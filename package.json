@@ -18,7 +18,14 @@
     "react-native-web": "0.17.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "electron": "^19.0.8",
+    "@babel/core": "^7.12.9",
+    "@expo/electron-adapter": "^0.0.55",
+    "@expo/webpack-config": "^0.16.25",
+    "@types/react": "~17.0.21",
+    "@types/react-native": "~0.67.6",
+    "electron-builder": "^23.1.0",
+    "typescript": "~4.3.5"
   },
   "private": true
 }
