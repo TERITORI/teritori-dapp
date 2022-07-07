@@ -10,22 +10,57 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo-google-fonts/exo": "^0.2.2",
+    "@react-native-async-storage/async-storage": "~1.17.3",
+    "@react-navigation/native": "^6.0.11",
+    "@react-navigation/native-stack": "^6.7.0",
+    "@reduxjs/toolkit": "^1.8.3",
+    "@solana-mobile/wallet-adapter-mobile": "^0.0.1-alpha.0",
+    "@solana/wallet-adapter-base": "^0.9.7",
+    "@solana/wallet-adapter-wallets": "^0.16.2",
+    "@solana/web3.js": "^1.44.3",
+    "@svgr/webpack": "^5.5.0",
+    "airtable": "^0.11.4",
+    "b58": "^4.0.3",
+    "bech32": "^2.0.0",
+    "eslint-config-universe": "^11.0.0",
     "expo": "~45.0.0",
+    "expo-font": "~10.1.0",
     "expo-status-bar": "~1.3.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-native": "0.68.2",
-    "react-native-web": "0.17.7"
+    "react-native-safe-area-context": "4.2.4",
+    "react-native-screens": "~3.11.1",
+    "react-native-svg": "12.3.0",
+    "react-native-web": "0.17.7",
+    "react-redux": "^8.0.2",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
-    "electron": "^19.0.8",
     "@babel/core": "^7.12.9",
     "@expo/electron-adapter": "^0.0.55",
     "@expo/webpack-config": "^0.16.25",
+    "@types/bs58": "^4.0.1",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.67.6",
+    "@typescript-eslint/eslint-plugin": "^5.30.5",
+    "@typescript-eslint/parser": "^5.30.5",
+    "electron": "^19.0.8",
     "electron-builder": "^23.1.0",
+    "eslint": "^8.19.0",
+    "prettier": "^2.7.1",
+    "react-native-svg-transformer": "^1.0.0",
     "typescript": "~4.3.5"
+  },
+  "resolutions": {
+    "svgo": "^2.8.0",
+    "@svgr/babel-preset": "^6.1.0",
+    "@svgr/plugin-jsx": "^6.1.2",
+    "@svgr/plugin-svgo": "^6.1.2"
+  },
+  "eslintConfig": {
+    "extends": "universe/native"
   },
   "private": true
 }
