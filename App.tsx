@@ -13,7 +13,6 @@ import { Provider as ReduxProvider } from "react-redux";
 import { LaunchpadProvider } from "./packages/components/LaunchpadProvider";
 import { Navigator } from "./packages/components/Navigator";
 import { SolanaBalanceProvider } from "./packages/components/SolanaBalanceProvider";
-import { SolanaProvider } from "./packages/components/SolanaProvider";
 import { TeritoriBalanceProvider } from "./packages/components/TeritoriBalanceProvider";
 import { WalletsProvider } from "./packages/components/WalletsProvider/WalletsProvider";
 import { store } from "./packages/store/store";
@@ -35,16 +34,14 @@ export default function App() {
       <SafeAreaProvider>
         <ReduxProvider store={store}>
           <WalletsProvider>
-            <SolanaProvider>
-              <SolanaBalanceProvider>
-                <TeritoriBalanceProvider>
-                  <LaunchpadProvider>
-                    <StatusBar style="inverted" />
-                    <Navigator />
-                  </LaunchpadProvider>
-                </TeritoriBalanceProvider>
-              </SolanaBalanceProvider>
-            </SolanaProvider>
+            <SolanaBalanceProvider>
+              <TeritoriBalanceProvider>
+                <LaunchpadProvider>
+                  <StatusBar style="inverted" />
+                  <Navigator />
+                </LaunchpadProvider>
+              </TeritoriBalanceProvider>
+            </SolanaBalanceProvider>
           </WalletsProvider>
         </ReduxProvider>
       </SafeAreaProvider>
