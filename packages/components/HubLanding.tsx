@@ -17,12 +17,13 @@ import stakingPNG from "../../assets/icons/staking.png";
 import walletPNG from "../../assets/icons/wallet.png";
 import { useSelectedWallet } from "../hooks";
 import { LaunchpadItem } from "../utils/airtable";
-import { neutral33 } from "../utils/colors";
 import { getCosmosBalances } from "../utils/cosmos";
+import { helpAreaWidth, sidebarWidth } from "../utils/layout";
 import { useAppNavigation } from "../utils/navigation";
 import { Network } from "../utils/network";
 import { BrandText } from "./BrandText";
 import { CardOutline } from "./CardOutline";
+import { CarouselSection } from "./CarouselSection";
 import { Guardian } from "./Guardian";
 import { LabelCard } from "./LabelCard";
 import { useLaunchpadData } from "./LaunchpadProvider";
@@ -36,6 +37,9 @@ import { Logo } from "./svgs/Logo";
 const breakPoint = 768;
 const gridHalfGutter = 12;
 
+const launchpadItemHeight = 266;
+const launchpadItemWidth = 196;
+
 const LaunchpadItemView: React.FC<{
   item: LaunchpadItem;
 }> = ({ item }) => {
@@ -44,8 +48,8 @@ const LaunchpadItemView: React.FC<{
       style={{
         paddingTop: 12,
         paddingBottom: 20,
-        width: 196,
-        margin: gridHalfGutter,
+        width: launchpadItemWidth,
+        height: launchpadItemHeight,
       }}
     >
       <Image
@@ -57,9 +61,9 @@ const LaunchpadItemView: React.FC<{
           borderRadius: 12,
         }}
       />
-      <View style={{ marginHorizontal: 12 }}>
+      <View style={{ marginHorizontal: 12, marginTop: 16 }}>
         <BrandText
-          style={{ marginTop: 16, fontSize: 14 }}
+          style={{ fontSize: 14 }}
           ellipsizeMode="tail"
           numberOfLines={1}
         >
@@ -298,8 +302,12 @@ const NewsBox: React.FC = () => {
 
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
-  const { launchpadItems } = useLaunchpadData();
+  const { width: windowWidth } = useWindowDimensions();
+  const { launchpadItems: unfilteredLaunchpadItems } = useLaunchpadData();
   const selectedWallet = useSelectedWallet();
+  const launchpadItems = unfilteredLaunchpadItems.filter(
+    (item) => item.shouldDisplay && item.imageURL
+  );
 
   useEffect(() => {
     if (!selectedWallet || selectedWallet.network !== Network.Teritori) {
@@ -389,21 +397,15 @@ Join the Bounty Program
             />
           </View>
         </Section>
-        <Section title="Upcoming Launches on Teritori Launch Pad">
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              margin: -gridHalfGutter,
-            }}
-          >
-            {launchpadItems
-              .filter((item) => item.shouldDisplay && item.imageURL)
-              .map((item) => (
-                <LaunchpadItemView key={item.id} item={item} />
-              ))}
-          </View>
-        </Section>
+        <CarouselSection
+          title="Upcoming Launches on Teritori Launch Pad"
+          data={launchpadItems}
+          renderItem={LaunchpadItemView}
+          width={launchpadItemWidth + 24}
+          height={launchpadItemHeight}
+          loop={false}
+          style={{ width: windowWidth - (helpAreaWidth + sidebarWidth) }}
+        />
         <View
           style={{
             flexDirection: "row",

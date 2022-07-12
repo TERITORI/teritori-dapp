@@ -14,6 +14,7 @@ import {
 import helpAreaPNG from "../../assets/help-area.png";
 import logoTopPNG from "../../assets/logo-top.png";
 import { neutral33 } from "../utils/colors";
+import { helpAreaWidth } from "../utils/layout";
 import { useAppNavigation } from "../utils/navigation";
 import { headerHeight, HubHeader } from "./HubHeader";
 import { Sidebar } from "./Sidebar";
@@ -62,7 +63,7 @@ export const ScreenContainer: React.FC = ({ children }) => {
               <Image
                 source={helpAreaPNG}
                 style={{
-                  width: 188,
+                  width: helpAreaWidth,
                   borderRightWidth: 1,
                   resizeMode: "stretch",
                   borderLeftWidth: 1,

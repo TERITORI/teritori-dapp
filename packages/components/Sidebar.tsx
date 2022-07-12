@@ -15,6 +15,7 @@ import sidebarContainerSelectedPNG from "../../assets/sidebar-container-selected
 import sidebarContainerPNG from "../../assets/sidebar-container.png";
 import sidebarTopPNG from "../../assets/sidebar-top.png";
 import { neutral33 } from "../utils/colors";
+import { sidebarWidth } from "../utils/layout";
 import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
 
 const SidebarButton: React.FC<{
@@ -57,24 +58,34 @@ const SidebarButton: React.FC<{
   );
 };
 
-const sidebarWidth = 88;
 const borderWidth = 1;
+const menuWidth = 88;
 
 export const Sidebar: React.FC = () => {
   const navigation = useAppNavigation();
   const currentRouteName = getCurrentRouteName(navigation);
   return (
-    <View style={{ marginLeft: 24, flex: 1, justifyContent: "center" }}>
+    <View
+      style={{
+        width: sidebarWidth,
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "flex-end",
+      }}
+    >
       <Image
         source={sidebarTopPNG}
-        style={{ width: sidebarWidth, height: 100, resizeMode: "stretch" }}
+        style={{
+          width: menuWidth,
+          height: 100,
+          resizeMode: "stretch",
+        }}
       />
       <View
         style={{
           borderLeftColor: neutral33,
           borderLeftWidth: borderWidth,
-          width: sidebarWidth - borderWidth,
-          alignSelf: "flex-end",
+          width: menuWidth - borderWidth,
           backgroundColor: "rgba(56, 58, 87, 0.5)",
         }}
       >
@@ -101,7 +112,7 @@ export const Sidebar: React.FC = () => {
       </View>
       <Image
         source={sidebarBottomPNG}
-        style={{ width: sidebarWidth, height: 100, resizeMode: "stretch" }}
+        style={{ width: menuWidth, height: 100, resizeMode: "stretch" }}
       />
     </View>
   );
