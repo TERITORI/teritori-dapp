@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 import { Network } from "../utils/network";
 import { getTeriBalance } from "../utils/teritori";
-import { useWallets } from "./WalletsProvider/WalletsProvider";
+import { useWallets } from "./WalletsProvider";
 
 const STAKE_PER_TERI = 10000;
 
@@ -36,9 +36,9 @@ export const TeritoriBalanceProvider: React.FC = ({ children }) => {
           .filter(
             (wallet) => wallet.network === Network.Teritori && wallet.publicKey
           )
-          .map((wallet) => {
+          .map(async (wallet) => {
             try {
-              return getTeriBalance(wallet.publicKey);
+              return await getTeriBalance(wallet.publicKey);
             } catch (err) {
               console.warn(
                 "failed to get teritori balance for",

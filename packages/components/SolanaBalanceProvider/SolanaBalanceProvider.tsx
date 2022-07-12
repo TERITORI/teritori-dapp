@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { Network } from "../../utils/network";
 import { getSolanaBalance } from "../../utils/solana";
-import { useWallets } from "../WalletsProvider/WalletsProvider";
+import { useWallets } from "../WalletsProvider";
 import {
   solanaBalanceIntitialValue,
   solanaBalanceContext,

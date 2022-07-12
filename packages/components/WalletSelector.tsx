@@ -3,13 +3,15 @@ import { View, ViewStyle, Image, TouchableOpacity, Text } from "react-native";
 
 import downPNG from "../../assets/icons/down.png";
 import upPNG from "../../assets/icons/up.png";
+import { useSelectedWallet } from "../hooks";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
-import { neutral17, neutral33, neutral44, primaryColor } from "../utils/colors";
+import { neutral17, neutral33, neutral44 } from "../utils/colors";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
-import { useWallets, Wallet } from "./WalletsProvider/WalletsProvider";
+import { useWallets, Wallet } from "./WalletsProvider";
+import { SecondaryAltButton } from "./buttons/SecondaryAltButton";
 
 // FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native
 
@@ -72,7 +74,8 @@ const WalletView: React.FC<{ wallet?: Wallet; style?: ViewStyle }> = ({
 export const WalletSelector: React.FC<{ onPressAddWallet?: () => void }> = ({
   onPressAddWallet,
 }) => {
-  const { selectedWallet, wallets } = useWallets();
+  const { wallets } = useWallets();
+  const selectedWallet = useSelectedWallet();
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -134,24 +137,15 @@ export const WalletSelector: React.FC<{ onPressAddWallet?: () => void }> = ({
             />
           )}
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#2B2B33",
-                borderRadius: 8,
-                paddingHorizontal: 13,
-                paddingVertical: 10,
-              }}
+            <SecondaryAltButton
+              text="Add wallet"
               onPress={() => {
                 setIsExpanded(false);
                 if (typeof onPressAddWallet === "function") {
                   onPressAddWallet();
                 }
               }}
-            >
-              <BrandText style={{ color: primaryColor, fontSize: 14 }}>
-                Add wallet
-              </BrandText>
-            </TouchableOpacity>
+            />
           </View>
         </View>
       )}
