@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ImageSourcePropType,
 } from "react-native";
-import { useSelector } from "react-redux";
 
 import dappCardPNG from "../../assets/dapp-card.png";
 import airdropPNG from "../../assets/icons/airdrop.png";
@@ -16,17 +15,19 @@ import launchpadPNG from "../../assets/icons/launchpad.png";
 import marketplacePNG from "../../assets/icons/marketplace.png";
 import stakingPNG from "../../assets/icons/staking.png";
 import walletPNG from "../../assets/icons/wallet.png";
-import { selectSelectedWalletId } from "../store/slices/settings";
+import { useSelectedWallet } from "../hooks";
 import { LaunchpadItem } from "../utils/airtable";
 import { neutral33 } from "../utils/colors";
 import { getCosmosBalances } from "../utils/cosmos";
 import { useAppNavigation } from "../utils/navigation";
 import { Network } from "../utils/network";
 import { BrandText } from "./BrandText";
+import { CardOutline } from "./CardOutline";
 import { Guardian } from "./Guardian";
 import { LabelCard } from "./LabelCard";
 import { useLaunchpadData } from "./LaunchpadProvider";
-import { useWallets } from "./WalletsProvider/WalletsProvider";
+import { Section } from "./Section";
+import { useWallets } from "./WalletsProvider";
 import { HollowPrimaryButton } from "./buttons/HollowPrimaryButton";
 import { SecondaryButton } from "./buttons/SecondaryButton";
 import { CertifiedIcon } from "./svgs/CertifiedIcon";
@@ -39,14 +40,11 @@ const LaunchpadItemView: React.FC<{
   item: LaunchpadItem;
 }> = ({ item }) => {
   return (
-    <View
+    <CardOutline
       style={{
-        borderColor: neutral33,
-        borderWidth: 1,
         paddingTop: 12,
         paddingBottom: 20,
         width: 196,
-        borderRadius: 8,
         margin: gridHalfGutter,
       }}
     >
@@ -88,7 +86,7 @@ const LaunchpadItemView: React.FC<{
           )}
         </View>
       </View>
-    </View>
+    </CardOutline>
   );
 };
 
@@ -106,27 +104,6 @@ const PrimaryBox: React.FC<{ style?: ViewStyle }> = ({ children, style }) => {
       ]}
     >
       <>{children}</>
-    </View>
-  );
-};
-
-const Section: React.FC<{ title: string }> = ({ children, title }) => {
-  const fontSize = 20;
-  return (
-    <View style={{ marginBottom: 64 }}>
-      <>
-        <BrandText
-          style={{
-            color: "#FFFFFF",
-            fontSize,
-            letterSpacing: -(fontSize * 0.04),
-            marginBottom: 20,
-          }}
-        >
-          {title}
-        </BrandText>
-        {children}
-      </>
     </View>
   );
 };
@@ -319,19 +296,17 @@ const NewsBox: React.FC = () => {
   );
 };
 
-export const HomeLanding: React.FC = () => {
+export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
   const { launchpadItems } = useLaunchpadData();
-  const selectedWalletId = useSelector(selectSelectedWalletId);
-  const { wallets } = useWallets();
+  const selectedWallet = useSelectedWallet();
 
-  const wallet = wallets.find((wallet) => wallet.id === selectedWalletId);
   useEffect(() => {
-    if (!wallet || wallet.network !== Network.Teritori) {
+    if (!selectedWallet || selectedWallet.network !== Network.Teritori) {
       return;
     }
-    getCosmosBalances(wallet.publicKey);
-  }, [wallet]);
+    getCosmosBalances(selectedWallet.publicKey);
+  }, [selectedWallet]);
 
   return (
     <View style={{ width: "100%", paddingHorizontal: 25 }}>

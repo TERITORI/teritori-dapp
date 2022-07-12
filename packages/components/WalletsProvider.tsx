@@ -7,15 +7,14 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 
-import { selectSelectedWalletId } from "../../store/slices/settings";
 import {
   addWallet,
   selectStoreWallets,
   storeWalletId,
-} from "../../store/slices/wallets";
-import { useAppDispatch } from "../../store/store";
-import { Network } from "../../utils/network";
-import { WalletProvider } from "../../utils/walletProvider";
+} from "../store/slices/wallets";
+import { useAppDispatch } from "../store/store";
+import { Network } from "../utils/network";
+import { WalletProvider } from "../utils/walletProvider";
 
 export interface Wallet {
   id: string;
@@ -115,13 +114,11 @@ const usePhantom: () => UsePhantomResult = () => {
 type WalletsContextValue = {
   wallets: Wallet[];
   ready: boolean;
-  selectedWallet: Wallet | undefined;
 };
 
 const WalletsContext = createContext<WalletsContextValue>({
   wallets: [],
   ready: false,
-  selectedWallet: undefined,
 });
 
 export const useWallets = () => useContext(WalletsContext);
@@ -129,8 +126,6 @@ export const useWallets = () => useContext(WalletsContext);
 export const WalletsProvider: React.FC = React.memo(({ children }) => {
   const [hasPhantom, phantomIsReady, phantomWallet]: UsePhantomResult =
     usePhantom();
-
-  const selectedWalletId = useSelector(selectSelectedWalletId);
 
   const storeWallets = useSelector(selectStoreWallets);
 
@@ -163,19 +158,8 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     return {
       wallets,
       ready: phantomIsReady,
-      selectedWallet:
-        wallets.find((wallet) => wallet.id === selectedWalletId) ||
-        (wallets.length > 0
-          ? wallets.find((wallet) => wallet.publicKey)
-          : undefined),
     };
-  }, [
-    hasPhantom,
-    phantomIsReady,
-    phantomWallet,
-    selectedWalletId,
-    storeWallets,
-  ]);
+  }, [hasPhantom, phantomIsReady, phantomWallet, storeWallets]);
 
   return (
     <WalletsContext.Provider value={value}>{children}</WalletsContext.Provider>

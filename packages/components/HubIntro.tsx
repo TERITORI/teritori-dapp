@@ -9,7 +9,7 @@ import { BrandText } from "./BrandText";
 import { useSolanaBalance } from "./SolanaBalanceProvider/solanaBalanceContext";
 import { useTeritoriBalance } from "./TeritoriBalanceProvider";
 import { WalletSelector } from "./WalletSelector";
-import { useWallets } from "./WalletsProvider/WalletsProvider";
+import { useWallets } from "./WalletsProvider";
 import { PrimaryButton } from "./buttons/PrimaryButton";
 import { Logo } from "./svgs/Logo";
 

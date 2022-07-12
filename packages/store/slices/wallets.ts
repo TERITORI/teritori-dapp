@@ -16,8 +16,10 @@ const storeWalletsAdapter = createEntityAdapter<StoreWallet>({
   selectId: storeWalletId,
 });
 
+const selectors = storeWalletsAdapter.getSelectors();
+
 export const selectStoreWallets = (state: RootState) =>
-  storeWalletsAdapter.getSelectors().selectAll(state.wallets);
+  selectors.selectAll(state.wallets);
 
 export const walletsSlice = createSlice({
   name: "wallets",

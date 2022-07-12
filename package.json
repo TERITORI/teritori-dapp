@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/exo": "^0.2.2",
+    "@metaplex-foundation/js-next": "0.7.1",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
@@ -21,12 +22,12 @@
     "@solana/web3.js": "^1.44.3",
     "@svgr/webpack": "^5.5.0",
     "airtable": "^0.11.4",
-    "b58": "^4.0.3",
     "bech32": "^2.0.0",
     "eslint-config-universe": "^11.0.0",
     "expo": "~45.0.0",
     "expo-font": "~10.1.0",
     "expo-status-bar": "~1.3.0",
+    "http2": "^3.3.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-native": "0.68.2",
@@ -41,7 +42,6 @@
     "@babel/core": "^7.12.9",
     "@expo/electron-adapter": "^0.0.55",
     "@expo/webpack-config": "^0.16.25",
-    "@types/bs58": "^4.0.1",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.67.6",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
@@ -54,6 +54,7 @@
     "typescript": "~4.3.5"
   },
   "resolutions": {
+    "@aws-sdk/client-s3": "3.54.1",
     "svgo": "^2.8.0",
     "@svgr/babel-preset": "^6.1.0",
     "@svgr/plugin-jsx": "^6.1.2",
