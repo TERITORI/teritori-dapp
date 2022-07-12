@@ -3,21 +3,33 @@ import { View } from "react-native";
 
 import { BrandText } from "./BrandText";
 
-export const Section: React.FC<{ title: string }> = ({ children, title }) => {
+export const Section: React.FC<{
+  title: string;
+  topRightChild?: React.ReactNode;
+}> = ({ children, title, topRightChild }) => {
   const fontSize = 20;
   return (
     <View style={{ marginBottom: 64 }}>
       <>
-        <BrandText
+        <View
           style={{
-            color: "#FFFFFF",
-            fontSize,
-            letterSpacing: -(fontSize * 0.04),
+            flexDirection: "row",
+            alignItems: "center",
             marginBottom: 20,
           }}
         >
-          {title}
-        </BrandText>
+          <BrandText
+            style={{
+              color: "#FFFFFF",
+              fontSize,
+              letterSpacing: -(fontSize * 0.04),
+              flex: 1,
+            }}
+          >
+            {title}
+          </BrandText>
+          <>{topRightChild}</>
+        </View>
         {children}
       </>
     </View>
