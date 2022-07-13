@@ -297,6 +297,8 @@ const NewsBox: React.FC = () => {
   );
 };
 
+const landingHorizontalPadding = 25;
+
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
   const { width: windowWidth } = useWindowDimensions();
@@ -306,7 +308,9 @@ export const HubLanding: React.FC = () => {
   );
 
   return (
-    <View style={{ width: "100%", paddingHorizontal: 25 }}>
+    <View
+      style={{ width: "100%", paddingHorizontal: landingHorizontalPadding }}
+    >
       <View style={{ flex: 1 }}>
         <Section title="Highlighted News">
           <NewsBox />
@@ -393,7 +397,11 @@ Join the Bounty Program
           width={launchpadItemWidth + 24}
           height={launchpadItemHeight}
           loop={false}
-          style={{ width: windowWidth - (helpAreaWidth + sidebarWidth) }}
+          style={{
+            width:
+              windowWidth -
+              (helpAreaWidth + sidebarWidth + landingHorizontalPadding),
+          }}
         />
         <View
           style={{
