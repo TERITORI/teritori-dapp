@@ -1,0 +1,32 @@
+name: JS
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+
+      - name: Install node modules
+        run: yarn
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Build web app
+        run: yarn expo-optimize && yarn expo build:web
+
+      - name: Check that there is no diff
+        run: |
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --

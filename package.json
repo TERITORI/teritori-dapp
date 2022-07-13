@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx . && tsc"
   },
   "dependencies": {
     "@expo-google-fonts/exo": "^0.2.2",
@@ -52,6 +53,7 @@
     "electron": "^19.0.8",
     "electron-builder": "^23.1.0",
     "eslint": "^8.19.0",
+    "expo-optimize": "^0.2.18",
     "prettier": "^2.7.1",
     "react-native-svg-transformer": "^1.0.0",
     "typescript": "~4.3.5"
@@ -63,8 +65,24 @@
     "@svgr/plugin-jsx": "^6.1.2",
     "@svgr/plugin-svgo": "^6.1.2"
   },
-  "eslintConfig": {
-    "extends": "universe/native"
-  },
-  "private": true
+  "private": true,
+  "build": {
+    "extraMetadata": {
+      "main": "main.js"
+    },
+    "files": [
+      {
+        "from": "dist/main/",
+        "to": "./",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "dist/renderer",
+        "to": "./",
+        "filter": ["**/*"]
+      },
+      "package.json",
+      "**/node_modules/**/*"
+    ]
+  }
 }

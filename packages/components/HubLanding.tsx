@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   View,
   Image,
@@ -15,12 +15,9 @@ import launchpadPNG from "../../assets/icons/launchpad.png";
 import marketplacePNG from "../../assets/icons/marketplace.png";
 import stakingPNG from "../../assets/icons/staking.png";
 import walletPNG from "../../assets/icons/wallet.png";
-import { useSelectedWallet } from "../hooks";
 import { LaunchpadItem } from "../utils/airtable";
-import { getCosmosBalances } from "../utils/cosmos";
 import { helpAreaWidth, sidebarWidth } from "../utils/layout";
 import { useAppNavigation } from "../utils/navigation";
-import { Network } from "../utils/network";
 import { BrandText } from "./BrandText";
 import { CardOutline } from "./CardOutline";
 import { CarouselSection } from "./CarouselSection";
@@ -304,17 +301,9 @@ export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
   const { width: windowWidth } = useWindowDimensions();
   const { launchpadItems: unfilteredLaunchpadItems } = useLaunchpadData();
-  const selectedWallet = useSelectedWallet();
   const launchpadItems = unfilteredLaunchpadItems.filter(
     (item) => item.shouldDisplay && item.imageURL
   );
-
-  useEffect(() => {
-    if (!selectedWallet || selectedWallet.network !== Network.Teritori) {
-      return;
-    }
-    getCosmosBalances(selectedWallet.publicKey);
-  }, [selectedWallet]);
 
   return (
     <View style={{ width: "100%", paddingHorizontal: 25 }}>
