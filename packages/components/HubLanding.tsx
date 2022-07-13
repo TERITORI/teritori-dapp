@@ -304,17 +304,9 @@ export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
   const { width: windowWidth } = useWindowDimensions();
   const { launchpadItems: unfilteredLaunchpadItems } = useLaunchpadData();
-  const selectedWallet = useSelectedWallet();
   const launchpadItems = unfilteredLaunchpadItems.filter(
     (item) => item.shouldDisplay && item.imageURL
   );
-
-  useEffect(() => {
-    if (!selectedWallet || selectedWallet.network !== Network.Teritori) {
-      return;
-    }
-    getCosmosBalances(selectedWallet.publicKey);
-  }, [selectedWallet]);
 
   return (
     <View style={{ width: "100%", paddingHorizontal: 25 }}>
