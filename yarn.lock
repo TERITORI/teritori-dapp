@@ -8801,6 +8801,11 @@ expo-modules-core@0.9.2:
     compare-versions "^3.4.0"
     invariant "^2.2.4"
 
+expo-optimize@^0.2.18:
+  version "0.2.18"
+  resolved "https://registry.yarnpkg.com/expo-optimize/-/expo-optimize-0.2.18.tgz#73929449ef1d2baa3c965d5d1ea664dbf490d02c"
+  integrity sha512-n0u5Z/PaBGYIcbKJ5e73g9P4L08zLPCmTl5M2qnrP/3zLRxMOkCfsURyn+Rm+0DEx8r04fkSiaGHQ65eGYe+qw==
+
 expo-pwa@0.0.120:
   version "0.0.120"
   resolved "https://registry.yarnpkg.com/expo-pwa/-/expo-pwa-0.0.120.tgz#5cd049a82376f157aa265013f2494ceb6a133d80"
