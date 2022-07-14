@@ -80,7 +80,7 @@ In the future (v3) it will also be a privacy first messaging application built o
 - Vote on every new proposals provided by community 
 - Users are not simply passive users, but are incentived to participate. Let's make governance great again.
 
-Teritori is currently developed by **[NXT Labs](https://berty.tech/about)**, a French nonprofit organization which bootstrap the network & dApp development, and got the mission to make it governed by users.
+Teritori is currently launched by **NXT Labs**, which bootstrap the network & dApp development, and got the mission to make it governed by users.
 
 
 ## Contributing
