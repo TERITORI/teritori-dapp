@@ -90,7 +90,7 @@ Please feel free to use PR & Issues, and to join us on Discord for any question!
 ## Other resources
 
 - Official website: https://www.teritori.com
-- Discord: https://discord.com/teritori
+- Discord: https://discord.gg/teritori
 - Twitter: https://twitter.com/TeritoriNetwork
 
 ___
