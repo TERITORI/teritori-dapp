@@ -11,7 +11,7 @@ import { MarketplaceScreen } from "../screens/Marketplace/MarketplaceScreen";
 import { MintScreen } from "../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../screens/MyCollection/MyCollectionScreen";
 import { WalletsScreen } from "../screens/Wallets/WalletsScreen";
-import {NameServiceBookingScreen} from '../screens/NameServiceBooking/NameServiceBookingScreen';
+import {NSBHomeScreen} from '../screens/NameServiceBooking/NSBHomeScreen';
 import { RootStackParamList } from "../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -71,8 +71,8 @@ export const Navigator: React.FC = () => {
         options={{ presentation: "transparentModal", header: () => null }}
       />
       <Stack.Screen
-        name="NameServiceBooking"
-        component={NameServiceBookingScreen}
+        name="NameService"
+        component={NSBHomeScreen}
         options={{ header: () => null }}
       />
     </Stack.Navigator>
