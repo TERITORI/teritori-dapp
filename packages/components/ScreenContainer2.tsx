@@ -25,6 +25,7 @@ export const ScreenContainer2: React.FC<{
 										<View style={{flexDirection: "column", flex: 1}}>
 												<Header/>
 
+												{/*TODO: Better scroll. Footer in ScrollView ? ... */}
 												<ScrollView
 														style={{ width: "100%", flex: 1 }}
 														contentContainerStyle={{ flex: 1 }}
