@@ -71,8 +71,11 @@ const WalletView: React.FC<{ wallet?: Wallet; style?: ViewStyle }> = ({
   );
 };
 
-export const WalletSelector: React.FC<{ onPressAddWallet?: () => void }> = ({
+export const WalletSelector: React.FC<{ onPressAddWallet?: () => void,
+  style?: ViewStyle
+}> = ({
   onPressAddWallet,
+  style
 }) => {
   const { wallets } = useWallets();
   const selectedWallet = useSelectedWallet();
@@ -87,7 +90,7 @@ export const WalletSelector: React.FC<{ onPressAddWallet?: () => void }> = ({
     (wallet) => wallet.id !== selectedWallet.id && wallet.publicKey
   );
   return (
-    <View>
+    <View style={style}>
       <TouchableOpacity onPress={() => setIsExpanded((value) => !value)}>
         <SecondaryBox
           style={{
