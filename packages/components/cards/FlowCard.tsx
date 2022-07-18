@@ -1,4 +1,4 @@
-import dappCardPNG from "../../assets/dapp-card.png"
+
 
 {/*TODO: STEP3*/
 }
@@ -6,10 +6,10 @@ import dappCardPNG from "../../assets/dapp-card.png"
 import React from "react"
 import {ViewStyle, View, StyleProp, Image, TouchableOpacity, ImageProps, ImageSourcePropType} from "react-native"
 
-import {neutral33} from "../utils/colors"
-import {LaunchpadItem} from "../utils/airtable"
-import flowCardPNG from "../../assets/flow-card.png"
-import {BrandText} from "./BrandText"
+import {neutral33} from "../../utils/colors"
+import {LaunchpadItem} from "../../utils/airtable"
+import flowCardPNG from "../../../assets/cards/flow-card.png"
+import {BrandText} from "../BrandText"
 
 export const FlowCard: React.FC<{
 		label: string;
@@ -63,7 +63,6 @@ export const FlowCard: React.FC<{
 								<View style={{flex: 1, flexDirection: "column", justifyContent: 'space-between'}}>
 										<BrandText
 												style={{
-														color: "white",
 														fontSize: labelFontSize,
 														letterSpacing: -(labelFontSize * 0.04)
 												}}

@@ -12,7 +12,8 @@ export type RootStackParamList = {
   Wallets: undefined;
   Governance: undefined;
   Mint: undefined;
-  NameService: undefined;
+  NameServiceBooking: undefined;
+  NSBExplore: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -36,7 +37,8 @@ const navConfig = {
     Launchpad: "launchpad",
     Governance: "governance",
     Mint: "mint",
-    NameService: "name-service",
+    NameServiceBooking: "nsb",
+    NSBExplore: "nsb-explore",
   },
 };
 

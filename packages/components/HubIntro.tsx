@@ -4,7 +4,7 @@ import { View, Image, ViewStyle, TouchableOpacity } from "react-native";
 import connectedImagePNG from "../../assets/connected-image-bad.png";
 import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
 import { WalletProvider } from "../utils/walletProvider";
-import { BalanceCard } from "./BalanceCard";
+import { BalanceCard } from "./cards/BalanceCard";
 import { BrandText } from "./BrandText";
 import { useSolanaBalance } from "./SolanaBalanceProvider/solanaBalanceContext";
 import { useTeritoriBalance } from "./TeritoriBalanceProvider";

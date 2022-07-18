@@ -8,7 +8,7 @@ import {
   ImageSourcePropType,
 } from "react-native";
 
-import dappCardPNG from "../../assets/dapp-card.png";
+import dappCardPNG from "../../assets/cards/dapp-card.png";
 import airdropPNG from "../../assets/icons/airdrop.png";
 import labsPNG from "../../assets/icons/labs.png";
 import launchpadPNG from "../../assets/icons/launchpad.png";
@@ -19,10 +19,10 @@ import { LaunchpadItem } from "../utils/airtable";
 import { helpAreaWidth, sidebarWidth } from "../utils/layout";
 import { useAppNavigation } from "../utils/navigation";
 import { BrandText } from "./BrandText";
-import { CardOutline } from "./CardOutline";
+import { CardOutline } from "./cards/CardOutline";
 import { CarouselSection } from "./CarouselSection";
 import { Guardian } from "./Guardian";
-import { LabelCard } from "./LabelCard";
+import { LabelCard } from "./cards/LabelCard";
 import { useLaunchpadData } from "./LaunchpadProvider";
 import { Section } from "./Section";
 import { useWallets } from "./WalletsProvider";
