@@ -10,6 +10,7 @@ export const IntroLogoText: React.FC<{
 		style?: ViewStyle;
 }> = ({subTitle, style}) => {
 
+		const height = 273
 		const titleFontSize = 28
 		const subTitleFontSize = 16
 		const logoWrapperSize = 200
@@ -17,9 +18,8 @@ export const IntroLogoText: React.FC<{
 		return (
 				<View
 						style={[style, {
-								flex: 1,
-								flexDirection: "column",
-								alignItems: "center",
+								flex: 1, flexDirection: "column", alignItems: "center",
+								maxHeight: height, minHeight: height, height
 						}]}
 				>
 						<View

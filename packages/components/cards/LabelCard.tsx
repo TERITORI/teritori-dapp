@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Image, ViewStyle } from "react-native";
 
-import balanceCardHighlightedPNG from "../../assets/balance-card-highlight.png";
-import balanceCardPNG from "../../assets/balance-card.png";
-import { BrandText } from "./BrandText";
+import balanceCardHighlightedPNG from "../../../assets/cards/balance-card-highlight.png";
+import balanceCardPNG from "../../../assets/cards/balance-card.png";
+import { BrandText } from "../BrandText";
 
 export const LabelCard: React.FC<{
   highlighted?: boolean;
