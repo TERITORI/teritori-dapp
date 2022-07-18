@@ -30,8 +30,9 @@ const ModalNameFinder: React.FC<{
 }> = ({visible, onClose}) => {
 
 		return (
-				<ModalBase visible={visible} onClose={onClose} label="Find a name" width={372}>
-						<TextInputCustom label="name" placeHolder="Type name here"/>
+				<ModalBase visible={visible} onClose={onClose} label="Find a name">
+						{/*TODO: Uncomment and fix */}
+						{/*<TextInputCustom label="name" placeHolder="Type name here"/>*/}
 				</ModalBase>
 		)
 }
