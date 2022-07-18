@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TouchableOpacity, View, ViewStyle } from "react-native";
+import {TextStyle, TouchableOpacity, View, ViewStyle} from "react-native"
 
 import { primaryColor, primaryTextColor } from "../../utils/colors";
 import { BrandText } from "../BrandText";
@@ -7,11 +7,13 @@ import { BrandText } from "../BrandText";
 export const PrimaryButton: React.FC<{
   text: string;
   style?: ViewStyle;
+  textStyle?: TextStyle;
   onPress?: () => void;
   big?: boolean;
   disabled?: boolean;
-}> = ({ text, style, onPress, big, disabled }) => {
+}> = ({ text, style, textStyle, onPress, big, disabled }) => {
   const height = big ? 56 : 48;
+  const fontSize = 14
   return (
     <View
       style={[
@@ -26,11 +28,13 @@ export const PrimaryButton: React.FC<{
           height,
           paddingHorizontal: 20,
           justifyContent: "center",
+          width: "100%"
         }}
         onPress={onPress}
         disabled={disabled}
       >
-        <BrandText style={{ color: primaryTextColor, fontSize: 14 }}>
+        {/*TODO: letter spacing or not ?*/}
+        <BrandText style={[{ color: primaryTextColor, fontSize, letterSpacing: -(fontSize * 0.04), textAlign: "center"}, textStyle]}>
           {text}
         </BrandText>
       </TouchableOpacity>
