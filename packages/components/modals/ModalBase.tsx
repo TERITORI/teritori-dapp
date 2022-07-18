@@ -32,23 +32,14 @@ export const ModalBase: React.FC<{
 		visible?: boolean;
 		childrenBottom?: ReactElement;
 }>  = ({label, visible, width, onClose, childrenBottom, children}) => {
-
-		const [_visible, setModalVisible] = useState(false)
 		const labelFontSize = 20
-
-		useEffect(() => {
-				setModalVisible(visible)
-		}, [visible])
 
 		return (
 				<Modal
 						style={{ flex: 1, alignItems: "center", justifyContent: "center"}}
 						animationType="fade" transparent
-						visible={_visible}
-						onRequestClose={() => {
-								Alert.alert('Modal has been closed.');
-								setModalVisible(!_visible);
-						}}
+						visible={visible}
+						onRequestClose={onClose}
 				>
 						{/*------ Modal background */}
 						<View style={{width: "100%", height: "100%", backgroundColor: "rgba(0, 0, 0, .8)"}}>
