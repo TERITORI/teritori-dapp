@@ -13,11 +13,18 @@ import {NameNFT} from "../../components/NameServiceBooking/NameNFT"
 import {PrimaryButton} from "../../components/buttons/PrimaryButton"
 import {SecondaryButton} from "../../components/buttons/SecondaryButton"
 import {HollowPrimaryButton} from "../../components/buttons/HollowPrimaryButton"
+import {RouteProp} from "@react-navigation/native"
 
-export const NSBExploreScreen: React.FC = () => {
+export const NSBExploreScreen: React.FC<{
+		route: RouteProp<{ params: { enteredName: string } }>
+}> = ({route}) => {
 		const [enteredName, setEnteredName] = useState("")
 		const [enteredNameAvailable, setEnteredNameAvailable] = useState(false)
 		const [enteredNameError, setEnteredNameError] = useState(false)
+
+		useEffect(() => {
+				setEnteredName(route.params?.enteredName)
+		},[route])
 
 		useEffect(() => {
 				console.log('enteredName', enteredName)

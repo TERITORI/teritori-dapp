@@ -11,7 +11,15 @@ export const TextInputCustom: React.FC<{
 		placeHolder: string;
 		style?: ViewStyle;
 		onChangeText: (text: string) => void
-}> = ({label, value, placeHolder, style, children, onChangeText}) => {
+		onPressEnter?: () => void
+}> = ({label, value, placeHolder, onPressEnter, style, children, onChangeText}) => {
+
+		// Handling key pressing
+		const handleKeyPress = ({ nativeEvent: { key: keyValue } }) => {
+				switch(keyValue) {
+						case "Enter": onPressEnter()
+				}
+		};
 
 		return (
 				<View
@@ -35,6 +43,7 @@ export const TextInputCustom: React.FC<{
 												placeholder={placeHolder}
 												value={value}
 												onChangeText={onChangeText}
+												onKeyPress={handleKeyPress}
 												placeholderTextColor="#999999"
 												style={[
 														{
