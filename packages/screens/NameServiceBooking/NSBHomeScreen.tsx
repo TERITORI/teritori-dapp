@@ -3,7 +3,7 @@ import {FlowCard} from "../../components/cards/FlowCard"
 {/*TODO: STEP3*/}
 
 
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import {WalletSelector} from '../../components/WalletSelector'
@@ -28,19 +28,26 @@ const ModalNameFinder: React.FC<{
 		visible?: boolean;
 		onClose: () => void;
 }> = ({visible, onClose}) => {
+		const [enteredName, setEnteredName] = useState("")
+		const navigation = useAppNavigation();
+
+		const onPressEnter = () => {
+				setEnteredName("")
+				onClose()
+				// @ts-ignore TODO: fix ? (Remove ts-ignore)
+				navigation.navigate("NSBExplore", {	enteredName })
+		}
 
 		return (
 				<ModalBase visible={visible} onClose={onClose} label="Find a name">
-						{/*TODO: Uncomment and fix */}
-						{/*<TextInputCustom label="name" placeHolder="Type name here"/>*/}
+						{/*TODO: Uncomment and fix  */}
+						<TextInputCustom label="name" placeHolder="Type name here" onPressEnter={onPressEnter} onChangeText={setEnteredName} value={enteredName}/>
 				</ModalBase>
 		)
 }
 
 export const NSBHomeScreen: React.FC = () => {
 		const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
-
-		const navigation = useAppNavigation();
 		const landingHorizontalPadding = 25;
 
 		return (
@@ -61,11 +68,7 @@ export const NSBHomeScreen: React.FC = () => {
 								<FlowCard
 										label="Explore" description="Lookup addresses and explore registered names"
 										iconSource={exploreIconPNG}
-										// onPress={() => navigation.navigate("NSBExplore")}
-										onPress={() => {
-												console.log('???????', modalNameFinderVisible)
-												return setModalNameFinderVisible(true)
-										}}
+										onPress={() => setModalNameFinderVisible(true)}
 								/>
 						</View>
 
