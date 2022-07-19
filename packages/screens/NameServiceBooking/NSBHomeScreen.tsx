@@ -5,7 +5,7 @@ import {FlowCard} from "../../components/cards/FlowCard"
 import React, {useState} from "react"
 
 import {useAppNavigation} from '../../utils/navigation'
-import { View} from "react-native"
+import { View, StyleSheet} from "react-native"
 import {ScreenContainer2} from "../../components/ScreenContainer2"
 import {SocialNetworks} from "../../components/Footer"
 import {IntroLogoText} from "../../components/IntroLogoText"
@@ -14,6 +14,54 @@ import manageIconPNG from "../../../assets/icons/manage.png"
 import exploreIconPNG from "../../../assets/icons/explore.png"
 import ModalBase from "../../components/modals/ModalBase"
 import {TextInputCustom} from "../../components/inputs/TextInputCustom"
+import {errorColor, neutral22, neutral33, neutral77, successColor} from "../../utils/colors"
+import {BrandText} from "../../components/BrandText"
+import {domainsList} from "../../utils/teritori"
+
+const DomainsAvailability: React.FC = () => {
+		const s = StyleSheet.create({
+				labelStyle: {
+						fontSize: 14, color: neutral77, marginBottom: 8
+				},
+				domainStyle: {
+						fontSize: 16, color: neutral77, marginRight: 16
+				},
+				domainsContainerStyle: {
+						flex: 1, flexDirection: "row", alignItems: "center", width: "100%"
+				}
+		})
+
+		//TODO: Set minted domains from domainsList and map() it is JSX
+
+		return (
+				<View 	style={{
+						backgroundColor: "#000000",
+						borderWidth: 1, borderColor: neutral33,	borderRadius: 8,
+						width: "100%", height: 160,
+						flex: 1, flexDirection: "column", justifyContent: "space-between",
+						paddingVertical: 24, paddingHorizontal: 20
+				}}>
+						<BrandText style={s.labelStyle}>Available domains:</BrandText>
+						{/* ---- Domains that exist (With status minted or not) */}
+						<View style={s.domainsContainerStyle}>
+								{domainsList.filter(domain => !domain.comingSoon).map(domain => (
+										<BrandText style={[s.domainStyle, {color: domain.minted ? errorColor : successColor}]}>
+												{domain.name}
+										</BrandText>
+								))}
+						</View>
+						<BrandText style={[s.labelStyle, {marginTop: 24}]}>Coming soon domains:</BrandText>
+						{/* ---- Domains that not exist */}
+						<View style={s.domainsContainerStyle}>
+								{domainsList.filter(domain => domain.comingSoon).map(domain => (
+										<BrandText style={s.domainStyle}>
+												{domain.name}
+										</BrandText>
+								))}
+						</View>
+				</View>
+		)
+}
 
 // "Find a name" modal
 const ModalNameFinder: React.FC<{
@@ -31,7 +79,10 @@ const ModalNameFinder: React.FC<{
 		}
 
 		return (
-				<ModalBase visible={visible} onClose={onClose} label="Find a name">
+				<ModalBase
+						visible={visible} onClose={onClose} label="Find a name"
+						childrenBottom={<DomainsAvailability/>}
+				>
 						{/*TODO: Uncomment and fix  */}
 						<TextInputCustom label="name" placeHolder="Type name here" onPressEnter={onPressEnter} onChangeText={setName} value={name}/>
 				</ModalBase>
