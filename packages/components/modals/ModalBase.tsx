@@ -32,7 +32,6 @@ export const ModalBase: React.FC<{
 		visible?: boolean;
 		childrenBottom?: ReactElement;
 }>  = ({label, visible, width, onClose, childrenBottom, children}) => {
-		const labelFontSize = 20
 
 		return (
 				<Modal
@@ -58,7 +57,7 @@ export const ModalBase: React.FC<{
 												<View
 														style={{	flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}
 												>
-														<BrandText style={{ fontSize: labelFontSize, color: "white", lineHeight: 24, letterSpacing: -(labelFontSize * 0.04) }}>
+														<BrandText style={{ fontSize: 20, color: "white", lineHeight: 24 }}>
 																{label}
 														</BrandText>
 

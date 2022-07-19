@@ -10,7 +10,7 @@ import {
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { WalletSelector } from "./WalletSelector";
-import { useWallets } from "./WalletsProvider";
+import { useWallets } from "../context/WalletsProvider";
 
 export const headerHeight = 80;
 

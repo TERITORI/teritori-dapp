@@ -3,14 +3,14 @@ import { View, ViewStyle, Image, TouchableOpacity, Text } from "react-native";
 
 import downPNG from "../../assets/icons/down.png";
 import upPNG from "../../assets/icons/up.png";
-import { useSelectedWallet } from "../hooks";
+import  useSelectedWallet from "../hooks/useSelectedWallet";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 import { neutral17, neutral33, neutral44 } from "../utils/colors";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
-import { useWallets, Wallet } from "./WalletsProvider";
+import { useWallets, Wallet } from "../context/WalletsProvider";
 import { SecondaryAltButton } from "./buttons/SecondaryAltButton";
 
 // FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native

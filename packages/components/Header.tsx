@@ -2,7 +2,7 @@ import logoTopPNG from "../../assets/logo-top.png"
 
 {/*TODO: STEP3*/}
 
-import React from "react";
+import React, {useCallback, useEffect, useState} from "react"
 import {
   View,
   Image,
@@ -17,17 +17,21 @@ import {SecondaryButton} from "./buttons/SecondaryButton"
 import flowCardPNG from "../../assets/cards/flow-card.png"
 import secondaryCardSmPNG from "../../assets/cards/secondary-card-sm.png"
 import {BrandText} from "./BrandText"
+import {useSigningClient} from "../context/cosmwasm"
+import {useStore} from "../store/cosmwasm"
+import {getNonSigningClient} from "../hooks/cosmwasm"
 
 
 // Displayed when no wallet connected. Press to connect wallet
 const ConnectWalletButton: React.FC<{
   style?: ViewStyle;
-}> = ({style}) => {
+  onPress: () => void;
+}> = ({style, onPress}) => {
   const height = 40
   const fontSize = 14
 
   return (
-    <TouchableOpacity style={style} onPress={() => {/*TODO:*/}}>
+    <TouchableOpacity style={style} onPress={onPress}>
       <Image
         source={secondaryCardSmPNG}
         style={{width: 220, height, resizeMode: "stretch"}}
@@ -41,8 +45,7 @@ const ConnectWalletButton: React.FC<{
       }}>
         <BrandText
           style={{
-            fontSize: fontSize,
-            letterSpacing: -(fontSize * 0.04)
+            fontSize: 14
           }}
         >
           Connect wallet
@@ -56,6 +59,82 @@ const ConnectWalletButton: React.FC<{
 export const Header: React.FC = () => {
   const navigation = useAppNavigation();
   const headerMarginH = 22
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // const router = useRouter()
+  const contract = process.env.NEXT_PUBLIC_WHOAMI_ADDRESS as string
+  const [loading, setLoading] = useState(false)
+
+  const walletAddress = useStore((state) => state.walletAddress)
+  const alias = useStore((state) => state.primaryAlias)
+  const setAlias = useStore((state) => state.setPrimaryAlias)
+  const setNonSigningClient = useStore((state) => state.setNonSigningClient)
+
+  // on first load, init the non signing client
+  useEffect(() => {
+    const initNonSigningClient = async () => {
+      const nonSigningClient = await getNonSigningClient()
+      setNonSigningClient(nonSigningClient)
+    }
+
+    initNonSigningClient()
+  }, [setNonSigningClient])
+
+  const { connectWallet, disconnect, signingClient } = useSigningClient()
+  const handleConnect = () => {
+    if (!walletAddress || walletAddress.length === 0) {
+      connectWallet()
+    } else {
+      disconnect()
+      setAlias(null)
+    }
+  }
+
+  const reconnect = useCallback(() => {
+    disconnect()
+    setAlias(null)
+    connectWallet()
+  }, [disconnect, connectWallet, setAlias])
+
+  useEffect(() => {
+    window.addEventListener('keplr_keystorechange', reconnect)
+
+    return () => {
+      window.removeEventListener('keplr_keystorechange', reconnect)
+    }
+  }, [reconnect])
+
+  useEffect(() => {
+    if (!signingClient || !walletAddress) {
+      return
+    }
+
+    const getAlias = async () => {
+      setLoading(true)
+      try {
+        let aliasResponse = await signingClient.queryContractSmart(contract, {
+          primary_alias: {
+            address: walletAddress,
+          },
+        })
+        setAlias(aliasResponse.username)
+        setLoading(false)
+      } catch (e) {
+        setLoading(false)
+        setAlias(null)
+        // console.log(e)
+        return
+      }
+    }
+
+    getAlias()
+  }, [alias, walletAddress, contract, signingClient, setAlias])
+
+  const PUBLIC_SITE_ICON_URL = process.env.NEXT_PUBLIC_SITE_ICON_URL || ''
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   return (
     <View
@@ -82,7 +161,7 @@ export const Header: React.FC = () => {
       {/*  onPress={() => navigation.navigate("Mint")}*/}
       {/*/>*/}
 
-      <ConnectWalletButton style={{ marginRight: headerMarginH}}/>
+      <ConnectWalletButton style={{ marginRight: headerMarginH}} onPress={() => {/*TODO: Display WalletManager*/}}/>
 
 
 

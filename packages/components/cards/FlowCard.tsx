@@ -26,9 +26,7 @@ export const FlowCard: React.FC<{
 						}) => {
 
 		// TODO: These variables in a parent ?
-		const labelFontSize = 20
 		const gridHalfGutter = 10
-		const descriptionFontSize = 14
 		const innerHeight = 56
 
 		return (
@@ -63,8 +61,7 @@ export const FlowCard: React.FC<{
 								<View style={{flex: 1, flexDirection: "column", justifyContent: 'space-between'}}>
 										<BrandText
 												style={{
-														fontSize: labelFontSize,
-														letterSpacing: -(labelFontSize * 0.04)
+														fontSize: 20,
 												}}
 										>
 												{label}
@@ -73,9 +70,8 @@ export const FlowCard: React.FC<{
 										<BrandText
 												style={{
 														color: "#A3A3A3",
-														fontSize: descriptionFontSize,
+														fontSize: 14,
 														// fontWeight: "500",
-														letterSpacing: -(descriptionFontSize * 0.04)
 												}}
 										>
 												{description}

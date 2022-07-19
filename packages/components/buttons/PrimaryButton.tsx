@@ -13,7 +13,6 @@ export const PrimaryButton: React.FC<{
   disabled?: boolean;
 }> = ({ text, style, textStyle, onPress, big, disabled }) => {
   const height = big ? 56 : 48;
-  const fontSize = 14
   return (
     <View
       style={[
@@ -34,7 +33,7 @@ export const PrimaryButton: React.FC<{
         disabled={disabled}
       >
         {/*TODO: letter spacing or not ?*/}
-        <BrandText style={[{ color: primaryTextColor, fontSize, letterSpacing: -(fontSize * 0.04), textAlign: "center"}, textStyle]}>
+        <BrandText style={[{ color: primaryTextColor, fontSize: 14, textAlign: "center"}, textStyle]}>
           {text}
         </BrandText>
       </TouchableOpacity>

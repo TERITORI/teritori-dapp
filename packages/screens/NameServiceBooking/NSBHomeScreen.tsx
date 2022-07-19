@@ -2,18 +2,10 @@ import {FlowCard} from "../../components/cards/FlowCard"
 
 {/*TODO: STEP3*/}
 
+import React, {useState} from "react"
 
-import React, {useEffect, useState} from "react"
-
-import { ScreenContainer } from "../../components/ScreenContainer";
-import {WalletSelector} from '../../components/WalletSelector'
 import {useAppNavigation} from '../../utils/navigation'
-import {WalletsManager} from '../../components/WalletsManager'
-import {Header} from "../../components/Header"
-import {TextInput, View} from "react-native"
-import {Sidebar} from "../../components/Sidebar"
-import {NSBIntro} from "../../components/NameServiceBooking/NSBIntro"
-import {NSBLanding} from "../../components/NameServiceBooking/NSBLanding"
+import { View} from "react-native"
 import {ScreenContainer2} from "../../components/ScreenContainer2"
 import {SocialNetworks} from "../../components/Footer"
 import {IntroLogoText} from "../../components/IntroLogoText"
@@ -28,20 +20,20 @@ const ModalNameFinder: React.FC<{
 		visible?: boolean;
 		onClose: () => void;
 }> = ({visible, onClose}) => {
-		const [enteredName, setEnteredName] = useState("")
+		const [name, setName] = useState("")
 		const navigation = useAppNavigation();
 
 		const onPressEnter = () => {
-				setEnteredName("")
+				setName("")
 				onClose()
-				// @ts-ignore TODO: fix ? (Remove ts-ignore)
-				navigation.navigate("NSBExplore", {	enteredName })
+				// @ts-ignore TODO: fix ? (Remove @ts-ignore)
+				navigation.navigate("NSBExplore", {	name })
 		}
 
 		return (
 				<ModalBase visible={visible} onClose={onClose} label="Find a name">
 						{/*TODO: Uncomment and fix  */}
-						<TextInputCustom label="name" placeHolder="Type name here" onPressEnter={onPressEnter} onChangeText={setEnteredName} value={enteredName}/>
+						<TextInputCustom label="name" placeHolder="Type name here" onPressEnter={onPressEnter} onChangeText={setName} value={name}/>
 				</ModalBase>
 		)
 }
@@ -52,9 +44,7 @@ export const NSBHomeScreen: React.FC = () => {
 
 		return (
 				<ScreenContainer2 footerChildren={<SocialNetworks/>}>
-						{/*<NSBIntro nsbPage="Home"/>*/}
 						<IntroLogoText subTitle="Name Service Booking"/>
-						{/*<NSBLanding/>*/}
 						<View
 								style={{
 										marginHorizontal: "auto",
@@ -62,7 +52,6 @@ export const NSBHomeScreen: React.FC = () => {
 										paddingHorizontal: landingHorizontalPadding
 								}}
 						>
-
 								<FlowCard label="Register" description="Register and configure a new name" iconSource={registerIconPNG}/>
 								<FlowCard label="Manage" description="Transfer, edit, or burn a name that you own" iconSource={manageIconPNG}/>
 								<FlowCard

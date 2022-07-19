@@ -4,14 +4,16 @@ import {BrandText} from "../BrandText"
 import React from "react"
 import defaultNameNFT from "../../../assets/default-name-nft.png"
 
-const fontSize = 20
-const width = 332
-const height = 404
+
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameNFT: React.FC<{
 		style?: ViewStyle;
 }> = ({style}) => {
+
+		const width = 332
+		const height = 404
+		const imageMargin = 12
 
 		return (
 				<View style={[{
@@ -20,7 +22,10 @@ export const NameNFT: React.FC<{
 						borderWidth: 1, borderRadius: 8,
 						height, minHeight: height, maxHeight: height, width
 				}, style]}>
-						<Image source={defaultNameNFT} style={{width: width -2, height: width -1, borderTopLeftRadius: 8, borderTopRightRadius: 8}}/>
+						<Image
+								source={defaultNameNFT}
+								style={{width: width -imageMargin*2, height: width -imageMargin*2, margin: imageMargin}}
+						/>
 
 						<View style={{flex: 1, flexDirection: "row", justifyContent: "center"}}>
 								<BrandText style={[styles.BrandText, {color: "#FFFFFF"}]}>
@@ -38,8 +43,7 @@ export const NameNFT: React.FC<{
 
 const styles = StyleSheet.create({
 		BrandText: {
-				fontSize,
-				letterSpacing: -(fontSize * 0.04),
+				fontSize: 20,
 				marginBottom: 36,
 				marginTop: 12
 		}
