@@ -1,1 +1,1 @@
-//TODO: Step 3 Name NFT at left and some text data at right (Present in NSB_Manage_02 and Explore (onPress View btn))
+//TODO: Step 3 Name NFT at left and some text data at right (Present in Explore, Manage and Register)
