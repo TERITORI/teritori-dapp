@@ -22,7 +22,7 @@ import { addressToNetwork, Network } from "../utils/network";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
-import { useWallets, Wallet } from "./WalletsProvider";
+import { useWallets, Wallet } from "../context/WalletsProvider";
 import { PrimaryButton } from "./buttons/PrimaryButton";
 import { TertiaryButton } from "./buttons/TertiaryButton";
 

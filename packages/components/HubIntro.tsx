@@ -6,10 +6,10 @@ import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
 import { WalletProvider } from "../utils/walletProvider";
 import { BalanceCard } from "./cards/BalanceCard";
 import { BrandText } from "./BrandText";
-import { useSolanaBalance } from "./SolanaBalanceProvider/solanaBalanceContext";
-import { useTeritoriBalance } from "./TeritoriBalanceProvider";
+import { useSolanaBalance } from "../context/SolanaBalanceProvider/solanaBalanceContext";
+import { useTeritoriBalance } from "../context/TeritoriBalanceProvider";
 import { WalletSelector } from "./WalletSelector";
-import { useWallets } from "./WalletsProvider";
+import { useWallets } from "../context/WalletsProvider";
 import { PrimaryButton } from "./buttons/PrimaryButton";
 import { Logo } from "./svgs/Logo";
 

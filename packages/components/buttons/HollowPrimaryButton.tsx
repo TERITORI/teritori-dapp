@@ -9,7 +9,7 @@ export const HollowPrimaryButton: React.FC<{
   style?: ViewStyle;
   textStyle?: TextStyle;
 }> = ({ text, style, textStyle }) => {
-  const fontSize = 14
+
   return (
     <View style={[{ alignItems: "center" }, style]}>
       <TouchableOpacity
@@ -24,7 +24,7 @@ export const HollowPrimaryButton: React.FC<{
         }}
       >
         {/*TODO: letter spacing or not ?*/}
-        <BrandText style={[{ color: primaryColor, fontSize, letterSpacing: -(fontSize * 0.04), textAlign: "center" }, textStyle]}>
+        <BrandText style={[{ color: primaryColor, fontSize: 14, textAlign: "center" }, textStyle]}>
           {text}
         </BrandText>
       </TouchableOpacity>

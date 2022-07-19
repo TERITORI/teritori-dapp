@@ -5,7 +5,7 @@ import { HubIntro } from "../../components/HubIntro";
 import { NFTView } from "../../components/NFTView";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Section } from "../../components/Section";
-import { useSolanaOwnedNFTs } from "../../components/SolanaOwnedNFTsProvider";
+import { useSolanaOwnedNFTs } from "../../context/SolanaOwnedNFTsProvider";
 import { NFTData } from "../../utils/nft";
 
 const gridHalfGutter = 12;

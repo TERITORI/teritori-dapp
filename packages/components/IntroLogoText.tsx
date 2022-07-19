@@ -11,7 +11,6 @@ export const IntroLogoText: React.FC<{
 }> = ({subTitle, style}) => {
 
 		const height = 273
-		const titleFontSize = 28
 		const subTitleFontSize = 16
 		const logoWrapperSize = 200
 
@@ -68,7 +67,7 @@ export const IntroLogoText: React.FC<{
 
 						<BrandText
 								style={{
-										fontSize: titleFontSize, lineHeight: 32,	letterSpacing: -(titleFontSize * 0.04),
+										fontSize: 28, lineHeight: 32,
 										marginBottom: 8
 								}}
 						>
@@ -111,7 +110,6 @@ export const IntroLogoText: React.FC<{
 										fontWeight: "700",
 										fontSize: subTitleFontSize,
 										lineHeight: 21,
-										letterSpacing: -(titleFontSize * 0.01),
 										textTransform: "uppercase"
 								}}
 						>
