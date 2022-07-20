@@ -88,9 +88,8 @@ const ModalNameFinder: React.FC<{
 		return (
 				<ModalBase
 						visible={visible} onClose={onClose} label="Find a name"
-						childrenBottom={<DomainsAvailability/>}
+						// childrenBottom={<DomainsAvailability/>} TODO: Uncomment this when <DomainsAvailability/> is finished
 				>
-						{/*TODO: Uncomment and fix  */}
 						<TextInputCustom label="NAME" placeHolder="Type name here" onPressEnter={onPressEnter} onChangeText={setName} value={name}/>
 				</ModalBase>
 		)

@@ -33,13 +33,13 @@ export const NSBRegisterScreen: React.FC = () => {
 								{(name && !nameError && !nameAvailable)
 										&& <PrimaryButton
 												text="View" big style={{maxWidth: 157, width: "100%"}}
-            onPress={() => {/*TODO:*/}}
+            onPress={() => navigation.navigate("NSBConsultName")}
 										/>
 								}
 								{(name && !nameError && nameAvailable)
 										&& <PrimaryButton
 												text="Mint your new ID" big style={{maxWidth: 157, width: "100%"}}
-            onPress={() => navigation.navigate("NSBConsultName")}
+            onPress={() => navigation.navigate("NSBEditCreateName")}
 										/>
 								}
 						</FindAName>

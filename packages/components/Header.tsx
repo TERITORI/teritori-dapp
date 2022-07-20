@@ -57,8 +57,11 @@ const ConnectWalletButton: React.FC<{
 
 {/*TODO: Is it a good name for this cpt ?*/}
 export const Header: React.FC = () => {
+  const [walletsManagerVisible, setWalletsManagerVisible] = useState(false)
   const navigation = useAppNavigation();
   const headerMarginH = 22
+
+
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,10 +164,10 @@ export const Header: React.FC = () => {
       {/*  onPress={() => navigation.navigate("Mint")}*/}
       {/*/>*/}
 
-      <ConnectWalletButton style={{ marginRight: headerMarginH}} onPress={() => {/*TODO: Display WalletManager*/}}/>
+      <ConnectWalletButton style={{ marginRight: headerMarginH}} onPress={() => setWalletsManagerVisible(true)}/>
 
 
-      {/*<WalletSelector style={{ marginRight: 22}}/>*/}
+      <WalletsManager visible={walletsManagerVisible} onClose={() => setWalletsManagerVisible(false)}/>
 
     </View>
   );

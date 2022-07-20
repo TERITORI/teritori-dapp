@@ -85,6 +85,7 @@ const networkColor = (net: Network) => {
 
 const Wallets: React.FC = () => {
   const { wallets } = useWallets();
+  console.log('wallets', wallets)
   return (
     <ScrollView style={{ height: 400 }}>
       {wallets.map((wallet) => {
@@ -150,6 +151,7 @@ const AddNewWallet: React.FC = () => {
 
   useEffect(() => {
     console.log('addressValue', addressValue)
+    console.log('addressNetwork', addressNetwork)
   }, [addressValue])
 
   return (
@@ -215,11 +217,14 @@ const AddNewWallet: React.FC = () => {
   );
 };
 
-export const WalletsManager: React.FC<{ onClose?: () => void }> = ({
-  onClose,
+export const WalletsManager: React.FC<{
+  onClose?: () => void
+  visible?: boolean
+}> = ({
+  onClose, visible
 }) => {
   return (
-    <ModalBase label="Manage Connected Wallets" onClose={onClose} childrenBottom={
+    <ModalBase label="Manage Connected Wallets" onClose={onClose} visible={visible} childrenBottom={
       <>
         <Separator />
         <AddNewWallet />

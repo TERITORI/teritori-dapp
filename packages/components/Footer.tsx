@@ -54,7 +54,7 @@ export const SocialNetworks: React.FC = () => {
 		)
 }
 
-// A clickable "<- Back To xxx". Or just "<- Back"
+// A clickable "<- Back To xxx" or "<- Back". Choose if navigate() or goBack()
 export const BacKTo: React.FC<{
 		label?: string;
 		navItem?: keyof RootStackParamList;

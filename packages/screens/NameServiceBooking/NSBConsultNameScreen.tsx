@@ -22,6 +22,7 @@ import {CopyToClipboardCard} from "../../components/cards/CopyToClipboardCard"
 import {BrandText} from "../../components/BrandText"
 import {dataTest} from "../../utils/types/nsb"
 import {NameAndDomainText} from "../../components/NameServiceBooking/NameAndDomainText"
+import {useCheckNameAvailability} from "../../hooks/useCheckNameAvailability"
 
 const NotOwnerActions = () => {
 		const btnStyle = {marginLeft: 24, width: "fit-content"}
@@ -51,6 +52,7 @@ const OwnerActions = () => {
 export const NSBConsultNameScreen: React.FC = () => {
 		const {name, signedUserIsOwner} = useContext(NSBContext)
 		const navigation = useAppNavigation()
+
 		// ---- When this screen is called, if there is no entered name, we go NSBHome
 		useFocusEffect(() => {
 				if(!name) navigation.navigate("NSBHome")
@@ -73,14 +75,16 @@ export const NSBConsultNameScreen: React.FC = () => {
 								}}>
 										{/*TODO: Dynamic values*/}
 										{dataTest.filter(d => !!d.value).map(d => (
-												<View style={{flex: 1, marginBottom: 32}}>
+												<View style={{flex: 1, marginBottom: 32}} key={d.label}>
 														<BrandText style={{fontSize: 16, marginBottom: 8, color: neutral77}}>{d.displayedLabel}</BrandText>
 														{/*---- We want some style depending on the data type*/}
 														{d.label === "publicName"
 																? <NameAndDomainText nameAndDomainStr={d.value}/>
 																: d.label === "imageUrl"
+
 																		// TODO: Gradient text blue-green
 																? <BrandText style={{color: primaryColor, letterSpacing: -(20 * 0.04)}} numberOfLines={1}> {d.value} </BrandText>
+
 																: <BrandText style={{letterSpacing: -(20 * 0.04)}}> {d.value} </BrandText>
 														}
 												</View>
