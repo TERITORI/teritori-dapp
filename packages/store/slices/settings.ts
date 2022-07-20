@@ -4,14 +4,19 @@ import { RootState } from "../store";
 
 interface Settings {
   selectedWalletId: string;
+  isKeplrConnected: boolean;
 }
 
 const initialState: Settings = {
   selectedWalletId: "",
+  isKeplrConnected: false,
 };
 
 export const selectSelectedWalletId = (state: RootState) =>
   state.settings.selectedWalletId;
+
+export const selectIsKeplrConnected = (state: RootState) =>
+  state.settings.isKeplrConnected;
 
 const settingsSlice = createSlice({
   name: "settings",
@@ -20,9 +25,13 @@ const settingsSlice = createSlice({
     setSelectedWalletId: (state, action: PayloadAction<string>) => {
       state.selectedWalletId = action.payload;
     },
+    setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {
+      state.isKeplrConnected = action.payload;
+    },
   },
 });
 
-export const { setSelectedWalletId } = settingsSlice.actions;
+export const { setSelectedWalletId, setIsKeplrConnected } =
+  settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;
