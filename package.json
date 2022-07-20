@@ -15,6 +15,7 @@
     "@expo-google-fonts/exo": "^0.2.2",
     "@metaplex-foundation/js-next": "0.7.1",
     "@react-native-async-storage/async-storage": "~1.17.3",
+    "@react-native-clipboard/clipboard": "^1.10.0",
     "@react-native-masked-view/masked-view": "0.2.6",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",

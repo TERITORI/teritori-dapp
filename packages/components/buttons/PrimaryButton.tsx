@@ -6,12 +6,13 @@ import { BrandText } from "../BrandText";
 
 export const PrimaryButton: React.FC<{
   text: string;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  style?: ViewStyle|ViewStyle[];
+  textStyle?: TextStyle|TextStyle[];
   onPress?: () => void;
   big?: boolean;
   disabled?: boolean;
-}> = ({ text, style, textStyle, onPress, big, disabled }) => {
+  backgroundColor?: string;
+}> = ({ text, style, textStyle, onPress, big, disabled, backgroundColor }) => {
   const height = big ? 56 : 48;
   return (
     <View
@@ -22,7 +23,7 @@ export const PrimaryButton: React.FC<{
     >
       <TouchableOpacity
         style={{
-          backgroundColor: primaryColor,
+          backgroundColor: backgroundColor || primaryColor,
           borderRadius: 6,
           height,
           paddingHorizontal: 20,
@@ -32,7 +33,6 @@ export const PrimaryButton: React.FC<{
         onPress={onPress}
         disabled={disabled}
       >
-        {/*TODO: letter spacing or not ?*/}
         <BrandText style={[{ color: primaryTextColor, fontSize: 14, textAlign: "center"}, textStyle]}>
           {text}
         </BrandText>

@@ -54,16 +54,17 @@ export const SocialNetworks: React.FC = () => {
 		)
 }
 
-// A clickable "<- Back To xxx"
+// A clickable "<- Back To xxx". Or just "<- Back"
 export const BacKTo: React.FC<{
-		label: string;
-		navItemLabel: keyof RootStackParamList;
-}> = ({label, navItemLabel}) => {
+		label?: string;
+		navItem?: keyof RootStackParamList;
+		justBack?: boolean
+}> = ({label, navItem, justBack}) => {
 		const navigation = useAppNavigation()
 		const labelFontSize = 16
 
 		return (
-				<TouchableOpacity onPress={() => navigation.navigate(navItemLabel)}>
+				<TouchableOpacity onPress={justBack ? () => navigation.goBack() : () => navigation.navigate(navItem)}>
 						<View
 								style={{
 										flex: 1,
@@ -74,7 +75,7 @@ export const BacKTo: React.FC<{
 								<BrandText
 										style={{fontSize: labelFontSize, lineHeight: 16, letterSpacing: -(labelFontSize * 0.04), marginLeft: 8}}
 								>
-										Back to {label}
+										{label ? `Back to ${label}` : "Back"}
 								</BrandText>
 
 						</View>

@@ -19,6 +19,7 @@ import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 import {SigningCosmWasmProvider} from "./packages/context/cosmwasm"
+import NSBContextProvider from "./packages/context/NSBProvider"
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -40,10 +41,12 @@ export default function App() {
               <TeritoriBalanceProvider>
                 <SolanaOwnedNFTsProvider>
                   <SigningCosmWasmProvider>
-                    <LaunchpadProvider>
-                      <StatusBar style="inverted" />
-                      <Navigator />
-                    </LaunchpadProvider>
+                    <NSBContextProvider>
+                      <LaunchpadProvider>
+                        <StatusBar style="inverted" />
+                        <Navigator />
+                      </LaunchpadProvider>
+                    </NSBContextProvider>
                   </SigningCosmWasmProvider>
                 </SolanaOwnedNFTsProvider>
               </TeritoriBalanceProvider>

@@ -15,25 +15,20 @@ export const FlowCard: React.FC<{
 		label: string;
 		description: string;
 		iconSource: ImageSourcePropType;
-		// style?: StyleProp<ViewStyle>;
-		onPress?: () => void;
+		style?: ViewStyle;
+		onPress: () => void;
 }> = ({
 								label,
 								description,
 								iconSource,
-								// style,
+								style,
 								onPress
 						}) => {
 
-		// TODO: These variables in a parent ?
-		const gridHalfGutter = 10
 		const innerHeight = 56
 
 		return (
-
-				// TODO: margin here ? const declared in a parent ? margin added in the parent ?
-
-				<TouchableOpacity style={{margin: gridHalfGutter}} onPress={onPress}>
+				<TouchableOpacity style={style} onPress={onPress}>
 						{/*<TouchableOpacity style={[style, {margin: gridHalfGutter}]} onPress={onPress}>*/}
 						<Image
 								source={flowCardPNG}
@@ -58,20 +53,13 @@ export const FlowCard: React.FC<{
 										}}
 								/>
 
-								<View style={{flex: 1, flexDirection: "column", justifyContent: 'space-between'}}>
-										<BrandText
-												style={{
-														fontSize: 20,
-												}}
-										>
-												{label}
-										</BrandText>
+								<View style={{flex: 1, justifyContent: 'space-between'}}>
+										<BrandText>{label}</BrandText>
 
 										<BrandText
 												style={{
 														color: "#A3A3A3",
-														fontSize: 14,
-														// fontWeight: "500",
+														fontSize: 14
 												}}
 										>
 												{description}

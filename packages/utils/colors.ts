@@ -9,6 +9,8 @@ export const pinkDefault = "#F46FBF";
 
 export const neutral17 = "#171717";
 export const neutral22 = "#222222";
+export const neutral30 = "#2B2B33";
 export const neutral33 = "#333333";
 export const neutral44 = "#444444";
 export const neutral77 = "#777777";
+
