@@ -1,5 +1,7 @@
 import { getCosmosBalances } from "./cosmos";
 
+export const teritoriChainId = "teritori-testnet-v2";
+
 const teriDenom = "stake";
 
 export const getTeriBalance = async (address: string) => {
@@ -17,26 +19,26 @@ export const domainsList = [
     // Is the domains can be minted ? Or just displayed as a "future available domain" (Doesn't exist yet)
     comingSoon: false,
     // Is the domain minted ? (To be true, comingSoon=false necessary) (I don't talk about "availability" to avoid confusion)
-    minted: false
+    minted: false,
   },
   {
     name: ".tori",
     comingSoon: false,
-    minted: false
+    minted: false,
   },
   {
     name: ".osmo",
     comingSoon: true,
-    minted: false
+    minted: false,
   },
   {
     name: ".atom",
     comingSoon: true,
-    minted: false
+    minted: false,
   },
   {
     name: ".juno",
     comingSoon: true,
-    minted: false
-  }
-]
+    minted: false,
+  },
+];
