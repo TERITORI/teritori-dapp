@@ -17,7 +17,7 @@ export const IntroLogoText: React.FC<{
 		return (
 				<View
 						style={[style, {
-								flex: 1, flexDirection: "column", alignItems: "center",
+								flex: 1, alignItems: "center",
 								maxHeight: height, minHeight: height, height
 						}]}
 				>

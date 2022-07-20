@@ -3,6 +3,7 @@ import {neutral33, neutral77} from "../../utils/colors"
 import {BrandText} from "../BrandText"
 import React from "react"
 import defaultNameNFT from "../../../assets/default-name-nft.png"
+import {NameAndDomainText} from "./NameAndDomainText"
 
 
 
@@ -17,7 +18,7 @@ export const NameNFT: React.FC<{
 
 		return (
 				<View style={[{
-						flex: 1, flexDirection: "column", alignItems: "center",
+						flex: 1, alignItems: "center",
 						borderColor: neutral33,
 						borderWidth: 1, borderRadius: 8,
 						height, minHeight: height, maxHeight: height, width
@@ -27,23 +28,14 @@ export const NameNFT: React.FC<{
 								style={{width: width -imageMargin*2, height: width -imageMargin*2, margin: imageMargin}}
 						/>
 
-						<View style={{flex: 1, flexDirection: "row", justifyContent: "center"}}>
-								<BrandText style={[styles.BrandText, {color: "#FFFFFF"}]}>
-										{"Test"}
-								</BrandText>
-
-								{/*TODO: color gradient gray for this BrandText*/}
-								<BrandText style={[styles.BrandText, {color: neutral77}]}>
-										{"." + "teritori"}
-								</BrandText>
-						</View>
+						{/*TODO: Dynamic value*/}
+						<NameAndDomainText nameAndDomainStr="Test.teritori"/>
 				</View>
 		)
 }
 
 const styles = StyleSheet.create({
 		BrandText: {
-				fontSize: 20,
 				marginBottom: 36,
 				marginTop: 12
 		}

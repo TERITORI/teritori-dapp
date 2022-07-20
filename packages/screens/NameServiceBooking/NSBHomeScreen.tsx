@@ -2,9 +2,9 @@ import {FlowCard} from "../../components/cards/FlowCard"
 
 {/*TODO: STEP3*/}
 
-import React, {useState} from "react"
+import React, {useContext, useEffect, useState} from "react"
 
-import {useAppNavigation} from '../../utils/navigation'
+import {RootStackParamList, useAppNavigation} from "../../utils/navigation"
 import { View, StyleSheet} from "react-native"
 import {ScreenContainer2} from "../../components/ScreenContainer2"
 import {SocialNetworks} from "../../components/Footer"
@@ -17,7 +17,9 @@ import {TextInputCustom} from "../../components/inputs/TextInputCustom"
 import {errorColor, neutral22, neutral33, neutral77, successColor} from "../../utils/colors"
 import {BrandText} from "../../components/BrandText"
 import {domainsList} from "../../utils/teritori"
+import {NSBContext} from "../../context/NSBProvider"
 
+// Just a container that it can be added at the bottom of the modal
 const DomainsAvailability: React.FC = () => {
 		const s = StyleSheet.create({
 				labelStyle: {
@@ -38,14 +40,14 @@ const DomainsAvailability: React.FC = () => {
 						backgroundColor: "#000000",
 						borderWidth: 1, borderColor: neutral33,	borderRadius: 8,
 						width: "100%", height: 160,
-						flex: 1, flexDirection: "column", justifyContent: "space-between",
+						flex: 1, justifyContent: "space-between",
 						paddingVertical: 24, paddingHorizontal: 20
 				}}>
 						<BrandText style={s.labelStyle}>Available domains:</BrandText>
 						{/* ---- Domains that exist (With status minted or not) */}
 						<View style={s.domainsContainerStyle}>
 								{domainsList.filter(domain => !domain.comingSoon).map(domain => (
-										<BrandText style={[s.domainStyle, {color: domain.minted ? errorColor : successColor}]}>
+										<BrandText key={domain.name} style={[s.domainStyle, {color: domain.minted ? errorColor : successColor}]}>
 												{domain.name}
 										</BrandText>
 								))}
@@ -54,10 +56,9 @@ const DomainsAvailability: React.FC = () => {
 						{/* ---- Domains that not exist */}
 						<View style={s.domainsContainerStyle}>
 								{domainsList.filter(domain => domain.comingSoon).map(domain => (
-										<BrandText style={s.domainStyle}>
-												{domain.name}
-										</BrandText>
+										<BrandText key={domain.name} style={s.domainStyle}> {domain.name} </BrandText>
 								))}
+								<BrandText style={[s.domainStyle, {marginRight: 0}]}>and more</BrandText>
 						</View>
 				</View>
 		)
@@ -65,18 +66,24 @@ const DomainsAvailability: React.FC = () => {
 
 // "Find a name" modal
 const ModalNameFinder: React.FC<{
-		visible?: boolean;
-		onClose: () => void;
-}> = ({visible, onClose}) => {
-		const [name, setName] = useState("")
+		visible?: boolean
+		onClose: () => void
+		navItem: keyof RootStackParamList
+}> = ({visible, navItem, onClose}) => {
 		const navigation = useAppNavigation();
+		const {name, setName} = useContext(NSBContext)
 
 		const onPressEnter = () => {
-				setName("")
-				onClose()
-				// @ts-ignore TODO: fix ? (Remove @ts-ignore)
-				navigation.navigate("NSBExplore", {	name })
+				if(name) {
+						onClose()
+						navigation.navigate(navItem)
+				}
 		}
+
+		useEffect(() => {
+				// Reset the name each time the modal appears
+				if(visible) setName("")
+		}, [visible])
 
 		return (
 				<ModalBase
@@ -84,14 +91,28 @@ const ModalNameFinder: React.FC<{
 						childrenBottom={<DomainsAvailability/>}
 				>
 						{/*TODO: Uncomment and fix  */}
-						<TextInputCustom label="name" placeHolder="Type name here" onPressEnter={onPressEnter} onChangeText={setName} value={name}/>
+						<TextInputCustom label="NAME" placeHolder="Type name here" onPressEnter={onPressEnter} onChangeText={setName} value={name}/>
 				</ModalBase>
 		)
 }
 
 export const NSBHomeScreen: React.FC = () => {
 		const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
+		const [pressedNavItem, setPressedNavItem] = useState<keyof RootStackParamList>("Home");
+		const navigation = useAppNavigation();
 		const landingHorizontalPadding = 25;
+
+		const onPressRegister = () => {
+				setPressedNavItem("NSBRegister")
+				setModalNameFinderVisible(true)
+		}
+		const onPressManage = () => {
+				navigation.navigate("NSBManage")
+		}
+		const onPressExplore = () => {
+				setPressedNavItem("NSBExplore")
+				setModalNameFinderVisible(true)
+		}
 
 		return (
 				<ScreenContainer2 footerChildren={<SocialNetworks/>}>
@@ -103,16 +124,29 @@ export const NSBHomeScreen: React.FC = () => {
 										paddingHorizontal: landingHorizontalPadding
 								}}
 						>
-								<FlowCard label="Register" description="Register and configure a new name" iconSource={registerIconPNG}/>
-								<FlowCard label="Manage" description="Transfer, edit, or burn a name that you own" iconSource={manageIconPNG}/>
 								<FlowCard
+										label="Register" description="Register and configure a new name"
+										iconSource={registerIconPNG}
+										onPress={onPressRegister}
+								/>
+								<FlowCard
+										style={{marginTop: 20}}
+										label="Manage" description="Transfer, edit, or burn a name that you own"
+										iconSource={manageIconPNG}
+										onPress={onPressManage}
+								/>
+								<FlowCard
+										style={{marginTop: 20}}
 										label="Explore" description="Lookup addresses and explore registered names"
 										iconSource={exploreIconPNG}
-										onPress={() => setModalNameFinderVisible(true)}
+										onPress={onPressExplore}
 								/>
 						</View>
 
-					<ModalNameFinder visible={modalNameFinderVisible} onClose={() => setModalNameFinderVisible(false)}/>
+					<ModalNameFinder
+							visible={modalNameFinderVisible} onClose={() => setModalNameFinderVisible(false)}
+							navItem={pressedNavItem}
+					/>
 
 				</ScreenContainer2>
 		);

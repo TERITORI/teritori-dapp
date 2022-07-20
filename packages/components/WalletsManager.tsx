@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react"
 import {
   ScrollView,
   TextInput,
@@ -25,6 +25,7 @@ import { NetworkIcon } from "./NetworkIcon";
 import { useWallets, Wallet } from "../context/WalletsProvider";
 import { PrimaryButton } from "./buttons/PrimaryButton";
 import { TertiaryButton } from "./buttons/TertiaryButton";
+import ModalBase from "./modals/ModalBase"
 
 const Separator: React.FC<{ style?: ViewStyle }> = ({ style }) => (
   <View style={[{ borderBottomWidth: 1, borderColor: neutral44 }, style]} />
@@ -146,6 +147,11 @@ const AddNewWallet: React.FC = () => {
   const [addressValue, setAddressValue] = useState("");
   const addressNetwork = addressToNetwork(addressValue);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    console.log('addressValue', addressValue)
+  }, [addressValue])
+
   return (
     <View
       style={{
@@ -213,38 +219,48 @@ export const WalletsManager: React.FC<{ onClose?: () => void }> = ({
   onClose,
 }) => {
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <View
-        style={{
-          backgroundColor: neutral22,
-          borderWidth: 1,
-          borderColor: neutral33,
-          borderRadius: 8,
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={{ padding: 20 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <BrandText style={{ fontSize: 20, color: "white" }}>
-              Manage Connected Wallets
-            </BrandText>
-            <TouchableOpacity onPress={onClose}>
-              <BrandText style={{ fontSize: 20, color: "white" }}>X</BrandText>
-            </TouchableOpacity>
-          </View>
-          <Separator style={{ marginTop: 20, marginBottom: 16 }} />
-          <Wallets />
-        </View>
-        <View>
-          <Separator />
-          <AddNewWallet />
-        </View>
-      </View>
-    </View>
-  );
+    <ModalBase label="Manage Connected Wallets" onClose={onClose} childrenBottom={
+      <>
+        <Separator />
+        <AddNewWallet />
+      </>
+    }>
+      <Wallets />
+    </ModalBase>
+  )
+
+  {/* <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>*/}
+      {/*<View*/}
+      {/*  style={{*/}
+      {/*    backgroundColor: neutral22,*/}
+      {/*    borderWidth: 1,*/}
+      {/*    borderColor: neutral33,*/}
+      {/*    borderRadius: 8,*/}
+      {/*    justifyContent: "space-between",*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <View style={{ padding: 20 }}>*/}
+      {/*    <View*/}
+      {/*      style={{*/}
+      {/*        flexDirection: "row",*/}
+      {/*        justifyContent: "space-between",*/}
+      {/*      }}*/}
+      {/*    >*/}
+      {/*      <BrandText style={{ fontSize: 20, color: "white" }}>*/}
+      {/*        Manage Connected Wallets*/}
+      {/*      </BrandText>*/}
+      {/*      <TouchableOpacity onPress={onClose}>*/}
+      {/*        <BrandText style={{ fontSize: 20, color: "white" }}>X</BrandText>*/}
+      {/*      </TouchableOpacity>*/}
+      {/*    </View>*/}
+      {/*    <Separator style={{ marginTop: 20, marginBottom: 16 }} />*/}
+      {/*    <Wallets />*/}
+      {/*  </View>*/}
+      {/*  <View>*/}
+      {/*    <Separator />*/}
+      {/*    <AddNewWallet />*/}
+      {/*  </View>*/}
+      {/*</View>*/}
+    {/*</View>*/}
+      //)
 };

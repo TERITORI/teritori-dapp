@@ -12,8 +12,12 @@ export type RootStackParamList = {
   Wallets: undefined;
   Governance: undefined;
   Mint: undefined;
-  NameServiceBooking: undefined;
+  NSBHome: undefined;
   NSBExplore: undefined;
+  NSBManage: undefined;
+  NSBRegister: undefined;
+  NSBConsultName: undefined;
+  NSBEditCreateName: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -37,8 +41,12 @@ const navConfig = {
     Launchpad: "launchpad",
     Governance: "governance",
     Mint: "mint",
-    NameServiceBooking: "nsb",
-    NSBExplore: "nsb-explore",
+    NSBHome: "nsb",
+    NSBExplore: "nsb/explore",
+    NSBManage: "nsb/manage",
+    NSBRegister: "nsb/register",
+    NSBConsultName: "nsb/consult-name",
+    NSBEditCreateName: "nsb/edit-create-name",
   },
 };
 

@@ -6,13 +6,15 @@ import { BrandText } from "../BrandText";
 
 export const HollowPrimaryButton: React.FC<{
   text: string;
-  style?: ViewStyle;
+  style?: ViewStyle|ViewStyle[];
   textStyle?: TextStyle;
-}> = ({ text, style, textStyle }) => {
+  onPress?: () => void;
+}> = ({ text, style, textStyle, onPress }) => {
 
   return (
     <View style={[{ alignItems: "center" }, style]}>
       <TouchableOpacity
+        onPress={onPress}
         style={{
           borderColor: primaryColor,
           borderWidth: 1,
@@ -23,7 +25,6 @@ export const HollowPrimaryButton: React.FC<{
           width: "100%"
         }}
       >
-        {/*TODO: letter spacing or not ?*/}
         <BrandText style={[{ color: primaryColor, fontSize: 14, textAlign: "center" }, textStyle]}>
           {text}
         </BrandText>

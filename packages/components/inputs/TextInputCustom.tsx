@@ -9,7 +9,7 @@ export const TextInputCustom: React.FC<{
 		label: string;
 		value: string;
 		placeHolder: string;
-		style?: ViewStyle;
+		style?: ViewStyle|ViewStyle[];
 		onChangeText: (text: string) => void
 		onPressEnter?: () => void
 }> = ({label, value, placeHolder, onPressEnter, style, children, onChangeText}) => {
@@ -35,7 +35,7 @@ export const TextInputCustom: React.FC<{
 						<View style={{ flexDirection: "row", alignItems: "center" }}>
 								<View style={{ flex: 1, marginRight: children && 12 }}>
 										<BrandText
-												style={{ color: neutral77, fontSize: 10, fontWeight: "500", textTransform: "uppercase" }}
+												style={{ color: neutral77, fontSize: 10, fontWeight: "500"}}
 										>
 												{label}
 										</BrandText>

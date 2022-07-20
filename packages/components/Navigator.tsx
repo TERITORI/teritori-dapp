@@ -13,7 +13,11 @@ import { MyCollectionScreen } from "../screens/MyCollection/MyCollectionScreen";
 import { WalletsScreen } from "../screens/Wallets/WalletsScreen";
 import {NSBHomeScreen} from '../screens/NameServiceBooking/NSBHomeScreen';
 import { RootStackParamList } from "../utils/navigation";
-import {NSBExploreScreen} from "../screens/NameServiceBooking/NSBExploreScreeen"
+import {NSBExploreScreen} from "../screens/NameServiceBooking/NSBExploreScreen"
+import {NSBRegisterScreen} from "../screens/NameServiceBooking/NSBRegisterScreen"
+import {NSBManageScreen} from "../screens/NameServiceBooking/NSBManageScreen"
+import {NSBConsultNameScreen} from "../screens/NameServiceBooking/NSBConsultNameScreen"
+import {NSBEditCreateNameScreen} from "../screens/NameServiceBooking/NSBEditCreateNameScreen"
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -72,7 +76,7 @@ export const Navigator: React.FC = () => {
         options={{ presentation: "transparentModal", header: () => null }}
       />
       <Stack.Screen
-        name="NameServiceBooking"
+        name="NSBHome"
         component={NSBHomeScreen}
         options={{ header: () => null }}
       />
@@ -81,6 +85,26 @@ export const Navigator: React.FC = () => {
 		      component={NSBExploreScreen}
 		      options={{ header: () => null }}
       />
+      <Stack.Screen
+        name="NSBManage"
+        component={NSBManageScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="NSBRegister"
+        component={NSBRegisterScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="NSBConsultName"
+        component={NSBConsultNameScreen}
+        options={{ header: () => null }}
+      />
+        <Stack.Screen
+          name="NSBEditCreateName"
+          component={NSBEditCreateNameScreen}
+          options={{ header: () => null }}
+        />
     </Stack.Navigator>
   );
 };

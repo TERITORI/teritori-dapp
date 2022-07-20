@@ -2,9 +2,10 @@ import React from "react";
 import { Text, TextProps } from "react-native";
 
 export const BrandTextBase: React.FC<TextProps> = (props) => {
-  const { style, ...otherProps } = props;
+  const { style, onPress, ...otherProps } = props;
   return (
     <Text
+      onPress={onPress}
       style={[
         {
           color: "white",

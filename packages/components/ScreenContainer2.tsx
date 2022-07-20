@@ -10,6 +10,7 @@ import {
 		StyleSheet, ScrollView
 } from "react-native"
 import {Footer} from "./Footer"
+import {WalletsManager} from "./WalletsManager"
 
 
 // TODO: Why not React.FC<{...}> ?
@@ -20,9 +21,9 @@ export const ScreenContainer2: React.FC<{
 		return (
 				<SafeAreaView style={{width: "100%", flex: 1}}>
 						<View style={styles.container}>
-								<View style={{flexDirection: "column", width: "100%", flex: 1, justifyContent: "space-between"}}>
+								<View style={{ width: "100%", flex: 1, justifyContent: "space-between"}}>
 
-										<View style={{flexDirection: "column", flex: 1}}>
+										<View style={{ flex: 1}}>
 												<Header/>
 
 												{/*TODO: Better scroll. Footer in ScrollView ? ... */}

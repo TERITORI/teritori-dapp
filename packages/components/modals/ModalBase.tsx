@@ -57,21 +57,24 @@ export const ModalBase: React.FC<{
 												<View
 														style={{	flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}
 												>
-														<BrandText style={{ fontSize: 20, color: "white", lineHeight: 24 }}>
+														<BrandText style={{ color: "white", lineHeight: 24 }}>
 																{label}
 														</BrandText>
 
 														<Pressable onPress={onClose}>
 																<Image style={{height: 20, width: 20, marginLeft: 20}} source={crossPNG}/>
-																{/*<BrandText style={{ fontSize: 20, color: "white", marginLeft: 20}}>x</BrandText>*/}
 														</Pressable>
 
 												</View>
-												{/*------- Modal main content */}
-												<Separator style={{ marginVertical: 20}} />
-												<View>
-														<>{children}</>
-												</View>
+												{children &&
+														<>
+																{/*------- Modal main content */}
+																<Separator style={{marginVertical: 20}} />
+																<View>
+																<>{children}</>
+																</View>
+              </>
+												}
 										</View>
 										{/*------- Modal bottom content */}
 										<View>
