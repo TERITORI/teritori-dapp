@@ -13,6 +13,7 @@ const NSBContextProvider = ({children}) => {
 		const [name, setName] = useState("")
 		const [signedUserIsOwner, setSignedUserIsOwner] = useState(false)
 
+
 		return (
 				<NSBContext.Provider
 						value={{
