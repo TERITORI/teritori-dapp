@@ -2,19 +2,14 @@ import {ScreenContainer2} from "../../components/ScreenContainer2"
 
 {/*TODO: STEP3 => Here, you can consult a name. If the name is minted by you, the Footer wil contains other actions*/}
 
-import React, {useContext, useEffect} from "react"
+import React, {useContext} from "react"
 
-import { ComingSoon } from "../../components/ComingSoon";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import {NameDataForm} from "../../components/NameServiceBooking/NameDataForm"
 import {BacKTo} from "../../components/Footer"
 import {PrimaryButton} from "../../components/buttons/PrimaryButton"
-import {SecondaryButton} from "../../components/buttons/SecondaryButton"
 import {NSBContext} from "../../context/NSBProvider"
 import {useAppNavigation} from "../../utils/navigation"
 import {useFocusEffect} from "@react-navigation/native"
-import {TertiaryButton} from "../../components/buttons/TertiaryButton"
-import {neutral30, neutral33, neutral77, primaryColor} from "../../utils/colors"
+import {neutral33, neutral77, primaryColor} from "../../utils/colors"
 import {DarkButton} from "../../components/buttons/DarkButton"
 import {View} from "react-native"
 import {NameNFT} from "../../components/NameServiceBooking/NameNFT"
@@ -22,7 +17,6 @@ import {CopyToClipboardCard} from "../../components/cards/CopyToClipboardCard"
 import {BrandText} from "../../components/BrandText"
 import {dataTest} from "../../utils/types/nsb"
 import {NameAndDomainText} from "../../components/NameServiceBooking/NameAndDomainText"
-import {useCheckNameAvailability} from "../../hooks/useCheckNameAvailability"
 
 const NotOwnerActions = () => {
 		const btnStyle = {marginLeft: 24, width: "fit-content"}

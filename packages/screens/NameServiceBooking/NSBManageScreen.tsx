@@ -2,17 +2,10 @@ import {ScreenContainer2} from "../../components/ScreenContainer2"
 
 {/*TODO: STEP3*/}
 
-import React, {useContext, useState} from "react"
+import React, {useContext} from "react"
 
-import { ComingSoon } from "../../components/ComingSoon";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import {NameDataForm} from "../../components/NameServiceBooking/NameDataForm"
 import {BrandText} from "../../components/BrandText"
-import {Image, ImageSourcePropType, TouchableOpacity, View, ViewStyle} from "react-native"
-import nsbNameCardPNG from "../../../assets/cards/nsb-name-card.png"
-import {TextInputCustom} from "../../components/inputs/TextInputCustom"
-import {NameStatusCard} from "../../components/NameServiceBooking/NameStatusCard"
-import {NameNFT} from "../../components/NameServiceBooking/NameNFT"
+import {Image, TouchableOpacity, View, ViewStyle} from "react-native"
 import flowCardPNG from "../../../assets/cards/flow-card.png"
 import logoSmPNG from "../../../assets/logo-sm.png"
 import {PrimaryPill} from "../../components/pills/PrimaryPill"
@@ -55,7 +48,7 @@ const NameCard: React.FC <{
 										<BrandText style={{letterSpacing: -(20 * 0.04)}}> {fullName} </BrandText>
 								</View>
 
-								{isPrimary && <PrimaryPill label={"Primary"} style={{marginRight: 20}}/>}
+								{isPrimary ? <PrimaryPill label={"Primary"} style={{marginRight: 20}}/> : null}
 						</View>
 				</TouchableOpacity>
 		)
@@ -98,7 +91,7 @@ export const NSBManageScreen: React.FC = () => {
 
 								{names.map(name => (
 										<NameCard
-												fullName={name.fullName}
+												fullName={name.fullName} key={name.fullName}
 												style={{marginTop: 20}}
 												isPrimary={name.isPrimary}
 												onPress={() => onPressNameCard(name)}

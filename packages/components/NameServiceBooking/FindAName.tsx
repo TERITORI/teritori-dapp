@@ -16,7 +16,8 @@ export const FindAName: React.FC<{
 		setName: (text: string) => void,
 		nameError?: boolean,
 		nameAvailable?: boolean,
-}> = ({name, setName, nameError, nameAvailable, children}) => {
+		loading?: boolean,
+}> = ({name, setName, nameError, nameAvailable, loading, children}) => {
 
 		const titleFontSize = 48
 
@@ -34,12 +35,17 @@ export const FindAName: React.FC<{
 								onChangeText={setName} value={name}
 						/>
 
-						{/*----- When a name is entered, we display its status */}
-						{name && <NameStatusCard available={nameAvailable} hasError={nameError}/>}
-						{/*----- If name entered and no error, we display the image */}
-						{(name && !nameError) && <NameNFT style={{marginTop: 12, marginBottom: children ? 20 : 0}}/>}
-						{/*----- One or two buttons here */}
-						<>{children}</>
+						{!loading
+								? <>
+										{/*----- When a name is entered, we display its status */}
+										{name ? <NameStatusCard available={nameAvailable} hasError={nameError}/> : null}
+										{/*----- If name entered and no error, we display the image */}
+										{name && !nameError ? <NameNFT style={{marginTop: 12, marginBottom: children ? 20 : 0}}/> : null}
+										{/*----- One or two buttons here */}
+										<>{children}</>
+								</>
+								: null
+						}
 				</View>
 		)
 

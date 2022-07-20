@@ -17,19 +17,12 @@ export const BrandText: React.FC<TextProps> = (props) => {
   const { style, onPress, ...otherProps } = props;
   const flatStyle = style ? StyleSheet.flatten(style) : undefined;
 
-  const clickableStyle = {
-    textDecoration: "underline",
-    // TODO: color gradient blue
-    color: primaryColor
-  }
-
   return (
     <BrandTextBase
       onPress={onPress}
       style={[
         { fontFamily: exoFontFamilyFromFontWeight(flatStyle?.fontWeight) },
-        style,
-        onPress && clickableStyle
+        style
       ]}
       {...otherProps}
     />

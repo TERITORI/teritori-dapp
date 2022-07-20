@@ -12,9 +12,10 @@ import {PrimaryButton} from "../buttons/PrimaryButton"
 import {neutral33, neutral77} from "../../utils/colors"
 import {BrandText} from "../BrandText"
 import * as path from "path"
+import { ExternalLink} from "../ExternalLink"
 
 
-// TODO: Create a reusable Form cpt to avoid writing too much code and call it in NameDataForm.tsx. Maybe use react-hook-form ?
+// TODO: Later, create a reusable Form cpt to avoid writing too much code and call it in NameDataForm.tsx. Maybe use react-hook-form ?
 
 export const NameDataForm: React.FC<{
 		isMintPath?: boolean
@@ -48,14 +49,14 @@ export const NameDataForm: React.FC<{
 						paddingBottom: 20, paddingTop: 24, paddingHorizontal: 24,
 						backgroundColor: "#000000", borderWidth: 1, borderColor: neutral33,	borderRadius: 8,
 				}}>
-						{isMintPath &&
-								<>
+						{isMintPath
+								? <>
 										<View style={{width: 210, height: 72, minHeight: 72, flex: 1, marginBottom: 20, alignSelf: "flex-start"}}>
 														<BrandText style={{marginBottom: 8}}>Profile data</BrandText>
-              <BrandText style={profileDataTextStyle}>Tip: to generate a PFP URL, use a service like
-																		<BrandText style={profileDataTextStyle} onPress={() => {/*TODO: redirection*/}}>
+              <BrandText style={profileDataTextStyle}>Tip: to generate a PFP URL, use a service like{" "}
+																		<ExternalLink externalUrl={"https://www.pinata.cloud/"} style={{fontSize: 16}}>
 																						Pinata
-																		</BrandText>
+																		</ExternalLink>
 																		.
 														</BrandText>
 										</View>
@@ -65,6 +66,7 @@ export const NameDataForm: React.FC<{
 														value={pathId} onChangeText={setPathId}
 										/>
 								</>
+								: null
 						}
 						<TextInputCustom
 								style={inputStyle}

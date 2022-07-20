@@ -6,12 +6,14 @@ import {getNonSigningClient} from "./cosmwasm"
 export const useCheckNameAvailability = (name) => {
 		const [nameAvailable, setNameAvailable] = useState(false)
 		const [nameError, setNameError] = useState(false)
+		const [loading, setLoading] = useState(false)
 		let cosmWasmClient = null
 
 		useEffect(() => {
 				const getToken = async () => {
-						const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string
+						setLoading(true)
 
+						const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string
 						// We just want to read, so we use a non-signing client
 						cosmWasmClient = await getNonSigningClient()
 
@@ -39,13 +41,15 @@ export const useCheckNameAvailability = (name) => {
 								setNameAvailable(false)
 								setNameError(false)
 						}
+						setLoading(false)
 				}).catch(e => {
 						console.log('ERROR getToken() : ', e)
+						setLoading(false)
 						setNameAvailable(false)
 						setNameError(true)
 				})
 		}, [name])
 
-		return {nameAvailable, nameError}
+		return {nameAvailable, nameError, loading}
 }
 
