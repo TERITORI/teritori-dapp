@@ -1,10 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 import { Network } from "../utils/network";
-import { getTeriBalance } from "../utils/teritori";
+import { getUtoriBalance, UTORI_PER_TORI } from "../utils/teritori";
 import { useWallets } from "./WalletsProvider";
-
-const STAKE_PER_TERI = 10000;
 
 const refreshInterval = 2 * 60 * 1000;
 
@@ -15,7 +13,7 @@ type TeritoriBalanceValue = {
 
 const initialValue = {
   total: 0,
-  totalString: "? SOL",
+  totalString: "? TORI",
 };
 
 const teritoriBalanceContext =
@@ -38,7 +36,7 @@ export const TeritoriBalanceProvider: React.FC = ({ children }) => {
           )
           .map(async (wallet) => {
             try {
-              return await getTeriBalance(wallet.publicKey);
+              return await getUtoriBalance(wallet.publicKey);
             } catch (err) {
               console.warn(
                 "failed to get teritori balance for",
@@ -53,7 +51,7 @@ export const TeritoriBalanceProvider: React.FC = ({ children }) => {
       if (cancelled) {
         return;
       }
-      setValue({ total, totalString: `${total / STAKE_PER_TERI} TERI` });
+      setValue({ total, totalString: `${total / UTORI_PER_TORI} TORI` });
       setTimeout(() => setRefreshIndex((index) => index + 1), refreshInterval);
     };
     effect();
