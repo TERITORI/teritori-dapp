@@ -5,14 +5,16 @@ export const NSBContext = createContext({
 		name: "",
 		setName: undefined,
 		signedUserIsOwner: false,
-		setSignedUserIsOwner: undefined
+		setSignedUserIsOwner: undefined,
+		nsbError: {title: "", text: ""},
+		setNsbError: undefined
 })
 
 const NSBContextProvider = ({children}) => {
 		// The entered name
 		const [name, setName] = useState("")
 		const [signedUserIsOwner, setSignedUserIsOwner] = useState(false)
-
+		const [nsbError, setNsbError] = useState({title: "", text: ""})
 
 		return (
 				<NSBContext.Provider
@@ -20,7 +22,9 @@ const NSBContextProvider = ({children}) => {
 								name,
 								setName,
 								signedUserIsOwner,
-								setSignedUserIsOwner
+								setSignedUserIsOwner,
+								nsbError,
+								setNsbError
 						}}
 				>
 						{children}

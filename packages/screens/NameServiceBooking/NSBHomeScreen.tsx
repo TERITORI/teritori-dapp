@@ -14,7 +14,7 @@ import manageIconPNG from "../../../assets/icons/manage.png"
 import exploreIconPNG from "../../../assets/icons/explore.png"
 import ModalBase from "../../components/modals/ModalBase"
 import {TextInputCustom} from "../../components/inputs/TextInputCustom"
-import {errorColor, neutral22, neutral33, neutral77, successColor} from "../../utils/colors"
+import {errorColor, neutral23, neutral33, neutral77, successColor} from "../../utils/colors"
 import {BrandText} from "../../components/BrandText"
 import {domainsList} from "../../utils/teritori"
 import {NSBContext} from "../../context/NSBProvider"
@@ -115,7 +115,7 @@ export const NSBHomeScreen: React.FC = () => {
 
 		return (
 				<ScreenContainer2 footerChildren={<SocialNetworks/>}>
-						<IntroLogoText subTitle="Name Service Booking"/>
+						<IntroLogoText subTitle="Name Service Booking" style={{marginTop: 40}}/>
 						<View
 								style={{
 										marginHorizontal: "auto",

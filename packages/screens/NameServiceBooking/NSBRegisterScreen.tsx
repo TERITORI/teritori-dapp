@@ -36,6 +36,13 @@ export const NSBRegisterScreen: React.FC = () => {
 										/>
 										: null
 								}
+
+
+
+								{/*<PrimaryButton*/}
+								{/*		text="Mint your new ID" big style={{maxWidth: 157, width: "100%"}}*/}
+								{/*		onPress={() => navigation.navigate("NSBEditCreateName")}*/}
+								{/*/>*/}
 						</FindAName>
 				</ScreenContainer2>
 		);

@@ -18,6 +18,7 @@ export type RootStackParamList = {
   NSBRegister: undefined;
   NSBConsultName: undefined;
   NSBEditCreateName: undefined;
+  NSBBurnName: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -45,8 +46,9 @@ const navConfig = {
     NSBExplore: "nsb/explore",
     NSBManage: "nsb/manage",
     NSBRegister: "nsb/register",
-    NSBConsultName: "nsb/consult-name",
-    NSBEditCreateName: "nsb/edit-create-name",
+    NSBConsultName: "nsb/consult",
+    NSBEditCreateName: "nsb/edit-create",
+    NSBBurnName: "nsb/burn",
   },
 };
 

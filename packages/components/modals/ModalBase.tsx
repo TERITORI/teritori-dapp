@@ -7,7 +7,7 @@ import {
 		ViewStyle,
 		Image
 } from "react-native"
-import {neutral22, neutral33} from "../../utils/colors"
+import {neutral23, neutral33} from "../../utils/colors"
 import crossPNG from "../../../assets/icons/cross.png"
 import {BrandText} from "../BrandText"
 import {LinearGradient} from "expo-linear-gradient"
@@ -45,7 +45,7 @@ export const ModalBase: React.FC<{
 								{/*------ Modal main container */}
 								<View
 										style={{
-												backgroundColor: neutral22,
+												backgroundColor: neutral23,
 												borderWidth: 1, borderColor: neutral33,	borderRadius: 8,
 												width: width || "fit-content",
 												margin: "auto"

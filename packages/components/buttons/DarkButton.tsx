@@ -9,7 +9,7 @@ export const DarkButton: React.FC<{
 		text: string;
 		style?: ViewStyle;
 		textStyle?: TextStyle;
-		onPress?: () => void;
+		onPress: () => void;
 		big?: boolean;
 		disabled?: boolean;
 }> = ({ text, style, textStyle, onPress, big, disabled }) => {

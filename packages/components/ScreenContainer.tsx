@@ -35,6 +35,7 @@ export const ScreenContainer: React.FC = ({ children }) => {
       >
         <WalletsManager onClose={() => setModalVisible(!modalVisible)} />
       </Modal>
+
       <View style={styles.container}>
         <View style={{ flexDirection: "row", width: "100%", flex: 1 }}>
           {["android", "ios"].includes(Platform.OS) || (

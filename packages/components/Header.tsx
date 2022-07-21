@@ -21,6 +21,9 @@ import {useSigningClient} from "../context/cosmwasm"
 import {useStore} from "../store/cosmwasm"
 import {getNonSigningClient} from "../hooks/cosmwasm"
 import {WalletsManager} from "./WalletsManager"
+import {useWallets} from "../context/WalletsProvider"
+import {WalletProvider} from "../utils/walletProvider"
+import {useHasUserConnectedWallet} from "../hooks/useHasUserConnectedWallet"
 
 
 // Displayed when no wallet connected. Press to connect wallet
@@ -58,6 +61,7 @@ const ConnectWalletButton: React.FC<{
 {/*TODO: Is it a good name for this cpt ?*/}
 export const Header: React.FC = () => {
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false)
+  const isAConnectedWallet = useHasUserConnectedWallet();
   const navigation = useAppNavigation();
   const headerMarginH = 22
 
@@ -164,11 +168,12 @@ export const Header: React.FC = () => {
       {/*  onPress={() => navigation.navigate("Mint")}*/}
       {/*/>*/}
 
-      <ConnectWalletButton style={{ marginRight: headerMarginH}} onPress={() => setWalletsManagerVisible(true)}/>
-
+      {isAConnectedWallet
+        ? <WalletSelector style={{ marginRight: headerMarginH}} onPressAddWallet={() => navigation.navigate("Wallets")}/>
+        : <ConnectWalletButton style={{ marginRight: headerMarginH}} onPress={() => setWalletsManagerVisible(true)}/>
+      }
 
       <WalletsManager visible={walletsManagerVisible} onClose={() => setWalletsManagerVisible(false)}/>
-
     </View>
   );
 };

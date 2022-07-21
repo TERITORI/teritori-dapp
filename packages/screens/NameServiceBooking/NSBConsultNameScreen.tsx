@@ -43,7 +43,7 @@ const SendFundModal: React.FC<{
 										<View style={{ borderBottomWidth: 1, borderColor: neutral44 }} />
 										<View style={{flex: 1, flexDirection: "row", width: "100%", alignItems: "center", justifyContent: "space-between", marginVertical: 20}}>
 												<BacKTo label="search" navItem={"NSBRegister"} onPress={() => setVisible(false)}/>
-												<DarkButton text={"Show paths"} style={{width: "fit-content"}}/>
+												{/*<DarkButton text={"Show paths"} style={{width: "fit-content"}}/>*/}
 										</View>
 								</View>
 						}
@@ -74,21 +74,22 @@ const NotOwnerActions = () => {
 				<>
 						<BacKTo label="search" navItem="NSBRegister"/>
 						<PrimaryButton text="Send funds" style={btnStyle} onPress={() => setModalVisible(true)}/>
-						<DarkButton text="Show paths" style={btnStyle}/>
+						{/*<DarkButton text="Show paths" style={btnStyle}/>*/}
 						<SendFundModal onClose={() => setModalVisible(false)} visible={modalVisible}/>
 				</>
 		)
 }
 
 const OwnerActions = () => {
+		const navigation = useAppNavigation()
 		const btnStyle = {marginLeft: 24, width: "fit-content"}
 		return (
 				<>
 						<BacKTo justBack/>
-						<DarkButton text="Update metadata" style={btnStyle}/>
-						<DarkButton text="Transfer" style={btnStyle}/>
-						<DarkButton text="Mint path" style={btnStyle}/>
-						<DarkButton text="Burn" style={btnStyle}/>
+						<DarkButton text="Update metadata" style={btnStyle} onPress={() => navigation.navigate("NSBEditCreateName")}/>
+						<DarkButton text="Transfer" style={btnStyle} onPress={() => {/*TODO:*/}}/>
+						<DarkButton text="Mint path" style={btnStyle} onPress={() => {/*TODO:*/}}/>
+						<DarkButton text="Burn" style={btnStyle} onPress={() => navigation.navigate("NSBBurnName")}/>
 				</>
 		)
 }
@@ -98,17 +99,17 @@ export const NSBConsultNameScreen: React.FC = () => {
 		const {name, signedUserIsOwner} = useContext(NSBContext)
 		const navigation = useAppNavigation()
 
-		// ---- When this screen is called, if there is no entered name, we go NSBHome
+		// ---- When this screen is called, if there is no entered name, we go back
 		useFocusEffect(() => {
 				if(!name) navigation.navigate("NSBHome")
 		})
 
 		return (
-				// <ScreenContainer2 footerChildren={signedUserIsOwner ? <OwnerActions/> : <NotOwnerActions/>}>
-				<ScreenContainer2 footerChildren={<NotOwnerActions/>}>
-						<View style={{flex: 1, flexDirection: "row", justifyContent: "center"}}>
-								<View style={{flex: 1, marginRight: 20, width: "100%", maxWidth: 332,}}>
-										<NameNFT style={{marginBottom: 20}}/>
+				<ScreenContainer2 footerChildren={signedUserIsOwner ? <OwnerActions/> : <NotOwnerActions/>}>
+				{/*<ScreenContainer2 footerChildren={<NotOwnerActions/>}>*/}
+						<View style={{flex: 1, flexDirection: "row", justifyContent: "center", marginTop: 32}}>
+								<View style={{flex: 1, marginRight: 20, width: "100%", maxWidth: 332}}>
+										<NameNFT style={{marginBottom: 20}} name={name}/>
 										{/*TODO: Dynamic value*/}
 										<CopyToClipboardCard text="https://tetitori.io/teritori::test"/>
 								</View>

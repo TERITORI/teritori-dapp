@@ -40,7 +40,7 @@ export const FindAName: React.FC<{
 										{/*----- When a name is entered, we display its status */}
 										{name ? <NameStatusCard available={nameAvailable} hasError={nameError}/> : null}
 										{/*----- If name entered and no error, we display the image */}
-										{name && !nameError ? <NameNFT style={{marginTop: 12, marginBottom: children ? 20 : 0}}/> : null}
+										{name && !nameError ? <NameNFT style={{marginTop: 12, marginBottom: children ? 20 : 0}} name={name}/> : null}
 										{/*----- One or two buttons here */}
 										<>{children}</>
 								</>

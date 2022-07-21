@@ -4,7 +4,7 @@ import { TextProps, StyleSheet } from "react-native";
 import { BrandTextBase } from "./BrandTextBase";
 import {primaryColor} from "../../utils/colors"
 
-const exoFontFamilyFromFontWeight = (weight: string) => {
+export const exoFontFamilyFromFontWeight = (weight: string) => {
   switch (weight) {
     case "500":
       return "Exo_500Medium";

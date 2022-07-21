@@ -38,8 +38,33 @@ export const NameDataForm: React.FC<{
 		const profileDataTextStyle = {color: neutral77, fontSize: 16}
 
 		const _onPressBtn = () => {
-				const values = {pathId, name, bio, imageUrl, email, website, twitter, discord, telegramUsername, keybaseIo, validatorOperatorAddress}
-				onPressBtn(values)
+				const date = {
+						pathId,
+						name,
+						public_bio: bio,
+						imageUrl,
+						email,
+						external_url: website,
+						twitter_id: twitter,
+						discord_id: discord,
+						telegram_id: telegramUsername,
+						keybase_id: keybaseIo,
+						validator_operator_address: validatorOperatorAddress
+				}
+
+						// image,
+						// image_data,
+						// email,
+						// external_url,
+						// public_name,
+						// public_bio,
+						// twitter_id,
+						// discord_id,
+						// telegram_id,
+						// keybase_id,
+						// validator_operator_address,
+
+				onPressBtn(date)
 		}
 
 		return (

@@ -1,5 +1,5 @@
 import {NativeSyntheticEvent, TextInput, TextInputChangeEventData, View, ViewStyle} from "react-native"
-import {neutral22, neutral33, neutral77} from "../../utils/colors"
+import {neutral23, neutral33, neutral77} from "../../utils/colors"
 import {BrandText} from "../BrandText"
 import {NetworkIcon} from "../NetworkIcon"
 import React, {useState} from "react"
@@ -43,7 +43,7 @@ export const TextInputCustom: React.FC<{
 				<View
 						style={[{
 								borderColor: neutral33,	borderWidth: 1,	borderRadius: 8,
-								backgroundColor: neutral22,
+								backgroundColor: neutral23,
 								flex: 1,
 								height: 48, minHeight: 48, maxHeight: 48, minWidth: 332,
 								paddingHorizontal: 12,

@@ -12,6 +12,7 @@ import {PrimaryPill} from "../../components/pills/PrimaryPill"
 import {NSBContext} from "../../context/NSBProvider"
 import {useAppNavigation} from "../../utils/navigation"
 import {BacKTo} from "../../components/Footer"
+import {useTokenList} from "../../hooks/tokens"
 
 const NameCard: React.FC <{
 		fullName: string;
@@ -57,9 +58,15 @@ const NameCard: React.FC <{
 export const NSBManageScreen: React.FC = () => {
 		const {setName, setSignedUserIsOwner} = useContext(NSBContext)
 		const navigation = useAppNavigation()
+
+		// TODO: Do I have to use that ?
+		// const { pathsAndTokens, tokens, paths, setStartAfter, page, setPage } = 	useTokenList()
+
+
 		const titleFontSize = 48
 		const subTitleFontSize = 28
 
+		// TODO: Dynamic values
 		const names = [
 				{fullName: "sdnfiodngsd", isPrimary: true},
 				{fullName: "sgezgezgz", isPrimary: false},
@@ -80,6 +87,7 @@ export const NSBManageScreen: React.FC = () => {
 								<BrandText
 										style={{fontSize: titleFontSize, lineHeight: 64, letterSpacing: -(titleFontSize * 0.04), marginTop: 32}}
 								>
+										{/*TODO: Dynamic value*/}
 										Welcome back, Test !
 								</BrandText>
 								{/*TODO: Gradient text green-blue*/}

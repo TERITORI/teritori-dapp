@@ -65,9 +65,9 @@ export const BacKTo: React.FC<{
 		const labelFontSize = 16
 
 		const _onPress = () => {
+				if(onPress) onPress()
 				if(justBack) navigation.goBack()
 				else navigation.navigate(navItem)
-				onPress()
 		}
 
 		return (

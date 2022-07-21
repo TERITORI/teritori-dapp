@@ -1,13 +1,20 @@
 import { Currency, Keplr } from "@keplr-wallet/types";
 
 export const UTORI_PER_TORI = 1000000;
+// export const UTORI_PER_TORI = process.env.PUBLIC_BASE_MINT_FEE;
 export const teritoriRestProvider = "http://176.9.19.162:1317";
 export const teritoriRPCProvider = "http://176.9.19.162:26657";
+// export const teritoriRestProvider = process.env.PUBLIC_CHAIN_REST_ENDPOINT;
+// export const teritoriRPCProvider = process.env.PUBLIC_CHAIN_RPC_ENDPOINT;
 export const teritoriChainId = "teritori-testnet-v2";
+// export const teritoriChainId = process.env.PUBLIC_CHAIN_ID;
 
 const toriDisplayDenom = "Tori";
 const toriDenom = "utori";
 const teritoriBechPrefix = "tori";
+// const toriDisplayDenom = process.env.PUBLIC_CHAIN_NAME;
+// const toriDenom = process.env.PUBLIC_STAKING_DENOM;
+// const teritoriBechPrefix = process.env.PUBLIC_CHAIN_BECH32_PREFIX;
 
 interface CosmosBalancesResponse {
   balances: { denom: string; amount: string }[];
@@ -21,7 +28,7 @@ const getCosmosBalances = async (address: string) => {
   return responseJSON;
 };
 
-export const getTeriBalance = async (address: string) => {
+export const getUtoriBalance = async (address: string) => {
   const cosmosBalances = await getCosmosBalances(address);
   return cosmosBalances.balances
   .filter((balance) => balance.denom === toriDenom)
