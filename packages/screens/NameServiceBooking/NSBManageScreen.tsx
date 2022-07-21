@@ -68,7 +68,7 @@ export const NSBManageScreen: React.FC = () => {
 		]
 
 		const onPressNameCard = name => {
-				setName(name)
+				setName(name.fullName)
 				setSignedUserIsOwner(true)
 				navigation.navigate("NSBConsultName")
 		}

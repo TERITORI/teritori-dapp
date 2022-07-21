@@ -54,17 +54,24 @@ export const SocialNetworks: React.FC = () => {
 		)
 }
 
-// A clickable "<- Back To xxx" or "<- Back". Choose if navigate() or goBack()
+// A clickable "<- Back To xxx" or "<- Back". Choose if navigate() or goBack(). You can handle more action with onPress() prop
 export const BacKTo: React.FC<{
 		label?: string;
 		navItem?: keyof RootStackParamList;
 		justBack?: boolean
-}> = ({label, navItem, justBack}) => {
+		onPress?: () => void
+}> = ({label, navItem, justBack, onPress}) => {
 		const navigation = useAppNavigation()
 		const labelFontSize = 16
 
+		const _onPress = () => {
+				if(justBack) navigation.goBack()
+				else navigation.navigate(navItem)
+				onPress()
+		}
+
 		return (
-				<TouchableOpacity onPress={justBack ? () => navigation.goBack() : () => navigation.navigate(navItem)}>
+				<TouchableOpacity onPress={_onPress}>
 						<View
 								style={{
 										flex: 1,

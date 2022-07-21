@@ -70,16 +70,12 @@ export const ModalBase: React.FC<{
 														<>
 																{/*------- Modal main content */}
 																<Separator style={{marginVertical: 20}} />
-																<View>
-																<>{children}</>
-																</View>
+																{children}
               </>
 												}
 										</View>
 										{/*------- Modal bottom content */}
-										<View>
-												<>{childrenBottom}</>
-										</View>
+										<>{childrenBottom}</>
 								</View>
 
 						</View>

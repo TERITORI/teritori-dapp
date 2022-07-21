@@ -43,7 +43,7 @@ export const useCheckNameAvailability = (name) => {
 						}
 						setLoading(false)
 				}).catch(e => {
-						console.log('ERROR getToken() : ', e)
+						console.warn('ERROR getToken() : ', e)
 						setLoading(false)
 						setNameAvailable(false)
 						setNameError(true)

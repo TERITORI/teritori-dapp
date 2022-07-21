@@ -3,6 +3,10 @@ import {neutral22, neutral33, neutral77} from "../../utils/colors"
 import {BrandText} from "../BrandText"
 import {NetworkIcon} from "../NetworkIcon"
 import React, {useState} from "react"
+import {
+		numberWithThousandsSeparator,
+		thousandSeparatedToNumber
+} from "../../utils/handefulFunctions"
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const TextInputCustom: React.FC<{
@@ -12,7 +16,8 @@ export const TextInputCustom: React.FC<{
 		style?: ViewStyle|ViewStyle[];
 		onChangeText: (text: string) => void
 		onPressEnter?: () => void
-}> = ({label, value, placeHolder, onPressEnter, style, children, onChangeText}) => {
+		wantNumber?: boolean
+}> = ({label, value, placeHolder, onPressEnter, style, children, onChangeText, wantNumber}) => {
 
 		// Handling key pressing
 		const handleKeyPress = ({ nativeEvent: { key: keyValue } }) => {
@@ -20,6 +25,19 @@ export const TextInputCustom: React.FC<{
 						case "Enter": onPressEnter()
 				}
 		};
+
+		// Replace the comma if number and controls
+		const _onChangeText = value => {
+				if(wantNumber) {
+						const withoutCommaValue = thousandSeparatedToNumber(value)
+						// Set value only if fully number
+						const reg = new RegExp(/^\d+$/)
+						if(reg.test(withoutCommaValue)) {
+								onChangeText(numberWithThousandsSeparator(withoutCommaValue))
+						}
+				}
+				else onChangeText(value)
+		}
 
 		return (
 				<View
@@ -42,7 +60,7 @@ export const TextInputCustom: React.FC<{
 										<TextInput
 												placeholder={placeHolder}
 												value={value}
-												onChangeText={onChangeText}
+												onChangeText={_onChangeText}
 												onKeyPress={handleKeyPress}
 												placeholderTextColor="#999999"
 												style={[

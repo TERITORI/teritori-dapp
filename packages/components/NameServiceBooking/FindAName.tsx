@@ -5,7 +5,7 @@ import {NameNFT} from "./NameNFT"
 import {View} from "react-native"
 import {PrimaryButton} from "../buttons/PrimaryButton"
 import {HollowPrimaryButton} from "../buttons/HollowPrimaryButton"
-import React from "react"
+import React, {useEffect} from "react"
 import {RouteProp} from "@react-navigation/native"
 
 // TODO: Maybe it can be a screen that is called in Register and Explore flow... NSBRegisterScreen.tsx and NSBExploreScreen.tsx have duplicated code
@@ -32,7 +32,7 @@ export const FindAName: React.FC<{
 
 						<TextInputCustom
 								label="NAME" placeHolder="Type name here" style={{marginBottom: 12}}
-								onChangeText={setName} value={name}
+								onChangeText={setName} value={name || ""}
 						/>
 
 						{!loading
