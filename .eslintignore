@@ -3,4 +3,5 @@
 /.expo
 /dist
 /node_modules
+/go
 /web-build

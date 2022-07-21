@@ -12,8 +12,9 @@ import sidebarContainerSVG from "../../../assets/sidebar/container.svg";
 import sidebarTopSVG from "../../../assets/sidebar/top.svg";
 import { getCurrentRouteName, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
-import { sidebarWidth } from "../../utils/style/layout";
 import { SVG } from "../SVG";
+
+const sidebarWidth = 94;
 
 const SidebarButton: React.FC<{
   iconSVG: React.FC<SvgProps>;
@@ -61,7 +62,6 @@ const SidebarButton: React.FC<{
   );
 };
 
-const borderWidth = 1;
 const menuWidth = 72;
 const widthAdjustment = 0.5;
 
@@ -87,7 +87,7 @@ export const Sidebar: React.FC = () => {
       <View
         style={{
           borderLeftColor: neutral33,
-          borderLeftWidth: borderWidth,
+          borderLeftWidth: 1,
           width: menuWidth,
           backgroundColor: "rgba(56, 58, 87, 0.5)",
         }}

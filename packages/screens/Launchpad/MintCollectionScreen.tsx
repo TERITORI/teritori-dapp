@@ -2,11 +2,12 @@ import React from "react";
 import { Image, View } from "react-native";
 
 import Guardian1PNG from "../../../assets/default-images/guardian_1.png";
-import DiscordSVG from "../../../assets/icons/discord.svg";
-import TwitterSVG from "../../../assets/icons/twitter.svg";
-import WebsiteSVG from "../../../assets/icons/website.svg";
+import discordSVG from "../../../assets/icons/discord.svg";
+import twitterSVG from "../../../assets/icons/twitter.svg";
+import websiteSVG from "../../../assets/icons/website.svg";
 import { BrandText } from "../../components/BrandText";
 import { SocialNetworks } from "../../components/Footer";
+import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -123,29 +124,17 @@ export const MintCollectionScreen: React.FC = () => {
           >
             <SocialButton
               text="Discord"
-              iconSvg={
-                <>
-                  <DiscordSVG />
-                </>
-              }
+              iconSvg={<SVG source={discordSVG} />}
               style={{ marginRight: 12 }}
             />
             <SocialButton
               text="Website"
-              iconSvg={
-                <>
-                  <WebsiteSVG />
-                </>
-              }
+              iconSvg={<SVG source={websiteSVG} />}
               style={{ marginRight: 12 }}
             />
             <SocialButton
               text="Twitter"
-              iconSvg={
-                <>
-                  <TwitterSVG />
-                </>
-              }
+              iconSvg={<SVG source={twitterSVG} />}
             />
           </View>
         </View>
