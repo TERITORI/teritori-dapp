@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package marketplace.v1;
+option go_package = "./marketplacepb";
+
+service MarketplaceService {
+  rpc UpcomingLaunches(UpcomingLaunchesRequest) returns (stream UpcomingLaunchesResponse);
+  rpc Collections(CollectionsRequest) returns (stream CollectionsResponse);
+}
+
+message Collection {
+  string image_uri = 1;
+  string collection_name = 2;
+  string creator_name = 3;
+  bool verified = 4;
+}
+
+message UpcomingLaunchesRequest {
+
+}
+
+message UpcomingLaunchesResponse {
+  Collection collection = 1;
+}
+
+message CollectionsRequest {
+
+}
+
+message CollectionsResponse {
+  Collection collection = 1;
+}

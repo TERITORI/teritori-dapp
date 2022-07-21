@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/exo": "^0.2.2",
+    "@improbable-eng/grpc-web": "^0.15.0",
     "@metaplex-foundation/js-next": "0.7.1",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-navigation/native": "^6.0.11",
@@ -24,6 +25,7 @@
     "@svgr/webpack": "^5.5.0",
     "airtable": "^0.11.4",
     "bech32": "^2.0.0",
+    "browser-headers": "^0.4.1",
     "eslint-config-universe": "^11.0.0",
     "expo": "~45.0.0",
     "expo-font": "~10.1.0",
@@ -56,6 +58,7 @@
     "expo-optimize": "^0.2.18",
     "prettier": "^2.7.1",
     "react-native-svg-transformer": "^1.0.0",
+    "ts-proto": "^1.120.0",
     "typescript": "~4.3.5"
   },
   "resolutions": {
@@ -74,12 +77,16 @@
       {
         "from": "dist/main/",
         "to": "./",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "dist/renderer",
         "to": "./",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       "package.json",
       "**/node_modules/**/*"

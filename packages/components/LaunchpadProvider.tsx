@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { fetchLaunchpadItems, LaunchpadItem } from "../utils/airtable";
+import { Collection } from "../api/marketplace/v1/marketplace";
+import { backendClient } from "../utils/backend";
 
 interface LaunchpadContextValue {
-  launchpadItems: LaunchpadItem[];
+  launchpadItems: Collection[];
 }
 
 const initialValue: LaunchpadContextValue = {
@@ -18,7 +19,11 @@ export const LaunchpadProvider = ({ children }) => {
   useEffect(() => {
     const effect = async () => {
       console.log("refreshing launchpad items");
-      const items = await fetchLaunchpadItems();
+      const launches = backendClient.UpcomingLaunches({});
+      const items: Collection[] = [];
+      await launches.forEach((launch) => {
+        items.push(launch.collection);
+      });
       setValue({ launchpadItems: items });
     };
     effect();

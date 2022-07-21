@@ -15,81 +15,20 @@ import launchpadPNG from "../../assets/icons/launchpad.png";
 import marketplacePNG from "../../assets/icons/marketplace.png";
 import stakingPNG from "../../assets/icons/staking.png";
 import walletPNG from "../../assets/icons/wallet.png";
-import { LaunchpadItem } from "../utils/airtable";
 import { helpAreaWidth, sidebarWidth } from "../utils/layout";
 import { useAppNavigation } from "../utils/navigation";
 import { BrandText } from "./BrandText";
-import { CardOutline } from "./CardOutline";
-import { CarouselSection } from "./CarouselSection";
 import { Guardian } from "./Guardian";
 import { LabelCard } from "./LabelCard";
-import { useLaunchpadData } from "./LaunchpadProvider";
+import { LaunchpadCarouselSection } from "./LaunchpadCarouselSection";
 import { Section } from "./Section";
 import { useWallets } from "./WalletsProvider";
 import { HollowPrimaryButton } from "./buttons/HollowPrimaryButton";
 import { SecondaryButton } from "./buttons/SecondaryButton";
-import { CertifiedIcon } from "./svgs/CertifiedIcon";
 import { Logo } from "./svgs/Logo";
 
 const breakPoint = 768;
 const gridHalfGutter = 12;
-
-const launchpadItemHeight = 266;
-const launchpadItemWidth = 196;
-
-const LaunchpadItemView: React.FC<{
-  item: LaunchpadItem;
-}> = ({ item }) => {
-  return (
-    <CardOutline
-      style={{
-        paddingTop: 12,
-        paddingBottom: 20,
-        width: launchpadItemWidth,
-        height: launchpadItemHeight,
-      }}
-    >
-      <Image
-        source={{ uri: item.imageURL }}
-        style={{
-          width: 172,
-          height: 172,
-          alignSelf: "center",
-          borderRadius: 12,
-        }}
-      />
-      <View style={{ marginHorizontal: 12, marginTop: 16 }}>
-        <BrandText
-          style={{ fontSize: 14 }}
-          ellipsizeMode="tail"
-          numberOfLines={1}
-        >
-          {item.name}
-        </BrandText>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 8,
-          }}
-        >
-          <BrandText
-            style={{ color: "#AEB1FF", fontSize: 14 }}
-            ellipsizeMode="tail"
-            numberOfLines={1}
-          >
-            {item.creatorName}
-          </BrandText>
-          {item.isCertified && (
-            <View style={{ marginLeft: 14 }}>
-              <CertifiedIcon />
-            </View>
-          )}
-        </View>
-      </View>
-    </CardOutline>
-  );
-};
 
 const PrimaryBox: React.FC<{ style?: ViewStyle }> = ({ children, style }) => {
   return (
@@ -302,10 +241,6 @@ const landingHorizontalPadding = 25;
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
   const { width: windowWidth } = useWindowDimensions();
-  const { launchpadItems: unfilteredLaunchpadItems } = useLaunchpadData();
-  const launchpadItems = unfilteredLaunchpadItems.filter(
-    (item) => item.shouldDisplay && item.imageURL
-  );
 
   return (
     <View
@@ -390,18 +325,12 @@ Join the Bounty Program
             />
           </View>
         </Section>
-        <CarouselSection
+        <LaunchpadCarouselSection
           title="Upcoming Launches on Teritori Launch Pad"
-          data={launchpadItems}
-          renderItem={LaunchpadItemView}
-          width={launchpadItemWidth + 24}
-          height={launchpadItemHeight}
-          loop={false}
-          style={{
-            width:
-              windowWidth -
-              (helpAreaWidth + sidebarWidth + landingHorizontalPadding),
-          }}
+          width={
+            windowWidth -
+            (helpAreaWidth + sidebarWidth + landingHorizontalPadding)
+          }
         />
         <View
           style={{

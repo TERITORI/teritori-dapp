@@ -1,0 +1,10 @@
+version: v1
+plugins:
+  - name: go
+    out: go/pkg
+  - name: go-grpc
+    out: go/pkg
+  - name: ts
+    out: packages/api
+    path: node_modules/ts-proto/protoc-gen-ts_proto
+    opt: outputClientImpl=grpc-web
