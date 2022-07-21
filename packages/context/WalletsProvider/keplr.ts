@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 
 import { addWallet } from "../../store/slices/wallets";
 import { useAppDispatch } from "../../store/store";
@@ -10,8 +11,7 @@ import {
   selectIsKeplrConnected,
   setIsKeplrConnected
 } from "../../store/slices/settings";
-import { useSelector } from "react-redux";
-import { teritoriChainId } from "../../utils/teritori";
+import { keplrSuggestTeritori, teritoriChainId } from "../../utils/teritori";
 
 export type UseKeplrResult =
   | [true, boolean, Wallet[]]
@@ -38,6 +38,7 @@ export const useKeplr: () => UseKeplrResult = () => {
         const accounts = await offlineSigner.getAccounts();
         setAddresses(accounts.map((account) => account.address));
       } catch (err) {
+        console.warn("failed to connect to keplr", err);
         dispatch(setIsKeplrConnected(false));
       }
       setReady(true);
