@@ -14,7 +14,7 @@ import {
   yellowDefault,
 } from "../utils/colors";
 import { addressToNetwork, Network } from "../utils/network";
-import { teritoriChainId } from "../utils/teritori";
+import { keplrSuggestTeritori, teritoriChainId } from "../utils/teritori";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
@@ -41,7 +41,7 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
                 try {
                   await (window as any)?.solana?.disconnect();
                 } catch (err) {
-                  console.warn("phantom failed to connect", err);
+                  console.warn(wallet.provider, "failed to disconnect", err);
                 }
               }
             }}
@@ -62,11 +62,12 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
                 if (!keplr) {
                   return;
                 }
+                await keplrSuggestTeritori(keplr);
                 await keplr.enable(teritoriChainId);
                 dispatch(setIsKeplrConnected(true));
               }
             } catch (err) {
-              console.warn("phantom failed to disconnect", err);
+              console.warn(wallet.provider, "failed to connect", err);
             }
           }}
         />
