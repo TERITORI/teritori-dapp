@@ -1,8 +1,10 @@
 import { getCosmosBalances } from "./cosmos";
 
-const teriDenom = "stake";
+export const UTORI_PER_TORI = 1000000;
 
-export const getTeriBalance = async (address: string) => {
+const teriDenom = "utori";
+
+export const getUtoriBalance = async (address: string) => {
   const cosmosBalances = await getCosmosBalances(address);
   return cosmosBalances.balances
     .filter((balance) => balance.denom === teriDenom)
