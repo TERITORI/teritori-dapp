@@ -1,21 +1,13 @@
-//TODO: Step 3 : For Register and Explore
-
-// children = A button
-
-// Name, bio, image url, email, website, twitter, discord, telegram username, keybase.io, validator operator address
-
-
 import {View} from "react-native"
-import React, {useState} from "react"
+import React, {useContext, useState} from "react"
 import {TextInputCustom} from "../inputs/TextInputCustom"
 import {PrimaryButton} from "../buttons/PrimaryButton"
 import {neutral33, neutral77} from "../../utils/colors"
 import {BrandText} from "../BrandText"
-import * as path from "path"
 import { ExternalLink} from "../ExternalLink"
+import {NSBContext} from "../../context/NSBProvider"
 
-
-// TODO: Later, create a reusable Form cpt to avoid writing too much code and call it in NameDataForm.tsx. Maybe use react-hook-form ?
+// TODO: Later, create a reusable FormBase cpt to avoid writing too much code and call it in NameDataForm.tsx. Maybe use react-hook-form ?
 
 export const NameDataForm: React.FC<{
 		isMintPath?: boolean
@@ -23,7 +15,7 @@ export const NameDataForm: React.FC<{
 		onPressBtn: (values: object) => void
 }> = ({isMintPath, btnLabel, onPressBtn}) => {
 		const [pathId, setPathId] = useState("")
-		const [name, setName] = useState("")
+		const {name} = useContext(NSBContext)
 		const [bio, setBio] = useState("")
 		const [imageUrl, setImageUrl] = useState("")
 		const [email, setEmail] = useState("")
@@ -40,9 +32,9 @@ export const NameDataForm: React.FC<{
 		const _onPressBtn = () => {
 				const date = {
 						pathId,
-						name,
+						public_name: name,		// Useless because NSBContext ?
 						public_bio: bio,
-						imageUrl,
+						image: imageUrl,
 						email,
 						external_url: website,
 						twitter_id: twitter,
@@ -51,19 +43,6 @@ export const NameDataForm: React.FC<{
 						keybase_id: keybaseIo,
 						validator_operator_address: validatorOperatorAddress
 				}
-
-						// image,
-						// image_data,
-						// email,
-						// external_url,
-						// public_name,
-						// public_bio,
-						// twitter_id,
-						// discord_id,
-						// telegram_id,
-						// keybase_id,
-						// validator_operator_address,
-
 				onPressBtn(date)
 		}
 
@@ -96,7 +75,7 @@ export const NameDataForm: React.FC<{
 						<TextInputCustom
 								style={inputStyle}
 								label="NAME" placeHolder="Type name here"
-								value={name} onChangeText={setName}
+								value={name} disabled regexp={new RegExp(/^[a-zA-Z]+$/)}
 						/>
 						<TextInputCustom
 								style={inputStyle}

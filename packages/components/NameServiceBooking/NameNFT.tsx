@@ -1,11 +1,8 @@
 import {Image, StyleSheet, View, ViewStyle} from "react-native"
-import {neutral33, neutral77} from "../../utils/colors"
-import {BrandText} from "../BrandText"
+import {neutral33} from "../../utils/colors"
 import React from "react"
 import defaultNameNFT from "../../../assets/default-name-nft.png"
 import {NameAndDomainText} from "./NameAndDomainText"
-
-
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameNFT: React.FC<{
@@ -30,14 +27,7 @@ export const NameNFT: React.FC<{
 						/>
 
 						{/*TODO: Dynamic value*/}
-						<NameAndDomainText nameAndDomainStr={name + ".cpasfinit"}/>
+						<NameAndDomainText nameAndDomainStr={name + ".tori"}/>
 				</View>
 		)
 }
-
-const styles = StyleSheet.create({
-		BrandText: {
-				marginBottom: 36,
-				marginTop: 12
-		}
-})

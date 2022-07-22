@@ -1,26 +1,16 @@
 import {ScreenContainer2} from "../../components/ScreenContainer2"
-
-{/*TODO: STEP3 Can edit if the current user is owner and the name is minted. Can create if the name is available*/}
-
-import React, {useContext, useEffect} from "react"
-
-import {Image, TouchableOpacity, View} from "react-native"
+import React, {useContext} from "react"
+import {Image, View} from "react-native"
 import {BacKTo} from "../../components/Footer"
-import {NameDataForm} from "../../components/NameServiceBooking/NameDataForm"
 import {NameNFT} from "../../components/NameServiceBooking/NameNFT"
-import longCardPNG from "../../../assets/cards/long-card.png"
 import burnPNG from "../../../assets/icons/burn.png"
-import coinPNG from "../../../assets/icons/coin.png"
 import {BrandText} from "../../components/BrandText"
-import {ToastError} from "../../components/toasts/ToastError"
 import {NSBContext} from "../../context/NSBProvider"
 import {neutral33} from "../../utils/colors"
 import {DarkButton} from "../../components/buttons/DarkButton"
 import {useFocusEffect} from "@react-navigation/native"
 import {useAppNavigation} from "../../utils/navigation"
 import {useHasUserConnectedWallet} from "../../hooks/useHasUserConnectedWallet"
-
-
 
 export const NSBBurnNameScreen: React.FC = () => {
 		const {name} = useContext(NSBContext)

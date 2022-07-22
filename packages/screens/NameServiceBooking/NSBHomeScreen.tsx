@@ -1,9 +1,5 @@
 import {FlowCard} from "../../components/cards/FlowCard"
-
-{/*TODO: STEP3*/}
-
 import React, {useContext, useEffect, useState} from "react"
-
 import {RootStackParamList, useAppNavigation} from "../../utils/navigation"
 import { View, StyleSheet} from "react-native"
 import {ScreenContainer2} from "../../components/ScreenContainer2"
@@ -14,12 +10,12 @@ import manageIconPNG from "../../../assets/icons/manage.png"
 import exploreIconPNG from "../../../assets/icons/explore.png"
 import ModalBase from "../../components/modals/ModalBase"
 import {TextInputCustom} from "../../components/inputs/TextInputCustom"
-import {errorColor, neutral23, neutral33, neutral77, successColor} from "../../utils/colors"
+import {errorColor, neutral33, neutral77, successColor} from "../../utils/colors"
 import {BrandText} from "../../components/BrandText"
 import {domainsList} from "../../utils/teritori"
 import {NSBContext} from "../../context/NSBProvider"
 
-// Just a container that it can be added at the bottom of the modal
+// Just a container that it can be added at the bottom of the modal TODO: Integrate this later
 const DomainsAvailability: React.FC = () => {
 		const s = StyleSheet.create({
 				labelStyle: {
@@ -32,8 +28,6 @@ const DomainsAvailability: React.FC = () => {
 						flex: 1, flexDirection: "row", alignItems: "center", width: "100%"
 				}
 		})
-
-		//TODO: Set minted domains from domainsList and map() it is JSX
 
 		return (
 				<View 	style={{
@@ -90,7 +84,11 @@ const ModalNameFinder: React.FC<{
 						visible={visible} onClose={onClose} label="Find a name"
 						// childrenBottom={<DomainsAvailability/>} TODO: Uncomment this when <DomainsAvailability/> is finished
 				>
-						<TextInputCustom label="NAME" placeHolder="Type name here" onPressEnter={onPressEnter} onChangeText={setName} value={name}/>
+						<TextInputCustom
+								label="NAME" placeHolder="Type name here"
+								onPressEnter={onPressEnter} onChangeText={setName}
+								value={name} regexp={new RegExp(/^[a-zA-Z]+$/)}
+						/>
 				</ModalBase>
 		)
 }

@@ -7,7 +7,6 @@ export const getToken = async (name: string) => {
 
 		const { signingClient } = useSigningClient()
 
-		// const doLoad = async (name: string) => {
 				// setLoading(true)
 				try {
 						// If this query fails it means that the token does not exist.
@@ -21,6 +20,4 @@ export const getToken = async (name: string) => {
 						return undefined
 				}
 				// setLoading(false)
-		// }
-		// doLoad(searchQuery)
 }

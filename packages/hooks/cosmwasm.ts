@@ -28,7 +28,6 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
 		const setStoreWalletAddress = useStore((state) => state.setWalletAddress)
 		const walletAddress = useStore((state) => state.walletAddress)
 		const signingClient = useStore((state) => state.signingClient)
-		// TODO: signingClient = null !!!!!!
 
 		const connectWallet = async () => {
 				setLoading(true)
@@ -36,12 +35,10 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
 						await connectKeplr()
 						// enable website to access kepler
 						await (window as any).keplr.enable(PUBLIC_CHAIN_ID)
-
 						// get offline signer for signing txs
 						const offlineSigner = await (window as any).getOfflineSignerAuto(
 								PUBLIC_CHAIN_ID
 						)
-
 						// make client
 						const client = await SigningCosmWasmClient.connectWithSigner(
 								PUBLIC_RPC_ENDPOINT,

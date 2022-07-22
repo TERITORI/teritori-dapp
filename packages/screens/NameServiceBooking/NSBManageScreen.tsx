@@ -1,9 +1,5 @@
 import {ScreenContainer2} from "../../components/ScreenContainer2"
-
-{/*TODO: STEP3*/}
-
-import React, {useContext} from "react"
-
+import React, {useContext, useEffect, useState} from "react"
 import {BrandText} from "../../components/BrandText"
 import {Image, TouchableOpacity, View, ViewStyle} from "react-native"
 import flowCardPNG from "../../../assets/cards/flow-card.png"
@@ -12,7 +8,11 @@ import {PrimaryPill} from "../../components/pills/PrimaryPill"
 import {NSBContext} from "../../context/NSBProvider"
 import {useAppNavigation} from "../../utils/navigation"
 import {BacKTo} from "../../components/Footer"
-import {useTokenList} from "../../hooks/tokens"
+import {getHandleNext, getHandlePrev, noTokens, useTokenList} from "../../hooks/tokens"
+import {usePrimaryAlias} from "../../hooks/usePrimaryAlias"
+import * as R from 'ramda'
+import {useSigningClient} from "../../context/cosmwasm"
+import {useSigningCosmWasmClient} from "../../hooks/cosmwasm"
 
 const NameCard: React.FC <{
 		fullName: string;
@@ -55,30 +55,49 @@ const NameCard: React.FC <{
 		)
 }
 
+
+
 export const NSBManageScreen: React.FC = () => {
 		const {setName, setSignedUserIsOwner} = useContext(NSBContext)
 		const navigation = useAppNavigation()
 
-		// TODO: Do I have to use that ?
-		// const { pathsAndTokens, tokens, paths, setStartAfter, page, setPage } = 	useTokenList()
-
-
 		const titleFontSize = 48
 		const subTitleFontSize = 28
-
-		// TODO: Dynamic values
-		const names = [
-				{fullName: "sdnfiodngsd", isPrimary: true},
-				{fullName: "sgezgezgz", isPrimary: false},
-				{fullName: "btehrfazf", isPrimary: false},
-				{fullName: "azfegzbe", isPrimary: false},
-		]
-
 		const onPressNameCard = name => {
 				setName(name.fullName)
 				setSignedUserIsOwner(true)
 				navigation.navigate("NSBConsultName")
 		}
+
+		//////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////
+		const { signingClient, walletAddress } = useSigningClient()
+		const aaeaeaeae = useSigningCosmWasmClient()
+		const { pathsAndTokens, tokens, paths, setStartAfter, page, setPage } = useTokenList()
+		const { alias, loadingAlias } = usePrimaryAlias()
+		const [pageStartTokens, setPageStartTokens] = useState<string[]>([])
+
+		// ----- Init
+		useEffect(() => {
+				if (noTokens(tokens)) return
+
+				const firstTokenOnCurrentPage = tokens[0]
+				if (!R.includes(firstTokenOnCurrentPage, pageStartTokens)) {
+						setPageStartTokens(R.append(firstTokenOnCurrentPage, pageStartTokens))
+				}
+		}, [tokens, pageStartTokens])
+
+		// ----- Pagination
+		const handlePrev = getHandlePrev(
+				page,
+				pageStartTokens,
+				setPage,
+				setStartAfter
+		)
+		const handleNext = getHandleNext(page, pathsAndTokens, setPage, setStartAfter)
+		//////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////
+
 
 		return (
 				<ScreenContainer2 footerChildren={<BacKTo label="home" navItem="NSBHome"/>}>
@@ -91,20 +110,62 @@ export const NSBManageScreen: React.FC = () => {
 										Welcome back, Test !
 								</BrandText>
 								{/*TODO: Gradient text green-blue*/}
-								<BrandText
-										style={{fontSize: subTitleFontSize, lineHeight: 32, letterSpacing: -(subTitleFontSize * 0.04), marginBottom: 20, marginTop: 8}}
-								>
-										Manage your names
-								</BrandText>
 
-								{names.map(name => (
-										<NameCard
-												fullName={name.fullName} key={name.fullName}
-												style={{marginTop: 20}}
-												isPrimary={name.isPrimary}
-												onPress={() => onPressNameCard(name)}
-										/>
-								))}
+
+								{noTokens(tokens)
+										? <BrandText style={{marginTop: 40}}>No token</BrandText>
+										: <>
+												{/*TODO: Integrate this when you own token !*/}
+												{/*// ---------- Tokens*/}
+												{/*<BrandText*/}
+												{/*		style={{*/}
+												{/*				fontSize: subTitleFontSize,*/}
+												{/*				lineHeight: 32,*/}
+												{/*				letterSpacing: -(subTitleFontSize * 0.04),*/}
+												{/*				marginBottom: 20,*/}
+												{/*				marginTop: 8*/}
+												{/*		}}*/}
+												{/*>*/}
+												{/*		Manage your names*/}
+												{/*</BrandText>*/}
+
+												{/*{tokens.map(token => (*/}
+												{/*		<NameCard*/}
+												{/*				fullName={token.fullName} key={token.fullName}*/}
+												{/*				style={{marginTop: 20}}*/}
+												{/*				isPrimary={token.isPrimary}*/}
+												{/*				onPress={() => onPressNameCard(token)}*/}
+												{/*		/>*/}
+												{/*))}*/}
+
+												{/*// ---------- Paths*/}
+												{/*<BrandText*/}
+												{/*		style={{*/}
+												{/*				fontSize: subTitleFontSize,*/}
+												{/*				lineHeight: 32,*/}
+												{/*				letterSpacing: -(subTitleFontSize * 0.04),*/}
+												{/*				marginBottom: 20,*/}
+												{/*				marginTop: 8*/}
+												{/*		}}*/}
+												{/*>*/}
+												{/*		Manage your paths*/}
+												{/*</BrandText>*/}
+
+												{/*{!R.isEmpty(paths)*/}
+												{/*		? paths.map(path => (*/}
+												{/*						<NameCard*/}
+												{/*								fullName={path.fullName} key={path.fullName}*/}
+												{/*								style={{marginTop: 20}}*/}
+												{/*								isPrimary={path.isPrimary}*/}
+												{/*								onPress={() => onPressNameCard(path)}*/}
+												{/*						/>*/}
+												{/*				))*/}
+												{/*		: null*/}
+												{/*}*/}
+										</>
+								}
+
+								{/*TODO: PrevNext buttons*/}
 						</View>
 				</ScreenContainer2>
 		);

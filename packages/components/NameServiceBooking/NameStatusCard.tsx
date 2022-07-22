@@ -1,11 +1,9 @@
-import {Image, TextInput, View} from "react-native"
-import {errorColor, neutral33, neutral77, successColor} from "../../utils/colors"
+import {Image, View} from "react-native"
+import {errorColor, successColor} from "../../utils/colors"
 import {BrandText} from "../BrandText"
-import {NetworkIcon} from "../NetworkIcon"
-import React, {useState} from "react"
+import React from "react"
 import mintedPNG from "../../../assets/icons/minted.png"
 import availablePNG from "../../../assets/icons/available.png"
-import {err} from "react-native-svg/lib/typescript/xml"
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameStatusCard: React.FC<{

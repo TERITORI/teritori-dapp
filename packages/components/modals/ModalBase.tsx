@@ -1,6 +1,5 @@
-import React, {ReactElement, useEffect, useState} from "react"
+import React, {ReactElement} from "react"
 import {
-		Alert,
 		Modal,
 		Pressable,
 		View,
@@ -77,9 +76,7 @@ export const ModalBase: React.FC<{
 										{/*------- Modal bottom content */}
 										<>{childrenBottom}</>
 								</View>
-
 						</View>
-
 		</Modal>
 		)
 };

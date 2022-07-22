@@ -1,8 +1,5 @@
 import {FindAName} from "../../components/NameServiceBooking/FindAName"
-
-{/*TODO: STEP3*/}
-
-import React, {useContext, useEffect} from "react"
+import React, {useContext} from "react"
 import {ScreenContainer2} from "../../components/ScreenContainer2"
 import {BacKTo} from "../../components/Footer"
 import {PrimaryButton} from "../../components/buttons/PrimaryButton"
@@ -36,13 +33,6 @@ export const NSBRegisterScreen: React.FC = () => {
 										/>
 										: null
 								}
-
-
-
-								{/*<PrimaryButton*/}
-								{/*		text="Mint your new ID" big style={{maxWidth: 157, width: "100%"}}*/}
-								{/*		onPress={() => navigation.navigate("NSBEditCreateName")}*/}
-								{/*/>*/}
 						</FindAName>
 				</ScreenContainer2>
 		);

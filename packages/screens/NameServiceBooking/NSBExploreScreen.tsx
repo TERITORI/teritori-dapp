@@ -1,7 +1,4 @@
 import {FindAName} from "../../components/NameServiceBooking/FindAName"
-
-{/*TODO: STEP3*/}
-
 import React, {useContext} from "react"
 import {ScreenContainer2} from "../../components/ScreenContainer2"
 import {BacKTo} from "../../components/Footer"

@@ -57,7 +57,7 @@ const SendFundModal: React.FC<{
 								<View style={{flex: 1, flexDirection: "row"}}>
 										<TextInputCustom
 												label="TORI AMOUNT ?" value={numberWithThousandsSeparator(amount)} placeHolder="Type your amount here"
-												onChangeText={setAmount} wantNumber
+												onChangeText={setAmount} onlyNumbers
 												style={{marginRight: 12 , minWidth: 0}}
 										/>
 										<PrimaryButton text={"Send"} style={{width: "fit-content"}}/>

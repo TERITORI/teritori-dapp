@@ -1,20 +1,38 @@
 import React, {createContext, useState} from 'react'
 import PropTypes from 'prop-types'
 
-export const NSBContext = createContext({
+interface NSBError {
+		title: string;
+		message: string;
+}
+export const initialNsbError: NSBError = {title: "", message: ""}
+
+interface DefaultValue {
+		name: string
+		setName: (name: string) => void
+		signedUserIsOwner: boolean
+		setSignedUserIsOwner: (isOwner: boolean) => void
+		nsbError: NSBError
+		setNsbError: (error: NSBError) => void
+}
+const defaultValue: DefaultValue = {
 		name: "",
 		setName: undefined,
 		signedUserIsOwner: false,
 		setSignedUserIsOwner: undefined,
-		nsbError: {title: "", text: ""},
+		nsbError: initialNsbError,
 		setNsbError: undefined
-})
+}
+
+export const NSBContext = createContext(defaultValue)
 
 const NSBContextProvider = ({children}) => {
 		// The entered name
 		const [name, setName] = useState("")
+		//TODO:
 		const [signedUserIsOwner, setSignedUserIsOwner] = useState(false)
-		const [nsbError, setNsbError] = useState({title: "", text: ""})
+		// Error after mint, etc...
+		const [nsbError, setNsbError] = useState(initialNsbError)
 
 		return (
 				<NSBContext.Provider

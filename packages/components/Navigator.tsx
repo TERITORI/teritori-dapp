@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-
 import { ActivitiesScreen } from "../screens/Activities/ActivitiesScreen";
 import { GovernanceScreen } from "../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../screens/Guardians/GuardiansScreen";

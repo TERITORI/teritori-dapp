@@ -1,8 +1,7 @@
 import * as React from "react";
-import {TextStyle, TouchableOpacity, View, ViewStyle} from "react-native"
+import {TextStyle, ViewStyle} from "react-native"
 
-import {neutral30, primaryColor, primaryTextColor} from "../../utils/colors"
-import { BrandText } from "../BrandText";
+import {neutral30, primaryColor} from "../../utils/colors"
 import {PrimaryButton} from "./PrimaryButton"
 
 export const DarkButton: React.FC<{

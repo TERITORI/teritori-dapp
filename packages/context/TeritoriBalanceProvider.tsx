@@ -16,7 +16,7 @@ const initialValue = {
   totalString: "? TORI",
 };
 
-const teritoriBalanceContext =
+export const teritoriBalanceContext =
   createContext<TeritoriBalanceValue>(initialValue);
 
 export const TeritoriBalanceProvider: React.FC = ({ children }) => {

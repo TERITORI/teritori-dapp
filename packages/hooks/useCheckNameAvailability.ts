@@ -26,6 +26,7 @@ export const useCheckNameAvailability = (name) => {
 								})
 								return token.extension
 						} catch (e) {
+								// ---- If here, "cannot contract", so the token is considered as available
 								return undefined
 						}
 				}

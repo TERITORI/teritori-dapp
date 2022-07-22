@@ -1,13 +1,5 @@
-
-
-{/*TODO: STEP3*/
-}
-
 import React from "react"
-import {ViewStyle, View, StyleProp, Image, TouchableOpacity, ImageProps, ImageSourcePropType} from "react-native"
-
-import {neutral33} from "../../utils/colors"
-import {LaunchpadItem} from "../../utils/airtable"
+import {ViewStyle, View, Image, TouchableOpacity, ImageSourcePropType} from "react-native"
 import flowCardPNG from "../../../assets/cards/flow-card.png"
 import {BrandText} from "../BrandText"
 
@@ -29,7 +21,6 @@ export const FlowCard: React.FC<{
 
 		return (
 				<TouchableOpacity style={style} onPress={onPress}>
-						{/*<TouchableOpacity style={[style, {margin: gridHalfGutter}]} onPress={onPress}>*/}
 						<Image
 								source={flowCardPNG}
 								style={{width: 392, height: 100, resizeMode: "stretch"}}
@@ -55,7 +46,6 @@ export const FlowCard: React.FC<{
 
 								<View style={{flex: 1, justifyContent: 'space-between'}}>
 										<BrandText>{label}</BrandText>
-
 										<BrandText
 												style={{
 														color: "#A3A3A3",
@@ -65,10 +55,7 @@ export const FlowCard: React.FC<{
 												{description}
 										</BrandText>
 								</View>
-
-
 						</View>
-
 				</TouchableOpacity>
 		)
 }

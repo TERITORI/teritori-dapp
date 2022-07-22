@@ -12,7 +12,7 @@ import {
 import {Footer} from "./Footer"
 import {WalletsManager} from "./WalletsManager"
 import {ToastError} from "./toasts/ToastError"
-import {NSBContext} from "../context/NSBProvider"
+import {initialNsbError, NSBContext} from "../context/NSBProvider"
 
 
 // TODO: Why not React.FC<{...}> ?
@@ -33,9 +33,9 @@ export const ScreenContainer2: React.FC<{
 
 												{nsbError && nsbError.title
 														? <ToastError
-																onPress={() => setNsbError({title: "", text: ""})}
-																title="Something went wrong!"
-																text="Account does not exist on chain. Send some tokens there before trying to query sequence."
+																onPress={() => setNsbError(initialNsbError)}
+																title={nsbError.title}
+																message={nsbError.message}
 														/>
 														: null
 												}

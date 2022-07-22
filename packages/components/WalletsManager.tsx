@@ -1,7 +1,6 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ScrollView, TextInput, View, ViewStyle, Text } from "react-native";
-
 import { useWallets, Wallet } from "../context/WalletsProvider";
 import { setIsKeplrConnected } from "../store/slices/settings";
 import { addWallet, StoreWallet } from "../store/slices/wallets";
@@ -92,7 +91,9 @@ const networkColor = (net: Network) => {
 
 const Wallets: React.FC = () => {
   const { wallets } = useWallets();
+
   console.log("wallets", wallets);
+
   return (
     <ScrollView style={{ height: 400 }}>
       {wallets.map((wallet) => {
@@ -155,11 +156,6 @@ const AddNewWallet: React.FC = () => {
   const [addressValue, setAddressValue] = useState("");
   const addressNetwork = addressToNetwork(addressValue);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    console.log("addressValue", addressValue);
-    console.log("addressNetwork", addressNetwork);
-  }, [addressValue]);
 
   return (
     <View

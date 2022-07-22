@@ -77,7 +77,7 @@ const getValidQuery = (
 // and pass it in with a perPage for the limit arg
 // note that 30 is the limit for that
 export function useTokenList() {
-  const contract = process.env.NEXT_PUBLIC_WHOAMI_ADDRESS as string
+  const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string
   const perPage = 10
 
   const setStoreTokens = useStore((state) => state.setTokenIds)
@@ -120,23 +120,12 @@ export function useTokenList() {
         setLoading(false)
       } catch (e) {
         setStoreTokens([])
-        console.log(e)
+        console.warn(e)
       }
     }
 
     getTokens()
   }, [tokens.length, walletAddress, startAfter])
-
-  console.log('============================================================ OLALALAALA', {
-    pathsAndTokens,
-    tokens,
-    paths,
-    loadingTokens,
-    startAfter,
-    setStartAfter,
-    page,
-    setPage,
-  })
 
   return {
     pathsAndTokens,

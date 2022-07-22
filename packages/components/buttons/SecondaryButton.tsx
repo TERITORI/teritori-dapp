@@ -1,6 +1,5 @@
 import * as React from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
-
 import { primaryTextColor } from "../../utils/colors";
 import { BrandText } from "../BrandText";
 
