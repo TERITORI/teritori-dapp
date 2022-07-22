@@ -1,15 +1,15 @@
 import * as React from "react";
-import {TextStyle, TouchableOpacity, View, ViewStyle} from "react-native"
+import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+
 import { primaryColor } from "../../utils/colors";
 import { BrandText } from "../BrandText";
 
 export const HollowPrimaryButton: React.FC<{
   text: string;
-  style?: ViewStyle|ViewStyle[];
+  style?: ViewStyle | ViewStyle[];
   textStyle?: TextStyle;
   onPress?: () => void;
 }> = ({ text, style, textStyle, onPress }) => {
-
   return (
     <View style={[{ alignItems: "center" }, style]}>
       <TouchableOpacity
@@ -21,13 +21,18 @@ export const HollowPrimaryButton: React.FC<{
           height: 56,
           paddingHorizontal: 20,
           justifyContent: "center",
-          width: "100%"
+          width: "100%",
         }}
       >
-        <BrandText style={[{ color: primaryColor, fontSize: 14, textAlign: "center" }, textStyle]}>
+        <BrandText
+          style={[
+            { color: primaryColor, fontSize: 14, textAlign: "center" },
+            textStyle,
+          ]}
+        >
           {text}
         </BrandText>
       </TouchableOpacity>
     </View>
-  )
-}
+  );
+};

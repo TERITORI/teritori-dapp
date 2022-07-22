@@ -2,16 +2,16 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
+import {
+  selectIsKeplrConnected,
+  setIsKeplrConnected,
+} from "../../store/slices/settings";
 import { addWallet } from "../../store/slices/wallets";
 import { useAppDispatch } from "../../store/store";
 import { Network } from "../../utils/network";
+import { teritoriChainId } from "../../utils/teritori";
 import { WalletProvider } from "../../utils/walletProvider";
 import { Wallet } from "./wallet";
-import {
-  selectIsKeplrConnected,
-  setIsKeplrConnected
-} from "../../store/slices/settings";
-import { keplrSuggestTeritori, teritoriChainId } from "../../utils/teritori";
 
 export type UseKeplrResult =
   | [true, boolean, Wallet[]]
@@ -54,7 +54,7 @@ export const useKeplr: () => UseKeplrResult = () => {
       dispatch(
         addWallet({
           publicKey: address,
-          network: Network.Teritori
+          network: Network.Teritori,
         })
       );
     });
@@ -67,7 +67,7 @@ export const useKeplr: () => UseKeplrResult = () => {
         provider: WalletProvider.Keplr,
         network: Network.Teritori,
         connected: false,
-        id: `keplr`
+        id: `keplr`,
       };
       return [wallet];
     }
@@ -77,7 +77,7 @@ export const useKeplr: () => UseKeplrResult = () => {
         provider: WalletProvider.Keplr,
         network: Network.Teritori,
         connected: true,
-        id: `keplr-${address}`
+        id: `keplr-${address}`,
       };
       console.log("keplr", index, wallet);
       return wallet;

@@ -5,9 +5,9 @@ import outlineStarPNG from "../../assets/icons/outline-star.png";
 import { neutral33, neutral77 } from "../utils/colors";
 import { NFTData } from "../utils/types/nft";
 import { BrandText } from "./BrandText";
-import { CardOutline } from "./cards/CardOutline";
 import { NetworkIcon } from "./NetworkIcon";
 import { SecondaryAltButton } from "./buttons/SecondaryAltButton";
+import { CardOutline } from "./cards/CardOutline";
 import { CertifiedIcon } from "./svgs/CertifiedIcon";
 
 export const NFTView: React.FC<{

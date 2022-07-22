@@ -1,6 +1,7 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import React, { useState } from "react";
 import { ScrollView, TextInput, View, ViewStyle, Text } from "react-native";
+
 import { useWallets, Wallet } from "../context/WalletsProvider";
 import { setIsKeplrConnected } from "../store/slices/settings";
 import { addWallet, StoreWallet } from "../store/slices/wallets";

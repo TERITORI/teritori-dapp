@@ -1,5 +1,6 @@
 import React from "react";
 import { ViewStyle, View, StyleProp } from "react-native";
+
 import { neutral33 } from "../../utils/colors";
 
 export const CardOutline: React.FC<{ style?: StyleProp<ViewStyle> }> = ({

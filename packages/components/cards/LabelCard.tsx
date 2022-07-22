@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Image, ViewStyle } from "react-native";
+
 import balanceCardHighlightedPNG from "../../../assets/cards/balance-card-highlight.png";
 import balanceCardPNG from "../../../assets/cards/balance-card.png";
 import { BrandText } from "../BrandText";

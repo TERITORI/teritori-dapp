@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+
 import { ActivitiesScreen } from "../screens/Activities/ActivitiesScreen";
 import { GovernanceScreen } from "../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../screens/Guardians/GuardiansScreen";
@@ -9,15 +10,15 @@ import { LaunchpadScreen } from "../screens/Launchpad/LaunchpadScreen";
 import { MarketplaceScreen } from "../screens/Marketplace/MarketplaceScreen";
 import { MintScreen } from "../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../screens/MyCollection/MyCollectionScreen";
+import { NSBBurnNameScreen } from "../screens/NameServiceBooking/NSBBurnNameScreen";
+import { NSBConsultNameScreen } from "../screens/NameServiceBooking/NSBConsultNameScreen";
+import { NSBEditCreateNameScreen } from "../screens/NameServiceBooking/NSBEditCreateNameScreen";
+import { NSBExploreScreen } from "../screens/NameServiceBooking/NSBExploreScreen";
+import { NSBHomeScreen } from "../screens/NameServiceBooking/NSBHomeScreen";
+import { NSBManageScreen } from "../screens/NameServiceBooking/NSBManageScreen";
+import { NSBRegisterScreen } from "../screens/NameServiceBooking/NSBRegisterScreen";
 import { WalletsScreen } from "../screens/Wallets/WalletsScreen";
-import {NSBHomeScreen} from '../screens/NameServiceBooking/NSBHomeScreen';
 import { RootStackParamList } from "../utils/navigation";
-import {NSBExploreScreen} from "../screens/NameServiceBooking/NSBExploreScreen"
-import {NSBRegisterScreen} from "../screens/NameServiceBooking/NSBRegisterScreen"
-import {NSBManageScreen} from "../screens/NameServiceBooking/NSBManageScreen"
-import {NSBConsultNameScreen} from "../screens/NameServiceBooking/NSBConsultNameScreen"
-import {NSBEditCreateNameScreen} from "../screens/NameServiceBooking/NSBEditCreateNameScreen"
-import {NSBBurnNameScreen} from "../screens/NameServiceBooking/NSBBurnNameScreen"
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -81,9 +82,9 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null }}
       />
       <Stack.Screen
-		      name="NSBExplore"
-		      component={NSBExploreScreen}
-		      options={{ header: () => null }}
+        name="NSBExplore"
+        component={NSBExploreScreen}
+        options={{ header: () => null }}
       />
       <Stack.Screen
         name="NSBManage"
@@ -100,16 +101,16 @@ export const Navigator: React.FC = () => {
         component={NSBConsultNameScreen}
         options={{ header: () => null }}
       />
-        <Stack.Screen
-          name="NSBEditCreateName"
-          component={NSBEditCreateNameScreen}
-          options={{ header: () => null }}
-        />
-        <Stack.Screen
-          name="NSBBurnName"
-          component={NSBBurnNameScreen}
-          options={{ header: () => null }}
-        />
+      <Stack.Screen
+        name="NSBEditCreateName"
+        component={NSBEditCreateNameScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="NSBBurnName"
+        component={NSBBurnNameScreen}
+        options={{ header: () => null }}
+      />
     </Stack.Navigator>
   );
 };

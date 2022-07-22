@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
+import { useWallets } from "../context/WalletsProvider";
 import { neutral33 } from "../utils/colors";
 import {
   AppNavigationProp,
@@ -10,7 +11,6 @@ import {
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { WalletSelector } from "./WalletSelector";
-import { useWallets } from "../context/WalletsProvider";
 
 export const headerHeight = 80;
 

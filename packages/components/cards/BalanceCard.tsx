@@ -1,5 +1,6 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
+
 import { primaryColor } from "../../utils/colors";
 import { BrandText } from "../BrandText";
 import { LabelCard } from "./LabelCard";

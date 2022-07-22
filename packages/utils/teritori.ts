@@ -31,7 +31,7 @@ const getCosmosBalances = async (address: string) => {
 export const getUtoriBalance = async (address: string) => {
   const cosmosBalances = await getCosmosBalances(address);
   return cosmosBalances.balances
-  .filter((balance) => balance.denom === toriDenom)
+    .filter((balance) => balance.denom === toriDenom)
     .reduce((total, balance) => total + parseInt(balance.amount, 10), 0);
 };
 

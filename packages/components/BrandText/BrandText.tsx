@@ -2,7 +2,6 @@ import React from "react";
 import { TextProps, StyleSheet } from "react-native";
 
 import { BrandTextBase } from "./BrandTextBase";
-import {primaryColor} from "../../utils/colors"
 
 export const exoFontFamilyFromFontWeight = (weight: string) => {
   switch (weight) {
@@ -22,7 +21,7 @@ export const BrandText: React.FC<TextProps> = (props) => {
       onPress={onPress}
       style={[
         { fontFamily: exoFontFamilyFromFontWeight(flatStyle?.fontWeight) },
-        style
+        style,
       ]}
       {...otherProps}
     />

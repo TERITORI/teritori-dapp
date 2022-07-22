@@ -2,15 +2,15 @@ import React from "react";
 import { View, Image, ViewStyle, TouchableOpacity } from "react-native";
 
 import connectedImagePNG from "../../assets/connected-image-bad.png";
-import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
-import { WalletProvider } from "../utils/walletProvider";
-import { BalanceCard } from "./cards/BalanceCard";
-import { BrandText } from "./BrandText";
 import { useSolanaBalance } from "../context/SolanaBalanceProvider/solanaBalanceContext";
 import { useTeritoriBalance } from "../context/TeritoriBalanceProvider";
-import { WalletSelector } from "./WalletSelector";
 import { useWallets } from "../context/WalletsProvider";
+import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
+import { WalletProvider } from "../utils/walletProvider";
+import { BrandText } from "./BrandText";
+import { WalletSelector } from "./WalletSelector";
 import { PrimaryButton } from "./buttons/PrimaryButton";
+import { BalanceCard } from "./cards/BalanceCard";
 import { Logo } from "./svgs/Logo";
 
 export type HubPageName = "Home" | "MyCollection" | "Activities" | "Guardians";

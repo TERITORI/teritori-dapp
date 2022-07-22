@@ -2,8 +2,8 @@ import { JsonMetadata } from "@metaplex-foundation/js-next";
 import { createContext, useContext, useEffect, useState } from "react";
 
 import { Network } from "../utils/network";
-import { NFTData } from "../utils/types/nft";
 import { getSolanaOwnedNFTS } from "../utils/solana";
+import { NFTData } from "../utils/types/nft";
 import { useWallets } from "./WalletsProvider";
 
 interface SolanaOwnedNFTsValue {
