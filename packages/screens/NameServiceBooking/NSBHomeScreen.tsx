@@ -137,7 +137,7 @@ const ModalNameFinder: React.FC<{
 export const NSBHomeScreen: React.FC = () => {
   const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
   const [pressedNavItem, setPressedNavItem] =
-    useState<keyof RootStackParamList>("Home");
+    useState<keyof RootStackParamList>("NSBHome");
   const navigation = useAppNavigation();
   const landingHorizontalPadding = 25;
 

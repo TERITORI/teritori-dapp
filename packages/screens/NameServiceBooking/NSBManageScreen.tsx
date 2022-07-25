@@ -18,6 +18,7 @@ import {
   useTokenList,
 } from "../../hooks/tokens";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
+import { tokenWithoutTld } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
 
 const NameCard: React.FC<{
@@ -72,14 +73,17 @@ const NameCard: React.FC<{
 };
 
 export const NSBManageScreen: React.FC = () => {
-  const { setName, setSignedUserIsOwner } = useContext(NSBContext);
+  const { setName } = useContext(NSBContext);
   const navigation = useAppNavigation();
 
   const titleFontSize = 48;
   const subTitleFontSize = 28;
-  const onPressNameCard = (name) => {
-    setName(name.fullName);
-    setSignedUserIsOwner(true);
+  const onPressNameCard = (token) => {
+    console.log(
+      "egvyzbgkienozenbomenerinbezmbjz ebmeoibnezmobieznbmoezibnez",
+      tokenWithoutTld(token)
+    );
+    setName(tokenWithoutTld(token));
     navigation.navigate("NSBConsultName");
   };
 
@@ -100,6 +104,8 @@ export const NSBManageScreen: React.FC = () => {
     if (!R.includes(firstTokenOnCurrentPage, pageStartTokens)) {
       setPageStartTokens(R.append(firstTokenOnCurrentPage, pageStartTokens));
     }
+
+    console.log("tokenstokenstokenstokenstokenstokenstokens", tokens);
   }, [tokens, pageStartTokens]);
 
   // ----- Pagination
@@ -141,28 +147,28 @@ export const NSBManageScreen: React.FC = () => {
           <BrandText style={{ marginTop: 40 }}>No token</BrandText>
         ) : (
           <>
-            {/*TODO: Integrate this when you own token !*/}
             {/*// ---------- Tokens*/}
-            {/*<BrandText*/}
-            {/*		style={{*/}
-            {/*				fontSize: subTitleFontSize,*/}
-            {/*				lineHeight: 32,*/}
-            {/*				letterSpacing: -(subTitleFontSize * 0.04),*/}
-            {/*				marginBottom: 20,*/}
-            {/*				marginTop: 8*/}
-            {/*		}}*/}
-            {/*>*/}
-            {/*		Manage your names*/}
-            {/*</BrandText>*/}
+            <BrandText
+              style={{
+                fontSize: subTitleFontSize,
+                lineHeight: 32,
+                letterSpacing: -(subTitleFontSize * 0.04),
+                marginBottom: 20,
+                marginTop: 8,
+              }}
+            >
+              Manage your names
+            </BrandText>
 
-            {/*{tokens.map(token => (*/}
-            {/*		<NameCard*/}
-            {/*				fullName={token.fullName} key={token.fullName}*/}
-            {/*				style={{marginTop: 20}}*/}
-            {/*				isPrimary={token.isPrimary}*/}
-            {/*				onPress={() => onPressNameCard(token)}*/}
-            {/*		/>*/}
-            {/*))}*/}
+            {tokens.map((token) => (
+              <NameCard
+                fullName={token}
+                key={token}
+                style={{ marginTop: 20 }}
+                //TODO: isPrimary={???}
+                onPress={() => onPressNameCard(token)}
+              />
+            ))}
 
             {/*// ---------- Paths*/}
             {/*<BrandText*/}

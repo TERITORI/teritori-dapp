@@ -1,5 +1,19 @@
 import { OptionString } from "./base";
 
+export const defaultMetaData: Metadata = {
+  image: "",
+  image_data: "",
+  email: "",
+  external_url: "",
+  public_name: "",
+  public_bio: "",
+  twitter_id: "",
+  discord_id: "",
+  telegram_id: "",
+  keybase_id: "",
+  validator_operator_address: "",
+};
+
 export interface Metadata {
   image: OptionString;
   image_data: OptionString;

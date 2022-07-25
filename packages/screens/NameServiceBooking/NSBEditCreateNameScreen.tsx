@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, View } from "react-native";
 
 import longCardPNG from "../../../assets/cards/long-card.png";
@@ -9,13 +9,17 @@ import { BacKTo } from "../../components/Footer";
 import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
 import { useSigningClient } from "../../context/cosmwasm";
 import { useSigningCosmWasmClient } from "../../hooks/cosmwasm";
+import { useIsUserOwnsToken } from "../../hooks/useIsUserOwnsToken";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee, getMintCost } from "../../utils/fee";
 import { defaultMemo } from "../../utils/memo";
 import { useAppNavigation } from "../../utils/navigation";
+import { OptionString } from "../../utils/types/base";
+import { defaultMetaData, Metadata } from "../../utils/types/messages";
 
 const CostContainer: React.FC = () => {
   const innerHeight = 32;
@@ -56,33 +60,68 @@ const CostContainer: React.FC = () => {
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const NSBEditCreateNameScreen: React.FC = () => {
-  const { name, setNsbError } = useContext(NSBContext);
+  const [initialData, setInitialData] = useState(defaultMetaData);
+  const { name, setNsbError, setNsbSuccess } = useContext(NSBContext);
   const navigation = useAppNavigation();
+  const { signingClient, walletAddress } = useSigningClient();
+  const { connectWallet } = useSigningCosmWasmClient();
+  const isUserOwnsToken = useIsUserOwnsToken(name);
+  const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+  const appendTokenId = useStore((state) => state.appendTokenId);
+  const mintCost = getMintCost(name);
 
   // No entered name ? Go home
   useEffect(() => {
     if (!name) navigation.navigate("NSBHome");
   });
 
-  const { signingClient, walletAddress } = useSigningClient();
-  const { connectWallet } = useSigningCosmWasmClient();
   // ---- Init
   useEffect(() => {
-    const initCosmWasm = async () => {
+    const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+    const init = async () => {
       await connectWallet();
+
+      try {
+        // If this query fails it means that the token does not exist.
+        const token = await signingClient.queryContractSmart(contract, {
+          nft_info: {
+            token_id: name + process.env.TLD,
+          },
+        });
+        // return token.extension;
+        const tokenData: Metadata = {
+          image: token.extension.image,
+          image_data: token.extension.image_data,
+          email: token.extension.email,
+          external_url: token.extension.external_url,
+          public_name: token.extension.public_name,
+          public_bio: token.extension.public_bio,
+          twitter_id: token.extension.twitter_id,
+          discord_id: token.extension.discord_id,
+          telegram_id: token.extension.telegram_id,
+          keybase_id: token.extension.keybase_id,
+          validator_operator_address:
+            token.extension.validator_operator_address,
+        };
+        setInitialData(tokenData);
+      } catch (e) {
+        // ---- If here, "cannot contract", so the token is considered as available
+        // return undefined;
+      }
     };
-    initCosmWasm();
+
+    init();
   }, []);
 
-  const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
-  const appendTokenId = useStore((state) => state.appendTokenId);
-  const mintCost = getMintCost(name);
-
-  const submitData = async (data) => {
+  const submitData = async (_data) => {
+    console.log(
+      "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSss",
+      signingClient
+    );
     if (!signingClient || !walletAddress) {
       return;
     }
-    // 		setLoading(true)  TODO: Loader everywhere
+    // 		setLoading(true)  TODO: Loader, loader everywhere
     const {
       image, // TODO - support later
       // image_data
@@ -95,9 +134,10 @@ export const NSBEditCreateNameScreen: React.FC = () => {
       telegram_id,
       keybase_id,
       validator_operator_address,
-    } = data;
+    } = _data;
 
-    const normalizedTokenId = R.toLower(name);
+    const normalizedTokenId = R.toLower(name + process.env.TLD);
+
     const msg = {
       mint: {
         owner: walletAddress,
@@ -108,7 +148,7 @@ export const NSBEditCreateNameScreen: React.FC = () => {
           image_data: null, // TODO - support later
           email,
           external_url,
-          public_name: name,
+          public_name: normalizedTokenId,
           public_bio,
           twitter_id,
           discord_id,
@@ -118,6 +158,16 @@ export const NSBEditCreateNameScreen: React.FC = () => {
         },
       },
     };
+
+    console.log("---------- msg", msg);
+    console.log("---------- normalizedTokenId", normalizedTokenId);
+    console.log("---------- R.toLower(name)", R.toLower(name));
+    console.log("---------- walletAddress", walletAddress);
+    console.log("---------- contractAddress", contractAddress);
+    console.log("---------- defaultMintFee", defaultMintFee);
+    console.log("---------- defaultMemo", defaultMemo);
+    console.log("---------- mintCost", mintCost);
+
     try {
       const mintedToken = await signingClient.execute(
         walletAddress!,
@@ -128,7 +178,12 @@ export const NSBEditCreateNameScreen: React.FC = () => {
         mintCost
       );
       if (mintedToken) {
-        appendTokenId(name);
+        appendTokenId(normalizedTokenId);
+        console.log(normalizedTokenId + " successfully minted");
+        setNsbSuccess({
+          title: normalizedTokenId + " successfully minted",
+          message: "",
+        });
         // setLoading(false)
       }
     } catch (err) {
@@ -142,15 +197,17 @@ export const NSBEditCreateNameScreen: React.FC = () => {
   };
 
   return (
-    //TODO: If the user is owner : BacKTo label="{name}" navItem="NSBConsult"/>
-    //If the user is not the owner : BacKTo label="search" navItem="NSBRegister"/>
     <ScreenContainer2
-      footerChildren={<BacKTo label="search" navItem="NSBRegister" />}
+      footerChildren={
+        isUserOwnsToken ? (
+          <BacKTo label={name} navItem="NSBConsultName" />
+        ) : (
+          <BacKTo label="search" navItem="NSBRegister" />
+        )
+      }
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
-        {/*TODO: If the user is not the owner : tokens[] <== "Is the entered name in these tokens ?" */}
-        <CostContainer />
-        {/*///////*/}
+        {!isUserOwnsToken ? <CostContainer /> : null}
 
         <View
           style={{
@@ -161,9 +218,12 @@ export const NSBEditCreateNameScreen: React.FC = () => {
           }}
         >
           <NameNFT style={{ marginRight: 20 }} name={name} />
-          {/*///////*/}
 
-          <NameDataForm btnLabel="Create username" onPressBtn={submitData} />
+          <NameDataForm
+            btnLabel={isUserOwnsToken ? "Update profile" : "Create username"}
+            onPressBtn={submitData}
+            initialData={initialData}
+          />
         </View>
       </View>
     </ScreenContainer2>

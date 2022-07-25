@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
+import { NSBContext } from "../../context/NSBProvider";
+import { getToken } from "../../hooks/tokens";
 import { BrandText } from "../BrandText";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { NameNFT } from "./NameNFT";

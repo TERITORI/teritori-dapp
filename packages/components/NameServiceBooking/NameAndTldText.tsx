@@ -2,25 +2,24 @@ import React from "react";
 import { View } from "react-native";
 
 import { neutral77 } from "../../utils/colors";
+import { tldFromToken, tokenWithoutTld } from "../../utils/handefulFunctions";
 import { BrandText } from "../BrandText";
 
 // A text with the substring ".xxx" grayed
-export const NameAndDomainText: React.FC<{
-  nameAndDomainStr: string;
-}> = ({ nameAndDomainStr }) => {
-  const normalPartStr = nameAndDomainStr.substring(
-    0,
-    nameAndDomainStr.indexOf(".")
-  );
-  const grayedPartStr = nameAndDomainStr.substr(nameAndDomainStr.indexOf("."));
+export const NameAndTldText: React.FC<{
+  nameAndTldStr: string;
+}> = ({ nameAndTldStr }) => {
+  console.log("nameAndTldStr", nameAndTldStr);
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
+      {/*---- White part*/}
       <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
-        {normalPartStr}
+        {tokenWithoutTld(nameAndTldStr)}
       </BrandText>
+      {/*---- Gray part*/}
       <BrandText style={{ color: neutral77, letterSpacing: -(20 * 0.04) }}>
-        {grayedPartStr}
+        {tldFromToken(nameAndTldStr)}
       </BrandText>
     </View>
   );

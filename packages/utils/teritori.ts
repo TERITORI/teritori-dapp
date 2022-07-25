@@ -1,5 +1,8 @@
 import { Currency, Keplr } from "@keplr-wallet/types";
 
+import { OptionString } from "./types/base";
+import { Metadata } from "./types/messages";
+
 export const UTORI_PER_TORI = 1000000;
 // export const UTORI_PER_TORI = process.env.PUBLIC_BASE_MINT_FEE;
 export const teritoriRestProvider = "http://176.9.19.162:1317";
@@ -104,6 +107,54 @@ export const keplrSuggestTeritori = (keplr: Keplr) =>
       "ibc-go",
     ],
   });
+
+interface PrettyTokenData {
+  displayLabel: string;
+  value: OptionString;
+}
+
+export const imageDisplayLabel = "Image URL";
+export const publicNameDisplayLabel = "Public Name";
+
+// From a token data, returns an array with these data ordered and containing a pretty label
+export const prettyTokenData = (tokenData: Metadata): PrettyTokenData[] => {
+  const finalDatas: PrettyTokenData[] = [];
+  Object.entries(tokenData).map(([key, value], i) => {
+    switch (key) {
+      case "email":
+        finalDatas[0] = { displayLabel: "Email", value };
+        break;
+      case "public_name":
+        finalDatas[1] = { displayLabel: publicNameDisplayLabel, value };
+        break;
+      case "public_bio":
+        finalDatas[2] = { displayLabel: "Bio", value };
+        break;
+      case "image":
+        finalDatas[3] = { displayLabel: imageDisplayLabel, value };
+        break;
+      case "external_url":
+        finalDatas[4] = { displayLabel: "External URL", value };
+        break;
+      case "discord_id":
+        finalDatas[5] = { displayLabel: "Discord group", value };
+        break;
+      case "twitter_id":
+        finalDatas[6] = { displayLabel: "Twitter", value };
+        break;
+      case "telegram_id":
+        finalDatas[7] = { displayLabel: "Telegram username", value };
+        break;
+      case "keybase_id":
+        finalDatas[8] = { displayLabel: "Keybase", value };
+        break;
+      case "validator_operator_address":
+        finalDatas[9] = { displayLabel: "Validator", value };
+        break;
+    }
+  });
+  return finalDatas;
+};
 
 // You can add, remove or modify the domains and their status (See DomainsAvailability in NSBHomeScreen.tsx)
 export const domainsList = [

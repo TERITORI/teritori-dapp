@@ -1,8 +1,9 @@
 import Clipboard from "@react-native-clipboard/clipboard";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import copyPNG from "../../../assets/icons/copy.png";
+import { NSBContext } from "../../context/NSBProvider";
 import { neutral23, neutral33 } from "../../utils/colors";
 import { BrandText } from "../BrandText";
 import ModalBase from "../modals/ModalBase";
@@ -10,10 +11,13 @@ import ModalBase from "../modals/ModalBase";
 export const CopyToClipboardCard: React.FC<{
   text: string;
 }> = ({ text }) => {
-  const [feedbackVisible, setFeedbackVisible] = useState(false);
+  const { setNsbSuccess } = useContext(NSBContext);
 
   const copyToClipboard = () => {
-    setFeedbackVisible(true);
+    setNsbSuccess({
+      title: "Copied",
+      message: "",
+    });
     Clipboard.setString(text);
   };
 
@@ -36,7 +40,10 @@ export const CopyToClipboardCard: React.FC<{
           borderRadius: 8,
         }}
       >
-        <BrandText style={{ fontSize: 14, fontWeight: "500", marginLeft: 12 }}>
+        <BrandText
+          style={{ fontSize: 14, fontWeight: "500", marginLeft: 12 }}
+          numberOfLines={1}
+        >
           {text}
         </BrandText>
         <Image
@@ -44,13 +51,6 @@ export const CopyToClipboardCard: React.FC<{
           style={{ width: 24, height: 24, marginRight: 12 }}
         />
       </View>
-
-      {/*TODO: Make a SuccessToast instead of a modal ?*/}
-      <ModalBase
-        label="Copied"
-        onClose={() => setFeedbackVisible(false)}
-        visible={feedbackVisible}
-      />
     </TouchableOpacity>
   );
 };

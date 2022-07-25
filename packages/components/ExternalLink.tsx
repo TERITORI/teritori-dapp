@@ -7,10 +7,12 @@ import { BrandText } from "./BrandText";
 export const ExternalLink: React.FC<{
   externalUrl: string;
   style?: TextStyle;
-}> = ({ children, externalUrl, style }) => {
+  numberOfLines?: number;
+}> = ({ children, externalUrl, style, numberOfLines }) => {
   return (
     <TouchableOpacity onPress={() => Linking.openURL(externalUrl)}>
       <BrandText
+        numberOfLines={numberOfLines}
         style={[
           {
             // @ts-ignore

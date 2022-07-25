@@ -50,11 +50,9 @@ export const TextInputCustom: React.FC<{
         onChangeText(numberWithThousandsSeparator(withoutCommaValue));
       }
     }
-    // ---- Apply onChange respecting the regexp
-    if (regexp) {
-      if (regexp.test(value)) {
-        onChangeText(value);
-      }
+    // ---- Apply onChange respecting the regexp (Allow empty string)
+    if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
+      onChangeText(value);
     }
   };
 

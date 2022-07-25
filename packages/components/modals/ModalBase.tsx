@@ -1,8 +1,9 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useRef } from "react";
 import { Modal, Pressable, View, ViewStyle, Image } from "react-native";
 
 import crossPNG from "../../../assets/icons/cross.png";
+import useOnClickOutside from "../../hooks/useOnClickOutside";
 import { neutral23, neutral33 } from "../../utils/colors";
 import { BrandText } from "../BrandText";
 
@@ -27,6 +28,9 @@ export const ModalBase: React.FC<{
   visible?: boolean;
   childrenBottom?: ReactElement;
 }> = ({ label, visible, width, onClose, childrenBottom, children }) => {
+  const mainContainerRef = useRef(null);
+  useOnClickOutside(mainContainerRef, onClose);
+
   return (
     <Modal
       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -45,6 +49,7 @@ export const ModalBase: React.FC<{
       >
         {/*------ Modal main container */}
         <View
+          ref={mainContainerRef}
           style={{
             backgroundColor: neutral23,
             borderWidth: 1,

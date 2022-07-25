@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { Dispatch, useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { NSBContext } from "../../context/NSBProvider";
 import { neutral33, neutral77 } from "../../utils/colors";
+import { Metadata } from "../../utils/types/messages";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { PrimaryButton } from "../buttons/PrimaryButton";
@@ -14,38 +15,53 @@ export const NameDataForm: React.FC<{
   isMintPath?: boolean;
   btnLabel: string;
   onPressBtn: (values: object) => void;
-}> = ({ isMintPath, btnLabel, onPressBtn }) => {
+  initialData: Metadata;
+}> = ({ isMintPath, btnLabel, onPressBtn, initialData }) => {
   const [pathId, setPathId] = useState("");
   const { name } = useContext(NSBContext);
-  const [bio, setBio] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [public_bio, setBio] = useState("");
+  const [image, setImageUrl] = useState("");
   const [email, setEmail] = useState("");
-  const [website, setWebsite] = useState("");
-  const [twitter, setTwitter] = useState("");
-  const [discord, setDiscord] = useState("");
-  const [telegramUsername, setTelegrameUsername] = useState("");
-  const [keybaseIo, setKeybaseIo] = useState("");
-  const [validatorOperatorAddress, setValidatorOperatorAddress] = useState("");
+  const [external_url, setWebsite] = useState("");
+  const [twitter_id, setTwitter] = useState("");
+  const [discord_id, setDiscord] = useState("");
+  const [telegram_id, setTelegrameUsername] = useState("");
+  const [keybase_id, setKeybaseIo] = useState("");
+  const [validator_operator_address, setValidatorOperatorAddress] =
+    useState("");
 
   const inputStyle = { marginBottom: 12, width: "100%" };
   const profileDataTextStyle = { color: neutral77, fontSize: 16 };
 
+  // Sending the input values
   const _onPressBtn = () => {
-    const date = {
+    onPressBtn({
       pathId,
       public_name: name, // Useless because NSBContext ?
-      public_bio: bio,
-      image: imageUrl,
+      public_bio,
+      image,
       email,
-      external_url: website,
-      twitter_id: twitter,
-      discord_id: discord,
-      telegram_id: telegramUsername,
-      keybase_id: keybaseIo,
-      validator_operator_address: validatorOperatorAddress,
-    };
-    onPressBtn(date);
+      external_url,
+      twitter_id,
+      discord_id,
+      telegram_id,
+      keybase_id,
+      validator_operator_address,
+    });
   };
+
+  // Setting initial inputs values (Pre-filled values if existing token)
+  useEffect(() => {
+    setBio(initialData.public_bio);
+    setImageUrl(initialData.image);
+    setEmail(initialData.email);
+    setWebsite(initialData.external_url);
+    setTwitter(initialData.twitter_id);
+    setDiscord(initialData.discord_id);
+    setTelegrameUsername(initialData.telegram_id);
+    setKeybaseIo(initialData.keybase_id);
+    setValidatorOperatorAddress(initialData.validator_operator_address);
+  }, [initialData]);
 
   return (
     <View
@@ -110,14 +126,14 @@ export const NameDataForm: React.FC<{
         style={inputStyle}
         label="BIO"
         placeHolder="Type bio here"
-        value={bio}
+        value={public_bio}
         onChangeText={setBio}
       />
       <TextInputCustom
         style={inputStyle}
         label="IMAGE URL"
         placeHolder="Insert image URL here"
-        value={imageUrl}
+        value={image}
         onChangeText={setImageUrl}
       />
       <TextInputCustom
@@ -131,42 +147,42 @@ export const NameDataForm: React.FC<{
         style={inputStyle}
         label="WEBSITE"
         placeHolder="Type/insert link here"
-        value={website}
+        value={external_url}
         onChangeText={setWebsite}
       />
       <TextInputCustom
         style={inputStyle}
         label="TWITTER"
         placeHolder="Link to Twitter account"
-        value={twitter}
+        value={twitter_id}
         onChangeText={setTwitter}
       />
       <TextInputCustom
         style={inputStyle}
         label="DISCORD"
         placeHolder="Link to Discord group"
-        value={discord}
+        value={discord_id}
         onChangeText={setDiscord}
       />
       <TextInputCustom
         style={inputStyle}
         label="TELEGRAM USERNAME"
         placeHolder="@nickname"
-        value={telegramUsername}
+        value={telegram_id}
         onChangeText={setTelegrameUsername}
       />
       <TextInputCustom
         style={inputStyle}
         label="KEYBASE.IO"
         placeHolder="Type/insert link here"
-        value={keybaseIo}
+        value={keybase_id}
         onChangeText={setKeybaseIo}
       />
       <TextInputCustom
         style={inputStyle}
         label="VALIDATOR OPERATOR ADDRESS"
         placeHolder="Type/insert link here"
-        value={validatorOperatorAddress}
+        value={validator_operator_address}
         onChangeText={setValidatorOperatorAddress}
       />
       <PrimaryButton

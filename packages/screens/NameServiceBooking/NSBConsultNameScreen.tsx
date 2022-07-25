@@ -1,10 +1,11 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
-import { View } from "react-native";
+import { Linking, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
+import { ExternalLink } from "../../components/ExternalLink";
 import { BacKTo } from "../../components/Footer";
-import { NameAndDomainText } from "../../components/NameServiceBooking/NameAndDomainText";
+import { NameAndTldText } from "../../components/NameServiceBooking/NameAndTldText";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { DarkButton } from "../../components/buttons/DarkButton";
@@ -12,17 +13,23 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
-import {NSBContext} from "../../context/NSBProvider"
-import {useAppNavigation} from "../../utils/navigation"
+import { NSBContext } from "../../context/NSBProvider";
+import { useToken } from "../../hooks/tokens";
+import { useIsUserOwnsToken } from "../../hooks/useIsUserOwnsToken";
 import {
   neutral33,
   neutral44,
   neutral77,
   primaryColor,
 } from "../../utils/colors";
-
-import { dataTest } from "../../utils/types/nsb";
 import { numberWithThousandsSeparator } from "../../utils/handefulFunctions";
+import { useAppNavigation } from "../../utils/navigation";
+import {
+  imageDisplayLabel,
+  prettyTokenData,
+  publicNameDisplayLabel,
+} from "../../utils/teritori";
+import { dataTest } from "../../utils/types/nsb";
 
 {
   /*TODO: STEP3 => Here, you can consult a name. If the name is minted by you, the Footer wil contains other actions*/
@@ -119,7 +126,7 @@ const OwnerActions = () => {
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BacKTo justBack />
+      <BacKTo navItem="NSBManage" />
       <DarkButton
         text="Update metadata"
         style={btnStyle}
@@ -150,8 +157,17 @@ const OwnerActions = () => {
 
 // The visible name data (Necessarily minted). If the name is minted by the current user, other actions are provided in Footer
 export const NSBConsultNameScreen: React.FC = () => {
-  const { name, signedUserIsOwner } = useContext(NSBContext);
+  const { name } = useContext(NSBContext);
   const navigation = useAppNavigation();
+  const { token, notFound } = useToken(name + process.env.TLD);
+  const isUserOwnsToken = useIsUserOwnsToken(name);
+
+  useEffect(() => {
+    console.log(
+      "tokentoke===ntokentokentok====entokentokento===kentokentoken==tokentokentokentoken==tokentokent====okentoen",
+      token
+    );
+  }, [token]);
 
   // ---- When this screen is called, if there is no entered name, we go back
   useFocusEffect(() => {
@@ -160,9 +176,7 @@ export const NSBConsultNameScreen: React.FC = () => {
 
   return (
     <ScreenContainer2
-      footerChildren={
-        signedUserIsOwner ? <OwnerActions /> : <NotOwnerActions />
-      }
+      footerChildren={isUserOwnsToken ? <OwnerActions /> : <NotOwnerActions />}
     >
       {/*<ScreenContainer2 footerChildren={<NotOwnerActions/>}>*/}
       <View
@@ -177,8 +191,12 @@ export const NSBConsultNameScreen: React.FC = () => {
           style={{ flex: 1, marginRight: 20, width: "100%", maxWidth: 332 }}
         >
           <NameNFT style={{ marginBottom: 20 }} name={name} />
-          {/*TODO: Dynamic value*/}
-          <CopyToClipboardCard text="https://tetitori.io/teritori::test" />
+          {/*TODO: Path in URL ... (I currently use ContextAPI to set the name.. And not dynamic routes*/}
+          {token && (
+            <CopyToClipboardCard
+              text={`https://${window.location.host}/nsb/explore/${name}`}
+            />
+          )}
         </View>
 
         <View
@@ -193,34 +211,56 @@ export const NSBConsultNameScreen: React.FC = () => {
             padding: 24,
           }}
         >
-          {/*TODO: Dynamic values*/}
-          {dataTest
-            .filter((d) => !!d.value)
-            .map((d) => (
-              <View style={{ flex: 1, marginBottom: 32 }} key={d.label}>
+          {token ? (
+            <>
+              <View style={{ flex: 1, marginBottom: 32 }}>
                 <BrandText
                   style={{ fontSize: 16, marginBottom: 8, color: neutral77 }}
                 >
-                  {d.displayedLabel}
+                  Name
                 </BrandText>
-                {/*---- We want some style depending on the data type*/}
-                {d.label === "publicName" ? (
-                  <NameAndDomainText nameAndDomainStr={d.value} />
-                ) : d.label === "imageUrl" ? (
-                  // TODO: Gradient text blue-green
-                  <BrandText
-                    style={{ color: primaryColor, letterSpacing: -(20 * 0.04) }}
-                    numberOfLines={1}
-                  >
-                    {d.value}
-                  </BrandText>
-                ) : (
-                  <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
-                    {d.value}
-                  </BrandText>
-                )}
+                <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
+                  {name}
+                </BrandText>
               </View>
-            ))}
+
+              {prettyTokenData(token)
+                // We display only the raw if there is a value
+                .filter((data) => data.value)
+                .map((data, i) => (
+                  <View style={{ flex: 1, marginBottom: 32 }} key={i}>
+                    <BrandText
+                      style={{
+                        fontSize: 16,
+                        marginBottom: 8,
+                        color: neutral77,
+                      }}
+                    >
+                      {data.displayLabel}
+                    </BrandText>
+                    {/*---- We want some style depending on the data type*/}
+                    {data.displayLabel === publicNameDisplayLabel ? (
+                      <NameAndTldText nameAndTldStr={data.value} />
+                    ) : data.displayLabel === imageDisplayLabel ? (
+                      // TODO: Gradient text blue-green
+                      <ExternalLink
+                        externalUrl={data.value}
+                        style={{ letterSpacing: -(20 * 0.04) }}
+                        numberOfLines={1}
+                      >
+                        {data.value}
+                      </ExternalLink>
+                    ) : (
+                      <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
+                        {data.value}
+                      </BrandText>
+                    )}
+                  </View>
+                ))}
+            </>
+          ) : (
+            <BrandText>Loading</BrandText>
+          )}
         </View>
       </View>
     </ScreenContainer2>

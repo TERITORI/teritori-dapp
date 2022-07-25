@@ -1,27 +1,28 @@
 import PropTypes from "prop-types";
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
-interface NSBError {
+interface NSBToastMessage {
   title: string;
   message: string;
 }
-export const initialNsbError: NSBError = { title: "", message: "" };
+export const initialNsbError: NSBToastMessage = { title: "", message: "" };
+export const initialNsbSuccess: NSBToastMessage = { title: "", message: "" };
 
 interface DefaultValue {
   name: string;
   setName: (name: string) => void;
-  signedUserIsOwner: boolean;
-  setSignedUserIsOwner: (isOwner: boolean) => void;
-  nsbError: NSBError;
-  setNsbError: (error: NSBError) => void;
+  nsbError: NSBToastMessage;
+  setNsbError: (error: NSBToastMessage) => void;
+  nsbSuccess: NSBToastMessage;
+  setNsbSuccess: (info: NSBToastMessage) => void;
 }
 const defaultValue: DefaultValue = {
   name: "",
   setName: undefined,
-  signedUserIsOwner: false,
-  setSignedUserIsOwner: undefined,
   nsbError: initialNsbError,
   setNsbError: undefined,
+  nsbSuccess: initialNsbSuccess,
+  setNsbSuccess: undefined,
 };
 
 export const NSBContext = createContext(defaultValue);
@@ -29,20 +30,23 @@ export const NSBContext = createContext(defaultValue);
 const NSBContextProvider = ({ children }) => {
   // The entered name
   const [name, setName] = useState("");
-  //TODO:
-  const [signedUserIsOwner, setSignedUserIsOwner] = useState(false);
-  // Error after mint, etc...
+  // Error/success after mint, etc...
   const [nsbError, setNsbError] = useState(initialNsbError);
+  const [nsbSuccess, setNsbSuccess] = useState(initialNsbSuccess);
+
+  useEffect(() => {
+    console.log("============ name", name);
+  }, [name]);
 
   return (
     <NSBContext.Provider
       value={{
         name,
         setName,
-        signedUserIsOwner,
-        setSignedUserIsOwner,
         nsbError,
         setNsbError,
+        nsbSuccess,
+        setNsbSuccess,
       }}
     >
       {children}
