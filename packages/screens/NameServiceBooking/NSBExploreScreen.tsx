@@ -7,17 +7,19 @@ import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { HollowPrimaryButton } from "../../components/buttons/HollowPrimaryButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
-import {useTokenList} from "../../hooks/tokens"
+import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
+import { isTokenOwned } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
-import {isTokenOwned} from "../../utils/handefulFunctions"
 
 export const NSBExploreScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const { name, setName } = useContext(NSBContext);
   const { tokens } = useTokenList();
-  const { nameAvailable, nameError, loading } = useCheckNameAvailability(name, tokens);
-
+  const { nameAvailable, nameError, loading } = useCheckNameAvailability(
+    name,
+    tokens
+  );
 
   return (
     <ScreenContainer2

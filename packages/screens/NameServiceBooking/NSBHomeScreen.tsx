@@ -12,6 +12,7 @@ import { FlowCard } from "../../components/cards/FlowCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
 import { NSBContext } from "../../context/NSBProvider";
+import { useStore } from "../../store/cosmwasm";
 import {
   errorColor,
   neutral33,
@@ -20,7 +21,6 @@ import {
 } from "../../utils/colors";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { domainsList } from "../../utils/teritori";
-import {useStore} from "../../store/cosmwasm"
 
 // Just a container that it can be added at the bottom of the modal TODO: Integrate this later
 const DomainsAvailability: React.FC = () => {
@@ -141,16 +141,16 @@ export const NSBHomeScreen: React.FC = () => {
     useState<keyof RootStackParamList>("NSBHome");
   const navigation = useAppNavigation();
   const landingHorizontalPadding = 25;
-  const signingClient = useStore((state) => state.signingClient)
+  const signingClient = useStore((state) => state.signingClient);
 
   const onPressRegister = () => {
-    if(signingClient) {
+    if (signingClient) {
       setPressedNavItem("NSBRegister");
       setModalNameFinderVisible(true);
     }
   };
   const onPressManage = () => {
-    if(signingClient) {
+    if (signingClient) {
       navigation.navigate("NSBManage");
     }
   };

@@ -1,3 +1,4 @@
+import { useFocusEffect } from "@react-navigation/native";
 import * as R from "ramda";
 import React, { useState } from "react";
 import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
@@ -15,11 +16,10 @@ import {
   noTokens,
   useTokenList,
 } from "../../hooks/tokens";
+import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
 import { tokenWithoutTld } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
-import {useFocusEffect} from "@react-navigation/native"
-import {useHasUserConnectedWallet} from "../../hooks/useHasUserConnectedWallet"
 
 const NameCard: React.FC<{
   fullName: string;
@@ -75,30 +75,30 @@ const NameCard: React.FC<{
 export const NSBManageScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const userHasCoWallet = useHasUserConnectedWallet();
-  const { pathsAndTokens, tokens, setStartAfter, page, setPage } = useTokenList();
+  const { pathsAndTokens, tokens, setStartAfter, page, setPage } =
+    useTokenList();
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
-  const { alias } = usePrimaryAlias()
-  const { signingClient } = useSigningClient()
-
+  const { alias } = usePrimaryAlias();
+  const { signingClient } = useSigningClient();
 
   const titleFontSize = 48;
   const subTitleFontSize = 28;
 
   // ==== Init
   useFocusEffect(() => {
-    console.log('---------- tokens', tokens)
-    console.log('---------- userHasCoWallet', userHasCoWallet)
+    console.log("---------- tokens", tokens);
+    console.log("---------- userHasCoWallet", userHasCoWallet);
 
     // ---- When this screen is called, if the user has no wallet, we go home (We are waiting for tokens state)
     // ===== Controls many things, be careful
-    if ((tokens && !userHasCoWallet) || !signingClient) navigation.navigate("NSBHome");
+    if ((tokens && !userHasCoWallet) || !signingClient)
+      navigation.navigate("NSBHome");
     if (noTokens(tokens)) return;
 
     const firstTokenOnCurrentPage = tokens[0];
     if (!R.includes(firstTokenOnCurrentPage, pageStartTokens)) {
       setPageStartTokens(R.append(firstTokenOnCurrentPage, pageStartTokens));
     }
-
   });
 
   // ----- Pagination TODO:
@@ -157,7 +157,11 @@ export const NSBManageScreen: React.FC = () => {
                 fullName={token}
                 key={token}
                 style={{ marginTop: 20 }}
-                onPress={() => navigation.navigate("NSBConsultName",{name: tokenWithoutTld(token)})}
+                onPress={() =>
+                  navigation.navigate("NSBConsultName", {
+                    name: tokenWithoutTld(token),
+                  })
+                }
               />
             ))}
 

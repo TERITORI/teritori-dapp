@@ -1,19 +1,18 @@
 // Query the name service
-import {useContext, useEffect, useState} from "react"
+import { useContext, useEffect, useState } from "react";
 
+import { NSBContext } from "../context/NSBProvider";
+import { isTokenOwned } from "../utils/handefulFunctions";
 import { getNonSigningClient } from "./cosmwasm";
-import {NSBContext} from "../context/NSBProvider"
-import {isTokenOwned} from "../utils/handefulFunctions"
 
 // NSB : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
 export const useCheckNameAvailability = (name, tokens: string[]) => {
   const [nameAvailable, setNameAvailable] = useState(true);
   const [nameError, setNameError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const {setNsbError} = useContext(NSBContext)
+  const { setNsbError } = useContext(NSBContext);
 
-  useEffect(() => {
-  }, [nameAvailable]);
+  useEffect(() => {}, [nameAvailable]);
 
   useEffect(() => {
     const _getToken = async () => {
@@ -38,7 +37,6 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
 
     _getToken()
       .then((tokenExtension) => {
-
         // ----- User owns
         if (isTokenOwned(tokens, name)) {
           setNameAvailable(false);
@@ -65,7 +63,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
         setNameError(true);
         setNsbError({
           title: "Something went wrong!",
-          message: e.message
+          message: e.message,
         });
       });
   }, [name]);

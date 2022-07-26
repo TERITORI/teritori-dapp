@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import React, { createContext, useEffect, useState } from "react";
-import {useTokenList} from "../hooks/tokens"
-import {useSigningCosmWasmClient} from "../hooks/cosmwasm"
-import {useHasUserConnectedWallet} from "../hooks/useHasUserConnectedWallet"
+
+import { useSigningCosmWasmClient } from "../hooks/cosmwasm";
+import { useTokenList } from "../hooks/tokens";
+import { useHasUserConnectedWallet } from "../hooks/useHasUserConnectedWallet";
 
 interface NSBToastMessage {
   title: string;

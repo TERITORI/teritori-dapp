@@ -1,4 +1,4 @@
-import * as R from 'ramda'
+import * as R from "ramda";
 
 // Returns your given number (string or number), but with comma as a thousand separator (string)
 export const numberWithThousandsSeparator = (
@@ -22,7 +22,6 @@ export const tldFromToken = (str: string): string =>
 export const tokenWithoutTld = (str: string): string =>
   str.substr(0, str.lastIndexOf("."));
 
-
 export const isTokenOwned = (tokenArray: string[], name: string) => {
-  return tokenArray.includes(name + process.env.TLD)
-}
+  return tokenArray.includes(name + process.env.TLD);
+};

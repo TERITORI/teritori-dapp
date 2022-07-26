@@ -1,6 +1,8 @@
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import * as R from "ramda";
 import React, { useContext, useState } from "react";
-import {  View } from "react-native";
+import { View } from "react-native";
+
 import { BacKTo } from "../../components/Footer";
 import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
@@ -8,25 +10,24 @@ import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { NSBContext } from "../../context/NSBProvider";
 import { useSigningClient } from "../../context/cosmwasm";
 import { useSigningCosmWasmClient } from "../../hooks/cosmwasm";
+import { useTokenList } from "../../hooks/tokens";
+import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee, getMintCost } from "../../utils/fee";
+import { isTokenOwned } from "../../utils/handefulFunctions";
 import { defaultMemo } from "../../utils/memo";
-import {RootStackParamList, useAppNavigation} from "../../utils/navigation"
+import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
-import {useHasUserConnectedWallet} from "../../hooks/useHasUserConnectedWallet"
-import {RouteProp, useFocusEffect} from "@react-navigation/native"
-import {useTokenList} from "../../hooks/tokens"
-import {isTokenOwned} from "../../utils/handefulFunctions"
 
 const normalize = (inputString: string) => {
-  const invalidChrsRemoved = R.replace(/[^a-z0-9\-\_]/g, '', inputString)
-  return R.replace(/[_\-]{2,}/g, '', invalidChrsRemoved)
-}
+  const invalidChrsRemoved = R.replace(/[^a-z0-9\-\_]/g, "", inputString);
+  return R.replace(/[_\-]{2,}/g, "", invalidChrsRemoved);
+};
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const NSBMintPathScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "NSBUpdateName">
-}> = ({route}) => {
+  route: RouteProp<RootStackParamList, "NSBUpdateName">;
+}> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const { name, setName, setNsbError, setNsbSuccess } = useContext(NSBContext);
   const navigation = useAppNavigation();
@@ -39,9 +40,14 @@ export const NSBMintPathScreen: React.FC<{
   useFocusEffect(() => {
     // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the user doesn't own the token
     // @ts-ignore
-    if(route.params && route.params.name) setName(route.params.name)
+    if (route.params && route.params.name) setName(route.params.name);
     // ===== Controls many things, be careful
-    if (name && tokens.length && (!userHasCoWallet || !isTokenOwned(tokens, name)) || !signingClient) {
+    if (
+      (name &&
+        tokens.length &&
+        (!userHasCoWallet || !isTokenOwned(tokens, name))) ||
+      !signingClient
+    ) {
       navigation.navigate("NSBHome");
     }
 
@@ -67,7 +73,7 @@ export const NSBMintPathScreen: React.FC<{
           telegram_id: token.extension.telegram_id,
           keybase_id: token.extension.keybase_id,
           validator_operator_address:
-          token.extension.validator_operator_address,
+            token.extension.validator_operator_address,
         };
         setInitialData(tokenData);
       } catch (e) {
@@ -80,7 +86,6 @@ export const NSBMintPathScreen: React.FC<{
   });
 
   const submitData = async (_data) => {
-
     if (!signingClient || !walletAddress) {
       return;
     }
@@ -138,7 +143,7 @@ export const NSBMintPathScreen: React.FC<{
           title: normalizedTokenId + " successfully minted",
           message: "",
         });
-        navigation.navigate("NSBManage")
+        navigation.navigate("NSBManage");
         // setLoading(false)
       }
     } catch (err) {
@@ -153,9 +158,11 @@ export const NSBMintPathScreen: React.FC<{
 
   return (
     <ScreenContainer2
-      footerChildren={<BacKTo label={name} navItem="NSBConsultName" navParams={{name}}/>}>
+      footerChildren={
+        <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
+      }
+    >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
-
         <View
           style={{
             flex: 1,
@@ -167,7 +174,7 @@ export const NSBMintPathScreen: React.FC<{
           <NameNFT style={{ marginRight: 20 }} name={name} />
 
           <NameDataForm
-            btnLabel={"Create path"}
+            btnLabel="Create path"
             onPressBtn={submitData}
             initialData={initialData}
             isMintPath

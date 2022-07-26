@@ -22,7 +22,8 @@ export const NameNFT: React.FC<{
   useEffect(() => {
     getToken(name)
       .then((tokenData) => {
-        if (tokenData && "image" in tokenData && tokenData.image) setImageUrl(tokenData.image);
+        if (tokenData && "image" in tokenData && tokenData.image)
+          setImageUrl(tokenData.image);
       })
       .catch((strError) => {
         setNsbError({

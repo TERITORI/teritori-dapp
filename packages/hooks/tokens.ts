@@ -10,7 +10,8 @@ import { getNonSigningClient, useSigningCosmWasmClient } from "./cosmwasm";
 
 export const isPath = (str: string) => R.includes("::", str);
 export const isToken = R.complement(isPath);
-export const noTokens = (tokenIds: string[]): boolean => tokenIds === undefined || R.isEmpty(tokenIds);
+export const noTokens = (tokenIds: string[]): boolean =>
+  tokenIds === undefined || R.isEmpty(tokenIds);
 
 export const getHandlePrev = (
   page: number,
@@ -83,7 +84,6 @@ const getValidQuery = (
 export function useTokenList() {
   const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   const perPage = 10;
-
 
   const setStoreTokens = useStore((state) => state.setTokenIds);
   const tokens: string[] = useStore((state) => state.tokenIds);
@@ -167,13 +167,13 @@ export function useToken(tokenId: string, tld: string) {
       try {
         const tokenInfo = await signingClient.queryContractSmart(contract, {
           nft_info: {
-            token_id: tokenId + tld
+            token_id: tokenId + tld,
           },
         });
 
         //setToken(tokenInfo.extension)
         setStoreToken(tokenInfo.extension);
-        setNotFound(false)
+        setNotFound(false);
         setLoading(false);
       } catch (e) {
         // ---- If here, "cannot contract", probably because not found, so the token is considered as available
@@ -185,15 +185,17 @@ export function useToken(tokenId: string, tld: string) {
     };
 
     // If no entered name (tokenId), we don't handle _getToken() to avoid useless errors
-    if(tokenId) {
-      _getToken().then().catch((e) => {
-        console.warn("ERROR getToken() : ", e);
-        setLoading(false);
-        setNsbError({
-          title: "Something went wrong!",
-          message: e.message
+    if (tokenId) {
+      _getToken()
+        .then()
+        .catch((e) => {
+          console.warn("ERROR getToken() : ", e);
+          setLoading(false);
+          setNsbError({
+            title: "Something went wrong!",
+            message: e.message,
+          });
         });
-      });
     }
   }, [tokenId, walletAddress]);
 
@@ -203,7 +205,7 @@ export function useToken(tokenId: string, tld: string) {
 export const getToken = async (
   name: string = "",
   client?: CosmWasmClient
-): Promise<Metadata|object|undefined> => {
+): Promise<Metadata | object | undefined> => {
   const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   // We just want to read, so we use a non-signing client
   if (!client) client = await getNonSigningClient();

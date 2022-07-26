@@ -87,7 +87,7 @@ export const BacKTo: React.FC<{
   const _onPress = () => {
     if (onPress) onPress();
     if (justBack) navigation.goBack();
-    else if(navParams) navigation.navigate(navItem, navParams);
+    else if (navParams) navigation.navigate(navItem, navParams);
     else navigation.navigate(navItem);
   };
 

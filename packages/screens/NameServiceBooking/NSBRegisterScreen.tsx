@@ -1,3 +1,4 @@
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
 
 import { BacKTo } from "../../components/Footer";
@@ -5,21 +6,23 @@ import { FindAName } from "../../components/NameServiceBooking/FindAName";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
-import {getToken, noTokens, useTokenList} from "../../hooks/tokens"
+import { getToken, noTokens, useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
+import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
+import { useStore } from "../../store/cosmwasm";
+import { isTokenOwned } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
-import {useFocusEffect, useNavigation} from "@react-navigation/native"
-import {isTokenOwned} from "../../utils/handefulFunctions"
-import {usePrimaryAlias} from "../../hooks/usePrimaryAlias"
-import {useStore} from "../../store/cosmwasm"
 
 export const NSBRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const { name, setName } = useContext(NSBContext);
   const { tokens } = useTokenList();
-  const signingClient = useStore((state) => state.signingClient)
+  const signingClient = useStore((state) => state.signingClient);
 
-  const { nameAvailable, nameError, loading } = useCheckNameAvailability(name, tokens);
+  const { nameAvailable, nameError, loading } = useCheckNameAvailability(
+    name,
+    tokens
+  );
 
   // ==== Init
   useFocusEffect(() => {
@@ -51,7 +54,7 @@ export const NSBRegisterScreen: React.FC = () => {
             text="Mint your new ID"
             big
             style={{ maxWidth: 157, width: "100%" }}
-            onPress={() => navigation.navigate("NSBMintName",{name})}
+            onPress={() => navigation.navigate("NSBMintName", { name })}
           />
         ) : null}
       </FindAName>

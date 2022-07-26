@@ -12,15 +12,15 @@ import { MintScreen } from "../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../screens/MyCollection/MyCollectionScreen";
 import { NSBBurnNameScreen } from "../screens/NameServiceBooking/NSBBurnNameScreen";
 import { NSBConsultNameScreen } from "../screens/NameServiceBooking/NSBConsultNameScreen";
-import { NSBUpdateNameScreen } from "../screens/NameServiceBooking/NSBUpdateNameScreen";
 import { NSBExploreScreen } from "../screens/NameServiceBooking/NSBExploreScreen";
 import { NSBHomeScreen } from "../screens/NameServiceBooking/NSBHomeScreen";
 import { NSBManageScreen } from "../screens/NameServiceBooking/NSBManageScreen";
+import { NSBMintNameScreen } from "../screens/NameServiceBooking/NSBMintNameScreen";
+import { NSBMintPathScreen } from "../screens/NameServiceBooking/NSBMintPathScreen";
 import { NSBRegisterScreen } from "../screens/NameServiceBooking/NSBRegisterScreen";
+import { NSBUpdateNameScreen } from "../screens/NameServiceBooking/NSBUpdateNameScreen";
 import { WalletsScreen } from "../screens/Wallets/WalletsScreen";
 import { RootStackParamList } from "../utils/navigation";
-import {NSBMintPathScreen} from "../screens/NameServiceBooking/NSBMintPathScreen"
-import {NSBMintNameScreen} from "../screens/NameServiceBooking/NSBMintNameScreen"
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -109,21 +109,21 @@ export const Navigator: React.FC = () => {
         component={NSBUpdateNameScreen}
         options={{ header: () => null }}
       />
-        <Stack.Screen
-          name="NSBMintName"
-          component={NSBMintNameScreen}
-          options={{ header: () => null }}
-        />
+      <Stack.Screen
+        name="NSBMintName"
+        component={NSBMintNameScreen}
+        options={{ header: () => null }}
+      />
       <Stack.Screen
         name="NSBBurnName"
         component={NSBBurnNameScreen}
         options={{ header: () => null }}
       />
-        <Stack.Screen
-          name="NSBMintPath"
-          component={NSBMintPathScreen}
-          options={{ header: () => null }}
-        />
+      <Stack.Screen
+        name="NSBMintPath"
+        component={NSBMintPathScreen}
+        options={{ header: () => null }}
+      />
     </Stack.Navigator>
   );
 };

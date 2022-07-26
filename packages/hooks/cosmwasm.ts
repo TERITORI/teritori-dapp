@@ -7,7 +7,7 @@ import { useState } from "react";
 import { connectKeplr } from "../services/keplr";
 import { useStore } from "../store/cosmwasm";
 import { OptionString } from "../utils/types/base";
-import {useHasUserConnectedWallet} from "./useHasUserConnectedWallet"
+import { useHasUserConnectedWallet } from "./useHasUserConnectedWallet";
 
 export interface ISigningCosmWasmClientContext {
   walletAddress: OptionString;
@@ -30,12 +30,12 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
   const walletAddress = useStore((state) => state.walletAddress);
   const signingClient = useStore((state) => state.signingClient);
 
-  const hasUserConnectedWallet = useHasUserConnectedWallet()
+  const hasUserConnectedWallet = useHasUserConnectedWallet();
 
   const connectWallet = async () => {
     setLoading(true);
     try {
-      if(!hasUserConnectedWallet) await connectKeplr();
+      if (!hasUserConnectedWallet) await connectKeplr();
       // enable website to access kepler
       await (window as any).keplr.enable(PUBLIC_CHAIN_ID);
       // get offline signer for signing txs
