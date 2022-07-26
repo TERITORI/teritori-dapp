@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import {RouteProp, useNavigation} from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
@@ -17,11 +17,13 @@ export type RootStackParamList = {
   NSBManage: undefined;
   NSBRegister: undefined;
   NSBConsultName: undefined;
-  NSBEditCreateName: undefined;
+  NSBMintName: undefined;
+  NSBUpdateName: undefined;
   NSBBurnName: undefined;
+  NSBMintPath: undefined;
 };
 
-export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList|any>;
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
@@ -42,13 +44,18 @@ const navConfig = {
     Launchpad: "launchpad",
     Governance: "governance",
     Mint: "mint",
+    // Name Service Booking
     NSBHome: "nsb",
     NSBExplore: "nsb/explore",
     NSBManage: "nsb/manage",
     NSBRegister: "nsb/register",
-    NSBConsultName: "nsb/consult",
-    NSBEditCreateName: "nsb/edit-create",
-    NSBBurnName: "nsb/burn",
+    // Consult token
+    NSBConsultName: "nsb/token/:name",
+    // Do things on token (Necessary minted and owned by the user)
+    NSBMintName: "nsb/tokens/:name/mint",
+    NSBUpdateName: "nsb/tokens/:name/update",
+    NSBBurnName: "nsb/tokens/:name/burn",
+    NSBMintPath: "nsb/tokens/:name/mint-path",
   },
 };
 
@@ -56,3 +63,8 @@ export const linking = {
   prefixes: [],
   config: navConfig,
 };
+
+// export type RootStackComponent<RouteName extends keyof RootStackParamList> = React.FC<{
+//   navigation: NativeStackNavigationProp<RootStackParamList, RouteName>,
+//   route: RouteProp<RootStackParamList, RouteName>
+// }>

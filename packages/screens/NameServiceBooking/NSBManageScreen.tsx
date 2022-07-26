@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import flowCardPNG from "../../../assets/cards/flow-card.png";
@@ -8,9 +8,7 @@ import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { PrimaryPill } from "../../components/pills/PrimaryPill";
-import { NSBContext } from "../../context/NSBProvider";
 import { useSigningClient } from "../../context/cosmwasm";
-import { useSigningCosmWasmClient } from "../../hooks/cosmwasm";
 import {
   getHandleNext,
   getHandlePrev,
@@ -20,6 +18,8 @@ import {
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
 import { tokenWithoutTld } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
+import {useFocusEffect} from "@react-navigation/native"
+import {useHasUserConnectedWallet} from "../../hooks/useHasUserConnectedWallet"
 
 const NameCard: React.FC<{
   fullName: string;
@@ -73,31 +73,25 @@ const NameCard: React.FC<{
 };
 
 export const NSBManageScreen: React.FC = () => {
-  const { setName } = useContext(NSBContext);
   const navigation = useAppNavigation();
+  const userHasCoWallet = useHasUserConnectedWallet();
+  const { pathsAndTokens, tokens, setStartAfter, page, setPage } = useTokenList();
+  const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
+  const { alias } = usePrimaryAlias()
+  const { signingClient } = useSigningClient()
+
 
   const titleFontSize = 48;
   const subTitleFontSize = 28;
-  const onPressNameCard = (token) => {
-    console.log(
-      "egvyzbgkienozenbomenerinbezmbjz ebmeoibnezmobieznbmoezibnez",
-      tokenWithoutTld(token)
-    );
-    setName(tokenWithoutTld(token));
-    navigation.navigate("NSBConsultName");
-  };
 
-  //////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////
-  const { signingClient, walletAddress } = useSigningClient();
-  const aaeaeaeae = useSigningCosmWasmClient();
-  const { pathsAndTokens, tokens, paths, setStartAfter, page, setPage } =
-    useTokenList();
-  const { alias, loadingAlias } = usePrimaryAlias();
-  const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
+  // ==== Init
+  useFocusEffect(() => {
+    console.log('---------- tokens', tokens)
+    console.log('---------- userHasCoWallet', userHasCoWallet)
 
-  // ----- Init
-  useEffect(() => {
+    // ---- When this screen is called, if the user has no wallet, we go home (We are waiting for tokens state)
+    // ===== Controls many things, be careful
+    if ((tokens && !userHasCoWallet) || !signingClient) navigation.navigate("NSBHome");
     if (noTokens(tokens)) return;
 
     const firstTokenOnCurrentPage = tokens[0];
@@ -105,10 +99,9 @@ export const NSBManageScreen: React.FC = () => {
       setPageStartTokens(R.append(firstTokenOnCurrentPage, pageStartTokens));
     }
 
-    console.log("tokenstokenstokenstokenstokenstokenstokens", tokens);
-  }, [tokens, pageStartTokens]);
+  });
 
-  // ----- Pagination
+  // ----- Pagination TODO:
   const handlePrev = getHandlePrev(
     page,
     pageStartTokens,
@@ -121,8 +114,6 @@ export const NSBManageScreen: React.FC = () => {
     setPage,
     setStartAfter
   );
-  //////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////
 
   return (
     <ScreenContainer2
@@ -139,7 +130,7 @@ export const NSBManageScreen: React.FC = () => {
           }}
         >
           {/*TODO: Dynamic value*/}
-          Welcome back, Test !
+          Welcome back, {alias} !
         </BrandText>
         {/*TODO: Gradient text green-blue*/}
 
@@ -162,15 +153,15 @@ export const NSBManageScreen: React.FC = () => {
 
             {tokens.map((token) => (
               <NameCard
+                isPrimary={alias === token}
                 fullName={token}
                 key={token}
                 style={{ marginTop: 20 }}
-                //TODO: isPrimary={???}
-                onPress={() => onPressNameCard(token)}
+                onPress={() => navigation.navigate("NSBConsultName",{name: tokenWithoutTld(token)})}
               />
             ))}
 
-            {/*// ---------- Paths*/}
+            {/*// ---------- Paths TODO: ?*/}
             {/*<BrandText*/}
             {/*		style={{*/}
             {/*				fontSize: subTitleFontSize,*/}

@@ -17,10 +17,6 @@ import { footerHeight } from "../utils/layout";
 import { RootStackParamList, useAppNavigation } from "../utils/navigation";
 import { BrandText } from "./BrandText";
 
-{
-  /*TODO: STEP3*/
-}
-
 // One social network button
 const NetworkButton: React.FC<{
   iconSource: ImageSourcePropType;
@@ -83,13 +79,15 @@ export const BacKTo: React.FC<{
   navItem?: keyof RootStackParamList;
   justBack?: boolean;
   onPress?: () => void;
-}> = ({ label, navItem, justBack, onPress }) => {
+  navParams?: object;
+}> = ({ label, navItem, justBack, onPress, navParams }) => {
   const navigation = useAppNavigation();
   const labelFontSize = 16;
 
   const _onPress = () => {
     if (onPress) onPress();
     if (justBack) navigation.goBack();
+    else if(navParams) navigation.navigate(navItem, navParams);
     else navigation.navigate(navItem);
   };
 

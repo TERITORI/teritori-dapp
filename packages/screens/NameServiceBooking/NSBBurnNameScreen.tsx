@@ -1,5 +1,5 @@
-import { useFocusEffect } from "@react-navigation/native";
-import React, { useContext } from "react";
+import {RouteProp, useFocusEffect} from "@react-navigation/native"
+import React, {useContext, useEffect} from "react"
 import { Image, View } from "react-native";
 
 import burnPNG from "../../../assets/icons/burn.png";
@@ -11,22 +11,72 @@ import { DarkButton } from "../../components/buttons/DarkButton";
 import { NSBContext } from "../../context/NSBProvider";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { neutral33 } from "../../utils/colors";
-import { useAppNavigation } from "../../utils/navigation";
+import {RootStackParamList, useAppNavigation} from "../../utils/navigation"
+import {useSigningClient} from "../../context/cosmwasm"
+import {Metadata} from "../../utils/types/messages"
+import {useSigningCosmWasmClient} from "../../hooks/cosmwasm"
+import {defaultExecuteFee} from "../../utils/fee"
+import {defaultMemo} from "../../utils/memo"
+import {useTokenList} from "../../hooks/tokens"
+import {isTokenOwned} from "../../utils/handefulFunctions"
 
-export const NSBBurnNameScreen: React.FC = () => {
-  const { name } = useContext(NSBContext);
+export const NSBBurnNameScreen: React.FC<{
+  route: RouteProp<RootStackParamList, "NSBUpdateName">
+}> = ({route}) => {
+  const { name, setName, setNsbError } = useContext(NSBContext);
+  const { signingClient, walletAddress } = useSigningClient()
+  const { connectWallet } = useSigningCosmWasmClient();
   const userHasCoWallet = useHasUserConnectedWallet();
-  //TODO: Is user owner ?
-  const navigation = useAppNavigation();
+  const { tokens } = useTokenList();
 
-  // ---- When this screen is called, if there is no selected name, or if the user has no wallet, or if he's not the owner, we go back
+
+  const navigation = useAppNavigation();
+  const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+
+  // ==== Init
   useFocusEffect(() => {
-    if (!name || !userHasCoWallet) navigation.navigate("NSBHome");
+    // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the user doesn't own the token
+    // @ts-ignore
+    if (route.params && route.params.name) setName(route.params.name)
+    // ===== Controls many things, be careful
+    if ((name && tokens.length && (!userHasCoWallet || !isTokenOwned(tokens, name)) || !signingClient) ) {
+      navigation.navigate("NSBHome");
+    }
   });
+
+  const onSubmit = async () => {
+    // setLoading(true)
+    const msg = {
+      burn: {
+        token_id: name,
+      },
+    }
+    try {
+      let updatedToken = await signingClient.execute(
+        walletAddress!,
+        contractAddress,
+        msg,
+        defaultExecuteFee,
+        defaultMemo
+      )
+      if (updatedToken) {
+        navigation.navigate("NSBManage")
+        // setLoading(false)
+      }
+    } catch (e) {
+      // TODO env var for dev logging (?)
+      setNsbError({
+        title: "Something went wrong!",
+        message: e.message,
+      });
+      console.warn(e);
+      // setLoading(false)
+    }
+  }
 
   return (
     <ScreenContainer2
-      footerChildren={<BacKTo label={name} navItem="NSBConsultName" />}
+      footerChildren={<BacKTo label={name} navItem="NSBConsultName" navParams={{name}}/>}
     >
       <View
         style={{
@@ -84,9 +134,7 @@ export const NSBBurnNameScreen: React.FC = () => {
 
           <DarkButton
             text="I understand, burn it"
-            onPress={() => {
-              /*TODO:*/
-            }}
+            onPress={onSubmit}
             style={{ width: "100%" }}
           />
         </View>

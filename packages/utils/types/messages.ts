@@ -15,6 +15,7 @@ export const defaultMetaData: Metadata = {
 };
 
 export interface Metadata {
+  contract_address?: OptionString
   image: OptionString;
   image_data: OptionString;
   email: OptionString;

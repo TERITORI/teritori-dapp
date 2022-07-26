@@ -5,18 +5,26 @@ import { FindAName } from "../../components/NameServiceBooking/FindAName";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
-import { getToken } from "../../hooks/tokens";
+import {getToken, noTokens, useTokenList} from "../../hooks/tokens"
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
-import { useIsUserOwnsToken } from "../../hooks/useIsUserOwnsToken";
 import { useAppNavigation } from "../../utils/navigation";
+import {useFocusEffect, useNavigation} from "@react-navigation/native"
+import {isTokenOwned} from "../../utils/handefulFunctions"
+import {usePrimaryAlias} from "../../hooks/usePrimaryAlias"
+import {useStore} from "../../store/cosmwasm"
 
 export const NSBRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const { name, setName } = useContext(NSBContext);
-  const { nameAvailable, nameError, loading, isUserOwnsToken } =
-    useCheckNameAvailability(name);
+  const { tokens } = useTokenList();
+  const signingClient = useStore((state) => state.signingClient)
 
-  useEffect(() => {}, [isUserOwnsToken]);
+  const { nameAvailable, nameError, loading } = useCheckNameAvailability(name, tokens);
+
+  // ==== Init
+  useFocusEffect(() => {
+    if (!signingClient) navigation.navigate("NSBHome");
+  });
 
   return (
     <ScreenContainer2
@@ -30,21 +38,20 @@ export const NSBRegisterScreen: React.FC = () => {
         nameAvailable={nameAvailable}
         loading={loading}
       >
-        {/*-----  If name entered, no error and if the name is minted, we display two buttons for Register flow*/}
-        {name && ((!nameError && !nameAvailable) || isUserOwnsToken) ? (
-          <PrimaryButton
-            text="View"
-            big
-            style={{ maxWidth: 157, width: "100%" }}
-            onPress={() => navigation.navigate("NSBConsultName")}
-          />
-        ) : null}
-        {name && !nameError && nameAvailable && !isUserOwnsToken ? (
+        {/*{name && ((!nameError && !nameAvailable) || isTokenOwned(tokens, name)) ? (*/}
+        {/*  <PrimaryButton*/}
+        {/*    text="View"*/}
+        {/*    big*/}
+        {/*    style={{ maxWidth: 157, width: "100%" }}*/}
+        {/*    onPress={() => navigation.navigate("NSBConsultName", {name})}*/}
+        {/*  />*/}
+        {/*) : null}*/}
+        {name && !nameError && nameAvailable && !isTokenOwned(tokens, name) ? (
           <PrimaryButton
             text="Mint your new ID"
             big
             style={{ maxWidth: 157, width: "100%" }}
-            onPress={() => navigation.navigate("NSBEditCreateName")}
+            onPress={() => navigation.navigate("NSBMintName",{name})}
           />
         ) : null}
       </FindAName>

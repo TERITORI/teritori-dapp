@@ -13,77 +13,48 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
 import { useSigningClient } from "../../context/cosmwasm";
 import { useSigningCosmWasmClient } from "../../hooks/cosmwasm";
-import { useIsUserOwnsToken } from "../../hooks/useIsUserOwnsToken";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee, getMintCost } from "../../utils/fee";
 import { defaultMemo } from "../../utils/memo";
-import { useAppNavigation } from "../../utils/navigation";
+import {RootStackParamList, useAppNavigation} from "../../utils/navigation"
 import { OptionString } from "../../utils/types/base";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
-
-const CostContainer: React.FC = () => {
-  const innerHeight = 32;
-
-  return (
-    <View>
-      <Image
-        source={longCardPNG}
-        style={{ width: 748, height: 80, resizeMode: "stretch" }}
-      />
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          alignItems: "center",
-          position: "absolute",
-          height: innerHeight,
-          top: `calc(50% - ${innerHeight}px / 2)`,
-        }}
-      >
-        <Image
-          source={coinPNG}
-          style={{
-            width: 32,
-            height: 32,
-            resizeMode: "stretch",
-            marginLeft: 24,
-            marginRight: 12,
-          }}
-        />
-
-        {/*TODO: Dynamic value ?*/}
-        <BrandText>The mint cost for this token is 1,000 Tori</BrandText>
-      </View>
-    </View>
-  );
-};
+import {useHasUserConnectedWallet} from "../../hooks/useHasUserConnectedWallet"
+import {RouteProp, useFocusEffect} from "@react-navigation/native"
+import {useTokenList} from "../../hooks/tokens"
+import {isTokenOwned} from "../../utils/handefulFunctions"
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
-export const NSBEditCreateNameScreen: React.FC = () => {
+export const NSBUpdateNameScreen: React.FC<{
+  route: RouteProp<RootStackParamList, "NSBUpdateName">
+}> = ({route}) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
-  const { name, setNsbError, setNsbSuccess } = useContext(NSBContext);
+  const { name, setName, setNsbError, setNsbSuccess } = useContext(NSBContext);
   const navigation = useAppNavigation();
   const { signingClient, walletAddress } = useSigningClient();
   const { connectWallet } = useSigningCosmWasmClient();
-  const isUserOwnsToken = useIsUserOwnsToken(name);
+  const userHasCoWallet = useHasUserConnectedWallet();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   const appendTokenId = useStore((state) => state.appendTokenId);
   const mintCost = getMintCost(name);
+  const { tokens } = useTokenList();
 
-  // No entered name ? Go home
-  useEffect(() => {
-    if (!name) navigation.navigate("NSBHome");
-  });
+  // ==== Init
+  useFocusEffect(() => {
+    // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the user doesn't own the token.
 
-  // ---- Init
-  useEffect(() => {
-    const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+    // @ts-ignore
+    if(route.params && route.params.name) setName(route.params.name)
+    // ===== Controls many things, be careful
+    if (name && tokens.length && (!userHasCoWallet || !isTokenOwned(tokens, name)) || !signingClient) {
+      navigation.navigate("NSBHome");
+    }
+
     const init = async () => {
-      await connectWallet();
-
+      // await connectWallet();
       try {
         // If this query fails it means that the token does not exist.
-        const token = await signingClient.queryContractSmart(contract, {
+        const token = await signingClient.queryContractSmart(contractAddress, {
           nft_info: {
             token_id: name + process.env.TLD,
           },
@@ -101,7 +72,7 @@ export const NSBEditCreateNameScreen: React.FC = () => {
           telegram_id: token.extension.telegram_id,
           keybase_id: token.extension.keybase_id,
           validator_operator_address:
-            token.extension.validator_operator_address,
+          token.extension.validator_operator_address,
         };
         setInitialData(tokenData);
       } catch (e) {
@@ -111,13 +82,10 @@ export const NSBEditCreateNameScreen: React.FC = () => {
     };
 
     init();
-  }, []);
+  });
 
   const submitData = async (_data) => {
-    console.log(
-      "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSss",
-      signingClient
-    );
+
     if (!signingClient || !walletAddress) {
       return;
     }
@@ -139,16 +107,14 @@ export const NSBEditCreateNameScreen: React.FC = () => {
     const normalizedTokenId = R.toLower(name + process.env.TLD);
 
     const msg = {
-      mint: {
-        owner: walletAddress,
+      update_metadata: {
         token_id: normalizedTokenId,
-        token_uri: null, // TODO - support later
-        extension: {
+        metadata: {
           image,
           image_data: null, // TODO - support later
           email,
           external_url,
-          public_name: normalizedTokenId,
+          public_name: name + process.env.TLD,
           public_bio,
           twitter_id,
           discord_id,
@@ -159,31 +125,21 @@ export const NSBEditCreateNameScreen: React.FC = () => {
       },
     };
 
-    console.log("---------- msg", msg);
-    console.log("---------- normalizedTokenId", normalizedTokenId);
-    console.log("---------- R.toLower(name)", R.toLower(name));
-    console.log("---------- walletAddress", walletAddress);
-    console.log("---------- contractAddress", contractAddress);
-    console.log("---------- defaultMintFee", defaultMintFee);
-    console.log("---------- defaultMemo", defaultMemo);
-    console.log("---------- mintCost", mintCost);
-
     try {
-      const mintedToken = await signingClient.execute(
+      const updatedToken = await signingClient.execute(
         walletAddress!,
         contractAddress,
         msg,
         defaultMintFee,
-        defaultMemo,
-        mintCost
+        defaultMemo
       );
-      if (mintedToken) {
-        appendTokenId(normalizedTokenId);
-        console.log(normalizedTokenId + " successfully minted");
+      if (updatedToken) {
+        console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token
         setNsbSuccess({
-          title: normalizedTokenId + " successfully minted",
+          title: normalizedTokenId + " successfully updated",
           message: "",
         });
+        navigation.navigate("NSBManage")
         // setLoading(false)
       }
     } catch (err) {
@@ -198,16 +154,8 @@ export const NSBEditCreateNameScreen: React.FC = () => {
 
   return (
     <ScreenContainer2
-      footerChildren={
-        isUserOwnsToken ? (
-          <BacKTo label={name} navItem="NSBConsultName" />
-        ) : (
-          <BacKTo label="search" navItem="NSBRegister" />
-        )
-      }
-    >
+      footerChildren={<BacKTo label={name} navItem="NSBConsultName" navParams={{name}}/>}>
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
-        {!isUserOwnsToken ? <CostContainer /> : null}
 
         <View
           style={{
@@ -220,7 +168,7 @@ export const NSBEditCreateNameScreen: React.FC = () => {
           <NameNFT style={{ marginRight: 20 }} name={name} />
 
           <NameDataForm
-            btnLabel={isUserOwnsToken ? "Update profile" : "Create username"}
+            btnLabel={"Update profile"}
             onPressBtn={submitData}
             initialData={initialData}
           />

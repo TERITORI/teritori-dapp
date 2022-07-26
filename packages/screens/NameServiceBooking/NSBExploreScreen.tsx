@@ -7,15 +7,17 @@ import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { HollowPrimaryButton } from "../../components/buttons/HollowPrimaryButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
-import { getToken } from "../../hooks/tokens";
+import {useTokenList} from "../../hooks/tokens"
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useAppNavigation } from "../../utils/navigation";
+import {isTokenOwned} from "../../utils/handefulFunctions"
 
 export const NSBExploreScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const { name, setName } = useContext(NSBContext);
-  const { nameAvailable, nameError, loading, isUserOwnsToken } =
-    useCheckNameAvailability(name);
+  const { tokens } = useTokenList();
+  const { nameAvailable, nameError, loading } = useCheckNameAvailability(name, tokens);
+
 
   return (
     <ScreenContainer2
@@ -30,7 +32,7 @@ export const NSBExploreScreen: React.FC = () => {
         loading={loading}
       >
         {/*-----  If name entered, no error and if the name is minted, we display some buttons for Explore flow */}
-        {name && !nameError && !nameAvailable && !isUserOwnsToken ? (
+        {name && !nameError && !nameAvailable && !isTokenOwned(tokens, name) ? (
           <View
             style={{
               flex: 1,

@@ -10,13 +10,7 @@ import { getNonSigningClient, useSigningCosmWasmClient } from "./cosmwasm";
 
 export const isPath = (str: string) => R.includes("::", str);
 export const isToken = R.complement(isPath);
-export const noTokens = (tokenIds: string[]): boolean => {
-  console.log(
-    "==============================================================================================",
-    tokenIds
-  );
-  return tokenIds === undefined || R.isEmpty(tokenIds);
-};
+export const noTokens = (tokenIds: string[]): boolean => tokenIds === undefined || R.isEmpty(tokenIds);
 
 export const getHandlePrev = (
   page: number,
@@ -90,6 +84,7 @@ export function useTokenList() {
   const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   const perPage = 10;
 
+
   const setStoreTokens = useStore((state) => state.setTokenIds);
   const tokens: string[] = useStore((state) => state.tokenIds);
 
@@ -106,44 +101,24 @@ export function useTokenList() {
   const { connectWallet } = useSigningCosmWasmClient();
   const walletAddress = useStore((state) => state.walletAddress);
 
-  // ---- Init
-  useEffect(() => {
-    const initCosmWasm = async () => {
-      await connectWallet();
-    };
-    initCosmWasm();
-  }, []);
-
-  // ----
   useEffect(() => {
     if (!signingClient || !walletAddress) {
       return;
     }
 
     const getTokens = async () => {
-      console.log("eeeeeeeeeeeeeeeeeeeeeeeee");
       setLoading(true);
 
       const query = getValidQuery(walletAddress, startAfter, perPage);
-      console.log("zzzzzzzzzzzzzzzzzzzzzzzzzz");
-
       try {
-        console.log("uuuuuuuuuuuuuuuuuuuuuuuu");
         const tokenList = await signingClient.queryContractSmart(
           contract,
           query
         );
-        console.log(" ############################# tokenList", tokenList);
-        console.log("pppppppppppppppppppppppppppp");
         if (!R.isNil(tokenList.tokens) && !R.isEmpty(tokenList.tokens)) {
-          console.log("nbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
           // filter tokens and paths
           const returnedTokens = R.filter(isToken, tokenList.tokens);
           const returnedPaths = R.filter(isPath, tokenList.tokens);
-          console.log(
-            "returnedTokensreturnedTokensreturnedTokensreturnedTokens",
-            returnedTokens
-          );
           setStoreTokens(returnedTokens);
           setStorePaths(returnedPaths);
           setPathsAndTokens(tokenList.tokens);
@@ -170,11 +145,7 @@ export function useTokenList() {
   };
 }
 
-export function useToken(tokenId: string) {
-  console.log(
-    "tokenIdtokenIdtokenIdtokenIdtokenIdtokenIdtokenIdtokenIdtokenIdtokenId",
-    tokenId
-  );
+export function useToken(tokenId: string, tld: string) {
   const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
 
   const setStoreToken = useStore((state) => state.setToken);
@@ -191,31 +162,39 @@ export function useToken(tokenId: string) {
     if (!signingClient) {
       return;
     }
-
-    // TODO: Reuse getToken() declared bellow
     const _getToken = async () => {
       setLoading(true);
       try {
         const tokenInfo = await signingClient.queryContractSmart(contract, {
           nft_info: {
-            token_id: tokenId,
+            token_id: tokenId + tld
           },
         });
+
         //setToken(tokenInfo.extension)
         setStoreToken(tokenInfo.extension);
+        setNotFound(false)
         setLoading(false);
       } catch (e) {
+        // ---- If here, "cannot contract", probably because not found, so the token is considered as available
         setStoreToken(null);
         setNotFound(true);
-        setNsbError({
-          title: "Something went wrong!",
-          message: e.message,
-        });
+        setLoading(false);
         console.warn(e);
       }
     };
 
-    _getToken();
+    // If no entered name (tokenId), we don't handle _getToken() to avoid useless errors
+    if(tokenId) {
+      _getToken().then().catch((e) => {
+        console.warn("ERROR getToken() : ", e);
+        setLoading(false);
+        setNsbError({
+          title: "Something went wrong!",
+          message: e.message
+        });
+      });
+    }
   }, [tokenId, walletAddress]);
 
   return { token, loadingToken, notFound };
@@ -224,7 +203,7 @@ export function useToken(tokenId: string) {
 export const getToken = async (
   name: string = "",
   client?: CosmWasmClient
-): Promise<Metadata | undefined> => {
+): Promise<Metadata|object|undefined> => {
   const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   // We just want to read, so we use a non-signing client
   if (!client) client = await getNonSigningClient();

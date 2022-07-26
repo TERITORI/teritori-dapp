@@ -22,7 +22,7 @@ export const NameNFT: React.FC<{
   useEffect(() => {
     getToken(name)
       .then((tokenData) => {
-        if (tokenData && tokenData.image) setImageUrl(tokenData.image);
+        if (tokenData && "image" in tokenData && tokenData.image) setImageUrl(tokenData.image);
       })
       .catch((strError) => {
         setNsbError({
@@ -51,7 +51,6 @@ export const NameNFT: React.FC<{
         style,
       ]}
     >
-      {/*TODO: Dynamic value*/}
       <Image
         source={imageUrl && imageUrl !== "" ? imageUrl : defaultNameNFT}
         style={{
@@ -61,7 +60,6 @@ export const NameNFT: React.FC<{
         }}
       />
 
-      {/*TODO: Dynamic value*/}
       <NameAndTldText nameAndTldStr={name + process.env.TLD} />
     </View>
   );

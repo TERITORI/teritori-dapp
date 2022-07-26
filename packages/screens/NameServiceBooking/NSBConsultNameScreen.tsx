@@ -1,6 +1,6 @@
-import { useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
-import { Linking, TouchableOpacity, View } from "react-native";
+import {NavigatorScreenParams, RouteProp, useFocusEffect} from "@react-navigation/native"
+import React, {Props, useContext, useEffect, useState} from "react"
+import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
@@ -14,26 +14,21 @@ import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard"
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
 import { NSBContext } from "../../context/NSBProvider";
-import { useToken } from "../../hooks/tokens";
-import { useIsUserOwnsToken } from "../../hooks/useIsUserOwnsToken";
+import {useToken, useTokenList} from "../../hooks/tokens"
 import {
   neutral33,
   neutral44,
   neutral77,
   primaryColor,
 } from "../../utils/colors";
-import { numberWithThousandsSeparator } from "../../utils/handefulFunctions";
-import { useAppNavigation } from "../../utils/navigation";
+import {isTokenOwned, numberWithThousandsSeparator} from "../../utils/handefulFunctions"
+import {RootStackParamList, useAppNavigation} from "../../utils/navigation"
 import {
   imageDisplayLabel,
   prettyTokenData,
   publicNameDisplayLabel,
 } from "../../utils/teritori";
-import { dataTest } from "../../utils/types/nsb";
-
-{
-  /*TODO: STEP3 => Here, you can consult a name. If the name is minted by you, the Footer wil contains other actions*/
-}
+import {useSigningClient} from "../../context/cosmwasm"
 
 const SendFundModal: React.FC<{
   onClose: () => void;
@@ -103,6 +98,7 @@ const SendFundModal: React.FC<{
 
 const NotOwnerActions = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const { name } = useContext(NSBContext);
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
@@ -123,6 +119,7 @@ const NotOwnerActions = () => {
 
 const OwnerActions = () => {
   const navigation = useAppNavigation();
+  const { name } = useContext(NSBContext);
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
@@ -130,55 +127,52 @@ const OwnerActions = () => {
       <DarkButton
         text="Update metadata"
         style={btnStyle}
-        onPress={() => navigation.navigate("NSBEditCreateName")}
+        onPress={() => navigation.navigate("NSBUpdateName", {name})}
       />
-      <DarkButton
-        text="Transfer"
-        style={btnStyle}
-        onPress={() => {
-          /*TODO:*/
-        }}
-      />
+      {/*<DarkButton*/}
+      {/*  text="Transfer"*/}
+      {/*  style={btnStyle}*/}
+      {/* onPress={() => {}}*/}
+      {/*/>*/}
       <DarkButton
         text="Mint path"
         style={btnStyle}
-        onPress={() => {
-          /*TODO:*/
-        }}
+        onPress={() => navigation.navigate("NSBMintPath", {name})}
       />
       <DarkButton
         text="Burn"
         style={btnStyle}
-        onPress={() => navigation.navigate("NSBBurnName")}
+        onPress={() => navigation.navigate("NSBBurnName", {name})}
       />
     </>
   );
 };
 
-// The visible name data (Necessarily minted). If the name is minted by the current user, other actions are provided in Footer
-export const NSBConsultNameScreen: React.FC = () => {
-  const { name } = useContext(NSBContext);
-  const navigation = useAppNavigation();
-  const { token, notFound } = useToken(name + process.env.TLD);
-  const isUserOwnsToken = useIsUserOwnsToken(name);
 
-  useEffect(() => {
-    console.log(
-      "tokentoke===ntokentokentok====entokentokento===kentokentoken==tokentokentokentoken==tokentokent====okentoen",
-      token
-    );
-  }, [token]);
+export const NSBConsultNameScreen: React.FC<{
+  route: RouteProp<RootStackParamList, "NSBConsultName">
+}> = ({route}) => {
+  const { name, setName } = useContext(NSBContext);
+  const { token, notFound} = useToken(name, process.env.TLD);
+  const { tokens } = useTokenList();
+  const { signingClient } = useSigningClient()
+  const navigation = useAppNavigation()
 
-  // ---- When this screen is called, if there is no entered name, we go back
+  // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the token is not minted
   useFocusEffect(() => {
-    if (!name) navigation.navigate("NSBHome");
+    // @ts-ignore
+    if (route.params && route.params.name) setName(route.params.name)
+    if(!signingClient) navigation.navigate("NSBHome")
   });
 
   return (
     <ScreenContainer2
-      footerChildren={isUserOwnsToken ? <OwnerActions /> : <NotOwnerActions />}
-    >
-      {/*<ScreenContainer2 footerChildren={<NotOwnerActions/>}>*/}
+      footerChildren={
+        (isTokenOwned(tokens, name) && !notFound)
+        ? <OwnerActions/>
+        : !notFound ? <NotOwnerActions/>
+        : <BacKTo navItem="NSBHome" label="home"/>
+    }>
       <View
         style={{
           flex: 1,
@@ -187,81 +181,91 @@ export const NSBConsultNameScreen: React.FC = () => {
           marginTop: 32,
         }}
       >
-        <View
-          style={{ flex: 1, marginRight: 20, width: "100%", maxWidth: 332 }}
-        >
-          <NameNFT style={{ marginBottom: 20 }} name={name} />
-          {/*TODO: Path in URL ... (I currently use ContextAPI to set the name.. And not dynamic routes*/}
-          {token && (
-            <CopyToClipboardCard
-              text={`https://${window.location.host}/nsb/explore/${name}`}
-            />
-          )}
-        </View>
+        {notFound ? <BrandText>Not found</BrandText> :
+          <>
+            <View
+              style={{ flex: 1, marginRight: 20, width: "100%", maxWidth: 332 }}
+            >
+              <NameNFT style={{ marginBottom: 20 }} name={name} />
+              {token && name && isTokenOwned(tokens, name)
+                ? <CopyToClipboardCard
+                  text={`https://${window.location.host}/nsb/${name}`}
+                />
+                : token && name && !isTokenOwned(tokens, name)
+                  ? <CopyToClipboardCard
+                    text={token.contract_address}
+                  />
+                  : null
+              }
+            </View>
 
-        <View
-          style={{
-            flex: 1,
-            borderColor: neutral33,
-            borderWidth: 1,
-            borderRadius: 8,
-            width: "100%",
-            maxWidth: 396,
-            height: "fit-content",
-            padding: 24,
-          }}
-        >
-          {token ? (
-            <>
-              <View style={{ flex: 1, marginBottom: 32 }}>
-                <BrandText
-                  style={{ fontSize: 16, marginBottom: 8, color: neutral77 }}
-                >
-                  Name
-                </BrandText>
-                <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
-                  {name}
-                </BrandText>
-              </View>
-
-              {prettyTokenData(token)
-                // We display only the raw if there is a value
-                .filter((data) => data.value)
-                .map((data, i) => (
-                  <View style={{ flex: 1, marginBottom: 32 }} key={i}>
+            <View
+              style={{
+                flex: 1,
+                borderColor: neutral33,
+                borderWidth: 1,
+                borderRadius: 8,
+                width: "100%",
+                maxWidth: 396,
+                height: "fit-content",
+                padding: 24,
+                // Remove the marginBottom of the last tokenData
+                paddingBottom: -8
+              }}
+            >
+              {token ? (
+                <>
+                  <View style={{ flex: 1, marginBottom: 32 }}>
                     <BrandText
-                      style={{
-                        fontSize: 16,
-                        marginBottom: 8,
-                        color: neutral77,
-                      }}
+                      style={{ fontSize: 16, marginBottom: 8, color: neutral77 }}
                     >
-                      {data.displayLabel}
+                      Name
                     </BrandText>
-                    {/*---- We want some style depending on the data type*/}
-                    {data.displayLabel === publicNameDisplayLabel ? (
-                      <NameAndTldText nameAndTldStr={data.value} />
-                    ) : data.displayLabel === imageDisplayLabel ? (
-                      // TODO: Gradient text blue-green
-                      <ExternalLink
-                        externalUrl={data.value}
-                        style={{ letterSpacing: -(20 * 0.04) }}
-                        numberOfLines={1}
-                      >
-                        {data.value}
-                      </ExternalLink>
-                    ) : (
-                      <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
-                        {data.value}
-                      </BrandText>
-                    )}
+                    <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
+                      {name}
+                    </BrandText>
                   </View>
-                ))}
-            </>
-          ) : (
-            <BrandText>Loading</BrandText>
-          )}
-        </View>
+
+                  {prettyTokenData(token)
+                  // We display only the raw if there is a value
+                  .filter((data) => data.value)
+                  .map((data, i) => (
+                    <View style={{ flex: 1, marginBottom: 32 }} key={i}>
+                      <BrandText
+                        style={{
+                          fontSize: 16,
+                          marginBottom: 8,
+                          color: neutral77,
+                        }}
+                      >
+                        {data.displayLabel}
+                      </BrandText>
+                      {/*---- We want some style depending on the data type*/}
+                      {data.displayLabel === publicNameDisplayLabel ? (
+                        <NameAndTldText nameAndTldStr={data.value} />
+                      ) : data.displayLabel === imageDisplayLabel ? (
+                        // TODO: Gradient text blue-green
+                        <ExternalLink
+                          externalUrl={data.value}
+                          style={{ letterSpacing: -(20 * 0.04) }}
+                          numberOfLines={1}
+                        >
+                          {data.value}
+                        </ExternalLink>
+                      ) : (
+                        <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
+                          {data.value}
+                        </BrandText>
+                      )}
+                    </View>
+                  ))}
+                </>
+              ) : (
+                <BrandText>Loading</BrandText>
+              )}
+            </View>
+          </>
+        }
       </View>
     </ScreenContainer2>
   );

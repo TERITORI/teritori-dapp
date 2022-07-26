@@ -9,8 +9,6 @@ import { BrandText } from "../BrandText";
 export const NameAndTldText: React.FC<{
   nameAndTldStr: string;
 }> = ({ nameAndTldStr }) => {
-  console.log("nameAndTldStr", nameAndTldStr);
-
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
       {/*---- White part*/}

@@ -20,6 +20,7 @@ import {
 } from "../../utils/colors";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { domainsList } from "../../utils/teritori";
+import {useStore} from "../../store/cosmwasm"
 
 // Just a container that it can be added at the bottom of the modal TODO: Integrate this later
 const DomainsAvailability: React.FC = () => {
@@ -140,13 +141,18 @@ export const NSBHomeScreen: React.FC = () => {
     useState<keyof RootStackParamList>("NSBHome");
   const navigation = useAppNavigation();
   const landingHorizontalPadding = 25;
+  const signingClient = useStore((state) => state.signingClient)
 
   const onPressRegister = () => {
-    setPressedNavItem("NSBRegister");
-    setModalNameFinderVisible(true);
+    if(signingClient) {
+      setPressedNavItem("NSBRegister");
+      setModalNameFinderVisible(true);
+    }
   };
   const onPressManage = () => {
-    navigation.navigate("NSBManage");
+    if(signingClient) {
+      navigation.navigate("NSBManage");
+    }
   };
   const onPressExplore = () => {
     setPressedNavItem("NSBExplore");

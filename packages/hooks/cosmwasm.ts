@@ -7,6 +7,7 @@ import { useState } from "react";
 import { connectKeplr } from "../services/keplr";
 import { useStore } from "../store/cosmwasm";
 import { OptionString } from "../utils/types/base";
+import {useHasUserConnectedWallet} from "./useHasUserConnectedWallet"
 
 export interface ISigningCosmWasmClientContext {
   walletAddress: OptionString;
@@ -21,9 +22,6 @@ const PUBLIC_RPC_ENDPOINT = process.env.PUBLIC_CHAIN_RPC_ENDPOINT || "";
 const PUBLIC_CHAIN_ID = process.env.PUBLIC_CHAIN_ID;
 
 export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
-  //const [walletAddress, setWalletAddress] = useState('')
-  // const [signingClient, setSigningClient] =
-  //  useState<SigningCosmWasmClient | null>(null)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -32,10 +30,12 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
   const walletAddress = useStore((state) => state.walletAddress);
   const signingClient = useStore((state) => state.signingClient);
 
+  const hasUserConnectedWallet = useHasUserConnectedWallet()
+
   const connectWallet = async () => {
     setLoading(true);
     try {
-      await connectKeplr();
+      if(!hasUserConnectedWallet) await connectKeplr();
       // enable website to access kepler
       await (window as any).keplr.enable(PUBLIC_CHAIN_ID);
       // get offline signer for signing txs

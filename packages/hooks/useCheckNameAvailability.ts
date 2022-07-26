@@ -1,54 +1,46 @@
 // Query the name service
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react"
 
 import { getNonSigningClient } from "./cosmwasm";
-import { useIsUserOwnsToken } from "./useIsUserOwnsToken";
+import {NSBContext} from "../context/NSBProvider"
+import {isTokenOwned} from "../utils/handefulFunctions"
 
 // NSB : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
-export const useCheckNameAvailability = (name) => {
-  const [nameAvailable, setNameAvailable] = useState(false);
+export const useCheckNameAvailability = (name, tokens: string[]) => {
+  const [nameAvailable, setNameAvailable] = useState(true);
   const [nameError, setNameError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const isUserOwnsToken = useIsUserOwnsToken(name);
-  let cosmWasmClient = null;
+  const {setNsbError} = useContext(NSBContext)
 
   useEffect(() => {
-    console.log("nameAvailablenameAvailablegbzeuygbei", nameAvailable);
   }, [nameAvailable]);
 
   useEffect(() => {
-    // TODO: Reuse getToken() declared in tokens.ts
     const _getToken = async () => {
       setLoading(true);
 
       const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
       // We just want to read, so we use a non-signing client
-      cosmWasmClient = await getNonSigningClient();
-
+      const cosmWasmClient = await getNonSigningClient();
       try {
         // If this query fails it means that the token does not exist.
         const token = await cosmWasmClient.queryContractSmart(contract, {
           nft_info: {
-            token_id: name,
+            token_id: name + process.env.TLD,
           },
         });
         return token.extension;
       } catch (e) {
-        console.log("rrrerze", e);
-        // ---- If here, "cannot contract", so the token is considered as available
+        // ---- If here, "cannot contract", probably because not found, so the token is considered as available
         return undefined;
       }
     };
 
     _getToken()
       .then((tokenExtension) => {
-        console.log(
-          "isUserOwnsTokenisUserOwnsTokenisUserOwnsTokenisUserOwnsTokenisUserOwnsToken",
-          isUserOwnsToken
-        );
 
         // ----- User owns
-        if (isUserOwnsToken) {
+        if (isTokenOwned(tokens, name)) {
           setNameAvailable(false);
           setNameError(false);
         } else {
@@ -59,19 +51,10 @@ export const useCheckNameAvailability = (name) => {
           }
           // ------ Minted
           else {
-            console.log(
-              "èèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèèè isUserOwnsToken",
-              isUserOwnsToken
-            );
             setNameAvailable(false);
             setNameError(false);
           }
         }
-
-        console.log(
-          "tokenExtensiontokenExtensiontokenExtension",
-          tokenExtension
-        );
 
         setLoading(false);
       })
@@ -80,8 +63,12 @@ export const useCheckNameAvailability = (name) => {
         setLoading(false);
         setNameAvailable(false);
         setNameError(true);
+        setNsbError({
+          title: "Something went wrong!",
+          message: e.message
+        });
       });
   }, [name]);
 
-  return { nameAvailable, nameError, loading, isUserOwnsToken };
+  return { nameAvailable, nameError, loading };
 };

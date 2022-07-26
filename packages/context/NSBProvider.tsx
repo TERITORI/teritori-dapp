@@ -1,5 +1,8 @@
 import PropTypes from "prop-types";
 import React, { createContext, useEffect, useState } from "react";
+import {useTokenList} from "../hooks/tokens"
+import {useSigningCosmWasmClient} from "../hooks/cosmwasm"
+import {useHasUserConnectedWallet} from "../hooks/useHasUserConnectedWallet"
 
 interface NSBToastMessage {
   title: string;
@@ -33,10 +36,17 @@ const NSBContextProvider = ({ children }) => {
   // Error/success after mint, etc...
   const [nsbError, setNsbError] = useState(initialNsbError);
   const [nsbSuccess, setNsbSuccess] = useState(initialNsbSuccess);
+  const { tokens } = useTokenList();
+  const userHasCoWallet = useHasUserConnectedWallet();
+  const { connectWallet } = useSigningCosmWasmClient();
 
+  // ---- Init
   useEffect(() => {
-    console.log("============ name", name);
-  }, [name]);
+    const init = async () => {
+      await connectWallet();
+    };
+    init();
+  }, []);
 
   return (
     <NSBContext.Provider

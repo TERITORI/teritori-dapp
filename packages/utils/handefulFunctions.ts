@@ -1,3 +1,5 @@
+import * as R from 'ramda'
+
 // Returns your given number (string or number), but with comma as a thousand separator (string)
 export const numberWithThousandsSeparator = (
   yourBigNumber: string | number
@@ -19,3 +21,8 @@ export const tldFromToken = (str: string): string =>
 // Get the token (NSB) without the tld
 export const tokenWithoutTld = (str: string): string =>
   str.substr(0, str.lastIndexOf("."));
+
+
+export const isTokenOwned = (tokenArray: string[], name: string) => {
+  return tokenArray.includes(name + process.env.TLD)
+}
