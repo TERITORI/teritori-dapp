@@ -80,7 +80,8 @@ In the future (v3) it will also be a privacy first messaging application built o
 - Vote on every new proposals provided by community 
 - Users are not simply passive users, but are incentived to participate. Let's make governance great again.
 
-Teritori is currently launched by **NXT Labs**, which bootstrap the network & dApp development, and got the mission to make it governed by users.
+Teritori is currently launched by a distributed core team, bootstrapping the network & dApp development, with the mission to make it governed by users, developped by more and more builders from all ecosystems.
+A dedicated Grants program, a Bounties program, are currently prepared by the core team to allow external contributors to join us.
 
 
 ## Contributing
