@@ -3,6 +3,7 @@ import {
   Image,
   ImageSourcePropType,
   ImageStyle,
+  Linking,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -65,10 +66,23 @@ export const SocialNetworks: React.FC = () => {
         iconSource={bookPNG}
         style={{ marginRight: 16 }}
         imageStyle={{ width: 15, height: 15 }}
+        onPress={() => Linking.openURL("https://teritori.gitbook.io/")}
       />
-      <NetworkButton iconSource={mediumPNG} style={{ marginRight: 16 }} />
-      <NetworkButton iconSource={twitterPNG} style={{ marginRight: 16 }} />
-      <NetworkButton iconSource={discordPNG} imageStyle={{ width: 15 }} />
+      <NetworkButton
+        iconSource={mediumPNG}
+        style={{ marginRight: 16 }}
+        onPress={() => Linking.openURL("https://medium.com/teritori/")}
+      />
+      <NetworkButton
+        iconSource={twitterPNG}
+        style={{ marginRight: 16 }}
+        onPress={() => Linking.openURL("https://twitter.com/TeritoriNetwork")}
+      />
+      <NetworkButton
+        iconSource={discordPNG}
+        imageStyle={{ width: 15 }}
+        onPress={() => Linking.openURL("https://discord.gg/teritori")}
+      />
     </View>
   );
 };

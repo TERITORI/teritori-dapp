@@ -65,6 +65,7 @@ export const NSBMintNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NSBUpdateName">;
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
+  const [initialized, setInitialized] = useState(false);
   const { name, setName, setNsbError, setNsbSuccess } = useContext(NSBContext);
   const navigation = useAppNavigation();
   const { signingClient, walletAddress } = useSigningClient();
@@ -74,6 +75,38 @@ export const NSBMintNameScreen: React.FC<{
   const appendTokenId = useStore((state) => state.appendTokenId);
   const mintCost = getMintCost(name);
   const { tokens } = useTokenList();
+
+  const init = async () => {
+    // await connectWallet();
+    try {
+      // If this query fails it means that the token does not exist.
+      const token = await signingClient.queryContractSmart(contractAddress, {
+        nft_info: {
+          token_id: name + process.env.TLD,
+        },
+      });
+      // return token.extension;
+      const tokenData: Metadata = {
+        image: token.extension.image,
+        image_data: token.extension.image_data,
+        email: token.extension.email,
+        external_url: token.extension.external_url,
+        public_name: token.extension.public_name,
+        public_bio: token.extension.public_bio,
+        twitter_id: token.extension.twitter_id,
+        discord_id: token.extension.discord_id,
+        telegram_id: token.extension.telegram_id,
+        keybase_id: token.extension.keybase_id,
+        validator_operator_address:
+        token.extension.validator_operator_address,
+      };
+      setInitialized(true)
+      setInitialData(tokenData);
+    } catch (e) {
+      // ---- If here, "cannot contract", so the token is considered as available
+      // return undefined;
+    }
+  };
 
   // ==== Init
   useFocusEffect(() => {
@@ -85,38 +118,7 @@ export const NSBMintNameScreen: React.FC<{
     if (name && userHasCoWallet && isTokenOwned(tokens, name))
       navigation.navigate("NSBManage");
 
-    const init = async () => {
-      // await connectWallet();
-      try {
-        // If this query fails it means that the token does not exist.
-        const token = await signingClient.queryContractSmart(contractAddress, {
-          nft_info: {
-            token_id: name + process.env.TLD,
-          },
-        });
-        // return token.extension;
-        const tokenData: Metadata = {
-          image: token.extension.image,
-          image_data: token.extension.image_data,
-          email: token.extension.email,
-          external_url: token.extension.external_url,
-          public_name: token.extension.public_name,
-          public_bio: token.extension.public_bio,
-          twitter_id: token.extension.twitter_id,
-          discord_id: token.extension.discord_id,
-          telegram_id: token.extension.telegram_id,
-          keybase_id: token.extension.keybase_id,
-          validator_operator_address:
-            token.extension.validator_operator_address,
-        };
-        setInitialData(tokenData);
-      } catch (e) {
-        // ---- If here, "cannot contract", so the token is considered as available
-        // return undefined;
-      }
-    };
-
-    init();
+    if(!initialized) init()
   });
 
   const submitData = async (_data) => {

@@ -1,7 +1,7 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import * as R from "ramda";
 import React, { useContext, useEffect, useState } from "react";
-import { Image, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 import longCardPNG from "../../../assets/cards/long-card.png";
 import coinPNG from "../../../assets/icons/coin.png";
@@ -29,9 +29,12 @@ export const NSBUpdateNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NSBUpdateName">;
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
+  const [initialized, setInitialized] = useState(false);
   const { name, setName, setNsbError, setNsbSuccess } = useContext(NSBContext);
   const navigation = useAppNavigation();
-  const { signingClient, walletAddress } = useSigningClient();
+  // const { signingClient, walletAddress } = useSigningClient();
+  const signingClient = useStore((state) => state.signingClient);
+  const walletAddress = useStore((state) => state.walletAddress);
   const { connectWallet } = useSigningCosmWasmClient();
   const userHasCoWallet = useHasUserConnectedWallet();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
@@ -39,10 +42,39 @@ export const NSBUpdateNameScreen: React.FC<{
   const mintCost = getMintCost(name);
   const { tokens } = useTokenList();
 
+  const init = async () => {
+    try {
+      // If this query fails it means that the token does not exist.
+      const token = await signingClient.queryContractSmart(contractAddress, {
+        nft_info: {
+          token_id: name + process.env.TLD,
+        },
+      });
+      // return token.extension;
+      const tokenData: Metadata = {
+        image: token.extension.image,
+        image_data: token.extension.image_data,
+        email: token.extension.email,
+        external_url: token.extension.external_url,
+        public_name: token.extension.public_name,
+        public_bio: token.extension.public_bio,
+        twitter_id: token.extension.twitter_id,
+        discord_id: token.extension.discord_id,
+        telegram_id: token.extension.telegram_id,
+        keybase_id: token.extension.keybase_id,
+        validator_operator_address: token.extension.validator_operator_address,
+      };
+      setInitialized(true)
+      setInitialData(tokenData);
+    } catch (e) {
+      // ---- If here, "cannot contract", so the token is considered as available
+      // return undefined;
+    }
+  };
+
   // ==== Init
   useFocusEffect(() => {
     // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the user doesn't own the token.
-
     // @ts-ignore
     if (route.params && route.params.name) setName(route.params.name);
     // ===== Controls many things, be careful
@@ -54,39 +86,7 @@ export const NSBUpdateNameScreen: React.FC<{
     ) {
       navigation.navigate("NSBHome");
     }
-
-    const init = async () => {
-      // await connectWallet();
-      try {
-        // If this query fails it means that the token does not exist.
-        const token = await signingClient.queryContractSmart(contractAddress, {
-          nft_info: {
-            token_id: name + process.env.TLD,
-          },
-        });
-        // return token.extension;
-        const tokenData: Metadata = {
-          image: token.extension.image,
-          image_data: token.extension.image_data,
-          email: token.extension.email,
-          external_url: token.extension.external_url,
-          public_name: token.extension.public_name,
-          public_bio: token.extension.public_bio,
-          twitter_id: token.extension.twitter_id,
-          discord_id: token.extension.discord_id,
-          telegram_id: token.extension.telegram_id,
-          keybase_id: token.extension.keybase_id,
-          validator_operator_address:
-            token.extension.validator_operator_address,
-        };
-        setInitialData(tokenData);
-      } catch (e) {
-        // ---- If here, "cannot contract", so the token is considered as available
-        // return undefined;
-      }
-    };
-
-    init();
+    if(!initialized) init()
   });
 
   const submitData = async (_data) => {
@@ -143,7 +143,7 @@ export const NSBUpdateNameScreen: React.FC<{
           title: normalizedTokenId + " successfully updated",
           message: "",
         });
-        navigation.navigate("NSBManage");
+        navigation.navigate("NSBConsultName", {name});
         // setLoading(false)
       }
     } catch (err) {

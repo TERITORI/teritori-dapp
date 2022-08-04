@@ -1,6 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import * as R from "ramda";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import flowCardPNG from "../../../assets/cards/flow-card.png";
@@ -18,6 +18,7 @@ import {
 } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
+import { useStore } from "../../store/cosmwasm";
 import { tokenWithoutTld } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
 
@@ -79,15 +80,17 @@ export const NSBManageScreen: React.FC = () => {
     useTokenList();
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
   const { alias } = usePrimaryAlias();
-  const { signingClient } = useSigningClient();
+  const signingClient = useStore((state) => state.signingClient);
 
   const titleFontSize = 48;
   const subTitleFontSize = 28;
 
   // ==== Init
   useFocusEffect(() => {
-    console.log("---------- tokens", tokens);
-    console.log("---------- userHasCoWallet", userHasCoWallet);
+    console.log('------- tokens', tokens)
+    console.log('------- !userHasCoWallet', !userHasCoWallet)
+    console.log('------- !signingClient', !signingClient)
+
 
     // ---- When this screen is called, if the user has no wallet, we go home (We are waiting for tokens state)
     // ===== Controls many things, be careful

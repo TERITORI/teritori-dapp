@@ -19,8 +19,6 @@ export const usePhantom: () => UsePhantomResult = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log("hasPhantom", hasPhantom);
-
     if (!hasPhantom) {
       return;
     }

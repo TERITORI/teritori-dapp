@@ -92,9 +92,6 @@ const networkColor = (net: Network) => {
 
 const Wallets: React.FC = () => {
   const { wallets } = useWallets();
-
-  console.log("wallets", wallets);
-
   return (
     <ScrollView style={{ height: 400 }}>
       {wallets.map((wallet) => {

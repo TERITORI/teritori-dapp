@@ -141,11 +141,11 @@ const OwnerActions = () => {
       {/*  style={btnStyle}*/}
       {/* onPress={() => {}}*/}
       {/*/>*/}
-      <DarkButton
-        text="Mint path"
-        style={btnStyle}
-        onPress={() => navigation.navigate("NSBMintPath", { name })}
-      />
+      {/*<DarkButton*/}
+      {/*  text="Mint path"*/}
+      {/*  style={btnStyle}*/}
+      {/*  onPress={() => navigation.navigate("NSBMintPath", { name })}*/}
+      {/*/>*/}
       <DarkButton
         text="Burn"
         style={btnStyle}
