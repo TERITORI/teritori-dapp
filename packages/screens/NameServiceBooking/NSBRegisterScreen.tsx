@@ -15,14 +15,18 @@ import { useAppNavigation } from "../../utils/navigation";
 
 export const NSBRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
-  const { name, setName } = useContext(NSBContext);
-  const { tokens } = useTokenList();
+  const { name, setName, setNsbLoading } = useContext(NSBContext);
+  const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
-
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
   );
+
+  // Sync nsbLoading
+  useEffect(() => {
+    setNsbLoading(loadingTokens);
+  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
@@ -41,14 +45,6 @@ export const NSBRegisterScreen: React.FC = () => {
         nameAvailable={nameAvailable}
         loading={loading}
       >
-        {/*{name && ((!nameError && !nameAvailable) || isTokenOwned(tokens, name)) ? (*/}
-        {/*  <PrimaryButton*/}
-        {/*    text="View"*/}
-        {/*    big*/}
-        {/*    style={{ maxWidth: 157, width: "100%" }}*/}
-        {/*    onPress={() => navigation.navigate("NSBConsultName", {name})}*/}
-        {/*  />*/}
-        {/*) : null}*/}
         {name && !nameError && nameAvailable && !isTokenOwned(tokens, name) ? (
           <PrimaryButton
             text="Mint your new ID"

@@ -1,6 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import * as R from "ramda";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import flowCardPNG from "../../../assets/cards/flow-card.png";
@@ -9,7 +9,7 @@ import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { PrimaryPill } from "../../components/pills/PrimaryPill";
-import { useSigningClient } from "../../context/cosmwasm";
+import { NSBContext } from "../../context/NSBProvider";
 import {
   getHandleNext,
   getHandlePrev,
@@ -74,24 +74,33 @@ const NameCard: React.FC<{
 };
 
 export const NSBManageScreen: React.FC = () => {
+  const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
+  const { setNsbLoading } = useContext(NSBContext);
+  const {
+    pathsAndTokens,
+    tokens,
+    setStartAfter,
+    page,
+    setPage,
+    loadingTokens,
+  } = useTokenList();
+  const { alias, loadingAlias } = usePrimaryAlias();
   const navigation = useAppNavigation();
   const userHasCoWallet = useHasUserConnectedWallet();
-  const { pathsAndTokens, tokens, setStartAfter, page, setPage } =
-    useTokenList();
-  const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
-  const { alias } = usePrimaryAlias();
   const signingClient = useStore((state) => state.signingClient);
-
   const titleFontSize = 48;
   const subTitleFontSize = 28;
 
+  // Sync nsbLoading
+  useEffect(() => {
+    setNsbLoading(loadingTokens);
+  }, [loadingTokens]);
+  useEffect(() => {
+    setNsbLoading(loadingAlias);
+  }, [loadingAlias]);
+
   // ==== Init
   useFocusEffect(() => {
-    console.log('------- tokens', tokens)
-    console.log('------- !userHasCoWallet', !userHasCoWallet)
-    console.log('------- !signingClient', !signingClient)
-
-
     // ---- When this screen is called, if the user has no wallet, we go home (We are waiting for tokens state)
     // ===== Controls many things, be careful
     if ((tokens && !userHasCoWallet) || !signingClient)
@@ -132,7 +141,6 @@ export const NSBManageScreen: React.FC = () => {
             marginTop: 32,
           }}
         >
-          {/*TODO: Dynamic value*/}
           Welcome back, {alias} !
         </BrandText>
         {/*TODO: Gradient text green-blue*/}

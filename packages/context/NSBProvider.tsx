@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React, { createContext, useEffect, useState } from "react";
 
+import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
 import { useSigningCosmWasmClient } from "../hooks/cosmwasm";
 import { useTokenList } from "../hooks/tokens";
 import { useHasUserConnectedWallet } from "../hooks/useHasUserConnectedWallet";
@@ -19,6 +20,8 @@ interface DefaultValue {
   setNsbError: (error: NSBToastMessage) => void;
   nsbSuccess: NSBToastMessage;
   setNsbSuccess: (info: NSBToastMessage) => void;
+  nsbLoading: boolean;
+  setNsbLoading: (loading: boolean) => void;
 }
 const defaultValue: DefaultValue = {
   name: "",
@@ -27,26 +30,35 @@ const defaultValue: DefaultValue = {
   setNsbError: undefined,
   nsbSuccess: initialNsbSuccess,
   setNsbSuccess: undefined,
+  nsbLoading: false,
+  setNsbLoading: undefined,
 };
 
 export const NSBContext = createContext(defaultValue);
 
 const NSBContextProvider = ({ children }) => {
+  const [nsbLoading, setNsbLoading] = useState(false);
   // The entered name
   const [name, setName] = useState("");
   // Error/success after mint, etc...
   const [nsbError, setNsbError] = useState(initialNsbError);
   const [nsbSuccess, setNsbSuccess] = useState(initialNsbSuccess);
-  const { tokens } = useTokenList();
-  const userHasCoWallet = useHasUserConnectedWallet();
   const { connectWallet } = useSigningCosmWasmClient();
 
   // ---- Init
   useEffect(() => {
+    setNsbLoading(true);
     const init = async () => {
       await connectWallet();
     };
-    init();
+    init()
+      .then((r) => {
+        setNsbLoading(false);
+      })
+      .catch((e) => {
+        setNsbError({ title: "Something went wrong!", message: e.message });
+        setNsbLoading(false);
+      });
   }, []);
 
   return (
@@ -58,8 +70,11 @@ const NSBContextProvider = ({ children }) => {
         setNsbError,
         nsbSuccess,
         setNsbSuccess,
+        nsbLoading,
+        setNsbLoading,
       }}
     >
+      {nsbLoading ? <LoaderFullScreen /> : null}
       {children}
     </NSBContext.Provider>
   );

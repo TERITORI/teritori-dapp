@@ -20,6 +20,7 @@ import ModalBase from "../../components/modals/ModalBase";
 import { NSBContext } from "../../context/NSBProvider";
 import { useSigningClient } from "../../context/cosmwasm";
 import { useToken, useTokenList } from "../../hooks/tokens";
+import { useStore } from "../../store/cosmwasm";
 import {
   neutral33,
   neutral44,
@@ -50,7 +51,6 @@ const SendFundModal: React.FC<{
   }, [visible]);
 
   return (
-    // TODO: dynamic value
     <ModalBase
       visible={_visible}
       onClose={onClose}
@@ -158,11 +158,19 @@ const OwnerActions = () => {
 export const NSBConsultNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NSBConsultName">;
 }> = ({ route }) => {
-  const { name, setName } = useContext(NSBContext);
-  const { token, notFound } = useToken(name, process.env.TLD);
-  const { tokens } = useTokenList();
-  const { signingClient } = useSigningClient();
+  const { name, setName, setNsbLoading } = useContext(NSBContext);
+  const { token, notFound, loadingToken } = useToken(name, process.env.TLD);
+  const { tokens, loadingTokens } = useTokenList();
+  const signingClient = useStore((state) => state.signingClient);
   const navigation = useAppNavigation();
+
+  // Sync nsbLoading
+  useEffect(() => {
+    setNsbLoading(loadingToken);
+  }, [loadingToken]);
+  useEffect(() => {
+    setNsbLoading(loadingTokens);
+  }, [loadingTokens]);
 
   // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the token is not minted
   useFocusEffect(() => {

@@ -66,23 +66,31 @@ export const NSBMintNameScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setNsbError, setNsbSuccess } = useContext(NSBContext);
-  const navigation = useAppNavigation();
-  const { signingClient, walletAddress } = useSigningClient();
-  const { connectWallet } = useSigningCosmWasmClient();
+  const {
+    name,
+    setName,
+    setNsbError,
+    setNsbSuccess,
+    setNsbLoading,
+    nsbLoading,
+  } = useContext(NSBContext);
+  const { tokens, loadingTokens } = useTokenList();
+  const signingClient = useStore((state) => state.signingClient);
+  const walletAddress = useStore((state) => state.walletAddress);
   const userHasCoWallet = useHasUserConnectedWallet();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   const appendTokenId = useStore((state) => state.appendTokenId);
   const mintCost = getMintCost(name);
-  const { tokens } = useTokenList();
+  const navigation = useAppNavigation();
 
-  const init = async () => {
-    // await connectWallet();
+  const normalizedTokenId = R.toLower(name + process.env.TLD);
+
+  const initData = async () => {
     try {
       // If this query fails it means that the token does not exist.
       const token = await signingClient.queryContractSmart(contractAddress, {
         nft_info: {
-          token_id: name + process.env.TLD,
+          token_id: normalizedTokenId,
         },
       });
       // return token.extension;
@@ -97,16 +105,23 @@ export const NSBMintNameScreen: React.FC<{
         discord_id: token.extension.discord_id,
         telegram_id: token.extension.telegram_id,
         keybase_id: token.extension.keybase_id,
-        validator_operator_address:
-        token.extension.validator_operator_address,
+        validator_operator_address: token.extension.validator_operator_address,
       };
-      setInitialized(true)
       setInitialData(tokenData);
+      setNsbLoading(false);
+      setInitialized(true);
     } catch (e) {
+      setInitialized(true);
+      setNsbLoading(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
+
+  // Sync nsbLoading
+  useEffect(() => {
+    setNsbLoading(loadingTokens);
+  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
@@ -118,14 +133,17 @@ export const NSBMintNameScreen: React.FC<{
     if (name && userHasCoWallet && isTokenOwned(tokens, name))
       navigation.navigate("NSBManage");
 
-    if(!initialized) init()
+    if (!initialized) {
+      setNsbLoading(true);
+      initData();
+    }
   });
 
   const submitData = async (_data) => {
     if (!signingClient || !walletAddress) {
       return;
     }
-    // 		setLoading(true)  TODO: Loader, loader everywhere
+    setNsbLoading(true);
     const {
       image, // TODO - support later
       // image_data
@@ -139,8 +157,6 @@ export const NSBMintNameScreen: React.FC<{
       keybase_id,
       validator_operator_address,
     } = _data;
-
-    const normalizedTokenId = R.toLower(name + process.env.TLD);
 
     const msg = {
       mint: {
@@ -174,13 +190,13 @@ export const NSBMintNameScreen: React.FC<{
       );
       if (mintedToken) {
         appendTokenId(normalizedTokenId);
-        console.log(normalizedTokenId + " successfully minted"); //TODO: redirect to the token
+        console.log(normalizedTokenId + " successfully minted");
         setNsbSuccess({
           title: normalizedTokenId + " successfully minted",
           message: "",
         });
         navigation.navigate("NSBConsult", { name });
-        // setLoading(false)
+        setNsbLoading(false);
       }
     } catch (err) {
       setNsbError({
@@ -188,7 +204,7 @@ export const NSBMintNameScreen: React.FC<{
         message: err.message,
       });
       console.warn(err);
-      // setLoading(false)
+      setNsbLoading(false);
     }
   };
 

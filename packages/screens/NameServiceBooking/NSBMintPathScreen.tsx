@@ -1,6 +1,6 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import * as R from "ramda";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
@@ -14,7 +14,7 @@ import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee, getMintCost } from "../../utils/fee";
-import { isTokenOwned } from "../../utils/handefulFunctions";
+import { isTokenOwned, tokenWithoutTld } from "../../utils/handefulFunctions";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
@@ -30,20 +30,24 @@ export const NSBMintPathScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setNsbError, setNsbSuccess } = useContext(NSBContext);
+  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
+    useContext(NSBContext);
+  const { tokens, loadingTokens } = useTokenList();
   const navigation = useAppNavigation();
-  const { signingClient, walletAddress } = useSigningClient();
+  const signingClient = useStore((state) => state.signingClient);
+  const walletAddress = useStore((state) => state.walletAddress);
   const userHasCoWallet = useHasUserConnectedWallet();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
-  const { tokens } = useTokenList();
 
-  const init = async () => {
+  const normalizedTokenId = R.toLower(name + process.env.TLD);
+
+  const initData = async () => {
     // await connectWallet();
     try {
       // If this query fails it means that the token does not exist.
       const token = await signingClient.queryContractSmart(contractAddress, {
         nft_info: {
-          token_id: name + process.env.TLD,
+          token_id: normalizedTokenId,
         },
       });
       // return token.extension;
@@ -58,16 +62,23 @@ export const NSBMintPathScreen: React.FC<{
         discord_id: token.extension.discord_id,
         telegram_id: token.extension.telegram_id,
         keybase_id: token.extension.keybase_id,
-        validator_operator_address:
-        token.extension.validator_operator_address,
+        validator_operator_address: token.extension.validator_operator_address,
       };
-      setInitialized(true)
+      setInitialized(true);
+      setNsbLoading(false);
       setInitialData(tokenData);
     } catch (e) {
+      setInitialized(true);
+      setNsbLoading(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
+
+  // Sync nsbLoading
+  useEffect(() => {
+    setNsbLoading(loadingTokens);
+  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
@@ -83,14 +94,17 @@ export const NSBMintPathScreen: React.FC<{
     ) {
       navigation.navigate("NSBHome");
     }
-    if(!initialized) init();
+    if (!initialized) {
+      setNsbLoading(true);
+      initData();
+    }
   });
 
   const submitData = async (_data) => {
     if (!signingClient || !walletAddress) {
       return;
     }
-    // 		setLoading(true)  TODO: Loader, loader everywhere
+    setNsbLoading(true);
     const {
       token_id: pathId,
       image, // TODO - support later
@@ -106,26 +120,26 @@ export const NSBMintPathScreen: React.FC<{
       validator_operator_address,
     } = _data;
 
-    const normalizedTokenId = normalize(R.toLower(pathId));
+    const normalizedPathId = normalize(R.toLower(pathId));
 
     const msg = {
       update_metadata: {
         owner: walletAddress,
-        token_id: normalizedTokenId,
+        token_id: normalizedPathId,
         token_uri: null, // TODO - support later
         extension: {
           image,
           image_data: null, // TODO - support later
           email,
           external_url,
-          public_name: normalizedTokenId,
+          public_name: normalizedPathId,
           public_bio,
           twitter_id,
           discord_id,
           telegram_id,
           keybase_id,
           validator_operator_address,
-          parent_token_id: name + process.env.TLD,
+          parent_token_id: normalizedTokenId,
         },
       },
     };
@@ -139,13 +153,13 @@ export const NSBMintPathScreen: React.FC<{
         defaultMemo
       );
       if (mintedToken) {
-        console.log(normalizedTokenId + " successfully minted"); //TODO: redirect to the token
+        console.log(normalizedPathId + " successfully minted"); //TODO: redirect to the token
         setNsbSuccess({
-          title: normalizedTokenId + " successfully minted",
+          title: normalizedPathId + " successfully minted",
           message: "",
         });
-        navigation.navigate("NSBManage");
-        // setLoading(false)
+        navigation.navigate("NSBConsult", { name: tokenWithoutTld(pathId) });
+        setNsbLoading(false);
       }
     } catch (err) {
       setNsbError({
@@ -153,7 +167,7 @@ export const NSBMintPathScreen: React.FC<{
         message: err.message,
       });
       console.warn(err);
-      // setLoading(false)
+      setNsbLoading(false);
     }
   };
 

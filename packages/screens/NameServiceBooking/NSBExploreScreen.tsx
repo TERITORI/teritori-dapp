@@ -14,12 +14,17 @@ import { useAppNavigation } from "../../utils/navigation";
 
 export const NSBExploreScreen: React.FC = () => {
   const navigation = useAppNavigation();
-  const { name, setName } = useContext(NSBContext);
-  const { tokens } = useTokenList();
+  const { name, setName, setNsbLoading } = useContext(NSBContext);
+  const { tokens, loadingTokens } = useTokenList();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
   );
+
+  // Sync nsbLoading
+  useEffect(() => {
+    setNsbLoading(loadingTokens);
+  }, [loadingTokens]);
 
   return (
     <ScreenContainer2

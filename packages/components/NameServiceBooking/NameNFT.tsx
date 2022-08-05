@@ -61,7 +61,10 @@ export const NameNFT: React.FC<{
         }}
       />
 
-      <NameAndTldText nameAndTldStr={name + process.env.TLD} />
+      <NameAndTldText
+        nameAndTldStr={name + process.env.TLD}
+        style={{ justifyContent: "center" }}
+      />
     </View>
   );
 };

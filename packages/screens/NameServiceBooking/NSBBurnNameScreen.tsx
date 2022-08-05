@@ -1,5 +1,6 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useEffect } from "react";
+import * as R from "ramda";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, View } from "react-native";
 
 import burnPNG from "../../../assets/icons/burn.png";
@@ -13,6 +14,7 @@ import { useSigningClient } from "../../context/cosmwasm";
 import { useSigningCosmWasmClient } from "../../hooks/cosmwasm";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
+import { useStore } from "../../store/cosmwasm";
 import { neutral33 } from "../../utils/colors";
 import { defaultExecuteFee } from "../../utils/fee";
 import { isTokenOwned } from "../../utils/handefulFunctions";
@@ -23,21 +25,27 @@ import { Metadata } from "../../utils/types/messages";
 export const NSBBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NSBUpdateName">;
 }> = ({ route }) => {
-  const { name, setName, setNsbError } = useContext(NSBContext);
-  const { signingClient, walletAddress } = useSigningClient();
-  const { connectWallet } = useSigningCosmWasmClient();
+  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
+    useContext(NSBContext);
+  const { tokens, loadingTokens } = useTokenList();
+  const signingClient = useStore((state) => state.signingClient);
+  const walletAddress = useStore((state) => state.walletAddress);
   const userHasCoWallet = useHasUserConnectedWallet();
-  const { tokens } = useTokenList();
-
   const navigation = useAppNavigation();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+  const normalizedTokenId = R.toLower(name + process.env.TLD);
+
+  // Sync nsbLoading
+  useEffect(() => {
+    setNsbLoading(loadingTokens);
+  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
     // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the user doesn't own the token
     // @ts-ignore
     if (route.params && route.params.name) setName(route.params.name);
-    // ===== Controls many things, be careful
+    // ===== Controls many things, be careful TODO: Still redirects to NSBHome, weird..
     if (
       (name &&
         tokens.length &&
@@ -49,10 +57,11 @@ export const NSBBurnNameScreen: React.FC<{
   });
 
   const onSubmit = async () => {
-    // setLoading(true)
+    setNsbLoading(true);
+
     const msg = {
       burn: {
-        token_id: name,
+        token_id: normalizedTokenId,
       },
     };
     try {
@@ -64,8 +73,13 @@ export const NSBBurnNameScreen: React.FC<{
         defaultMemo
       );
       if (updatedToken) {
+        console.log(normalizedTokenId + " successfully burnt");
+        setNsbSuccess({
+          title: normalizedTokenId + " successfully burnt",
+          message: "",
+        });
         navigation.navigate("NSBManage");
-        // setLoading(false)
+        setNsbLoading(false);
       }
     } catch (e) {
       // TODO env var for dev logging (?)
@@ -74,7 +88,7 @@ export const NSBBurnNameScreen: React.FC<{
         message: e.message,
       });
       console.warn(e);
-      // setLoading(false)
+      setNsbLoading(false);
     }
   };
 

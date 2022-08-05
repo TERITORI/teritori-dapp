@@ -39,7 +39,8 @@ export const IntroLogoText: React.FC<{
         <Logo />
       </View>
 
-      {/*TODO: How to deal with electron cpt ?*/}
+      {/*========= TEST GRADIENT TEXT*/}
+
       {/*<BrandText*/}
       {/*		style={{*/}
       {/*				fontSize: titleFontSize,*/}
@@ -72,6 +73,9 @@ export const IntroLogoText: React.FC<{
       {/*		/>*/}
       {/*</MaskedView>*/}
 
+      {/*========= ============*/}
+
+
       <BrandText
         style={{
           fontSize: 28,
@@ -82,7 +86,6 @@ export const IntroLogoText: React.FC<{
         TERITORI
       </BrandText>
 
-      {/*/!*TODO: Have to set lineHeight and letterSpacing ? Are there auto values ?*!/*/}
       {/*<BrandText*/}
       {/*		style={{fontWeight: "700", fontSize: subTitleFontSize, lineHeight: 21, letterSpacing: -(titleFontSize * 0.01)}}>*/}
       {/*		{subTitle}*/}

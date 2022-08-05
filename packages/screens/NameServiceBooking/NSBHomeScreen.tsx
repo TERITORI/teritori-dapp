@@ -121,7 +121,7 @@ const ModalNameFinder: React.FC<{
       visible={visible}
       onClose={onClose}
       label="Find a name"
-      // childrenBottom={<DomainsAvailability/>} TODO: Uncomment this when <DomainsAvailability/> is finished
+      // childrenBottom={<DomainsAvailability/>} TODO: Uncomment this when the functionality is done
     >
       <TextInputCustom
         label="NAME"

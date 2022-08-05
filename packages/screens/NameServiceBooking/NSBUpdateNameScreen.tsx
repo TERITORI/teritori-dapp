@@ -30,19 +30,16 @@ export const NSBUpdateNameScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setNsbError, setNsbSuccess } = useContext(NSBContext);
-  const navigation = useAppNavigation();
-  // const { signingClient, walletAddress } = useSigningClient();
+  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
+    useContext(NSBContext);
+  const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
-  const { connectWallet } = useSigningCosmWasmClient();
   const userHasCoWallet = useHasUserConnectedWallet();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
-  const appendTokenId = useStore((state) => state.appendTokenId);
-  const mintCost = getMintCost(name);
-  const { tokens } = useTokenList();
+  const navigation = useAppNavigation();
 
-  const init = async () => {
+  const initData = async () => {
     try {
       // If this query fails it means that the token does not exist.
       const token = await signingClient.queryContractSmart(contractAddress, {
@@ -64,13 +61,21 @@ export const NSBUpdateNameScreen: React.FC<{
         keybase_id: token.extension.keybase_id,
         validator_operator_address: token.extension.validator_operator_address,
       };
-      setInitialized(true)
+      setInitialized(true);
+      setNsbLoading(false);
       setInitialData(tokenData);
     } catch (e) {
+      setInitialized(true);
+      setNsbLoading(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
+
+  // Sync nsbLoading
+  useEffect(() => {
+    setNsbLoading(loadingTokens);
+  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
@@ -86,14 +91,14 @@ export const NSBUpdateNameScreen: React.FC<{
     ) {
       navigation.navigate("NSBHome");
     }
-    if(!initialized) init()
+    if (!initialized) initData();
   });
 
   const submitData = async (_data) => {
     if (!signingClient || !walletAddress) {
       return;
     }
-    // 		setLoading(true)  TODO: Loader, loader everywhere
+    setNsbLoading(true);
     const {
       image, // TODO - support later
       // image_data
@@ -143,8 +148,8 @@ export const NSBUpdateNameScreen: React.FC<{
           title: normalizedTokenId + " successfully updated",
           message: "",
         });
-        navigation.navigate("NSBConsultName", {name});
-        // setLoading(false)
+        navigation.navigate("NSBConsultName", { name });
+        setNsbLoading(false);
       }
     } catch (err) {
       setNsbError({
@@ -152,7 +157,7 @@ export const NSBUpdateNameScreen: React.FC<{
         message: err.message,
       });
       console.warn(err);
-      // setLoading(false)
+      setNsbLoading(false);
     }
   };
 
