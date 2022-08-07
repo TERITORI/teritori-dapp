@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";

@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 
 import exploreIconPNG from "../../../assets/icons/explore.png";
 import manageIconPNG from "../../../assets/icons/manage.png";
 import registerIconPNG from "../../../assets/icons/register.png";
-import { BrandText } from "../../components/BrandText";
 import { SocialNetworks } from "../../components/Footer";
 import { IntroLogoText } from "../../components/IntroLogoText";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
@@ -13,87 +12,80 @@ import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
 import { NSBContext } from "../../context/NSBProvider";
 import { useStore } from "../../store/cosmwasm";
-import {
-  errorColor,
-  neutral33,
-  neutral77,
-  successColor,
-} from "../../utils/colors";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { domainsList } from "../../utils/teritori";
 
 // Just a container that it can be added at the bottom of the modal TODO: Integrate this later
-const DomainsAvailability: React.FC = () => {
-  const s = StyleSheet.create({
-    labelStyle: {
-      fontSize: 14,
-      color: neutral77,
-      marginBottom: 8,
-    },
-    domainStyle: {
-      fontSize: 16,
-      color: neutral77,
-      marginRight: 16,
-    },
-    domainsContainerStyle: {
-      flex: 1,
-      flexDirection: "row",
-      alignItems: "center",
-      width: "100%",
-    },
-  });
-
-  return (
-    <View
-      style={{
-        backgroundColor: "#000000",
-        borderWidth: 1,
-        borderColor: neutral33,
-        borderRadius: 8,
-        width: "100%",
-        height: 160,
-        flex: 1,
-        justifyContent: "space-between",
-        paddingVertical: 24,
-        paddingHorizontal: 20,
-      }}
-    >
-      <BrandText style={s.labelStyle}>Available domains:</BrandText>
-      {/* ---- Domains that exist (With status minted or not) */}
-      <View style={s.domainsContainerStyle}>
-        {domainsList
-          .filter((domain) => !domain.comingSoon)
-          .map((domain) => (
-            <BrandText
-              key={domain.name}
-              style={[
-                s.domainStyle,
-                { color: domain.minted ? errorColor : successColor },
-              ]}
-            >
-              {domain.name}
-            </BrandText>
-          ))}
-      </View>
-      <BrandText style={[s.labelStyle, { marginTop: 24 }]}>
-        Coming soon domains:
-      </BrandText>
-      {/* ---- Domains that not exist */}
-      <View style={s.domainsContainerStyle}>
-        {domainsList
-          .filter((domain) => domain.comingSoon)
-          .map((domain) => (
-            <BrandText key={domain.name} style={s.domainStyle}>
-              {domain.name}
-            </BrandText>
-          ))}
-        <BrandText style={[s.domainStyle, { marginRight: 0 }]}>
-          and more
-        </BrandText>
-      </View>
-    </View>
-  );
-};
+// const DomainsAvailability: React.FC = () => {
+//   const s = StyleSheet.create({
+//     labelStyle: {
+//       fontSize: 14,
+//       color: neutral77,
+//       marginBottom: 8,
+//     },
+//     domainStyle: {
+//       fontSize: 16,
+//       color: neutral77,
+//       marginRight: 16,
+//     },
+//     domainsContainerStyle: {
+//       flex: 1,
+//       flexDirection: "row",
+//       alignItems: "center",
+//       width: "100%",
+//     },
+//   });
+//
+//   return (
+//     <View
+//       style={{
+//         backgroundColor: "#000000",
+//         borderWidth: 1,
+//         borderColor: neutral33,
+//         borderRadius: 8,
+//         width: "100%",
+//         height: 160,
+//         flex: 1,
+//         justifyContent: "space-between",
+//         paddingVertical: 24,
+//         paddingHorizontal: 20,
+//       }}
+//     >
+//       <BrandText style={s.labelStyle}>Available domains:</BrandText>
+//       {/* ---- Domains that exist (With status minted or not) */}
+//       <View style={s.domainsContainerStyle}>
+//         {domainsList
+//           .filter((domain) => !domain.comingSoon)
+//           .map((domain) => (
+//             <BrandText
+//               key={domain.name}
+//               style={[
+//                 s.domainStyle,
+//                 { color: domain.minted ? errorColor : successColor },
+//               ]}
+//             >
+//               {domain.name}
+//             </BrandText>
+//           ))}
+//       </View>
+//       <BrandText style={[s.labelStyle, { marginTop: 24 }]}>
+//         Coming soon domains:
+//       </BrandText>
+//       {/* ---- Domains that not exist */}
+//       <View style={s.domainsContainerStyle}>
+//         {domainsList
+//           .filter((domain) => domain.comingSoon)
+//           .map((domain) => (
+//             <BrandText key={domain.name} style={s.domainStyle}>
+//               {domain.name}
+//             </BrandText>
+//           ))}
+//         <BrandText style={[s.domainStyle, { marginRight: 0 }]}>
+//           and more
+//         </BrandText>
+//       </View>
+//     </View>
+//   );
+// };
 
 // "Find a name" modal
 const ModalNameFinder: React.FC<{

@@ -3,8 +3,6 @@ import React, { createContext, useEffect, useState } from "react";
 
 import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
 import { useSigningCosmWasmClient } from "../hooks/cosmwasm";
-import { useTokenList } from "../hooks/tokens";
-import { useHasUserConnectedWallet } from "../hooks/useHasUserConnectedWallet";
 
 interface NSBToastMessage {
   title: string;
@@ -52,7 +50,7 @@ const NSBContextProvider = ({ children }) => {
       await connectWallet();
     };
     init()
-      .then((r) => {
+      .then(() => {
         setNsbLoading(false);
       })
       .catch((e) => {

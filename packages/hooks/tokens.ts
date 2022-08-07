@@ -6,7 +6,7 @@ import { NSBContext } from "../context/NSBProvider";
 import { useSigningClient } from "../context/cosmwasm";
 import { useStore } from "../store/cosmwasm";
 import { Metadata } from "../utils/types/messages";
-import { getNonSigningClient, useSigningCosmWasmClient } from "./cosmwasm";
+import { getNonSigningClient } from "./cosmwasm";
 
 export const isPath = (str: string) => R.includes("::", str);
 export const isToken = R.complement(isPath);
@@ -32,8 +32,8 @@ export const getHandlePrev = (
       setPage(prevPageIndex);
 
       if (prevPageIndex < pageStartTokens.length) {
-        const minusTwo = prevPageIndex - 1;
-        const newIdx = minusTwo === 0 ? 0 : minusTwo;
+        // const minusTwo = prevPageIndex - 1;
+        // const newIdx = minusTwo === 0 ? 0 : minusTwo;
         setStartAfter(pageStartTokens[prevPageIndex - 1]);
       }
     }
@@ -98,7 +98,7 @@ export function useTokenList() {
   const [loadingTokens, setLoading] = useState(false);
 
   const { signingClient } = useSigningClient();
-  const { connectWallet } = useSigningCosmWasmClient();
+  // const { connectWallet } = useSigningCosmWasmClient();
   const walletAddress = useStore((state) => state.walletAddress);
 
   useEffect(() => {
@@ -218,7 +218,7 @@ export const getToken = async (
       },
     });
     return token.extension;
-  } catch (e) {
+  } catch {
     return undefined;
   }
 };

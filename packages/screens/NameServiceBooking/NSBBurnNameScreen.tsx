@@ -1,6 +1,6 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import * as R from "ramda";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Image, View } from "react-native";
 
 import burnPNG from "../../../assets/icons/burn.png";
@@ -10,8 +10,6 @@ import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { NSBContext } from "../../context/NSBProvider";
-import { useSigningClient } from "../../context/cosmwasm";
-import { useSigningCosmWasmClient } from "../../hooks/cosmwasm";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
@@ -20,7 +18,6 @@ import { defaultExecuteFee } from "../../utils/fee";
 import { isTokenOwned } from "../../utils/handefulFunctions";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { Metadata } from "../../utils/types/messages";
 
 export const NSBBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NSBUpdateName">;

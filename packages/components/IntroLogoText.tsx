@@ -75,7 +75,6 @@ export const IntroLogoText: React.FC<{
 
       {/*========= ============*/}
 
-
       <BrandText
         style={{
           fontSize: 28,

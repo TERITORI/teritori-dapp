@@ -1,4 +1,4 @@
-import React, { Dispatch, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { NSBContext } from "../../context/NSBProvider";

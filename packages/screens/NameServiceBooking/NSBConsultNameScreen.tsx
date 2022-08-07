@@ -1,9 +1,5 @@
-import {
-  NavigatorScreenParams,
-  RouteProp,
-  useFocusEffect,
-} from "@react-navigation/native";
-import React, { Props, useContext, useEffect, useState } from "react";
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
+import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -18,15 +14,9 @@ import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard"
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
 import { NSBContext } from "../../context/NSBProvider";
-import { useSigningClient } from "../../context/cosmwasm";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useStore } from "../../store/cosmwasm";
-import {
-  neutral33,
-  neutral44,
-  neutral77,
-  primaryColor,
-} from "../../utils/colors";
+import { neutral33, neutral44, neutral77 } from "../../utils/colors";
 import {
   isTokenOwned,
   numberWithThousandsSeparator,
@@ -105,7 +95,6 @@ const SendFundModal: React.FC<{
 
 const NotOwnerActions = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const { name } = useContext(NSBContext);
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>

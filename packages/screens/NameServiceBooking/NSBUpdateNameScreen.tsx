@@ -1,27 +1,20 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import * as R from "ramda";
 import React, { useContext, useEffect, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 
-import longCardPNG from "../../../assets/cards/long-card.png";
-import coinPNG from "../../../assets/icons/coin.png";
-import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
 import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
-import { useSigningClient } from "../../context/cosmwasm";
-import { useSigningCosmWasmClient } from "../../hooks/cosmwasm";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
-import { defaultMintFee, getMintCost } from "../../utils/fee";
+import { defaultMintFee } from "../../utils/fee";
 import { isTokenOwned } from "../../utils/handefulFunctions";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { OptionString } from "../../utils/types/base";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
@@ -64,7 +57,7 @@ export const NSBUpdateNameScreen: React.FC<{
       setInitialized(true);
       setNsbLoading(false);
       setInitialData(tokenData);
-    } catch (e) {
+    } catch {
       setInitialized(true);
       setNsbLoading(false);
       // ---- If here, "cannot contract", so the token is considered as available

@@ -8,12 +8,10 @@ import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { NSBContext } from "../../context/NSBProvider";
-import { useSigningClient } from "../../context/cosmwasm";
-import { useSigningCosmWasmClient } from "../../hooks/cosmwasm";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
-import { defaultMintFee, getMintCost } from "../../utils/fee";
+import { defaultMintFee } from "../../utils/fee";
 import { isTokenOwned, tokenWithoutTld } from "../../utils/handefulFunctions";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
@@ -67,7 +65,7 @@ export const NSBMintPathScreen: React.FC<{
       setInitialized(true);
       setNsbLoading(false);
       setInitialData(tokenData);
-    } catch (e) {
+    } catch {
       setInitialized(true);
       setNsbLoading(false);
       // ---- If here, "cannot contract", so the token is considered as available

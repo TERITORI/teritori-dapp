@@ -10,16 +10,16 @@ import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
-import { LaunchpadProvider } from "./packages/context/LaunchpadProvider";
 import { Navigator } from "./packages/components/Navigator";
+import { LaunchpadProvider } from "./packages/context/LaunchpadProvider";
+import NSBContextProvider from "./packages/context/NSBProvider";
 import { SolanaBalanceProvider } from "./packages/context/SolanaBalanceProvider";
 import { SolanaOwnedNFTsProvider } from "./packages/context/SolanaOwnedNFTsProvider";
 import { TeritoriBalanceProvider } from "./packages/context/TeritoriBalanceProvider";
 import { WalletsProvider } from "./packages/context/WalletsProvider";
+import { SigningCosmWasmProvider } from "./packages/context/cosmwasm";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
-import {SigningCosmWasmProvider} from "./packages/context/cosmwasm"
-import NSBContextProvider from "./packages/context/NSBProvider"
 
 export default function App() {
   const [fontsLoaded] = useFonts({

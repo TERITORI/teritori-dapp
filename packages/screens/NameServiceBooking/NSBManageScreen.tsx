@@ -10,12 +10,7 @@ import { BacKTo } from "../../components/Footer";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { PrimaryPill } from "../../components/pills/PrimaryPill";
 import { NSBContext } from "../../context/NSBProvider";
-import {
-  getHandleNext,
-  getHandlePrev,
-  noTokens,
-  useTokenList,
-} from "../../hooks/tokens";
+import { noTokens, useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
 import { useStore } from "../../store/cosmwasm";
@@ -76,14 +71,7 @@ const NameCard: React.FC<{
 export const NSBManageScreen: React.FC = () => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
   const { setNsbLoading } = useContext(NSBContext);
-  const {
-    pathsAndTokens,
-    tokens,
-    setStartAfter,
-    page,
-    setPage,
-    loadingTokens,
-  } = useTokenList();
+  const { tokens, loadingTokens } = useTokenList();
   const { alias, loadingAlias } = usePrimaryAlias();
   const navigation = useAppNavigation();
   const userHasCoWallet = useHasUserConnectedWallet();
@@ -114,18 +102,18 @@ export const NSBManageScreen: React.FC = () => {
   });
 
   // ----- Pagination TODO:
-  const handlePrev = getHandlePrev(
-    page,
-    pageStartTokens,
-    setPage,
-    setStartAfter
-  );
-  const handleNext = getHandleNext(
-    page,
-    pathsAndTokens,
-    setPage,
-    setStartAfter
-  );
+  // const handlePrev = getHandlePrev(
+  //   page,
+  //   pageStartTokens,
+  //   setPage,
+  //   setStartAfter
+  // );
+  // const handleNext = getHandleNext(
+  //   page,
+  //   pathsAndTokens,
+  //   setPage,
+  //   setStartAfter
+  // );
 
   return (
     <ScreenContainer2

@@ -1,12 +1,11 @@
 import Clipboard from "@react-native-clipboard/clipboard";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import copyPNG from "../../../assets/icons/copy.png";
 import { NSBContext } from "../../context/NSBProvider";
 import { neutral23, neutral33 } from "../../utils/colors";
 import { BrandText } from "../BrandText";
-import ModalBase from "../modals/ModalBase";
 
 export const CopyToClipboardCard: React.FC<{
   text: string;

@@ -29,7 +29,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
           },
         });
         return token.extension;
-      } catch (e) {
+      } catch {
         // ---- If here, "cannot contract", probably because not found, so the token is considered as available
         return undefined;
       }

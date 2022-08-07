@@ -1,13 +1,7 @@
 import React from "react";
-import { Image, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
-import warningPNG from "../../../assets/icons/warning.png";
-import {
-  errorColor,
-  neutral11,
-  neutral77,
-  successColor,
-} from "../../utils/colors";
+import { neutral11, neutral77, successColor } from "../../utils/colors";
 import { BrandText } from "../BrandText";
 
 export const ToastSuccess: React.FC<{

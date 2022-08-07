@@ -10,10 +10,7 @@ import { BacKTo } from "../../components/Footer";
 import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
-import { useSigningClient } from "../../context/cosmwasm";
-import { useSigningCosmWasmClient } from "../../hooks/cosmwasm";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
@@ -21,7 +18,6 @@ import { defaultMintFee, getMintCost } from "../../utils/fee";
 import { isTokenOwned } from "../../utils/handefulFunctions";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { OptionString } from "../../utils/types/base";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
 
 const CostContainer: React.FC = () => {
@@ -66,14 +62,8 @@ export const NSBMintNameScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const {
-    name,
-    setName,
-    setNsbError,
-    setNsbSuccess,
-    setNsbLoading,
-    nsbLoading,
-  } = useContext(NSBContext);
+  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
+    useContext(NSBContext);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
@@ -110,7 +100,7 @@ export const NSBMintNameScreen: React.FC<{
       setInitialData(tokenData);
       setNsbLoading(false);
       setInitialized(true);
-    } catch (e) {
+    } catch {
       setInitialized(true);
       setNsbLoading(false);
       // ---- If here, "cannot contract", so the token is considered as available

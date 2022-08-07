@@ -1,14 +1,13 @@
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useContext, useEffect } from "react";
 
 import { BacKTo } from "../../components/Footer";
 import { FindAName } from "../../components/NameServiceBooking/FindAName";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
-import { getToken, noTokens, useTokenList } from "../../hooks/tokens";
+import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
-import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
 import { useStore } from "../../store/cosmwasm";
 import { isTokenOwned } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
