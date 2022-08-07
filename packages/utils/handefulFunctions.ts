@@ -1,5 +1,3 @@
-import * as R from "ramda";
-
 // Returns your given number (string or number), but with comma as a thousand separator (string)
 export const numberWithThousandsSeparator = (
   yourBigNumber: string | number
