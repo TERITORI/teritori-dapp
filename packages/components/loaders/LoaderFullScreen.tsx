@@ -2,9 +2,6 @@ import Lottie from "lottie-react";
 import * as React from "react";
 import { View } from "react-native";
 
-import { primaryColor } from "../../utils/colors";
-import { BrandText } from "../BrandText";
-
 export const LoaderFullScreen: React.FC = () => {
   return (
     <View
