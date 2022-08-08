@@ -10,11 +10,13 @@ import {
 
 import dappCardPNG from "../../assets/dapp-card.png";
 import airdropPNG from "../../assets/icons/airdrop.png";
+import CertifiedIcon from "../../assets/icons/certified.svg";
 import labsPNG from "../../assets/icons/labs.png";
 import launchpadPNG from "../../assets/icons/launchpad.png";
 import marketplacePNG from "../../assets/icons/marketplace.png";
 import stakingPNG from "../../assets/icons/staking.png";
 import walletPNG from "../../assets/icons/wallet.png";
+import Logo from "../../assets/logo.svg";
 import { LaunchpadItem } from "../utils/airtable";
 import { helpAreaWidth, sidebarWidth } from "../utils/layout";
 import { useAppNavigation } from "../utils/navigation";
@@ -28,8 +30,6 @@ import { Section } from "./Section";
 import { useWallets } from "./WalletsProvider";
 import { HollowPrimaryButton } from "./buttons/HollowPrimaryButton";
 import { SecondaryButton } from "./buttons/SecondaryButton";
-import { CertifiedIcon } from "./svgs/CertifiedIcon";
-import { Logo } from "./svgs/Logo";
 
 const breakPoint = 768;
 const gridHalfGutter = 12;

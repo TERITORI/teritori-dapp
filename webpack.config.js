@@ -1,28 +1,14 @@
 const createExpoWebpackConfigAsync = require("@expo/webpack-config");
 
+const svgRule = require("./svg-webpack-rule.js");
+
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
 
   // needed for svg loading in browser environment
   config.module.rules.forEach((rule) => {
     if (rule.oneOf) {
-      rule.oneOf.unshift({
-        test: /\.svg$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: require.resolve("@svgr/webpack"),
-            options: {
-              inlineStyles: {
-                onlyMatchedOnce: false,
-              },
-              viewBox: false,
-              removeUnknownsAndDefaults: false,
-              convertColors: false,
-            },
-          },
-        ],
-      });
+      rule.oneOf.unshift(svgRule);
     }
   });
 
