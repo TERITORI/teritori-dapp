@@ -10,6 +10,7 @@ import {
 
 import dappCardPNG from "../../assets/cards/dapp-card.png";
 import airdropPNG from "../../assets/icons/airdrop.png";
+import CertifiedIcon from "../../assets/icons/certified.svg";
 import labsPNG from "../../assets/icons/labs.png";
 import launchpadPNG from "../../assets/icons/launchpad.png";
 import marketplacePNG from "../../assets/icons/marketplace.png";
@@ -17,13 +18,18 @@ import stakingPNG from "../../assets/icons/staking.png";
 import walletPNG from "../../assets/icons/wallet.png";
 import { useLaunchpadData } from "../context/LaunchpadProvider";
 import { useWallets } from "../context/WalletsProvider";
+import Logo from "../../assets/logo.svg";
 import { LaunchpadItem } from "../utils/airtable";
 import { helpAreaWidth, sidebarWidth } from "../utils/layout";
 import { useAppNavigation } from "../utils/navigation";
 import { BrandText } from "./BrandText";
+import { CardOutline } from "./CardOutline";
 import { CarouselSection } from "./CarouselSection";
 import { Guardian } from "./Guardian";
+import { LabelCard } from "./LabelCard";
+import { useLaunchpadData } from "./LaunchpadProvider";
 import { Section } from "./Section";
+import { useWallets } from "./WalletsProvider";
 import { HollowPrimaryButton } from "./buttons/HollowPrimaryButton";
 import { SecondaryButton } from "./buttons/SecondaryButton";
 import { CardOutline } from "./cards/CardOutline";
