@@ -1,8 +1,8 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
 
+import Logo from "../../assets/logo.svg";
 import { BrandText } from "./BrandText";
-import { Logo } from "./svgs/Logo";
 // import { LinearGradient } from 'expo-linear-gradient';
 
 export const IntroLogoText: React.FC<{
