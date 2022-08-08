@@ -2,6 +2,7 @@ import React from "react";
 import { View, Image, ViewStyle, TouchableOpacity } from "react-native";
 
 import connectedImagePNG from "../../assets/connected-image-bad.png";
+import Logo from "../../assets/logo.svg";
 import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
 import { WalletProvider } from "../utils/walletProvider";
 import { BalanceCard } from "./BalanceCard";
@@ -11,7 +12,6 @@ import { useTeritoriBalance } from "./TeritoriBalanceProvider";
 import { WalletSelector } from "./WalletSelector";
 import { useWallets } from "./WalletsProvider";
 import { PrimaryButton } from "./buttons/PrimaryButton";
-import { Logo } from "./svgs/Logo";
 
 export type HubPageName = "Home" | "MyCollection" | "Activities" | "Guardians";
 

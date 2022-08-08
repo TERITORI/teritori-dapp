@@ -1,6 +1,7 @@
 import React from "react";
 import { ViewStyle, Image, View, StyleProp } from "react-native";
 
+import CertifiedIcon from "../../assets/icons/certified.svg";
 import outlineStarPNG from "../../assets/icons/outline-star.png";
 import { neutral33, neutral77 } from "../utils/colors";
 import { NFTData } from "../utils/nft";
@@ -8,7 +9,6 @@ import { BrandText } from "./BrandText";
 import { CardOutline } from "./CardOutline";
 import { NetworkIcon } from "./NetworkIcon";
 import { SecondaryAltButton } from "./buttons/SecondaryAltButton";
-import { CertifiedIcon } from "./svgs/CertifiedIcon";
 
 export const NFTView: React.FC<{
   data: NFTData;
