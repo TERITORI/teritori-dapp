@@ -8,15 +8,10 @@ import { useTeritoriBalance } from "../context/TeritoriBalanceProvider";
 import { useWallets } from "../context/WalletsProvider";
 import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
 import { WalletProvider } from "../utils/walletProvider";
-import { BalanceCard } from "./BalanceCard";
 import { BrandText } from "./BrandText";
-import { useSolanaBalance } from "./SolanaBalanceProvider/solanaBalanceContext";
-import { useTeritoriBalance } from "./TeritoriBalanceProvider";
 import { WalletSelector } from "./WalletSelector";
-import { useWallets } from "./WalletsProvider";
 import { PrimaryButton } from "./buttons/PrimaryButton";
 import { BalanceCard } from "./cards/BalanceCard";
-import { Logo } from "./svgs/Logo";
 
 export type HubPageName = "Home" | "MyCollection" | "Activities" | "Guardians";
 
