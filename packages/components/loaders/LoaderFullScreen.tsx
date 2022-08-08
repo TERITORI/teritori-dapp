@@ -1,3 +1,4 @@
+import Lottie from "lottie-react";
 import * as React from "react";
 import { View } from "react-native";
 
@@ -19,13 +20,15 @@ export const LoaderFullScreen: React.FC = () => {
         style={{
           height: 80,
           width: 80,
-          backgroundColor: primaryColor,
           borderRadius: 999,
           margin: "auto",
         }}
       >
-        {/*TODO: Which design ?*/}
-        <BrandText style={{ margin: "auto", fontSize: 30 }}>⛩</BrandText>
+        <Lottie
+          animationData={require("./animation-full-screen.json")}
+          autoPlay
+          loop
+        />
       </View>
     </View>
   );
