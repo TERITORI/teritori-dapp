@@ -7,7 +7,7 @@ import { ExternalLink } from "../../components/ExternalLink";
 import { BacKTo } from "../../components/Footer";
 import { NameAndTldText } from "../../components/NameServiceBooking/NameAndTldText";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
@@ -169,7 +169,7 @@ export const NSBConsultNameScreen: React.FC<{
   });
 
   return (
-    <ScreenContainer2
+    <ScreenContainerNSB
       footerChildren={
         isTokenOwned(tokens, name) && !notFound ? (
           <OwnerActions />
@@ -277,6 +277,6 @@ export const NSBConsultNameScreen: React.FC<{
           </>
         )}
       </View>
-    </ScreenContainer2>
+    </ScreenContainerNSB>
   );
 };

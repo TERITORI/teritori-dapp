@@ -7,7 +7,7 @@ import burnPNG from "../../../assets/icons/burn.png";
 import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
@@ -90,7 +90,7 @@ export const NSBBurnNameScreen: React.FC<{
   };
 
   return (
-    <ScreenContainer2
+    <ScreenContainerNSB
       footerChildren={
         <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
       }
@@ -156,6 +156,6 @@ export const NSBBurnNameScreen: React.FC<{
           />
         </View>
       </View>
-    </ScreenContainer2>
+    </ScreenContainerNSB>
   );
 };

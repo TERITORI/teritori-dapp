@@ -7,7 +7,7 @@ import flowCardPNG from "../../../assets/cards/flow-card.png";
 import logoSmPNG from "../../../assets/logo-sm.png";
 import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { PrimaryPill } from "../../components/pills/PrimaryPill";
 import { NSBContext } from "../../context/NSBProvider";
 import { noTokens, useTokenList } from "../../hooks/tokens";
@@ -116,7 +116,7 @@ export const NSBManageScreen: React.FC = () => {
   // );
 
   return (
-    <ScreenContainer2
+    <ScreenContainerNSB
       footerChildren={<BacKTo label="home" navItem="NSBHome" />}
     >
       <View style={{ flex: 1, alignItems: "center" }}>
@@ -193,6 +193,6 @@ export const NSBManageScreen: React.FC = () => {
 
         {/*TODO: PrevNext buttons*/}
       </View>
-    </ScreenContainer2>
+    </ScreenContainerNSB>
   );
 };

@@ -1,15 +1,13 @@
 import React, { ReactElement, useContext } from "react";
 import { SafeAreaView, View, StyleSheet, ScrollView } from "react-native";
 
-import { initialNsbError, NSBContext } from "../context/NSBProvider";
-import { Footer } from "./Footer";
-import { Header } from "./Header";
-import { ToastError } from "./toasts/ToastError";
-import { ToastSuccess } from "./toasts/ToastSuccess";
+import { initialNsbError, NSBContext } from "../../context/NSBProvider";
+import { Footer } from "../Footer";
+import { Header } from "../Header";
+import { ToastError } from "../toasts/ToastError";
+import { ToastSuccess } from "../toasts/ToastSuccess";
 
-//*TODO: Name ScreenContainer2 with an explicit name. Difference with ScreenContainer : Header and not SideBar, simpler, ...
-
-export const ScreenContainer2: React.FC<{
+export const ScreenContainerNSB: React.FC<{
   footerChildren?: ReactElement;
 }> = ({ children, footerChildren }) => {
   const { nsbError, setNsbError, nsbSuccess, setNsbSuccess } =

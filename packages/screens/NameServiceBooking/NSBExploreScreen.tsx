@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
 import { FindAName } from "../../components/NameServiceBooking/FindAName";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { HollowPrimaryButton } from "../../components/buttons/HollowPrimaryButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
@@ -27,7 +27,7 @@ export const NSBExploreScreen: React.FC = () => {
   }, [loadingTokens]);
 
   return (
-    <ScreenContainer2
+    <ScreenContainerNSB
       footerChildren={<BacKTo label="home" navItem="NSBHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
@@ -69,6 +69,6 @@ export const NSBExploreScreen: React.FC = () => {
           </View>
         ) : null}
       </FindAName>
-    </ScreenContainer2>
+    </ScreenContainerNSB>
   );
 };

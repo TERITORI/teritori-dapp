@@ -6,7 +6,7 @@ import { View } from "react-native";
 import { BacKTo } from "../../components/Footer";
 import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
@@ -170,7 +170,7 @@ export const NSBMintPathScreen: React.FC<{
   };
 
   return (
-    <ScreenContainer2
+    <ScreenContainerNSB
       footerChildren={
         <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
       }
@@ -194,6 +194,6 @@ export const NSBMintPathScreen: React.FC<{
           />
         </View>
       </View>
-    </ScreenContainer2>
+    </ScreenContainerNSB>
   );
 };

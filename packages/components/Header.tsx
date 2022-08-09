@@ -50,7 +50,7 @@ const ConnectWalletButton: React.FC<{
 {
   /*TODO: Is it a good name for this cpt ?*/
 }
-export const Header: React.FC = () => {
+export const Header: React.FC = ({ children }) => {
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
   const isAConnectedWallet = useHasUserConnectedWallet();
   const navigation = useAppNavigation();
@@ -79,6 +79,8 @@ export const Header: React.FC = () => {
           }}
         />
       </TouchableOpacity>
+
+      <>{children}</>
 
       {isAConnectedWallet ? (
         <WalletSelector

@@ -6,7 +6,7 @@ import manageIconPNG from "../../../assets/icons/manage.png";
 import registerIconPNG from "../../../assets/icons/register.png";
 import { SocialNetworks } from "../../components/Footer";
 import { IntroLogoText } from "../../components/IntroLogoText";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { FlowCard } from "../../components/cards/FlowCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
@@ -152,7 +152,7 @@ export const NSBHomeScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer2 footerChildren={<SocialNetworks />}>
+    <ScreenContainerNSB footerChildren={<SocialNetworks />}>
       <IntroLogoText
         subTitle="Name Service Booking"
         style={{ marginTop: 40 }}
@@ -191,6 +191,6 @@ export const NSBHomeScreen: React.FC = () => {
         onClose={() => setModalNameFinderVisible(false)}
         navItem={pressedNavItem}
       />
-    </ScreenContainer2>
+    </ScreenContainerNSB>
   );
 };

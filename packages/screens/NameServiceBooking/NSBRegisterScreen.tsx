@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from "react";
 
 import { BacKTo } from "../../components/Footer";
 import { FindAName } from "../../components/NameServiceBooking/FindAName";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
@@ -33,7 +33,7 @@ export const NSBRegisterScreen: React.FC = () => {
   });
 
   return (
-    <ScreenContainer2
+    <ScreenContainerNSB
       footerChildren={<BacKTo label="home" navItem="NSBHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
@@ -53,6 +53,6 @@ export const NSBRegisterScreen: React.FC = () => {
           />
         ) : null}
       </FindAName>
-    </ScreenContainer2>
+    </ScreenContainerNSB>
   );
 };
