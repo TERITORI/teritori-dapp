@@ -7,7 +7,6 @@ import { ExternalLink } from "../../components/ExternalLink";
 import { BacKTo } from "../../components/Footer";
 import { NameAndTldText } from "../../components/NameServiceBooking/NameAndTldText";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
-import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
@@ -27,6 +26,8 @@ import {
   prettyTokenData,
   publicNameDisplayLabel,
 } from "../../utils/teritori";
+import {FeedbacksContext} from "../../context/FeedbacksProvider"
+import {ScreenContainer} from "../../components/ScreenContainer"
 
 const SendFundModal: React.FC<{
   onClose: () => void;
@@ -147,7 +148,8 @@ const OwnerActions = () => {
 export const NSBConsultNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NSBConsultName">;
 }> = ({ route }) => {
-  const { name, setName, setNsbLoading } = useContext(NSBContext);
+  const { name, setName } = useContext(NSBContext);
+  const { setLoadingFullScreen } = useContext(FeedbacksContext);
   const { token, notFound, loadingToken } = useToken(name, process.env.TLD);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
@@ -155,10 +157,10 @@ export const NSBConsultNameScreen: React.FC<{
 
   // Sync nsbLoading
   useEffect(() => {
-    setNsbLoading(loadingToken);
+    setLoadingFullScreen(loadingToken);
   }, [loadingToken]);
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
   // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the token is not minted
@@ -169,7 +171,7 @@ export const NSBConsultNameScreen: React.FC<{
   });
 
   return (
-    <ScreenContainerNSB
+    <ScreenContainer hideSidebar
       footerChildren={
         isTokenOwned(tokens, name) && !notFound ? (
           <OwnerActions />
@@ -277,6 +279,6 @@ export const NSBConsultNameScreen: React.FC<{
           </>
         )}
       </View>
-    </ScreenContainerNSB>
+    </ScreenContainer>
   );
 };

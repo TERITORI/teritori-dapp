@@ -1,61 +1,40 @@
 import PropTypes from "prop-types";
-import React, { createContext, useEffect, useState } from "react";
+import React, {createContext, useContext, useEffect, useState} from "react"
 
 import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
 import { useSigningCosmWasmClient } from "../hooks/cosmwasm";
-
-interface NSBToastMessage {
-  title: string;
-  message: string;
-}
-export const initialNsbError: NSBToastMessage = { title: "", message: "" };
-export const initialNsbSuccess: NSBToastMessage = { title: "", message: "" };
+import {FeedbacksContext} from "./FeedbacksProvider"
 
 interface DefaultValue {
   name: string;
   setName: (name: string) => void;
-  nsbError: NSBToastMessage;
-  setNsbError: (error: NSBToastMessage) => void;
-  nsbSuccess: NSBToastMessage;
-  setNsbSuccess: (info: NSBToastMessage) => void;
-  nsbLoading: boolean;
-  setNsbLoading: (loading: boolean) => void;
 }
 const defaultValue: DefaultValue = {
   name: "",
   setName: undefined,
-  nsbError: initialNsbError,
-  setNsbError: undefined,
-  nsbSuccess: initialNsbSuccess,
-  setNsbSuccess: undefined,
-  nsbLoading: false,
-  setNsbLoading: undefined,
 };
 
 export const NSBContext = createContext(defaultValue);
 
 const NSBContextProvider = ({ children }) => {
-  const [nsbLoading, setNsbLoading] = useState(false);
   // The entered name
   const [name, setName] = useState("");
-  // Error/success after mint, etc...
-  const [nsbError, setNsbError] = useState(initialNsbError);
-  const [nsbSuccess, setNsbSuccess] = useState(initialNsbSuccess);
   const { connectWallet } = useSigningCosmWasmClient();
+  const { setLoadingFullScreen, setToastError } = useContext(FeedbacksContext);
 
   // ---- Init
   useEffect(() => {
-    setNsbLoading(true);
+    setLoadingFullScreen(true);
     const init = async () => {
       await connectWallet();
     };
     init()
       .then(() => {
-        setNsbLoading(false);
+        setLoadingFullScreen(false);
       })
       .catch((e) => {
-        setNsbError({ title: "Something went wrong!", message: e.message });
-        setNsbLoading(false);
+        setToastError({ title: "Something went wrong!", message: e.message });
+        setLoadingFullScreen(false);
       });
   }, []);
 
@@ -63,16 +42,9 @@ const NSBContextProvider = ({ children }) => {
     <NSBContext.Provider
       value={{
         name,
-        setName,
-        nsbError,
-        setNsbError,
-        nsbSuccess,
-        setNsbSuccess,
-        nsbLoading,
-        setNsbLoading,
+        setName
       }}
     >
-      {nsbLoading ? <LoaderFullScreen /> : null}
       {children}
     </NSBContext.Provider>
   );

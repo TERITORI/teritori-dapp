@@ -1,26 +1,21 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import * as R from "ramda";
 import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
 import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
-import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee } from "../../utils/fee";
-import { isTokenOwned, tokenWithoutTld } from "../../utils/handefulFunctions";
+import {isTokenOwned, normalizedPathId, normalizedTokenId, tokenWithoutTld} from "../../utils/handefulFunctions"
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
-
-const normalize = (inputString: string) => {
-  const invalidChrsRemoved = R.replace(/[^a-z0-9\-\_]/g, "", inputString);
-  return R.replace(/[_\-]{2,}/g, "", invalidChrsRemoved);
-};
+import {FeedbacksContext} from "../../context/FeedbacksProvider"
+import {ScreenContainer} from "../../components/ScreenContainer"
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const NSBMintPathScreen: React.FC<{
@@ -28,8 +23,9 @@ export const NSBMintPathScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
+  const { name, setName } =
     useContext(NSBContext);
+  const { setLoadingFullScreen, setToastError, setToastSuccess } = useContext(FeedbacksContext);
   const { tokens, loadingTokens } = useTokenList();
   const navigation = useAppNavigation();
   const signingClient = useStore((state) => state.signingClient);
@@ -37,15 +33,13 @@ export const NSBMintPathScreen: React.FC<{
   const userHasCoWallet = useHasUserConnectedWallet();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
 
-  const normalizedTokenId = R.toLower(name + process.env.TLD);
-
   const initData = async () => {
     // await connectWallet();
     try {
       // If this query fails it means that the token does not exist.
       const token = await signingClient.queryContractSmart(contractAddress, {
         nft_info: {
-          token_id: normalizedTokenId,
+          token_id: normalizedTokenId(name),
         },
       });
       // return token.extension;
@@ -63,11 +57,11 @@ export const NSBMintPathScreen: React.FC<{
         validator_operator_address: token.extension.validator_operator_address,
       };
       setInitialized(true);
-      setNsbLoading(false);
+      setLoadingFullScreen(false);
       setInitialData(tokenData);
     } catch {
       setInitialized(true);
-      setNsbLoading(false);
+      setLoadingFullScreen(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
@@ -75,7 +69,7 @@ export const NSBMintPathScreen: React.FC<{
 
   // Sync nsbLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
   // ==== Init
@@ -93,7 +87,7 @@ export const NSBMintPathScreen: React.FC<{
       navigation.navigate("NSBHome");
     }
     if (!initialized) {
-      setNsbLoading(true);
+      setLoadingFullScreen(true);
       initData();
     }
   });
@@ -102,7 +96,7 @@ export const NSBMintPathScreen: React.FC<{
     if (!signingClient || !walletAddress) {
       return;
     }
-    setNsbLoading(true);
+    setLoadingFullScreen(true);
     const {
       token_id: pathId,
       image, // TODO - support later
@@ -118,26 +112,26 @@ export const NSBMintPathScreen: React.FC<{
       validator_operator_address,
     } = _data;
 
-    const normalizedPathId = normalize(R.toLower(pathId));
+    const _normalizedPathId = normalizedPathId(normalizedTokenId(pathId));
 
     const msg = {
       update_metadata: {
         owner: walletAddress,
-        token_id: normalizedPathId,
+        token_id: _normalizedPathId,
         token_uri: null, // TODO - support later
         extension: {
           image,
           image_data: null, // TODO - support later
           email,
           external_url,
-          public_name: normalizedPathId,
+          public_name: _normalizedPathId,
           public_bio,
           twitter_id,
           discord_id,
           telegram_id,
           keybase_id,
           validator_operator_address,
-          parent_token_id: normalizedTokenId,
+          parent_token_id: normalizedTokenId(name),
         },
       },
     };
@@ -151,26 +145,26 @@ export const NSBMintPathScreen: React.FC<{
         defaultMemo
       );
       if (mintedToken) {
-        console.log(normalizedPathId + " successfully minted"); //TODO: redirect to the token
-        setNsbSuccess({
-          title: normalizedPathId + " successfully minted",
+        console.log(_normalizedPathId + " successfully minted"); //TODO: redirect to the token
+        setToastSuccess({
+          title: _normalizedPathId + " successfully minted",
           message: "",
         });
         navigation.navigate("NSBConsult", { name: tokenWithoutTld(pathId) });
-        setNsbLoading(false);
+        setLoadingFullScreen(false);
       }
     } catch (err) {
-      setNsbError({
+      setToastError({
         title: "Something went wrong!",
         message: err.message,
       });
       console.warn(err);
-      setNsbLoading(false);
+      setLoadingFullScreen(false);
     }
   };
 
   return (
-    <ScreenContainerNSB
+    <ScreenContainer hideSidebar
       footerChildren={
         <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
       }
@@ -194,6 +188,6 @@ export const NSBMintPathScreen: React.FC<{
           />
         </View>
       </View>
-    </ScreenContainerNSB>
+    </ScreenContainer>
   );
 };

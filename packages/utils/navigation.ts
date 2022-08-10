@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {MintGuardiansScreen} from "../screens/Launchpad/MintGuardiansScreen"
 
 export type RootStackParamList = {
   Home: undefined;
@@ -21,6 +22,7 @@ export type RootStackParamList = {
   NSBUpdateName: undefined;
   NSBBurnName: undefined;
   NSBMintPath: undefined;
+  MintGuardians: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<
@@ -43,10 +45,15 @@ const navConfig = {
     Wallets: "wallets",
     Marketplace: "marketplace",
     GuardiansGame: "guardians-game",
-    Launchpad: "launchpad",
-    Governance: "governance",
     Mint: "mint",
-    // Name Service Booking
+
+    // ==== Launchpad
+    Launchpad: "launchpad",
+    // Mint Guardians NFT
+    MintGuardians: "launchpad/mint/guardians",
+    Governance: "governance",
+
+    // ==== Teritori Name Service (TNS) (= Name Service Booking (NSB))
     NSBHome: "nsb",
     NSBExplore: "nsb/explore",
     NSBManage: "nsb/manage",

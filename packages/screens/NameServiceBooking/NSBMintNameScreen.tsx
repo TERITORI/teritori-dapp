@@ -1,5 +1,4 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import * as R from "ramda";
 import React, { useContext, useEffect, useState } from "react";
 import { Image, View } from "react-native";
 
@@ -9,16 +8,17 @@ import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
 import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
-import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee, getMintCost } from "../../utils/fee";
-import { isTokenOwned } from "../../utils/handefulFunctions";
+import {isTokenOwned, normalizedTokenId} from "../../utils/handefulFunctions"
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
+import {FeedbacksContext} from "../../context/FeedbacksProvider"
+import {ScreenContainer} from "../../components/ScreenContainer"
 
 const CostContainer: React.FC = () => {
   const innerHeight = 32;
@@ -62,8 +62,9 @@ export const NSBMintNameScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
+  const { name, setName } =
     useContext(NSBContext);
+  const { setLoadingFullScreen, setToastError, setToastSuccess } = useContext(FeedbacksContext);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
@@ -73,16 +74,15 @@ export const NSBMintNameScreen: React.FC<{
   const mintCost = getMintCost(name);
   const navigation = useAppNavigation();
 
-  const normalizedTokenId = R.toLower(name + process.env.TLD);
-
   const initData = async () => {
     try {
       // If this query fails it means that the token does not exist.
       const token = await signingClient.queryContractSmart(contractAddress, {
         nft_info: {
-          token_id: normalizedTokenId,
+          token_id: normalizedTokenId(name),
         },
       });
+
       // return token.extension;
       const tokenData: Metadata = {
         image: token.extension.image,
@@ -98,11 +98,11 @@ export const NSBMintNameScreen: React.FC<{
         validator_operator_address: token.extension.validator_operator_address,
       };
       setInitialData(tokenData);
-      setNsbLoading(false);
+      setLoadingFullScreen(false);
       setInitialized(true);
     } catch {
       setInitialized(true);
-      setNsbLoading(false);
+      setLoadingFullScreen(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
@@ -110,7 +110,7 @@ export const NSBMintNameScreen: React.FC<{
 
   // Sync nsbLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
   // ==== Init
@@ -124,7 +124,7 @@ export const NSBMintNameScreen: React.FC<{
       navigation.navigate("NSBManage");
 
     if (!initialized) {
-      setNsbLoading(true);
+      setLoadingFullScreen(true);
       initData();
     }
   });
@@ -133,7 +133,7 @@ export const NSBMintNameScreen: React.FC<{
     if (!signingClient || !walletAddress) {
       return;
     }
-    setNsbLoading(true);
+    setLoadingFullScreen(true);
     const {
       image, // TODO - support later
       // image_data
@@ -151,7 +151,7 @@ export const NSBMintNameScreen: React.FC<{
     const msg = {
       mint: {
         owner: walletAddress,
-        token_id: normalizedTokenId,
+        token_id: normalizedTokenId(name),
         token_uri: null, // TODO - support later
         extension: {
           image,
@@ -179,27 +179,27 @@ export const NSBMintNameScreen: React.FC<{
         mintCost
       );
       if (mintedToken) {
-        appendTokenId(normalizedTokenId);
-        console.log(normalizedTokenId + " successfully minted");
-        setNsbSuccess({
-          title: normalizedTokenId + " successfully minted",
+        appendTokenId(normalizedTokenId(name));
+        console.log(normalizedTokenId(name) + " successfully minted");
+        setToastSuccess({
+          title: normalizedTokenId(name) + " successfully minted",
           message: "",
         });
         navigation.navigate("NSBConsult", { name });
-        setNsbLoading(false);
+        setLoadingFullScreen(false);
       }
     } catch (err) {
-      setNsbError({
+      setToastError({
         title: "Something went wrong!",
         message: err.message,
       });
       console.warn(err);
-      setNsbLoading(false);
+      setLoadingFullScreen(false);
     }
   };
 
   return (
-    <ScreenContainerNSB
+    <ScreenContainer hideSidebar
       footerChildren={<BacKTo label="search" navItem="NSBRegister" />}
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
@@ -222,6 +222,6 @@ export const NSBMintNameScreen: React.FC<{
           />
         </View>
       </View>
-    </ScreenContainerNSB>
+    </ScreenContainer>
   );
 };

@@ -7,15 +7,15 @@ import flowCardPNG from "../../../assets/cards/flow-card.png";
 import logoSmPNG from "../../../assets/logo-sm.png";
 import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
-import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { PrimaryPill } from "../../components/pills/PrimaryPill";
-import { NSBContext } from "../../context/NSBProvider";
 import { noTokens, useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
 import { useStore } from "../../store/cosmwasm";
 import { tokenWithoutTld } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
+import {FeedbacksContext} from "../../context/FeedbacksProvider"
+import {ScreenContainer} from "../../components/ScreenContainer"
 
 const NameCard: React.FC<{
   fullName: string;
@@ -70,7 +70,7 @@ const NameCard: React.FC<{
 
 export const NSBManageScreen: React.FC = () => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
-  const { setNsbLoading } = useContext(NSBContext);
+  const { setLoadingFullScreen } = useContext(FeedbacksContext);
   const { tokens, loadingTokens } = useTokenList();
   const { alias, loadingAlias } = usePrimaryAlias();
   const navigation = useAppNavigation();
@@ -81,10 +81,10 @@ export const NSBManageScreen: React.FC = () => {
 
   // Sync nsbLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
   useEffect(() => {
-    setNsbLoading(loadingAlias);
+    setLoadingFullScreen(loadingAlias);
   }, [loadingAlias]);
 
   // ==== Init
@@ -116,7 +116,7 @@ export const NSBManageScreen: React.FC = () => {
   // );
 
   return (
-    <ScreenContainerNSB
+    <ScreenContainer hideSidebar
       footerChildren={<BacKTo label="home" navItem="NSBHome" />}
     >
       <View style={{ flex: 1, alignItems: "center" }}>
@@ -193,6 +193,6 @@ export const NSBManageScreen: React.FC = () => {
 
         {/*TODO: PrevNext buttons*/}
       </View>
-    </ScreenContainerNSB>
+    </ScreenContainer>
   );
 };

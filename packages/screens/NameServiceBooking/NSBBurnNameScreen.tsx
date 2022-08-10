@@ -1,5 +1,4 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import * as R from "ramda";
 import React, { useContext, useEffect } from "react";
 import { Image, View } from "react-native";
 
@@ -7,7 +6,6 @@ import burnPNG from "../../../assets/icons/burn.png";
 import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
-import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
@@ -15,26 +13,28 @@ import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet
 import { useStore } from "../../store/cosmwasm";
 import { neutral33 } from "../../utils/colors";
 import { defaultExecuteFee } from "../../utils/fee";
-import { isTokenOwned } from "../../utils/handefulFunctions";
+import {isTokenOwned, normalizedTokenId} from "../../utils/handefulFunctions"
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import {FeedbacksContext} from "../../context/FeedbacksProvider"
+import {ScreenContainer} from "../../components/ScreenContainer"
 
 export const NSBBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NSBUpdateName">;
 }> = ({ route }) => {
-  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
+  const { name, setName } =
     useContext(NSBContext);
+  const { setToastError, setToastSuccess, setLoadingFullScreen} = useContext(FeedbacksContext)
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
   const userHasCoWallet = useHasUserConnectedWallet();
   const navigation = useAppNavigation();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
-  const normalizedTokenId = R.toLower(name + process.env.TLD);
 
   // Sync nsbLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
   // ==== Init
@@ -54,11 +54,11 @@ export const NSBBurnNameScreen: React.FC<{
   });
 
   const onSubmit = async () => {
-    setNsbLoading(true);
+    setLoadingFullScreen(true);
 
     const msg = {
       burn: {
-        token_id: normalizedTokenId,
+        token_id: normalizedTokenId(name),
       },
     };
     try {
@@ -70,27 +70,27 @@ export const NSBBurnNameScreen: React.FC<{
         defaultMemo
       );
       if (updatedToken) {
-        console.log(normalizedTokenId + " successfully burnt");
-        setNsbSuccess({
-          title: normalizedTokenId + " successfully burnt",
+        console.log(normalizedTokenId(name) + " successfully burnt");
+        setToastSuccess({
+          title: normalizedTokenId(name) + " successfully burnt",
           message: "",
         });
         navigation.navigate("NSBManage");
-        setNsbLoading(false);
+        setLoadingFullScreen(false);
       }
     } catch (e) {
       // TODO env var for dev logging (?)
-      setNsbError({
+      setToastError({
         title: "Something went wrong!",
         message: e.message,
       });
       console.warn(e);
-      setNsbLoading(false);
+      setLoadingFullScreen(false);
     }
   };
 
   return (
-    <ScreenContainerNSB
+    <ScreenContainer hideSidebar
       footerChildren={
         <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
       }
@@ -156,6 +156,6 @@ export const NSBBurnNameScreen: React.FC<{
           />
         </View>
       </View>
-    </ScreenContainerNSB>
+    </ScreenContainer>
   );
 };

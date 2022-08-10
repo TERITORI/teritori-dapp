@@ -1,3 +1,5 @@
+import * as R from "ramda";
+
 // Returns your given number (string or number), but with comma as a thousand separator (string)
 export const numberWithThousandsSeparator = (
   yourBigNumber: string | number
@@ -22,4 +24,13 @@ export const tokenWithoutTld = (str: string): string =>
 
 export const isTokenOwned = (tokenArray: string[], name: string) => {
   return tokenArray.includes(name + process.env.TLD);
+};
+
+// Get a token ID, ready for query contract
+export const normalizedTokenId = name => R.toLower(name + process.env.TLD);
+
+// Get a path ID from token, ready for query contract
+export const normalizedPathId = (inputString: string) => {
+  const invalidChrsRemoved = R.replace(/[^a-z0-9\-\_]/g, "", inputString);
+  return R.replace(/[_\-]{2,}/g, "", invalidChrsRemoved);
 };

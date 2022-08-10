@@ -3,7 +3,6 @@ import React, { useContext, useEffect } from "react";
 
 import { BacKTo } from "../../components/Footer";
 import { FindAName } from "../../components/NameServiceBooking/FindAName";
-import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
@@ -11,10 +10,13 @@ import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useStore } from "../../store/cosmwasm";
 import { isTokenOwned } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
+import {FeedbacksContext} from "../../context/FeedbacksProvider"
+import {ScreenContainer} from "../../components/ScreenContainer"
 
 export const NSBRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
-  const { name, setName, setNsbLoading } = useContext(NSBContext);
+  const { name, setName } = useContext(NSBContext);
+  const { setLoadingFullScreen } = useContext(FeedbacksContext);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
@@ -24,7 +26,7 @@ export const NSBRegisterScreen: React.FC = () => {
 
   // Sync nsbLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
   // ==== Init
@@ -33,7 +35,7 @@ export const NSBRegisterScreen: React.FC = () => {
   });
 
   return (
-    <ScreenContainerNSB
+    <ScreenContainer hideSidebar
       footerChildren={<BacKTo label="home" navItem="NSBHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
@@ -53,6 +55,6 @@ export const NSBRegisterScreen: React.FC = () => {
           />
         ) : null}
       </FindAName>
-    </ScreenContainerNSB>
+    </ScreenContainer>
   );
 };

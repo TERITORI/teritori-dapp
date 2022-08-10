@@ -20,6 +20,7 @@ import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { SigningCosmWasmProvider } from "./packages/context/cosmwasm";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
+import FeedbacksContextProvider from "./packages/context/FeedbacksProvider"
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -41,12 +42,14 @@ export default function App() {
               <TeritoriBalanceProvider>
                 <SolanaOwnedNFTsProvider>
                   <SigningCosmWasmProvider>
-                    <NSBContextProvider>
-                      <LaunchpadProvider>
-                        <StatusBar style="inverted" />
-                        <Navigator />
-                      </LaunchpadProvider>
-                    </NSBContextProvider>
+                    <FeedbacksContextProvider>
+                      <NSBContextProvider>
+                        <LaunchpadProvider>
+                          <StatusBar style="inverted" />
+                          <Navigator />
+                        </LaunchpadProvider>
+                      </NSBContextProvider>
+                    </FeedbacksContextProvider>
                   </SigningCosmWasmProvider>
                 </SolanaOwnedNFTsProvider>
               </TeritoriBalanceProvider>

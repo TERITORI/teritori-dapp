@@ -6,13 +6,13 @@ import manageIconPNG from "../../../assets/icons/manage.png";
 import registerIconPNG from "../../../assets/icons/register.png";
 import { SocialNetworks } from "../../components/Footer";
 import { IntroLogoText } from "../../components/IntroLogoText";
-import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { FlowCard } from "../../components/cards/FlowCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
 import { NSBContext } from "../../context/NSBProvider";
 import { useStore } from "../../store/cosmwasm";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import {ScreenContainer} from "../../components/ScreenContainer"
 
 // Just a container that it can be added at the bottom of the modal TODO: Integrate this later
 // const DomainsAvailability: React.FC = () => {
@@ -152,7 +152,7 @@ export const NSBHomeScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainerNSB footerChildren={<SocialNetworks />}>
+    <ScreenContainer hideSidebar footerChildren={<SocialNetworks />}>
       <IntroLogoText
         subTitle="Name Service Booking"
         style={{ marginTop: 40 }}
@@ -191,6 +191,6 @@ export const NSBHomeScreen: React.FC = () => {
         onClose={() => setModalNameFinderVisible(false)}
         navItem={pressedNavItem}
       />
-    </ScreenContainerNSB>
+    </ScreenContainer>
   );
 };

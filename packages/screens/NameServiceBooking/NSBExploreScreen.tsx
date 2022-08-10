@@ -3,7 +3,6 @@ import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
 import { FindAName } from "../../components/NameServiceBooking/FindAName";
-import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { HollowPrimaryButton } from "../../components/buttons/HollowPrimaryButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
@@ -11,10 +10,13 @@ import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { isTokenOwned } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
+import {FeedbacksContext} from "../../context/FeedbacksProvider"
+import {ScreenContainer} from "../../components/ScreenContainer"
 
 export const NSBExploreScreen: React.FC = () => {
   const navigation = useAppNavigation();
-  const { name, setName, setNsbLoading } = useContext(NSBContext);
+  const { name, setName } = useContext(NSBContext);
+  const { setLoadingFullScreen } = useContext(FeedbacksContext);
   const { tokens, loadingTokens } = useTokenList();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
@@ -23,11 +25,11 @@ export const NSBExploreScreen: React.FC = () => {
 
   // Sync nsbLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
   return (
-    <ScreenContainerNSB
+    <ScreenContainer hideSidebar
       footerChildren={<BacKTo label="home" navItem="NSBHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
@@ -69,6 +71,6 @@ export const NSBExploreScreen: React.FC = () => {
           </View>
         ) : null}
       </FindAName>
-    </ScreenContainerNSB>
+    </ScreenContainer>
   );
 };

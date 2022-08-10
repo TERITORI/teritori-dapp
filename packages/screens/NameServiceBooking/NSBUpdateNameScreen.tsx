@@ -1,21 +1,21 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import * as R from "ramda";
 import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
 import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
 import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
-import { ScreenContainerNSB } from "../../components/NameServiceBooking/ScreenContainerNSB";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee } from "../../utils/fee";
-import { isTokenOwned } from "../../utils/handefulFunctions";
+import {isTokenOwned, normalizedTokenId} from "../../utils/handefulFunctions"
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
+import {FeedbacksContext} from "../../context/FeedbacksProvider"
+import {ScreenContainer} from "../../components/ScreenContainer"
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const NSBUpdateNameScreen: React.FC<{
@@ -23,8 +23,9 @@ export const NSBUpdateNameScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
+  const { name, setName } =
     useContext(NSBContext);
+  const { setLoadingFullScreen, setToastSuccess, setToastError } = useContext(FeedbacksContext);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
@@ -55,11 +56,11 @@ export const NSBUpdateNameScreen: React.FC<{
         validator_operator_address: token.extension.validator_operator_address,
       };
       setInitialized(true);
-      setNsbLoading(false);
+      setLoadingFullScreen(false);
       setInitialData(tokenData);
     } catch {
       setInitialized(true);
-      setNsbLoading(false);
+      setLoadingFullScreen(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
@@ -67,7 +68,7 @@ export const NSBUpdateNameScreen: React.FC<{
 
   // Sync nsbLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
   // ==== Init
@@ -91,7 +92,7 @@ export const NSBUpdateNameScreen: React.FC<{
     if (!signingClient || !walletAddress) {
       return;
     }
-    setNsbLoading(true);
+    setLoadingFullScreen(true);
     const {
       image, // TODO - support later
       // image_data
@@ -106,11 +107,9 @@ export const NSBUpdateNameScreen: React.FC<{
       validator_operator_address,
     } = _data;
 
-    const normalizedTokenId = R.toLower(name + process.env.TLD);
-
     const msg = {
       update_metadata: {
-        token_id: normalizedTokenId,
+        token_id: normalizedTokenId(name),
         metadata: {
           image,
           image_data: null, // TODO - support later
@@ -136,26 +135,26 @@ export const NSBUpdateNameScreen: React.FC<{
         defaultMemo
       );
       if (updatedToken) {
-        console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token
-        setNsbSuccess({
-          title: normalizedTokenId + " successfully updated",
+        console.log(normalizedTokenId(name) + " successfully updated"); //TODO: redirect to the token
+        setToastSuccess({
+          title: normalizedTokenId(name) + " successfully updated",
           message: "",
         });
         navigation.navigate("NSBConsultName", { name });
-        setNsbLoading(false);
+        setLoadingFullScreen(false);
       }
     } catch (err) {
-      setNsbError({
+      setToastError({
         title: "Something went wrong!",
         message: err.message,
       });
       console.warn(err);
-      setNsbLoading(false);
+      setLoadingFullScreen(false);
     }
   };
 
   return (
-    <ScreenContainerNSB
+    <ScreenContainer hideSidebar
       footerChildren={
         <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
       }
@@ -178,6 +177,6 @@ export const NSBUpdateNameScreen: React.FC<{
           />
         </View>
       </View>
-    </ScreenContainerNSB>
+    </ScreenContainer>
   );
 };
