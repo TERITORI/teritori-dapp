@@ -6,7 +6,7 @@ import BackSVG from "../../../assets/icons/back.svg"
 import {BrandText} from "../BrandText"
 import {neutral22} from "../../utils/colors"
 
-export const BackToButton: React.FC<{
+export const BackTo: React.FC<{
 		label?: string;
 		navItem?: keyof RootStackParamList;
 		onPress?: () => void;

@@ -3,7 +3,7 @@ import React from "react";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import {SocialNetworks} from "../../components/Footer"
 import {View} from "react-native"
-import {BackToButton} from "../../components/navigation/BackToButton"
+import {BackTo} from "../../components/navigation/BackTo"
 import {TertiaryBadge} from "../../components/badges/TertiaryBadge"
 import {BrandText} from "../../components/BrandText"
 
@@ -11,7 +11,7 @@ export const MintGuardiansScreen: React.FC = () => {
 		return (
 				<ScreenContainer
 						footerChildren={<SocialNetworks />}
-						headerChildren={<BackToButton label="Guardians Collection" />}
+						headerChildren={<BackTo label="Guardians Collection" />}
 				>
 						<View
 								style={{

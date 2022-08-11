@@ -11,7 +11,7 @@ import { isTokenOwned } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackToButton} from "../../components/navigation/BackToButton"
+import {BackTo} from "../../components/navigation/BackTo"
 
 export const NSBExploreScreen: React.FC = () => {
   const navigation = useAppNavigation();
@@ -30,7 +30,7 @@ export const NSBExploreScreen: React.FC = () => {
 
   return (
     <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
-      footerChildren={<BackToButton label="Back to home" navItem="NSBHome" />}
+      footerChildren={<BackTo label="Back to home" navItem="NSBHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName

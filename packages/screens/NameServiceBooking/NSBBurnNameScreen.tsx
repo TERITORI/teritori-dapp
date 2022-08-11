@@ -17,7 +17,7 @@ import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackToButton} from "../../components/navigation/BackToButton"
+import {BackTo} from "../../components/navigation/BackTo"
 
 export const NSBBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NSBUpdateName">;
@@ -92,7 +92,7 @@ export const NSBBurnNameScreen: React.FC<{
   return (
     <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
       footerChildren={
-        <BackToButton label={"Back to " + name} navItem="NSBConsultName" navParams={{ name }} />
+        <BackTo label={"Back to " + name} navItem="NSBConsultName" navParams={{ name }} />
       }
     >
       <View

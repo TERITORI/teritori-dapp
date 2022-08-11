@@ -27,7 +27,7 @@ import {
 } from "../../utils/teritori";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackToButton} from "../../components/navigation/BackToButton"
+import {BackTo} from "../../components/navigation/BackTo"
 
 const SendFundModal: React.FC<{
   onClose: () => void;
@@ -60,7 +60,7 @@ const SendFundModal: React.FC<{
               marginVertical: 20,
             }}
           >
-            <BackToButton
+            <BackTo
               label="Back to search"
               navItem="NSBRegister"
               onPress={() => setVisible(false)}
@@ -99,7 +99,7 @@ const NotOwnerActions = () => {
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BackToButton label="Back to search" navItem="NSBRegister" />
+      <BackTo label="Back to search" navItem="NSBRegister" />
       <PrimaryButton
         text="Send funds"
         style={btnStyle}
@@ -120,7 +120,7 @@ const OwnerActions = () => {
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BackToButton navItem="NSBManage" label="Back"/>
+      <BackTo navItem="NSBManage" label="Back"/>
       <DarkButton
         text="Update metadata"
         style={btnStyle}
@@ -178,7 +178,7 @@ export const NSBConsultNameScreen: React.FC<{
         ) : !notFound ? (
           <NotOwnerActions />
         ) : (
-          <BackToButton navItem="NSBHome" label="Back to home" />
+          <BackTo navItem="NSBHome" label="Back to home" />
         )
       }
     >

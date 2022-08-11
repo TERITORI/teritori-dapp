@@ -15,7 +15,7 @@ import { tokenWithoutTld } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackToButton} from "../../components/navigation/BackToButton"
+import {BackTo} from "../../components/navigation/BackTo"
 
 const NameCard: React.FC<{
   fullName: string;
@@ -117,7 +117,7 @@ export const NSBManageScreen: React.FC = () => {
 
   return (
     <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
-      footerChildren={<BackToButton label="Back to home" navItem="NSBHome" />}
+      footerChildren={<BackTo label="Back to home" navItem="NSBHome" />}
     >
       <View style={{ flex: 1, alignItems: "center" }}>
         {/*TODO: Gradient text green-blue*/}

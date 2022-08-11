@@ -15,7 +15,7 @@ import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackToButton} from "../../components/navigation/BackToButton"
+import {BackTo} from "../../components/navigation/BackTo"
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const NSBMintPathScreen: React.FC<{
@@ -166,7 +166,7 @@ export const NSBMintPathScreen: React.FC<{
   return (
     <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
       footerChildren={
-        <BackToButton label={"Back to " + name} navItem="NSBConsultName" navParams={{ name }} />
+        <BackTo label={"Back to " + name} navItem="NSBConsultName" navParams={{ name }} />
       }
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>

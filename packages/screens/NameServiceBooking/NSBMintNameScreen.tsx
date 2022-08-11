@@ -18,7 +18,7 @@ import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackToButton} from "../../components/navigation/BackToButton"
+import {BackTo} from "../../components/navigation/BackTo"
 
 const CostContainer: React.FC = () => {
   const innerHeight = 32;
@@ -200,7 +200,7 @@ export const NSBMintNameScreen: React.FC<{
 
   return (
     <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
-      footerChildren={<BackToButton label="Back to search" navItem="NSBRegister" />}
+      footerChildren={<BackTo label="Back to search" navItem="NSBRegister" />}
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
         <CostContainer />
