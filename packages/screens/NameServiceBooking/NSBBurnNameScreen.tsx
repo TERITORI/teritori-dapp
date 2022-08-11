@@ -10,7 +10,7 @@ import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
-import { neutral33 } from "../../utils/colors";
+import { neutral33 } from "../../utils/style/colors";
 import { defaultExecuteFee } from "../../utils/fee";
 import {isTokenOwned, normalizedTokenId} from "../../utils/handefulFunctions"
 import { defaultMemo } from "../../utils/memo";

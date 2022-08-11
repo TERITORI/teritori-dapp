@@ -2,6 +2,7 @@ import {
   useFonts,
   Exo_600SemiBold,
   Exo_500Medium,
+  Exo_700Bold,
 } from "@expo-google-fonts/exo";
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
@@ -26,6 +27,7 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     Exo_500Medium,
     Exo_600SemiBold,
+    Exo_700Bold,
   });
 
   // FIXME: Fonts don't load on electron

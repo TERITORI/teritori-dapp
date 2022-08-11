@@ -1,7 +1,7 @@
 import React from "react";
 import { TextInput, View, ViewStyle } from "react-native";
 
-import { neutral22, neutral33, neutral77 } from "../../utils/colors";
+import { neutral22, neutral33, neutral77 } from "../../utils/style/colors";
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,

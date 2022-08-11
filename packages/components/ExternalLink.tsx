@@ -1,7 +1,7 @@
 import React from "react";
 import { TextStyle, TouchableOpacity, Linking } from "react-native";
 
-import { primaryColor } from "../utils/colors";
+import { primaryColor } from "../utils/style/colors";
 import { BrandText } from "./BrandText";
 
 export const ExternalLink: React.FC<{

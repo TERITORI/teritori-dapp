@@ -12,7 +12,7 @@ import {
 import {Header} from "./Header"
 import {Sidebar} from "./navigation/Sidebar"
 import {WalletsManager} from "./WalletsManager"
-import {screenContainerContentMarginH, sidebarWidth} from "../utils/layout"
+import {screenContainerContentMarginH, sidebarWidth} from "../utils/style/layout"
 import {ToastError} from "./toasts/ToastError"
 import {ToastSuccess} from "./toasts/ToastSuccess"
 import {Footer} from "./Footer"

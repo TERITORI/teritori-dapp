@@ -14,7 +14,7 @@ import ModalBase from "../../components/modals/ModalBase";
 import { NSBContext } from "../../context/NSBProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useStore } from "../../store/cosmwasm";
-import { neutral33, neutral44, neutral77 } from "../../utils/colors";
+import { neutral33, neutral44, neutral77 } from "../../utils/style/colors";
 import {
   isTokenOwned,
   numberWithThousandsSeparator,

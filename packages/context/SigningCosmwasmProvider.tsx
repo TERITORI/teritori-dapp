@@ -1,4 +1,4 @@
-import React, {createContext, useContext, ReactNode, useEffect} from "react"
+import React, {createContext, useContext, useEffect} from "react"
 
 import {
   useSigningCosmWasmClient,

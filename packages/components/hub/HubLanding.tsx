@@ -20,7 +20,7 @@ import Logo from "../../../assets/logo.svg";
 import { useLaunchpadData } from "../../context/LaunchpadProvider";
 import { useWallets } from "../../context/WalletsProvider";
 import { LaunchpadItem } from "../../utils/airtable";
-import { helpAreaWidth, sidebarWidth } from "../../utils/layout";
+import { helpAreaWidth, sidebarWidth } from "../../utils/style/layout";
 import { useAppNavigation } from "../../utils/navigation";
 import { BrandText } from "../BrandText";
 import { CarouselSection } from "../CarouselSection";

@@ -4,7 +4,7 @@ import { View, Image, TouchableOpacity } from "react-native";
 
 import copyPNG from "../../../assets/icons/copy.png";
 import { NSBContext } from "../../context/NSBProvider";
-import { neutral22, neutral33 } from "../../utils/colors";
+import { neutral22, neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 

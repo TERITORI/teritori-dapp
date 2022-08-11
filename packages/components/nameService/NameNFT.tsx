@@ -4,7 +4,7 @@ import { Image, View, ViewStyle } from "react-native";
 import defaultNameNFT from "../../../assets/default-name-nft.png";
 import { NSBContext } from "../../context/NSBProvider";
 import { getToken } from "../../hooks/tokens";
-import { neutral33 } from "../../utils/colors";
+import { neutral33 } from "../../utils/style/colors";
 import { NameAndTldText } from "./NameAndTldText";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 

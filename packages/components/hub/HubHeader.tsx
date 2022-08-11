@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 
 import { useWallets } from "../../context/WalletsProvider";
-import { neutral33 } from "../../utils/colors";
+import { neutral33 } from "../../utils/style/colors";
 import {
   AppNavigationProp,
   getCurrentRouteName,

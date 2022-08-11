@@ -1,6 +1,4 @@
-import React, {createContext, useContext, useEffect, useState} from "react"
-import { useSigningCosmWasmClient } from "../hooks/useSigningCosmWasmClient";
-import {FeedbacksContext} from "./FeedbacksProvider"
+import React, {createContext, useState} from "react"
 
 interface DefaultValue {
   name: string;

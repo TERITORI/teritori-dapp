@@ -1,7 +1,7 @@
 import * as React from "react";
 import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { primaryColor } from "../../utils/colors";
+import { primaryColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 export const HollowPrimaryButton: React.FC<{

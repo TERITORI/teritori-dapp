@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, ViewStyle } from "react-native";
 
-import {neutral33} from "../../utils/colors"
+import {neutral33} from "../../utils/style/colors"
 import { BrandText } from "../BrandText";
 
 export const TertiaryBadge: React.FC<{
@@ -12,8 +12,8 @@ export const TertiaryBadge: React.FC<{
 				<View
 						style={[
 								{
-										paddingVertical: 4,
-										paddingHorizontal: 10,
+										paddingVertical: 5,
+										paddingHorizontal: 12,
 										backgroundColor: neutral33,
 										borderRadius: 999,
 										width: "fit-content",

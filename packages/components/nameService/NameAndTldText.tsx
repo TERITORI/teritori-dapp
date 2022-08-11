@@ -1,7 +1,7 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
 
-import { neutral77 } from "../../utils/colors";
+import { neutral77 } from "../../utils/style/colors";
 import { tldFromToken, tokenWithoutTld } from "../../utils/handefulFunctions";
 import { BrandText } from "../BrandText";
 

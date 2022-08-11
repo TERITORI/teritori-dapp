@@ -4,12 +4,12 @@ import {View, Image, TouchableOpacity, ViewStyle, SafeAreaView} from "react-nati
 import secondaryCardSmPNG from "../../assets/cards/secondary-card-sm.png";
 import LogoTopSVG from "../../assets/logo-top.svg";
 import { useHasUserConnectedWallet } from "../hooks/useHasUserConnectedWallet";
-import {headerHeight, screenContainerContentMarginH} from "../utils/layout"
+import {headerHeight, screenContainerContentMarginH} from "../utils/style/layout"
 import { useAppNavigation } from "../utils/navigation";
 import { BrandText } from "./BrandText";
 import { WalletSelector } from "./WalletSelector";
 import { WalletsManager } from "./WalletsManager";
-import {neutral33} from "../utils/colors"
+import {neutral33} from "../utils/style/colors"
 
 // Displayed when no wallet connected. Press to connect wallet
 const ConnectWalletButton: React.FC<{

@@ -4,7 +4,7 @@ import {RootStackParamList, useAppNavigation} from "../../utils/navigation"
 import {Image, TouchableOpacity, View} from "react-native"
 import BackSVG from "../../../assets/icons/back.svg"
 import {BrandText} from "../BrandText"
-import {neutral22} from "../../utils/colors"
+import {neutral22} from "../../utils/style/colors"
 
 export const BackTo: React.FC<{
 		label?: string;
