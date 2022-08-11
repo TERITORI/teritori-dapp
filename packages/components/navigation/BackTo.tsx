@@ -15,7 +15,7 @@ export const BackTo: React.FC<{
 		const navigation = useAppNavigation();
 		const labelFontSize = 16;
 
-		const _onPress = () => {
+		const handleOnPress = () => {
 				if (onPress) onPress();
 				if (!navItem) navigation.goBack();
 				else if (navItem && navParams) navigation.navigate(navItem, navParams);
@@ -23,7 +23,7 @@ export const BackTo: React.FC<{
 		};
 
 		return (
-				<TouchableOpacity onPress={_onPress}>
+				<TouchableOpacity onPress={handleOnPress}>
 						<View
 								style={{
 										flex: 1,
