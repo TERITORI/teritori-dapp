@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useSigningClient } from "../context/cosmwasm";
+import { useSigningClient } from "../context/SigningCosmwasmProvider";
 import { useStore } from "../store/cosmwasm";
 
 export function usePrimaryAlias() {

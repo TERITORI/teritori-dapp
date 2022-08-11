@@ -6,13 +6,13 @@ import {
 		View,
 		StyleSheet,
 		useWindowDimensions,
-		Platform
+		Platform, ViewStyle
 } from "react-native"
 
 import {Header} from "./Header"
-import {Sidebar} from "./Sidebar"
+import {Sidebar} from "./navigation/Sidebar"
 import {WalletsManager} from "./WalletsManager"
-import {screenContainerContentMarginH} from "../utils/layout"
+import {screenContainerContentMarginH, sidebarWidth} from "../utils/layout"
 import {ToastError} from "./toasts/ToastError"
 import {ToastSuccess} from "./toasts/ToastSuccess"
 import {Footer} from "./Footer"
@@ -21,11 +21,13 @@ import {FeedbacksContext, initialToastError, initialToastSuccess} from "../conte
 export const ScreenContainer: React.FC<{
 		headerChildren?: ReactElement;
   footerChildren?: ReactElement;
+		headerStyle?: ViewStyle;
 		hideSidebar?: boolean;
 }> = ({
   children,
   headerChildren,
   footerChildren,
+		headerStyle,
 																																						hideSidebar
 }) => {
 		const [modalVisible, setModalVisible] = useState(false)
@@ -45,7 +47,7 @@ export const ScreenContainer: React.FC<{
 						<View style={styles.container}>
 								<View style={{width: "100%", flex: 1}}>
           {/*==== Header*/}
-										<Header>{headerChildren}</Header>
+										<Header style={headerStyle}>{headerChildren}</Header>
 
 										<View
 												style={{width: "100%", flexDirection: "row", flex: 1, height}}
@@ -62,7 +64,7 @@ export const ScreenContainer: React.FC<{
 
 										</View>
           {/*==== Footer*/}
-										<Footer>{footerChildren}</Footer>
+										<Footer style={!hideSidebar && {paddingLeft: sidebarWidth}}> {footerChildren}</Footer>
 								</View>
 						</View>
 				</SafeAreaView>

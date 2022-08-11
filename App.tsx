@@ -10,14 +10,14 @@ import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
-import { Navigator } from "./packages/components/Navigator";
+import { Navigator } from "./packages/components/navigation/Navigator";
 import { LaunchpadProvider } from "./packages/context/LaunchpadProvider";
 import NSBContextProvider from "./packages/context/NSBProvider";
 import { SolanaBalanceProvider } from "./packages/context/SolanaBalanceProvider";
 import { SolanaOwnedNFTsProvider } from "./packages/context/SolanaOwnedNFTsProvider";
 import { TeritoriBalanceProvider } from "./packages/context/TeritoriBalanceProvider";
 import { WalletsProvider } from "./packages/context/WalletsProvider";
-import { SigningCosmWasmProvider } from "./packages/context/cosmwasm";
+import { SigningCosmWasmProvider } from "./packages/context/SigningCosmwasmProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 import FeedbacksContextProvider from "./packages/context/FeedbacksProvider"
@@ -37,24 +37,24 @@ export default function App() {
     <NavigationContainer linking={linking}>
       <SafeAreaProvider>
         <ReduxProvider store={store}>
+          <FeedbacksContextProvider>
           <WalletsProvider>
             <SolanaBalanceProvider>
               <TeritoriBalanceProvider>
                 <SolanaOwnedNFTsProvider>
                   <SigningCosmWasmProvider>
-                    <FeedbacksContextProvider>
                       <NSBContextProvider>
                         <LaunchpadProvider>
                           <StatusBar style="inverted" />
                           <Navigator />
                         </LaunchpadProvider>
                       </NSBContextProvider>
-                    </FeedbacksContextProvider>
                   </SigningCosmWasmProvider>
                 </SolanaOwnedNFTsProvider>
               </TeritoriBalanceProvider>
             </SolanaBalanceProvider>
           </WalletsProvider>
+          </FeedbacksContextProvider>
         </ReduxProvider>
       </SafeAreaProvider>
     </NavigationContainer>

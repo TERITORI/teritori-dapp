@@ -6,17 +6,17 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import governanceIconPNG from "../../assets/icons/governance.png";
-import guardiansIconPNG from "../../assets/icons/guardians.png";
-import launchpadIconPNG from "../../assets/icons/launchpad.png";
-import marketplaceIconPNG from "../../assets/icons/marketplace.png";
-import sidebarBottomPNG from "../../assets/sidebar-bottom.png";
-import sidebarContainerSelectedPNG from "../../assets/sidebar-container-selected.png";
-import sidebarContainerPNG from "../../assets/sidebar-container.png";
-import sidebarTopPNG from "../../assets/sidebar-top.png";
-import { neutral33 } from "../utils/colors";
-import { sidebarWidth } from "../utils/layout";
-import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
+import governanceIconPNG from "../../../assets/icons/governance.png";
+import guardiansIconPNG from "../../../assets/icons/guardians.png";
+import launchpadIconPNG from "../../../assets/icons/launchpad.png";
+import marketplaceIconPNG from "../../../assets/icons/marketplace.png";
+import sidebarBottomPNG from "../../../assets/sidebar-bottom.png";
+import sidebarContainerSelectedPNG from "../../../assets/sidebar-container-selected.png";
+import sidebarContainerPNG from "../../../assets/sidebar-container.png";
+import sidebarTopPNG from "../../../assets/sidebar-top.png";
+import { neutral33 } from "../../utils/colors";
+import { sidebarWidth } from "../../utils/layout";
+import { getCurrentRouteName, useAppNavigation } from "../../utils/navigation";
 
 const SidebarButton: React.FC<{
   source: ImageSourcePropType;

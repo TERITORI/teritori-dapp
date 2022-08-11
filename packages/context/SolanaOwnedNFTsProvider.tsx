@@ -1,5 +1,5 @@
 import { JsonMetadata } from "@metaplex-foundation/js-next";
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { Network } from "../utils/network";
 import { getSolanaOwnedNFTS } from "../utils/solana";

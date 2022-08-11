@@ -6,6 +6,7 @@ import { NSBContext } from "../../context/NSBProvider";
 import { getToken } from "../../hooks/tokens";
 import { neutral33 } from "../../utils/colors";
 import { NameAndTldText } from "./NameAndTldText";
+import {FeedbacksContext} from "../../context/FeedbacksProvider"
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameNFT: React.FC<{
@@ -13,7 +14,7 @@ export const NameNFT: React.FC<{
   name: string;
 }> = ({ style, name }) => {
   const [imageUrl, setImageUrl] = useState(null);
-  const { setNsbError } = useContext(NSBContext);
+  const { setToastError } = useContext(FeedbacksContext);
   const width = 332;
   const height = 404;
   const imageMargin = 12;
@@ -26,7 +27,7 @@ export const NameNFT: React.FC<{
           setImageUrl(tokenData.image);
       })
       .catch((strError) => {
-        setNsbError({
+        setToastError({
           title: "Something went wrong!",
           message: strError,
         });

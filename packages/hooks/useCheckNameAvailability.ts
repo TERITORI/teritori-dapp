@@ -3,14 +3,15 @@ import { useContext, useEffect, useState } from "react";
 
 import { NSBContext } from "../context/NSBProvider";
 import { isTokenOwned } from "../utils/handefulFunctions";
-import { getNonSigningClient } from "./cosmwasm";
+import { getNonSigningClient } from "./useSigningCosmWasmClient";
+import {FeedbacksContext} from "../context/FeedbacksProvider"
 
 // NSB : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
 export const useCheckNameAvailability = (name, tokens: string[]) => {
   const [nameAvailable, setNameAvailable] = useState(true);
   const [nameError, setNameError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { setNsbError } = useContext(NSBContext);
+  const { setToastError } = useContext(FeedbacksContext);
 
   useEffect(() => {}, [nameAvailable]);
 
@@ -61,7 +62,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
         setLoading(false);
         setNameAvailable(false);
         setNameError(true);
-        setNsbError({
+        setToastError({
           title: "Something went wrong!",
           message: e.message,
         });

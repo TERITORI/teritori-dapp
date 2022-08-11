@@ -1,8 +1,6 @@
-import PropTypes from "prop-types";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useState } from "react";
 
 import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
-import { useSigningCosmWasmClient } from "../hooks/cosmwasm";
 import {ToastError} from "../components/toasts/ToastError"
 import {ToastSuccess} from "../components/toasts/ToastSuccess"
 
@@ -32,7 +30,7 @@ const defaultValue: DefaultValue = {
 
 export const FeedbacksContext = createContext(defaultValue);
 
-const FeedbacksContextProvider = ({ children }) => {
+const FeedbacksContextProvider: React.FC = ({ children }) => {
 		const [loadingFullScreen, setLoadingFullScreen] = useState(false);
 		const [toastError, setToastError] = useState(initialToastError);
 		const [toastSuccess, setToastSuccess] = useState(initialToastSuccess);
@@ -69,13 +67,6 @@ const FeedbacksContextProvider = ({ children }) => {
 						{children}
 				</FeedbacksContext.Provider>
 		);
-};
-
-FeedbacksContextProvider.propTypes = {
-		children: PropTypes.oneOfType([
-				PropTypes.arrayOf(PropTypes.node),
-				PropTypes.node,
-		]),
 };
 
 export default FeedbacksContextProvider;

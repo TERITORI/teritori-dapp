@@ -4,7 +4,7 @@ import { Modal, Pressable, View, ViewStyle, Image } from "react-native";
 
 import crossPNG from "../../../assets/icons/cross.png";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
-import { neutral23, neutral33 } from "../../utils/colors";
+import { neutral22, neutral33 } from "../../utils/colors";
 import { BrandText } from "../BrandText";
 
 // Just an horizontal separator
@@ -51,7 +51,7 @@ export const ModalBase: React.FC<{
         <View
           ref={mainContainerRef}
           style={{
-            backgroundColor: neutral23,
+            backgroundColor: neutral22,
             borderWidth: 1,
             borderColor: neutral33,
             borderRadius: 8,

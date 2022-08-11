@@ -2,9 +2,8 @@ import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { BacKTo } from "../../components/Footer";
-import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
-import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
+import { NameDataForm } from "../../components/nameService/NameDataForm";
+import { NameNFT } from "../../components/nameService/NameNFT";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
@@ -16,6 +15,7 @@ import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
+import {BackToButton} from "../../components/navigation/BackToButton"
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const NSBUpdateNameScreen: React.FC<{
@@ -66,7 +66,7 @@ export const NSBUpdateNameScreen: React.FC<{
     }
   };
 
-  // Sync nsbLoading
+  // Sync loadingFullScreen
   useEffect(() => {
     setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
@@ -154,9 +154,9 @@ export const NSBUpdateNameScreen: React.FC<{
   };
 
   return (
-    <ScreenContainer hideSidebar
+    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
       footerChildren={
-        <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
+        <BackToButton label={"Back to " + name} navItem="NSBConsultName" navParams={{ name }} />
       }
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>

@@ -40,12 +40,14 @@ interface State {
   setPaths: (ps: Metadata[]) => void;
 }
 
+// Zustand state management : Creating a store
 const useStore = create<
   State,
   SetState<State>,
   GetState<State>,
   StoreApiWithPersist<State>
 >(
+  // TODO: devtools is deprecated, be careful (Fix it ?)
   devtools(
     // persist(
     (set) =>

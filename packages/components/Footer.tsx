@@ -87,58 +87,16 @@ export const SocialNetworks: React.FC = () => {
   );
 };
 
-// A clickable "<- Back To xxx" or "<- Back". Choose if navigate() or goBack(). You can handle more action with onPress() prop
-export const BacKTo: React.FC<{
-  label?: string;
-  navItem?: keyof RootStackParamList;
-  justBack?: boolean;
-  onPress?: () => void;
-  navParams?: object;
-}> = ({ label, navItem, justBack, onPress, navParams }) => {
-  const navigation = useAppNavigation();
-  const labelFontSize = 16;
-
-  const _onPress = () => {
-    if (onPress) onPress();
-    if (justBack) navigation.goBack();
-    else if (navParams) navigation.navigate(navItem, navParams);
-    else navigation.navigate(navItem);
-  };
-
-  return (
-    <TouchableOpacity onPress={_onPress}>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Image source={backPNG} style={{ width: 24, height: 24 }} />
-        <BrandText
-          style={{
-            fontSize: labelFontSize,
-            lineHeight: 16,
-            letterSpacing: -(labelFontSize * 0.04),
-            marginLeft: 8,
-          }}
-        >
-          {label ? `Back to ${label}` : "Back"}
-        </BrandText>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
 // A footer that can contains children
 {
   /*TODO: Is it a good name for this cpt ?*/
 }
-export const Footer: React.FC = ({ children }) => {
+export const Footer: React.FC<{
+  style?: ViewStyle;
+}> = ({ children, style }) => {
   return (
     <View
-      style={{
+      style={[{
         height: footerHeight,
         maxHeight: footerHeight,
         width: "100%",
@@ -146,7 +104,7 @@ export const Footer: React.FC = ({ children }) => {
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-      }}
+      }, style]}
     >
       <>{children}</>
     </View>

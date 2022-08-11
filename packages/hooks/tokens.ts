@@ -3,10 +3,11 @@ import * as R from "ramda";
 import { useContext, useEffect, useState } from "react";
 
 import { NSBContext } from "../context/NSBProvider";
-import { useSigningClient } from "../context/cosmwasm";
+import { useSigningClient } from "../context/SigningCosmwasmProvider";
 import { useStore } from "../store/cosmwasm";
 import { Metadata } from "../utils/types/messages";
-import { getNonSigningClient } from "./cosmwasm";
+import { getNonSigningClient } from "./useSigningCosmWasmClient";
+import {FeedbacksContext} from "../context/FeedbacksProvider"
 
 export const isPath = (str: string) => R.includes("::", str);
 export const isToken = R.complement(isPath);
@@ -156,7 +157,7 @@ export function useToken(tokenId: string, tld: string) {
 
   const { signingClient } = useSigningClient();
   const walletAddress = useStore((state) => state.walletAddress);
-  const { setNsbError } = useContext(NSBContext);
+  const { setToastError } = useContext(FeedbacksContext);
 
   useEffect(() => {
     if (!signingClient) {
@@ -191,7 +192,7 @@ export function useToken(tokenId: string, tld: string) {
         .catch((e) => {
           console.warn("ERROR getToken() : ", e);
           setLoading(false);
-          setNsbError({
+          setToastError({
             title: "Something went wrong!",
             message: e.message,
           });

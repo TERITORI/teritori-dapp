@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-import { HubIntro } from "../../components/HubIntro";
+import { HubIntro } from "../../components/hub/HubIntro";
 import { NFTView } from "../../components/NFTView";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Section } from "../../components/Section";

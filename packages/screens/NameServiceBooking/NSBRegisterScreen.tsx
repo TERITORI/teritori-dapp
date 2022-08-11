@@ -1,8 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
 
-import { BacKTo } from "../../components/Footer";
-import { FindAName } from "../../components/NameServiceBooking/FindAName";
+import { FindAName } from "../../components/nameService/FindAName";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
@@ -12,6 +11,7 @@ import { isTokenOwned } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
+import {BackToButton} from "../../components/navigation/BackToButton"
 
 export const NSBRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
@@ -24,7 +24,7 @@ export const NSBRegisterScreen: React.FC = () => {
     tokens
   );
 
-  // Sync nsbLoading
+  // Sync loadingFullScreen
   useEffect(() => {
     setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
@@ -35,8 +35,8 @@ export const NSBRegisterScreen: React.FC = () => {
   });
 
   return (
-    <ScreenContainer hideSidebar
-      footerChildren={<BacKTo label="home" navItem="NSBHome" />}
+    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
+      footerChildren={<BackToButton label="Back to home" navItem="NSBHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName

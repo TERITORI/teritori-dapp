@@ -4,8 +4,7 @@ import { Image, View } from "react-native";
 
 import burnPNG from "../../../assets/icons/burn.png";
 import { BrandText } from "../../components/BrandText";
-import { BacKTo } from "../../components/Footer";
-import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
+import { NameNFT } from "../../components/nameService/NameNFT";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
@@ -18,6 +17,7 @@ import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
+import {BackToButton} from "../../components/navigation/BackToButton"
 
 export const NSBBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NSBUpdateName">;
@@ -32,7 +32,7 @@ export const NSBBurnNameScreen: React.FC<{
   const navigation = useAppNavigation();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
 
-  // Sync nsbLoading
+  // Sync loadingFullScreen
   useEffect(() => {
     setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
@@ -90,9 +90,9 @@ export const NSBBurnNameScreen: React.FC<{
   };
 
   return (
-    <ScreenContainer hideSidebar
+    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
       footerChildren={
-        <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
+        <BackToButton label={"Back to " + name} navItem="NSBConsultName" navParams={{ name }} />
       }
     >
       <View

@@ -1,7 +1,7 @@
 import React from "react";
 import { TextInput, View, ViewStyle } from "react-native";
 
-import { neutral23, neutral33, neutral77 } from "../../utils/colors";
+import { neutral22, neutral33, neutral77 } from "../../utils/colors";
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
@@ -63,7 +63,7 @@ export const TextInputCustom: React.FC<{
           borderColor: neutral33,
           borderWidth: 1,
           borderRadius: 8,
-          backgroundColor: neutral23,
+          backgroundColor: neutral22,
           flex: 1,
           height: 48,
           minHeight: 48,

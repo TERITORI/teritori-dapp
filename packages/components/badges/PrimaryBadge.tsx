@@ -4,7 +4,7 @@ import { View, ViewStyle } from "react-native";
 import { primaryColor } from "../../utils/colors";
 import { BrandText } from "../BrandText";
 
-export const PrimaryPill: React.FC<{
+export const PrimaryBadge: React.FC<{
   label: string;
   style?: ViewStyle;
 }> = ({ label, style }) => {

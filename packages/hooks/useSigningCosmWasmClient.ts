@@ -25,10 +25,12 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  ////// TODO: These lines produces "Invalid hook call. Hooks can only be called inside of the body of a function component"
   const setSigningClient = useStore((state) => state.setSigningClient);
   const setStoreWalletAddress = useStore((state) => state.setWalletAddress);
   const walletAddress = useStore((state) => state.walletAddress);
   const signingClient = useStore((state) => state.signingClient);
+  /////////
 
   const hasUserConnectedWallet = useHasUserConnectedWallet();
 

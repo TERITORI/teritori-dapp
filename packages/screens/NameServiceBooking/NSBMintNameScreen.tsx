@@ -5,9 +5,8 @@ import { Image, View } from "react-native";
 import longCardPNG from "../../../assets/cards/long-card.png";
 import coinPNG from "../../../assets/icons/coin.png";
 import { BrandText } from "../../components/BrandText";
-import { BacKTo } from "../../components/Footer";
-import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
-import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
+import { NameDataForm } from "../../components/nameService/NameDataForm";
+import { NameNFT } from "../../components/nameService/NameNFT";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
@@ -19,6 +18,7 @@ import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
+import {BackToButton} from "../../components/navigation/BackToButton"
 
 const CostContainer: React.FC = () => {
   const innerHeight = 32;
@@ -108,7 +108,7 @@ export const NSBMintNameScreen: React.FC<{
     }
   };
 
-  // Sync nsbLoading
+  // Sync loadingFullScreen
   useEffect(() => {
     setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
@@ -199,8 +199,8 @@ export const NSBMintNameScreen: React.FC<{
   };
 
   return (
-    <ScreenContainer hideSidebar
-      footerChildren={<BacKTo label="search" navItem="NSBRegister" />}
+    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
+      footerChildren={<BackToButton label="Back to search" navItem="NSBRegister" />}
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
         <CostContainer />

@@ -4,9 +4,8 @@ import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
-import { BacKTo } from "../../components/Footer";
-import { NameAndTldText } from "../../components/NameServiceBooking/NameAndTldText";
-import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
+import { NameAndTldText } from "../../components/nameService/NameAndTldText";
+import { NameNFT } from "../../components/nameService/NameNFT";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
@@ -28,6 +27,7 @@ import {
 } from "../../utils/teritori";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
+import {BackToButton} from "../../components/navigation/BackToButton"
 
 const SendFundModal: React.FC<{
   onClose: () => void;
@@ -60,8 +60,8 @@ const SendFundModal: React.FC<{
               marginVertical: 20,
             }}
           >
-            <BacKTo
-              label="search"
+            <BackToButton
+              label="Back to search"
               navItem="NSBRegister"
               onPress={() => setVisible(false)}
             />
@@ -99,7 +99,7 @@ const NotOwnerActions = () => {
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BacKTo label="search" navItem="NSBRegister" />
+      <BackToButton label="Back to search" navItem="NSBRegister" />
       <PrimaryButton
         text="Send funds"
         style={btnStyle}
@@ -120,7 +120,7 @@ const OwnerActions = () => {
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BacKTo navItem="NSBManage" />
+      <BackToButton navItem="NSBManage" label="Back"/>
       <DarkButton
         text="Update metadata"
         style={btnStyle}
@@ -155,7 +155,7 @@ export const NSBConsultNameScreen: React.FC<{
   const signingClient = useStore((state) => state.signingClient);
   const navigation = useAppNavigation();
 
-  // Sync nsbLoading
+  // Sync loadingFullScreen
   useEffect(() => {
     setLoadingFullScreen(loadingToken);
   }, [loadingToken]);
@@ -171,14 +171,14 @@ export const NSBConsultNameScreen: React.FC<{
   });
 
   return (
-    <ScreenContainer hideSidebar
+    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
       footerChildren={
         isTokenOwned(tokens, name) && !notFound ? (
           <OwnerActions />
         ) : !notFound ? (
           <NotOwnerActions />
         ) : (
-          <BacKTo navItem="NSBHome" label="home" />
+          <BackToButton navItem="NSBHome" label="Back to home" />
         )
       }
     >

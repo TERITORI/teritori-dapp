@@ -6,8 +6,7 @@ import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 import flowCardPNG from "../../../assets/cards/flow-card.png";
 import logoSmPNG from "../../../assets/logo-sm.png";
 import { BrandText } from "../../components/BrandText";
-import { BacKTo } from "../../components/Footer";
-import { PrimaryPill } from "../../components/pills/PrimaryPill";
+import { PrimaryBadge } from "../../components/badges/PrimaryBadge";
 import { noTokens, useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
@@ -16,6 +15,7 @@ import { tokenWithoutTld } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
 import {FeedbacksContext} from "../../context/FeedbacksProvider"
 import {ScreenContainer} from "../../components/ScreenContainer"
+import {BackToButton} from "../../components/navigation/BackToButton"
 
 const NameCard: React.FC<{
   fullName: string;
@@ -61,7 +61,7 @@ const NameCard: React.FC<{
         </View>
 
         {isPrimary ? (
-          <PrimaryPill label="Primary" style={{ marginRight: 20 }} />
+          <PrimaryBadge label="Primary" style={{ marginRight: 20 }} />
         ) : null}
       </View>
     </TouchableOpacity>
@@ -79,7 +79,7 @@ export const NSBManageScreen: React.FC = () => {
   const titleFontSize = 48;
   const subTitleFontSize = 28;
 
-  // Sync nsbLoading
+  // Sync loadingFullScreen
   useEffect(() => {
     setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
@@ -116,8 +116,8 @@ export const NSBManageScreen: React.FC = () => {
   // );
 
   return (
-    <ScreenContainer hideSidebar
-      footerChildren={<BacKTo label="home" navItem="NSBHome" />}
+    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
+      footerChildren={<BackToButton label="Back to home" navItem="NSBHome" />}
     >
       <View style={{ flex: 1, alignItems: "center" }}>
         {/*TODO: Gradient text green-blue*/}

@@ -4,16 +4,17 @@ import { View, Image, TouchableOpacity } from "react-native";
 
 import copyPNG from "../../../assets/icons/copy.png";
 import { NSBContext } from "../../context/NSBProvider";
-import { neutral23, neutral33 } from "../../utils/colors";
+import { neutral22, neutral33 } from "../../utils/colors";
 import { BrandText } from "../BrandText";
+import {FeedbacksContext} from "../../context/FeedbacksProvider"
 
 export const CopyToClipboardCard: React.FC<{
   text: string;
 }> = ({ text }) => {
-  const { setNsbSuccess } = useContext(NSBContext);
+  const { setToastSuccess } = useContext(FeedbacksContext);
 
   const copyToClipboard = () => {
-    setNsbSuccess({
+    setToastSuccess({
       title: "Copied",
       message: "",
     });
@@ -33,7 +34,7 @@ export const CopyToClipboardCard: React.FC<{
           height: 40,
           maxHeight: 40,
           minHeight: 40,
-          backgroundColor: neutral23,
+          backgroundColor: neutral22,
           borderWidth: 1,
           borderColor: neutral33,
           borderRadius: 8,

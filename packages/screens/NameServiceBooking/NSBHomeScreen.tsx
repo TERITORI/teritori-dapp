@@ -152,7 +152,7 @@ export const NSBHomeScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer hideSidebar footerChildren={<SocialNetworks />}>
+    <ScreenContainer hideSidebar footerChildren={<SocialNetworks />} headerStyle={{borderBottomColor: "transparent"}}>
       <IntroLogoText
         subTitle="Name Service Booking"
         style={{ marginTop: 40 }}
