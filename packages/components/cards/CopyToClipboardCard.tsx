@@ -3,17 +3,17 @@ import React, { useContext } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import copyPNG from "../../../assets/icons/copy.png";
-import { NSBContext } from "../../context/NSBProvider";
-import { neutral23, neutral33 } from "../../utils/colors";
+import { TNSContext } from "../../context/TNSProvider";
+import { neutral23, neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 export const CopyToClipboardCard: React.FC<{
   text: string;
 }> = ({ text }) => {
-  const { setNsbSuccess } = useContext(NSBContext);
+  const { setTnsSuccess } = useContext(TNSContext);
 
   const copyToClipboard = () => {
-    setNsbSuccess({
+    setTnsSuccess({
       title: "Copied",
       message: "",
     });

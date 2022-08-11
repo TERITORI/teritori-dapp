@@ -1,7 +1,7 @@
 import React, { ReactElement, useContext } from "react";
 import { SafeAreaView, View, StyleSheet, ScrollView } from "react-native";
 
-import { initialNsbError, NSBContext } from "../context/NSBProvider";
+import { initialTnsError, TNSContext } from "../context/TNSProvider";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { ToastError } from "./toasts/ToastError";
@@ -12,8 +12,8 @@ import { ToastSuccess } from "./toasts/ToastSuccess";
 export const ScreenContainer2: React.FC<{
   footerChildren?: ReactElement;
 }> = ({ children, footerChildren }) => {
-  const { nsbError, setNsbError, nsbSuccess, setNsbSuccess } =
-    useContext(NSBContext);
+  const { tnsError, setTnsError, tnsSuccess, setTnsSuccess } =
+    useContext(TNSContext);
 
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
@@ -24,18 +24,18 @@ export const ScreenContainer2: React.FC<{
           <View style={{ flex: 1 }}>
             <Header />
 
-            {nsbError && nsbError.title ? (
+            {tnsError && tnsError.title ? (
               <ToastError
-                onPress={() => setNsbError(initialNsbError)}
-                title={nsbError.title}
-                message={nsbError.message}
+                onPress={() => setTnsError(initialTnsError)}
+                title={tnsError.title}
+                message={tnsError.message}
               />
             ) : null}
-            {nsbSuccess && nsbSuccess.title ? (
+            {tnsSuccess && tnsSuccess.title ? (
               <ToastSuccess
-                onPress={() => setNsbSuccess(initialNsbError)}
-                title={nsbSuccess.title}
-                message={nsbSuccess.message}
+                onPress={() => setTnsSuccess(initialTnsError)}
+                title={tnsSuccess.title}
+                message={tnsSuccess.message}
               />
             ) : null}
 

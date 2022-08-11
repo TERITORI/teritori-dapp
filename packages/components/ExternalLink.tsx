@@ -1,7 +1,7 @@
 import React from "react";
 import { TextStyle, TouchableOpacity, Linking } from "react-native";
 
-import { primaryColor } from "../utils/colors";
+import { primaryColor } from "../utils/style/colors";
 import { BrandText } from "./BrandText";
 
 export const ExternalLink: React.FC<{
@@ -15,7 +15,7 @@ export const ExternalLink: React.FC<{
         numberOfLines={numberOfLines}
         style={[
           {
-            // @ts-ignore
+            //@ts-expect-error
             textDecoration: "underline",
             // TODO: color gradient blue
             color: primaryColor,

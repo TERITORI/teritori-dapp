@@ -9,12 +9,12 @@ import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { PrimaryPill } from "../../components/pills/PrimaryPill";
-import { NSBContext } from "../../context/NSBProvider";
+import { TNSContext } from "../../context/TNSProvider";
 import { noTokens, useTokenList } from "../../hooks/tokens";
-import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
+import { useAreThereWallet } from "../../hooks/useAreThereWallet";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
 import { useStore } from "../../store/cosmwasm";
-import { tokenWithoutTld } from "../../utils/handefulFunctions";
+import { tokenWithoutTld } from "../../utils/tns";
 import { useAppNavigation } from "../../utils/navigation";
 
 const NameCard: React.FC<{
@@ -68,23 +68,23 @@ const NameCard: React.FC<{
   );
 };
 
-export const NSBManageScreen: React.FC = () => {
+export const TNSManageScreen: React.FC = () => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
-  const { setNsbLoading } = useContext(NSBContext);
+  const { setTnsLoading } = useContext(TNSContext);
   const { tokens, loadingTokens } = useTokenList();
   const { alias, loadingAlias } = usePrimaryAlias();
   const navigation = useAppNavigation();
-  const userHasCoWallet = useHasUserConnectedWallet();
+  const userHasCoWallet = useAreThereWallet();
   const signingClient = useStore((state) => state.signingClient);
   const titleFontSize = 48;
   const subTitleFontSize = 28;
 
-  // Sync nsbLoading
+  // Sync tnsLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setTnsLoading(loadingTokens);
   }, [loadingTokens]);
   useEffect(() => {
-    setNsbLoading(loadingAlias);
+    setTnsLoading(loadingAlias);
   }, [loadingAlias]);
 
   // ==== Init
@@ -92,7 +92,7 @@ export const NSBManageScreen: React.FC = () => {
     // ---- When this screen is called, if the user has no wallet, we go home (We are waiting for tokens state)
     // ===== Controls many things, be careful
     if ((tokens && !userHasCoWallet) || !signingClient)
-      navigation.navigate("NSBHome");
+      navigation.navigate("TNSHome");
     if (noTokens(tokens)) return;
 
     const firstTokenOnCurrentPage = tokens[0];
@@ -117,7 +117,7 @@ export const NSBManageScreen: React.FC = () => {
 
   return (
     <ScreenContainer2
-      footerChildren={<BacKTo label="home" navItem="NSBHome" />}
+      footerChildren={<BacKTo label="home" navItem="TNSHome" />}
     >
       <View style={{ flex: 1, alignItems: "center" }}>
         {/*TODO: Gradient text green-blue*/}
@@ -157,7 +157,7 @@ export const NSBManageScreen: React.FC = () => {
                 key={token}
                 style={{ marginTop: 20 }}
                 onPress={() =>
-                  navigation.navigate("NSBConsultName", {
+                  navigation.navigate("TNSConsultName", {
                     name: tokenWithoutTld(token),
                   })
                 }

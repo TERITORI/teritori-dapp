@@ -3,7 +3,7 @@ import { ViewStyle, Image, View, StyleProp } from "react-native";
 
 import CertifiedIcon from "../../assets/icons/certified.svg";
 import outlineStarPNG from "../../assets/icons/outline-star.png";
-import { neutral33, neutral77 } from "../utils/colors";
+import { neutral33, neutral77 } from "../utils/style/colors";
 import { NFTData } from "../utils/types/nft";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";

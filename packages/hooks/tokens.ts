@@ -2,10 +2,10 @@ import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import * as R from "ramda";
 import { useContext, useEffect, useState } from "react";
 
-import { NSBContext } from "../context/NSBProvider";
+import { TNSContext } from "../context/TNSProvider";
 import { useSigningClient } from "../context/cosmwasm";
 import { useStore } from "../store/cosmwasm";
-import { Metadata } from "../utils/types/messages";
+import { Metadata } from "../utils/types/tns";
 import { getNonSigningClient } from "./cosmwasm";
 
 export const isPath = (str: string) => R.includes("::", str);
@@ -156,7 +156,7 @@ export function useToken(tokenId: string, tld: string) {
 
   const { signingClient } = useSigningClient();
   const walletAddress = useStore((state) => state.walletAddress);
-  const { setNsbError } = useContext(NSBContext);
+  const { setTnsError } = useContext(TNSContext);
 
   useEffect(() => {
     if (!signingClient) {
@@ -191,7 +191,7 @@ export function useToken(tokenId: string, tld: string) {
         .catch((e) => {
           console.warn("ERROR getToken() : ", e);
           setLoading(false);
-          setNsbError({
+          setTnsError({
             title: "Something went wrong!",
             message: e.message,
           });

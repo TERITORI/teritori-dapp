@@ -1,4 +1,4 @@
-import { convertFromMicroDenom } from "../utils/conversion";
+import { convertFromMicroDenom } from "./conversion";
 
 // extend window with CosmJS and Keplr properties
 interface CosmosKeplrWindow extends Window {

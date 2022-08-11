@@ -3,7 +3,7 @@ import { Image, View } from "react-native";
 
 import availablePNG from "../../../assets/icons/available.png";
 import mintedPNG from "../../../assets/icons/minted.png";
-import { errorColor, successColor } from "../../utils/colors";
+import { errorColor, successColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)

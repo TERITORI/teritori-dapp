@@ -4,13 +4,12 @@ import {
 } from "@cosmjs/cosmwasm-stargate";
 import { useState } from "react";
 
-import { connectKeplr } from "../services/keplr";
+import { connectKeplr } from "../utils/keplr";
 import { useStore } from "../store/cosmwasm";
-import { OptionString } from "../utils/types/base";
-import { useHasUserConnectedWallet } from "./useHasUserConnectedWallet";
+import { useAreThereWallet } from "./useAreThereWallet";
 
 export interface ISigningCosmWasmClientContext {
-  walletAddress: OptionString;
+  walletAddress: string | null;
   signingClient: SigningCosmWasmClient | null;
   loading: boolean;
   error: any;
@@ -30,7 +29,7 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
   const walletAddress = useStore((state) => state.walletAddress);
   const signingClient = useStore((state) => state.signingClient);
 
-  const hasUserConnectedWallet = useHasUserConnectedWallet();
+  const hasUserConnectedWallet = useAreThereWallet();
 
   const connectWallet = async () => {
     setLoading(true);

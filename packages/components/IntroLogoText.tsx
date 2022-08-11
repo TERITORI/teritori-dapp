@@ -39,42 +39,6 @@ export const IntroLogoText: React.FC<{
         <Logo />
       </View>
 
-      {/*========= TEST GRADIENT TEXT*/}
-
-      {/*<BrandText*/}
-      {/*		style={{*/}
-      {/*				fontSize: titleFontSize,*/}
-      {/*				lineHeight: 32,*/}
-      {/*				letterSpacing: -(titleFontSize * 0.04)*/}
-      {/*		}}*/}
-      {/*>*/}
-      {/*		TERITORI*/}
-      {/*</BrandText>*/}
-
-      {/*<MaskedView*/}
-      {/*		style={{height: 24}}*/}
-      {/*		maskElement={*/}
-      {/*				<BrandText*/}
-      {/*						style={{*/}
-      {/*								fontSize: titleFontSize,*/}
-      {/*								lineHeight: 32,*/}
-      {/*								letterSpacing: -(titleFontSize * 0.04)*/}
-      {/*						}}*/}
-      {/*				>*/}
-      {/*						TERITORI*/}
-      {/*				</BrandText>*/}
-      {/*		}*/}
-      {/*>*/}
-      {/*		<LinearGradient*/}
-      {/*				colors={["#2AF598", "#009EFD"]}*/}
-      {/*				start={{x: 1, y: 1}}*/}
-      {/*				end={{x: 0, y: 0.33}}*/}
-      {/*				style={{flex: 1}}*/}
-      {/*		/>*/}
-      {/*</MaskedView>*/}
-
-      {/*========= ============*/}
-
       <BrandText
         style={{
           fontSize: 28,
@@ -84,35 +48,6 @@ export const IntroLogoText: React.FC<{
       >
         TERITORI
       </BrandText>
-
-      {/*<BrandText*/}
-      {/*		style={{fontWeight: "700", fontSize: subTitleFontSize, lineHeight: 21, letterSpacing: -(titleFontSize * 0.01)}}>*/}
-      {/*		{subTitle}*/}
-      {/*</BrandText>*/}
-
-      {/*<MaskedView*/}
-      {/*		style={{height: 24}}*/}
-      {/*		maskElement={*/}
-      {/*				<BrandText*/}
-      {/*						style={{*/}
-      {/*								fontWeight: "700",*/}
-      {/*								fontSize: subTitleFontSize,*/}
-      {/*								lineHeight: 21,*/}
-      {/*								letterSpacing: -(titleFontSize * 0.01),*/}
-      {/*								textTransform: "uppercase"*/}
-      {/*				}}*/}
-      {/*				>*/}
-      {/*						{subTitle}*/}
-      {/*				</BrandText>*/}
-      {/*		}*/}
-      {/*>*/}
-      {/*		<LinearGradient*/}
-      {/*				colors={["#2AF598", "#009EFD"]}*/}
-      {/*				start={{x: 1, y: 1}}*/}
-      {/*				end={{x: 0, y: 0.33}}*/}
-      {/*				style={{flex: 1}}*/}
-      {/*		/>*/}
-      {/*</MaskedView>*/}
 
       <BrandText
         style={{

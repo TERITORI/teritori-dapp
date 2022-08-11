@@ -12,7 +12,7 @@ import {
   neutral77,
   pinkDefault,
   yellowDefault,
-} from "../utils/colors";
+} from "../utils/style/colors";
 import { addressToNetwork, Network } from "../utils/network";
 import { keplrSuggestTeritori, teritoriChainId } from "../utils/teritori";
 import { WalletProvider } from "../utils/walletProvider";

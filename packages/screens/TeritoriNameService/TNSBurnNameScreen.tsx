@@ -6,55 +6,55 @@ import { Image, View } from "react-native";
 import burnPNG from "../../../assets/icons/burn.png";
 import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
-import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
+import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { DarkButton } from "../../components/buttons/DarkButton";
-import { NSBContext } from "../../context/NSBProvider";
+import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
-import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
+import { useAreThereWallet } from "../../hooks/useAreThereWallet";
 import { useStore } from "../../store/cosmwasm";
-import { neutral33 } from "../../utils/colors";
+import { neutral33 } from "../../utils/style/colors";
 import { defaultExecuteFee } from "../../utils/fee";
-import { isTokenOwned } from "../../utils/handefulFunctions";
+import { isTokenOwned } from "../../utils/tns";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 
-export const NSBBurnNameScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "NSBUpdateName">;
+export const TNSBurnNameScreen: React.FC<{
+  route: RouteProp<RootStackParamList, "TNSUpdateName">;
 }> = ({ route }) => {
-  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
-    useContext(NSBContext);
+  const { name, setName, setTnsError, setTnsSuccess, setTnsLoading } =
+    useContext(TNSContext);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
-  const userHasCoWallet = useHasUserConnectedWallet();
+  const userHasCoWallet = useAreThereWallet();
   const navigation = useAppNavigation();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   const normalizedTokenId = R.toLower(name + process.env.TLD);
 
-  // Sync nsbLoading
+  // Sync tnsLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setTnsLoading(loadingTokens);
   }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
-    // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the user doesn't own the token
+    // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token
     // @ts-ignore
     if (route.params && route.params.name) setName(route.params.name);
-    // ===== Controls many things, be careful TODO: Still redirects to NSBHome, weird..
+    // ===== Controls many things, be careful TODO: Still redirects to TNSHome, weird..
     if (
       (name &&
         tokens.length &&
         (!userHasCoWallet || !isTokenOwned(tokens, name))) ||
       !signingClient
     ) {
-      navigation.navigate("NSBHome");
+      navigation.navigate("TNSHome");
     }
   });
 
   const onSubmit = async () => {
-    setNsbLoading(true);
+    setTnsLoading(true);
 
     const msg = {
       burn: {
@@ -71,28 +71,28 @@ export const NSBBurnNameScreen: React.FC<{
       );
       if (updatedToken) {
         console.log(normalizedTokenId + " successfully burnt");
-        setNsbSuccess({
+        setTnsSuccess({
           title: normalizedTokenId + " successfully burnt",
           message: "",
         });
-        navigation.navigate("NSBManage");
-        setNsbLoading(false);
+        navigation.navigate("TNSManage");
+        setTnsLoading(false);
       }
     } catch (e) {
       // TODO env var for dev logging (?)
-      setNsbError({
+      setTnsError({
         title: "Something went wrong!",
         message: e.message,
       });
       console.warn(e);
-      setNsbLoading(false);
+      setTnsLoading(false);
     }
   };
 
   return (
     <ScreenContainer2
       footerChildren={
-        <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
+        <BacKTo label={name} navItem="TNSConsultName" navParams={{ name }} />
       }
     >
       <View

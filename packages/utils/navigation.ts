@@ -12,15 +12,15 @@ export type RootStackParamList = {
   Wallets: undefined;
   Governance: undefined;
   Mint: undefined;
-  NSBHome: undefined;
-  NSBExplore: undefined;
-  NSBManage: undefined;
-  NSBRegister: undefined;
-  NSBConsultName: undefined;
-  NSBMintName: undefined;
-  NSBUpdateName: undefined;
-  NSBBurnName: undefined;
-  NSBMintPath: undefined;
+  TNSHome: undefined;
+  TNSExplore: undefined;
+  TNSManage: undefined;
+  TNSRegister: undefined;
+  TNSConsultName: undefined;
+  TNSMintName: undefined;
+  TNSUpdateName: undefined;
+  TNSBurnName: undefined;
+  TNSMintPath: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<
@@ -47,17 +47,17 @@ const navConfig = {
     Governance: "governance",
     Mint: "mint",
     // Name Service Booking
-    NSBHome: "nsb",
-    NSBExplore: "nsb/explore",
-    NSBManage: "nsb/manage",
-    NSBRegister: "nsb/register",
+    TNSHome: "tns",
+    TNSExplore: "tns/explore",
+    TNSManage: "tns/manage",
+    TNSRegister: "tns/register",
     // Consult token
-    NSBConsultName: "nsb/token/:name",
+    TNSConsultName: "tns/token/:name",
     // Do things on token (Necessary minted and owned by the user)
-    NSBMintName: "nsb/tokens/:name/mint",
-    NSBUpdateName: "nsb/tokens/:name/update",
-    NSBBurnName: "nsb/tokens/:name/burn",
-    NSBMintPath: "nsb/tokens/:name/mint-path",
+    TNSMintName: "tns/tokens/:name/mint",
+    TNSUpdateName: "tns/tokens/:name/update",
+    TNSBurnName: "tns/tokens/:name/burn",
+    TNSMintPath: "tns/tokens/:name/mint-path",
   },
 };
 

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { primaryColor, primaryTextColor } from "../../utils/colors";
+import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 export const PrimaryButton: React.FC<{

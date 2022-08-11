@@ -2,19 +2,19 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
 
 import { BacKTo } from "../../components/Footer";
-import { FindAName } from "../../components/NameServiceBooking/FindAName";
+import { FindAName } from "../../components/TeritoriNameService/FindAName";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { NSBContext } from "../../context/NSBProvider";
+import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useStore } from "../../store/cosmwasm";
-import { isTokenOwned } from "../../utils/handefulFunctions";
+import { isTokenOwned } from "../../utils/tns";
 import { useAppNavigation } from "../../utils/navigation";
 
-export const NSBRegisterScreen: React.FC = () => {
+export const TNSRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
-  const { name, setName, setNsbLoading } = useContext(NSBContext);
+  const { name, setName, setTnsLoading } = useContext(TNSContext);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
@@ -22,19 +22,19 @@ export const NSBRegisterScreen: React.FC = () => {
     tokens
   );
 
-  // Sync nsbLoading
+  // Sync tnsLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setTnsLoading(loadingTokens);
   }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
-    if (!signingClient) navigation.navigate("NSBHome");
+    if (!signingClient) navigation.navigate("TNSHome");
   });
 
   return (
     <ScreenContainer2
-      footerChildren={<BacKTo label="home" navItem="NSBHome" />}
+      footerChildren={<BacKTo label="home" navItem="TNSHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName
@@ -49,7 +49,7 @@ export const NSBRegisterScreen: React.FC = () => {
             text="Mint your new ID"
             big
             style={{ maxWidth: 157, width: "100%" }}
-            onPress={() => navigation.navigate("NSBMintName", { name })}
+            onPress={() => navigation.navigate("TNSMintName", { name })}
           />
         ) : null}
       </FindAName>

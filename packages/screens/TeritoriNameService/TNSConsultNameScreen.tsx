@@ -5,22 +5,24 @@ import { View } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
 import { BacKTo } from "../../components/Footer";
-import { NameAndTldText } from "../../components/NameServiceBooking/NameAndTldText";
-import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
+import { NameAndTldText } from "../../components/TeritoriNameService/NameAndTldText";
+import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
-import { NSBContext } from "../../context/NSBProvider";
+import { TNSContext } from "../../context/TNSProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useStore } from "../../store/cosmwasm";
-import { neutral33, neutral44, neutral77 } from "../../utils/colors";
+import { neutral33, neutral44, neutral77 } from "../../utils/style/colors";
 import {
   isTokenOwned,
+} from "../../utils/tns";
+import {
   numberWithThousandsSeparator,
-} from "../../utils/handefulFunctions";
+} from "../../utils/numbers";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import {
   imageDisplayLabel,
@@ -61,7 +63,7 @@ const SendFundModal: React.FC<{
           >
             <BacKTo
               label="search"
-              navItem="NSBRegister"
+              navItem="TNSRegister"
               onPress={() => setVisible(false)}
             />
             {/*<DarkButton text={"Show paths"} style={{width: "fit-content"}}/>*/}
@@ -98,7 +100,7 @@ const NotOwnerActions = () => {
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BacKTo label="search" navItem="NSBRegister" />
+      <BacKTo label="search" navItem="TNSRegister" />
       <PrimaryButton
         text="Send funds"
         style={btnStyle}
@@ -115,15 +117,15 @@ const NotOwnerActions = () => {
 
 const OwnerActions = () => {
   const navigation = useAppNavigation();
-  const { name } = useContext(NSBContext);
+  const { name } = useContext(TNSContext);
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BacKTo navItem="NSBManage" />
+      <BacKTo navItem="TNSManage" />
       <DarkButton
         text="Update metadata"
         style={btnStyle}
-        onPress={() => navigation.navigate("NSBUpdateName", { name })}
+        onPress={() => navigation.navigate("TNSUpdateName", { name })}
       />
       {/*<DarkButton*/}
       {/*  text="Transfer"*/}
@@ -133,39 +135,39 @@ const OwnerActions = () => {
       {/*<DarkButton*/}
       {/*  text="Mint path"*/}
       {/*  style={btnStyle}*/}
-      {/*  onPress={() => navigation.navigate("NSBMintPath", { name })}*/}
+      {/*  onPress={() => navigation.navigate("TNSMintPath", { name })}*/}
       {/*/>*/}
       <DarkButton
         text="Burn"
         style={btnStyle}
-        onPress={() => navigation.navigate("NSBBurnName", { name })}
+        onPress={() => navigation.navigate("TNSBurnName", { name })}
       />
     </>
   );
 };
 
-export const NSBConsultNameScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "NSBConsultName">;
+export const TNSConsultNameScreen: React.FC<{
+  route: RouteProp<RootStackParamList, "TNSConsultName">;
 }> = ({ route }) => {
-  const { name, setName, setNsbLoading } = useContext(NSBContext);
+  const { name, setName, setTnsLoading } = useContext(TNSContext);
   const { token, notFound, loadingToken } = useToken(name, process.env.TLD);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const navigation = useAppNavigation();
 
-  // Sync nsbLoading
+  // Sync tnsLoading
   useEffect(() => {
-    setNsbLoading(loadingToken);
+    setTnsLoading(loadingToken);
   }, [loadingToken]);
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setTnsLoading(loadingTokens);
   }, [loadingTokens]);
 
-  // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the token is not minted
+  // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the token is not minted
   useFocusEffect(() => {
-    // @ts-ignore
+    // @ts-expect-error
     if (route.params && route.params.name) setName(route.params.name);
-    if (!signingClient) navigation.navigate("NSBHome");
+    if (!signingClient) navigation.navigate("TNSHome");
   });
 
   return (
@@ -176,7 +178,7 @@ export const NSBConsultNameScreen: React.FC<{
         ) : !notFound ? (
           <NotOwnerActions />
         ) : (
-          <BacKTo navItem="NSBHome" label="home" />
+          <BacKTo navItem="TNSHome" label="home" />
         )
       }
     >
@@ -198,7 +200,7 @@ export const NSBConsultNameScreen: React.FC<{
               <NameNFT style={{ marginBottom: 20 }} name={name} />
               {token && name && isTokenOwned(tokens, name) ? (
                 <CopyToClipboardCard
-                  text={`https://${window.location.host}/nsb/${name}`}
+                  text={`https://${window.location.host}/tns/${name}`}
                 />
               ) : token && name && !isTokenOwned(tokens, name) ? (
                 <CopyToClipboardCard text={token.contract_address} />

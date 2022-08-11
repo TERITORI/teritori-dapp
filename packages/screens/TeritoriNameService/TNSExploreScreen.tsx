@@ -2,33 +2,33 @@ import React, { useContext, useEffect } from "react";
 import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
-import { FindAName } from "../../components/NameServiceBooking/FindAName";
+import { FindAName } from "../../components/TeritoriNameService/FindAName";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { HollowPrimaryButton } from "../../components/buttons/HollowPrimaryButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { NSBContext } from "../../context/NSBProvider";
+import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
-import { isTokenOwned } from "../../utils/handefulFunctions";
+import { isTokenOwned } from "../../utils/tns";
 import { useAppNavigation } from "../../utils/navigation";
 
-export const NSBExploreScreen: React.FC = () => {
+export const TNSExploreScreen: React.FC = () => {
   const navigation = useAppNavigation();
-  const { name, setName, setNsbLoading } = useContext(NSBContext);
+  const { name, setName, setTnsLoading } = useContext(TNSContext);
   const { tokens, loadingTokens } = useTokenList();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
   );
 
-  // Sync nsbLoading
+  // Sync tnsLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setTnsLoading(loadingTokens);
   }, [loadingTokens]);
 
   return (
     <ScreenContainer2
-      footerChildren={<BacKTo label="home" navItem="NSBHome" />}
+      footerChildren={<BacKTo label="home" navItem="TNSHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName
@@ -57,7 +57,7 @@ export const NSBExploreScreen: React.FC = () => {
               text="View"
               big
               style={{ maxWidth: 157, width: "100%" }}
-              onPress={() => navigation.navigate("NSBConsultName")}
+              onPress={() => navigation.navigate("TNSConsultName")}
             />
             <HollowPrimaryButton
               text="Send funds"

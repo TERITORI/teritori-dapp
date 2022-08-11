@@ -1,43 +1,86 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import * as R from "ramda";
 import React, { useContext, useEffect, useState } from "react";
-import { View } from "react-native";
+import { Image, View } from "react-native";
 
+import longCardPNG from "../../../assets/cards/long-card.png";
+import coinPNG from "../../../assets/icons/coin.png";
+import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
-import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
-import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
+import { NameDataForm } from "../../components/TeritoriNameService/NameDataForm";
+import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
-import { NSBContext } from "../../context/NSBProvider";
+import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
-import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
+import { useAreThereWallet } from "../../hooks/useAreThereWallet";
 import { useStore } from "../../store/cosmwasm";
-import { defaultMintFee } from "../../utils/fee";
-import { isTokenOwned } from "../../utils/handefulFunctions";
+import { defaultMintFee, getMintCost } from "../../utils/fee";
+import { isTokenOwned } from "../../utils/tns";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { defaultMetaData, Metadata } from "../../utils/types/messages";
+import { defaultMetaData, Metadata } from "../../utils/types/tns";
+
+const CostContainer: React.FC = () => {
+  const innerHeight = 32;
+
+  return (
+    <View>
+      <Image
+        source={longCardPNG}
+        style={{ width: 748, height: 80, resizeMode: "stretch" }}
+      />
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          alignItems: "center",
+          position: "absolute",
+          height: innerHeight,
+          top: `calc(50% - ${innerHeight}px / 2)`,
+        }}
+      >
+        <Image
+          source={coinPNG}
+          style={{
+            width: 32,
+            height: 32,
+            resizeMode: "stretch",
+            marginLeft: 24,
+            marginRight: 12,
+          }}
+        />
+
+        <BrandText>The mint cost for this token is 1,000 Tori</BrandText>
+      </View>
+    </View>
+  );
+};
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
-export const NSBUpdateNameScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "NSBUpdateName">;
+export const TNSMintNameScreen: React.FC<{
+  route: RouteProp<RootStackParamList, "TNSUpdateName">;
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
-    useContext(NSBContext);
+  const { name, setName, setTnsError, setTnsSuccess, setTnsLoading } =
+    useContext(TNSContext);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
-  const userHasCoWallet = useHasUserConnectedWallet();
+  const userHasCoWallet = useAreThereWallet();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+  const appendTokenId = useStore((state) => state.appendTokenId);
+  const mintCost = getMintCost(name);
   const navigation = useAppNavigation();
+
+  const normalizedTokenId = R.toLower(name + process.env.TLD);
 
   const initData = async () => {
     try {
       // If this query fails it means that the token does not exist.
       const token = await signingClient.queryContractSmart(contractAddress, {
         nft_info: {
-          token_id: name + process.env.TLD,
+          token_id: normalizedTokenId,
         },
       });
       // return token.extension;
@@ -54,50 +97,49 @@ export const NSBUpdateNameScreen: React.FC<{
         keybase_id: token.extension.keybase_id,
         validator_operator_address: token.extension.validator_operator_address,
       };
-      setInitialized(true);
-      setNsbLoading(false);
       setInitialData(tokenData);
+      setTnsLoading(false);
+      setInitialized(true);
     } catch {
       setInitialized(true);
-      setNsbLoading(false);
+      setTnsLoading(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
 
-  // Sync nsbLoading
+  // Sync tnsLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setTnsLoading(loadingTokens);
   }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
-    // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the user doesn't own the token.
+    // ---- Setting the name from TNSContext. Redirects to TNSManage if this screen is called when the user owns the token. Redirects to TNSHome if no connected wallet
     // @ts-ignore
     if (route.params && route.params.name) setName(route.params.name);
     // ===== Controls many things, be careful
-    if (
-      (name &&
-        tokens.length &&
-        (!userHasCoWallet || !isTokenOwned(tokens, name))) ||
-      !signingClient
-    ) {
-      navigation.navigate("NSBHome");
+    if (!userHasCoWallet || !signingClient) navigation.navigate("TNSHome");
+    if (name && userHasCoWallet && isTokenOwned(tokens, name))
+      navigation.navigate("TNSManage");
+
+    if (!initialized) {
+      setTnsLoading(true);
+      initData();
     }
-    if (!initialized) initData();
   });
 
   const submitData = async (_data) => {
     if (!signingClient || !walletAddress) {
       return;
     }
-    setNsbLoading(true);
+    setTnsLoading(true);
     const {
       image, // TODO - support later
       // image_data
       email,
       external_url,
-      // public_name, // Useless because NSBContext ?
+      // public_name, // Useless because TNSContext ?
       public_bio,
       twitter_id,
       discord_id,
@@ -106,12 +148,12 @@ export const NSBUpdateNameScreen: React.FC<{
       validator_operator_address,
     } = _data;
 
-    const normalizedTokenId = R.toLower(name + process.env.TLD);
-
     const msg = {
-      update_metadata: {
+      mint: {
+        owner: walletAddress,
         token_id: normalizedTokenId,
-        metadata: {
+        token_uri: null, // TODO - support later
+        extension: {
           image,
           image_data: null, // TODO - support later
           email,
@@ -128,39 +170,41 @@ export const NSBUpdateNameScreen: React.FC<{
     };
 
     try {
-      const updatedToken = await signingClient.execute(
+      const mintedToken = await signingClient.execute(
         walletAddress!,
         contractAddress,
         msg,
         defaultMintFee,
-        defaultMemo
+        defaultMemo,
+        mintCost
       );
-      if (updatedToken) {
-        console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token
-        setNsbSuccess({
-          title: normalizedTokenId + " successfully updated",
+      if (mintedToken) {
+        appendTokenId(normalizedTokenId);
+        console.log(normalizedTokenId + " successfully minted");
+        setTnsSuccess({
+          title: normalizedTokenId + " successfully minted",
           message: "",
         });
-        navigation.navigate("NSBConsultName", { name });
-        setNsbLoading(false);
+        navigation.navigate("TNSConsult", { name });
+        setTnsLoading(false);
       }
     } catch (err) {
-      setNsbError({
+      setTnsError({
         title: "Something went wrong!",
         message: err.message,
       });
       console.warn(err);
-      setNsbLoading(false);
+      setTnsLoading(false);
     }
   };
 
   return (
     <ScreenContainer2
-      footerChildren={
-        <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
-      }
+      footerChildren={<BacKTo label="search" navItem="TNSRegister" />}
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
+        <CostContainer />
+
         <View
           style={{
             flex: 1,
@@ -172,7 +216,7 @@ export const NSBUpdateNameScreen: React.FC<{
           <NameNFT style={{ marginRight: 20 }} name={name} />
 
           <NameDataForm
-            btnLabel="Update profile"
+            btnLabel="Create username"
             onPressBtn={submitData}
             initialData={initialData}
           />

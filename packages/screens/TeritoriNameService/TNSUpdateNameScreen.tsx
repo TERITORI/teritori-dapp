@@ -4,48 +4,40 @@ import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
-import { NameDataForm } from "../../components/NameServiceBooking/NameDataForm";
-import { NameNFT } from "../../components/NameServiceBooking/NameNFT";
+import { NameDataForm } from "../../components/TeritoriNameService/NameDataForm";
+import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
-import { NSBContext } from "../../context/NSBProvider";
+import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
-import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
+import { useAreThereWallet } from "../../hooks/useAreThereWallet";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee } from "../../utils/fee";
-import { isTokenOwned, tokenWithoutTld } from "../../utils/handefulFunctions";
+import { isTokenOwned } from "../../utils/tns";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { defaultMetaData, Metadata } from "../../utils/types/messages";
-
-const normalize = (inputString: string) => {
-  const invalidChrsRemoved = R.replace(/[^a-z0-9\-\_]/g, "", inputString);
-  return R.replace(/[_\-]{2,}/g, "", invalidChrsRemoved);
-};
+import { defaultMetaData, Metadata } from "../../utils/types/tns";
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
-export const NSBMintPathScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "NSBUpdateName">;
+export const TNSUpdateNameScreen: React.FC<{
+  route: RouteProp<RootStackParamList, "TNSUpdateName">;
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setNsbError, setNsbSuccess, setNsbLoading } =
-    useContext(NSBContext);
+  const { name, setName, setTnsError, setTnsSuccess, setTnsLoading } =
+    useContext(TNSContext);
   const { tokens, loadingTokens } = useTokenList();
-  const navigation = useAppNavigation();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
-  const userHasCoWallet = useHasUserConnectedWallet();
+  const userHasCoWallet = useAreThereWallet();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
-
-  const normalizedTokenId = R.toLower(name + process.env.TLD);
+  const navigation = useAppNavigation();
 
   const initData = async () => {
-    // await connectWallet();
     try {
       // If this query fails it means that the token does not exist.
       const token = await signingClient.queryContractSmart(contractAddress, {
         nft_info: {
-          token_id: normalizedTokenId,
+          token_id: name + process.env.TLD,
         },
       });
       // return token.extension;
@@ -63,24 +55,24 @@ export const NSBMintPathScreen: React.FC<{
         validator_operator_address: token.extension.validator_operator_address,
       };
       setInitialized(true);
-      setNsbLoading(false);
+      setTnsLoading(false);
       setInitialData(tokenData);
     } catch {
       setInitialized(true);
-      setNsbLoading(false);
+      setTnsLoading(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
 
-  // Sync nsbLoading
+  // Sync tnsLoading
   useEffect(() => {
-    setNsbLoading(loadingTokens);
+    setTnsLoading(loadingTokens);
   }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
-    // ---- Setting the name from NSBContext. Redirects to NSBHome if this screen is called when the user doesn't own the token
+    // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token.
     // @ts-ignore
     if (route.params && route.params.name) setName(route.params.name);
     // ===== Controls many things, be careful
@@ -90,26 +82,22 @@ export const NSBMintPathScreen: React.FC<{
         (!userHasCoWallet || !isTokenOwned(tokens, name))) ||
       !signingClient
     ) {
-      navigation.navigate("NSBHome");
+      navigation.navigate("TNSHome");
     }
-    if (!initialized) {
-      setNsbLoading(true);
-      initData();
-    }
+    if (!initialized) initData();
   });
 
   const submitData = async (_data) => {
     if (!signingClient || !walletAddress) {
       return;
     }
-    setNsbLoading(true);
+    setTnsLoading(true);
     const {
-      token_id: pathId,
       image, // TODO - support later
       // image_data
       email,
       external_url,
-      // public_name, // Useless because NSBContext ?
+      // public_name, // Useless because TNSContext ?
       public_bio,
       twitter_id,
       discord_id,
@@ -118,61 +106,58 @@ export const NSBMintPathScreen: React.FC<{
       validator_operator_address,
     } = _data;
 
-    const normalizedPathId = normalize(R.toLower(pathId));
+    const normalizedTokenId = R.toLower(name + process.env.TLD);
 
     const msg = {
       update_metadata: {
-        owner: walletAddress,
-        token_id: normalizedPathId,
-        token_uri: null, // TODO - support later
-        extension: {
+        token_id: normalizedTokenId,
+        metadata: {
           image,
           image_data: null, // TODO - support later
           email,
           external_url,
-          public_name: normalizedPathId,
+          public_name: name + process.env.TLD,
           public_bio,
           twitter_id,
           discord_id,
           telegram_id,
           keybase_id,
           validator_operator_address,
-          parent_token_id: normalizedTokenId,
         },
       },
     };
 
     try {
-      const mintedToken = await signingClient.execute(
+      const updatedToken = await signingClient.execute(
         walletAddress!,
         contractAddress,
         msg,
         defaultMintFee,
         defaultMemo
       );
-      if (mintedToken) {
-        console.log(normalizedPathId + " successfully minted"); //TODO: redirect to the token
-        setNsbSuccess({
-          title: normalizedPathId + " successfully minted",
+      if (updatedToken) {
+        console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token
+        setTnsSuccess({
+          title: normalizedTokenId + " successfully updated",
           message: "",
         });
-        navigation.navigate("NSBConsult", { name: tokenWithoutTld(pathId) });
-        setNsbLoading(false);
+        navigation.navigate("TNSConsultName", { name });
+        setTnsLoading(false);
       }
     } catch (err) {
-      setNsbError({
+      setTnsError({
         title: "Something went wrong!",
         message: err.message,
       });
       console.warn(err);
-      setNsbLoading(false);
+      setTnsLoading(false);
     }
   };
 
   return (
     <ScreenContainer2
       footerChildren={
-        <BacKTo label={name} navItem="NSBConsultName" navParams={{ name }} />
+        <BacKTo label={name} navItem="TNSConsultName" navParams={{ name }} />
       }
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
@@ -187,10 +172,9 @@ export const NSBMintPathScreen: React.FC<{
           <NameNFT style={{ marginRight: 20 }} name={name} />
 
           <NameDataForm
-            btnLabel="Create path"
+            btnLabel="Update profile"
             onPressBtn={submitData}
             initialData={initialData}
-            isMintPath
           />
         </View>
       </View>

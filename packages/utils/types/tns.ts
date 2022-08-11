@@ -1,4 +1,4 @@
-import { OptionString } from "./base";
+
 
 export const defaultMetaData: Metadata = {
   image: "",
@@ -15,24 +15,24 @@ export const defaultMetaData: Metadata = {
 };
 
 export interface Metadata {
-  contract_address?: OptionString;
-  image: OptionString;
-  image_data: OptionString;
-  email: OptionString;
-  external_url: OptionString;
-  public_name: OptionString;
-  public_bio: OptionString;
-  twitter_id: OptionString;
-  discord_id: OptionString;
-  telegram_id: OptionString;
-  keybase_id: OptionString;
-  validator_operator_address: OptionString;
+  contract_address?: string | null;
+  image: string | null;
+  image_data: string | null;
+  email: string | null;
+  external_url: string | null;
+  public_name: string | null;
+  public_bio: string | null;
+  twitter_id: string | null;
+  discord_id: string | null;
+  telegram_id: string | null;
+  keybase_id: string | null;
+  validator_operator_address: string | null;
 }
 
 // interface MintMsg {
 //   owner: string;
 //   token_id: string;
-//   token_uri: OptionString;
+//   token_uri: string | null;
 //   extension: Metadata | null;
 // }
 

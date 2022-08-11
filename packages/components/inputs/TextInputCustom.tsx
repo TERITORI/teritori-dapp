@@ -1,11 +1,11 @@
 import React from "react";
 import { TextInput, View, ViewStyle } from "react-native";
 
-import { neutral23, neutral33, neutral77 } from "../../utils/colors";
+import { neutral23, neutral33, neutral77 } from "../../utils/style/colors";
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
-} from "../../utils/handefulFunctions";
+} from "../../utils/numbers";
 import { BrandText } from "../BrandText";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -40,7 +40,7 @@ export const TextInputCustom: React.FC<{
   };
 
   // Replace the comma if number and controls
-  const _onChangeText = (value) => {
+  const handleChangeText = (value) => {
     // ---- If you want only number in the TextInputCustom, we apply comma as a thousand separator
     if (onlyNumbers) {
       const withoutCommaValue = thousandSeparatedToNumber(value);
@@ -86,7 +86,7 @@ export const TextInputCustom: React.FC<{
             editable={!disabled}
             placeholder={placeHolder}
             value={value}
-            onChangeText={_onChangeText}
+            onChangeText={handleChangeText}
             onKeyPress={handleKeyPress}
             placeholderTextColor="#999999"
             style={[

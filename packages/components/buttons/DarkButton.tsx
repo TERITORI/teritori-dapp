@@ -1,7 +1,7 @@
 import * as React from "react";
 import { TextStyle, ViewStyle } from "react-native";
 
-import { neutral30, primaryColor } from "../../utils/colors";
+import { neutral30, primaryColor } from "../../utils/style/colors";
 import { PrimaryButton } from "./PrimaryButton";
 
 export const DarkButton: React.FC<{

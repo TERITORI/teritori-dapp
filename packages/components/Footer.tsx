@@ -14,7 +14,7 @@ import bookPNG from "../../assets/icons/book.png";
 import discordPNG from "../../assets/icons/discord.png";
 import mediumPNG from "../../assets/icons/medium.png";
 import twitterPNG from "../../assets/icons/twitter.png";
-import { footerHeight } from "../utils/layout";
+import { footerHeight } from "../utils/style/layout";
 import { RootStackParamList, useAppNavigation } from "../utils/navigation";
 import { BrandText } from "./BrandText";
 
@@ -98,7 +98,7 @@ export const BacKTo: React.FC<{
   const navigation = useAppNavigation();
   const labelFontSize = 16;
 
-  const _onPress = () => {
+  const handlePress = () => {
     if (onPress) onPress();
     if (justBack) navigation.goBack();
     else if (navParams) navigation.navigate(navItem, navParams);
@@ -106,7 +106,7 @@ export const BacKTo: React.FC<{
   };
 
   return (
-    <TouchableOpacity onPress={_onPress}>
+    <TouchableOpacity onPress={handlePress}>
       <View
         style={{
           flex: 1,
@@ -132,9 +132,6 @@ export const BacKTo: React.FC<{
 };
 
 // A footer that can contains children
-{
-  /*TODO: Is it a good name for this cpt ?*/
-}
 export const Footer: React.FC = ({ children }) => {
   return (
     <View

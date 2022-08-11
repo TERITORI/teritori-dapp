@@ -3,8 +3,8 @@ import { View, Image, TouchableOpacity, ViewStyle } from "react-native";
 
 import secondaryCardSmPNG from "../../assets/cards/secondary-card-sm.png";
 import logoTopPNG from "../../assets/logo-top.png";
-import { useHasUserConnectedWallet } from "../hooks/useHasUserConnectedWallet";
-import { headerHeight } from "../utils/layout";
+import { useAreThereWallet } from "../hooks/useAreThereWallet";
+import { headerHeight } from "../utils/style/layout";
 import { useAppNavigation } from "../utils/navigation";
 import { BrandText } from "./BrandText";
 import { WalletSelector } from "./WalletSelector";
@@ -47,12 +47,9 @@ const ConnectWalletButton: React.FC<{
   );
 };
 
-{
-  /*TODO: Is it a good name for this cpt ?*/
-}
 export const Header: React.FC = () => {
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
-  const isAConnectedWallet = useHasUserConnectedWallet();
+  const isAConnectedWallet = useAreThereWallet();
   const navigation = useAppNavigation();
   const headerMarginH = 22;
 

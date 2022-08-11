@@ -6,7 +6,7 @@ import { TextInputCustom } from "../inputs/TextInputCustom";
 import { NameNFT } from "./NameNFT";
 import { NameStatusCard } from "./NameStatusCard";
 
-// TODO: Maybe it can be a screen that is called in Register and Explore flow... NSBRegisterScreen.tsx and NSBExploreScreen.tsx have duplicated code
+// TODO: Maybe it can be a screen that is called in Register and Explore flow... TNSRegisterScreen.tsx and TNSExploreScreen.tsx have duplicated code
 
 // A title + Name status (minted or available) + NFT card + optional buttons
 export const FindAName: React.FC<{

@@ -6,8 +6,7 @@ import * as R from "ramda";
 import create, { GetState, SetState } from "zustand";
 import { StoreApiWithPersist, devtools } from "zustand/middleware";
 
-import { OptionString } from "../utils/types/base";
-import { Metadata } from "../utils/types/messages";
+import { Metadata } from "../utils/types/tns";
 
 type SCWClientOrNull = SigningCosmWasmClient | null;
 type CWClientOrNull = CosmWasmClient | null;
@@ -16,8 +15,8 @@ interface State {
   // fields
   signingClient: SCWClientOrNull;
   nonSigningClient: CWClientOrNull;
-  primaryAlias: OptionString;
-  walletAddress: OptionString;
+  primaryAlias: string | null;
+  walletAddress: string | null;
   token: Metadata | null;
   tokenIds: string[];
   tokens: Metadata[];
@@ -27,7 +26,7 @@ interface State {
   // functions
   setSigningClient: (c: SCWClientOrNull) => void;
   setNonSigningClient: (c: CWClientOrNull) => void;
-  setPrimaryAlias: (alias: OptionString) => void;
+  setPrimaryAlias: (alias: string | null) => void;
   setWalletAddress: (address: string) => void;
   setToken: (t: Metadata | null) => void;
   appendTokenId: (tid: string) => void;
@@ -59,11 +58,11 @@ const useStore = create<
           set((state) => ({ nonSigningClient: client })),
 
         primaryAlias: null,
-        setPrimaryAlias: (alias: OptionString) =>
+        setPrimaryAlias: (alias: string | null) =>
           set((state) => ({ primaryAlias: alias })),
 
         walletAddress: null,
-        setWalletAddress: (address: OptionString) =>
+        setWalletAddress: (address: string | null) =>
           set((state) => ({ walletAddress: address })),
 
         token: null,

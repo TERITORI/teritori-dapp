@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import { neutral11, neutral77, successColor } from "../../utils/colors";
+import { neutral11, neutral77, successColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 export const ToastSuccess: React.FC<{

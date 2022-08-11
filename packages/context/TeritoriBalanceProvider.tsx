@@ -16,7 +16,7 @@ const initialValue = {
   totalString: "? TORI",
 };
 
-export const teritoriBalanceContext =
+const teritoriBalanceContext =
   createContext<TeritoriBalanceValue>(initialValue);
 
 export const TeritoriBalanceProvider: React.FC = ({ children }) => {
@@ -51,7 +51,7 @@ export const TeritoriBalanceProvider: React.FC = ({ children }) => {
       if (cancelled) {
         return;
       }
-      setValue({ total, totalString: `${total / UTORI_PER_TORI} TORI` });
+      setValue({ total, totalString: `${total / parseInt(UTORI_PER_TORI)} TORI` });
       setTimeout(() => setRefreshIndex((index) => index + 1), refreshInterval);
     };
     effect();

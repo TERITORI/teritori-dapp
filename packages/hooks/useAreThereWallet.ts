@@ -1,7 +1,7 @@
 import { useWallets } from "../context/WalletsProvider";
 import { WalletProvider } from "../utils/walletProvider";
 
-export const useHasUserConnectedWallet = () => {
+export const useAreThereWallet = () => {
   const { wallets } = useWallets();
   return (
     wallets.filter(

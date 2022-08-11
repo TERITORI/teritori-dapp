@@ -10,7 +10,7 @@ import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { FlowCard } from "../../components/cards/FlowCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
-import { NSBContext } from "../../context/NSBProvider";
+import { TNSContext } from "../../context/TNSProvider";
 import { useStore } from "../../store/cosmwasm";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 
@@ -94,7 +94,7 @@ const ModalNameFinder: React.FC<{
   navItem: keyof RootStackParamList;
 }> = ({ visible, navItem, onClose }) => {
   const navigation = useAppNavigation();
-  const { name, setName } = useContext(NSBContext);
+  const { name, setName } = useContext(TNSContext);
 
   const onPressEnter = () => {
     if (name) {
@@ -127,27 +127,27 @@ const ModalNameFinder: React.FC<{
   );
 };
 
-export const NSBHomeScreen: React.FC = () => {
+export const TNSHomeScreen: React.FC = () => {
   const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
   const [pressedNavItem, setPressedNavItem] =
-    useState<keyof RootStackParamList>("NSBHome");
+    useState<keyof RootStackParamList>("TNSHome");
   const navigation = useAppNavigation();
   const landingHorizontalPadding = 25;
   const signingClient = useStore((state) => state.signingClient);
 
   const onPressRegister = () => {
     if (signingClient) {
-      setPressedNavItem("NSBRegister");
+      setPressedNavItem("TNSRegister");
       setModalNameFinderVisible(true);
     }
   };
   const onPressManage = () => {
     if (signingClient) {
-      navigation.navigate("NSBManage");
+      navigation.navigate("TNSManage");
     }
   };
   const onPressExplore = () => {
-    setPressedNavItem("NSBExplore");
+    setPressedNavItem("TNSExplore");
     setModalNameFinderVisible(true);
   };
 

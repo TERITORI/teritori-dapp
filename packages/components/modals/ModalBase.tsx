@@ -4,7 +4,7 @@ import { Modal, Pressable, View, ViewStyle, Image } from "react-native";
 
 import crossPNG from "../../../assets/icons/cross.png";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
-import { neutral23, neutral33 } from "../../utils/colors";
+import { neutral23, neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 // Just an horizontal separator
