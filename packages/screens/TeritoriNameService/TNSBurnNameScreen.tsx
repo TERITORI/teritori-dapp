@@ -55,7 +55,6 @@ export const TNSBurnNameScreen: React.FC<{
 
   const onSubmit = async () => {
     setTnsLoading(true);
-
     const msg = {
       burn: {
         token_id: normalizedTokenId,
