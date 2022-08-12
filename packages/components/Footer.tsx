@@ -9,14 +9,11 @@ import {
   ViewStyle,
 } from "react-native";
 
-import backPNG from "../../assets/icons/back.png";
 import bookPNG from "../../assets/icons/book.png";
 import discordPNG from "../../assets/icons/discord.png";
 import mediumPNG from "../../assets/icons/medium.png";
 import twitterPNG from "../../assets/icons/twitter.png";
 import { footerHeight } from "../utils/style/layout";
-import { RootStackParamList, useAppNavigation } from "../utils/navigation";
-import { BrandText } from "./BrandText";
 
 // One social network button
 const NetworkButton: React.FC<{
@@ -88,23 +85,23 @@ export const SocialNetworks: React.FC = () => {
 };
 
 // A footer that can contains children
-{
-  /*TODO: Is it a good name for this cpt ?*/
-}
 export const Footer: React.FC<{
   style?: ViewStyle;
 }> = ({ children, style }) => {
   return (
     <View
-      style={[{
-        height: footerHeight,
-        maxHeight: footerHeight,
-        width: "100%",
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-      }, style]}
+      style={[
+        {
+          height: footerHeight,
+          maxHeight: footerHeight,
+          width: "100%",
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        style,
+      ]}
     >
       <>{children}</>
     </View>

@@ -2,11 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { Image, View, ViewStyle } from "react-native";
 
 import defaultNameNFT from "../../../assets/default-name-nft.png";
-import { NSBContext } from "../../context/NSBProvider";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { getToken } from "../../hooks/tokens";
 import { neutral33 } from "../../utils/style/colors";
 import { NameAndTldText } from "./NameAndTldText";
-import {FeedbacksContext} from "../../context/FeedbacksProvider"
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameNFT: React.FC<{

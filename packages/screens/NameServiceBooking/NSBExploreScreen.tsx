@@ -1,17 +1,17 @@
 import React, { useContext, useEffect } from "react";
 import { View } from "react-native";
 
-import { FindAName } from "../../components/nameService/FindAName";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { HollowPrimaryButton } from "../../components/buttons/HollowPrimaryButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { BackTo } from "../../components/navigation/BackTo";
+import { FindAName } from "../../components/teritorinameService/FindAName";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { isTokenOwned } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
-import {FeedbacksContext} from "../../context/FeedbacksProvider"
-import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackTo} from "../../components/navigation/BackTo"
 
 export const NSBExploreScreen: React.FC = () => {
   const navigation = useAppNavigation();
@@ -29,7 +29,9 @@ export const NSBExploreScreen: React.FC = () => {
   }, [loadingTokens]);
 
   return (
-    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={<BackTo label="Back to home" navItem="NSBHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
@@ -56,14 +58,13 @@ export const NSBExploreScreen: React.FC = () => {
             }}
           >
             <PrimaryButton
+              width={156}
               text="View"
-              big
-              style={{ maxWidth: 157, width: "100%" }}
               onPress={() => navigation.navigate("NSBConsultName")}
             />
             <HollowPrimaryButton
+              width={156}
               text="Send funds"
-              style={{ maxWidth: 154, width: "100%" }}
               onPress={() => {
                 /*TODO:*/
               }}

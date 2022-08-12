@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import {MintGuardiansScreen} from "../screens/Launchpad/MintGuardiansScreen"
 
 export type RootStackParamList = {
   Home: undefined;

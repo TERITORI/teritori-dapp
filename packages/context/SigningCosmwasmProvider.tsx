@@ -1,10 +1,10 @@
-import React, {createContext, useContext, useEffect} from "react"
+import React, { createContext, useContext, useEffect } from "react";
 
 import {
   useSigningCosmWasmClient,
   ISigningCosmWasmClientContext,
 } from "../hooks/useSigningCosmWasmClient";
-import {FeedbacksContext} from "./FeedbacksProvider"
+import { FeedbacksContext } from "./FeedbacksProvider";
 
 let CosmWasmContext: any;
 const { Provider } = (CosmWasmContext =
@@ -20,7 +20,7 @@ const { Provider } = (CosmWasmContext =
 export const useSigningClient = (): ISigningCosmWasmClientContext =>
   useContext(CosmWasmContext);
 
-export const SigningCosmWasmProvider: React.FC = ({children}) => {
+export const SigningCosmWasmProvider: React.FC = ({ children }) => {
   const value = useSigningCosmWasmClient();
   const { setLoadingFullScreen, setToastError } = useContext(FeedbacksContext);
 
@@ -31,13 +31,13 @@ export const SigningCosmWasmProvider: React.FC = ({children}) => {
       await value.connectWallet();
     };
     init()
-    .then(() => {
-      setLoadingFullScreen(false);
-    })
-    .catch((e) => {
-      setToastError({ title: "Something went wrong!", message: e.message });
-      setLoadingFullScreen(false);
-    });
+      .then(() => {
+        setLoadingFullScreen(false);
+      })
+      .catch((e) => {
+        setToastError({ title: "Something went wrong!", message: e.message });
+        setLoadingFullScreen(false);
+      });
   }, []);
 
   return <Provider value={value}>{children}</Provider>;

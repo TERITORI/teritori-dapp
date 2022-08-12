@@ -4,27 +4,27 @@ import { Image, View } from "react-native";
 
 import burnPNG from "../../../assets/icons/burn.png";
 import { BrandText } from "../../components/BrandText";
-import { NameNFT } from "../../components/nameService/NameNFT";
-import { DarkButton } from "../../components/buttons/DarkButton";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { BackTo } from "../../components/navigation/BackTo";
+import { NameNFT } from "../../components/teritorinameService/NameNFT";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
-import { neutral33 } from "../../utils/style/colors";
 import { defaultExecuteFee } from "../../utils/fee";
-import {isTokenOwned, normalizedTokenId} from "../../utils/handefulFunctions"
+import { isTokenOwned, normalizedTokenId } from "../../utils/handefulFunctions";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import {FeedbacksContext} from "../../context/FeedbacksProvider"
-import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackTo} from "../../components/navigation/BackTo"
+import { neutral33 } from "../../utils/style/colors";
 
 export const NSBBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NSBUpdateName">;
 }> = ({ route }) => {
-  const { name, setName } =
-    useContext(NSBContext);
-  const { setToastError, setToastSuccess, setLoadingFullScreen} = useContext(FeedbacksContext)
+  const { name, setName } = useContext(NSBContext);
+  const { setToastError, setToastSuccess, setLoadingFullScreen } =
+    useContext(FeedbacksContext);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
@@ -90,9 +90,15 @@ export const NSBBurnNameScreen: React.FC<{
   };
 
   return (
-    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={
-        <BackTo label={"Back to " + name} navItem="NSBConsultName" navParams={{ name }} />
+        <BackTo
+          label={"Back to " + name}
+          navItem="NSBConsultName"
+          navParams={{ name }}
+        />
       }
     >
       <View
@@ -149,10 +155,10 @@ export const NSBBurnNameScreen: React.FC<{
             </BrandText>
           </View>
 
-          <DarkButton
+          <SecondaryButton
+            height={48}
             text="I understand, burn it"
             onPress={onSubmit}
-            style={{ width: "100%" }}
           />
         </View>
       </View>

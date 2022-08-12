@@ -2,12 +2,11 @@ import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import * as R from "ramda";
 import { useContext, useEffect, useState } from "react";
 
-import { NSBContext } from "../context/NSBProvider";
+import { FeedbacksContext } from "../context/FeedbacksProvider";
 import { useSigningClient } from "../context/SigningCosmwasmProvider";
 import { useStore } from "../store/cosmwasm";
 import { Metadata } from "../utils/types/messages";
 import { getNonSigningClient } from "./useSigningCosmWasmClient";
-import {FeedbacksContext} from "../context/FeedbacksProvider"
 
 export const isPath = (str: string) => R.includes("::", str);
 export const isToken = R.complement(isPath);

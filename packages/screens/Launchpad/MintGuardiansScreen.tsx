@@ -1,91 +1,289 @@
-import React from "react"
+import React from "react";
+import { Image, View } from "react-native";
 
-import {ScreenContainer} from "../../components/ScreenContainer"
-import {SocialNetworks} from "../../components/Footer"
-import {View} from "react-native"
-import {BackTo} from "../../components/navigation/BackTo"
-import {TertiaryBadge} from "../../components/badges/TertiaryBadge"
-import {BrandText} from "../../components/BrandText"
-import {AttributesCardTest} from "../../components/cards/AttributesCardTest"
-import {fontSemibold14} from "../../utils/style/fonts"
-import {ProgressionCard} from "../../components/cards/ProgressionCard"
-import {PrimaryButtonTest} from "../../components/buttons/PrimaryButtonTest"
-import {SecondaryCardTest} from "../../components/cards/SecondaryCardTest"
-import {SocialButton} from "../../components/buttons/SocialButton"
-import DiscordSVG from "../../../assets/icons/discord.svg"
-import WebsiteSVG from "../../../assets/icons/website.svg"
-import TwitterSVG from "../../../assets/icons/twitter.svg"
+import Guardian1PNG from "../../../assets/guardian_1.png";
+import DiscordSVG from "../../../assets/icons/discord.svg";
+import TwitterSVG from "../../../assets/icons/twitter.svg";
+import WebsiteSVG from "../../../assets/icons/website.svg";
+import { BrandText } from "../../components/BrandText";
+import { SocialNetworks } from "../../components/Footer";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { SocialButton } from "../../components/buttons/SocialButton";
+import { AttributesCard } from "../../components/cards/AttributesCard";
+import { ProgressionCard } from "../../components/cards/ProgressionCard";
+import { SecondaryCard } from "../../components/cards/SecondaryCard";
+import { BackTo } from "../../components/navigation/BackTo";
+import {
+  neutral33,
+  neutral77,
+  primaryColor,
+  yellowDefault,
+} from "../../utils/style/colors";
+import {
+  fontSemibold14,
+  fontSemibold16,
+  fontSemibold20,
+} from "../../utils/style/fonts";
 
 //TODO: Dynamic data
 
 export const MintGuardiansScreen: React.FC = () => {
-		return (
-				<ScreenContainer
-						footerChildren={<SocialNetworks/>}
-						headerChildren={<BackTo label="Guardians Collection"/>}
-				>
-						<View
-								style={{
-										flex: 1, flexDirection: "row", justifyContent: "center",
-										marginTop: 72
-								}}
-						>
-								<View style={{
-										flex: 1, justifyContent: "center",
-										backgroundColor: "blue",
-										marginRight: 24
-								}}>
-										<TertiaryBadge label="GENESIS LAUNCH"/>
+  return (
+    <ScreenContainer
+      footerChildren={<SocialNetworks />}
+      headerChildren={<BackTo label="Guardians Collection" />}
+    >
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          marginTop: 72,
+          minHeight: 702,
+          maxHeight: 702,
+        }}
+      >
+        {/* ===== Left container */}
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            marginRight: 24,
+            width: "100%",
+            maxWidth: 534,
+            minWidth: 534,
+          }}
+        >
+          <TertiaryBadge label="GENESIS LAUNCH" style={{ marginBottom: 24 }} />
 
-										<BrandText>Genesis Guardians of Teritori</BrandText>
+          <BrandText style={{ marginBottom: 12 }}>
+            Genesis Guardians of Teritori
+          </BrandText>
 
-										<View style={{flex: 1, flexDirection: "row", alignItems: "center"}}>
-												<AttributesCardTest label="Supply" value="5000"/>
-												<AttributesCardTest label="Price" value="5 SOL"/>
-												<AttributesCardTest label="Limit Buy" value="5 by address"/>
-										</View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 20,
+            }}
+          >
+            <AttributesCard
+              label="Supply"
+              value="5000"
+              style={{ marginRight: 12 }}
+            />
+            <AttributesCard
+              label="Price"
+              value="5 SOL"
+              style={{ marginRight: 12 }}
+            />
+            <AttributesCard label="Limit Buy" value="5 by address" />
+          </View>
 
-										<BrandText style={[fontSemibold14]}>
+          <BrandText style={[fontSemibold14, { marginBottom: 24 }]}>
+            {"For decades, the destruction of ecosystems and social relations has turned people into soulless robots. " +
+              "At the same time, inequality explodes every year and misery becomes the norm for the silent majority.\n\n" +
+              "A minority of powerful & wealthy leaders, called the “The Legion'', have set up a technological & political" +
+              "system allowing them to continue to develop their wealth and safety.\n" +
+              "Of course this system only serves the happy few elite members of the society while the majority survives in" +
+              "an increasingly uncertain world.\n\n" +
+              "Small groups start to gather in the shadows to take action.\n" +
+              "They go by the name of “Guardians” and believe that everyone should be able to live autonomously without the" +
+              "need to rely on “The Legion”. Their solution for a better world is to offer a decentralized ecosystem open" +
+              "to anyone, rich or poor."}
+          </BrandText>
 
-												{/*TODO: Allow to use \n to make new lines directly on text (And remove <br/>*/}
-												For decades, the destruction of ecosystems and social relations has turned people into soulless robots. At
-												the same time, inequality explodes every year and misery becomes the norm for the silent majority.<br/>
-												<br/>
-												A minority of powerful & wealthy leaders, called the “The Legion'', have set up a technological & political
-												system allowing them to continue to develop their wealth and safety.<br/>
-												Of course this system only serves the happy few elite members of the society while the majority survives in
-												an increasingly uncertain world.<br/>
-												<br/>
-												Small groups start to gather in the shadows to take action.<br/>
-												They go by the name of “Guardians” and believe that everyone should be able to live autonomously without the
-												need to rely on “The Legion”. Their solution for a better world is to offer a decentralized ecosystem open
-												to anyone, rich or poor.
-										</BrandText>
+          <ProgressionCard
+            label="Tokens Minted"
+            valueCurrent={1343}
+            valueMax={1999}
+            style={{ marginBottom: 32 }}
+          />
 
-										<ProgressionCard label="Tokens Minted" valueCurrent={1343} valueMax={1999}/>
+          <PrimaryButton
+            text="Mint now"
+            style={{ marginBottom: 24 }}
+            onPress={() => {
+              /*TODO:*/
+            }}
+            width={160}
+          />
 
-										<PrimaryButtonTest text="Mint now" onPress={() => {/*TODO:*/
-										}} width={160}/>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 40,
+            }}
+          >
+            <SocialButton
+              text="Discord"
+              iconSvg={
+                <>
+                  <DiscordSVG />
+                </>
+              }
+              onPress={() => {
+                /*TODO:*/
+              }}
+              style={{ marginRight: 12 }}
+            />
+            <SocialButton
+              text="Website"
+              iconSvg={
+                <>
+                  <WebsiteSVG />
+                </>
+              }
+              onPress={() => {
+                /*TODO:*/
+              }}
+              style={{ marginRight: 12 }}
+            />
+            <SocialButton
+              text="Twitter"
+              iconSvg={
+                <>
+                  <TwitterSVG />
+                </>
+              }
+              onPress={() => {
+                /*TODO:*/
+              }}
+            />
+          </View>
+        </View>
 
-										<View style={{flex: 1, flexDirection: "row", alignItems: "center"}}>
-												<SocialButton
-														text="Discord" iconSvg={<><DiscordSVG/></>} onPress={() => {/*TODO:*/
-												}}
-														style={{marginRight: 12}}/>
-												<SocialButton text="Website" iconSvg={<><WebsiteSVG/></>} onPress={() => {/*TODO:*/
-												}} style={{marginRight: 12}}/>
-												<SocialButton text="Twitter" iconSvg={<><TwitterSVG/></>} onPress={() => {/*TODO:*/
-												}}/>
-										</View>
-								</View>
+        {/* ===== Right container */}
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            width: "100%",
+            maxWidth: 534,
+            minWidth: 534,
+            minHeight: 806,
+            maxHeight: 806,
+          }}
+        >
+          <SecondaryCard
+            paddingV={0}
+            paddingH={0}
+            width={534}
+            height={534}
+            style={{ marginBottom: 40 }}
+          >
+            {/*SecondaryCard has borders width 1px, so we must remove 2px to height and width from this Image to correctly size it*/}
+            <Image
+              source={Guardian1PNG}
+              style={{ width: 532, height: 532, borderRadius: 8 }}
+            />
+          </SecondaryCard>
 
-								<View style={{
-										flex: 1, justifyContent: "center",
-										backgroundColor: "green"
-								}}>
+          <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
+            Activity
+          </BrandText>
 
-								</View>
-						</View>
-				</ScreenContainer>
-		)
-}
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <TertiaryBadge label="Presale" />
+            {/*TODO: Gradient text yellow*/}
+            <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
+              ENDED
+            </BrandText>
+          </View>
+
+          <View
+            style={{
+              borderBottomColor: neutral33,
+              borderBottomWidth: 1,
+              marginBottom: 24,
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                marginVertical: 16,
+              }}
+            >
+              <BrandText
+                style={[fontSemibold16, { color: neutral77, marginRight: 5 }]}
+              >
+                Whitelist
+              </BrandText>
+              <BrandText style={fontSemibold16}>953</BrandText>
+
+              <View
+                style={{
+                  borderRadius: 999,
+                  width: 2,
+                  height: 2,
+                  marginHorizontal: 12,
+                  backgroundColor: neutral77,
+                }}
+              />
+
+              <BrandText
+                style={[fontSemibold16, { color: neutral77, marginRight: 5 }]}
+              >
+                Max
+              </BrandText>
+              <BrandText style={fontSemibold16}>1</BrandText>
+              <BrandText
+                style={[fontSemibold16, { color: neutral77, marginLeft: 5 }]}
+              >
+                Token
+              </BrandText>
+
+              <View
+                style={{
+                  borderRadius: 999,
+                  width: 2,
+                  height: 2,
+                  marginHorizontal: 12,
+                  backgroundColor: neutral77,
+                }}
+              />
+
+              <BrandText style={fontSemibold16}>1.8</BrandText>
+            </View>
+          </View>
+
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <TertiaryBadge label="Public Mint" />
+            {/*TODO: Gradient text blue*/}
+            <BrandText style={[fontSemibold16, { color: primaryColor }]}>
+              IN PROGRESS
+            </BrandText>
+          </View>
+
+          <View style={{ borderBottomColor: neutral33, borderBottomWidth: 1 }}>
+            <BrandText style={[fontSemibold16, { marginVertical: 16 }]}>
+              1.8
+            </BrandText>
+          </View>
+        </View>
+      </View>
+    </ScreenContainer>
+  );
+};

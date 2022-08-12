@@ -27,7 +27,7 @@ export const isTokenOwned = (tokenArray: string[], name: string) => {
 };
 
 // Get a token ID, ready for query contract
-export const normalizedTokenId = name => R.toLower(name + process.env.TLD);
+export const normalizedTokenId = (name) => R.toLower(name + process.env.TLD);
 
 // Get a path ID from token, ready for query contract
 export const normalizedPathId = (inputString: string) => {

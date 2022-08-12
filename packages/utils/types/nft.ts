@@ -1,7 +1,7 @@
 import { Network } from "../network";
 
 export interface NFTData {
-  network: Network;
+  network: Network | null;
   name: string;
   owned: boolean;
   imageURI: string;

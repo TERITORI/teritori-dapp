@@ -5,7 +5,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 
 export const LaunchpadScreen: React.FC = () => {
   return (
-    <ScreenContainer >
+    <ScreenContainer>
       <ComingSoon />
     </ScreenContainer>
   );

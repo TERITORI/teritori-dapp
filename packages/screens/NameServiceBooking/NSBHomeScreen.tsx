@@ -6,13 +6,13 @@ import manageIconPNG from "../../../assets/icons/manage.png";
 import registerIconPNG from "../../../assets/icons/register.png";
 import { SocialNetworks } from "../../components/Footer";
 import { IntroLogoText } from "../../components/IntroLogoText";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { FlowCard } from "../../components/cards/FlowCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
 import { NSBContext } from "../../context/NSBProvider";
 import { useStore } from "../../store/cosmwasm";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import {ScreenContainer} from "../../components/ScreenContainer"
 
 // Just a container that it can be added at the bottom of the modal TODO: Integrate this later
 // const DomainsAvailability: React.FC = () => {
@@ -152,7 +152,11 @@ export const NSBHomeScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer hideSidebar footerChildren={<SocialNetworks />} headerStyle={{borderBottomColor: "transparent"}}>
+    <ScreenContainer
+      hideSidebar
+      footerChildren={<SocialNetworks />}
+      headerStyle={{ borderBottomColor: "transparent" }}
+    >
       <IntroLogoText
         subTitle="Name Service Booking"
         style={{ marginTop: 40 }}

@@ -1,10 +1,9 @@
 // Query the name service
 import { useContext, useEffect, useState } from "react";
 
-import { NSBContext } from "../context/NSBProvider";
+import { FeedbacksContext } from "../context/FeedbacksProvider";
 import { isTokenOwned } from "../utils/handefulFunctions";
 import { getNonSigningClient } from "./useSigningCosmWasmClient";
-import {FeedbacksContext} from "../context/FeedbacksProvider"
 
 // NSB : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
 export const useCheckNameAvailability = (name, tokens: string[]) => {

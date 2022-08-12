@@ -1,17 +1,17 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
 
-import { FindAName } from "../../components/nameService/FindAName";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { BackTo } from "../../components/navigation/BackTo";
+import { FindAName } from "../../components/teritorinameService/FindAName";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useStore } from "../../store/cosmwasm";
 import { isTokenOwned } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
-import {FeedbacksContext} from "../../context/FeedbacksProvider"
-import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackTo} from "../../components/navigation/BackTo"
 
 export const NSBRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
@@ -35,7 +35,9 @@ export const NSBRegisterScreen: React.FC = () => {
   });
 
   return (
-    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={<BackTo label="Back to home" navItem="NSBHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
@@ -48,9 +50,8 @@ export const NSBRegisterScreen: React.FC = () => {
       >
         {name && !nameError && nameAvailable && !isTokenOwned(tokens, name) ? (
           <PrimaryButton
+            width={156}
             text="Mint your new ID"
-            big
-            style={{ maxWidth: 157, width: "100%" }}
             onPress={() => navigation.navigate("NSBMintName", { name })}
           />
         ) : null}

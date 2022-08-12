@@ -2,20 +2,25 @@ import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { NameDataForm } from "../../components/nameService/NameDataForm";
-import { NameNFT } from "../../components/nameService/NameNFT";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { BackTo } from "../../components/navigation/BackTo";
+import { NameDataForm } from "../../components/teritorinameService/NameDataForm";
+import { NameNFT } from "../../components/teritorinameService/NameNFT";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee } from "../../utils/fee";
-import {isTokenOwned, normalizedPathId, normalizedTokenId, tokenWithoutTld} from "../../utils/handefulFunctions"
+import {
+  isTokenOwned,
+  normalizedPathId,
+  normalizedTokenId,
+  tokenWithoutTld,
+} from "../../utils/handefulFunctions";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
-import {FeedbacksContext} from "../../context/FeedbacksProvider"
-import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackTo} from "../../components/navigation/BackTo"
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const NSBMintPathScreen: React.FC<{
@@ -23,9 +28,9 @@ export const NSBMintPathScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName } =
-    useContext(NSBContext);
-  const { setLoadingFullScreen, setToastError, setToastSuccess } = useContext(FeedbacksContext);
+  const { name, setName } = useContext(NSBContext);
+  const { setLoadingFullScreen, setToastError, setToastSuccess } =
+    useContext(FeedbacksContext);
   const { tokens, loadingTokens } = useTokenList();
   const navigation = useAppNavigation();
   const signingClient = useStore((state) => state.signingClient);
@@ -164,9 +169,15 @@ export const NSBMintPathScreen: React.FC<{
   };
 
   return (
-    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={
-        <BackTo label={"Back to " + name} navItem="NSBConsultName" navParams={{ name }} />
+        <BackTo
+          label={"Back to " + name}
+          navItem="NSBConsultName"
+          navParams={{ name }}
+        />
       }
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>

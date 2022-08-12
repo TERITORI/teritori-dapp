@@ -6,16 +6,16 @@ import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 import flowCardPNG from "../../../assets/cards/flow-card.png";
 import logoSmPNG from "../../../assets/logo-sm.png";
 import { BrandText } from "../../components/BrandText";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryBadge } from "../../components/badges/PrimaryBadge";
+import { BackTo } from "../../components/navigation/BackTo";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { noTokens, useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
 import { useStore } from "../../store/cosmwasm";
 import { tokenWithoutTld } from "../../utils/handefulFunctions";
 import { useAppNavigation } from "../../utils/navigation";
-import {FeedbacksContext} from "../../context/FeedbacksProvider"
-import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackTo} from "../../components/navigation/BackTo"
 
 const NameCard: React.FC<{
   fullName: string;
@@ -116,7 +116,9 @@ export const NSBManageScreen: React.FC = () => {
   // );
 
   return (
-    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={<BackTo label="Back to home" navItem="NSBHome" />}
     >
       <View style={{ flex: 1, alignItems: "center" }}>

@@ -120,7 +120,12 @@ export const NFTView: React.FC<{
             Floor Price
           </BrandText>
         </View>
-        <SecondaryAltButton text={data.floorPrice} />
+        <SecondaryAltButton
+          text={data.floorPrice}
+          onPress={() => {
+            /*TODO:*/
+          }}
+        />
       </View>
     </CardOutline>
   );

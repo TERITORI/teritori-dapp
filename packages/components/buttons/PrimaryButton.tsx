@@ -1,47 +1,50 @@
-import * as React from "react";
-import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import React from "react";
+import { ViewStyle } from "react-native";
 
 import { primaryColor, primaryTextColor } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { TertiaryCard } from "../cards/TertiaryCard";
 
 export const PrimaryButton: React.FC<{
+  width?: number | string;
+  height?: number;
+  paddingH?: number;
   text: string;
+  onPress: () => void;
+  squaresBckgColor?: string;
   style?: ViewStyle | ViewStyle[];
-  textStyle?: TextStyle | TextStyle[];
-  onPress?: () => void;
-  big?: boolean;
   disabled?: boolean;
-  backgroundColor?: string;
-}> = ({ text, style, textStyle, onPress, big, disabled, backgroundColor }) => {
-  const height = big ? 56 : 48;
+}> = ({
+  width = "fit-content",
+  height = 56,
+  text,
+  onPress,
+  paddingH = 20,
+  squaresBckgColor = "#000000",
+  style,
+  disabled = false,
+}) => {
   return (
-    <View
-      style={[
-        { alignItems: "center", opacity: disabled ? 0.5 : undefined },
-        style,
-      ]}
+    <TertiaryCard
+      onPress={onPress}
+      borderRadius={6}
+      style={style}
+      backgroundColor={primaryColor}
+      height={height}
+      paddingH={paddingH}
+      disabled={disabled}
+      squaresBckgColor={squaresBckgColor}
+      width={width}
     >
-      <TouchableOpacity
-        style={{
-          backgroundColor: backgroundColor || primaryColor,
-          borderRadius: 6,
-          height,
-          paddingHorizontal: 20,
-          justifyContent: "center",
-          width: "100%",
-        }}
-        onPress={onPress}
-        disabled={disabled}
+      <BrandText
+        style={[
+          fontSemibold14,
+          { color: primaryTextColor, textAlign: "center" },
+        ]}
       >
-        <BrandText
-          style={[
-            { color: primaryTextColor, fontSize: 14, textAlign: "center" },
-            textStyle,
-          ]}
-        >
-          {text}
-        </BrandText>
-      </TouchableOpacity>
-    </View>
+        {text}
+      </BrandText>
+    </TertiaryCard>
   );
 };

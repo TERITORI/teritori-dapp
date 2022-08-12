@@ -1,4 +1,4 @@
-import React, {createContext, useState} from "react"
+import React, { createContext, useState } from "react";
 
 interface DefaultValue {
   name: string;
@@ -19,7 +19,7 @@ const NSBContextProvider: React.FC = ({ children }) => {
     <NSBContext.Provider
       value={{
         name,
-        setName
+        setName,
       }}
     >
       {children}

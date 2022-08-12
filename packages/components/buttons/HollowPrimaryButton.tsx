@@ -1,38 +1,52 @@
 import * as React from "react";
-import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { TextStyle, ViewStyle } from "react-native";
 
 import { primaryColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
+import { SecondaryCard } from "../cards/SecondaryCard";
 
 export const HollowPrimaryButton: React.FC<{
   text: string;
-  style?: ViewStyle | ViewStyle[];
   textStyle?: TextStyle;
-  onPress?: () => void;
-}> = ({ text, style, textStyle, onPress }) => {
+  width?: number | string;
+  height?: number;
+  paddingH?: number;
+  onPress: () => void;
+  squaresBckgColor?: string;
+  style?: ViewStyle | ViewStyle[];
+  disabled?: boolean;
+}> = ({
+  text,
+  style,
+  textStyle,
+  onPress,
+  width = "fit-content",
+  height = 56,
+  paddingH = 20,
+  squaresBckgColor = "#000000",
+  disabled = false,
+}) => {
   return (
-    <View style={[{ alignItems: "center" }, style]}>
-      <TouchableOpacity
-        onPress={onPress}
-        style={{
-          borderColor: primaryColor,
-          borderWidth: 1,
-          borderRadius: 6,
-          height: 56,
-          paddingHorizontal: 20,
-          justifyContent: "center",
-          width: "100%",
-        }}
+    <SecondaryCard
+      onPress={onPress}
+      borderRadius={6}
+      style={style}
+      backgroundColor="#000000"
+      height={height}
+      paddingH={paddingH}
+      disabled={disabled}
+      squaresBckgColor={squaresBckgColor}
+      width={width}
+      borderColor={primaryColor}
+    >
+      <BrandText
+        style={[
+          { color: primaryColor, fontSize: 14, textAlign: "center" },
+          textStyle,
+        ]}
       >
-        <BrandText
-          style={[
-            { color: primaryColor, fontSize: 14, textAlign: "center" },
-            textStyle,
-          ]}
-        >
-          {text}
-        </BrandText>
-      </TouchableOpacity>
-    </View>
+        {text}
+      </BrandText>
+    </SecondaryCard>
   );
 };

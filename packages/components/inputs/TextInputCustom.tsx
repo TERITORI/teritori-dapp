@@ -1,11 +1,11 @@
 import React from "react";
 import { TextInput, View, ViewStyle } from "react-native";
 
-import { neutral22, neutral33, neutral77 } from "../../utils/style/colors";
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
 } from "../../utils/handefulFunctions";
+import { neutral22, neutral33, neutral77 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)

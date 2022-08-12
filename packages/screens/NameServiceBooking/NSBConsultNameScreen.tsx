@@ -4,30 +4,30 @@ import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
-import { NameAndTldText } from "../../components/nameService/NameAndTldText";
-import { NameNFT } from "../../components/nameService/NameNFT";
-import { DarkButton } from "../../components/buttons/DarkButton";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
+import { BackTo } from "../../components/navigation/BackTo";
+import { NameAndTldText } from "../../components/teritorinameService/NameAndTldText";
+import { NameNFT } from "../../components/teritorinameService/NameNFT";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { NSBContext } from "../../context/NSBProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useStore } from "../../store/cosmwasm";
-import { neutral33, neutral44, neutral77 } from "../../utils/style/colors";
 import {
   isTokenOwned,
   numberWithThousandsSeparator,
 } from "../../utils/handefulFunctions";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { neutral33, neutral44, neutral77 } from "../../utils/style/colors";
 import {
   imageDisplayLabel,
   prettyTokenData,
   publicNameDisplayLabel,
 } from "../../utils/teritori";
-import {FeedbacksContext} from "../../context/FeedbacksProvider"
-import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackTo} from "../../components/navigation/BackTo"
 
 const SendFundModal: React.FC<{
   onClose: () => void;
@@ -65,7 +65,7 @@ const SendFundModal: React.FC<{
               navItem="NSBRegister"
               onPress={() => setVisible(false)}
             />
-            {/*<DarkButton text={"Show paths"} style={{width: "fit-content"}}/>*/}
+            {/*<SecondaryButton height={48} text={"Show paths"}/>*/}
           </View>
         </View>
       }
@@ -87,7 +87,14 @@ const SendFundModal: React.FC<{
             onlyNumbers
             style={{ marginRight: 12, minWidth: 0 }}
           />
-          <PrimaryButton text="Send" style={{ width: "fit-content" }} />
+          <PrimaryButton
+            height={48}
+            text="Send"
+            style={{ width: "fit-content" }}
+            onPress={() => {
+              /*TODO:*/
+            }}
+          />
         </View>
       </View>
     </ModalBase>
@@ -96,16 +103,16 @@ const SendFundModal: React.FC<{
 
 const NotOwnerActions = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
       <BackTo label="Back to search" navItem="NSBRegister" />
       <PrimaryButton
+        height={48}
         text="Send funds"
-        style={btnStyle}
+        style={{ marginLeft: 24 }}
         onPress={() => setModalVisible(true)}
       />
-      {/*<DarkButton text="Show paths" style={btnStyle}/>*/}
+      {/*<SecondaryButton height={48} text="Show paths" style={{ marginLeft: 24}}/>*/}
       <SendFundModal
         onClose={() => setModalVisible(false)}
         visible={modalVisible}
@@ -117,28 +124,31 @@ const NotOwnerActions = () => {
 const OwnerActions = () => {
   const navigation = useAppNavigation();
   const { name } = useContext(NSBContext);
-  const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BackTo navItem="NSBManage" label="Back"/>
-      <DarkButton
+      <BackTo navItem="NSBManage" label="Back" />
+      <SecondaryButton
+        height={48}
         text="Update metadata"
-        style={btnStyle}
+        style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("NSBUpdateName", { name })}
       />
-      {/*<DarkButton*/}
+      {/*<SecondaryButton*/}
+      {/*height={48}*/}
       {/*  text="Transfer"*/}
-      {/*  style={btnStyle}*/}
+      {/* style={{ marginLeft: 24}}*/}
       {/* onPress={() => {}}*/}
       {/*/>*/}
-      {/*<DarkButton*/}
+      {/*<SecondaryButton*/}
+      {/*height={48}*/}
       {/*  text="Mint path"*/}
-      {/*  style={btnStyle}*/}
+      {/*  style={{ marginLeft: 24}}*/}
       {/*  onPress={() => navigation.navigate("NSBMintPath", { name })}*/}
       {/*/>*/}
-      <DarkButton
+      <SecondaryButton
+        height={48}
         text="Burn"
-        style={btnStyle}
+        style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("NSBBurnName", { name })}
       />
     </>
@@ -171,7 +181,9 @@ export const NSBConsultNameScreen: React.FC<{
   });
 
   return (
-    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={
         isTokenOwned(tokens, name) && !notFound ? (
           <OwnerActions />

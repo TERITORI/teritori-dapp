@@ -1,8 +1,8 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
 
-import { neutral77 } from "../../utils/style/colors";
 import { tldFromToken, tokenWithoutTld } from "../../utils/handefulFunctions";
+import { neutral77 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 // A text with the substring ".xxx" grayed

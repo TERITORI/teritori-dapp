@@ -2,6 +2,7 @@ import * as React from "react";
 import { View, ViewStyle } from "react-native";
 
 import { primaryColor } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 
 export const PrimaryBadge: React.FC<{
@@ -17,11 +18,12 @@ export const PrimaryBadge: React.FC<{
           backgroundColor: primaryColor,
           borderRadius: 999,
           width: "fit-content",
+          height: 24,
         },
         style,
       ]}
     >
-      <BrandText style={{ fontSize: 14, color: "#000000", lineHeight: 16 }}>
+      <BrandText style={[fontSemibold14, { color: "#000000" }]}>
         {label}
       </BrandText>
     </View>

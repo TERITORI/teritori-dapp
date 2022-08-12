@@ -186,6 +186,7 @@ export const NameDataForm: React.FC<{
         onChangeText={setValidatorOperatorAddress}
       />
       <PrimaryButton
+        height={48}
         text={btnLabel}
         onPress={_onPressBtn}
         style={{ marginTop: 8 }}

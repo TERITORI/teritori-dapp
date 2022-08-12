@@ -2,20 +2,20 @@ import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { NameDataForm } from "../../components/nameService/NameDataForm";
-import { NameNFT } from "../../components/nameService/NameNFT";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { BackTo } from "../../components/navigation/BackTo";
+import { NameDataForm } from "../../components/teritorinameService/NameDataForm";
+import { NameNFT } from "../../components/teritorinameService/NameNFT";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { NSBContext } from "../../context/NSBProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useHasUserConnectedWallet } from "../../hooks/useHasUserConnectedWallet";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee } from "../../utils/fee";
-import {isTokenOwned, normalizedTokenId} from "../../utils/handefulFunctions"
+import { isTokenOwned, normalizedTokenId } from "../../utils/handefulFunctions";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/messages";
-import {FeedbacksContext} from "../../context/FeedbacksProvider"
-import {ScreenContainer} from "../../components/ScreenContainer"
-import {BackTo} from "../../components/navigation/BackTo"
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const NSBUpdateNameScreen: React.FC<{
@@ -23,9 +23,9 @@ export const NSBUpdateNameScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName } =
-    useContext(NSBContext);
-  const { setLoadingFullScreen, setToastSuccess, setToastError } = useContext(FeedbacksContext);
+  const { name, setName } = useContext(NSBContext);
+  const { setLoadingFullScreen, setToastSuccess, setToastError } =
+    useContext(FeedbacksContext);
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
@@ -154,9 +154,15 @@ export const NSBUpdateNameScreen: React.FC<{
   };
 
   return (
-    <ScreenContainer hideSidebar headerStyle={{borderBottomColor: "transparent"}}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={
-        <BackTo label={"Back to " + name} navItem="NSBConsultName" navParams={{ name }} />
+        <BackTo
+          label={"Back to " + name}
+          navItem="NSBConsultName"
+          navParams={{ name }}
+        />
       }
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>

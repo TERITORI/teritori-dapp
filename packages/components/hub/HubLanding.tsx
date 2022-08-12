@@ -20,14 +20,15 @@ import Logo from "../../../assets/logo.svg";
 import { useLaunchpadData } from "../../context/LaunchpadProvider";
 import { useWallets } from "../../context/WalletsProvider";
 import { LaunchpadItem } from "../../utils/airtable";
-import { helpAreaWidth, sidebarWidth } from "../../utils/style/layout";
 import { useAppNavigation } from "../../utils/navigation";
+import { helpAreaWidth, sidebarWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CarouselSection } from "../CarouselSection";
 import { Guardian } from "../Guardian";
 import { Section } from "../Section";
 import { HollowPrimaryButton } from "../buttons/HollowPrimaryButton";
 import { SecondaryButton } from "../buttons/SecondaryButton";
+import { TertiaryButton } from "../buttons/TertiaryButton";
 import { CardOutline } from "../cards/CardOutline";
 import { LabelCard } from "../cards/LabelCard";
 
@@ -282,6 +283,7 @@ const NewsBox: React.FC = () => {
             }}
           >
             <SecondaryButton
+              height={48}
               text="Join the Mint"
               onPress={() => navigation.navigate("Mint")}
             />
@@ -306,9 +308,7 @@ export const HubLanding: React.FC = () => {
   );
 
   return (
-    <View
-      style={{ width: "100%"}}
-    >
+    <View style={{ width: "100%" }}>
       <View style={{ flex: 1 }}>
         <Section title="Highlighted News">
           <NewsBox />
@@ -396,9 +396,7 @@ Join the Bounty Program
           height={launchpadItemHeight}
           loop={false}
           style={{
-            width:
-              windowWidth -
-              (helpAreaWidth + sidebarWidth),
+            width: windowWidth - (helpAreaWidth + sidebarWidth),
           }}
         />
         <View
@@ -412,14 +410,23 @@ Join the Bounty Program
           <HollowPrimaryButton
             text="Apply to the Launch Pad"
             style={{ margin: gridHalfGutter }}
+            onPress={() => {
+              /*TODO:*/
+            }}
           />
           <HollowPrimaryButton
             text="Explore All Upcoming Launches"
             style={{ margin: gridHalfGutter }}
+            onPress={() => {
+              /*TODO:*/
+            }}
           />
           <HollowPrimaryButton
             text="Vote on Upcoming Launches"
             style={{ margin: gridHalfGutter }}
+            onPress={() => {
+              /*TODO:*/
+            }}
           />
         </View>
         <View
