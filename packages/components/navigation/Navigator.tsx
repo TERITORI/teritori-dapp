@@ -7,7 +7,7 @@ import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
-import { MintGuardiansScreen } from "../../screens/Launchpad/MintGuardiansScreen";
+import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { MintScreen } from "../../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
@@ -62,8 +62,8 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="MintGuardians"
-        component={MintGuardiansScreen}
+        name="MintCollection"
+        component={MintCollectionScreen}
         options={{ header: () => null }}
       />
 

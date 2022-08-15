@@ -27,9 +27,13 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 
-//TODO: Dynamic data
+//TODO: Dynamic data (Collection id is in route.params.id)
 
-export const MintGuardiansScreen: React.FC = () => {
+// export const MintCollectionScreen: React.FC<{
+//   route: RouteProp<RootStackParamList, "NSBConsultName">;
+// }> = ({ route }) => {
+export const MintCollectionScreen: React.FC = () => {
+
   return (
     <ScreenContainer
       footerChildren={<SocialNetworks />}

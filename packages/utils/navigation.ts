@@ -21,7 +21,7 @@ export type RootStackParamList = {
   NSBUpdateName: undefined;
   NSBBurnName: undefined;
   NSBMintPath: undefined;
-  MintGuardians: undefined;
+  MintCollection: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<
@@ -45,13 +45,11 @@ const navConfig = {
     Marketplace: "marketplace",
     GuardiansGame: "guardians-game",
     Mint: "mint",
-
+    Governance: "governance",
     // ==== Launchpad
     Launchpad: "launchpad",
-    // Mint Guardians NFT
-    MintGuardians: "launchpad/mint/guardians",
-    Governance: "governance",
-
+    // Mint NFT collection
+    MintCollection: "launchpad/collection/:id/mint",
     // ==== Teritori Name Service (TNS) (= Name Service Booking (NSB))
     NSBHome: "nsb",
     NSBExplore: "nsb/explore",
