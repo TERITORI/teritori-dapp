@@ -16,7 +16,7 @@ export const NameAndTldText: React.FC<{
       <BrandText
         style={{
           letterSpacing: -(20 * 0.04),
-          maxWidth: "calc(100% - 12px * 2)",
+          maxWidth: "100%",
         }}
       >
         {tokenWithoutTld(nameAndTldStr)}

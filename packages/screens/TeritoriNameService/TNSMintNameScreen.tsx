@@ -21,22 +21,24 @@ import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
 
 const CostContainer: React.FC = () => {
-  const innerHeight = 32;
+  const width = 748;
+  const height = 80;
 
   return (
     <View>
       <Image
         source={longCardPNG}
-        style={{ width: 748, height: 80, resizeMode: "stretch" }}
+        style={{ width, height, position: "absolute", resizeMode: "stretch" }}
       />
       <View
         style={{
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          position: "absolute",
-          height: innerHeight,
-          top: `calc(50% - ${innerHeight}px / 2)`,
+          height,
+          width,
+          minWidth: width,
+          minHeight: height
         }}
       >
         <Image

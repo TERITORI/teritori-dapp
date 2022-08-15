@@ -46,7 +46,7 @@ export const keplrSuggestTeritori = (keplr: Keplr) =>
     // Chain-id of the Cosmos SDK chain.
     chainId: teritoriChainId,
     // The name of the chain to be displayed to the user.
-    chainName: "Teritori",
+    chainName: toriDisplayDenom,
     // RPC endpoint of the chain.
     rpc: teritoriRPCProvider,
     // REST endpoint of the chain.

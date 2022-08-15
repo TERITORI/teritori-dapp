@@ -3,7 +3,7 @@ import * as R from "ramda";
 import React, { useContext, useEffect, useState } from "react";
 import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import flowCardPNG from "../../../assets/cards/flow-card.png";
+import flowCardPNG from "../../../assets/cards/name-card.png";
 import logoSmPNG from "../../../assets/logo-sm.png";
 import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
@@ -23,25 +23,22 @@ const NameCard: React.FC<{
   style: ViewStyle;
   onPress: () => void;
 }> = ({ fullName, isPrimary, style, onPress }) => {
-  const innerHeight = 44;
+  const width = 392;
+  const height = 84;
 
   return (
     <TouchableOpacity style={style} onPress={onPress}>
-      <Image
-        source={flowCardPNG}
-        style={{ width: 392, height: 84, resizeMode: "stretch" }}
-      />
-
+      <Image source={flowCardPNG} style={{ width, height, position: "absolute", resizeMode: "stretch" }}/>
       <View
         style={{
           flex: 1,
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          position: "absolute",
-          height: innerHeight,
-          width: "100%",
-          top: `calc(50% - ${innerHeight}px / 2)`,
+          height,
+          minHeight: height,
+          width,
+          minWidth: width,
         }}
       >
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>

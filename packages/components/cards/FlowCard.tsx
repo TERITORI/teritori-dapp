@@ -7,7 +7,7 @@ import {
   ImageSourcePropType,
 } from "react-native";
 
-import flowCardPNG from "../../../assets/cards/flow-card.png";
+import flowCardPNG from "../../../assets/cards/name-card.png";
 import { BrandText } from "../BrandText";
 
 export const FlowCard: React.FC<{
@@ -17,22 +17,23 @@ export const FlowCard: React.FC<{
   style?: ViewStyle;
   onPress: () => void;
 }> = ({ label, description, iconSource, style, onPress }) => {
-  const innerHeight = 56;
+  const width = 392;
+  const height = 100;
 
   return (
     <TouchableOpacity style={style} onPress={onPress}>
       <Image
         source={flowCardPNG}
-        style={{ width: 392, height: 100, resizeMode: "stretch" }}
+        style={{ width, height, position: "absolute", resizeMode: "stretch" }}
       />
 
       <View
         style={{
           flex: 1,
           flexDirection: "row",
-          position: "absolute",
-          height: innerHeight,
-          top: `calc(50% - ${innerHeight}px / 2)`,
+          padding: 20,
+          width: width, height,
+          minWidth: width, minHeight: height,
         }}
       >
         <Image
@@ -41,7 +42,6 @@ export const FlowCard: React.FC<{
             width: 24,
             height: 24,
             resizeMode: "stretch",
-            marginLeft: 20,
             marginRight: 8,
           }}
         />
