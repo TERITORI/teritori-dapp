@@ -4,17 +4,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
+import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { NameDataForm } from "../../components/TeritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee } from "../../utils/fee";
-import { isTokenOwned } from "../../utils/tns";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { isTokenOwned } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available

@@ -6,18 +6,18 @@ import { Image, View } from "react-native";
 import burnPNG from "../../../assets/icons/burn.png";
 import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
-import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useStore } from "../../store/cosmwasm";
-import { neutral33 } from "../../utils/style/colors";
 import { defaultExecuteFee } from "../../utils/fee";
-import { isTokenOwned } from "../../utils/tns";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { neutral33 } from "../../utils/style/colors";
+import { isTokenOwned } from "../../utils/tns";
 
 export const TNSBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "TNSUpdateName">;

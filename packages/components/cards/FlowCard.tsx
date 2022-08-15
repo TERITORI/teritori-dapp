@@ -32,8 +32,10 @@ export const FlowCard: React.FC<{
           flex: 1,
           flexDirection: "row",
           padding: 20,
-          width: width, height,
-          minWidth: width, minHeight: height,
+          width,
+          height,
+          minWidth: width,
+          minHeight: height,
         }}
       >
         <Image

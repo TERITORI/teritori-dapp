@@ -2,15 +2,15 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
 
 import { BacKTo } from "../../components/Footer";
-import { FindAName } from "../../components/TeritoriNameService/FindAName";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { FindAName } from "../../components/TeritoriNameService/FindAName";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useStore } from "../../store/cosmwasm";
-import { isTokenOwned } from "../../utils/tns";
 import { useAppNavigation } from "../../utils/navigation";
+import { isTokenOwned } from "../../utils/tns";
 
 export const TNSRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();

@@ -6,6 +6,7 @@ import { useWallets, Wallet } from "../context/WalletsProvider";
 import { setIsKeplrConnected } from "../store/slices/settings";
 import { addWallet, StoreWallet } from "../store/slices/wallets";
 import { useAppDispatch } from "../store/store";
+import { addressToNetwork, Network } from "../utils/network";
 import {
   neutral33,
   neutral44,
@@ -13,7 +14,6 @@ import {
   pinkDefault,
   yellowDefault,
 } from "../utils/style/colors";
-import { addressToNetwork, Network } from "../utils/network";
 import { keplrSuggestTeritori, teritoriChainId } from "../utils/teritori";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";

@@ -2,15 +2,15 @@ import React, { useContext, useEffect } from "react";
 import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
-import { FindAName } from "../../components/TeritoriNameService/FindAName";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { FindAName } from "../../components/TeritoriNameService/FindAName";
 import { HollowPrimaryButton } from "../../components/buttons/HollowPrimaryButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
-import { isTokenOwned } from "../../utils/tns";
 import { useAppNavigation } from "../../utils/navigation";
+import { isTokenOwned } from "../../utils/tns";
 
 export const TNSExploreScreen: React.FC = () => {
   const navigation = useAppNavigation();

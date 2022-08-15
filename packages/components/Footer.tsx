@@ -14,8 +14,8 @@ import bookPNG from "../../assets/icons/book.png";
 import discordPNG from "../../assets/icons/discord.png";
 import mediumPNG from "../../assets/icons/medium.png";
 import twitterPNG from "../../assets/icons/twitter.png";
-import { footerHeight } from "../utils/style/layout";
 import { RootStackParamList, useAppNavigation } from "../utils/navigation";
+import { footerHeight } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 
 // One social network button

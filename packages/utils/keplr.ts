@@ -1,6 +1,4 @@
-import { convertFromMicroDenom } from "./conversion";
-import {keplrSuggestTeritori} from "./teritori"
-import {Keplr} from "@keplr-wallet/types"
+import { keplrSuggestTeritori } from "./teritori";
 
 // extend window with CosmJS and Keplr properties
 interface CosmosKeplrWindow extends Window {

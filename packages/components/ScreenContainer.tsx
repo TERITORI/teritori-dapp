@@ -13,9 +13,9 @@ import {
 
 import helpAreaPNG from "../../assets/help-area.png";
 import logoTopPNG from "../../assets/logo-top.png";
+import { useAppNavigation } from "../utils/navigation";
 import { neutral33 } from "../utils/style/colors";
 import { helpAreaWidth } from "../utils/style/layout";
-import { useAppNavigation } from "../utils/navigation";
 import { headerHeight, HubHeader } from "./HubHeader";
 import { Sidebar } from "./Sidebar";
 import { WalletsManager } from "./WalletsManager";

@@ -5,9 +5,9 @@ import { View } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
 import { BacKTo } from "../../components/Footer";
+import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { NameAndTldText } from "../../components/TeritoriNameService/NameAndTldText";
 import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
@@ -16,19 +16,15 @@ import ModalBase from "../../components/modals/ModalBase";
 import { TNSContext } from "../../context/TNSProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useStore } from "../../store/cosmwasm";
-import { neutral33, neutral44, neutral77 } from "../../utils/style/colors";
-import {
-  isTokenOwned,
-} from "../../utils/tns";
-import {
-  numberWithThousandsSeparator,
-} from "../../utils/numbers";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { numberWithThousandsSeparator } from "../../utils/numbers";
+import { neutral33, neutral44, neutral77 } from "../../utils/style/colors";
 import {
   imageDisplayLabel,
   prettyTokenData,
   publicNameDisplayLabel,
 } from "../../utils/teritori";
+import { isTokenOwned } from "../../utils/tns";
 
 const SendFundModal: React.FC<{
   onClose: () => void;

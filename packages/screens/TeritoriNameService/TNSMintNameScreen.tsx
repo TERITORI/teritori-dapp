@@ -7,17 +7,17 @@ import longCardPNG from "../../../assets/cards/long-card.png";
 import coinPNG from "../../../assets/icons/coin.png";
 import { BrandText } from "../../components/BrandText";
 import { BacKTo } from "../../components/Footer";
+import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { NameDataForm } from "../../components/TeritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee, getMintCost } from "../../utils/fee";
-import { isTokenOwned } from "../../utils/tns";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { isTokenOwned } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
 
 const CostContainer: React.FC = () => {
@@ -38,7 +38,7 @@ const CostContainer: React.FC = () => {
           height,
           width,
           minWidth: width,
-          minHeight: height
+          minHeight: height,
         }}
       >
         <Image

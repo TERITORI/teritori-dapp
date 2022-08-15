@@ -1,5 +1,3 @@
-
-
 export const defaultMetaData: Metadata = {
   image: "",
   image_data: "",

@@ -2,12 +2,12 @@ import React from "react";
 import { View } from "react-native";
 
 import { useWallets } from "../context/WalletsProvider";
-import { neutral33 } from "../utils/style/colors";
 import {
   AppNavigationProp,
   getCurrentRouteName,
   useAppNavigation,
 } from "../utils/navigation";
+import { neutral33 } from "../utils/style/colors";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { WalletSelector } from "./WalletSelector";

@@ -10,7 +10,7 @@ export const ToastError: React.FC<{
   message?: string;
   onPress: () => void;
 }> = ({ title, message, onPress }) => {
-  const width = 432
+  const width = 432;
 
   return (
     <TouchableOpacity
@@ -29,7 +29,7 @@ export const ToastError: React.FC<{
         height: "auto",
         position: "absolute",
         top: 24,
-        left: Dimensions.get('window').width / 2 - width / 2,
+        left: Dimensions.get("window").width / 2 - width / 2,
         zIndex: 999,
       }}
     >

@@ -1,12 +1,12 @@
-import React from "react"
+import React from "react";
 import {
   View,
   Image,
   ViewStyle,
   useWindowDimensions,
   TouchableOpacity,
-  ImageSourcePropType, TextInput
-} from "react-native"
+  ImageSourcePropType,
+} from "react-native";
 
 import dappCardPNG from "../../assets/cards/dapp-card.png";
 import airdropPNG from "../../assets/icons/airdrop.png";
@@ -20,8 +20,8 @@ import Logo from "../../assets/logo.svg";
 import { useLaunchpadData } from "../context/LaunchpadProvider";
 import { useWallets } from "../context/WalletsProvider";
 import { LaunchpadItem } from "../utils/airtable";
-import { helpAreaWidth, sidebarWidth } from "../utils/style/layout";
 import { useAppNavigation } from "../utils/navigation";
+import { helpAreaWidth, sidebarWidth } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { CarouselSection } from "./CarouselSection";
 import { Guardian } from "./Guardian";

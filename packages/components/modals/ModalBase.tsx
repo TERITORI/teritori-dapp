@@ -27,7 +27,6 @@ export const ModalBase: React.FC<{
   visible?: boolean;
   childrenBottom?: ReactElement;
 }> = ({ label, visible, width, onClose, childrenBottom, children }) => {
-
   return (
     <Modal
       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}

@@ -14,8 +14,8 @@ import { noTokens, useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
 import { useStore } from "../../store/cosmwasm";
-import { tokenWithoutTld } from "../../utils/tns";
 import { useAppNavigation } from "../../utils/navigation";
+import { tokenWithoutTld } from "../../utils/tns";
 
 const NameCard: React.FC<{
   fullName: string;
@@ -28,7 +28,10 @@ const NameCard: React.FC<{
 
   return (
     <TouchableOpacity style={style} onPress={onPress}>
-      <Image source={flowCardPNG} style={{ width, height, position: "absolute", resizeMode: "stretch" }}/>
+      <Image
+        source={flowCardPNG}
+        style={{ width, height, position: "absolute", resizeMode: "stretch" }}
+      />
       <View
         style={{
           flex: 1,
@@ -155,8 +158,6 @@ export const TNSManageScreen: React.FC = () => {
   );
 };
 
-
-
 // ----- Pagination TODO:
 // const handlePrev = getHandlePrev(
 //   page,
@@ -171,28 +172,73 @@ export const TNSManageScreen: React.FC = () => {
 //   setStartAfter
 // );
 
+{
+  /*// ---------- Paths TODO: ?*/
+}
+{
+  /*<BrandText*/
+}
+{
+  /*		style={{*/
+}
+{
+  /*				fontSize: subTitleFontSize,*/
+}
+{
+  /*				lineHeight: 32,*/
+}
+{
+  /*				letterSpacing: -(subTitleFontSize * 0.04),*/
+}
+{
+  /*				marginBottom: 20,*/
+}
+{
+  /*				marginTop: 8*/
+}
+{
+  /*		}}*/
+}
+{
+  /*>*/
+}
+{
+  /*		Manage your paths*/
+}
+{
+  /*</BrandText>*/
+}
 
-{/*// ---------- Paths TODO: ?*/}
-{/*<BrandText*/}
-{/*		style={{*/}
-{/*				fontSize: subTitleFontSize,*/}
-{/*				lineHeight: 32,*/}
-{/*				letterSpacing: -(subTitleFontSize * 0.04),*/}
-{/*				marginBottom: 20,*/}
-{/*				marginTop: 8*/}
-{/*		}}*/}
-{/*>*/}
-{/*		Manage your paths*/}
-{/*</BrandText>*/}
-
-{/*{!R.isEmpty(paths)*/}
-{/*		? paths.map(path => (*/}
-{/*						<NameCard*/}
-{/*								fullName={path.fullName} key={path.fullName}*/}
-{/*								style={{marginTop: 20}}*/}
-{/*								isPrimary={path.isPrimary}*/}
-{/*								onPress={() => onPressNameCard(path)}*/}
-{/*						/>*/}
-{/*				))*/}
-{/*		: null*/}
-{/*}*/}
+{
+  /*{!R.isEmpty(paths)*/
+}
+{
+  /*		? paths.map(path => (*/
+}
+{
+  /*						<NameCard*/
+}
+{
+  /*								fullName={path.fullName} key={path.fullName}*/
+}
+{
+  /*								style={{marginTop: 20}}*/
+}
+{
+  /*								isPrimary={path.isPrimary}*/
+}
+{
+  /*								onPress={() => onPressNameCard(path)}*/
+}
+{
+  /*						/>*/
+}
+{
+  /*				))*/
+}
+{
+  /*		: null*/
+}
+{
+  /*}*/
+}

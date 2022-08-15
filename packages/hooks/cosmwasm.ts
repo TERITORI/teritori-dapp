@@ -4,8 +4,8 @@ import {
 } from "@cosmjs/cosmwasm-stargate";
 import { useState } from "react";
 
-import { connectKeplr } from "../utils/keplr";
 import { useStore } from "../store/cosmwasm";
+import { connectKeplr } from "../utils/keplr";
 import { useAreThereWallets } from "./useAreThereWallets";
 
 export interface ISigningCosmWasmClientContext {

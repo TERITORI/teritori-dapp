@@ -14,9 +14,9 @@ import sidebarBottomPNG from "../../assets/sidebar-bottom.png";
 import sidebarContainerSelectedPNG from "../../assets/sidebar-container-selected.png";
 import sidebarContainerPNG from "../../assets/sidebar-container.png";
 import sidebarTopPNG from "../../assets/sidebar-top.png";
+import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
 import { neutral33 } from "../utils/style/colors";
 import { sidebarWidth } from "../utils/style/layout";
-import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
 
 const SidebarButton: React.FC<{
   source: ImageSourcePropType;
