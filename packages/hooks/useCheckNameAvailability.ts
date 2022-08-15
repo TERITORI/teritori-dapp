@@ -15,7 +15,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
   useEffect(() => {}, [nameAvailable]);
 
   useEffect(() => {
-    const _getToken = async () => {
+    const getToken = async () => {
       setLoading(true);
 
       const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
@@ -35,7 +35,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
       }
     };
 
-    _getToken()
+    getToken()
       .then((tokenExtension) => {
         // ----- User owns
         if (isTokenOwned(tokens, name)) {

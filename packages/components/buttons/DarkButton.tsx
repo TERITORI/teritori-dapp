@@ -12,7 +12,6 @@ export const DarkButton: React.FC<{
   big?: boolean;
   disabled?: boolean;
 }> = ({ text, style, textStyle, onPress, big, disabled }) => {
-  const _textStyle = { color: primaryColor };
   return (
     <PrimaryButton
       text={text}
@@ -20,7 +19,7 @@ export const DarkButton: React.FC<{
       big={big}
       disabled={disabled}
       backgroundColor={neutral30}
-      textStyle={[_textStyle, textStyle]}
+      textStyle={[{ color: primaryColor }, textStyle]}
       style={style}
     />
   );

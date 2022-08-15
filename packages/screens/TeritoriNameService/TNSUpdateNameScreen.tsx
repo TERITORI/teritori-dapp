@@ -9,7 +9,7 @@ import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
-import { useAreThereWallet } from "../../hooks/useAreThereWallet";
+import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee } from "../../utils/fee";
 import { isTokenOwned } from "../../utils/tns";
@@ -28,7 +28,7 @@ export const TNSUpdateNameScreen: React.FC<{
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
-  const userHasCoWallet = useAreThereWallet();
+  const userHasCoWallet = useAreThereWallets();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   const navigation = useAppNavigation();
 

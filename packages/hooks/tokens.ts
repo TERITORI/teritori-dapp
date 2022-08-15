@@ -32,8 +32,6 @@ export const getHandlePrev = (
       setPage(prevPageIndex);
 
       if (prevPageIndex < pageStartTokens.length) {
-        // const minusTwo = prevPageIndex - 1;
-        // const newIdx = minusTwo === 0 ? 0 : minusTwo;
         setStartAfter(pageStartTokens[prevPageIndex - 1]);
       }
     }
@@ -98,7 +96,6 @@ export function useTokenList() {
   const [loadingTokens, setLoading] = useState(false);
 
   const { signingClient } = useSigningClient();
-  // const { connectWallet } = useSigningCosmWasmClient();
   const walletAddress = useStore((state) => state.walletAddress);
 
   useEffect(() => {
@@ -162,7 +159,7 @@ export function useToken(tokenId: string, tld: string) {
     if (!signingClient) {
       return;
     }
-    const _getToken = async () => {
+    const getTokenWithSigningClient = async () => {
       setLoading(true);
       try {
         const tokenInfo = await signingClient.queryContractSmart(contract, {
@@ -184,9 +181,9 @@ export function useToken(tokenId: string, tld: string) {
       }
     };
 
-    // If no entered name (tokenId), we don't handle _getToken() to avoid useless errors
+    // If no entered name (tokenId), we don't handle getTokenWithSigningClient() to avoid useless errors
     if (tokenId) {
-      _getToken()
+      getTokenWithSigningClient()
         .then()
         .catch((e) => {
           console.warn("ERROR getToken() : ", e);

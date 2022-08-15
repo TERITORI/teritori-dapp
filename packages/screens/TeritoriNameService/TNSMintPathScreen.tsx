@@ -9,7 +9,7 @@ import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
-import { useAreThereWallet } from "../../hooks/useAreThereWallet";
+import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee } from "../../utils/fee";
 import { isTokenOwned, tokenWithoutTld } from "../../utils/tns";
@@ -34,7 +34,7 @@ export const TNSMintPathScreen: React.FC<{
   const navigation = useAppNavigation();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
-  const userHasCoWallet = useAreThereWallet();
+  const userHasCoWallet = useAreThereWallets();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
 
   const normalizedTokenId = R.toLower(name + process.env.TLD);
@@ -98,7 +98,7 @@ export const TNSMintPathScreen: React.FC<{
     }
   });
 
-  const submitData = async (_data) => {
+  const submitData = async (data) => {
     if (!signingClient || !walletAddress) {
       return;
     }
@@ -116,7 +116,7 @@ export const TNSMintPathScreen: React.FC<{
       telegram_id,
       keybase_id,
       validator_operator_address,
-    } = _data;
+    } = data;
 
     const normalizedPathId = normalize(R.toLower(pathId));
 

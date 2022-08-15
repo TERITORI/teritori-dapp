@@ -11,7 +11,7 @@ import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { PrimaryPill } from "../../components/pills/PrimaryPill";
 import { TNSContext } from "../../context/TNSProvider";
 import { noTokens, useTokenList } from "../../hooks/tokens";
-import { useAreThereWallet } from "../../hooks/useAreThereWallet";
+import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
 import { useStore } from "../../store/cosmwasm";
 import { tokenWithoutTld } from "../../utils/tns";
@@ -74,7 +74,7 @@ export const TNSManageScreen: React.FC = () => {
   const { tokens, loadingTokens } = useTokenList();
   const { alias, loadingAlias } = usePrimaryAlias();
   const navigation = useAppNavigation();
-  const userHasCoWallet = useAreThereWallet();
+  const userHasCoWallet = useAreThereWallets();
   const signingClient = useStore((state) => state.signingClient);
   const titleFontSize = 48;
   const subTitleFontSize = 28;
@@ -100,20 +100,6 @@ export const TNSManageScreen: React.FC = () => {
       setPageStartTokens(R.append(firstTokenOnCurrentPage, pageStartTokens));
     }
   });
-
-  // ----- Pagination TODO:
-  // const handlePrev = getHandlePrev(
-  //   page,
-  //   pageStartTokens,
-  //   setPage,
-  //   setStartAfter
-  // );
-  // const handleNext = getHandleNext(
-  //   page,
-  //   pathsAndTokens,
-  //   setPage,
-  //   setStartAfter
-  // );
 
   return (
     <ScreenContainer2
@@ -163,31 +149,6 @@ export const TNSManageScreen: React.FC = () => {
                 }
               />
             ))}
-
-            {/*// ---------- Paths TODO: ?*/}
-            {/*<BrandText*/}
-            {/*		style={{*/}
-            {/*				fontSize: subTitleFontSize,*/}
-            {/*				lineHeight: 32,*/}
-            {/*				letterSpacing: -(subTitleFontSize * 0.04),*/}
-            {/*				marginBottom: 20,*/}
-            {/*				marginTop: 8*/}
-            {/*		}}*/}
-            {/*>*/}
-            {/*		Manage your paths*/}
-            {/*</BrandText>*/}
-
-            {/*{!R.isEmpty(paths)*/}
-            {/*		? paths.map(path => (*/}
-            {/*						<NameCard*/}
-            {/*								fullName={path.fullName} key={path.fullName}*/}
-            {/*								style={{marginTop: 20}}*/}
-            {/*								isPrimary={path.isPrimary}*/}
-            {/*								onPress={() => onPressNameCard(path)}*/}
-            {/*						/>*/}
-            {/*				))*/}
-            {/*		: null*/}
-            {/*}*/}
           </>
         )}
 
@@ -196,3 +157,45 @@ export const TNSManageScreen: React.FC = () => {
     </ScreenContainer2>
   );
 };
+
+
+
+// ----- Pagination TODO:
+// const handlePrev = getHandlePrev(
+//   page,
+//   pageStartTokens,
+//   setPage,
+//   setStartAfter
+// );
+// const handleNext = getHandleNext(
+//   page,
+//   pathsAndTokens,
+//   setPage,
+//   setStartAfter
+// );
+
+
+{/*// ---------- Paths TODO: ?*/}
+{/*<BrandText*/}
+{/*		style={{*/}
+{/*				fontSize: subTitleFontSize,*/}
+{/*				lineHeight: 32,*/}
+{/*				letterSpacing: -(subTitleFontSize * 0.04),*/}
+{/*				marginBottom: 20,*/}
+{/*				marginTop: 8*/}
+{/*		}}*/}
+{/*>*/}
+{/*		Manage your paths*/}
+{/*</BrandText>*/}
+
+{/*{!R.isEmpty(paths)*/}
+{/*		? paths.map(path => (*/}
+{/*						<NameCard*/}
+{/*								fullName={path.fullName} key={path.fullName}*/}
+{/*								style={{marginTop: 20}}*/}
+{/*								isPrimary={path.isPrimary}*/}
+{/*								onPress={() => onPressNameCard(path)}*/}
+{/*						/>*/}
+{/*				))*/}
+{/*		: null*/}
+{/*}*/}

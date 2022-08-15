@@ -324,20 +324,6 @@ export const HubLanding: React.FC = () => {
             }}
           >
             <MyWalletsCard onPress={() => navigation.navigate("Wallets")} />
-            <TextInput
-              placeholder={"aaaaa"}
-              value={"dggdgsgdsgdgdg"}
-              placeholderTextColor="#999999"
-              style={[
-                {
-                  fontSize: 14,
-                  marginTop: 4,
-                  color: "white",
-                  fontFamily: "Exo_600SemiBold",
-                },
-                { outlineStyle: "none" } as any,
-              ]}
-            />
             <DAppCard
               label="Staking"
               description="Participate to the Security

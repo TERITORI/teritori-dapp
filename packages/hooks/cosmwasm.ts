@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { connectKeplr } from "../utils/keplr";
 import { useStore } from "../store/cosmwasm";
-import { useAreThereWallet } from "./useAreThereWallet";
+import { useAreThereWallets } from "./useAreThereWallets";
 
 export interface ISigningCosmWasmClientContext {
   walletAddress: string | null;
@@ -29,7 +29,7 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
   const walletAddress = useStore((state) => state.walletAddress);
   const signingClient = useStore((state) => state.signingClient);
 
-  const hasUserConnectedWallet = useAreThereWallet();
+  const hasUserConnectedWallet = useAreThereWallets();
 
   const connectWallet = async () => {
     setLoading(true);

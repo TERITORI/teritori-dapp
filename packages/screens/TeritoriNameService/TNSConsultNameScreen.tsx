@@ -36,15 +36,15 @@ const SendFundModal: React.FC<{
 }> = ({ onClose, visible }) => {
   const [comment, setComment] = useState("Sent from Teritori");
   const [amount, setAmount] = useState("1000");
-  const [_visible, setVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setVisible(visible);
+    setIsVisible(visible);
   }, [visible]);
 
   return (
     <ModalBase
-      visible={_visible}
+      visible={isVisible}
       onClose={onClose}
       width={372}
       label={`Your wallet has ${numberWithThousandsSeparator(1000)} Tori`}
@@ -64,7 +64,7 @@ const SendFundModal: React.FC<{
             <BacKTo
               label="search"
               navItem="TNSRegister"
-              onPress={() => setVisible(false)}
+              onPress={() => setIsVisible(false)}
             />
             {/*<DarkButton text={"Show paths"} style={{width: "fit-content"}}/>*/}
           </View>

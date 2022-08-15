@@ -11,7 +11,7 @@ import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
-import { useAreThereWallet } from "../../hooks/useAreThereWallet";
+import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useStore } from "../../store/cosmwasm";
 import { neutral33 } from "../../utils/style/colors";
 import { defaultExecuteFee } from "../../utils/fee";
@@ -27,7 +27,7 @@ export const TNSBurnNameScreen: React.FC<{
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
-  const userHasCoWallet = useAreThereWallet();
+  const userHasCoWallet = useAreThereWallets();
   const navigation = useAppNavigation();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   const normalizedTokenId = R.toLower(name + process.env.TLD);

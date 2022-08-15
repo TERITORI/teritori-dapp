@@ -34,7 +34,7 @@ export const NameDataForm: React.FC<{
   const profileDataTextStyle = { color: neutral77, fontSize: 16 };
 
   // Sending the input values
-  const _onPressBtn = () => {
+  const handlePressBtn = () => {
     onPressBtn({
       pathId,
       public_name: name, // Useless because TNSContext ?
@@ -187,7 +187,7 @@ export const NameDataForm: React.FC<{
       />
       <PrimaryButton
         text={btnLabel}
-        onPress={_onPressBtn}
+        onPress={handlePressBtn}
         style={{ marginTop: 8 }}
       />
     </View>
