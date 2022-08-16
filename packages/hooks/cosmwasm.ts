@@ -51,9 +51,6 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
       // get user address
       const [{ address }] = await offlineSigner.getAccounts();
 
-      console.log('[{ address }]', [{ address }])
-      console.log('offlineSignerofflineSigner',offlineSigner)
-
       // this will definitely be set to string
       setStoreWalletAddress(address);
 

@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { TNSContext } from "../context/TNSProvider";
 import { useSigningClient } from "../context/cosmwasm";
 import { useStore } from "../store/cosmwasm";
+import { Metadata } from "../utils/types/tns";
 import { getNonSigningClient } from "./cosmwasm";
 
 export const isPath = (str: string) => R.includes("::", str);
@@ -97,33 +98,20 @@ export function useTokenList() {
   const { signingClient } = useSigningClient();
   const walletAddress = useStore((state) => state.walletAddress);
 
-  window.onload = async () => {
-   console.log('walletAddress çççççç ', walletAddress)
-  }
-
   useEffect(() => {
+    if (!signingClient || !walletAddress) {
+      return;
+    }
+
     const getTokens = async () => {
-      let client: CosmWasmClient;
-
-      if (!signingClient) {
-        client = await getNonSigningClient();
-      }
-      else client = signingClient
-
-      console.log("clientclientclient", client)
-      console.log("############ walletAddress", walletAddress)
-      console.log("############ startAfter", startAfter)
-      console.log("############ perPage", perPage)
-
       setLoading(true);
 
       const query = getValidQuery(walletAddress, startAfter, perPage);
-
-      console.log("queryqueryqueryquery", query)
-      console.log("contractcontractcontract", contract)
-
       try {
-        const tokenList = await client.queryContractSmart(contract, query);
+        const tokenList = await signingClient.queryContractSmart(
+          contract,
+          query
+        );
         if (!R.isNil(tokenList.tokens) && !R.isEmpty(tokenList.tokens)) {
           // filter tokens and paths
           const returnedTokens = R.filter(isToken, tokenList.tokens);
@@ -131,13 +119,11 @@ export function useTokenList() {
           setStoreTokens(returnedTokens);
           setStorePaths(returnedPaths);
           setPathsAndTokens(tokenList.tokens);
-          console.log("tokenListtokenListtokenList", tokenList)
         }
         setLoading(false);
       } catch (e) {
         setStoreTokens([]);
         console.warn(e);
-        setLoading(false);
       }
     };
 
@@ -170,16 +156,13 @@ export function useToken(tokenId: string, tld: string) {
   const { setTnsError } = useContext(TNSContext);
 
   useEffect(() => {
-    const getTokenWithClient = async () => {
-      let client: CosmWasmClient = signingClient;
-      if (!signingClient) {
-        client = await getNonSigningClient();
-      }
-
+    if (!signingClient) {
+      return;
+    }
+    const getTokenWithSigningClient = async () => {
       setLoading(true);
-
       try {
-        const tokenInfo = await client.queryContractSmart(contract, {
+        const tokenInfo = await signingClient.queryContractSmart(contract, {
           nft_info: {
             token_id: tokenId + tld,
           },
@@ -200,18 +183,39 @@ export function useToken(tokenId: string, tld: string) {
 
     // If no entered name (tokenId), we don't handle getTokenWithSigningClient() to avoid useless errors
     if (tokenId) {
-      getTokenWithClient()
-        .then()
-        .catch((e) => {
-          console.warn("ERROR getTokenWithClient() : ", e);
-          setLoading(false);
-          setTnsError({
-            title: "Something went wrong!",
-            message: e.message,
-          });
+      getTokenWithSigningClient()
+      .then()
+      .catch((e) => {
+        console.warn("ERROR getToken() : ", e);
+        setLoading(false);
+        setTnsError({
+          title: "Something went wrong!",
+          message: e.message,
         });
+      });
     }
   }, [tokenId, walletAddress]);
 
   return { token, loadingToken, notFound };
 }
+
+export const getToken = async (
+  name: string = "",
+  client?: CosmWasmClient
+): Promise<Metadata | object | undefined> => {
+  const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+  // We just want to read, so we use a non-signing client
+  if (!client) client = await getNonSigningClient();
+
+  try {
+    // If this query fails it means that the token does not exist.
+    const token = await client.queryContractSmart(contract, {
+      nft_info: {
+        token_id: name + process.env.TLD,
+      },
+    });
+    return token.extension;
+  } catch {
+    return undefined;
+  }
+};

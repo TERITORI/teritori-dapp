@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
-import React, { createContext, useState } from "react";
+import React, {createContext, useEffect, useState} from "react"
 
 import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
+import {useSigningCosmWasmClient} from "../hooks/cosmwasm"
 
 interface TNSToastMessage {
   title: string;
@@ -40,6 +41,23 @@ const TNSContextProvider = ({ children }) => {
   // Error/success after mint, etc...
   const [tnsError, setTnsError] = useState(initialTnsError);
   const [tnsSuccess, setTnsSuccess] = useState(initialTnsSuccess);
+  const { connectWallet } = useSigningCosmWasmClient();
+
+  // ---- Init
+  useEffect(() => {
+    setTnsLoading(true);
+    const init = async () => {
+      await connectWallet();
+    };
+    init()
+    .then(() => {
+      setTnsLoading(false);
+    })
+    .catch((e) => {
+      setTnsError({ title: "Something went wrong!", message: e.message });
+      setTnsLoading(false);
+    });
+  }, []);
 
   return (
     <TNSContext.Provider

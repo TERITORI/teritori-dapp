@@ -36,36 +36,36 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
     };
 
     getToken()
-      .then((tokenExtension) => {
-        // ----- User owns
-        if (isTokenOwnedByUser(tokens, name)) {
+    .then((tokenExtension) => {
+      // ----- User owns
+      if (isTokenOwnedByUser(tokens, name)) {
+        setNameAvailable(false);
+        setNameError(false);
+      } else {
+        // ------ Available
+        if (!tokenExtension) {
+          setNameAvailable(true);
+          setNameError(false);
+        }
+        // ------ Minted
+        else {
           setNameAvailable(false);
           setNameError(false);
-        } else {
-          // ------ Available
-          if (!tokenExtension) {
-            setNameAvailable(true);
-            setNameError(false);
-          }
-          // ------ Minted
-          else {
-            setNameAvailable(false);
-            setNameError(false);
-          }
         }
+      }
 
-        setLoading(false);
-      })
-      .catch((e) => {
-        console.warn("ERROR getToken() : ", e);
-        setLoading(false);
-        setNameAvailable(false);
-        setNameError(true);
-        setTnsError({
-          title: "Something went wrong!",
-          message: e.message,
-        });
+      setLoading(false);
+    })
+    .catch((e) => {
+      console.warn("ERROR getToken() : ", e);
+      setLoading(false);
+      setNameAvailable(false);
+      setNameError(true);
+      setTnsError({
+        title: "Something went wrong!",
+        message: e.message,
       });
+    });
   }, [name]);
 
   return { nameAvailable, nameError, loading };
