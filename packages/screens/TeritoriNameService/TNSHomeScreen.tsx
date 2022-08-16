@@ -13,6 +13,9 @@ import ModalBase from "../../components/modals/ModalBase";
 import { TNSContext } from "../../context/TNSProvider";
 import { useStore } from "../../store/cosmwasm";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import {PrimaryButton} from "../../components/buttons/PrimaryButton"
+import {useWallets} from "../../context/WalletsProvider"
+import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 // "Find a name" modal
 const ModalNameFinder: React.FC<{
@@ -60,18 +63,11 @@ export const TNSHomeScreen: React.FC = () => {
     useState<keyof RootStackParamList>("TNSHome");
   const navigation = useAppNavigation();
   const landingHorizontalPadding = 25;
-  const signingClient = useStore((state) => state.signingClient);
+  const isKeplrConnected = useIsKeplrConnected()
 
   const onPressRegister = () => {
-    if (signingClient) {
-      setPressedNavItem("TNSRegister");
-      setModalNameFinderVisible(true);
-    }
-  };
-  const onPressManage = () => {
-    if (signingClient) {
-      navigation.navigate("TNSManage");
-    }
+    setPressedNavItem("TNSRegister");
+    setModalNameFinderVisible(true);
   };
   const onPressExplore = () => {
     setPressedNavItem("TNSExplore");
@@ -92,17 +88,19 @@ export const TNSHomeScreen: React.FC = () => {
         }}
       >
         <FlowCard
+          disabled={!isKeplrConnected}
           label="Register"
           description="Register and configure a new name"
           iconSource={registerIconPNG}
           onPress={onPressRegister}
         />
         <FlowCard
+          disabled={!isKeplrConnected}
           style={{ marginTop: 20 }}
           label="Manage"
           description="Transfer, edit, or burn a name that you own"
           iconSource={manageIconPNG}
-          onPress={onPressManage}
+          onPress={() => navigation.navigate("TNSManage")}
         />
         <FlowCard
           style={{ marginTop: 20 }}

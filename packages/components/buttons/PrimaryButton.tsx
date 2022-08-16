@@ -16,10 +16,7 @@ export const PrimaryButton: React.FC<{
   const height = big ? 56 : 48;
   return (
     <View
-      style={[
-        { alignItems: "center", opacity: disabled ? 0.5 : undefined },
-        style,
-      ]}
+      style={[{ alignItems: "center" }, disabled && { opacity: 0.5 }, style]}
     >
       <TouchableOpacity
         style={{

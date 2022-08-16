@@ -14,8 +14,9 @@ import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee } from "../../utils/fee";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { isTokenOwned, tokenWithoutTld } from "../../utils/tns";
+import { isTokenOwnedByUser, tokenWithoutTld } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
+import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 const normalize = (inputString: string) => {
   const invalidChrsRemoved = R.replace(/[^a-z0-9\-\_]/g, "", inputString);
@@ -32,6 +33,7 @@ export const TNSMintPathScreen: React.FC<{
     useContext(TNSContext);
   const { tokens, loadingTokens } = useTokenList();
   const navigation = useAppNavigation();
+  const isKeplrConnected = useIsKeplrConnected()
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
   const userHasCoWallet = useAreThereWallets();
@@ -40,7 +42,6 @@ export const TNSMintPathScreen: React.FC<{
   const normalizedTokenId = R.toLower(name + process.env.TLD);
 
   const initData = async () => {
-    // await connectWallet();
     try {
       // If this query fails it means that the token does not exist.
       const token = await signingClient.queryContractSmart(contractAddress, {
@@ -87,8 +88,8 @@ export const TNSMintPathScreen: React.FC<{
     if (
       (name &&
         tokens.length &&
-        (!userHasCoWallet || !isTokenOwned(tokens, name))) ||
-      !signingClient
+        (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))) ||
+      !isKeplrConnected
     ) {
       navigation.navigate("TNSHome");
     }
@@ -99,7 +100,7 @@ export const TNSMintPathScreen: React.FC<{
   });
 
   const submitData = async (data) => {
-    if (!signingClient || !walletAddress) {
+    if (!isKeplrConnected || !walletAddress) {
       return;
     }
     setTnsLoading(true);

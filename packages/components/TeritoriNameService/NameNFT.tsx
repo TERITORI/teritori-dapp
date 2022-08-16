@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { Image, View, ViewStyle } from "react-native";
 
 import defaultNameNFT from "../../../assets/default-name-nft.png";
-import { TNSContext } from "../../context/TNSProvider";
-import { getToken } from "../../hooks/tokens";
+import { useToken } from "../../hooks/tokens";
 import { neutral33 } from "../../utils/style/colors";
 import { NameAndTldText } from "./NameAndTldText";
 
@@ -12,26 +11,10 @@ export const NameNFT: React.FC<{
   style?: ViewStyle;
   name: string;
 }> = ({ style, name }) => {
-  const [imageUrl, setImageUrl] = useState(null);
-  const { setTnsError } = useContext(TNSContext);
+  const { token } = useToken(name, process.env.TLD);
   const width = 332;
   const height = 404;
   const imageMargin = 12;
-
-  // Find the image !
-  useEffect(() => {
-    getToken(name)
-      .then((tokenData) => {
-        if (tokenData && "image" in tokenData && tokenData.image)
-          setImageUrl(tokenData.image);
-      })
-      .catch((strError) => {
-        setTnsError({
-          title: "Something went wrong!",
-          message: strError,
-        });
-      });
-  }, [name]);
 
   return (
     <View
@@ -53,7 +36,11 @@ export const NameNFT: React.FC<{
       ]}
     >
       <Image
-        source={imageUrl && imageUrl !== "" ? imageUrl : defaultNameNFT}
+        source={
+          token && token.image && token.image !== ""
+            ? token.image
+            : defaultNameNFT
+        }
         style={{
           width: width - imageMargin * 2,
           height: width - imageMargin * 2,

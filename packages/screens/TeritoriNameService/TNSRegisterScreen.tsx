@@ -10,13 +10,14 @@ import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useStore } from "../../store/cosmwasm";
 import { useAppNavigation } from "../../utils/navigation";
-import { isTokenOwned } from "../../utils/tns";
+import { isTokenOwnedByUser } from "../../utils/tns";
+import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 export const TNSRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const { name, setName, setTnsLoading } = useContext(TNSContext);
   const { tokens, loadingTokens } = useTokenList();
-  const signingClient = useStore((state) => state.signingClient);
+  const isKeplrConnected = useIsKeplrConnected()
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
@@ -29,7 +30,7 @@ export const TNSRegisterScreen: React.FC = () => {
 
   // ==== Init
   useFocusEffect(() => {
-    if (!signingClient) navigation.navigate("TNSHome");
+    if (!isKeplrConnected) navigation.navigate("TNSHome");
   });
 
   return (
@@ -44,7 +45,10 @@ export const TNSRegisterScreen: React.FC = () => {
         nameAvailable={nameAvailable}
         loading={loading}
       >
-        {name && !nameError && nameAvailable && !isTokenOwned(tokens, name) ? (
+        {name &&
+        !nameError &&
+        nameAvailable &&
+        !isTokenOwnedByUser(tokens, name) ? (
           <PrimaryButton
             text="Mint your new ID"
             big

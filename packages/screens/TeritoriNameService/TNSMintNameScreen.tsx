@@ -17,8 +17,9 @@ import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee, getMintCost } from "../../utils/fee";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { isTokenOwned } from "../../utils/tns";
+import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
+import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 const CostContainer: React.FC = () => {
   const width = 748;
@@ -67,6 +68,7 @@ export const TNSMintNameScreen: React.FC<{
   const { name, setName, setTnsError, setTnsSuccess, setTnsLoading } =
     useContext(TNSContext);
   const { tokens, loadingTokens } = useTokenList();
+  const isKeplrConnected = useIsKeplrConnected()
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
   const userHasCoWallet = useAreThereWallets();
@@ -121,8 +123,8 @@ export const TNSMintNameScreen: React.FC<{
     // @ts-ignore
     if (route.params && route.params.name) setName(route.params.name);
     // ===== Controls many things, be careful
-    if (!userHasCoWallet || !signingClient) navigation.navigate("TNSHome");
-    if (name && userHasCoWallet && isTokenOwned(tokens, name))
+    if (!userHasCoWallet || !isKeplrConnected) navigation.navigate("TNSHome");
+    if (name && userHasCoWallet && isTokenOwnedByUser(tokens, name))
       navigation.navigate("TNSManage");
 
     if (!initialized) {
@@ -132,7 +134,7 @@ export const TNSMintNameScreen: React.FC<{
   });
 
   const submitData = async (_data) => {
-    if (!signingClient || !walletAddress) {
+    if (!isKeplrConnected || !walletAddress) {
       return;
     }
     setTnsLoading(true);

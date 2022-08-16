@@ -21,12 +21,15 @@ import { NetworkIcon } from "./NetworkIcon";
 import { PrimaryButton } from "./buttons/PrimaryButton";
 import { TertiaryButton } from "./buttons/TertiaryButton";
 import ModalBase from "./modals/ModalBase";
+import {useSigningCosmWasmClient} from "../hooks/cosmwasm"
 
 const Separator: React.FC<{ style?: ViewStyle }> = ({ style }) => (
   <View style={[{ borderBottomWidth: 1, borderColor: neutral44 }, style]} />
 );
 
 const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
+  const {connectWallet} = useSigningCosmWasmClient()
+
   const dispatch = useAppDispatch();
   switch (wallet.provider) {
     case WalletProvider.Phantom:
@@ -53,6 +56,9 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
           text={`Connect ${wallet.provider}`}
           onPress={async () => {
             try {
+
+              await connectWallet()
+
               if (wallet.provider === WalletProvider.Phantom) {
                 console.log("Connecting to phantom");
                 (window as any)?.solana?.connect();

@@ -14,8 +14,9 @@ import { useStore } from "../../store/cosmwasm";
 import { defaultMintFee } from "../../utils/fee";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { isTokenOwned } from "../../utils/tns";
+import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
+import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const TNSUpdateNameScreen: React.FC<{
@@ -26,6 +27,7 @@ export const TNSUpdateNameScreen: React.FC<{
   const { name, setName, setTnsError, setTnsSuccess, setTnsLoading } =
     useContext(TNSContext);
   const { tokens, loadingTokens } = useTokenList();
+  const isKeplrConnected = useIsKeplrConnected()
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
   const userHasCoWallet = useAreThereWallets();
@@ -79,8 +81,8 @@ export const TNSUpdateNameScreen: React.FC<{
     if (
       (name &&
         tokens.length &&
-        (!userHasCoWallet || !isTokenOwned(tokens, name))) ||
-      !signingClient
+        (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))) ||
+      !isKeplrConnected
     ) {
       navigation.navigate("TNSHome");
     }
@@ -88,7 +90,7 @@ export const TNSUpdateNameScreen: React.FC<{
   });
 
   const submitData = async (_data) => {
-    if (!signingClient || !walletAddress) {
+    if (!isKeplrConnected || !walletAddress) {
       return;
     }
     setTnsLoading(true);

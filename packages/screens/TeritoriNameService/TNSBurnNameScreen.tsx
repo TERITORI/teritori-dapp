@@ -17,7 +17,8 @@ import { defaultExecuteFee } from "../../utils/fee";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
-import { isTokenOwned } from "../../utils/tns";
+import { isTokenOwnedByUser } from "../../utils/tns";
+import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 export const TNSBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "TNSUpdateName">;
@@ -27,6 +28,7 @@ export const TNSBurnNameScreen: React.FC<{
   const { tokens, loadingTokens } = useTokenList();
   const signingClient = useStore((state) => state.signingClient);
   const walletAddress = useStore((state) => state.walletAddress);
+  const isKeplrConnected = useIsKeplrConnected()
   const userHasCoWallet = useAreThereWallets();
   const navigation = useAppNavigation();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
@@ -46,8 +48,8 @@ export const TNSBurnNameScreen: React.FC<{
     if (
       (name &&
         tokens.length &&
-        (!userHasCoWallet || !isTokenOwned(tokens, name))) ||
-      !signingClient
+        (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))) ||
+      !isKeplrConnected
     ) {
       navigation.navigate("TNSHome");
     }

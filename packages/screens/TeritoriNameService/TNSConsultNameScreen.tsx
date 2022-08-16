@@ -8,104 +8,41 @@ import { BacKTo } from "../../components/Footer";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
 import { NameAndTldText } from "../../components/TeritoriNameService/NameAndTldText";
 import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
+import { SendFundModal } from "../../components/TeritoriNameService/SendFundsModal";
 import { DarkButton } from "../../components/buttons/DarkButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
-import ModalBase from "../../components/modals/ModalBase";
 import { TNSContext } from "../../context/TNSProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useStore } from "../../store/cosmwasm";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { numberWithThousandsSeparator } from "../../utils/numbers";
-import { neutral33, neutral44, neutral77 } from "../../utils/style/colors";
+import { neutral33, neutral77 } from "../../utils/style/colors";
 import {
   imageDisplayLabel,
   prettyTokenData,
   publicNameDisplayLabel,
 } from "../../utils/teritori";
-import { isTokenOwned } from "../../utils/tns";
-
-const SendFundModal: React.FC<{
-  onClose: () => void;
-  visible?: boolean;
-}> = ({ onClose, visible }) => {
-  const [comment, setComment] = useState("Sent from Teritori");
-  const [amount, setAmount] = useState("1000");
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(visible);
-  }, [visible]);
-
-  return (
-    <ModalBase
-      visible={isVisible}
-      onClose={onClose}
-      width={372}
-      label={`Your wallet has ${numberWithThousandsSeparator(1000)} Tori`}
-      childrenBottom={
-        <View style={{ marginHorizontal: 20 }}>
-          <View style={{ borderBottomWidth: 1, borderColor: neutral44 }} />
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginVertical: 20,
-            }}
-          >
-            <BacKTo
-              label="search"
-              navItem="TNSRegister"
-              onPress={() => setIsVisible(false)}
-            />
-            {/*<DarkButton text={"Show paths"} style={{width: "fit-content"}}/>*/}
-          </View>
-        </View>
-      }
-    >
-      <View>
-        <TextInputCustom
-          label="COMMENT ?"
-          value={comment}
-          placeHolder="Type your comment here"
-          onChangeText={setComment}
-          style={{ marginBottom: 12 }}
-        />
-        <View style={{ flex: 1, flexDirection: "row" }}>
-          <TextInputCustom
-            label="TORI AMOUNT ?"
-            value={numberWithThousandsSeparator(amount)}
-            placeHolder="Type your amount here"
-            onChangeText={setAmount}
-            onlyNumbers
-            style={{ marginRight: 12, minWidth: 0 }}
-          />
-          <PrimaryButton text="Send" style={{ width: "fit-content" }} />
-        </View>
-      </View>
-    </ModalBase>
-  );
-};
+import { isTokenOwnedByUser } from "../../utils/tns";
+import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 const NotOwnerActions = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
+  const isKeplrConnected = useIsKeplrConnected()
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
       <BacKTo label="search" navItem="TNSRegister" />
       <PrimaryButton
+        disabled={!isKeplrConnected}
         text="Send funds"
         style={btnStyle}
-        onPress={() => setModalVisible(true)}
+        // TODO: if no signed, conenctKeplr, then, open modal
+        onPress={() => setSendFundsModalVisible(true)}
       />
       {/*<DarkButton text="Show paths" style={btnStyle}/>*/}
       <SendFundModal
-        onClose={() => setModalVisible(false)}
-        visible={modalVisible}
+        onClose={() => setSendFundsModalVisible(false)}
+        visible={sendFundsModalVisible}
       />
     </>
   );
@@ -148,8 +85,6 @@ export const TNSConsultNameScreen: React.FC<{
   const { name, setName, setTnsLoading } = useContext(TNSContext);
   const { token, notFound, loadingToken } = useToken(name, process.env.TLD);
   const { tokens, loadingTokens } = useTokenList();
-  const signingClient = useStore((state) => state.signingClient);
-  const navigation = useAppNavigation();
 
   // Sync tnsLoading
   useEffect(() => {
@@ -163,13 +98,12 @@ export const TNSConsultNameScreen: React.FC<{
   useFocusEffect(() => {
     // @ts-expect-error
     if (route.params && route.params.name) setName(route.params.name);
-    if (!signingClient) navigation.navigate("TNSHome");
   });
 
   return (
     <ScreenContainer2
       footerChildren={
-        isTokenOwned(tokens, name) && !notFound ? (
+        isTokenOwnedByUser(tokens, name) && !notFound ? (
           <OwnerActions />
         ) : !notFound ? (
           <NotOwnerActions />
@@ -194,11 +128,11 @@ export const TNSConsultNameScreen: React.FC<{
               style={{ flex: 1, marginRight: 20, width: "100%", maxWidth: 332 }}
             >
               <NameNFT style={{ marginBottom: 20 }} name={name} />
-              {token && name && isTokenOwned(tokens, name) ? (
+              {token && name && isTokenOwnedByUser(tokens, name) ? (
                 <CopyToClipboardCard
-                  text={`https://${window.location.host}/tns/${name}`}
+                  text={`https://${window.location.host}/tns/token/${name}`}
                 />
-              ) : token && name && !isTokenOwned(tokens, name) ? (
+              ) : token && name && !isTokenOwnedByUser(tokens, name) ? (
                 <CopyToClipboardCard text={token.contract_address} />
               ) : null}
             </View>

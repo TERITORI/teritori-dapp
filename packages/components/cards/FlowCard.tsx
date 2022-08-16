@@ -16,12 +16,17 @@ export const FlowCard: React.FC<{
   iconSource: ImageSourcePropType;
   style?: ViewStyle;
   onPress: () => void;
-}> = ({ label, description, iconSource, style, onPress }) => {
+  disabled?: boolean;
+}> = ({ label, description, iconSource, style, disabled, onPress }) => {
   const width = 392;
   const height = 100;
 
   return (
-    <TouchableOpacity style={style} onPress={onPress}>
+    <TouchableOpacity
+      style={[disabled && { opacity: 0.5 }, style]}
+      onPress={onPress}
+      disabled={disabled}
+    >
       <Image
         source={flowCardPNG}
         style={{ width, height, position: "absolute", resizeMode: "stretch" }}

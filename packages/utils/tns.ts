@@ -5,6 +5,5 @@ export const tldFromToken = (str: string): string =>
 export const tokenWithoutTld = (str: string): string =>
   str.substr(0, str.lastIndexOf("."));
 
-export const isTokenOwned = (tokenArray: string[], name: string) => {
-  return tokenArray.includes(name + process.env.TLD);
-};
+export const isTokenOwnedByUser = (tokensArray: string[], name: string) =>
+  tokensArray.includes(name + process.env.TLD);

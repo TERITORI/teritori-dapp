@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import { TNSContext } from "../context/TNSProvider";
-import { isTokenOwned } from "../utils/tns";
+import { isTokenOwnedByUser } from "../utils/tns";
 import { getNonSigningClient } from "./cosmwasm";
 
 // TNS : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
@@ -38,7 +38,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
     getToken()
       .then((tokenExtension) => {
         // ----- User owns
-        if (isTokenOwned(tokens, name)) {
+        if (isTokenOwnedByUser(tokens, name)) {
           setNameAvailable(false);
           setNameError(false);
         } else {

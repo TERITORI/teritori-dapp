@@ -9,10 +9,14 @@ export const HollowPrimaryButton: React.FC<{
   style?: ViewStyle | ViewStyle[];
   textStyle?: TextStyle;
   onPress?: () => void;
-}> = ({ text, style, textStyle, onPress }) => {
+  disabled?: boolean;
+}> = ({ text, style, textStyle, disabled, onPress }) => {
   return (
-    <View style={[{ alignItems: "center" }, style]}>
+    <View
+      style={[{ alignItems: "center" }, disabled && { opacity: 0.5 }, style]}
+    >
       <TouchableOpacity
+        disabled={disabled}
         onPress={onPress}
         style={{
           borderColor: primaryColor,
