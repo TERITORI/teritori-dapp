@@ -1,17 +1,18 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
-import { BacKTo } from "../../components/Footer";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { NameAndTldText } from "../../components/TeritoriNameService/NameAndTldText";
 import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
 import { SendFundModal } from "../../components/TeritoriNameService/SendFundsModal";
-import { DarkButton } from "../../components/buttons/DarkButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
+import { BackTo } from "../../components/navigation/BackTo";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { TNSContext } from "../../context/TNSProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -30,7 +31,7 @@ const NotOwnerActions = () => {
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BacKTo label="search" navItem="TNSRegister" />
+      <BackTo label="Back" />
       <PrimaryButton
         disabled={!isKeplrConnected}
         text="Send funds"
@@ -38,7 +39,6 @@ const NotOwnerActions = () => {
         // TODO: if no signed, conenctKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}
       />
-      {/*<DarkButton text="Show paths" style={btnStyle}/>*/}
       <SendFundModal
         onClose={() => setSendFundsModalVisible(false)}
         visible={sendFundsModalVisible}
@@ -50,28 +50,17 @@ const NotOwnerActions = () => {
 const OwnerActions = () => {
   const navigation = useAppNavigation();
   const { name } = useContext(TNSContext);
-  const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BacKTo navItem="TNSManage" />
-      <DarkButton
+      <BackTo label="Back" />
+      <SecondaryAltButton
         text="Update metadata"
-        style={btnStyle}
+        style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("TNSUpdateName", { name })}
       />
-      {/*<DarkButton*/}
-      {/*  text="Transfer"*/}
-      {/*  style={btnStyle}*/}
-      {/* onPress={() => {}}*/}
-      {/*/>*/}
-      {/*<DarkButton*/}
-      {/*  text="Mint path"*/}
-      {/*  style={btnStyle}*/}
-      {/*  onPress={() => navigation.navigate("TNSMintPath", { name })}*/}
-      {/*/>*/}
-      <DarkButton
+      <SecondaryAltButton
         text="Burn"
-        style={btnStyle}
+        style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("TNSBurnName", { name })}
       />
     </>
@@ -82,25 +71,38 @@ export const TNSConsultNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "TNSConsultName">;
 }> = ({ route }) => {
   const { name, setName } = useContext(TNSContext);
-  const { token, notFound } = useToken(name, process.env.TLD);
+  const { setLoadingFullScreen } = useContext(FeedbacksContext);
+  const { token, notFound, loadingToken } = useToken(name, process.env.TLD);
+  const { tokens, loadingTokens } = useTokenList();
+  const isKeplrConnected = useIsKeplrConnected();
+  const navigation = useAppNavigation();
 
-  const { tokens } = useTokenList();
+  // Sync loadingFullScreen
+  useEffect(() => {
+    setLoadingFullScreen(loadingToken);
+  }, [loadingToken]);
+  useEffect(() => {
+    setLoadingFullScreen(loadingTokens);
+  }, [loadingTokens]);
 
-  // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the token is not minted
+  // ---- Setting the name from NSBContext. Redirects to TNSHome if this screen is called when the token is not minted
   useFocusEffect(() => {
-    // @ts-expect-error
+    // @ts-ignore
     if (route.params && route.params.name) setName(route.params.name);
+    if (!isKeplrConnected) navigation.navigate("TNSHome");
   });
 
   return (
-    <ScreenContainer2
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={
         isTokenOwnedByUser(tokens, name) && !notFound ? (
           <OwnerActions />
         ) : !notFound ? (
           <NotOwnerActions />
         ) : (
-          <BacKTo navItem="TNSHome" label="home" />
+          <BackTo navItem="TNSHome" label="Back to home" />
         )
       }
     >
@@ -201,6 +203,6 @@ export const TNSConsultNameScreen: React.FC<{
           </>
         )}
       </View>
-    </ScreenContainer2>
+    </ScreenContainer>
   );
 };

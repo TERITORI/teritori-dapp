@@ -1,10 +1,11 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
-import { BacKTo } from "../../components/Footer";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { FindAName } from "../../components/TeritoriNameService/FindAName";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { BackTo } from "../../components/navigation/BackTo";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
@@ -15,12 +16,18 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 export const TNSRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const { name, setName } = useContext(TNSContext);
-  const { tokens } = useTokenList();
+  const { setLoadingFullScreen } = useContext(FeedbacksContext);
+  const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
   );
+
+  // Sync loadingFullScreen
+  useEffect(() => {
+    setLoadingFullScreen(loadingTokens);
+  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
@@ -28,8 +35,10 @@ export const TNSRegisterScreen: React.FC = () => {
   });
 
   return (
-    <ScreenContainer2
-      footerChildren={<BacKTo label="home" navItem="TNSHome" />}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
+      footerChildren={<BackTo label="Back to home" navItem="TNSHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName
@@ -45,12 +54,11 @@ export const TNSRegisterScreen: React.FC = () => {
         !isTokenOwnedByUser(tokens, name) ? (
           <PrimaryButton
             text="Mint your new ID"
-            big
             style={{ maxWidth: 157, width: "100%" }}
             onPress={() => navigation.navigate("TNSMintName", { name })}
           />
         ) : null}
       </FindAName>
-    </ScreenContainer2>
+    </ScreenContainer>
   );
 };

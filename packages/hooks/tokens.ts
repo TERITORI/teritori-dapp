@@ -90,7 +90,7 @@ export function useToken(tokenId: string, tld: string) {
   const [loadingToken, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
-  const { setTnsError } = useContext(TNSContext);
+  const { setToastError } = useContext(TNSContext);
 
   const isKeplrConnected = useIsKeplrConnected();
 
@@ -141,7 +141,7 @@ export function useToken(tokenId: string, tld: string) {
         .catch((e) => {
           console.warn("ERROR getToken() : ", e);
           setLoading(false);
-          setTnsError({
+          setToastError({
             title: "Something went wrong!",
             message: e.message,
           });

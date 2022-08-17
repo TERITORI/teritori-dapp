@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import { View, Image, TouchableOpacity, ViewStyle } from "react-native";
 
 import secondaryCardSmPNG from "../../assets/cards/secondary-card-sm.png";
-import logoTopPNG from "../../assets/logo-top.png";
+import LogoTopSVG from "../../assets/logo-top.svg";
 import { useAreThereWallets } from "../hooks/useAreThereWallets";
 import { useAppNavigation } from "../utils/navigation";
-import { headerHeight } from "../utils/style/layout";
+import { neutral33 } from "../utils/style/colors";
+import {
+  headerHeight,
+  screenContainerContentMarginH,
+} from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { WalletSelector } from "./WalletSelector";
 import { WalletsManager } from "./WalletsManager";
@@ -48,7 +52,9 @@ const ConnectWalletButton: React.FC<{
   );
 };
 
-export const Header: React.FC = () => {
+export const Header: React.FC<{
+  style?: ViewStyle;
+}> = ({ children, style }) => {
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
   const isAConnectedWallet = useAreThereWallets();
   const navigation = useAppNavigation();
@@ -56,27 +62,45 @@ export const Header: React.FC = () => {
 
   return (
     <View
-      style={{
-        height: headerHeight,
-        maxHeight: headerHeight,
-        width: "100%",
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
+      style={[
+        {
+          height: headerHeight,
+          maxHeight: headerHeight,
+          width: "100%",
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottomColor: neutral33,
+          borderBottomWidth: 1,
+        },
+        style,
+      ]}
     >
-      <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-        <Image
-          source={logoTopPNG}
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Home")}
+        style={{ marginLeft: headerMarginH }}
+      >
+        <LogoTopSVG
           style={{
             width: 68,
             height: 68,
-            resizeMode: "contain",
             marginLeft: headerMarginH,
           }}
         />
       </TouchableOpacity>
+
+      <View
+        style={{
+          width: "100%",
+          flex: 1,
+          flexDirection: "row",
+          alignItems: "center",
+          marginLeft: screenContainerContentMarginH,
+        }}
+      >
+        <>{children}</>
+      </View>
 
       {isAConnectedWallet ? (
         <WalletSelector

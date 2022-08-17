@@ -1,13 +1,14 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import flowCardPNG from "../../../assets/cards/name-card.png";
 import logoSmPNG from "../../../assets/logo-sm.png";
 import { BrandText } from "../../components/BrandText";
-import { BacKTo } from "../../components/Footer";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { BackTo } from "../../components/navigation/BackTo";
 import { PrimaryPill } from "../../components/pills/PrimaryPill";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -68,13 +69,22 @@ const NameCard: React.FC<{
 
 export const TNSManageScreen: React.FC = () => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
-  const { tokens } = useTokenList();
-  const { alias } = usePrimaryAlias();
+  const { setLoadingFullScreen } = useContext(FeedbacksContext);
+  const { tokens, loadingTokens } = useTokenList();
+  const { alias, loadingAlias } = usePrimaryAlias();
   const navigation = useAppNavigation();
   const userHasCoWallet = useAreThereWallets();
   const isKeplrConnected = useIsKeplrConnected();
   const titleFontSize = 48;
   const subTitleFontSize = 28;
+
+  // Sync loadingFullScreen
+  useEffect(() => {
+    setLoadingFullScreen(loadingTokens);
+  }, [loadingTokens]);
+  useEffect(() => {
+    setLoadingFullScreen(loadingAlias);
+  }, [loadingAlias]);
 
   // ==== Init
   useFocusEffect(() => {
@@ -91,8 +101,10 @@ export const TNSManageScreen: React.FC = () => {
   });
 
   return (
-    <ScreenContainer2
-      footerChildren={<BacKTo label="home" navItem="TNSHome" />}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
+      footerChildren={<BackTo label="Back to home" navItem="TNSHome" />}
     >
       <View style={{ flex: 1, alignItems: "center" }}>
         {/*TODO: Gradient text green-blue*/}
@@ -143,6 +155,6 @@ export const TNSManageScreen: React.FC = () => {
 
         {/*TODO: PrevNext buttons*/}
       </View>
-    </ScreenContainer2>
+    </ScreenContainer>
   );
 };

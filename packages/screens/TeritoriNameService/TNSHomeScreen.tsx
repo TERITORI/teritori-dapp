@@ -6,7 +6,7 @@ import manageIconPNG from "../../../assets/icons/manage.png";
 import registerIconPNG from "../../../assets/icons/register.png";
 import { SocialNetworks } from "../../components/Footer";
 import { IntroLogoText } from "../../components/IntroLogoText";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { FlowCard } from "../../components/cards/FlowCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
@@ -72,7 +72,11 @@ export const TNSHomeScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer2 footerChildren={<SocialNetworks />}>
+    <ScreenContainer
+      footerChildren={<SocialNetworks />}
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
+    >
       <IntroLogoText
         subTitle="Name Service Booking"
         style={{ marginTop: 40 }}
@@ -113,6 +117,6 @@ export const TNSHomeScreen: React.FC = () => {
         onClose={() => setModalNameFinderVisible(false)}
         navItem={pressedNavItem}
       />
-    </ScreenContainer2>
+    </ScreenContainer>
   );
 };

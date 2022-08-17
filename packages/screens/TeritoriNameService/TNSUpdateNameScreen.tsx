@@ -1,11 +1,12 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { BacKTo } from "../../components/Footer";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { NameDataForm } from "../../components/TeritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
+import { BackTo } from "../../components/navigation/BackTo";
+import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
@@ -26,8 +27,10 @@ export const TNSUpdateNameScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setTnsError, setTnsSuccess } = useContext(TNSContext);
-  const { tokens } = useTokenList();
+  const { name, setName } = useContext(TNSContext);
+  const { setLoadingFullScreen, setToastSuccess, setToastError } =
+    useContext(FeedbacksContext);
+  const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
@@ -59,12 +62,19 @@ export const TNSUpdateNameScreen: React.FC<{
       };
       setInitialized(true);
       setInitialData(tokenData);
+      setLoadingFullScreen(false);
     } catch {
       setInitialized(true);
+      setLoadingFullScreen(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
+
+  // Sync loadingFullScreen
+  useEffect(() => {
+    setLoadingFullScreen(loadingTokens);
+  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
@@ -87,7 +97,7 @@ export const TNSUpdateNameScreen: React.FC<{
     if (!isKeplrConnected) {
       return;
     }
-
+    setLoadingFullScreen(true);
     const {
       image, // TODO - support later
       // image_data
@@ -137,25 +147,33 @@ export const TNSUpdateNameScreen: React.FC<{
       );
       if (updatedToken) {
         console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token
-        setTnsSuccess({
+        setToastSuccess({
           title: normalizedTokenId + " successfully updated",
           message: "",
         });
         navigation.navigate("TNSConsultName", { name });
+        setLoadingFullScreen(false);
       }
     } catch (err) {
-      setTnsError({
+      setToastError({
         title: "Something went wrong!",
         message: err.message,
       });
       console.warn(err);
+      setLoadingFullScreen(false);
     }
   };
 
   return (
-    <ScreenContainer2
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={
-        <BacKTo label={name} navItem="TNSConsultName" navParams={{ name }} />
+        <BackTo
+          label={"Back to " + name}
+          navItem="TNSConsultName"
+          navParams={{ name }}
+        />
       }
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
@@ -176,6 +194,6 @@ export const TNSUpdateNameScreen: React.FC<{
           />
         </View>
       </View>
-    </ScreenContainer2>
+    </ScreenContainer>
   );
 };

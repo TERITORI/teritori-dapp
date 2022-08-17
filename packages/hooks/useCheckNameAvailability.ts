@@ -10,7 +10,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
   const [nameAvailable, setNameAvailable] = useState(true);
   const [nameError, setNameError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { setTnsError } = useContext(TNSContext);
+  const { setToastError } = useContext(TNSContext);
 
   useEffect(() => {}, [nameAvailable]);
 
@@ -61,7 +61,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
         setLoading(false);
         setNameAvailable(false);
         setNameError(true);
-        setTnsError({
+        setToastError({
           title: "Something went wrong!",
           message: e.message,
         });

@@ -24,28 +24,6 @@ export const SendFundModal: React.FC<{
       onClose={onClose}
       width={372}
       label={`Your wallet has ${numberWithThousandsSeparator(1000)} Tori`}
-      // childrenBottom={
-      //   <View style={{ marginHorizontal: 20 }}>
-      //     <View style={{ borderBottomWidth: 1, borderColor: neutral44 }} />
-      //     <View
-      //       style={{
-      //         flex: 1,
-      //         flexDirection: "row",
-      //         width: "100%",
-      //         alignItems: "center",
-      //         justifyContent: "space-between",
-      //         marginVertical: 20,
-      //       }}
-      //     >
-      //       <BacKTo
-      //         label="search"
-      //         justBack
-      //         onPress={() => setIsVisible(false)}
-      //       />
-      //       {/*<DarkButton text={"Show paths"} style={{width: "fit-content"}}/>*/}
-      //     </View>
-      //   </View>
-      // }
     >
       <View>
         <TextInputCustom
@@ -64,7 +42,13 @@ export const SendFundModal: React.FC<{
             onlyNumbers
             style={{ marginRight: 12, minWidth: 0 }}
           />
-          <PrimaryButton text="Send" style={{ width: "fit-content" }} />
+          <PrimaryButton
+            text="Send"
+            style={{ width: "fit-content" }}
+            onPress={() => {
+              /*TODO:*/
+            }}
+          />
         </View>
       </View>
     </ModalBase>
