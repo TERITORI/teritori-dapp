@@ -62,7 +62,8 @@
     "electron": "^19.0.8",
     "electron-builder": "^23.1.0",
     "eslint": "^8.19.0",
-    "expo-optimize": "^0.2.18",
+    "expo-cli": "^6.0.2",
+    "expo-optimize": "^0.2.19",
     "prettier": "^2.7.1",
     "react-native-svg-transformer": "^1.0.0",
     "typescript": "~4.3.5"
