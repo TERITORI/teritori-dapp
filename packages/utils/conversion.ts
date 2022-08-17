@@ -1,9 +1,8 @@
 import { bech32 } from "bech32";
-import * as R from "ramda";
 
 const DENOM = process.env.PUBLIC_CHAIN_BECH32_PREFIX || "tori";
 
-export const getDenom = () => R.toLower(DENOM);
+export const getDenom = () => DENOM.toLowerCase();
 
 export const getTeritoriAddress = (cosmosAddress: string) =>
   bech32.encode(getDenom(), bech32.decode(cosmosAddress).words);

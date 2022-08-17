@@ -13,11 +13,11 @@ export const defaultMintFee: StdFee = {
 // todo - should parse and validate these more elegantly
 export const getMintCost = (username: string): Coin[] => {
   const surchargeOwed =
-    username.length < parseInt(process.env.PUBLIC_SURCHARGE_MAX_CHARACTERS!)
-      ? parseInt(process.env.PUBLIC_SURCHARGE_FEE!)
+    username.length < parseInt(process.env.PUBLIC_SURCHARGE_MAX_CHARACTERS!, 10)
+      ? parseInt(process.env.PUBLIC_SURCHARGE_FEE!, 10)
       : 0;
 
-  const baseFee = parseInt(process.env.PUBLIC_BASE_MINT_FEE!);
+  const baseFee = parseInt(process.env.PUBLIC_BASE_MINT_FEE!, 10);
   const totalFee = baseFee + surchargeOwed;
   return coins(totalFee, process.env.PUBLIC_STAKING_DENOM!);
 };

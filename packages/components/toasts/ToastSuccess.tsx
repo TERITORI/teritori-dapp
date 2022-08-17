@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Dimensions, TouchableOpacity, View } from "react-native";
 
 import { neutral11, neutral77, successColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
@@ -9,6 +9,9 @@ export const ToastSuccess: React.FC<{
   message?: string;
   onPress: () => void;
 }> = ({ title, message, onPress }) => {
+  const width = 300;
+  const marginHorizontal = 24;
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -21,20 +24,20 @@ export const ToastSuccess: React.FC<{
         borderRadius: 8,
         borderWidth: 1,
         borderStyle: "solid",
-        width: "100%",
-        maxWidth: 300,
+        width,
+        maxWidth: width,
         height: "auto",
         position: "absolute",
         top: 24,
-        left: `calc(50% - 300px / 2)`,
+        left: Dimensions.get("window").width / 2 - width / 2,
         zIndex: 999,
       }}
     >
       <View
         style={{
-          width: `calc(100% - 24px * 2)`,
+          width: width - marginHorizontal * 2,
           marginVertical: 12,
-          marginHorizontal: 24,
+          marginHorizontal,
         }}
       >
         <BrandText style={{ fontSize: 13, lineHeight: 20, width: "100%" }}>

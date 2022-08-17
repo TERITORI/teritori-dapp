@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity, View, Dimensions } from "react-native";
 
 import warningPNG from "../../../assets/icons/warning.png";
 import { errorColor, neutral11, neutral77 } from "../../utils/style/colors";
@@ -10,6 +10,8 @@ export const ToastError: React.FC<{
   message?: string;
   onPress: () => void;
 }> = ({ title, message, onPress }) => {
+  const width = 432;
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -22,12 +24,12 @@ export const ToastError: React.FC<{
         borderRadius: 8,
         borderWidth: 1,
         borderStyle: "solid",
-        width: "100%",
-        maxWidth: 432,
+        maxWidth: width,
+        width,
         height: "auto",
         position: "absolute",
         top: 24,
-        left: `calc(50% - ${432}px / 2)`,
+        left: Dimensions.get("window").width / 2 - width / 2,
         zIndex: 999,
       }}
     >

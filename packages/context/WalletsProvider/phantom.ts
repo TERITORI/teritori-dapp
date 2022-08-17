@@ -60,7 +60,9 @@ export const usePhantom: () => UsePhantomResult = () => {
       }
       try {
         await phantom.connect({ onlyIfTrusted: true });
-      } catch {}
+      } catch (err) {
+        console.warn("failed to connect to phantom", err);
+      }
       setReady(true);
     };
     effect();

@@ -1,28 +1,29 @@
 import { useEffect, useState } from "react";
 
-import { useSigningClient } from "../context/SigningCosmwasmProvider";
-import { useStore } from "../store/cosmwasm";
+import { getFirstKeplrAccount, getSigningCosmWasmClient } from "../utils/keplr";
+import { useIsKeplrConnected } from "./useIsKeplrConnected";
 
 export function usePrimaryAlias() {
   const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
 
-  const setPrimaryAlias = useStore((state) => state.setPrimaryAlias);
-  const alias = useStore((state) => state.primaryAlias);
+  const [alias, setPrimaryAlias] = useState("");
 
-  //const [alias, setAlias] = useState<string | undefined>()
   const [loadingAlias, setLoading] = useState(false);
 
-  const { signingClient } = useSigningClient();
-  const walletAddress = useStore((state) => state.walletAddress);
+  const isKeplrConnected = useIsKeplrConnected();
 
   useEffect(() => {
-    if (!signingClient || !walletAddress) {
+    if (!isKeplrConnected) {
       return;
     }
 
     const getAlias = async () => {
       setLoading(true);
       try {
+        const signingClient = await getSigningCosmWasmClient();
+
+        const walletAddress = (await getFirstKeplrAccount()).address;
+
         const aliasResponse = await signingClient.queryContractSmart(contract, {
           primary_alias: {
             address: walletAddress,
@@ -39,7 +40,7 @@ export function usePrimaryAlias() {
     };
 
     getAlias();
-  }, [walletAddress]);
+  }, [isKeplrConnected]);
 
   return { alias, loadingAlias };
 }

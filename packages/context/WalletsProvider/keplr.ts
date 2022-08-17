@@ -15,23 +15,40 @@ import { Wallet } from "./wallet";
 
 export type UseKeplrResult =
   | [true, boolean, Wallet[]]
-  | [false, true, undefined];
+  | [false, boolean, undefined];
 
 export const useKeplr: () => UseKeplrResult = () => {
   const isKeplrConnected = useSelector(selectIsKeplrConnected);
+  const [hasKeplr, setHasKeplr] = useState(false);
   const dispatch = useAppDispatch();
-  const keplr = (window as KeplrWindow)?.keplr;
-  const hasKeplr = !!keplr;
 
   const [addresses, setAddresses] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const handleLoad = () => {
+      const keplr = (window as KeplrWindow)?.keplr;
+      const hasKeplr = !!keplr;
+      if (hasKeplr) {
+        console.log("keplr installed");
+      }
+      setHasKeplr(hasKeplr);
+      if (!hasKeplr) {
+        setReady(true);
+      }
+    };
+    window.addEventListener("load", handleLoad);
+    return () => window.removeEventListener("load", handleLoad);
+  }, []);
 
   useEffect(() => {
     const effect = async () => {
       if (!hasKeplr || !isKeplrConnected) {
         return;
       }
+
       try {
+        const keplr = (window as KeplrWindow).keplr;
         const chainId = teritoriChainId;
         await keplr.enable(chainId);
         const offlineSigner = keplr.getOfflineSigner(chainId);
@@ -41,10 +58,11 @@ export const useKeplr: () => UseKeplrResult = () => {
         console.warn("failed to connect to keplr", err);
         dispatch(setIsKeplrConnected(false));
       }
+
       setReady(true);
     };
     effect();
-  }, [isKeplrConnected, dispatch]);
+  }, [hasKeplr, isKeplrConnected, dispatch]);
 
   useEffect(() => {
     addresses.forEach((address) => {
@@ -84,5 +102,5 @@ export const useKeplr: () => UseKeplrResult = () => {
     });
   }, [addresses]);
 
-  return hasKeplr ? [true, ready, wallets] : [false, true, undefined];
+  return hasKeplr ? [true, ready, wallets] : [false, ready, undefined];
 };

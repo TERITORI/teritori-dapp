@@ -15,7 +15,7 @@ export const ExternalLink: React.FC<{
         numberOfLines={numberOfLines}
         style={[
           {
-            // @ts-ignore
+            //@ts-expect-error
             textDecoration: "underline",
             // TODO: color gradient blue
             color: primaryColor,

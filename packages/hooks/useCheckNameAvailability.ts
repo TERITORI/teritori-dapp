@@ -1,26 +1,26 @@
 // Query the name service
 import { useContext, useEffect, useState } from "react";
 
-import { FeedbacksContext } from "../context/FeedbacksProvider";
-import { isTokenOwned } from "../utils/handefulFunctions";
-import { getNonSigningClient } from "./useSigningCosmWasmClient";
+import { TNSContext } from "../context/TNSProvider";
+import { getNonSigningCosmWasmClient } from "../utils/keplr";
+import { isTokenOwnedByUser } from "../utils/tns";
 
-// NSB : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
+// TNS : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
 export const useCheckNameAvailability = (name, tokens: string[]) => {
   const [nameAvailable, setNameAvailable] = useState(true);
   const [nameError, setNameError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { setToastError } = useContext(FeedbacksContext);
+  const { setTnsError } = useContext(TNSContext);
 
   useEffect(() => {}, [nameAvailable]);
 
   useEffect(() => {
-    const _getToken = async () => {
+    const getToken = async () => {
       setLoading(true);
 
       const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
       // We just want to read, so we use a non-signing client
-      const cosmWasmClient = await getNonSigningClient();
+      const cosmWasmClient = await getNonSigningCosmWasmClient();
       try {
         // If this query fails it means that the token does not exist.
         const token = await cosmWasmClient.queryContractSmart(contract, {
@@ -35,10 +35,10 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
       }
     };
 
-    _getToken()
+    getToken()
       .then((tokenExtension) => {
         // ----- User owns
-        if (isTokenOwned(tokens, name)) {
+        if (isTokenOwnedByUser(tokens, name)) {
           setNameAvailable(false);
           setNameError(false);
         } else {
@@ -61,7 +61,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
         setLoading(false);
         setNameAvailable(false);
         setNameError(true);
-        setToastError({
+        setTnsError({
           title: "Something went wrong!",
           message: e.message,
         });
