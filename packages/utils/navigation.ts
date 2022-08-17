@@ -7,11 +7,14 @@ export type RootStackParamList = {
   Activities: undefined;
   Guardians: undefined;
   GuardiansGame: undefined;
-  Launchpad: undefined;
   Marketplace: undefined;
   Wallets: undefined;
   Governance: undefined;
   Mint: undefined;
+
+  Launchpad: undefined;
+  MintCollection: undefined;
+
   TNSHome: undefined;
   TNSExplore: undefined;
   TNSManage: undefined;

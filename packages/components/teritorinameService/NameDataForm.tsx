@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { NSBContext } from "../../context/NSBProvider";
+import { TNSContext } from "../../context/TNSProvider";
 import { neutral33, neutral77 } from "../../utils/style/colors";
-import { Metadata } from "../../utils/types/messages";
+import { Metadata } from "../../utils/types/tns";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { PrimaryButton } from "../buttons/PrimaryButton";
@@ -18,7 +18,7 @@ export const NameDataForm: React.FC<{
   initialData: Metadata;
 }> = ({ isMintPath, btnLabel, onPressBtn, initialData }) => {
   const [pathId, setPathId] = useState("");
-  const { name } = useContext(NSBContext);
+  const { name } = useContext(TNSContext);
   const [public_bio, setBio] = useState("");
   const [image, setImageUrl] = useState("");
   const [email, setEmail] = useState("");
@@ -34,10 +34,10 @@ export const NameDataForm: React.FC<{
   const profileDataTextStyle = { color: neutral77, fontSize: 16 };
 
   // Sending the input values
-  const _onPressBtn = () => {
+  const handlePressBtn = () => {
     onPressBtn({
       pathId,
-      public_name: name, // Useless because NSBContext ?
+      public_name: name, // Useless because TNSContext ?
       public_bio,
       image,
       email,
@@ -186,9 +186,8 @@ export const NameDataForm: React.FC<{
         onChangeText={setValidatorOperatorAddress}
       />
       <PrimaryButton
-        height={48}
         text={btnLabel}
-        onPress={_onPressBtn}
+        onPress={handlePressBtn}
         style={{ marginTop: 8 }}
       />
     </View>

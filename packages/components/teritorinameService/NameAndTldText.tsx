@@ -1,8 +1,8 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
 
-import { tldFromToken, tokenWithoutTld } from "../../utils/handefulFunctions";
 import { neutral77 } from "../../utils/style/colors";
+import { tldFromToken, tokenWithoutTld } from "../../utils/tns";
 import { BrandText } from "../BrandText";
 
 // A text with the substring ".xxx" grayed
@@ -16,7 +16,7 @@ export const NameAndTldText: React.FC<{
       <BrandText
         style={{
           letterSpacing: -(20 * 0.04),
-          maxWidth: "calc(100% - 12px * 2)",
+          maxWidth: "100%",
         }}
       >
         {tokenWithoutTld(nameAndTldStr)}

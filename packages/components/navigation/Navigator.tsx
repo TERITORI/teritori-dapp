@@ -11,15 +11,15 @@ import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScre
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { MintScreen } from "../../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
-import { NSBBurnNameScreen } from "../../screens/NameServiceBooking/NSBBurnNameScreen";
-import { NSBConsultNameScreen } from "../../screens/NameServiceBooking/NSBConsultNameScreen";
-import { NSBExploreScreen } from "../../screens/NameServiceBooking/NSBExploreScreen";
-import { NSBHomeScreen } from "../../screens/NameServiceBooking/NSBHomeScreen";
-import { NSBManageScreen } from "../../screens/NameServiceBooking/NSBManageScreen";
-import { NSBMintNameScreen } from "../../screens/NameServiceBooking/NSBMintNameScreen";
-import { NSBMintPathScreen } from "../../screens/NameServiceBooking/NSBMintPathScreen";
-import { NSBRegisterScreen } from "../../screens/NameServiceBooking/NSBRegisterScreen";
-import { NSBUpdateNameScreen } from "../../screens/NameServiceBooking/NSBUpdateNameScreen";
+import { TNSBurnNameScreen } from "../../screens/TeritoriNameService/TNSBurnNameScreen";
+import { TNSConsultNameScreen } from "../../screens/TeritoriNameService/TNSConsultNameScreen";
+import { TNSExploreScreen } from "../../screens/TeritoriNameService/TNSExploreScreen";
+import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
+import { TNSManageScreen } from "../../screens/TeritoriNameService/TNSManageScreen";
+import { TNSMintNameScreen } from "../../screens/TeritoriNameService/TNSMintNameScreen";
+import { TNSMintPathScreen } from "../../screens/TeritoriNameService/TNSMintPathScreen";
+import { TNSRegisterScreen } from "../../screens/TeritoriNameService/TNSRegisterScreen";
+import { TNSUpdateNameScreen } from "../../screens/TeritoriNameService/TNSUpdateNameScreen";
 import { WalletsScreen } from "../../screens/Wallets/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
 
@@ -54,19 +54,6 @@ export const Navigator: React.FC = () => {
         component={GuardiansGameScreen}
         options={{ header: () => null }}
       />
-
-      {/* ==== Launchpad */}
-      <Stack.Screen
-        name="Launchpad"
-        component={LaunchpadScreen}
-        options={{ header: () => null }}
-      />
-      <Stack.Screen
-        name="MintCollection"
-        component={MintCollectionScreen}
-        options={{ header: () => null }}
-      />
-
       <Stack.Screen
         name="Marketplace"
         component={MarketplaceScreen}
@@ -87,50 +74,63 @@ export const Navigator: React.FC = () => {
         component={WalletsScreen}
         options={{ presentation: "transparentModal", header: () => null }}
       />
-      {/* ==== Teritori Name Service (TNS) (= Name Service Booking (NSB))*/}
+
+      {/* ==== Launchpad */}
       <Stack.Screen
-        name="NSBHome"
-        component={NSBHomeScreen}
+        name="Launchpad"
+        component={LaunchpadScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="NSBExplore"
-        component={NSBExploreScreen}
+        name="MintCollection"
+        component={MintCollectionScreen}
+        options={{ header: () => null }}
+      />
+
+      {/* ==== Teritori Name Service*/}
+      <Stack.Screen
+        name="TNSHome"
+        component={TNSHomeScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="NSBManage"
-        component={NSBManageScreen}
+        name="TNSExplore"
+        component={TNSExploreScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="NSBRegister"
-        component={NSBRegisterScreen}
+        name="TNSManage"
+        component={TNSManageScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="NSBConsultName"
-        component={NSBConsultNameScreen}
+        name="TNSRegister"
+        component={TNSRegisterScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="NSBUpdateName"
-        component={NSBUpdateNameScreen}
+        name="TNSConsultName"
+        component={TNSConsultNameScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="NSBMintName"
-        component={NSBMintNameScreen}
+        name="TNSUpdateName"
+        component={TNSUpdateNameScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="NSBBurnName"
-        component={NSBBurnNameScreen}
+        name="TNSMintName"
+        component={TNSMintNameScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="NSBMintPath"
-        component={NSBMintPathScreen}
+        name="TNSBurnName"
+        component={TNSBurnNameScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="TNSMintPath"
+        component={TNSMintPathScreen}
         options={{ header: () => null }}
       />
     </Stack.Navigator>
