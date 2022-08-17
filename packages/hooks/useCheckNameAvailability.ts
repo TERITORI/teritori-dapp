@@ -2,8 +2,8 @@
 import { useContext, useEffect, useState } from "react";
 
 import { TNSContext } from "../context/TNSProvider";
+import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { isTokenOwnedByUser } from "../utils/tns";
-import { getNonSigningClient } from "./cosmwasm";
 
 // TNS : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
 export const useCheckNameAvailability = (name, tokens: string[]) => {
@@ -20,7 +20,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
 
       const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
       // We just want to read, so we use a non-signing client
-      const cosmWasmClient = await getNonSigningClient();
+      const cosmWasmClient = await getNonSigningCosmWasmClient();
       try {
         // If this query fails it means that the token does not exist.
         const token = await cosmWasmClient.queryContractSmart(contract, {
@@ -36,36 +36,36 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
     };
 
     getToken()
-    .then((tokenExtension) => {
-      // ----- User owns
-      if (isTokenOwnedByUser(tokens, name)) {
-        setNameAvailable(false);
-        setNameError(false);
-      } else {
-        // ------ Available
-        if (!tokenExtension) {
-          setNameAvailable(true);
-          setNameError(false);
-        }
-        // ------ Minted
-        else {
+      .then((tokenExtension) => {
+        // ----- User owns
+        if (isTokenOwnedByUser(tokens, name)) {
           setNameAvailable(false);
           setNameError(false);
+        } else {
+          // ------ Available
+          if (!tokenExtension) {
+            setNameAvailable(true);
+            setNameError(false);
+          }
+          // ------ Minted
+          else {
+            setNameAvailable(false);
+            setNameError(false);
+          }
         }
-      }
 
-      setLoading(false);
-    })
-    .catch((e) => {
-      console.warn("ERROR getToken() : ", e);
-      setLoading(false);
-      setNameAvailable(false);
-      setNameError(true);
-      setTnsError({
-        title: "Something went wrong!",
-        message: e.message,
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.warn("ERROR getToken() : ", e);
+        setLoading(false);
+        setNameAvailable(false);
+        setNameError(true);
+        setTnsError({
+          title: "Something went wrong!",
+          message: e.message,
+        });
       });
-    });
   }, [name]);
 
   return { nameAvailable, nameError, loading };

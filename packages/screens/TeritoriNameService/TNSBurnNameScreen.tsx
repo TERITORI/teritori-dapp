@@ -1,6 +1,5 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import * as R from "ramda";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Image, View } from "react-native";
 
 import burnPNG from "../../../assets/icons/burn.png";
@@ -12,32 +11,27 @@ import { DarkButton } from "../../components/buttons/DarkButton";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useStore } from "../../store/cosmwasm";
+import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { defaultExecuteFee } from "../../utils/fee";
+import {
+  getFirstKeplrAccount,
+  getSigningCosmWasmClient,
+} from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
-import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 export const TNSBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "TNSUpdateName">;
 }> = ({ route }) => {
-  const { name, setName, setTnsError, setTnsSuccess, setTnsLoading } =
-    useContext(TNSContext);
-  const { tokens, loadingTokens } = useTokenList();
-  const signingClient = useStore((state) => state.signingClient);
-  const walletAddress = useStore((state) => state.walletAddress);
-  const isKeplrConnected = useIsKeplrConnected()
+  const { name, setName, setTnsError, setTnsSuccess } = useContext(TNSContext);
+  const { tokens } = useTokenList();
+  const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
   const navigation = useAppNavigation();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
-  const normalizedTokenId = R.toLower(name + process.env.TLD);
-
-  // Sync tnsLoading
-  useEffect(() => {
-    setTnsLoading(loadingTokens);
-  }, [loadingTokens]);
+  const normalizedTokenId = (name + process.env.TLD).toLowerCase();
 
   // ==== Init
   useFocusEffect(() => {
@@ -56,13 +50,16 @@ export const TNSBurnNameScreen: React.FC<{
   });
 
   const onSubmit = async () => {
-    setTnsLoading(true);
     const msg = {
       burn: {
         token_id: normalizedTokenId,
       },
     };
     try {
+      const signingClient = await getSigningCosmWasmClient();
+
+      const walletAddress = (await getFirstKeplrAccount()).address;
+
       const updatedToken = await signingClient.execute(
         walletAddress!,
         contractAddress,
@@ -77,7 +74,6 @@ export const TNSBurnNameScreen: React.FC<{
           message: "",
         });
         navigation.navigate("TNSManage");
-        setTnsLoading(false);
       }
     } catch (e) {
       // TODO env var for dev logging (?)
@@ -86,7 +82,6 @@ export const TNSBurnNameScreen: React.FC<{
         message: e.message,
       });
       console.warn(e);
-      setTnsLoading(false);
     }
   };
 

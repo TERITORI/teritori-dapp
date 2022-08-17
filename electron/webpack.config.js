@@ -1,13 +1,13 @@
 const { withExpoWebpack } = require("@expo/electron-adapter");
+const Dotenv = require("dotenv-webpack");
 
 const svgRule = require("../svg-webpack-rule.js");
-const Dotenv = require('dotenv-webpack')
 
 module.exports = (oconfig) => {
   const config = withExpoWebpack(oconfig);
 
   // needed to use environment variables
-  config.plugins.push(new Dotenv())
+  config.plugins.push(new Dotenv());
 
   // we need to tell webpack to not handle svg with the url-loader rule
   config.module.rules = config.module.rules.map((rule) => {

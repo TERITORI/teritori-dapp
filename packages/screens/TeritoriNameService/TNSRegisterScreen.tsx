@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 
 import { BacKTo } from "../../components/Footer";
 import { ScreenContainer2 } from "../../components/ScreenContainer2";
@@ -8,25 +8,19 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
-import { useStore } from "../../store/cosmwasm";
+import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useAppNavigation } from "../../utils/navigation";
 import { isTokenOwnedByUser } from "../../utils/tns";
-import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 export const TNSRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
-  const { name, setName, setTnsLoading } = useContext(TNSContext);
-  const { tokens, loadingTokens } = useTokenList();
-  const isKeplrConnected = useIsKeplrConnected()
+  const { name, setName } = useContext(TNSContext);
+  const { tokens } = useTokenList();
+  const isKeplrConnected = useIsKeplrConnected();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
   );
-
-  // Sync tnsLoading
-  useEffect(() => {
-    setTnsLoading(loadingTokens);
-  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {

@@ -53,7 +53,7 @@ export const TeritoriBalanceProvider: React.FC = ({ children }) => {
       }
       setValue({
         total,
-        totalString: `${total / parseInt(UTORI_PER_TORI)} TORI`,
+        totalString: `${total / parseInt(UTORI_PER_TORI, 10)} TORI`,
       });
       setTimeout(() => setRefreshIndex((index) => index + 1), refreshInterval);
     };

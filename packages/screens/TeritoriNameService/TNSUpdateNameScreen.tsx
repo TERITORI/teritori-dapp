@@ -1,6 +1,5 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import * as R from "ramda";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
@@ -10,13 +9,16 @@ import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useStore } from "../../store/cosmwasm";
+import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { defaultMintFee } from "../../utils/fee";
+import {
+  getFirstKeplrAccount,
+  getSigningCosmWasmClient,
+} from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
-import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const TNSUpdateNameScreen: React.FC<{
@@ -24,18 +26,17 @@ export const TNSUpdateNameScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setTnsError, setTnsSuccess, setTnsLoading } =
-    useContext(TNSContext);
-  const { tokens, loadingTokens } = useTokenList();
-  const isKeplrConnected = useIsKeplrConnected()
-  const signingClient = useStore((state) => state.signingClient);
-  const walletAddress = useStore((state) => state.walletAddress);
+  const { name, setName, setTnsError, setTnsSuccess } = useContext(TNSContext);
+  const { tokens } = useTokenList();
+  const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   const navigation = useAppNavigation();
 
   const initData = async () => {
     try {
+      const signingClient = await getSigningCosmWasmClient();
+
       // If this query fails it means that the token does not exist.
       const token = await signingClient.queryContractSmart(contractAddress, {
         nft_info: {
@@ -57,20 +58,13 @@ export const TNSUpdateNameScreen: React.FC<{
         validator_operator_address: token.extension.validator_operator_address,
       };
       setInitialized(true);
-      setTnsLoading(false);
       setInitialData(tokenData);
     } catch {
       setInitialized(true);
-      setTnsLoading(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
-
-  // Sync tnsLoading
-  useEffect(() => {
-    setTnsLoading(loadingTokens);
-  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
@@ -90,10 +84,10 @@ export const TNSUpdateNameScreen: React.FC<{
   });
 
   const submitData = async (_data) => {
-    if (!isKeplrConnected || !walletAddress) {
+    if (!isKeplrConnected) {
       return;
     }
-    setTnsLoading(true);
+
     const {
       image, // TODO - support later
       // image_data
@@ -108,7 +102,7 @@ export const TNSUpdateNameScreen: React.FC<{
       validator_operator_address,
     } = _data;
 
-    const normalizedTokenId = R.toLower(name + process.env.TLD);
+    const normalizedTokenId = (name + process.env.TLD).toLowerCase();
 
     const msg = {
       update_metadata: {
@@ -130,6 +124,10 @@ export const TNSUpdateNameScreen: React.FC<{
     };
 
     try {
+      const walletAddress = (await getFirstKeplrAccount()).address;
+
+      const signingClient = await getSigningCosmWasmClient();
+
       const updatedToken = await signingClient.execute(
         walletAddress!,
         contractAddress,
@@ -144,7 +142,6 @@ export const TNSUpdateNameScreen: React.FC<{
           message: "",
         });
         navigation.navigate("TNSConsultName", { name });
-        setTnsLoading(false);
       }
     } catch (err) {
       setTnsError({
@@ -152,7 +149,6 @@ export const TNSUpdateNameScreen: React.FC<{
         message: err.message,
       });
       console.warn(err);
-      setTnsLoading(false);
     }
   };
 

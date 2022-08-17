@@ -1,5 +1,5 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -14,7 +14,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
 import { TNSContext } from "../../context/TNSProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
-import { useStore } from "../../store/cosmwasm";
+import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import {
@@ -23,11 +23,10 @@ import {
   publicNameDisplayLabel,
 } from "../../utils/teritori";
 import { isTokenOwnedByUser } from "../../utils/tns";
-import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 const NotOwnerActions = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
-  const isKeplrConnected = useIsKeplrConnected()
+  const isKeplrConnected = useIsKeplrConnected();
   const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
@@ -82,17 +81,10 @@ const OwnerActions = () => {
 export const TNSConsultNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "TNSConsultName">;
 }> = ({ route }) => {
-  const { name, setName, setTnsLoading } = useContext(TNSContext);
-  const { token, notFound, loadingToken } = useToken(name, process.env.TLD);
-  const { tokens, loadingTokens } = useTokenList();
+  const { name, setName } = useContext(TNSContext);
+  const { token, notFound } = useToken(name, process.env.TLD);
 
-  // Sync tnsLoading
-  useEffect(() => {
-    setTnsLoading(loadingToken);
-  }, [loadingToken]);
-  useEffect(() => {
-    setTnsLoading(loadingTokens);
-  }, [loadingTokens]);
+  const { tokens } = useTokenList();
 
   // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the token is not minted
   useFocusEffect(() => {

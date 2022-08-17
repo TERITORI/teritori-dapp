@@ -14,12 +14,11 @@ import { Navigator } from "./packages/components/Navigator";
 import { LaunchpadProvider } from "./packages/context/LaunchpadProvider";
 import { SolanaBalanceProvider } from "./packages/context/SolanaBalanceProvider";
 import { SolanaOwnedNFTsProvider } from "./packages/context/SolanaOwnedNFTsProvider";
+import TNSContextProvider from "./packages/context/TNSProvider";
 import { TeritoriBalanceProvider } from "./packages/context/TeritoriBalanceProvider";
 import { WalletsProvider } from "./packages/context/WalletsProvider";
-import { SigningCosmWasmProvider } from "./packages/context/cosmwasm";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
-import TNSContextProvider from "./packages/context/TNSProvider"
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -40,14 +39,12 @@ export default function App() {
             <SolanaBalanceProvider>
               <TeritoriBalanceProvider>
                 <SolanaOwnedNFTsProvider>
-                  <SigningCosmWasmProvider>
-                    <TNSContextProvider>
-                      <LaunchpadProvider>
-                        <StatusBar style="inverted" />
-                        <Navigator />
-                      </LaunchpadProvider>
-                    </TNSContextProvider>
-                  </SigningCosmWasmProvider>
+                  <TNSContextProvider>
+                    <LaunchpadProvider>
+                      <StatusBar style="inverted" />
+                      <Navigator />
+                    </LaunchpadProvider>
+                  </TNSContextProvider>
                 </SolanaOwnedNFTsProvider>
               </TeritoriBalanceProvider>
             </SolanaBalanceProvider>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { View } from "react-native";
 
 import { BacKTo } from "../../components/Footer";
@@ -10,26 +10,20 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { TNSContext } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
-import { useStore } from "../../store/cosmwasm";
+import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useAppNavigation } from "../../utils/navigation";
 import { isTokenOwnedByUser } from "../../utils/tns";
-import {useIsKeplrConnected} from "../../hooks/useIsKeplrConnected"
 
 export const TNSExploreScreen: React.FC = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const navigation = useAppNavigation();
-  const isKeplrConnected = useIsKeplrConnected()
-  const { name, setName, setTnsLoading } = useContext(TNSContext);
-  const { tokens, loadingTokens } = useTokenList();
+  const isKeplrConnected = useIsKeplrConnected();
+  const { name, setName } = useContext(TNSContext);
+  const { tokens } = useTokenList();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
   );
-
-  // Sync tnsLoading
-  useEffect(() => {
-    setTnsLoading(loadingTokens);
-  }, [loadingTokens]);
 
   return (
     <ScreenContainer2

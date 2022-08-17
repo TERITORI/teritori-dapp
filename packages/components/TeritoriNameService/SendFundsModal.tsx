@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { numberWithThousandsSeparator } from "../../utils/numbers";
-import { neutral44 } from "../../utils/style/colors";
-import { BacKTo } from "../Footer";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
