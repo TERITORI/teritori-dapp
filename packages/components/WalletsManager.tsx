@@ -1,39 +1,38 @@
+import { Window as KeplrWindow } from "@keplr-wallet/types";
 import React, { useState } from "react";
-import {
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-  Text,
-} from "react-native";
+import { ScrollView, TextInput, View, ViewStyle, Text } from "react-native";
 
+import { useWallets, Wallet } from "../context/WalletsProvider";
+import { setIsKeplrConnected } from "../store/slices/settings";
 import { addWallet, StoreWallet } from "../store/slices/wallets";
 import { useAppDispatch } from "../store/store";
+import { addressToNetwork, Network } from "../utils/network";
 import {
-  neutral22,
   neutral33,
   neutral44,
   neutral77,
   pinkDefault,
   yellowDefault,
-} from "../utils/colors";
-import { addressToNetwork, Network } from "../utils/network";
+} from "../utils/style/colors";
+import { keplrSuggestTeritori, teritoriChainId } from "../utils/teritori";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
-import { useWallets, Wallet } from "./WalletsProvider";
 import { PrimaryButton } from "./buttons/PrimaryButton";
 import { TertiaryButton } from "./buttons/TertiaryButton";
+import ModalBase from "./modals/ModalBase";
 
 const Separator: React.FC<{ style?: ViewStyle }> = ({ style }) => (
   <View style={[{ borderBottomWidth: 1, borderColor: neutral44 }, style]} />
 );
 
 const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
+  const dispatch = useAppDispatch();
   switch (wallet.provider) {
     case WalletProvider.Phantom:
+    case WalletProvider.Keplr:
       if (wallet.publicKey) {
+        // FIXME: no disconnect on keplr
         return (
           <TertiaryButton
             text={`Disconnect ${wallet.provider}`}
@@ -42,7 +41,7 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
                 try {
                   await (window as any)?.solana?.disconnect();
                 } catch (err) {
-                  console.warn("phantom failed to connect", err);
+                  console.warn(wallet.provider, "failed to disconnect", err);
                 }
               }
             }}
@@ -57,9 +56,18 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
               if (wallet.provider === WalletProvider.Phantom) {
                 console.log("Connecting to phantom");
                 (window as any)?.solana?.connect();
+              } else if (wallet.provider === WalletProvider.Keplr) {
+                console.log("Connecting to keplr");
+                const keplr = (window as KeplrWindow)?.keplr;
+                if (!keplr) {
+                  return;
+                }
+                await keplrSuggestTeritori(keplr);
+                await keplr.enable(teritoriChainId);
+                dispatch(setIsKeplrConnected(true));
               }
             } catch (err) {
-              console.warn("phantom failed to disconnect", err);
+              console.warn(wallet.provider, "failed to connect", err);
             }
           }}
         />
@@ -146,6 +154,7 @@ const AddNewWallet: React.FC = () => {
   const [addressValue, setAddressValue] = useState("");
   const addressNetwork = addressToNetwork(addressValue);
   const dispatch = useAppDispatch();
+
   return (
     <View
       style={{
@@ -209,42 +218,23 @@ const AddNewWallet: React.FC = () => {
   );
 };
 
-export const WalletsManager: React.FC<{ onClose?: () => void }> = ({
-  onClose,
-}) => {
+export const WalletsManager: React.FC<{
+  onClose?: () => void;
+  visible?: boolean;
+}> = ({ onClose, visible }) => {
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <View
-        style={{
-          backgroundColor: neutral22,
-          borderWidth: 1,
-          borderColor: neutral33,
-          borderRadius: 8,
-          justifyContent: "space-between",
-        }}
-      >
-        <View style={{ padding: 20 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <BrandText style={{ fontSize: 20, color: "white" }}>
-              Manage Connected Wallets
-            </BrandText>
-            <TouchableOpacity onPress={onClose}>
-              <BrandText style={{ fontSize: 20, color: "white" }}>X</BrandText>
-            </TouchableOpacity>
-          </View>
-          <Separator style={{ marginTop: 20, marginBottom: 16 }} />
-          <Wallets />
-        </View>
-        <View>
+    <ModalBase
+      label="Manage Connected Wallets"
+      onClose={onClose}
+      visible={visible}
+      childrenBottom={
+        <>
           <Separator />
           <AddNewWallet />
-        </View>
-      </View>
-    </View>
+        </>
+      }
+    >
+      <Wallets />
+    </ModalBase>
   );
 };

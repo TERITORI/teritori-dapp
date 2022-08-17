@@ -1,36 +1,41 @@
 import * as React from "react";
-import { TouchableOpacity, View, ViewStyle } from "react-native";
+import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { primaryColor, primaryTextColor } from "../../utils/colors";
+import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 export const PrimaryButton: React.FC<{
   text: string;
-  style?: ViewStyle;
+  style?: ViewStyle | ViewStyle[];
+  textStyle?: TextStyle | TextStyle[];
   onPress?: () => void;
   big?: boolean;
   disabled?: boolean;
-}> = ({ text, style, onPress, big, disabled }) => {
+  backgroundColor?: string;
+}> = ({ text, style, textStyle, onPress, big, disabled, backgroundColor }) => {
   const height = big ? 56 : 48;
   return (
     <View
-      style={[
-        { alignItems: "center", opacity: disabled ? 0.5 : undefined },
-        style,
-      ]}
+      style={[{ alignItems: "center" }, disabled && { opacity: 0.5 }, style]}
     >
       <TouchableOpacity
         style={{
-          backgroundColor: primaryColor,
+          backgroundColor: backgroundColor || primaryColor,
           borderRadius: 6,
           height,
           paddingHorizontal: 20,
           justifyContent: "center",
+          width: "100%",
         }}
         onPress={onPress}
         disabled={disabled}
       >
-        <BrandText style={{ color: primaryTextColor, fontSize: 14 }}>
+        <BrandText
+          style={[
+            { color: primaryTextColor, fontSize: 14, textAlign: "center" },
+            textStyle,
+          ]}
+        >
           {text}
         </BrandText>
       </TouchableOpacity>

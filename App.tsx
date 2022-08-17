@@ -10,12 +10,13 @@ import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
-import { LaunchpadProvider } from "./packages/components/LaunchpadProvider";
 import { Navigator } from "./packages/components/Navigator";
-import { SolanaBalanceProvider } from "./packages/components/SolanaBalanceProvider";
-import { SolanaOwnedNFTsProvider } from "./packages/components/SolanaOwnedNFTsProvider";
-import { TeritoriBalanceProvider } from "./packages/components/TeritoriBalanceProvider";
-import { WalletsProvider } from "./packages/components/WalletsProvider";
+import { LaunchpadProvider } from "./packages/context/LaunchpadProvider";
+import { SolanaBalanceProvider } from "./packages/context/SolanaBalanceProvider";
+import { SolanaOwnedNFTsProvider } from "./packages/context/SolanaOwnedNFTsProvider";
+import TNSContextProvider from "./packages/context/TNSProvider";
+import { TeritoriBalanceProvider } from "./packages/context/TeritoriBalanceProvider";
+import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
@@ -38,10 +39,12 @@ export default function App() {
             <SolanaBalanceProvider>
               <TeritoriBalanceProvider>
                 <SolanaOwnedNFTsProvider>
-                  <LaunchpadProvider>
-                    <StatusBar style="inverted" />
-                    <Navigator />
-                  </LaunchpadProvider>
+                  <TNSContextProvider>
+                    <LaunchpadProvider>
+                      <StatusBar style="inverted" />
+                      <Navigator />
+                    </LaunchpadProvider>
+                  </TNSContextProvider>
                 </SolanaOwnedNFTsProvider>
               </TeritoriBalanceProvider>
             </SolanaBalanceProvider>

@@ -13,9 +13,9 @@ import {
 
 import helpAreaPNG from "../../assets/help-area.png";
 import logoTopPNG from "../../assets/logo-top.png";
-import { neutral33 } from "../utils/colors";
-import { helpAreaWidth } from "../utils/layout";
 import { useAppNavigation } from "../utils/navigation";
+import { neutral33 } from "../utils/style/colors";
+import { helpAreaWidth } from "../utils/style/layout";
 import { headerHeight, HubHeader } from "./HubHeader";
 import { Sidebar } from "./Sidebar";
 import { WalletsManager } from "./WalletsManager";
@@ -35,6 +35,7 @@ export const ScreenContainer: React.FC = ({ children }) => {
       >
         <WalletsManager onClose={() => setModalVisible(!modalVisible)} />
       </Modal>
+
       <View style={styles.container}>
         <View style={{ flexDirection: "row", width: "100%", flex: 1 }}>
           {["android", "ios"].includes(Platform.OS) || (

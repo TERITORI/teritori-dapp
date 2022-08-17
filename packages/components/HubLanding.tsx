@@ -8,7 +8,7 @@ import {
   ImageSourcePropType,
 } from "react-native";
 
-import dappCardPNG from "../../assets/dapp-card.png";
+import dappCardPNG from "../../assets/cards/dapp-card.png";
 import airdropPNG from "../../assets/icons/airdrop.png";
 import CertifiedIcon from "../../assets/icons/certified.svg";
 import labsPNG from "../../assets/icons/labs.png";
@@ -17,19 +17,19 @@ import marketplacePNG from "../../assets/icons/marketplace.png";
 import stakingPNG from "../../assets/icons/staking.png";
 import walletPNG from "../../assets/icons/wallet.png";
 import Logo from "../../assets/logo.svg";
+import { useLaunchpadData } from "../context/LaunchpadProvider";
+import { useWallets } from "../context/WalletsProvider";
 import { LaunchpadItem } from "../utils/airtable";
-import { helpAreaWidth, sidebarWidth } from "../utils/layout";
 import { useAppNavigation } from "../utils/navigation";
+import { helpAreaWidth, sidebarWidth } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
-import { CardOutline } from "./CardOutline";
 import { CarouselSection } from "./CarouselSection";
 import { Guardian } from "./Guardian";
-import { LabelCard } from "./LabelCard";
-import { useLaunchpadData } from "./LaunchpadProvider";
 import { Section } from "./Section";
-import { useWallets } from "./WalletsProvider";
 import { HollowPrimaryButton } from "./buttons/HollowPrimaryButton";
 import { SecondaryButton } from "./buttons/SecondaryButton";
+import { CardOutline } from "./cards/CardOutline";
+import { LabelCard } from "./cards/LabelCard";
 
 const breakPoint = 768;
 const gridHalfGutter = 12;

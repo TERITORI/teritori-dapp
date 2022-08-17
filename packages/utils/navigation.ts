@@ -12,9 +12,20 @@ export type RootStackParamList = {
   Wallets: undefined;
   Governance: undefined;
   Mint: undefined;
+  TNSHome: undefined;
+  TNSExplore: undefined;
+  TNSManage: undefined;
+  TNSRegister: undefined;
+  TNSConsultName: undefined;
+  TNSMintName: undefined;
+  TNSUpdateName: undefined;
+  TNSBurnName: undefined;
+  TNSMintPath: undefined;
 };
 
-export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+export type AppNavigationProp = NativeStackNavigationProp<
+  RootStackParamList | any
+>;
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
@@ -35,6 +46,18 @@ const navConfig = {
     Launchpad: "launchpad",
     Governance: "governance",
     Mint: "mint",
+    // Name Service Booking
+    TNSHome: "tns",
+    TNSExplore: "tns/explore",
+    TNSManage: "tns/manage",
+    TNSRegister: "tns/register",
+    // Consult token
+    TNSConsultName: "tns/token/:name",
+    // Do things on token (Necessary minted and owned by the user)
+    TNSMintName: "tns/tokens/:name/mint",
+    TNSUpdateName: "tns/tokens/:name/update",
+    TNSBurnName: "tns/tokens/:name/burn",
+    TNSMintPath: "tns/tokens/:name/mint-path",
   },
 };
 
@@ -42,3 +65,8 @@ export const linking = {
   prefixes: [],
   config: navConfig,
 };
+
+// export type RootStackComponent<RouteName extends keyof RootStackParamList> = React.FC<{
+//   navigation: NativeStackNavigationProp<RootStackParamList, RouteName>,
+//   route: RouteProp<RootStackParamList, RouteName>
+// }>

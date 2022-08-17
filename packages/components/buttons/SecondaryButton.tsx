@@ -1,7 +1,7 @@
 import * as React from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { primaryTextColor } from "../../utils/colors";
+import { primaryTextColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 export const SecondaryButton: React.FC<{

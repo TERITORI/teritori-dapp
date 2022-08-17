@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
-import { primaryColor } from "../../utils/colors";
+import { neutral30, primaryColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 export const SecondaryAltButton: React.FC<{
@@ -11,7 +11,7 @@ export const SecondaryAltButton: React.FC<{
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: "#2B2B33",
+        backgroundColor: neutral30,
         borderRadius: 8,
         paddingHorizontal: 13,
         paddingVertical: 10,

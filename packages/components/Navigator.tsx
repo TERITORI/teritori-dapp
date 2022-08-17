@@ -10,6 +10,15 @@ import { LaunchpadScreen } from "../screens/Launchpad/LaunchpadScreen";
 import { MarketplaceScreen } from "../screens/Marketplace/MarketplaceScreen";
 import { MintScreen } from "../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../screens/MyCollection/MyCollectionScreen";
+import { TNSBurnNameScreen } from "../screens/TeritoriNameService/TNSBurnNameScreen";
+import { TNSConsultNameScreen } from "../screens/TeritoriNameService/TNSConsultNameScreen";
+import { TNSExploreScreen } from "../screens/TeritoriNameService/TNSExploreScreen";
+import { TNSHomeScreen } from "../screens/TeritoriNameService/TNSHomeScreen";
+import { TNSManageScreen } from "../screens/TeritoriNameService/TNSManageScreen";
+import { TNSMintNameScreen } from "../screens/TeritoriNameService/TNSMintNameScreen";
+import { TNSMintPathScreen } from "../screens/TeritoriNameService/TNSMintPathScreen";
+import { TNSRegisterScreen } from "../screens/TeritoriNameService/TNSRegisterScreen";
+import { TNSUpdateNameScreen } from "../screens/TeritoriNameService/TNSUpdateNameScreen";
 import { WalletsScreen } from "../screens/Wallets/WalletsScreen";
 import { RootStackParamList } from "../utils/navigation";
 
@@ -68,6 +77,52 @@ export const Navigator: React.FC = () => {
         name="Wallets"
         component={WalletsScreen}
         options={{ presentation: "transparentModal", header: () => null }}
+      />
+
+      <Stack.Screen
+        name="TNSHome"
+        component={TNSHomeScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="TNSExplore"
+        component={TNSExploreScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="TNSManage"
+        component={TNSManageScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="TNSRegister"
+        component={TNSRegisterScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="TNSConsultName"
+        component={TNSConsultNameScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="TNSUpdateName"
+        component={TNSUpdateNameScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="TNSMintName"
+        component={TNSMintNameScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="TNSBurnName"
+        component={TNSBurnNameScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="TNSMintPath"
+        component={TNSMintPathScreen}
+        options={{ header: () => null }}
       />
     </Stack.Navigator>
   );
