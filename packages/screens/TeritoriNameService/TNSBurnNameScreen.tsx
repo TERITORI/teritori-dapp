@@ -5,7 +5,7 @@ import { Image, View } from "react-native";
 import burnPNG from "../../../assets/icons/burn.png";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
+import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
 import { BackTo } from "../../components/navigation/BackTo";
 import { FeedbacksContext } from "../../context/FeedbacksProvider";

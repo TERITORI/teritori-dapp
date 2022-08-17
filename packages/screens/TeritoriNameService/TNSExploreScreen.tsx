@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { FindAName } from "../../components/TeritoriNameService/FindAName";
-import { SendFundModal } from "../../components/TeritoriNameService/SendFundsModal";
+import { FindAName } from "../../components/teritoriNameService/FindAName";
+import { SendFundModal } from "../../components/teritoriNameService/SendFundsModal";
 import { HollowPrimaryButton } from "../../components/buttons/HollowPrimaryButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { BackTo } from "../../components/navigation/BackTo";

@@ -2,7 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect } from "react";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { FindAName } from "../../components/TeritoriNameService/FindAName";
+import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { BackTo } from "../../components/navigation/BackTo";
 import { FeedbacksContext } from "../../context/FeedbacksProvider";

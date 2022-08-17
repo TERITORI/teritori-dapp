@@ -33,7 +33,6 @@ import {
 //   route: RouteProp<RootStackParamList, "NSBConsultName">;
 // }> = ({ route }) => {
 export const MintCollectionScreen: React.FC = () => {
-
   return (
     <ScreenContainer
       footerChildren={<SocialNetworks />}

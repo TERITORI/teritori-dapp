@@ -3,8 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { NameDataForm } from "../../components/TeritoriNameService/NameDataForm";
-import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
+import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
+import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { BackTo } from "../../components/navigation/BackTo";
 import { FeedbacksContext } from "../../context/FeedbacksProvider";
 import { TNSContext } from "../../context/TNSProvider";
