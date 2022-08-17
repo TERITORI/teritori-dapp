@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 interface TNSToastMessage {
   title: string;
@@ -34,6 +34,13 @@ const TNSContextProvider = ({ children }) => {
   // Error/success after mint, etc...
   const [tnsError, setTnsError] = useState(initialTnsError);
   const [tnsSuccess, setTnsSuccess] = useState(initialTnsSuccess);
+
+  useEffect(() => {
+    if (!tnsError.message) {
+      return;
+    }
+    console.log("tnsError", tnsError);
+  }, [tnsError]);
 
   return (
     <TNSContext.Provider
