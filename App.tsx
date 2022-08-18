@@ -12,6 +12,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
 import { Navigator } from "./packages/components/navigation/Navigator";
+import FeedbacksContextProvider from "./packages/context/FeedbacksProvider";
 import { LaunchpadProvider } from "./packages/context/LaunchpadProvider";
 import { SolanaBalanceProvider } from "./packages/context/SolanaBalanceProvider";
 import { SolanaOwnedNFTsProvider } from "./packages/context/SolanaOwnedNFTsProvider";
@@ -20,7 +21,6 @@ import { TeritoriBalanceProvider } from "./packages/context/TeritoriBalanceProvi
 import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
-import FeedbacksContextProvider from "./packages/context/FeedbacksProvider"
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -39,20 +39,20 @@ export default function App() {
       <SafeAreaProvider>
         <ReduxProvider store={store}>
           <FeedbacksContextProvider>
-          <WalletsProvider>
-            <SolanaBalanceProvider>
-              <TeritoriBalanceProvider>
-                <SolanaOwnedNFTsProvider>
-                  <TNSContextProvider>
-                    <LaunchpadProvider>
-                      <StatusBar style="inverted" />
-                      <Navigator />
-                    </LaunchpadProvider>
-                  </TNSContextProvider>
-                </SolanaOwnedNFTsProvider>
-              </TeritoriBalanceProvider>
-            </SolanaBalanceProvider>
-          </WalletsProvider>
+            <WalletsProvider>
+              <SolanaBalanceProvider>
+                <TeritoriBalanceProvider>
+                  <SolanaOwnedNFTsProvider>
+                    <TNSContextProvider>
+                      <LaunchpadProvider>
+                        <StatusBar style="inverted" />
+                        <Navigator />
+                      </LaunchpadProvider>
+                    </TNSContextProvider>
+                  </SolanaOwnedNFTsProvider>
+                </TeritoriBalanceProvider>
+              </SolanaBalanceProvider>
+            </WalletsProvider>
           </FeedbacksContextProvider>
         </ReduxProvider>
       </SafeAreaProvider>
