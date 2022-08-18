@@ -1,12 +1,11 @@
 import React from "react";
 
-import { ComingSoon } from "../../components/ComingSoon";
 import { ScreenContainer } from "../../components/ScreenContainer";
 
 export const MintScreen: React.FC = () => {
   return (
     <ScreenContainer>
-      <ComingSoon />
+      <h1>Mint Screen</h1>
     </ScreenContainer>
   );
 };
