@@ -10,7 +10,6 @@ export const BrandText: React.FC<TextProps> = (props) => {
 
   return (
     <BrandTextBase
-      onPress={onPress}
       style={[
         { fontFamily: exoFontFamilyFromFontWeight(flatStyle?.fontWeight) },
         style,

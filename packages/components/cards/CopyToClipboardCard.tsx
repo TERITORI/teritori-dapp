@@ -1,16 +1,16 @@
 import Clipboard from "@react-native-clipboard/clipboard";
-import React, { useContext } from "react";
+import React from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import copyPNG from "../../../assets/icons/copy.png";
-import { FeedbacksContext } from "../../context/FeedbacksProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { neutral22, neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 export const CopyToClipboardCard: React.FC<{
   text: string;
 }> = ({ text }) => {
-  const { setToastSuccess } = useContext(FeedbacksContext);
+  const { setToastSuccess } = useFeedbacks();
 
   const copyToClipboard = () => {
     setToastSuccess({

@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { FeedbacksContext } from "../context/FeedbacksProvider";
+import { useFeedbacks } from "../context/FeedbacksProvider";
 import {
   getFirstKeplrAccount,
   getKeplrAccounts,
@@ -90,7 +90,7 @@ export function useToken(tokenId: string, tld: string) {
   const [loadingToken, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
-  const { setToastError } = useContext(FeedbacksContext);
+  const { setToastError } = useFeedbacks();
 
   const isKeplrConnected = useIsKeplrConnected();
 

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 import {
-  screenContainerContentMarginH,
+  screenContainerContentMarginHorizontal,
   sidebarWidth,
 } from "../utils/style/layout";
 import { Footer } from "./Footer";
@@ -61,7 +61,7 @@ export const ScreenContainer: React.FC<{
               style={{ width: "100%", flex: 1 }}
               contentContainerStyle={{
                 flex: 1,
-                marginHorizontal: screenContainerContentMarginH,
+                marginHorizontal: screenContainerContentMarginHorizontal,
               }}
             >
               <>{children}</>

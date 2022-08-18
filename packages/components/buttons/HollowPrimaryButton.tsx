@@ -10,9 +10,9 @@ export const HollowPrimaryButton: React.FC<{
   textStyle?: TextStyle;
   width?: number | string;
   height?: number;
-  paddingH?: number;
-  onPress: () => void;
-  squaresBckgColor?: string;
+  paddingHorizontal?: number;
+  onPress?: () => void;
+  squaresBackgroundColor?: string;
   style?: ViewStyle | ViewStyle[];
   disabled?: boolean;
 }> = ({
@@ -22,8 +22,8 @@ export const HollowPrimaryButton: React.FC<{
   onPress,
   width = "fit-content",
   height = 56,
-  paddingH = 20,
-  squaresBckgColor = "#000000",
+  paddingHorizontal = 20,
+  squaresBackgroundColor = "#000000",
   disabled = false,
 }) => {
   return (
@@ -33,9 +33,9 @@ export const HollowPrimaryButton: React.FC<{
       style={style}
       backgroundColor="#000000"
       height={height}
-      paddingH={paddingH}
+      paddingHorizontal={paddingHorizontal}
       disabled={disabled}
-      squaresBckgColor={squaresBckgColor}
+      squaresBackgroundColor={squaresBackgroundColor}
       width={width}
       borderColor={primaryColor}
     >

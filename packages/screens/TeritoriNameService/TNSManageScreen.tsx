@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import flowCardPNG from "../../../assets/cards/name-card.png";
@@ -8,7 +8,7 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
 import { PrimaryPill } from "../../components/pills/PrimaryPill";
-import { FeedbacksContext } from "../../context/FeedbacksProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -69,7 +69,7 @@ const NameCard: React.FC<{
 
 export const TNSManageScreen: React.FC = () => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
-  const { setLoadingFullScreen } = useContext(FeedbacksContext);
+  const { setLoadingFullScreen } = useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
   const { alias, loadingAlias } = usePrimaryAlias();
   const navigation = useAppNavigation();

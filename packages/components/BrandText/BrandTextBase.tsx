@@ -5,7 +5,6 @@ export const BrandTextBase: React.FC<TextProps> = (props) => {
   const { style, onPress, ...otherProps } = props;
   return (
     <Text
-      onPress={onPress}
       style={[
         {
           color: "white",

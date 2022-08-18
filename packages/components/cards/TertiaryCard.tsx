@@ -8,13 +8,13 @@ import { neutral22 } from "../../utils/style/colors";
 export const TertiaryCard: React.FC<{
   width?: number | string;
   height?: number;
-  paddingH?: number;
-  paddingV?: number;
+  paddingHorizontal?: number;
+  paddingVertical?: number;
   borderRadius?: number;
   backgroundColor?: string;
   onPress?: () => void;
   disabled?: boolean;
-  squaresBckgColor?: string;
+  squaresBackgroundColor?: string;
   cornerWidth?: number;
   style?: ViewStyle | ViewStyle[];
 }> = ({
@@ -24,10 +24,10 @@ export const TertiaryCard: React.FC<{
   backgroundColor = neutral22,
   borderRadius = 8,
   onPress,
-  paddingH = 6,
-  paddingV = 6,
+  paddingHorizontal = 6,
+  paddingVertical = 6,
   // We need that to correctly set the color under the card
-  squaresBckgColor = "#000000",
+  squaresBackgroundColor = "#000000",
   // Less or more big "broken" corner
   cornerWidth = 8,
   disabled = false,
@@ -50,11 +50,11 @@ export const TertiaryCard: React.FC<{
       <View
         style={{
           width,
-          height: height - paddingV * 2,
+          height: height - paddingVertical * 2,
           backgroundColor,
           borderRadius,
-          paddingVertical: paddingV,
-          paddingHorizontal: paddingH,
+          paddingVertical,
+          paddingHorizontal,
           opacity: disabled ? 0.5 : undefined,
           flex: 1,
           alignItems: "center",
@@ -71,7 +71,7 @@ export const TertiaryCard: React.FC<{
           height: 20,
           left: 0,
           top: -6,
-          backgroundColor: squaresBckgColor,
+          backgroundColor: squaresBackgroundColor,
           transform: [{ rotate: "45deg" }],
           position: "absolute",
           zIndex: 2,
@@ -86,7 +86,7 @@ export const TertiaryCard: React.FC<{
           right: 0,
           bottom: -6,
           transform: [{ rotate: "225deg" }],
-          backgroundColor: squaresBckgColor,
+          backgroundColor: squaresBackgroundColor,
           position: "absolute",
           zIndex: 2,
         }}

@@ -1,13 +1,13 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { FeedbacksContext } from "../../context/FeedbacksProvider";
-import { TNSContext } from "../../context/TNSProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -32,9 +32,9 @@ export const TNSMintPathScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName } = useContext(TNSContext);
+  const { name, setName } = useTNS();
   const { setLoadingFullScreen, setToastError, setToastSuccess } =
-    useContext(FeedbacksContext);
+    useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
   const navigation = useAppNavigation();
   const isKeplrConnected = useIsKeplrConnected();
@@ -86,7 +86,7 @@ export const TNSMintPathScreen: React.FC<{
   // ==== Init
   useFocusEffect(() => {
     // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token
-    // @ts-ignore
+    // @ts-expect-error
     if (route.params && route.params.name) setName(route.params.name);
     // ===== Controls many things, be careful
     if (

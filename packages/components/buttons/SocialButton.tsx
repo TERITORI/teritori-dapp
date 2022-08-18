@@ -9,7 +9,7 @@ import { TertiaryCard } from "../cards/TertiaryCard";
 export const SocialButton: React.FC<{
   text: string;
   iconSvg: ReactFragment; // Ugly, but it works (Removing the fragments from parent and using the type 'Element' doesn't work)
-  onPress: () => void;
+  onPress?: () => void;
   style?: ViewStyle;
 }> = ({ text, onPress, iconSvg, style }) => {
   return (
@@ -19,7 +19,7 @@ export const SocialButton: React.FC<{
           backgroundColor={neutral33}
           width={32}
           height={32}
-          squaresBckgColor={neutral22}
+          squaresBackgroundColor={neutral22}
           borderRadius={6}
           cornerWidth={5}
         >

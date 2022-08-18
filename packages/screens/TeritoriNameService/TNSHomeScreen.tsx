@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import exploreIconPNG from "../../../assets/icons/explore.png";
@@ -10,7 +10,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { FlowCard } from "../../components/cards/FlowCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
-import { TNSContext } from "../../context/TNSProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 
@@ -21,7 +21,7 @@ const ModalNameFinder: React.FC<{
   navItem: keyof RootStackParamList;
 }> = ({ visible, navItem, onClose }) => {
   const navigation = useAppNavigation();
-  const { name, setName } = useContext(TNSContext);
+  const { name, setName } = useTNS();
 
   const onPressEnter = () => {
     if (name) {

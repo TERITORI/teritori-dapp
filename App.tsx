@@ -12,11 +12,11 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
 import { Navigator } from "./packages/components/navigation/Navigator";
-import FeedbacksContextProvider from "./packages/context/FeedbacksProvider";
+import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { LaunchpadProvider } from "./packages/context/LaunchpadProvider";
 import { SolanaBalanceProvider } from "./packages/context/SolanaBalanceProvider";
 import { SolanaOwnedNFTsProvider } from "./packages/context/SolanaOwnedNFTsProvider";
-import TNSContextProvider from "./packages/context/TNSProvider";
+import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TeritoriBalanceProvider } from "./packages/context/TeritoriBalanceProvider";
 import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";

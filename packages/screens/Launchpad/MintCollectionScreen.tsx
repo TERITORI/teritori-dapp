@@ -110,9 +110,6 @@ export const MintCollectionScreen: React.FC = () => {
           <PrimaryButton
             text="Mint now"
             style={{ marginBottom: 24 }}
-            onPress={() => {
-              /*TODO:*/
-            }}
             width={160}
           />
 
@@ -131,9 +128,6 @@ export const MintCollectionScreen: React.FC = () => {
                   <DiscordSVG />
                 </>
               }
-              onPress={() => {
-                /*TODO:*/
-              }}
               style={{ marginRight: 12 }}
             />
             <SocialButton
@@ -143,9 +137,6 @@ export const MintCollectionScreen: React.FC = () => {
                   <WebsiteSVG />
                 </>
               }
-              onPress={() => {
-                /*TODO:*/
-              }}
               style={{ marginRight: 12 }}
             />
             <SocialButton
@@ -155,9 +146,6 @@ export const MintCollectionScreen: React.FC = () => {
                   <TwitterSVG />
                 </>
               }
-              onPress={() => {
-                /*TODO:*/
-              }}
             />
           </View>
         </View>
@@ -175,8 +163,8 @@ export const MintCollectionScreen: React.FC = () => {
           }}
         >
           <SecondaryCard
-            paddingV={0}
-            paddingH={0}
+            paddingVertical={0}
+            paddingHorizontal={0}
             width={534}
             height={534}
             style={{ marginBottom: 40 }}

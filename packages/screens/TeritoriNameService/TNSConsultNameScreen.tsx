@@ -1,5 +1,5 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -12,8 +12,8 @@ import { BackTo } from "../../components/navigation/BackTo";
 import { NameAndTldText } from "../../components/teritoriNameService/NameAndTldText";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { SendFundModal } from "../../components/teritoriNameService/SendFundsModal";
-import { FeedbacksContext } from "../../context/FeedbacksProvider";
-import { TNSContext } from "../../context/TNSProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
@@ -49,7 +49,7 @@ const NotOwnerActions = () => {
 
 const OwnerActions = () => {
   const navigation = useAppNavigation();
-  const { name } = useContext(TNSContext);
+  const { name } = useTNS();
   return (
     <>
       <BackTo label="Back" />
@@ -70,8 +70,8 @@ const OwnerActions = () => {
 export const TNSConsultNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "TNSConsultName">;
 }> = ({ route }) => {
-  const { name, setName } = useContext(TNSContext);
-  const { setLoadingFullScreen } = useContext(FeedbacksContext);
+  const { name, setName } = useTNS();
+  const { setLoadingFullScreen } = useFeedbacks();
   const { token, notFound, loadingToken } = useToken(name, process.env.TLD);
   const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
@@ -85,9 +85,9 @@ export const TNSConsultNameScreen: React.FC<{
     setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
-  // ---- Setting the name from NSBContext. Redirects to TNSHome if this screen is called when the token is not minted
+  // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the token is not minted
   useFocusEffect(() => {
-    // @ts-ignore
+    // @ts-expect-error
     if (route.params && route.params.name) setName(route.params.name);
     if (!isKeplrConnected) navigation.navigate("TNSHome");
   });

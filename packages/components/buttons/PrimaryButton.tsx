@@ -9,10 +9,10 @@ import { TertiaryCard } from "../cards/TertiaryCard";
 export const PrimaryButton: React.FC<{
   width?: number | string;
   height?: number;
-  paddingH?: number;
+  paddingHorizontal?: number;
   text: string;
-  onPress: () => void;
-  squaresBckgColor?: string;
+  onPress?: () => void;
+  squaresBackgroundColor?: string;
   style?: ViewStyle | ViewStyle[];
   disabled?: boolean;
 }> = ({
@@ -20,8 +20,8 @@ export const PrimaryButton: React.FC<{
   height = 56,
   text,
   onPress,
-  paddingH = 20,
-  squaresBckgColor = "#000000",
+  paddingHorizontal = 20,
+  squaresBackgroundColor = "#000000",
   style,
   disabled = false,
 }) => {
@@ -32,9 +32,9 @@ export const PrimaryButton: React.FC<{
       style={style}
       backgroundColor={primaryColor}
       height={height}
-      paddingH={paddingH}
+      paddingHorizontal={paddingHorizontal}
       disabled={disabled}
-      squaresBckgColor={squaresBckgColor}
+      squaresBackgroundColor={squaresBackgroundColor}
       width={width}
     >
       <BrandText

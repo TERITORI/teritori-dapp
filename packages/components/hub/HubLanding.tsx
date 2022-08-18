@@ -409,23 +409,14 @@ Join the Bounty Program
           <HollowPrimaryButton
             text="Apply to the Launch Pad"
             style={{ margin: gridHalfGutter }}
-            onPress={() => {
-              /*TODO:*/
-            }}
           />
           <HollowPrimaryButton
             text="Explore All Upcoming Launches"
             style={{ margin: gridHalfGutter }}
-            onPress={() => {
-              /*TODO:*/
-            }}
           />
           <HollowPrimaryButton
             text="Vote on Upcoming Launches"
             style={{ margin: gridHalfGutter }}
-            onPress={() => {
-              /*TODO:*/
-            }}
           />
         </View>
         <View

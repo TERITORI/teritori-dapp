@@ -1,5 +1,5 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, View } from "react-native";
 
 import longCardPNG from "../../../assets/cards/long-card.png";
@@ -9,8 +9,8 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { FeedbacksContext } from "../../context/FeedbacksProvider";
-import { TNSContext } from "../../context/TNSProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -68,9 +68,9 @@ export const TNSMintNameScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName } = useContext(TNSContext);
+  const { name, setName } = useTNS();
   const { setLoadingFullScreen, setToastError, setToastSuccess } =
-    useContext(FeedbacksContext);
+    useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
@@ -123,7 +123,7 @@ export const TNSMintNameScreen: React.FC<{
   // ==== Init
   useFocusEffect(() => {
     // ---- Setting the name from TNSContext. Redirects to TNSManage if this screen is called when the user owns the token. Redirects to TNSHome if no connected wallet
-    // @ts-ignore
+    // @ts-expect-error
     if (route.params && route.params.name) setName(route.params.name);
     // ===== Controls many things, be careful
     if (!userHasCoWallet || !isKeplrConnected) navigation.navigate("TNSHome");

@@ -8,7 +8,7 @@ import { useAppNavigation } from "../utils/navigation";
 import { neutral33 } from "../utils/style/colors";
 import {
   headerHeight,
-  screenContainerContentMarginH,
+  screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { WalletSelector } from "./WalletSelector";
@@ -96,7 +96,7 @@ export const Header: React.FC<{
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: screenContainerContentMarginH,
+          marginLeft: screenContainerContentMarginHorizontal,
         }}
       >
         <>{children}</>

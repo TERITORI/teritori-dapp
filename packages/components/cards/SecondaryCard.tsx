@@ -6,14 +6,14 @@ import { neutral33 } from "../../utils/style/colors";
 export const SecondaryCard: React.FC<{
   width?: number | string;
   height?: number;
-  paddingH?: number;
-  paddingV?: number;
+  paddingHorizontal?: number;
+  paddingVertical?: number;
   borderRadius?: number;
   backgroundColor?: string;
   borderColor?: string;
   onPress?: () => void;
   disabled?: boolean;
-  squaresBckgColor?: string;
+  squaresBackgroundColor?: string;
   style?: ViewStyle | ViewStyle[];
 }> = ({
   width = "fit-content",
@@ -23,9 +23,9 @@ export const SecondaryCard: React.FC<{
   borderColor = neutral33,
   borderRadius = 8,
   onPress,
-  paddingH = 16,
-  paddingV = 16,
-  squaresBckgColor = "#000000",
+  paddingHorizontal = 16,
+  paddingVertical = 16,
+  squaresBackgroundColor = "#000000",
   style,
 }) => {
   return (
@@ -44,13 +44,13 @@ export const SecondaryCard: React.FC<{
       <View
         style={{
           width,
-          height: height - paddingV * 2,
+          height: height - paddingVertical * 2,
           backgroundColor,
           borderRadius,
           borderColor,
           borderWidth: 1,
-          paddingVertical: paddingV,
-          paddingHorizontal: paddingH,
+          paddingVertical,
+          paddingHorizontal,
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
@@ -66,7 +66,7 @@ export const SecondaryCard: React.FC<{
           height: 20,
           left: -9,
           top: -9,
-          backgroundColor: squaresBckgColor,
+          backgroundColor: squaresBackgroundColor,
           transform: [{ rotate: "45deg" }],
           position: "absolute",
           borderRightColor: borderColor,
@@ -83,7 +83,7 @@ export const SecondaryCard: React.FC<{
           right: -9,
           bottom: -9,
           transform: [{ rotate: "225deg" }],
-          backgroundColor: squaresBckgColor,
+          backgroundColor: squaresBackgroundColor,
           position: "absolute",
           borderRightColor: borderColor,
           borderRightWidth: 1,

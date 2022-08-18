@@ -9,17 +9,17 @@ import { TertiaryCard } from "../cards/TertiaryCard";
 // Tighter than SecondaryButton
 export const SecondaryAltButton: React.FC<{
   width?: number | string;
-  paddingH?: number;
+  paddingHorizontal?: number;
   text: string;
-  onPress: () => void;
-  squaresBckgColor?: string;
+  onPress?: () => void;
+  squaresBackgroundColor?: string;
   style?: ViewStyle | ViewStyle[];
   disabled?: boolean;
 }> = ({
   width = "fit-content",
   text,
   onPress,
-  squaresBckgColor = "#000000",
+  squaresBackgroundColor = "#000000",
   style,
   disabled = false,
 }) => {
@@ -29,9 +29,9 @@ export const SecondaryAltButton: React.FC<{
       style={style}
       backgroundColor={neutral30}
       height={36}
-      paddingH={13}
+      paddingHorizontal={13}
       disabled={disabled}
-      squaresBckgColor={squaresBckgColor}
+      squaresBackgroundColor={squaresBackgroundColor}
       width={width}
     >
       <BrandText

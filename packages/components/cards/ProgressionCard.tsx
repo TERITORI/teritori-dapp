@@ -63,37 +63,6 @@ export const ProgressionCard: React.FC<{
           />
         </View>
       </View>
-      {/*<SecondaryCardXlSvg style={{position: "absolute", left: 0, top: 0}}/>*/}
     </SecondaryCard>
-
-    // <TouchableOpacity
-    // 		style={[
-    // 				{
-    // 						width: 420,
-    // 						height: 100,
-    // 						padding: 16
-    // 				},
-    // 				style
-    // 		]}
-    // >
-    // 		<View style={{zIndex: 2}}>
-    // 				<BrandText style={[fontSemibold12, {marginBottom: 8}]}>{label}</BrandText>
-    //
-    // 				<View style={{
-    // 						flex: 1, flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between",
-    // 						marginBottom: 10
-    // 				}}>
-    // 						{/*TODO: Gradient text blue*/}
-    // 						<BrandText style={[fontSemibold28, {color: primaryColor}]}>{Math.round((valueCurrent * 100) / valueMax)}%</BrandText>
-    //
-    // 						<BrandText style={[fontSemibold12, {color: neutral77, marginRight: 6}]}>{valueCurrent}/{valueMax}</BrandText>
-    // 				</View>
-    //
-    // 				<View style={{borderRadius: 20, height: 4, backgroundColor: neutral44, width: "100%"}}>
-    //
-    // 				</View>
-    // 		</View>
-    // 		<SecondaryCardXlSvg style={{position: "absolute", left: 0, top: 0}}/>
-    // </TouchableOpacity>
   );
 };

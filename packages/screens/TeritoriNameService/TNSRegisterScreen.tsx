@@ -1,12 +1,12 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { BackTo } from "../../components/navigation/BackTo";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
-import { FeedbacksContext } from "../../context/FeedbacksProvider";
-import { TNSContext } from "../../context/TNSProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -15,8 +15,8 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 
 export const TNSRegisterScreen: React.FC = () => {
   const navigation = useAppNavigation();
-  const { name, setName } = useContext(TNSContext);
-  const { setLoadingFullScreen } = useContext(FeedbacksContext);
+  const { name, setName } = useTNS();
+  const { setLoadingFullScreen } = useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(

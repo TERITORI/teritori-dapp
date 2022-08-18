@@ -1,5 +1,5 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Image, View } from "react-native";
 
 import burnPNG from "../../../assets/icons/burn.png";
@@ -8,8 +8,8 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
 import { BackTo } from "../../components/navigation/BackTo";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { FeedbacksContext } from "../../context/FeedbacksProvider";
-import { TNSContext } from "../../context/TNSProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -26,9 +26,9 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 export const TNSBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "TNSUpdateName">;
 }> = ({ route }) => {
-  const { name, setName } = useContext(TNSContext);
+  const { name, setName } = useTNS();
   const { setToastError, setToastSuccess, setLoadingFullScreen } =
-    useContext(FeedbacksContext);
+    useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
@@ -44,7 +44,7 @@ export const TNSBurnNameScreen: React.FC<{
   // ==== Init
   useFocusEffect(() => {
     // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token
-    // @ts-ignore
+    // @ts-expect-error
     if (route.params && route.params.name) setName(route.params.name);
     // ===== Controls many things, be careful TODO: Still redirects to TNSHome, weird..
     if (

@@ -16,8 +16,8 @@ export const AttributesCard: React.FC<{
       style={style}
       width={132}
       height={62}
-      paddingH={12}
-      paddingV={14}
+      paddingHorizontal={12}
+      paddingVertical={14}
     >
       <BrandText
         style={[fontSemibold12, { color: neutral77, marginBottom: 6 }]}

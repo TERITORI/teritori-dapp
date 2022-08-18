@@ -1,7 +1,7 @@
 // Query the name service
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { FeedbacksContext } from "../context/FeedbacksProvider";
+import { useFeedbacks } from "../context/FeedbacksProvider";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { isTokenOwnedByUser } from "../utils/tns";
 
@@ -10,7 +10,7 @@ export const useCheckNameAvailability = (name, tokens: string[]) => {
   const [nameAvailable, setNameAvailable] = useState(true);
   const [nameError, setNameError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { setToastError } = useContext(FeedbacksContext);
+  const { setToastError } = useFeedbacks();
 
   useEffect(() => {}, [nameAvailable]);
 

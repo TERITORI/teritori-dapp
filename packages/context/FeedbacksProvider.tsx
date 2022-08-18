@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
 import { ToastError } from "../components/toasts/ToastError";
@@ -30,7 +30,7 @@ const defaultValue: DefaultValue = {
 
 export const FeedbacksContext = createContext(defaultValue);
 
-const FeedbacksContextProvider: React.FC = ({ children }) => {
+export const FeedbacksContextProvider: React.FC = ({ children }) => {
   const [loadingFullScreen, setLoadingFullScreen] = useState(false);
   const [toastError, setToastError] = useState(initialToastError);
   const [toastSuccess, setToastSuccess] = useState(initialToastSuccess);
@@ -69,4 +69,4 @@ const FeedbacksContextProvider: React.FC = ({ children }) => {
   );
 };
 
-export default FeedbacksContextProvider;
+export const useFeedbacks = () => useContext(FeedbacksContext);

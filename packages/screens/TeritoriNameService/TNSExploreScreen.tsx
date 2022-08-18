@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -7,8 +7,8 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { BackTo } from "../../components/navigation/BackTo";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { SendFundModal } from "../../components/teritoriNameService/SendFundsModal";
-import { FeedbacksContext } from "../../context/FeedbacksProvider";
-import { TNSContext } from "../../context/TNSProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -17,10 +17,10 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 
 export const TNSExploreScreen: React.FC = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
-  const { name, setName } = useContext(TNSContext);
+  const { name, setName } = useTNS();
   const navigation = useAppNavigation();
   const isKeplrConnected = useIsKeplrConnected();
-  const { setLoadingFullScreen } = useContext(FeedbacksContext);
+  const { setLoadingFullScreen } = useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
