@@ -13,19 +13,27 @@ export const PrimaryBadge: React.FC<{
     <View
       style={[
         {
-          paddingVertical: 4,
-          paddingHorizontal: 10,
-          backgroundColor: primaryColor,
-          borderRadius: 999,
-          width: "fit-content",
+          flexDirection: "row",
+          alignItems: "center",
           height: 24,
+          maxHeight: 24,
+          minHeight: 24,
         },
         style,
       ]}
     >
-      <BrandText style={[fontSemibold14, { color: "#000000" }]}>
-        {label}
-      </BrandText>
+      <View
+        style={{
+          paddingVertical: 4,
+          paddingHorizontal: 10,
+          backgroundColor: primaryColor,
+          borderRadius: 999,
+        }}
+      >
+        <BrandText style={[fontSemibold14, { color: "#000000" }]}>
+          {label}
+        </BrandText>
+      </View>
     </View>
   );
 };

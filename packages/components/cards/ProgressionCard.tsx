@@ -23,7 +23,6 @@ export const ProgressionCard: React.FC<{
 
         <View
           style={{
-            flex: 1,
             flexDirection: "row",
             alignItems: "flex-end",
             justifyContent: "space-between",

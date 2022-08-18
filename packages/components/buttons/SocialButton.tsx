@@ -13,22 +13,29 @@ export const SocialButton: React.FC<{
   style?: ViewStyle;
 }> = ({ text, onPress, iconSvg, style }) => {
   return (
-    <TertiaryCard onPress={onPress} style={style} backgroundColor={neutral22}>
-      <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-        <TertiaryCard
-          backgroundColor={neutral33}
-          width={32}
-          height={32}
-          squaresBackgroundColor={neutral22}
-          borderRadius={6}
-          cornerWidth={5}
-        >
-          {iconSvg}
-        </TertiaryCard>
-        <BrandText style={[fontMedium14, { marginLeft: 8, marginRight: 10 }]}>
-          {text}
-        </BrandText>
-      </View>
-    </TertiaryCard>
+    <View
+      style={[
+        style,
+        { flexDirection: "row", height: 44, minHeight: 44, maxHeight: 44 },
+      ]}
+    >
+      <TertiaryCard onPress={onPress} backgroundColor={neutral22}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TertiaryCard
+            backgroundColor={neutral33}
+            width={32}
+            height={32}
+            squaresBackgroundColor={neutral22}
+            borderRadius={6}
+            cornerWidth={5}
+          >
+            {iconSvg}
+          </TertiaryCard>
+          <BrandText style={[fontMedium14, { marginLeft: 8, marginRight: 10 }]}>
+            {text}
+          </BrandText>
+        </View>
+      </TertiaryCard>
+    </View>
   );
 };

@@ -6,8 +6,8 @@ import flowCardPNG from "../../../assets/cards/name-card.png";
 import logoSmPNG from "../../../assets/logo-sm.png";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { PrimaryBadge } from "../../components/badges/PrimaryBadge";
 import { BackTo } from "../../components/navigation/BackTo";
-import { PrimaryPill } from "../../components/pills/PrimaryPill";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
@@ -60,7 +60,7 @@ const NameCard: React.FC<{
         </View>
 
         {isPrimary ? (
-          <PrimaryPill label="Primary" style={{ marginRight: 20 }} />
+          <PrimaryBadge label="Primary" style={{ marginRight: 20 }} />
         ) : null}
       </View>
     </TouchableOpacity>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { TextStyle, ViewStyle } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import { primaryColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
@@ -20,33 +20,39 @@ export const HollowPrimaryButton: React.FC<{
   style,
   textStyle,
   onPress,
-  width = "fit-content",
+  width,
   height = 56,
   paddingHorizontal = 20,
   squaresBackgroundColor = "#000000",
   disabled = false,
 }) => {
   return (
-    <SecondaryCard
-      onPress={onPress}
-      borderRadius={6}
-      style={style}
-      backgroundColor="#000000"
-      height={height}
-      paddingHorizontal={paddingHorizontal}
-      disabled={disabled}
-      squaresBackgroundColor={squaresBackgroundColor}
-      width={width}
-      borderColor={primaryColor}
+    <View
+      style={[
+        style,
+        { flexDirection: "row", height, minHeight: height, maxHeight: height },
+      ]}
     >
-      <BrandText
-        style={[
-          { color: primaryColor, fontSize: 14, textAlign: "center" },
-          textStyle,
-        ]}
+      <SecondaryCard
+        onPress={onPress}
+        borderRadius={6}
+        backgroundColor="#000000"
+        height={height}
+        paddingHorizontal={paddingHorizontal}
+        disabled={disabled}
+        squaresBackgroundColor={squaresBackgroundColor}
+        width={width}
+        borderColor={primaryColor}
       >
-        {text}
-      </BrandText>
-    </SecondaryCard>
+        <BrandText
+          style={[
+            { color: primaryColor, fontSize: 14, textAlign: "center" },
+            textStyle,
+          ]}
+        >
+          {text}
+        </BrandText>
+      </SecondaryCard>
+    </View>
   );
 };

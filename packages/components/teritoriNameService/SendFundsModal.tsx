@@ -42,7 +42,7 @@ export const SendFundModal: React.FC<{
             onlyNumbers
             style={{ marginRight: 12, minWidth: 0 }}
           />
-          <PrimaryButton text="Send" style={{ width: "fit-content" }} />
+          <PrimaryButton text="Send" />
         </View>
       </View>
     </ModalBase>

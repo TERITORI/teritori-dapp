@@ -50,7 +50,7 @@ export const ModalBase: React.FC<{
             borderWidth: 1,
             borderColor: neutral33,
             borderRadius: 8,
-            width: width || "fit-content",
+            width,
             margin: "auto",
           }}
         >

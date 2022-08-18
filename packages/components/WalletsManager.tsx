@@ -8,6 +8,7 @@ import { addWallet, StoreWallet } from "../store/slices/wallets";
 import { useAppDispatch } from "../store/store";
 import { addressToNetwork, Network } from "../utils/network";
 import {
+  neutral22,
   neutral33,
   neutral44,
   neutral77,
@@ -202,6 +203,7 @@ const AddNewWallet: React.FC = () => {
         </View>
       </View>
       <PrimaryButton
+        squaresBackgroundColor={neutral22}
         height={48}
         text="Add New Wallet"
         style={{ marginLeft: 16 }}

@@ -16,7 +16,6 @@ export const ToastError: React.FC<{
     <TouchableOpacity
       onPress={onPress}
       style={{
-        flex: 1,
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: neutral11,

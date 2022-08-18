@@ -28,14 +28,13 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 const NotOwnerActions = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const isKeplrConnected = useIsKeplrConnected();
-  const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
       <BackTo label="Back" />
       <PrimaryButton
         disabled={!isKeplrConnected}
         text="Send funds"
-        style={btnStyle}
+        style={{ marginLeft: 24 }}
         // TODO: if no signed, conenctKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}
       />
@@ -133,13 +132,11 @@ export const TNSConsultNameScreen: React.FC<{
 
             <View
               style={{
-                flex: 1,
                 borderColor: neutral33,
                 borderWidth: 1,
                 borderRadius: 8,
                 width: "100%",
                 maxWidth: 396,
-                height: "fit-content",
                 padding: 24,
                 // Remove the marginBottom of the last tokenData
                 paddingBottom: -8,

@@ -1,5 +1,5 @@
 import React from "react";
-import { ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -16,7 +16,7 @@ export const PrimaryButton: React.FC<{
   style?: ViewStyle | ViewStyle[];
   disabled?: boolean;
 }> = ({
-  width = "fit-content",
+  width,
   height = 56,
   text,
   onPress,
@@ -26,25 +26,31 @@ export const PrimaryButton: React.FC<{
   disabled = false,
 }) => {
   return (
-    <TertiaryCard
-      onPress={onPress}
-      borderRadius={6}
-      style={style}
-      backgroundColor={primaryColor}
-      height={height}
-      paddingHorizontal={paddingHorizontal}
-      disabled={disabled}
-      squaresBackgroundColor={squaresBackgroundColor}
-      width={width}
+    <View
+      style={[
+        style,
+        { flexDirection: "row", height, minHeight: height, maxHeight: height },
+      ]}
     >
-      <BrandText
-        style={[
-          fontSemibold14,
-          { color: primaryTextColor, textAlign: "center" },
-        ]}
+      <TertiaryCard
+        onPress={onPress}
+        borderRadius={6}
+        backgroundColor={primaryColor}
+        height={height}
+        paddingHorizontal={paddingHorizontal}
+        disabled={disabled}
+        squaresBackgroundColor={squaresBackgroundColor}
+        width={width}
       >
-        {text}
-      </BrandText>
-    </TertiaryCard>
+        <BrandText
+          style={[
+            fontSemibold14,
+            { color: primaryTextColor, textAlign: "center" },
+          ]}
+        >
+          {text}
+        </BrandText>
+      </TertiaryCard>
+    </View>
   );
 };

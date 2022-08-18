@@ -18,7 +18,7 @@ export const TertiaryCard: React.FC<{
   cornerWidth?: number;
   style?: ViewStyle | ViewStyle[];
 }> = ({
-  width = "fit-content",
+  width,
   height = 44,
   children,
   backgroundColor = neutral22,
@@ -34,63 +34,61 @@ export const TertiaryCard: React.FC<{
   style,
 }) => {
   return (
-    // Touchable container
-    <TouchableOpacity
-      onPress={onPress}
-      disabled={disabled}
-      style={[
-        {
+    <View style={[style, { flexDirection: "row" }]}>
+      {/*Touchable container*/}
+      <TouchableOpacity
+        onPress={onPress}
+        disabled={disabled}
+        style={{
           width,
           height,
-        },
-        style,
-      ]}
-    >
-      {/*Main container */}
-      <View
-        style={{
-          width,
-          height: height - paddingVertical * 2,
-          backgroundColor,
-          borderRadius,
-          paddingVertical,
-          paddingHorizontal,
-          opacity: disabled ? 0.5 : undefined,
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
         }}
       >
-        <>{children}</>
-      </View>
+        {/*Main container */}
+        <View
+          style={{
+            width,
+            height,
+            backgroundColor,
+            borderRadius,
+            paddingVertical,
+            paddingHorizontal,
+            opacity: disabled ? 0.5 : undefined,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <>{children}</>
+        </View>
 
-      {/* Left top broken corner */}
-      <View
-        style={{
-          width: cornerWidth,
-          height: 20,
-          left: 0,
-          top: -6,
-          backgroundColor: squaresBackgroundColor,
-          transform: [{ rotate: "45deg" }],
-          position: "absolute",
-          zIndex: 2,
-        }}
-      />
+        {/* Left top broken corner */}
+        <View
+          style={{
+            width: cornerWidth,
+            height: 20,
+            left: 0,
+            top: -6,
+            backgroundColor: squaresBackgroundColor,
+            transform: [{ rotate: "45deg" }],
+            position: "absolute",
+            zIndex: 2,
+          }}
+        />
 
-      {/* Right bottom broken corner */}
-      <View
-        style={{
-          width: cornerWidth,
-          height: 20,
-          right: 0,
-          bottom: -6,
-          transform: [{ rotate: "225deg" }],
-          backgroundColor: squaresBackgroundColor,
-          position: "absolute",
-          zIndex: 2,
-        }}
-      />
-    </TouchableOpacity>
+        {/* Right bottom broken corner */}
+        <View
+          style={{
+            width: cornerWidth,
+            height: 20,
+            right: 0,
+            bottom: -6,
+            transform: [{ rotate: "225deg" }],
+            backgroundColor: squaresBackgroundColor,
+            position: "absolute",
+            zIndex: 2,
+          }}
+        />
+      </TouchableOpacity>
+    </View>
   );
 };

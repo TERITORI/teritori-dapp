@@ -13,17 +13,23 @@ export const TertiaryBadge: React.FC<{
     <View
       style={[
         {
-          paddingVertical: 5,
-          paddingHorizontal: 12,
-          backgroundColor: neutral33,
-          borderRadius: 999,
-          width: "fit-content",
+          flexDirection: "row",
+          alignItems: "center",
           height: 28,
         },
         style,
       ]}
     >
-      <BrandText style={fontSemibold13}>{label}</BrandText>
+      <View
+        style={{
+          paddingVertical: 5,
+          paddingHorizontal: 12,
+          backgroundColor: neutral33,
+          borderRadius: 999,
+        }}
+      >
+        <BrandText style={fontSemibold13}>{label}</BrandText>
+      </View>
     </View>
   );
 };

@@ -24,7 +24,6 @@ export const CopyToClipboardCard: React.FC<{
     <TouchableOpacity onPress={copyToClipboard}>
       <View
         style={{
-          flex: 1,
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
