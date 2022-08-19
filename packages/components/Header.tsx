@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Image, TouchableOpacity, ViewStyle } from "react-native";
 
 import secondaryCardSmPNG from "../../assets/cards/secondary-card-sm.png";
-import LogoTopSVG from "../../assets/logo-top.svg";
+import logoTopSVG from "../../assets/logo-top.svg";
 import { useAreThereWallets } from "../hooks/useAreThereWallets";
 import { useAppNavigation } from "../utils/navigation";
 import { neutral33 } from "../utils/style/colors";
@@ -11,6 +11,7 @@ import {
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
+import { SVG } from "./SVG";
 import { WalletSelector } from "./WalletSelector";
 import { WalletsManager } from "./WalletsManager";
 
@@ -81,13 +82,7 @@ export const Header: React.FC<{
         onPress={() => navigation.navigate("Home")}
         style={{ marginLeft: headerMarginH }}
       >
-        <LogoTopSVG
-          style={{
-            width: 68,
-            height: 68,
-            marginLeft: headerMarginH,
-          }}
-        />
+        <SVG width={68} height={68} source={logoTopSVG} />
       </TouchableOpacity>
 
       <View

@@ -26,7 +26,6 @@
     "@solana/wallet-adapter-base": "^0.9.7",
     "@solana/wallet-adapter-wallets": "^0.16.2",
     "@solana/web3.js": "^1.44.3",
-    "@svgr/webpack": "^5.5.0",
     "airtable": "^0.11.4",
     "bech32": "^2.0.0",
     "dotenv-webpack": "^8.0.0",
@@ -70,11 +69,7 @@
     "typescript": "~4.3.5"
   },
   "resolutions": {
-    "@aws-sdk/client-s3": "3.54.1",
-    "svgo": "^2.8.0",
-    "@svgr/babel-preset": "^6.1.0",
-    "@svgr/plugin-jsx": "^6.1.2",
-    "@svgr/plugin-svgo": "^6.1.2"
+    "@aws-sdk/client-s3": "3.54.1"
   },
   "private": true,
   "build": {
