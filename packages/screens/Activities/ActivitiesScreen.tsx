@@ -1,7 +1,7 @@
 import React from "react";
 
-import { HubIntro } from "../../components/HubIntro";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { HubIntro } from "../../components/hub/HubIntro";
 
 export const ActivitiesScreen: React.FC = () => {
   return (

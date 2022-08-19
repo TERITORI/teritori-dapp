@@ -139,6 +139,7 @@ export const WalletSelector: React.FC<{
           )}
           <View style={{ flexDirection: "row" }}>
             <SecondaryAltButton
+              squaresBackgroundColor={neutral17}
               text="Add wallet"
               onPress={() => {
                 setIsExpanded(false);

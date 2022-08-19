@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { TNSContext } from "../../context/TNSProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { Metadata } from "../../utils/types/tns";
 import { BrandText } from "../BrandText";
@@ -18,7 +18,7 @@ export const NameDataForm: React.FC<{
   initialData: Metadata;
 }> = ({ isMintPath, btnLabel, onPressBtn, initialData }) => {
   const [pathId, setPathId] = useState("");
-  const { name } = useContext(TNSContext);
+  const { name } = useTNS();
   const [public_bio, setBio] = useState("");
   const [image, setImageUrl] = useState("");
   const [email, setEmail] = useState("");

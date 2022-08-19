@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import exploreIconPNG from "../../../assets/icons/explore.png";
@@ -6,11 +6,11 @@ import manageIconPNG from "../../../assets/icons/manage.png";
 import registerIconPNG from "../../../assets/icons/register.png";
 import { SocialNetworks } from "../../components/Footer";
 import { IntroLogoText } from "../../components/IntroLogoText";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { FlowCard } from "../../components/cards/FlowCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
-import { TNSContext } from "../../context/TNSProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 
@@ -21,7 +21,7 @@ const ModalNameFinder: React.FC<{
   navItem: keyof RootStackParamList;
 }> = ({ visible, navItem, onClose }) => {
   const navigation = useAppNavigation();
-  const { name, setName } = useContext(TNSContext);
+  const { name, setName } = useTNS();
 
   const onPressEnter = () => {
     if (name) {
@@ -72,7 +72,11 @@ export const TNSHomeScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer2 footerChildren={<SocialNetworks />}>
+    <ScreenContainer
+      footerChildren={<SocialNetworks />}
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
+    >
       <IntroLogoText
         subTitle="Name Service Booking"
         style={{ marginTop: 40 }}
@@ -113,6 +117,6 @@ export const TNSHomeScreen: React.FC = () => {
         onClose={() => setModalNameFinderVisible(false)}
         navItem={pressedNavItem}
       />
-    </ScreenContainer2>
+    </ScreenContainer>
   );
 };

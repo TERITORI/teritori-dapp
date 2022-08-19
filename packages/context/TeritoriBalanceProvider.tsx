@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { Network } from "../utils/network";
 import { getUtoriBalance, UTORI_PER_TORI } from "../utils/teritori";

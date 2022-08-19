@@ -1,18 +1,19 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
-import { BacKTo } from "../../components/Footer";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
-import { NameAndTldText } from "../../components/TeritoriNameService/NameAndTldText";
-import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
-import { SendFundModal } from "../../components/TeritoriNameService/SendFundsModal";
-import { DarkButton } from "../../components/buttons/DarkButton";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
 import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
-import { TNSContext } from "../../context/TNSProvider";
+import { BackTo } from "../../components/navigation/BackTo";
+import { NameAndTldText } from "../../components/teritoriNameService/NameAndTldText";
+import { NameNFT } from "../../components/teritoriNameService/NameNFT";
+import { SendFundModal } from "../../components/teritoriNameService/SendFundsModal";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
@@ -27,18 +28,16 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 const NotOwnerActions = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const isKeplrConnected = useIsKeplrConnected();
-  const btnStyle = { marginLeft: 24, width: "fit-content" };
   return (
     <>
-      <BacKTo label="search" navItem="TNSRegister" />
+      <BackTo label="Back" />
       <PrimaryButton
         disabled={!isKeplrConnected}
         text="Send funds"
-        style={btnStyle}
+        style={{ marginLeft: 24 }}
         // TODO: if no signed, conenctKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}
       />
-      {/*<DarkButton text="Show paths" style={btnStyle}/>*/}
       <SendFundModal
         onClose={() => setSendFundsModalVisible(false)}
         visible={sendFundsModalVisible}
@@ -49,29 +48,18 @@ const NotOwnerActions = () => {
 
 const OwnerActions = () => {
   const navigation = useAppNavigation();
-  const { name } = useContext(TNSContext);
-  const btnStyle = { marginLeft: 24, width: "fit-content" };
+  const { name } = useTNS();
   return (
     <>
-      <BacKTo navItem="TNSManage" />
-      <DarkButton
+      <BackTo label="Back" />
+      <SecondaryAltButton
         text="Update metadata"
-        style={btnStyle}
+        style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("TNSUpdateName", { name })}
       />
-      {/*<DarkButton*/}
-      {/*  text="Transfer"*/}
-      {/*  style={btnStyle}*/}
-      {/* onPress={() => {}}*/}
-      {/*/>*/}
-      {/*<DarkButton*/}
-      {/*  text="Mint path"*/}
-      {/*  style={btnStyle}*/}
-      {/*  onPress={() => navigation.navigate("TNSMintPath", { name })}*/}
-      {/*/>*/}
-      <DarkButton
+      <SecondaryAltButton
         text="Burn"
-        style={btnStyle}
+        style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("TNSBurnName", { name })}
       />
     </>
@@ -81,26 +69,39 @@ const OwnerActions = () => {
 export const TNSConsultNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "TNSConsultName">;
 }> = ({ route }) => {
-  const { name, setName } = useContext(TNSContext);
-  const { token, notFound } = useToken(name, process.env.TLD);
+  const { name, setName } = useTNS();
+  const { setLoadingFullScreen } = useFeedbacks();
+  const { token, notFound, loadingToken } = useToken(name, process.env.TLD);
+  const { tokens, loadingTokens } = useTokenList();
+  const isKeplrConnected = useIsKeplrConnected();
+  const navigation = useAppNavigation();
 
-  const { tokens } = useTokenList();
+  // Sync loadingFullScreen
+  useEffect(() => {
+    setLoadingFullScreen(loadingToken);
+  }, [loadingToken]);
+  useEffect(() => {
+    setLoadingFullScreen(loadingTokens);
+  }, [loadingTokens]);
 
   // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the token is not minted
   useFocusEffect(() => {
     // @ts-expect-error
     if (route.params && route.params.name) setName(route.params.name);
+    if (!isKeplrConnected) navigation.navigate("TNSHome");
   });
 
   return (
-    <ScreenContainer2
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={
         isTokenOwnedByUser(tokens, name) && !notFound ? (
           <OwnerActions />
         ) : !notFound ? (
           <NotOwnerActions />
         ) : (
-          <BacKTo navItem="TNSHome" label="home" />
+          <BackTo navItem="TNSHome" label="Back to home" />
         )
       }
     >
@@ -131,13 +132,11 @@ export const TNSConsultNameScreen: React.FC<{
 
             <View
               style={{
-                flex: 1,
                 borderColor: neutral33,
                 borderWidth: 1,
                 borderRadius: 8,
                 width: "100%",
                 maxWidth: 396,
-                height: "fit-content",
                 padding: 24,
                 // Remove the marginBottom of the last tokenData
                 paddingBottom: -8,
@@ -201,6 +200,6 @@ export const TNSConsultNameScreen: React.FC<{
           </>
         )}
       </View>
-    </ScreenContainer2>
+    </ScreenContainer>
   );
 };

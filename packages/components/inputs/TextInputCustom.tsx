@@ -5,7 +5,7 @@ import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
 } from "../../utils/numbers";
-import { neutral23, neutral33, neutral77 } from "../../utils/style/colors";
+import { neutral22, neutral33, neutral77 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -63,7 +63,7 @@ export const TextInputCustom: React.FC<{
           borderColor: neutral33,
           borderWidth: 1,
           borderRadius: 8,
-          backgroundColor: neutral23,
+          backgroundColor: neutral22,
           flex: 1,
           height: 48,
           minHeight: 48,

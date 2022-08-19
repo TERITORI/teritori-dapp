@@ -3,6 +3,7 @@ import { TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { BrandText } from "../BrandText";
 
+//TODO: Refactor like SecondaryButton (Choose the right card, set the props etc..)
 export const TertiaryButton: React.FC<{
   text: string;
   style?: ViewStyle;

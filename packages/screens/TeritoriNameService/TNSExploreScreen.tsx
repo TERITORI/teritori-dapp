@@ -1,13 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { BacKTo } from "../../components/Footer";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
-import { FindAName } from "../../components/TeritoriNameService/FindAName";
-import { SendFundModal } from "../../components/TeritoriNameService/SendFundsModal";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { HollowPrimaryButton } from "../../components/buttons/HollowPrimaryButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { TNSContext } from "../../context/TNSProvider";
+import { BackTo } from "../../components/navigation/BackTo";
+import { FindAName } from "../../components/teritoriNameService/FindAName";
+import { SendFundModal } from "../../components/teritoriNameService/SendFundsModal";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -16,18 +17,26 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 
 export const TNSExploreScreen: React.FC = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
+  const { name, setName } = useTNS();
   const navigation = useAppNavigation();
   const isKeplrConnected = useIsKeplrConnected();
-  const { name, setName } = useContext(TNSContext);
-  const { tokens } = useTokenList();
+  const { setLoadingFullScreen } = useFeedbacks();
+  const { tokens, loadingTokens } = useTokenList();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
   );
 
+  // Sync loadingFullScreen
+  useEffect(() => {
+    setLoadingFullScreen(loadingTokens);
+  }, [loadingTokens]);
+
   return (
-    <ScreenContainer2
-      footerChildren={<BacKTo label="home" navItem="TNSHome" />}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
+      footerChildren={<BackTo label="Back to home" navItem="TNSHome" />}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName
@@ -57,7 +66,6 @@ export const TNSExploreScreen: React.FC = () => {
           >
             <PrimaryButton
               text="View"
-              big
               style={{ maxWidth: 157, width: "100%" }}
               onPress={() => navigation.navigate("TNSConsultName", { name })}
             />
@@ -75,6 +83,6 @@ export const TNSExploreScreen: React.FC = () => {
         onClose={() => setSendFundsModalVisible(false)}
         visible={sendFundsModalVisible}
       />
-    </ScreenContainer2>
+    </ScreenContainer>
   );
 };

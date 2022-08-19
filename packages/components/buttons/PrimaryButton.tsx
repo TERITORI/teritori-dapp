@@ -1,44 +1,56 @@
-import * as React from "react";
-import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import React from "react";
+import { View, ViewStyle } from "react-native";
 
 import { primaryColor, primaryTextColor } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { TertiaryCard } from "../cards/TertiaryCard";
 
 export const PrimaryButton: React.FC<{
+  width?: number | string;
+  height?: number;
+  paddingHorizontal?: number;
   text: string;
-  style?: ViewStyle | ViewStyle[];
-  textStyle?: TextStyle | TextStyle[];
   onPress?: () => void;
-  big?: boolean;
+  squaresBackgroundColor?: string;
+  style?: ViewStyle | ViewStyle[];
   disabled?: boolean;
-  backgroundColor?: string;
-}> = ({ text, style, textStyle, onPress, big, disabled, backgroundColor }) => {
-  const height = big ? 56 : 48;
+}> = ({
+  width,
+  height = 56,
+  text,
+  onPress,
+  paddingHorizontal = 20,
+  squaresBackgroundColor = "#000000",
+  style,
+  disabled = false,
+}) => {
   return (
     <View
-      style={[{ alignItems: "center" }, disabled && { opacity: 0.5 }, style]}
+      style={[
+        style,
+        { flexDirection: "row", height, minHeight: height, maxHeight: height },
+      ]}
     >
-      <TouchableOpacity
-        style={{
-          backgroundColor: backgroundColor || primaryColor,
-          borderRadius: 6,
-          height,
-          paddingHorizontal: 20,
-          justifyContent: "center",
-          width: "100%",
-        }}
+      <TertiaryCard
         onPress={onPress}
+        borderRadius={6}
+        backgroundColor={primaryColor}
+        height={height}
+        paddingHorizontal={paddingHorizontal}
         disabled={disabled}
+        squaresBackgroundColor={squaresBackgroundColor}
+        width={width}
       >
         <BrandText
           style={[
-            { color: primaryTextColor, fontSize: 14, textAlign: "center" },
-            textStyle,
+            fontSemibold14,
+            { color: primaryTextColor, textAlign: "center" },
           ]}
         >
           {text}
         </BrandText>
-      </TouchableOpacity>
+      </TertiaryCard>
     </View>
   );
 };

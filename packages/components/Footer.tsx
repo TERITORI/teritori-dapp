@@ -9,14 +9,11 @@ import {
   ViewStyle,
 } from "react-native";
 
-import backPNG from "../../assets/icons/back.png";
 import bookPNG from "../../assets/icons/book.png";
 import discordPNG from "../../assets/icons/discord.png";
 import mediumPNG from "../../assets/icons/medium.png";
 import twitterPNG from "../../assets/icons/twitter.png";
-import { RootStackParamList, useAppNavigation } from "../utils/navigation";
 import { footerHeight } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
 
 // One social network button
 const NetworkButton: React.FC<{
@@ -87,63 +84,24 @@ export const SocialNetworks: React.FC = () => {
   );
 };
 
-// A clickable "<- Back To xxx" or "<- Back". Choose if navigate() or goBack(). You can handle more action with onPress() prop
-export const BacKTo: React.FC<{
-  label?: string;
-  navItem?: keyof RootStackParamList;
-  justBack?: boolean;
-  onPress?: () => void;
-  navParams?: object;
-}> = ({ label, navItem, justBack, onPress, navParams }) => {
-  const navigation = useAppNavigation();
-  const labelFontSize = 16;
-
-  const handlePress = () => {
-    if (onPress) onPress();
-    if (justBack) navigation.goBack();
-    else if (navParams) navigation.navigate(navItem, navParams);
-    else navigation.navigate(navItem);
-  };
-
+// A footer that can contains children
+export const Footer: React.FC<{
+  style?: ViewStyle;
+}> = ({ children, style }) => {
   return (
-    <TouchableOpacity onPress={handlePress}>
-      <View
-        style={{
+    <View
+      style={[
+        {
+          height: footerHeight,
+          maxHeight: footerHeight,
+          width: "100%",
           flex: 1,
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",
-        }}
-      >
-        <Image source={backPNG} style={{ width: 24, height: 24 }} />
-        <BrandText
-          style={{
-            fontSize: labelFontSize,
-            lineHeight: 16,
-            letterSpacing: -(labelFontSize * 0.04),
-            marginLeft: 8,
-          }}
-        >
-          {label ? `Back to ${label}` : "Back"}
-        </BrandText>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-// A footer that can contains children
-export const Footer: React.FC = ({ children }) => {
-  return (
-    <View
-      style={{
-        height: footerHeight,
-        maxHeight: footerHeight,
-        width: "100%",
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+        },
+        style,
+      ]}
     >
       <>{children}</>
     </View>

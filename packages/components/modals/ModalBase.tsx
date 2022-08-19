@@ -3,7 +3,7 @@ import React, { ReactElement } from "react";
 import { Modal, Pressable, View, ViewStyle, Image } from "react-native";
 
 import crossPNG from "../../../assets/icons/cross.png";
-import { neutral23, neutral33 } from "../../utils/style/colors";
+import { neutral22, neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 // Just an horizontal separator
@@ -46,11 +46,11 @@ export const ModalBase: React.FC<{
         {/*------ Modal main container */}
         <View
           style={{
-            backgroundColor: neutral23,
+            backgroundColor: neutral22,
             borderWidth: 1,
             borderColor: neutral33,
             borderRadius: 8,
-            width: width || "fit-content",
+            width,
             margin: "auto",
           }}
         >

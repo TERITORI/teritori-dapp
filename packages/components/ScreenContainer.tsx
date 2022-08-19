@@ -1,28 +1,37 @@
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import {
   Modal,
   SafeAreaView,
   ScrollView,
   View,
   StyleSheet,
-  Image,
   useWindowDimensions,
-  TouchableOpacity,
   Platform,
+  ViewStyle,
 } from "react-native";
 
-import helpAreaPNG from "../../assets/help-area.png";
-import logoTopPNG from "../../assets/logo-top.png";
-import { useAppNavigation } from "../utils/navigation";
-import { neutral33 } from "../utils/style/colors";
-import { helpAreaWidth } from "../utils/style/layout";
-import { headerHeight, HubHeader } from "./HubHeader";
-import { Sidebar } from "./Sidebar";
+import {
+  screenContainerContentMarginHorizontal,
+  sidebarWidth,
+} from "../utils/style/layout";
+import { Footer } from "./Footer";
+import { Header } from "./Header";
 import { WalletsManager } from "./WalletsManager";
+import { Sidebar } from "./navigation/Sidebar";
 
-export const ScreenContainer: React.FC = ({ children }) => {
+export const ScreenContainer: React.FC<{
+  headerChildren?: ReactElement;
+  footerChildren?: ReactElement;
+  headerStyle?: ViewStyle;
+  hideSidebar?: boolean;
+}> = ({
+  children,
+  headerChildren,
+  footerChildren,
+  headerStyle,
+  hideSidebar,
+}) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const navigation = useAppNavigation();
   const { height } = useWindowDimensions();
 
   return (
@@ -37,51 +46,32 @@ export const ScreenContainer: React.FC = ({ children }) => {
       </Modal>
 
       <View style={styles.container}>
-        <View style={{ flexDirection: "row", width: "100%", flex: 1 }}>
-          {["android", "ios"].includes(Platform.OS) || (
-            <>
-              <View>
-                <View
-                  style={{
-                    height: headerHeight,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-                    <Image
-                      source={logoTopPNG}
-                      style={{
-                        width: 68,
-                        height: 68,
-                        resizeMode: "contain",
-                      }}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <Sidebar />
-              </View>
-              <Image
-                source={helpAreaPNG}
-                style={{
-                  width: helpAreaWidth,
-                  borderRightWidth: 1,
-                  resizeMode: "stretch",
-                  borderLeftWidth: 1,
-                  borderColor: neutral33,
-                }}
-              />
-            </>
-          )}
-          <View style={{ width: "100%", flex: 1, height }}>
-            <HubHeader />
+        <View style={{ width: "100%", flex: 1 }}>
+          {/*==== Header*/}
+          <Header style={headerStyle}>{headerChildren}</Header>
+
+          <View
+            style={{ width: "100%", flexDirection: "row", flex: 1, height }}
+          >
+            {["android", "ios"].includes(Platform.OS) ||
+              (!hideSidebar ? <Sidebar /> : null)}
+
+            {/*==== Scrollable screen content*/}
             <ScrollView
               style={{ width: "100%", flex: 1 }}
-              contentContainerStyle={{ flex: 1 }}
+              contentContainerStyle={{
+                flex: 1,
+                marginHorizontal: screenContainerContentMarginHorizontal,
+              }}
             >
               <>{children}</>
             </ScrollView>
           </View>
+          {/*==== Footer*/}
+          <Footer style={!hideSidebar && { paddingLeft: sidebarWidth }}>
+            {" "}
+            {footerChildren}
+          </Footer>
         </View>
       </View>
     </SafeAreaView>

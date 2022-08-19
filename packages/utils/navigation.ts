@@ -7,11 +7,14 @@ export type RootStackParamList = {
   Activities: undefined;
   Guardians: undefined;
   GuardiansGame: undefined;
-  Launchpad: undefined;
   Marketplace: undefined;
   Wallets: undefined;
   Governance: undefined;
   Mint: undefined;
+
+  Launchpad: undefined;
+  MintCollection: undefined;
+
   TNSHome: undefined;
   TNSExplore: undefined;
   TNSManage: undefined;
@@ -43,10 +46,13 @@ const navConfig = {
     Wallets: "wallets",
     Marketplace: "marketplace",
     GuardiansGame: "guardians-game",
-    Launchpad: "launchpad",
-    Governance: "governance",
     Mint: "mint",
-    // Name Service Booking
+    Governance: "governance",
+    // ==== Launchpad
+    Launchpad: "launchpad",
+    // Mint NFT collection
+    MintCollection: "launchpad/collection/:id/mint",
+    // ==== Teritori Name Service
     TNSHome: "tns",
     TNSExplore: "tns/explore",
     TNSManage: "tns/manage",

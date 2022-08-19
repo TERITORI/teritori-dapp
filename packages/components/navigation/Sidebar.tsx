@@ -6,17 +6,17 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import governanceIconPNG from "../../assets/icons/governance.png";
-import guardiansIconPNG from "../../assets/icons/guardians.png";
-import launchpadIconPNG from "../../assets/icons/launchpad.png";
-import marketplaceIconPNG from "../../assets/icons/marketplace.png";
-import sidebarBottomPNG from "../../assets/sidebar-bottom.png";
-import sidebarContainerSelectedPNG from "../../assets/sidebar-container-selected.png";
-import sidebarContainerPNG from "../../assets/sidebar-container.png";
-import sidebarTopPNG from "../../assets/sidebar-top.png";
-import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
-import { neutral33 } from "../utils/style/colors";
-import { sidebarWidth } from "../utils/style/layout";
+import governanceIconPNG from "../../../assets/icons/governance.png";
+import guardiansIconPNG from "../../../assets/icons/guardians.png";
+import launchpadIconPNG from "../../../assets/icons/launchpad.png";
+import marketplaceIconPNG from "../../../assets/icons/marketplace.png";
+import sidebarBottomPNG from "../../../assets/sidebar-bottom.png";
+import sidebarContainerSelectedPNG from "../../../assets/sidebar-container-selected.png";
+import sidebarContainerPNG from "../../../assets/sidebar-container.png";
+import sidebarTopPNG from "../../../assets/sidebar-top.png";
+import { getCurrentRouteName, useAppNavigation } from "../../utils/navigation";
+import { neutral33 } from "../../utils/style/colors";
+import { sidebarWidth } from "../../utils/style/layout";
 
 const SidebarButton: React.FC<{
   source: ImageSourcePropType;
@@ -59,7 +59,7 @@ const SidebarButton: React.FC<{
 };
 
 const borderWidth = 1;
-const menuWidth = 88;
+const menuWidth = 72;
 
 export const Sidebar: React.FC = () => {
   const navigation = useAppNavigation();
@@ -68,6 +68,7 @@ export const Sidebar: React.FC = () => {
     <View
       style={{
         width: sidebarWidth,
+        maxWidth: sidebarWidth,
         flex: 1,
         justifyContent: "center",
         alignItems: "flex-end",
@@ -77,7 +78,7 @@ export const Sidebar: React.FC = () => {
         source={sidebarTopPNG}
         style={{
           width: menuWidth,
-          height: 100,
+          height: 64,
           resizeMode: "stretch",
         }}
       />
@@ -112,7 +113,7 @@ export const Sidebar: React.FC = () => {
       </View>
       <Image
         source={sidebarBottomPNG}
-        style={{ width: menuWidth, height: 100, resizeMode: "stretch" }}
+        style={{ width: menuWidth, height: 64, resizeMode: "stretch" }}
       />
     </View>
   );

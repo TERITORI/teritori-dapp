@@ -1,15 +1,16 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, View } from "react-native";
 
 import longCardPNG from "../../../assets/cards/long-card.png";
 import coinPNG from "../../../assets/icons/coin.png";
 import { BrandText } from "../../components/BrandText";
-import { BacKTo } from "../../components/Footer";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
-import { NameDataForm } from "../../components/TeritoriNameService/NameDataForm";
-import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
-import { TNSContext } from "../../context/TNSProvider";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { BackTo } from "../../components/navigation/BackTo";
+import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
+import { NameNFT } from "../../components/teritoriNameService/NameNFT";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -67,8 +68,10 @@ export const TNSMintNameScreen: React.FC<{
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
-  const { name, setName, setTnsError, setTnsSuccess } = useContext(TNSContext);
-  const { tokens } = useTokenList();
+  const { name, setName } = useTNS();
+  const { setLoadingFullScreen, setToastError, setToastSuccess } =
+    useFeedbacks();
+  const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
@@ -103,17 +106,24 @@ export const TNSMintNameScreen: React.FC<{
       };
       setInitialData(tokenData);
       setInitialized(true);
+      setLoadingFullScreen(false);
     } catch {
       setInitialized(true);
+      setLoadingFullScreen(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
 
+  // Sync loadingFullScreen
+  useEffect(() => {
+    setLoadingFullScreen(loadingTokens);
+  }, [loadingTokens]);
+
   // ==== Init
   useFocusEffect(() => {
     // ---- Setting the name from TNSContext. Redirects to TNSManage if this screen is called when the user owns the token. Redirects to TNSHome if no connected wallet
-    // @ts-ignore
+    // @ts-expect-error
     if (route.params && route.params.name) setName(route.params.name);
     // ===== Controls many things, be careful
     if (!userHasCoWallet || !isKeplrConnected) navigation.navigate("TNSHome");
@@ -121,6 +131,7 @@ export const TNSMintNameScreen: React.FC<{
       navigation.navigate("TNSManage");
 
     if (!initialized) {
+      setLoadingFullScreen(true);
       initData();
     }
   });
@@ -129,7 +140,7 @@ export const TNSMintNameScreen: React.FC<{
     if (!isKeplrConnected) {
       return;
     }
-
+    setLoadingFullScreen(true);
     const {
       image, // TODO - support later
       // image_data
@@ -180,24 +191,28 @@ export const TNSMintNameScreen: React.FC<{
       );
       if (mintedToken) {
         console.log(normalizedTokenId + " successfully minted");
-        setTnsSuccess({
+        setToastSuccess({
           title: normalizedTokenId + " successfully minted",
           message: "",
         });
         navigation.navigate("TNSConsultName", { name });
+        setLoadingFullScreen(false);
       }
     } catch (err) {
-      setTnsError({
+      setToastError({
         title: "Something went wrong!",
         message: err.message,
       });
       console.warn(err);
+      setLoadingFullScreen(false);
     }
   };
 
   return (
-    <ScreenContainer2
-      footerChildren={<BacKTo label="search" navItem="TNSRegister" />}
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
+      footerChildren={<BackTo label="Back to search" navItem="TNSRegister" />}
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
         <CostContainer />
@@ -219,6 +234,6 @@ export const TNSMintNameScreen: React.FC<{
           />
         </View>
       </View>
-    </ScreenContainer2>
+    </ScreenContainer>
   );
 };

@@ -1,17 +1,17 @@
 import React from "react";
 import { View, Image, ViewStyle, TouchableOpacity } from "react-native";
 
-import connectedImagePNG from "../../assets/connected-image-bad.png";
-import Logo from "../../assets/logo.svg";
-import { useSolanaBalance } from "../context/SolanaBalanceProvider/solanaBalanceContext";
-import { useTeritoriBalance } from "../context/TeritoriBalanceProvider";
-import { useWallets } from "../context/WalletsProvider";
-import { getCurrentRouteName, useAppNavigation } from "../utils/navigation";
-import { WalletProvider } from "../utils/walletProvider";
-import { BrandText } from "./BrandText";
-import { WalletSelector } from "./WalletSelector";
-import { PrimaryButton } from "./buttons/PrimaryButton";
-import { BalanceCard } from "./cards/BalanceCard";
+import connectedImagePNG from "../../../assets/connected-image-bad.png";
+import Logo from "../../../assets/logo.svg";
+import { useSolanaBalance } from "../../context/SolanaBalanceProvider/solanaBalanceContext";
+import { useTeritoriBalance } from "../../context/TeritoriBalanceProvider";
+import { useWallets } from "../../context/WalletsProvider";
+import { getCurrentRouteName, useAppNavigation } from "../../utils/navigation";
+import { WalletProvider } from "../../utils/walletProvider";
+import { BrandText } from "../BrandText";
+import { WalletSelector } from "../WalletSelector";
+import { PrimaryButton } from "../buttons/PrimaryButton";
+import { BalanceCard } from "../cards/BalanceCard";
 
 export type HubPageName = "Home" | "MyCollection" | "Activities" | "Guardians";
 
@@ -125,7 +125,6 @@ const DisconnectedIntro: React.FC = () => {
         Welcome to Teritori_
       </BrandText>
       <PrimaryButton
-        big
         style={{ marginTop: 72 }}
         text="Connect wallet"
         onPress={() => navigation.navigate("Wallets")}

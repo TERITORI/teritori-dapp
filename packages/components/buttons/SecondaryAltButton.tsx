@@ -1,26 +1,50 @@
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { neutral30, primaryColor } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { TertiaryCard } from "../cards/TertiaryCard";
 
+// Tighter than SecondaryButton
 export const SecondaryAltButton: React.FC<{
-  onPress?: () => void;
+  width?: number | string;
+  paddingHorizontal?: number;
   text: string;
-}> = ({ onPress, text }) => {
+  onPress?: () => void;
+  squaresBackgroundColor?: string;
+  style?: ViewStyle | ViewStyle[];
+  disabled?: boolean;
+}> = ({
+  width,
+  text,
+  onPress,
+  squaresBackgroundColor = "#000000",
+  style,
+  disabled = false,
+}) => {
   return (
-    <TouchableOpacity
-      style={{
-        backgroundColor: neutral30,
-        borderRadius: 8,
-        paddingHorizontal: 13,
-        paddingVertical: 10,
-      }}
-      onPress={onPress}
+    <View
+      style={[
+        style,
+        { flexDirection: "row", height: 36, minHeight: 36, maxHeight: 36 },
+      ]}
     >
-      <BrandText style={{ color: primaryColor, fontSize: 14 }}>
-        {text}
-      </BrandText>
-    </TouchableOpacity>
+      <TertiaryCard
+        onPress={onPress}
+        backgroundColor={neutral30}
+        height={36}
+        paddingHorizontal={13}
+        disabled={disabled}
+        squaresBackgroundColor={squaresBackgroundColor}
+        width={width}
+      >
+        <BrandText
+          style={[fontSemibold14, { color: primaryColor, textAlign: "center" }]}
+        >
+          {text}
+        </BrandText>
+      </TertiaryCard>
+    </View>
   );
 };

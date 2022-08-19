@@ -1,14 +1,15 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { Image, View } from "react-native";
 
 import burnPNG from "../../../assets/icons/burn.png";
 import { BrandText } from "../../components/BrandText";
-import { BacKTo } from "../../components/Footer";
-import { ScreenContainer2 } from "../../components/ScreenContainer2";
-import { NameNFT } from "../../components/TeritoriNameService/NameNFT";
-import { DarkButton } from "../../components/buttons/DarkButton";
-import { TNSContext } from "../../context/TNSProvider";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
+import { BackTo } from "../../components/navigation/BackTo";
+import { NameNFT } from "../../components/teritoriNameService/NameNFT";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -25,18 +26,25 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 export const TNSBurnNameScreen: React.FC<{
   route: RouteProp<RootStackParamList, "TNSUpdateName">;
 }> = ({ route }) => {
-  const { name, setName, setTnsError, setTnsSuccess } = useContext(TNSContext);
-  const { tokens } = useTokenList();
+  const { name, setName } = useTNS();
+  const { setToastError, setToastSuccess, setLoadingFullScreen } =
+    useFeedbacks();
+  const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
   const navigation = useAppNavigation();
   const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
   const normalizedTokenId = (name + process.env.TLD).toLowerCase();
 
+  // Sync loadingFullScreen
+  useEffect(() => {
+    setLoadingFullScreen(loadingTokens);
+  }, [loadingTokens]);
+
   // ==== Init
   useFocusEffect(() => {
     // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token
-    // @ts-ignore
+    // @ts-expect-error
     if (route.params && route.params.name) setName(route.params.name);
     // ===== Controls many things, be careful TODO: Still redirects to TNSHome, weird..
     if (
@@ -50,6 +58,8 @@ export const TNSBurnNameScreen: React.FC<{
   });
 
   const onSubmit = async () => {
+    setLoadingFullScreen(true);
+
     const msg = {
       burn: {
         token_id: normalizedTokenId,
@@ -69,26 +79,34 @@ export const TNSBurnNameScreen: React.FC<{
       );
       if (updatedToken) {
         console.log(normalizedTokenId + " successfully burnt");
-        setTnsSuccess({
+        setToastSuccess({
           title: normalizedTokenId + " successfully burnt",
           message: "",
         });
         navigation.navigate("TNSManage");
+        setLoadingFullScreen(false);
       }
     } catch (e) {
       // TODO env var for dev logging (?)
-      setTnsError({
+      setToastError({
         title: "Something went wrong!",
         message: e.message,
       });
       console.warn(e);
+      setLoadingFullScreen(false);
     }
   };
 
   return (
-    <ScreenContainer2
+    <ScreenContainer
+      hideSidebar
+      headerStyle={{ borderBottomColor: "transparent" }}
       footerChildren={
-        <BacKTo label={name} navItem="TNSConsultName" navParams={{ name }} />
+        <BackTo
+          label={"Back to " + name}
+          navItem="TNSConsultName"
+          navParams={{ name }}
+        />
       }
     >
       <View
@@ -145,13 +163,13 @@ export const TNSBurnNameScreen: React.FC<{
             </BrandText>
           </View>
 
-          <DarkButton
+          <SecondaryAltButton
             text="I understand, burn it"
             onPress={onSubmit}
             style={{ width: "100%" }}
           />
         </View>
       </View>
-    </ScreenContainer2>
+    </ScreenContainer>
   );
 };

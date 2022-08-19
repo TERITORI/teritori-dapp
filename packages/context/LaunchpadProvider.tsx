@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { fetchLaunchpadItems, LaunchpadItem } from "../utils/airtable";
 
@@ -12,7 +12,7 @@ const initialValue: LaunchpadContextValue = {
 
 const launchpadContext = createContext(initialValue);
 
-export const LaunchpadProvider = ({ children }) => {
+export const LaunchpadProvider: React.FC = ({ children }) => {
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {

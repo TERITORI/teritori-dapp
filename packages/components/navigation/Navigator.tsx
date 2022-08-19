@@ -1,26 +1,27 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
-import { ActivitiesScreen } from "../screens/Activities/ActivitiesScreen";
-import { GovernanceScreen } from "../screens/Governance/GovernanceScreen";
-import { GuardiansScreen } from "../screens/Guardians/GuardiansScreen";
-import { GuardiansGameScreen } from "../screens/GuardiansGame/GuardiansGameScreen";
-import { HomeScreen } from "../screens/Home/HomeScreen";
-import { LaunchpadScreen } from "../screens/Launchpad/LaunchpadScreen";
-import { MarketplaceScreen } from "../screens/Marketplace/MarketplaceScreen";
-import { MintScreen } from "../screens/Mint/MintScreen";
-import { MyCollectionScreen } from "../screens/MyCollection/MyCollectionScreen";
-import { TNSBurnNameScreen } from "../screens/TeritoriNameService/TNSBurnNameScreen";
-import { TNSConsultNameScreen } from "../screens/TeritoriNameService/TNSConsultNameScreen";
-import { TNSExploreScreen } from "../screens/TeritoriNameService/TNSExploreScreen";
-import { TNSHomeScreen } from "../screens/TeritoriNameService/TNSHomeScreen";
-import { TNSManageScreen } from "../screens/TeritoriNameService/TNSManageScreen";
-import { TNSMintNameScreen } from "../screens/TeritoriNameService/TNSMintNameScreen";
-import { TNSMintPathScreen } from "../screens/TeritoriNameService/TNSMintPathScreen";
-import { TNSRegisterScreen } from "../screens/TeritoriNameService/TNSRegisterScreen";
-import { TNSUpdateNameScreen } from "../screens/TeritoriNameService/TNSUpdateNameScreen";
-import { WalletsScreen } from "../screens/Wallets/WalletsScreen";
-import { RootStackParamList } from "../utils/navigation";
+import { ActivitiesScreen } from "../../screens/Activities/ActivitiesScreen";
+import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
+import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
+import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
+import { HomeScreen } from "../../screens/Home/HomeScreen";
+import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
+import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScreen";
+import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
+import { MintScreen } from "../../screens/Mint/MintScreen";
+import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { TNSBurnNameScreen } from "../../screens/TeritoriNameService/TNSBurnNameScreen";
+import { TNSConsultNameScreen } from "../../screens/TeritoriNameService/TNSConsultNameScreen";
+import { TNSExploreScreen } from "../../screens/TeritoriNameService/TNSExploreScreen";
+import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
+import { TNSManageScreen } from "../../screens/TeritoriNameService/TNSManageScreen";
+import { TNSMintNameScreen } from "../../screens/TeritoriNameService/TNSMintNameScreen";
+import { TNSMintPathScreen } from "../../screens/TeritoriNameService/TNSMintPathScreen";
+import { TNSRegisterScreen } from "../../screens/TeritoriNameService/TNSRegisterScreen";
+import { TNSUpdateNameScreen } from "../../screens/TeritoriNameService/TNSUpdateNameScreen";
+import { WalletsScreen } from "../../screens/Wallets/WalletsScreen";
+import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -54,11 +55,6 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="Launchpad"
-        component={LaunchpadScreen}
-        options={{ header: () => null }}
-      />
-      <Stack.Screen
         name="Marketplace"
         component={MarketplaceScreen}
         options={{ header: () => null }}
@@ -79,6 +75,19 @@ export const Navigator: React.FC = () => {
         options={{ presentation: "transparentModal", header: () => null }}
       />
 
+      {/* ==== Launchpad */}
+      <Stack.Screen
+        name="Launchpad"
+        component={LaunchpadScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="MintCollection"
+        component={MintCollectionScreen}
+        options={{ header: () => null }}
+      />
+
+      {/* ==== Teritori Name Service*/}
       <Stack.Screen
         name="TNSHome"
         component={TNSHomeScreen}

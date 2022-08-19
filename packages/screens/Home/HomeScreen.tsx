@@ -1,8 +1,8 @@
 import React from "react";
 
-import { HubIntro } from "../../components/HubIntro";
-import { HubLanding } from "../../components/HubLanding";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { HubIntro } from "../../components/hub/HubIntro";
+import { HubLanding } from "../../components/hub/HubLanding";
 
 export const HomeScreen: React.FC = () => {
   return (

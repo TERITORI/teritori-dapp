@@ -34,7 +34,6 @@ export const FlowCard: React.FC<{
 
       <View
         style={{
-          flex: 1,
           flexDirection: "row",
           padding: 20,
           width,
@@ -53,7 +52,7 @@ export const FlowCard: React.FC<{
           }}
         />
 
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
+        <View style={{ justifyContent: "space-between" }}>
           <BrandText>{label}</BrandText>
           <BrandText
             style={{

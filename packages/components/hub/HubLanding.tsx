@@ -8,28 +8,28 @@ import {
   ImageSourcePropType,
 } from "react-native";
 
-import dappCardPNG from "../../assets/cards/dapp-card.png";
-import airdropPNG from "../../assets/icons/airdrop.png";
-import CertifiedIcon from "../../assets/icons/certified.svg";
-import labsPNG from "../../assets/icons/labs.png";
-import launchpadPNG from "../../assets/icons/launchpad.png";
-import marketplacePNG from "../../assets/icons/marketplace.png";
-import stakingPNG from "../../assets/icons/staking.png";
-import walletPNG from "../../assets/icons/wallet.png";
-import Logo from "../../assets/logo.svg";
-import { useLaunchpadData } from "../context/LaunchpadProvider";
-import { useWallets } from "../context/WalletsProvider";
-import { LaunchpadItem } from "../utils/airtable";
-import { useAppNavigation } from "../utils/navigation";
-import { helpAreaWidth, sidebarWidth } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { CarouselSection } from "./CarouselSection";
-import { Guardian } from "./Guardian";
-import { Section } from "./Section";
-import { HollowPrimaryButton } from "./buttons/HollowPrimaryButton";
-import { SecondaryButton } from "./buttons/SecondaryButton";
-import { CardOutline } from "./cards/CardOutline";
-import { LabelCard } from "./cards/LabelCard";
+import dappCardPNG from "../../../assets/cards/dapp-card.png";
+import airdropPNG from "../../../assets/icons/airdrop.png";
+import CertifiedIcon from "../../../assets/icons/certified.svg";
+import labsPNG from "../../../assets/icons/labs.png";
+import launchpadPNG from "../../../assets/icons/launchpad.png";
+import marketplacePNG from "../../../assets/icons/marketplace.png";
+import stakingPNG from "../../../assets/icons/staking.png";
+import walletPNG from "../../../assets/icons/wallet.png";
+import Logo from "../../../assets/logo.svg";
+import { useLaunchpadData } from "../../context/LaunchpadProvider";
+import { useWallets } from "../../context/WalletsProvider";
+import { LaunchpadItem } from "../../utils/airtable";
+import { useAppNavigation } from "../../utils/navigation";
+import { helpAreaWidth, sidebarWidth } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { CarouselSection } from "../CarouselSection";
+import { Guardian } from "../Guardian";
+import { Section } from "../Section";
+import { HollowPrimaryButton } from "../buttons/HollowPrimaryButton";
+import { SecondaryButton } from "../buttons/SecondaryButton";
+import { CardOutline } from "../cards/CardOutline";
+import { LabelCard } from "../cards/LabelCard";
 
 const breakPoint = 768;
 const gridHalfGutter = 12;
@@ -282,6 +282,7 @@ const NewsBox: React.FC = () => {
             }}
           >
             <SecondaryButton
+              height={48}
               text="Join the Mint"
               onPress={() => navigation.navigate("Mint")}
             />
@@ -297,8 +298,6 @@ const NewsBox: React.FC = () => {
   );
 };
 
-const landingHorizontalPadding = 25;
-
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
   const { width: windowWidth } = useWindowDimensions();
@@ -308,9 +307,7 @@ export const HubLanding: React.FC = () => {
   );
 
   return (
-    <View
-      style={{ width: "100%", paddingHorizontal: landingHorizontalPadding }}
-    >
+    <View style={{ width: "100%" }}>
       <View style={{ flex: 1 }}>
         <Section title="Highlighted News">
           <NewsBox />
@@ -398,9 +395,7 @@ Join the Bounty Program
           height={launchpadItemHeight}
           loop={false}
           style={{
-            width:
-              windowWidth -
-              (helpAreaWidth + sidebarWidth + landingHorizontalPadding),
+            width: windowWidth - (helpAreaWidth + sidebarWidth),
           }}
         />
         <View
