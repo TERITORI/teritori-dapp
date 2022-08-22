@@ -1,10 +1,11 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { ReactElement } from "react";
-import { Modal, Pressable, View, ViewStyle, Image } from "react-native";
+import { Modal, Pressable, View, ViewStyle } from "react-native";
 
-import crossPNG from "../../../assets/icons/cross.png";
+import closeSVG from "../../../assets/icons/close.svg";
 import { neutral22, neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 
 // Just an horizontal separator
 const Separator: React.FC<{ style?: ViewStyle }> = ({ style }) => (
@@ -64,15 +65,14 @@ export const ModalBase: React.FC<{
                 alignItems: "center",
               }}
             >
-              <BrandText style={{ color: "white", lineHeight: 24 }}>
+              <BrandText
+                style={{ color: "white", lineHeight: 24, marginRight: 20 }}
+              >
                 {label}
               </BrandText>
 
               <Pressable onPress={onClose}>
-                <Image
-                  style={{ height: 20, width: 20, marginLeft: 20 }}
-                  source={crossPNG}
-                />
+                <SVG width={20} height={20} source={closeSVG} />
               </Pressable>
             </View>
             {children && (

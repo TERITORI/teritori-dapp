@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, View } from "react-native";
 
-import guardianPNG from "../../assets/guardian_1.png";
+import guardianPNG from "../../assets/default-images/guardian_1.png";
 
 export const Guardian: React.FC = () => (
   <View style={{ alignItems: "center" }}>

@@ -1,12 +1,13 @@
 import React, { useRef } from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import Carousel, {
   ICarouselInstance,
   TCarouselProps,
 } from "react-native-reanimated-carousel";
 
-import chevronLeftPNG from "../../assets/icons/chevron-left.png";
-import chevronRightPNG from "../../assets/icons/chevron-right.png";
+import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
+import chevronRightSVG from "../../assets/icons/chevron-right.svg";
+import { SVG } from "./SVG";
 import { Section } from "./Section";
 
 export const CarouselSection: React.FC<
@@ -23,16 +24,10 @@ export const CarouselSection: React.FC<
         onPress={() => carouselRef.current?.prev()}
         style={{ marginRight: 24 }}
       >
-        <Image
-          source={chevronLeftPNG}
-          style={{ width: 16, height: 16, resizeMode: "stretch" }}
-        />
+        <SVG width={16} height={16} source={chevronLeftSVG} />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => carouselRef.current?.next()}>
-        <Image
-          source={chevronRightPNG}
-          style={{ width: 16, height: 16, resizeMode: "stretch" }}
-        />
+        <SVG width={16} height={16} source={chevronRightSVG} />
       </TouchableOpacity>
     </View>
   );

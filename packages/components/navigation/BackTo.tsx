@@ -2,10 +2,11 @@
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import BackSVG from "../../../assets/icons/back.svg";
+import backSVG from "../../../assets/icons/back.svg";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
 import { neutral22 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 
 export const BackTo: React.FC<{
   label?: string;
@@ -39,9 +40,11 @@ export const BackTo: React.FC<{
             height: 32,
             backgroundColor: neutral22,
             borderRadius: 999,
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <BackSVG style={{ margin: "auto" }} />
+          <SVG width={24} height={24} source={backSVG} />
         </View>
         <BrandText
           style={{

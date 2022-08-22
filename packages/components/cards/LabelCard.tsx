@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Image, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 
-import balanceCardHighlightedPNG from "../../../assets/cards/balance-card-highlight.png";
-import balanceCardPNG from "../../../assets/cards/balance-card.png";
+import balanceCardHighlightSVG from "../../../assets/cards/balance-card-highlight.svg";
+import balanceCardSVG from "../../../assets/cards/balance-card.svg";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 
 export const LabelCard: React.FC<{
   highlighted?: boolean;
@@ -15,9 +16,10 @@ export const LabelCard: React.FC<{
   const fontSize = 12;
   return (
     <View style={style}>
-      <Image
-        source={highlighted ? balanceCardHighlightedPNG : balanceCardPNG}
-        style={{ width, height, resizeMode: "contain" }}
+      <SVG
+        width={width}
+        height={height}
+        source={highlighted ? balanceCardHighlightSVG : balanceCardSVG}
       />
       <View
         style={{

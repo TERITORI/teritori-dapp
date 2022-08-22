@@ -1,8 +1,9 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
 
-import Logo from "../../assets/logo.svg";
+import logoSVG from "../../assets/logos/logo.svg";
 import { BrandText } from "./BrandText";
+import { SVG } from "./SVG";
 
 export const IntroLogoText: React.FC<{
   subTitle: string;
@@ -35,7 +36,7 @@ export const IntroLogoText: React.FC<{
           marginBottom: 12,
         }}
       >
-        <Logo />
+        <SVG width={200} height={200} source={logoSVG} />
       </View>
 
       <BrandText

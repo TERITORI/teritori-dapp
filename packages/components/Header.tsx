@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { View, Image, TouchableOpacity, ViewStyle } from "react-native";
+import { View, TouchableOpacity, ViewStyle } from "react-native";
 
-import secondaryCardSmPNG from "../../assets/cards/secondary-card-sm.png";
-import logoTopSVG from "../../assets/logo-top.svg";
+import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
+import logoTopSVG from "../../assets/logos/logo-hexagon.svg";
 import { useAreThereWallets } from "../hooks/useAreThereWallets";
 import { useAppNavigation } from "../utils/navigation";
 import { neutral33 } from "../utils/style/colors";
@@ -25,11 +25,7 @@ const ConnectWalletButton: React.FC<{
 
   return (
     <TouchableOpacity style={style} onPress={onPress}>
-      <Image
-        source={secondaryCardSmPNG}
-        style={{ width, height, resizeMode: "stretch", position: "absolute" }}
-      />
-
+      <SVG width={width} height={height} source={secondaryCardSmSVG} />
       <View
         style={{
           flex: 1,
@@ -39,6 +35,7 @@ const ConnectWalletButton: React.FC<{
           minHeight: height,
           width,
           minWidth: width,
+          position: "absolute",
         }}
       >
         <BrandText

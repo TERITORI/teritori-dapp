@@ -1,10 +1,11 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
+import { TouchableOpacity, View, ViewStyle } from "react-native";
 
-import flowCardPNG from "../../../assets/cards/name-card.png";
-import logoSmPNG from "../../../assets/logo-sm.png";
+import nameCardSVG from "../../../assets/cards/name-card.svg";
+import logoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryBadge } from "../../components/badges/PrimaryBadge";
 import { BackTo } from "../../components/navigation/BackTo";
@@ -27,10 +28,7 @@ const NameCard: React.FC<{
 
   return (
     <TouchableOpacity style={style} onPress={onPress}>
-      <Image
-        source={flowCardPNG}
-        style={{ width, height, position: "absolute", resizeMode: "stretch" }}
-      />
+      <SVG width={width} height={height} source={nameCardSVG} />
       <View
         style={{
           flex: 1,
@@ -41,20 +39,19 @@ const NameCard: React.FC<{
           minHeight: height,
           width,
           minWidth: width,
+          position: "absolute",
         }}
       >
-        <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-          <Image
-            source={logoSmPNG}
-            style={{
-              width: 44,
-              height: 44,
-              resizeMode: "stretch",
-              marginLeft: 20,
-              marginRight: 12,
-            }}
-          />
-          <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            marginLeft: 20,
+          }}
+        >
+          <SVG width={44} height={44} source={logoSVG} />
+          <BrandText style={{ letterSpacing: -(20 * 0.04), marginLeft: 12 }}>
             {fullName}
           </BrandText>
         </View>

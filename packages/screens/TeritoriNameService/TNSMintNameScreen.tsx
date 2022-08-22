@@ -1,10 +1,11 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
-import longCardPNG from "../../../assets/cards/long-card.png";
-import coinPNG from "../../../assets/icons/coin.png";
+import longCardSVG from "../../../assets/cards/long-card.svg";
+import coinSVG from "../../../assets/icons/coin.svg";
 import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
@@ -30,10 +31,7 @@ const CostContainer: React.FC = () => {
 
   return (
     <View>
-      <Image
-        source={longCardPNG}
-        style={{ width, height, position: "absolute", resizeMode: "stretch" }}
-      />
+      <SVG width={width} height={height} source={longCardSVG} />
       <View
         style={{
           flex: 1,
@@ -43,20 +41,15 @@ const CostContainer: React.FC = () => {
           width,
           minWidth: width,
           minHeight: height,
+          position: "absolute",
+          paddingLeft: 24,
         }}
       >
-        <Image
-          source={coinPNG}
-          style={{
-            width: 32,
-            height: 32,
-            resizeMode: "stretch",
-            marginLeft: 24,
-            marginRight: 12,
-          }}
-        />
+        <SVG width={32} height={32} source={coinSVG} />
 
-        <BrandText>The mint cost for this token is 1,000 Tori</BrandText>
+        <BrandText style={{ marginLeft: 12 }}>
+          The mint cost for this token is 1,000 Tori
+        </BrandText>
       </View>
     </View>
   );

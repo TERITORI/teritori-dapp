@@ -1,11 +1,12 @@
 import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 
-import copyPNG from "../../../assets/icons/copy.png";
+import copySVG from "../../../assets/icons/copy.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { neutral22, neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 
 export const CopyToClipboardCard: React.FC<{
   text: string;
@@ -36,6 +37,7 @@ export const CopyToClipboardCard: React.FC<{
           borderWidth: 1,
           borderColor: neutral33,
           borderRadius: 8,
+          paddingRight: 12,
         }}
       >
         <BrandText
@@ -44,10 +46,7 @@ export const CopyToClipboardCard: React.FC<{
         >
           {text}
         </BrandText>
-        <Image
-          source={copyPNG}
-          style={{ width: 24, height: 24, marginRight: 12 }}
-        />
+        <SVG width={24} height={24} source={copySVG} />
       </View>
     </TouchableOpacity>
   );

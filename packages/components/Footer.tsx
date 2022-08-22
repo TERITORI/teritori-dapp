@@ -1,27 +1,20 @@
 import React from "react";
-import {
-  Image,
-  ImageSourcePropType,
-  ImageStyle,
-  Linking,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
+import { Linking, TouchableOpacity, View, ViewStyle } from "react-native";
+import { SvgProps } from "react-native-svg";
 
-import bookPNG from "../../assets/icons/book.png";
-import discordPNG from "../../assets/icons/discord.png";
-import mediumPNG from "../../assets/icons/medium.png";
-import twitterPNG from "../../assets/icons/twitter.png";
+import bookSVG from "../../assets/icons/book.svg";
+import discordSVG from "../../assets/icons/discord.svg";
+import mediumSVG from "../../assets/icons/medium.svg";
+import twitterSVG from "../../assets/icons/twitter.svg";
 import { footerHeight } from "../utils/style/layout";
+import { SVG } from "./SVG";
 
 // One social network button
 const NetworkButton: React.FC<{
-  iconSource: ImageSourcePropType;
+  iconSVG: React.FC<SvgProps>;
   style?: ViewStyle;
-  imageStyle?: ImageStyle;
   onPress?: () => void;
-}> = ({ iconSource, onPress, style, imageStyle }) => {
+}> = ({ iconSVG, onPress, style }) => {
   return (
     <TouchableOpacity
       style={[
@@ -32,18 +25,14 @@ const NetworkButton: React.FC<{
           borderRadius: 5,
           borderWidth: 1,
           borderStyle: "solid",
+          alignItems: "center",
+          justifyContent: "center",
         },
         style,
       ]}
       onPress={onPress}
     >
-      <Image
-        source={iconSource}
-        style={[
-          { margin: "auto", width: 12, height: 12, resizeMode: "stretch" },
-          imageStyle,
-        ]}
-      />
+      <SVG width={15} height={15} source={iconSVG} />
     </TouchableOpacity>
   );
 };
@@ -60,24 +49,22 @@ export const SocialNetworks: React.FC = () => {
       }}
     >
       <NetworkButton
-        iconSource={bookPNG}
+        iconSVG={bookSVG}
         style={{ marginRight: 16 }}
-        imageStyle={{ width: 15, height: 15 }}
         onPress={() => Linking.openURL("https://teritori.gitbook.io/")}
       />
       <NetworkButton
-        iconSource={mediumPNG}
+        iconSVG={mediumSVG}
         style={{ marginRight: 16 }}
         onPress={() => Linking.openURL("https://medium.com/teritori/")}
       />
       <NetworkButton
-        iconSource={twitterPNG}
+        iconSVG={twitterSVG}
         style={{ marginRight: 16 }}
         onPress={() => Linking.openURL("https://twitter.com/TeritoriNetwork")}
       />
       <NetworkButton
-        iconSource={discordPNG}
-        imageStyle={{ width: 15 }}
+        iconSVG={discordSVG}
         onPress={() => Linking.openURL("https://discord.gg/teritori")}
       />
     </View>

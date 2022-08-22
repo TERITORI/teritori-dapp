@@ -1,10 +1,11 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
-import availablePNG from "../../../assets/icons/available.png";
-import mintedPNG from "../../../assets/icons/minted.png";
+import availableSVG from "../../../assets/icons/available.svg";
+import mintedSVG from "../../../assets/icons/minted.svg";
 import { errorColor, successColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameStatusCard: React.FC<{
@@ -33,9 +34,10 @@ export const NameStatusCard: React.FC<{
         paddingHorizontal: 12,
       }}
     >
-      <Image
-        source={available ? availablePNG : mintedPNG}
-        style={{ width: 24, height: 24 }}
+      <SVG
+        width={24}
+        height={24}
+        source={available ? availableSVG : mintedSVG}
       />
       <BrandText style={{ fontSize: 14, marginLeft: 4 }}>
         {hasError ? "error" : available ? "available" : "minted"}

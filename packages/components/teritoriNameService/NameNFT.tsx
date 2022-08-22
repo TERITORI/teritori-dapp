@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, View, ViewStyle } from "react-native";
 
-import defaultNameNFT from "../../../assets/default-name-nft.png";
+import defaultNameNFT from "../../../assets/default-images/default-name-nft.png";
 import { useToken } from "../../hooks/tokens";
 import { neutral33 } from "../../utils/style/colors";
 import { NameAndTldText } from "./NameAndTldText";

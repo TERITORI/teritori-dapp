@@ -5,18 +5,18 @@ import {
   ViewStyle,
   useWindowDimensions,
   TouchableOpacity,
-  ImageSourcePropType,
 } from "react-native";
+import { SvgProps } from "react-native-svg";
 
-import dappCardPNG from "../../../assets/cards/dapp-card.png";
-import airdropPNG from "../../../assets/icons/airdrop.png";
-import CertifiedIcon from "../../../assets/icons/certified.svg";
-import labsPNG from "../../../assets/icons/labs.png";
-import launchpadPNG from "../../../assets/icons/launchpad.png";
-import marketplacePNG from "../../../assets/icons/marketplace.png";
-import stakingPNG from "../../../assets/icons/staking.png";
-import walletPNG from "../../../assets/icons/wallet.png";
-import Logo from "../../../assets/logo.svg";
+import dappCardSVG from "../../../assets/cards/dapp-card.svg";
+import airdropSVG from "../../../assets/icons/airdrop.svg";
+import certifiedSVG from "../../../assets/icons/certified.svg";
+import labsSVG from "../../../assets/icons/labs.svg";
+import launchpadSVG from "../../../assets/icons/launchpad.svg";
+import marketplaceSVG from "../../../assets/icons/marketplace.svg";
+import stakingSVG from "../../../assets/icons/staking.svg";
+import walletSVG from "../../../assets/icons/wallet.svg";
+import logoSVG from "../../../assets/logos/logo.svg";
 import { useLaunchpadData } from "../../context/LaunchpadProvider";
 import { useWallets } from "../../context/WalletsProvider";
 import { LaunchpadItem } from "../../utils/airtable";
@@ -25,6 +25,7 @@ import { helpAreaWidth, sidebarWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CarouselSection } from "../CarouselSection";
 import { Guardian } from "../Guardian";
+import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { HollowPrimaryButton } from "../buttons/HollowPrimaryButton";
 import { SecondaryButton } from "../buttons/SecondaryButton";
@@ -82,7 +83,7 @@ const LaunchpadItemView: React.FC<{
           </BrandText>
           {item.isCertified && (
             <View style={{ marginLeft: 14 }}>
-              <CertifiedIcon />
+              <SVG width={16} height={16} source={certifiedSVG} />
             </View>
           )}
         </View>
@@ -114,17 +115,14 @@ const DAppCard: React.FC<{
   description: string;
   info: string;
   onPress?: () => void;
-  iconSource: ImageSourcePropType;
-}> = ({ label, description, info, onPress, iconSource }) => {
+  iconSVG: React.FC<SvgProps>;
+}> = ({ label, description, info, onPress, iconSVG }) => {
   const labelFontSize = 20;
   const descriptionFontSize = 14;
   const borderRadius = 20;
   return (
     <TouchableOpacity style={{ margin: gridHalfGutter }} onPress={onPress}>
-      <Image
-        source={dappCardPNG}
-        style={{ width: 350, height: 166, resizeMode: "stretch" }}
-      />
+      <SVG width={350} height={166} source={dappCardSVG} />
       <View
         style={{
           position: "absolute",
@@ -134,17 +132,10 @@ const DAppCard: React.FC<{
           justifyContent: "flex-start",
           borderRadius,
           alignItems: "center",
+          marginLeft: 68,
         }}
       >
-        <Image
-          source={iconSource}
-          style={{
-            width: 40,
-            height: 40,
-            resizeMode: "stretch",
-            marginLeft: 68,
-          }}
-        />
+        <SVG width={40} height={40} source={iconSVG} />
       </View>
       <View
         style={{
@@ -212,7 +203,7 @@ Connect & Manage"
       info={`${
         connectedWalletsCount > 0 ? connectedWalletsCount : "No"
       } wallet${connectedWalletsCount > 1 ? "s" : ""} connected`}
-      iconSource={walletPNG}
+      iconSVG={walletSVG}
       onPress={onPress}
     />
   );
@@ -326,34 +317,34 @@ export const HubLanding: React.FC = () => {
               description="Participate to the Security
 Get rewards by delegating to Teritori validators"
               info="Staking on Keplr!"
-              iconSource={stakingPNG}
+              iconSVG={stakingSVG}
             />
             <DAppCard
               label="Airdrop"
               description="Get $TORI
 Join Teritori Community "
               info="Coming soon"
-              iconSource={airdropPNG}
+              iconSVG={airdropSVG}
             />
             <DAppCard
               label="Marketplace"
               description="Trade your NFTs & TNS and rank up on your profile by contributing to expansion"
               info="Explore Collections"
-              iconSource={marketplacePNG}
+              iconSVG={marketplaceSVG}
               onPress={() => navigation.navigate("Marketplace")}
             />
             <DAppCard
               label="Launchpad"
               description="Apply to a NFT Launch on Teritori Launchpad and get validated & pushed by the community."
               info="Apply here"
-              iconSource={launchpadPNG}
+              iconSVG={launchpadSVG}
               onPress={() => navigation.navigate("Launchpad")}
             />
             <DAppCard
               label="Tori Labs"
               description="Get funds to develop, contribute and build new feature for Communities"
               info="Apply here"
-              iconSource={labsPNG}
+              iconSVG={labsSVG}
             />
           </View>
         </Section>
@@ -383,7 +374,7 @@ Launch"
 Join the Bounty Program
 & get your project funded."
               info="Apply here"
-              iconSource={airdropPNG}
+              iconSVG={airdropSVG}
             />
           </View>
         </Section>
@@ -426,7 +417,7 @@ Join the Bounty Program
             marginBottom: 20,
           }}
         >
-          <Logo />
+          <SVG width={68} height={68} source={logoSVG} />
         </View>
       </View>
     </View>

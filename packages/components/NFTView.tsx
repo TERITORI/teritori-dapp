@@ -2,11 +2,12 @@ import React from "react";
 import { ViewStyle, Image, View, StyleProp } from "react-native";
 
 import CertifiedIcon from "../../assets/icons/certified.svg";
-import outlineStarPNG from "../../assets/icons/outline-star.png";
+import outlineStarSVG from "../../assets/icons/outline-star.svg";
 import { neutral33, neutral77 } from "../utils/style/colors";
 import { NFTData } from "../utils/types/nft";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
+import { SVG } from "./SVG";
 import { SecondaryAltButton } from "./buttons/SecondaryAltButton";
 import { CardOutline } from "./cards/CardOutline";
 
@@ -85,10 +86,7 @@ export const NFTView: React.FC<{
             >
               {data.favoritesCount}
             </BrandText>
-            <Image
-              source={outlineStarPNG}
-              style={{ width: 24, height: 24, resizeMode: "stretch" }}
-            />
+            <SVG width={24} height={24} source={outlineStarSVG} />
           </View>
         </View>
       </View>
