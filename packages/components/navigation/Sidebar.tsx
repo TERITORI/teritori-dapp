@@ -62,7 +62,7 @@ export const Sidebar: React.FC = () => {
         alignItems: "flex-end",
       }}
     >
-      <SVG width={menuWidth} height={64} source={sidebarTopSVG} />
+      <SVG width={menuWidth + 1} height={63} source={sidebarTopSVG} />
       <View
         style={{
           borderLeftColor: neutral33,
@@ -92,7 +92,7 @@ export const Sidebar: React.FC = () => {
           onPress={() => navigation.navigate("Governance")}
         />
       </View>
-      <SVG width={menuWidth} height={64} source={sidebarBottomSVG} />
+      <SVG width={menuWidth + 1} height={63} source={sidebarBottomSVG} />
     </View>
   );
 };
