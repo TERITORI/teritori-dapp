@@ -26,6 +26,7 @@ const ConnectWalletButton: React.FC<{
   return (
     <TouchableOpacity style={style} onPress={onPress}>
       <SVG width={width} height={height} source={secondaryCardSmSVG} />
+
       <View
         style={{
           flex: 1,

@@ -82,9 +82,7 @@ const LaunchpadItemView: React.FC<{
             {item.creatorName}
           </BrandText>
           {item.isCertified && (
-            <View style={{ marginLeft: 14 }}>
-              <SVG width={16} height={16} source={certifiedSVG} />
-            </View>
+            <SVG width={16} height={16} source={certifiedSVG} style={{marginLeft: 14}}/>
           )}
         </View>
       </View>
@@ -132,10 +130,9 @@ const DAppCard: React.FC<{
           justifyContent: "flex-start",
           borderRadius,
           alignItems: "center",
-          marginLeft: 68,
         }}
       >
-        <SVG width={40} height={40} source={iconSVG} />
+        <SVG width={40} height={40} source={iconSVG} style={{ marginLeft: 68}}/>
       </View>
       <View
         style={{

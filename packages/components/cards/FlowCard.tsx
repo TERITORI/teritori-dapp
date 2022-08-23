@@ -35,8 +35,8 @@ export const FlowCard: React.FC<{
           position: "absolute",
         }}
       >
-        <SVG width={24} height={24} source={iconSVG} />
-        <View style={{ justifyContent: "space-between", marginLeft: 8 }}>
+        <SVG width={24} height={24} source={iconSVG} style={{marginRight: 8}}/>
+        <View style={{ justifyContent: "space-between"}}>
           <BrandText>{label}</BrandText>
           <BrandText
             style={{

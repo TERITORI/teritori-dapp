@@ -66,13 +66,13 @@ export const ModalBase: React.FC<{
               }}
             >
               <BrandText
-                style={{ color: "white", lineHeight: 24, marginRight: 20 }}
+                style={{ color: "white", lineHeight: 24}}
               >
                 {label}
               </BrandText>
 
               <Pressable onPress={onClose}>
-                <SVG width={20} height={20} source={closeSVG} />
+                <SVG width={20} height={20} source={closeSVG} style={{ marginLeft: 20 }} />
               </Pressable>
             </View>
             {children && (

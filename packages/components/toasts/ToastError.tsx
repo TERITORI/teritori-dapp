@@ -31,12 +31,11 @@ export const ToastError: React.FC<{
         top: 24,
         left: Dimensions.get("window").width / 2 - width / 2,
         zIndex: 999,
-        paddingLeft: 24,
       }}
     >
-      <SVG width={24} height={24} source={warningSVG} />
+      <SVG width={24} height={24} source={warningSVG} style={{marginHorizontal: 24 }}/>
 
-      <View style={{ maxWidth: 287, marginVertical: 12, marginLeft: 24 }}>
+      <View style={{ maxWidth: 287, marginVertical: 12}}>
         <BrandText style={{ fontSize: 13, lineHeight: 20 }}>{title}</BrandText>
         <BrandText style={{ fontSize: 13, lineHeight: 15, color: neutral77 }}>
           {message}
