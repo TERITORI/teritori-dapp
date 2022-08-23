@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import exploreIconPNG from "../../../assets/icons/explore.png";
-import manageIconPNG from "../../../assets/icons/manage.png";
-import registerIconPNG from "../../../assets/icons/register.png";
+import exploreSVG from "../../../assets/icons/explore.svg";
+import manageSVG from "../../../assets/icons/manage.svg";
+import registerSVG from "../../../assets/icons/register.svg";
 import { SocialNetworks } from "../../components/Footer";
 import { IntroLogoText } from "../../components/IntroLogoText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -92,7 +92,7 @@ export const TNSHomeScreen: React.FC = () => {
           disabled={!isKeplrConnected}
           label="Register"
           description="Register and configure a new name"
-          iconSource={registerIconPNG}
+          iconSVG={registerSVG}
           onPress={onPressRegister}
         />
         <FlowCard
@@ -100,14 +100,14 @@ export const TNSHomeScreen: React.FC = () => {
           style={{ marginTop: 20 }}
           label="Manage"
           description="Transfer, edit, or burn a name that you own"
-          iconSource={manageIconPNG}
+          iconSVG={manageSVG}
           onPress={() => navigation.navigate("TNSManage")}
         />
         <FlowCard
           style={{ marginTop: 20 }}
           label="Explore"
           description="Lookup addresses and explore registered names"
-          iconSource={exploreIconPNG}
+          iconSVG={exploreSVG}
           onPress={onPressExplore}
         />
       </View>

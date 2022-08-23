@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, View } from "react-native";
 
-import Guardian1PNG from "../../../assets/guardian_1.png";
+import Guardian1PNG from "../../../assets/default-images/guardian_1.png";
 import DiscordSVG from "../../../assets/icons/discord.svg";
 import TwitterSVG from "../../../assets/icons/twitter.svg";
 import WebsiteSVG from "../../../assets/icons/website.svg";

@@ -1,9 +1,10 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import React, { useEffect } from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
-import burnPNG from "../../../assets/icons/burn.png";
+import burnSVG from "../../../assets/icons/burn.svg";
 import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
 import { BackTo } from "../../components/navigation/BackTo";
@@ -141,9 +142,11 @@ export const TNSBurnNameScreen: React.FC<{
             <View
               style={{ flex: 1, alignItems: "center", flexDirection: "row" }}
             >
-              <Image
-                source={burnPNG}
-                style={{ width: 32, height: 32, marginRight: 16 }}
+              <SVG
+                width={32}
+                height={32}
+                source={burnSVG}
+                style={{ marginRight: 16 }}
               />
               <BrandText style={{ fontSize: 32, lineHeight: 44 }}>
                 Burn {name}

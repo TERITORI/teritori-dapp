@@ -1,56 +1,59 @@
 import React from "react";
-import {
-  View,
-  Image,
-  ImageSourcePropType,
-  TouchableOpacity,
-} from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import { SvgProps } from "react-native-svg";
 
-import governanceIconPNG from "../../../assets/icons/governance.png";
-import guardiansIconPNG from "../../../assets/icons/guardians.png";
-import launchpadIconPNG from "../../../assets/icons/launchpad.png";
-import marketplaceIconPNG from "../../../assets/icons/marketplace.png";
-import sidebarBottomPNG from "../../../assets/sidebar-bottom.png";
-import sidebarContainerSelectedPNG from "../../../assets/sidebar-container-selected.png";
-import sidebarContainerPNG from "../../../assets/sidebar-container.png";
-import sidebarTopPNG from "../../../assets/sidebar-top.png";
+import governanceSVG from "../../../assets/icons/governance.svg";
+import guardiansSVG from "../../../assets/icons/guardians.svg";
+import launchpadSVG from "../../../assets/icons/launchpad.svg";
+import marketplaceSVG from "../../../assets/icons/marketplace.svg";
+import sidebarBottomSVG from "../../../assets/sidebar/bottom.svg";
+import sidebarContainerSelectedSVG from "../../../assets/sidebar/container-selected.svg";
+import sidebarContainerSVG from "../../../assets/sidebar/container.svg";
+import sidebarTopSVG from "../../../assets/sidebar/top.svg";
 import { getCurrentRouteName, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { sidebarWidth } from "../../utils/style/layout";
+import { SVG } from "../SVG";
 
 const SidebarButton: React.FC<{
-  source: ImageSourcePropType;
+  iconSVG: React.FC<SvgProps>;
   selected?: boolean;
   onPress?: () => void;
-}> = ({ selected, source, onPress }) => {
+}> = ({ selected, iconSVG, onPress }) => {
   return (
     <View
       style={{ alignItems: "center", justifyContent: "center", height: 88 }}
     >
       <TouchableOpacity onPress={onPress} disabled={selected}>
-        {selected ? (
-          <Image
-            source={sidebarContainerSelectedPNG}
-            style={{ width: 68, height: 68, resizeMode: "stretch" }}
-          />
-        ) : (
-          <Image
-            source={sidebarContainerPNG}
-            style={{ width: 54, height: 54, resizeMode: "stretch" }}
-          />
-        )}
         <View
           style={{
-            position: "absolute",
             width: "100%",
             height: "100%",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Image
-            source={source}
-            style={{ width: 40, height: 40, resizeMode: "stretch" }}
+          {selected ? (
+            <SVG
+              width={68}
+              height={68}
+              source={sidebarContainerSelectedSVG}
+              style={{ position: "absolute" }}
+            />
+          ) : (
+            <SVG
+              width={54}
+              height={54}
+              source={sidebarContainerSVG}
+              style={{ position: "absolute" }}
+            />
+          )}
+
+          <SVG
+            width={40}
+            height={40}
+            source={iconSVG}
+            style={{ position: "absolute" }}
           />
         </View>
       </TouchableOpacity>
@@ -60,6 +63,7 @@ const SidebarButton: React.FC<{
 
 const borderWidth = 1;
 const menuWidth = 72;
+const widthAdjustment = 0.5;
 
 export const Sidebar: React.FC = () => {
   const navigation = useAppNavigation();
@@ -74,46 +78,46 @@ export const Sidebar: React.FC = () => {
         alignItems: "flex-end",
       }}
     >
-      <Image
-        source={sidebarTopPNG}
-        style={{
-          width: menuWidth,
-          height: 64,
-          resizeMode: "stretch",
-        }}
+      <SVG
+        width={menuWidth + widthAdjustment}
+        height={64}
+        source={sidebarTopSVG}
+        preserveAspectRatio="none"
       />
       <View
         style={{
           borderLeftColor: neutral33,
           borderLeftWidth: borderWidth,
-          width: menuWidth - borderWidth,
+          width: menuWidth,
           backgroundColor: "rgba(56, 58, 87, 0.5)",
         }}
       >
         <SidebarButton
           selected={currentRouteName === "Marketplace"}
-          source={marketplaceIconPNG}
+          iconSVG={marketplaceSVG}
           onPress={() => navigation.navigate("Marketplace")}
         />
         <SidebarButton
           selected={currentRouteName === "Launchpad"}
-          source={launchpadIconPNG}
+          iconSVG={launchpadSVG}
           onPress={() => navigation.navigate("Launchpad")}
         />
         <SidebarButton
           selected={currentRouteName === "GuardiansGame"}
-          source={guardiansIconPNG}
+          iconSVG={guardiansSVG}
           onPress={() => navigation.navigate("GuardiansGame")}
         />
         <SidebarButton
           selected={currentRouteName === "Governance"}
-          source={governanceIconPNG}
+          iconSVG={governanceSVG}
           onPress={() => navigation.navigate("Governance")}
         />
       </View>
-      <Image
-        source={sidebarBottomPNG}
-        style={{ width: menuWidth, height: 64, resizeMode: "stretch" }}
+      <SVG
+        width={menuWidth + widthAdjustment}
+        height={64}
+        source={sidebarBottomSVG}
+        preserveAspectRatio="none"
       />
     </View>
   );

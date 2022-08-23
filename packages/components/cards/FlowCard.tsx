@@ -1,23 +1,19 @@
 import React from "react";
-import {
-  ViewStyle,
-  View,
-  Image,
-  TouchableOpacity,
-  ImageSourcePropType,
-} from "react-native";
+import { ViewStyle, View, TouchableOpacity } from "react-native";
+import { SvgProps } from "react-native-svg";
 
-import flowCardPNG from "../../../assets/cards/name-card.png";
+import flowCardSVG from "../../../assets/cards/flow-card.svg";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 
 export const FlowCard: React.FC<{
   label: string;
   description: string;
-  iconSource: ImageSourcePropType;
+  iconSVG: React.FC<SvgProps>;
   style?: ViewStyle;
   onPress: () => void;
   disabled?: boolean;
-}> = ({ label, description, iconSource, style, disabled, onPress }) => {
+}> = ({ label, description, iconSVG, style, disabled, onPress }) => {
   const width = 392;
   const height = 100;
 
@@ -27,11 +23,12 @@ export const FlowCard: React.FC<{
       onPress={onPress}
       disabled={disabled}
     >
-      <Image
-        source={flowCardPNG}
-        style={{ width, height, position: "absolute", resizeMode: "stretch" }}
+      <SVG
+        width={width}
+        height={height}
+        source={flowCardSVG}
+        style={{ position: "absolute" }}
       />
-
       <View
         style={{
           flexDirection: "row",
@@ -42,16 +39,12 @@ export const FlowCard: React.FC<{
           minHeight: height,
         }}
       >
-        <Image
-          source={iconSource}
-          style={{
-            width: 24,
-            height: 24,
-            resizeMode: "stretch",
-            marginRight: 8,
-          }}
+        <SVG
+          width={24}
+          height={24}
+          source={iconSVG}
+          style={{ marginRight: 8 }}
         />
-
         <View style={{ justifyContent: "space-between" }}>
           <BrandText>{label}</BrandText>
           <BrandText

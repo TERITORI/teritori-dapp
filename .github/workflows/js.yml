@@ -23,7 +23,7 @@ jobs:
         run: yarn lint
 
       - name: Build web app
-        run: yarn expo-optimize && yarn expo build:web
+        run: yarn expo build:web
 
       - name: Check that there is no diff
         run: |

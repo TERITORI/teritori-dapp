@@ -1,9 +1,10 @@
 import React from "react";
-import { Image, TouchableOpacity, View, Dimensions } from "react-native";
+import { TouchableOpacity, View, Dimensions } from "react-native";
 
-import warningPNG from "../../../assets/icons/warning.png";
+import warningSVG from "../../../assets/icons/warning.svg";
 import { errorColor, neutral11, neutral77 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 
 export const ToastError: React.FC<{
   title: string;
@@ -32,10 +33,13 @@ export const ToastError: React.FC<{
         zIndex: 999,
       }}
     >
-      <Image
-        source={warningPNG}
-        style={{ width: 24, height: 24, marginHorizontal: 24 }}
+      <SVG
+        width={24}
+        height={24}
+        source={warningSVG}
+        style={{ marginHorizontal: 24 }}
       />
+
       <View style={{ maxWidth: 287, marginVertical: 12 }}>
         <BrandText style={{ fontSize: 13, lineHeight: 20 }}>{title}</BrandText>
         <BrandText style={{ fontSize: 13, lineHeight: 15, color: neutral77 }}>

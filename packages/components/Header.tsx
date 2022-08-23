@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { View, Image, TouchableOpacity, ViewStyle } from "react-native";
+import { View, TouchableOpacity, ViewStyle } from "react-native";
 
-import secondaryCardSmPNG from "../../assets/cards/secondary-card-sm.png";
-import LogoTopSVG from "../../assets/logo-top.svg";
+import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
+import logoTopSVG from "../../assets/logos/logo-hexagon.svg";
 import { useAreThereWallets } from "../hooks/useAreThereWallets";
 import { useAppNavigation } from "../utils/navigation";
 import { neutral33 } from "../utils/style/colors";
@@ -11,6 +11,7 @@ import {
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
+import { SVG } from "./SVG";
 import { WalletSelector } from "./WalletSelector";
 import { WalletsManager } from "./WalletsManager";
 
@@ -24,9 +25,11 @@ const ConnectWalletButton: React.FC<{
 
   return (
     <TouchableOpacity style={style} onPress={onPress}>
-      <Image
-        source={secondaryCardSmPNG}
-        style={{ width, height, resizeMode: "stretch", position: "absolute" }}
+      <SVG
+        width={width}
+        height={height}
+        source={secondaryCardSmSVG}
+        style={{ position: "absolute" }}
       />
 
       <View
@@ -81,13 +84,7 @@ export const Header: React.FC<{
         onPress={() => navigation.navigate("Home")}
         style={{ marginLeft: headerMarginH }}
       >
-        <LogoTopSVG
-          style={{
-            width: 68,
-            height: 68,
-            marginLeft: headerMarginH,
-          }}
-        />
+        <SVG width={68} height={68} source={logoTopSVG} />
       </TouchableOpacity>
 
       <View

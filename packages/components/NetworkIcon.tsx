@@ -1,11 +1,12 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
-import solanaCirclePNG from "../../assets/icons/solana-circle.png";
-import solanaPNG from "../../assets/icons/solana.png";
-import teritoriCirclePNG from "../../assets/icons/teritori-circle.png";
-import teritoriPNG from "../../assets/icons/teritori.png";
+import solanaCircleSVG from "../../assets/icons/solana-circle.svg";
+import solanaSVG from "../../assets/icons/solana.svg";
+import teritoriCircleSVG from "../../assets/icons/teritori-circle.svg";
+import teritoriSVG from "../../assets/icons/teritori.svg";
 import { Network } from "../utils/network";
+import { SVG } from "./SVG";
 
 export const NetworkIcon: React.FC<{
   network: Network;
@@ -15,16 +16,18 @@ export const NetworkIcon: React.FC<{
   switch (network) {
     case Network.Solana:
       return (
-        <Image
-          source={circle ? solanaCirclePNG : solanaPNG}
-          style={{ width: size, height: size, resizeMode: "contain" }}
+        <SVG
+          width={size}
+          height={size}
+          source={circle ? solanaCircleSVG : solanaSVG}
         />
       );
     case Network.Teritori:
       return (
-        <Image
-          source={circle ? teritoriCirclePNG : teritoriPNG}
-          style={{ width: size, height: size, resizeMode: "contain" }}
+        <SVG
+          width={size}
+          height={size}
+          source={circle ? teritoriCircleSVG : teritoriSVG}
         />
       );
     default:

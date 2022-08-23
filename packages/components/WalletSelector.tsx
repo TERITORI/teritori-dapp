@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { View, ViewStyle, Image, TouchableOpacity, Text } from "react-native";
+import { View, ViewStyle, TouchableOpacity, Text } from "react-native";
 
-import downPNG from "../../assets/icons/down.png";
-import upPNG from "../../assets/icons/up.png";
+import chevronUpSVG from "../../assets/icons/chevron-down.svg";
+import chevronDownSVG from "../../assets/icons/chevron-up.svg";
 import { useWallets, Wallet } from "../context/WalletsProvider";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { setSelectedWalletId } from "../store/slices/settings";
@@ -11,6 +11,7 @@ import { neutral17, neutral33, neutral44 } from "../utils/style/colors";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
+import { SVG } from "./SVG";
 import { SecondaryAltButton } from "./buttons/SecondaryAltButton";
 
 // FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native
@@ -99,9 +100,10 @@ export const WalletSelector: React.FC<{
           }}
         >
           <WalletView wallet={selectedWallet} />
-          <Image
-            source={isExpanded ? upPNG : downPNG}
-            style={{ width: 16, aspectRatio: 1 }}
+          <SVG
+            source={isExpanded ? chevronUpSVG : chevronDownSVG}
+            width={16}
+            height={16}
           />
         </SecondaryBox>
       </TouchableOpacity>
