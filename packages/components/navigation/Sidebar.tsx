@@ -25,21 +25,36 @@ const SidebarButton: React.FC<{
       style={{ alignItems: "center", justifyContent: "center", height: 88 }}
     >
       <TouchableOpacity onPress={onPress} disabled={selected}>
-        {selected ? (
-          <SVG width={68} height={68} source={sidebarContainerSelectedSVG} />
-        ) : (
-          <SVG width={54} height={54} source={sidebarContainerSVG} />
-        )}
         <View
           style={{
-            position: "absolute",
             width: "100%",
             height: "100%",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <SVG width={40} height={40} source={iconSVG} />
+          {selected ? (
+            <SVG
+              width={68}
+              height={68}
+              source={sidebarContainerSelectedSVG}
+              style={{ position: "absolute" }}
+            />
+          ) : (
+            <SVG
+              width={54}
+              height={54}
+              source={sidebarContainerSVG}
+              style={{ position: "absolute" }}
+            />
+          )}
+
+          <SVG
+            width={40}
+            height={40}
+            source={iconSVG}
+            style={{ position: "absolute" }}
+          />
         </View>
       </TouchableOpacity>
     </View>
@@ -48,6 +63,7 @@ const SidebarButton: React.FC<{
 
 const borderWidth = 1;
 const menuWidth = 72;
+const widthAdjustment = 0.5;
 
 export const Sidebar: React.FC = () => {
   const navigation = useAppNavigation();
@@ -62,7 +78,12 @@ export const Sidebar: React.FC = () => {
         alignItems: "flex-end",
       }}
     >
-      <SVG width={menuWidth} height={64} source={sidebarTopSVG} preserveAspectRatio="none"/>
+      <SVG
+        width={menuWidth + widthAdjustment}
+        height={64}
+        source={sidebarTopSVG}
+        preserveAspectRatio="none"
+      />
       <View
         style={{
           borderLeftColor: neutral33,
@@ -92,7 +113,12 @@ export const Sidebar: React.FC = () => {
           onPress={() => navigation.navigate("Governance")}
         />
       </View>
-      <SVG width={menuWidth} height={64} source={sidebarBottomSVG} preserveAspectRatio="none"/>
+      <SVG
+        width={menuWidth + widthAdjustment}
+        height={64}
+        source={sidebarBottomSVG}
+        preserveAspectRatio="none"
+      />
     </View>
   );
 };

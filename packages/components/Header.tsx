@@ -25,7 +25,12 @@ const ConnectWalletButton: React.FC<{
 
   return (
     <TouchableOpacity style={style} onPress={onPress}>
-      <SVG width={width} height={height} source={secondaryCardSmSVG} />
+      <SVG
+        width={width}
+        height={height}
+        source={secondaryCardSmSVG}
+        style={{ position: "absolute" }}
+      />
 
       <View
         style={{
@@ -36,7 +41,6 @@ const ConnectWalletButton: React.FC<{
           minHeight: height,
           width,
           minWidth: width,
-          position: "absolute",
         }}
       >
         <BrandText

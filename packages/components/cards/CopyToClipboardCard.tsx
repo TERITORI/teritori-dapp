@@ -45,7 +45,12 @@ export const CopyToClipboardCard: React.FC<{
         >
           {text}
         </BrandText>
-        <SVG width={24} height={24} source={copySVG} style={{marginHorizontal: 12}}/>
+        <SVG
+          width={24}
+          height={24}
+          source={copySVG}
+          style={{ marginHorizontal: 12 }}
+        />
       </View>
     </TouchableOpacity>
   );

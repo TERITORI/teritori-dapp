@@ -1,6 +1,6 @@
 import React from "react";
+import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
-import {View} from "react-native"
 
 export const SVG: React.FC<SvgProps & { source: string }> = ({
   source,
@@ -14,7 +14,7 @@ export const SVG: React.FC<SvgProps & { source: string }> = ({
     finalSource += "#svgView(preserveAspectRatio(none))";
   }
   return (
-    <View style={[{flexDirection: "row"}, svgProps.style]}>
+    <View style={[{ flexDirection: "row" }, svgProps.style]}>
       <img src={finalSource} style={{ width, height }} />
     </View>
   );

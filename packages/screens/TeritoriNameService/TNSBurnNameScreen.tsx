@@ -142,10 +142,13 @@ export const TNSBurnNameScreen: React.FC<{
             <View
               style={{ flex: 1, alignItems: "center", flexDirection: "row" }}
             >
-              <SVG width={32} height={32} source={burnSVG} style={{ marginRight: 16}}/>
-              <BrandText
-                style={{ fontSize: 32, lineHeight: 44 }}
-              >
+              <SVG
+                width={32}
+                height={32}
+                source={burnSVG}
+                style={{ marginRight: 16 }}
+              />
+              <BrandText style={{ fontSize: 32, lineHeight: 44 }}>
                 Burn {name}
               </BrandText>
             </View>

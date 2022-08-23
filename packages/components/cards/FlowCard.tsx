@@ -23,7 +23,12 @@ export const FlowCard: React.FC<{
       onPress={onPress}
       disabled={disabled}
     >
-      <SVG width={width} height={height} source={flowCardSVG} />
+      <SVG
+        width={width}
+        height={height}
+        source={flowCardSVG}
+        style={{ position: "absolute" }}
+      />
       <View
         style={{
           flexDirection: "row",
@@ -32,11 +37,15 @@ export const FlowCard: React.FC<{
           height,
           minWidth: width,
           minHeight: height,
-          position: "absolute",
         }}
       >
-        <SVG width={24} height={24} source={iconSVG} style={{marginRight: 8}}/>
-        <View style={{ justifyContent: "space-between"}}>
+        <SVG
+          width={24}
+          height={24}
+          source={iconSVG}
+          style={{ marginRight: 8 }}
+        />
+        <View style={{ justifyContent: "space-between" }}>
           <BrandText>{label}</BrandText>
           <BrandText
             style={{

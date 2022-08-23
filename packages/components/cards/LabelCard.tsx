@@ -20,10 +20,10 @@ export const LabelCard: React.FC<{
         width={width}
         height={height}
         source={highlighted ? balanceCardHighlightSVG : balanceCardSVG}
+        style={{ position: "absolute" }}
       />
       <View
         style={{
-          position: "absolute",
           width,
           height,
           alignItems: "center",
