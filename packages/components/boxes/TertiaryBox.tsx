@@ -1,35 +1,44 @@
 import React from "react";
 import { View, TouchableOpacity, ViewStyle } from "react-native";
 
-import { neutral22 } from "../../utils/style/colors";
+import { neutral11, neutral77 } from "../../utils/style/colors";
 
-// A card with solid background color, no border, children.
-// backgroundColor neutral22 by default. But can be used to make buttons or cards with personalisation.
-export const TertiaryCard: React.FC<{
-  width?: number | string;
+/*
+backgroundColor custom
+borderRadius custom
+width custom
+height custom
+paddingHorizontal custom
+paddingVertical custom
+squaresBackgroundColor custom
+cornerWidth custom
+borderColor custom
+
+TODO: disabled
+*/
+export const TertiaryBox: React.FC<{
+  width?: number;
   height?: number;
-  paddingHorizontal?: number;
+  paddingHorizontal: number;
   paddingVertical?: number;
-  borderRadius?: number;
-  backgroundColor?: string;
+  borderRadius: number;
+  backgroundColor: string;
+  borderColor: string;
   onPress?: () => void;
   disabled?: boolean;
   squaresBackgroundColor?: string;
-  cornerWidth?: number;
   style?: ViewStyle | ViewStyle[];
 }> = ({
   width,
-  height = 44,
+  height,
   children,
-  backgroundColor = neutral22,
-  borderRadius = 8,
+  backgroundColor,
+  borderColor,
+  borderRadius,
   onPress,
-  paddingHorizontal = 6,
-  paddingVertical = 6,
-  // We need that to correctly set the color under the card
+  paddingHorizontal,
+  paddingVertical,
   squaresBackgroundColor = "#000000",
-  // Less or more big "broken" corner
-  cornerWidth = 8,
   disabled = false,
   style,
 }) => {
@@ -49,13 +58,15 @@ export const TertiaryCard: React.FC<{
           style={{
             width,
             height,
-            backgroundColor,
+            backgroundColor: disabled ? neutral11 : backgroundColor,
+            borderColor: disabled ? neutral77 : borderColor,
+            borderWidth: 1,
             borderRadius,
-            paddingVertical,
             paddingHorizontal,
-            opacity: disabled ? 0.5 : 1,
+            paddingVertical,
             alignItems: "center",
             justifyContent: "center",
+            flexDirection: "row",
           }}
         >
           <>{children}</>
@@ -64,11 +75,13 @@ export const TertiaryCard: React.FC<{
         {/* Left top broken corner */}
         <View
           style={{
-            width: cornerWidth,
-            height: 20,
+            width: 8,
+            height: 18,
             left: 0,
-            top: -6,
+            top: -5,
             backgroundColor: squaresBackgroundColor,
+            borderRightColor: disabled ? neutral77 : borderColor,
+            borderRightWidth: 1,
             transform: [{ rotate: "45deg" }],
             position: "absolute",
             zIndex: 2,
@@ -78,12 +91,14 @@ export const TertiaryCard: React.FC<{
         {/* Right bottom broken corner */}
         <View
           style={{
-            width: cornerWidth,
-            height: 20,
+            width: 8,
+            height: 18,
             right: 0,
-            bottom: -6,
+            bottom: -5,
             transform: [{ rotate: "225deg" }],
             backgroundColor: squaresBackgroundColor,
+            borderRightColor: disabled ? neutral77 : borderColor,
+            borderRightWidth: 1,
             position: "absolute",
             zIndex: 2,
           }}
