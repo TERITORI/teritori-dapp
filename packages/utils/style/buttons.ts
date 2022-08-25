@@ -1,11 +1,11 @@
 export const height = (format) => {
   switch (format) {
     case "XL":
-      return 58;
+      return 56;
     case "M":
-      return 50;
+      return 48;
     case "SM":
-      return 42;
+      return 40;
     case "XS":
       return 36;
   }

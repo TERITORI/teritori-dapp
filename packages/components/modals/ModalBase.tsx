@@ -3,13 +3,14 @@ import React, { ReactElement } from "react";
 import { Modal, Pressable, View, ViewStyle } from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
-import { neutral22, neutral33 } from "../../utils/style/colors";
+import { neutral22 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
-// Just an horizontal separator
+// Just an horizontal gradient separator
 const Separator: React.FC<{ style?: ViewStyle }> = ({ style }) => (
-  <View style={[{ height: 1 }, style]}>
+  <View style={[{ height: 1, width: "100%" }, style]}>
     {/* Background gradient */}
     <LinearGradient
       start={{ x: 0, y: 0 }}
@@ -45,50 +46,46 @@ export const ModalBase: React.FC<{
         }}
       >
         {/*------ Modal main container */}
-        <View
-          style={{
-            backgroundColor: neutral22,
-            borderWidth: 1,
-            borderColor: neutral33,
-            borderRadius: 8,
-            width,
-            margin: "auto",
-          }}
+        <TertiaryBox
+          nonPressable
+          backgroundColor={neutral22}
+          width={width}
+          style={{ margin: "auto" }}
+          paddingHorizontal={20}
+          paddingVertical={20}
         >
-          {/*------ Modal main wrapper */}
-          <View style={{ padding: 20 }}>
-            {/*------ Modal header */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <BrandText style={{ color: "white", lineHeight: 24 }}>
-                {label}
-              </BrandText>
+          {/*------ Modal header */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <BrandText style={{ color: "white", lineHeight: 24 }}>
+              {label}
+            </BrandText>
 
-              <Pressable onPress={onClose}>
-                <SVG
-                  width={20}
-                  height={20}
-                  source={closeSVG}
-                  style={{ marginLeft: 20 }}
-                />
-              </Pressable>
-            </View>
-            {children && (
-              <>
-                {/*------- Modal main content */}
-                <Separator style={{ marginVertical: 20 }} />
-                {children}
-              </>
-            )}
+            <Pressable onPress={onClose}>
+              <SVG
+                width={20}
+                height={20}
+                source={closeSVG}
+                style={{ marginLeft: 20 }}
+              />
+            </Pressable>
           </View>
+          {children && (
+            <>
+              {/*------- Modal main content */}
+              <Separator style={{ marginVertical: 20 }} />
+              {children}
+            </>
+          )}
           {/*------- Modal bottom content */}
           <>{childrenBottom}</>
-        </View>
+        </TertiaryBox>
       </View>
     </Modal>
   );

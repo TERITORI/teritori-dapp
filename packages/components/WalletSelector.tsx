@@ -7,35 +7,15 @@ import { useWallets, Wallet } from "../context/WalletsProvider";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
-import { neutral17, neutral33, neutral44 } from "../utils/style/colors";
+import { neutral17, neutral44 } from "../utils/style/colors";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
 import { SVG } from "./SVG";
-import { SecondaryAltButton } from "./buttons/SecondaryAltButton";
+import { TertiaryBox } from "./boxes/TertiaryBox";
+import { SecondaryButton } from "./buttons/SecondaryButton";
 
 // FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native
-
-const SecondaryBox: React.FC<{
-  style?: ViewStyle;
-}> = ({ children, style }) => {
-  return (
-    <View
-      style={[
-        {
-          borderColor: "#3D3D3D",
-          borderWidth: 1,
-          borderRadius: 12,
-          paddingHorizontal: 12,
-          height: 40,
-        },
-        style,
-      ]}
-    >
-      <>{children}</>
-    </View>
-  );
-};
 
 const tinyAddress = (fullAddress: string) => {
   if (fullAddress.length <= 13) {
@@ -90,34 +70,28 @@ export const WalletSelector: React.FC<{
   );
   return (
     <View style={style}>
-      <TouchableOpacity onPress={() => setIsExpanded((value) => !value)}>
-        <SecondaryBox
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            width: 220,
-            justifyContent: "space-between",
-          }}
-        >
-          <WalletView wallet={selectedWallet} />
-          <SVG
-            source={isExpanded ? chevronUpSVG : chevronDownSVG}
-            width={16}
-            height={16}
-          />
-        </SecondaryBox>
-      </TouchableOpacity>
+      <TertiaryBox
+        width={220}
+        mainContainerStyle={{
+          justifyContent: "space-between",
+          flexDirection: "row",
+        }}
+        height={40}
+        paddingHorizontal={12}
+      >
+        <WalletView wallet={selectedWallet} />
+        <SVG
+          source={isExpanded ? chevronUpSVG : chevronDownSVG}
+          width={16}
+          height={16}
+        />
+      </TertiaryBox>
       {isExpanded && (
-        <View
-          style={{
-            position: "absolute",
-            top: 44,
-            padding: 12,
-            backgroundColor: neutral17,
-            borderWidth: 1,
-            borderColor: neutral33,
-            borderRadius: 8,
-          }}
+        <TertiaryBox
+          style={{ position: "absolute", top: 44 }}
+          paddingHorizontal={12}
+          paddingVertical={12}
+          backgroundColor={neutral17}
         >
           {otherWallets.map((wallet) => (
             <TouchableOpacity
@@ -135,12 +109,15 @@ export const WalletSelector: React.FC<{
               style={{
                 borderBottomColor: neutral44,
                 borderBottomWidth: 1,
+                height: 1,
+                width: "100%",
                 marginBottom: 10,
               }}
             />
           )}
           <View style={{ flexDirection: "row" }}>
-            <SecondaryAltButton
+            <SecondaryButton
+              format="XS"
               squaresBackgroundColor={neutral17}
               text="Add wallet"
               onPress={() => {
@@ -151,7 +128,7 @@ export const WalletSelector: React.FC<{
               }}
             />
           </View>
-        </View>
+        </TertiaryBox>
       )}
     </View>
   );

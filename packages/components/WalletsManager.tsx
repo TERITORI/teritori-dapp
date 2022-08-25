@@ -36,6 +36,8 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
         // FIXME: no disconnect on keplr
         return (
           <TertiaryButton
+            squaresBackgroundColor={neutral22}
+            format="SM"
             text={`Disconnect ${wallet.provider}`}
             onPress={async () => {
               if (wallet.provider === WalletProvider.Phantom) {
@@ -51,6 +53,8 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
       }
       return (
         <TertiaryButton
+          squaresBackgroundColor={neutral22}
+          format="SM"
           text={`Connect ${wallet.provider}`}
           onPress={async () => {
             try {
@@ -74,7 +78,13 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
         />
       );
     case WalletProvider.Store:
-      return <TertiaryButton text="Remove" />;
+      return (
+        <TertiaryButton
+          text="Remove"
+          format="SM"
+          squaresBackgroundColor={neutral22}
+        />
+      );
     default:
       return null;
   }
@@ -204,7 +214,7 @@ const AddNewWallet: React.FC = () => {
       </View>
       <PrimaryButton
         squaresBackgroundColor={neutral22}
-        height={48}
+        format="M"
         text="Add New Wallet"
         style={{ marginLeft: 16 }}
         disabled={!addressNetwork}

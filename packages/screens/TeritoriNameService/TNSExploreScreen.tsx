@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { HollowPrimaryButton } from "../../components/buttons/HollowPrimaryButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { BackTo } from "../../components/navigation/BackTo";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { SendFundModal } from "../../components/teritoriNameService/SendFundsModal";
@@ -65,14 +65,16 @@ export const TNSExploreScreen: React.FC = () => {
             }}
           >
             <PrimaryButton
+              format="XL"
+              width={154}
               text="View"
-              style={{ maxWidth: 157, width: "100%" }}
               onPress={() => navigation.navigate("TNSConsultName", { name })}
             />
-            <HollowPrimaryButton
+            <PrimaryButtonOutline
+              format="XL"
+              width={154}
               disabled={!isKeplrConnected}
               text="Send funds"
-              style={{ maxWidth: 154, width: "100%" }}
               onPress={() => setSendFundsModalVisible(true)}
             />
           </View>

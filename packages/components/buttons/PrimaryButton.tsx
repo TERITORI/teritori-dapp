@@ -1,56 +1,74 @@
 import React from "react";
-import { View, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
+import { SvgProps } from "react-native-svg";
 
-import { primaryColor, primaryTextColor } from "../../utils/style/colors";
+import { borderRadius, height } from "../../utils/style/buttons";
+import {
+  neutral77,
+  primaryColor,
+  primaryTextColor,
+} from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { TertiaryCard } from "../cards/TertiaryCard";
+import { SVG } from "../SVG";
+import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const PrimaryButton: React.FC<{
-  width?: number | string;
-  height?: number;
-  paddingHorizontal?: number;
+  format: "XL" | "M" | "SM" | "XS";
   text: string;
+  width?: number;
   onPress?: () => void;
   squaresBackgroundColor?: string;
   style?: ViewStyle | ViewStyle[];
+  iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
+  fullWidth?: boolean;
 }> = ({
+  // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
-  height = 56,
+  format,
   text,
   onPress,
-  paddingHorizontal = 20,
-  squaresBackgroundColor = "#000000",
+  squaresBackgroundColor,
   style,
+  iconSVG,
   disabled = false,
+  fullWidth = false,
 }) => {
   return (
-    <View
-      style={[
-        style,
-        { flexDirection: "row", height, minHeight: height, maxHeight: height },
-      ]}
+    <SecondaryBox
+      onPress={onPress}
+      borderRadius={borderRadius(format)}
+      backgroundColor={primaryColor}
+      height={height(format)}
+      paddingHorizontal={20}
+      style={style}
+      disabled={disabled}
+      fullWidth={fullWidth}
+      squaresBackgroundColor={squaresBackgroundColor}
+      width={width}
+      mainContainerStyle={{ flexDirection: "row" }}
     >
-      <TertiaryCard
-        onPress={onPress}
-        borderRadius={6}
-        backgroundColor={primaryColor}
-        height={height}
-        paddingHorizontal={paddingHorizontal}
-        disabled={disabled}
-        squaresBackgroundColor={squaresBackgroundColor}
-        width={width}
+      {iconSVG ? (
+        <SVG
+          source={iconSVG}
+          width={16}
+          height={16}
+          style={{ marginRight: 8 }}
+        />
+      ) : null}
+
+      <BrandText
+        style={[
+          fontSemibold14,
+          {
+            color: disabled ? neutral77 : primaryTextColor,
+            textAlign: "center",
+          },
+        ]}
       >
-        <BrandText
-          style={[
-            fontSemibold14,
-            { color: primaryTextColor, textAlign: "center" },
-          ]}
-        >
-          {text}
-        </BrandText>
-      </TertiaryCard>
-    </View>
+        {text}
+      </BrandText>
+    </SecondaryBox>
   );
 };

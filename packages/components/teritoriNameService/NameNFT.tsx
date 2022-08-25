@@ -1,9 +1,9 @@
 import React from "react";
-import { Image, View, ViewStyle } from "react-native";
+import { Image, ViewStyle } from "react-native";
 
 import defaultNameNFT from "../../../assets/default-images/default-name-nft.png";
 import { useToken } from "../../hooks/tokens";
-import { neutral33 } from "../../utils/style/colors";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { NameAndTldText } from "./NameAndTldText";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -17,24 +17,7 @@ export const NameNFT: React.FC<{
   const imageMargin = 12;
 
   return (
-    <View
-      style={[
-        {
-          flex: 1,
-          alignItems: "center",
-          borderColor: neutral33,
-          borderWidth: 1,
-          borderRadius: 8,
-          backgroundColor: "#000000",
-          height,
-          minHeight: height,
-          maxHeight: height,
-          width: "100%",
-          maxWidth: width,
-        },
-        style,
-      ]}
-    >
+    <TertiaryBox height={height} width={width} style={style} nonPressable>
       <Image
         source={
           token && token.image && token.image !== ""
@@ -56,6 +39,6 @@ export const NameNFT: React.FC<{
           width: width - imageMargin * 2,
         }}
       />
-    </View>
+    </TertiaryBox>
   );
 };

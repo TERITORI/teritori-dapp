@@ -1,7 +1,7 @@
 import React from "react";
 import {
   View,
-  ViewStyle,
+  Image,
   useWindowDimensions,
   TouchableOpacity,
 } from "react-native";
@@ -23,28 +23,71 @@ import { CollectionsCarouselSection } from "../CollectionsCarouselSection";
 import { Guardian } from "../Guardian";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
-import { HollowPrimaryButton } from "../buttons/HollowPrimaryButton";
+import { PrimaryBox } from "../boxes/PrimaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
+import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { LabelCard } from "../cards/LabelCard";
 
 const breakPoint = 768;
 const gridHalfGutter = 12;
 
-const PrimaryBox: React.FC<{ style?: ViewStyle }> = ({ children, style }) => {
+const launchpadItemHeight = 266;
+const launchpadItemWidth = 196;
+
+const LaunchpadItemView: React.FC<{
+  item: LaunchpadItem;
+}> = ({ item }) => {
+  const contentWidth = 172;
+
   return (
-    <View
-      style={[
-        {
-          borderColor: "#00C6FB",
-          borderWidth: 1,
-          borderRadius: 8,
-          padding: 20,
-        },
-        style,
-      ]}
+    <TertiaryBox
+      paddingVertical={12}
+      height={launchpadItemHeight}
+      width={launchpadItemWidth}
     >
-      <>{children}</>
-    </View>
+      <Image
+        source={{ uri: item.imageURL }}
+        style={{
+          width: contentWidth,
+          height: 172,
+          borderRadius: 12,
+        }}
+      />
+
+      <View style={{ marginTop: 16, marginBottom: 8, width: contentWidth }}>
+        <BrandText
+          style={{ fontSize: 14 }}
+          ellipsizeMode="tail"
+          numberOfLines={1}
+        >
+          {item.name}
+        </BrandText>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 8,
+          }}
+        >
+          <BrandText
+            style={{ color: "#AEB1FF", fontSize: 14 }}
+            ellipsizeMode="tail"
+            numberOfLines={1}
+          >
+            {item.creatorName}
+          </BrandText>
+          {item.isCertified && (
+            <SVG
+              width={16}
+              height={16}
+              source={certifiedSVG}
+              style={{ marginLeft: 14 }}
+            />
+          )}
+        </View>
+      </View>
+    </TertiaryBox>
   );
 };
 
@@ -161,21 +204,17 @@ const NewsBox: React.FC = () => {
   const titleFontSize = 20;
 
   return (
-    <PrimaryBox>
-      {width <= breakPoint && (
-        <View style={{ marginBottom: 44 }}>
-          <Guardian />
-        </View>
-      )}
+    <PrimaryBox paddingHorizontal={20} paddingVertical={20} nonPressable>
       <View
-        style={
+        style={[
+          { width: "100%" },
           width > breakPoint
             ? {
                 flexDirection: "row",
                 justifyContent: "space-between",
               }
-            : undefined
-        }
+            : { flexDirection: "column-reverse" },
+        ]}
       >
         <View
           style={[
@@ -218,17 +257,24 @@ const NewsBox: React.FC = () => {
             }}
           >
             <SecondaryButton
-              height={48}
+              backgroundColor="#FFFFFF"
+              color="#000000"
+              format="SM"
               text="Join the Mint"
               onPress={() => navigation.navigate("Mint")}
             />
           </View>
         </View>
-        {width > breakPoint && (
-          <View style={{ marginLeft: 44 }}>
-            <Guardian />
-          </View>
-        )}
+
+        <View
+          style={
+            width > breakPoint
+              ? { marginLeft: 44 }
+              : { marginBottom: 44, width: "100%", alignItems: "center" }
+          }
+        >
+          <Guardian />
+        </View>
       </View>
     </PrimaryBox>
   );
@@ -330,15 +376,18 @@ Join the Bounty Program
             flexWrap: "wrap",
           }}
         >
-          <HollowPrimaryButton
+          <PrimaryButtonOutline
+            format="XL"
             text="Apply to the Launch Pad"
             style={{ margin: gridHalfGutter }}
           />
-          <HollowPrimaryButton
+          <PrimaryButtonOutline
+            format="XL"
             text="Explore All Upcoming Launches"
             style={{ margin: gridHalfGutter }}
           />
-          <HollowPrimaryButton
+          <PrimaryButtonOutline
+            format="XL"
             text="Vote on Upcoming Launches"
             style={{ margin: gridHalfGutter }}
           />

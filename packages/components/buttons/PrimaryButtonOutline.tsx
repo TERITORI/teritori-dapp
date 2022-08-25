@@ -3,21 +3,18 @@ import { ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { borderRadius, height } from "../../utils/style/buttons";
-import { neutral30, neutral77, primaryColor } from "../../utils/style/colors";
+import { neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
-// Same as _PrimaryButtonTest but with customizable color and backgroundColor
-export const SecondaryButton: React.FC<{
+export const PrimaryButtonOutline: React.FC<{
   format: "XL" | "M" | "SM" | "XS";
   text: string;
   width?: number;
   onPress?: () => void;
   squaresBackgroundColor?: string;
-  backgroundColor?: string;
-  color?: string;
   style?: ViewStyle | ViewStyle[];
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
@@ -29,25 +26,24 @@ export const SecondaryButton: React.FC<{
   text,
   onPress,
   squaresBackgroundColor,
-  backgroundColor = neutral30,
-  color = primaryColor,
   style,
   iconSVG,
   disabled = false,
   fullWidth = false,
 }) => {
   return (
-    <SecondaryBox
+    <TertiaryBox
       onPress={onPress}
       borderRadius={borderRadius(format)}
-      backgroundColor={backgroundColor}
+      backgroundColor="#000000"
       height={height(format)}
-      style={style}
       paddingHorizontal={20}
       disabled={disabled}
+      style={style}
+      fullWidth={fullWidth}
       squaresBackgroundColor={squaresBackgroundColor}
       width={width}
-      fullWidth={fullWidth}
+      borderColor={primaryColor}
       mainContainerStyle={{ flexDirection: "row" }}
     >
       {iconSVG ? (
@@ -62,11 +58,11 @@ export const SecondaryButton: React.FC<{
       <BrandText
         style={[
           fontSemibold14,
-          { color: disabled ? neutral77 : color, textAlign: "center" },
+          { color: disabled ? neutral77 : primaryColor, textAlign: "center" },
         ]}
       >
         {text}
       </BrandText>
-    </SecondaryBox>
+    </TertiaryBox>
   );
 };

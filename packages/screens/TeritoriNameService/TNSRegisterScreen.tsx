@@ -53,8 +53,9 @@ export const TNSRegisterScreen: React.FC = () => {
         nameAvailable &&
         !isTokenOwnedByUser(tokens, name) ? (
           <PrimaryButton
+            format="XL"
+            width={157}
             text="Mint your new ID"
-            style={{ maxWidth: 157, width: "100%" }}
             onPress={() => navigation.navigate("TNSMintName", { name })}
           />
         ) : null}

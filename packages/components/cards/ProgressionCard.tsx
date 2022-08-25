@@ -4,7 +4,7 @@ import { ViewStyle, View } from "react-native";
 import { neutral44, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { SecondaryCard } from "./SecondaryCard";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const ProgressionCard: React.FC<{
   style?: ViewStyle;
@@ -15,7 +15,14 @@ export const ProgressionCard: React.FC<{
   const percent = Math.round((valueCurrent * 100) / valueMax);
 
   return (
-    <SecondaryCard style={style} width={420} height={100}>
+    <TertiaryBox
+      style={style}
+      width={420}
+      height={100}
+      paddingHorizontal={16}
+      paddingVertical={16}
+      nonPressable
+    >
       <View style={{ zIndex: 2, width: "100%" }}>
         <BrandText style={[fontSemibold12, { marginBottom: 8 }]}>
           {label}
@@ -62,6 +69,6 @@ export const ProgressionCard: React.FC<{
           />
         </View>
       </View>
-    </SecondaryCard>
+    </TertiaryBox>
   );
 };
