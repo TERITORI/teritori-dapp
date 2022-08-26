@@ -50,7 +50,7 @@ export const PrimaryBox: React.FC<{
             height,
           }}
         >
-          {/*Main gradient (background absolute to make fake borders)*/}
+          {/*Main gradient*/}
           <LinearGradient
             // Be careful with these coordinates
             // TODO: Find dynamic values depending on the ratio width/height to get a correct gradient angle everytime
@@ -62,8 +62,6 @@ export const PrimaryBox: React.FC<{
               height,
               opacity: disabled ? 0.5 : 1,
               borderRadius,
-              // Instead of using absolute position for the Main gardient (Ex: SecondaryBox and TertiaryBox),
-              // we wrap all the content in this LinearGradient and use padding
               padding: 1,
             }}
             colors={disabled ? ["#676767", "#B7B7B7"] : ["#01B7C5", "#782C96"]}
