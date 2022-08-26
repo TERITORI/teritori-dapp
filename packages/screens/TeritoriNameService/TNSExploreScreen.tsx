@@ -65,13 +65,13 @@ export const TNSExploreScreen: React.FC = () => {
             }}
           >
             <PrimaryButton
-              format="XL"
+              size="XL"
               width={154}
               text="View"
               onPress={() => navigation.navigate("TNSConsultName", { name })}
             />
             <PrimaryButtonOutline
-              format="XL"
+              size="XL"
               width={154}
               disabled={!isKeplrConnected}
               text="Send funds"

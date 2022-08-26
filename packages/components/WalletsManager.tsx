@@ -37,7 +37,7 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
         return (
           <TertiaryButton
             squaresBackgroundColor={neutral22}
-            format="SM"
+            size="SM"
             text={`Disconnect ${wallet.provider}`}
             onPress={async () => {
               if (wallet.provider === WalletProvider.Phantom) {
@@ -54,7 +54,7 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
       return (
         <TertiaryButton
           squaresBackgroundColor={neutral22}
-          format="SM"
+          size="SM"
           text={`Connect ${wallet.provider}`}
           onPress={async () => {
             try {
@@ -81,7 +81,7 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
       return (
         <TertiaryButton
           text="Remove"
-          format="SM"
+          size="SM"
           squaresBackgroundColor={neutral22}
         />
       );
@@ -214,7 +214,7 @@ const AddNewWallet: React.FC = () => {
       </View>
       <PrimaryButton
         squaresBackgroundColor={neutral22}
-        format="M"
+        size="M"
         text="Add New Wallet"
         style={{ marginLeft: 16 }}
         disabled={!addressNetwork}

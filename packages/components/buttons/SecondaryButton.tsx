@@ -1,8 +1,8 @@
 import React from "react";
-import { ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { borderRadius, height } from "../../utils/style/buttons";
+import { borderRadius, ButtonsSize, height } from "../../utils/style/buttons";
 import { neutral30, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -11,21 +11,21 @@ import { SecondaryBox } from "../boxes/SecondaryBox";
 
 // Same as _PrimaryButtonTest but with customizable color and backgroundColor
 export const SecondaryButton: React.FC<{
-  format: "XL" | "M" | "SM" | "XS";
+  size: ButtonsSize;
   text: string;
   width?: number;
   onPress?: () => void;
   squaresBackgroundColor?: string;
   backgroundColor?: string;
   color?: string;
-  style?: ViewStyle | ViewStyle[];
+  style?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
-  format,
+  size,
   text,
   onPress,
   squaresBackgroundColor,
@@ -39,9 +39,9 @@ export const SecondaryButton: React.FC<{
   return (
     <SecondaryBox
       onPress={onPress}
-      borderRadius={borderRadius(format)}
+      borderRadius={borderRadius(size)}
       backgroundColor={backgroundColor}
-      height={height(format)}
+      height={height(size)}
       style={style}
       paddingHorizontal={20}
       disabled={disabled}

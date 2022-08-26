@@ -1,8 +1,8 @@
 import React from "react";
-import { ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { borderRadius, height } from "../../utils/style/buttons";
+import { borderRadius, ButtonsSize, height } from "../../utils/style/buttons";
 import {
   neutral77,
   primaryColor,
@@ -14,19 +14,19 @@ import { SVG } from "../SVG";
 import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const PrimaryButton: React.FC<{
-  format: "XL" | "M" | "SM" | "XS";
+  size: ButtonsSize;
   text: string;
   width?: number;
   onPress?: () => void;
   squaresBackgroundColor?: string;
-  style?: ViewStyle | ViewStyle[];
+  style?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
-  format,
+  size,
   text,
   onPress,
   squaresBackgroundColor,
@@ -38,9 +38,9 @@ export const PrimaryButton: React.FC<{
   return (
     <SecondaryBox
       onPress={onPress}
-      borderRadius={borderRadius(format)}
+      borderRadius={borderRadius(size)}
       backgroundColor={primaryColor}
-      height={height(format)}
+      height={height(size)}
       paddingHorizontal={20}
       style={style}
       disabled={disabled}

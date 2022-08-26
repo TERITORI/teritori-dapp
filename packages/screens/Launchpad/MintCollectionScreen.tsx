@@ -134,7 +134,7 @@ export const MintCollectionScreen: React.FC = () => {
           />
 
           <PrimaryButton
-            format="XL"
+            size="XL"
             text="Mint now"
             style={{ marginBottom: 24 }}
             width={160}

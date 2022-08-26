@@ -264,7 +264,7 @@ const NewsBox: React.FC = () => {
             <SecondaryButton
               backgroundColor="#FFFFFF"
               color="#000000"
-              format="SM"
+              size="SM"
               text="Join the Mint"
               onPress={() => navigation.navigate("Mint")}
             />
@@ -382,17 +382,17 @@ Join the Bounty Program
           }}
         >
           <PrimaryButtonOutline
-            format="XL"
+            size="XL"
             text="Apply to the Launch Pad"
             style={{ margin: gridHalfGutter }}
           />
           <PrimaryButtonOutline
-            format="XL"
+            size="XL"
             text="Explore All Upcoming Launches"
             style={{ margin: gridHalfGutter }}
           />
           <PrimaryButtonOutline
-            format="XL"
+            size="XL"
             text="Vote on Upcoming Launches"
             style={{ margin: gridHalfGutter }}
           />

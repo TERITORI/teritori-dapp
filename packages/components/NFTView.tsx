@@ -114,7 +114,7 @@ export const NFTView: React.FC<{
             {data.floorPrice ? "Floor Price" : "Not Listed"}
           </BrandText>
         </View>
-        {!!data.floorPrice &&<SecondaryButton format="XS" text={data.floorPrice} />}
+        {!!data.floorPrice &&<SecondaryButton size="XS" text={data.floorPrice} />}
       </View>
     </TertiaryBox>
   );

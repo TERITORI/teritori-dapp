@@ -177,7 +177,7 @@ export const NameDataForm: React.FC<{
         onChangeText={setValidatorOperatorAddress}
       />
       <PrimaryButton
-        format="XL"
+        size="XL"
         text={btnLabel}
         onPress={handlePressBtn}
         style={{ marginTop: 8 }}

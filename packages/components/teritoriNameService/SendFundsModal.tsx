@@ -46,7 +46,7 @@ export const SendFundModal: React.FC<{
             style={{ marginRight: 12, minWidth: 0 }}
           />
           <PrimaryButton
-            format="M"
+            size="M"
             text="Send"
             squaresBackgroundColor={neutral22}
           />

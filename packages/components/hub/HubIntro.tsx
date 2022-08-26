@@ -126,7 +126,7 @@ const DisconnectedIntro: React.FC = () => {
         Welcome to Teritori_
       </BrandText>
       <PrimaryButton
-        format="XL"
+        size="XL"
         style={{ marginTop: 72 }}
         text="Connect wallet"
         onPress={() => navigation.navigate("Wallets")}

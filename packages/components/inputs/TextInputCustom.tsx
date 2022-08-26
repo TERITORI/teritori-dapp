@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, View, ViewStyle } from "react-native";
+import { StyleProp, TextInput, View, ViewStyle } from "react-native";
 
 import {
   numberWithThousandsSeparator,
@@ -15,7 +15,7 @@ export const TextInputCustom: React.FC<{
   value: string;
   placeHolder: string;
   squaresBackgroundColor?: string;
-  style?: ViewStyle | ViewStyle[];
+  style?: StyleProp<ViewStyle>;
   onChangeText?: (text: string) => void;
   onPressEnter?: () => void;
   onlyNumbers?: boolean;

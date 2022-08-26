@@ -26,7 +26,7 @@ const NotOwnerActions = () => {
       {/*TODO: Fix: goBack() fails sometimes*/}
       <BackTo label="Back" />
       <PrimaryButton
-        format="XL"
+        size="XL"
         disabled={!isKeplrConnected}
         text="Send funds"
         style={{ marginLeft: 24 }}
@@ -48,13 +48,13 @@ const OwnerActions = () => {
     <>
       <BackTo label="Back" />
       <SecondaryButton
-        format="M"
+        size="M"
         text="Update metadata"
         style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("TNSUpdateName", { name })}
       />
       <SecondaryButton
-        format="M"
+        size="M"
         text="Burn"
         style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("TNSBurnName", { name })}

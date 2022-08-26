@@ -168,7 +168,7 @@ export const TNSBurnNameScreen: React.FC<{
 
           <SecondaryButton
             fullWidth
-            format="XS"
+            size="XS"
             text="I understand, burn it"
             onPress={onSubmit}
           />

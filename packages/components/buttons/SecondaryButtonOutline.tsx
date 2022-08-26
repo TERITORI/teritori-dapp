@@ -1,8 +1,8 @@
 import React from "react";
-import { ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { borderRadius, height } from "../../utils/style/buttons";
+import { borderRadius, ButtonsSize, height } from "../../utils/style/buttons";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -10,7 +10,7 @@ import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SecondaryButtonOutline: React.FC<{
-  format: "XL" | "M" | "SM" | "XS";
+  size: ButtonsSize;
   text: string;
   width?: number;
   onPress?: () => void;
@@ -18,14 +18,14 @@ export const SecondaryButtonOutline: React.FC<{
   backgroundColor?: string;
   color?: string;
   borderColor?: string;
-  style?: ViewStyle | ViewStyle[];
+  style?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
-  format,
+  size,
   text,
   onPress,
   squaresBackgroundColor,
@@ -40,9 +40,9 @@ export const SecondaryButtonOutline: React.FC<{
   return (
     <TertiaryBox
       onPress={onPress}
-      borderRadius={borderRadius(format)}
+      borderRadius={borderRadius(size)}
       backgroundColor={backgroundColor}
-      height={height(format)}
+      height={height(size)}
       paddingHorizontal={20}
       style={style}
       disabled={disabled}

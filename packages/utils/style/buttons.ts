@@ -1,3 +1,5 @@
+export type ButtonsSize = "XL" | "M" | "SM" | "XS";
+
 export const height = (format) => {
   switch (format) {
     case "XL":

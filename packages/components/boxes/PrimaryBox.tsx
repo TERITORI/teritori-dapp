@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { View, TouchableOpacity, ViewStyle } from "react-native";
+import { View, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
 
 import { neutral11 } from "../../utils/style/colors";
 
@@ -16,8 +16,8 @@ export const PrimaryBox: React.FC<{
   disabled?: boolean;
   nonPressable?: boolean;
   onPress?: () => void;
-  style?: ViewStyle | ViewStyle[];
-  mainContainerStyle?: ViewStyle | ViewStyle[];
+  style?: StyleProp<ViewStyle>;
+  mainContainerStyle?: StyleProp<ViewStyle>;
 }> = ({
   width,
   height,
