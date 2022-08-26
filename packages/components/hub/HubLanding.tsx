@@ -204,7 +204,12 @@ const NewsBox: React.FC = () => {
   const titleFontSize = 20;
 
   return (
-    <PrimaryBox paddingHorizontal={20} paddingVertical={20} nonPressable>
+    <PrimaryBox
+      paddingHorizontal={20}
+      paddingVertical={20}
+      nonPressable
+      fullWidth
+    >
       <View
         style={[
           { width: "100%" },
