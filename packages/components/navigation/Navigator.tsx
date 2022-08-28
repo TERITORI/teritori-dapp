@@ -11,6 +11,7 @@ import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScre
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { MintScreen } from "../../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { TNSBurnNameScreen } from "../../screens/TeritoriNameService/TNSBurnNameScreen";
 import { TNSConsultNameScreen } from "../../screens/TeritoriNameService/TNSConsultNameScreen";
 import { TNSExploreScreen } from "../../screens/TeritoriNameService/TNSExploreScreen";
@@ -73,6 +74,11 @@ export const Navigator: React.FC = () => {
         name="Wallets"
         component={WalletsScreen}
         options={{ presentation: "transparentModal", header: () => null }}
+      />
+      <Stack.Screen
+        name="RiotersFooter"
+        component={RiotersFooterScreen}
+        options={{ header: () => null }}
       />
 
       {/* ==== Launchpad */}
