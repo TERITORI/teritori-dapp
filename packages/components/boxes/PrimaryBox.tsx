@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import {View, ViewStyle, StyleProp, StyleSheet} from "react-native"
+import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 
 import { neutral11 } from "../../utils/style/colors";
 
@@ -22,13 +22,13 @@ export const PrimaryBox: React.FC<{
   mainContainerStyle,
   children,
 }) => {
-  const flatMainContainerStyle = mainContainerStyle ? StyleSheet.flatten(mainContainerStyle) : undefined;
-  const {
-    paddingVertical,
-    paddingHorizontal,
-    borderRadius = 8,
-    backgroundColor = "#000000",
-  } = flatMainContainerStyle;
+  const flatMainContainerStyle = mainContainerStyle
+    ? StyleSheet.flatten(mainContainerStyle)
+    : {};
+  const borderRadius = flatMainContainerStyle.borderRadius || 8;
+  const backgroundColor = disabled
+    ? neutral11
+    : flatMainContainerStyle.backgroundColor || "#000000";
 
   return (
     // ---- Main container, flex row to fit the horizontal content
@@ -66,11 +66,9 @@ export const PrimaryBox: React.FC<{
                 {
                   width: fullWidth ? "100%" : width - 2,
                   height: height - 2,
-                  backgroundColor: disabled ? neutral11 : backgroundColor,
+                  backgroundColor,
                   borderRadius,
                   zIndex: 1,
-                  paddingHorizontal,
-                  paddingVertical,
                   alignItems: "center",
                   justifyContent: "center",
                 },

@@ -1,5 +1,5 @@
 import React from "react";
-import {View, ViewStyle, StyleProp, StyleSheet} from "react-native"
+import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 
 import { neutral11, neutral33, neutral44 } from "../../utils/style/colors";
 
@@ -21,14 +21,16 @@ export const TertiaryBox: React.FC<{
   style,
   mainContainerStyle,
 }) => {
-  const flatMainContainerStyle = mainContainerStyle ? StyleSheet.flatten(mainContainerStyle) : undefined;
-  const {
-    paddingVertical,
-    paddingHorizontal,
-    borderRadius = 8,
-    borderColor = neutral33,
-    backgroundColor = "#000000",
-  } = flatMainContainerStyle;
+  const flatMainContainerStyle = mainContainerStyle
+    ? StyleSheet.flatten(mainContainerStyle)
+    : {};
+  const borderRadius = flatMainContainerStyle.borderRadius || 8;
+  const borderColor = disabled
+    ? neutral44
+    : flatMainContainerStyle.borderColor || neutral33;
+  const backgroundColor = disabled
+    ? neutral11
+    : flatMainContainerStyle.backgroundColor || "#000000";
 
   return (
     // ---- Main container, flex row to fit the horizontal content
@@ -50,12 +52,10 @@ export const TertiaryBox: React.FC<{
               {
                 width: fullWidth ? "100%" : width,
                 height,
-                backgroundColor: disabled ? neutral11 : backgroundColor,
-                borderColor: disabled ? neutral44 : borderColor,
+                backgroundColor,
+                borderColor,
                 borderWidth: 1,
                 borderRadius,
-                paddingHorizontal,
-                paddingVertical,
                 alignItems: "center",
                 justifyContent: "center",
               },
@@ -72,7 +72,7 @@ export const TertiaryBox: React.FC<{
               left: 0,
               top: -5,
               backgroundColor: squaresBackgroundColor,
-              borderRightColor: disabled ? neutral44 : borderColor,
+              borderRightColor: borderColor,
               borderRightWidth: 1,
               transform: [{ rotate: "45deg" }],
               position: "absolute",
@@ -89,7 +89,7 @@ export const TertiaryBox: React.FC<{
               bottom: -5,
               transform: [{ rotate: "225deg" }],
               backgroundColor: squaresBackgroundColor,
-              borderRightColor: disabled ? neutral44 : borderColor,
+              borderRightColor: borderColor,
               borderRightWidth: 1,
               position: "absolute",
               zIndex: 2,
