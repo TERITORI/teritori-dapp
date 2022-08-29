@@ -14,7 +14,7 @@ import { SVG } from "../SVG";
 import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const PrimaryButton: React.FC<{
-  size: ButtonSize;
+  size: ButtonsSize;
   text: string;
   width?: number;
   onPress?: () => void;

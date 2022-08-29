@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ViewStyle, StyleProp } from "react-native";
+import {View, ViewStyle, StyleProp, StyleSheet} from "react-native"
 
 import { neutral11 } from "../../utils/style/colors";
 
@@ -11,7 +11,7 @@ export const SecondaryBox: React.FC<{
   squaresBackgroundColor?: string;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
-  mainContainerStyle?: StyleProp<any>;
+  mainContainerStyle?: StyleProp<ViewStyle>;
 }> = ({
   width,
   height,
@@ -25,12 +25,13 @@ export const SecondaryBox: React.FC<{
   mainContainerStyle,
   children,
 }) => {
+  const flatMainContainerStyle = mainContainerStyle ? StyleSheet.flatten(mainContainerStyle) : undefined;
   const {
     paddingVertical,
     paddingHorizontal,
     borderRadius = 8,
     backgroundColor = "#000000",
-  } = mainContainerStyle;
+  } = flatMainContainerStyle;
 
   return (
     // ---- Main container, flex row to fit the horizontal content

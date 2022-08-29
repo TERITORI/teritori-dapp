@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ViewStyle, StyleProp } from "react-native";
+import {View, ViewStyle, StyleProp, StyleSheet} from "react-native"
 
 import { neutral11, neutral33, neutral44 } from "../../utils/style/colors";
 
@@ -10,7 +10,7 @@ export const TertiaryBox: React.FC<{
   squaresBackgroundColor?: string;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
-  mainContainerStyle?: StyleProp<any>;
+  mainContainerStyle?: StyleProp<ViewStyle>;
 }> = ({
   width,
   height,
@@ -21,13 +21,14 @@ export const TertiaryBox: React.FC<{
   style,
   mainContainerStyle,
 }) => {
+  const flatMainContainerStyle = mainContainerStyle ? StyleSheet.flatten(mainContainerStyle) : undefined;
   const {
     paddingVertical,
     paddingHorizontal,
     borderRadius = 8,
     borderColor = neutral33,
     backgroundColor = "#000000",
-  } = mainContainerStyle;
+  } = flatMainContainerStyle;
 
   return (
     // ---- Main container, flex row to fit the horizontal content
