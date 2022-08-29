@@ -22,7 +22,9 @@ export const PrimaryBox: React.FC<{
   mainContainerStyle,
   children,
 }) => {
-  const flatMainContainerStyle = StyleSheet.flatten(mainContainerStyle);
+  const flatMainContainerStyle = mainContainerStyle
+    ? StyleSheet.flatten(mainContainerStyle)
+    : {};
   const borderRadius = flatMainContainerStyle.borderRadius || 8;
   const backgroundColor = disabled
     ? neutral11
