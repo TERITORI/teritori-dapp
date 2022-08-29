@@ -21,9 +21,7 @@ export const TertiaryBox: React.FC<{
   style,
   mainContainerStyle,
 }) => {
-  const flatMainContainerStyle = mainContainerStyle
-    ? StyleSheet.flatten(mainContainerStyle)
-    : {};
+  const flatMainContainerStyle = StyleSheet.flatten(mainContainerStyle);
   const borderRadius = flatMainContainerStyle.borderRadius || 8;
   const borderColor = disabled
     ? neutral44
