@@ -67,9 +67,7 @@ export const NameDataForm: React.FC<{
   return (
     <TertiaryBox
       width={396}
-      paddingHorizontal={24}
-      paddingVertical={24}
-      disabled
+      mainContainerStyle={{ paddingHorizontal: 24, paddingVertical: 24 }}
     >
       {isMintPath ? (
         <>

@@ -1,15 +1,16 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { ReactElement } from "react";
-import { Modal, Pressable, View, ViewStyle } from "react-native";
+import React from "react";
+import { Modal, Pressable, StyleProp, View, ViewStyle } from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
 import { neutral22 } from "../../utils/style/colors";
+import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 // Just an horizontal gradient separator
-const Separator: React.FC<{ style?: ViewStyle }> = ({ style }) => (
+const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View style={[{ height: 1, width: "100%" }, style]}>
     {/* Background gradient */}
     <LinearGradient
@@ -27,7 +28,8 @@ export const ModalBase: React.FC<{
   onClose: () => void;
   width?: number;
   visible?: boolean;
-  childrenBottom?: ReactElement;
+  childrenBottom?: JSX.Element | JSX.Element[];
+  children?: JSX.Element | JSX.Element[];
 }> = ({ label, visible, width, onClose, childrenBottom, children }) => {
   return (
     <Modal
@@ -47,12 +49,12 @@ export const ModalBase: React.FC<{
       >
         {/*------ Modal main container */}
         <TertiaryBox
-          nonPressable
-          backgroundColor={neutral22}
           width={width}
           style={{ margin: "auto" }}
-          paddingHorizontal={20}
-          paddingVertical={20}
+          mainContainerStyle={{
+            alignItems: "flex-start",
+            backgroundColor: neutral22,
+          }}
         >
           {/*------ Modal header */}
           <View
@@ -61,6 +63,7 @@ export const ModalBase: React.FC<{
               justifyContent: "space-between",
               alignItems: "center",
               width: "100%",
+              padding: modalMarginPadding,
             }}
           >
             <BrandText style={{ color: "white", lineHeight: 24 }}>
@@ -72,19 +75,19 @@ export const ModalBase: React.FC<{
                 width={20}
                 height={20}
                 source={closeSVG}
-                style={{ marginLeft: 20 }}
+                style={{ marginLeft: modalMarginPadding }}
               />
             </Pressable>
           </View>
           {children && (
-            <>
+            <View style={{ marginHorizontal: modalMarginPadding }}>
               {/*------- Modal main content */}
-              <Separator style={{ marginVertical: 20 }} />
+              <Separator style={{ marginBottom: modalMarginPadding }} />
               {children}
-            </>
+            </View>
           )}
           {/*------- Modal bottom content */}
-          <>{childrenBottom}</>
+          {childrenBottom}
         </TertiaryBox>
       </View>
     </Modal>

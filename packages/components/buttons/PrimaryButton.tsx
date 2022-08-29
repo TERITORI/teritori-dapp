@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, ViewStyle } from "react-native";
+import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { borderRadius, ButtonsSize, height } from "../../utils/style/buttons";
@@ -35,40 +35,47 @@ export const PrimaryButton: React.FC<{
   disabled = false,
   fullWidth = false,
 }) => {
-  return (
-    <SecondaryBox
-      onPress={onPress}
-      borderRadius={borderRadius(size)}
-      backgroundColor={primaryColor}
-      height={height(size)}
-      paddingHorizontal={20}
-      style={style}
-      disabled={disabled}
-      fullWidth={fullWidth}
-      squaresBackgroundColor={squaresBackgroundColor}
-      width={width}
-      mainContainerStyle={{ flexDirection: "row" }}
-    >
-      {iconSVG ? (
-        <SVG
-          source={iconSVG}
-          width={16}
-          height={16}
-          style={{ marginRight: 8 }}
-        />
-      ) : null}
+  const boxProps = {
+    style,
+    disabled,
+    squaresBackgroundColor,
+    width,
+    fullWidth,
+  };
 
-      <BrandText
-        style={[
-          fontSemibold14,
-          {
-            color: disabled ? neutral77 : primaryTextColor,
-            textAlign: "center",
-          },
-        ]}
+  return (
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
+      <SecondaryBox
+        height={height(size)}
+        mainContainerStyle={{
+          flexDirection: "row",
+          borderRadius: borderRadius(size),
+          backgroundColor: primaryColor,
+          paddingHorizontal: 20,
+        }}
+        {...boxProps}
       >
-        {text}
-      </BrandText>
-    </SecondaryBox>
+        {iconSVG ? (
+          <SVG
+            source={iconSVG}
+            width={16}
+            height={16}
+            style={{ marginRight: 8 }}
+          />
+        ) : null}
+
+        <BrandText
+          style={[
+            fontSemibold14,
+            {
+              color: disabled ? neutral77 : primaryTextColor,
+              textAlign: "center",
+            },
+          ]}
+        >
+          {text}
+        </BrandText>
+      </SecondaryBox>
+    </TouchableOpacity>
   );
 };

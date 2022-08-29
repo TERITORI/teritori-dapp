@@ -21,7 +21,11 @@ export const NFTView: React.FC<{
   const contentWidth = 236;
 
   return (
-    <TertiaryBox paddingVertical={16} width={268} style={style}>
+    <TertiaryBox
+      width={268}
+      style={style}
+      mainContainerStyle={{ paddingVertical: 16 }}
+    >
       <Image
         source={{ uri: data.imageURI }}
         style={{

@@ -1,5 +1,5 @@
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Network } from "../../utils/network";
 import { getSolanaBalance } from "../../utils/solana";

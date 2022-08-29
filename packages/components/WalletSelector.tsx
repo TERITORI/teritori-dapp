@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, ViewStyle, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  ViewStyle,
+  TouchableOpacity,
+  Text,
+  StyleProp,
+} from "react-native";
 
 import chevronUpSVG from "../../assets/icons/chevron-down.svg";
 import chevronDownSVG from "../../assets/icons/chevron-up.svg";
@@ -26,10 +32,10 @@ const tinyAddress = (fullAddress: string) => {
   )}`;
 };
 
-const WalletView: React.FC<{ wallet?: Wallet; style?: ViewStyle }> = ({
-  wallet,
-  style,
-}) => {
+const WalletView: React.FC<{
+  wallet?: Wallet;
+  style?: StyleProp<ViewStyle>;
+}> = ({ wallet, style }) => {
   const fontSize = 14;
   return (
     <View style={[{ flexDirection: "row", alignItems: "center" }, style]}>
@@ -54,7 +60,7 @@ const WalletView: React.FC<{ wallet?: Wallet; style?: ViewStyle }> = ({
 
 export const WalletSelector: React.FC<{
   onPressAddWallet?: () => void;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }> = ({ onPressAddWallet, style }) => {
   const { wallets } = useWallets();
   const selectedWallet = useSelectedWallet();
@@ -70,28 +76,32 @@ export const WalletSelector: React.FC<{
   );
   return (
     <View style={style}>
-      <TertiaryBox
-        width={220}
-        mainContainerStyle={{
-          justifyContent: "space-between",
-          flexDirection: "row",
-        }}
-        height={40}
-        paddingHorizontal={12}
-      >
-        <WalletView wallet={selectedWallet} />
-        <SVG
-          source={isExpanded ? chevronUpSVG : chevronDownSVG}
-          width={16}
-          height={16}
-        />
-      </TertiaryBox>
+      <TouchableOpacity onPress={() => setIsExpanded((value) => !value)}>
+        <TertiaryBox
+          width={220}
+          mainContainerStyle={{
+            justifyContent: "space-between",
+            flexDirection: "row",
+            paddingHorizontal: 12,
+          }}
+          height={40}
+        >
+          <WalletView wallet={selectedWallet} />
+          <SVG
+            source={isExpanded ? chevronUpSVG : chevronDownSVG}
+            width={16}
+            height={16}
+          />
+        </TertiaryBox>
+      </TouchableOpacity>
       {isExpanded && (
         <TertiaryBox
           style={{ position: "absolute", top: 44 }}
-          paddingHorizontal={12}
-          paddingVertical={12}
-          backgroundColor={neutral17}
+          mainContainerStyle={{
+            paddingHorizontal: 12,
+            paddingVertical: 12,
+            backgroundColor: neutral17,
+          }}
         >
           {otherWallets.map((wallet) => (
             <TouchableOpacity

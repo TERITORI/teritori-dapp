@@ -42,7 +42,7 @@ const LaunchpadItemView: React.FC<{
 
   return (
     <TertiaryBox
-      paddingVertical={12}
+      mainContainerStyle={{ paddingVertical: 12 }}
       height={launchpadItemHeight}
       width={launchpadItemWidth}
     >
@@ -205,9 +205,9 @@ const NewsBox: React.FC = () => {
 
   return (
     <PrimaryBox
-      paddingHorizontal={20}
-      paddingVertical={20}
-      nonPressable
+      // paddingHorizontal={20}
+      // paddingVertical={20}
+      mainContainerStyle={{ paddingHorizontal: 20, paddingVertical: 20 }}
       fullWidth
     >
       <View

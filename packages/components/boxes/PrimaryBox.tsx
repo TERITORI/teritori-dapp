@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { View, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
+import { View, ViewStyle, StyleProp } from "react-native";
 
 import { neutral11 } from "../../utils/style/colors";
 
@@ -8,43 +8,36 @@ export const PrimaryBox: React.FC<{
   width?: number;
   height?: number;
   fullWidth?: boolean;
-  paddingHorizontal?: number;
-  paddingVertical?: number;
-  backgroundColor?: string;
-  borderRadius?: number;
   squaresBackgroundColor?: string;
   disabled?: boolean;
-  nonPressable?: boolean;
-  onPress?: () => void;
   style?: StyleProp<ViewStyle>;
-  mainContainerStyle?: StyleProp<ViewStyle>;
+  mainContainerStyle?: StyleProp<any>;
 }> = ({
   width,
   height,
   fullWidth = false,
-  paddingHorizontal,
-  paddingVertical,
-  backgroundColor = "#000000",
-  borderRadius = 8,
   squaresBackgroundColor = "#000000",
   disabled = false,
-  nonPressable = false,
-  onPress,
   style,
   mainContainerStyle,
   children,
 }) => {
+  const {
+    paddingVertical,
+    paddingHorizontal,
+    borderRadius = 8,
+    backgroundColor = "#000000",
+  } = mainContainerStyle;
+
   return (
     // ---- Main container, flex row to fit the horizontal content
     <View
-      style={[style, { flexDirection: "row" }, fullWidth && { width: "100%" }]}
+      style={[{ flexDirection: "row" }, fullWidth && { width: "100%" }, style]}
     >
       {/* ---- Sub main container, flex column to fit the vertical content*/}
       <View style={fullWidth && { width: "100%" }}>
-        {/*Touchable container*/}
-        <TouchableOpacity
-          onPress={onPress}
-          disabled={disabled || nonPressable}
+        {/*---- Content wrapper*/}
+        <View
           style={{
             width: fullWidth ? "100%" : width,
             height,
@@ -91,7 +84,7 @@ export const PrimaryBox: React.FC<{
               style={{
                 width: 8,
                 height: 20,
-                left: -0.5,
+                left: -1,
                 top: -7,
                 backgroundColor: squaresBackgroundColor,
                 transform: [{ rotate: "45deg" }],
@@ -126,7 +119,7 @@ export const PrimaryBox: React.FC<{
               style={{
                 width: 8,
                 height: 20,
-                right: -0.5,
+                right: -1,
                 bottom: -7,
                 transform: [{ rotate: "225deg" }],
                 backgroundColor: squaresBackgroundColor,
@@ -156,7 +149,7 @@ export const PrimaryBox: React.FC<{
               }
             />
           </LinearGradient>
-        </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

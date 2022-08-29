@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import balanceCardHighlightSVG from "../../../assets/cards/balance-card-highlight.svg";
 import balanceCardSVG from "../../../assets/cards/balance-card.svg";
@@ -9,7 +9,7 @@ import { SVG } from "../SVG";
 export const LabelCard: React.FC<{
   highlighted?: boolean;
   label?: string;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }> = ({ label, highlighted, style }) => {
   const width = 164;
   const height = 166;

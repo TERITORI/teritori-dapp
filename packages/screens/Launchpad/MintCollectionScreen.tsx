@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, View, StyleProp, ViewStyle } from "react-native";
+import { Image, StyleProp, View, ViewStyle } from "react-native";
 
 import guardian1PNG from "../../../assets/default-images/guardian_1.png";
 import discordSVG from "../../../assets/icons/discord.svg";
@@ -37,13 +37,14 @@ const AttributesCard: React.FC<{
 }> = ({ style, label, value }) => {
   return (
     <TertiaryBox
-      nonPressable
       style={style}
       width={132}
       height={62}
-      paddingHorizontal={12}
-      paddingVertical={14}
-      mainContainerStyle={{ alignItems: "flex-start" }}
+      mainContainerStyle={{
+        alignItems: "flex-start",
+        paddingHorizontal: 12,
+        paddingVertical: 14,
+      }}
     >
       <BrandText
         style={[fontSemibold12, { color: neutral77, marginBottom: 6 }]}
@@ -174,12 +175,7 @@ export const MintCollectionScreen: React.FC = () => {
             maxHeight: 806,
           }}
         >
-          <TertiaryBox
-            width={534}
-            height={534}
-            style={{ marginBottom: 40 }}
-            nonPressable
-          >
+          <TertiaryBox width={534} height={534} style={{ marginBottom: 40 }}>
             <Image
               source={guardian1PNG}
               style={{ width: 532, height: 532, borderRadius: 8 }}

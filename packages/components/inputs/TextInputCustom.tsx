@@ -61,16 +61,19 @@ export const TextInputCustom: React.FC<{
 
   return (
     <TertiaryBox
-      nonPressable
       height={48}
       width={332}
-      paddingHorizontal={12}
       squaresBackgroundColor={squaresBackgroundColor}
-      backgroundColor={neutral22}
       style={style}
-      mainContainerStyle={{ alignItems: "flex-start" }}
+      mainContainerStyle={{
+        alignItems: "flex-start",
+        paddingHorizontal: 12,
+        backgroundColor: neutral22,
+      }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View
+        style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
+      >
         <View style={{ flex: 1, marginRight: children && 12 }}>
           <BrandText
             style={{ color: neutral77, fontSize: 10, fontWeight: "500" }}

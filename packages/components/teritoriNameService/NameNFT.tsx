@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, ViewStyle } from "react-native";
+import { Image, StyleProp, ViewStyle } from "react-native";
 
 import defaultNameNFT from "../../../assets/default-images/default-name-nft.png";
 import { useToken } from "../../hooks/tokens";
@@ -8,7 +8,7 @@ import { NameAndTldText } from "./NameAndTldText";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameNFT: React.FC<{
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   name: string;
 }> = ({ style, name }) => {
   const { token } = useToken(name, process.env.TLD);
@@ -17,7 +17,7 @@ export const NameNFT: React.FC<{
   const imageMargin = 12;
 
   return (
-    <TertiaryBox height={height} width={width} style={style} nonPressable>
+    <TertiaryBox height={height} width={width} style={style}>
       <Image
         source={
           token && token.image && token.image !== ""

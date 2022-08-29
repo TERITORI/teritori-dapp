@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
+import { View, ViewStyle, StyleProp } from "react-native";
 
 import { neutral11 } from "../../utils/style/colors";
 
@@ -7,47 +7,40 @@ export const SecondaryBox: React.FC<{
   width?: number;
   height?: number;
   fullWidth?: boolean;
-  paddingHorizontal?: number;
-  paddingVertical?: number;
-  backgroundColor?: string;
-  borderRadius?: number;
   cornerWidth?: number;
   squaresBackgroundColor?: string;
   disabled?: boolean;
-  nonPressable?: boolean;
-  onPress?: () => void;
   style?: StyleProp<ViewStyle>;
-  mainContainerStyle?: StyleProp<ViewStyle>;
+  mainContainerStyle?: StyleProp<any>;
 }> = ({
   width,
   height,
   fullWidth = false,
-  paddingHorizontal,
-  paddingVertical,
-  backgroundColor = "#000000",
-  borderRadius = 8,
   // Less or more big "broken" corner (Example on SocialButton)
   cornerWidth = 8,
   // We need that to correctly set the color under the card
   squaresBackgroundColor = "#000000",
   disabled = false,
-  nonPressable = false,
   style,
   mainContainerStyle,
-  onPress,
   children,
 }) => {
+  const {
+    paddingVertical,
+    paddingHorizontal,
+    borderRadius = 8,
+    backgroundColor = "#000000",
+  } = mainContainerStyle;
+
   return (
     // ---- Main container, flex row to fit the horizontal content
     <View
-      style={[style, { flexDirection: "row" }, fullWidth && { width: "100%" }]}
+      style={[{ flexDirection: "row" }, fullWidth && { width: "100%" }, style]}
     >
       {/* ---- Sub main container, flex column to fit the vertical content*/}
       <View style={fullWidth && { width: "100%" }}>
-        {/*Touchable container*/}
-        <TouchableOpacity
-          onPress={onPress}
-          disabled={disabled || nonPressable}
+        {/*---- Content wrapper*/}
+        <View
           style={{
             width: fullWidth ? "100%" : width,
             height,
@@ -99,7 +92,7 @@ export const SecondaryBox: React.FC<{
               zIndex: 2,
             }}
           />
-        </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

@@ -20,13 +20,12 @@ export const NameData: React.FC<{
 
   return (
     <TertiaryBox
-      nonPressable
       width={width}
-      paddingHorizontal={24}
-      paddingVertical={24}
       mainContainerStyle={{
         alignItems: "flex-start",
         justifyContent: "flex-start",
+        paddingHorizontal: 24,
+        paddingVertical: 24,
       }}
     >
       {token ? (
