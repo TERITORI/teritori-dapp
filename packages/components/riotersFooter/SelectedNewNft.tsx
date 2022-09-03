@@ -1,5 +1,6 @@
 import React from "react";
-import { FlatList, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, TouchableOpacity, View } from "react-native";
+import { DraxList, DraxView } from "react-native-drax";
 
 import badgeSvg from "../../../assets/icons/badge.svg";
 import nftSvg from "../../../assets/icons/nft.svg";
@@ -9,7 +10,7 @@ import { SVG } from "../../components/SVG";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 
-const fakeNft = [
+export const fakeNft = [
   {
     id: "0",
     name: "NFT name #4554",
@@ -112,9 +113,9 @@ const SelectNewNft: React.FC<{
           }}
         />
       </View>
-      <FlatList
+      <DraxList
         data={fakeNft}
-        renderItem={renderItem}
+        renderItemContent={renderItem}
         keyExtractor={keyExtractor}
         ListHeaderComponent={
           <ListHeaderComponent
@@ -134,7 +135,14 @@ const SelectNewNft: React.FC<{
 
 const renderItem = ({ item }) => (
   <View style={{ width: 104, marginTop: 12 }}>
-    <SVG width={104} height={104} source={item.svg} />
+    <DraxView
+      onDragStart={() => {
+        console.log("start drag id", item.id);
+      }}
+      dragPayload={item.id}
+    >
+      <Image style={{ width: 104, height: 104 }} source={item.svg} />
+    </DraxView>
     <BrandText
       numberOfLines={1}
       ellipsizeMode="tail"
