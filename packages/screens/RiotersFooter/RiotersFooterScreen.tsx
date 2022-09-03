@@ -334,6 +334,7 @@ export const RiotersFooterScreen: React.FC = () => {
                   borderRadius: 12,
                   borderWidth: 1,
                   borderColor: neutral33,
+                  backgroundColor: "black",
                 }}
                 onReceiveDragDrop={(event) => {
                   console.log(event);
@@ -375,6 +376,9 @@ export const RiotersFooterScreen: React.FC = () => {
                           position: "absolute",
                           left: nft.left,
                           top: nft.top,
+                          borderColor: neutral33,
+                          borderWidth: 1,
+                          padding: 4,
                         }}
                       />
                     ))}
