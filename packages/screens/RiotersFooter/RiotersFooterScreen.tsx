@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, ScrollView } from "react-native";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { View, ScrollView, Image } from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
 
 import avaSvg from "../../../assets/icons/ava.svg";
@@ -143,6 +143,7 @@ const oldNftPositions = [
     height: 74,
     top: 388,
     left: 0,
+    date: new Date("August 15, 2022 15:00:00"),
   },
   {
     id: "1",
@@ -151,6 +152,7 @@ const oldNftPositions = [
     height: 43,
     top: 229,
     left: 478,
+    date: new Date("August 16, 2022 15:00:00"),
   },
   {
     id: "2",
@@ -159,6 +161,7 @@ const oldNftPositions = [
     height: 77,
     top: 415,
     left: 575,
+    date: new Date("August 17, 2022 15:00:00"),
   },
   {
     id: "3",
@@ -167,6 +170,7 @@ const oldNftPositions = [
     height: 72,
     top: 279,
     left: 654,
+    date: new Date("August 18, 2022 15:00:00"),
   },
   {
     id: "4",
@@ -175,6 +179,7 @@ const oldNftPositions = [
     height: 36,
     top: 289,
     left: 38,
+    date: new Date("August 19, 2022 15:00:00"),
   },
   {
     id: "5",
@@ -183,6 +188,7 @@ const oldNftPositions = [
     height: 59,
     top: 333,
     left: 446,
+    date: new Date("August 20, 2022 15:00:00"),
   },
   {
     id: "6",
@@ -191,6 +197,7 @@ const oldNftPositions = [
     height: 82,
     top: 253,
     left: 174,
+    date: new Date("August 21, 2022 15:00:00"),
   },
   {
     id: "7",
@@ -199,6 +206,7 @@ const oldNftPositions = [
     height: 74,
     top: 388,
     left: 747,
+    date: new Date("August 22, 2022 15:00:00"),
   },
   {
     id: "8",
@@ -207,6 +215,7 @@ const oldNftPositions = [
     height: 82,
     top: 253,
     left: 922,
+    date: new Date("August 23, 2022 15:00:00"),
   },
   {
     id: "9",
@@ -215,6 +224,7 @@ const oldNftPositions = [
     height: 100,
     top: 396,
     left: 159,
+    date: new Date("August 24, 2022 15:00:00"),
   },
   {
     id: "10",
@@ -223,6 +233,7 @@ const oldNftPositions = [
     height: 100,
     top: 396,
     left: 850,
+    date: new Date("August 25, 2022 15:00:00"),
   },
 ];
 
@@ -234,6 +245,17 @@ export const RiotersFooterScreen: React.FC = () => {
   const [nftId, setNftId] = useState<string>("");
   const [nftDrop, setNftDrop] = useState<any>(null);
   const [nftPositions, setNftPositions] = useState(undefined);
+  const [oldNftPositionsWithZIndex, setOldNftPositionsWithZIndex] =
+    useState(undefined);
+
+  useEffect(() => {
+    setOldNftPositionsWithZIndex(
+      oldNftPositions.sort((a, b) => a.date.getTime() - b.date.getTime())
+    );
+    console.log(
+      oldNftPositions.sort((a, b) => a.date.getTime() - b.date.getTime())
+    );
+  }, [oldNftPositions]);
 
   const MapNftType = new Map([
     [
@@ -338,10 +360,12 @@ export const RiotersFooterScreen: React.FC = () => {
                 }}
                 onReceiveDragDrop={(event) => {
                   console.log(event);
-                  if (!nftDrop) {
-                    setNftDrop(
-                      fakeNft.find((nft) => nft.id === event.dragged.payload)
-                    );
+                  if (!nftDrop || nftDrop.id === event.dragged.payload) {
+                    if (!nftDrop) {
+                      setNftDrop(
+                        fakeNft.find((nft) => nft.id === event.dragged.payload)
+                      );
+                    }
                     setNftPositions({
                       x:
                         event.receiver.receiveOffset.x -
@@ -355,46 +379,11 @@ export const RiotersFooterScreen: React.FC = () => {
                   }
                 }}
                 renderContent={() => (
-                  <>
-                    <SVG
-                      width={94}
-                      height={102}
-                      source={teritorriSvg}
-                      style={{
-                        alignSelf: "center",
-                        marginTop: 43,
-                        zIndex: 9999,
-                      }}
-                    />
-                    {oldNftPositions.map((nft) => (
-                      <SVG
-                        key={nft.id}
-                        width={nft.width}
-                        height={nft.height}
-                        source={nft.svg}
-                        style={{
-                          position: "absolute",
-                          left: nft.left,
-                          top: nft.top,
-                          borderColor: neutral33,
-                          borderWidth: 1,
-                          padding: 4,
-                        }}
-                      />
-                    ))}
-                    {nftDrop && nftPositions && (
-                      <SVG
-                        width={nftPositions.width}
-                        height={nftPositions.height}
-                        source={nftDrop.svg}
-                        style={{
-                          position: "absolute",
-                          left: nftPositions.x,
-                          top: nftPositions.y,
-                        }}
-                      />
-                    )}
-                  </>
+                  <DraxViewReceiverContent
+                    oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
+                    nftDrop={nftDrop}
+                    nftPositions={nftPositions}
+                  />
                 )}
               />
             </View>
@@ -402,5 +391,91 @@ export const RiotersFooterScreen: React.FC = () => {
         </View>
       </DraxProvider>
     </ScreenContainer>
+  );
+};
+
+const DraxViewReceiverContent = ({
+  oldNftPositionsWithZIndex,
+  nftDrop,
+  nftPositions,
+}) => {
+  const NtfDragAndDropInReceiverViewCallback = useCallback(
+    ({ nftDrop, nftPositions, oldNftPositionsWithZIndex }) => (
+      <NtfDragAndDropInReceiverView
+        nftDrop={nftDrop}
+        nftPositions={nftPositions}
+        oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
+      />
+    ),
+    [nftPositions]
+  );
+  return (
+    <>
+      <SVG
+        width={94}
+        height={102}
+        source={teritorriSvg}
+        style={{
+          alignSelf: "center",
+          marginTop: 43,
+          zIndex: oldNftPositionsWithZIndex + 1,
+        }}
+      />
+      {oldNftPositionsWithZIndex &&
+        oldNftPositionsWithZIndex.map((nft, index) => (
+          <SVG
+            key={nft.id}
+            width={nft.width}
+            height={nft.height}
+            source={nft.svg}
+            style={{
+              position: "absolute",
+              left: nft.left,
+              top: nft.top,
+              borderColor: neutral33,
+              borderWidth: 1,
+              padding: 4,
+              zIndex: index,
+            }}
+          />
+        ))}
+      {nftDrop && nftPositions && (
+        <NtfDragAndDropInReceiverViewCallback
+          nftDrop={nftDrop}
+          nftPositions={nftPositions}
+          oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
+        />
+      )}
+    </>
+  );
+};
+
+const NtfDragAndDropInReceiverView = ({
+  nftDrop,
+  nftPositions,
+  oldNftPositionsWithZIndex,
+}) => {
+  return (
+    <DraxView
+      onDragStart={() => {
+        console.log("start drag id", nftDrop.id);
+      }}
+      animateSnapback={false}
+      dragPayload={nftDrop.id}
+      style={{
+        position: "absolute",
+        left: nftPositions.x,
+        top: nftPositions.y,
+        zIndex: oldNftPositionsWithZIndex.length,
+      }}
+    >
+      <Image
+        style={{
+          width: nftPositions.width,
+          height: nftPositions.height,
+        }}
+        source={nftDrop.svg}
+      />
+    </DraxView>
   );
 };

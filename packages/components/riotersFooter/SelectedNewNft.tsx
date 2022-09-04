@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, Image, TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 import { DraxList, DraxView } from "react-native-drax";
 
 import badgeSvg from "../../../assets/icons/badge.svg";
@@ -139,6 +139,7 @@ const renderItem = ({ item }) => (
       onDragStart={() => {
         console.log("start drag id", item.id);
       }}
+      animateSnapback={false}
       dragPayload={item.id}
     >
       <Image style={{ width: 104, height: 104 }} source={item.svg} />
