@@ -1,3 +1,6 @@
+CANDYMACHINE_REPO=terra-candymachine
+CANDYMACHINE_PACKAGE=teritori-nft-minter
+
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
@@ -27,3 +30,17 @@ go/pkg/holagql/holaplex-schema.graphql:
 .PHONY: docker.backend
 docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
+
+.PHONY: packages/$(CANDYMACHINE_PACKAGE)
+packages/$(CANDYMACHINE_PACKAGE): node_modules
+	rm -fr $(CANDYMACHINE_REPO)
+	git clone git@github.com:TERITORI/$(CANDYMACHINE_REPO).git
+	cd $(CANDYMACHINE_REPO) && git checkout e14d8abab6c82fd44f6d3d229bb278227cecc7e7
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(CANDYMACHINE_REPO)/schema/nft-minter \
+		--out $@ \
+		--name $(CANDYMACHINE_PACKAGE) \
+		--no-bundle
+	rm -fr $(CANDYMACHINE_REPO)

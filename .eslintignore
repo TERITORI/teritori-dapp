@@ -5,3 +5,6 @@
 /node_modules
 /go
 /web-build
+
+# generated packages
+/packages/teritori-nft-minter
