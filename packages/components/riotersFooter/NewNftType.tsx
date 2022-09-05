@@ -2,20 +2,20 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import addSvg from "../../../assets/icons/add.svg";
-import badgeSvg from "../../../assets/icons/badge.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
+import CollectionItem from "./CollectionItem";
 
 const NewNftType: React.FC<{
   searchNewNftCollection: string;
   setSearchNewNftCollection: (text: string) => void;
-  setNftId: (text: string) => void;
+  setNftCollectionId: (text: string) => void;
   newNftCollections: any[];
 }> = ({
   searchNewNftCollection,
   setSearchNewNftCollection,
-  setNftId,
+  setNftCollectionId,
   newNftCollections,
 }) => {
   return (
@@ -46,26 +46,12 @@ const NewNftType: React.FC<{
       </TouchableOpacity>
       {newNftCollections.map((collection) => (
         <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 12,
-          }}
           onPress={() => {
-            setNftId(collection.id);
+            setNftCollectionId(collection.id);
           }}
           key={collection.id}
         >
-          <SVG
-            width={32}
-            height={32}
-            source={collection.avatar}
-            style={{ marginRight: 12 }}
-          />
-          <BrandText style={{ fontSize: 14, marginRight: 8 }}>
-            {collection.name}
-          </BrandText>
-          {collection.badge && <SVG width={16} height={16} source={badgeSvg} />}
+          <CollectionItem collection={collection} />
         </TouchableOpacity>
       ))}
     </View>

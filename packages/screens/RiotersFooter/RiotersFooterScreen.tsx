@@ -18,6 +18,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
 import ExistingNftType from "../../components/riotersFooter/ExistingNftType";
 import NewNftType from "../../components/riotersFooter/NewNftType";
+import NftAdjustments from "../../components/riotersFooter/NftAdjustments";
 import NftTypeTab from "../../components/riotersFooter/NftTypeTab";
 import SelectNewNft, {
   fakeNft,
@@ -242,11 +243,12 @@ export const RiotersFooterScreen: React.FC = () => {
   const [searchNewNftCollection, setSearchNewNftCollection] =
     useState<string>("");
   const [searchNft, setSearchNft] = useState<string>("");
-  const [nftId, setNftId] = useState<string>("");
+  const [nftCollectionId, setNftCollectionId] = useState<string>("");
   const [nftDrop, setNftDrop] = useState<any>(null);
   const [nftPositions, setNftPositions] = useState(undefined);
   const [oldNftPositionsWithZIndex, setOldNftPositionsWithZIndex] =
     useState(undefined);
+  const [price, setPrice] = useState<number>(7.8);
 
   useEffect(() => {
     setOldNftPositionsWithZIndex(
@@ -263,7 +265,7 @@ export const RiotersFooterScreen: React.FC = () => {
       <NewNftType
         searchNewNftCollection={searchNewNftCollection}
         setSearchNewNftCollection={setSearchNewNftCollection}
-        setNftId={setNftId}
+        setNftCollectionId={setNftCollectionId}
         newNftCollections={fakeNewNtfCollections}
       />,
     ],
@@ -289,7 +291,7 @@ export const RiotersFooterScreen: React.FC = () => {
               borderColor: neutral33,
             }}
           >
-            {!nftId ? (
+            {!nftCollectionId ? (
               <>
                 <View style={{ width: 220 }}>
                   <BrandText style={{ color: "white", fontSize: 14 }}>
@@ -308,10 +310,21 @@ export const RiotersFooterScreen: React.FC = () => {
                   <View style={{ width: 220 }}>{MapNftType.get(nftType)}</View>
                 </ScrollView>
               </>
+            ) : nftDrop && nftPositions ? (
+              <NftAdjustments
+                nftCollectionId={nftCollectionId}
+                newNftCollections={fakeNewNtfCollections}
+                nftDrop={nftDrop}
+                setNftDrop={setNftDrop}
+                nftPositions={nftPositions}
+                setNftPositions={setNftPositions}
+                price={price}
+                setPrice={setPrice}
+              />
             ) : (
               <SelectNewNft
-                nftId={nftId}
-                setNftId={setNftId}
+                nftCollectionId={nftCollectionId}
+                setNftCollectionId={setNftCollectionId}
                 searchNft={searchNft}
                 setSearchNft={setSearchNft}
                 newNftCollections={fakeNewNtfCollections}
@@ -367,6 +380,7 @@ export const RiotersFooterScreen: React.FC = () => {
                       );
                     }
                     setNftPositions({
+                      ...nftPositions,
                       x:
                         event.receiver.receiveOffset.x -
                         event.dragged.grabOffset.x,
@@ -409,6 +423,7 @@ const DraxViewReceiverContent = ({
     ),
     [nftPositions]
   );
+
   return (
     <>
       <SVG
@@ -468,11 +483,19 @@ const NtfDragAndDropInReceiverView = ({
         top: nftPositions.y,
         zIndex: oldNftPositionsWithZIndex.length,
       }}
+      draggingStyle={{ opacity: 0.5 }}
     >
       <Image
         style={{
           width: nftPositions.width,
           height: nftPositions.height,
+          borderRadius: nftPositions.borderRadius
+            ? (nftPositions.borderRadius *
+                (nftPositions.width > nftPositions.height
+                  ? nftPositions.width
+                  : nftPositions.height)) /
+              200
+            : 0,
         }}
         source={nftDrop.svg}
       />
