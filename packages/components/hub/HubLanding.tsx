@@ -8,6 +8,7 @@ import {
 import { SvgProps } from "react-native-svg";
 
 import dappCardSVG from "../../../assets/cards/dapp-card.svg";
+import certifiedSVG from "../../../assets/icons/certified.svg";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
 import labsSVG from "../../../assets/icons/labs.svg";
 import launchpadSVG from "../../../assets/icons/launchpad.svg";
@@ -31,65 +32,6 @@ import { LabelCard } from "../cards/LabelCard";
 
 const breakPoint = 768;
 const gridHalfGutter = 12;
-
-const launchpadItemHeight = 266;
-const launchpadItemWidth = 196;
-
-const LaunchpadItemView: React.FC<{
-  item: LaunchpadItem;
-}> = ({ item }) => {
-  const contentWidth = 172;
-
-  return (
-    <TertiaryBox
-      mainContainerStyle={{ paddingVertical: 12 }}
-      height={launchpadItemHeight}
-      width={launchpadItemWidth}
-    >
-      <Image
-        source={{ uri: item.imageURL }}
-        style={{
-          width: contentWidth,
-          height: 172,
-          borderRadius: 12,
-        }}
-      />
-
-      <View style={{ marginTop: 16, marginBottom: 8, width: contentWidth }}>
-        <BrandText
-          style={{ fontSize: 14 }}
-          ellipsizeMode="tail"
-          numberOfLines={1}
-        >
-          {item.name}
-        </BrandText>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 8,
-          }}
-        >
-          <BrandText
-            style={{ color: "#AEB1FF", fontSize: 14 }}
-            ellipsizeMode="tail"
-            numberOfLines={1}
-          >
-            {item.creatorName}
-          </BrandText>
-          {item.isCertified && (
-            <SVG
-              width={16}
-              height={16}
-              source={certifiedSVG}
-              style={{ marginLeft: 14 }}
-            />
-          )}
-        </View>
-      </View>
-    </TertiaryBox>
-  );
-};
 
 const DAppCard: React.FC<{
   label: string;
