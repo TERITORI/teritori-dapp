@@ -1,14 +1,8 @@
 import React from "react";
-import {
-  View,
-  Image,
-  useWindowDimensions,
-  TouchableOpacity,
-} from "react-native";
+import { View, useWindowDimensions, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import dappCardSVG from "../../../assets/cards/dapp-card.svg";
-import certifiedSVG from "../../../assets/icons/certified.svg";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
 import labsSVG from "../../../assets/icons/labs.svg";
 import launchpadSVG from "../../../assets/icons/launchpad.svg";
@@ -25,7 +19,6 @@ import { Guardian } from "../Guardian";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { PrimaryBox } from "../boxes/PrimaryBox";
-import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { LabelCard } from "../cards/LabelCard";
