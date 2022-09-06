@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Image, ViewStyle, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  ViewStyle,
+  TouchableOpacity,
+  StyleProp,
+} from "react-native";
 
 import connectedImagePNG from "../../../assets/default-images/connected-image-bad.png";
 import logoSVG from "../../../assets/logos/logo.svg";
@@ -17,7 +23,7 @@ import { BalanceCard } from "../cards/BalanceCard";
 export type HubPageName = "Home" | "MyCollection" | "Activity" | "Guardians";
 
 const MyCollectionCard: React.FC<{
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   highlighted?: boolean;
 }> = ({ style, highlighted }) => {
   const navigation = useAppNavigation();
@@ -37,7 +43,7 @@ const MyCollectionCard: React.FC<{
 };
 
 const ActivityCard: React.FC<{
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   highlighted?: boolean;
 }> = ({ style, highlighted }) => {
   const navigation = useAppNavigation();
@@ -58,7 +64,7 @@ const ActivityCard: React.FC<{
 };
 
 const GuardiansCard: React.FC<{
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   highlighted?: boolean;
 }> = ({ style, highlighted }) => {
   const navigation = useAppNavigation();
@@ -126,6 +132,7 @@ const DisconnectedIntro: React.FC = () => {
         Welcome to Teritori_
       </BrandText>
       <PrimaryButton
+        size="XL"
         style={{ marginTop: 72 }}
         text="Connect wallet"
         onPress={() => navigation.navigate("Wallets")}

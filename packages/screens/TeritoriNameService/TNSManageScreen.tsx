@@ -1,6 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { TouchableOpacity, View, ViewStyle } from "react-native";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import nameCardSVG from "../../../assets/cards/name-card.svg";
 import logoSVG from "../../../assets/logos/logo.svg";
@@ -20,7 +20,7 @@ import { tokenWithoutTld } from "../../utils/tns";
 const NameCard: React.FC<{
   fullName: string;
   isPrimary?: boolean;
-  style: ViewStyle;
+  style: StyleProp<ViewStyle>;
   onPress: () => void;
 }> = ({ fullName, isPrimary, style, onPress }) => {
   const width = 392;

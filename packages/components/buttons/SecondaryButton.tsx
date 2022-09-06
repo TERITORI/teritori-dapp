@@ -1,53 +1,79 @@
 import React from "react";
-import { View, ViewStyle } from "react-native";
+import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import { SvgProps } from "react-native-svg";
 
-import { neutral30, primaryColor } from "../../utils/style/colors";
+import { borderRadius, ButtonsSize, height } from "../../utils/style/buttons";
+import { neutral30, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { TertiaryCard } from "../cards/TertiaryCard";
+import { SVG } from "../SVG";
+import { SecondaryBox } from "../boxes/SecondaryBox";
 
+// Same as _PrimaryButtonTest but with customizable color and backgroundColor
 export const SecondaryButton: React.FC<{
-  width?: number | string;
-  height?: number;
-  paddingHorizontal?: number;
+  size: ButtonsSize;
   text: string;
-  onPress: () => void;
+  width?: number;
+  onPress?: () => void;
   squaresBackgroundColor?: string;
-  style?: ViewStyle | ViewStyle[];
+  backgroundColor?: string;
+  color?: string;
+  style?: StyleProp<ViewStyle>;
+  iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
+  fullWidth?: boolean;
 }> = ({
+  // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
-  height = 56,
+  size,
   text,
   onPress,
-  paddingHorizontal = 20,
-  squaresBackgroundColor = "#000000",
+  squaresBackgroundColor,
+  backgroundColor = neutral30,
+  color = primaryColor,
   style,
+  iconSVG,
   disabled = false,
+  fullWidth = false,
 }) => {
+  const boxProps = {
+    style,
+    disabled,
+    squaresBackgroundColor,
+    width,
+    fullWidth,
+  };
+
   return (
-    <View
-      style={[
-        style,
-        { flexDirection: "row", height, minHeight: height, maxHeight: height },
-      ]}
-    >
-      <TertiaryCard
-        onPress={onPress}
-        borderRadius={6}
-        backgroundColor={neutral30}
-        height={height}
-        paddingHorizontal={paddingHorizontal}
-        disabled={disabled}
-        squaresBackgroundColor={squaresBackgroundColor}
-        width={width}
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
+      <SecondaryBox
+        height={height(size)}
+        mainContainerStyle={{
+          flexDirection: "row",
+          borderRadius: borderRadius(size),
+          backgroundColor,
+          paddingHorizontal: 20,
+        }}
+        {...boxProps}
       >
+        {iconSVG ? (
+          <SVG
+            source={iconSVG}
+            width={16}
+            height={16}
+            style={{ marginRight: 8 }}
+          />
+        ) : null}
+
         <BrandText
-          style={[fontSemibold14, { color: primaryColor, textAlign: "center" }]}
+          style={[
+            fontSemibold14,
+            { color: disabled ? neutral77 : color, textAlign: "center" },
+          ]}
         >
           {text}
         </BrandText>
-      </TertiaryCard>
-    </View>
+      </SecondaryBox>
+    </TouchableOpacity>
   );
 };

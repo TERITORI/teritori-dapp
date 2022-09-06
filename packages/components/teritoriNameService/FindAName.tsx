@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { BrandText } from "../BrandText";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { NameNFT } from "./NameNFT";
-import { NameStatusCard } from "./NameStatusCard";
+import { NameStatus } from "./NameStatus";
 
 // TODO: Maybe it can be a screen that is called in Register and Explore flow... TNSRegisterScreen.tsx and TNSExploreScreen.tsx have duplicated code
 
@@ -46,7 +46,7 @@ export const FindAName: React.FC<{
         <>
           {/*----- When a name is entered, we display its status */}
           {name ? (
-            <NameStatusCard available={nameAvailable} hasError={nameError} />
+            <NameStatus available={nameAvailable} hasError={nameError} />
           ) : null}
           {/*----- If name entered and no error, we display the image */}
           {name && !nameError ? (

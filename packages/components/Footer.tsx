@@ -1,5 +1,11 @@
 import React from "react";
-import { Linking, TouchableOpacity, View, ViewStyle } from "react-native";
+import {
+  Linking,
+  StyleProp,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import bookSVG from "../../assets/icons/book.svg";
@@ -12,7 +18,7 @@ import { SVG } from "./SVG";
 // One social network button
 const NetworkButton: React.FC<{
   iconSVG: React.FC<SvgProps>;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   onPress?: () => void;
 }> = ({ iconSVG, onPress, style }) => {
   return (
@@ -73,7 +79,7 @@ export const SocialNetworks: React.FC = () => {
 
 // A footer that can contains children
 export const Footer: React.FC<{
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }> = ({ children, style }) => {
   return (
     <View

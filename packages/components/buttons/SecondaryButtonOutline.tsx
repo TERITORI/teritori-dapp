@@ -3,22 +3,21 @@ import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { borderRadius, ButtonsSize, height } from "../../utils/style/buttons";
-import {
-  neutral77,
-  primaryColor,
-  primaryTextColor,
-} from "../../utils/style/colors";
+import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
-export const PrimaryButton: React.FC<{
+export const SecondaryButtonOutline: React.FC<{
   size: ButtonsSize;
   text: string;
   width?: number;
   onPress?: () => void;
   squaresBackgroundColor?: string;
+  backgroundColor?: string;
+  color?: string;
+  borderColor?: string;
   style?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
@@ -30,6 +29,9 @@ export const PrimaryButton: React.FC<{
   text,
   onPress,
   squaresBackgroundColor,
+  backgroundColor = neutral33,
+  color = "#FFFFFF",
+  borderColor = "#FFFFFF",
   style,
   iconSVG,
   disabled = false,
@@ -45,13 +47,14 @@ export const PrimaryButton: React.FC<{
 
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled}>
-      <SecondaryBox
+      <TertiaryBox
         height={height(size)}
         mainContainerStyle={{
           flexDirection: "row",
           borderRadius: borderRadius(size),
-          backgroundColor: primaryColor,
+          backgroundColor,
           paddingHorizontal: 20,
+          borderColor,
         }}
         {...boxProps}
       >
@@ -67,15 +70,12 @@ export const PrimaryButton: React.FC<{
         <BrandText
           style={[
             fontSemibold14,
-            {
-              color: disabled ? neutral77 : primaryTextColor,
-              textAlign: "center",
-            },
+            { color: disabled ? neutral77 : color, textAlign: "center" },
           ]}
         >
           {text}
         </BrandText>
-      </SecondaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

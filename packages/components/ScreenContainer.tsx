@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   SafeAreaView,
@@ -8,6 +8,7 @@ import {
   useWindowDimensions,
   Platform,
   ViewStyle,
+  StyleProp,
 } from "react-native";
 
 import { screenContainerContentMarginHorizontal } from "../utils/style/layout";
@@ -17,9 +18,9 @@ import { WalletsManager } from "./WalletsManager";
 import { Sidebar } from "./navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
-  headerChildren?: ReactElement;
-  footerChildren?: ReactElement;
-  headerStyle?: ViewStyle;
+  headerChildren?: JSX.Element;
+  footerChildren?: JSX.Element;
+  headerStyle?: StyleProp<ViewStyle>;
   hideSidebar?: boolean;
   noMargin?: boolean;
   noScroll?: boolean;

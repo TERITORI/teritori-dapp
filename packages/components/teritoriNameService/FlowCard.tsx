@@ -1,43 +1,33 @@
 import React from "react";
-import { ViewStyle, View, TouchableOpacity } from "react-native";
+import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import flowCardSVG from "../../../assets/cards/flow-card.svg";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { PrimaryBox } from "../boxes/PrimaryBox";
 
 export const FlowCard: React.FC<{
   label: string;
   description: string;
   iconSVG: React.FC<SvgProps>;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   onPress: () => void;
   disabled?: boolean;
 }> = ({ label, description, iconSVG, style, disabled, onPress }) => {
-  const width = 392;
-  const height = 100;
-
   return (
-    <TouchableOpacity
-      style={[disabled && { opacity: 0.5 }, style]}
-      onPress={onPress}
-      disabled={disabled}
-    >
-      <SVG
-        width={width}
-        height={height}
-        source={flowCardSVG}
-        style={{ position: "absolute" }}
-      />
-      <View
-        style={{
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
+      <PrimaryBox
+        width={392}
+        height={100}
+        mainContainerStyle={{
+          paddingVertical: 20,
+          paddingHorizontal: 20,
           flexDirection: "row",
-          padding: 20,
-          width,
-          height,
-          minWidth: width,
-          minHeight: height,
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
         }}
+        disabled={disabled}
+        style={style}
       >
         <SVG
           width={24}
@@ -45,7 +35,7 @@ export const FlowCard: React.FC<{
           source={iconSVG}
           style={{ marginRight: 8 }}
         />
-        <View style={{ justifyContent: "space-between" }}>
+        <View style={{ justifyContent: "space-between", height: "100%" }}>
           <BrandText>{label}</BrandText>
           <BrandText
             style={{
@@ -56,7 +46,7 @@ export const FlowCard: React.FC<{
             {description}
           </BrandText>
         </View>
-      </View>
+      </PrimaryBox>
     </TouchableOpacity>
   );
 };

@@ -7,10 +7,11 @@ import { Collection } from "../api/marketplace/v1/marketplace";
 import { useAppNavigation } from "../utils/navigation";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
-import { CardOutline } from "./cards/CardOutline";
+import { TertiaryBox } from "./boxes/TertiaryBox";
 
 export const collectionItemHeight = 266;
 export const collectionItemWidth = 196;
+const contentWidth = 172;
 
 export const CollectionView: React.FC<{
   item: Collection;
@@ -23,24 +24,26 @@ export const CollectionView: React.FC<{
       }
       disabled={!item.mintAddress}
     >
-      <CardOutline
-        style={{
+      <TertiaryBox
+        mainContainerStyle={{
           paddingTop: 12,
           paddingBottom: 20,
-          width: collectionItemWidth,
-          height: collectionItemHeight,
         }}
+        width={collectionItemWidth}
+        height={collectionItemHeight}
       >
         <Image
           source={{ uri: item.imageUri }}
           style={{
-            width: 172,
+            width: contentWidth,
             height: 172,
             alignSelf: "center",
             borderRadius: 12,
           }}
         />
-        <View style={{ marginHorizontal: 12, marginTop: 16 }}>
+        <View
+          style={{ marginHorizontal: 12, marginTop: 16, width: contentWidth }}
+        >
           <BrandText
             style={{ fontSize: 14 }}
             ellipsizeMode="tail"
@@ -69,7 +72,7 @@ export const CollectionView: React.FC<{
             )}
           </View>
         </View>
-      </CardOutline>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

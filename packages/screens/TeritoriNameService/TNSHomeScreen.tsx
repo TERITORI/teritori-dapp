@@ -7,12 +7,13 @@ import registerSVG from "../../../assets/icons/register.svg";
 import { SocialNetworks } from "../../components/Footer";
 import { IntroLogoText } from "../../components/IntroLogoText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { FlowCard } from "../../components/cards/FlowCard";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import ModalBase from "../../components/modals/ModalBase";
+import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useTNS } from "../../context/TNSProvider";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { neutral22 } from "../../utils/style/colors";
 
 // "Find a name" modal
 const ModalNameFinder: React.FC<{
@@ -43,6 +44,7 @@ const ModalNameFinder: React.FC<{
       // childrenBottom={<DomainsAvailability/>} TODO: Uncomment this when the functionality is done
     >
       <TextInputCustom
+        squaresBackgroundColor={neutral22}
         label="NAME"
         placeHolder="Type name here"
         onPressEnter={onPressEnter}

@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  View,
-  ViewStyle,
-  useWindowDimensions,
-  TouchableOpacity,
-} from "react-native";
+import { View, useWindowDimensions, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import dappCardSVG from "../../../assets/cards/dapp-card.svg";
@@ -23,30 +18,13 @@ import { CollectionsCarouselSection } from "../CollectionsCarouselSection";
 import { Guardian } from "../Guardian";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
-import { HollowPrimaryButton } from "../buttons/HollowPrimaryButton";
+import { PrimaryBox } from "../boxes/PrimaryBox";
+import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { LabelCard } from "../cards/LabelCard";
 
 const breakPoint = 768;
 const gridHalfGutter = 12;
-
-const PrimaryBox: React.FC<{ style?: ViewStyle }> = ({ children, style }) => {
-  return (
-    <View
-      style={[
-        {
-          borderColor: "#00C6FB",
-          borderWidth: 1,
-          borderRadius: 8,
-          padding: 20,
-        },
-        style,
-      ]}
-    >
-      <>{children}</>
-    </View>
-  );
-};
 
 const DAppCard: React.FC<{
   label: string;
@@ -161,21 +139,22 @@ const NewsBox: React.FC = () => {
   const titleFontSize = 20;
 
   return (
-    <PrimaryBox>
-      {width <= breakPoint && (
-        <View style={{ marginBottom: 44 }}>
-          <Guardian />
-        </View>
-      )}
+    <PrimaryBox
+      // paddingHorizontal={20}
+      // paddingVertical={20}
+      mainContainerStyle={{ paddingHorizontal: 20, paddingVertical: 20 }}
+      fullWidth
+    >
       <View
-        style={
+        style={[
+          { width: "100%" },
           width > breakPoint
             ? {
                 flexDirection: "row",
                 justifyContent: "space-between",
               }
-            : undefined
-        }
+            : { flexDirection: "column-reverse" },
+        ]}
       >
         <View
           style={[
@@ -218,17 +197,24 @@ const NewsBox: React.FC = () => {
             }}
           >
             <SecondaryButton
-              height={48}
+              backgroundColor="#FFFFFF"
+              color="#000000"
+              size="SM"
               text="Join the Mint"
               onPress={() => navigation.navigate("Mint")}
             />
           </View>
         </View>
-        {width > breakPoint && (
-          <View style={{ marginLeft: 44 }}>
-            <Guardian />
-          </View>
-        )}
+
+        <View
+          style={
+            width > breakPoint
+              ? { marginLeft: 44 }
+              : { marginBottom: 44, width: "100%", alignItems: "center" }
+          }
+        >
+          <Guardian />
+        </View>
       </View>
     </PrimaryBox>
   );
@@ -330,15 +316,18 @@ Join the Bounty Program
             flexWrap: "wrap",
           }}
         >
-          <HollowPrimaryButton
+          <PrimaryButtonOutline
+            size="XL"
             text="Apply to the Launch Pad"
             style={{ margin: gridHalfGutter }}
           />
-          <HollowPrimaryButton
+          <PrimaryButtonOutline
+            size="XL"
             text="Explore All Upcoming Launches"
             style={{ margin: gridHalfGutter }}
           />
-          <HollowPrimaryButton
+          <PrimaryButtonOutline
+            size="XL"
             text="Vote on Upcoming Launches"
             style={{ margin: gridHalfGutter }}
           />

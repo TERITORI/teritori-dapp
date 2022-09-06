@@ -1,15 +1,15 @@
 import React from "react";
 import { ViewStyle, Image, View, StyleProp } from "react-native";
 
-import certifiedIconSVG from "../../assets/icons/certified.svg";
+import certifiedSVG from "../../assets/icons/certified.svg";
 import outlineStarSVG from "../../assets/icons/outline-star.svg";
 import { neutral33, neutral77 } from "../utils/style/colors";
 import { NFTData } from "../utils/types/nft";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
 import { SVG } from "./SVG";
-import { SecondaryAltButton } from "./buttons/SecondaryAltButton";
-import { CardOutline } from "./cards/CardOutline";
+import { TertiaryBox } from "./boxes/TertiaryBox";
+import { SecondaryButton } from "./buttons/SecondaryButton";
 
 export const NFTView: React.FC<{
   data: NFTData;
@@ -18,27 +18,25 @@ export const NFTView: React.FC<{
   const collectionFontSize = 12;
   const favoriteCountFontSize = 12;
   const floorPriceLabelFontSize = 12;
+  const contentWidth = 236;
+
   return (
-    <CardOutline
-      style={[
-        {
-          paddingVertical: 16,
-          width: 268,
-        },
-        style,
-      ]}
+    <TertiaryBox
+      width={268}
+      style={style}
+      mainContainerStyle={{ paddingVertical: 16 }}
     >
       <Image
         source={{ uri: data.imageURI }}
         style={{
-          width: 236,
+          width: contentWidth,
           height: 236,
           alignSelf: "center",
           borderRadius: 12,
         }}
       />
 
-      <View style={{ marginHorizontal: 16 }}>
+      <View style={{ marginHorizontal: 16, width: contentWidth }}>
         <BrandText
           style={{ marginTop: 16, fontSize: 14 }}
           ellipsizeMode="tail"
@@ -68,7 +66,7 @@ export const NFTView: React.FC<{
             >
               {data.collectionName}
             </BrandText>
-            {data.isCertified && <SVG source={certifiedIconSVG} />}
+            {data.isCertified && <SVG source={certifiedSVG} />}
           </View>
           <View
             style={{
@@ -96,14 +94,15 @@ export const NFTView: React.FC<{
           borderBottomWidth: 1,
           marginBottom: 14,
           marginTop: 12,
+          width: "100%",
+          height: 1,
         }}
       />
       <View
         style={{
           flexDirection: "row",
           alignItems: "center",
-          marginHorizontal: 16,
-          flex: 1,
+          width: contentWidth,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
@@ -119,8 +118,10 @@ export const NFTView: React.FC<{
             {data.floorPrice ? "Floor Price" : "Not Listed"}
           </BrandText>
         </View>
-        {!!data.floorPrice && <SecondaryAltButton text={data.floorPrice} />}
+        {!!data.floorPrice && (
+          <SecondaryButton size="XS" text={data.floorPrice} />
+        )}
       </View>
-    </CardOutline>
+    </TertiaryBox>
   );
 });

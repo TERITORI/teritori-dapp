@@ -3,13 +3,12 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
-import { ExternalLink } from "../../components/ExternalLink";
+import { CopyToClipboard } from "../../components/CopyToClipboard";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
-import { CopyToClipboardCard } from "../../components/cards/CopyToClipboardCard";
+import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { BackTo } from "../../components/navigation/BackTo";
-import { NameAndTldText } from "../../components/teritoriNameService/NameAndTldText";
+import { NameData } from "../../components/teritoriNameService/NameData";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { SendFundModal } from "../../components/teritoriNameService/SendFundsModal";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -17,12 +16,6 @@ import { useTNS } from "../../context/TNSProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-import { neutral33, neutral77 } from "../../utils/style/colors";
-import {
-  imageDisplayLabel,
-  prettyTokenData,
-  publicNameDisplayLabel,
-} from "../../utils/teritori";
 import { isTokenOwnedByUser } from "../../utils/tns";
 
 const NotOwnerActions = () => {
@@ -30,12 +23,14 @@ const NotOwnerActions = () => {
   const isKeplrConnected = useIsKeplrConnected();
   return (
     <>
+      {/*TODO: Fix: goBack() fails sometimes*/}
       <BackTo label="Back" />
       <PrimaryButton
+        size="XL"
         disabled={!isKeplrConnected}
         text="Send funds"
         style={{ marginLeft: 24 }}
-        // TODO: if no signed, conenctKeplr, then, open modal
+        // TODO: if no signed, connectKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}
       />
       <SendFundModal
@@ -52,12 +47,14 @@ const OwnerActions = () => {
   return (
     <>
       <BackTo label="Back" />
-      <SecondaryAltButton
+      <SecondaryButton
+        size="M"
         text="Update metadata"
         style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("TNSUpdateName", { name })}
       />
-      <SecondaryAltButton
+      <SecondaryButton
+        size="M"
         text="Burn"
         style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("TNSBurnName", { name })}
@@ -122,81 +119,15 @@ export const TNSConsultNameScreen: React.FC<{
             >
               <NameNFT style={{ marginBottom: 20 }} name={name} />
               {token && name && isTokenOwnedByUser(tokens, name) ? (
-                <CopyToClipboardCard
+                <CopyToClipboard
                   text={`https://${window.location.host}/tns/token/${name}`}
                 />
               ) : token && name && !isTokenOwnedByUser(tokens, name) ? (
-                <CopyToClipboardCard text={token.contract_address} />
+                <CopyToClipboard text={token.contract_address} />
               ) : null}
             </View>
 
-            <View
-              style={{
-                borderColor: neutral33,
-                borderWidth: 1,
-                borderRadius: 8,
-                width: "100%",
-                maxWidth: 396,
-                padding: 24,
-                // Remove the marginBottom of the last tokenData
-                paddingBottom: -8,
-              }}
-            >
-              {token ? (
-                <>
-                  <View style={{ flex: 1, marginBottom: 32 }}>
-                    <BrandText
-                      style={{
-                        fontSize: 16,
-                        marginBottom: 8,
-                        color: neutral77,
-                      }}
-                    >
-                      Name
-                    </BrandText>
-                    <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
-                      {name}
-                    </BrandText>
-                  </View>
-
-                  {prettyTokenData(token)
-                    // We display only the raw if there is a value
-                    .filter((data) => data.value)
-                    .map((data, i) => (
-                      <View style={{ flex: 1, marginBottom: 32 }} key={i}>
-                        <BrandText
-                          style={{
-                            fontSize: 16,
-                            marginBottom: 8,
-                            color: neutral77,
-                          }}
-                        >
-                          {data.displayLabel}
-                        </BrandText>
-                        {/*---- We want some style depending on the data type*/}
-                        {data.displayLabel === publicNameDisplayLabel ? (
-                          <NameAndTldText nameAndTldStr={data.value} />
-                        ) : data.displayLabel === imageDisplayLabel ? (
-                          // TODO: Gradient text blue-green
-                          <ExternalLink
-                            externalUrl={data.value}
-                            style={{ letterSpacing: -(20 * 0.04) }}
-                            numberOfLines={1}
-                          >
-                            {data.value}
-                          </ExternalLink>
-                        ) : (
-                          <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
-                            {data.value}
-                          </BrandText>
-                        )}
-                      </View>
-                    ))}
-                </>
-              ) : (
-                <BrandText>Loading</BrandText>
-              )}
-            </View>
+            <NameData token={token} name={name} />
           </>
         )}
       </View>

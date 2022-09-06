@@ -1,38 +1,31 @@
 import React from "react";
-import { View } from "react-native";
 
 import availableSVG from "../../../assets/icons/available.svg";
 import mintedSVG from "../../../assets/icons/minted.svg";
 import { errorColor, successColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
-export const NameStatusCard: React.FC<{
+export const NameStatus: React.FC<{
   available?: boolean;
   hasError?: boolean;
 }> = ({ available, hasError }) => {
   return (
-    <View
-      style={{
-        flex: 1,
+    <TertiaryBox
+      mainContainerStyle={{
         flexDirection: "row",
-        alignItems: "center",
         justifyContent: "flex-start",
+        paddingHorizontal: 12,
         borderColor: hasError
           ? errorColor
           : available
           ? successColor
           : errorColor,
-        borderWidth: 1,
-        borderRadius: 8,
-        backgroundColor: "#000000",
-        height: 48,
-        minHeight: 48,
-        maxHeight: 48,
-        width: 332,
-        paddingHorizontal: 12,
       }}
+      height={48}
+      width={332}
     >
       <SVG
         width={24}
@@ -42,6 +35,6 @@ export const NameStatusCard: React.FC<{
       <BrandText style={{ fontSize: 14, marginLeft: 4 }}>
         {hasError ? "error" : available ? "available" : "minted"}
       </BrandText>
-    </View>
+    </TertiaryBox>
   );
 };

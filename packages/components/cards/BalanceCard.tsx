@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import { primaryColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
@@ -11,7 +11,7 @@ export const BalanceCard: React.FC<{
   balanceTitle?: string;
   balanceText?: string;
   balanceIcon?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }> = ({
   highlighted,
   label,

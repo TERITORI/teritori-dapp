@@ -3,17 +3,13 @@ import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { borderRadius, ButtonsSize, height } from "../../utils/style/buttons";
-import {
-  neutral77,
-  primaryColor,
-  primaryTextColor,
-} from "../../utils/style/colors";
+import { neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
-export const PrimaryButton: React.FC<{
+export const PrimaryButtonOutline: React.FC<{
   size: ButtonsSize;
   text: string;
   width?: number;
@@ -45,13 +41,14 @@ export const PrimaryButton: React.FC<{
 
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled}>
-      <SecondaryBox
+      <TertiaryBox
         height={height(size)}
         mainContainerStyle={{
           flexDirection: "row",
           borderRadius: borderRadius(size),
-          backgroundColor: primaryColor,
+          backgroundColor: "#000000",
           paddingHorizontal: 20,
+          borderColor: primaryColor,
         }}
         {...boxProps}
       >
@@ -67,15 +64,12 @@ export const PrimaryButton: React.FC<{
         <BrandText
           style={[
             fontSemibold14,
-            {
-              color: disabled ? neutral77 : primaryTextColor,
-              textAlign: "center",
-            },
+            { color: disabled ? neutral77 : primaryColor, textAlign: "center" },
           ]}
         >
           {text}
         </BrandText>
-      </SecondaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

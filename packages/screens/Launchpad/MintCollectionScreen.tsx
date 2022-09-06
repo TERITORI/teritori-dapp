@@ -1,20 +1,18 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { Image, StyleProp, View, ViewStyle } from "react-native";
 
-import Guardian1PNG from "../../../assets/default-images/guardian_1.png";
+import guardian1PNG from "../../../assets/default-images/guardian_1.png";
 import discordSVG from "../../../assets/icons/discord.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
 import { BrandText } from "../../components/BrandText";
 import { SocialNetworks } from "../../components/Footer";
-import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SocialButton } from "../../components/buttons/SocialButton";
-import { AttributesCard } from "../../components/cards/AttributesCard";
 import { ProgressionCard } from "../../components/cards/ProgressionCard";
-import { SecondaryCard } from "../../components/cards/SecondaryCard";
 import { BackTo } from "../../components/navigation/BackTo";
 import {
   neutral33,
@@ -23,12 +21,40 @@ import {
   yellowDefault,
 } from "../../utils/style/colors";
 import {
+  fontMedium14,
+  fontSemibold12,
   fontSemibold14,
   fontSemibold16,
   fontSemibold20,
 } from "../../utils/style/fonts";
 
 //TODO: Dynamic data (Collection id is in route.params.id)
+
+const AttributesCard: React.FC<{
+  style?: StyleProp<ViewStyle>;
+  label: string;
+  value: string;
+}> = ({ style, label, value }) => {
+  return (
+    <TertiaryBox
+      style={style}
+      width={132}
+      height={62}
+      mainContainerStyle={{
+        alignItems: "flex-start",
+        paddingHorizontal: 12,
+        paddingVertical: 14,
+      }}
+    >
+      <BrandText
+        style={[fontSemibold12, { color: neutral77, marginBottom: 6 }]}
+      >
+        {label}
+      </BrandText>
+      <BrandText style={fontMedium14}>{value}</BrandText>
+    </TertiaryBox>
+  );
+};
 
 // export const MintCollectionScreen: React.FC<{
 //   route: RouteProp<RootStackParamList, "NSBConsultName">;
@@ -109,6 +135,7 @@ export const MintCollectionScreen: React.FC = () => {
           />
 
           <PrimaryButton
+            size="XL"
             text="Mint now"
             style={{ marginBottom: 24 }}
             width={160}
@@ -124,18 +151,15 @@ export const MintCollectionScreen: React.FC = () => {
           >
             <SocialButton
               text="Discord"
-              iconSvg={<SVG source={discordSVG} />}
+              iconSvg={discordSVG}
               style={{ marginRight: 12 }}
             />
             <SocialButton
               text="Website"
-              iconSvg={<SVG source={websiteSVG} />}
+              iconSvg={websiteSVG}
               style={{ marginRight: 12 }}
             />
-            <SocialButton
-              text="Twitter"
-              iconSvg={<SVG source={twitterSVG} />}
-            />
+            <SocialButton text="Twitter" iconSvg={twitterSVG} />
           </View>
         </View>
 
@@ -151,19 +175,12 @@ export const MintCollectionScreen: React.FC = () => {
             maxHeight: 806,
           }}
         >
-          <SecondaryCard
-            paddingVertical={0}
-            paddingHorizontal={0}
-            width={534}
-            height={534}
-            style={{ marginBottom: 40 }}
-          >
-            {/*SecondaryCard has borders width 1px, so we must remove 2px to height and width from this Image to correctly size it*/}
+          <TertiaryBox width={534} height={534} style={{ marginBottom: 40 }}>
             <Image
-              source={Guardian1PNG}
+              source={guardian1PNG}
               style={{ width: 532, height: 532, borderRadius: 8 }}
             />
-          </SecondaryCard>
+          </TertiaryBox>
 
           <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
             Activity

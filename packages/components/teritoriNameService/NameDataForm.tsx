@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { useTNS } from "../../context/TNSProvider";
-import { neutral33, neutral77 } from "../../utils/style/colors";
+import { neutral77 } from "../../utils/style/colors";
 import { Metadata } from "../../utils/types/tns";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 
@@ -64,22 +65,9 @@ export const NameDataForm: React.FC<{
   }, [initialData]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        width: "100%",
-        maxWidth: 396,
-        maxHeight: isMintPath ? 852 : 700,
-        minHeight: isMintPath ? 852 : 700,
-        paddingBottom: 20,
-        paddingTop: 24,
-        paddingHorizontal: 24,
-        backgroundColor: "#000000",
-        borderWidth: 1,
-        borderColor: neutral33,
-        borderRadius: 8,
-      }}
+    <TertiaryBox
+      width={396}
+      mainContainerStyle={{ paddingHorizontal: 24, paddingVertical: 24 }}
     >
       {isMintPath ? (
         <>
@@ -89,6 +77,7 @@ export const NameDataForm: React.FC<{
               height: 72,
               minHeight: 72,
               flex: 1,
+              marginTop: 4,
               marginBottom: 20,
               alignSelf: "flex-start",
             }}
@@ -115,7 +104,7 @@ export const NameDataForm: React.FC<{
         </>
       ) : null}
       <TextInputCustom
-        style={inputStyle}
+        style={[inputStyle, !isMintPath && { marginTop: 4 }]}
         label="NAME"
         placeHolder="Type name here"
         value={name}
@@ -186,10 +175,11 @@ export const NameDataForm: React.FC<{
         onChangeText={setValidatorOperatorAddress}
       />
       <PrimaryButton
+        size="XL"
         text={btnLabel}
         onPress={handlePressBtn}
         style={{ marginTop: 8 }}
       />
-    </View>
+    </TertiaryBox>
   );
 };

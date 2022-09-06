@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, ViewStyle } from "react-native";
+import { View, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
 
 import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
 import logoTopSVG from "../../assets/logos/logo-hexagon.svg";
@@ -17,7 +17,7 @@ import { WalletsManager } from "./WalletsManager";
 
 // Displayed when no wallet connected. Press to connect wallet
 const ConnectWalletButton: React.FC<{
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   onPress: () => void;
 }> = ({ style, onPress }) => {
   const height = 40;
@@ -56,7 +56,7 @@ const ConnectWalletButton: React.FC<{
 };
 
 export const Header: React.FC<{
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }> = ({ children, style }) => {
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
   const isAConnectedWallet = useAreThereWallets();

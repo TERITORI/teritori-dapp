@@ -6,7 +6,7 @@ import burnSVG from "../../../assets/icons/burn.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
+import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { BackTo } from "../../components/navigation/BackTo";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -166,10 +166,11 @@ export const TNSBurnNameScreen: React.FC<{
             </BrandText>
           </View>
 
-          <SecondaryAltButton
+          <SecondaryButton
+            fullWidth
+            size="XS"
             text="I understand, burn it"
             onPress={onSubmit}
-            style={{ width: "100%" }}
           />
         </View>
       </View>
