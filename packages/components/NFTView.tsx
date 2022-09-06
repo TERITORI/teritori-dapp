@@ -1,7 +1,7 @@
 import React from "react";
 import { ViewStyle, Image, View, StyleProp } from "react-native";
 
-import CertifiedIcon from "../../assets/icons/certified.svg";
+import certifiedIconSVG from "../../assets/icons/certified.svg";
 import outlineStarSVG from "../../assets/icons/outline-star.svg";
 import { neutral33, neutral77 } from "../utils/style/colors";
 import { NFTData } from "../utils/types/nft";
@@ -14,7 +14,7 @@ import { CardOutline } from "./cards/CardOutline";
 export const NFTView: React.FC<{
   data: NFTData;
   style?: StyleProp<ViewStyle>;
-}> = ({ data, style }) => {
+}> = React.memo(({ data, style }) => {
   const collectionFontSize = 12;
   const favoriteCountFontSize = 12;
   const floorPriceLabelFontSize = 12;
@@ -68,7 +68,7 @@ export const NFTView: React.FC<{
             >
               {data.collectionName}
             </BrandText>
-            {data.isCertified && <CertifiedIcon />}
+            {data.isCertified && <SVG source={certifiedIconSVG} />}
           </View>
           <View
             style={{
@@ -103,6 +103,7 @@ export const NFTView: React.FC<{
           flexDirection: "row",
           alignItems: "center",
           marginHorizontal: 16,
+          flex: 1,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
@@ -115,11 +116,11 @@ export const NFTView: React.FC<{
               color: neutral77,
             }}
           >
-            Floor Price
+            {data.floorPrice ? "Floor Price" : "Not Listed"}
           </BrandText>
         </View>
-        <SecondaryAltButton text={data.floorPrice} />
+        {!!data.floorPrice && <SecondaryAltButton text={data.floorPrice} />}
       </View>
     </CardOutline>
   );
-};
+});

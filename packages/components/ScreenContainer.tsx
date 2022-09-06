@@ -10,10 +10,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import {
-  screenContainerContentMarginHorizontal,
-  sidebarWidth,
-} from "../utils/style/layout";
+import { screenContainerContentMarginHorizontal } from "../utils/style/layout";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { WalletsManager } from "./WalletsManager";
@@ -24,15 +21,24 @@ export const ScreenContainer: React.FC<{
   footerChildren?: ReactElement;
   headerStyle?: ViewStyle;
   hideSidebar?: boolean;
+  noMargin?: boolean;
+  noScroll?: boolean;
 }> = ({
   children,
   headerChildren,
   footerChildren,
   headerStyle,
   hideSidebar,
+  noMargin,
+  noScroll,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { height } = useWindowDimensions();
+  const hasMargin = !noMargin;
+  const hasScroll = !noScroll;
+  const marginStyle = hasMargin && {
+    marginHorizontal: screenContainerContentMarginHorizontal,
+  };
 
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
@@ -57,21 +63,25 @@ export const ScreenContainer: React.FC<{
               (!hideSidebar ? <Sidebar /> : null)}
 
             {/*==== Scrollable screen content*/}
-            <ScrollView
-              style={{ width: "100%", flex: 1 }}
-              contentContainerStyle={{
-                flex: 1,
-                marginHorizontal: screenContainerContentMarginHorizontal,
-              }}
-            >
-              <>{children}</>
-            </ScrollView>
+            <View style={{ flex: 1 }}>
+              {hasScroll ? (
+                <ScrollView
+                  style={{ width: "100%", flex: 1 }}
+                  contentContainerStyle={[
+                    {
+                      flex: 1,
+                    },
+                    marginStyle,
+                  ]}
+                >
+                  {children}
+                </ScrollView>
+              ) : (
+                <View style={[{ flex: 1 }, marginStyle]}>{children}</View>
+              )}
+              {footerChildren && <Footer>{footerChildren}</Footer>}
+            </View>
           </View>
-          {/*==== Footer*/}
-          <Footer style={!hideSidebar && { paddingLeft: sidebarWidth }}>
-            {" "}
-            {footerChildren}
-          </Footer>
         </View>
       </View>
     </SafeAreaView>

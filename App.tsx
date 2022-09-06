@@ -13,7 +13,6 @@ import { Provider as ReduxProvider } from "react-redux";
 
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
-import { LaunchpadProvider } from "./packages/context/LaunchpadProvider";
 import { SolanaBalanceProvider } from "./packages/context/SolanaBalanceProvider";
 import { SolanaOwnedNFTsProvider } from "./packages/context/SolanaOwnedNFTsProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -44,10 +43,8 @@ export default function App() {
                 <TeritoriBalanceProvider>
                   <SolanaOwnedNFTsProvider>
                     <TNSContextProvider>
-                      <LaunchpadProvider>
-                        <StatusBar style="inverted" />
-                        <Navigator />
-                      </LaunchpadProvider>
+                      <StatusBar style="inverted" />
+                      <Navigator />
                     </TNSContextProvider>
                   </SolanaOwnedNFTsProvider>
                 </TeritoriBalanceProvider>

@@ -1,13 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
-import { ActivitiesScreen } from "../../screens/Activities/ActivitiesScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScreen";
+import { CollectionActivityScreen } from "../../screens/Marketplace/CollectionActivityScreen";
+import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { MintScreen } from "../../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
@@ -27,7 +28,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const Navigator: React.FC = () => {
   return (
-    // @ts-expect-error
     <Stack.Navigator>
       <Stack.Screen
         name="Home"
@@ -37,11 +37,6 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="MyCollection"
         component={MyCollectionScreen}
-        options={{ header: () => null }}
-      />
-      <Stack.Screen
-        name="Activities"
-        component={ActivitiesScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
@@ -131,6 +126,16 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="TNSMintPath"
         component={TNSMintPathScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="Collection"
+        component={CollectionScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="CollectionActivity"
+        component={CollectionActivityScreen}
         options={{ header: () => null }}
       />
     </Stack.Navigator>

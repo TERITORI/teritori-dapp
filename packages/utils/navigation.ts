@@ -4,10 +4,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 export type RootStackParamList = {
   Home: undefined;
   MyCollection: undefined;
-  Activities: undefined;
+  Activity: undefined;
   Guardians: undefined;
   GuardiansGame: undefined;
-  Marketplace: undefined;
   Wallets: undefined;
   Governance: undefined;
   Mint: undefined;
@@ -24,6 +23,10 @@ export type RootStackParamList = {
   TNSUpdateName: undefined;
   TNSBurnName: undefined;
   TNSMintPath: undefined;
+
+  Marketplace: undefined;
+  Collection: { mintAddress: string };
+  CollectionActivity: { mintAddress: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<
@@ -41,10 +44,9 @@ const navConfig = {
   screens: {
     Home: "",
     MyCollection: "my-collection",
-    Activities: "activities",
+    Activity: "activity",
     Guardians: "guardians",
     Wallets: "wallets",
-    Marketplace: "marketplace",
     GuardiansGame: "guardians-game",
     Mint: "mint",
     Governance: "governance",
@@ -64,6 +66,10 @@ const navConfig = {
     TNSUpdateName: "tns/tokens/:name/update",
     TNSBurnName: "tns/tokens/:name/burn",
     TNSMintPath: "tns/tokens/:name/mint-path",
+
+    Marketplace: "marketplace",
+    Collection: "collection/:mintAddress",
+    CollectionActivity: "collection/:mintAddress/activity",
   },
 };
 

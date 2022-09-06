@@ -14,7 +14,7 @@ import { WalletSelector } from "../WalletSelector";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { BalanceCard } from "../cards/BalanceCard";
 
-export type HubPageName = "Home" | "MyCollection" | "Activities" | "Guardians";
+export type HubPageName = "Home" | "MyCollection" | "Activity" | "Guardians";
 
 const MyCollectionCard: React.FC<{
   style?: ViewStyle;
@@ -36,7 +36,7 @@ const MyCollectionCard: React.FC<{
   );
 };
 
-const ActivitiesCard: React.FC<{
+const ActivityCard: React.FC<{
   style?: ViewStyle;
   highlighted?: boolean;
 }> = ({ style, highlighted }) => {
@@ -44,12 +44,12 @@ const ActivitiesCard: React.FC<{
   const { totalString } = useSolanaBalance();
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Activities")}
+      onPress={() => navigation.navigate("Activity")}
       style={style}
     >
       <BalanceCard
         highlighted={highlighted}
-        label="Activities"
+        label="Activity"
         balanceTitle="Total Wallet Amount"
         balanceText={totalString}
       />
@@ -103,9 +103,9 @@ const ConnectedIntro: React.FC = () => {
             style={{ margin: 30 }}
             highlighted={currentRoutName === "MyCollection"}
           />
-          <ActivitiesCard
+          <ActivityCard
             style={{ margin: 30 }}
-            highlighted={currentRoutName === "Activities"}
+            highlighted={currentRoutName === "Activity"}
           />
           <GuardiansCard
             style={{ margin: 30 }}
