@@ -4,6 +4,9 @@ CANDYMACHINE_PACKAGE=teritori-nft-minter
 NAME_SERVICE_REPO=teritori-name-service
 NAME_SERVICE_PACKAGE=teritori-name-service
 
+RIOTER_FOOTER_REPO=rioter-footer-nft
+RIOTER_FOOTER_PACKAGE=rioter-footer-nft
+
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
@@ -61,3 +64,17 @@ packages/$(NAME_SERVICE_PACKAGE): node_modules
 		--name $(NAME_SERVICE_PACKAGE) \
 		--no-bundle
 	rm -fr $(NAME_SERVICE_REPO)
+
+.PHONY: packages/$(RIOTER_FOOTER_PACKAGE)
+packages/$(RIOTER_FOOTER_PACKAGE): node_modules
+	rm -fr $(RIOTER_FOOTER_REPO)
+	git clone git@github.com:TERITORI/$(RIOTER_FOOTER_REPO).git
+	cd $(RIOTER_FOOTER_REPO) && git checkout a75455535551010acbc33784aa09ff2b1a890a7d
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(RIOTER_FOOTER_REPO)/contracts/rioter_footer_nft/schema \
+		--out $@ \
+		--name $(RIOTER_FOOTER_PACKAGE) \
+		--no-bundle
+	rm -fr $(RIOTER_FOOTER_REPO)
