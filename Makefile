@@ -1,6 +1,9 @@
 CANDYMACHINE_REPO=terra-candymachine
 CANDYMACHINE_PACKAGE=teritori-nft-minter
 
+NAME_SERVICE_REPO=teritori-name-service
+NAME_SERVICE_PACKAGE=teritori-name-service
+
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
@@ -44,3 +47,17 @@ packages/$(CANDYMACHINE_PACKAGE): node_modules
 		--name $(CANDYMACHINE_PACKAGE) \
 		--no-bundle
 	rm -fr $(CANDYMACHINE_REPO)
+
+.PHONY: packages/$(NAME_SERVICE_PACKAGE)
+packages/$(NAME_SERVICE_PACKAGE): node_modules
+	rm -fr $(NAME_SERVICE_REPO)
+	git clone git@github.com:TERITORI/$(NAME_SERVICE_REPO).git
+	cd $(NAME_SERVICE_REPO) && git checkout f3b3ac169418ff2044443c7a0c58b6aaf6f8b153
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(NAME_SERVICE_REPO)/schema \
+		--out $@ \
+		--name $(NAME_SERVICE_PACKAGE) \
+		--no-bundle
+	rm -fr $(NAME_SERVICE_REPO)
