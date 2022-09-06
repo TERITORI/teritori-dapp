@@ -7,12 +7,14 @@ NAME_SERVICE_PACKAGE=teritori-name-service
 RIOTER_FOOTER_REPO=rioter-footer-nft
 RIOTER_FOOTER_PACKAGE=rioter-footer-nft
 
+CONTRACTS_CLIENTS_DIR=packages/contracts-clients
+
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
 
 .PHONY: generate
-generate: generate.protobuf generate.graphql
+generate: generate.protobuf generate.graphql generate.contracts-clients
 
 .PHONY: generate.protobuf
 generate.protobuf: node_modules
@@ -37,8 +39,11 @@ go/pkg/holagql/holaplex-schema.graphql:
 docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 
-.PHONY: packages/$(CANDYMACHINE_PACKAGE)
-packages/$(CANDYMACHINE_PACKAGE): node_modules
+.PHONY: generate.contracts-clients
+generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE): node_modules
 	rm -fr $(CANDYMACHINE_REPO)
 	git clone git@github.com:TERITORI/$(CANDYMACHINE_REPO).git
 	cd $(CANDYMACHINE_REPO) && git checkout e14d8abab6c82fd44f6d3d229bb278227cecc7e7
@@ -51,11 +56,11 @@ packages/$(CANDYMACHINE_PACKAGE): node_modules
 		--no-bundle
 	rm -fr $(CANDYMACHINE_REPO)
 
-.PHONY: packages/$(NAME_SERVICE_PACKAGE)
-packages/$(NAME_SERVICE_PACKAGE): node_modules
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE): node_modules
 	rm -fr $(NAME_SERVICE_REPO)
 	git clone git@github.com:TERITORI/$(NAME_SERVICE_REPO).git
-	cd $(NAME_SERVICE_REPO) && git checkout f3b3ac169418ff2044443c7a0c58b6aaf6f8b153
+	cd $(NAME_SERVICE_REPO) && git checkout 251733d569b931fdfcc15cedb7414bafe5ba2598
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
@@ -65,8 +70,8 @@ packages/$(NAME_SERVICE_PACKAGE): node_modules
 		--no-bundle
 	rm -fr $(NAME_SERVICE_REPO)
 
-.PHONY: packages/$(RIOTER_FOOTER_PACKAGE)
-packages/$(RIOTER_FOOTER_PACKAGE): node_modules
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE): node_modules
 	rm -fr $(RIOTER_FOOTER_REPO)
 	git clone git@github.com:TERITORI/$(RIOTER_FOOTER_REPO).git
 	cd $(RIOTER_FOOTER_REPO) && git checkout a75455535551010acbc33784aa09ff2b1a890a7d
