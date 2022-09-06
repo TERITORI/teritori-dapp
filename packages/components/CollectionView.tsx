@@ -41,7 +41,9 @@ export const CollectionView: React.FC<{
             borderRadius: 12,
           }}
         />
-        <View style={{ marginHorizontal: 12, marginTop: 16, width: contentWidth }}>
+        <View
+          style={{ marginHorizontal: 12, marginTop: 16, width: contentWidth }}
+        >
           <BrandText
             style={{ fontSize: 14 }}
             ellipsizeMode="tail"
