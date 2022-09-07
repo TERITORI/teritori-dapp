@@ -7,6 +7,4 @@
 /web-build
 
 # generated packages
-/packages/contracts-clients/teritori-nft-minter
-/packages/contracts-clients/teritori-name-service
-/packages/contracts-clients/rioter-footer-nft
+/packages/contracts-clients

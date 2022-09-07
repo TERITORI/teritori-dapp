@@ -1,5 +1,7 @@
 CANDYMACHINE_REPO=terra-candymachine
 CANDYMACHINE_PACKAGE=teritori-nft-minter
+TOKEN_REPO=terra-candymachine
+TOKEN_PACKAGE=teritori-nft
 
 NAME_SERVICE_REPO=teritori-name-service
 NAME_SERVICE_PACKAGE=teritori-name-service
@@ -40,7 +42,7 @@ docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 
 .PHONY: generate.contracts-clients
-generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE)
+generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE)
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE): node_modules
@@ -83,3 +85,17 @@ $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE): node_modules
 		--name $(RIOTER_FOOTER_PACKAGE) \
 		--no-bundle
 	rm -fr $(RIOTER_FOOTER_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules
+	rm -fr $(TOKEN_REPO)
+	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
+	cd $(TOKEN_REPO) && git checkout c6ef0c279d2e616a1a3774c6709d43c897a30d2e
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema ../terra-candymachine/schema/nft-token \
+		--out $@ \
+		--name $(TOKEN_PACKAGE) \
+		--no-bundle
+	rm -fr $(TOKEN_REPO)
