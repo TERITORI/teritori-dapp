@@ -12,6 +12,7 @@ module.exports = {
         "electron-webpack.js",
         "metro.config.js",
         "electron/main/**",
+        "packages/candymachine/**",
       ],
     },
   ],

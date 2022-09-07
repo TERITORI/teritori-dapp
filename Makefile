@@ -99,3 +99,6 @@ $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules
 		--name $(TOKEN_PACKAGE) \
 		--no-bundle
 	rm -fr $(TOKEN_REPO)
+
+run.candymachine: node_modules
+	npx ts-node packages/candymachine/cli.ts
