@@ -1,4 +1,5 @@
 import { Currency, Keplr } from "@keplr-wallet/types";
+import { Decimal, GasPrice } from "cosmwasm";
 
 import { Metadata } from "./types/tns";
 
@@ -6,7 +7,7 @@ export const UTORI_PER_TORI = process.env.PUBLIC_BASE_MINT_FEE;
 export const teritoriRestProvider = process.env.PUBLIC_CHAIN_REST_ENDPOINT;
 export const teritoriRPCProvider = process.env.PUBLIC_CHAIN_RPC_ENDPOINT;
 export const teritoriChainId = process.env.PUBLIC_CHAIN_ID;
-const toriDisplayDenom = process.env.PUBLIC_CHAIN_NAME;
+const toriDisplayDenom = process.env.PUBLIC_STAKING_DENOM_DISPLAY_NAME;
 const toriDenom = process.env.PUBLIC_STAKING_DENOM;
 const teritoriBechPrefix = process.env.PUBLIC_CHAIN_BECH32_PREFIX;
 
@@ -29,7 +30,7 @@ export const getUtoriBalance = async (address: string) => {
     .reduce((total, balance) => total + parseInt(balance.amount, 10), 0);
 };
 
-const toriCurrency: Currency = {
+export const toriCurrency: Currency = {
   // Coin denomination to be displayed to the user.
   coinDenom: toriDisplayDenom,
   // Actual denom (i.e. uatom, uscrt) used by the blockchain.
@@ -40,6 +41,11 @@ const toriCurrency: Currency = {
   // You can get id from https://api.coingecko.com/api/v3/coins/list if it is listed.
   // coinGeckoId: ""
 };
+
+export const teritoriGasPrice = new GasPrice(
+  Decimal.fromUserInput("0.025", toriCurrency.coinDecimals),
+  toriCurrency.coinMinimalDenom
+);
 
 export const keplrSuggestTeritori = (keplr: Keplr) =>
   keplr.experimentalSuggestChain({

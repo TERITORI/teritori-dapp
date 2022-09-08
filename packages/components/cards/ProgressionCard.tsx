@@ -11,15 +11,20 @@ export const ProgressionCard: React.FC<{
   label: string;
   valueCurrent: number;
   valueMax: number;
-}> = ({ style, label, valueCurrent, valueMax }) => {
+  fullWidth?: boolean;
+}> = ({ style, label, valueCurrent, valueMax, fullWidth }) => {
   const percent = Math.round((valueCurrent * 100) / valueMax);
 
   return (
     <TertiaryBox
       style={style}
-      width={420}
       height={100}
-      mainContainerStyle={{ paddingHorizontal: 16, paddingVertical: 16 }}
+      fullWidth
+      mainContainerStyle={{
+        paddingHorizontal: 16,
+        paddingVertical: 16,
+        width: "100%",
+      }}
     >
       <View style={{ zIndex: 2, width: "100%" }}>
         <BrandText style={[fontSemibold12, { marginBottom: 8 }]}>

@@ -86,6 +86,8 @@ const renderItem: ListRenderItem<NFT> = (info) => {
         owned: false,
         imageURI: nft.imageUri,
         collectionName: "Collection",
+        collectionId: "TODO",
+        collectionDiscriminator: "TODO",
         isCertified: true,
         floorPrice: nft.price,
         favoritesCount: 420,

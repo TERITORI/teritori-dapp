@@ -6,6 +6,8 @@ export interface NFTData {
   owned: boolean;
   imageURI: string;
   collectionName: string;
+  collectionId: string;
+  collectionDiscriminator: string;
   isCertified: boolean;
   floorPrice: string;
   favoritesCount: number;

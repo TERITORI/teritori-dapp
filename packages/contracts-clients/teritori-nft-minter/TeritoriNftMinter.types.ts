@@ -16,6 +16,7 @@ export interface ConfigResponse {
   nft_price_amount: Uint128;
   nft_symbol: string;
   owner: string;
+  price_denom: string;
   whitelist_mint_max?: Uint128 | null;
   whitelist_mint_period: number;
   whitelisted_size: Uint128;

@@ -12,7 +12,7 @@ export type RootStackParamList = {
   Mint: undefined;
 
   Launchpad: undefined;
-  MintCollection: undefined;
+  MintCollection: { id: string };
 
   TNSHome: undefined;
   TNSExplore: undefined;
