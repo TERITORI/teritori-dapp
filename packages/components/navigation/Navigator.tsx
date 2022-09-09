@@ -23,6 +23,7 @@ import { TNSMintNameScreen } from "../../screens/TeritoriNameService/TNSMintName
 import { TNSMintPathScreen } from "../../screens/TeritoriNameService/TNSMintPathScreen";
 import { TNSRegisterScreen } from "../../screens/TeritoriNameService/TNSRegisterScreen";
 import { TNSUpdateNameScreen } from "../../screens/TeritoriNameService/TNSUpdateNameScreen";
+import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletsScreen } from "../../screens/Wallets/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
 
@@ -70,6 +71,11 @@ export const Navigator: React.FC = () => {
         name="Wallets"
         component={WalletsScreen}
         options={{ presentation: "transparentModal", header: () => null }}
+      />
+      <Stack.Screen
+        name="WalletManager"
+        component={WalletManagerScreen}
+        options={{ header: () => null }}
       />
 
       {/* ==== Launchpad */}

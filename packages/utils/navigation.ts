@@ -8,6 +8,7 @@ export type RootStackParamList = {
   Guardians: undefined;
   GuardiansGame: undefined;
   Wallets: undefined;
+  WalletManager: undefined;
   Governance: undefined;
   Mint: undefined;
 
@@ -52,6 +53,7 @@ const navConfig: {
     Activity: "activity",
     Guardians: "guardians",
     Wallets: "wallets",
+    WalletManager: "wallet-manager",
     GuardiansGame: "guardians-game",
     Mint: "mint",
     Governance: "governance",
