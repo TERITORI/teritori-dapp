@@ -8,7 +8,6 @@ import {
   neutral77,
   primaryColor,
   errorColor,
-  neutral22,
 } from "../../utils/style/colors";
 import Slider from "../Slider";
 import { IconButton } from "../buttons/IconButton";
