@@ -6,8 +6,8 @@ import nftSvg from "../../../assets/icons/nft.svg";
 import shapeSvg from "../../../assets/icons/shape.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { neutral33, neutral77 } from "../../utils/style/colors";
+import { TextInputCustomBorder } from "../inputs/TextInputCustomBorder";
 import CollectionItem from "./CollectionItem";
 
 export const fakeNft = [
@@ -172,10 +172,15 @@ const ListHeaderComponent: React.FC<{
         </TouchableOpacity>
         <BrandText style={{ fontSize: 14 }}>Choose NFT Artwork</BrandText>
       </View>
-      <TextInputCustom
-        style={{ minWidth: 220, minHeight: 40 }}
-        label=""
-        placeHolder="Search"
+      <TextInputCustomBorder
+        style={{
+          minWidth: 20,
+          width: 220,
+          minHeight: 40,
+          borderRadius: 8,
+          backgroundColor: "black",
+        }}
+        placeHolder="Search collection or NFT"
         value={searchNft}
         onChangeText={setSearchNft}
       />

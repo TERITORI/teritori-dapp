@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, ScrollView, Image } from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
 
@@ -23,7 +23,7 @@ import NftTypeTab from "../../components/riotersFooter/NftTypeTab";
 import SelectNewNft, {
   fakeNft,
 } from "../../components/riotersFooter/SelectedNewNft";
-import { neutral33 } from "../../utils/style/colors";
+import { neutral33, primaryColor } from "../../utils/style/colors";
 
 const fakeNewNtfCollections = [
   {
@@ -392,13 +392,16 @@ export const RiotersFooterScreen: React.FC = () => {
                     });
                   }
                 }}
-                renderContent={() => (
-                  <DraxViewReceiverContent
-                    oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
-                    nftDrop={nftDrop}
-                    nftPositions={nftPositions}
-                  />
-                )}
+                renderContent={() =>
+                  oldNftPositionsWithZIndex && (
+                    <DraxViewReceiverContent
+                      oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
+                      nftDrop={nftDrop}
+                      setNftPositions={setNftPositions}
+                      nftPositions={nftPositions}
+                    />
+                  )
+                }
               />
             </View>
           </View>
@@ -411,6 +414,7 @@ export const RiotersFooterScreen: React.FC = () => {
 const DraxViewReceiverContent = ({
   oldNftPositionsWithZIndex,
   nftDrop,
+  setNftPositions,
   nftPositions,
 }) => {
   const NtfDragAndDropInReceiverViewCallback = useCallback(
@@ -433,11 +437,11 @@ const DraxViewReceiverContent = ({
         style={{
           alignSelf: "center",
           marginTop: 43,
-          zIndex: oldNftPositionsWithZIndex + 1,
+          zIndex: oldNftPositionsWithZIndex.length + 1,
         }}
       />
       {oldNftPositionsWithZIndex &&
-        oldNftPositionsWithZIndex.map((nft, index) => (
+        oldNftPositionsWithZIndex.map((nft: any, index: number) => (
           <SVG
             key={nft.id}
             width={nft.width}
@@ -482,6 +486,9 @@ const NtfDragAndDropInReceiverView = ({
         left: nftPositions.x,
         top: nftPositions.y,
         zIndex: oldNftPositionsWithZIndex.length,
+        padding: 4,
+        borderColor: primaryColor,
+        borderWidth: 1,
       }}
       draggingStyle={{ opacity: 0.5 }}
     >

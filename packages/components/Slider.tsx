@@ -29,7 +29,7 @@ const Slider: React.FC<{
 }) => {
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: (_, ctx: any) => {
-      ctx.offsetX = value - widthThumb / 2;
+      ctx.offsetX = value;
     },
     onActive: (event, ctx) => {
       onValueChange(clamp(ctx.offsetX + event.translationX, 0, width));

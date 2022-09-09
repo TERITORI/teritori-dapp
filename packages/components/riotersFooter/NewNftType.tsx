@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from "react-native";
 import addSvg from "../../../assets/icons/add.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
+import { TextInputCustomBorder } from "../inputs/TextInputCustomBorder";
 import CollectionItem from "./CollectionItem";
 
 const NewNftType: React.FC<{
@@ -23,9 +23,15 @@ const NewNftType: React.FC<{
       <BrandText style={{ fontSize: 14, marginTop: 20 }}>
         Choose Collection
       </BrandText>
-      <TextInputCustom
-        style={{ marginVertical: 12, minWidth: 220, minHeight: 40 }}
-        label=""
+      <TextInputCustomBorder
+        style={{
+          marginVertical: 12,
+          minWidth: 20,
+          width: 220,
+          minHeight: 40,
+          borderRadius: 8,
+          backgroundColor: "black",
+        }}
         placeHolder="Search collection or NFT"
         value={searchNewNftCollection}
         onChangeText={setSearchNewNftCollection}

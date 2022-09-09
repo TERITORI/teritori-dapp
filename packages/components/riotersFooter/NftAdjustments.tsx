@@ -7,8 +7,12 @@ import {
   neutral44,
   neutral77,
   primaryColor,
+  errorColor,
+  neutral22,
 } from "../../utils/style/colors";
 import Slider from "../Slider";
+import { IconButton } from "../buttons/IconButton";
+import { PrimaryButton } from "../buttons/PrimaryButton";
 import CollectionItem from "./CollectionItem";
 
 const NftAdjustments: React.FC<{
@@ -46,7 +50,7 @@ const NftAdjustments: React.FC<{
   );
 
   return (
-    <View style={{ width: 220 }}>
+    <View style={{ width: 220, flex: 1 }}>
       <BrandText style={{ fontSize: 14, color: neutral77 }}>
         NFT info & adjustments
       </BrandText>
@@ -140,6 +144,37 @@ const NftAdjustments: React.FC<{
         >
           {price} $TORI
         </BrandText>
+      </View>
+      <View style={{ flex: 1, justifyContent: "flex-end" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 2,
+          }}
+        >
+          <IconButton
+            icon={require("../../../assets/icons/trash.svg")}
+            iconColor={errorColor}
+            iconHeight={12}
+            iconWidth={12}
+            onPress={() => {
+              setNftDrop(undefined);
+              setNftPositions(undefined);
+            }}
+            width={56}
+            height={48}
+            backgroundColor="#F46F761A"
+            style={{ borderWidth: 1, borderRadius: 6 }}
+            borderColor={errorColor}
+          />
+          <PrimaryButton
+            width={128}
+            height={48}
+            onPress={() => {}}
+            text="Submit"
+          />
+        </View>
       </View>
     </View>
   );
