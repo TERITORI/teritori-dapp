@@ -6,7 +6,7 @@ interface DefaultValue {
 }
 const defaultValue: DefaultValue = {
   name: "",
-  setName: undefined,
+  setName: () => {},
 };
 
 const TNSContext = createContext(defaultValue);

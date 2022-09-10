@@ -25,7 +25,7 @@ const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
 export const ModalBase: React.FC<{
   label: string;
-  onClose: () => void;
+  onClose?: () => void;
   width?: number;
   visible?: boolean;
   childrenBottom?: JSX.Element | JSX.Element[];

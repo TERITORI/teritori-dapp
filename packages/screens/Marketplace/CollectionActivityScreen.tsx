@@ -27,6 +27,9 @@ const useCollectionActivity = (
       const stream = backendClient.CollectionActivity(offsetReq);
       let newActivity: Activity[] = [];
       await stream.forEach((response) => {
+        if (!response.activity) {
+          return;
+        }
         newActivity = [...newActivity, response.activity];
       });
       setActivity((activity) => [...activity, ...newActivity]);

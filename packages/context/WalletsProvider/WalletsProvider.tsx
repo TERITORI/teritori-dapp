@@ -42,7 +42,7 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       return wallet;
     });
 
-    if (hasPhantom) {
+    if (hasPhantom && phantomWallet) {
       const storePhantomWalletIndex = wallets.findIndex(
         (wallet) =>
           wallet.network === phantomWallet.network &&
@@ -56,7 +56,7 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       }
     }
 
-    if (hasKeplr) {
+    if (hasKeplr && keplrWallets) {
       if (keplrWallets.length === 1 && !keplrWallets[0].connected) {
         wallets.unshift(keplrWallets[0]);
       } else {

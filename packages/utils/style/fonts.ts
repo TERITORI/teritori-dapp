@@ -1,6 +1,6 @@
 import { StyleProp, TextStyle } from "react-native";
 
-export const exoFontFamilyFromFontWeight = (weight: string) => {
+export const exoFontFamilyFromFontWeight = (weight: string | undefined) => {
   switch (weight) {
     case "500":
       return "Exo_500Medium";

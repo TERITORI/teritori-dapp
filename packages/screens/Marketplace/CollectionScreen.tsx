@@ -48,6 +48,9 @@ const useCollectionNFTs = (
       const stream = backendClient.CollectionNFTs(offsetReq);
       let newNFTS: NFT[] = [];
       await stream.forEach((response) => {
+        if (!response.nft) {
+          return;
+        }
         newNFTS = [...newNFTS, response.nft];
       });
       setNFTs((collec) => [...collec, ...newNFTS]);

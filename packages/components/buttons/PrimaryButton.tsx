@@ -45,7 +45,7 @@ export const PrimaryButton: React.FC<{
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePress = useCallback(async () => {
-    if (isLoading) {
+    if (isLoading || !onPress) {
       return;
     }
     setIsLoading(true);

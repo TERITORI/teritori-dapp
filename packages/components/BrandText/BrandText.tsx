@@ -11,7 +11,9 @@ export const BrandText: React.FC<TextProps> = (props) => {
   return (
     <BrandTextBase
       style={[
-        { fontFamily: exoFontFamilyFromFontWeight(flatStyle?.fontWeight) },
+        {
+          fontFamily: exoFontFamilyFromFontWeight(flatStyle?.fontWeight),
+        },
         style,
       ]}
       {...otherProps}

@@ -7,9 +7,12 @@ import { BrandText } from "../BrandText";
 
 // A text with the substring ".xxx" grayed
 export const NameAndTldText: React.FC<{
-  nameAndTldStr: string;
+  nameAndTldStr: string | null | undefined;
   style?: StyleProp<ViewStyle>;
 }> = ({ nameAndTldStr, style }) => {
+  if (!nameAndTldStr) {
+    return null;
+  }
   return (
     <View style={[{ flex: 1, flexDirection: "row", width: "100%" }, style]}>
       {/*---- White part*/}

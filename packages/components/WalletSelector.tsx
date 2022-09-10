@@ -39,7 +39,7 @@ const WalletView: React.FC<{
   const fontSize = 14;
   return (
     <View style={[{ flexDirection: "row", alignItems: "center" }, style]}>
-      <NetworkIcon network={wallet.network} />
+      <NetworkIcon network={wallet?.network} />
       <BrandText
         style={{
           color: "white",
@@ -49,9 +49,9 @@ const WalletView: React.FC<{
           fontWeight: "500",
         }}
       >
-        {tinyAddress(wallet.publicKey)}
+        {tinyAddress(wallet?.publicKey || "")}
       </BrandText>
-      {wallet.provider === WalletProvider.Store && (
+      {wallet?.provider === WalletProvider.Store && (
         <Text style={{ marginLeft: 12 }}>👁️</Text>
       )}
     </View>

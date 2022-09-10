@@ -33,6 +33,9 @@ export const MyCollectionScreen: React.FC = () => {
   // FIXME: don't rely on the first nft being properly formatted
   const byCollection = [...teritoriNFTs, ...solanaNFTs].reduce(
     (byCollection, nft) => {
+      if (!nft.network) {
+        return byCollection;
+      }
       if (!byCollection[nft.collectionId]) {
         byCollection[nft.collectionId] = {
           collectionName: nft.collectionName,
@@ -135,6 +138,10 @@ const useTeritoriOwnedNFTs = () => {
 
           for (const tokenId of myTokens) {
             const info = await nftClient.nftInfo({ tokenId });
+            if (!info.token_uri) {
+              console.error("token has no uri");
+              continue;
+            }
             const gatewayURI = ipfsURLToHTTPURL(info.token_uri);
             const metadataReply = await fetch(gatewayURI);
             const metadata = await metadataReply.json();

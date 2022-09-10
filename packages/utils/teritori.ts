@@ -11,6 +11,17 @@ const toriDisplayDenom = process.env.PUBLIC_STAKING_DENOM_DISPLAY_NAME;
 const toriDenom = process.env.PUBLIC_STAKING_DENOM;
 const teritoriBechPrefix = process.env.PUBLIC_CHAIN_BECH32_PREFIX;
 
+if (
+  !toriDisplayDenom ||
+  !toriDenom ||
+  !teritoriBechPrefix ||
+  !teritoriChainId ||
+  !teritoriRPCProvider ||
+  !teritoriRestProvider
+) {
+  throw new Error("missing teritori environment variable(s)");
+}
+
 interface CosmosBalancesResponse {
   balances: { denom: string; amount: string }[];
 }

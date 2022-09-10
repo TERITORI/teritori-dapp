@@ -15,11 +15,11 @@ export const CarouselSection: React.FC<
     title: string;
   } & TCarouselProps
 > = (props) => {
-  const carouselRef = useRef<ICarouselInstance>();
+  const carouselRef = useRef<ICarouselInstance | null>(null);
   const { children, title, width, style, data, ...carouselProps } = props;
   const viewWidth = StyleSheet.flatten(style).width;
   const step = Math.floor(
-    (typeof viewWidth === "number" ? viewWidth : 0) / width
+    (typeof viewWidth === "number" ? viewWidth : 0) / (width || 0)
   );
   const navRef = useRef(false);
 
@@ -27,13 +27,13 @@ export const CarouselSection: React.FC<
     <View style={{ flexDirection: "row", alignItems: "center" }}>
       <TouchableOpacity
         onPress={() => {
-          if (navRef.current || step === 0) {
+          if (!carouselRef.current || navRef.current || step === 0) {
             return;
           }
           navRef.current = true;
           let finalStep = step;
-          if (carouselRef.current?.getCurrentIndex() < finalStep) {
-            finalStep = carouselRef.current?.getCurrentIndex();
+          if (carouselRef.current.getCurrentIndex() < finalStep) {
+            finalStep = carouselRef.current?.getCurrentIndex() || 0;
           }
           if (finalStep === 0) {
             navRef.current = false;
@@ -50,13 +50,12 @@ export const CarouselSection: React.FC<
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          if (navRef.current || step === 0) {
+          if (!carouselRef.current || navRef.current || step === 0) {
             return;
           }
           navRef.current = true;
           const finalStep = step;
-          const remaining =
-            data.length - carouselRef.current?.getCurrentIndex();
+          const remaining = data.length - carouselRef.current.getCurrentIndex();
           if (remaining <= finalStep) {
             navRef.current = false;
             return;
@@ -81,7 +80,7 @@ export const CarouselSection: React.FC<
         data={data}
         ref={carouselRef}
         style={style}
-        width={width}
+        width={width || 0}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
         {...carouselProps}
       />

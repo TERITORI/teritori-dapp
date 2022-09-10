@@ -6,16 +6,24 @@ import { teritoriGasPrice } from "./teritori";
 const PUBLIC_RPC_ENDPOINT = process.env.PUBLIC_CHAIN_RPC_ENDPOINT || "";
 const PUBLIC_CHAIN_ID = process.env.PUBLIC_CHAIN_ID;
 
+if (!PUBLIC_CHAIN_ID) {
+  throw new Error("missing PUBLIC_CHAIN_ID in env");
+}
+
 export function isKeplrInstalled() {
   return !!(window as KeplrWindow)?.keplr;
 }
 
-export const getKeplrOfflineSigner = () => {
-  if (!isKeplrInstalled()) {
+export const getKeplr = () => {
+  const keplrWindow = window as KeplrWindow;
+  if (!keplrWindow.keplr) {
     throw new Error("keplr not installed");
   }
+  return keplrWindow.keplr;
+};
 
-  return (window as KeplrWindow).keplr.getOfflineSigner(PUBLIC_CHAIN_ID);
+export const getKeplrOfflineSigner = () => {
+  return getKeplr().getOfflineSigner(PUBLIC_CHAIN_ID);
 };
 
 export const getKeplrAccounts = async () => {

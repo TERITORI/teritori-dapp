@@ -8,6 +8,7 @@ export const numberWithThousandsSeparator = (
   if (typeof yourBigNumber === "string") {
     return yourBigNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+  return "?";
 };
 
 export const thousandSeparatedToNumber = (str: string): string =>

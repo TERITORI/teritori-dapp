@@ -1,3 +1,4 @@
+import { PublicKey } from "@solana/web3.js";
 import { useEffect, useMemo, useState } from "react";
 
 import { addWallet } from "../../store/slices/wallets";
@@ -25,7 +26,7 @@ export const usePhantom: () => UsePhantomResult = () => {
 
     console.log("phantom installed");
 
-    const handleConnect = (pk) => {
+    const handleConnect = (pk: PublicKey) => {
       console.log("phantom connected");
       if (!pk) {
         return;
@@ -34,13 +35,13 @@ export const usePhantom: () => UsePhantomResult = () => {
     };
     phantom.on("connect", handleConnect);
 
-    const handleDisconnect = (pk) => {
+    const handleDisconnect = (pk: PublicKey) => {
       console.log("phantom disconnected");
       setPublicKey("");
     };
     phantom.on("disconnect", handleDisconnect);
 
-    const handleAccountChanged = async (pk) => {
+    const handleAccountChanged = async (pk: PublicKey) => {
       console.log("phantom account changed");
       setPublicKey("");
     };
