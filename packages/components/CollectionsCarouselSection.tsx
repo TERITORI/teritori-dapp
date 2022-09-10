@@ -34,11 +34,11 @@ const useCollections = (
           ...req,
           offset: req.offset + collections.length,
         });
-        await stream.forEach((response) => {
-          setCollections((collections) => [
-            ...collections,
-            response.collection,
-          ]);
+        await stream.forEach(({ collection }) => {
+          if (!collection) {
+            return;
+          }
+          setCollections((collections) => [...collections, collection]);
         });
       } catch (err) {
         console.warn("failed to fetch collections:", err);
@@ -56,6 +56,10 @@ const useCollections = (
 };
 
 const gap = 24;
+
+const renderItem = (props: { item: Collection }) => (
+  <CollectionView item={props.item} />
+);
 
 export const CollectionsCarouselSection: React.FC<{
   title: string;
@@ -80,7 +84,7 @@ export const CollectionsCarouselSection: React.FC<{
         style={{
           width: viewWidth,
         }}
-        renderItem={CollectionView}
+        renderItem={renderItem}
       />
     </View>
   );

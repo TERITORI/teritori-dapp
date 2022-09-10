@@ -68,7 +68,10 @@ export const TNSConsultNameScreen: React.FC<{
 }> = ({ route }) => {
   const { name, setName } = useTNS();
   const { setLoadingFullScreen } = useFeedbacks();
-  const { token, notFound, loadingToken } = useToken(name, process.env.TLD);
+  const { token, notFound, loadingToken } = useToken(
+    name,
+    process.env.TLD || ""
+  );
   const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const navigation = useAppNavigation();

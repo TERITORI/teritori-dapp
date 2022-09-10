@@ -9,7 +9,7 @@ import { Network } from "../utils/network";
 import { SVG } from "./SVG";
 
 export const NetworkIcon: React.FC<{
-  network: Network;
+  network: Network | null | undefined;
   circle?: boolean;
   size?: number;
 }> = ({ network, circle, size = 16 }) => {

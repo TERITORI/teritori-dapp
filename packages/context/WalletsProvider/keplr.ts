@@ -49,7 +49,15 @@ export const useKeplr: () => UseKeplrResult = () => {
 
       try {
         const keplr = (window as KeplrWindow).keplr;
+        if (!keplr) {
+          console.error("no keplr");
+          return;
+        }
         const chainId = teritoriChainId;
+        if (!chainId) {
+          console.error("missing chain id");
+          return;
+        }
         await keplr.enable(chainId);
         const offlineSigner = keplr.getOfflineSigner(chainId);
         const accounts = await offlineSigner.getAccounts();

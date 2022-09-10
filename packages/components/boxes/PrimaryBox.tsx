@@ -13,8 +13,8 @@ export const PrimaryBox: React.FC<{
   style?: StyleProp<ViewStyle>;
   mainContainerStyle?: StyleProp<ViewStyle>;
 }> = ({
-  width,
-  height,
+  width = 200,
+  height = 200,
   fullWidth = false,
   squaresBackgroundColor = "#000000",
   disabled = false,

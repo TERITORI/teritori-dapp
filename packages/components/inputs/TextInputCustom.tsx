@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleProp, TextInput, View, ViewStyle } from "react-native";
+import {
+  NativeSyntheticEvent,
+  StyleProp,
+  TextInput,
+  TextInputKeyPressEventData,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import {
   numberWithThousandsSeparator,
@@ -35,7 +42,12 @@ export const TextInputCustom: React.FC<{
   squaresBackgroundColor,
 }) => {
   // Handling key pressing
-  const handleKeyPress = ({ nativeEvent: { key: keyValue } }) => {
+  const handleKeyPress = (
+    event: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    const {
+      nativeEvent: { key: keyValue },
+    } = event;
     switch (keyValue) {
       case "Enter":
         if (onPressEnter) onPressEnter();
@@ -43,7 +55,10 @@ export const TextInputCustom: React.FC<{
   };
 
   // Replace the comma if number and controls
-  const handleChangeText = (value) => {
+  const handleChangeText = (value: string) => {
+    if (!onChangeText) {
+      return;
+    }
     // ---- If you want only number in the TextInputCustom, we apply comma as a thousand separator
     if (onlyNumbers) {
       const withoutCommaValue = thousandSeparatedToNumber(value);
@@ -74,7 +89,7 @@ export const TextInputCustom: React.FC<{
       <View
         style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
       >
-        <View style={{ flex: 1, marginRight: children && 12 }}>
+        <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
           <BrandText
             style={{ color: neutral77, fontSize: 10, fontWeight: "500" }}
           >

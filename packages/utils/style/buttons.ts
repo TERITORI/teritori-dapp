@@ -1,6 +1,6 @@
 export type ButtonsSize = "XL" | "M" | "SM" | "XS";
 
-export const height = (format) => {
+export const height = (format: ButtonsSize) => {
   switch (format) {
     case "XL":
       return 56;
@@ -13,7 +13,7 @@ export const height = (format) => {
   }
 };
 
-export const borderRadius = (format) => {
+export const borderRadius = (format: ButtonsSize) => {
   switch (format) {
     case "XS":
       return 12;

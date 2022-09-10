@@ -53,15 +53,15 @@ export const NameDataForm: React.FC<{
 
   // Setting initial inputs values (Pre-filled values if existing token)
   useEffect(() => {
-    setBio(initialData.public_bio);
-    setImageUrl(initialData.image);
-    setEmail(initialData.email);
-    setWebsite(initialData.external_url);
-    setTwitter(initialData.twitter_id);
-    setDiscord(initialData.discord_id);
-    setTelegrameUsername(initialData.telegram_id);
-    setKeybaseIo(initialData.keybase_id);
-    setValidatorOperatorAddress(initialData.validator_operator_address);
+    setBio(initialData.public_bio || "");
+    setImageUrl(initialData.image || "");
+    setEmail(initialData.email || "");
+    setWebsite(initialData.external_url || "");
+    setTwitter(initialData.twitter_id || "");
+    setDiscord(initialData.discord_id || "");
+    setTelegrameUsername(initialData.telegram_id || "");
+    setKeybaseIo(initialData.keybase_id || "");
+    setValidatorOperatorAddress(initialData.validator_operator_address || "");
   }, [initialData]);
 
   return (

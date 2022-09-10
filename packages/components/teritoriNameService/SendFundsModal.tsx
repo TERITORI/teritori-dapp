@@ -16,7 +16,7 @@ export const SendFundModal: React.FC<{
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setIsVisible(visible);
+    setIsVisible(visible || false);
   }, [visible]);
 
   return (

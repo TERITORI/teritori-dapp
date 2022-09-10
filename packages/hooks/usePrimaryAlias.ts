@@ -32,10 +32,10 @@ export function usePrimaryAlias() {
         //setAlias(aliasResponse.username)
         setPrimaryAlias(aliasResponse.username);
         setLoading(false);
-      } catch (e) {
-        console.error(e.message);
+      } catch (err) {
+        console.error(err);
         //setAlias(undefined)
-        setPrimaryAlias(null);
+        setPrimaryAlias("");
       }
     };
 

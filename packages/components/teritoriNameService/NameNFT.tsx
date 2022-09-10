@@ -11,7 +11,7 @@ export const NameNFT: React.FC<{
   style?: StyleProp<ViewStyle>;
   name: string;
 }> = ({ style, name }) => {
-  const { token } = useToken(name, process.env.TLD);
+  const { token } = useToken(name, process.env.TLD || "");
   const width = 332;
   const height = 404;
   const imageMargin = 12;

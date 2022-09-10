@@ -8,7 +8,7 @@ import {
 const backendEndpoint = process.env.TERITORI_BACKEND_ENDPOINT;
 
 if (!backendEndpoint) {
-  console.warn("missing TERITORI_BACKEND_ENDPOINT in env");
+  throw new Error("missing TERITORI_BACKEND_ENDPOINT in env");
 }
 
 const rpc = new GrpcWebImpl(backendEndpoint, {

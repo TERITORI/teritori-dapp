@@ -73,6 +73,10 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
                   return;
                 }
                 await keplrSuggestTeritori(keplr);
+                if (!teritoriChainId) {
+                  console.error("missing chain id for teritori");
+                  return;
+                }
                 await keplr.enable(teritoriChainId);
                 dispatch(setIsKeplrConnected(true));
               }
@@ -198,6 +202,10 @@ const AddNewWallet: React.FC = () => {
         style={{ marginLeft: 16 }}
         disabled={!addressNetwork}
         onPress={() => {
+          if (!addressNetwork) {
+            console.error("unknown address network");
+            return;
+          }
           const wallet: StoreWallet = {
             publicKey: addressValue,
             network: addressNetwork,

@@ -103,7 +103,8 @@ export const TNSMintPathScreen: React.FC<{
     }
   });
 
-  const submitData = async (data) => {
+  // FIXME: typesafe data
+  const submitData = async (data: any) => {
     if (!isKeplrConnected) {
       return;
     }
@@ -171,11 +172,17 @@ export const TNSMintPathScreen: React.FC<{
         setLoadingFullScreen(false);
       }
     } catch (err) {
+      console.warn(err);
+      let message;
+      if (err instanceof Error) {
+        message = err.message;
+      } else {
+        message = `${err}`;
+      }
       setToastError({
         title: "Something went wrong!",
-        message: err.message,
+        message,
       });
-      console.warn(err);
       setLoadingFullScreen(false);
     }
   };

@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
+import { prettyPrice } from "../utils/coins";
 import { Network } from "../utils/network";
-import { getUtoriBalance, UTORI_PER_TORI } from "../utils/teritori";
+import { getUtoriBalance, toriCurrency } from "../utils/teritori";
 import { useWallets } from "./WalletsProvider";
 
 const refreshInterval = 2 * 60 * 1000;
@@ -53,7 +54,7 @@ export const TeritoriBalanceProvider: React.FC = ({ children }) => {
       }
       setValue({
         total,
-        totalString: `${total / parseInt(UTORI_PER_TORI, 10)} TORI`,
+        totalString: prettyPrice(`${total}`, toriCurrency.coinMinimalDenom),
       });
       setTimeout(() => setRefreshIndex((index) => index + 1), refreshInterval);
     };

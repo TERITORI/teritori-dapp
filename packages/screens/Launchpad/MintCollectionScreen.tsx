@@ -75,11 +75,21 @@ export const MintCollectionScreen: React.FC<{
     !wallet ||
     wallet.network !== Network.Teritori ||
     !wallet.connected;
+  const {
+    discord: discordLink,
+    twitter: twitterLink,
+    website: websiteLink,
+  } = info;
+  const hasLinks = discordLink || twitterLink || websiteLink;
 
   const mint = useCallback(async () => {
     try {
       setToastError(initialToastError);
       const sender = wallet?.publicKey;
+      if (!sender || !info.unitPrice || !info.priceDenom) {
+        console.error("invalid mint args");
+        return;
+      }
       const cosmwasmClient = await getSigningCosmWasmClient();
       const minterClient = new TeritoriNftMinterClient(
         cosmwasmClient,
@@ -136,12 +146,12 @@ export const MintCollectionScreen: React.FC<{
             >
               <AttributesCard
                 label="Supply"
-                value={info.maxSupply}
+                value={info.maxSupply || ""}
                 style={{ margin: cardsHalfGap }}
               />
               <AttributesCard
                 label="Price"
-                value={info.prettyUnitPrice}
+                value={info.prettyUnitPrice || ""}
                 style={{ margin: cardsHalfGap }}
               />
               <AttributesCard
@@ -164,8 +174,10 @@ export const MintCollectionScreen: React.FC<{
 
           <ProgressionCard
             label="Tokens Minted"
-            valueCurrent={parseInt(info.mintedAmount, 10)}
-            valueMax={parseInt(info.maxSupply, 10)}
+            valueCurrent={
+              info.mintedAmount ? parseInt(info.mintedAmount, 10) : 0
+            }
+            valueMax={info.maxSupply ? parseInt(info.maxSupply, 10) : 0}
             style={{
               marginBottom: 24,
               maxWidth: 420,
@@ -184,7 +196,7 @@ export const MintCollectionScreen: React.FC<{
             />
           )}
 
-          {(info.discord || info.website || info.twitter) && (
+          {hasLinks && (
             <View style={{ marginBottom: 24 }}>
               <View
                 style={{
@@ -194,28 +206,28 @@ export const MintCollectionScreen: React.FC<{
                   margin: -cardsHalfGap,
                 }}
               >
-                {info.discord && (
+                {discordLink && (
                   <SocialButton
                     text="Discord"
                     iconSvg={discordSVG}
                     style={{ margin: cardsHalfGap }}
-                    onPress={() => Linking.openURL(info.discord)}
+                    onPress={() => Linking.openURL(discordLink)}
                   />
                 )}
-                {info.website && (
+                {websiteLink && (
                   <SocialButton
                     text="Website"
                     iconSvg={websiteSVG}
                     style={{ margin: cardsHalfGap }}
-                    onPress={() => Linking.openURL(info.website)}
+                    onPress={() => Linking.openURL(websiteLink)}
                   />
                 )}
-                {info.twitter && (
+                {twitterLink && (
                   <SocialButton
                     style={{ margin: cardsHalfGap }}
                     text="Twitter"
                     iconSvg={twitterSVG}
-                    onPress={() => Linking.openURL(info.twitter)}
+                    onPress={() => Linking.openURL(twitterLink)}
                   />
                 )}
               </View>
@@ -253,9 +265,9 @@ export const MintCollectionScreen: React.FC<{
           </BrandText>
           {info.hasPresale && (
             <PresaleActivy
-              running={info.isInPresalePeriod}
-              whitelistSize={info.whitelistSize}
-              maxPerAddress={info.whitelistMaxPerAddress}
+              running={info.isInPresalePeriod || false}
+              whitelistSize={info.whitelistSize || "0"}
+              maxPerAddress={info.whitelistMaxPerAddress || "0"}
             />
           )}
           {info.isInPresalePeriod || (
@@ -483,8 +495,8 @@ const useCollectionInfo = (id: string) => {
           discord: metadata.discord,
           twitter: metadata.twitter,
           website: metadata.website,
-          maxPerAddress: conf.mint_max,
-          whitelistMaxPerAddress: conf.whitelist_mint_max,
+          maxPerAddress: conf.mint_max || undefined,
+          whitelistMaxPerAddress: conf.whitelist_mint_max || undefined,
           whitelistSize: conf.whitelisted_size,
           hasPresale: hasWhitelistPeriod,
           publicSaleEnded,
@@ -502,7 +514,10 @@ const useCollectionInfo = (id: string) => {
         setInfo(info);
       } catch (err) {
         console.error(err);
-        setToastError({ title: "Refresh failed", message: err?.message });
+        if (!(err instanceof Error)) {
+          return;
+        }
+        setToastError({ title: "Refresh failed", message: err.message });
       }
     };
     effect();
