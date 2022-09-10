@@ -12,11 +12,12 @@
     "lint-fix": "eslint --ext .js,.jsx,.ts,.tsx . --fix"
   },
   "dependencies": {
-    "@cosmjs/cosmwasm-stargate": "^0.28.11",
+    "@cosmjs/cosmwasm-stargate": "^0.28.13",
     "@expo-google-fonts/exo": "^0.2.2",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@keplr-wallet/types": "^0.10.13",
     "@metaplex-foundation/js-next": "0.7.1",
+    "@pinata/sdk": "^1.1.26",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-clipboard/clipboard": "^1.10.0",
     "@react-navigation/native": "^6.0.11",
@@ -29,6 +30,7 @@
     "airtable": "^0.11.4",
     "bech32": "^2.0.0",
     "browser-headers": "^0.4.1",
+    "cosmwasm": "^1.1.1",
     "dotenv-webpack": "^8.0.0",
     "eslint-config-universe": "^11.0.0",
     "expo": "~45.0.0",
@@ -39,6 +41,7 @@
     "lottie-ios": "3.4.0",
     "lottie-react": "^2.3.1",
     "moment": "^2.29.4",
+    "nft.storage": "^7.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-native": "0.68.2",
@@ -70,6 +73,7 @@
     "expo-optimize": "^0.2.19",
     "prettier": "^2.7.1",
     "react-native-svg-transformer": "^1.0.0",
+    "ts-node": "^10.9.1",
     "ts-proto": "^1.120.0",
     "typescript": "~4.3.5"
   },
