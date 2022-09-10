@@ -1,8 +1,7 @@
-import {
-  CosmWasmClient,
-  SigningCosmWasmClient,
-} from "@cosmjs/cosmwasm-stargate";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
+import { CosmWasmClient, SigningCosmWasmClient } from "cosmwasm";
+
+import { teritoriGasPrice } from "./teritori";
 
 const PUBLIC_RPC_ENDPOINT = process.env.PUBLIC_CHAIN_RPC_ENDPOINT || "";
 const PUBLIC_CHAIN_ID = process.env.PUBLIC_CHAIN_ID;
@@ -40,7 +39,8 @@ export const getSigningCosmWasmClient = async () => {
 
   return SigningCosmWasmClient.connectWithSigner(
     PUBLIC_RPC_ENDPOINT,
-    offlineSigner
+    offlineSigner,
+    { gasPrice: teritoriGasPrice }
   );
 };
 

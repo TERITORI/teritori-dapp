@@ -88,7 +88,6 @@ export const Footer: React.FC<{
           height: footerHeight,
           maxHeight: footerHeight,
           width: "100%",
-          flex: 1,
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",

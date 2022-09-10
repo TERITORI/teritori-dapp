@@ -1,9 +1,4 @@
-import {
-  SigningCosmWasmClient,
-  Secp256k1HdWallet,
-  GasPrice,
-  Decimal,
-} from "cosmwasm";
+import { SigningCosmWasmClient, Secp256k1HdWallet } from "cosmwasm";
 import fs from "fs";
 import { stdin, stdout } from "node:process";
 import path from "path";
@@ -11,6 +6,7 @@ import readline, { Interface as ReadlineInterface } from "readline";
 
 import { TeritoriNftMinterClient } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
 import { InstantiateMsg } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.types";
+import { teritoriGasPrice } from "../utils/teritori";
 import { nftStorageUpload } from "./nft-storage-upload";
 import { pinataUpload } from "./pinata-upload";
 import { StorageResult } from "./storage";
@@ -18,9 +14,8 @@ import { StorageResult } from "./storage";
 // port of https://github.com/public-awesome/stargaze-tools
 
 const rpcEndpoint = "https://teritorid.65.108.73.219.nip.io:443/rpc";
-const minterCodeID = 8;
+const minterCodeID = 9;
 const tokenCodeID = 6;
-const gasPrice = new GasPrice(Decimal.fromUserInput("0.25", 6), "utori");
 
 const main = async () => {
   // FIXME: validate config
@@ -38,7 +33,7 @@ const main = async () => {
   const client = await SigningCosmWasmClient.connectWithSigner(
     rpcEndpoint,
     wallet,
-    { gasPrice: gasPrice as any } // FIXME: versions mismatch
+    { gasPrice: teritoriGasPrice }
   );
 
   const accounts = await wallet.getAccounts();
@@ -95,10 +90,11 @@ const main = async () => {
     nft_name: collection.name,
     nft_price_amount: `${collection.unit_price}`,
     nft_symbol: collection.symbol,
-    whitelist_mint_period: collection.whitelist_mint_period,
+    whitelist_mint_period: collection.whitelist_mint_period || 0,
     price_denom: collection.price_denom,
-    mint_max: `${collection.mint_max}`,
-    whitelist_mint_max: `${collection.whitelist_mint_max}`,
+    mint_max: collection.mint_max && `${collection.mint_max}`,
+    whitelist_mint_max:
+      collection.whitelist_mint_max && `${collection.whitelist_mint_max}`,
   };
 
   const reply = await client.instantiate(
@@ -112,7 +108,7 @@ const main = async () => {
   console.log(reply);
 
   const minterClient = new TeritoriNftMinterClient(
-    client as any, // FIXME: versions mismatch
+    client,
     account.address,
     reply.contractAddress
   );

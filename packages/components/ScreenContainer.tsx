@@ -76,11 +76,14 @@ export const ScreenContainer: React.FC<{
                   ]}
                 >
                   {children}
+                  {footerChildren && <Footer>{footerChildren}</Footer>}
                 </ScrollView>
               ) : (
-                <View style={[{ flex: 1 }, marginStyle]}>{children}</View>
+                <View style={[{ flex: 1, width: "100%" }, marginStyle]}>
+                  {children}
+                  {footerChildren && <Footer>{footerChildren}</Footer>}
+                </View>
               )}
-              {footerChildren && <Footer>{footerChildren}</Footer>}
             </View>
           </View>
         </View>

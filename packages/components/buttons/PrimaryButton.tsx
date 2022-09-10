@@ -1,5 +1,10 @@
-import React from "react";
-import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import React, { useCallback, useState } from "react";
+import {
+  ActivityIndicator,
+  StyleProp,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { borderRadius, ButtonsSize, height } from "../../utils/style/buttons";
@@ -17,12 +22,13 @@ export const PrimaryButton: React.FC<{
   size: ButtonsSize;
   text: string;
   width?: number;
-  onPress?: () => void;
+  onPress?: (() => Promise<void>) | (() => void);
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
+  loader?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -34,7 +40,25 @@ export const PrimaryButton: React.FC<{
   iconSVG,
   disabled = false,
   fullWidth = false,
+  loader,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handlePress = useCallback(async () => {
+    if (isLoading) {
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await onPress();
+    } catch (err) {
+      console.error(err);
+    }
+    setIsLoading(false);
+  }, [onPress, isLoading]);
+
+  const isDisabled = !!(disabled || (loader && isLoading));
+
   const boxProps = {
     style,
     disabled,
@@ -44,7 +68,10 @@ export const PrimaryButton: React.FC<{
   };
 
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled}>
+    <TouchableOpacity
+      onPress={onPress ? handlePress : undefined}
+      disabled={isDisabled}
+    >
       <SecondaryBox
         height={height(size)}
         mainContainerStyle={{
@@ -64,17 +91,21 @@ export const PrimaryButton: React.FC<{
           />
         ) : null}
 
-        <BrandText
-          style={[
-            fontSemibold14,
-            {
-              color: disabled ? neutral77 : primaryTextColor,
-              textAlign: "center",
-            },
-          ]}
-        >
-          {text}
-        </BrandText>
+        {loader && isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <BrandText
+            style={[
+              fontSemibold14,
+              {
+                color: isDisabled ? neutral77 : primaryTextColor,
+                textAlign: "center",
+              },
+            ]}
+          >
+            {text}
+          </BrandText>
+        )}
       </SecondaryBox>
     </TouchableOpacity>
   );

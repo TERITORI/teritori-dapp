@@ -48,7 +48,7 @@ generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE) $(C
 $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE): node_modules
 	rm -fr $(CANDYMACHINE_REPO)
 	git clone git@github.com:TERITORI/$(CANDYMACHINE_REPO).git
-	cd $(CANDYMACHINE_REPO) && git checkout e14d8abab6c82fd44f6d3d229bb278227cecc7e7
+	cd $(CANDYMACHINE_REPO) && git checkout c368eba82348c0f9cc538cee7401bcf673847dcc
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
