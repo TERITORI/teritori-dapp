@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, ScrollView, Image, ViewStyle } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
 
 import avaSvg from "../../../assets/icons/ava.svg";
-import teritorriSvg from "../../../assets/icons/teritori.svg";
 import apeOneSvg from "../../../assets/nft/ape-one.svg";
 import etherumGangSvg from "../../../assets/nft/etherum-gang.svg";
 import freeSnowDenSvg from "../../../assets/nft/free-snowden.svg";
@@ -13,9 +12,9 @@ import rideOrDieSvg from "../../../assets/nft/ride-or-die.svg";
 import satoshiSvg from "../../../assets/nft/satoshi.svg";
 import solFarmSvg from "../../../assets/nft/sol-farm.svg";
 import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
+import DraxViewReceiverContent from "../../components/riotersFooter/DraxViewReceiverContent";
 import ExistingNftType from "../../components/riotersFooter/ExistingNftType";
 import NewNftType from "../../components/riotersFooter/NewNftType";
 import NftAdjustments from "../../components/riotersFooter/NftAdjustments";
@@ -23,10 +22,8 @@ import NftTypeTab from "../../components/riotersFooter/NftTypeTab";
 import SelectNewNft, {
   fakeNft,
 } from "../../components/riotersFooter/SelectedNewNft";
-import { neutral33, primaryColor } from "../../utils/style/colors";
-import { useAnimatedGestureHandler } from "react-native-reanimated";
-import { PanGestureHandler } from "react-native-gesture-handler";
-import { clamp } from "react-native-redash";
+import { neutral33 } from "../../utils/style/colors";
+import { nftDropedAdjustmentType } from "./RiotersFooterScreen.types";
 
 const fakeNewNtfCollections = [
   {
@@ -242,19 +239,20 @@ const oldNftPositions = [
 ];
 
 export const RiotersFooterScreen: React.FC = () => {
-  const [nftType, setNftType] = useState<string>("New");
+  const [tabName, setTabName] = useState<string>("New");
   const [searchNewNftCollection, setSearchNewNftCollection] =
     useState<string>("");
   const [searchNft, setSearchNft] = useState<string>("");
   const [nftCollectionId, setNftCollectionId] = useState<string>("");
-  const [nftDrop, setNftDrop] = useState<any>(null);
-  const [nftPositions, setNftPositions] = useState(undefined);
-  const [oldNftPositionsWithZIndex, setOldNftPositionsWithZIndex] =
+  const [nftDroped, setNftDroped] = useState<any>(null);
+  const [nftDropedAdjustment, setNftDropedAdjustment] =
+    useState<nftDropedAdjustmentType>(undefined);
+  const [oldNftPositionsWithZIndexOrder, setOldNftPositionsWithZIndexOrder] =
     useState(undefined);
   const [price, setPrice] = useState<number>(7.8);
 
   useEffect(() => {
-    setOldNftPositionsWithZIndex(
+    setOldNftPositionsWithZIndexOrder(
       oldNftPositions.sort((a, b) => a.date.getTime() - b.date.getTime())
     );
     console.log(
@@ -275,52 +273,64 @@ export const RiotersFooterScreen: React.FC = () => {
     ["Existing", <ExistingNftType />],
   ]);
 
+  const onReceiveDragDrop = useCallback(
+    (event) => {
+      if (!nftDroped || nftDroped.id === event.dragged.payload) {
+        if (!nftDroped) {
+          setNftDroped(fakeNft.find((nft) => nft.id === event.dragged.payload));
+        }
+        setNftDropedAdjustment({
+          width: 104,
+          height: 104,
+          borderRadius: 0,
+          ...nftDropedAdjustment,
+          x: event.receiver.receiveOffset.x - event.dragged.grabOffset.x,
+          y: event.receiver.receiveOffset.y - event.dragged.grabOffset.y,
+        });
+      }
+    },
+    [nftDroped, nftDropedAdjustment]
+  );
+
+  const RenderContent = useCallback(
+    () =>
+      oldNftPositionsWithZIndexOrder && (
+        <DraxViewReceiverContent
+          oldNftPositionsWithZIndexOrder={oldNftPositionsWithZIndexOrder}
+          nftDroped={nftDroped}
+          setNftDropedAdjustment={setNftDropedAdjustment}
+          nftDropedAdjustment={nftDropedAdjustment}
+        />
+      ),
+    [oldNftPositionsWithZIndexOrder, nftDroped, nftDropedAdjustment]
+  );
+
   return (
     <ScreenContainer>
       <DraxProvider>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            marginLeft: -110,
-            width: "100%",
-          }}
-        >
-          <View
-            style={{
-              width: 240,
-              paddingTop: 24,
-              borderRightWidth: 1,
-              borderColor: neutral33,
-            }}
-          >
+        <View style={styles.container}>
+          <View style={styles.menu}>
             {!nftCollectionId ? (
               <>
                 <View style={{ width: 220 }}>
                   <BrandText style={{ color: "white", fontSize: 14 }}>
                     NFT type for the Rioters’ Footer
                   </BrandText>
-                  <NftTypeTab nftType={nftType} setNftType={setNftType} />
-                  <View
-                    style={{
-                      height: 1,
-                      backgroundColor: neutral33,
-                      marginTop: 16,
-                    }}
-                  />
+                  <NftTypeTab tabName={tabName} setTabName={setTabName} />
+                  <View style={styles.separator} />
                 </View>
                 <ScrollView>
-                  <View style={{ width: 220 }}>{MapNftType.get(nftType)}</View>
+                  <View style={{ width: 220 }}>{MapNftType.get(tabName)}</View>
                 </ScrollView>
               </>
-            ) : nftDrop && nftPositions ? (
+            ) : nftDroped && nftDropedAdjustment ? (
               <NftAdjustments
                 nftCollectionId={nftCollectionId}
                 newNftCollections={fakeNewNtfCollections}
-                nftDrop={nftDrop}
-                setNftDrop={setNftDrop}
-                nftPositions={nftPositions}
-                setNftPositions={setNftPositions}
+                nftDroped={nftDroped}
+                setNftDroped={setNftDroped}
+                nftDropedAdjustment={nftDropedAdjustment}
+                setNftDropedAdjustment={setNftDropedAdjustment}
                 price={price}
                 setPrice={setPrice}
               />
@@ -335,16 +345,7 @@ export const RiotersFooterScreen: React.FC = () => {
             )}
           </View>
           <View style={{ marginLeft: 20, width: "100%" }}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginTop: 24,
-                marginBottom: 16,
-                width: "100%",
-              }}
-            >
+            <View style={styles.headerChosePosition}>
               <BrandText style={{ color: "white", fontSize: 28 }}>
                 Choose the exact position in footer
               </BrandText>
@@ -358,54 +359,11 @@ export const RiotersFooterScreen: React.FC = () => {
                 style={{ marginRight: 34 }}
               />
             </View>
-            <View
-              style={{
-                width: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <DraxView
-                style={{
-                  width: 1030,
-                  height: 552,
-                  borderRadius: 12,
-                  borderWidth: 1,
-                  borderColor: neutral33,
-                  backgroundColor: "black",
-                }}
-                onReceiveDragDrop={(event) => {
-                  if (!nftDrop || nftDrop.id === event.dragged.payload) {
-                    if (!nftDrop) {
-                      setNftDrop(
-                        fakeNft.find((nft) => nft.id === event.dragged.payload)
-                      );
-                    }
-                    setNftPositions({
-                      width: 104,
-                      height: 104,
-                      ...nftPositions,
-                      x:
-                        event.receiver.receiveOffset.x -
-                        event.dragged.grabOffset.x,
-                      y:
-                        event.receiver.receiveOffset.y -
-                        event.dragged.grabOffset.y,
-                    });
-                  }
-                }}
-                renderContent={() =>
-                  oldNftPositionsWithZIndex && (
-                    <DraxViewReceiverContent
-                      oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
-                      nftDrop={nftDrop}
-                      setNftPositions={setNftPositions}
-                      nftPositions={nftPositions}
-                    />
-                  )
-                }
-              />
-            </View>
+            <DraxView
+              style={styles.chosePositionContainer}
+              onReceiveDragDrop={onReceiveDragDrop}
+              renderContent={RenderContent}
+            />
           </View>
         </View>
       </DraxProvider>
@@ -413,384 +371,37 @@ export const RiotersFooterScreen: React.FC = () => {
   );
 };
 
-const DraxViewReceiverContent = ({
-  oldNftPositionsWithZIndex,
-  nftDrop,
-  setNftPositions,
-  nftPositions,
-}) => {
-  const NtfDragAndDropInReceiverViewCallback = useCallback(
-    ({ nftDrop, nftPositions, oldNftPositionsWithZIndex }) => (
-      <NtfDragAndDropInReceiverView
-        nftDrop={nftDrop}
-        nftPositions={nftPositions}
-        oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
-      />
-    ),
-    [nftPositions]
-  );
-
-  return (
-    <>
-      <SVG
-        width={94}
-        height={102}
-        source={teritorriSvg}
-        style={{
-          alignSelf: "center",
-          marginTop: 43,
-          zIndex: oldNftPositionsWithZIndex.length + 1,
-        }}
-      />
-      {oldNftPositionsWithZIndex &&
-        oldNftPositionsWithZIndex.map((nft: any, index: number) => (
-          <SVG
-            key={nft.id}
-            width={nft.width}
-            height={nft.height}
-            source={nft.svg}
-            style={{
-              position: "absolute",
-              left: nft.left,
-              top: nft.top,
-              borderColor: neutral33,
-              borderWidth: 1,
-              padding: 4,
-              zIndex: index,
-            }}
-          />
-        ))}
-      {nftDrop && nftPositions && (
-        <>
-          <NtfDragAndDropInReceiverViewCallback
-            nftDrop={nftDrop}
-            nftPositions={nftPositions}
-            oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
-          />
-          <NftDrargResizeCorner
-            nftPositions={nftPositions}
-            style={{
-              top: nftPositions.y - 3.5,
-              left: nftPositions.x - 3.5,
-            }}
-            oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
-            onResize={({
-              widthTopLeftCorner: width,
-              heightTopLeftCorner: height,
-              xTopLeftCorner: x,
-              yTopLeftCorner: y,
-            }) => {
-              const positions: {
-                width: number;
-                height: number;
-                x?: number;
-                y?: number;
-              } = {
-                width,
-                height,
-              };
-              if (x) {
-                positions.x = x;
-              }
-              if (y) {
-                positions.y = y;
-              }
-              setNftPositions({
-                ...nftPositions,
-                ...positions,
-              });
-            }}
-          />
-          <NftDrargResizeCorner
-            nftPositions={nftPositions}
-            style={{
-              top: nftPositions.y - 3.5,
-              left: nftPositions.x + nftPositions.width + 3.5 + 2,
-            }}
-            oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
-            onResize={({
-              widthTopRightCorner: width,
-              heightTopRightCorner: height,
-              yTopRightCorner: y,
-            }) => {
-              const positions: {
-                width: number;
-                height: number;
-                y?: number;
-              } = {
-                width,
-                height,
-              };
-              if (y) {
-                positions.y = y;
-              }
-
-              setNftPositions({
-                ...nftPositions,
-                ...positions,
-              });
-            }}
-          />
-          <NftDrargResizeCorner
-            nftPositions={nftPositions}
-            style={{
-              top: nftPositions.y + nftPositions.height + 3.5 + 2,
-              left: nftPositions.x - 3.5,
-            }}
-            oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
-            onResize={({
-              widthBottomLeftCorner: width,
-              heightBottomLeftCorner: height,
-              xBottomLeftCorner: x,
-            }) => {
-              const positions: {
-                width: number;
-                height: number;
-                x?: number;
-              } = {
-                width,
-                height,
-              };
-              if (x) {
-                positions.x = x;
-              }
-              setNftPositions({
-                ...nftPositions,
-                ...positions,
-              });
-            }}
-          />
-          <NftDrargResizeCorner
-            nftPositions={nftPositions}
-            style={{
-              top: nftPositions.y + nftPositions.height + 3.5 + 2,
-              left: nftPositions.x + nftPositions.width + 3.5 + 2,
-            }}
-            oldNftPositionsWithZIndex={oldNftPositionsWithZIndex}
-            onResize={({
-              widthBottomRightCorner: width,
-              heightBottomRightCorner: height,
-            }) => {
-              setNftPositions({
-                ...nftPositions,
-                width,
-                height,
-              });
-            }}
-          />
-        </>
-      )}
-    </>
-  );
-};
-
-const NftDrargResizeCorner: React.FC<{
-  nftPositions: any;
-  oldNftPositionsWithZIndex: any;
-  style: ViewStyle | ViewStyle[];
-  onResize: (event: any) => void;
-}> = ({ nftPositions, oldNftPositionsWithZIndex, style, onResize }) => {
-  const onGestureEvent = useAnimatedGestureHandler({
-    onStart: (_, ctx: any) => {
-      ctx.offsetX = nftPositions.x;
-      ctx.offsetY = nftPositions.y;
-      ctx.width = nftPositions.width;
-      ctx.height = nftPositions.height;
-    },
-    onActive: (event, ctx) => {
-      const xTopLeftCorner =
-        ctx.width - event.translationX <= 10 ||
-        ctx.width - event.translationX >= 200
-          ? null
-          : ctx.offsetX + event.translationX;
-      const yTopLeftCorner =
-        ctx.height - event.translationY <= 10 ||
-        ctx.height - event.translationY >= 200
-          ? null
-          : ctx.offsetY + event.translationY;
-      const widthTopLeftCorner = clamp(ctx.width - event.translationX, 10, 200);
-      const heightTopLeftCorner = clamp(
-        ctx.height - event.translationY,
-        10,
-        200
-      );
-
-      const yTopRightCorner =
-        ctx.height - event.translationY <= 10 ||
-        ctx.height - event.translationY >= 200
-          ? null
-          : ctx.offsetY + event.translationY;
-      const widthTopRightCorner = clamp(
-        ctx.width + event.translationX,
-        10,
-        200
-      );
-      const heightTopRightCorner = clamp(
-        ctx.height - event.translationY,
-        10,
-        200
-      );
-
-      const xBottomLeftCorner =
-        ctx.width - event.translationX <= 10 ||
-        ctx.width - event.translationX >= 200
-          ? null
-          : ctx.offsetX + event.translationX;
-      const widthBottomLeftCorner = clamp(
-        ctx.width - event.translationX,
-        10,
-        200
-      );
-      const heightBottomLeftCorner = clamp(
-        ctx.height + event.translationY,
-        10,
-        200
-      );
-
-      const widthBottomRightCorner = clamp(
-        ctx.width + event.translationX,
-        10,
-        200
-      );
-      const heightBottomRightCorner = clamp(
-        ctx.height + event.translationY,
-        10,
-        200
-      );
-
-      const positions: {
-        xTopLeftCorner?: number | null;
-        yTopLeftCorner?: number | null;
-
-        yTopRightCorner?: number | null;
-
-        xBottomLeftCorner?: number | null;
-
-        widthTopLeftCorner?: number;
-        heightTopLeftCorner?: number;
-
-        widthTopRightCorner?: number;
-        heightTopRightCorner?: number;
-
-        widthBottomLeftCorner?: number;
-        heightBottomLeftCorner?: number;
-
-        widthBottomRightCorner?: number;
-        heightBottomRightCorner?: number;
-      } = {};
-      if (xTopLeftCorner) {
-        positions.xTopLeftCorner = xTopLeftCorner;
-      }
-      if (yTopLeftCorner) {
-        positions.yTopLeftCorner = yTopLeftCorner;
-      }
-      if (widthTopLeftCorner) {
-        positions.widthTopLeftCorner = widthTopLeftCorner;
-      }
-      if (heightTopLeftCorner) {
-        positions.heightTopLeftCorner = heightTopLeftCorner;
-      }
-
-      if (yTopRightCorner) {
-        positions.yTopRightCorner = yTopRightCorner;
-      }
-      if (widthTopRightCorner) {
-        positions.widthTopRightCorner = widthTopRightCorner;
-      }
-      if (heightTopRightCorner) {
-        positions.heightTopRightCorner = heightTopRightCorner;
-      }
-
-      if (xBottomLeftCorner) {
-        positions.xBottomLeftCorner = xBottomLeftCorner;
-      }
-      if (widthBottomLeftCorner) {
-        positions.widthBottomLeftCorner = widthBottomLeftCorner;
-      }
-      if (heightBottomLeftCorner) {
-        positions.heightBottomLeftCorner = heightBottomLeftCorner;
-      }
-
-      if (widthBottomRightCorner) {
-        positions.widthBottomRightCorner = widthBottomRightCorner;
-      }
-      if (heightBottomRightCorner) {
-        positions.heightBottomRightCorner = heightBottomRightCorner;
-      }
-      onResize(positions);
-    },
-  });
-
-  return (
-    <PanGestureHandler onGestureEvent={onGestureEvent}>
-      <View
-        style={[
-          {
-            width: 7,
-            height: 7,
-            position: "absolute",
-            backgroundColor: "black",
-            borderWidth: 1,
-            borderColor: primaryColor,
-            zIndex: oldNftPositionsWithZIndex.length + 2,
-          },
-          style,
-        ]}
-      />
-    </PanGestureHandler>
-  );
-};
-
-const NtfDragAndDropInReceiverView = ({
-  nftDrop,
-  nftPositions,
-  oldNftPositionsWithZIndex,
-}) => {
-  const width =
-    nftPositions.width <= 10
-      ? 10
-      : nftPositions.width >= 200
-      ? 200
-      : nftPositions.width;
-  const height =
-    nftPositions.height <= 10
-      ? 10
-      : nftPositions.height >= 200
-      ? 200
-      : nftPositions.height;
-
-  return (
-    <DraxView
-      onDragStart={() => {
-        console.log("start drag id", nftDrop.id);
-      }}
-      animateSnapback={false}
-      dragPayload={nftDrop.id}
-      style={{
-        position: "absolute",
-        left: nftPositions.x,
-        top: nftPositions.y,
-        zIndex: oldNftPositionsWithZIndex.length,
-        padding: 4,
-        borderColor: primaryColor,
-        borderWidth: 1,
-      }}
-      draggingStyle={{ opacity: 0.5 }}
-    >
-      <Image
-        style={{
-          width,
-          height,
-          borderRadius: nftPositions.borderRadius
-            ? (nftPositions.borderRadius *
-                (nftPositions.width > nftPositions.height
-                  ? nftPositions.width
-                  : nftPositions.height)) /
-              200
-            : 0,
-        }}
-        source={nftDrop.svg}
-      />
-    </DraxView>
-  );
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    marginLeft: -110,
+    width: "100%",
+  },
+  menu: {
+    width: 240,
+    paddingTop: 24,
+    borderRightWidth: 1,
+    borderColor: neutral33,
+  },
+  separator: { height: 1, backgroundColor: neutral33, marginTop: 16 },
+  headerChosePosition: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 24,
+    marginBottom: 16,
+    width: "100%",
+  },
+  chosePositionContainer: {
+    width: 1030,
+    height: 552,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: neutral33,
+    backgroundColor: "black",
+    alignSelf: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+});

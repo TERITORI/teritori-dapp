@@ -17,19 +17,19 @@ import CollectionItem from "./CollectionItem";
 const NftAdjustments: React.FC<{
   nftCollectionId: string;
   newNftCollections: any[];
-  nftDrop: any;
-  setNftDrop: (nftDrop: any) => void;
-  nftPositions: any;
-  setNftPositions: (nftPositions: any) => void;
+  nftDroped: any;
+  setNftDroped: (nftDroped: any) => void;
+  nftDropedAdjustment: any;
+  setNftDropedAdjustment: (nftDropedAdjustment: any) => void;
   price: number;
   setPrice: (price: number) => void;
 }> = ({
   nftCollectionId,
   newNftCollections,
-  nftDrop,
-  setNftDrop,
-  nftPositions,
-  setNftPositions,
+  nftDroped,
+  setNftDroped,
+  nftDropedAdjustment,
+  setNftDropedAdjustment,
   price,
   setPrice,
 }) => {
@@ -37,7 +37,7 @@ const NftAdjustments: React.FC<{
   const [percentage, setPercentage] = useState(0);
 
   useEffect(() => {
-    setNftPositions({ ...nftPositions, borderRadius: percentage });
+    setNftDropedAdjustment({ ...nftDropedAdjustment, borderRadius: percentage });
   }, [percentage]);
 
   useEffect(() => {
@@ -78,11 +78,11 @@ const NftAdjustments: React.FC<{
         NFT artwork
       </BrandText>
       <Image
-        source={nftDrop.svg}
+        source={nftDroped.svg}
         style={{ aspectRatio: 1, width: 220, marginVertical: 12 }}
         resizeMode="contain"
       />
-      <BrandText style={{ fontSize: 13 }}>{nftDrop.name}</BrandText>
+      <BrandText style={{ fontSize: 13 }}>{nftDroped.name}</BrandText>
       <View
         style={{
           height: 1,
@@ -158,8 +158,8 @@ const NftAdjustments: React.FC<{
             iconHeight={12}
             iconWidth={12}
             onPress={() => {
-              setNftDrop(undefined);
-              setNftPositions(undefined);
+              setNftDroped(undefined);
+              setNftDropedAdjustment(undefined);
             }}
             width={56}
             height={48}

@@ -5,9 +5,9 @@ import { BrandText } from "../../components/BrandText";
 import { neutral33, primaryColor } from "../../utils/style/colors";
 
 const NftTypeTab: React.FC<{
-  nftType: string;
-  setNftType: (text: string) => void;
-}> = ({ nftType, setNftType }) => {
+  tabName: string;
+  setTabName: (text: string) => void;
+}> = ({ tabName, setTabName }) => {
   return (
     <View
       style={{
@@ -27,12 +27,12 @@ const NftTypeTab: React.FC<{
               alignItems: "center",
             },
           ]}
-          onPress={() => setNftType("New")}
+          onPress={() => setTabName("New")}
         >
           <View
             style={[
               { width: "96%", height: "90%", justifyContent: "center" },
-              nftType === "New" && {
+              tabName === "New" && {
                 backgroundColor: primaryColor,
                 borderRadius: 7,
               },
@@ -44,7 +44,7 @@ const NftTypeTab: React.FC<{
                   textAlign: "center",
                   fontSize: 14,
                 },
-                nftType === "New" && { color: "black" },
+                tabName === "New" && { color: "black" },
               ]}
             >
               New
@@ -57,12 +57,12 @@ const NftTypeTab: React.FC<{
             justifyContent: "center",
             alignItems: "center",
           }}
-          onPress={() => setNftType("Existing")}
+          onPress={() => setTabName("Existing")}
         >
           <View
             style={[
               { width: "96%", height: "90%", justifyContent: "center" },
-              nftType === "Existing" && {
+              tabName === "Existing" && {
                 backgroundColor: primaryColor,
                 borderRadius: 7,
               },
@@ -74,7 +74,7 @@ const NftTypeTab: React.FC<{
                   textAlign: "center",
                   fontSize: 14,
                 },
-                nftType === "Existing" && { color: "black" },
+                tabName === "Existing" && { color: "black" },
               ]}
             >
               Existing
