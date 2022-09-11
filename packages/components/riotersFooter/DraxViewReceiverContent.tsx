@@ -30,7 +30,7 @@ const DraxViewReceiverContent: React.FC<{
           oldNftPositionsWithZIndexOrder={oldNftPositionsWithZIndexOrder}
         />
       ),
-      [nftDropedAdjustment]
+      [nftDropedAdjustment?.x, nftDropedAdjustment?.y]
     );
 
     const OnResize = useCallback(
