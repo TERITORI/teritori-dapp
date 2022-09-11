@@ -1,5 +1,5 @@
-import React from "react";
-import { Image, TouchableOpacity, View } from "react-native";
+import React, { memo, useCallback } from "react";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { DraxList, DraxView } from "react-native-drax";
 
 import nftSvg from "../../../assets/icons/nft.svg";
@@ -74,124 +74,137 @@ const SelectNewNft: React.FC<{
   searchNft: string;
   setSearchNft: (text: string) => void;
   newNftCollections: any[];
-}> = ({
-  nftCollectionId,
-  setNftCollectionId,
-  searchNft,
-  setSearchNft,
-  newNftCollections,
-}) => {
-  const currentCollection = newNftCollections.find(
-    (collection) => collection.id === nftCollectionId
-  );
+}> = memo(
+  ({
+    nftCollectionId,
+    setNftCollectionId,
+    searchNft,
+    setSearchNft,
+    newNftCollections,
+  }) => {
+    const currentCollection = newNftCollections.find(
+      (collection) => collection.id === nftCollectionId
+    );
 
-  return (
-    <>
-      <View style={{ width: 220 }}>
-        <BrandText style={{ fontSize: 14, color: neutral77 }}>
-          Collection
-        </BrandText>
-        <CollectionItem collection={currentCollection} />
-        <View
-          style={{
-            height: 1,
-            backgroundColor: neutral33,
-            marginVertical: 20,
-          }}
+    const RenderItem = useCallback(
+      ({ item }) => (
+        <View style={{ width: 104, marginTop: 12 }}>
+          <DraxView
+            onDragStart={() => {
+              console.log("start drag id", item.id);
+            }}
+            animateSnapback={false}
+            dragPayload={item.id}
+            draggingStyle={{ opacity: 0.5 }}
+          >
+            <Image style={{ width: 104, height: 104 }} source={item.svg} />
+          </DraxView>
+          <BrandText
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{ fontSize: 13, marginTop: 8 }}
+          >
+            {item.name}
+          </BrandText>
+        </View>
+      ),
+      []
+    );
+
+    const keyExtractor = useCallback(({ id }) => id, []);
+
+    const ListHeaderComponent: React.FC<{
+      setNftCollectionId: (text: string) => void;
+      searchNft: string;
+      setSearchNft: (text: string) => void;
+    }> = useCallback(
+      ({ setNftCollectionId, searchNft, setSearchNft }) => {
+        return (
+          <>
+            <View
+              style={{
+                flexDirection: "row",
+                marginBottom: 12,
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  setNftCollectionId("");
+                }}
+              >
+                <SVG
+                  width={7}
+                  height={11}
+                  source={shapeSvg}
+                  style={{ marginRight: 33, marginLeft: 5 }}
+                />
+              </TouchableOpacity>
+              <BrandText style={{ fontSize: 14 }}>Choose NFT Artwork</BrandText>
+            </View>
+            <TextInputCustomBorder
+              style={{
+                minWidth: 20,
+                width: 220,
+                minHeight: 40,
+                borderRadius: 8,
+                backgroundColor: "black",
+              }}
+              placeHolder="Search collection or NFT"
+              value={searchNft}
+              onChangeText={setSearchNft}
+            />
+          </>
+        );
+      },
+      [searchNft]
+    );
+
+    const getItemLayout = useCallback(
+      (_: any, index: number) => ({
+        length: 130,
+        offset: (130 + 12) * index,
+        index,
+      }),
+      []
+    );
+
+    return (
+      <>
+        <View style={{ width: 220 }}>
+          <BrandText style={{ fontSize: 14, color: neutral77 }}>
+            Collection
+          </BrandText>
+          <CollectionItem collection={currentCollection} />
+          <View style={styles.separator} />
+        </View>
+        <DraxList
+          data={fakeNft}
+          renderItemContent={RenderItem}
+          keyExtractor={keyExtractor}
+          ListHeaderComponent={
+            <ListHeaderComponent
+              setNftCollectionId={setNftCollectionId}
+              searchNft={searchNft}
+              setSearchNft={setSearchNft}
+            />
+          }
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
+          getItemLayout={getItemLayout}
+          contentContainerStyle={{ height: 716, width: 220 }}
         />
-      </View>
-      <DraxList
-        data={fakeNft}
-        renderItemContent={renderItem}
-        keyExtractor={keyExtractor}
-        ListHeaderComponent={
-          <ListHeaderComponent
-            setNftCollectionId={setNftCollectionId}
-            searchNft={searchNft}
-            setSearchNft={setSearchNft}
-          />
-        }
-        numColumns={2}
-        columnWrapperStyle={{ justifyContent: "space-between" }}
-        getItemLayout={getItemLayout}
-        contentContainerStyle={{ height: 716, width: 220 }}
-      />
-    </>
-  );
-};
-
-const renderItem = ({ item }) => (
-  <View style={{ width: 104, marginTop: 12 }}>
-    <DraxView
-      onDragStart={() => {
-        console.log("start drag id", item.id);
-      }}
-      animateSnapback={false}
-      dragPayload={item.id}
-      draggingStyle={{ opacity: 0.5 }}
-    >
-      <Image style={{ width: 104, height: 104 }} source={item.svg} />
-    </DraxView>
-    <BrandText
-      numberOfLines={1}
-      ellipsizeMode="tail"
-      style={{ fontSize: 13, marginTop: 8 }}
-    >
-      {item.name}
-    </BrandText>
-  </View>
+      </>
+    );
+  }
 );
 
-const keyExtractor = ({ id }) => id;
-
-const ListHeaderComponent: React.FC<{
-  setNftCollectionId: (text: string) => void;
-  searchNft: string;
-  setSearchNft: (text: string) => void;
-}> = ({ setNftCollectionId, searchNft, setSearchNft }) => {
-  return (
-    <>
-      <View
-        style={{
-          flexDirection: "row",
-          marginBottom: 12,
-          alignItems: "center",
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => {
-            setNftCollectionId("");
-          }}
-        >
-          <SVG
-            width={7}
-            height={11}
-            source={shapeSvg}
-            style={{ marginRight: 33, marginLeft: 5 }}
-          />
-        </TouchableOpacity>
-        <BrandText style={{ fontSize: 14 }}>Choose NFT Artwork</BrandText>
-      </View>
-      <TextInputCustomBorder
-        style={{
-          minWidth: 20,
-          width: 220,
-          minHeight: 40,
-          borderRadius: 8,
-          backgroundColor: "black",
-        }}
-        placeHolder="Search collection or NFT"
-        value={searchNft}
-        onChangeText={setSearchNft}
-      />
-    </>
-  );
-};
-
-const getItemLayout = (_: any, index: number) => ({
-  length: 130,
-  offset: (130 + 12) * index,
-  index,
-});
-
 export default SelectNewNft;
+
+const styles = StyleSheet.create({
+  separator: {
+    height: 1,
+    backgroundColor: neutral33,
+    marginVertical: 20,
+  },
+});

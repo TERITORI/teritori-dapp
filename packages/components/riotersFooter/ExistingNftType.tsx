@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import addSvg from "../../../assets/icons/add.svg";
@@ -65,7 +65,7 @@ const fakeNft = [
   },
 ];
 
-const ExistingNftType: React.FC = () => {
+const ExistingNftType: React.FC = memo(() => {
   return !fakeNft || fakeNft.length === 0 ? (
     <>
       <BrandText style={{ fontSize: 14, marginTop: 20, color: neutral77 }}>
@@ -116,6 +116,6 @@ const ExistingNftType: React.FC = () => {
       ))}
     </>
   );
-};
+});
 
 export default ExistingNftType;
