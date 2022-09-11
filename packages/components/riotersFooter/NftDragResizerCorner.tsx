@@ -37,9 +37,12 @@ const NftDragResizerCorner: React.FC<{
         const positions: {
           x?: number;
           y?: number;
-          width?: number;
-          height?: number;
-        } = {};
+          width: number;
+          height: number;
+        } = {
+          width: 0,
+          height: 0,
+        };
         let x = null;
         let y = null;
 
