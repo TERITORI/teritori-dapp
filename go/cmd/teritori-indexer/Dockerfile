@@ -47,7 +47,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
   -w -s -linkmode=external -extldflags '-Wl,-z,muldefs -static'" \
   -trimpath \
   -o /app/build/ \
-  ./go/cmd/teritori-dapp-backend
+  ./go/cmd/teritori-indexer
 
 # --------------------------------------------------------
 # Runner
@@ -55,9 +55,9 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 
 FROM ${RUNNER_IMAGE}
 
-COPY --from=builder /app/build/teritori-dapp-backend /bin/teritori-dapp-backend
+COPY --from=builder /app/build/teritori-indexer /bin/teritori-indexer
 
 ENV HOME /app
 WORKDIR $HOME
 
-ENTRYPOINT ["teritori-dapp-backend"]
+ENTRYPOINT ["teritori-indexer"]

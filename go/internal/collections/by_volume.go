@@ -2,6 +2,7 @@ package collections
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -52,12 +53,14 @@ func fetchCollectionsByVolume(ctx context.Context, graphqlEndpoint string, logge
 			}
 		}
 
+		mintAddress := collection.GetNft().MintAddress
 		collections = append(collections, &marketplacepb.Collection{
+			Id:             fmt.Sprintf("sol-%s", mintAddress),
 			CollectionName: collection.GetNft().Name,
 			Verified:       true,
 			CreatorName:    creatorName,
 			ImageUri:       collection.GetNft().Image,
-			MintAddress:    collection.GetNft().MintAddress,
+			MintAddress:    mintAddress,
 		})
 	}
 	return collections, nil

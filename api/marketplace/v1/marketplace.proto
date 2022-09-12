@@ -7,33 +7,57 @@ service MarketplaceService {
   rpc Collections(CollectionsRequest) returns (stream CollectionsResponse);
   rpc CollectionNFTs(CollectionNFTsRequest) returns (stream CollectionNFTsResponse);
   rpc CollectionActivity(CollectionActivityRequest) returns (stream CollectionActivityResponse);
+  rpc NFTActivity(NFTActivityRequest) returns (stream NFTActivityResponse);
+  rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
+}
+
+enum Network {
+  NETWORK_UNSPECIFIED = 0;
+  NETWORK_FAKE = 1;
+  NETWORK_TERITORI = 2;
+  NETWORK_SOLANA = 3;
 }
 
 message NFT {
-  string image_uri = 1;
-  string name = 2;
-  string mint_address = 3;
-  string price = 4;
+  string id = 1;
+  Network network = 2;
+  string image_uri = 3;
+  string name = 4;
+  string mint_address = 5;
+  string price = 6;
+  string denom = 7;
+  bool is_listed = 8;
 }
 
 message Collection {
+  string id = 1;
   string image_uri = 2;
   string collection_name = 3;
   string creator_name = 4;
   bool verified = 5;
   string mint_address = 6;
+  Network network = 7;
+  string volume = 8;
+  string volume_denom = 9;
 }
 
 message Activity {
-  string transaction_kind = 1;
-  string target_name = 2;
-  string target_image_uri = 3;
-  string contract_name = 4;
-  string time = 5;
-  string amount = 6;
-  string transaction_id = 7;
-  string buyer = 8;
-  string seller = 9;
+  string id = 1;
+  string transaction_kind = 2;
+  string target_name = 3;
+  string target_image_uri = 4;
+  string contract_name = 5;
+  string time = 6;
+  string amount = 7;
+  string denom = 8;
+  string transaction_id = 9;
+  string buyer_id = 10;
+  string seller_id = 11;
+}
+
+message PriceDatum {
+  string price = 1;
+  string time = 2;
 }
 
 message CollectionsRequest {
@@ -43,6 +67,7 @@ message CollectionsRequest {
     KIND_BY_MARKETCAP = 2;
     KIND_FAKE = 3;
     KIND_UPCOMING = 4;
+    KIND_TERITORI_FEATURES = 5;
   }
 
   Kind kind = 1;
@@ -55,7 +80,7 @@ message CollectionsResponse {
 }
 
 message CollectionNFTsRequest {
-  string mint_address = 1;
+  string id = 1;
   int32 limit = 2;
   int32 offset = 3;
 }
@@ -65,11 +90,29 @@ message CollectionNFTsResponse {
 }
 
 message CollectionActivityRequest {
-  string mint_address = 1;
-  int32 limit = 2;
-  int32 offset = 3;
+  string id = 1;
+  int32 limit = 3;
+  int32 offset = 4;
 }
 
 message CollectionActivityResponse {
   Activity activity = 1;
+}
+
+message NFTActivityRequest {
+  string id = 1;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message NFTActivityResponse {
+  Activity activity = 1;
+}
+
+message NFTPriceHistoryRequest {
+  string id = 1;
+}
+
+message NFTPriceHistoryResponse {
+  repeated PriceDatum data = 1;
 }

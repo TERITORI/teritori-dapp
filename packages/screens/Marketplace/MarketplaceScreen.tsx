@@ -18,7 +18,10 @@ export const MarketplaceScreen: React.FC = () => {
           kind={CollectionsRequest_Kind.KIND_BY_VOLUME}
         />
         <CollectionsCarouselSection title="Auctions" />
-        <CollectionsCarouselSection title="TERITORI Features Collections" />
+        <CollectionsCarouselSection
+          title="TERITORI Features Collections"
+          kind={CollectionsRequest_Kind.KIND_TERITORI_FEATURES}
+        />
         <CollectionsCarouselSection
           title="Top Market Cap"
           kind={CollectionsRequest_Kind.KIND_BY_MARKETCAP}
