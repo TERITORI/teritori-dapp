@@ -32,7 +32,13 @@ const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   />
 );
 
-const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
+export const WalletActionButton: React.FC<{
+  wallet: Wallet;
+  squaresBackgroundColor?: string;
+  fullWidth?: boolean;
+}> = ({ wallet, fullWidth = false, squaresBackgroundColor = neutral22 }) => {
+  const tertiaryButtonProps = { fullWidth, squaresBackgroundColor };
+
   const dispatch = useAppDispatch();
   switch (wallet.provider) {
     case WalletProvider.Phantom:
@@ -41,7 +47,6 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
         // FIXME: no disconnect on keplr
         return (
           <TertiaryButton
-            squaresBackgroundColor={neutral22}
             size="SM"
             text={`Disconnect ${wallet.provider}`}
             onPress={async () => {
@@ -53,12 +58,12 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
                 }
               }
             }}
+            {...tertiaryButtonProps}
           />
         );
       }
       return (
         <TertiaryButton
-          squaresBackgroundColor={neutral22}
           size="SM"
           text={`Connect ${wallet.provider}`}
           onPress={async () => {
@@ -84,15 +89,12 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
               console.warn(wallet.provider, "failed to connect", err);
             }
           }}
+          {...tertiaryButtonProps}
         />
       );
     case WalletProvider.Store:
       return (
-        <TertiaryButton
-          text="Remove"
-          size="SM"
-          squaresBackgroundColor={neutral22}
-        />
+        <TertiaryButton text="Remove" size="SM" {...tertiaryButtonProps} />
       );
     default:
       return null;

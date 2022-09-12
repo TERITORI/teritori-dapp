@@ -3,7 +3,6 @@ import React from "react";
 import { Modal, Pressable, StyleProp, View, ViewStyle } from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
-import { neutral22 } from "../../utils/style/colors";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -53,7 +52,7 @@ export const ModalBase: React.FC<{
           style={{ margin: "auto" }}
           mainContainerStyle={{
             alignItems: "flex-start",
-            backgroundColor: neutral22,
+            backgroundColor: "#000000",
           }}
         >
           {/*------ Modal header */}

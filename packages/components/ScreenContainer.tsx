@@ -85,6 +85,7 @@ export const ScreenContainer: React.FC<{
                   contentContainerStyle={[
                     {
                       flex: 1,
+                      alignItems: "center",
                     },
                     marginStyle,
                   ]}
@@ -93,7 +94,7 @@ export const ScreenContainer: React.FC<{
                   {footerChildren && <Footer>{footerChildren}</Footer>}
                 </ScrollView>
               ) : (
-                <View style={[{ flex: 1, width: "100%" }, marginStyle]}>
+                <View style={[{ flex: 1, width: "100%",  alignItems: "center" }, marginStyle]}>
                   {children}
                   {footerChildren && <Footer>{footerChildren}</Footer>}
                 </View>

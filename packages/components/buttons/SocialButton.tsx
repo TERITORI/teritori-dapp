@@ -28,7 +28,7 @@ export const SocialButton: React.FC<{
             width={32}
             height={32}
             squaresBackgroundColor={neutral22}
-            cornerWidth={5}
+            cornerWidth={4}
           >
             <SVG source={iconSvg} />
           </SecondaryBox>

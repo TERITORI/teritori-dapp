@@ -2,7 +2,11 @@ import React from "react";
 import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { borderRadius, ButtonsSize, height } from "../../utils/style/buttons";
+import {
+  borderRadiusButton,
+  ButtonsSize,
+  heightButton,
+} from "../../utils/style/buttons";
 import { neutral30, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -45,12 +49,16 @@ export const SecondaryButton: React.FC<{
   };
 
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled}>
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={disabled}
+      style={{ width: fullWidth ? "100%" : width }}
+    >
       <SecondaryBox
-        height={height(size)}
+        height={heightButton(size)}
         mainContainerStyle={{
           flexDirection: "row",
-          borderRadius: borderRadius(size),
+          borderRadius: borderRadiusButton(size),
           backgroundColor,
           paddingHorizontal: 20,
         }}

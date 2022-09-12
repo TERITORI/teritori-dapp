@@ -13,3 +13,9 @@ export interface NFTData {
   favoritesCount: number;
   id: string;
 }
+
+export interface NFTAttribute {
+  traitType: string;
+  value: string;
+  displayType?: string;
+}

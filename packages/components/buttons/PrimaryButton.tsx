@@ -7,7 +7,11 @@ import {
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { borderRadius, ButtonsSize, height } from "../../utils/style/buttons";
+import {
+  borderRadiusButton,
+  ButtonsSize,
+  heightButton,
+} from "../../utils/style/buttons";
 import {
   neutral77,
   primaryColor,
@@ -68,15 +72,12 @@ export const PrimaryButton: React.FC<{
   };
 
   return (
-    <TouchableOpacity
-      onPress={onPress ? handlePress : undefined}
-      disabled={isDisabled}
-    >
+    <TouchableOpacity onPress={onPress ? handlePress : undefined} disabled={isDisabled} style={{ width: fullWidth ? "100%" : width }}>
       <SecondaryBox
-        height={height(size)}
+        height={heightButton(size)}
         mainContainerStyle={{
           flexDirection: "row",
-          borderRadius: borderRadius(size),
+          borderRadius: borderRadiusButton(size),
           backgroundColor: primaryColor,
           paddingHorizontal: 20,
         }}

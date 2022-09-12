@@ -10,6 +10,7 @@ import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScre
 import { CollectionActivityScreen } from "../../screens/Marketplace/CollectionActivityScreen";
 import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
+import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MintScreen } from "../../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { TNSBurnNameScreen } from "../../screens/TeritoriNameService/TNSBurnNameScreen";
@@ -136,6 +137,11 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="CollectionActivity"
         component={CollectionActivityScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="NFTDetail"
+        component={NFTDetailScreen}
         options={{ header: () => null }}
       />
     </Stack.Navigator>
