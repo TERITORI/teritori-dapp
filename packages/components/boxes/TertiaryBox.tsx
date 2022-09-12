@@ -41,17 +41,17 @@ export const TertiaryBox: React.FC<{
       <View style={fullWidth && { width: "100%" }}>
         {/*---- Content wrapper*/}
         <View
-          style={{
-            width: fullWidth ? "100%" : width,
-            height,
-          }}
+          style={[
+            height ? { height } : null,
+            width ? { width } : fullWidth ? { width: "100%" } : null,
+          ]}
         >
           {/* ---- Content container */}
           <View
             style={[
+              width ? { width } : fullWidth ? { width: "100%" } : null,
+              height ? { height } : null,
               {
-                width: fullWidth ? "100%" : width,
-                height,
                 backgroundColor,
                 borderColor,
                 borderWidth: 1,
