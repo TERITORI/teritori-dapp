@@ -13,8 +13,8 @@ export const PrimaryBox: React.FC<{
   style?: StyleProp<ViewStyle>;
   mainContainerStyle?: StyleProp<ViewStyle>;
 }> = ({
-  width = 200,
-  height = 200,
+  width,
+  height,
   fullWidth = false,
   squaresBackgroundColor = "#000000",
   disabled = false,
@@ -39,10 +39,10 @@ export const PrimaryBox: React.FC<{
       <View style={fullWidth && { width: "100%" }}>
         {/*---- Content wrapper*/}
         <View
-          style={{
-            width: fullWidth ? "100%" : width,
-            height,
-          }}
+          style={[
+            height ? { height } : null,
+            width ? { width } : fullWidth ? { width: "100%" } : null,
+          ]}
         >
           {/*Main gradient*/}
           <LinearGradient
@@ -51,21 +51,27 @@ export const PrimaryBox: React.FC<{
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             locations={[0.7, 0.8]}
-            style={{
-              width: fullWidth ? "100%" : width,
-              height,
-              opacity: disabled ? 0.5 : 1,
-              borderRadius,
-              padding: 1,
-            }}
+            style={[
+              height ? { height } : null,
+              width ? { width } : fullWidth ? { width: "100%" } : null,
+              {
+                opacity: disabled ? 0.5 : 1,
+                borderRadius,
+                padding: 1,
+              },
+            ]}
             colors={disabled ? ["#676767", "#B7B7B7"] : ["#01B7C5", "#782C96"]}
           >
             {/* ---- Content container */}
             <View
               style={[
+                height ? { height: height - 2 } : null,
+                width
+                  ? { width: width - 2 }
+                  : fullWidth
+                  ? { width: "100%" }
+                  : null,
                 {
-                  width: fullWidth ? "100%" : width - 2,
-                  height: height - 2,
                   backgroundColor,
                   borderRadius,
                   zIndex: 1,
