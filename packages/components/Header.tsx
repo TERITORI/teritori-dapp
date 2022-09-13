@@ -1,67 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
 
-import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
 import logoTopSVG from "../../assets/logos/logo-hexagon.svg";
-import { useAreThereWallets } from "../hooks/useAreThereWallets";
 import { useAppNavigation } from "../utils/navigation";
 import { neutral33 } from "../utils/style/colors";
 import {
   headerHeight,
+  headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
-import { WalletSelector } from "./WalletSelector";
-import { WalletsManager } from "./WalletsManager";
-
-// Displayed when no wallet connected. Press to connect wallet
-const ConnectWalletButton: React.FC<{
-  style?: StyleProp<ViewStyle>;
-  onPress: () => void;
-}> = ({ style, onPress }) => {
-  const height = 40;
-  const width = 220;
-
-  return (
-    <TouchableOpacity style={style} onPress={onPress}>
-      <SVG
-        width={width}
-        height={height}
-        source={secondaryCardSmSVG}
-        style={{ position: "absolute" }}
-      />
-
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          height,
-          minHeight: height,
-          width,
-          minWidth: width,
-        }}
-      >
-        <BrandText
-          style={{
-            fontSize: 14,
-          }}
-        >
-          Connect wallet
-        </BrandText>
-      </View>
-    </TouchableOpacity>
-  );
-};
 
 export const Header: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ children, style }) => {
-  const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
-  const isAConnectedWallet = useAreThereWallets();
   const navigation = useAppNavigation();
-  const headerMarginH = 22;
 
   return (
     <View
@@ -82,7 +35,7 @@ export const Header: React.FC<{
     >
       <TouchableOpacity
         onPress={() => navigation.navigate("Home")}
-        style={{ marginLeft: headerMarginH }}
+        style={{ marginLeft: headerMarginHorizontal }}
       >
         <SVG width={68} height={68} source={logoTopSVG} />
       </TouchableOpacity>
@@ -99,22 +52,8 @@ export const Header: React.FC<{
         <>{children}</>
       </View>
 
-      {isAConnectedWallet ? (
-        <WalletSelector
-          style={{ marginRight: headerMarginH }}
-          onPressAddWallet={() => navigation.navigate("Wallets")}
-        />
-      ) : (
-        <ConnectWalletButton
-          style={{ marginRight: headerMarginH }}
-          onPress={() => setWalletsManagerVisible(true)}
-        />
-      )}
-
-      <WalletsManager
-        visible={walletsManagerVisible}
-        onClose={() => setWalletsManagerVisible(false)}
-      />
+      {/* Wallet selector placeholder */}
+      <View />
     </View>
   );
 };
