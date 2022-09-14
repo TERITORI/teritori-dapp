@@ -41,7 +41,7 @@ export const NFTAttributes: React.FC<{
           width: "100%",
           alignItems: "center",
           justifyContent: "space-between",
-          marginTop: 12
+          marginTop: 12,
         }}
       >
         <View style={{ height: 1, width: 240, backgroundColor: neutral33 }} />
