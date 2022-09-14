@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { Uint128, ConfigResponse, Addr, Config, ExecuteMsg, InstantiateMsg, QueryMsg } from "./TeritoriNftMinter.types";
+import { Uint128, ConfigResponse } from "./TeritoriNftMinter.types";
 export interface TeritoriNftMinterReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<ConfigResponse>;

@@ -72,7 +72,11 @@ export const PrimaryButton: React.FC<{
   };
 
   return (
-    <TouchableOpacity onPress={onPress ? handlePress : undefined} disabled={isDisabled} style={{ width: fullWidth ? "100%" : width }}>
+    <TouchableOpacity
+      onPress={onPress ? handlePress : undefined}
+      disabled={isDisabled}
+      style={{ width: fullWidth ? "100%" : width }}
+    >
       <SecondaryBox
         height={heightButton(size)}
         mainContainerStyle={{

@@ -1,14 +1,24 @@
-import React, { useState } from "react";
+import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+import React, { useEffect, useState } from "react";
 import { Image, View } from "react-native";
 
 import guardian1PNG from "../../../assets/default-images/guardian_1.png";
+import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { neutral77, primaryColor } from "../../utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "../../utils/style/fonts";
+import {
+  fontMedium14,
+  fontSemibold12,
+  fontSemibold14,
+  fontSemibold28,
+} from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { tinyAddress } from "../WalletSelector";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TransactionPaymentModal } from "../modals/transaction/TransactionPaymentModal";
+import { TransactionPendingModal } from "../modals/transaction/TransactionPendingModal";
+import { TransactionSuccessModal } from "../modals/transaction/TransactionSuccessModal";
 import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
 import { NFTAttributes } from "./NFTAttributes";
 
@@ -27,9 +37,32 @@ const mainInfoTabItems: TabItem[] = [
   },
 ];
 
-export const NFTMainInfo: React.FC = () => {
+// Displays NFT metadata and handle buying
+export const NFTMainInfo: React.FC<{
+  nftInfo?: NFTInfo;
+  buy: () => Promise<ExecuteResult | undefined>;
+}> = ({ nftInfo, buy }) => {
   const [transactionPaymentModalVisible, setTransactionPaymentModalVisible] =
     useState(false);
+  const [transactionPendingModalVisible, setTransactionPendingModalVisible] =
+    useState(false);
+  const [transactionSuccessModalVisible, setTransactionSuccessModalVisible] =
+    useState(false);
+  const [transactionHash, setTransactionHash] = useState("");
+
+  const handleBuy = async () => {
+    setTransactionPaymentModalVisible(false);
+    setTransactionPendingModalVisible(true);
+    buy().then((reply) => {
+      if (!reply) {
+        setTransactionPendingModalVisible(false);
+      } else {
+        setTransactionHash(reply?.transactionHash || "");
+        setTransactionPendingModalVisible(false);
+        setTransactionSuccessModalVisible(true);
+      }
+    });
+  };
 
   const { onPressTabItem, selectedTabItem, tabItems } =
     useTabs(mainInfoTabItems);
@@ -38,33 +71,119 @@ export const NFTMainInfo: React.FC = () => {
     switch (selectedTabItem.label) {
       case "About":
         return (
-          <BrandText
-            style={[fontSemibold14, { marginBottom: 24, width: "100%" }]}
-          >
-            {"For decades, the destruction of ecosystems and social relations has turned people into soulless robots. " +
-              "At the same time, inequality explodes every year and misery becomes the norm for the silent majority.\n\n" +
-              "A minority of powerful & wealthy leaders, called the “The Legion'', have set up a technological & political" +
-              "system allowing them to continue to develop their wealth and safety.\n" +
-              "Of course this system only serves the happy few elite members of the society while the majority survives in" +
-              "an increasingly uncertain world.\n\n" +
-              "Small groups start to gather in the shadows to take action.\n" +
-              "They go by the name of “Guardians” and believe that everyone should be able to live autonomously without the" +
-              "need to rely on “The Legion”. Their solution for a better world is to offer a decentralized ecosystem open" +
-              "to anyone, rich or poor."}
-          </BrandText>
+          <View style={{ width: 600 }}>
+            <BrandText
+              style={[fontSemibold14, { marginBottom: 24, width: "100%" }]}
+            >
+              {nftInfo?.description}
+            </BrandText>
+          </View>
         );
       case "Attributes":
-        return <NFTAttributes />;
+        return (
+          <View style={{ width: 600 }}>
+            <NFTAttributes nftAttributes={nftInfo?.attributes} />
+          </View>
+        );
       case "Details":
         return (
-          <View style={{ height: 222, width: 600 }}>
-            <BrandText>WIP</BrandText>
+          <View style={{ width: 600 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 6,
+              }}
+            >
+              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                Mint address
+              </BrandText>
+              <BrandText style={fontMedium14}>
+                {tinyAddress(nftInfo?.nftAddress, 30)}
+              </BrandText>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 6,
+              }}
+            >
+              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                On-chain collection
+              </BrandText>
+              <BrandText style={fontMedium14}>WIP</BrandText>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 6,
+              }}
+            >
+              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                Token address
+              </BrandText>
+              <BrandText style={fontMedium14}>
+                {tinyAddress(nftInfo?.tokenAddress, 30)}
+              </BrandText>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 6,
+              }}
+            >
+              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                Owner
+              </BrandText>
+              <BrandText style={fontMedium14}>
+                {tinyAddress(nftInfo?.ownerAddress, 30)}
+              </BrandText>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 6,
+              }}
+            >
+              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                Creator Royalties
+              </BrandText>
+              <BrandText style={fontMedium14}>0%</BrandText>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 6,
+              }}
+            >
+              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                Transaction fee
+              </BrandText>
+              <BrandText style={fontMedium14}>2%</BrandText>
+            </View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                Listing/Bidding/Cancel
+              </BrandText>
+              <BrandText style={fontMedium14}>Free</BrandText>
+            </View>
           </View>
         );
       default:
         return null;
     }
   };
+
+  useEffect(() => {
+    console.log("çççççç nftInfonftInfo", nftInfo);
+  }, [nftInfo]);
 
   return (
     <View
@@ -83,22 +202,26 @@ export const NFTMainInfo: React.FC = () => {
         style={{ marginRight: 28, marginBottom: 40 }}
       >
         <Image
-          source={guardian1PNG}
+          source={{ uri: nftInfo?.imageURL }}
           style={{ width: 462, height: 462, borderRadius: 8 }}
         />
       </TertiaryBox>
       {/*---- Info NFT */}
       <View style={{ maxWidth: 600 }}>
         <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
-          Genesis Guardians of Teritori
+          {nftInfo?.name}
         </BrandText>
+
         <CollectionInfoInline
           imageSource={guardian1PNG}
-          name="Genesis Guardians"
+          name={nftInfo?.collectionName}
         />
+
         <NFTPriceBuyCard
           style={{ marginTop: 24, marginBottom: 40 }}
           onPressBuy={() => setTransactionPaymentModalVisible(true)}
+          price={nftInfo?.price}
+          priceDenom={nftInfo?.priceDenom}
         />
 
         <Tabs
@@ -112,24 +235,57 @@ export const NFTMainInfo: React.FC = () => {
         <SelectedTabItemRendering />
       </View>
 
+      {/* ====== "Buy this NFT" three modals*/}
+      {/*TODO: Handle these 3 modales with a component, or a hook*/}
+
+      {/* ----- Modal to process payment*/}
       <TransactionPaymentModal
+        onPressProceed={handleBuy}
         onClose={() => setTransactionPaymentModalVisible(false)}
         visible={transactionPaymentModalVisible}
-        price={8}
+        price={nftInfo?.price}
+        priceDenom={nftInfo?.priceDenom}
         label="Checkout"
-        text={
+        textComponent={
           <BrandText style={fontSemibold14}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
               You are about to purchase a{" "}
             </BrandText>
-            Genesis Guardians of Teritori
+            {nftInfo?.name}
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
               {" "}
               from{" "}
             </BrandText>
-            Genesis Guardians
+            {nftInfo?.collectionName}
           </BrandText>
         }
+      />
+
+      {/* ----- Modal with loader, witing for wallet approbation*/}
+      <TransactionPendingModal
+        operationLabel="Purchase"
+        visible={transactionPendingModalVisible}
+        onClose={() => setTransactionPendingModalVisible(false)}
+      />
+
+      {/* ----- Success modal*/}
+      <TransactionSuccessModal
+        transactionHash={transactionHash}
+        visible={transactionSuccessModalVisible}
+        textComponent={
+          <BrandText style={fontSemibold14}>
+            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+              You successfully purchased{" "}
+            </BrandText>
+            {nftInfo?.name}
+            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+              {" "}
+              from{" "}
+            </BrandText>
+            {nftInfo?.collectionName}
+          </BrandText>
+        }
+        onClose={() => setTransactionSuccessModalVisible(false)}
       />
     </View>
   );

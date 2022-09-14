@@ -7,12 +7,7 @@ import { setIsKeplrConnected } from "../store/slices/settings";
 import { addWallet, StoreWallet } from "../store/slices/wallets";
 import { useAppDispatch } from "../store/store";
 import { addressToNetwork, Network } from "../utils/network";
-import {
-  neutral22,
-  neutral44,
-  pinkDefault,
-  yellowDefault,
-} from "../utils/style/colors";
+import { neutral44, pinkDefault, yellowDefault } from "../utils/style/colors";
 import { modalMarginPadding } from "../utils/style/modals";
 import { keplrSuggestTeritori, teritoriChainId } from "../utils/teritori";
 import { WalletProvider } from "../utils/walletProvider";
@@ -33,14 +28,14 @@ const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
 );
 
 export const WalletActionButton: React.FC<{
-  wallet: Wallet;
+  wallet?: Wallet;
   squaresBackgroundColor?: string;
   fullWidth?: boolean;
-}> = ({ wallet, fullWidth = false, squaresBackgroundColor = neutral22 }) => {
+}> = ({ wallet, fullWidth = false, squaresBackgroundColor }) => {
   const tertiaryButtonProps = { fullWidth, squaresBackgroundColor };
 
   const dispatch = useAppDispatch();
-  switch (wallet.provider) {
+  switch (wallet?.provider) {
     case WalletProvider.Phantom:
     case WalletProvider.Keplr:
       if (wallet.publicKey) {
@@ -184,13 +179,13 @@ const AddNewWallet: React.FC = () => {
         justifyContent: "space-between",
         alignItems: "center",
         padding: modalMarginPadding,
+        width: "100%",
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TextInputCustom
           value={addressValue}
           onChangeText={setAddressValue}
-          squaresBackgroundColor={neutral22}
           label="WALLET ADDRESS"
           placeHolder="Enter address here..."
         >
@@ -198,7 +193,6 @@ const AddNewWallet: React.FC = () => {
         </TextInputCustom>
       </View>
       <PrimaryButton
-        squaresBackgroundColor={neutral22}
         size="M"
         text="Add New Wallet"
         style={{ marginLeft: 16 }}

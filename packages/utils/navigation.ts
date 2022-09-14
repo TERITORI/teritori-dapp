@@ -27,7 +27,7 @@ export type RootStackParamList = {
   Marketplace: undefined;
   Collection: { mintAddress: string };
   CollectionActivity: { mintAddress: string };
-  NFTDetail: { mintAddress: string };
+  NFTDetail: { id: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<
@@ -71,7 +71,7 @@ const navConfig = {
     Marketplace: "marketplace",
     Collection: "collection/:mintAddress",
     CollectionActivity: "collection/:mintAddress/activity",
-    NFTDetail: "nft/:mintAddress",
+    NFTDetail: "nft/:id",
   },
 };
 

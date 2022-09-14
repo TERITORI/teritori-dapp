@@ -23,11 +23,14 @@ import { SecondaryButton } from "./buttons/SecondaryButton";
 
 // FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native
 
-const tinyAddress = (fullAddress: string) => {
+export const tinyAddress = (
+  fullAddress: string = "",
+  nbCharBefore: number = 5
+) => {
   if (fullAddress.length <= 13) {
     return fullAddress;
   }
-  return `${fullAddress.substring(0, 5)}...${fullAddress.substring(
+  return `${fullAddress.substring(0, nbCharBefore)}...${fullAddress.substring(
     fullAddress.length - 5
   )}`;
 };

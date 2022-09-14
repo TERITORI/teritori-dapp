@@ -6,7 +6,7 @@ import { BrandText } from "../BrandText";
 
 export const CollectionInfoInline: React.FC<{
   imageSource: ImageSourcePropType;
-  name: string;
+  name?: string;
 }> = ({ imageSource, name }) => {
   return (
     <View style={{ flexDirection: "row", alignItems: "center" }}>

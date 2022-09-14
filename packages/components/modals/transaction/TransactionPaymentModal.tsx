@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
+import { useTeritoriBalance } from "../../../context/TeritoriBalanceProvider";
 import { useWallets } from "../../../context/WalletsProvider";
 import { selectIsKeplrConnected } from "../../../store/slices/settings";
+import { decimalPrice, prettyPrice } from "../../../utils/coins";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { WalletProvider } from "../../../utils/walletProvider";
@@ -17,14 +19,25 @@ import ModalBase from "../ModalBase";
 // Modal with price, fee,  Teritori wallet connexion and status and Payment button
 export const TransactionPaymentModal: React.FC<{
   label: string;
-  price: number;
-  text: JSX.Element;
+  price?: string;
+  priceDenom?: string;
+  textComponent: JSX.Element;
+  onPressProceed: () => void;
   onClose: () => void;
   visible?: boolean;
-}> = ({ label, price, text, onClose, visible }) => {
+}> = ({
+  label,
+  price = "",
+  priceDenom = "",
+  textComponent,
+  onPressProceed,
+  onClose,
+  visible = false,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const { wallets } = useWallets();
   const isKeplrConnected = useSelector(selectIsKeplrConnected);
+  const { totalString, total } = useTeritoriBalance();
 
   useEffect(() => {
     setIsVisible(visible);
@@ -36,7 +49,7 @@ export const TransactionPaymentModal: React.FC<{
         {/*==== Text*/}
         <View style={{ flexDirection: "row", marginBottom: 16 }}>
           {/*---- Could be some <BrandText> to explain the transaction like "You are about to purchase a xxxx NFT from the collection yyyy..." */}
-          {text}
+          {textComponent}
         </View>
 
         {/*==== Teritori wallet*/}
@@ -45,11 +58,9 @@ export const TransactionPaymentModal: React.FC<{
         ) : (
           <WalletActionButton
             fullWidth
-            wallet={
-              wallets.filter(
-                (wallet) => wallet.provider === WalletProvider.Keplr
-              )[0]
-            }
+            wallet={wallets.find(
+              (wallet) => wallet.provider === WalletProvider.Keplr
+            )}
             squaresBackgroundColor="#000000"
           />
         )}
@@ -67,20 +78,8 @@ export const TransactionPaymentModal: React.FC<{
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
               Balance
             </BrandText>
-            <BrandText style={fontSemibold14}>23.5875 TORI</BrandText>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 8,
-            }}
-          >
-            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Service fee 1%
-            </BrandText>
-            <BrandText style={fontSemibold14}>{price * 0.01} TORI</BrandText>
+            {/* TODO: Refresh totalString just after connect Keplr*/}
+            <BrandText style={fontSemibold14}>{totalString}</BrandText>
           </View>
           <View
             style={{
@@ -93,7 +92,7 @@ export const TransactionPaymentModal: React.FC<{
               You will pay
             </BrandText>
             <BrandText style={fontSemibold14}>
-              {price + price * 0.01} TORI
+              {prettyPrice(price, priceDenom)}
             </BrandText>
           </View>
         </View>
@@ -108,12 +107,26 @@ export const TransactionPaymentModal: React.FC<{
           }}
         />
         {/*==== Buttons */}
-        <PrimaryButton
-          size="XS"
-          text="Proceed to payment"
-          fullWidth
-          disabled={!isKeplrConnected}
-        />
+        {
+          // Can buy if only the funds are sufficient
+          price &&
+          decimalPrice(total.toString(), priceDenom) <
+            decimalPrice(price, priceDenom) ? (
+            <View style={{ alignItems: "center", width: "100%" }}>
+              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                Insufficient funds
+              </BrandText>
+            </View>
+          ) : (
+            <PrimaryButton
+              onPress={onPressProceed}
+              size="XS"
+              text="Proceed to payment"
+              fullWidth
+              disabled={!isKeplrConnected}
+            />
+          )
+        }
         <SecondaryButton
           size="XS"
           text="Cancel"

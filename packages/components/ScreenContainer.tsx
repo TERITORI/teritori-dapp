@@ -57,6 +57,7 @@ export const ScreenContainer: React.FC<{
 
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
+      {/*TODO: Refactor this*/}
       <Modal
         animationType="slide"
         transparent
@@ -85,7 +86,6 @@ export const ScreenContainer: React.FC<{
                   contentContainerStyle={[
                     {
                       flex: 1,
-                      alignItems: "center",
                     },
                     marginStyle,
                   ]}
@@ -94,7 +94,7 @@ export const ScreenContainer: React.FC<{
                   {footerChildren && <Footer>{footerChildren}</Footer>}
                 </ScrollView>
               ) : (
-                <View style={[{ flex: 1, width: "100%",  alignItems: "center" }, marginStyle]}>
+                <View style={[{ flex: 1, width: "100%" }, marginStyle]}>
                   {children}
                   {footerChildren && <Footer>{footerChildren}</Footer>}
                 </View>

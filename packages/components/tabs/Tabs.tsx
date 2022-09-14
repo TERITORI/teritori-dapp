@@ -10,16 +10,16 @@ export type TabItem = {
   isSelected?: boolean;
 };
 
-export const useTabs = (items) => {
+export const useTabs = (items: TabItem[]) => {
   const [tabItems, setTabItems] = useState(items);
   const [selectedTabItem, setSelectedTabItem] = useState(
-    items.filter((item) => item.isSelected)[0]
+    items.filter((item: TabItem) => item.isSelected)[0]
   );
 
   const onPressTabItem = (pressedItem: TabItem) => {
     // Select the pressed TabItem and unselect all the others
-    const updatedItems = [];
-    tabItems.map((tabItem) => {
+    const updatedItems: TabItem[] = [];
+    tabItems.map((tabItem: TabItem) => {
       tabItem.isSelected = tabItem.label === pressedItem.label;
       updatedItems.push(tabItem);
     });
@@ -36,7 +36,7 @@ export const Tabs: React.FC<{
   borderColorTabSelected?: string;
   onPressTabItem: (item: TabItem) => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ items, borderColorTabSelected, onPressTabItem, style }) => {
+}> = ({ items, borderColorTabSelected = "#FFFFFF", onPressTabItem, style }) => {
   return (
     <View
       style={[
@@ -59,12 +59,10 @@ export const Tabs: React.FC<{
           <View
             style={[
               { marginHorizontal: 12, height: "100%" },
-              // If the item is selected, we add a borderBottom and shift it with marginTop: 1 to keep the same tabs labels horizontal alignment
               item.isSelected && {
                 borderBottomWidth: 2,
                 borderBottomColor: borderColorTabSelected,
               },
-              style,
             ]}
           >
             <BrandText style={fontSemibold14}>{item.label}</BrandText>

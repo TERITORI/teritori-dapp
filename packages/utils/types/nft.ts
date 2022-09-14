@@ -15,7 +15,7 @@ export interface NFTData {
 }
 
 export interface NFTAttribute {
-  traitType: string;
+  trait_type: string;
   value: string;
-  displayType?: string;
+  display_type?: string;
 }

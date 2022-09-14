@@ -6,58 +6,13 @@ import { NFTAttribute } from "../../utils/types/nft";
 import { DropdownButton } from "../buttons/DropdownButton";
 import { NFTAttributeCard } from "../cards/NFTAttributeCard";
 
-const nftAttributes: NFTAttribute[] = [
-  {
-    traitType: "aaa",
-    value: "aaaa",
-  },
-  {
-    traitType: "bbb",
-    value: "bbb",
-  },
-  {
-    traitType: "ccc",
-    value: "ccc",
-  },
-  {
-    traitType: "ddd",
-    value: "ddd",
-  },
-  {
-    traitType: "eee",
-    value: "eee",
-  },
-  {
-    traitType: "fff",
-    value: "fff",
-  },
-  {
-    traitType: "ggg",
-    value: "ggg",
-  },
-  {
-    traitType: "hhh",
-    value: "hhh",
-  },
-  {
-    traitType: "iii",
-    value: "iii",
-  },
-  {
-    traitType: "sfgfsgd",
-    value: "dgsdgd",
-  },
-  {
-    traitType: "rerzr",
-    value: "ezrzege",
-  },
-];
-
-export const NFTAttributes: React.FC = () => {
+export const NFTAttributes: React.FC<{
+  nftAttributes?: NFTAttribute[];
+}> = ({ nftAttributes = [] }) => {
   const [isMoreDisplayed, setIsMoreDisplayed] = useState(false);
 
   return (
-    <View>
+    <>
       <View
         style={{
           flexWrap: "wrap",
@@ -107,6 +62,6 @@ export const NFTAttributes: React.FC = () => {
         />
         <View style={{ height: 1, width: 240, backgroundColor: neutral33 }} />
       </View>
-    </View>
+    </>
   );
 };
