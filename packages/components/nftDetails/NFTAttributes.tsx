@@ -17,7 +17,7 @@ export const NFTAttributes: React.FC<{
         style={{
           flexWrap: "wrap",
           flexDirection: "row",
-          marginRight: -12,
+          margin: -6,
         }}
       >
         {/*No marginRight for NFTAttributeCard if the Card is at the last column (We use modulo of 3 because we have (not explicitly) 3 columns*/}
@@ -28,7 +28,7 @@ export const NFTAttributes: React.FC<{
               key={index}
               nftAttribute={attribute}
               style={{
-                margin: "0 12px 12px 0",
+                margin: 6,
               }}
             />
           )
@@ -41,6 +41,7 @@ export const NFTAttributes: React.FC<{
           width: "100%",
           alignItems: "center",
           justifyContent: "space-between",
+          marginTop: 12
         }}
       >
         <View style={{ height: 1, width: 240, backgroundColor: neutral33 }} />
