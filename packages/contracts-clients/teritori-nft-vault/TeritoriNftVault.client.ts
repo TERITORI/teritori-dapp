@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { Uint128, AllNftsInVaultResponse, ConfigResponse, Binary, NftInfoResponse, NftListResponse, NftOwnerInfoResponse} from "./TeritoriNftVault.types";
+import { Uint128, Addr, AllNftsInVaultResponse, NFTInfo, ConfigResponse, ExecuteMsg, Binary, Cw721ReceiveMsg, InstantiateMsg, NftInfoResponse, NftListResponse, NftOwnerInfoResponse, QueryMsg } from "./TeritoriNftVault.types";
 export interface TeritoriNftVaultReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<ConfigResponse>;

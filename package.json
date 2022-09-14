@@ -63,7 +63,6 @@
     "@cosmwasm/ts-codegen": "^0.13.4",
     "@expo/electron-adapter": "^0.0.55",
     "@expo/webpack-config": "^0.16.25",
-    "@types/big.js": "^6.1.6",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.67.6",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
