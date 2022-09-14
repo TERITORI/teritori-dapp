@@ -17,32 +17,22 @@ export const NFTAttributes: React.FC<{
         style={{
           flexWrap: "wrap",
           flexDirection: "row",
-          marginRight: -12
+          marginRight: -12,
         }}
       >
         {/*No marginRight for NFTAttributeCard if the Card is at the last column (We use modulo of 3 because we have (not explicitly) 3 columns*/}
         {/*TODO: Responsive*/}
-        {isMoreDisplayed
-          ? nftAttributes.map((attribute, index) => (
-              <NFTAttributeCard
-                key={index}
-                nftAttribute={attribute}
-                style={{
-                  marginBottom: 12,
-                  marginRight: 12,
-                }}
-              />
-            ))
-          : nftAttributes.slice(0, 9).map((attribute, index) => (
-              <NFTAttributeCard
-                key={index}
-                nftAttribute={attribute}
-                style={{
-                  marginBottom: 12,
-                  marginRight: 12,
-                }}
-              />
-            ))}
+        {(isMoreDisplayed ? nftAttributes : nftAttributes.slice(0, 9)).map(
+          (attribute, index) => (
+            <NFTAttributeCard
+              key={index}
+              nftAttribute={attribute}
+              style={{
+                margin: "0 12px 12px 0",
+              }}
+            />
+          )
+        )}
       </View>
 
       <View
