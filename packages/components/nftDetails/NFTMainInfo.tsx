@@ -1,5 +1,5 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Image, View } from "react-native";
 
 import guardian1PNG from "../../../assets/default-images/guardian_1.png";
@@ -12,7 +12,6 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { tinyAddress } from "../WalletSelector";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
@@ -96,36 +95,10 @@ export const NFTMainInfo: React.FC<{
               }}
             >
               <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                Mint address
+                Mint contract address
               </BrandText>
-              <BrandText style={fontMedium14}>
-                {tinyAddress(nftInfo?.nftAddress, 30)}
-              </BrandText>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginBottom: 6,
-              }}
-            >
-              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                On-chain collection
-              </BrandText>
-              <BrandText style={fontMedium14}>WIP</BrandText>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginBottom: 6,
-              }}
-            >
-              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                Token address
-              </BrandText>
-              <BrandText style={fontMedium14}>
-                {tinyAddress(nftInfo?.tokenAddress, 30)}
+              <BrandText style={fontMedium14} numberOfLines={1}>
+                {nftInfo?.mintAddress}
               </BrandText>
             </View>
             <View
@@ -136,43 +109,24 @@ export const NFTMainInfo: React.FC<{
               }}
             >
               <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                Owner
+                Token contract address
               </BrandText>
-              <BrandText style={fontMedium14}>
-                {tinyAddress(nftInfo?.ownerAddress, 30)}
+              <BrandText style={fontMedium14} numberOfLines={1}>
+                {nftInfo?.nftAddress}
               </BrandText>
             </View>
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                marginBottom: 6,
               }}
             >
               <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                Creator Royalties
+                Owner address
               </BrandText>
-              <BrandText style={fontMedium14}>0%</BrandText>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginBottom: 6,
-              }}
-            >
-              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                Transaction fee
+              <BrandText style={fontMedium14} numberOfLines={1}>
+                {nftInfo?.ownerAddress}
               </BrandText>
-              <BrandText style={fontMedium14}>2%</BrandText>
-            </View>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                Listing/Bidding/Cancel
-              </BrandText>
-              <BrandText style={fontMedium14}>Free</BrandText>
             </View>
           </View>
         );
@@ -180,10 +134,6 @@ export const NFTMainInfo: React.FC<{
         return null;
     }
   };
-
-  useEffect(() => {
-    console.log("çççççç nftInfonftInfo", nftInfo);
-  }, [nftInfo]);
 
   return (
     <View

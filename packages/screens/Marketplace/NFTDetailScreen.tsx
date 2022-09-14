@@ -64,7 +64,7 @@ export interface NFTInfo {
   nftAddress: string;
   imageURL: string;
   tokenId: string;
-  tokenAddress: string;
+  mintAddress: string;
   ownerAddress: string;
   isSeller: boolean;
   isListed: boolean;
@@ -243,10 +243,6 @@ const useNFTInfo = (id: string, wallet: string | undefined) => {
         const nftMetadata = await (
           await fetch(ipfsURLToHTTPURL(nftInfo.token_uri))
         ).json();
-        console.log("contractInfocontractInfocontractInfo", contractInfo);
-        console.log("nftInfonftInfonftInfo", nftInfo);
-        console.log("nftMetadatanftMetadatanftMetadata", nftMetadata);
-        console.log("ownerownerowner", owner);
         // ======== Getting vault stuff (For selling)
         const vaultClient = new TeritoriNftVaultQueryClient(
           cosmwasmClient,
@@ -281,9 +277,9 @@ const useNFTInfo = (id: string, wallet: string | undefined) => {
           description: nftMetadata.description,
           attributes: nftMetadata.attributes,
           nftAddress: minterConfig.nft_addr,
+          mintAddress: minterContractAddress,
           imageURL: ipfsURLToHTTPURL(nftMetadata.image),
           tokenId,
-          tokenAddress: id,
           ownerAddress: owner,
           isSeller: isListed && isOwner,
           isListed,
