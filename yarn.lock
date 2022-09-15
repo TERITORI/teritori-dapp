@@ -2531,10 +2531,10 @@
   resolved "https://registry.yarnpkg.com/@cosmjs/utils/-/utils-0.24.1.tgz#0adfefe63b7f17222bc2bc12f71296f35e7ad378"
   integrity sha512-VA3WFx1lMFb7esp9BqHWkDgMvHoA3D9w+uDRvWhVRpUpDc7RYHxMbWExASjz+gNblTCg556WJGzF64tXnf9tdQ==
 
-"@cosmwasm/ts-codegen@^0.13.4":
-  version "0.13.4"
-  resolved "https://registry.yarnpkg.com/@cosmwasm/ts-codegen/-/ts-codegen-0.13.4.tgz#738b24110e66da0974c26b6e5c13db2980dcec92"
-  integrity sha512-8JK9HdmnOKhqfYQzVgNSOlUM2JKc2I1TRba2RND6jP4HGTgy/LyUIgkBUtijIp7FTijy0gHTYHq/sec5qqfebQ==
+"@cosmwasm/ts-codegen@^0.16.3":
+  version "0.16.3"
+  resolved "https://registry.yarnpkg.com/@cosmwasm/ts-codegen/-/ts-codegen-0.16.3.tgz#2eeec718657314601896b42625979ffbac6ab5e8"
+  integrity sha512-VKqIR8DCSWN7GtfgM5coEa+cGg0gbpSBTauAqr2tMipnfRZcJO5SVznt7z7XqAm7ctjiozh+oQifAFxnwp+8/w==
   dependencies:
     "@babel/core" "7.18.10"
     "@babel/generator" "7.18.12"
@@ -2562,7 +2562,7 @@
     parse-package-name "1.0.0"
     rimraf "3.0.2"
     shelljs "0.8.5"
-    wasm-ast-types "^0.9.0"
+    wasm-ast-types "^0.11.3"
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
@@ -20501,10 +20501,10 @@ warning@^4.0.3:
   dependencies:
     loose-envify "^1.0.0"
 
-wasm-ast-types@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/wasm-ast-types/-/wasm-ast-types-0.9.0.tgz#d0f15f669286d3bc32340f9017d6bdbe2bd8c9d8"
-  integrity sha512-C/dzYTSa/2Zxhzup2G5mEi1Vt2/rGI7MHTNgRwB4F++7Uh7cY+U3rVwD/Syanyj9RZss4kcW/ZczwC0Rg9ab6A==
+wasm-ast-types@^0.11.3:
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/wasm-ast-types/-/wasm-ast-types-0.11.3.tgz#d91b6456e11b3cb23d77b34e5156d13d2ead3a22"
+  integrity sha512-rNJNKznUMgt8Bb01xPoyjM13VQmXzDIBG49oV09k4RusRELZu7pQWejBy08lV5BQjcIYKpWkqiUnAZJp73ZmOA==
   dependencies:
     "@babel/runtime" "^7.18.9"
     "@babel/types" "7.18.10"
