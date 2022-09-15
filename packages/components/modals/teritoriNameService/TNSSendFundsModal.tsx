@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { numberWithThousandsSeparator } from "../../utils/numbers";
-import { neutral22 } from "../../utils/style/colors";
-import { PrimaryButton } from "../buttons/PrimaryButton";
-import { TextInputCustom } from "../inputs/TextInputCustom";
-import ModalBase from "../modals/ModalBase";
+import { numberWithThousandsSeparator } from "../../../utils/numbers";
+import { PrimaryButton } from "../../buttons/PrimaryButton";
+import { TextInputCustom } from "../../inputs/TextInputCustom";
+import ModalBase from "../ModalBase";
 
 export const SendFundModal: React.FC<{
   onClose: () => void;
@@ -28,7 +27,6 @@ export const SendFundModal: React.FC<{
     >
       <View>
         <TextInputCustom
-          squaresBackgroundColor={neutral22}
           label="COMMENT ?"
           value={comment}
           placeHolder="Type your comment here"
@@ -37,7 +35,6 @@ export const SendFundModal: React.FC<{
         />
         <View style={{ flex: 1, flexDirection: "row" }}>
           <TextInputCustom
-            squaresBackgroundColor={neutral22}
             label="TORI AMOUNT ?"
             value={numberWithThousandsSeparator(amount)}
             placeHolder="Type your amount here"
@@ -45,11 +42,7 @@ export const SendFundModal: React.FC<{
             onlyNumbers
             style={{ marginRight: 12, minWidth: 0 }}
           />
-          <PrimaryButton
-            size="M"
-            text="Send"
-            squaresBackgroundColor={neutral22}
-          />
+          <PrimaryButton size="M" text="Send" />
         </View>
       </View>
     </ModalBase>

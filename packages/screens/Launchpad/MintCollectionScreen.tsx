@@ -1,5 +1,5 @@
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -64,10 +64,16 @@ export const MintCollectionScreen: React.FC<{
 }) => {
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
-  const info = useCollectionInfo(id);
+  const { info, notFound, loading } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const { navigate } = useAppNavigation();
   const [viewWidth, setViewWidth] = useState(0);
+  const { setLoadingFullScreen } = useFeedbacks();
+
+  // Sync loadingFullScreen
+  useEffect(() => {
+    setLoadingFullScreen(loading);
+  }, [loading]);
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
   const mintButtonDisabled =
@@ -113,91 +119,38 @@ export const MintCollectionScreen: React.FC<{
     }
   }, [wallet?.publicKey, id, info.unitPrice, info.hasPresale]);
 
-  return (
-    <ScreenContainer noMargin>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          marginHorizontal: 40,
-          flexWrap: "wrap",
-          marginTop: 72,
-        }}
-        onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
-      >
-        {/* ===== Left container */}
+  if (notFound) {
+    return (
+      <ScreenContainer noMargin>
+        <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
+          <BrandText>Collection not found</BrandText>
+        </View>
+      </ScreenContainer>
+    );
+  } else
+    return (
+      <ScreenContainer noMargin>
         <View
           style={{
-            justifyContent: "flex-start",
-            width: "100%",
-            maxWidth: 534,
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            marginHorizontal: 40,
+            flexWrap: "wrap",
+            marginTop: 72,
           }}
+          onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
         >
-          <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
-
-          <View style={{ marginBottom: 20 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                flexWrap: "wrap",
-                margin: -cardsHalfGap,
-              }}
-            >
-              <AttributesCard
-                label="Supply"
-                value={info.maxSupply || ""}
-                style={{ margin: cardsHalfGap }}
-              />
-              <AttributesCard
-                label="Price"
-                value={info.prettyUnitPrice || ""}
-                style={{ margin: cardsHalfGap }}
-              />
-              <AttributesCard
-                label="Limit Buy"
-                value={
-                  info.maxPerAddress
-                    ? `${info.maxPerAddress} by address`
-                    : "Unlimited"
-                }
-                style={{ margin: cardsHalfGap }}
-              />
-            </View>
-          </View>
-
-          <BrandText
-            style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
-          >
-            {info.description}
-          </BrandText>
-
-          <ProgressionCard
-            label="Tokens Minted"
-            valueCurrent={
-              info.mintedAmount ? parseInt(info.mintedAmount, 10) : 0
-            }
-            valueMax={info.maxSupply ? parseInt(info.maxSupply, 10) : 0}
+          {/* ===== Left container */}
+          <View
             style={{
-              marginBottom: 24,
-              maxWidth: 420,
+              justifyContent: "flex-start",
+              width: "100%",
+              maxWidth: 534,
             }}
-          />
+          >
+            <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
 
-          {info.isMintable && (
-            <PrimaryButton
-              size="XL"
-              text="Mint now"
-              style={{ marginBottom: 24 }}
-              width={160}
-              disabled={mintButtonDisabled}
-              loader
-              onPress={mint}
-            />
-          )}
-
-          {hasLinks && (
-            <View style={{ marginBottom: 24 }}>
+            <View style={{ marginBottom: 20 }}>
               <View
                 style={{
                   flexDirection: "row",
@@ -206,80 +159,142 @@ export const MintCollectionScreen: React.FC<{
                   margin: -cardsHalfGap,
                 }}
               >
-                {discordLink && (
-                  <SocialButton
-                    text="Discord"
-                    iconSvg={discordSVG}
-                    style={{ margin: cardsHalfGap }}
-                    onPress={() => Linking.openURL(discordLink)}
-                  />
-                )}
-                {websiteLink && (
-                  <SocialButton
-                    text="Website"
-                    iconSvg={websiteSVG}
-                    style={{ margin: cardsHalfGap }}
-                    onPress={() => Linking.openURL(websiteLink)}
-                  />
-                )}
-                {twitterLink && (
-                  <SocialButton
-                    style={{ margin: cardsHalfGap }}
-                    text="Twitter"
-                    iconSvg={twitterSVG}
-                    onPress={() => Linking.openURL(twitterLink)}
-                  />
-                )}
+                <AttributesCard
+                  label="Supply"
+                  value={info.maxSupply || ""}
+                  style={{ margin: cardsHalfGap }}
+                />
+                <AttributesCard
+                  label="Price"
+                  value={info.prettyUnitPrice || ""}
+                  style={{ margin: cardsHalfGap }}
+                />
+                <AttributesCard
+                  label="Limit Buy"
+                  value={
+                    info.maxPerAddress
+                      ? `${info.maxPerAddress} by address`
+                      : "Unlimited"
+                  }
+                  style={{ margin: cardsHalfGap }}
+                />
               </View>
             </View>
-          )}
-        </View>
 
-        {/* ===== Right container */}
-        <View
-          style={{
-            justifyContent: "flex-start",
-            width: "100%",
-            maxWidth: 534,
-            maxHeight: 806,
-            paddingBottom: 72,
-          }}
-        >
-          <TertiaryBox style={{ marginBottom: 40 }}>
-            {info.image ? (
-              <Image
-                source={{ uri: info.image }}
-                style={{
-                  width: imageSize,
-                  height: imageSize,
-                  borderRadius: 8,
-                }}
+            <BrandText
+              style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
+            >
+              {info.description}
+            </BrandText>
+
+            <ProgressionCard
+              label="Tokens Minted"
+              valueCurrent={
+                info.mintedAmount ? parseInt(info.mintedAmount, 10) : 0
+              }
+              valueMax={info.maxSupply ? parseInt(info.maxSupply, 10) : 0}
+              style={{
+                marginBottom: 24,
+                maxWidth: 420,
+              }}
+            />
+
+            {info.isMintable && (
+              <PrimaryButton
+                size="XL"
+                text="Mint now"
+                style={{ marginBottom: 24 }}
+                width={160}
+                disabled={mintButtonDisabled}
+                loader
+                onPress={mint}
               />
-            ) : (
-              <ActivityIndicator size="large" style={{ margin: 40 }} />
             )}
-          </TertiaryBox>
 
-          <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
-            Activity
-          </BrandText>
-          {info.hasPresale && (
-            <PresaleActivy
-              running={info.isInPresalePeriod || false}
-              whitelistSize={info.whitelistSize || "0"}
-              maxPerAddress={info.whitelistMaxPerAddress || "0"}
-            />
-          )}
-          {info.isInPresalePeriod || (
-            <PublicSaleActivity
-              running={info.maxSupply !== info.mintedAmount}
-            />
-          )}
+            {hasLinks && (
+              <View style={{ marginBottom: 24 }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    margin: -cardsHalfGap,
+                  }}
+                >
+                  {discordLink && (
+                    <SocialButton
+                      text="Discord"
+                      iconSvg={discordSVG}
+                      style={{ margin: cardsHalfGap }}
+                      onPress={() => Linking.openURL(discordLink)}
+                    />
+                  )}
+                  {websiteLink && (
+                    <SocialButton
+                      text="Website"
+                      iconSvg={websiteSVG}
+                      style={{ margin: cardsHalfGap }}
+                      onPress={() => Linking.openURL(websiteLink)}
+                    />
+                  )}
+                  {twitterLink && (
+                    <SocialButton
+                      style={{ margin: cardsHalfGap }}
+                      text="Twitter"
+                      iconSvg={twitterSVG}
+                      onPress={() => Linking.openURL(twitterLink)}
+                    />
+                  )}
+                </View>
+              </View>
+            )}
+          </View>
+
+          {/* ===== Right container */}
+          <View
+            style={{
+              justifyContent: "flex-start",
+              width: "100%",
+              maxWidth: 534,
+              maxHeight: 806,
+              paddingBottom: 72,
+            }}
+          >
+            <TertiaryBox style={{ marginBottom: 40 }}>
+              {info.image ? (
+                <Image
+                  source={{ uri: info.image }}
+                  style={{
+                    width: imageSize,
+                    height: imageSize,
+                    borderRadius: 8,
+                  }}
+                />
+              ) : (
+                <ActivityIndicator size="large" style={{ margin: 40 }} />
+              )}
+            </TertiaryBox>
+
+            <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
+              Activity
+            </BrandText>
+            {info.hasPresale && (
+              <PresaleActivy
+                running={info.isInPresalePeriod || false}
+                whitelistSize={info.whitelistSize || "0"}
+                maxPerAddress={info.whitelistMaxPerAddress || "0"}
+              />
+            )}
+            {info.isInPresalePeriod || (
+              <PublicSaleActivity
+                running={info.maxSupply !== info.mintedAmount}
+              />
+            )}
+          </View>
         </View>
-      </View>
-      {minted && <ConfettiCannon count={200} origin={{ x: -200, y: 0 }} />}
-    </ScreenContainer>
-  );
+        {minted && <ConfettiCannon count={200} origin={{ x: -200, y: 0 }} />}
+      </ScreenContainer>
+    );
 };
 
 const AttributesCard: React.FC<{
@@ -458,11 +473,14 @@ interface CollectionInfo {
 }
 
 const useCollectionInfo = (id: string) => {
-  const { setToastError } = useFeedbacks();
   const [info, setInfo] = useState<CollectionInfo>({});
+  const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const refresh = useCallback(() => {
     let canceled = false;
     const effect = async () => {
+      setNotFound(true);
       try {
         const cosmwasm = await getNonSigningCosmWasmClient();
 
@@ -512,12 +530,15 @@ const useCollectionInfo = (id: string) => {
           return;
         }
         setInfo(info);
+        setNotFound(false);
+        setLoading(false);
       } catch (err) {
         console.error(err);
         if (!(err instanceof Error)) {
           return;
         }
-        setToastError({ title: "Refresh failed", message: err.message });
+        setNotFound(true);
+        setLoading(false);
       }
     };
     effect();
@@ -526,5 +547,6 @@ const useCollectionInfo = (id: string) => {
     };
   }, [id]);
   useFocusEffect(refresh);
-  return info;
+
+  return { info, notFound, loading };
 };

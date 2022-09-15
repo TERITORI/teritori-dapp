@@ -57,6 +57,7 @@ export const ScreenContainer: React.FC<{
 
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
+      {/*TODO: Refactor this*/}
       <Modal
         animationType="slide"
         transparent

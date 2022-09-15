@@ -14,3 +14,9 @@ export const neutral30 = "#2B2B33";
 export const neutral33 = "#333333";
 export const neutral44 = "#444444";
 export const neutral77 = "#777777";
+
+// Returns hexa color modified with alpha
+export const withAlpha = (color: string, opacity: number) => {
+  const _opacity = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
+  return color + _opacity.toString(16).toUpperCase();
+};

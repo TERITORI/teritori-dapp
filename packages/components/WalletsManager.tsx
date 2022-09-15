@@ -7,12 +7,7 @@ import { setIsKeplrConnected } from "../store/slices/settings";
 import { addWallet, StoreWallet } from "../store/slices/wallets";
 import { useAppDispatch } from "../store/store";
 import { addressToNetwork, Network } from "../utils/network";
-import {
-  neutral22,
-  neutral44,
-  pinkDefault,
-  yellowDefault,
-} from "../utils/style/colors";
+import { neutral44, pinkDefault, yellowDefault } from "../utils/style/colors";
 import { modalMarginPadding } from "../utils/style/modals";
 import { keplrSuggestTeritori, teritoriChainId } from "../utils/teritori";
 import { WalletProvider } from "../utils/walletProvider";
@@ -32,16 +27,21 @@ const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   />
 );
 
-const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
+export const WalletActionButton: React.FC<{
+  wallet?: Wallet;
+  squaresBackgroundColor?: string;
+  fullWidth?: boolean;
+}> = ({ wallet, fullWidth = false, squaresBackgroundColor }) => {
+  const tertiaryButtonProps = { fullWidth, squaresBackgroundColor };
+
   const dispatch = useAppDispatch();
-  switch (wallet.provider) {
+  switch (wallet?.provider) {
     case WalletProvider.Phantom:
     case WalletProvider.Keplr:
       if (wallet.publicKey) {
         // FIXME: no disconnect on keplr
         return (
           <TertiaryButton
-            squaresBackgroundColor={neutral22}
             size="SM"
             text={`Disconnect ${wallet.provider}`}
             onPress={async () => {
@@ -53,12 +53,12 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
                 }
               }
             }}
+            {...tertiaryButtonProps}
           />
         );
       }
       return (
         <TertiaryButton
-          squaresBackgroundColor={neutral22}
           size="SM"
           text={`Connect ${wallet.provider}`}
           onPress={async () => {
@@ -84,15 +84,12 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
               console.warn(wallet.provider, "failed to connect", err);
             }
           }}
+          {...tertiaryButtonProps}
         />
       );
     case WalletProvider.Store:
       return (
-        <TertiaryButton
-          text="Remove"
-          size="SM"
-          squaresBackgroundColor={neutral22}
-        />
+        <TertiaryButton text="Remove" size="SM" {...tertiaryButtonProps} />
       );
     default:
       return null;
@@ -182,13 +179,13 @@ const AddNewWallet: React.FC = () => {
         justifyContent: "space-between",
         alignItems: "center",
         padding: modalMarginPadding,
+        width: "100%",
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TextInputCustom
           value={addressValue}
           onChangeText={setAddressValue}
-          squaresBackgroundColor={neutral22}
           label="WALLET ADDRESS"
           placeHolder="Enter address here..."
         >
@@ -196,7 +193,6 @@ const AddNewWallet: React.FC = () => {
         </TextInputCustom>
       </View>
       <PrimaryButton
-        squaresBackgroundColor={neutral22}
         size="M"
         text="Add New Wallet"
         style={{ marginLeft: 16 }}

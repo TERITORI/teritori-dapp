@@ -25,7 +25,7 @@ import { neutral33 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 
 export const TNSBurnNameScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "TNSUpdateName">;
+  route: RouteProp<RootStackParamList, "TNSBurnName">;
 }> = ({ route }) => {
   const { name, setName } = useTNS();
   const { setToastError, setToastSuccess, setLoadingFullScreen } =
