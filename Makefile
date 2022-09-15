@@ -1,13 +1,17 @@
-CANDYMACHINE_REPO=terra-candymachine
+CANDYMACHINE_REPO=teritori-nfts
 CANDYMACHINE_PACKAGE=teritori-nft-minter
-TOKEN_REPO=terra-candymachine
+
+TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
 
 NAME_SERVICE_REPO=teritori-name-service
 NAME_SERVICE_PACKAGE=teritori-name-service
 
-RIOTER_FOOTER_REPO=rioter-footer-nft
+RIOTER_FOOTER_REPO=rioters-footer-nft
 RIOTER_FOOTER_PACKAGE=rioter-footer-nft
+
+VAULT_REPO=teritori-vault
+VAULT_PACKAGE=teritori-nft-vault
 
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
@@ -90,15 +94,29 @@ $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules
 	rm -fr $(TOKEN_REPO)
 	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
-	cd $(TOKEN_REPO) && git checkout c6ef0c279d2e616a1a3774c6709d43c897a30d2e
+	cd $(TOKEN_REPO) && git checkout c368eba82348c0f9cc538cee7401bcf673847dcc
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
-		--schema ../terra-candymachine/schema/nft-token \
+		--schema $(TOKEN_REPO)/schema/nft-token \
 		--out $@ \
 		--name $(TOKEN_PACKAGE) \
 		--no-bundle
 	rm -fr $(TOKEN_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
+	rm -fr $(VAULT_REPO)
+	git clone git@github.com:TERITORI/$(VAULT_REPO).git
+	cd $(VAULT_REPO) && git checkout a04e44fe54ed798d96659098914af72a0c36d8f5
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(VAULT_REPO)/contracts/nft-vault/schema \
+		--out $@ \
+		--name $(VAULT_PACKAGE) \
+		--no-bundle
+	rm -fr $(VAULT_REPO)
 
 run.candymachine: node_modules
 	npx ts-node packages/candymachine/cli.ts

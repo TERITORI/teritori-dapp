@@ -1,9 +1,9 @@
 /* eslint-disable */
 import { grpc } from "@improbable-eng/grpc-web";
 import { BrowserHeaders } from "browser-headers";
-import { share } from "rxjs/operators";
-import { Observable } from "rxjs";
 import * as _m0 from "protobufjs/minimal";
+import { Observable } from "rxjs";
+import { share } from "rxjs/operators";
 
 export const protobufPackage = "marketplace.v1";
 
@@ -49,9 +49,7 @@ export enum CollectionsRequest_Kind {
   UNRECOGNIZED = -1,
 }
 
-export function collectionsRequest_KindFromJSON(
-  object: any
-): CollectionsRequest_Kind {
+export function collectionsRequest_KindFromJSON(object: any): CollectionsRequest_Kind {
   switch (object) {
     case 0:
     case "KIND_UNSPECIFIED":
@@ -75,9 +73,7 @@ export function collectionsRequest_KindFromJSON(
   }
 }
 
-export function collectionsRequest_KindToJSON(
-  object: CollectionsRequest_Kind
-): string {
+export function collectionsRequest_KindToJSON(object: CollectionsRequest_Kind): string {
   switch (object) {
     case CollectionsRequest_Kind.KIND_UNSPECIFIED:
       return "KIND_UNSPECIFIED";
@@ -180,8 +176,7 @@ export const NFT = {
     const obj: any = {};
     message.imageUri !== undefined && (obj.imageUri = message.imageUri);
     message.name !== undefined && (obj.name = message.name);
-    message.mintAddress !== undefined &&
-      (obj.mintAddress = message.mintAddress);
+    message.mintAddress !== undefined && (obj.mintAddress = message.mintAddress);
     message.price !== undefined && (obj.price = message.price);
     return obj;
   },
@@ -197,20 +192,11 @@ export const NFT = {
 };
 
 function createBaseCollection(): Collection {
-  return {
-    imageUri: "",
-    collectionName: "",
-    creatorName: "",
-    verified: false,
-    mintAddress: "",
-  };
+  return { imageUri: "", collectionName: "", creatorName: "", verified: false, mintAddress: "" };
 }
 
 export const Collection = {
-  encode(
-    message: Collection,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Collection, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.imageUri !== "") {
       writer.uint32(18).string(message.imageUri);
     }
@@ -262,9 +248,7 @@ export const Collection = {
   fromJSON(object: any): Collection {
     return {
       imageUri: isSet(object.imageUri) ? String(object.imageUri) : "",
-      collectionName: isSet(object.collectionName)
-        ? String(object.collectionName)
-        : "",
+      collectionName: isSet(object.collectionName) ? String(object.collectionName) : "",
       creatorName: isSet(object.creatorName) ? String(object.creatorName) : "",
       verified: isSet(object.verified) ? Boolean(object.verified) : false,
       mintAddress: isSet(object.mintAddress) ? String(object.mintAddress) : "",
@@ -274,19 +258,14 @@ export const Collection = {
   toJSON(message: Collection): unknown {
     const obj: any = {};
     message.imageUri !== undefined && (obj.imageUri = message.imageUri);
-    message.collectionName !== undefined &&
-      (obj.collectionName = message.collectionName);
-    message.creatorName !== undefined &&
-      (obj.creatorName = message.creatorName);
+    message.collectionName !== undefined && (obj.collectionName = message.collectionName);
+    message.creatorName !== undefined && (obj.creatorName = message.creatorName);
     message.verified !== undefined && (obj.verified = message.verified);
-    message.mintAddress !== undefined &&
-      (obj.mintAddress = message.mintAddress);
+    message.mintAddress !== undefined && (obj.mintAddress = message.mintAddress);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Collection>, I>>(
-    object: I
-  ): Collection {
+  fromPartial<I extends Exact<DeepPartial<Collection>, I>>(object: I): Collection {
     const message = createBaseCollection();
     message.imageUri = object.imageUri ?? "";
     message.collectionName = object.collectionName ?? "";
@@ -312,10 +291,7 @@ function createBaseActivity(): Activity {
 }
 
 export const Activity = {
-  encode(
-    message: Activity,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Activity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.transactionKind !== "") {
       writer.uint32(10).string(message.transactionKind);
     }
@@ -390,21 +366,13 @@ export const Activity = {
 
   fromJSON(object: any): Activity {
     return {
-      transactionKind: isSet(object.transactionKind)
-        ? String(object.transactionKind)
-        : "",
+      transactionKind: isSet(object.transactionKind) ? String(object.transactionKind) : "",
       targetName: isSet(object.targetName) ? String(object.targetName) : "",
-      targetImageUri: isSet(object.targetImageUri)
-        ? String(object.targetImageUri)
-        : "",
-      contractName: isSet(object.contractName)
-        ? String(object.contractName)
-        : "",
+      targetImageUri: isSet(object.targetImageUri) ? String(object.targetImageUri) : "",
+      contractName: isSet(object.contractName) ? String(object.contractName) : "",
       time: isSet(object.time) ? String(object.time) : "",
       amount: isSet(object.amount) ? String(object.amount) : "",
-      transactionId: isSet(object.transactionId)
-        ? String(object.transactionId)
-        : "",
+      transactionId: isSet(object.transactionId) ? String(object.transactionId) : "",
       buyer: isSet(object.buyer) ? String(object.buyer) : "",
       seller: isSet(object.seller) ? String(object.seller) : "",
     };
@@ -412,17 +380,13 @@ export const Activity = {
 
   toJSON(message: Activity): unknown {
     const obj: any = {};
-    message.transactionKind !== undefined &&
-      (obj.transactionKind = message.transactionKind);
+    message.transactionKind !== undefined && (obj.transactionKind = message.transactionKind);
     message.targetName !== undefined && (obj.targetName = message.targetName);
-    message.targetImageUri !== undefined &&
-      (obj.targetImageUri = message.targetImageUri);
-    message.contractName !== undefined &&
-      (obj.contractName = message.contractName);
+    message.targetImageUri !== undefined && (obj.targetImageUri = message.targetImageUri);
+    message.contractName !== undefined && (obj.contractName = message.contractName);
     message.time !== undefined && (obj.time = message.time);
     message.amount !== undefined && (obj.amount = message.amount);
-    message.transactionId !== undefined &&
-      (obj.transactionId = message.transactionId);
+    message.transactionId !== undefined && (obj.transactionId = message.transactionId);
     message.buyer !== undefined && (obj.buyer = message.buyer);
     message.seller !== undefined && (obj.seller = message.seller);
     return obj;
@@ -448,10 +412,7 @@ function createBaseCollectionsRequest(): CollectionsRequest {
 }
 
 export const CollectionsRequest = {
-  encode(
-    message: CollectionsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CollectionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.kind !== 0) {
       writer.uint32(8).int32(message.kind);
     }
@@ -490,9 +451,7 @@ export const CollectionsRequest = {
 
   fromJSON(object: any): CollectionsRequest {
     return {
-      kind: isSet(object.kind)
-        ? collectionsRequest_KindFromJSON(object.kind)
-        : 0,
+      kind: isSet(object.kind) ? collectionsRequest_KindFromJSON(object.kind) : 0,
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
     };
@@ -500,16 +459,13 @@ export const CollectionsRequest = {
 
   toJSON(message: CollectionsRequest): unknown {
     const obj: any = {};
-    message.kind !== undefined &&
-      (obj.kind = collectionsRequest_KindToJSON(message.kind));
+    message.kind !== undefined && (obj.kind = collectionsRequest_KindToJSON(message.kind));
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionsRequest>, I>>(
-    object: I
-  ): CollectionsRequest {
+  fromPartial<I extends Exact<DeepPartial<CollectionsRequest>, I>>(object: I): CollectionsRequest {
     const message = createBaseCollectionsRequest();
     message.kind = object.kind ?? 0;
     message.limit = object.limit ?? 0;
@@ -523,10 +479,7 @@ function createBaseCollectionsResponse(): CollectionsResponse {
 }
 
 export const CollectionsResponse = {
-  encode(
-    message: CollectionsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CollectionsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.collection !== undefined) {
       Collection.encode(message.collection, writer.uint32(10).fork()).ldelim();
     }
@@ -552,30 +505,21 @@ export const CollectionsResponse = {
   },
 
   fromJSON(object: any): CollectionsResponse {
-    return {
-      collection: isSet(object.collection)
-        ? Collection.fromJSON(object.collection)
-        : undefined,
-    };
+    return { collection: isSet(object.collection) ? Collection.fromJSON(object.collection) : undefined };
   },
 
   toJSON(message: CollectionsResponse): unknown {
     const obj: any = {};
     message.collection !== undefined &&
-      (obj.collection = message.collection
-        ? Collection.toJSON(message.collection)
-        : undefined);
+      (obj.collection = message.collection ? Collection.toJSON(message.collection) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionsResponse>, I>>(
-    object: I
-  ): CollectionsResponse {
+  fromPartial<I extends Exact<DeepPartial<CollectionsResponse>, I>>(object: I): CollectionsResponse {
     const message = createBaseCollectionsResponse();
-    message.collection =
-      object.collection !== undefined && object.collection !== null
-        ? Collection.fromPartial(object.collection)
-        : undefined;
+    message.collection = (object.collection !== undefined && object.collection !== null)
+      ? Collection.fromPartial(object.collection)
+      : undefined;
     return message;
   },
 };
@@ -585,10 +529,7 @@ function createBaseCollectionNFTsRequest(): CollectionNFTsRequest {
 }
 
 export const CollectionNFTsRequest = {
-  encode(
-    message: CollectionNFTsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CollectionNFTsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.mintAddress !== "") {
       writer.uint32(10).string(message.mintAddress);
     }
@@ -601,10 +542,7 @@ export const CollectionNFTsRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): CollectionNFTsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionNFTsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionNFTsRequest();
@@ -638,16 +576,13 @@ export const CollectionNFTsRequest = {
 
   toJSON(message: CollectionNFTsRequest): unknown {
     const obj: any = {};
-    message.mintAddress !== undefined &&
-      (obj.mintAddress = message.mintAddress);
+    message.mintAddress !== undefined && (obj.mintAddress = message.mintAddress);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionNFTsRequest>, I>>(
-    object: I
-  ): CollectionNFTsRequest {
+  fromPartial<I extends Exact<DeepPartial<CollectionNFTsRequest>, I>>(object: I): CollectionNFTsRequest {
     const message = createBaseCollectionNFTsRequest();
     message.mintAddress = object.mintAddress ?? "";
     message.limit = object.limit ?? 0;
@@ -661,20 +596,14 @@ function createBaseCollectionNFTsResponse(): CollectionNFTsResponse {
 }
 
 export const CollectionNFTsResponse = {
-  encode(
-    message: CollectionNFTsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CollectionNFTsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.nft !== undefined) {
       NFT.encode(message.nft, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): CollectionNFTsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionNFTsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionNFTsResponse();
@@ -693,26 +622,18 @@ export const CollectionNFTsResponse = {
   },
 
   fromJSON(object: any): CollectionNFTsResponse {
-    return {
-      nft: isSet(object.nft) ? NFT.fromJSON(object.nft) : undefined,
-    };
+    return { nft: isSet(object.nft) ? NFT.fromJSON(object.nft) : undefined };
   },
 
   toJSON(message: CollectionNFTsResponse): unknown {
     const obj: any = {};
-    message.nft !== undefined &&
-      (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
+    message.nft !== undefined && (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionNFTsResponse>, I>>(
-    object: I
-  ): CollectionNFTsResponse {
+  fromPartial<I extends Exact<DeepPartial<CollectionNFTsResponse>, I>>(object: I): CollectionNFTsResponse {
     const message = createBaseCollectionNFTsResponse();
-    message.nft =
-      object.nft !== undefined && object.nft !== null
-        ? NFT.fromPartial(object.nft)
-        : undefined;
+    message.nft = (object.nft !== undefined && object.nft !== null) ? NFT.fromPartial(object.nft) : undefined;
     return message;
   },
 };
@@ -722,10 +643,7 @@ function createBaseCollectionActivityRequest(): CollectionActivityRequest {
 }
 
 export const CollectionActivityRequest = {
-  encode(
-    message: CollectionActivityRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CollectionActivityRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.mintAddress !== "") {
       writer.uint32(10).string(message.mintAddress);
     }
@@ -738,10 +656,7 @@ export const CollectionActivityRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): CollectionActivityRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionActivityRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionActivityRequest();
@@ -775,16 +690,13 @@ export const CollectionActivityRequest = {
 
   toJSON(message: CollectionActivityRequest): unknown {
     const obj: any = {};
-    message.mintAddress !== undefined &&
-      (obj.mintAddress = message.mintAddress);
+    message.mintAddress !== undefined && (obj.mintAddress = message.mintAddress);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionActivityRequest>, I>>(
-    object: I
-  ): CollectionActivityRequest {
+  fromPartial<I extends Exact<DeepPartial<CollectionActivityRequest>, I>>(object: I): CollectionActivityRequest {
     const message = createBaseCollectionActivityRequest();
     message.mintAddress = object.mintAddress ?? "";
     message.limit = object.limit ?? 0;
@@ -798,20 +710,14 @@ function createBaseCollectionActivityResponse(): CollectionActivityResponse {
 }
 
 export const CollectionActivityResponse = {
-  encode(
-    message: CollectionActivityResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CollectionActivityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.activity !== undefined) {
       Activity.encode(message.activity, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): CollectionActivityResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionActivityResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionActivityResponse();
@@ -830,46 +736,33 @@ export const CollectionActivityResponse = {
   },
 
   fromJSON(object: any): CollectionActivityResponse {
-    return {
-      activity: isSet(object.activity)
-        ? Activity.fromJSON(object.activity)
-        : undefined,
-    };
+    return { activity: isSet(object.activity) ? Activity.fromJSON(object.activity) : undefined };
   },
 
   toJSON(message: CollectionActivityResponse): unknown {
     const obj: any = {};
-    message.activity !== undefined &&
-      (obj.activity = message.activity
-        ? Activity.toJSON(message.activity)
-        : undefined);
+    message.activity !== undefined && (obj.activity = message.activity ? Activity.toJSON(message.activity) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionActivityResponse>, I>>(
-    object: I
-  ): CollectionActivityResponse {
+  fromPartial<I extends Exact<DeepPartial<CollectionActivityResponse>, I>>(object: I): CollectionActivityResponse {
     const message = createBaseCollectionActivityResponse();
-    message.activity =
-      object.activity !== undefined && object.activity !== null
-        ? Activity.fromPartial(object.activity)
-        : undefined;
+    message.activity = (object.activity !== undefined && object.activity !== null)
+      ? Activity.fromPartial(object.activity)
+      : undefined;
     return message;
   },
 };
 
 export interface MarketplaceService {
-  Collections(
-    request: DeepPartial<CollectionsRequest>,
-    metadata?: grpc.Metadata
-  ): Observable<CollectionsResponse>;
+  Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
   CollectionNFTs(
     request: DeepPartial<CollectionNFTsRequest>,
-    metadata?: grpc.Metadata
+    metadata?: grpc.Metadata,
   ): Observable<CollectionNFTsResponse>;
   CollectionActivity(
     request: DeepPartial<CollectionActivityRequest>,
-    metadata?: grpc.Metadata
+    metadata?: grpc.Metadata,
   ): Observable<CollectionActivityResponse>;
 }
 
@@ -883,43 +776,30 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.CollectionActivity = this.CollectionActivity.bind(this);
   }
 
-  Collections(
-    request: DeepPartial<CollectionsRequest>,
-    metadata?: grpc.Metadata
-  ): Observable<CollectionsResponse> {
-    return this.rpc.invoke(
-      MarketplaceServiceCollectionsDesc,
-      CollectionsRequest.fromPartial(request),
-      metadata
-    );
+  Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse> {
+    return this.rpc.invoke(MarketplaceServiceCollectionsDesc, CollectionsRequest.fromPartial(request), metadata);
   }
 
   CollectionNFTs(
     request: DeepPartial<CollectionNFTsRequest>,
-    metadata?: grpc.Metadata
+    metadata?: grpc.Metadata,
   ): Observable<CollectionNFTsResponse> {
-    return this.rpc.invoke(
-      MarketplaceServiceCollectionNFTsDesc,
-      CollectionNFTsRequest.fromPartial(request),
-      metadata
-    );
+    return this.rpc.invoke(MarketplaceServiceCollectionNFTsDesc, CollectionNFTsRequest.fromPartial(request), metadata);
   }
 
   CollectionActivity(
     request: DeepPartial<CollectionActivityRequest>,
-    metadata?: grpc.Metadata
+    metadata?: grpc.Metadata,
   ): Observable<CollectionActivityResponse> {
     return this.rpc.invoke(
       MarketplaceServiceCollectionActivityDesc,
       CollectionActivityRequest.fromPartial(request),
-      metadata
+      metadata,
     );
   }
 }
 
-export const MarketplaceServiceDesc = {
-  serviceName: "marketplace.v1.MarketplaceService",
-};
+export const MarketplaceServiceDesc = { serviceName: "marketplace.v1.MarketplaceService" };
 
 export const MarketplaceServiceCollectionsDesc: UnaryMethodDefinitionish = {
   methodName: "Collections",
@@ -965,31 +845,29 @@ export const MarketplaceServiceCollectionNFTsDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-export const MarketplaceServiceCollectionActivityDesc: UnaryMethodDefinitionish =
-  {
-    methodName: "CollectionActivity",
-    service: MarketplaceServiceDesc,
-    requestStream: false,
-    responseStream: true,
-    requestType: {
-      serializeBinary() {
-        return CollectionActivityRequest.encode(this).finish();
-      },
-    } as any,
-    responseType: {
-      deserializeBinary(data: Uint8Array) {
-        return {
-          ...CollectionActivityResponse.decode(data),
-          toObject() {
-            return this;
-          },
-        };
-      },
-    } as any,
-  };
+export const MarketplaceServiceCollectionActivityDesc: UnaryMethodDefinitionish = {
+  methodName: "CollectionActivity",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: true,
+  requestType: {
+    serializeBinary() {
+      return CollectionActivityRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...CollectionActivityResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
 
-interface UnaryMethodDefinitionishR
-  extends grpc.UnaryMethodDefinition<any, any> {
+interface UnaryMethodDefinitionishR extends grpc.UnaryMethodDefinition<any, any> {
   requestStream: any;
   responseStream: any;
 }
@@ -1000,12 +878,12 @@ interface Rpc {
   unary<T extends UnaryMethodDefinitionish>(
     methodDesc: T,
     request: any,
-    metadata: grpc.Metadata | undefined
+    metadata: grpc.Metadata | undefined,
   ): Promise<any>;
   invoke<T extends UnaryMethodDefinitionish>(
     methodDesc: T,
     request: any,
-    metadata: grpc.Metadata | undefined
+    metadata: grpc.Metadata | undefined,
   ): Observable<any>;
 }
 
@@ -1027,7 +905,7 @@ export class GrpcWebImpl {
       debug?: boolean;
       metadata?: grpc.Metadata;
       upStreamRetryCodes?: number[];
-    }
+    },
   ) {
     this.host = host;
     this.options = options;
@@ -1036,16 +914,12 @@ export class GrpcWebImpl {
   unary<T extends UnaryMethodDefinitionish>(
     methodDesc: T,
     _request: any,
-    metadata: grpc.Metadata | undefined
+    metadata: grpc.Metadata | undefined,
   ): Promise<any> {
     const request = { ..._request, ...methodDesc.requestType };
-    const maybeCombinedMetadata =
-      metadata && this.options.metadata
-        ? new BrowserHeaders({
-            ...this.options?.metadata.headersMap,
-            ...metadata?.headersMap,
-          })
-        : metadata || this.options.metadata;
+    const maybeCombinedMetadata = metadata && this.options.metadata
+      ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
+      : metadata || this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
@@ -1057,11 +931,7 @@ export class GrpcWebImpl {
           if (response.status === grpc.Code.OK) {
             resolve(response.message);
           } else {
-            const err = new GrpcWebError(
-              response.statusMessage,
-              response.status,
-              response.trailers
-            );
+            const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
           }
         },
@@ -1072,20 +942,16 @@ export class GrpcWebImpl {
   invoke<T extends UnaryMethodDefinitionish>(
     methodDesc: T,
     _request: any,
-    metadata: grpc.Metadata | undefined
+    metadata: grpc.Metadata | undefined,
   ): Observable<any> {
     const upStreamCodes = this.options.upStreamRetryCodes || [];
     const DEFAULT_TIMEOUT_TIME: number = 3_000;
     const request = { ..._request, ...methodDesc.requestType };
-    const maybeCombinedMetadata =
-      metadata && this.options.metadata
-        ? new BrowserHeaders({
-            ...this.options?.metadata.headersMap,
-            ...metadata?.headersMap,
-          })
-        : metadata || this.options.metadata;
+    const maybeCombinedMetadata = metadata && this.options.metadata
+      ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
+      : metadata || this.options.metadata;
     return new Observable((observer) => {
-      const upStream = () => {
+      const upStream = (() => {
         const client = grpc.invoke(methodDesc, {
           host: this.host,
           request,
@@ -1093,11 +959,7 @@ export class GrpcWebImpl {
           metadata: maybeCombinedMetadata,
           debug: this.options.debug,
           onMessage: (next) => observer.next(next),
-          onEnd: (
-            code: grpc.Code,
-            message: string,
-            trailers: grpc.Metadata
-          ) => {
+          onEnd: (code: grpc.Code, message: string, trailers: grpc.Metadata) => {
             if (code === 0) {
               observer.complete();
             } else if (upStreamCodes.includes(code)) {
@@ -1111,48 +973,29 @@ export class GrpcWebImpl {
           },
         });
         observer.add(() => client.close());
-      };
+      });
       upStream();
     }).pipe(share());
   }
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin
-  ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
 export class GrpcWebError extends Error {
-  constructor(
-    message: string,
-    public code: grpc.Code,
-    public metadata: grpc.Metadata
-  ) {
+  constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }
 }

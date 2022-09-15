@@ -8,3 +8,4 @@
 
 # generated packages
 /packages/contracts-clients
+/packages/api
