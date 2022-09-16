@@ -1,3 +1,4 @@
+import { logs } from "@cosmjs/stargate";
 import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -90,6 +91,8 @@ export const MintCollectionScreen: React.FC<{
 
   const mint = useCallback(async () => {
     try {
+      const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
+
       setToastError(initialToastError);
       const sender = wallet?.publicKey;
       if (!sender || !info.unitPrice || !info.priceDenom) {
@@ -100,14 +103,19 @@ export const MintCollectionScreen: React.FC<{
       const minterClient = new TeritoriNftMinterClient(
         cosmwasmClient,
         sender,
-        id
+        mintAddress
       );
-      await minterClient.mint("auto", "", [
+      const reply = await minterClient.mint("auto", "", [
         { amount: info.unitPrice, denom: info.priceDenom },
       ]);
       setMinted(true);
+      const tokenId = firstTokenId(reply.logs);
       setTimeout(() => {
-        navigate("MyCollection");
+        if (tokenId) {
+          navigate("NFTDetail", { id: `${id}-${tokenId}` });
+        } else {
+          navigate("MyCollection");
+        }
         setMinted(false);
       }, 3000);
     } catch (err) {
@@ -480,11 +488,22 @@ const useCollectionInfo = (id: string) => {
   const refresh = useCallback(() => {
     let canceled = false;
     const effect = async () => {
-      setNotFound(true);
+      setLoading(true);
       try {
+        if (!id.startsWith("tori-")) {
+          setLoading(false);
+          setNotFound(true);
+          return;
+        }
+
+        const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
+
         const cosmwasm = await getNonSigningCosmWasmClient();
 
-        const minterClient = new TeritoriNftMinterQueryClient(cosmwasm, id);
+        const minterClient = new TeritoriNftMinterQueryClient(
+          cosmwasm,
+          mintAddress
+        );
         const conf = await minterClient.config();
 
         const nftClient = new TeritoriNftQueryClient(cosmwasm, conf.nft_addr);
@@ -534,9 +553,6 @@ const useCollectionInfo = (id: string) => {
         setLoading(false);
       } catch (err) {
         console.error(err);
-        if (!(err instanceof Error)) {
-          return;
-        }
         setNotFound(true);
         setLoading(false);
       }
@@ -549,4 +565,18 @@ const useCollectionInfo = (id: string) => {
   useFocusEffect(refresh);
 
   return { info, notFound, loading };
+};
+
+const firstTokenId = (logs: readonly logs.Log[]) => {
+  for (const logEntry of logs) {
+    for (const event of logEntry.events) {
+      if (event.type === "wasm") {
+        for (const attr of event.attributes) {
+          if (attr.key === "token_id") {
+            return attr.value;
+          }
+        }
+      }
+    }
+  }
 };
