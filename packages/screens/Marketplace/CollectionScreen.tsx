@@ -4,63 +4,41 @@ import {
   FlatList,
   LayoutChangeEvent,
   View,
-  ViewStyle,
-} from "react-native";
+  ViewStyle, Image, Linking
+} from "react-native"
 
 import {
-  CollectionNFTsRequest,
   NFT,
 } from "../../api/marketplace/v1/marketplace";
 import { NFTView } from "../../components/NFTView";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { backendClient } from "../../utils/backend";
 import { prettyPrice } from "../../utils/coins";
+import { RootStackParamList } from "../../utils/navigation";
 import { ScreenFC } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 
-const useCollectionNFTs = (
-  req: CollectionNFTsRequest
-): [NFT[], () => Promise<void>] => {
-  const [nfts, setNFTs] = useState<NFT[]>([]);
+const keyExtractor = (item: NFT) => item.mintAddress
 
-  const fetchMore = useCallback(async () => {
-    try {
-      const offsetReq = {
-        ...req,
-        offset: req.offset + nfts.length,
-      };
-      console.log("fetching", offsetReq);
-      const stream = backendClient.CollectionNFTs(offsetReq);
-      let newNFTS: NFT[] = [];
-      await stream.forEach((response) => {
-        if (!response.nft) {
-          return;
-        }
-        newNFTS = [...newNFTS, response.nft];
-      });
-      setNFTs((collec) => [...collec, ...newNFTS]);
-    } catch (err) {
-      console.warn("failed to fetch collection nfts:", err);
-    }
-  }, [req, nfts]);
-
-  useEffect(() => {
-    setNFTs([]);
-    fetchMore();
-  }, [req.id]);
-
-  return [nfts, fetchMore];
-};
+// ====== Style =====
 
 const gap = 20;
 const nftWidth = 268 + gap * 2; // FIXME: ssot
 
-const ItemSeparator: React.FC = () => <View style={{ height: gap }} />;
+const viewStyle: ViewStyle = {
+  height: "100%",
+  alignItems: "center"
+}
 
-const keyExtractor = (item: NFT) => item.mintAddress;
+const alignDown = (count: number, stride: number) => {
+  const factor = Math.floor(count / stride)
+  return factor * stride
+}
+
+// ====== Components =====
+const ItemSeparator: React.FC = () => <View style={{height: gap}}/>
 
 const renderItem: ListRenderItem<NFT> = (info) => {
-  const nft = info.item;
+  const nft = info.item
   return (
     <NFTView
       key={nft.mintAddress}
@@ -77,32 +55,80 @@ const renderItem: ListRenderItem<NFT> = (info) => {
         favoritesCount: 420,
         id: nft.id,
       }}
-      style={{ marginHorizontal: gap / 2 }}
+      style={{marginHorizontal: gap / 2}}
     />
-  );
-};
+  )
+}
 
-const viewStyle: ViewStyle = {
-  alignItems: "center",
-  height: "100%",
-};
+// All the screen content before the Flatlist used to display NFTs
+const FlatListHeader: React.FC<{
+  collectionInfo: CollectionInfo
+}> = ({collectionInfo = {}}) => {
+  const {onPressTabItem, tabItems} = useTabs(collectionScreenTabItems)
 
-const alignDown = (count: number, stride: number) => {
-  const factor = Math.floor(count / stride);
-  return factor * stride;
-};
+  return (
+    <View style={{maxWidth: screenContentMaxWidth}}>
+      <Image source={bannerCollection}
+             style={{height: 311, width: screenContentMaxWidth, marginBottom: 42, marginTop: 7}}
+      />
 
-const BoundariesSpacer: React.FC = () => <View style={{ height: 100 }} />;
+      <View style={{flexDirection: "row", alignItems: "center", marginBottom: 24}}>
+        <RoundedGradientImage imageSource={{uri: collectionInfo.image}} style={{marginRight: 24}}/>
+        <View>
+          <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
+          <View style={{flexDirection: "row", marginTop: 16, alignItems: "center"}}>
+            <SocialButton text="Medium" iconSvg={mediumSVG} style={{marginRight: 12}}/>
+            <SocialButton text="Discord" iconSvg={discordSVG} style={{marginRight: 12}} onPress={() => Linking.openURL(collectionInfo.discord || "")}/>
+            <SocialButton text="Twitter" iconSvg={twitterSVG} style={{marginRight: 12}} onPress={() => Linking.openURL(collectionInfo.twitter || "")}/>
+            <View style={{height: 24, width: 1, backgroundColor: neutral33, marginRight: 12}}/>
+            <SocialButtonSecondary text="Etherscan" iconSvg={etherscanSVG} style={{marginRight: 12}}/>
+            <SocialButtonSecondary text="Share" iconSvg={shareSVG}/>
+          </View>
+        </View>
+      </View>
+
+      <PrimaryBox
+        mainContainerStyle={{flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 8}}
+        fullWidth height={64} style={{marginBottom: 24}}
+      >
+        <Tabs items={tabItems} onPressTabItem={onPressTabItem}
+              style={{width: "fit-content", height: 64, borderBottomWidth: 0}}
+        />
+        <SortButton/>
+      </PrimaryBox>
+    </View>
+  )
+}
+
+// All the screen content after the Flatlist used to display NFTs
+const FlatListFooter: React.FC = () => <View style={{height: 100}}/>
 
 const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
-  id,
-  numColumns,
-}) => {
-  const [nfts, fetchMore] = useCollectionNFTs({
+                                                                        id,
+                                                                        numColumns,
+                                                                      }) => {
+  const {info, notFound, loading: loadingCollectionInfo} = useCollectionInfo(id)
+  const {nfts, fetchMore, firstLoading: firstLoadingNTFs} = useCollectionNFTs({
     id,
     limit: alignDown(20, numColumns) || numColumns,
     offset: 0,
   });
+
+  const {setLoadingFullScreen} = useFeedbacks()
+
+  // Sync loadingFullScreen
+  useEffect(() => {
+    setLoadingFullScreen(loadingCollectionInfo && firstLoadingNTFs)
+  }, [loadingCollectionInfo, firstLoadingNTFs])
+
+  // TODO: Uncomment this when the collection has info AND NFTs
+  // if (notFound) {
+  //   return (
+  //     <View style={{alignItems: "center", width: "100%", marginTop: 40}}>
+  //       <BrandText>Collection not found</BrandText>
+  //     </View>
+  //   )
+  // } else
   return (
     <FlatList
       key={numColumns}
@@ -113,8 +139,8 @@ const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
       keyExtractor={keyExtractor}
       onEndReachedThreshold={4}
       renderItem={renderItem}
-      ListHeaderComponent={BoundariesSpacer}
-      ListFooterComponent={BoundariesSpacer}
+      ListHeaderComponent={<FlatListHeader collectionInfo={info}/>}
+      ListFooterComponent={<FlatListFooter/>}
     />
   );
 };
@@ -138,7 +164,10 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   return (
     <ScreenContainer noMargin noScroll>
-      <Content key={route.params.id} id={route.params.id} />
+      <Content
+        key={route.params.id}
+        id={route.params.id}
+      />
     </ScreenContainer>
   );
 };

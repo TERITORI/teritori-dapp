@@ -5,7 +5,7 @@ import { prettyPrice } from "../../utils/coins";
 import { Network } from "../../utils/network";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { NetworkIcon } from "../NetworkIcon";
+import { NetworkIcon } from "../images/NetworkIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 

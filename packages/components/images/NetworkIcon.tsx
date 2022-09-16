@@ -11,8 +11,8 @@ import solanaCircleSVG from "../../assets/icons/networks/solana-circle.svg";
 import solanaSVG from "../../assets/icons/networks/solana.svg";
 import teritoriCircleSVG from "../../assets/icons/networks/teritori-circle.svg";
 import teritoriSVG from "../../assets/icons/networks/teritori.svg";
-import { Network } from "../utils/network";
-import { SVG } from "./SVG";
+import { Network } from "../../utils/network";
+import { SVG } from "../SVG";
 
 export const NetworkIcon: React.FC<{
   network: Network | null | undefined;

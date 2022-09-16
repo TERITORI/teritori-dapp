@@ -8,6 +8,7 @@ import { useAppNavigation } from "../utils/navigation";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
+import {lavenderDefault} from "../utils/style/colors"
 
 export const collectionItemHeight = 266;
 export const collectionItemWidth = 196;
@@ -57,7 +58,7 @@ export const CollectionView: React.FC<{
             }}
           >
             <BrandText
-              style={{ color: "#AEB1FF", fontSize: 14 }}
+              style={{ color: lavenderDefault, fontSize: 14 }}
               ellipsizeMode="tail"
               numberOfLines={1}
             >

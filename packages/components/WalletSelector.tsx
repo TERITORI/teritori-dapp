@@ -17,7 +17,7 @@ import { neutral17, neutral44 } from "../utils/style/colors";
 import { walletSelectorWidth } from "../utils/style/layout";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
+import { NetworkIcon } from "./images/NetworkIcon";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SecondaryButton } from "./buttons/SecondaryButton";

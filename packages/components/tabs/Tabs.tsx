@@ -1,46 +1,43 @@
 import React, { useState } from "react";
-import {
-  TouchableOpacity,
-  View,
-  StyleProp,
-  ViewStyle,
-  StyleSheet,
-} from "react-native";
+import { TouchableOpacity, View, StyleProp, StyleSheet, ViewStyle } from "react-native";
 
-import { neutral33 } from "../../utils/style/colors";
+import { neutral33, primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import {TertiaryBadge} from "../badges/TertiaryBadge"
+import { layout } from "../../utils/style/layout";
 import { PrimaryBadge } from "../badges/PrimaryBadge";
-import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { SpacerRow } from "../spacer";
+
 
 export type TabItem = {
   label: string;
   isSelected?: boolean;
+  // If provided, a TertiaryBadge will be added with this label
+  badgeLabel?: string;
   badgeCount?: number;
 };
 
 export const useTabs = (items: TabItem[]) => {
-  const [tabItems, setTabItems] = useState(items);
+  const [tabItems, setTabItems] = useState(items)
   const [selectedTabItem, setSelectedTabItem] = useState(
     items.filter((item: TabItem) => item.isSelected)[0]
-  );
+  )
 
   const onPressTabItem = (pressedItem: TabItem) => {
     // Select the pressed TabItem and unselect all the others
-    const updatedItems: TabItem[] = [];
+    const updatedItems: TabItem[] = []
     tabItems.map((tabItem: TabItem) => {
-      tabItem.isSelected = tabItem.label === pressedItem.label;
-      updatedItems.push(tabItem);
-    });
-    setTabItems(updatedItems);
+      tabItem.isSelected = tabItem.label === pressedItem.label
+      updatedItems.push(tabItem)
+    })
+    setTabItems(updatedItems)
 
     // Set the selected TabItem to provide it (No need to use whole tabItems to find the selected one)
-    setSelectedTabItem(pressedItem);
-  };
-  return { onPressTabItem, tabItems, selectedTabItem };
-};
+    setSelectedTabItem(pressedItem)
+  }
+  return {onPressTabItem, tabItems, selectedTabItem}
+}
 
 export const Tabs: React.FC<{
   items: TabItem[];
@@ -48,7 +45,6 @@ export const Tabs: React.FC<{
   onPressTabItem: (item: TabItem) => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ items, borderColorTabSelected = "#FFFFFF", onPressTabItem, style }) => {
-  // returns
   return (
     <View
       style={[
@@ -56,8 +52,9 @@ export const Tabs: React.FC<{
           width: "100%",
           flexDirection: "row",
           borderBottomColor: neutral33,
-          borderBottomWidth: 1,
+          borderBottomWidth: 1
         },
+        style,
       ]}
     >
       {items.map((item, index) => (
@@ -74,6 +71,7 @@ export const Tabs: React.FC<{
             <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
               {item.label}
             </BrandText>
+
 
             {item.badgeCount && <SpacerRow size={1} />}
             {item.badgeCount ? (

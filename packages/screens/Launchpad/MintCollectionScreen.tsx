@@ -1,5 +1,5 @@
 import { logs } from "@cosmjs/stargate";
-import { useFocusEffect } from "@react-navigation/native";
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -27,14 +27,9 @@ import {
 } from "../../context/FeedbacksProvider";
 import {
   TeritoriNftMinterClient,
-  TeritoriNftMinterQueryClient,
 } from "../../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
-import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { prettyPrice } from "../../utils/coins";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
-  getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -52,6 +47,7 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../utils/style/fonts";
+import {useCollectionInfo} from "../../hooks/useCollectionInfo"
 
 const maxImageSize = 532;
 const cardsHalfGap = 6;
@@ -456,126 +452,4 @@ const prettyError = (err: any) => {
     return "You are not in the presale whitelist";
   }
   return msg;
-};
-
-interface CollectionInfo {
-  image?: string;
-  description?: string;
-  prettyUnitPrice?: string;
-  unitPrice?: string;
-  priceDenom?: string;
-  maxSupply?: string;
-  mintedAmount?: string;
-  name?: string;
-  discord?: string;
-  twitter?: string;
-  website?: string;
-  maxPerAddress?: string;
-  hasPresale?: boolean;
-  whitelistMaxPerAddress?: string;
-  whitelistSize?: string;
-  isInPresalePeriod?: boolean;
-  isMintable?: boolean;
-  publicSaleEnded?: boolean;
-}
-
-const useCollectionInfo = (id: string) => {
-  const [info, setInfo] = useState<CollectionInfo>({});
-  const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const refresh = useCallback(() => {
-    let canceled = false;
-    const effect = async () => {
-      setLoading(true);
-      try {
-        if (!id.startsWith("tori-")) {
-          setLoading(false);
-          setNotFound(true);
-          return;
-        }
-
-        const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
-
-        const cosmwasm = await getNonSigningCosmWasmClient();
-
-        const minterClient = new TeritoriNftMinterQueryClient(
-          cosmwasm,
-          mintAddress
-        );
-        const conf = await minterClient.config();
-
-        const nftClient = new TeritoriNftQueryClient(cosmwasm, conf.nft_addr);
-        const nftInfo = await nftClient.contractInfo();
-
-        const baseURI = ipfsURLToHTTPURL(conf.nft_base_uri);
-        const metadataURI = baseURI + "collection.json";
-        const metadataReply = await fetch(metadataURI);
-        const metadata = await metadataReply.json();
-
-        const secondsSinceEpoch = Date.now() / 1000;
-
-        const whitelistEnd = conf.mint_start_time + conf.whitelist_mint_period;
-        const hasWhitelistPeriod = !!conf.whitelist_mint_period;
-        const publicSaleEnded = conf.minted_amount === conf.nft_max_supply;
-
-        const info: CollectionInfo = {
-          name: nftInfo.name,
-          image: ipfsURLToHTTPURL(metadata.image),
-          description: metadata.description,
-          prettyUnitPrice: prettyPrice(conf.nft_price_amount, conf.price_denom),
-          unitPrice: conf.nft_price_amount,
-          priceDenom: conf.price_denom,
-          maxSupply: conf.nft_max_supply,
-          mintedAmount: conf.minted_amount,
-          discord: metadata.discord,
-          twitter: metadata.twitter,
-          website: metadata.website,
-          maxPerAddress: conf.mint_max || undefined,
-          whitelistMaxPerAddress: conf.whitelist_mint_max || undefined,
-          whitelistSize: conf.whitelisted_size,
-          hasPresale: hasWhitelistPeriod,
-          publicSaleEnded,
-          isMintable: !publicSaleEnded && conf.is_mintable,
-          isInPresalePeriod:
-            hasWhitelistPeriod &&
-            conf.mint_start_time !== 0 &&
-            secondsSinceEpoch >= conf.mint_start_time &&
-            secondsSinceEpoch < whitelistEnd,
-        };
-
-        if (canceled) {
-          return;
-        }
-        setInfo(info);
-        setNotFound(false);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setNotFound(true);
-        setLoading(false);
-      }
-    };
-    effect();
-    return () => {
-      canceled = true;
-    };
-  }, [id]);
-  useFocusEffect(refresh);
-
-  return { info, notFound, loading };
-};
-
-const firstTokenId = (logs: readonly logs.Log[]) => {
-  for (const logEntry of logs) {
-    for (const event of logEntry.events) {
-      if (event.type === "wasm") {
-        for (const attr of event.attributes) {
-          if (attr.key === "token_id") {
-            return attr.value;
-          }
-        }
-      }
-    }
-  }
 };

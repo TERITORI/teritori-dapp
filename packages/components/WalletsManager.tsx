@@ -12,7 +12,7 @@ import { modalMarginPadding } from "../utils/style/modals";
 import { keplrSuggestTeritori, teritoriChainId } from "../utils/teritori";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
+import { NetworkIcon } from "./images/NetworkIcon";
 import { PrimaryButton } from "./buttons/PrimaryButton";
 import { TertiaryButton } from "./buttons/TertiaryButton";
 import { TextInputCustom } from "./inputs/TextInputCustom";

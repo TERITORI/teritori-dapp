@@ -8,15 +8,12 @@ import {
   StyleSheet,
 } from "react-native";
 
-import certifiedSVG from "../../assets/icons/certified.svg";
-import outlineStarSVG from "../../assets/icons/outline-star.svg";
 import { useAppNavigation } from "../utils/navigation";
 import { heightButton } from "../utils/style/buttons";
 import { neutral33, neutral77 } from "../utils/style/colors";
 import { NFTData } from "../utils/types/nft";
 import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
-import { SVG } from "./SVG";
+import {NetworkIcon} from "./images/NetworkIcon"
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SecondaryButton } from "./buttons/SecondaryButton";
 
@@ -109,7 +106,6 @@ export const NFTView: React.FC<{
               >
                 {data.collectionName}
               </BrandText>
-              {data.isCertified && <SVG source={certifiedSVG} />}
             </View>
             <View
               style={{
@@ -127,7 +123,6 @@ export const NFTView: React.FC<{
               >
                 {data.favoritesCount}
               </BrandText>
-              <SVG width={24} height={24} source={outlineStarSVG} />
             </View>
           </View>
         </View>

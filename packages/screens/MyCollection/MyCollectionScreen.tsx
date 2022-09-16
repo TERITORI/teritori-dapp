@@ -4,7 +4,7 @@ import { ActivityIndicator, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { NFTView } from "../../components/NFTView";
-import { NetworkIcon } from "../../components/NetworkIcon";
+import { NetworkIcon } from "../../components/images/NetworkIcon";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Section } from "../../components/Section";
 import { HubIntro } from "../../components/hub/HubIntro";
