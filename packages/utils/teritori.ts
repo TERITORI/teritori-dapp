@@ -10,6 +10,7 @@ export const teritoriChainId = process.env.PUBLIC_CHAIN_ID;
 const toriDisplayDenom = process.env.PUBLIC_STAKING_DENOM_DISPLAY_NAME;
 const toriDenom = process.env.PUBLIC_STAKING_DENOM;
 const teritoriBechPrefix = process.env.PUBLIC_CHAIN_BECH32_PREFIX;
+const toriChainName = process.env.PUBLIC_CHAIN_NAME;
 
 if (
   !toriDisplayDenom ||
@@ -17,7 +18,8 @@ if (
   !teritoriBechPrefix ||
   !teritoriChainId ||
   !teritoriRPCProvider ||
-  !teritoriRestProvider
+  !teritoriRestProvider ||
+  !toriChainName
 ) {
   throw new Error("missing teritori environment variable(s)");
 }
@@ -63,7 +65,7 @@ export const keplrSuggestTeritori = (keplr: Keplr) =>
     // Chain-id of the Cosmos SDK chain.
     chainId: teritoriChainId,
     // The name of the chain to be displayed to the user.
-    chainName: toriDisplayDenom,
+    chainName: toriChainName,
     // RPC endpoint of the chain.
     rpc: teritoriRPCProvider,
     // REST endpoint of the chain.
