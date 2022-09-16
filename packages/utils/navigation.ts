@@ -54,7 +54,7 @@ const navConfig = {
     // ==== Launchpad
     Launchpad: "launchpad",
     // Mint NFT collection
-    MintCollection: "launchpad/collection/:id/mint",
+    MintCollection: "collection/:id/mint",
     // ==== Teritori Name Service
     TNSHome: "tns",
     TNSExplore: "tns/explore",
