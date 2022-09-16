@@ -1,0 +1,113 @@
+query GetCollectionsByVolume(
+  $OrderDirection: OrderDirection!
+  $StartDate: DateTimeUtc!
+  $EndDate: DateTimeUtc!
+  $Limit: Int!
+  $Offset: Int!
+) {
+  collectionsFeaturedByVolume(
+    orderDirection: $OrderDirection
+    startDate: $StartDate
+    endDate: $EndDate
+    limit: $Limit
+    offset: $Offset
+  ) {
+    nft {
+      name
+      address
+      mintAddress
+      image(width: 400)
+      creators {
+        address
+        metadataAddress
+      }
+    }
+  }
+}
+
+query GetCollectionsByMarketCap(
+  $OrderDirection: OrderDirection!
+  $StartDate: DateTimeUtc!
+  $EndDate: DateTimeUtc!
+  $Limit: Int!
+  $Offset: Int!
+) {
+  collectionsFeaturedByMarketCap(
+    orderDirection: $OrderDirection
+    startDate: $StartDate
+    endDate: $EndDate
+    limit: $Limit
+    offset: $Offset
+  ) {
+    nft {
+      name
+      address
+      mintAddress
+      image(width: 400)
+      creators {
+        address
+        metadataAddress
+      }
+    }
+  }
+}
+
+query GetCreatorName(
+  $Address: String!
+) {
+  metadataJsons(
+    term: $Address
+    limit: 1
+    offset: 0
+  ) {
+    name
+  } 
+}
+
+query GetCollectionNFTs(
+  $MintAddress: PublicKey!
+  $Limit: Int!
+  $Offset: Int!
+) {
+  nfts(
+    collection: $MintAddress
+    limit: $Limit
+    offset: $Offset
+  ) {
+    name
+    mintAddress
+    image(width: 400)
+    listings {
+      price
+    }
+  }
+}
+
+query GetCollectionActivity(
+  $MintAddress: String!
+  $Limit: Int!
+  $Offset: Int!
+) {
+  collection(
+    address: $MintAddress
+  ) {
+    activities (
+      limit: $Limit
+      offset: $Offset
+    ) {
+      activityType
+      price
+      metadata
+      createdAt
+      marketplaceProgramAddress
+      nft {
+        name
+        mintAddress
+        image(width: 400)
+      }
+      wallets {
+        address
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ export const Section: React.FC<{
 }> = ({ children, title, topRightChild }) => {
   const fontSize = 20;
   return (
-    <View style={{ marginBottom: 64 }}>
+    <View style={{ marginBottom: 64, overflow: "hidden" }}>
       <>
         <View
           style={{

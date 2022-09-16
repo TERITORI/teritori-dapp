@@ -4,17 +4,16 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 export type RootStackParamList = {
   Home: undefined;
   MyCollection: undefined;
-  Activities: undefined;
+  Activity: undefined;
   Guardians: undefined;
   GuardiansGame: undefined;
-  Marketplace: undefined;
   Wallets: undefined;
   Governance: undefined;
   Mint: undefined;
   RiotersFooter: undefined;
 
   Launchpad: undefined;
-  MintCollection: undefined;
+  MintCollection: { id: string };
 
   TNSHome: undefined;
   TNSExplore: undefined;
@@ -25,6 +24,11 @@ export type RootStackParamList = {
   TNSUpdateName: undefined;
   TNSBurnName: undefined;
   TNSMintPath: undefined;
+
+  Marketplace: undefined;
+  Collection: { mintAddress: string };
+  CollectionActivity: { mintAddress: string };
+  NFTDetail: { id: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<
@@ -42,10 +46,9 @@ const navConfig = {
   screens: {
     Home: "",
     MyCollection: "my-collection",
-    Activities: "activities",
+    Activity: "activity",
     Guardians: "guardians",
     Wallets: "wallets",
-    Marketplace: "marketplace",
     GuardiansGame: "guardians-game",
     Mint: "mint",
     Governance: "governance",
@@ -53,7 +56,7 @@ const navConfig = {
     // ==== Launchpad
     Launchpad: "launchpad",
     // Mint NFT collection
-    MintCollection: "launchpad/collection/:id/mint",
+    MintCollection: "collection/:id/mint",
     // ==== Teritori Name Service
     TNSHome: "tns",
     TNSExplore: "tns/explore",
@@ -66,6 +69,11 @@ const navConfig = {
     TNSUpdateName: "tns/tokens/:name/update",
     TNSBurnName: "tns/tokens/:name/burn",
     TNSMintPath: "tns/tokens/:name/mint-path",
+    // ==== Marketplace
+    Marketplace: "marketplace",
+    Collection: "collection/:mintAddress",
+    CollectionActivity: "collection/:mintAddress/activity",
+    NFTDetail: "nft/:id",
   },
 };
 

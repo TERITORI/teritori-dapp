@@ -1,0 +1,929 @@
+schema {
+  query: QueryRoot
+}
+"Uuid"
+scalar Uuid
+"I64"
+scalar I64
+"PublicKey"
+scalar PublicKey
+"DateTime"
+scalar DateTimeUtc
+"NaiveDateTime"
+scalar NaiveDateTime
+"U64"
+scalar U64
+"Bonding change enriched with reserve change and supply change"
+type EnrichedBondingChange {
+  address: String!
+  slot: U64!
+  insertTs: NaiveDateTime!
+  reserveChange: I64!
+  supplyChange: I64!
+}
+type Purchase {
+  id: Uuid!
+  buyer: PublicKey!
+  seller: PublicKey!
+  metadata: PublicKey!
+  price: U64!
+  createdAt: DateTimeUtc!
+  tokenSize: Int!
+  marketplaceProgramAddress: String!
+  nft: Nft
+  auctionHouse: AuctionHouse
+}
+type CreatorCounts {
+  creations: Int!
+}
+type CandyMachine {
+  address: PublicKey!
+  authority: PublicKey!
+  wallet: PublicKey!
+  tokenMint: PublicKey
+  itemsRedeemed: U64!
+  uuid: String!
+  price: U64!
+  symbol: String!
+  sellerFeeBasisPoints: Int!
+  maxSupply: U64!
+  isMutable: Boolean!
+  retainAuthority: Boolean!
+  goLiveDate: U64
+  itemsAvailable: U64!
+  "NOTE - this is currently bugged and will only return one creator"
+  creators: [CandyMachineCreator!]!
+  collectionPda: CandyMachineCollectionPda
+  "NOTE - this is currently bugged and will always be empty"
+  configLines: [CandyMachineConfigLine!]!
+  endSetting: CandyMachineEndSetting
+  whitelistMintSetting: CandyMachineWhitelistMintSetting
+  hiddenSetting: CandyMachineHiddenSetting
+  gateKeeperConfig: CandyMachineGateKeeperConfig
+}
+type Collection {
+  nft: Nft!
+  activities(eventTypes: [String!], limit: Int!, offset: Int!): [NftActivity!]!
+  "Lowest price of currently listed NFTs in the collection."
+  floorPrice: I64
+  "Count of wallets that currently hold at least one NFT from the collection."
+  holderCount: U64!
+  "Count of active listings of NFTs in the collection."
+  listedCount: U64!
+  "Count of NFTs in the collection."
+  nftCount: I64
+  "Total of all sales of all NFTs in the collection over all time, in lamports."
+  volumeTotal: U64!
+  address: String! @deprecated(reason: "use `nft { address }`")
+  name: String! @deprecated(reason: "use `nft { name }`")
+  sellerFeeBasisPoints: Int! @deprecated(reason: "use `nft { seller_fee_basis_points }`")
+  mintAddress: String! @deprecated(reason: "use `nft { mint_address }`")
+  tokenAccountAddress: String! @deprecated(reason: "use `nft { token_account_address }`")
+  primarySaleHappened: Boolean! @deprecated(reason: "use `nft { primary_sale_happened }`")
+  updateAuthorityAddress: String! @deprecated(reason: "use `nft { update_authority_address }`")
+  description: String! @deprecated(reason: "use `nft { description }`")
+  category: String! @deprecated(reason: "use `nft { category }`")
+  parser: String @deprecated(reason: "use `nft { parser }`")
+  image(width: Int): String! @deprecated(reason: "use `nft { image }`")
+  animationUrl: String @deprecated(reason: "use `nft { animation_url }`")
+  externalUrl: String @deprecated(reason: "use `nft { external_url }`")
+  creators: [NftCreator!]! @deprecated(reason: "use `nft { creators }`")
+  attributes: [NftAttribute!]! @deprecated(reason: "use `nft { attributes }`")
+  owner: NftOwner @deprecated(reason: "use `nft { owner }`")
+  listings: [AhListing!]! @deprecated(reason: "use `nft { ah_listings_loader }`")
+  purchases: [Purchase!]! @deprecated(reason: "use `nft { purchases }`")
+  offers: [Offer!]! @deprecated(reason: "use `nft { offers }`")
+  files: [NftFile!]! @deprecated(reason: "use `nft { files }`")
+  collection: Collection @deprecated(reason: "use `nft { collection }`")
+  createdAt: DateTimeUtc @deprecated(reason: "use `nft { created_at }`")
+}
+type TwitterProfile {
+  walletAddress: String
+  handle: String!
+  profileImageUrl: String! @deprecated(reason: "Use profileImageUrlLowres instead.")
+  profileImageUrlLowres: String!
+  profileImageUrlHighres: String!
+  bannerImageUrl: String!
+  description: String!
+}
+type AttributeGroup {
+  name: String!
+  variants: [AttributeVariant!]!
+}
+type ProposalV2 {
+  address: PublicKey!
+  governingTokenMint: PublicKey!
+  state: ProposalState!
+  signatoriesCount: Int!
+  signatoriesSignedOffCount: Int!
+  voteType: VoteType!
+  denyVoteWeight: I64
+  vetoVoteWeight: I64
+  abstainVoteWeight: I64
+  startVotingAt: DateTimeUtc
+  draftAt: DateTimeUtc!
+  signingOffAt: DateTimeUtc
+  votingAt: DateTimeUtc
+  votingAtSlot: I64
+  votingCompletedAt: DateTimeUtc
+  executingAt: DateTimeUtc
+  closedAt: DateTimeUtc
+  executionFlags: InstructionExecutionFlags!
+  maxVoteWeight: I64
+  maxVotingTime: I64
+  voteThresholdType: VoteThreshold
+  voteThresholdPercentage: Int
+  name: String!
+  description: String!
+  multiChoice: MultiChoice
+  governance: Governance
+  tokenOwnerRecord: TokenOwnerRecord
+  proposalOptions: [ProposalOption!]!
+}
+type SignatoryRecord {
+  address: PublicKey!
+  accountType: GovernanceAccountType!
+  signatory: PublicKey!
+  signedOff: Boolean!
+  proposal: Proposal
+}
+type NftAttribute {
+  metadataAddress: String!
+  value: String
+  traitType: String
+}
+"A Metaplex storefront"
+type Storefront {
+  address: String!
+  ownerAddress: String!
+  subdomain: String!
+  title: String!
+  description: String!
+  faviconUrl: String!
+  logoUrl: String!
+  bannerUrl: String!
+}
+type CandyMachineCreator {
+  candyMachineAddress: PublicKey!
+  creatorAddress: PublicKey!
+  verified: Boolean!
+  share: Int!
+}
+type NftCount {
+  total: Int!
+  listed(
+    "a list of auction house public keys"
+    auctionHouses: [PublicKey!]
+  ): Int!
+}
+type Creator {
+  address: String!
+  counts: CreatorCounts!
+  stats(
+    "Auction house public keys"
+    auctionHouses: [PublicKey!]!
+  ): [MintStats!]!
+  attributeGroups: [AttributeGroup!]!
+  profile: TwitterProfile
+}
+type CandyMachineHiddenSetting {
+  candyMachineAddress: PublicKey!
+  name: String!
+  uri: String!
+  "lowercase base64 encoded string of the hash bytes"
+  hash: String!
+}
+type MetadataJson {
+  address: String!
+  name: String!
+  mintAddress: String!
+  image: String
+  creatorAddress: String
+  creatorTwitterHandle: String
+}
+type CandyMachineCollectionPda {
+  candyMachineAddress: PublicKey!
+  collectionPda: PublicKey!
+  mint: PublicKey!
+}
+type CandyMachineEndSetting {
+  candyMachineAddress: PublicKey!
+  endSettingType: CandyMachineEndSettingType!
+  number: U64!
+}
+type MultiChoice {
+  maxVoterOptions: Int!
+  maxWinningOptions: Int!
+}
+type GraphConnection {
+  address: String!
+  from: Wallet!
+  to: Wallet!
+  connectedAt: DateTimeUtc!
+}
+type AhListing {
+  id: Uuid!
+  tradeState: String!
+  seller: PublicKey!
+  metadata: PublicKey!
+  purchaseId: Uuid
+  price: U64!
+  tokenSize: Int!
+  tradeStateBump: Int!
+  createdAt: DateTimeUtc!
+  canceledAt: DateTimeUtc
+  marketplaceProgramAddress: String!
+  nft: Nft
+  auctionHouse: AuctionHouse
+}
+type TokenOwnerRecord {
+  address: PublicKey!
+  accountType: GovernanceAccountType!
+  governingTokenMint: PublicKey!
+  governingTokenOwner: PublicKey!
+  governingTokenDepositAmount: I64!
+  unrelinquishedVotesCount: I64!
+  totalVotesCount: I64!
+  outstandingProposalCount: Int!
+  governanceDelegate: PublicKey
+  realm: Realm
+}
+type Nft {
+  address: String!
+  name: String!
+  sellerFeeBasisPoints: Int!
+  mintAddress: String!
+  tokenAccountAddress: String!
+  primarySaleHappened: Boolean!
+  updateAuthorityAddress: String!
+  description: String!
+  category: String!
+  """
+  The JSON parser with which the NFT was processed by the indexer
+  
+  - `"full"` indicates the full Metaplex standard-compliant parser was
+    used.
+  - `"minimal"` (provided with an optional description of an error)
+    indicates the full model failed to parse and a more lenient fallback
+    parser with fewer fields was used instead.
+  """
+  parser: String
+  image(
+    """
+    Image width possible values are:
+    - 0 (Original size)
+    - 100 (Tiny)
+    - 400 (XSmall)
+    - 600 (Small)
+    - 800 (Medium)
+    - 1400 (Large)
+    
+    Any other value will return the original image size.
+    
+    If no value is provided, it will return XSmall
+    """
+    width: Int
+  ): String!
+  animationUrl: String
+  externalUrl: String
+  creators: [NftCreator!]!
+  attributes: [NftAttribute!]!
+  owner: NftOwner
+  activities: [NftActivity!]!
+  listings: [AhListing!]!
+  purchases: [Purchase!]!
+  offers: [Offer!]!
+  files: [NftFile!]!
+  collection: Collection
+  createdAt: DateTimeUtc
+}
+type MintStats {
+  mint: String!
+  floor: U64
+  average: U64
+  volume24hr: U64
+  volumeTotal: U64
+  auctionHouse: AuctionHouse
+}
+type ListingEvent {
+  createdAt: DateTimeUtc!
+  walletAddress: PublicKey!
+  profile: TwitterProfile
+  feedEventId: String!
+  lifecycle: String!
+  listingId: Uuid!
+  listing: AhListing
+  wallet: Wallet!
+}
+type FollowEvent {
+  createdAt: DateTimeUtc!
+  walletAddress: PublicKey!
+  profile: TwitterProfile
+  feedEventId: String!
+  graphConnectionAddress: PublicKey!
+  connection: GraphConnection
+  wallet: Wallet!
+}
+type GenoRentalAgreement {
+  habitatAddress: PublicKey!
+  alchemist: PublicKey
+  rentalPeriod: I64!
+  rent: I64!
+  rentToken: PublicKey!
+  rentTokenDecimals: Int!
+  lastRentPayment: DateTimeUtc!
+  nextPaymentDue: DateTimeUtc!
+  gracePeriod: I64!
+  openMarket: Boolean!
+}
+type VoteChoice {
+  address: PublicKey!
+  rank: Int!
+  weightPercentage: Int!
+}
+type MarketStats {
+  nfts: U64
+}
+type ProfilesStats {
+  "The total number of indexed profiles"
+  totalProfiles: Int!
+}
+type PurchaseEvent {
+  createdAt: DateTimeUtc!
+  walletAddress: PublicKey!
+  profile: TwitterProfile
+  feedEventId: String!
+  purchaseId: Uuid!
+  purchase: Purchase
+  wallet: Wallet!
+}
+type WalletNftCount {
+  owned: Int!
+  offered(
+    "auction houses to scope wallet counts"
+    auctionHouses: [PublicKey!]
+  ): Int!
+  listed(
+    "auction houses to scope wallet counts"
+    auctionHouses: [PublicKey!]
+  ): Int!
+  created: Int!
+}
+type AuctionHouse {
+  stats: MintStats
+  address: String!
+  treasuryMint: String!
+  auctionHouseTreasury: String!
+  treasuryWithdrawalDestination: String!
+  feeWithdrawalDestination: String!
+  authority: String!
+  creator: String!
+  bump: Int!
+  treasuryBump: Int!
+  feePayerBump: Int!
+  sellerFeeBasisPoints: Int!
+  requiresSignOff: Boolean!
+  canChangeSalePrice: Boolean!
+  auctionHouseFeeAccount: String!
+}
+type CandyMachineWhitelistMintSetting {
+  candyMachineAddress: PublicKey!
+  mode: CandyMachineWhitelistMintMode!
+  mint: PublicKey!
+  presale: Boolean!
+  discountPrice: U64
+}
+type NftOwner {
+  address: String!
+  associatedTokenAccountAddress: String!
+  twitterHandle: String
+  profile: TwitterProfile
+}
+type Realm {
+  address: PublicKey!
+  accountType: GovernanceAccountType!
+  communityMint: PublicKey!
+  votingProposalCount: Int!
+  authority: PublicKey
+  name: String!
+  realmConfig: RealmConfig
+}
+type BidReceipt {
+  address: String!
+  tradeState: String!
+  buyer: PublicKey!
+  metadata: PublicKey!
+  price: U64!
+  tradeStateBump: Int!
+  tokenAccount: String
+  createdAt: DateTimeUtc!
+  canceledAt: DateTimeUtc
+  bookkeeper: PublicKey!
+  purchaseReceipt: PublicKey
+  tokenSize: Int!
+  bump: Int!
+  nft: Nft
+  auctionHouse: AuctionHouse
+}
+type NftCreator {
+  address: String!
+  metadataAddress: String!
+  share: Int!
+  verified: Boolean!
+  position: Int
+  twitterHandle: String
+  profile: TwitterProfile
+}
+type PriceChart {
+  listingFloor: [PricePoint!]!
+  salesAverage: [PricePoint!]!
+  totalVolume: [PricePoint!]!
+}
+type Offer {
+  id: Uuid!
+  tradeState: String!
+  buyer: PublicKey!
+  metadata: PublicKey!
+  price: U64!
+  purchaseId: Uuid
+  tradeStateBump: Int!
+  tokenAccount: String
+  createdAt: DateTimeUtc!
+  canceledAt: DateTimeUtc
+  tokenSize: Int!
+  marketplaceProgramAddress: String!
+  nft: Nft
+  auctionHouse: AuctionHouse
+}
+type CandyMachineConfigLine {
+  candyMachineAddress: PublicKey!
+  name: String!
+  uri: String!
+}
+type VoteRecordV1 {
+  address: PublicKey!
+  governingTokenOwner: PublicKey!
+  isRelinquished: Boolean!
+  voteWeight: I64!
+  voteType: VoteWeightV1!
+  proposal: ProposalV1
+  tokenOwnerRecords: [TokenOwnerRecord!]!
+}
+type WalletActivity {
+  id: Uuid!
+  metadata: PublicKey!
+  price: U64!
+  createdAt: DateTimeUtc!
+  wallets: [Wallet!]!
+  activityType: String!
+  nft: Nft
+  auctionHouse: AuctionHouse
+}
+type VoteRecordV2 {
+  address: PublicKey!
+  governingTokenOwner: PublicKey!
+  isRelinquished: Boolean!
+  voterWeight: I64!
+  vote: Vote!
+  approveVoteChoices: [VoteChoice!]!
+  proposal: ProposalV2
+  tokenOwnerRecords: [TokenOwnerRecord!]!
+}
+type Marketplace {
+  configAddress: PublicKey!
+  subdomain: String!
+  name: String!
+  description: String!
+  logoUrl: String!
+  bannerUrl: String!
+  ownerAddress: String!
+  storeAddress: PublicKey
+  auctionHouses: [AuctionHouse!]!
+  creators: [StoreCreator!]!
+  stats: MarketStats
+}
+type NftActivity {
+  id: Uuid!
+  metadata: PublicKey!
+  price: U64!
+  createdAt: DateTimeUtc!
+  wallets: [Wallet!]!
+  activityType: String!
+  marketplaceProgramAddress: String!
+  nft: Nft
+  auctionHouse: AuctionHouse
+}
+type Denylist {
+  storefronts: [PublicKey!]!
+  listings: [PublicKey!]!
+}
+type GenoHabitat {
+  address: PublicKey!
+  habitatMint: PublicKey!
+  level: Int!
+  element: Int!
+  genesis: Boolean!
+  renewalTimestamp: DateTimeUtc!
+  expiryTimestamp: DateTimeUtc!
+  nextDayTimestamp: DateTimeUtc!
+  crystalsRefined: Int!
+  harvester: String!
+  kiHarvested: I64!
+  seedsSpawned: Boolean!
+  isSubHabitat: Boolean!
+  parentHabitat: PublicKey
+  subHabitats: [PublicKey!]!
+  harvesterRoyaltyBips: Int!
+  harvesterOpenMarket: Boolean!
+  totalKiHarvested: I64!
+  totalCrystalsRefined: I64!
+  terraformingHabitat: PublicKey
+  active: Boolean!
+  durability: Int!
+  habitatsTerraformed: Int!
+  sequence: I64!
+  guild: Int
+  subHabitatCooldownTimestamp: DateTimeUtc!
+  harvesterSettingsCooldownTimestamp: DateTimeUtc!
+  rentalAgreement: GenoRentalAgreement
+  nft: Nft
+}
+type GovernanceConfig {
+  governanceAddress: PublicKey!
+  voteThresholdType: VoteThreshold!
+  voteThresholdPercentage: Int!
+  minCommunityWeightToCreateProposal: U64!
+  minInstructionHoldUpTime: I64!
+  maxVotingTime: I64!
+  voteTipping: VoteTipping!
+  proposalCoolOffTime: I64!
+  minCouncilWeightToCreateProposal: I64!
+}
+type QueryRoot {
+  "Recommend wallets to follow."
+  followWallets(
+    "A user wallet public key"
+    wallet: PublicKey,
+    "The query record limit"
+    limit: Int!,
+    "The query record offset"
+    offset: Int!
+  ): [Wallet!]!
+  "Returns events for the wallets the user is following using the graph_program."
+  feedEvents(
+    "A user wallet public key"
+    wallet: PublicKey!,
+    "The query record limit"
+    limit: Int!,
+    "The query record offset"
+    offset: Int!,excludeTypes: [String!]  ): [FeedEvent!]!
+  "Returns the latest on chain events using the graph_program."
+  latestFeedEvents(
+    "The query record limit"
+    limit: Int!,
+    "Data record needed forward or backward"
+    isForward: Boolean!,
+    "The query record offset"
+    cursor: String!,includeTypes: [String!]  ): [FeedEvent!]!
+  nftCounts(
+    "creators of nfts"
+    creators: [PublicKey!]!
+  ): NftCount!
+  charts(
+    "List of auction houses"
+    auctionHouses: [PublicKey!]!,
+    "Optional list of creators"
+    creators: [PublicKey!],
+    "Start date for which we want to get the average price"
+    startDate: DateTimeUtc!,
+    "End date for which we want to get the average price"
+    endDate: DateTimeUtc!
+  ): PriceChart!
+  activities(auctionHouses: [PublicKey!]!, 
+    "Optional list of creators"
+    creators: [PublicKey!]
+  ): [NftActivity!]!
+  profile(handle: String!): TwitterProfile
+  enrichedBondingChanges(address: PublicKey!, startUnixTime: NaiveDateTime!, stopUnixTime: NaiveDateTime!, limit: Int!, offset: Int!): [EnrichedBondingChange!]!
+  offer(address: String!): BidReceipt
+  connections(from: [PublicKey!], to: [PublicKey!], limit: Int!, offset: Int!): [GraphConnection!]!
+  creator(address: String!): Creator!
+  nfts(owners: [PublicKey!], creators: [PublicKey!], updateAuthorities: [PublicKey!], offerers: [PublicKey!], attributes: [AttributeFilter!], listed: Boolean, allowUnverified: Boolean, withOffers: Boolean, auctionHouses: [PublicKey!], collection: PublicKey, collections: [PublicKey!], term: String, limit: Int!, offset: Int!): [Nft!]!
+  "Stats aggregated across all indexed NFTs"
+  nftsStats: NftsStats!
+  featuredListings(auctionHouses: [PublicKey!], sellerExclusions: [PublicKey!], limitPerSeller: Int, limit: Int!, offset: Int): [AhListing!]!
+  wallet(address: PublicKey!): Wallet!
+  wallets(addresses: [PublicKey!]!): [Wallet!]!
+  listings: [Listing!]!
+  "Get an NFT by metadata address."
+  nft(address: String!): Nft
+  "Get an NFT by mint address."
+  nftByMintAddress(address: String!): Nft
+  "Get a list of NFTs by mint address."
+  nftsByMintAddress(addresses: [PublicKey!]!): [Nft!]!
+  "Get a candymachine by the candymachine config address"
+  candymachine(address: String!): CandyMachine
+  storefronts: [Storefront!]!
+  "A storefront"
+  storefront(subdomain: String!): Storefront
+  "A marketplace"
+  marketplace(subdomain: String!): Marketplace
+  "returns metadata_jsons matching the term"
+  metadataJsons(term: String!, limit: Int!, offset: Int!): [MetadataJson!]!
+  "Returns collection data along with collection activities"
+  collection(
+    "Collection address"
+    address: String!
+  ): Collection
+  "Returns featured collection NFTs ordered by market cap (floor price * number of NFTs in collection)"
+  collectionsFeaturedByMarketCap(
+    "Return collections whose metadata match this term (case insensitive); sorting occurs among limited search results (rather than searching after sorting)"
+    term: String,
+    "Choose (and sort) ascending or descending by market cap"
+    orderDirection: OrderDirection!,
+    "Compute market cap over NFTs listed later than this date (ISO 8601 format like 2022-07-04T17:06:10Z)"
+    startDate: DateTimeUtc!,
+    "Compute market cap over NFTs listed earlier than this date (ISO 8601 format like 2022-07-04T17:06:10Z)"
+    endDate: DateTimeUtc!,
+    "Return at most this many results"
+    limit: Int!,
+    "Return results starting from this index"
+    offset: Int!
+  ): [Collection!]!
+  "Returns featured collection NFTs ordered by volume (sum of purchase prices)"
+  collectionsFeaturedByVolume(
+    "Return collections whose metadata match this term (case insensitive); sorting occurs among limited search results (rather than searching after sorting)"
+    term: String,
+    "Choose (and sort) ascending or descending by volume"
+    orderDirection: OrderDirection!,
+    "Compute volume over sales starting from this date (ISO 8601 format like 2022-07-04T17:06:10Z)"
+    startDate: DateTimeUtc!,
+    "Compute volume over sales ending at this date (ISO 8601 format like 2022-07-04T17:06:10Z)"
+    endDate: DateTimeUtc!,
+    "Return at most this many results"
+    limit: Int!,
+    "Return results starting from this index"
+    offset: Int!
+  ): [Collection!]!
+  "returns all the collections matching the search term"
+  searchCollections(term: String!, limit: Int!, offset: Int!): [MetadataJson!]!
+  "returns profiles matching the search term"
+  profiles(term: String!, limit: Int!, offset: Int!): [Wallet!]!
+  "returns stats about profiles"
+  profilesStats: ProfilesStats!
+  "Get multiple marketplaces; results will be in alphabetical order by subdomain"
+  marketplaces(subdomains: [String!], limit: Int, offset: Int): [Marketplace!]!
+  auctionHouse(address: String!): AuctionHouse
+  genoHabitat(address: PublicKey!): GenoHabitat
+  genoHabitats(mints: [PublicKey!], owners: [PublicKey!], renters: [PublicKey!], harvesters: [String!], genesis: Boolean, elements: [Int!], minLevel: Int, maxLevel: Int, minSequence: Int, maxSequence: Int, guilds: [Int!], minDurability: Int, maxDurability: Int, minExpiry: DateTimeUtc, maxExpiry: DateTimeUtc, harvesterOpenMarket: Boolean, rentalOpenMarket: Boolean, term: String, limit: Int!, offset: Int!): [GenoHabitat!]!
+  tokenOwnerRecords(addresses: [PublicKey!], realms: [PublicKey!], governingTokenMints: [PublicKey!]): [TokenOwnerRecord!]!
+  governances(addresses: [PublicKey!], realms: [PublicKey!]): [Governance!]!
+  proposals(addresses: [PublicKey!], governances: [PublicKey!]): [Proposal!]!
+  voteRecords(addresses: [PublicKey!], proposals: [PublicKey!], governingTokenOwners: [PublicKey!], isRelinquished: Boolean): [VoteRecord!]!
+  signatoryRecords(addresses: [PublicKey!], proposals: [PublicKey!]): [SignatoryRecord!]!
+  realms(addresses: [PublicKey!], communityMints: [PublicKey!]): [Realm!]!
+  denylist: Denylist!
+}
+type CollectedCollection {
+  collection: Collection
+  nftsOwned: Int!
+  estimatedValue: U64!
+}
+type Listing {
+  address: String!
+  extAddress: String!
+  cacheAddress: String!
+  storeAddress: String!
+  endsAt: DateTimeUtc
+  ended: Boolean!
+  storefront: Storefront
+  nfts: [Nft!]!
+  bids: [Bid!]!
+}
+type ConnectionCounts {
+  fromCount: Int!
+  toCount: Int!
+}
+type MintEvent {
+  createdAt: DateTimeUtc!
+  walletAddress: PublicKey!
+  profile: TwitterProfile
+  feedEventId: String!
+  metadataAddress: PublicKey!
+  nft: Nft
+  wallet: Wallet!
+}
+type NftsStats {
+  "The total number of indexed NFTs"
+  totalNfts: Int!
+  "The total number of buy-now listings"
+  buyNowListings: Int!
+  "The total number of NFTs with active offers"
+  nftsWithActiveOffers: Int!
+}
+type CandyMachineGateKeeperConfig {
+  candyMachineAddress: PublicKey!
+  gatekeeperNetwork: String!
+  expireOnUse: Boolean!
+}
+type Wallet {
+  address: PublicKey!
+  twitterHandle: String
+  collectedCollections: [CollectedCollection!]!
+  activities: [WalletActivity!]!
+  bids: [Bid!]!
+  profile: TwitterProfile
+  connectionCounts: ConnectionCounts!
+  nftCounts(
+    "a list of auction house public keys"
+    creators: [PublicKey!]
+  ): WalletNftCount!
+}
+type ProposalV1 {
+  address: PublicKey!
+  accountType: GovernanceAccountType!
+  governingTokenMint: PublicKey!
+  state: ProposalState!
+  signatoriesCount: Int!
+  signatoriesSignedOffCount: Int!
+  yesVotesCount: I64!
+  noVotesCount: I64!
+  instructionsExecutedCount: Int!
+  instructionsCount: Int!
+  instructionsNextIndex: Int!
+  draftAt: DateTimeUtc!
+  signingOffAt: DateTimeUtc
+  votingAt: DateTimeUtc
+  votingAtSlot: I64
+  votingCompletedAt: DateTimeUtc
+  executingAt: DateTimeUtc
+  closedAt: DateTimeUtc
+  executionFlags: InstructionExecutionFlags!
+  maxVoteWeight: I64
+  voteThresholdType: VoteThreshold
+  voteThresholdPercentage: Int
+  name: String!
+  description: String!
+  governance: Governance
+  tokenOwnerRecord: TokenOwnerRecord
+}
+type Bid {
+  listingAddress: String!
+  bidderAddress: String!
+  lastBidTime: String!
+  lastBidAmount: U64!
+  cancelled: Boolean!
+  listing: Listing
+}
+type AttributeVariant {
+  name: String!
+  count: Int!
+}
+type ProposalOption {
+  proposalAddress: PublicKey!
+  label: String!
+  voteWeight: I64!
+  voteResult: OptionVoteResult!
+  transactionsExecutedCount: Int!
+  transactionsCount: Int!
+  transactionsNextIndex: Int!
+}
+type Governance {
+  address: PublicKey!
+  accountType: GovernanceAccountType!
+  governedAccount: PublicKey!
+  proposalsCount: I64!
+  votingProposalCount: Int!
+  governanceConfig: GovernanceConfig
+  realm: Realm
+}
+type RealmConfig {
+  realmAddress: PublicKey!
+  useCommunityVoterWeightAddin: Boolean!
+  useMaxCommunityVoterWeightAddin: Boolean!
+  minCommunityWeightToCreateGovernance: U64!
+  communityMintMaxVoteWeightSource: MintMaxVoteWeightSource!
+  communityMintMaxVoteWeight: I64!
+  councilMint: PublicKey
+}
+type NftFile {
+  metadataAddress: String!
+  uri: String!
+  fileType: String!
+}
+type OfferEvent {
+  createdAt: DateTimeUtc!
+  walletAddress: PublicKey!
+  profile: TwitterProfile
+  feedEventId: String!
+  lifecycle: String!
+  offerId: Uuid!
+  offer: Offer
+  wallet: Wallet!
+}
+type PricePoint {
+  price: U64!
+  date: DateTimeUtc!
+}
+type StoreCreator {
+  storeConfigAddress: String!
+  creatorAddress: String!
+  twitterHandle: String
+  preview: [Nft!]!
+  profile: TwitterProfile
+  nftCount: Int
+}
+union Proposal = ProposalV1 | ProposalV2
+union VoteRecord = VoteRecordV1 | VoteRecordV2
+union FeedEvent = MintEvent | OfferEvent | ListingEvent | PurchaseEvent | FollowEvent
+enum MintMaxVoteWeightSource {
+  SUPPLY_FRACTION
+  ABSOLUTE
+}
+enum Vote {
+  APPROVE
+  DENY
+  ABSTAIN
+  VETO
+}
+enum CandyMachineEndSettingType {
+  DATE
+  AMOUNT
+}
+"Sorts results ascending or descending"
+enum OrderDirection {
+  DESC
+  ASC
+}
+enum VoteWeightV1 {
+  YES
+  NO
+}
+enum VoteTipping {
+  STRICT
+  EARLY
+  DISABLED
+}
+enum ProposalState {
+  DRAFT
+  SIGNING_OFF
+  VOTING
+  SUCCEEDED
+  EXECUTING
+  COMPLETED
+  CANCELLED
+  DEFEATED
+  EXECUTING_WITH_ERRORS
+}
+enum InstructionExecutionFlags {
+  NONE
+  ORDERED
+  USE_TRANSACTION
+}
+enum VoteType {
+  SINGLE_CHOICE
+  MULTI_CHOICE
+}
+enum GovernanceAccountType {
+  UNINITIALIZED
+  REALM_V1
+  TOKEN_OWNER_RECORD_V1
+  GOVERNANCE_V1
+  PROGRAM_GOVERNANCE_V1
+  PROPOSAL_V1
+  SIGNATORY_RECORD_V1
+  VOTE_RECORD_V1
+  PROPOSAL_INSTRUCTION_V1
+  MINT_GOVERNANCE_V1
+  TOKEN_GOVERNANCE_V1
+  REALM_CONFIG
+  VOTE_RECORD_V2
+  PROPOSAL_TRANSACTION_V2
+  PROPOSAL_V2
+  PROGRAM_METADATA
+  REALM_V2
+  TOKEN_OWNER_RECORD_V2
+  GOVERNANCE_V2
+  PROGRAM_GOVERNANCE_V2
+  MINT_GOVERNANCE_V2
+  TOKEN_GOVERNANCE_V2
+  SIGNATORY_RECORD_V2
+}
+enum CandyMachineWhitelistMintMode {
+  BURN_EVERY_TIME
+  NEVER_BURN
+}
+enum VoteThreshold {
+  YES_VOTE
+  QUORUM
+}
+enum OptionVoteResult {
+  NONE
+  SUCCEEDED
+  DEFEATED
+}
+"Filter on NFT attributes"
+input AttributeFilter {
+  traitType: String!
+  values: [String!]!
+}

@@ -66,7 +66,7 @@ const CostContainer: React.FC = () => {
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const TNSMintNameScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "TNSUpdateName">;
+  route: RouteProp<RootStackParamList, "TNSMintName">;
 }> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
@@ -138,7 +138,8 @@ export const TNSMintNameScreen: React.FC<{
     }
   });
 
-  const submitData = async (_data) => {
+  // FIXME: typesafe data
+  const submitData = async (data: any) => {
     if (!isKeplrConnected) {
       return;
     }
@@ -155,7 +156,7 @@ export const TNSMintNameScreen: React.FC<{
       telegram_id,
       keybase_id,
       validator_operator_address,
-    } = _data;
+    } = data;
 
     try {
       const walletAddress = (await getFirstKeplrAccount()).address;
@@ -201,11 +202,17 @@ export const TNSMintNameScreen: React.FC<{
         setLoadingFullScreen(false);
       }
     } catch (err) {
+      console.warn(err);
+      let message;
+      if (err instanceof Error) {
+        message = err.message;
+      } else {
+        message = `${err}`;
+      }
       setToastError({
         title: "Something went wrong!",
-        message: err.message,
+        message,
       });
-      console.warn(err);
       setLoadingFullScreen(false);
     }
   };

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import { neutral77 } from "../../utils/style/colors";
 import { tldFromToken, tokenWithoutTld } from "../../utils/tns";
@@ -7,9 +7,12 @@ import { BrandText } from "../BrandText";
 
 // A text with the substring ".xxx" grayed
 export const NameAndTldText: React.FC<{
-  nameAndTldStr: string;
-  style?: ViewStyle;
+  nameAndTldStr: string | null | undefined;
+  style?: StyleProp<ViewStyle>;
 }> = ({ nameAndTldStr, style }) => {
+  if (!nameAndTldStr) {
+    return null;
+  }
   return (
     <View style={[{ flex: 1, flexDirection: "row", width: "100%" }, style]}>
       {/*---- White part*/}

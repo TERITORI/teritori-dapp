@@ -6,6 +6,8 @@ import { getSolanaOwnedNFTS } from "../utils/solana";
 import { NFTData } from "../utils/types/nft";
 import { useWallets } from "./WalletsProvider";
 
+// this needs to be rewritten
+
 interface SolanaOwnedNFTsValue {
   solanaNFTs: NFTData[];
 }
@@ -48,13 +50,16 @@ export const SolanaOwnedNFTsProvider: React.FC = ({ children }) => {
               const meta: JsonMetadata = await response.json();
               const data: NFTData = {
                 name: nft.name,
-                collectionName: meta.collection.name,
+                collectionName: meta.collection?.name || "",
+                collectionId: `sol-${nft.collection?.key}`,
+                collectionDiscriminator:
+                  nft.collection?.key.toString().substring(0, 7) || "",
                 network: Network.Solana,
                 floorPrice: "4.75 SOL",
                 isCertified: !!nft.collection,
                 favoritesCount: 175,
                 owned: true,
-                imageURI: meta.image,
+                imageURI: meta.image || "",
                 id: `Solana-${nft.mint.toBase58()}`,
               };
               return data;
@@ -64,12 +69,12 @@ export const SolanaOwnedNFTsProvider: React.FC = ({ children }) => {
             }
           })
         )
-      ).filter((data) => !!data);
+      ).filter((data) => !!data) as NFTData[];
       if (cancelled) {
         return;
       }
       setValue({ solanaNFTs: nftsData });
-      console.log("refreshed nfts", nfts);
+      console.log("refreshed solana owned nfts", nfts);
     };
     effect();
     return () => {

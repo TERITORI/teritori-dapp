@@ -1,19 +1,28 @@
 import React from "react";
-import { TextInput, View, ViewStyle } from "react-native";
+import {
+  NativeSyntheticEvent,
+  StyleProp,
+  TextInput,
+  TextInputKeyPressEventData,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
 } from "../../utils/numbers";
-import { neutral22, neutral33, neutral77 } from "../../utils/style/colors";
+import { neutral22, neutral77 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const TextInputCustom: React.FC<{
   label: string;
   value: string;
   placeHolder: string;
-  style?: ViewStyle | ViewStyle[];
+  squaresBackgroundColor?: string;
+  style?: StyleProp<ViewStyle>;
   onChangeText?: (text: string) => void;
   onPressEnter?: () => void;
   onlyNumbers?: boolean;
@@ -30,9 +39,15 @@ export const TextInputCustom: React.FC<{
   onChangeText,
   onlyNumbers,
   disabled,
+  squaresBackgroundColor,
 }) => {
   // Handling key pressing
-  const handleKeyPress = ({ nativeEvent: { key: keyValue } }) => {
+  const handleKeyPress = (
+    event: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    const {
+      nativeEvent: { key: keyValue },
+    } = event;
     switch (keyValue) {
       case "Enter":
         if (onPressEnter) onPressEnter();
@@ -40,7 +55,10 @@ export const TextInputCustom: React.FC<{
   };
 
   // Replace the comma if number and controls
-  const handleChangeText = (value) => {
+  const handleChangeText = (value: string) => {
+    if (!onChangeText) {
+      return;
+    }
     // ---- If you want only number in the TextInputCustom, we apply comma as a thousand separator
     if (onlyNumbers) {
       const withoutCommaValue = thousandSeparatedToNumber(value);
@@ -57,26 +75,21 @@ export const TextInputCustom: React.FC<{
   };
 
   return (
-    <View
-      style={[
-        {
-          borderColor: neutral33,
-          borderWidth: 1,
-          borderRadius: 8,
-          backgroundColor: neutral22,
-          flex: 1,
-          height: 48,
-          minHeight: 48,
-          maxHeight: 48,
-          minWidth: 332,
-          paddingHorizontal: 12,
-          justifyContent: "center",
-        },
-        style,
-      ]}
+    <TertiaryBox
+      height={48}
+      width={332}
+      squaresBackgroundColor={squaresBackgroundColor}
+      style={style}
+      mainContainerStyle={{
+        alignItems: "flex-start",
+        paddingHorizontal: 12,
+        backgroundColor: neutral22,
+      }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <View style={{ flex: 1, marginRight: children && 12 }}>
+      <View
+        style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
+      >
+        <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
           <BrandText
             style={{ color: neutral77, fontSize: 10, fontWeight: "500" }}
           >
@@ -103,6 +116,6 @@ export const TextInputCustom: React.FC<{
 
         <>{children}</>
       </View>
-    </View>
+    </TertiaryBox>
   );
 };

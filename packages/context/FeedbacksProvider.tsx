@@ -21,11 +21,11 @@ interface DefaultValue {
 }
 const defaultValue: DefaultValue = {
   toastError: initialToastError,
-  setToastError: undefined,
+  setToastError: () => {},
   toastSuccess: initialToastSuccess,
-  setToastSuccess: undefined,
+  setToastSuccess: () => {},
   loadingFullScreen: false,
-  setLoadingFullScreen: undefined,
+  setLoadingFullScreen: () => {},
 };
 
 export const FeedbacksContext = createContext(defaultValue);

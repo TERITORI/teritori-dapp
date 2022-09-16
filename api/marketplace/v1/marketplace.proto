@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package marketplace.v1;
+option go_package = "./marketplacepb";
+
+service MarketplaceService {
+  rpc Collections(CollectionsRequest) returns (stream CollectionsResponse);
+  rpc CollectionNFTs(CollectionNFTsRequest) returns (stream CollectionNFTsResponse);
+  rpc CollectionActivity(CollectionActivityRequest) returns (stream CollectionActivityResponse);
+}
+
+message NFT {
+  string image_uri = 1;
+  string name = 2;
+  string mint_address = 3;
+  string price = 4;
+}
+
+message Collection {
+  string image_uri = 2;
+  string collection_name = 3;
+  string creator_name = 4;
+  bool verified = 5;
+  string mint_address = 6;
+}
+
+message Activity {
+  string transaction_kind = 1;
+  string target_name = 2;
+  string target_image_uri = 3;
+  string contract_name = 4;
+  string time = 5;
+  string amount = 6;
+  string transaction_id = 7;
+  string buyer = 8;
+  string seller = 9;
+}
+
+message CollectionsRequest {
+  enum Kind {
+    KIND_UNSPECIFIED = 0;
+    KIND_BY_VOLUME = 1;
+    KIND_BY_MARKETCAP = 2;
+    KIND_FAKE = 3;
+    KIND_UPCOMING = 4;
+  }
+
+  Kind kind = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message CollectionsResponse {
+  Collection collection = 1;
+}
+
+message CollectionNFTsRequest {
+  string mint_address = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message CollectionNFTsResponse {
+  NFT nft = 1;
+}
+
+message CollectionActivityRequest {
+  string mint_address = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message CollectionActivityResponse {
+  Activity activity = 1;
+}

@@ -1,14 +1,17 @@
 import React from "react";
-import { TextStyle, TouchableOpacity, Linking } from "react-native";
+import { TextStyle, TouchableOpacity, Linking, StyleProp } from "react-native";
 
 import { primaryColor } from "../utils/style/colors";
 import { BrandText } from "./BrandText";
 
 export const ExternalLink: React.FC<{
-  externalUrl: string;
-  style?: TextStyle;
+  externalUrl: string | null | undefined;
+  style?: StyleProp<TextStyle>;
   numberOfLines?: number;
 }> = ({ children, externalUrl, style, numberOfLines }) => {
+  if (!externalUrl) {
+    return null;
+  }
   return (
     <TouchableOpacity onPress={() => Linking.openURL(externalUrl)}>
       <BrandText

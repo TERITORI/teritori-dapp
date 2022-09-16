@@ -1,117 +1,30 @@
 import React from "react";
-import {
-  View,
-  Image,
-  ViewStyle,
-  useWindowDimensions,
-  TouchableOpacity,
-} from "react-native";
+import { View, useWindowDimensions, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import dappCardSVG from "../../../assets/cards/dapp-card.svg";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
-import certifiedSVG from "../../../assets/icons/certified.svg";
 import labsSVG from "../../../assets/icons/labs.svg";
 import launchpadSVG from "../../../assets/icons/launchpad.svg";
 import marketplaceSVG from "../../../assets/icons/marketplace.svg";
 import stakingSVG from "../../../assets/icons/staking.svg";
 import walletSVG from "../../../assets/icons/wallet.svg";
 import logoSVG from "../../../assets/logos/logo.svg";
-import { useLaunchpadData } from "../../context/LaunchpadProvider";
+import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
 import { useWallets } from "../../context/WalletsProvider";
-import { LaunchpadItem } from "../../utils/airtable";
 import { useAppNavigation } from "../../utils/navigation";
-import { helpAreaWidth, sidebarWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { CarouselSection } from "../CarouselSection";
+import { CollectionsCarouselSection } from "../CollectionsCarouselSection";
 import { Guardian } from "../Guardian";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
-import { HollowPrimaryButton } from "../buttons/HollowPrimaryButton";
+import { PrimaryBox } from "../boxes/PrimaryBox";
+import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { SecondaryButton } from "../buttons/SecondaryButton";
-import { CardOutline } from "../cards/CardOutline";
 import { LabelCard } from "../cards/LabelCard";
 
 const breakPoint = 768;
 const gridHalfGutter = 12;
-
-const launchpadItemHeight = 266;
-const launchpadItemWidth = 196;
-
-const LaunchpadItemView: React.FC<{
-  item: LaunchpadItem;
-}> = ({ item }) => {
-  return (
-    <CardOutline
-      style={{
-        paddingTop: 12,
-        paddingBottom: 20,
-        width: launchpadItemWidth,
-        height: launchpadItemHeight,
-      }}
-    >
-      <Image
-        source={{ uri: item.imageURL }}
-        style={{
-          width: 172,
-          height: 172,
-          alignSelf: "center",
-          borderRadius: 12,
-        }}
-      />
-      <View style={{ marginHorizontal: 12, marginTop: 16 }}>
-        <BrandText
-          style={{ fontSize: 14 }}
-          ellipsizeMode="tail"
-          numberOfLines={1}
-        >
-          {item.name}
-        </BrandText>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 8,
-          }}
-        >
-          <BrandText
-            style={{ color: "#AEB1FF", fontSize: 14 }}
-            ellipsizeMode="tail"
-            numberOfLines={1}
-          >
-            {item.creatorName}
-          </BrandText>
-          {item.isCertified && (
-            <SVG
-              width={16}
-              height={16}
-              source={certifiedSVG}
-              style={{ marginLeft: 14 }}
-            />
-          )}
-        </View>
-      </View>
-    </CardOutline>
-  );
-};
-
-const PrimaryBox: React.FC<{ style?: ViewStyle }> = ({ children, style }) => {
-  return (
-    <View
-      style={[
-        {
-          borderColor: "#00C6FB",
-          borderWidth: 1,
-          borderRadius: 8,
-          padding: 20,
-        },
-        style,
-      ]}
-    >
-      <>{children}</>
-    </View>
-  );
-};
 
 const DAppCard: React.FC<{
   label: string;
@@ -226,21 +139,20 @@ const NewsBox: React.FC = () => {
   const titleFontSize = 20;
 
   return (
-    <PrimaryBox>
-      {width <= breakPoint && (
-        <View style={{ marginBottom: 44 }}>
-          <Guardian />
-        </View>
-      )}
+    <PrimaryBox
+      mainContainerStyle={{ paddingHorizontal: 20, paddingVertical: 20 }}
+      fullWidth
+    >
       <View
-        style={
+        style={[
+          { width: "100%" },
           width > breakPoint
             ? {
                 flexDirection: "row",
                 justifyContent: "space-between",
               }
-            : undefined
-        }
+            : { flexDirection: "column-reverse" },
+        ]}
       >
         <View
           style={[
@@ -283,17 +195,24 @@ const NewsBox: React.FC = () => {
             }}
           >
             <SecondaryButton
-              height={48}
+              backgroundColor="#FFFFFF"
+              color="#000000"
+              size="SM"
               text="Join the Mint"
               onPress={() => navigation.navigate("Mint")}
             />
           </View>
         </View>
-        {width > breakPoint && (
-          <View style={{ marginLeft: 44 }}>
-            <Guardian />
-          </View>
-        )}
+
+        <View
+          style={
+            width > breakPoint
+              ? { marginLeft: 44 }
+              : { marginBottom: 44, width: "100%", alignItems: "center" }
+          }
+        >
+          <Guardian />
+        </View>
       </View>
     </PrimaryBox>
   );
@@ -301,11 +220,6 @@ const NewsBox: React.FC = () => {
 
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
-  const { width: windowWidth } = useWindowDimensions();
-  const { launchpadItems: unfilteredLaunchpadItems } = useLaunchpadData();
-  const launchpadItems = unfilteredLaunchpadItems.filter(
-    (item) => item.shouldDisplay && item.imageURL
-  );
 
   return (
     <View style={{ width: "100%" }}>
@@ -388,16 +302,9 @@ Join the Bounty Program
             />
           </View>
         </Section>
-        <CarouselSection
+        <CollectionsCarouselSection
           title="Upcoming Launches on Teritori Launch Pad"
-          data={launchpadItems}
-          renderItem={LaunchpadItemView}
-          width={launchpadItemWidth + 24}
-          height={launchpadItemHeight}
-          loop={false}
-          style={{
-            width: windowWidth - (helpAreaWidth + sidebarWidth),
-          }}
+          kind={CollectionsRequest_Kind.KIND_UPCOMING}
         />
         <View
           style={{
@@ -407,15 +314,18 @@ Join the Bounty Program
             flexWrap: "wrap",
           }}
         >
-          <HollowPrimaryButton
+          <PrimaryButtonOutline
+            size="XL"
             text="Apply to the Launch Pad"
             style={{ margin: gridHalfGutter }}
           />
-          <HollowPrimaryButton
+          <PrimaryButtonOutline
+            size="XL"
             text="Explore All Upcoming Launches"
             style={{ margin: gridHalfGutter }}
           />
-          <HollowPrimaryButton
+          <PrimaryButtonOutline
+            size="XL"
             text="Vote on Upcoming Launches"
             style={{ margin: gridHalfGutter }}
           />

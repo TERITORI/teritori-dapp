@@ -1,56 +1,117 @@
-import React from "react";
-import { View, ViewStyle } from "react-native";
+import React, { useCallback, useState } from "react";
+import {
+  ActivityIndicator,
+  StyleProp,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
+import { SvgProps } from "react-native-svg";
 
-import { primaryColor, primaryTextColor } from "../../utils/style/colors";
+import {
+  borderRadiusButton,
+  ButtonsSize,
+  heightButton,
+} from "../../utils/style/buttons";
+import {
+  neutral77,
+  primaryColor,
+  primaryTextColor,
+} from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { TertiaryCard } from "../cards/TertiaryCard";
+import { SVG } from "../SVG";
+import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const PrimaryButton: React.FC<{
-  width?: number | string;
-  height?: number;
-  paddingHorizontal?: number;
+  size: ButtonsSize;
   text: string;
-  onPress?: () => void;
+  width?: number;
+  onPress?: (() => Promise<void>) | (() => void);
   squaresBackgroundColor?: string;
-  style?: ViewStyle | ViewStyle[];
+  style?: StyleProp<ViewStyle>;
+  iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
+  fullWidth?: boolean;
+  loader?: boolean;
 }> = ({
+  // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
-  height = 56,
+  size,
   text,
   onPress,
-  paddingHorizontal = 20,
-  squaresBackgroundColor = "#000000",
+  squaresBackgroundColor,
   style,
+  iconSVG,
   disabled = false,
+  fullWidth = false,
+  loader,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handlePress = useCallback(async () => {
+    if (isLoading || !onPress) {
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await onPress();
+    } catch (err) {
+      console.error(err);
+    }
+    setIsLoading(false);
+  }, [onPress, isLoading]);
+
+  const isDisabled = !!(disabled || (loader && isLoading));
+
+  const boxProps = {
+    style,
+    disabled,
+    squaresBackgroundColor,
+    width,
+    fullWidth,
+  };
+
   return (
-    <View
-      style={[
-        style,
-        { flexDirection: "row", height, minHeight: height, maxHeight: height },
-      ]}
+    <TouchableOpacity
+      onPress={onPress ? handlePress : undefined}
+      disabled={isDisabled}
+      style={{ width: fullWidth ? "100%" : width }}
     >
-      <TertiaryCard
-        onPress={onPress}
-        borderRadius={6}
-        backgroundColor={primaryColor}
-        height={height}
-        paddingHorizontal={paddingHorizontal}
-        disabled={disabled}
-        squaresBackgroundColor={squaresBackgroundColor}
-        width={width}
+      <SecondaryBox
+        height={heightButton(size)}
+        mainContainerStyle={{
+          flexDirection: "row",
+          borderRadius: borderRadiusButton(size),
+          backgroundColor: primaryColor,
+          paddingHorizontal: 20,
+        }}
+        {...boxProps}
       >
-        <BrandText
-          style={[
-            fontSemibold14,
-            { color: primaryTextColor, textAlign: "center" },
-          ]}
-        >
-          {text}
-        </BrandText>
-      </TertiaryCard>
-    </View>
+        {iconSVG ? (
+          <SVG
+            source={iconSVG}
+            width={16}
+            height={16}
+            style={{ marginRight: 8 }}
+          />
+        ) : null}
+
+        {loader && isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <BrandText
+            style={[
+              fontSemibold14,
+              {
+                color: isDisabled ? neutral77 : primaryTextColor,
+                textAlign: "center",
+              },
+            ]}
+          >
+            {text}
+          </BrandText>
+        )}
+      </SecondaryBox>
+    </TouchableOpacity>
   );
 };

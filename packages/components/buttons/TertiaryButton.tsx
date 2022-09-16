@@ -1,27 +1,83 @@
-import * as React from "react";
-import { TouchableOpacity, View, ViewStyle } from "react-native";
+import React from "react";
+import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import { SvgProps } from "react-native-svg";
 
+import {
+  borderRadiusButton,
+  ButtonsSize,
+  heightButton,
+} from "../../utils/style/buttons";
+import { neutral33, neutral44, neutral77 } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
-//TODO: Refactor like SecondaryButton (Choose the right card, set the props etc..)
 export const TertiaryButton: React.FC<{
+  size: ButtonsSize;
   text: string;
-  style?: ViewStyle;
+  width?: number;
   onPress?: () => void;
-}> = ({ text, style, onPress }) => (
-  <View style={[{ alignItems: "center" }, style]}>
+  squaresBackgroundColor?: string;
+  style?: StyleProp<ViewStyle>;
+  iconSVG?: React.FC<SvgProps>;
+  disabled?: boolean;
+  fullWidth?: boolean;
+}> = ({
+  // If no width, the buttons will fit the content including paddingHorizontal 20
+  width,
+  size,
+  text,
+  onPress,
+  squaresBackgroundColor,
+  style,
+  iconSVG,
+  disabled = false,
+  fullWidth = false,
+}) => {
+  const boxProps = {
+    style,
+    disabled,
+    squaresBackgroundColor,
+    width,
+    fullWidth,
+  };
+
+  return (
     <TouchableOpacity
-      style={{
-        backgroundColor: "#222222",
-        borderColor: "#3D3D3D",
-        borderWidth: 1,
-        borderRadius: 6,
-        paddingHorizontal: 20,
-        paddingVertical: 12,
-      }}
       onPress={onPress}
+      disabled={disabled}
+      style={{ width: fullWidth ? "100%" : width }}
     >
-      <BrandText style={{ color: "white", fontSize: 14 }}>{text}</BrandText>
+      <TertiaryBox
+        height={heightButton(size)}
+        mainContainerStyle={{
+          flexDirection: "row",
+          borderRadius: borderRadiusButton(size),
+          backgroundColor: neutral33,
+          paddingHorizontal: 20,
+          borderColor: neutral44,
+        }}
+        {...boxProps}
+      >
+        {iconSVG ? (
+          <SVG
+            source={iconSVG}
+            width={16}
+            height={16}
+            style={{ marginRight: 8 }}
+          />
+        ) : null}
+
+        <BrandText
+          style={[
+            fontSemibold14,
+            { color: disabled ? neutral77 : "#FFFFFF", textAlign: "center" },
+          ]}
+        >
+          {text}
+        </BrandText>
+      </TertiaryBox>
     </TouchableOpacity>
-  </View>
-);
+  );
+};

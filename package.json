@@ -12,13 +12,14 @@
     "lint-fix": "eslint --ext .js,.jsx,.ts,.tsx . --fix"
   },
   "dependencies": {
-    "@cosmjs/cosmwasm-stargate": "^0.28.11",
+    "@cosmjs/cosmwasm-stargate": "^0.28.13",
     "@expo-google-fonts/exo": "^0.2.2",
+    "@improbable-eng/grpc-web": "^0.15.0",
     "@keplr-wallet/types": "^0.10.13",
     "@metaplex-foundation/js-next": "0.7.1",
+    "@pinata/sdk": "^1.1.26",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-clipboard/clipboard": "^1.10.0",
-    "@react-native-masked-view/masked-view": "0.2.6",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
     "@reduxjs/toolkit": "^1.8.3",
@@ -28,6 +29,8 @@
     "@solana/web3.js": "^1.44.3",
     "airtable": "^0.11.4",
     "bech32": "^2.0.0",
+    "browser-headers": "^0.4.1",
+    "cosmwasm": "^1.1.1",
     "dotenv-webpack": "^8.0.0",
     "eslint-config-universe": "^11.0.0",
     "expo": "~45.0.0",
@@ -37,9 +40,12 @@
     "http2": "^3.3.7",
     "lottie-ios": "3.4.0",
     "lottie-react": "^2.3.1",
+    "moment": "^2.29.4",
+    "nft.storage": "^7.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-native": "0.68.2",
+    "react-native-confetti-cannon": "^1.5.2",
     "react-native-drax": "^0.10.2",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-reanimated": "~2.8.0",
@@ -55,6 +61,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@babel/plugin-proposal-numeric-separator": "^7.18.6",
+    "@cosmwasm/ts-codegen": "^0.16.3",
     "@expo/electron-adapter": "^0.0.55",
     "@expo/webpack-config": "^0.16.25",
     "@types/react": "~17.0.21",
@@ -68,10 +76,14 @@
     "expo-optimize": "^0.2.19",
     "prettier": "^2.7.1",
     "react-native-svg-transformer": "^1.0.0",
+    "ts-node": "^10.9.1",
+    "ts-proto": "^1.120.0",
     "typescript": "~4.3.5"
   },
   "resolutions": {
-    "@aws-sdk/client-s3": "3.54.1"
+    "@aws-sdk/client-s3": "3.54.1",
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2"
   },
   "private": true,
   "build": {

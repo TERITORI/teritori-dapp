@@ -3,4 +3,9 @@
 /.expo
 /dist
 /node_modules
+/go
 /web-build
+
+# generated packages
+/packages/contracts-clients
+/packages/api

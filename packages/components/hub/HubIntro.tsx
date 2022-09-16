@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Image, ViewStyle, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  ViewStyle,
+  TouchableOpacity,
+  StyleProp,
+} from "react-native";
 
 import connectedImagePNG from "../../../assets/default-images/connected-image-bad.png";
 import logoSVG from "../../../assets/logos/logo.svg";
@@ -14,10 +20,10 @@ import { WalletSelector } from "../WalletSelector";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { BalanceCard } from "../cards/BalanceCard";
 
-export type HubPageName = "Home" | "MyCollection" | "Activities" | "Guardians";
+export type HubPageName = "Home" | "MyCollection" | "Activity" | "Guardians";
 
 const MyCollectionCard: React.FC<{
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   highlighted?: boolean;
 }> = ({ style, highlighted }) => {
   const navigation = useAppNavigation();
@@ -36,20 +42,20 @@ const MyCollectionCard: React.FC<{
   );
 };
 
-const ActivitiesCard: React.FC<{
-  style?: ViewStyle;
+const ActivityCard: React.FC<{
+  style?: StyleProp<ViewStyle>;
   highlighted?: boolean;
 }> = ({ style, highlighted }) => {
   const navigation = useAppNavigation();
   const { totalString } = useSolanaBalance();
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Activities")}
+      onPress={() => navigation.navigate("Activity")}
       style={style}
     >
       <BalanceCard
         highlighted={highlighted}
-        label="Activities"
+        label="Activity"
         balanceTitle="Total Wallet Amount"
         balanceText={totalString}
       />
@@ -58,7 +64,7 @@ const ActivitiesCard: React.FC<{
 };
 
 const GuardiansCard: React.FC<{
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   highlighted?: boolean;
 }> = ({ style, highlighted }) => {
   const navigation = useAppNavigation();
@@ -103,9 +109,9 @@ const ConnectedIntro: React.FC = () => {
             style={{ margin: 30 }}
             highlighted={currentRoutName === "MyCollection"}
           />
-          <ActivitiesCard
+          <ActivityCard
             style={{ margin: 30 }}
-            highlighted={currentRoutName === "Activities"}
+            highlighted={currentRoutName === "Activity"}
           />
           <GuardiansCard
             style={{ margin: 30 }}
@@ -126,6 +132,7 @@ const DisconnectedIntro: React.FC = () => {
         Welcome to Teritori_
       </BrandText>
       <PrimaryButton
+        size="XL"
         style={{ marginTop: 72 }}
         text="Connect wallet"
         onPress={() => navigation.navigate("Wallets")}

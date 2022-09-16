@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
@@ -7,7 +7,7 @@ import { BrandText } from "../BrandText";
 
 export const TertiaryBadge: React.FC<{
   label: string;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }> = ({ label, style }) => {
   return (
     <View

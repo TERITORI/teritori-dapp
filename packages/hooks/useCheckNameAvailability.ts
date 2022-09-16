@@ -6,7 +6,7 @@ import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { isTokenOwnedByUser } from "../utils/tns";
 
 // TNS : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
-export const useCheckNameAvailability = (name, tokens: string[]) => {
+export const useCheckNameAvailability = (name: string, tokens: string[]) => {
   const [nameAvailable, setNameAvailable] = useState(true);
   const [nameError, setNameError] = useState(false);
   const [loading, setLoading] = useState(false);

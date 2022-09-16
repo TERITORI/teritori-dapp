@@ -1,15 +1,18 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { ReactElement } from "react";
-import { Modal, Pressable, View, ViewStyle } from "react-native";
+import React from "react";
+import { Modal, Pressable, StyleProp, View, ViewStyle } from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
-import { neutral22, neutral33 } from "../../utils/style/colors";
+import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
-// Just an horizontal separator
-const Separator: React.FC<{ style?: ViewStyle }> = ({ style }) => (
-  <View style={[{ height: 1 }, style]}>
+// Just an horizontal gradient separator
+const SeparatorGradient: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
+  style,
+}) => (
+  <View style={[{ height: 1, width: "100%" }, style]}>
     {/* Background gradient */}
     <LinearGradient
       start={{ x: 0, y: 0 }}
@@ -20,13 +23,16 @@ const Separator: React.FC<{ style?: ViewStyle }> = ({ style }) => (
   </View>
 );
 
+// TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
+
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
 export const ModalBase: React.FC<{
   label: string;
-  onClose: () => void;
+  onClose?: () => void;
   width?: number;
   visible?: boolean;
-  childrenBottom?: ReactElement;
+  childrenBottom?: JSX.Element | JSX.Element[];
+  children?: JSX.Element | JSX.Element[];
 }> = ({ label, visible, width, onClose, childrenBottom, children }) => {
   return (
     <Modal
@@ -45,50 +51,49 @@ export const ModalBase: React.FC<{
         }}
       >
         {/*------ Modal main container */}
-        <View
-          style={{
-            backgroundColor: neutral22,
-            borderWidth: 1,
-            borderColor: neutral33,
-            borderRadius: 8,
-            width,
-            margin: "auto",
+        <TertiaryBox
+          width={width}
+          style={{ margin: "auto" }}
+          mainContainerStyle={{
+            alignItems: "flex-start",
+            backgroundColor: "#000000",
           }}
         >
-          {/*------ Modal main wrapper */}
-          <View style={{ padding: 20 }}>
-            {/*------ Modal header */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <BrandText style={{ color: "white", lineHeight: 24 }}>
-                {label}
-              </BrandText>
+          {/*------ Modal header */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+              padding: modalMarginPadding,
+            }}
+          >
+            <BrandText style={{ color: "white", lineHeight: 24 }}>
+              {label}
+            </BrandText>
 
-              <Pressable onPress={onClose}>
-                <SVG
-                  width={20}
-                  height={20}
-                  source={closeSVG}
-                  style={{ marginLeft: 20 }}
-                />
-              </Pressable>
-            </View>
-            {children && (
-              <>
-                {/*------- Modal main content */}
-                <Separator style={{ marginVertical: 20 }} />
-                {children}
-              </>
-            )}
+            <Pressable onPress={onClose}>
+              <SVG
+                width={20}
+                height={20}
+                source={closeSVG}
+                style={{ marginLeft: modalMarginPadding }}
+              />
+            </Pressable>
           </View>
+          {children && (
+            <View
+              style={{ width: "100%", paddingHorizontal: modalMarginPadding }}
+            >
+              {/*------- Modal main content */}
+              <SeparatorGradient style={{ marginBottom: modalMarginPadding }} />
+              {children}
+            </View>
+          )}
           {/*------- Modal bottom content */}
-          <>{childrenBottom}</>
-        </View>
+          {childrenBottom}
+        </TertiaryBox>
       </View>
     </Modal>
   );

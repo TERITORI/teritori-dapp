@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import logoSVG from "../../assets/logos/logo.svg";
 import { BrandText } from "./BrandText";
@@ -7,7 +7,7 @@ import { SVG } from "./SVG";
 
 export const IntroLogoText: React.FC<{
   subTitle: string;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }> = ({ subTitle, style }) => {
   const height = 273;
   const subTitleFontSize = 16;

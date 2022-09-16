@@ -1,41 +1,48 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import React, { useState } from "react";
-import { ScrollView, TextInput, View, ViewStyle, Text } from "react-native";
+import { ScrollView, View, ViewStyle, Text, StyleProp } from "react-native";
 
 import { useWallets, Wallet } from "../context/WalletsProvider";
 import { setIsKeplrConnected } from "../store/slices/settings";
 import { addWallet, StoreWallet } from "../store/slices/wallets";
 import { useAppDispatch } from "../store/store";
 import { addressToNetwork, Network } from "../utils/network";
-import {
-  neutral22,
-  neutral33,
-  neutral44,
-  neutral77,
-  pinkDefault,
-  yellowDefault,
-} from "../utils/style/colors";
+import { neutral44, pinkDefault, yellowDefault } from "../utils/style/colors";
+import { modalMarginPadding } from "../utils/style/modals";
 import { keplrSuggestTeritori, teritoriChainId } from "../utils/teritori";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
 import { PrimaryButton } from "./buttons/PrimaryButton";
 import { TertiaryButton } from "./buttons/TertiaryButton";
+import { TextInputCustom } from "./inputs/TextInputCustom";
 import ModalBase from "./modals/ModalBase";
 
-const Separator: React.FC<{ style?: ViewStyle }> = ({ style }) => (
-  <View style={[{ borderBottomWidth: 1, borderColor: neutral44 }, style]} />
+const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
+  <View
+    style={[
+      { borderBottomWidth: 1, borderColor: neutral44, width: "100%" },
+      style,
+    ]}
+  />
 );
 
-const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
+export const WalletActionButton: React.FC<{
+  wallet?: Wallet;
+  squaresBackgroundColor?: string;
+  fullWidth?: boolean;
+}> = ({ wallet, fullWidth = false, squaresBackgroundColor }) => {
+  const tertiaryButtonProps = { fullWidth, squaresBackgroundColor };
+
   const dispatch = useAppDispatch();
-  switch (wallet.provider) {
+  switch (wallet?.provider) {
     case WalletProvider.Phantom:
     case WalletProvider.Keplr:
       if (wallet.publicKey) {
         // FIXME: no disconnect on keplr
         return (
           <TertiaryButton
+            size="SM"
             text={`Disconnect ${wallet.provider}`}
             onPress={async () => {
               if (wallet.provider === WalletProvider.Phantom) {
@@ -46,11 +53,13 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
                 }
               }
             }}
+            {...tertiaryButtonProps}
           />
         );
       }
       return (
         <TertiaryButton
+          size="SM"
           text={`Connect ${wallet.provider}`}
           onPress={async () => {
             try {
@@ -64,6 +73,10 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
                   return;
                 }
                 await keplrSuggestTeritori(keplr);
+                if (!teritoriChainId) {
+                  console.error("missing chain id for teritori");
+                  return;
+                }
                 await keplr.enable(teritoriChainId);
                 dispatch(setIsKeplrConnected(true));
               }
@@ -71,10 +84,13 @@ const WalletActionButton: React.FC<{ wallet: Wallet }> = ({ wallet }) => {
               console.warn(wallet.provider, "failed to connect", err);
             }
           }}
+          {...tertiaryButtonProps}
         />
       );
     case WalletProvider.Store:
-      return <TertiaryButton text="Remove" />;
+      return (
+        <TertiaryButton text="Remove" size="SM" {...tertiaryButtonProps} />
+      );
     default:
       return null;
   }
@@ -160,55 +176,32 @@ const AddNewWallet: React.FC = () => {
     <View
       style={{
         flexDirection: "row",
-        margin: 20,
         justifyContent: "space-between",
         alignItems: "center",
+        padding: modalMarginPadding,
+        width: "100%",
       }}
     >
-      <View
-        style={{
-          borderColor: neutral33,
-          borderWidth: 1,
-          borderRadius: 8,
-          flex: 1,
-          height: 48,
-          paddingHorizontal: 12,
-          justifyContent: "center",
-        }}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <View style={{ flex: 1, marginRight: 12 }}>
-            <BrandText
-              style={{ color: neutral77, fontSize: 10, fontWeight: "500" }}
-            >
-              WALLET ADDRESS
-            </BrandText>
-            <TextInput
-              placeholder="Enter address here..."
-              value={addressValue}
-              onChangeText={setAddressValue}
-              placeholderTextColor="#999999"
-              style={[
-                {
-                  fontSize: 14,
-                  marginTop: 4,
-                  color: "white",
-                  fontFamily: "Exo_600SemiBold",
-                },
-                { outlineStyle: "none" } as any,
-              ]}
-            />
-          </View>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <TextInputCustom
+          value={addressValue}
+          onChangeText={setAddressValue}
+          label="WALLET ADDRESS"
+          placeHolder="Enter address here..."
+        >
           <NetworkIcon network={addressNetwork} circle size={24} />
-        </View>
+        </TextInputCustom>
       </View>
       <PrimaryButton
-        squaresBackgroundColor={neutral22}
-        height={48}
+        size="M"
         text="Add New Wallet"
         style={{ marginLeft: 16 }}
         disabled={!addressNetwork}
         onPress={() => {
+          if (!addressNetwork) {
+            console.error("unknown address network");
+            return;
+          }
           const wallet: StoreWallet = {
             publicKey: addressValue,
             network: addressNetwork,

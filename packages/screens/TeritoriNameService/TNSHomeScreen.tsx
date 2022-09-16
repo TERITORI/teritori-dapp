@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import exploreSVG from "../../../assets/icons/explore.svg";
@@ -7,52 +7,10 @@ import registerSVG from "../../../assets/icons/register.svg";
 import { SocialNetworks } from "../../components/Footer";
 import { IntroLogoText } from "../../components/IntroLogoText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { FlowCard } from "../../components/cards/FlowCard";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
-import ModalBase from "../../components/modals/ModalBase";
-import { useTNS } from "../../context/TNSProvider";
+import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/TNSNameFinderModal";
+import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
-
-// "Find a name" modal
-const ModalNameFinder: React.FC<{
-  visible?: boolean;
-  onClose: () => void;
-  navItem: keyof RootStackParamList;
-}> = ({ visible, navItem, onClose }) => {
-  const navigation = useAppNavigation();
-  const { name, setName } = useTNS();
-
-  const onPressEnter = () => {
-    if (name) {
-      onClose();
-      navigation.navigate(navItem);
-    }
-  };
-
-  useEffect(() => {
-    // Reset the name each time the modal appears
-    if (visible) setName("");
-  }, [visible]);
-
-  return (
-    <ModalBase
-      visible={visible}
-      onClose={onClose}
-      label="Find a name"
-      // childrenBottom={<DomainsAvailability/>} TODO: Uncomment this when the functionality is done
-    >
-      <TextInputCustom
-        label="NAME"
-        placeHolder="Type name here"
-        onPressEnter={onPressEnter}
-        onChangeText={setName}
-        value={name}
-        regexp={new RegExp(/^[a-zA-Z]+$/)}
-      />
-    </ModalBase>
-  );
-};
 
 export const TNSHomeScreen: React.FC = () => {
   const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
@@ -112,7 +70,7 @@ export const TNSHomeScreen: React.FC = () => {
         />
       </View>
 
-      <ModalNameFinder
+      <TNSNameFinderModal
         visible={modalNameFinderVisible}
         onClose={() => setModalNameFinderVisible(false)}
         navItem={pressedNavItem}
