@@ -1,5 +1,12 @@
-import React, { memo, useCallback } from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { memo, useCallback, useState } from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { DraxList, DraxView } from "react-native-drax";
 
 import nftSvg from "../../../assets/icons/nft.svg";
@@ -150,7 +157,7 @@ const SelectNewNft: React.FC<{
                 borderRadius: 8,
                 backgroundColor: "black",
               }}
-              placeHolder="Search collection or NFT"
+              placeHolder="Search"
               value={searchNft}
               onChangeText={setSearchNft}
             />
@@ -170,7 +177,7 @@ const SelectNewNft: React.FC<{
     );
 
     return (
-      <>
+      <View style={{ height: "100%" }}>
         <View style={{ width: 220 }}>
           <BrandText style={{ fontSize: 14, color: neutral77 }}>
             Collection
@@ -192,9 +199,10 @@ const SelectNewNft: React.FC<{
           numColumns={2}
           columnWrapperStyle={{ justifyContent: "space-between" }}
           getItemLayout={getItemLayout}
-          contentContainerStyle={{ height: 716, width: 220 }}
+          contentContainerStyle={{ width: 220, paddingTop: 20 }}
+          style={{ flex: 1 }}
         />
-      </>
+      </View>
     );
   }
 );
@@ -205,6 +213,6 @@ const styles = StyleSheet.create({
   separator: {
     height: 1,
     backgroundColor: neutral33,
-    marginVertical: 20,
+    marginTop: 20,
   },
 });

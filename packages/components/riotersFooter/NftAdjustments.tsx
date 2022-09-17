@@ -115,23 +115,23 @@ const NftAdjustments: React.FC<{
             }}
           >
             <IconButton
-              icon={require("../../../assets/icons/trash.svg")}
+              iconSVG={require("../../../assets/icons/trash.svg")}
               iconColor={errorColor}
-              iconHeight={12}
-              iconWidth={12}
+              iconSize={12}
               onPress={() => {
                 setNftDroped(undefined);
                 setNftDropedAdjustment(undefined);
               }}
               width={56}
-              height={48}
+              size="M"
               backgroundColor="#F46F761A"
               style={{ borderWidth: 1, borderRadius: 6 }}
               borderColor={errorColor}
+              squaresBorderColor={errorColor}
             />
             <PrimaryButton
               width={128}
-              height={48}
+              size="M"
               onPress={() => {}}
               text="Submit"
             />

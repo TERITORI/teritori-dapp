@@ -13,7 +13,7 @@ import satoshiSvg from "../../../assets/nft/satoshi.svg";
 import solFarmSvg from "../../../assets/nft/sol-farm.svg";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { SecondaryAltButton } from "../../components/buttons/SecondaryAltButton";
+import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
 import DraxViewReceiverContent from "../../components/riotersFooter/DraxViewReceiverContent";
 import ExistingNftType from "../../components/riotersFooter/ExistingNftType";
 import NewNftType from "../../components/riotersFooter/NewNftType";
@@ -24,6 +24,9 @@ import SelectNewNft, {
 } from "../../components/riotersFooter/SelectedNewNft";
 import { neutral33 } from "../../utils/style/colors";
 import { nftDropedAdjustmentType } from "./RiotersFooterScreen.types";
+import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 
 const fakeNewNtfCollections = [
   {
@@ -344,20 +347,23 @@ export const RiotersFooterScreen: React.FC = () => {
               />
             )}
           </View>
-          <View style={{ marginLeft: 20, width: "100%" }}>
+          <View style={{ width: "100%" }}>
             <View style={styles.headerChosePosition}>
-              <BrandText style={{ color: "white", fontSize: 28 }}>
+              <BrandText
+                style={{ color: "white", fontSize: 28, marginLeft: 20 }}
+              >
                 Choose the exact position in footer
               </BrandText>
-              <SecondaryAltButton
-                text="Preview"
-                onPress={() => {
-                  console.log("press preview");
-                }}
-                width={126}
-                height={48}
-                style={{ marginRight: 34 }}
-              />
+              <View style={{ marginRight: 24 }}>
+                <SecondaryButton
+                  text="Preview"
+                  onPress={() => {
+                    console.log("press preview");
+                  }}
+                  width={126}
+                  size="M"
+                />
+              </View>
             </View>
             <DraxView
               style={styles.chosePositionContainer}
