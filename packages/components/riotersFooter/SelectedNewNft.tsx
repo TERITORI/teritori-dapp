@@ -1,12 +1,5 @@
-import React, { memo, useCallback, useState } from "react";
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import React, { memo, useCallback } from "react";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { DraxList, DraxView } from "react-native-drax";
 
 import nftSvg from "../../../assets/icons/nft.svg";
@@ -14,8 +7,8 @@ import shapeSvg from "../../../assets/icons/shape.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { neutral33, neutral77 } from "../../utils/style/colors";
+import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TextInputCustomBorder } from "../inputs/TextInputCustomBorder";
-import CollectionItem from "./CollectionItem";
 
 export const fakeNft = [
   {
@@ -182,7 +175,11 @@ const SelectNewNft: React.FC<{
           <BrandText style={{ fontSize: 14, color: neutral77 }}>
             Collection
           </BrandText>
-          <CollectionItem collection={currentCollection} />
+          <View style={{ marginTop: 12 }} />
+          <CollectionInfoInline
+            imageSource={currentCollection.avatar}
+            name={currentCollection.name}
+          />
           <View style={styles.separator} />
         </View>
         <DraxList

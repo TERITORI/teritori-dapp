@@ -4,8 +4,8 @@ import { TouchableOpacity, View } from "react-native";
 import addSvg from "../../../assets/icons/add.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
+import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TextInputCustomBorder } from "../inputs/TextInputCustomBorder";
-import CollectionItem from "./CollectionItem";
 
 const NewNftType: React.FC<{
   searchNewNftCollection: string;
@@ -58,7 +58,11 @@ const NewNftType: React.FC<{
             }}
             key={collection.id}
           >
-            <CollectionItem collection={collection} />
+            <View style={{ marginTop: 12 }} />
+            <CollectionInfoInline
+              imageSource={collection.avatar}
+              name={collection.name}
+            />
           </TouchableOpacity>
         ))}
       </View>

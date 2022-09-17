@@ -13,7 +13,7 @@ import {
 import Slider from "../Slider";
 import { IconButton } from "../buttons/IconButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
-import CollectionItem from "./CollectionItem";
+import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 
 const NftAdjustments: React.FC<{
   nftCollectionId: string;
@@ -61,7 +61,11 @@ const NftAdjustments: React.FC<{
         <View style={styles.separator} />
         <View>
           <BrandText style={styles.textTitle}>Collection</BrandText>
-          <CollectionItem collection={currentCollection} />
+          <View style={{ marginTop: 12 }} />
+          <CollectionInfoInline
+            name={currentCollection.name}
+            imageSource={currentCollection.avatar}
+          />
         </View>
         <View style={styles.separator} />
         <BrandText style={styles.textTitle}>NFT artwork</BrandText>
