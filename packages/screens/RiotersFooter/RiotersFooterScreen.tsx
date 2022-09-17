@@ -13,7 +13,10 @@ import satoshiSvg from "../../../assets/nft/satoshi.svg";
 import solFarmSvg from "../../../assets/nft/sol-farm.svg";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
+import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { TransactionPaymentModal } from "../../components/modals/transaction/TransactionPaymentModal";
+import { TransactionPendingModal } from "../../components/modals/transaction/TransactionPendingModal";
+import { TransactionSuccessModal } from "../../components/modals/transaction/TransactionSuccessModal";
 import DraxViewReceiverContent from "../../components/riotersFooter/DraxViewReceiverContent";
 import ExistingNftType from "../../components/riotersFooter/ExistingNftType";
 import NewNftType from "../../components/riotersFooter/NewNftType";
@@ -22,11 +25,9 @@ import NftTypeTab from "../../components/riotersFooter/NftTypeTab";
 import SelectNewNft, {
   fakeNft,
 } from "../../components/riotersFooter/SelectedNewNft";
-import { neutral33 } from "../../utils/style/colors";
+import { neutral33, neutral77 } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { nftDropedAdjustmentType } from "./RiotersFooterScreen.types";
-import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 
 const fakeNewNtfCollections = [
   {
@@ -247,12 +248,21 @@ export const RiotersFooterScreen: React.FC = () => {
     useState<string>("");
   const [searchNft, setSearchNft] = useState<string>("");
   const [nftCollectionId, setNftCollectionId] = useState<string>("");
+  const [currentCollection, setCurrentCollection] = useState<any>(undefined);
   const [nftDroped, setNftDroped] = useState<any>(null);
   const [nftDropedAdjustment, setNftDropedAdjustment] =
     useState<nftDropedAdjustmentType>(undefined);
   const [oldNftPositionsWithZIndexOrder, setOldNftPositionsWithZIndexOrder] =
     useState(undefined);
   const [price, setPrice] = useState<number>(7.8);
+
+  const [transactionPaymentModalVisible, setTransactionPaymentModalVisible] =
+    useState(false);
+  const [transactionPendingModalVisible, setTransactionPendingModalVisible] =
+    useState(false);
+  const [transactionSuccessModalVisible, setTransactionSuccessModalVisible] =
+    useState(false);
+  const [transactionHash, setTransactionHash] = useState("");
 
   useEffect(() => {
     setOldNftPositionsWithZIndexOrder(
@@ -262,6 +272,13 @@ export const RiotersFooterScreen: React.FC = () => {
       oldNftPositions.sort((a, b) => a.date.getTime() - b.date.getTime())
     );
   }, [oldNftPositions]);
+
+  useEffect(() => {
+    const currentCollection = fakeNewNtfCollections.find(
+      (collection) => collection.id === nftCollectionId
+    );
+    setCurrentCollection(currentCollection);
+  }, [nftCollectionId]);
 
   const MapNftType = new Map([
     [
@@ -308,6 +325,16 @@ export const RiotersFooterScreen: React.FC = () => {
     [oldNftPositionsWithZIndexOrder, nftDroped, nftDropedAdjustment]
   );
 
+  const handleBuy = useCallback(() => {
+    console.log("buy");
+    setTransactionPaymentModalVisible(false);
+    setTransactionPendingModalVisible(true);
+    setTimeout(() => {
+      setTransactionPendingModalVisible(false);
+      setTransactionSuccessModalVisible(true);
+    }, 3000);
+  }, []);
+
   return (
     <ScreenContainer>
       <DraxProvider>
@@ -336,6 +363,9 @@ export const RiotersFooterScreen: React.FC = () => {
                 setNftDropedAdjustment={setNftDropedAdjustment}
                 price={price}
                 setPrice={setPrice}
+                setTransactionPaymentModalVisible={
+                  setTransactionPaymentModalVisible
+                }
               />
             ) : (
               <SelectNewNft
@@ -373,6 +403,58 @@ export const RiotersFooterScreen: React.FC = () => {
           </View>
         </View>
       </DraxProvider>
+      {/* ====== "Buy this NFT" three modals*/}
+      {/*TODO: Handle these 3 modales with a component, or a hook*/}
+
+      {/* ----- Modal to process payment*/}
+      <TransactionPaymentModal
+        onPressProceed={handleBuy}
+        onClose={() => setTransactionPaymentModalVisible(false)}
+        visible={transactionPaymentModalVisible}
+        price={"0"}
+        // priceDenom={nftInfo?.priceDenom}
+        label="Checkout"
+        textComponent={
+          <BrandText style={fontSemibold14}>
+            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+              You are about to purchase a{" "}
+            </BrandText>
+            {nftDroped?.name}
+            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+              {" "}
+              from{" "}
+            </BrandText>
+            {currentCollection?.name}
+          </BrandText>
+        }
+      />
+
+      {/* ----- Modal with loader, witing for wallet approbation*/}
+      <TransactionPendingModal
+        operationLabel="Purchase"
+        visible={transactionPendingModalVisible}
+        onClose={() => setTransactionPendingModalVisible(false)}
+      />
+
+      {/* ----- Success modal*/}
+      <TransactionSuccessModal
+        transactionHash={transactionHash}
+        visible={transactionSuccessModalVisible}
+        textComponent={
+          <BrandText style={fontSemibold14}>
+            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+              You successfully purchased{" "}
+            </BrandText>
+            {nftDroped?.name}
+            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+              {" "}
+              from{" "}
+            </BrandText>
+            {currentCollection?.name}
+          </BrandText>
+        }
+        onClose={() => setTransactionSuccessModalVisible(false)}
+      />
     </ScreenContainer>
   );
 };

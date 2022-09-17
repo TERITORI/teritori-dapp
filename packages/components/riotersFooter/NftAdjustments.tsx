@@ -26,6 +26,7 @@ const NftAdjustments: React.FC<{
   ) => void;
   price: number;
   setPrice: (price: number) => void;
+  setTransactionPaymentModalVisible: (visible: boolean) => void;
 }> = memo(
   ({
     nftCollectionId,
@@ -36,6 +37,7 @@ const NftAdjustments: React.FC<{
     setNftDropedAdjustment,
     price,
     setPrice,
+    setTransactionPaymentModalVisible,
   }) => {
     const [sliderValue, setSliderValue] = useState(0);
     const [percentage, setPercentage] = useState(0);
@@ -136,7 +138,9 @@ const NftAdjustments: React.FC<{
             <PrimaryButton
               width={128}
               size="M"
-              onPress={() => {}}
+              onPress={() => {
+                setTransactionPaymentModalVisible(true);
+              }}
               text="Submit"
             />
           </View>
