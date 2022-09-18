@@ -3,6 +3,7 @@ import { View, ScrollView, StyleSheet } from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
 
 import avaSvg from "../../../assets/icons/ava.svg";
+import teritorriSvg from "../../../assets/icons/teritori.svg";
 import apeOneSvg from "../../../assets/nft/ape-one.svg";
 import etherumGangSvg from "../../../assets/nft/etherum-gang.svg";
 import freeSnowDenSvg from "../../../assets/nft/free-snowden.svg";
@@ -12,6 +13,7 @@ import rideOrDieSvg from "../../../assets/nft/ride-or-die.svg";
 import satoshiSvg from "../../../assets/nft/satoshi.svg";
 import solFarmSvg from "../../../assets/nft/sol-farm.svg";
 import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { TransactionPaymentModal } from "../../components/modals/transaction/TransactionPaymentModal";
@@ -253,8 +255,9 @@ export const RiotersFooterScreen: React.FC = () => {
   const [nftDropedAdjustment, setNftDropedAdjustment] =
     useState<nftDropedAdjustmentType>(undefined);
   const [oldNftPositionsWithZIndexOrder, setOldNftPositionsWithZIndexOrder] =
-    useState(undefined);
+    useState<any | undefined>(undefined);
   const [price, setPrice] = useState<number>(7.8);
+  const [isPreview, setIsPreview] = useState<boolean>(false);
 
   const [transactionPaymentModalVisible, setTransactionPaymentModalVisible] =
     useState(false);
@@ -336,73 +339,139 @@ export const RiotersFooterScreen: React.FC = () => {
   }, []);
 
   return (
-    <ScreenContainer>
-      <DraxProvider>
-        <View style={styles.container}>
-          <View style={styles.menu}>
-            {!nftCollectionId ? (
-              <>
-                <View style={{ width: 220 }}>
-                  <BrandText style={{ color: "white", fontSize: 14 }}>
-                    NFT type for the Rioters’ Footer
-                  </BrandText>
-                  <NftTypeTab tabName={tabName} setTabName={setTabName} />
-                  <View style={styles.separator} />
-                </View>
-                <ScrollView>
-                  <View style={{ width: 220 }}>{MapNftType.get(tabName)}</View>
-                </ScrollView>
-              </>
-            ) : nftDroped && nftDropedAdjustment ? (
-              <NftAdjustments
-                nftCollectionId={nftCollectionId}
-                newNftCollections={fakeNewNtfCollections}
-                nftDroped={nftDroped}
-                setNftDroped={setNftDroped}
-                nftDropedAdjustment={nftDropedAdjustment}
-                setNftDropedAdjustment={setNftDropedAdjustment}
-                price={price}
-                setPrice={setPrice}
-                setTransactionPaymentModalVisible={
-                  setTransactionPaymentModalVisible
-                }
-              />
-            ) : (
-              <SelectNewNft
-                nftCollectionId={nftCollectionId}
-                setNftCollectionId={setNftCollectionId}
-                searchNft={searchNft}
-                setSearchNft={setSearchNft}
-                newNftCollections={fakeNewNtfCollections}
-              />
-            )}
-          </View>
-          <View style={{ width: "100%" }}>
-            <View style={styles.headerChosePosition}>
-              <BrandText
-                style={{ color: "white", fontSize: 28, marginLeft: 20 }}
-              >
-                Choose the exact position in footer
-              </BrandText>
-              <View style={{ marginRight: 24 }}>
-                <SecondaryButton
-                  text="Preview"
-                  onPress={() => {
-                    console.log("press preview");
-                  }}
-                  width={126}
-                  size="M"
+    <ScreenContainer hideSidebar={isPreview}>
+      {!isPreview ? (
+        <DraxProvider>
+          <View style={styles.container}>
+            <View style={styles.menu}>
+              {!nftCollectionId ? (
+                <>
+                  <View style={{ width: 220 }}>
+                    <BrandText style={{ color: "white", fontSize: 14 }}>
+                      NFT type for the Rioters’ Footer
+                    </BrandText>
+                    <NftTypeTab tabName={tabName} setTabName={setTabName} />
+                    <View style={styles.separator} />
+                  </View>
+                  <ScrollView>
+                    <View style={{ width: 220 }}>
+                      {MapNftType.get(tabName)}
+                    </View>
+                  </ScrollView>
+                </>
+              ) : nftDroped && nftDropedAdjustment ? (
+                <NftAdjustments
+                  nftCollectionId={nftCollectionId}
+                  newNftCollections={fakeNewNtfCollections}
+                  nftDroped={nftDroped}
+                  setNftDroped={setNftDroped}
+                  nftDropedAdjustment={nftDropedAdjustment}
+                  setNftDropedAdjustment={setNftDropedAdjustment}
+                  price={price}
+                  setPrice={setPrice}
+                  setTransactionPaymentModalVisible={
+                    setTransactionPaymentModalVisible
+                  }
                 />
-              </View>
+              ) : (
+                <SelectNewNft
+                  nftCollectionId={nftCollectionId}
+                  setNftCollectionId={setNftCollectionId}
+                  searchNft={searchNft}
+                  setSearchNft={setSearchNft}
+                  newNftCollections={fakeNewNtfCollections}
+                />
+              )}
             </View>
-            <DraxView
-              style={styles.chosePositionContainer}
-              onReceiveDragDrop={onReceiveDragDrop}
-              renderContent={RenderContent}
+            <View style={{ width: "100%" }}>
+              <View style={styles.headerChosePosition}>
+                <BrandText
+                  style={{ color: "white", fontSize: 28, marginLeft: 20 }}
+                >
+                  Choose the exact position in footer
+                </BrandText>
+                <View style={{ marginRight: 124 }}>
+                  <SecondaryButton
+                    text="Preview"
+                    onPress={() => {
+                      setIsPreview(true);
+                    }}
+                    width={126}
+                    size="M"
+                  />
+                </View>
+              </View>
+              <DraxView
+                style={styles.chosePositionContainer}
+                onReceiveDragDrop={onReceiveDragDrop}
+                renderContent={RenderContent}
+              />
+            </View>
+          </View>
+        </DraxProvider>
+      ) : (
+        <View style={{ flex: 1 }}>
+          <View style={{ top: 20, right: 0, position: "absolute" }}>
+            <SecondaryButton
+              text="Exit Preview"
+              onPress={() => {
+                setIsPreview(false);
+              }}
+              width={126}
+              size="M"
             />
           </View>
+          <View style={[{ marginTop: 100 }, styles.chosePositionContainer]}>
+            <SVG
+              width={94}
+              height={102}
+              source={teritorriSvg}
+              style={{
+                alignSelf: "center",
+                marginTop: 43,
+                zIndex: (oldNftPositionsWithZIndexOrder?.length || 0) + 3,
+              }}
+            />
+            {oldNftPositionsWithZIndexOrder &&
+              oldNftPositionsWithZIndexOrder.map((nft: any, index: number) => (
+                <SVG
+                  key={nft.id}
+                  width={nft.width}
+                  height={nft.height}
+                  source={nft.svg}
+                  style={[
+                    styles.oldNftPositions,
+                    {
+                      left: nft.left,
+                      top: nft.top,
+                      zIndex: index,
+                    },
+                  ]}
+                />
+              ))}
+            {nftDroped && nftDropedAdjustment && (
+              <View
+                style={{
+                  position: "absolute",
+                  left: nftDropedAdjustment.x,
+                  top: nftDropedAdjustment.y,
+                  zIndex: oldNftPositionsWithZIndexOrder.length,
+                }}
+              >
+                <View
+                  style={{ borderRadius: nftDropedAdjustment.borderRadius }}
+                >
+                  <SVG
+                    width={nftDropedAdjustment.width}
+                    height={nftDropedAdjustment.height}
+                    source={nftDroped.svg}
+                  />
+                </View>
+              </View>
+            )}
+          </View>
         </View>
-      </DraxProvider>
+      )}
       {/* ====== "Buy this NFT" three modals*/}
       {/*TODO: Handle these 3 modales with a component, or a hook*/}
 
@@ -489,7 +558,11 @@ const styles = StyleSheet.create({
     borderColor: neutral33,
     backgroundColor: "black",
     alignSelf: "center",
-    justifyContent: "center",
     overflow: "hidden",
+  },
+  oldNftPositions: {
+    position: "absolute",
+    borderWidth: 0,
+    padding: 4,
   },
 });
