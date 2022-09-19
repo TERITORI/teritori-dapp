@@ -13,14 +13,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	CollectionPrefix  = "fake_collection_"
-	NFTPrefix         = "fake_nft_"
-	TransactionPrefix = "fake_transaction_"
-	AccountPrefix     = "fake_account_"
-	IdPrefix          = "fake-"
-)
-
 func getRedirect(url string) (string, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -58,15 +50,19 @@ func fakeBool() bool {
 }
 
 func FakeCollection() *marketplacepb.Collection {
+	volume := strconv.FormatFloat(rand.Float64()*5000, 'f', 2, 64)
+	volume = strings.TrimRight(strings.TrimRight(volume, "0"), ".")
 	fakeMintAddress := faker.UUIDDigit()
 	return &marketplacepb.Collection{
-		Id:             fmt.Sprintf("%s%s", IdPrefix, fakeMintAddress),
+		Id:             marketplacepb.Network_NETWORK_FAKE.Prefix() + "-" + fakeMintAddress,
 		CollectionName: faker.Sentence(),
 		CreatorName:    faker.Name(),
 		Verified:       fakeBool(),
 		ImageUri:       fakeImageURI(400, 400),
 		Network:        marketplacepb.Network_NETWORK_FAKE,
 		MintAddress:    fakeMintAddress,
+		Volume:         volume,
+		VolumeDenom:    faker.Currency(),
 	}
 }
 
@@ -81,11 +77,13 @@ func FakeNFT() *marketplacepb.NFT {
 	}
 
 	return &marketplacepb.NFT{
+		Id:          marketplacepb.Network_NETWORK_FAKE.Prefix() + "-" + faker.UUIDDigit(),
 		Name:        faker.Sentence(),
-		MintAddress: NFTPrefix + faker.UUIDDigit(),
+		MintAddress: faker.UUIDDigit(),
 		ImageUri:    fakeImageURI(400, 400),
 		Price:       price,
 		Denom:       denom,
+		Network:     marketplacepb.Network_NETWORK_FAKE,
 		IsListed:    isListed,
 	}
 }
@@ -95,7 +93,7 @@ func FakeActivity() *marketplacepb.Activity {
 	price = strings.TrimRight(strings.TrimRight(price, "0"), ".")
 	t := time.Unix(faker.UnixTime(), 0)
 	return &marketplacepb.Activity{
-		Id:              IdPrefix + faker.UUIDDigit(),
+		Id:              marketplacepb.Network_NETWORK_FAKE.Prefix() + "-" + faker.UUIDDigit(),
 		TargetName:      faker.Sentence(),
 		ContractName:    faker.Word(),
 		Time:            t.Format(time.RFC3339),
@@ -103,8 +101,8 @@ func FakeActivity() *marketplacepb.Activity {
 		Amount:          price,
 		Denom:           faker.Currency(),
 		TransactionKind: faker.Word(),
-		TransactionId:   TransactionPrefix + faker.UUIDDigit(),
-		BuyerId:         IdPrefix + faker.UUIDDigit(),
-		SellerId:        IdPrefix + faker.UUIDDigit(),
+		TransactionId:   faker.UUIDDigit(),
+		BuyerId:         marketplacepb.Network_NETWORK_FAKE.Prefix() + "-" + faker.UUIDDigit(),
+		SellerId:        marketplacepb.Network_NETWORK_FAKE.Prefix() + "-" + faker.UUIDDigit(),
 	}
 }
