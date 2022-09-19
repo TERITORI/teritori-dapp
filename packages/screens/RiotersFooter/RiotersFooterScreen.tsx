@@ -266,6 +266,7 @@ export const RiotersFooterScreen: React.FC = () => {
     useState(false);
   const [transactionSuccessModalVisible, setTransactionSuccessModalVisible] =
     useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionHash, setTransactionHash] = useState("");
 
   useEffect(() => {
