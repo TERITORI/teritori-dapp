@@ -55,7 +55,7 @@ func fetchCollectionsByVolume(ctx context.Context, graphqlEndpoint string, logge
 
 		mintAddress := collection.GetNft().MintAddress
 		collections = append(collections, &marketplacepb.Collection{
-			Id:             fmt.Sprintf("sol-%s", mintAddress),
+			Id:             fmt.Sprintf("%s-%s", marketplacepb.Network_NETWORK_SOLANA.Prefix(), mintAddress),
 			CollectionName: collection.GetNft().Name,
 			Verified:       true,
 			CreatorName:    creatorName,

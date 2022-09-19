@@ -107,8 +107,6 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 	return fmt.Errorf("unknown collection list kind %s", req.GetKind().String())
 }
 
-const solanaCollectionIdPrefix = "sol-"
-
 func (s *MarkteplaceService) CollectionNFTs(req *marketplacepb.CollectionNFTsRequest, srv marketplacepb.MarketplaceService_CollectionNFTsServer) error {
 	// NOTE: we should probably query the graphql api from the client directly in this case
 
@@ -127,7 +125,7 @@ func (s *MarkteplaceService) CollectionNFTs(req *marketplacepb.CollectionNFTsReq
 		return errors.New("empty id")
 	}
 
-	if strings.HasPrefix(id, faking.IdPrefix) {
+	if strings.HasPrefix(id, marketplacepb.Network_NETWORK_FAKE.Prefix()) {
 		for i := int32(0); i < limit; i++ {
 			if err := srv.Send(&marketplacepb.CollectionNFTsResponse{Nft: faking.FakeNFT()}); err != nil {
 				return errors.Wrap(err, "failed to send nft")
@@ -136,11 +134,11 @@ func (s *MarkteplaceService) CollectionNFTs(req *marketplacepb.CollectionNFTsReq
 		return nil
 	}
 
-	if strings.HasPrefix(id, solanaCollectionIdPrefix) {
+	if strings.HasPrefix(id, marketplacepb.Network_NETWORK_SOLANA.Prefix()) {
 		gqlClient := graphql.NewClient(s.graphqlEndpoint, nil)
 
 		collectionNFTs, err := holagql.GetCollectionNFTs(srv.Context(), gqlClient,
-			strings.TrimPrefix(id, solanaCollectionIdPrefix),
+			strings.TrimPrefix(id, marketplacepb.Network_NETWORK_SOLANA.Prefix()+"-"),
 			int(limit),
 			int(offset),
 		)
@@ -212,7 +210,7 @@ func (s *MarkteplaceService) CollectionActivity(req *marketplacepb.CollectionAct
 		return errors.New("empty mint address")
 	}
 
-	if strings.HasPrefix(id, faking.IdPrefix) {
+	if strings.HasPrefix(id, marketplacepb.Network_NETWORK_FAKE.Prefix()) {
 		for i := int32(0); i < limit; i++ {
 			if err := srv.Send(&marketplacepb.CollectionActivityResponse{Activity: faking.FakeActivity()}); err != nil {
 				return errors.Wrap(err, "failed to send activity")
@@ -221,11 +219,11 @@ func (s *MarkteplaceService) CollectionActivity(req *marketplacepb.CollectionAct
 		return nil
 	}
 
-	if strings.HasPrefix(id, solanaCollectionIdPrefix) {
+	if strings.HasPrefix(id, marketplacepb.Network_NETWORK_SOLANA.Prefix()) {
 		gqlClient := graphql.NewClient(s.graphqlEndpoint, nil)
 
 		collectionActivity, err := holagql.GetCollectionActivity(srv.Context(), gqlClient,
-			id[len(solanaCollectionIdPrefix):],
+			strings.TrimPrefix(id, marketplacepb.Network_NETWORK_SOLANA.Prefix()+"-"),
 			int(limit),
 			int(offset),
 		)
@@ -235,7 +233,7 @@ func (s *MarkteplaceService) CollectionActivity(req *marketplacepb.CollectionAct
 
 		for _, activity := range collectionActivity.Collection.Activities {
 			if err := srv.Send(&marketplacepb.CollectionActivityResponse{Activity: &marketplacepb.Activity{
-				Id:              fmt.Sprintf("sol-%s", faker.UUIDDigit()),
+				Id:              fmt.Sprintf("%s-%s", marketplacepb.Network_NETWORK_SOLANA.Prefix(), faker.UUIDDigit()),
 				Amount:          activity.Price,
 				Denom:           "lamports",
 				TransactionKind: activity.ActivityType,
@@ -315,7 +313,7 @@ func (s *MarkteplaceService) NFTActivity(req *marketplacepb.NFTActivityRequest, 
 		return errors.New("empty mint address")
 	}
 
-	if strings.HasPrefix(id, faking.IdPrefix) {
+	if strings.HasPrefix(id, marketplacepb.Network_NETWORK_FAKE.Prefix()) {
 		for i := int32(0); i < limit; i++ {
 			if err := srv.Send(&marketplacepb.NFTActivityResponse{Activity: faking.FakeActivity()}); err != nil {
 				return errors.Wrap(err, "failed to send activity")
