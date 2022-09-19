@@ -79,10 +79,12 @@ export const SecondaryBox: React.FC<{
                 position: "absolute",
                 zIndex: 2,
               },
-              squaresBorderColor && {
-                borderColor: squaresBorderColor,
-                borderRightWidth: 1,
-              },
+              squaresBorderColor
+                ? {
+                    borderColor: squaresBorderColor,
+                    borderRightWidth: 1,
+                  }
+                : {},
             ]}
           />
 
@@ -99,10 +101,12 @@ export const SecondaryBox: React.FC<{
                 position: "absolute",
                 zIndex: 2,
               },
-              squaresBorderColor && {
-                borderColor: squaresBorderColor,
-                borderRightWidth: 1,
-              },
+              squaresBorderColor
+                ? {
+                    borderColor: squaresBorderColor,
+                    borderRightWidth: 1,
+                  }
+                : {},
             ]}
           />
         </View>
