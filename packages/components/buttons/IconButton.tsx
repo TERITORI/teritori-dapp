@@ -48,33 +48,6 @@ export const IconButton: React.FC<{
   };
 
   return (
-    // <View
-    //   style={[
-    //     style,
-    //     {
-    //       flexDirection: "row",
-    //       height,
-    //       minHeight: height,
-    //       maxHeight: height,
-    //     },
-    //   ]}
-    // >
-    //   <PrimaryButton
-    //     onPress={onPress}
-    //     // borderRadius={6}
-    //     // backgroundColor={backgroundColor}
-    //     // height={height}
-    //     // paddingHorizontal={paddingHorizontal}
-    //     disabled={disabled}
-    //     squaresBackgroundColor={squaresBackgroundColor}
-    //     // width={width}
-    //     size="M"
-    //     // text="oui"
-    //     // borderColor={borderColor}
-    //     iconSVG={icon}
-    //   />
-    // </View>
-
     <TouchableOpacity
       onPress={onPress}
       style={{ width: fullWidth ? "100%" : width }}
@@ -88,7 +61,7 @@ export const IconButton: React.FC<{
             backgroundColor,
             paddingHorizontal: 20,
           },
-          borderColor && { borderWidth: 1, borderColor },
+          borderColor ? { borderWidth: 1, borderColor } : {},
         ]}
         squaresBorderColor={squaresBorderColor}
         {...boxProps}
