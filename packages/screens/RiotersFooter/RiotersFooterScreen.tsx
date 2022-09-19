@@ -252,8 +252,9 @@ export const RiotersFooterScreen: React.FC = () => {
   const [nftCollectionId, setNftCollectionId] = useState<string>("");
   const [currentCollection, setCurrentCollection] = useState<any>(undefined);
   const [nftDroped, setNftDroped] = useState<any>(null);
-  const [nftDropedAdjustment, setNftDropedAdjustment] =
-    useState<nftDropedAdjustmentType>(undefined);
+  const [nftDropedAdjustment, setNftDropedAdjustment] = useState<
+    nftDropedAdjustmentType | undefined
+  >(undefined);
   const [oldNftPositionsWithZIndexOrder, setOldNftPositionsWithZIndexOrder] =
     useState<any | undefined>(undefined);
   const [price, setPrice] = useState<number>(7.8);
@@ -315,7 +316,7 @@ export const RiotersFooterScreen: React.FC = () => {
     [nftDroped, nftDropedAdjustment]
   );
 
-  const RenderContent = useCallback(
+  const renderContent = useCallback(
     () =>
       oldNftPositionsWithZIndexOrder && (
         <DraxViewReceiverContent
@@ -404,7 +405,7 @@ export const RiotersFooterScreen: React.FC = () => {
               <DraxView
                 style={styles.chosePositionContainer}
                 onReceiveDragDrop={onReceiveDragDrop}
-                renderContent={RenderContent}
+                renderContent={renderContent}
               />
             </View>
           </View>
@@ -480,7 +481,7 @@ export const RiotersFooterScreen: React.FC = () => {
         onPressProceed={handleBuy}
         onClose={() => setTransactionPaymentModalVisible(false)}
         visible={transactionPaymentModalVisible}
-        price={"0"}
+        price={price.toString()}
         // priceDenom={nftInfo?.priceDenom}
         label="Checkout"
         textComponent={

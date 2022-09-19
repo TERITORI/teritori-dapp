@@ -11,7 +11,7 @@ import NftDragResizerCorner from "./NftDragResizerCorner";
 const DraxViewReceiverContent: React.FC<{
   oldNftPositionsWithZIndexOrder: any;
   nftDroped: any;
-  nftDropedAdjustment: nftDropedAdjustmentType;
+  nftDropedAdjustment: nftDropedAdjustmentType | undefined;
   setNftDropedAdjustment: (
     nftDropedAdjustment: nftDropedAdjustmentType
   ) => void;

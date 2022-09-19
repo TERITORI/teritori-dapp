@@ -22,7 +22,7 @@ const NftAdjustments: React.FC<{
   setNftDroped: (nftDroped: any) => void;
   nftDropedAdjustment: nftDropedAdjustmentType;
   setNftDropedAdjustment: (
-    nftDropedAdjustment: nftDropedAdjustmentType
+    nftDropedAdjustment: nftDropedAdjustmentType | undefined
   ) => void;
   price: number;
   setPrice: (price: number) => void;
