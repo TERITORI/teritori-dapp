@@ -5,10 +5,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import certifiedIconSVG from "../../assets/icons/certified.svg";
 import { Collection } from "../api/marketplace/v1/marketplace";
 import { useAppNavigation } from "../utils/navigation";
+import { lavenderDefault } from "../utils/style/colors";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
-import {lavenderDefault} from "../utils/style/colors"
 
 export const collectionItemHeight = 266;
 export const collectionItemWidth = 196;

@@ -25,13 +25,10 @@ import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
-import {
-  TeritoriNftMinterClient,
-} from "../../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
+import { TeritoriNftMinterClient } from "../../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
+import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import {
@@ -47,7 +44,6 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../utils/style/fonts";
-import {useCollectionInfo} from "../../hooks/useCollectionInfo"
 
 const maxImageSize = 532;
 const cardsHalfGap = 6;

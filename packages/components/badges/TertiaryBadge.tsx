@@ -1,17 +1,21 @@
-import * as React from "react"
-import {StyleProp, View, ViewStyle} from "react-native"
+import * as React from "react";
+import { StyleProp, View, ViewStyle } from "react-native";
 
-import {fontSemibold13} from "../../utils/style/fonts"
-import {BrandText} from "../BrandText"
-import {BadgesSize, heightBadge, paddingHorizontalBadge} from "../../utils/style/badges"
-import {neutral33} from "../../utils/style/colors"
+import {
+  BadgesSize,
+  heightBadge,
+  paddingHorizontalBadge,
+} from "../../utils/style/badges";
+import { neutral33 } from "../../utils/style/colors";
+import { fontSemibold13 } from "../../utils/style/fonts";
+import { BrandText } from "../BrandText";
 
 export const TertiaryBadge: React.FC<{
   label: string | number;
   size?: BadgesSize;
   textColor?: string;
   style?: StyleProp<ViewStyle>;
-}> = ({label, size = "M", textColor = "#FFFFFF", style}) => {
+}> = ({ label, size = "M", textColor = "#FFFFFF", style }) => {
   return (
     <View
       style={[
@@ -21,12 +25,14 @@ export const TertiaryBadge: React.FC<{
           height: heightBadge(size),
           paddingHorizontal: paddingHorizontalBadge(size),
           backgroundColor: neutral33,
-          borderRadius: 999
+          borderRadius: 999,
         },
-        style
+        style,
       ]}
     >
-      <BrandText style={[fontSemibold13, {color: textColor}]}>{label}</BrandText>
+      <BrandText style={[fontSemibold13, { color: textColor }]}>
+        {label}
+      </BrandText>
     </View>
-  )
-}
+  );
+};

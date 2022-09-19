@@ -1,4 +1,4 @@
-export type BadgesSize =  "M" | "SM";
+export type BadgesSize = "M" | "SM";
 
 export const heightBadge = (format: BadgesSize) => {
   switch (format) {

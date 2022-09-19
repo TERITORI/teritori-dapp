@@ -1,10 +1,11 @@
-import {useCallback, useEffect, useState} from "react"
-import {getNonSigningCosmWasmClient} from "../utils/keplr"
-import {TeritoriNftMinterQueryClient} from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client"
-import {TeritoriNftQueryClient} from "../contracts-clients/teritori-nft/TeritoriNft.client"
-import {ipfsURLToHTTPURL} from "../utils/ipfs"
-import {TeritoriNftVaultQueryClient} from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client"
-import {NFTInfo} from "../screens/Marketplace/NFTDetailScreen"
+import { useCallback, useEffect, useState } from "react";
+
+import { TeritoriNftMinterQueryClient } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
+import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
+import { ipfsURLToHTTPURL } from "../utils/ipfs";
+import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
 export const vaultContractAddress =
   "tori17ww32dvhrxa9ga57vk65dzu8746nm0cqlqxq06zfrkd0wffpkleslfmjtq";

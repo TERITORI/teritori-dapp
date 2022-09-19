@@ -4,41 +4,80 @@ import {
   FlatList,
   LayoutChangeEvent,
   View,
-  ViewStyle, Image, Linking
-} from "react-native"
+  ViewStyle,
+  Image,
+  Linking,
+} from "react-native";
 
-import {
-  NFT,
-} from "../../api/marketplace/v1/marketplace";
+import bannerCollection from "../../../assets/default-images/banner-collection.png";
+import discordSVG from "../../../assets/icons/discord.svg";
+import etherscanSVG from "../../../assets/icons/etherscan.svg";
+import mediumSVG from "../../../assets/icons/medium.svg";
+import shareSVG from "../../../assets/icons/share.svg";
+import twitterSVG from "../../../assets/icons/twitter.svg";
+import { NFT } from "../../api/marketplace/v1/marketplace";
+import { BrandText } from "../../components/BrandText";
 import { NFTView } from "../../components/NFTView";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { prettyPrice } from "../../utils/coins";
-import { RootStackParamList } from "../../utils/navigation";
-import { ScreenFC } from "../../utils/navigation";
+import { PrimaryBox } from "../../components/boxes/PrimaryBox";
+import { SocialButton } from "../../components/buttons/SocialButton";
+import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSecondary";
+import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
+import { BackTo } from "../../components/navigation/BackTo";
+import { SortButton } from "../../components/sorts/SortButton";
+import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import {
+  CollectionInfo,
+  useCollectionInfo,
+} from "../../hooks/useCollectionInfo";
+import { useCollectionNFTs } from "../../hooks/useCollectionNFTs";
 import { Network } from "../../utils/network";
+import { neutral33 } from "../../utils/style/colors";
+import { fontSemibold28 } from "../../utils/style/fonts";
+import { screenContentMaxWidth } from "../../utils/style/layout";
+import { prettyPrice } from "../../utils/coins";
+import { ScreenFC } from "../../utils/navigation";
 
-const keyExtractor = (item: NFT) => item.mintAddress
+const collectionScreenTabItems: TabItem[] = [
+  {
+    label: "Owned",
+    isSelected: true,
+    badgeLabel: "87"
+  },
+  {
+    label: "Collections",
+    badgeLabel: "5760"
+  },
+  {
+    label: "Activity"
+  },
+  {
+    label: "Offers"
+  }
+]
+
+const keyExtractor = (item: NFT) => item.mintAddress;
 
 // ====== Style =====
-
-const gap = 20;
+const gap = 20
 const nftWidth = 268 + gap * 2; // FIXME: ssot
 
 const viewStyle: ViewStyle = {
   height: "100%",
-  alignItems: "center"
-}
+  alignItems: "center",
+};
 
 const alignDown = (count: number, stride: number) => {
-  const factor = Math.floor(count / stride)
-  return factor * stride
-}
+  const factor = Math.floor(count / stride);
+  return factor * stride;
+};
 
 // ====== Components =====
-const ItemSeparator: React.FC = () => <View style={{height: gap}}/>
+const ItemSeparator: React.FC = () => <View style={{ height: gap }} />;
 
 const renderItem: ListRenderItem<NFT> = (info) => {
-  const nft = info.item
+  const nft = info.item;
   return (
     <NFTView
       key={nft.mintAddress}
@@ -55,71 +94,120 @@ const renderItem: ListRenderItem<NFT> = (info) => {
         favoritesCount: 420,
         id: nft.id,
       }}
-      style={{marginHorizontal: gap / 2}}
+      style={{ marginHorizontal: gap / 2 }}
     />
-  )
-}
+  );
+};
 
 // All the screen content before the Flatlist used to display NFTs
 const FlatListHeader: React.FC<{
-  collectionInfo: CollectionInfo
-}> = ({collectionInfo = {}}) => {
-  const {onPressTabItem, tabItems} = useTabs(collectionScreenTabItems)
+  collectionInfo: CollectionInfo;
+}> = ({ collectionInfo = {} }) => {
+  const { onPressTabItem, tabItems } = useTabs(collectionScreenTabItems);
 
   return (
-    <View style={{maxWidth: screenContentMaxWidth}}>
-      <Image source={bannerCollection}
-             style={{height: 311, width: screenContentMaxWidth, marginBottom: 42, marginTop: 7}}
+    <View style={{ maxWidth: screenContentMaxWidth }}>
+      <Image
+        source={bannerCollection}
+        style={{
+          height: 311,
+          width: screenContentMaxWidth,
+          marginBottom: 42,
+          marginTop: 7,
+        }}
       />
 
-      <View style={{flexDirection: "row", alignItems: "center", marginBottom: 24}}>
-        <RoundedGradientImage imageSource={{uri: collectionInfo.image}} style={{marginRight: 24}}/>
+      <View
+        style={{ flexDirection: "row", alignItems: "center", marginBottom: 24 }}
+      >
+        <RoundedGradientImage
+          imageSource={{ uri: collectionInfo.image }}
+          style={{ marginRight: 24 }}
+        />
         <View>
           <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
-          <View style={{flexDirection: "row", marginTop: 16, alignItems: "center"}}>
-            <SocialButton text="Medium" iconSvg={mediumSVG} style={{marginRight: 12}}/>
-            <SocialButton text="Discord" iconSvg={discordSVG} style={{marginRight: 12}} onPress={() => Linking.openURL(collectionInfo.discord || "")}/>
-            <SocialButton text="Twitter" iconSvg={twitterSVG} style={{marginRight: 12}} onPress={() => Linking.openURL(collectionInfo.twitter || "")}/>
-            <View style={{height: 24, width: 1, backgroundColor: neutral33, marginRight: 12}}/>
-            <SocialButtonSecondary text="Etherscan" iconSvg={etherscanSVG} style={{marginRight: 12}}/>
-            <SocialButtonSecondary text="Share" iconSvg={shareSVG}/>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 16,
+              alignItems: "center",
+            }}
+          >
+            <SocialButton
+              text="Medium"
+              iconSvg={mediumSVG}
+              style={{ marginRight: 12 }}
+            />
+            <SocialButton
+              text="Discord"
+              iconSvg={discordSVG}
+              style={{ marginRight: 12 }}
+              onPress={() => Linking.openURL(collectionInfo.discord || "")}
+            />
+            <SocialButton
+              text="Twitter"
+              iconSvg={twitterSVG}
+              style={{ marginRight: 12 }}
+              onPress={() => Linking.openURL(collectionInfo.twitter || "")}
+            />
+            <View
+              style={{
+                height: 24,
+                width: 1,
+                backgroundColor: neutral33,
+                marginRight: 12,
+              }}
+            />
+            <SocialButtonSecondary
+              text="Etherscan"
+              iconSvg={etherscanSVG}
+              style={{ marginRight: 12 }}
+            />
+            <SocialButtonSecondary text="Share" iconSvg={shareSVG} />
           </View>
         </View>
       </View>
 
       <PrimaryBox
-        mainContainerStyle={{flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 8}}
-        fullWidth height={64} style={{marginBottom: 24}}
+        mainContainerStyle={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingHorizontal: 8,
+        }}
+        fullWidth
+        height={64}
+        style={{ marginBottom: 24 }}
       >
-        <Tabs items={tabItems} onPressTabItem={onPressTabItem}
-              style={{width: "fit-content", height: 64, borderBottomWidth: 0}}
+        <Tabs
+          items={tabItems}
+          onPressTabItem={onPressTabItem}
+          style={{ width: "fit-content", height: 64, borderBottomWidth: 0 }}
         />
-        <SortButton/>
+        <SortButton />
       </PrimaryBox>
     </View>
-  )
-}
+  );
+};
 
 // All the screen content after the Flatlist used to display NFTs
-const FlatListFooter: React.FC = () => <View style={{height: 100}}/>
+const FlatListFooter: React.FC = () => <View style={{ height: 100 }} />;
 
 const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
                                                                         id,
-                                                                        numColumns,
-                                                                      }) => {
+                                                                        numColumns,}) => {
   const {info, notFound, loading: loadingCollectionInfo} = useCollectionInfo(id)
-  const {nfts, fetchMore, firstLoading: firstLoadingNTFs} = useCollectionNFTs({
-    id,
-    limit: alignDown(20, numColumns) || numColumns,
-    offset: 0,
-  });
-
+  const {nfts, fetchMore, firstLoading: firstLoadingNTFs} = useCollectionNFTs(
+    {
+      id,
+      limit: alignDown(20, numColumns) || numColumns,
+      offset: 0
+    })
   const {setLoadingFullScreen} = useFeedbacks()
 
   // Sync loadingFullScreen
   useEffect(() => {
-    setLoadingFullScreen(loadingCollectionInfo && firstLoadingNTFs)
-  }, [loadingCollectionInfo, firstLoadingNTFs])
+    setLoadingFullScreen(loadingCollectionInfo && firstLoadingNTFs);
+  }, [loadingCollectionInfo, firstLoadingNTFs]);
 
   // TODO: Uncomment this when the collection has info AND NFTs
   // if (notFound) {
@@ -129,21 +217,23 @@ const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
   //     </View>
   //   )
   // } else
-  return (
-    <FlatList
-      key={numColumns}
-      data={nfts}
-      numColumns={numColumns}
-      ItemSeparatorComponent={ItemSeparator}
-      onEndReached={fetchMore}
-      keyExtractor={keyExtractor}
-      onEndReachedThreshold={4}
-      renderItem={renderItem}
-      ListHeaderComponent={<FlatListHeader collectionInfo={info}/>}
-      ListFooterComponent={<FlatListFooter/>}
-    />
-  );
-};
+    return (
+      <FlatList
+        style={{width: "100%"}}
+        contentContainerStyle={{alignItems: "center"}}
+        key={numColumns}
+        data={nfts}
+        numColumns={numColumns}
+        ItemSeparatorComponent={ItemSeparator}
+        onEndReached={fetchMore}
+        keyExtractor={keyExtractor}
+        onEndReachedThreshold={4}
+        renderItem={renderItem}
+        ListHeaderComponent={<FlatListHeader collectionInfo={info}/>}
+        ListFooterComponent={<FlatListFooter/>}
+      />
+  )
+}
 
 const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
   const [viewWidth, setViewWidth] = useState(0);
@@ -163,7 +253,11 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   return (
-    <ScreenContainer noMargin noScroll>
+    <ScreenContainer noMargin noScroll headerChildren={
+      <BackTo
+        label="Collection Profile"
+      />
+    }>
       <Content
         key={route.params.id}
         id={route.params.id}

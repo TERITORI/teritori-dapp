@@ -1,5 +1,5 @@
-import * as React from "react"
-import {StyleProp, View, ViewStyle} from "react-native"
+import * as React from "react";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import { primaryColor, secondaryColor, primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -18,18 +18,17 @@ export const PrimaryBadge: React.FC<{
         {
           flexDirection: "row",
           alignItems: "center",
-          paddingHorizontal: paddingHorizontalBadge(size),
           height: heightBadge(size),
-          backgroundColor:
-            backgroundColor === "primary" ? primaryColor : secondaryColor,
+          paddingHorizontal: paddingHorizontalBadge(size),
+          backgroundColor: backgroundColor === "primary" ? primaryColor : secondaryColor,
           borderRadius: 999
         },
-        style,
+        style
       ]}
     >
       <BrandText style={[fontSemibold14, { color: primaryTextColor }]}>
         {label}
       </BrandText>
     </View>
-  );
-};
+  )
+}

@@ -17,10 +17,10 @@ import { neutral17, neutral44 } from "../utils/style/colors";
 import { walletSelectorWidth } from "../utils/style/layout";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./images/NetworkIcon";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SecondaryButton } from "./buttons/SecondaryButton";
+import { NetworkIcon } from "./images/NetworkIcon";
 
 // FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native
 

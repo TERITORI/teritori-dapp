@@ -18,7 +18,9 @@ import {
   TeritoriNftVaultClient,
   TeritoriNftVaultQueryClient,
 } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { useNFTInfo, vaultContractAddress } from "../../hooks/useNFTInfo";
 import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
+
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
 import { useSellNFT } from "../../hooks/useSellNFT";
@@ -35,7 +37,6 @@ import {
   screenContentMaxWidth,
 } from "../../utils/style/layout";
 import { NFTAttribute } from "../../utils/types/nft";
-import {useNFTInfo, vaultContractAddress} from "../../hooks/useNFTInfo"
 
 const screenTabItems: TabItem[] = [
   {
@@ -201,8 +202,11 @@ const Content: React.FC<{
 
   // Used to send Collection name and mintAddress to the parent ScreenContainer (BackTo)
   useEffect(() => {
-    setCollectionInfo({name: info?.collectionName || "", mintAddress: info?.mintAddress || ""})
-  }, [info?.mintAddress])
+    setCollectionInfo({
+      name: info?.collectionName || "",
+      mintAddress: info?.mintAddress || "",
+    });
+  }, [info?.mintAddress]);
 
   // Sync loadingFullScreen
   useEffect(() => {
@@ -261,15 +265,15 @@ const Content: React.FC<{
 type CollectionInfoSmall = {
   name: string;
   mintAddress: string;
-}
+};
 
 export const NFTDetailScreen: React.FC<{
   route: RouteProp<RootStackParamList, "NFTDetail">;
 }> = ({
-        route: {
-          params: { id },
-        },
-      }) => {
+  route: {
+    params: { id },
+  },
+}) => {
   const [collectionInfo, setCollectionInfo] = useState<CollectionInfoSmall>()
 
 
@@ -281,12 +285,12 @@ export const NFTDetailScreen: React.FC<{
         <BackTo
           label={collectionInfo.name}
           navItem="Collection"
-          navParams={{ id: id.split("-").slice(0, -1).join("-")  }}
+          navParams={{ id: id.split("-").slice(0, -1).join("-") }}
         />
         : undefined
       }
     >
-      <Content key={id} id={id} setCollectionInfo={setCollectionInfo}/>
+      <Content key={id} id={id} setCollectionInfo={setCollectionInfo} />
     </ScreenContainer>
   );
 };

@@ -1,10 +1,11 @@
-import {useCallback, useState} from "react"
-import {getNonSigningCosmWasmClient} from "../utils/keplr"
-import {TeritoriNftMinterQueryClient} from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client"
-import {TeritoriNftQueryClient} from "../contracts-clients/teritori-nft/TeritoriNft.client"
-import {ipfsURLToHTTPURL} from "../utils/ipfs"
-import {prettyPrice} from "../utils/coins"
-import {useFocusEffect} from "@react-navigation/native"
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useState } from "react";
+
+import { TeritoriNftMinterQueryClient } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
+import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { prettyPrice } from "../utils/coins";
+import { ipfsURLToHTTPURL } from "../utils/ipfs";
+import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
 export interface CollectionInfo {
   image?: string;
@@ -92,7 +93,7 @@ export const useCollectionInfo = (id: string) => {
         if (!(err instanceof Error)) {
           return;
         }
-        console.log('1111111111111111111111111111111111111111111111111')
+        console.log("1111111111111111111111111111111111111111111111111");
         setNotFound(true);
         setLoading(false);
       }
