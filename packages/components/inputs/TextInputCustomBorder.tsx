@@ -1,5 +1,11 @@
 import React from "react";
-import { TextInput, View, ViewStyle } from "react-native";
+import {
+  NativeSyntheticEvent,
+  TextInput,
+  TextInputKeyPressEventData,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import {
   numberWithThousandsSeparator,
@@ -30,7 +36,12 @@ export const TextInputCustomBorder: React.FC<{
   disabled,
 }) => {
   // Handling key pressing
-  const handleKeyPress = ({ nativeEvent: { key: keyValue } }) => {
+  const handleKeyPress = (
+    event: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    const {
+      nativeEvent: { key: keyValue },
+    } = event;
     switch (keyValue) {
       case "Enter":
         if (onPressEnter) onPressEnter();
@@ -40,17 +51,19 @@ export const TextInputCustomBorder: React.FC<{
   // Replace the comma if number and controls
   const handleChangeText = (value: string) => {
     // ---- If you want only number in the TextInputCustomBorder, we apply comma as a thousand separator
-    if (onlyNumbers) {
-      const withoutCommaValue = thousandSeparatedToNumber(value);
-      // Set value only if fully number
-      const reg = new RegExp(/^\d+$/);
-      if (reg.test(withoutCommaValue)) {
-        onChangeText(numberWithThousandsSeparator(withoutCommaValue));
+    if (onChangeText) {
+      if (onlyNumbers) {
+        const withoutCommaValue = thousandSeparatedToNumber(value);
+        // Set value only if fully number
+        const reg = new RegExp(/^\d+$/);
+        if (reg.test(withoutCommaValue)) {
+          onChangeText(numberWithThousandsSeparator(withoutCommaValue));
+        }
       }
-    }
-    // ---- Apply onChange respecting the regexp (Allow empty string)
-    if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
-      onChangeText(value);
+      // ---- Apply onChange respecting the regexp (Allow empty string)
+      if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
+        onChangeText(value);
+      }
     }
   };
 
@@ -76,7 +89,9 @@ export const TextInputCustomBorder: React.FC<{
       <View
         style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
       >
-        <View style={{ flex: 1, marginRight: children && 12, width: "100%" }}>
+        <View
+          style={{ flex: 1, marginRight: children ? 12 : 0, width: "100%" }}
+        >
           <View
             style={{
               flexDirection: "row",
