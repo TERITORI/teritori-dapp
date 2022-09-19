@@ -63,6 +63,7 @@ export const MintCollectionScreen: React.FC<{
     params: { id },
   },
 }) => {
+  const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const { info, notFound, loading } = useCollectionInfo(id);
@@ -125,7 +126,7 @@ export const MintCollectionScreen: React.FC<{
         message: prettyError(err),
       });
     }
-  }, [wallet?.publicKey, id, info.unitPrice, info.hasPresale]);
+  }, [wallet?.publicKey, mintAddress, info.unitPrice, info.hasPresale]);
 
   if (notFound) {
     return (

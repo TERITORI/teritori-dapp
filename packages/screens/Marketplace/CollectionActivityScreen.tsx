@@ -10,6 +10,8 @@ import {
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { backendClient } from "../../utils/backend";
+import { prettyPrice } from "../../utils/coins";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { RootStackParamList } from "../../utils/navigation";
 
 const useCollectionActivity = (
@@ -41,7 +43,7 @@ const useCollectionActivity = (
   useEffect(() => {
     setActivity([]);
     fetchMore();
-  }, [req.mintAddress]);
+  }, [req.id]);
 
   return [activity, fetchMore];
 };
@@ -56,7 +58,11 @@ const renderItem: ListRenderItem<Activity> = (info) => {
       style={{ flexDirection: "row", marginBottom: gap, alignItems: "center" }}
     >
       <Image
-        source={{ uri: activity.targetImageUri }}
+        source={{
+          uri: activity.targetImageUri.startsWith("ipfs://")
+            ? ipfsURLToHTTPURL(activity.targetImageUri)
+            : activity.targetImageUri,
+        }}
         style={{ width: 40, height: 40 }}
       />
       <BrandText style={{ marginLeft: gap }}>{activity.targetName}</BrandText>
@@ -66,7 +72,9 @@ const renderItem: ListRenderItem<Activity> = (info) => {
       <BrandText style={{ marginLeft: gap }}>
         {moment(activity.time).fromNow()}
       </BrandText>
-      <BrandText style={{ marginLeft: gap }}>{activity.amount}</BrandText>
+      <BrandText style={{ marginLeft: gap }}>
+        {prettyPrice(activity.amount, activity.denom)}
+      </BrandText>
     </View>
   );
 };
@@ -77,11 +85,11 @@ export const CollectionActivityScreen: React.FC<{
   route: RouteProp<RootStackParamList, "CollectionActivity">;
 }> = ({
   route: {
-    params: { mintAddress },
+    params: { id },
   },
 }) => {
   const [activity, fetchMore] = useCollectionActivity({
-    mintAddress,
+    id,
     limit: 20,
     offset: 0,
   });

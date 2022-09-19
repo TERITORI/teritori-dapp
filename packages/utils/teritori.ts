@@ -36,6 +36,10 @@ const getCosmosBalances = async (address: string) => {
   return responseJSON;
 };
 
+export const teritoriVaultContractAddress =
+  "tori17ww32dvhrxa9ga57vk65dzu8746nm0cqlqxq06zfrkd0wffpkleslfmjtq";
+export const teritoriNFTVaultCodeID = 10;
+
 export const getUtoriBalance = async (address: string) => {
   const cosmosBalances = await getCosmosBalances(address);
   return cosmosBalances.balances

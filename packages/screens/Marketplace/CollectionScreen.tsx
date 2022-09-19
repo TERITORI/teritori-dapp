@@ -1,5 +1,5 @@
 import { RouteProp } from "@react-navigation/native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ListRenderItem,
   FlatList,
@@ -15,26 +15,12 @@ import {
 import { NFTView } from "../../components/NFTView";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { backendClient } from "../../utils/backend";
+import { prettyPrice } from "../../utils/coins";
 import { RootStackParamList } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 
-function usePrevious<T>(value: T, initialValue: T) {
-  // The ref object is a generic container whose current property is mutable ...
-  // ... and can hold any value, similar to an instance property on a class
-  const ref = useRef<T>(initialValue);
-
-  // Store current value in ref
-  useEffect(() => {
-    ref.current = value;
-  }, [value]); // Only re-run if value changes
-
-  // Return previous value (happens before update in useEffect above)
-  return ref.current;
-}
-
 const useCollectionNFTs = (
-  req: CollectionNFTsRequest,
-  ready: boolean
+  req: CollectionNFTsRequest
 ): [NFT[], () => Promise<void>] => {
   const [nfts, setNFTs] = useState<NFT[]>([]);
 
@@ -59,14 +45,10 @@ const useCollectionNFTs = (
     }
   }, [req, nfts]);
 
-  const prevReady = usePrevious(ready, false);
-
   useEffect(() => {
-    if (ready && !prevReady) {
-      setNFTs([]);
-      fetchMore();
-    }
-  }, [req.mintAddress, ready, prevReady]);
+    setNFTs([]);
+    fetchMore();
+  }, [req.id]);
 
   return [nfts, fetchMore];
 };
@@ -84,7 +66,7 @@ const renderItem: ListRenderItem<NFT> = (info) => {
     <NFTView
       key={nft.mintAddress}
       data={{
-        network: Network.Solana,
+        network: Network.Solana, // FIXME
         name: nft.name,
         owned: false,
         imageURI: nft.imageUri,
@@ -92,9 +74,9 @@ const renderItem: ListRenderItem<NFT> = (info) => {
         collectionId: "TODO",
         collectionDiscriminator: "TODO",
         isCertified: true,
-        floorPrice: nft.price,
+        floorPrice: nft.isListed ? prettyPrice(nft.price, nft.denom) : "",
         favoritesCount: 420,
-        id: `sol-${nft.mintAddress}`,
+        id: nft.id,
       }}
       style={{ marginHorizontal: gap / 2 }}
     />
@@ -113,17 +95,34 @@ const alignDown = (count: number, stride: number) => {
 
 const BoundariesSpacer: React.FC = () => <View style={{ height: 100 }} />;
 
-const Content: React.FC<{ mintAddress: string }> = ({ mintAddress }) => {
+const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
+  id,
+  numColumns,
+}) => {
+  const [nfts, fetchMore] = useCollectionNFTs({
+    id,
+    limit: alignDown(20, numColumns) || numColumns,
+    offset: 0,
+  });
+  return (
+    <FlatList
+      key={numColumns}
+      data={nfts}
+      numColumns={numColumns}
+      ItemSeparatorComponent={ItemSeparator}
+      onEndReached={fetchMore}
+      keyExtractor={keyExtractor}
+      onEndReachedThreshold={4}
+      renderItem={renderItem}
+      ListHeaderComponent={BoundariesSpacer}
+      ListFooterComponent={BoundariesSpacer}
+    />
+  );
+};
+
+const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
   const [viewWidth, setViewWidth] = useState(0);
   const numColumns = Math.floor(viewWidth / nftWidth);
-  const [nfts, fetchMore] = useCollectionNFTs(
-    {
-      mintAddress,
-      limit: alignDown(20, numColumns) || numColumns,
-      offset: 0,
-    },
-    !!viewWidth
-  );
 
   const handleViewLayout = useCallback(
     (event: LayoutChangeEvent) => setViewWidth(event.nativeEvent.layout.width),
@@ -132,31 +131,17 @@ const Content: React.FC<{ mintAddress: string }> = ({ mintAddress }) => {
 
   return (
     <View style={viewStyle} onLayout={handleViewLayout}>
-      <FlatList
-        key={numColumns}
-        data={nfts}
-        numColumns={numColumns}
-        ItemSeparatorComponent={ItemSeparator}
-        onEndReached={fetchMore}
-        keyExtractor={keyExtractor}
-        onEndReachedThreshold={4}
-        renderItem={renderItem}
-        ListHeaderComponent={BoundariesSpacer}
-        ListFooterComponent={BoundariesSpacer}
-      />
+      {viewWidth ? <CollectionNFTs id={id} numColumns={numColumns} /> : null}
     </View>
   );
-};
+});
 
 export const CollectionScreen: React.FC<{
   route: RouteProp<RootStackParamList, "Collection">;
 }> = ({ route }) => {
   return (
     <ScreenContainer noMargin noScroll>
-      <Content
-        key={route.params.mintAddress}
-        mintAddress={route.params.mintAddress}
-      />
+      <Content key={route.params.id} id={route.params.id} />
     </ScreenContainer>
   );
 };

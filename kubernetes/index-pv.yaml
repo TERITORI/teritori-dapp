@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: teritori-indexer-pv
+spec:
+  capacity:
+    storage: 500Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: ""
+  claimRef:
+    namespace: YOUR_NAMESPACE
+    name: teritori-indexer-pvc
+  local:
+    path: INDEXER_DATA_PATH
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: YOUR_NODE
+          operator: In
+          values:
+          - "true"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: teritori-indexer-pvc
+  labels:
+    app: teritori-indexer
+spec:
+ storageClassName: ""
+ accessModes:
+   - ReadWriteOnce
+ resources:
+   requests:
+      storage: 500Gi

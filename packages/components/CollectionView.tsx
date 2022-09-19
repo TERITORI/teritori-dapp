@@ -19,10 +19,8 @@ export const CollectionView: React.FC<{
   const navigation = useAppNavigation();
   return (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("Collection", { mintAddress: item.mintAddress })
-      }
-      disabled={!item.mintAddress}
+      onPress={() => navigation.navigate("Collection", { id: item.id })}
+      disabled={!item.id}
     >
       <TertiaryBox
         mainContainerStyle={{

@@ -113,6 +113,7 @@ export const WalletSelector: React.FC<{
                 dispatch(setSelectedWalletId(wallet.id));
               }}
               key={wallet.id}
+              style={{ width: "100%" }}
             >
               <WalletView wallet={wallet} style={{ marginBottom: 24 }} />
             </TouchableOpacity>

@@ -25,8 +25,8 @@ export type RootStackParamList = {
   TNSMintPath: undefined;
 
   Marketplace: undefined;
-  Collection: { mintAddress: string };
-  CollectionActivity: { mintAddress: string };
+  Collection: { id: string };
+  CollectionActivity: { id: string };
   NFTDetail: { id: string };
 };
 
@@ -69,8 +69,8 @@ const navConfig = {
     TNSMintPath: "tns/tokens/:name/mint-path",
     // ==== Marketplace
     Marketplace: "marketplace",
-    Collection: "collection/:mintAddress",
-    CollectionActivity: "collection/:mintAddress/activity",
+    Collection: "collection/:id",
+    CollectionActivity: "collection/:id/activity",
     NFTDetail: "nft/:id",
   },
 };
