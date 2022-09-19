@@ -13,19 +13,14 @@ import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
-import { TeritoriNftMinterQueryClient } from "../../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
 import {
   TeritoriNftVaultClient,
   TeritoriNftVaultQueryClient,
 } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { useNFTInfo, vaultContractAddress } from "../../hooks/useNFTInfo";
-import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
-
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
+import { useNFTInfo, vaultContractAddress } from "../../hooks/useNFTInfo";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
-
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
@@ -274,20 +269,20 @@ export const NFTDetailScreen: React.FC<{
     params: { id },
   },
 }) => {
-  const [collectionInfo, setCollectionInfo] = useState<CollectionInfoSmall>()
-
+  const [collectionInfo, setCollectionInfo] = useState<CollectionInfoSmall>();
 
   return (
     <ScreenContainer
       noScroll
       noMargin
-      headerChildren={ collectionInfo?.mintAddress ?
-        <BackTo
-          label={collectionInfo.name}
-          navItem="Collection"
-          navParams={{ id: id.split("-").slice(0, -1).join("-") }}
-        />
-        : undefined
+      headerChildren={
+        collectionInfo?.mintAddress ? (
+          <BackTo
+            label={collectionInfo.name}
+            navItem="Collection"
+            navParams={{ id: id.split("-").slice(0, -1).join("-") }}
+          />
+        ) : undefined
       }
     >
       <Content key={id} id={id} setCollectionInfo={setCollectionInfo} />

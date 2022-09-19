@@ -449,3 +449,17 @@ const prettyError = (err: any) => {
   }
   return msg;
 };
+
+const firstTokenId = (logs: readonly logs.Log[]) => {
+  for (const logEntry of logs) {
+    for (const event of logEntry.events) {
+      if (event.type === "wasm") {
+        for (const attr of event.attributes) {
+          if (attr.key === "token_id") {
+            return attr.value;
+          }
+        }
+      }
+    }
+  }
+};

@@ -93,7 +93,6 @@ export const useCollectionInfo = (id: string) => {
         if (!(err instanceof Error)) {
           return;
         }
-        console.log("1111111111111111111111111111111111111111111111111");
         setNotFound(true);
         setLoading(false);
       }

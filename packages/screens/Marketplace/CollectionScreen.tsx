@@ -60,7 +60,7 @@ const collectionScreenTabItems: TabItem[] = [
 const keyExtractor = (item: NFT) => item.mintAddress;
 
 // ====== Style =====
-const gap = 20
+const gap = 20;
 const nftWidth = 268 + gap * 2; // FIXME: ssot
 
 const viewStyle: ViewStyle = {
@@ -193,16 +193,24 @@ const FlatListHeader: React.FC<{
 const FlatListFooter: React.FC = () => <View style={{ height: 100 }} />;
 
 const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
-                                                                        id,
-                                                                        numColumns,}) => {
-  const {info, notFound, loading: loadingCollectionInfo} = useCollectionInfo(id)
-  const {nfts, fetchMore, firstLoading: firstLoadingNTFs} = useCollectionNFTs(
-    {
-      id,
-      limit: alignDown(20, numColumns) || numColumns,
-      offset: 0
-    })
-  const {setLoadingFullScreen} = useFeedbacks()
+  id,
+  numColumns,
+}) => {
+  const {
+    info,
+    notFound,
+    loading: loadingCollectionInfo,
+  } = useCollectionInfo(id);
+  const {
+    nfts,
+    fetchMore,
+    firstLoading: firstLoadingNTFs,
+  } = useCollectionNFTs({
+    id,
+    limit: alignDown(20, numColumns) || numColumns,
+    offset: 0,
+  });
+  const { setLoadingFullScreen } = useFeedbacks();
 
   // Sync loadingFullScreen
   useEffect(() => {
@@ -217,23 +225,23 @@ const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
   //     </View>
   //   )
   // } else
-    return (
-      <FlatList
-        style={{width: "100%"}}
-        contentContainerStyle={{alignItems: "center"}}
-        key={numColumns}
-        data={nfts}
-        numColumns={numColumns}
-        ItemSeparatorComponent={ItemSeparator}
-        onEndReached={fetchMore}
-        keyExtractor={keyExtractor}
-        onEndReachedThreshold={4}
-        renderItem={renderItem}
-        ListHeaderComponent={<FlatListHeader collectionInfo={info}/>}
-        ListFooterComponent={<FlatListFooter/>}
-      />
-  )
-}
+  return (
+    <FlatList
+      style={{ width: "100%" }}
+      contentContainerStyle={{ alignItems: "center" }}
+      key={numColumns}
+      data={nfts}
+      numColumns={numColumns}
+      ItemSeparatorComponent={ItemSeparator}
+      onEndReached={fetchMore}
+      keyExtractor={keyExtractor}
+      onEndReachedThreshold={4}
+      renderItem={renderItem}
+      ListHeaderComponent={<FlatListHeader collectionInfo={info} />}
+      ListFooterComponent={<FlatListFooter />}
+    />
+  );
+};
 
 const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
   const [viewWidth, setViewWidth] = useState(0);
@@ -253,15 +261,12 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   return (
-    <ScreenContainer noMargin noScroll headerChildren={
-      <BackTo
-        label="Collection Profile"
-      />
-    }>
-      <Content
-        key={route.params.id}
-        id={route.params.id}
-      />
+    <ScreenContainer
+      noMargin
+      noScroll
+      headerChildren={<BackTo label="Collection Profile" />}
+    >
+      <Content key={route.params.id} id={route.params.id} />
     </ScreenContainer>
   );
 };
