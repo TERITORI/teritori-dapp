@@ -198,7 +198,7 @@ const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
 }) => {
   const {
     info,
-    notFound,
+    // notFound,
     loading: loadingCollectionInfo,
   } = useCollectionInfo(id);
   const {
