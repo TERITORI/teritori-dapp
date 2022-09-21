@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
-import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
-import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
-import copySVG from "../../../../assets/icons/copy.svg";
-import starSVG from "../../../../assets/icons/star.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
+import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
+import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
+import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
+import copySVG from "../../../assets/icons/copy.svg";
+import starSVG from "../../../assets/icons/star.svg";
+import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
 import {
   neutral17,
   neutral22,
@@ -16,8 +16,8 @@ import {
   neutralA3,
   primaryColor,
   primaryTextColor,
-} from "../../../utils/style/colors";
-import { getIconFromTitle } from "./TokenAllocation";
+} from "../../utils/style/colors";
+import { getIconFromTitle } from "./Overview/TokenAllocation";
 
 interface ButtonGroupProps {
   buttons: {

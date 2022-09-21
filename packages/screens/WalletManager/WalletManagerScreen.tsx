@@ -2,9 +2,10 @@ import React from "react";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Overview } from "./Overview/Overview";
-import { TotalAssets } from "./Overview/TotalAssets";
 import { TabView } from "./TabView";
+import { TotalAssets } from "./TotalAssets";
 import { WalletHeader } from "./WalletHeader";
+import { Wallets } from "./Wallets";
 
 export const WalletManagerScreen: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ export const WalletManagerScreen: React.FC = () => {
       <TabView />
       <Overview />
       <TotalAssets />
+      <Wallets />
     </ScreenContainer>
   );
 };

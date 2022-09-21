@@ -5,6 +5,7 @@ import { PieChart } from "react-native-svg-charts";
 import cosmosHubSVG from "../../../../assets/icons/cosmos-hub-circle.svg";
 import solanaSVG from "../../../../assets/icons/solana-circle.svg";
 import teritoriSVG from "../../../../assets/icons/teritori.svg";
+import terraSVG from "../../../../assets/icons/terra-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { neutral33 } from "../../../utils/style/colors";
@@ -28,6 +29,8 @@ export const getIconFromTitle = (title: string) => {
       return cosmosHubSVG;
     case "Teritori":
       return teritoriSVG;
+    case "Terra":
+      return terraSVG;
     default:
       return solanaSVG;
   }
@@ -49,7 +52,9 @@ const pieData = [
 export const TokenAllocation: React.FC = () => {
   return (
     <View>
-      <BrandText style={{ marginBottom: 24 }}>Token Allocation</BrandText>
+      <BrandText style={{ marginBottom: 24, fontSize: 20 }}>
+        Token Allocation
+      </BrandText>
       <View
         style={{
           flexDirection: "row",

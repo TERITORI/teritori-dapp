@@ -92,6 +92,7 @@ const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
         style={{
           width: 200,
           marginLeft: 8,
+          fontSize: 14,
         }}
       >
         {title}
@@ -101,6 +102,7 @@ const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
         style={{
           width: 80,
           textAlign: "right",
+          fontSize: 14,
         }}
       >
         {percent}%
@@ -158,7 +160,13 @@ export const AssetRatioByChain: React.FC = () => {
               marginRight: 12,
             }}
           />
-          <BrandText>Available Balance</BrandText>
+          <BrandText
+            style={{
+              fontSize: 14,
+            }}
+          >
+            Available Balance
+          </BrandText>
         </View>
         <View
           style={{
@@ -176,7 +184,13 @@ export const AssetRatioByChain: React.FC = () => {
               marginRight: 12,
             }}
           />
-          <BrandText>Staked Balance</BrandText>
+          <BrandText
+            style={{
+              fontSize: 14,
+            }}
+          >
+            Staked Balance
+          </BrandText>
         </View>
       </View>
     </View>
