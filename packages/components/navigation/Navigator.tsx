@@ -33,6 +33,11 @@ export const Navigator: React.FC = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
+        name="WalletManager"
+        component={WalletManagerScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{ header: () => null }}
@@ -71,11 +76,6 @@ export const Navigator: React.FC = () => {
         name="Wallets"
         component={WalletsScreen}
         options={{ presentation: "transparentModal", header: () => null }}
-      />
-      <Stack.Screen
-        name="WalletManager"
-        component={WalletManagerScreen}
-        options={{ header: () => null }}
       />
 
       {/* ==== Launchpad */}

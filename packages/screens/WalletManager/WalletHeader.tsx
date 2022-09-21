@@ -2,16 +2,12 @@ import React from "react";
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import walletHeaderButtonCardSVG from "../../../assets/cards/wallet-header-button-card.svg";
-import walletHeaderCardSVG from "../../../assets/cards/wallet-header-card.svg";
 import penSVG from "../../../assets/icons/manage.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import {
-  neutral22,
-  neutralA3,
-  primaryTextColor,
-} from "../../utils/style/colors";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 
 interface WalletHeaderProps {
   title: string;
@@ -28,20 +24,16 @@ const WalletHeaderCard: React.FC<WalletHeaderProps> = ({
   actionButton,
 }) => {
   return (
-    <View
+    <TertiaryBox
+      height={116}
+      width={200}
+      mainContainerStyle={{
+        backgroundColor: neutral17,
+      }}
       style={{
-        height: 116,
-        width: 200,
         marginLeft: 16,
-        position: "relative",
       }}
     >
-      <SVG
-        width="100%"
-        height="100%"
-        source={walletHeaderCardSVG}
-        style={{ position: "absolute", zIndex: 0 }}
-      />
       <View
         style={{
           paddingVertical: 14,
@@ -49,6 +41,9 @@ const WalletHeaderCard: React.FC<WalletHeaderProps> = ({
           flexDirection: "column",
           justifyContent: "space-between",
           flex: 1,
+          width: "100%",
+          height: 116,
+          position: "relative",
         }}
       >
         <BrandText
@@ -65,38 +60,20 @@ const WalletHeaderCard: React.FC<WalletHeaderProps> = ({
         >
           {data}
         </BrandText>
-      </View>
-      {!!actionButton && (
-        <TouchableOpacity
-          onPress={actionButton.onPress}
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            height: 36,
-            width: 85,
-            position: "absolute",
-            bottom: 12,
-            right: 12,
-          }}
-        >
-          <SVG
-            width="100%"
-            height="100%"
-            source={walletHeaderButtonCardSVG}
-            style={{ position: "absolute", zIndex: 0 }}
-          />
-          <BrandText
+        {!!actionButton && (
+          <PrimaryButton
+            size="XS"
+            text={actionButton.label}
+            onPress={actionButton.onPress}
             style={{
-              fontSize: 16,
-              color: primaryTextColor,
-              zIndex: 1,
+              position: "absolute",
+              bottom: 0,
+              right: 0,
             }}
-          >
-            {actionButton.label}
-          </BrandText>
-        </TouchableOpacity>
-      )}
-    </View>
+          />
+        )}
+      </View>
+    </TertiaryBox>
   );
 };
 

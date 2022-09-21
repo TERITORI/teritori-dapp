@@ -8,10 +8,12 @@ export const errorColor = "#F46F76";
 export const yellowDefault = "#FFE768";
 export const pinkDefault = "#F46FBF";
 
-// others
 export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
 
+export const white = "#FFFFFF";
+
+export const neutral00 = "#000000";
 export const neutral17 = "#171717";
 export const neutral11 = "#111111";
 export const neutral22 = "#222222";
