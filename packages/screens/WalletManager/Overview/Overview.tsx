@@ -6,7 +6,11 @@ import { TokenAllocation } from "./TokenAllocation";
 
 export const Overview: React.FC = () => {
   return (
-    <View>
+    <View
+      style={{
+        paddingBottom: 40,
+      }}
+    >
       <AssetRatioByChain />
       <TokenAllocation />
     </View>

@@ -4,6 +4,7 @@ import { PieChart } from "react-native-svg-charts";
 
 import cosmosHubSVG from "../../../../assets/icons/cosmos-hub-circle.svg";
 import solanaSVG from "../../../../assets/icons/solana-circle.svg";
+import teritoriSVG from "../../../../assets/icons/teritori.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 
@@ -18,12 +19,14 @@ const getPieColor = (title: string): string => {
   }
 };
 
-const getIconFromTitle = (title: string) => {
+export const getIconFromTitle = (title: string) => {
   switch (title) {
     case "Solana":
       return solanaSVG;
     case "Cosmos Hub":
       return cosmosHubSVG;
+    case "Teritori":
+      return teritoriSVG;
     default:
       return solanaSVG;
   }
