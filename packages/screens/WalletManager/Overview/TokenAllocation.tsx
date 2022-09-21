@@ -7,6 +7,7 @@ import solanaSVG from "../../../../assets/icons/solana-circle.svg";
 import teritoriSVG from "../../../../assets/icons/teritori.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
+import { neutral33 } from "../../../utils/style/colors";
 
 const getPieColor = (title: string): string => {
   switch (title) {
@@ -58,7 +59,7 @@ export const TokenAllocation: React.FC = () => {
         }}
       >
         <PieChart
-          style={{ height: 216, flex: 1 }}
+          style={{ height: 216, flex: 1, width: 216, marginRight: 32 }}
           data={pieData.map((data) => ({
             ...data,
             key: data.title,
@@ -77,6 +78,7 @@ export const TokenAllocation: React.FC = () => {
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
+                marginBottom: 16,
               }}
             >
               <SVG
@@ -87,18 +89,30 @@ export const TokenAllocation: React.FC = () => {
               <BrandText
                 style={{
                   marginLeft: 8,
+                  width: 120,
+                  fontSize: 14,
                 }}
               >
                 {item.title}
               </BrandText>
               <BrandText
                 style={{
-                  alignSelf: "flex-end",
+                  fontSize: 14,
                 }}
               >
                 ${item.amount}
               </BrandText>
-              <BrandText>{item.percent}%</BrandText>
+              <BrandText
+                style={{
+                  fontSize: 14,
+                  borderLeftWidth: 1,
+                  borderColor: neutral33,
+                  paddingLeft: 12,
+                  marginLeft: 12,
+                }}
+              >
+                {item.percent}%
+              </BrandText>
             </View>
           ))}
         </View>

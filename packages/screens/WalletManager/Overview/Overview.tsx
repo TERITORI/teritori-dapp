@@ -9,6 +9,8 @@ export const Overview: React.FC = () => {
     <View
       style={{
         paddingBottom: 40,
+        flexDirection: "row",
+        justifyContent: "space-between",
       }}
     >
       <AssetRatioByChain />
