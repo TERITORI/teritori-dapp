@@ -13,7 +13,9 @@ import {
 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { NFTCancelListingCard } from "../cards/NFTCancelListingCard";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
+import { NFTSellCard } from "../cards/NFTSellCard";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TransactionPaymentModal } from "../modals/transaction/TransactionPaymentModal";
 import { TransactionPendingModal } from "../modals/transaction/TransactionPendingModal";
@@ -40,7 +42,9 @@ const mainInfoTabItems: TabItem[] = [
 export const NFTMainInfo: React.FC<{
   nftInfo?: NFTInfo;
   buy: () => Promise<ExecuteResult | undefined>;
-}> = ({ nftInfo, buy }) => {
+  sell: (price: string) => Promise<ExecuteResult | undefined>;
+  cancelListing: () => Promise<ExecuteResult | undefined>;
+}> = ({ nftInfo, buy, sell, cancelListing }) => {
   const [transactionPaymentModalVisible, setTransactionPaymentModalVisible] =
     useState(false);
   const [transactionPendingModalVisible, setTransactionPendingModalVisible] =
@@ -167,12 +171,33 @@ export const NFTMainInfo: React.FC<{
           name={nftInfo?.collectionName}
         />
 
-        <NFTPriceBuyCard
-          style={{ marginTop: 24, marginBottom: 40 }}
-          onPressBuy={() => setTransactionPaymentModalVisible(true)}
-          price={nftInfo?.price}
-          priceDenom={nftInfo?.priceDenom}
-        />
+        {nftInfo?.canSell && (
+          <NFTSellCard
+            style={{ marginTop: 24, marginBottom: 40 }}
+            onPressSell={sell}
+          />
+        )}
+        {nftInfo?.isListed && !nftInfo?.isOwner && (
+          <NFTPriceBuyCard
+            style={{ marginTop: 24, marginBottom: 40 }}
+            onPressBuy={() => setTransactionPaymentModalVisible(true)}
+            price={nftInfo.price}
+            priceDenom={nftInfo.priceDenom}
+          />
+        )}
+        {nftInfo?.isListed && nftInfo?.isOwner && (
+          <NFTCancelListingCard
+            style={{ marginTop: 24, marginBottom: 40 }}
+            price={nftInfo.price}
+            priceDenom={nftInfo.priceDenom}
+            onPressCancel={cancelListing}
+          />
+        )}
+        {!nftInfo?.isListed && !nftInfo?.isOwner && (
+          <View style={{ marginTop: 24, marginBottom: 40 }}>
+            <BrandText style={{ color: neutral77 }}>Not listed</BrandText>
+          </View>
+        )}
 
         <Tabs
           onPressTabItem={onPressTabItem}

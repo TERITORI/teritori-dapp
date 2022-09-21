@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: teritori-dapp-backend
+  name: teritori-indexer
   annotations:
     reloader.stakater.com/auto: "true"
 spec:
@@ -13,23 +13,25 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: teritori-dapp-backend
+      app: teritori-indexer
   template:
     metadata:
       labels:
-        app: teritori-dapp-backend
+        app: teritori-indexer
     spec:
       containers:
-      - name: teritori-dapp-backend
-        image: YOUR_REGISTRY/teritori/teritori-dapp-backend:BACKEND_COMMIT
+      - name: teritori-indexer
+        image: YOUR_REGISTRY/teritori/teritori-indexer:BACKEND_COMMIT
         env:
+        - name: TENDERMINT_RPC_ENDPOINT
+          value: "http://teritorid:26657"
+        - name: COSMOS_REST_ENDPOINT
+          value: "http://teritorid:1317"
         - name: DB_PATH
           value: "/data/teritori-index.sqlite"
         securityContext:
           allowPrivilegeEscalation: false
         imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 9090
         volumeMounts:
           - mountPath: /data
             name: teritor-indexer-storage
@@ -45,19 +47,3 @@ spec:
       - name: teritor-indexer-storage
         persistentVolumeClaim:
           claimName: teritori-indexer-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: teritori-dapp-backend
-  annotations:
-spec:
-  selector:
-    app: teritori-dapp-backend
-  ports:
-  - name: http
-    port: 80
-    targetPort: 9090
-  - name: https
-    port: 443
-    targetPort: 9090

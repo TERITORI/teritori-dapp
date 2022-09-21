@@ -1,4 +1,9 @@
-import { SigningCosmWasmClient, Secp256k1HdWallet } from "cosmwasm";
+import {
+  SigningCosmWasmClient,
+  Secp256k1HdWallet,
+  GasPrice,
+  Decimal,
+} from "cosmwasm";
 import fs from "fs";
 import { stdin, stdout } from "node:process";
 import path from "path";
@@ -6,7 +11,6 @@ import readline, { Interface as ReadlineInterface } from "readline";
 
 import { TeritoriNftMinterClient } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
 import { InstantiateMsg } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.types";
-import { teritoriGasPrice } from "../utils/teritori";
 import { nftStorageUpload } from "./nft-storage-upload";
 import { pinataUpload } from "./pinata-upload";
 import { StorageResult } from "./storage";
@@ -33,7 +37,7 @@ const main = async () => {
   const client = await SigningCosmWasmClient.connectWithSigner(
     rpcEndpoint,
     wallet,
-    { gasPrice: teritoriGasPrice }
+    { gasPrice: new GasPrice(Decimal.fromUserInput("0.025", 6), "utori") }
   );
 
   const accounts = await wallet.getAccounts();

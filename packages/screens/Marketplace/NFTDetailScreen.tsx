@@ -5,7 +5,9 @@ import { ScrollView, View } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
+import { NFTActivity } from "../../components/nftDetails/NFTActivity";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
+import { NFTPriceHistory } from "../../components/nftDetails/NFTPriceHistory";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
 import {
   initialToastError,
@@ -17,7 +19,9 @@ import {
   TeritoriNftVaultQueryClient,
 } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
+import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useSellNFT } from "../../hooks/useSellNFT";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   getNonSigningCosmWasmClient,
@@ -45,7 +49,7 @@ const screenTabItems: TabItem[] = [
     isSelected: false,
   },
   {
-    label: "Activities",
+    label: "Activity",
     isSelected: false,
   },
   {
@@ -75,8 +79,32 @@ export interface NFTInfo {
   collectionName: string;
 }
 
+export const NFTDetailScreen: React.FC<{
+  route: RouteProp<RootStackParamList, "NFTDetail">;
+}> = ({
+  route: {
+    params: { id },
+  },
+}) => {
+  return (
+    <ScreenContainer
+      noScroll
+      noMargin
+      headerChildren={
+        <BackTo
+          label="Collection"
+          navItem="Collection"
+          navParams={{ id: id.split("-").slice(0, -1).join("-") }}
+        />
+      }
+    >
+      <Content key={id} id={id} />
+    </ScreenContainer>
+  );
+};
+
 const Content: React.FC<{ id: string }> = ({ id }) => {
-  const { onPressTabItem, tabItems } = useTabs(screenTabItems);
+  const { onPressTabItem, tabItems, selectedTabItem } = useTabs(screenTabItems);
   const { setToastError } = useFeedbacks();
   const { setLoadingFullScreen } = useFeedbacks();
   const wallet = useSelectedWallet();
@@ -107,7 +135,7 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
         nftContractAddr: info.nftAddress,
         nftTokenId: info.tokenId,
       });
-      const vaultInfo = vaultClient.nftInfo({
+      const vaultInfo = await vaultClient.nftInfo({
         nftContractAddr: info.nftAddress,
         nftTokenId: info.tokenId,
         wallet: ownerAddress,
@@ -124,8 +152,8 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
         undefined,
         [
           {
-            amount: (await vaultInfo).amount,
-            denom: (await vaultInfo).denom,
+            amount: vaultInfo.amount,
+            denom: vaultInfo.denom,
           },
         ]
       );
@@ -143,6 +171,55 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
       }
     }
   }, [wallet, info]);
+
+  const sell = useSellNFT();
+
+  const handleSell = useCallback(
+    async (price: string) => {
+      if (!info) {
+        return;
+      }
+      const reply = await sell(info.nftAddress, info.tokenId, price);
+      console.log(reply);
+      refresh();
+      return reply;
+    },
+    [info, sell, refresh]
+  );
+
+  const cancelListing = useCancelNFTListing(
+    info?.nftAddress || "",
+    info?.tokenId || ""
+  );
+
+  const handleCancelListing = useCallback(async () => {
+    const reply = await cancelListing();
+    console.log(reply);
+    refresh();
+    return reply;
+  }, [cancelListing, refresh]);
+
+  let tabContent;
+  switch (selectedTabItem.label) {
+    case "Main info":
+      tabContent = (
+        <NFTMainInfo
+          nftInfo={info}
+          buy={buy}
+          sell={handleSell}
+          cancelListing={handleCancelListing}
+        />
+      );
+      break;
+    case "Price history":
+      tabContent = (
+        <NFTPriceHistory id={id} style={{ height: 200, width: 400 }} />
+      );
+      break;
+    case "Activity":
+      tabContent = <NFTActivity id={id} />;
+      break;
+  }
 
   // Sync loadingFullScreen
   useEffect(() => {
@@ -186,8 +263,7 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
             onPressTabItem={onPressTabItem}
           />
 
-          {/*====== Main info NFT */}
-          <NFTMainInfo nftInfo={info} buy={buy} />
+          {tabContent}
 
           {/*====== More from this collection */}
           {/*TODO: Fetch 4 firsts NFTs from this NFT collection*/}
@@ -302,30 +378,4 @@ const useNFTInfo = (id: string, wallet: string | undefined) => {
   }, [id, wallet, refreshIndex]);
 
   return { info, refresh, notFound, loading };
-};
-
-export const NFTDetailScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "NFTDetail">;
-}> = ({
-  route: {
-    params: { id },
-  },
-}) => {
-  //TODO: Get collection mintaddress and name from the NFT and pass it to <BackTo/>
-
-  return (
-    <ScreenContainer
-      noScroll
-      noMargin
-      headerChildren={
-        <BackTo
-          label="Collection"
-          navItem="Collection"
-          navParams={{ mintAddress: "collection_mintaddress" }}
-        />
-      }
-    >
-      <Content key={id} id={id} />
-    </ScreenContainer>
-  );
 };
