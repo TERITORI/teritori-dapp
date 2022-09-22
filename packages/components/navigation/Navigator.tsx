@@ -30,7 +30,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const Navigator: React.FC = () => {
   return (
-    <Stack.Navigator initialRouteName="MyCollection">
+    <Stack.Navigator>
       <Stack.Screen
         name="Home"
         component={HomeScreen}
