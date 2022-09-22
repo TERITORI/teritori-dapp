@@ -1,6 +1,7 @@
 import React from "react";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { MyNFTs } from "./MyNFTs";
 import { Overview } from "./Overview/Overview";
 import { TabView } from "./TabView";
 import { TotalAssets } from "./TotalAssets";
@@ -15,6 +16,7 @@ export const WalletManagerScreen: React.FC = () => {
       <Overview />
       <TotalAssets />
       <Wallets />
+      <MyNFTs />
     </ScreenContainer>
   );
 };
