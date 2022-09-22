@@ -237,6 +237,7 @@ export const HubLanding: React.FC = () => {
           >
             <MyWalletsCard onPress={() => navigation.navigate("Wallets")} />
             <DAppCard
+              onPress={() => navigation.navigate("Staking")}
               label="Staking"
               description="Participate to the Security
 Get rewards by delegating to Teritori validators"

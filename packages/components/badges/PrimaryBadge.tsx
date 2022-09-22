@@ -1,14 +1,17 @@
 import * as React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
+import { DefaultTheme, useTheme } from "styled-components/native";
 
-import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 
 export const PrimaryBadge: React.FC<{
-  label: string;
+  label: string | number;
   style?: StyleProp<ViewStyle>;
-}> = ({ label, style }) => {
+  backgroundColor?: keyof DefaultTheme["colors"];
+}> = ({ label, style, backgroundColor = "primary" }) => {
+  const { colors } = useTheme();
+
   return (
     <View
       style={[
@@ -26,7 +29,7 @@ export const PrimaryBadge: React.FC<{
         style={{
           paddingVertical: 4,
           paddingHorizontal: 10,
-          backgroundColor: primaryColor,
+          backgroundColor: colors[backgroundColor],
           borderRadius: 999,
         }}
       >

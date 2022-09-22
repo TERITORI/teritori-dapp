@@ -13,6 +13,7 @@ import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MintScreen } from "../../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { StackScreen } from "../../screens/Stack";
 import { TNSBurnNameScreen } from "../../screens/TeritoriNameService/TNSBurnNameScreen";
 import { TNSConsultNameScreen } from "../../screens/TeritoriNameService/TNSConsultNameScreen";
 import { TNSExploreScreen } from "../../screens/TeritoriNameService/TNSExploreScreen";
@@ -29,7 +30,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const Navigator: React.FC = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="MyCollection">
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -142,6 +143,11 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="NFTDetail"
         component={NFTDetailScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="Staking"
+        component={StackScreen}
         options={{ header: () => null }}
       />
     </Stack.Navigator>
