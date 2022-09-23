@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import styled from "styled-components/native";
 
@@ -8,13 +8,20 @@ import { Avatar } from "../../components/avatar";
 import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
 import { DivRow } from "../../components/div";
 import { SpacerRow } from "../../components/spacer";
-import { TableRowData, TableRowDataItem } from "../../components/table";
-import { TableRow, TableRowHeading } from "../../components/table/TableRow";
+import {
+  TableRowData,
+  TableRowDataItem,
+  TableRow,
+  TableRowHeading,
+} from "../../components/table";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
 import { fontSemibold13, fontSemibold28 } from "../../utils/style/fonts";
 import { genericStyles } from "../../utils/style/genericStyles";
 import { TEMP_IMAGE } from "../../utils/variables";
-import stackData from "./stackData.json";
+import { StakeDetailModal } from "./components/StakeDetailModal";
+import { StakeFormModal } from "./components/StakeFormModal";
+import stakeData from "./stakeData.json";
+import { StakeType } from "./types";
 
 const mainInfoTabItems: TabItem[] = [
   {
@@ -51,27 +58,51 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
     flex: 2,
   },
 };
-// : TableRowDataItem[][]
-export const StackScreen = () => {
+
+export const StakeScreen = () => {
   //   variables
   const { onPressTabItem, tabItems } = useTabs(mainInfoTabItems);
+  const [stakeDetailModalVisible, setStakeDetailModalVisible] = useState(false);
+  const [isStakeFormVisible, setIsStakeFormVisible] = useState(false);
+  const [selectedStake, setSelectedStake] = useState<StakeType | undefined>();
 
   const customRowData = useMemo(
-    () =>
-      stackData.map((d) => [
-        ...Object.keys(d).map((k) => ({
-          label: d[k as keyof typeof d],
-          id: k,
-          flex: TABLE_ROWS[k].flex,
-        })),
-        { label: "", id: "actions", flex: TABLE_ROWS.actions.flex },
+    (): TableRowDataItem[][] =>
+      stakeData.map((d) => [
+        ...Object.keys(d)
+          .filter((f) =>
+            ["rank", "name", "votingPower", "commission"].includes(f)
+          )
+          .map((k) => ({
+            label: d[k as keyof typeof d],
+            keyId: k,
+            flex: TABLE_ROWS[k].flex,
+            uid: d.rank,
+          })),
+        {
+          label: "",
+          keyId: "actions",
+          flex: TABLE_ROWS.actions.flex,
+          uid: d.rank,
+        },
       ]),
-    [stackData]
+    [stakeData]
   );
+
+  // functions
+  const toggleDetailModal = (stakeData?: StakeType) => {
+    setStakeDetailModalVisible(!stakeDetailModalVisible);
+    setSelectedStake(stakeData);
+  };
+
+  const toggleStakeForm = () => {
+    setIsStakeFormVisible(!isStakeFormVisible);
+    setStakeDetailModalVisible(false);
+  };
 
   // returns
   const specialRender = useCallback((item: TableRowDataItem) => {
-    switch (item.id) {
+    switch (item.keyId) {
       case "name":
         return (
           <View style={genericStyles.rowWithCenter}>
@@ -84,7 +115,13 @@ export const StackScreen = () => {
       case "actions":
         return (
           <View style={[genericStyles.selfEnd]}>
-            <SecondaryButtonOutline text="Manage" size="XS" />
+            <SecondaryButtonOutline
+              onPress={() =>
+                toggleDetailModal(stakeData.find((d) => d.rank === item.uid))
+              }
+              text="Manage"
+              size="XS"
+            />
           </View>
         );
 
@@ -109,6 +146,19 @@ export const StackScreen = () => {
         renderItem={({ item }) => (
           <TableRowData data={item} specialRender={specialRender} />
         )}
+      />
+
+      <StakeDetailModal
+        visible={stakeDetailModalVisible}
+        onClose={toggleDetailModal}
+        data={selectedStake}
+        onPressDelegate={toggleStakeForm}
+      />
+
+      <StakeFormModal
+        visible={isStakeFormVisible}
+        onClose={toggleStakeForm}
+        data={selectedStake}
       />
     </ScreenContainer>
   );

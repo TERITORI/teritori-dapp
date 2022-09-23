@@ -7,6 +7,9 @@ declare module "styled-components" {
     colors: {
       primary: string;
       secondary: string;
+      error: string;
+      neutral44: string;
+      neutral77: string;
 
       codGray: string;
       mineShaft: string;

@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { ComponentType } from "react";
 import { Modal, Pressable, StyleProp, View, ViewStyle } from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
@@ -27,13 +27,24 @@ const SeparatorGradient: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
 export const ModalBase: React.FC<{
-  label: string;
+  label?: string;
   onClose?: () => void;
   width?: number;
   visible?: boolean;
+  Header?: ComponentType;
   childrenBottom?: JSX.Element | JSX.Element[];
   children?: JSX.Element | JSX.Element[];
-}> = ({ label, visible, width, onClose, childrenBottom, children }) => {
+  hideMainSeparator?: boolean;
+}> = ({
+  label,
+  visible,
+  width,
+  onClose,
+  childrenBottom,
+  children,
+  Header,
+  hideMainSeparator,
+}) => {
   return (
     <Modal
       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -69,9 +80,13 @@ export const ModalBase: React.FC<{
               padding: modalMarginPadding,
             }}
           >
-            <BrandText style={{ color: "white", lineHeight: 24 }}>
-              {label}
-            </BrandText>
+            {label && (
+              <BrandText style={{ color: "white", lineHeight: 24 }}>
+                {label}
+              </BrandText>
+            )}
+
+            {Header && <Header />}
 
             <Pressable onPress={onClose}>
               <SVG
@@ -87,7 +102,11 @@ export const ModalBase: React.FC<{
               style={{ width: "100%", paddingHorizontal: modalMarginPadding }}
             >
               {/*------- Modal main content */}
-              <SeparatorGradient style={{ marginBottom: modalMarginPadding }} />
+              {hideMainSeparator !== true && (
+                <SeparatorGradient
+                  style={{ marginBottom: modalMarginPadding }}
+                />
+              )}
               {children}
             </View>
           )}

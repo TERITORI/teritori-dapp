@@ -7,13 +7,16 @@ import { AVATAR_WIDTH } from "../utils/variables";
 // types
 export interface AvatarProps {
   uri: string;
-  size?: "regular";
+  size?: "regular" | "medium";
 }
 
 export const Avatar = ({ uri, size = "regular" }: AvatarProps) => {
   // functions
   const getSize = () => {
     switch (size) {
+      case "medium":
+        return AVATAR_WIDTH * 1.2;
+
       default:
         return AVATAR_WIDTH;
     }

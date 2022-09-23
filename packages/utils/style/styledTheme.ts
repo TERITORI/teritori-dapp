@@ -1,7 +1,7 @@
 // misc
 import { DefaultTheme } from "styled-components/native";
 
-import { primaryColor } from "./colors";
+import { errorColor, neutral44, neutral77, primaryColor } from "./colors";
 import { styledLayout } from "./styledLayout";
 
 /**
@@ -11,8 +11,14 @@ import { styledLayout } from "./styledLayout";
 
 export const styledTheme: DefaultTheme = {
   colors: {
+    // main
     primary: primaryColor,
     secondary: "#FFFFFF",
+    error: errorColor,
+    neutral44,
+    neutral77,
+
+    // others
     codGray: "#1C1C1C",
     mineShaft: "#3D3D3D",
   },

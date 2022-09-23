@@ -7,7 +7,8 @@ import { genericStyles } from "../../utils/style/genericStyles";
 import { BrandText } from "../BrandText";
 
 export type TableRowDataItem = {
-  id: string;
+  uid: string;
+  keyId: string;
   label?: string;
   flex: number;
 };
@@ -15,21 +16,23 @@ export type TableRowDataItem = {
 interface TableRowDataProps {
   data: TableRowDataItem[];
   specialRender?: (item: TableRowDataItem) => React.ReactNode;
+  onPress?: () => void;
 }
 
 export const TableRowData: React.FC<TableRowDataProps> = ({
   data,
   specialRender,
+  onPress,
 }) => {
   return (
-    <Row>
-      {data.map(({ label, flex, id }, index) => (
+    <Row onPress={onPress}>
+      {data.map(({ label, flex, keyId, uid }, index) => (
         <ItemContainer
           key={label}
           flex={flex}
           isLast={data.length - 1 === index}
         >
-          {(specialRender && specialRender({ label, flex, id })) || (
+          {(specialRender && specialRender({ label, flex, keyId, uid })) || (
             <LabelText>{label}</LabelText>
           )}
         </ItemContainer>
@@ -38,7 +41,7 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
   );
 };
 
-const Row = styled.View(({ theme: { layout, colors } }) => ({
+const Row = styled.Pressable(({ theme: { layout, colors } }) => ({
   ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
   width: "100%",
   borderColor: colors.mineShaft,
