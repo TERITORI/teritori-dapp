@@ -7,10 +7,11 @@ import { TabView } from "./TabView";
 import { TotalAssets } from "./TotalAssets";
 import { WalletHeader } from "./WalletHeader";
 import { Wallets } from "./Wallets";
+import { WalletSidebar } from "./WalletSidebar";
 
 export const WalletManagerScreen: React.FC = () => {
   return (
-    <ScreenContainer>
+    <ScreenContainer hideSidebar customSidebar={<WalletSidebar />}>
       <WalletHeader />
       <TabView />
       <Overview />

@@ -6,5 +6,5 @@ export const SVG: React.FC<SvgProps & { source: React.FC<SvgProps> }> = ({
   ...svgProps
 }) => {
   const Component = source;
-  return <Component {...svgProps} />;
+  return <Component {...svgProps} fill={svgProps.color} />;
 };

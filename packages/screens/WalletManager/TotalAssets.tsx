@@ -73,13 +73,15 @@ const CHAIN_ASSETS = [
     apr: 84.36,
     address: "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
     amount: 400,
+    exactAmount: 399.74,
     isFavorite: false,
   },
   {
     title: "Cosmos Hub",
     apr: 84.36,
     address: "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
-    amount: 400,
+    amount: 100,
+    exactAmount: 100.12,
     isFavorite: false,
   },
 ];
@@ -193,89 +195,103 @@ export const TotalAssets: React.FC = () => {
                 }}
               >
                 <BrandText>{item.title}</BrandText>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    borderRadius: 6,
-                    paddingVertical: 2,
-                    paddingHorizontal: 10,
-                    backgroundColor: neutral22,
-                    marginLeft: 12,
-                  }}
-                >
-                  <BrandText
+                {activeView === "Chain" && (
+                  <View
                     style={{
-                      marginRight: 4,
-                      fontSize: 13,
-                    }}
-                  >
-                    Chain info
-                  </BrandText>
-                  <SVG source={chevronRightSVG} />
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 8,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginRight: 12,
-                  }}
-                >
-                  <BrandText
-                    style={{
-                      fontSize: 16,
-                      color: neutralA3,
-                      marginRight: 4,
-                    }}
-                  >
-                    Staking APR:
-                  </BrandText>
-                  <BrandText
-                    style={{
-                      fontSize: 14,
-                    }}
-                  >
-                    {item.apr}%
-                  </BrandText>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    backgroundColor: neutral17,
-                    paddingVertical: 2,
-                    paddingHorizontal: 10,
-                    borderRadius: 6,
-                  }}
-                >
-                  <BrandText
-                    style={{
-                      color: neutral77,
-                      fontSize: 13,
-                    }}
-                  >
-                    {item.address}
-                  </BrandText>
-                  <TouchableOpacity
-                    style={{
-                      height: 24,
-                      width: 24,
+                      flexDirection: "row",
                       alignItems: "center",
-                      justifyContent: "center",
-                      marginLeft: 4,
+                      borderRadius: 6,
+                      paddingVertical: 2,
+                      paddingHorizontal: 10,
+                      backgroundColor: neutral22,
+                      marginLeft: 12,
                     }}
                   >
-                    <SVG source={copySVG} />
-                  </TouchableOpacity>
-                </View>
+                    <BrandText
+                      style={{
+                        marginRight: 4,
+                        fontSize: 13,
+                      }}
+                    >
+                      Chain info
+                    </BrandText>
+                    <SVG source={chevronRightSVG} />
+                  </View>
+                )}
               </View>
+              {activeView === "Chain" && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 8,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginRight: 12,
+                    }}
+                  >
+                    <BrandText
+                      style={{
+                        fontSize: 16,
+                        color: neutralA3,
+                        marginRight: 4,
+                      }}
+                    >
+                      Staking APR:
+                    </BrandText>
+                    <BrandText
+                      style={{
+                        fontSize: 14,
+                      }}
+                    >
+                      {item.apr}%
+                    </BrandText>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: neutral17,
+                      paddingVertical: 2,
+                      paddingHorizontal: 10,
+                      borderRadius: 6,
+                    }}
+                  >
+                    <BrandText
+                      style={{
+                        color: neutral77,
+                        fontSize: 13,
+                      }}
+                    >
+                      {item.address}
+                    </BrandText>
+                    <TouchableOpacity
+                      style={{
+                        height: 24,
+                        width: 24,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginLeft: 4,
+                      }}
+                    >
+                      <SVG source={copySVG} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+              {activeView === "Token" && (
+                <BrandText
+                  style={{
+                    marginTop: 8,
+                    fontSize: 14,
+                  }}
+                >
+                  ≈ ${item.exactAmount}
+                </BrandText>
+              )}
             </View>
           </View>
           <View
