@@ -1,9 +1,12 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import chainSVG from "../../../assets/icons/chain.svg";
-import gridSVG from "../../../assets/icons/grid.svg";
-import walletsSVG from "../../../assets/icons/wallets.svg";
+import chainNeutralA3SVG from "../../../assets/icons/chain-neutralA3.svg";
+import chainWhiteSVG from "../../../assets/icons/chain-white.svg";
+import gridNeutralA3SVG from "../../../assets/icons/grid-neutralA3.svg";
+import gridWhiteSVG from "../../../assets/icons/grid-white.svg";
+import walletsNeutralA3SVG from "../../../assets/icons/wallets-neutralA3.svg";
+import walletsWhiteSVG from "../../../assets/icons/wallets-white.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { getCurrentRouteName, useAppNavigation } from "../../utils/navigation";
@@ -11,17 +14,20 @@ import { neutral33, neutralA3 } from "../../utils/style/colors";
 
 const LIST = [
   {
-    icon: gridSVG,
+    activeIcon: gridWhiteSVG,
+    inactiveIcon: gridNeutralA3SVG,
     title: "My Dashboard",
     routeName: "WalletManager",
   },
   {
-    icon: walletsSVG,
+    activeIcon: walletsWhiteSVG,
+    inactiveIcon: walletsNeutralA3SVG,
     title: "Wallets",
     routeName: "WalletManagerWallets",
   },
   {
-    icon: chainSVG,
+    activeIcon: chainWhiteSVG,
+    inactiveIcon: chainNeutralA3SVG,
     title: "All Chains",
     routeName: "WalletManagerChains",
   },
@@ -52,10 +58,13 @@ export const WalletSidebar: React.FC = () => {
           onPress={() => navigation.navigate(item.routeName)}
         >
           <SVG
-            source={item.icon}
+            source={
+              currentRouteName === item.routeName
+                ? item.activeIcon
+                : item.inactiveIcon
+            }
             height={28}
             width={28}
-            color={currentRouteName === item.routeName ? "white" : neutralA3}
           />
           <BrandText
             style={{

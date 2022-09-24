@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "../components/BrandText";
-import { TertiaryBox } from "../components/boxes/TertiaryBox";
+import { PrimaryBox } from "../components/boxes/PrimaryBox";
 import { neutral33 } from "../utils/style/colors";
 
 const DEFAULT_WIDTH = 164;
@@ -24,14 +24,11 @@ export const Menu: React.FC<MenuProps> = ({
   const [isMenuVisible, setMenuVisibility] = useState(false);
   return (
     <View style={{ position: "relative" }}>
-      <TouchableOpacity
-        onPress={() => setMenuVisibility((prev) => !prev)}
-        style={{ zIndex: 1 }}
-      >
+      <TouchableOpacity onPress={() => setMenuVisibility((prev) => !prev)}>
         {component}
       </TouchableOpacity>
       {isMenuVisible && (
-        <TertiaryBox
+        <PrimaryBox
           width={width}
           style={{
             position: "absolute",
@@ -68,7 +65,7 @@ export const Menu: React.FC<MenuProps> = ({
               </BrandText>
             </TouchableOpacity>
           ))}
-        </TertiaryBox>
+        </PrimaryBox>
       )}
     </View>
   );

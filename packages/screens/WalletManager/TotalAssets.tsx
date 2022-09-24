@@ -243,7 +243,14 @@ export const TotalAssets: React.FC = () => {
             >
               ${item.amount}
             </BrandText>
-            <TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                height: 32,
+                width: 32,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <SVG source={chevronDownSVG} height={16} />
             </TouchableOpacity>
           </View>

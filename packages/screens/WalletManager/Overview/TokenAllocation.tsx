@@ -22,7 +22,6 @@ export const TokenAllocation: React.FC = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          flex: 1,
         }}
       >
         <PieChart
