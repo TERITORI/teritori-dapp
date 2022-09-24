@@ -34,22 +34,6 @@ export const Navigator: React.FC = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="WalletManagerWallets"
-        component={WalletMangerWalletsScreen}
-        options={{ header: () => null }}
-      />
-      <Stack.Screen
-        name="WalletManager"
-        component={WalletManagerScreen}
-        options={{ header: () => null }}
-      />
-
-      <Stack.Screen
-        name="WalletManagerChains"
-        component={WalletManagerScreen}
-        options={{ header: () => null }}
-      />
-      <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{ header: () => null }}
@@ -90,6 +74,23 @@ export const Navigator: React.FC = () => {
         options={{ presentation: "transparentModal", header: () => null }}
       />
 
+      {/* ==== Wallet Manager */}
+      <Stack.Screen
+        name="WalletManagerWallets"
+        component={WalletMangerWalletsScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="WalletManager"
+        component={WalletManagerScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="WalletManagerChains"
+        component={WalletManagerScreen}
+        options={{ header: () => null }}
+      />
       {/* ==== Launchpad */}
       <Stack.Screen
         name="Launchpad"

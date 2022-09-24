@@ -5,14 +5,13 @@ import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ALL_WALLETS } from "../../utils/fakeData/walletManager";
 import { neutral33, neutralA3 } from "../../utils/style/colors";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 import { WalletItem, WalletItemProps } from "./WalletItem";
-import { WalletSidebar } from "./WalletSidebar";
+import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
 
 interface WalletProps {
   item: {
@@ -95,7 +94,7 @@ const Wallet: React.FC<WalletProps> = ({ item }) => {
 };
 export const WalletMangerWalletsScreen: React.FC = () => {
   return (
-    <ScreenContainer hideSidebar customSidebar={<WalletSidebar />}>
+    <WalletManagerScreenContainer>
       <View
         style={{
           paddingVertical: 48,
@@ -130,6 +129,6 @@ export const WalletMangerWalletsScreen: React.FC = () => {
           <Wallet key={item.title} item={item} />
         ))}
       </View>
-    </ScreenContainer>
+    </WalletManagerScreenContainer>
   );
 };

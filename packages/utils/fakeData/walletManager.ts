@@ -172,18 +172,21 @@ export const MY_NFT = [
 
 export const WALLETS = [
   {
+    id: 1,
     title: "Teritori",
     staked: 535053.812943,
     pendingReward: 56469.54635563,
     address: "GxF3432432904320430SDSDSFDS@S>!3A31",
   },
   {
+    id: 2,
     title: "Cosmos Hub",
     staked: 535053.812943,
     pendingReward: 56469.54635563,
     address: "GxF3432432904320430SDSDSFDS@S>!3A31",
   },
   {
+    id: 3,
     title: "Terra",
     staked: 535053.812943,
     pendingReward: 56469.54635563,
