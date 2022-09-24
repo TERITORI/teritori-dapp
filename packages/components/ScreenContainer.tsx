@@ -79,7 +79,7 @@ export const ScreenContainer: React.FC<{
           >
             {["android", "ios"].includes(Platform.OS) ||
               (!hideSidebar ? <Sidebar /> : null)}
-            {customSidebar}
+            {!["android", "ios"].includes(Platform.OS) && customSidebar}
 
             {/*==== Scrollable screen content*/}
             <View style={{ flex: 1 }}>

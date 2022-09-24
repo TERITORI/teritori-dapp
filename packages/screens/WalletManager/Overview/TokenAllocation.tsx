@@ -2,52 +2,14 @@ import React from "react";
 import { View } from "react-native";
 import { PieChart } from "react-native-svg-charts";
 
-import cosmosHubSVG from "../../../../assets/icons/cosmos-hub-circle.svg";
-import solanaSVG from "../../../../assets/icons/solana-circle.svg";
-import teritoriSVG from "../../../../assets/icons/teritori.svg";
-import terraSVG from "../../../../assets/icons/terra-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
+import { WALLET_TOKEN_PIE } from "../../../utils/fakeData/walletManager";
 import { neutral33 } from "../../../utils/style/colors";
-
-const getPieColor = (title: string): string => {
-  switch (title) {
-    case "Solana":
-      return "#16BBFF";
-    case "Cosmos Hub":
-      return "#5C26F5";
-    default:
-      return "black";
-  }
-};
-
-export const getIconFromTitle = (title: string) => {
-  switch (title) {
-    case "Solana":
-      return solanaSVG;
-    case "Cosmos Hub":
-      return cosmosHubSVG;
-    case "Teritori":
-      return teritoriSVG;
-    case "Terra":
-      return terraSVG;
-    default:
-      return solanaSVG;
-  }
-};
-
-const pieData = [
-  {
-    title: "Solana",
-    amount: 400,
-    percent: 80,
-  },
-  {
-    title: "Cosmos Hub",
-    amount: 100,
-    percent: 20,
-  },
-];
+import {
+  getWalletIconFromTitle,
+  getWalletPieColor,
+} from "../../../utils/walletManagerHelpers";
 
 export const TokenAllocation: React.FC = () => {
   return (
@@ -65,20 +27,21 @@ export const TokenAllocation: React.FC = () => {
       >
         <PieChart
           style={{ height: 216, flex: 1, width: 216, marginRight: 32 }}
-          data={pieData.map((data) => ({
+          data={WALLET_TOKEN_PIE.map((data) => ({
             ...data,
             key: data.title,
             value: data.percent,
             svg: {
-              fill: getPieColor(data.title),
+              fill: getWalletPieColor(data.title),
             },
           }))}
           innerRadius="80%"
           padAngle={0.02}
         />
         <View>
-          {pieData.map((item) => (
+          {WALLET_TOKEN_PIE.map((item) => (
             <View
+              key={item.title}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -89,7 +52,7 @@ export const TokenAllocation: React.FC = () => {
               <SVG
                 height={24}
                 width={24}
-                source={getIconFromTitle(item.title)}
+                source={getWalletIconFromTitle(item.title)}
               />
               <BrandText
                 style={{

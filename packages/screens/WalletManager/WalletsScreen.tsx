@@ -8,69 +8,20 @@ import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { ALL_WALLETS } from "../../utils/fakeData/walletManager";
 import { neutral33, neutralA3 } from "../../utils/style/colors";
-import { getIconFromTitle } from "./Overview/TokenAllocation";
-import { WalletItem } from "./WalletItem";
+import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
+import { WalletItem, WalletItemProps } from "./WalletItem";
 import { WalletSidebar } from "./WalletSidebar";
-const ALL_WALLETS = [
-  {
-    title: "Teritori",
-    data: [
-      {
-        id: 1,
-        staked: 535053.812943,
-        pendingReward: 56469.54635563,
-        address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-        isDefault: true,
-      },
-      {
-        id: 2,
-        staked: 535053.812943,
-        pendingReward: 56469.54635563,
-        address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-        isDefault: false,
-      },
-    ],
-  },
-  {
-    title: "Cosmos Hub",
-    data: [
-      {
-        id: 3,
-        staked: 535053.812943,
-        pendingReward: 56469.54635563,
-        address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-        isDefault: true,
-      },
-      {
-        id: 4,
-        staked: 535053.812943,
-        pendingReward: 56469.54635563,
-        address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-        isDefault: false,
-      },
-    ],
-  },
-  {
-    title: "Terra",
-    data: [
-      {
-        staked: 535053.812943,
-        pendingReward: 56469.54635563,
-        address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-        isDefault: true,
-      },
-      {
-        staked: 535053.812943,
-        pendingReward: 56469.54635563,
-        address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-        isDefault: false,
-      },
-    ],
-  },
-];
 
-const Wallet: React.FC = ({ item }) => {
+interface WalletProps {
+  item: {
+    title: string;
+    data: WalletItemProps["item"][];
+  };
+}
+
+const Wallet: React.FC<WalletProps> = ({ item }) => {
   const [isExpanded, setExpanded] = useState(false);
   return (
     <TertiaryBox
@@ -79,43 +30,48 @@ const Wallet: React.FC = ({ item }) => {
         marginBottom: 12,
       }}
     >
-      <TertiaryBox
-        fullWidth
-        mainContainerStyle={{
-          backgroundColor: neutral33,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingVertical: 16,
-          paddingHorizontal: 20,
+      <TouchableOpacity
+        onPress={() => setExpanded((prev) => !prev)}
+        activeOpacity={0.7}
+        style={{
+          width: "100%",
         }}
       >
-        <View
-          style={{
+        <TertiaryBox
+          fullWidth
+          mainContainerStyle={{
+            backgroundColor: neutral33,
             flexDirection: "row",
+            justifyContent: "space-between",
             alignItems: "center",
+            paddingVertical: 16,
+            paddingHorizontal: 20,
           }}
         >
-          <SVG source={getIconFromTitle(item.title)} height={32} width={32} />
-          <BrandText
+          <View
             style={{
-              marginLeft: 12,
-              fontSize: 20,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
-            {item.title}
-          </BrandText>
-        </View>
-        <TouchableOpacity
-          onPress={() => setExpanded((prev) => !prev)}
-          style={{
-            paddingVertical: 4,
-            paddingLeft: 8,
-          }}
-        >
+            <SVG
+              source={getWalletIconFromTitle(item.title)}
+              height={32}
+              width={32}
+            />
+            <BrandText
+              style={{
+                marginLeft: 12,
+                fontSize: 20,
+              }}
+            >
+              {item.title}
+            </BrandText>
+          </View>
+
           <SVG source={isExpanded ? chevronUpSVG : chevronDownSVG} />
-        </TouchableOpacity>
-      </TertiaryBox>
+        </TertiaryBox>
+      </TouchableOpacity>
       {!!isExpanded && (
         <View
           style={{
@@ -128,7 +84,7 @@ const Wallet: React.FC = ({ item }) => {
             <WalletItem
               key={subItem.id}
               totalLength={item.data.length}
-              item={{ ...subItem, title: item.title }}
+              item={subItem}
               index={index}
             />
           ))}

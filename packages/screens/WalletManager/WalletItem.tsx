@@ -4,12 +4,29 @@ import { View, TouchableOpacity } from "react-native";
 import copySVG from "../../../assets/icons/copy.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import { BrandText } from "../../components/BrandText";
+import { Menu } from "../../components/Menu";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { neutral33, neutral77, neutralA3 } from "../../utils/style/colors";
-import { getIconFromTitle } from "./Overview/TokenAllocation";
+import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 
-export const WalletItem: React.FC = ({ index, item, totalLength }) => {
+export interface WalletItemProps {
+  index: number;
+  totalLength: number;
+  item: {
+    id: number;
+    title: string;
+    address: string;
+    pendingReward: number;
+    staked: number;
+  };
+}
+
+export const WalletItem: React.FC<WalletItemProps> = ({
+  index,
+  item,
+  totalLength,
+}) => {
   return (
     <View
       style={{
@@ -28,7 +45,7 @@ export const WalletItem: React.FC = ({ index, item, totalLength }) => {
         }}
       >
         <SVG
-          source={getIconFromTitle(item.title)}
+          source={getWalletIconFromTitle(item.title)}
           height={64}
           width={64}
           style={{
@@ -154,9 +171,24 @@ export const WalletItem: React.FC = ({ index, item, totalLength }) => {
             marginRight: 16,
           }}
         />
-        <TouchableOpacity onPress={() => {}}>
-          <SVG height={32} width={32} source={dotsCircleSVG} />
-        </TouchableOpacity>
+
+        <Menu
+          component={<SVG height={32} width={32} source={dotsCircleSVG} />}
+          items={[
+            {
+              label: "View on Explorer",
+              onPress: () => {},
+            },
+            {
+              label: "Rename address",
+              onPress: () => {},
+            },
+            {
+              label: "Delete wallet",
+              onPress: () => {},
+            },
+          ]}
+        />
       </View>
     </View>
   );

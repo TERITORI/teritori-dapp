@@ -8,6 +8,7 @@ export const Overview: React.FC = () => {
   return (
     <View
       style={{
+        paddingTop: 32,
         paddingBottom: 40,
         flexDirection: "row",
         justifyContent: "space-between",

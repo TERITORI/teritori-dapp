@@ -2,28 +2,10 @@ import React from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
+import { WALLETS } from "../../utils/fakeData/walletManager";
 import { neutral33 } from "../../utils/style/colors";
 import { WalletItem } from "./WalletItem";
-const WALLETS = [
-  {
-    title: "Teritori",
-    staked: 535053.812943,
-    pendingReward: 56469.54635563,
-    address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-  },
-  {
-    title: "Cosmos Hub",
-    staked: 535053.812943,
-    pendingReward: 56469.54635563,
-    address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-  },
-  {
-    title: "Terra",
-    staked: 535053.812943,
-    pendingReward: 56469.54635563,
-    address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-  },
-];
+
 export const Wallets: React.FC = () => {
   return (
     <View

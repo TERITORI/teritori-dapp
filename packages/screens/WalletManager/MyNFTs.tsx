@@ -1,7 +1,6 @@
 import React from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity, Image, FlatList } from "react-native";
 
-import avatarPNG from "../../../assets/default-images/avatar.png";
 import guardianPNG from "../../../assets/default-images/guardian_1.png";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import starSVG from "../../../assets/icons/star.svg";
@@ -9,61 +8,10 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { MY_NFT } from "../../utils/fakeData/walletManager";
 import { neutral33, neutral77 } from "../../utils/style/colors";
-import { getIconFromTitle } from "./Overview/TokenAllocation";
-const NFTs = [
-  {
-    title: "Guardian Genesisi #0",
-    stars: 179,
-    owner: {
-      name: "@nickname",
-      avatar: avatarPNG,
-    },
-    token: "Solona",
-    subTitle: "Gurdians of Teritory",
-    points: 4.75,
-    pointsKey: "SOL",
-    bids: {
-      total: 1,
-      highest: 1,
-    },
-    image: guardianPNG,
-  },
-  {
-    title: "Guardian Genesisi #0",
-    stars: 179,
-    owner: {
-      name: "@nickname",
-      avatar: avatarPNG,
-    },
-    token: "Solona",
-    subTitle: "Gurdians of Teritory",
-    points: 4.75,
-    pointsKey: "SOL",
-    bids: {
-      total: 1,
-      highest: 1,
-    },
-    image: guardianPNG,
-  },
-  {
-    title: "Guardian Genesisi #0",
-    stars: 179,
-    owner: {
-      name: "@nickname",
-      avatar: avatarPNG,
-    },
-    token: "Solona",
-    subTitle: "Gurdians of Teritory",
-    points: 4.75,
-    pointsKey: "SOL",
-    bids: {
-      total: 1,
-      highest: 1,
-    },
-    image: guardianPNG,
-  },
-];
+import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
+
 export const MyNFTs: React.FC = () => {
   return (
     <View
@@ -81,159 +29,167 @@ export const MyNFTs: React.FC = () => {
           flexDirection: "row",
         }}
       >
-        {NFTs.map((item, index) => (
-          <TertiaryBox
-            height={438}
-            width={255}
-            style={{
-              marginRight: 34,
-            }}
-          >
-            <View>
-              <View
-                style={{
-                  paddingTop: 16,
-                  paddingBottom: 12,
-                  paddingHorizontal: 16,
-                }}
-              >
+        <FlatList
+          data={MY_NFT}
+          horizontal
+          keyExtractor={(item) => item.title}
+          renderItem={({ item }) => (
+            <TertiaryBox
+              key={item.title}
+              height={438}
+              width={255}
+              style={{
+                marginRight: 34,
+              }}
+            >
+              <View>
                 <View
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    paddingTop: 16,
+                    paddingBottom: 12,
+                    paddingHorizontal: 16,
                   }}
                 >
                   <View
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <Image
-                      source={{ uri: item.owner.avatar }}
+                    <View
                       style={{
-                        height: 32,
-                        width: 32,
-                        borderRadius: 18,
-                        marginRight: 6,
+                        flexDirection: "row",
+                        alignItems: "center",
                       }}
-                    />
-                    <View>
-                      <BrandText
+                    >
+                      <Image
+                        source={{ uri: item.owner.avatar }}
                         style={{
-                          fontSize: 10,
-                          color: neutral77,
+                          height: 32,
+                          width: 32,
+                          borderRadius: 18,
+                          marginRight: 6,
                         }}
-                      >
-                        Owned by
-                      </BrandText>
+                      />
+                      <View>
+                        <BrandText
+                          style={{
+                            fontSize: 10,
+                            color: neutral77,
+                          }}
+                        >
+                          Owned by
+                        </BrandText>
+                        <BrandText
+                          style={{
+                            fontSize: 12,
+                            lineHeight: 16,
+                          }}
+                        >
+                          {item.owner.name}
+                        </BrandText>
+                      </View>
+                    </View>
+                    <TouchableOpacity>
+                      <SVG source={dotsCircleSVG} height={32} width={32} />
+                    </TouchableOpacity>
+                  </View>
+                  <Image
+                    source={{ uri: guardianPNG }}
+                    style={{
+                      height: 223,
+                      width: 223,
+                      marginTop: 15,
+                      marginBottom: 20,
+                      borderRadius: 12,
+                    }}
+                  />
+                  <BrandText
+                    style={{
+                      fontSize: 14,
+                      marginBottom: 12,
+                    }}
+                  >
+                    {item.title}
+                  </BrandText>
+
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <SVG
+                        height={24}
+                        width={24}
+                        source={getWalletIconFromTitle(item.token)}
+                      />
                       <BrandText
                         style={{
                           fontSize: 12,
-                          lineHeight: 16,
+                          marginLeft: 4,
                         }}
                       >
-                        {item.owner.name}
+                        {item.subTitle}
                       </BrandText>
                     </View>
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <BrandText
+                        style={{
+                          color: neutral77,
+                          fontSize: 12,
+                          marginRight: 4,
+                        }}
+                      >
+                        {item.stars}
+                      </BrandText>
+                      <SVG height={16} width={16} source={starSVG} />
+                    </View>
                   </View>
-                  <TouchableOpacity>
-                    <SVG source={dotsCircleSVG} height={32} width={32} />
-                  </TouchableOpacity>
                 </View>
-                <Image
-                  source={{ uri: guardianPNG }}
-                  style={{
-                    height: 223,
-                    width: 223,
-                    marginTop: 15,
-                    marginBottom: 20,
-                    borderRadius: 12,
-                  }}
-                />
-                <BrandText
-                  style={{
-                    fontSize: 14,
-                    marginBottom: 12,
-                  }}
-                >
-                  {item.title}
-                </BrandText>
-
                 <View
                   style={{
+                    borderTopWidth: 1,
+                    borderTopColor: neutral33,
+                    paddingVertical: 16,
+                    paddingHorizontal: 16,
                     flexDirection: "row",
-                    alignItems: "center",
                     justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <SVG
                       height={24}
                       width={24}
-                      source={getIconFromTitle(item.token)}
+                      source={getWalletIconFromTitle(item.token)}
                     />
                     <BrandText
-                      style={{
-                        fontSize: 12,
-                        marginLeft: 4,
-                      }}
+                      style={{ fontSize: 12, color: neutral77, marginLeft: 6 }}
                     >
-                      {item.subTitle}
+                      Highest bid {item.bids.highest}/{item.bids.total}
                     </BrandText>
                   </View>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <BrandText
-                      style={{
-                        color: neutral77,
-                        fontSize: 12,
-                        marginRight: 4,
-                      }}
-                    >
-                      {item.stars}
-                    </BrandText>
-                    <SVG height={16} width={16} source={starSVG} />
-                  </View>
-                </View>
-              </View>
-              <View
-                style={{
-                  borderTopWidth: 1,
-                  borderTopColor: neutral33,
-                  paddingVertical: 16,
-                  paddingHorizontal: 16,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <SVG
-                    height={24}
-                    width={24}
-                    source={getIconFromTitle(item.token)}
+                  <SecondaryButton
+                    size="XS"
+                    text={`${item.points} ${item.pointsKey}`}
+                    onPress={() => {}}
                   />
-                  <BrandText
-                    style={{ fontSize: 12, color: neutral77, marginLeft: 6 }}
-                  >
-                    Highest bid {item.bids.highest}/{item.bids.total}
-                  </BrandText>
                 </View>
-                <SecondaryButton
-                  size="XS"
-                  text={`${item.points} ${item.pointsKey}`}
-                  onPress={() => {}}
-                />
               </View>
-            </View>
-          </TertiaryBox>
-        ))}
+            </TertiaryBox>
+          )}
+        />
       </View>
     </View>
   );

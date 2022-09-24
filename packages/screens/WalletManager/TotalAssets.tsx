@@ -8,83 +8,17 @@ import copySVG from "../../../assets/icons/copy.svg";
 import starSVG from "../../../assets/icons/star.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
+import { ButtonGroup } from "../../components/buttons/ButtonGroup";
+import { WALLET_CHAIN_ASSETS } from "../../utils/fakeData/walletManager";
 import {
   neutral17,
   neutral22,
   neutral33,
   neutral77,
   neutralA3,
-  primaryColor,
-  primaryTextColor,
 } from "../../utils/style/colors";
-import { getIconFromTitle } from "./Overview/TokenAllocation";
+import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 
-interface ButtonGroupProps {
-  buttons: {
-    title: string;
-    onPress: () => void;
-    isActive: boolean;
-  }[];
-}
-
-const ButtonGroup: React.FC<ButtonGroupProps> = ({ buttons }) => (
-  <View
-    style={{
-      flexDirection: "row",
-      alignItems: "center",
-    }}
-  >
-    {buttons?.map((button, index) => (
-      <TouchableOpacity
-        onPress={button.onPress}
-        style={[
-          {
-            backgroundColor: button.isActive ? primaryColor : neutral22,
-            paddingVertical: 6,
-            paddingHorizontal: 11,
-          },
-          index === 0 && {
-            borderTopLeftRadius: 20,
-            borderBottomLeftRadius: 20,
-          },
-          index === buttons?.length - 1 && {
-            borderTopRightRadius: 20,
-            borderBottomRightRadius: 20,
-          },
-        ]}
-      >
-        <BrandText
-          style={{
-            fontSize: 14,
-            lineHeight: 16,
-            color: button?.isActive ? primaryTextColor : "white",
-          }}
-        >
-          {button.title}
-        </BrandText>
-      </TouchableOpacity>
-    ))}
-  </View>
-);
-
-const CHAIN_ASSETS = [
-  {
-    title: "Teritori",
-    apr: 84.36,
-    address: "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
-    amount: 400,
-    exactAmount: 399.74,
-    isFavorite: false,
-  },
-  {
-    title: "Cosmos Hub",
-    apr: 84.36,
-    address: "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
-    amount: 100,
-    exactAmount: 100.12,
-    isFavorite: false,
-  },
-];
 export const TotalAssets: React.FC = () => {
   const [activeView, setActiveView] = useState<"Chain" | "Token">("Chain");
   const [isExpandAll, setIsExpandAll] = useState(false);
@@ -115,12 +49,12 @@ export const TotalAssets: React.FC = () => {
           <ButtonGroup
             buttons={[
               {
-                title: "Chain",
+                label: "Chain",
                 onPress: () => setActiveView("Chain"),
                 isActive: activeView === "Chain",
               },
               {
-                title: "Token",
+                label: "Token",
                 onPress: () => setActiveView("Token"),
                 isActive: activeView === "Token",
               },
@@ -160,13 +94,14 @@ export const TotalAssets: React.FC = () => {
         </View>
       </View>
 
-      {CHAIN_ASSETS.map((item, index) => (
+      {WALLET_CHAIN_ASSETS.map((item, index) => (
         <View
+          key={item.title}
           style={{
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            borderBottomWidth: index !== CHAIN_ASSETS.length - 1 ? 1 : 0,
+            borderBottomWidth: index !== WALLET_CHAIN_ASSETS.length - 1 ? 1 : 0,
             borderColor: neutral33,
             paddingVertical: 16,
           }}
@@ -179,7 +114,7 @@ export const TotalAssets: React.FC = () => {
           >
             <SVG source={starSVG} height={16} width={16} />
             <SVG
-              source={getIconFromTitle(item.title)}
+              source={getWalletIconFromTitle(item.title)}
               height={64}
               width={64}
               style={{

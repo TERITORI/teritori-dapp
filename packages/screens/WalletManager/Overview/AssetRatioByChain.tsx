@@ -9,6 +9,7 @@ import ethereumSVG from "../../../../assets/icons/ethereum-circle.svg";
 import solanaSVG from "../../../../assets/icons/solana-circle.svg";
 import terraSVG from "../../../../assets/icons/terra-circle.svg";
 import { BrandText } from "../../../components/BrandText";
+import { ProgressLine } from "../../../components/ProgressLine";
 import { SVG } from "../../../components/SVG";
 import { neutral33 } from "../../../utils/style/colors";
 
@@ -46,37 +47,6 @@ const DATA: AssetRatioData[] = [
   },
 ];
 
-export const ProgressBar: React.FC<Pick<AssetRatioData, "percent">> = ({
-  percent,
-}) => {
-  return (
-    <View
-      style={{
-        height: 4,
-        borderRadius: 4,
-        backgroundColor: neutral33,
-        width: 200,
-        position: "relative",
-      }}
-    >
-      <LinearGradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        locations={[0, 0.5, 1]}
-        colors={["#5433FF", "#20BDFF", "#A5FECB"]}
-        style={{
-          width: (percent / 100) * 200,
-          height: 4,
-          position: "absolute",
-          top: 0,
-          left: 0,
-          borderRadius: 4,
-        }}
-      />
-    </View>
-  );
-};
-
 const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
   return (
     <View
@@ -97,7 +67,7 @@ const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
       >
         {title}
       </BrandText>
-      <ProgressBar percent={percent} />
+      <ProgressLine percent={percent} />
       <BrandText
         style={{
           width: 80,
