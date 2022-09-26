@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet } from "react-native";
 import styled from "styled-components/native";
@@ -38,9 +38,14 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
   data,
 }) => {
   // variables
-  const { control, setValue, handleSubmit, watch } =
+  const { control, setValue, handleSubmit, watch, reset } =
     useForm<StakeFormValuesType>();
   const watchAll = watch();
+
+  // hooks
+  useEffect(() => {
+    reset();
+  }, [visible]);
 
   // functions
   const onSubmit = (formData: StakeFormValuesType) => {
