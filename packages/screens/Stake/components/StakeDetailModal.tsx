@@ -75,7 +75,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
         </FooterRow>
       </>
     ),
-    []
+    [visible]
   );
 
   return (
