@@ -32,6 +32,7 @@ export const SendFundModal: React.FC<{
           placeHolder="Type your comment here"
           onChangeText={setComment}
           style={{ marginBottom: 12 }}
+          width={322}
         />
         <View style={{ flex: 1, flexDirection: "row" }}>
           <TextInputCustom
@@ -41,6 +42,7 @@ export const SendFundModal: React.FC<{
             onChangeText={setAmount}
             onlyNumbers
             style={{ marginRight: 12, minWidth: 0 }}
+            width={322}
           />
           <PrimaryButton size="M" text="Send" />
         </View>

@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { StyleSheet } from "react-native";
+import React, { useCallback, useState } from "react";
+import { Pressable, StyleSheet } from "react-native";
 import styled from "styled-components/native";
 
 import warningTriangleSVG from "../../../../assets/icons/warning-triangle.svg";
@@ -12,7 +12,9 @@ import { DivColumn, DivRow } from "../../../components/div";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useCurrencyFormater } from "../../../hooks/useCurrencyFormater";
 import {
+  fontSemibold9,
   fontSemibold12,
   fontSemibold13,
   fontSemibold16,
@@ -27,11 +29,17 @@ interface StakeFormModalProps {
   data?: StakeType;
 }
 
+const MAX_VALUE = 43554434;
+
 export const StakeFormModal: React.FC<StakeFormModalProps> = ({
   onClose,
   visible,
   data,
 }) => {
+  // variables
+  const [amount, setAmount] = useState("");
+  const { formatCurrency } = useCurrencyFormater();
+
   // returns
   const Header = useCallback(
     () => (
@@ -51,9 +59,9 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
       <>
         <Separator />
         <FooterRow>
-          <SecondaryButton size="SM" text="Cancel" />
+          <SecondaryButton size="XS" text="Cancel" width={120} />
           <SpacerRow numberOfSpaces={0.5} />
-          <PrimaryButton size="SM" text="Stake" />
+          <PrimaryButton size="XS" text="Stake" width={120} />
         </FooterRow>
       </>
     ),
@@ -89,13 +97,32 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
           </DivColumn>
         </StakeWarningContainer>
         <SpacerColumn numberOfSpaces={0.625} />
-        {/* <TextInputCustom
+        <TextInputCustom
+          variant="labelOutside"
           label="Validator Name"
           placeHolder="Allnodes.com ⚡️ Lowest fees"
+          value="Allnodes.com ⚡️ Lowest fees"
+          onChangeText={() => {}}
         />
-        <TextInputCustom label="Amount" placeHolder="0" />
+        <SpacerColumn numberOfSpaces={0.625} />
+        <TextInputCustom
+          variant="labelOutside"
+          label="Amount"
+          placeHolder="0"
+          onlyNumbers
+          onChangeText={setAmount}
+          value={amount}
+        >
+          <Pressable onPress={() => setAmount(MAX_VALUE.toString())}>
+            <MaxText style={fontSemibold9}>max</MaxText>
+          </Pressable>
+        </TextInputCustom>
+        <SpacerColumn numberOfSpaces={0.25} />
 
-        <MainText>Available balance: 435,544,34 [$$$]</MainText> */}
+        <MainText style={fontSemibold13}>
+          Available balance: {formatCurrency(MAX_VALUE)} [$$$]
+        </MainText>
+        <SpacerColumn numberOfSpaces={0.625} />
       </Container>
     </ModalBase>
   );
@@ -131,3 +158,10 @@ const WarningDescriptionContainer = styled.View({
   flexDirection: "row",
   width: "55%",
 });
+
+const MaxText = styled.View(({ theme: { layout, colors } }) => ({
+  backgroundColor: colors.primary,
+  color: colors.neutral22,
+  borderRadius: layout.borderRadius,
+  paddingHorizontal: layout.padding * 0.1,
+}));

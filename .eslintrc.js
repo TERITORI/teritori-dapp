@@ -2,7 +2,13 @@ module.exports = {
   root: true,
   extends: "universe/native",
   rules: {
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "warn", // or "error"
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+      },
+    ],
   },
   overrides: [
     {

@@ -10,6 +10,7 @@ declare module "styled-components" {
       error: string;
       neutral44: string;
       neutral77: string;
+      neutral22: string;
 
       codGray: string;
       mineShaft: string;

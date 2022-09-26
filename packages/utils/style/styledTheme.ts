@@ -1,7 +1,13 @@
 // misc
 import { DefaultTheme } from "styled-components/native";
 
-import { errorColor, neutral44, neutral77, primaryColor } from "./colors";
+import {
+  errorColor,
+  neutral22,
+  neutral44,
+  neutral77,
+  primaryColor,
+} from "./colors";
 import { styledLayout } from "./styledLayout";
 
 /**
@@ -17,6 +23,7 @@ export const styledTheme: DefaultTheme = {
     error: errorColor,
     neutral44,
     neutral77,
+    neutral22,
 
     // others
     codGray: "#1C1C1C",

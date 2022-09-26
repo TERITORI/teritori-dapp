@@ -27,6 +27,7 @@ export const NFTSellCard: React.FC<{
         value={price}
         placeHolder=""
         onChangeText={setPrice}
+        width={322}
       />
       <PrimaryButton size="XL" text="Sell this NFT" onPress={handleSell} />
     </TertiaryBox>

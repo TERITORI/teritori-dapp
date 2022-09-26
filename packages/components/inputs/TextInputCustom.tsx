@@ -2,19 +2,24 @@ import React from "react";
 import {
   NativeSyntheticEvent,
   StyleProp,
-  TextInput,
+  StyleSheet,
   TextInputKeyPressEventData,
   View,
   ViewStyle,
 } from "react-native";
+import styled from "styled-components/native";
 
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
 } from "../../utils/numbers";
-import { neutral22, neutral77 } from "../../utils/style/colors";
+import { neutral22 } from "../../utils/style/colors";
+import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
+import { genericStyles } from "../../utils/style/genericStyles";
 import { BrandText } from "../BrandText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { DivColumn } from "../div";
+import { SpacerColumn } from "../spacer";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const TextInputCustom: React.FC<{
@@ -28,6 +33,8 @@ export const TextInputCustom: React.FC<{
   onlyNumbers?: boolean;
   disabled?: boolean;
   regexp?: RegExp;
+  width?: number;
+  variant?: "regular" | "labelOutside";
 }> = ({
   label,
   value,
@@ -40,6 +47,8 @@ export const TextInputCustom: React.FC<{
   onlyNumbers,
   disabled,
   squaresBackgroundColor,
+  width,
+  variant,
 }) => {
   // Handling key pressing
   const handleKeyPress = (
@@ -75,47 +84,62 @@ export const TextInputCustom: React.FC<{
   };
 
   return (
-    <TertiaryBox
-      height={48}
-      width={332}
-      squaresBackgroundColor={squaresBackgroundColor}
-      style={style}
-      mainContainerStyle={{
-        alignItems: "flex-start",
-        paddingHorizontal: 12,
-        backgroundColor: neutral22,
-      }}
-    >
-      <View
-        style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
-      >
-        <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
-          <BrandText
-            style={{ color: neutral77, fontSize: 10, fontWeight: "500" }}
-          >
-            {label}
-          </BrandText>
-          <TextInput
-            editable={!disabled}
-            placeholder={placeHolder}
-            value={value}
-            onChangeText={handleChangeText}
-            onKeyPress={handleKeyPress}
-            placeholderTextColor="#999999"
-            style={[
-              {
-                fontSize: 14,
-                marginTop: 4,
-                color: "white",
-                fontFamily: "Exo_600SemiBold",
-              },
-              { outlineStyle: "none" } as any,
-            ]}
-          />
-        </View>
+    <>
+      {variant === "labelOutside" && (
+        <DivColumn>
+          <LabelText style={fontSemibold14}>{label}</LabelText>
+          <SpacerColumn numberOfSpaces={0.25} />
+        </DivColumn>
+      )}
 
-        <>{children}</>
-      </View>
-    </TertiaryBox>
+      <TertiaryBox
+        squaresBackgroundColor={squaresBackgroundColor}
+        style={style}
+        mainContainerStyle={styles.mainContainer}
+        fullWidth
+        width={width}
+      >
+        <View style={[genericStyles.rowWithCenter, genericStyles.w100]}>
+          <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
+            {variant !== "labelOutside" && (
+              <DivColumn>
+                <LabelText style={fontMedium10}>{label}</LabelText>
+                <SpacerColumn numberOfSpaces={0.125} />
+              </DivColumn>
+            )}
+            <TextInput
+              editable={!disabled}
+              placeholder={placeHolder}
+              value={value}
+              onChangeText={handleChangeText}
+              onKeyPress={handleKeyPress}
+              placeholderTextColor="#999999"
+            />
+          </View>
+
+          <>{children}</>
+        </View>
+      </TertiaryBox>
+    </>
   );
 };
+
+const LabelText = styled(BrandText)(({ theme: { layout, colors } }) => ({
+  color: colors.neutral77,
+}));
+
+const TextInput = styled.TextInput(({ theme: { layout, colors } }) => ({
+  fontSize: 14,
+  color: colors.secondary,
+  fontFamily: "Exo_600SemiBold",
+  outlineStyle: "none",
+}));
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    alignItems: "flex-start",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: neutral22,
+  },
+});
