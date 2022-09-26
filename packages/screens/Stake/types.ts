@@ -6,3 +6,8 @@ export type StakeType = {
   description: string;
   website: string;
 };
+
+export type StakeFormValuesType = {
+  validatorName: string;
+  amount: string;
+};

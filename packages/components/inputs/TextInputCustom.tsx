@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
+import {
+  RegisterOptions,
+  useController,
+  Control,
+  Path,
+  PathValue,
+} from "react-hook-form";
 import {
   NativeSyntheticEvent,
   StyleProp,
   StyleSheet,
   TextInputKeyPressEventData,
+  TextInputProps,
   View,
   ViewStyle,
 } from "react-native";
@@ -16,40 +24,48 @@ import {
 import { neutral22 } from "../../utils/style/colors";
 import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { genericStyles } from "../../utils/style/genericStyles";
+import { DEFAULT_ERRORS } from "../../utils/variables";
 import { BrandText } from "../BrandText";
+import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { DivColumn } from "../div";
 import { SpacerColumn } from "../spacer";
 
-// A custom TextInput. You can add children (Ex: An icon or a small container)
-export const TextInputCustom: React.FC<{
+export interface TextInputCustomProps<T> extends TextInputProps {
   label: string;
-  value: string;
-  placeHolder: string;
+  placeHolder?: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
-  onChangeText?: (text: string) => void;
   onPressEnter?: () => void;
   onlyNumbers?: boolean;
   disabled?: boolean;
   regexp?: RegExp;
   width?: number;
   variant?: "regular" | "labelOutside";
-}> = ({
+  control?: Control<T>;
+  name: Path<T>;
+  rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
+  defaultValue?: any;
+}
+
+// A custom TextInput. You can add children (Ex: An icon or a small container)
+export const TextInputCustom = <T,>({
   label,
-  value,
   placeHolder,
   onPressEnter,
   style,
   regexp,
   children,
-  onChangeText,
   onlyNumbers,
   disabled,
   squaresBackgroundColor,
   width,
   variant,
-}) => {
+  name,
+  control,
+  defaultValue = "",
+  rules,
+}: TextInputCustomProps<T>) => {
   // Handling key pressing
   const handleKeyPress = (
     event: NativeSyntheticEvent<TextInputKeyPressEventData>
@@ -63,23 +79,45 @@ export const TextInputCustom: React.FC<{
     }
   };
 
+  const { field, fieldState } = useController({
+    name,
+    control,
+    rules,
+    defaultValue,
+  });
+
+  const error = useMemo(() => {
+    if (fieldState.error) {
+      if (fieldState.error?.message) {
+        return fieldState.error?.message;
+      }
+      return DEFAULT_ERRORS.required;
+    }
+  }, [fieldState.error]);
+
   // Replace the comma if number and controls
   const handleChangeText = (value: string) => {
-    if (!onChangeText) {
-      return;
-    }
     // ---- If you want only number in the TextInputCustom, we apply comma as a thousand separator
     if (onlyNumbers) {
       const withoutCommaValue = thousandSeparatedToNumber(value);
       // Set value only if fully number
       const reg = new RegExp(/^\d+$/);
-      if (reg.test(withoutCommaValue)) {
-        onChangeText(numberWithThousandsSeparator(withoutCommaValue));
+
+      if (
+        rules?.max &&
+        parseInt(withoutCommaValue, 10) >= (rules.max as number) + 1
+      ) {
+        return;
       }
+
+      if (reg.test(withoutCommaValue) || !value) {
+        field.onChange(numberWithThousandsSeparator(withoutCommaValue));
+      }
+      return;
     }
     // ---- Apply onChange respecting the regexp (Allow empty string)
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
-      onChangeText(value);
+      field.onChange(value);
     }
   };
 
@@ -110,25 +148,26 @@ export const TextInputCustom: React.FC<{
             <TextInput
               editable={!disabled}
               placeholder={placeHolder}
-              value={value}
               onChangeText={handleChangeText}
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
+              value={field.value as any}
             />
           </View>
 
           <>{children}</>
         </View>
       </TertiaryBox>
+      <ErrorText>{error}</ErrorText>
     </>
   );
 };
 
-const LabelText = styled(BrandText)(({ theme: { layout, colors } }) => ({
+const LabelText = styled(BrandText)(({ theme: { colors } }) => ({
   color: colors.neutral77,
 }));
 
-const TextInput = styled.TextInput(({ theme: { layout, colors } }) => ({
+const TextInput = styled.TextInput(({ theme: { colors } }) => ({
   fontSize: 14,
   color: colors.secondary,
   fontFamily: "Exo_600SemiBold",

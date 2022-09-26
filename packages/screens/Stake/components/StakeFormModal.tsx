@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
+import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet } from "react-native";
 import styled from "styled-components/native";
 
@@ -12,7 +13,7 @@ import { DivColumn, DivRow } from "../../../components/div";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useCurrencyFormater } from "../../../hooks/useCurrencyFormater";
+import { numberWithThousandsSeparator } from "../../../utils/numbers";
 import {
   fontSemibold9,
   fontSemibold12,
@@ -21,7 +22,7 @@ import {
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { genericStyles } from "../../../utils/style/genericStyles";
-import { StakeType } from "../types";
+import { StakeFormValuesType, StakeType } from "../types";
 
 interface StakeFormModalProps {
   onClose?: () => void;
@@ -37,8 +38,15 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
   data,
 }) => {
   // variables
-  const [amount, setAmount] = useState("");
-  const { formatCurrency } = useCurrencyFormater();
+  const { control, setValue, handleSubmit, watch } =
+    useForm<StakeFormValuesType>();
+  const watchAll = watch();
+
+  // functions
+  const onSubmit = (formData: StakeFormValuesType) => {
+    console.log(formData);
+    onClose && onClose();
+  };
 
   // returns
   const Header = useCallback(
@@ -61,11 +69,16 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
         <FooterRow>
           <SecondaryButton size="XS" text="Cancel" width={120} />
           <SpacerRow numberOfSpaces={0.5} />
-          <PrimaryButton size="XS" text="Stake" width={120} />
+          <PrimaryButton
+            size="XS"
+            text="Stake"
+            width={120}
+            onPress={handleSubmit(onSubmit)}
+          />
         </FooterRow>
       </>
     ),
-    []
+    [watchAll]
   );
 
   return (
@@ -97,30 +110,39 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
           </DivColumn>
         </StakeWarningContainer>
         <SpacerColumn numberOfSpaces={0.625} />
-        <TextInputCustom
+        <TextInputCustom<StakeFormValuesType>
+          name="validatorName"
+          control={control}
           variant="labelOutside"
           label="Validator Name"
-          placeHolder="Allnodes.com ⚡️ Lowest fees"
-          value="Allnodes.com ⚡️ Lowest fees"
-          onChangeText={() => {}}
+          defaultValue="Allnodes.com ⚡️ Lowest fees"
+          disabled
+          rules={{ required: true }}
         />
         <SpacerColumn numberOfSpaces={0.625} />
-        <TextInputCustom
+        <TextInputCustom<StakeFormValuesType>
+          name="amount"
           variant="labelOutside"
           label="Amount"
+          control={control}
           placeHolder="0"
           onlyNumbers
-          onChangeText={setAmount}
-          value={amount}
+          rules={{ required: true, max: MAX_VALUE }}
         >
-          <Pressable onPress={() => setAmount(MAX_VALUE.toString())}>
+          <Pressable
+            onPress={() =>
+              setValue("amount", numberWithThousandsSeparator(MAX_VALUE), {
+                shouldValidate: true,
+              })
+            }
+          >
             <MaxText style={fontSemibold9}>max</MaxText>
           </Pressable>
         </TextInputCustom>
         <SpacerColumn numberOfSpaces={0.25} />
 
         <MainText style={fontSemibold13}>
-          Available balance: {formatCurrency(MAX_VALUE)} [$$$]
+          Available balance: {numberWithThousandsSeparator(MAX_VALUE)} [$$$]
         </MainText>
         <SpacerColumn numberOfSpaces={0.625} />
       </Container>
