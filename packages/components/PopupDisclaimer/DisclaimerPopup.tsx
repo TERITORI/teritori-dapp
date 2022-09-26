@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { ScrollView, View, ViewStyle, StyleProp } from "react-native";
+import {
+  useWindowDimensions,
+  ScrollView,
+  View,
+  ViewStyle,
+  StyleProp,
+} from "react-native";
 import { useSelector } from "react-redux";
 
 import {
@@ -23,8 +29,15 @@ const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
 );
 
 const TextDisclaimer: React.FC = () => {
+  const { width, height } = useWindowDimensions();
   return (
-    <ScrollView style={{ height: 610 }}>
+    <ScrollView
+      style={{
+        height: height - 400,
+        width: width - 200,
+        paddingBottom: modalMarginPadding,
+      }}
+    >
       <View>
         <View
           style={{
@@ -35,7 +48,7 @@ const TextDisclaimer: React.FC = () => {
             style={{
               fontSize: 15,
               color: "white",
-              width: 1000,
+              width: width - 200,
             }}
           >
             <strong>IMPORTANT</strong>
@@ -45,7 +58,7 @@ const TextDisclaimer: React.FC = () => {
             style={{
               fontSize: 12,
               color: "white",
-              width: 1000,
+              width: width - 200,
             }}
           >
             <br />
@@ -131,14 +144,6 @@ const TextDisclaimer: React.FC = () => {
             cryptocurrencies, tokens, or anything else of value.
             <br />
           </BrandText>
-          <View style={{ width: 10 }} />
-          <View
-            style={{
-              justifyContent: "flex-end",
-              flexDirection: "row",
-              flex: 1,
-            }}
-          />
         </View>
       </View>
     </ScrollView>
@@ -149,6 +154,7 @@ export default function DisclaimerPopup() {
   const [firstVerif, setfirstVerif] = useState(false);
   const [secondVerif, setsecondVeriff] = useState(false);
   const alreadyVisited = useSelector(selectAlreadyVisited);
+  const { width, height } = useWindowDimensions();
   const dispatch = useAppDispatch();
 
   const handleFirstVerif = () => setfirstVerif(!firstVerif);
@@ -179,6 +185,8 @@ export default function DisclaimerPopup() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   padding: modalMarginPadding,
+                  height: height - 300,
+                  width: width - 200,
                 }}
               >
                 <View>
@@ -207,9 +215,12 @@ export default function DisclaimerPopup() {
                           fontSize: 12,
                           color: "white",
                           marginLeft: 15,
+                          width: width - 250,
+                          position: "relative",
+                          left: 0,
                         }}
                       >
-                        I confirm that I have react, understood and accept the
+                        I confirm that I have read, understood and accept the
                         Terms of Use and the Risks Statement
                       </BrandText>
                     </View>
@@ -223,6 +234,7 @@ export default function DisclaimerPopup() {
                       justifyContent: "space-between",
                       alignItems: "center",
                       padding: 5,
+                      marginBottom: 10,
                     }}
                   >
                     <View>
@@ -239,29 +251,32 @@ export default function DisclaimerPopup() {
                         style={{
                           fontSize: 12,
                           color: "white",
-                          marginRight: 209,
+                          width: width - 250,
+                          position: "relative",
+                          left: 0,
                         }}
                       >
                         I confirm that I do not fall under any of these
-                        eclusions
+                        exclusions
                       </BrandText>
                     </View>
                   </View>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    left: 250,
-                  }}
-                >
-                  <PrimaryButton
-                    disabled={!(firstVerif && secondVerif)}
-                    size="M"
-                    text="ENTER THE DAPP"
-                    style={{}}
-                    onPress={onPressSubmitButton}
-                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: 10,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <PrimaryButton
+                      disabled={!(firstVerif && secondVerif)}
+                      size="M"
+                      text="ENTER THE DAPP"
+                      style={{}}
+                      onPress={onPressSubmitButton}
+                    />
+                  </View>
                 </View>
               </View>
             </>
