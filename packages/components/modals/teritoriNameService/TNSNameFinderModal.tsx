@@ -36,7 +36,8 @@ export const TNSNameFinderModal: React.FC<{
       label="Find a name"
       // childrenBottom={<DomainsAvailability/>} TODO: Uncomment this when the functionality is done
     >
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="name"
         label="NAME"
         placeHolder="Type name here"
         onPressEnter={onPressEnter}

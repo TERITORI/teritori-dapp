@@ -33,7 +33,8 @@ export const FindAName: React.FC<{
         Find a name
       </BrandText>
 
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="name"
         label="NAME"
         placeHolder="Type name here"
         style={{ marginBottom: 12 }}

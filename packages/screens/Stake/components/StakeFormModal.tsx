@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet } from "react-native";
 import styled from "styled-components/native";
@@ -67,7 +67,12 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
       <>
         <Separator />
         <FooterRow>
-          <SecondaryButton size="XS" text="Cancel" width={120} />
+          <SecondaryButton
+            size="XS"
+            text="Cancel"
+            width={120}
+            onPress={onClose}
+          />
           <SpacerRow numberOfSpaces={0.5} />
           <PrimaryButton
             size="XS"

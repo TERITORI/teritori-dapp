@@ -26,7 +26,8 @@ export const SendFundModal: React.FC<{
       label={`Your wallet has ${numberWithThousandsSeparator(1000)} Tori`}
     >
       <View>
-        <TextInputCustom
+        <TextInputCustom<any>
+          name="comment"
           label="COMMENT ?"
           value={comment}
           placeHolder="Type your comment here"
@@ -35,7 +36,8 @@ export const SendFundModal: React.FC<{
           width={322}
         />
         <View style={{ flex: 1, flexDirection: "row" }}>
-          <TextInputCustom
+          <TextInputCustom<any>
+            name="amount"
             label="TORI AMOUNT ?"
             value={numberWithThousandsSeparator(amount)}
             placeHolder="Type your amount here"

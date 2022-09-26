@@ -94,7 +94,8 @@ export const NameDataForm: React.FC<{
               .
             </BrandText>
           </View>
-          <TextInputCustom
+          <TextInputCustom<any>
+            name="Path ID (must be unique)"
             style={inputStyle}
             label="Path ID (must be unique)"
             placeHolder="Type path ID here"
@@ -103,7 +104,8 @@ export const NameDataForm: React.FC<{
           />
         </>
       ) : null}
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="NAME"
         style={[inputStyle, !isMintPath && { marginTop: 4 }]}
         label="NAME"
         placeHolder="Type name here"
@@ -111,63 +113,72 @@ export const NameDataForm: React.FC<{
         disabled
         regexp={new RegExp(/^[a-zA-Z]+$/)}
       />
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="BIO"
         style={inputStyle}
         label="BIO"
         placeHolder="Type bio here"
         value={public_bio}
         onChangeText={setBio}
       />
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="IMAGE URL"
         style={inputStyle}
         label="IMAGE URL"
         placeHolder="Insert image URL here"
         value={image}
         onChangeText={setImageUrl}
       />
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="EMAIL"
         style={inputStyle}
         label="EMAIL"
         placeHolder="Type email here"
         value={email}
         onChangeText={setEmail}
       />
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="WEBSITE"
         style={inputStyle}
         label="WEBSITE"
         placeHolder="Type/insert link here"
         value={external_url}
         onChangeText={setWebsite}
       />
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="TWITTER"
         style={inputStyle}
         label="TWITTER"
         placeHolder="Link to Twitter account"
         value={twitter_id}
         onChangeText={setTwitter}
       />
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="DISCORD"
         style={inputStyle}
         label="DISCORD"
         placeHolder="Link to Discord group"
         value={discord_id}
         onChangeText={setDiscord}
       />
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="TELEGRAM USERNAME"
         style={inputStyle}
         label="TELEGRAM USERNAME"
         placeHolder="@nickname"
         value={telegram_id}
         onChangeText={setTelegrameUsername}
       />
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="KEYBASE.IO"
         style={inputStyle}
         label="KEYBASE.IO"
         placeHolder="Type/insert link here"
         value={keybase_id}
         onChangeText={setKeybaseIo}
       />
-      <TextInputCustom
+      <TextInputCustom<any>
+        name="VALIDATOR OPERATOR ADDRESS"
         style={inputStyle}
         label="VALIDATOR OPERATOR ADDRESS"
         placeHolder="Type/insert link here"

@@ -1,11 +1,5 @@
-import React, { useEffect, useMemo } from "react";
-import {
-  RegisterOptions,
-  useController,
-  Control,
-  Path,
-  PathValue,
-} from "react-hook-form";
+import React, { useMemo } from "react";
+import { RegisterOptions, useController, Control, Path } from "react-hook-form";
 import {
   NativeSyntheticEvent,
   StyleProp,
@@ -31,7 +25,8 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 import { DivColumn } from "../div";
 import { SpacerColumn } from "../spacer";
 
-export interface TextInputCustomProps<T> extends TextInputProps {
+export interface TextInputCustomProps<T>
+  extends Omit<TextInputProps, "accessibilityRole"> {
   label: string;
   placeHolder?: string;
   squaresBackgroundColor?: string;
@@ -65,6 +60,7 @@ export const TextInputCustom = <T,>({
   control,
   defaultValue = "",
   rules,
+  ...restProps
 }: TextInputCustomProps<T>) => {
   // Handling key pressing
   const handleKeyPress = (
@@ -97,6 +93,10 @@ export const TextInputCustom = <T,>({
 
   // Replace the comma if number and controls
   const handleChangeText = (value: string) => {
+    if (restProps?.onChangeText) {
+      restProps.onChangeText(value);
+      return;
+    }
     // ---- If you want only number in the TextInputCustom, we apply comma as a thousand separator
     if (onlyNumbers) {
       const withoutCommaValue = thousandSeparatedToNumber(value);
@@ -152,6 +152,7 @@ export const TextInputCustom = <T,>({
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
               value={field.value as any}
+              {...restProps}
             />
           </View>
 
