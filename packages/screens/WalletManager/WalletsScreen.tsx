@@ -77,6 +77,7 @@ const Wallet: React.FC<WalletProps> = ({ item }) => {
             width: "100%",
             paddingVertical: 16,
             paddingHorizontal: 20,
+            zIndex: 99,
           }}
         >
           {item.data.map((subItem, index) => (

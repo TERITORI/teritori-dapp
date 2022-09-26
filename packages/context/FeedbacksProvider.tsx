@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
 import { ToastError } from "../components/toasts/ToastError";
@@ -7,9 +7,18 @@ import { ToastSuccess } from "../components/toasts/ToastSuccess";
 interface ToastMessage {
   title: string;
   message: string;
+  duration?: number;
 }
-export const initialToastError: ToastMessage = { title: "", message: "" };
-export const initialToastSuccess: ToastMessage = { title: "", message: "" };
+export const initialToastError: ToastMessage = {
+  title: "",
+  message: "",
+  duration: 2000,
+};
+export const initialToastSuccess: ToastMessage = {
+  title: "",
+  message: "",
+  duration: 2000,
+};
 
 interface DefaultValue {
   toastError: ToastMessage;
@@ -34,6 +43,15 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
   const [loadingFullScreen, setLoadingFullScreen] = useState(false);
   const [toastError, setToastError] = useState(initialToastError);
   const [toastSuccess, setToastSuccess] = useState(initialToastSuccess);
+
+  useEffect(() => {
+    const timeoutID = setTimeout(() => {
+      setToastError(initialToastError);
+      setToastSuccess(initialToastSuccess);
+    }, toastError.duration || toastSuccess.duration || 2000);
+
+    return () => clearTimeout(timeoutID);
+  }, [toastError, toastSuccess]);
 
   return (
     <FeedbacksContext.Provider

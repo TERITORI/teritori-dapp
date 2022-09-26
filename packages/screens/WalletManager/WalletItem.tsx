@@ -1,3 +1,4 @@
+import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
@@ -7,9 +8,9 @@ import { BrandText } from "../../components/BrandText";
 import { Menu } from "../../components/Menu";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { neutral33, neutral77, neutralA3 } from "../../utils/style/colors";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
-
 export interface WalletItemProps {
   index: number;
   totalLength: number;
@@ -27,6 +28,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
   item,
   totalLength,
 }) => {
+  const { setToastSuccess } = useFeedbacks();
   return (
     <View
       style={{
@@ -36,6 +38,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
         borderBottomWidth: index !== totalLength - 1 ? 1 : 0,
         borderColor: neutral33,
         paddingVertical: 16,
+        zIndex: 10 + totalLength - index,
       }}
     >
       <View
@@ -71,6 +74,13 @@ export const WalletItem: React.FC<WalletItemProps> = ({
                 {item.address.substr(-4)}
               </BrandText>
               <TouchableOpacity
+                onPress={() => {
+                  Clipboard.setString(item.address);
+                  setToastSuccess({
+                    title: "Copied",
+                    message: "",
+                  });
+                }}
                 style={{
                   height: 24,
                   width: 24,

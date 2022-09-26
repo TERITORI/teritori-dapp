@@ -5,7 +5,7 @@ import { BrandText } from "../../components/BrandText";
 
 interface WalletHeaderProps {}
 
-export const WalletHeader: React.FC<WalletHeaderProps> = ({}) => {
+export const WalletHeader: React.FC<WalletHeaderProps> = () => {
   return (
     <View>
       <BrandText

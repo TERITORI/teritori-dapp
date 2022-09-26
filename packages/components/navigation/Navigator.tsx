@@ -76,19 +76,18 @@ export const Navigator: React.FC = () => {
 
       {/* ==== Wallet Manager */}
       <Stack.Screen
+        name="WalletManager"
+        component={WalletManagerScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
         name="WalletManagerWallets"
         component={WalletMangerWalletsScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="WalletManager"
-        component={WalletManagerScreen}
-        options={{ header: () => null }}
-      />
-
-      <Stack.Screen
         name="WalletManagerChains"
-        component={WalletManagerScreen}
+        component={WalletMangerWalletsScreen}
         options={{ header: () => null }}
       />
       {/* ==== Launchpad */}

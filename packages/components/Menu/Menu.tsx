@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import { BrandText } from "../components/BrandText";
-import { PrimaryBox } from "../components/boxes/PrimaryBox";
-import { neutral33 } from "../utils/style/colors";
+import { neutral33 } from "../../utils/style/colors";
+import { BrandText } from "../BrandText";
+import { PrimaryBox } from "../boxes/PrimaryBox";
 
 const DEFAULT_WIDTH = 164;
 

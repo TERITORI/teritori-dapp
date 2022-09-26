@@ -1,10 +1,7 @@
 import React, { useEffect } from "react";
 
 import { useTNS } from "../../../context/TNSProvider";
-import {
-  RootStackParamList,
-  useAppNavigation,
-} from "../../../utils/navigation";
+import { useAppNavigation } from "../../../utils/navigation";
 import { NameFinderFormType } from "../../../utils/types/tns";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
@@ -13,7 +10,7 @@ import ModalBase from "../ModalBase";
 export const TNSNameFinderModal: React.FC<{
   visible?: boolean;
   onClose: () => void;
-  navItem: keyof RootStackParamList;
+  navItem: string;
 }> = ({ visible, navItem, onClose }) => {
   const navigation = useAppNavigation();
   const { name, setName } = useTNS();

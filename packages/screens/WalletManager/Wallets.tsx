@@ -13,6 +13,7 @@ export const Wallets: React.FC = () => {
         paddingTop: 40,
         borderTopWidth: 1,
         borderColor: neutral33,
+        zIndex: 99,
       }}
     >
       <BrandText style={{ marginRight: 20, fontSize: 20 }}>Wallets</BrandText>
