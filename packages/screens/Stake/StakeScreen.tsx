@@ -2,9 +2,9 @@ import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import styled from "styled-components/native";
 
+import { Avatar } from "../../components/Avatar";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Avatar } from "../../components/avatar";
 import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
 import { DivRow } from "../../components/div";
 import { SpacerRow } from "../../components/spacer";

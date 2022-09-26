@@ -1,10 +1,10 @@
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
 
+import { Avatar } from "../../../components/Avatar";
 import { BrandText } from "../../../components/BrandText";
 import { GradientText } from "../../../components/GradientText";
 import { Separator } from "../../../components/Separator";
-import { Avatar } from "../../../components/avatar";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { DivColumn, DivRow } from "../../../components/div";

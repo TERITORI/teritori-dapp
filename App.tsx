@@ -23,7 +23,7 @@ import { TeritoriBalanceProvider } from "./packages/context/TeritoriBalanceProvi
 import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
-import { styledTheme } from "./packages/utils/style/styledtheme";
+import { styledTheme } from "./packages/utils/style/styledTheme";
 
 export default function App() {
   const methods = useForm();
