@@ -11,6 +11,7 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { getCurrentRouteName, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutralA3 } from "../../utils/style/colors";
+import { WALLET_SIDEBAR_WIDTH } from "./constants";
 
 const LIST = [
   {
@@ -39,7 +40,7 @@ export const WalletSidebar: React.FC = () => {
   return (
     <View
       style={{
-        width: 262,
+        width: WALLET_SIDEBAR_WIDTH,
         borderRightWidth: 1,
         borderColor: neutral33,
         paddingTop: 36,

@@ -40,7 +40,6 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
           paddingHorizontal: 12,
           flexDirection: "column",
           justifyContent: "space-between",
-          flex: 1,
           width: "100%",
           height: 116,
           position: "relative",
@@ -65,10 +64,10 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
             size="XS"
             text={actionButton.label}
             onPress={actionButton.onPress}
-            style={{
+            touchableStyle={{
               position: "absolute",
-              bottom: 0,
-              right: 0,
+              bottom: 12,
+              right: 14,
             }}
           />
         )}

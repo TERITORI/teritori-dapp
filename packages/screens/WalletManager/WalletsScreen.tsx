@@ -14,19 +14,24 @@ import { WalletItem, WalletItemProps } from "./WalletItem";
 import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
 
 interface WalletProps {
+  index: number;
+  itemsCount: number;
   item: {
     title: string;
     data: WalletItemProps["item"][];
   };
 }
 
-const Wallet: React.FC<WalletProps> = ({ item }) => {
+const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
   const [isExpanded, setExpanded] = useState(false);
   return (
     <TertiaryBox
       fullWidth
       mainContainerStyle={{
         marginBottom: 12,
+      }}
+      style={{
+        zIndex: 10 + itemsCount - index,
       }}
     >
       <TouchableOpacity
@@ -83,7 +88,7 @@ const Wallet: React.FC<WalletProps> = ({ item }) => {
           {item.data.map((subItem, index) => (
             <WalletItem
               key={subItem.id}
-              totalLength={item.data.length}
+              itemsCount={item.data.length}
               item={subItem}
               index={index}
             />
@@ -126,8 +131,13 @@ export const WalletMangerWalletsScreen: React.FC = () => {
           <PrimaryButton size="SM" text="Add wallet" onPress={() => {}} />
         </View>
 
-        {ALL_WALLETS.map((item) => (
-          <Wallet key={item.title} item={item} />
+        {ALL_WALLETS.map((item, index) => (
+          <Wallet
+            key={item.title}
+            item={item}
+            index={index}
+            itemsCount={ALL_WALLETS.length}
+          />
         ))}
       </View>
     </WalletManagerScreenContainer>

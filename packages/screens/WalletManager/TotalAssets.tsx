@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
@@ -20,6 +20,7 @@ import {
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 
 export const TotalAssets: React.FC = () => {
+  const { width } = useWindowDimensions();
   const [activeView, setActiveView] = useState<"Chain" | "Token">("Chain");
   const [isExpandAll, setIsExpandAll] = useState(false);
   return (
@@ -201,7 +202,11 @@ export const TotalAssets: React.FC = () => {
                         fontSize: 13,
                       }}
                     >
-                      {item.address}
+                      {width > 1050
+                        ? item.address
+                        : `${item.address.substr(0, 5)}...${item.address.substr(
+                            -4
+                          )}`}
                     </BrandText>
                     <TouchableOpacity
                       style={{

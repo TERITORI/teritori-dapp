@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { PieChart } from "react-native-svg-charts";
 
 import { BrandText } from "../../../components/BrandText";
@@ -11,9 +11,13 @@ import {
   getWalletPieColor,
 } from "../../../utils/walletManagerHelpers";
 
-export const TokenAllocation: React.FC = () => {
+interface TokenAllocationProps {
+  style?: ViewStyle;
+}
+
+export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
   return (
-    <View>
+    <View style={[style]}>
       <BrandText style={{ marginBottom: 24, fontSize: 20 }}>
         Token Allocation
       </BrandText>
@@ -25,7 +29,7 @@ export const TokenAllocation: React.FC = () => {
         }}
       >
         <PieChart
-          style={{ height: 216, flex: 1, width: 216, marginRight: 32 }}
+          style={{ height: 216, width: 216, marginRight: 32 }}
           data={WALLET_TOKEN_PIE.map((data) => ({
             ...data,
             key: data.title,

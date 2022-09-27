@@ -2,6 +2,7 @@ import React from "react";
 import { View, TouchableOpacity, Image, FlatList } from "react-native";
 
 import guardianPNG from "../../../assets/default-images/guardian_1.png";
+import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import starSVG from "../../../assets/icons/star.svg";
 import { BrandText } from "../../components/BrandText";
@@ -21,9 +22,35 @@ export const MyNFTs: React.FC = () => {
         borderColor: neutral33,
       }}
     >
-      <BrandText style={{ marginRight: 20, fontSize: 20, marginBottom: 24 }}>
-        My NFTs
-      </BrandText>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 24,
+        }}
+      >
+        <BrandText style={{ marginRight: 20, fontSize: 20 }}>My NFTs</BrandText>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => {}}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <BrandText
+            style={{
+              fontSize: 14,
+              marginRight: 16,
+            }}
+          >
+            See All
+          </BrandText>
+          <SVG source={chevronRightSVG} height={16} />
+        </TouchableOpacity>
+      </View>
       <View
         style={{
           flexDirection: "row",

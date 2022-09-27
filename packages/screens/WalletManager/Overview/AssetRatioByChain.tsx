@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import busdSVG from "../../../../assets/icons/busd-circle.svg";
@@ -12,6 +12,7 @@ import { BrandText } from "../../../components/BrandText";
 import { ProgressLine } from "../../../components/ProgressLine";
 import { SVG } from "../../../components/SVG";
 import { neutral33 } from "../../../utils/style/colors";
+import { OVERVIEW_FLEX_BREAK_WIDTH } from "../constants";
 
 interface AssetRatioData {
   icon: React.FC<SvgProps>;
@@ -48,6 +49,7 @@ const DATA: AssetRatioData[] = [
 ];
 
 const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
+  const { width } = useWindowDimensions();
   return (
     <View
       style={{
@@ -67,7 +69,10 @@ const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
       >
         {title}
       </BrandText>
-      <ProgressLine percent={percent} />
+      <ProgressLine
+        percent={percent}
+        width={width < OVERVIEW_FLEX_BREAK_WIDTH ? width - 540 : 200}
+      />
       <BrandText
         style={{
           width: 80,
@@ -81,9 +86,14 @@ const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
   );
 };
 
-export const AssetRatioByChain: React.FC = () => {
+interface AssetRatioByChainProps {
+  style?: ViewStyle;
+}
+export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
+  style,
+}) => {
   return (
-    <View>
+    <View style={[style]}>
       <BrandText
         style={{
           marginBottom: 24,

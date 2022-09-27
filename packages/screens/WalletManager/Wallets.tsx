@@ -21,7 +21,7 @@ export const Wallets: React.FC = () => {
       {WALLETS.map((item, index) => (
         <WalletItem
           key={item.title}
-          totalLength={WALLETS.length}
+          itemsCount={WALLETS.length}
           item={item}
           index={index}
         />

@@ -1,6 +1,6 @@
 import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 
 import copySVG from "../../../assets/icons/copy.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
@@ -13,7 +13,7 @@ import { neutral33, neutral77, neutralA3 } from "../../utils/style/colors";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 export interface WalletItemProps {
   index: number;
-  totalLength: number;
+  itemsCount: number;
   item: {
     id: number;
     title: string;
@@ -26,19 +26,21 @@ export interface WalletItemProps {
 export const WalletItem: React.FC<WalletItemProps> = ({
   index,
   item,
-  totalLength,
+  itemsCount,
 }) => {
+  const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
+
   return (
     <View
       style={{
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        borderBottomWidth: index !== totalLength - 1 ? 1 : 0,
+        borderBottomWidth: index !== itemsCount - 1 ? 1 : 0,
         borderColor: neutral33,
         paddingVertical: 16,
-        zIndex: 10 + totalLength - index,
+        zIndex: 10 + itemsCount - index,
       }}
     >
       <View
@@ -164,27 +166,44 @@ export const WalletItem: React.FC<WalletItemProps> = ({
           </BrandText>
         </View>
 
-        <SecondaryButton
-          size="XS"
-          text="Claim reward"
-          onPress={() => {}}
-          style={{
-            backgroundColor: neutral33,
-            marginRight: 16,
-          }}
-        />
-        <SecondaryButton
-          size="XS"
-          text="Stake"
-          onPress={() => {}}
-          style={{
-            marginRight: 16,
-          }}
-        />
+        {width > 1150 && (
+          <>
+            {" "}
+            <SecondaryButton
+              size="XS"
+              text="Claim reward"
+              onPress={() => {}}
+              style={{
+                backgroundColor: neutral33,
+                marginRight: 16,
+              }}
+            />
+            <SecondaryButton
+              size="XS"
+              text="Stake"
+              onPress={() => {}}
+              style={{
+                marginRight: 16,
+              }}
+            />
+          </>
+        )}
 
         <Menu
           component={<SVG height={32} width={32} source={dotsCircleSVG} />}
           items={[
+            ...(width <= 1150
+              ? [
+                  {
+                    label: "Claim reward",
+                    onPress: () => {},
+                  },
+                  {
+                    label: "Stake",
+                    onPress: () => {},
+                  },
+                ]
+              : []),
             {
               label: "View on Explorer",
               onPress: () => {},
