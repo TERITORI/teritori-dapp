@@ -38,13 +38,13 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
       <>
         <DivRow style={genericStyles.jcAiCenter}>
           <Avatar size="medium" uri={TEMP_IMAGE} />
-          <SpacerRow numberOfSpaces={0.5} />
+          <SpacerRow size={0.5} />
           <DivColumn>
             <MainText style={fontSemibold20}>{data?.name}</MainText>
-            <SpacerColumn numberOfSpaces={0.1} />
+            <SpacerColumn size={0.5} />
             <DivRow>
               <AlternateText style={fontSemibold16}>Commission</AlternateText>
-              <SpacerRow numberOfSpaces={0.25} />
+              <SpacerRow size={1} />
               <GradientText style={fontSemibold16}>
                 {data?.commission}
               </GradientText>
@@ -62,11 +62,11 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
         <Separator />
         <FooterRow>
           <PrimaryButton size="SM" text="Close" onPress={onClose} />
-          <SpacerRow numberOfSpaces={0.5} />
+          <SpacerRow size={0.5} />
           <SecondaryButton size="SM" text="Undelegate" />
-          <SpacerRow numberOfSpaces={0.5} />
+          <SpacerRow size={0.5} />
           <SecondaryButton size="SM" text="Redelegate" />
-          <SpacerRow numberOfSpaces={0.5} />
+          <SpacerRow size={0.5} />
           <SecondaryButton
             size="SM"
             text="Delegate"
@@ -89,22 +89,22 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
     >
       <Container>
         <Separator />
-        <SpacerColumn numberOfSpaces={0.625} />
+        <SpacerColumn size={2.5} />
         <AlternateText style={fontSemibold14}>Website</AlternateText>
-        <SpacerColumn numberOfSpaces={0.125} />
+        <SpacerColumn size={2} />
         <MainText style={fontSemibold16}>{data?.website}</MainText>
-        <SpacerColumn numberOfSpaces={0.625} />
+        <SpacerColumn size={2.5} />
         <AlternateText style={fontSemibold14}>Description</AlternateText>
-        <SpacerColumn numberOfSpaces={0.125} />
+        <SpacerColumn size={2} />
         <MainText style={fontSemibold16}>{data?.description}</MainText>
-        <SpacerColumn numberOfSpaces={0.625} />
+        <SpacerColumn size={2.5} />
       </Container>
     </ModalBase>
   );
 };
 
 const FooterRow = styled(DivRow)(({ theme: { layout } }) => ({
-  padding: layout.padding * 0.625,
+  padding: layout.padding_x2_5,
 }));
 
 const Container = styled.View({

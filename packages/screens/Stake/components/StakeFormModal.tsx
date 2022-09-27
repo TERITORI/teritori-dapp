@@ -58,7 +58,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
     () => (
       <DivColumn>
         <MainText style={fontSemibold20}>Stake Tokens</MainText>
-        <SpacerColumn numberOfSpaces={0.1} />
+        <SpacerColumn size={0.5} />
         <AlternateText style={fontSemibold16}>
           Select a validator and amount of TORI to stake.
         </AlternateText>
@@ -78,7 +78,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
             width={120}
             onPress={onClose}
           />
-          <SpacerRow numberOfSpaces={0.5} />
+          <SpacerRow size={2} />
           <PrimaryButton
             size="XS"
             text="Stake"
@@ -101,16 +101,16 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
     >
       <Container>
         <Separator />
-        <SpacerColumn numberOfSpaces={0.625} />
+        <SpacerColumn size={2.5} />
         <StakeWarningContainer>
           <SVG width={24} height={24} source={warningTriangleSVG} />
-          <SpacerRow numberOfSpaces={0.75} />
+          <SpacerRow size={3} />
 
           <DivColumn>
             <MainText style={fontSemibold13}>
               Staking will lock your funds for 14 days
             </MainText>
-            <SpacerColumn numberOfSpaces={0.1} />
+            <SpacerColumn size={0.5} />
             <WarningDescriptionContainer>
               <AlternateText style={fontSemibold12}>
                 Once you undelegate your staked STARS, you will need to wait 14
@@ -119,7 +119,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
             </WarningDescriptionContainer>
           </DivColumn>
         </StakeWarningContainer>
-        <SpacerColumn numberOfSpaces={0.625} />
+        <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
           name="validatorName"
           control={control}
@@ -129,7 +129,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
           disabled
           rules={{ required: true }}
         />
-        <SpacerColumn numberOfSpaces={0.625} />
+        <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
           name="amount"
           variant="labelOutside"
@@ -149,12 +149,12 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
             <MaxText style={fontSemibold9}>max</MaxText>
           </Pressable>
         </TextInputCustom>
-        <SpacerColumn numberOfSpaces={0.25} />
+        <SpacerColumn size={1} />
 
         <MainText style={fontSemibold13}>
           Available balance: {numberWithThousandsSeparator(MAX_VALUE)} [$$$]
         </MainText>
-        <SpacerColumn numberOfSpaces={0.625} />
+        <SpacerColumn size={2.5} />
       </Container>
     </ModalBase>
   );
@@ -163,7 +163,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
 const FooterRow = styled(DivRow)(({ theme: { layout } }) => ({
   ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
   width: "100%",
-  padding: layout.padding * 0.625,
+  padding: layout.padding_x2_5,
 }));
 
 const StakeWarningContainer = styled.View(({ theme: { layout, colors } }) => ({
@@ -171,8 +171,8 @@ const StakeWarningContainer = styled.View(({ theme: { layout, colors } }) => ({
   borderWidth: 1,
   borderColor: colors.error,
   borderRadius: layout.borderRadius * 0.65,
-  paddingVertical: layout.padding * 0.375,
-  paddingHorizontal: layout.padding * 0.75,
+  paddingVertical: layout.padding_x1_5,
+  paddingHorizontal: layout.padding_x3,
 }));
 
 const Container = styled.View({
@@ -195,5 +195,5 @@ const MaxText = styled.View(({ theme: { layout, colors } }) => ({
   backgroundColor: colors.primary,
   color: colors.neutral22,
   borderRadius: layout.borderRadius,
-  paddingHorizontal: layout.padding * 0.1,
+  paddingHorizontal: layout.padding_x0_5,
 }));

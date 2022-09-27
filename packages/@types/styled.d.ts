@@ -18,7 +18,14 @@ declare module "styled-components" {
     layout: {
       window: { width: number; height: number };
       screen: { width: number; height: number };
-      padding: number;
+      padding_x0_5: number;
+      padding_x1: number;
+      padding_x1_5: number;
+      padding_x2: number;
+      padding_x2_5: number;
+      padding_x3: number;
+      padding_x3_5: number;
+      padding_x4: number;
       contentPadding: number;
       borderRadius: number;
     };

@@ -46,14 +46,14 @@ const Row = styled.Pressable(({ theme: { layout, colors } }) => ({
   width: "100%",
   borderColor: colors.mineShaft,
   borderTopWidth: 1,
-  paddingVertical: layout.padding / 2,
-  paddingHorizontal: layout.padding * 0.625,
+  paddingVertical: layout.padding_x2,
+  paddingHorizontal: layout.padding_x2_5,
 }));
 
 const ItemContainer = styled.View<{ flex: number; isLast: boolean }>(
   ({ theme: { layout }, flex, isLast }) => ({
     flex,
-    paddingRight: isLast ? 0 : layout.padding * 0.25,
+    paddingRight: isLast ? 0 : layout.padding_x1,
   })
 );
 

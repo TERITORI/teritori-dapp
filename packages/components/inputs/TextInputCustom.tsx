@@ -126,7 +126,7 @@ export const TextInputCustom = <T,>({
       {variant === "labelOutside" && (
         <DivColumn>
           <LabelText style={fontSemibold14}>{label}</LabelText>
-          <SpacerColumn numberOfSpaces={0.25} />
+          <SpacerColumn size={1} />
         </DivColumn>
       )}
 
@@ -142,7 +142,7 @@ export const TextInputCustom = <T,>({
             {variant !== "labelOutside" && (
               <DivColumn>
                 <LabelText style={fontMedium10}>{label}</LabelText>
-                <SpacerColumn numberOfSpaces={0.125} />
+                <SpacerColumn size={0.5} />
               </DivColumn>
             )}
             <TextInput

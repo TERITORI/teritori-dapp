@@ -257,7 +257,7 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
             maxWidth: screenContentMaxWidth,
           }}
         >
-          <SpacerColumn numberOfSpaces={1.5} />
+          <SpacerColumn size={1.5} />
           {/*====== Tabs Menu for whole screen */}
           <Tabs
             items={tabItems}

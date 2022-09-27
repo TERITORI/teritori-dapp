@@ -64,9 +64,8 @@ export const Tabs: React.FC<{
             style={[
               genericStyles.rowWithCenterAndSB,
               {
-                marginRight:
-                  index !== items.length - 1 ? layout.padding * 0.75 : 0,
-                paddingBottom: layout.padding * 0.75,
+                marginRight: index !== items.length - 1 ? layout.padding_x3 : 0,
+                paddingBottom: layout.padding_x3,
               },
             ]}
           >
@@ -74,7 +73,7 @@ export const Tabs: React.FC<{
               {item.label}
             </BrandText>
 
-            {item.badgeCount && <SpacerRow numberOfSpaces={0.25} />}
+            {item.badgeCount && <SpacerRow size={1} />}
             {item.badgeCount ? (
               item.isSelected ? (
                 <PrimaryBadge

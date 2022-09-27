@@ -107,7 +107,7 @@ export const StakeScreen = () => {
         return (
           <View style={genericStyles.rowWithCenter}>
             <Avatar uri={TEMP_IMAGE} />
-            <SpacerRow numberOfSpaces={0.25} />
+            <SpacerRow size={1} />
             <BrandText style={fontSemibold13}>{item.label}</BrandText>
           </View>
         );
@@ -167,7 +167,7 @@ export const StakeScreen = () => {
 const RowHeader = styled.View(({ theme: { layout } }) => ({
   ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
   paddingTop: layout.contentPadding,
-  marginBottom: layout.padding * 0.625,
+  marginBottom: layout.padding_x2_5,
 }));
 
 const Heading = styled(BrandText)({

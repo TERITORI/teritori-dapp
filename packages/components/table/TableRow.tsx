@@ -33,7 +33,7 @@ const Row = styled.View(({ theme: { layout, colors } }) => ({
   width: "100%",
   backgroundColor: colors.codGray,
   minHeight: layout.contentPadding,
-  paddingHorizontal: layout.padding * 0.625,
+  paddingHorizontal: layout.padding_x2_5,
   borderTopLeftRadius: layout.borderRadius,
   borderTopRightRadius: layout.borderRadius,
 }));
@@ -45,6 +45,6 @@ const LabelText = styled(BrandText)<{ flex: number; isLast: boolean }>(
     opacity: 0.4,
     flex,
     textTransform: "uppercase",
-    paddingRight: isLast ? 0 : layout.padding * 0.25,
+    paddingRight: isLast ? 0 : layout.padding_x1,
   })
 );
