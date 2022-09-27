@@ -13,9 +13,10 @@ export const SVG: React.FC<SvgProps & { source: string }> = ({
   if (preserveAspectRatio === "none") {
     finalSource += "#svgView(preserveAspectRatio(none))";
   }
+  finalSource += "#svgView(fill(red))";
   return (
     <View style={[{ flexDirection: "row" }, svgProps.style]}>
-      <img src={finalSource} style={{ width, height }} />
+      <img src={finalSource} style={{ width, height, color: "red" }} />
     </View>
   );
 };

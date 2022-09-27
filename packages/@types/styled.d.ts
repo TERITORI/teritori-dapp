@@ -11,9 +11,11 @@ declare module "styled-components" {
       neutral44: string;
       neutral77: string;
       neutral22: string;
+      neutral33: string;
 
       codGray: string;
       mineShaft: string;
+      reef: string;
     };
     layout: {
       window: { width: number; height: number };
@@ -28,6 +30,7 @@ declare module "styled-components" {
       padding_x4: number;
       contentPadding: number;
       borderRadius: number;
+      icon: number;
     };
   }
 }

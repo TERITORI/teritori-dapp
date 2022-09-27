@@ -42,7 +42,14 @@ export const Tabs: React.FC<{
   borderColorTabSelected?: string;
   onPressTabItem: (item: TabItem) => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ items, borderColorTabSelected = "#FFFFFF", onPressTabItem, style }) => {
+  tabStyle?: ViewStyle;
+}> = ({
+  items,
+  borderColorTabSelected = "#FFFFFF",
+  onPressTabItem,
+  style,
+  tabStyle,
+}) => {
   // variables
   const { layout } = useTheme();
 
@@ -56,6 +63,7 @@ export const Tabs: React.FC<{
           borderBottomColor: neutral33,
           borderBottomWidth: 1,
         },
+        style,
       ]}
     >
       {items.map((item, index) => (
@@ -63,10 +71,12 @@ export const Tabs: React.FC<{
           <View
             style={[
               genericStyles.rowWithCenterAndSB,
+              genericStyles.jcAiCenter,
               {
                 marginRight: index !== items.length - 1 ? layout.padding_x3 : 0,
                 paddingBottom: layout.padding_x3,
               },
+              tabStyle,
             ]}
           >
             <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
@@ -84,10 +94,10 @@ export const Tabs: React.FC<{
                 <TertiaryBadge style={{ height: 24 }} label={item.badgeCount} />
               )
             ) : null}
+            {item.isSelected && (
+              <SelectedBorder borderColorTabSelected={borderColorTabSelected} />
+            )}
           </View>
-          {item.isSelected && (
-            <SelectedBorder borderColorTabSelected={borderColorTabSelected} />
-          )}
         </TouchableOpacity>
       ))}
     </View>

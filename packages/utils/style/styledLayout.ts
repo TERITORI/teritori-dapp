@@ -32,4 +32,5 @@ export const styledLayout: DefaultTheme["layout"] = {
   },
   borderRadius: 12,
   contentPadding: 48,
+  icon: 32,
 };

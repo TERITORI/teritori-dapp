@@ -30,6 +30,7 @@ import {
 } from "../../utils/keplr";
 import { RootStackParamList } from "../../utils/navigation";
 import { Network } from "../../utils/network";
+import { genericStyles } from "../../utils/style/genericStyles";
 import {
   screenContainerContentMarginHorizontal,
   screenContentMaxWidth,
@@ -257,11 +258,11 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
             maxWidth: screenContentMaxWidth,
           }}
         >
-          <SpacerColumn size={1.5} />
+          <SpacerColumn size={4} />
           {/*====== Tabs Menu for whole screen */}
           <Tabs
             items={tabItems}
-            style={{ marginTop: 24, justifyContent: "flex-end" }}
+            style={genericStyles.jcEnd}
             onPressTabItem={onPressTabItem}
           />
 
@@ -269,6 +270,7 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
 
           {/*====== More from this collection */}
           {/*TODO: Fetch 4 firsts NFTs from this NFT collection*/}
+          <SpacerColumn size={6} />
         </View>
       </ScrollView>
     );

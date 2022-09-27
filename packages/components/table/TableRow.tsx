@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TextStyle } from "react-native";
 import styled from "styled-components/native";
 
 import { fontSemibold12 } from "../../utils/style/fonts";
@@ -10,9 +10,10 @@ export type TableRowHeading = { label: string; flex: number };
 
 interface TableRowProps {
   headings: TableRowHeading[];
+  labelStyle?: TextStyle;
 }
 
-export const TableRow: React.FC<TableRowProps> = ({ headings }) => {
+export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
   return (
     <Row>
       {headings.map(({ label, flex }, index) => (
@@ -20,6 +21,7 @@ export const TableRow: React.FC<TableRowProps> = ({ headings }) => {
           key={label}
           flex={flex}
           isLast={headings.length - 1 === index}
+          style={labelStyle}
         >
           {label}
         </LabelText>
@@ -44,7 +46,6 @@ const LabelText = styled(BrandText)<{ flex: number; isLast: boolean }>(
     color: colors.secondary,
     opacity: 0.4,
     flex,
-    textTransform: "uppercase",
     paddingRight: isLast ? 0 : layout.padding_x1,
   })
 );

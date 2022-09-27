@@ -108,7 +108,7 @@ export const StakeScreen = () => {
           <View style={genericStyles.rowWithCenter}>
             <Avatar uri={TEMP_IMAGE} />
             <SpacerRow size={1} />
-            <BrandText style={fontSemibold13}>{item.label}</BrandText>
+            <BrandText style={fontSemibold13}>{item.value}</BrandText>
           </View>
         );
 
@@ -139,12 +139,19 @@ export const StakeScreen = () => {
         </DivRow>
       </RowHeader>
 
-      <TableRow headings={Object.values(TABLE_ROWS)} />
+      <TableRow
+        headings={Object.values(TABLE_ROWS)}
+        labelStyle={genericStyles.upperCase}
+      />
 
       <FlatList
         data={customRowData}
         renderItem={({ item }) => (
-          <TableRowData data={item} specialRender={specialRender} />
+          <TableRowData
+            data={item}
+            specialRender={specialRender}
+            labelStyle={genericStyles.upperCase}
+          />
         )}
       />
 

@@ -6,6 +6,7 @@ import {
   neutral22,
   neutral44,
   neutral77,
+  neutral33,
   primaryColor,
 } from "./colors";
 import { styledLayout } from "./styledLayout";
@@ -24,10 +25,12 @@ export const styledTheme: DefaultTheme = {
     neutral44,
     neutral77,
     neutral22,
+    neutral33,
 
     // others
     codGray: "#1C1C1C",
     mineShaft: "#3D3D3D",
+    reef: "#D2FFAE",
   },
   layout: { ...styledLayout },
 };

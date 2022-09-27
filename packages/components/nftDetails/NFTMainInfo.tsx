@@ -1,6 +1,7 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import React, { useState } from "react";
 import { Image, View } from "react-native";
+import styled, { useTheme } from "styled-components/native";
 
 import guardian1PNG from "../../../assets/default-images/guardian_1.png";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
@@ -22,6 +23,7 @@ import { TransactionPendingModal } from "../modals/transaction/TransactionPendin
 import { TransactionSuccessModal } from "../modals/transaction/TransactionSuccessModal";
 import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
 import { NFTAttributes } from "./NFTAttributes";
+import { CollapsableActivities } from "./components/CollapsableActivities";
 
 const mainInfoTabItems: TabItem[] = [
   {
@@ -45,6 +47,9 @@ export const NFTMainInfo: React.FC<{
   sell: (price: string) => Promise<ExecuteResult | undefined>;
   cancelListing: () => Promise<ExecuteResult | undefined>;
 }> = ({ nftInfo, buy, sell, cancelListing }) => {
+  // variables
+  const { layout } = useTheme();
+
   const [transactionPaymentModalVisible, setTransactionPaymentModalVisible] =
     useState(false);
   const [transactionPendingModalVisible, setTransactionPendingModalVisible] =
@@ -74,23 +79,23 @@ export const NFTMainInfo: React.FC<{
     switch (selectedTabItem.label) {
       case "About":
         return (
-          <View style={{ width: 600 }}>
+          <SectionContainer>
             <BrandText
               style={[fontSemibold14, { marginBottom: 24, width: "100%" }]}
             >
               {nftInfo?.description}
             </BrandText>
-          </View>
+          </SectionContainer>
         );
       case "Attributes":
         return (
-          <View style={{ width: 600 }}>
+          <SectionContainer>
             <NFTAttributes nftAttributes={nftInfo?.attributes} />
-          </View>
+          </SectionContainer>
         );
       case "Details":
         return (
-          <View style={{ width: 600 }}>
+          <SectionContainer>
             <View
               style={{
                 flexDirection: "row",
@@ -132,7 +137,7 @@ export const NFTMainInfo: React.FC<{
                 {nftInfo?.ownerAddress}
               </BrandText>
             </View>
-          </View>
+          </SectionContainer>
         );
       default:
         return null;
@@ -203,12 +208,13 @@ export const NFTMainInfo: React.FC<{
           onPressTabItem={onPressTabItem}
           items={tabItems}
           borderColorTabSelected={primaryColor}
-          style={{ height: 26, marginBottom: 16 }}
+          tabStyle={{ paddingBottom: layout.padding_x2 }}
         />
         {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
         {/*TODO: About  = Big text*/}
         <SelectedTabItemRendering />
       </View>
+      <CollapsableActivities />
 
       {/* ====== "Buy this NFT" three modals*/}
       {/*TODO: Handle these 3 modales with a component, or a hook*/}
@@ -265,3 +271,8 @@ export const NFTMainInfo: React.FC<{
     </View>
   );
 };
+
+const SectionContainer = styled.View(({ theme: { layout } }) => ({
+  width: 600,
+  paddingVertical: layout.padding_x3,
+}));

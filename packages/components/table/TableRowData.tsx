@@ -1,15 +1,15 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TextStyle } from "react-native";
 import styled from "styled-components/native";
 
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { genericStyles } from "../../utils/style/genericStyles";
 import { BrandText } from "../BrandText";
 
-export type TableRowDataItem = {
+export type TableRowDataItem<T = any> = {
   uid: string;
-  keyId: string;
-  label?: string;
+  keyId: keyof T;
+  value?: string;
   flex: number;
 };
 
@@ -17,23 +17,25 @@ interface TableRowDataProps {
   data: TableRowDataItem[];
   specialRender?: (item: TableRowDataItem) => React.ReactNode;
   onPress?: () => void;
+  labelStyle?: TextStyle;
 }
 
 export const TableRowData: React.FC<TableRowDataProps> = ({
   data,
   specialRender,
   onPress,
+  labelStyle,
 }) => {
   return (
     <Row onPress={onPress}>
-      {data.map(({ label, flex, keyId, uid }, index) => (
+      {data.map(({ value, flex, keyId, uid }, index) => (
         <ItemContainer
-          key={label}
+          key={value}
           flex={flex}
           isLast={data.length - 1 === index}
         >
-          {(specialRender && specialRender({ label, flex, keyId, uid })) || (
-            <LabelText>{label}</LabelText>
+          {(specialRender && specialRender({ value, flex, keyId, uid })) || (
+            <LabelText style={labelStyle}>{value}</LabelText>
           )}
         </ItemContainer>
       ))}
@@ -57,8 +59,7 @@ const ItemContainer = styled.View<{ flex: number; isLast: boolean }>(
   })
 );
 
-const LabelText = styled(BrandText)(({ theme: { colors, layout } }) => ({
+const LabelText = styled(BrandText)(({ theme: { colors } }) => ({
   ...(fontSemibold13 as object),
   color: colors.secondary,
-  textTransform: "uppercase",
 }));
