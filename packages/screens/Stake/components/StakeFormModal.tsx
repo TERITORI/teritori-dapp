@@ -8,7 +8,6 @@ import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { DivColumn } from "../../../components/div";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
@@ -25,8 +24,8 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { genericStyles } from "../../../utils/style/genericStyles";
 import { layout } from "../../../utils/style/layout";
+import { toriDisplayDenom } from "../../../utils/teritori";
 import { StakeFormValuesType, StakeType } from "../types";
 
 interface StakeFormModalProps {
@@ -61,13 +60,13 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
   // returns
   const Header = useCallback(
     () => (
-      <DivColumn>
+      <View>
         <BrandText style={fontSemibold20}>Stake Tokens</BrandText>
         <SpacerColumn size={0.5} />
         <BrandText style={[styles.alternateText, fontSemibold16]}>
-          Select a validator and amount of TORI to stake.
+          Select a validator and amount of {toriDisplayDenom} to stake.
         </BrandText>
-      </DivColumn>
+      </View>
     ),
     [data]
   );
@@ -111,18 +110,18 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
           <SVG width={24} height={24} source={warningTriangleSVG} />
           <SpacerRow size={3} />
 
-          <DivColumn>
+          <View>
             <BrandText style={fontSemibold13}>
               Staking will lock your funds for 14 days
             </BrandText>
             <SpacerColumn size={0.5} />
             <View style={styles.warningDescriptionContainer}>
               <BrandText style={styles.alternateText}>
-                Once you undelegate your staked STARS, you will need to wait 14
-                days for your tokens to be liquid.
+                Once you undelegate your staked {toriDisplayDenom}, you will
+                need to wait 14 days for your tokens to be liquid.
               </BrandText>
             </View>
-          </DivColumn>
+          </View>
         </View>
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
@@ -171,12 +170,15 @@ const styles = StyleSheet.create({
     width: 446,
   },
   footerRow: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
     padding: layout.padding_x2_5,
   },
   stakeWarningContainer: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenter),
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: errorColor,
     borderRadius: layout.borderRadius * 0.65,

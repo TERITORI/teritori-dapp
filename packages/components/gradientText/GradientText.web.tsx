@@ -2,7 +2,9 @@ import { TextStyle } from "react-native";
 
 import { exoFontFamilyFromFontWeight } from "../../utils/style/fonts";
 
-export const GradientText: React.FC<{ style: TextStyle }> = ({ children }) => (
+export const GradientText: React.FC<{
+  style: Pick<TextStyle, "fontFamily" | "fontWeight" | "fontSize">;
+}> = ({ children, style }) => (
   <p
     style={{
       backgroundImage:
@@ -12,6 +14,8 @@ export const GradientText: React.FC<{ style: TextStyle }> = ({ children }) => (
       WebkitTextFillColor: "transparent",
       fontFamily: exoFontFamilyFromFontWeight("500"),
       fontSize: 16,
+      margin: 0,
+      ...style,
     }}
   >
     {children}

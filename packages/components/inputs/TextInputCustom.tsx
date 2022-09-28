@@ -24,11 +24,9 @@ import {
 } from "../../utils/numbers";
 import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
-import { genericStyles } from "../../utils/style/genericStyles";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { DivColumn } from "../div";
 import { SpacerColumn } from "../spacer";
 
 export interface TextInputCustomProps<T>
@@ -130,12 +128,12 @@ export const TextInputCustom = <T,>({
   return (
     <>
       {variant === "labelOutside" && (
-        <DivColumn>
+        <View>
           <BrandText style={[styles.labelText, fontSemibold14]}>
             {label}
           </BrandText>
           <SpacerColumn size={1} />
-        </DivColumn>
+        </View>
       )}
 
       <TertiaryBox
@@ -145,15 +143,15 @@ export const TextInputCustom = <T,>({
         fullWidth
         width={width}
       >
-        <View style={[genericStyles.rowWithCenter, { width: "100%" }]}>
+        <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {variant !== "labelOutside" && (
-              <DivColumn>
+              <View>
                 <BrandText style={[styles.labelText, fontMedium10]}>
                   {label}
                 </BrandText>
                 <SpacerColumn size={0.5} />
-              </DivColumn>
+              </View>
             )}
             <TextInput
               editable={!disabled}
@@ -190,5 +188,10 @@ const styles = StyleSheet.create({
     color: secondaryColor,
     fontFamily: "Exo_600SemiBold",
     outlineStyle: "none",
+  },
+  innerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
   },
 });

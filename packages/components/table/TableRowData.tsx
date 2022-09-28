@@ -3,7 +3,6 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 import { mineShaftColor, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
-import { genericStyles } from "../../utils/style/genericStyles";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 
@@ -46,7 +45,9 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
 
 const styles = StyleSheet.create({
   row: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
     borderColor: mineShaftColor,
     borderTopWidth: 1,

@@ -3,7 +3,6 @@ import { StyleSheet, View } from "react-native";
 
 import { codGrayColor, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
-import { genericStyles } from "../../utils/style/genericStyles";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 
@@ -37,7 +36,9 @@ export const TableRow: React.FC<TableRowProps> = ({ headings }) => {
 
 const styles = StyleSheet.create({
   row: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
     backgroundColor: codGrayColor,
     minHeight: layout.contentPadding,

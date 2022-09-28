@@ -6,7 +6,6 @@ import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { DivColumn, DivRow } from "../../../components/div";
 import { GradientText } from "../../../components/gradientText";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
@@ -17,7 +16,6 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { genericStyles } from "../../../utils/style/genericStyles";
 import { layout } from "../../../utils/style/layout";
 import { StakeType } from "../types";
 
@@ -38,23 +36,21 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
   const Header = useCallback(
     () => (
       <>
-        <DivRow>
+        <View style={styles.rowWithCenter}>
           <Avatar size="medium" uri={TEMP_IMAGE} />
           <SpacerRow size={2} />
-          <DivColumn>
+          <View>
             <BrandText style={fontSemibold20}>{data?.name}</BrandText>
             <SpacerColumn size={0.5} />
-            <DivRow>
+            <View style={styles.rowWithCenter}>
               <BrandText style={[styles.alternateText, fontSemibold16]}>
                 Commission
               </BrandText>
               <SpacerRow size={1} />
-              <GradientText style={fontSemibold16}>
-                {data?.commission}
-              </GradientText>
-            </DivRow>
-          </DivColumn>
-        </DivRow>
+              <GradientText>{data?.commission}</GradientText>
+            </View>
+          </View>
+        </View>
       </>
     ),
     [data]
@@ -113,11 +109,17 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
 
 const styles = StyleSheet.create({
   footerRow: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: layout.padding_x2_5,
   },
   container: {
     width: 446,
   },
   alternateText: { color: neutral77, flexShrink: 1 },
+  rowWithCenter: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
 });

@@ -5,7 +5,6 @@ import { Avatar } from "../../components/Avatar";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
-import { DivRow } from "../../components/div";
 import { SpacerRow } from "../../components/spacer";
 import {
   TableRowData,
@@ -16,7 +15,6 @@ import {
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
 import { TEMP_IMAGE } from "../../utils/faking";
 import { fontSemibold13, fontSemibold28 } from "../../utils/style/fonts";
-import { genericStyles } from "../../utils/style/genericStyles";
 import { layout } from "../../utils/style/layout";
 import { StakeDetailModal } from "./components/StakeDetailModal";
 import { StakeFormModal } from "./components/StakeFormModal";
@@ -105,7 +103,7 @@ export const StakeScreen: React.FC = () => {
     switch (item.keyId) {
       case "name":
         return (
-          <View style={genericStyles.rowWithCenter}>
+          <View style={styles.nameContainer}>
             <Avatar uri={TEMP_IMAGE} />
             <SpacerRow size={1} />
             <BrandText style={fontSemibold13}>{item.label}</BrandText>
@@ -138,9 +136,9 @@ export const StakeScreen: React.FC = () => {
     <ScreenContainer>
       <View style={styles.rowHeader}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
-        <DivRow>
+        <View style={styles.rowWithCenter}>
           <Tabs onPressTabItem={onPressTabItem} items={tabItems} />
-        </DivRow>
+        </View>
       </View>
 
       <TableRow headings={Object.values(TABLE_ROWS)} />
@@ -169,9 +167,19 @@ export const StakeScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  nameContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   rowHeader: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingTop: layout.contentPadding,
     marginBottom: layout.padding_x2_5,
+  },
+  rowWithCenter: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

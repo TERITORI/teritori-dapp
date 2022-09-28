@@ -9,7 +9,6 @@ import {
 
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { genericStyles } from "../../utils/style/genericStyles";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { PrimaryBadge } from "../badges/PrimaryBadge";
@@ -64,13 +63,13 @@ export const Tabs: React.FC<{
       {items.map((item, index) => (
         <TouchableOpacity key={index} onPress={() => onPressTabItem(item)}>
           <View
-            style={[
-              genericStyles.rowWithCenterAndSB,
-              {
-                marginRight: index !== items.length - 1 ? layout.padding_x3 : 0,
-                paddingBottom: layout.padding_x3,
-              },
-            ]}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginRight: index !== items.length - 1 ? layout.padding_x3 : 0,
+              paddingBottom: layout.padding_x3,
+            }}
           >
             <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
               {item.label}
