@@ -22,7 +22,7 @@ export const NFTSellCard: React.FC<{
         justifyContent: "space-between",
       }}
     >
-      <TextInputCustom
+      <TextInputCustom<{ price: string }>
         name="price"
         label="Price in TORI"
         value={price}

@@ -183,7 +183,7 @@ const AddNewWallet: React.FC = () => {
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", width: 332 }}>
-        <TextInputCustom
+        <TextInputCustom<{ walletAddress: string }>
           name="walletAddress"
           value={addressValue}
           onChangeText={setAddressValue}
