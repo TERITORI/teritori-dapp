@@ -1,16 +1,26 @@
 // libraries
-import { ViewStyle } from "react-native";
-import styled from "styled-components/native";
+import React from "react";
+import { View, ViewStyle } from "react-native";
 
-export interface DivProps extends ViewStyle {
+import { genericStyles } from "../../utils/style/genericStyles";
+
+export interface DivProps {
   jc?: ViewStyle["justifyContent"];
   ai?: ViewStyle["alignItems"];
+  style?: ViewStyle;
 }
 
-export const DivColumn = styled.View<DivProps>(({ jc, ai, flex, height }) => ({
-  flexDirection: "column",
-  justifyContent: jc,
-  alignItems: ai,
-  flex,
-  height,
-}));
+export const DivColumn: React.FC<DivProps> = ({ children, jc, ai, style }) => (
+  <View
+    style={[
+      genericStyles.column,
+      {
+        justifyContent: jc,
+        alignItems: ai,
+        ...style,
+      },
+    ]}
+  >
+    {children}
+  </View>
+);

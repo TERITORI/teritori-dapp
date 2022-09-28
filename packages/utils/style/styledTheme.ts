@@ -1,5 +1,4 @@
 // misc
-import { DefaultTheme } from "styled-components/native";
 
 import {
   errorColor,
