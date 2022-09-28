@@ -5,6 +5,7 @@ import {
   RootStackParamList,
   useAppNavigation,
 } from "../../../utils/navigation";
+import { NameFinderFormType } from "../../../utils/types/tns";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
 
@@ -36,7 +37,7 @@ export const TNSNameFinderModal: React.FC<{
       label="Find a name"
       // childrenBottom={<DomainsAvailability/>} TODO: Uncomment this when the functionality is done
     >
-      <TextInputCustom<{ name: string }>
+      <TextInputCustom<NameFinderFormType>
         name="name"
         label="NAME"
         placeHolder="Type name here"

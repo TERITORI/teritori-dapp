@@ -3,11 +3,11 @@ import { StyleSheet, View } from "react-native";
 
 import { Avatar } from "../../../components/Avatar";
 import { BrandText } from "../../../components/BrandText";
-import { GradientText } from "../../../components/GradientText";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { DivColumn, DivRow } from "../../../components/div";
+import { GradientText } from "../../../components/gradientText";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { TEMP_IMAGE } from "../../../utils/faking";
