@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { TouchableOpacity, View, StyleProp, ViewStyle } from "react-native";
-import styled, { useTheme } from "styled-components/native";
+import {
+  TouchableOpacity,
+  View,
+  StyleProp,
+  ViewStyle,
+  StyleSheet,
+} from "react-native";
 
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { genericStyles } from "../../utils/style/genericStyles";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
@@ -50,8 +56,6 @@ export const Tabs: React.FC<{
   style,
   tabStyle,
 }) => {
-  // variables
-  const { layout } = useTheme();
 
   // returns
   return (
@@ -95,7 +99,12 @@ export const Tabs: React.FC<{
               )
             ) : null}
             {item.isSelected && (
-              <SelectedBorder borderColorTabSelected={borderColorTabSelected} />
+              <View
+                style={[
+                  styles.selectedBorder,
+                  { backgroundColor: borderColorTabSelected },
+                ]}
+              />
             )}
           </View>
         </TouchableOpacity>
@@ -104,12 +113,11 @@ export const Tabs: React.FC<{
   );
 };
 
-const SelectedBorder = styled.View<{ borderColorTabSelected: string }>(
-  ({ borderColorTabSelected }) => ({
+const styles = StyleSheet.create({
+  selectedBorder: {
     height: 2,
     width: "100%",
-    backgroundColor: borderColorTabSelected,
     position: "absolute",
     bottom: -2,
-  })
-);
+  },
+});

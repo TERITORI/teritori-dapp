@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, StyleSheet } from "react-native";
-import styled from "styled-components/native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import warningTriangleSVG from "../../../../assets/icons/warning-triangle.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -9,19 +8,25 @@ import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { DivColumn, DivRow } from "../../../components/div";
+import { DivColumn } from "../../../components/div";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { numberWithThousandsSeparator } from "../../../utils/numbers";
 import {
-  fontSemibold9,
+  errorColor,
+  neutral22,
+  neutral77,
+  primaryColor,
+} from "../../../utils/style/colors";
+import {
   fontSemibold12,
   fontSemibold13,
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { genericStyles } from "../../../utils/style/genericStyles";
+import { layout } from "../../../utils/style/layout";
 import { StakeFormValuesType, StakeType } from "../types";
 
 interface StakeFormModalProps {
@@ -57,11 +62,11 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
   const Header = useCallback(
     () => (
       <DivColumn>
-        <MainText style={fontSemibold20}>Stake Tokens</MainText>
+        <BrandText style={fontSemibold20}>Stake Tokens</BrandText>
         <SpacerColumn size={0.5} />
-        <AlternateText style={fontSemibold16}>
+        <BrandText style={[styles.AlternateText, fontSemibold16]}>
           Select a validator and amount of TORI to stake.
-        </AlternateText>
+        </BrandText>
       </DivColumn>
     ),
     [data]
@@ -71,7 +76,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
     () => (
       <>
         <Separator />
-        <FooterRow>
+        <View style={styles.FooterRow}>
           <SecondaryButton
             size="XS"
             text="Cancel"
@@ -85,7 +90,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
             width={120}
             onPress={handleSubmit(onSubmit)}
           />
-        </FooterRow>
+        </View>
       </>
     ),
     [watchAll]
@@ -99,26 +104,26 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
       childrenBottom={Footer()}
       hideMainSeparator
     >
-      <Container>
+      <View style={styles.Container}>
         <Separator />
         <SpacerColumn size={2.5} />
-        <StakeWarningContainer>
+        <View style={styles.StakeWarningContainer}>
           <SVG width={24} height={24} source={warningTriangleSVG} />
           <SpacerRow size={3} />
 
           <DivColumn>
-            <MainText style={fontSemibold13}>
+            <BrandText style={fontSemibold13}>
               Staking will lock your funds for 14 days
-            </MainText>
+            </BrandText>
             <SpacerColumn size={0.5} />
-            <WarningDescriptionContainer>
-              <AlternateText style={fontSemibold12}>
+            <View style={styles.WarningDescriptionContainer}>
+              <BrandText style={styles.AlternateText}>
                 Once you undelegate your staked STARS, you will need to wait 14
                 days for your tokens to be liquid.
-              </AlternateText>
-            </WarningDescriptionContainer>
+              </BrandText>
+            </View>
           </DivColumn>
-        </StakeWarningContainer>
+        </View>
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
           name="validatorName"
@@ -146,54 +151,51 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
               })
             }
           >
-            <MaxText style={fontSemibold9}>max</MaxText>
+            <BrandText style={styles.MaxText}>max</BrandText>
           </Pressable>
         </TextInputCustom>
         <SpacerColumn size={1} />
 
-        <MainText style={fontSemibold13}>
+        <BrandText style={fontSemibold13}>
           Available balance: {numberWithThousandsSeparator(MAX_VALUE)} [$$$]
-        </MainText>
+        </BrandText>
         <SpacerColumn size={2.5} />
-      </Container>
+      </View>
     </ModalBase>
   );
 };
 
-const FooterRow = styled(DivRow)(({ theme: { layout } }) => ({
-  ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
-  width: "100%",
-  padding: layout.padding_x2_5,
-}));
-
-const StakeWarningContainer = styled.View(({ theme: { layout, colors } }) => ({
-  ...StyleSheet.flatten(genericStyles.rowWithCenter),
-  borderWidth: 1,
-  borderColor: colors.error,
-  borderRadius: layout.borderRadius * 0.65,
-  paddingVertical: layout.padding_x1_5,
-  paddingHorizontal: layout.padding_x3,
-}));
-
-const Container = styled.View({
-  width: 446,
+const styles = StyleSheet.create({
+  Container: {
+    width: 446,
+  },
+  FooterRow: {
+    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+    width: "100%",
+    padding: layout.padding_x2_5,
+  },
+  StakeWarningContainer: {
+    ...StyleSheet.flatten(genericStyles.rowWithCenter),
+    borderWidth: 1,
+    borderColor: errorColor,
+    borderRadius: layout.borderRadius * 0.65,
+    paddingVertical: layout.padding_x1_5,
+    paddingHorizontal: layout.padding_x3,
+  },
+  AlternateText: {
+    ...(fontSemibold12 as object),
+    color: neutral77,
+    flexShrink: 1,
+  },
+  WarningDescriptionContainer: {
+    flexDirection: "row",
+    width: "55%",
+  },
+  MaxText: {
+    ...(fontSemibold12 as object),
+    backgroundColor: primaryColor,
+    color: neutral22,
+    borderRadius: layout.borderRadius,
+    paddingHorizontal: layout.padding_x0_5,
+  },
 });
-
-const MainText = styled(BrandText)(() => ({}));
-
-const AlternateText = styled(BrandText)(({ theme: { colors } }) => ({
-  color: colors.neutral77,
-  flexShrink: 1,
-}));
-
-const WarningDescriptionContainer = styled.View({
-  flexDirection: "row",
-  width: "55%",
-});
-
-const MaxText = styled.View(({ theme: { layout, colors } }) => ({
-  backgroundColor: colors.primary,
-  color: colors.neutral22,
-  borderRadius: layout.borderRadius,
-  paddingHorizontal: layout.padding_x0_5,
-}));

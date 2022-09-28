@@ -1,6 +1,6 @@
 // libraries
 import React from "react";
-import styled from "styled-components/native";
+import { Image } from "react-native";
 
 import { AVATAR_WIDTH } from "../utils/variables";
 
@@ -31,17 +31,11 @@ export const Avatar = ({ uri, size = "regular" }: AvatarProps) => {
       source={{
         uri,
       }}
-      size={avatarSize}
+      style={{
+        width: avatarSize,
+        height: avatarSize,
+        borderRadius: avatarSize / 2,
+      }}
     />
   );
 };
-
-interface ImageProps {
-  size: number;
-}
-
-const Image = styled.Image(({ size }: ImageProps) => ({
-  width: size,
-  height: size,
-  borderRadius: size / 2,
-}));

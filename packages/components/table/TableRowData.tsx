@@ -1,9 +1,10 @@
 import React from "react";
-import { StyleSheet, TextStyle } from "react-native";
-import styled from "styled-components/native";
+import { Pressable, StyleSheet, TextStyle, View } from "react-native";
 
+import { mineShaftColor, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { genericStyles } from "../../utils/style/genericStyles";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 
 export type TableRowDataItem<T = any> = {
@@ -27,39 +28,37 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
   labelStyle,
 }) => {
   return (
-    <Row onPress={onPress}>
+    <Pressable style={styles.Row} onPress={onPress}>
       {data.map(({ value, flex, keyId, uid }, index) => (
-        <ItemContainer
+        <View
           key={value}
-          flex={flex}
-          isLast={data.length - 1 === index}
+          style={{
+            flex,
+            paddingRight: data.length - 1 === index ? 0 : layout.padding_x1,
+          }}
         >
           {(specialRender && specialRender({ value, flex, keyId, uid })) || (
-            <LabelText style={labelStyle}>{value}</LabelText>
+            <BrandText style={[styles.LabelText, labelStyle]}>
+              {value}
+            </BrandText>
           )}
-        </ItemContainer>
+        </View>
       ))}
-    </Row>
+    </Pressable>
   );
 };
 
-const Row = styled.Pressable(({ theme: { layout, colors } }) => ({
-  ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
-  width: "100%",
-  borderColor: colors.mineShaft,
-  borderTopWidth: 1,
-  paddingVertical: layout.padding_x2,
-  paddingHorizontal: layout.padding_x2_5,
-}));
-
-const ItemContainer = styled.View<{ flex: number; isLast: boolean }>(
-  ({ theme: { layout }, flex, isLast }) => ({
-    flex,
-    paddingRight: isLast ? 0 : layout.padding_x1,
-  })
-);
-
-const LabelText = styled(BrandText)(({ theme: { colors } }) => ({
-  ...(fontSemibold13 as object),
-  color: colors.secondary,
-}));
+const styles = StyleSheet.create({
+  Row: {
+    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+    width: "100%",
+    borderColor: mineShaftColor,
+    borderTopWidth: 1,
+    paddingVertical: layout.padding_x2,
+    paddingHorizontal: layout.padding_x2_5,
+  },
+  LabelText: {
+    ...(fontSemibold13 as object),
+    color: secondaryColor,
+  },
+});

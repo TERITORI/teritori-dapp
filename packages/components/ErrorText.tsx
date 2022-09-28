@@ -1,14 +1,11 @@
 // libraries
 import React from "react";
 import { TextProps } from "react-native";
-import styled from "styled-components/native";
 
+import { errorColor } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
-
-// components
 import { BrandText } from "./BrandText";
 
-// types
 interface ErrorTextProps extends TextProps {
   center?: boolean;
 }
@@ -16,13 +13,18 @@ interface ErrorTextProps extends TextProps {
 // error text component to be used by input elements
 export const ErrorText = ({ children, ...restProps }: ErrorTextProps) => {
   return children ? (
-    <Text style={[fontSemibold14, restProps.style]} {...restProps}>
-      {children}{" "}
-    </Text>
+    <BrandText
+      style={[
+        {
+          marginTop: 6,
+          color: errorColor,
+        },
+        fontSemibold14,
+        restProps.style,
+      ]}
+      {...restProps}
+    >
+      {children}
+    </BrandText>
   ) : null;
 };
-
-const Text = styled(BrandText)(({ theme: { colors } }) => ({
-  marginTop: 6,
-  color: colors.error,
-}));

@@ -4,18 +4,18 @@ import {
   NativeSyntheticEvent,
   StyleProp,
   StyleSheet,
+  TextInput,
   TextInputKeyPressEventData,
   TextInputProps,
   View,
   ViewStyle,
 } from "react-native";
-import styled from "styled-components/native";
 
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
 } from "../../utils/numbers";
-import { neutral22 } from "../../utils/style/colors";
+import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { genericStyles } from "../../utils/style/genericStyles";
 import { DEFAULT_ERRORS } from "../../utils/variables";
@@ -125,7 +125,9 @@ export const TextInputCustom = <T,>({
     <>
       {variant === "labelOutside" && label && (
         <DivColumn>
-          <LabelText style={fontSemibold14}>{label}</LabelText>
+          <BrandText style={[styles.labelText, fontSemibold14]}>
+            {label}
+          </BrandText>
           <SpacerColumn size={1} />
         </DivColumn>
       )}
@@ -141,7 +143,9 @@ export const TextInputCustom = <T,>({
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {variant !== "labelOutside" && (
               <DivColumn>
-                <LabelText style={fontMedium10}>{label}</LabelText>
+                <BrandText style={[styles.labelText, fontMedium10]}>
+                  {label}
+                </BrandText>
                 <SpacerColumn size={0.5} />
               </DivColumn>
             )}
@@ -152,6 +156,7 @@ export const TextInputCustom = <T,>({
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
               value={field.value as any}
+              style={styles.textInput}
               {...restProps}
             />
           </View>
@@ -164,22 +169,20 @@ export const TextInputCustom = <T,>({
   );
 };
 
-const LabelText = styled(BrandText)(({ theme: { colors } }) => ({
-  color: colors.neutral77,
-}));
-
-const TextInput = styled.TextInput(({ theme: { colors } }) => ({
-  fontSize: 14,
-  color: colors.secondary,
-  fontFamily: "Exo_600SemiBold",
-  outlineStyle: "none",
-}));
-
 const styles = StyleSheet.create({
   mainContainer: {
     alignItems: "flex-start",
     paddingHorizontal: 12,
     paddingVertical: 10,
     backgroundColor: neutral22,
+  },
+  labelText: {
+    color: neutral77,
+  },
+  textInput: {
+    fontSize: 14,
+    color: secondaryColor,
+    fontFamily: "Exo_600SemiBold",
+    outlineStyle: "none",
   },
 });

@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import styled from "styled-components/native";
 
 import { Avatar } from "../../components/Avatar";
 import { BrandText } from "../../components/BrandText";
@@ -17,6 +16,7 @@ import {
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
 import { fontSemibold13, fontSemibold28 } from "../../utils/style/fonts";
 import { genericStyles } from "../../utils/style/genericStyles";
+import { layout } from "../../utils/style/layout";
 import { TEMP_IMAGE } from "../../utils/variables";
 import { StakeDetailModal } from "./components/StakeDetailModal";
 import { StakeFormModal } from "./components/StakeFormModal";
@@ -132,12 +132,12 @@ export const StakeScreen = () => {
 
   return (
     <ScreenContainer>
-      <RowHeader>
-        <Heading>Stake</Heading>
+      <View style={styles.RowHeader}>
+        <BrandText style={fontSemibold28}>Stake</BrandText>
         <DivRow>
           <Tabs onPressTabItem={onPressTabItem} items={tabItems} />
         </DivRow>
-      </RowHeader>
+      </View>
 
       <TableRow
         headings={Object.values(TABLE_ROWS)}
@@ -171,12 +171,10 @@ export const StakeScreen = () => {
   );
 };
 
-const RowHeader = styled.View(({ theme: { layout } }) => ({
-  ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
-  paddingTop: layout.contentPadding,
-  marginBottom: layout.padding_x2_5,
-}));
-
-const Heading = styled(BrandText)({
-  ...(fontSemibold28 as object),
+const styles = StyleSheet.create({
+  RowHeader: {
+    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+    paddingTop: layout.contentPadding,
+    marginBottom: layout.padding_x2_5,
+  },
 });
