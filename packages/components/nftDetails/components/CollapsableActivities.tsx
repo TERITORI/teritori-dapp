@@ -1,10 +1,15 @@
 // libraries
 import React, { useCallback, useMemo } from "react";
+import { StyleSheet } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import styled from "styled-components/native";
 
 import starSVG from "../../../../assets/icons/star.svg";
 import { NFTActivityType } from "../../../screens/Marketplace/types";
+import {
+  neutral77,
+  primaryColor,
+  reefColor,
+} from "../../../utils/style/colors";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { Pagination } from "../../Pagination";
@@ -75,16 +80,26 @@ export const CollapsableActivities = ({}: CollapsableActivitiesProps) => {
         case "seller":
         case "transactionId":
           return (
-            <AddressText numberOfLines={1} ellipsizeMode="head">
+            <BrandText
+              style={styles.AddressText}
+              numberOfLines={1}
+              ellipsizeMode="head"
+            >
               {item.value}
-            </AddressText>
+            </BrandText>
           );
 
         case "transactionType":
           if (item.value?.includes("Sold via")) {
-            return <SoldViaText>{item.value}</SoldViaText>;
+            return (
+              <BrandText style={styles.SoldViaText}>{item.value}</BrandText>
+            );
           } else if (item.value?.includes("Cancel")) {
-            return <CancelListingText>{item.value}</CancelListingText>;
+            return (
+              <BrandText style={styles.CancelListingText}>
+                {item.value}
+              </BrandText>
+            );
           }
           return null;
 
@@ -111,17 +126,19 @@ export const CollapsableActivities = ({}: CollapsableActivitiesProps) => {
   );
 };
 
-const AddressText = styled(BrandText)(({ theme: { colors } }) => ({
-  ...(fontMedium14 as object),
-  color: colors.primary,
-}));
+const styles = StyleSheet.create({
+  AddressText: {
+    ...(fontMedium14 as object),
+    color: primaryColor,
+  },
 
-const SoldViaText = styled(BrandText)(({ theme: { colors } }) => ({
-  ...(fontMedium14 as object),
-  color: colors.reef,
-}));
+  SoldViaText: {
+    ...(fontMedium14 as object),
+    color: reefColor,
+  },
 
-const CancelListingText = styled(BrandText)(({ theme: { colors } }) => ({
-  ...(fontMedium14 as object),
-  color: colors.neutral77,
-}));
+  CancelListingText: {
+    ...(fontMedium14 as object),
+    color: neutral77,
+  },
+});

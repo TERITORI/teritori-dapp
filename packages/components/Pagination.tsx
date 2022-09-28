@@ -1,14 +1,16 @@
 // libraries
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import styled from "styled-components/native";
 
 import chevronLeftDoubleSVG from "../../assets/icons/chevron-left-double.svg";
 import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
 import chevronRightDoubleSVG from "../../assets/icons/chevron-right-double.svg";
 import chevronRightSVG from "../../assets/icons/chevron-right.svg";
+import { neutral77 } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { genericStyles } from "../utils/style/genericStyles";
+import { layout } from "../utils/style/layout";
+import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { PrimaryButton } from "./buttons/PrimaryButton";
@@ -38,21 +40,21 @@ export const Pagination = ({
 
   // returns
   return (
-    <Container>
+    <View style={styles.Container}>
       <DivRow jc="center" ai="center">
-        <GrayText>
+        <BrandText style={styles.GrayText}>
           Page {currentPage} of {maxPage}
-        </GrayText>
-        <GrayText>|</GrayText>
-        <GrayText>Go to page:</GrayText>
-        <InputContainer>
+        </BrandText>
+        <BrandText style={styles.GrayText}>|</BrandText>
+        <BrandText style={styles.GrayText}>Go to page:</BrandText>
+        <View style={styles.InputContainer}>
           <TextInputCustom
             name="page"
             label=""
             variant="labelOutside"
             defaultValue={currentPage}
           />
-        </InputContainer>
+        </View>
       </DivRow>
 
       <DivRow>
@@ -80,32 +82,34 @@ export const Pagination = ({
       </DivRow>
 
       <DivRow jc="center" ai="center">
-        <GrayText>Items per page:</GrayText>
-        <InputContainer>
+        <BrandText style={styles.GrayText}>Items per page:</BrandText>
+        <View style={styles.InputContainer}>
           <TextInputCustom
             name="page"
             label=""
             variant="labelOutside"
             defaultValue={currentPage}
           />
-        </InputContainer>
+        </View>
       </DivRow>
-    </Container>
+    </View>
   );
 };
 
-const Container = styled.View(({ theme: { layout } }) => ({
-  ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
-  paddingHorizontal: layout.padding_x2,
-}));
+const styles = StyleSheet.create({
+  Container: {
+    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+    paddingHorizontal: layout.padding_x2,
+  },
 
-const GrayText = styled.View(({ theme: { colors, layout } }) => ({
-  ...(fontSemibold14 as object),
-  color: colors.neutral77,
-  paddingRight: layout.padding_x1,
-  lineHeight: 14,
-}));
+  GrayText: {
+    ...(fontSemibold14 as object),
+    color: neutral77,
+    paddingRight: layout.padding_x1,
+    lineHeight: 14,
+  },
 
-const InputContainer = styled.View({
-  width: 80,
+  InputContainer: {
+    width: 80,
+  },
 });

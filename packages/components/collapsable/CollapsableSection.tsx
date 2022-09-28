@@ -1,16 +1,15 @@
 // libraries
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { SvgProps } from "react-native-svg";
-import styled from "styled-components/native";
-
-// components
 
 // styles
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
+import { neutral33, neutral44 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { genericStyles } from "../../utils/style/genericStyles";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -38,8 +37,8 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
 
   // returns
   return (
-    <Container fullWidth>
-      <Header>
+    <TertiaryBox>
+      <View style={styles.Header}>
         <DivRow jc="center" ai="center">
           <SVG source={icon} width={14} height={14} />
           <SpacerRow size={1.5} />
@@ -48,34 +47,34 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
           </BrandText>
         </DivRow>
 
-        <ChevronContainer onPress={toggleExpansion}>
+        <Pressable style={styles.ChevronContainer} onPress={toggleExpansion}>
           <SVG
             source={isExpanded ? chevronDownSVG : chevronUpSVG}
             fill="red"
             width={16}
             height={16}
           />
-        </ChevronContainer>
-      </Header>
+        </Pressable>
+      </View>
       <View style={genericStyles.w100}>{children}</View>
-    </Container>
+    </TertiaryBox>
   );
 };
 
-const Container = styled(TertiaryBox)({});
+const styles = StyleSheet.create({
+  Header: {
+    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+    width: "100%",
+    padding: layout.padding_x2,
+  },
 
-const Header = styled.View(({ theme: { layout } }) => ({
-  ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
-  width: "100%",
-  padding: layout.padding_x2,
-}));
-
-const ChevronContainer = styled.Pressable(({ theme: { colors, layout } }) => ({
-  ...StyleSheet.flatten(genericStyles.jcAiCenter),
-  height: layout.icon,
-  width: layout.icon,
-  borderRadius: layout.icon / 2,
-  background: colors.neutral33,
-  borderWidth: 1,
-  borderColor: colors.neutral44,
-}));
+  ChevronContainer: {
+    ...StyleSheet.flatten(genericStyles.jcAiCenter),
+    height: layout.icon,
+    width: layout.icon,
+    borderRadius: layout.icon / 2,
+    background: neutral33,
+    borderWidth: 1,
+    borderColor: neutral44,
+  },
+});

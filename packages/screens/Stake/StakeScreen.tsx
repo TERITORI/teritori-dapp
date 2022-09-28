@@ -74,7 +74,7 @@ export const StakeScreen = () => {
             ["rank", "name", "votingPower", "commission"].includes(f)
           )
           .map((k) => ({
-            label: d[k as keyof typeof d],
+            value: d[k as keyof typeof d],
             keyId: k,
             flex: TABLE_ROWS[k].flex,
             uid: d.rank,

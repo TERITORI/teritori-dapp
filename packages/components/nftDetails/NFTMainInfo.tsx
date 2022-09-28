@@ -1,7 +1,6 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import React, { useState } from "react";
-import { Image, View } from "react-native";
-import styled, { useTheme } from "styled-components/native";
+import { Image, StyleSheet, View } from "react-native";
 
 import guardian1PNG from "../../../assets/default-images/guardian_1.png";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
@@ -12,6 +11,7 @@ import {
   fontSemibold14,
   fontSemibold28,
 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { NFTCancelListingCard } from "../cards/NFTCancelListingCard";
@@ -47,9 +47,6 @@ export const NFTMainInfo: React.FC<{
   sell: (price: string) => Promise<ExecuteResult | undefined>;
   cancelListing: () => Promise<ExecuteResult | undefined>;
 }> = ({ nftInfo, buy, sell, cancelListing }) => {
-  // variables
-  const { layout } = useTheme();
-
   const [transactionPaymentModalVisible, setTransactionPaymentModalVisible] =
     useState(false);
   const [transactionPendingModalVisible, setTransactionPendingModalVisible] =
@@ -79,23 +76,23 @@ export const NFTMainInfo: React.FC<{
     switch (selectedTabItem.label) {
       case "About":
         return (
-          <SectionContainer>
+          <View style={styles.SectionContainer}>
             <BrandText
               style={[fontSemibold14, { marginBottom: 24, width: "100%" }]}
             >
               {nftInfo?.description}
             </BrandText>
-          </SectionContainer>
+          </View>
         );
       case "Attributes":
         return (
-          <SectionContainer>
+          <View style={styles.SectionContainer}>
             <NFTAttributes nftAttributes={nftInfo?.attributes} />
-          </SectionContainer>
+          </View>
         );
       case "Details":
         return (
-          <SectionContainer>
+          <View style={styles.SectionContainer}>
             <View
               style={{
                 flexDirection: "row",
@@ -137,7 +134,7 @@ export const NFTMainInfo: React.FC<{
                 {nftInfo?.ownerAddress}
               </BrandText>
             </View>
-          </SectionContainer>
+          </View>
         );
       default:
         return null;
@@ -272,7 +269,9 @@ export const NFTMainInfo: React.FC<{
   );
 };
 
-const SectionContainer = styled.View(({ theme: { layout } }) => ({
-  width: 600,
-  paddingVertical: layout.padding_x3,
-}));
+const styles = StyleSheet.create({
+  SectionContainer: {
+    width: 600,
+    paddingVertical: layout.padding_x3,
+  },
+});
