@@ -27,11 +27,9 @@ const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
   return (
     <TertiaryBox
       fullWidth
-      mainContainerStyle={{
-        marginBottom: 12,
-      }}
       style={{
         zIndex: 10 + itemsCount - index,
+        marginBottom: 12,
       }}
     >
       <TouchableOpacity

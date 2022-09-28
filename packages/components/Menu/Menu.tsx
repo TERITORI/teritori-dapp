@@ -30,11 +30,7 @@ export const Menu: React.FC<MenuProps> = ({
       {isMenuVisible && (
         <PrimaryBox
           width={width}
-          style={{
-            position: "absolute",
-            right: 0,
-            bottom: -20,
-          }}
+          style={{ position: "absolute", right: 0, bottom: -20 }}
           mainContainerStyle={{
             position: "absolute",
             paddingHorizontal: 12,
