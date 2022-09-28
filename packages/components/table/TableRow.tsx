@@ -15,12 +15,12 @@ interface TableRowProps {
 
 export const TableRow: React.FC<TableRowProps> = ({ headings }) => {
   return (
-    <View style={styles.Row}>
+    <View style={styles.row}>
       {headings.map(({ label, flex }, index) => (
         <BrandText
           key={label}
           style={[
-            styles.LabelText,
+            styles.labelText,
             {
               flex,
               paddingRight:
@@ -36,7 +36,7 @@ export const TableRow: React.FC<TableRowProps> = ({ headings }) => {
 };
 
 const styles = StyleSheet.create({
-  Row: {
+  row: {
     ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
     width: "100%",
     backgroundColor: codGrayColor,
@@ -45,11 +45,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: layout.borderRadius,
     borderTopRightRadius: layout.borderRadius,
   },
-
-  LabelText: {
-    ...(fontSemibold12 as object),
-    color: secondaryColor,
-    opacity: 0.4,
-    textTransform: "uppercase",
-  },
+  labelText: StyleSheet.flatten([
+    fontSemibold12,
+    {
+      color: secondaryColor,
+      opacity: 0.4,
+      textTransform: "uppercase",
+    },
+  ]),
 });

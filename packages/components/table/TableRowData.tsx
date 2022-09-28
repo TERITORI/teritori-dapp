@@ -26,7 +26,7 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
   onPress,
 }) => {
   return (
-    <Pressable style={styles.Row} onPress={onPress}>
+    <Pressable style={styles.row} onPress={onPress}>
       {data.map(({ label, flex, keyId, uid }, index) => (
         <View
           key={label}
@@ -36,7 +36,7 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
           }}
         >
           {(specialRender && specialRender({ label, flex, keyId, uid })) || (
-            <BrandText style={styles.LabelText}>{label}</BrandText>
+            <BrandText style={styles.labelText}>{label}</BrandText>
           )}
         </View>
       ))}
@@ -45,7 +45,7 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
 };
 
 const styles = StyleSheet.create({
-  Row: {
+  row: {
     ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
     width: "100%",
     borderColor: mineShaftColor,
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     paddingVertical: layout.padding_x2,
     paddingHorizontal: layout.padding_x2_5,
   },
-  LabelText: {
-    ...(fontSemibold13 as object),
+  labelText: {
+    ...StyleSheet.flatten(fontSemibold13),
     color: secondaryColor,
     textTransform: "uppercase",
   },

@@ -14,10 +14,10 @@ import {
   TableRowHeading,
 } from "../../components/table";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
+import { TEMP_IMAGE } from "../../utils/faking";
 import { fontSemibold13, fontSemibold28 } from "../../utils/style/fonts";
 import { genericStyles } from "../../utils/style/genericStyles";
 import { layout } from "../../utils/style/layout";
-import { TEMP_IMAGE } from "../../utils/variables";
 import { StakeDetailModal } from "./components/StakeDetailModal";
 import { StakeFormModal } from "./components/StakeFormModal";
 import stakeData from "./stakeData.json";
@@ -59,7 +59,7 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
   },
 };
 
-export const StakeScreen = () => {
+export const StakeScreen: React.FC = () => {
   //   variables
   const { onPressTabItem, tabItems } = useTabs(mainInfoTabItems);
   const [stakeDetailModalVisible, setStakeDetailModalVisible] = useState(false);
@@ -114,7 +114,11 @@ export const StakeScreen = () => {
 
       case "actions":
         return (
-          <View style={[genericStyles.selfEnd]}>
+          <View
+            style={{
+              alignSelf: "center",
+            }}
+          >
             <SecondaryButtonOutline
               onPress={() =>
                 toggleDetailModal(stakeData.find((d) => d.rank === item.uid))
@@ -132,7 +136,7 @@ export const StakeScreen = () => {
 
   return (
     <ScreenContainer>
-      <View style={styles.RowHeader}>
+      <View style={styles.rowHeader}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
         <DivRow>
           <Tabs onPressTabItem={onPressTabItem} items={tabItems} />
@@ -165,7 +169,7 @@ export const StakeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  RowHeader: {
+  rowHeader: {
     ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
     paddingTop: layout.contentPadding,
     marginBottom: layout.padding_x2_5,

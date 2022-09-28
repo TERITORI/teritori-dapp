@@ -64,7 +64,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
       <DivColumn>
         <BrandText style={fontSemibold20}>Stake Tokens</BrandText>
         <SpacerColumn size={0.5} />
-        <BrandText style={[styles.AlternateText, fontSemibold16]}>
+        <BrandText style={[styles.alternateText, fontSemibold16]}>
           Select a validator and amount of TORI to stake.
         </BrandText>
       </DivColumn>
@@ -76,7 +76,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
     () => (
       <>
         <Separator />
-        <View style={styles.FooterRow}>
+        <View style={styles.footerRow}>
           <SecondaryButton
             size="XS"
             text="Cancel"
@@ -104,10 +104,10 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
       childrenBottom={Footer()}
       hideMainSeparator
     >
-      <View style={styles.Container}>
+      <View style={styles.container}>
         <Separator />
         <SpacerColumn size={2.5} />
-        <View style={styles.StakeWarningContainer}>
+        <View style={styles.stakeWarningContainer}>
           <SVG width={24} height={24} source={warningTriangleSVG} />
           <SpacerRow size={3} />
 
@@ -116,8 +116,8 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
               Staking will lock your funds for 14 days
             </BrandText>
             <SpacerColumn size={0.5} />
-            <View style={styles.WarningDescriptionContainer}>
-              <BrandText style={styles.AlternateText}>
+            <View style={styles.warningDescriptionContainer}>
+              <BrandText style={styles.alternateText}>
                 Once you undelegate your staked STARS, you will need to wait 14
                 days for your tokens to be liquid.
               </BrandText>
@@ -142,6 +142,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
           control={control}
           placeHolder="0"
           onlyNumbers
+          defaultValue=""
           rules={{ required: true, max: MAX_VALUE }}
         >
           <Pressable
@@ -151,7 +152,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
               })
             }
           >
-            <BrandText style={styles.MaxText}>max</BrandText>
+            <BrandText style={styles.maxText}>max</BrandText>
           </Pressable>
         </TextInputCustom>
         <SpacerColumn size={1} />
@@ -166,15 +167,15 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
 };
 
 const styles = StyleSheet.create({
-  Container: {
+  container: {
     width: 446,
   },
-  FooterRow: {
+  footerRow: {
     ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
     width: "100%",
     padding: layout.padding_x2_5,
   },
-  StakeWarningContainer: {
+  stakeWarningContainer: {
     ...StyleSheet.flatten(genericStyles.rowWithCenter),
     borderWidth: 1,
     borderColor: errorColor,
@@ -182,17 +183,17 @@ const styles = StyleSheet.create({
     paddingVertical: layout.padding_x1_5,
     paddingHorizontal: layout.padding_x3,
   },
-  AlternateText: {
-    ...(fontSemibold12 as object),
+  alternateText: {
+    ...StyleSheet.flatten(fontSemibold12),
     color: neutral77,
     flexShrink: 1,
   },
-  WarningDescriptionContainer: {
+  warningDescriptionContainer: {
     flexDirection: "row",
     width: "55%",
   },
-  MaxText: {
-    ...(fontSemibold12 as object),
+  maxText: {
+    ...StyleSheet.flatten(fontSemibold12),
     backgroundColor: primaryColor,
     color: neutral22,
     borderRadius: layout.borderRadius,

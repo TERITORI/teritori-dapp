@@ -1,7 +1,6 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
-import { genericStyles } from "../../utils/style/genericStyles";
 import { DivProps } from "./DivColumn";
 
 export const DivRow: React.FC<DivProps> = ({
@@ -11,14 +10,12 @@ export const DivRow: React.FC<DivProps> = ({
   style,
 }) => (
   <View
-    style={[
-      genericStyles.row,
-      {
-        justifyContent: jc,
-        alignItems: ai,
-        ...style,
-      },
-    ]}
+    style={{
+      flexDirection: "row",
+      justifyContent: jc,
+      alignItems: ai,
+      ...style,
+    }}
   >
     {children}
   </View>

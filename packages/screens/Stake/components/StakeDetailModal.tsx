@@ -10,6 +10,7 @@ import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { DivColumn, DivRow } from "../../../components/div";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { TEMP_IMAGE } from "../../../utils/faking";
 import { neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold14,
@@ -18,7 +19,6 @@ import {
 } from "../../../utils/style/fonts";
 import { genericStyles } from "../../../utils/style/genericStyles";
 import { layout } from "../../../utils/style/layout";
-import { TEMP_IMAGE } from "../../../utils/variables";
 import { StakeType } from "../types";
 
 interface StakeDetailModalProps {
@@ -45,11 +45,11 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
             <BrandText style={fontSemibold20}>{data?.name}</BrandText>
             <SpacerColumn size={0.5} />
             <DivRow>
-              <BrandText style={[styles.AlternateText, fontSemibold16]}>
+              <BrandText style={[styles.alternateText, fontSemibold16]}>
                 Commission
               </BrandText>
               <SpacerRow size={1} />
-              <GradientText style={fontSemibold16 as object}>
+              <GradientText style={fontSemibold16}>
                 {data?.commission}
               </GradientText>
             </DivRow>
@@ -64,7 +64,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
     () => (
       <>
         <Separator />
-        <View style={styles.FooterRow}>
+        <View style={styles.footerRow}>
           <PrimaryButton size="SM" text="Close" onPress={onClose} />
           <SpacerRow size={2} />
           <SecondaryButton size="SM" text="Undelegate" />
@@ -91,16 +91,16 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
       childrenBottom={Footer()}
       hideMainSeparator
     >
-      <View style={styles.Container}>
+      <View style={styles.container}>
         <Separator />
         <SpacerColumn size={2.5} />
-        <BrandText style={[styles.AlternateText, fontSemibold14]}>
+        <BrandText style={[styles.alternateText, fontSemibold14]}>
           Website
         </BrandText>
         <SpacerColumn size={0.5} />
         <BrandText style={fontSemibold16}>{data?.website}</BrandText>
         <SpacerColumn size={2.5} />
-        <BrandText style={[styles.AlternateText, fontSemibold14]}>
+        <BrandText style={[styles.alternateText, fontSemibold14]}>
           Description
         </BrandText>
         <SpacerColumn size={0.5} />
@@ -112,12 +112,12 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
 };
 
 const styles = StyleSheet.create({
-  FooterRow: {
+  footerRow: {
     ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
     padding: layout.padding_x2_5,
   },
-  Container: {
+  container: {
     width: 446,
   },
-  AlternateText: { color: neutral77, flexShrink: 1 },
+  alternateText: { color: neutral77, flexShrink: 1 },
 });

@@ -94,7 +94,7 @@ export const NameDataForm: React.FC<{
               .
             </BrandText>
           </View>
-          <TextInputCustom<any>
+          <TextInputCustom
             name="Path ID (must be unique)"
             style={inputStyle}
             label="Path ID (must be unique)"
@@ -104,7 +104,7 @@ export const NameDataForm: React.FC<{
           />
         </>
       ) : null}
-      <TextInputCustom<any>
+      <TextInputCustom
         name="NAME"
         style={[inputStyle, !isMintPath && { marginTop: 4 }]}
         label="NAME"
@@ -113,7 +113,7 @@ export const NameDataForm: React.FC<{
         disabled
         regexp={new RegExp(/^[a-zA-Z]+$/)}
       />
-      <TextInputCustom<any>
+      <TextInputCustom
         name="BIO"
         style={inputStyle}
         label="BIO"
@@ -121,7 +121,7 @@ export const NameDataForm: React.FC<{
         value={public_bio}
         onChangeText={setBio}
       />
-      <TextInputCustom<any>
+      <TextInputCustom
         name="IMAGE URL"
         style={inputStyle}
         label="IMAGE URL"
@@ -129,7 +129,7 @@ export const NameDataForm: React.FC<{
         value={image}
         onChangeText={setImageUrl}
       />
-      <TextInputCustom<any>
+      <TextInputCustom
         name="EMAIL"
         style={inputStyle}
         label="EMAIL"
@@ -137,7 +137,7 @@ export const NameDataForm: React.FC<{
         value={email}
         onChangeText={setEmail}
       />
-      <TextInputCustom<any>
+      <TextInputCustom
         name="WEBSITE"
         style={inputStyle}
         label="WEBSITE"
@@ -145,7 +145,7 @@ export const NameDataForm: React.FC<{
         value={external_url}
         onChangeText={setWebsite}
       />
-      <TextInputCustom<any>
+      <TextInputCustom
         name="TWITTER"
         style={inputStyle}
         label="TWITTER"
@@ -153,7 +153,7 @@ export const NameDataForm: React.FC<{
         value={twitter_id}
         onChangeText={setTwitter}
       />
-      <TextInputCustom<any>
+      <TextInputCustom
         name="DISCORD"
         style={inputStyle}
         label="DISCORD"
@@ -161,7 +161,7 @@ export const NameDataForm: React.FC<{
         value={discord_id}
         onChangeText={setDiscord}
       />
-      <TextInputCustom<any>
+      <TextInputCustom
         name="TELEGRAM USERNAME"
         style={inputStyle}
         label="TELEGRAM USERNAME"
@@ -169,7 +169,7 @@ export const NameDataForm: React.FC<{
         value={telegram_id}
         onChangeText={setTelegrameUsername}
       />
-      <TextInputCustom<any>
+      <TextInputCustom
         name="KEYBASE.IO"
         style={inputStyle}
         label="KEYBASE.IO"
@@ -177,7 +177,7 @@ export const NameDataForm: React.FC<{
         value={keybase_id}
         onChangeText={setKeybaseIo}
       />
-      <TextInputCustom<any>
+      <TextInputCustom
         name="VALIDATOR OPERATOR ADDRESS"
         style={inputStyle}
         label="VALIDATOR OPERATOR ADDRESS"
