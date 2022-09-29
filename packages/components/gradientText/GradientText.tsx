@@ -3,7 +3,7 @@ import { StyleProp, StyleSheet, TextStyle } from "react-native";
 import { BrandText } from "../BrandText";
 
 export interface GradientTextProps {
-  style: StyleProp<Pick<TextStyle, "fontFamily" | "fontWeight" | "fontSize">>;
+  style?: StyleProp<Pick<TextStyle, "fontFamily" | "fontWeight" | "fontSize">>;
 }
 
 export const GradientText: React.FC<GradientTextProps> = ({
