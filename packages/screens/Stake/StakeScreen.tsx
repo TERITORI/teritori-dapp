@@ -5,7 +5,6 @@ import { Avatar } from "../../components/Avatar";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
-import { DivRow } from "../../components/div";
 import { SpacerRow } from "../../components/spacer";
 import {
   TableRowData,
@@ -14,10 +13,9 @@ import {
   TableRowHeading,
 } from "../../components/table";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
+import { TEMP_IMAGE } from "../../utils/faking";
 import { fontSemibold13, fontSemibold28 } from "../../utils/style/fonts";
-import { genericStyles } from "../../utils/style/genericStyles";
 import { layout } from "../../utils/style/layout";
-import { TEMP_IMAGE } from "../../utils/variables";
 import { StakeDetailModal } from "./components/StakeDetailModal";
 import { StakeFormModal } from "./components/StakeFormModal";
 import stakeData from "./stakeData.json";
@@ -59,7 +57,7 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
   },
 };
 
-export const StakeScreen = () => {
+export const StakeScreen: React.FC = () => {
   //   variables
   const { onPressTabItem, tabItems } = useTabs(mainInfoTabItems);
   const [stakeDetailModalVisible, setStakeDetailModalVisible] = useState(false);
@@ -105,7 +103,7 @@ export const StakeScreen = () => {
     switch (item.keyId) {
       case "name":
         return (
-          <View style={genericStyles.rowWithCenter}>
+          <View style={styles.nameContainer}>
             <Avatar uri={TEMP_IMAGE} />
             <SpacerRow size={1} />
             <BrandText style={fontSemibold13}>{item.value}</BrandText>
@@ -114,7 +112,11 @@ export const StakeScreen = () => {
 
       case "actions":
         return (
-          <View style={[genericStyles.selfEnd]}>
+          <View
+            style={{
+              alignSelf: "center",
+            }}
+          >
             <SecondaryButtonOutline
               onPress={() =>
                 toggleDetailModal(stakeData.find((d) => d.rank === item.uid))
@@ -132,11 +134,11 @@ export const StakeScreen = () => {
 
   return (
     <ScreenContainer>
-      <View style={styles.RowHeader}>
+      <View style={styles.rowHeader}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
-        <DivRow>
+        <View style={styles.rowWithCenter}>
           <Tabs onPressTabItem={onPressTabItem} items={tabItems} />
-        </DivRow>
+        </View>
       </View>
 
       <TableRow
@@ -172,9 +174,19 @@ export const StakeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  RowHeader: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+  nameContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  rowHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingTop: layout.contentPadding,
     marginBottom: layout.padding_x2_5,
+  },
+  rowWithCenter: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

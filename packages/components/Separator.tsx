@@ -8,7 +8,9 @@ type SeparatorProps = {
   style?: ViewStyle;
 };
 
-export const Separator = ({ style }: SeparatorProps) => {
+export const Separator: React.FC<SeparatorProps> = ({
+  style,
+}: SeparatorProps) => {
   // returns
   return <View style={[styles.container, style]} />;
 };

@@ -11,7 +11,10 @@ interface ErrorTextProps extends TextProps {
 }
 
 // error text component to be used by input elements
-export const ErrorText = ({ children, ...restProps }: ErrorTextProps) => {
+export const ErrorText: React.FC<ErrorTextProps> = ({
+  children,
+  ...restProps
+}) => {
   return children ? (
     <BrandText
       style={[

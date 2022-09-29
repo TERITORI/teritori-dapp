@@ -1,5 +1,11 @@
 import React, { useMemo } from "react";
-import { RegisterOptions, useController, Control, Path } from "react-hook-form";
+import {
+  RegisterOptions,
+  useController,
+  Control,
+  Path,
+  PathValue,
+} from "react-hook-form";
 import {
   NativeSyntheticEvent,
   StyleProp,
@@ -11,22 +17,20 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { DEFAULT_ERRORS } from "../../utils/errors";
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
 } from "../../utils/numbers";
 import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
-import { genericStyles } from "../../utils/style/genericStyles";
-import { DEFAULT_ERRORS } from "../../utils/variables";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { DivColumn } from "../div";
 import { SpacerColumn } from "../spacer";
 
 export interface TextInputCustomProps<T>
-  extends Omit<TextInputProps, "accessibilityRole"> {
+  extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
   placeHolder?: string;
   squaresBackgroundColor?: string;
@@ -40,7 +44,7 @@ export interface TextInputCustomProps<T>
   control?: Control<T>;
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
-  defaultValue?: any;
+  defaultValue?: PathValue<T, Path<T>>;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -58,7 +62,7 @@ export const TextInputCustom = <T,>({
   variant,
   name,
   control,
-  defaultValue = "",
+  defaultValue,
   rules,
   ...restProps
 }: TextInputCustomProps<T>) => {
@@ -124,12 +128,12 @@ export const TextInputCustom = <T,>({
   return (
     <>
       {variant === "labelOutside" && label && (
-        <DivColumn>
+        <View>
           <BrandText style={[styles.labelText, fontSemibold14]}>
             {label}
           </BrandText>
           <SpacerColumn size={1} />
-        </DivColumn>
+        </View>
       )}
 
       <TertiaryBox
@@ -139,15 +143,15 @@ export const TextInputCustom = <T,>({
         fullWidth
         width={width}
       >
-        <View style={[genericStyles.rowWithCenter, genericStyles.w100]}>
+        <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {variant !== "labelOutside" && (
-              <DivColumn>
+              <View>
                 <BrandText style={[styles.labelText, fontMedium10]}>
                   {label}
                 </BrandText>
                 <SpacerColumn size={0.5} />
-              </DivColumn>
+              </View>
             )}
             <TextInput
               editable={!disabled}
@@ -155,7 +159,7 @@ export const TextInputCustom = <T,>({
               onChangeText={handleChangeText}
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
-              value={field.value as any}
+              value={field.value as string}
               style={styles.textInput}
               {...restProps}
             />
@@ -184,5 +188,10 @@ const styles = StyleSheet.create({
     color: secondaryColor,
     fontFamily: "Exo_600SemiBold",
     outlineStyle: "none",
+  },
+  innerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
   },
 });

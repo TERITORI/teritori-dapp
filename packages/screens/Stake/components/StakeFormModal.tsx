@@ -8,7 +8,6 @@ import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { DivColumn } from "../../../components/div";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
@@ -25,8 +24,8 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { genericStyles } from "../../../utils/style/genericStyles";
 import { layout } from "../../../utils/style/layout";
+import { toriDisplayDenom } from "../../../utils/teritori";
 import { StakeFormValuesType, StakeType } from "../types";
 
 interface StakeFormModalProps {
@@ -61,13 +60,13 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
   // returns
   const Header = useCallback(
     () => (
-      <DivColumn>
+      <View>
         <BrandText style={fontSemibold20}>Stake Tokens</BrandText>
         <SpacerColumn size={0.5} />
-        <BrandText style={[styles.AlternateText, fontSemibold16]}>
-          Select a validator and amount of TORI to stake.
+        <BrandText style={[styles.alternateText, fontSemibold16]}>
+          Select a validator and amount of {toriDisplayDenom} to stake.
         </BrandText>
-      </DivColumn>
+      </View>
     ),
     [data]
   );
@@ -76,7 +75,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
     () => (
       <>
         <Separator />
-        <View style={styles.FooterRow}>
+        <View style={styles.footerRow}>
           <SecondaryButton
             size="XS"
             text="Cancel"
@@ -104,25 +103,25 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
       childrenBottom={Footer()}
       hideMainSeparator
     >
-      <View style={styles.Container}>
+      <View style={styles.container}>
         <Separator />
         <SpacerColumn size={2.5} />
-        <View style={styles.StakeWarningContainer}>
+        <View style={styles.stakeWarningContainer}>
           <SVG width={24} height={24} source={warningTriangleSVG} />
           <SpacerRow size={3} />
 
-          <DivColumn>
+          <View>
             <BrandText style={fontSemibold13}>
               Staking will lock your funds for 14 days
             </BrandText>
             <SpacerColumn size={0.5} />
-            <View style={styles.WarningDescriptionContainer}>
-              <BrandText style={styles.AlternateText}>
-                Once you undelegate your staked STARS, you will need to wait 14
-                days for your tokens to be liquid.
+            <View style={styles.warningDescriptionContainer}>
+              <BrandText style={styles.alternateText}>
+                Once you undelegate your staked {toriDisplayDenom}, you will
+                need to wait 14 days for your tokens to be liquid.
               </BrandText>
             </View>
-          </DivColumn>
+          </View>
         </View>
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
@@ -142,6 +141,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
           control={control}
           placeHolder="0"
           onlyNumbers
+          defaultValue=""
           rules={{ required: true, max: MAX_VALUE }}
         >
           <Pressable
@@ -151,7 +151,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
               })
             }
           >
-            <BrandText style={styles.MaxText}>max</BrandText>
+            <BrandText style={styles.maxText}>max</BrandText>
           </Pressable>
         </TextInputCustom>
         <SpacerColumn size={1} />
@@ -166,33 +166,36 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
 };
 
 const styles = StyleSheet.create({
-  Container: {
+  container: {
     width: 446,
   },
-  FooterRow: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+  footerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
     padding: layout.padding_x2_5,
   },
-  StakeWarningContainer: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenter),
+  stakeWarningContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: errorColor,
     borderRadius: layout.borderRadius * 0.65,
     paddingVertical: layout.padding_x1_5,
     paddingHorizontal: layout.padding_x3,
   },
-  AlternateText: {
-    ...(fontSemibold12 as object),
+  alternateText: {
+    ...StyleSheet.flatten(fontSemibold12),
     color: neutral77,
     flexShrink: 1,
   },
-  WarningDescriptionContainer: {
+  warningDescriptionContainer: {
     flexDirection: "row",
     width: "55%",
   },
-  MaxText: {
-    ...(fontSemibold12 as object),
+  maxText: {
+    ...StyleSheet.flatten(fontSemibold12),
     backgroundColor: primaryColor,
     color: neutral22,
     borderRadius: layout.borderRadius,

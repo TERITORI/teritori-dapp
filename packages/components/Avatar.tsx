@@ -2,7 +2,7 @@
 import React from "react";
 import { Image } from "react-native";
 
-import { AVATAR_WIDTH } from "../utils/variables";
+import { avatarWidth } from "../utils/style/layout";
 
 // types
 export interface AvatarProps {
@@ -10,15 +10,15 @@ export interface AvatarProps {
   size?: "regular" | "medium";
 }
 
-export const Avatar = ({ uri, size = "regular" }: AvatarProps) => {
+export const Avatar: React.FC<AvatarProps> = ({ uri, size = "regular" }) => {
   // functions
   const getSize = () => {
     switch (size) {
       case "medium":
-        return AVATAR_WIDTH * 1.2;
+        return avatarWidth * 1.2;
 
       default:
-        return AVATAR_WIDTH;
+        return avatarWidth;
     }
   };
 

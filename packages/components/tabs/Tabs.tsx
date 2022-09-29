@@ -56,7 +56,6 @@ export const Tabs: React.FC<{
   style,
   tabStyle,
 }) => {
-
   // returns
   return (
     <View
@@ -74,9 +73,10 @@ export const Tabs: React.FC<{
         <TouchableOpacity key={index} onPress={() => onPressTabItem(item)}>
           <View
             style={[
-              genericStyles.rowWithCenterAndSB,
-              genericStyles.jcAiCenter,
               {
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
                 marginRight: index !== items.length - 1 ? layout.padding_x3 : 0,
                 paddingBottom: layout.padding_x3,
               },

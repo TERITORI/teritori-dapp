@@ -37,3 +37,12 @@ export interface Metadata {
 export interface MetadataWithTokenId extends Metadata {
   token_id: string;
 }
+
+export type SendFundFormType = {
+  comment: string;
+  amount: string;
+};
+
+export type NameFinderFormType = {
+  name: string;
+};

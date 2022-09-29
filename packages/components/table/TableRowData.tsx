@@ -3,7 +3,6 @@ import { Pressable, StyleSheet, TextStyle, View } from "react-native";
 
 import { mineShaftColor, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
-import { genericStyles } from "../../utils/style/genericStyles";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 
@@ -28,7 +27,7 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
   labelStyle,
 }) => {
   return (
-    <Pressable style={styles.Row} onPress={onPress}>
+    <Pressable style={styles.row} onPress={onPress}>
       {data.map(({ value, flex, keyId, uid }, index) => (
         <View
           key={value}
@@ -38,7 +37,7 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
           }}
         >
           {(specialRender && specialRender({ value, flex, keyId, uid })) || (
-            <BrandText style={[styles.LabelText, labelStyle]}>
+            <BrandText style={[styles.labelText, labelStyle]}>
               {value}
             </BrandText>
           )}
@@ -49,16 +48,18 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
 };
 
 const styles = StyleSheet.create({
-  Row: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
     borderColor: mineShaftColor,
     borderTopWidth: 1,
     paddingVertical: layout.padding_x2,
     paddingHorizontal: layout.padding_x2_5,
   },
-  LabelText: {
-    ...(fontSemibold13 as object),
+  labelText: {
+    ...StyleSheet.flatten(fontSemibold13),
     color: secondaryColor,
   },
 });
