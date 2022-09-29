@@ -12,7 +12,7 @@ export const GradientText: React.FC<{
       backgroundClip: "text",
       WebkitBackgroundClip: "text",
       WebkitTextFillColor: "transparent",
-      fontFamily: exoFontFamilyFromFontWeight("500"),
+      fontFamily: exoFontFamilyFromFontWeight(style?.fontWeight || "500"),
       fontSize: 16,
       margin: 0,
       ...style,
