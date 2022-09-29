@@ -9,6 +9,7 @@ import { ExternalLink } from "../ExternalLink";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
+import { NameDataFormType } from "./types";
 
 // TODO: Later, create a reusable FormBase cpt to avoid writing too much code and call it in NameDataForm.tsx. Maybe use react-hook-form ?
 
@@ -94,7 +95,8 @@ export const NameDataForm: React.FC<{
               .
             </BrandText>
           </View>
-          <TextInputCustom
+          <TextInputCustom<NameDataFormType>
+            name="pathId"
             style={inputStyle}
             label="Path ID (must be unique)"
             placeHolder="Type path ID here"
@@ -103,7 +105,8 @@ export const NameDataForm: React.FC<{
           />
         </>
       ) : null}
-      <TextInputCustom
+      <TextInputCustom<NameDataFormType>
+        name="name"
         style={[inputStyle, !isMintPath && { marginTop: 4 }]}
         label="NAME"
         placeHolder="Type name here"
@@ -111,63 +114,72 @@ export const NameDataForm: React.FC<{
         disabled
         regexp={new RegExp(/^[a-zA-Z]+$/)}
       />
-      <TextInputCustom
+      <TextInputCustom<NameDataFormType>
+        name="public_bio"
         style={inputStyle}
         label="BIO"
         placeHolder="Type bio here"
         value={public_bio}
         onChangeText={setBio}
       />
-      <TextInputCustom
+      <TextInputCustom<NameDataFormType>
+        name="image"
         style={inputStyle}
         label="IMAGE URL"
         placeHolder="Insert image URL here"
         value={image}
         onChangeText={setImageUrl}
       />
-      <TextInputCustom
+      <TextInputCustom<NameDataFormType>
+        name="email"
         style={inputStyle}
         label="EMAIL"
         placeHolder="Type email here"
         value={email}
         onChangeText={setEmail}
       />
-      <TextInputCustom
+      <TextInputCustom<NameDataFormType>
+        name="external_url"
         style={inputStyle}
         label="WEBSITE"
         placeHolder="Type/insert link here"
         value={external_url}
         onChangeText={setWebsite}
       />
-      <TextInputCustom
+      <TextInputCustom<NameDataFormType>
+        name="twitter_id"
         style={inputStyle}
         label="TWITTER"
         placeHolder="Link to Twitter account"
         value={twitter_id}
         onChangeText={setTwitter}
       />
-      <TextInputCustom
+      <TextInputCustom<NameDataFormType>
+        name="discord_id"
         style={inputStyle}
         label="DISCORD"
         placeHolder="Link to Discord group"
         value={discord_id}
         onChangeText={setDiscord}
       />
-      <TextInputCustom
+      <TextInputCustom<NameDataFormType>
+        name="telegram_id"
         style={inputStyle}
         label="TELEGRAM USERNAME"
         placeHolder="@nickname"
         value={telegram_id}
         onChangeText={setTelegrameUsername}
       />
-      <TextInputCustom
+      <TextInputCustom<NameDataFormType>
+        name="keybase_id"
         style={inputStyle}
         label="KEYBASE.IO"
         placeHolder="Type/insert link here"
         value={keybase_id}
         onChangeText={setKeybaseIo}
       />
-      <TextInputCustom
+      <TextInputCustom<NameDataFormType>
+        name="validator_operator_address"
         style={inputStyle}
         label="VALIDATOR OPERATOR ADDRESS"
         placeHolder="Type/insert link here"

@@ -7,6 +7,7 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
+import { useForm, FormProvider } from "react-hook-form";
 import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
@@ -23,6 +24,7 @@ import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
 export default function App() {
+  const methods = useForm();
   const [fontsLoaded] = useFonts({
     Exo_500Medium,
     Exo_600SemiBold,
@@ -35,26 +37,28 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer linking={linking}>
-      <SafeAreaProvider>
-        <ReduxProvider store={store}>
-          <DisclaimerPopup />
-          <FeedbacksContextProvider>
-            <WalletsProvider>
-              <SolanaBalanceProvider>
-                <TeritoriBalanceProvider>
-                  <SolanaOwnedNFTsProvider>
-                    <TNSContextProvider>
-                      <StatusBar style="inverted" />
-                      <Navigator />
-                    </TNSContextProvider>
-                  </SolanaOwnedNFTsProvider>
-                </TeritoriBalanceProvider>
-              </SolanaBalanceProvider>
-            </WalletsProvider>
-          </FeedbacksContextProvider>
-        </ReduxProvider>
-      </SafeAreaProvider>
-    </NavigationContainer>
+    <FormProvider {...methods}>
+      <NavigationContainer linking={linking}>
+        <SafeAreaProvider>
+          <ReduxProvider store={store}>
+            <DisclaimerPopup />
+            <FeedbacksContextProvider>
+              <WalletsProvider>
+                <SolanaBalanceProvider>
+                  <TeritoriBalanceProvider>
+                    <SolanaOwnedNFTsProvider>
+                      <TNSContextProvider>
+                        <StatusBar style="inverted" />
+                        <Navigator />
+                      </TNSContextProvider>
+                    </SolanaOwnedNFTsProvider>
+                  </TeritoriBalanceProvider>
+                </SolanaBalanceProvider>
+              </WalletsProvider>
+            </FeedbacksContextProvider>
+          </ReduxProvider>
+        </SafeAreaProvider>
+      </NavigationContainer>
+    </FormProvider>
   );
 }

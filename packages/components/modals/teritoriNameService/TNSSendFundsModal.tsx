@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { numberWithThousandsSeparator } from "../../../utils/numbers";
+import { SendFundFormType } from "../../../utils/types/tns";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
@@ -26,21 +27,25 @@ export const SendFundModal: React.FC<{
       label={`Your wallet has ${numberWithThousandsSeparator(1000)} Tori`}
     >
       <View>
-        <TextInputCustom
+        <TextInputCustom<SendFundFormType>
+          name="comment"
           label="COMMENT ?"
           value={comment}
           placeHolder="Type your comment here"
           onChangeText={setComment}
           style={{ marginBottom: 12 }}
+          width={322}
         />
         <View style={{ flex: 1, flexDirection: "row" }}>
-          <TextInputCustom
+          <TextInputCustom<SendFundFormType>
+            name="amount"
             label="TORI AMOUNT ?"
             value={numberWithThousandsSeparator(amount)}
             placeHolder="Type your amount here"
             onChangeText={setAmount}
             onlyNumbers
             style={{ marginRight: 12, minWidth: 0 }}
+            width={322}
           />
           <PrimaryButton size="M" text="Send" />
         </View>

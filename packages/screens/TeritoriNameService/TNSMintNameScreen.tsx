@@ -44,8 +44,8 @@ const CostContainer: React.FC = () => {
           alignItems: "center",
           height,
           width,
-          minWidth: width,
           minHeight: height,
+          minWidth: width,
         }}
       >
         <SVG

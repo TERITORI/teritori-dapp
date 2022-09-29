@@ -28,6 +28,8 @@ export type RootStackParamList = {
   Collection: { id: string };
   CollectionActivity: { id: string };
   NFTDetail: { id: string };
+
+  Staking: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<
@@ -41,7 +43,9 @@ export const getCurrentRouteName = (navigation: AppNavigationProp) => {
   return routes[routes.length - 1].name;
 };
 
-const navConfig = {
+const navConfig: {
+  screens: { [Name in keyof RootStackParamList]: string };
+} = {
   screens: {
     Home: "",
     MyCollection: "my-collection",
@@ -72,6 +76,8 @@ const navConfig = {
     Collection: "collection/:id",
     CollectionActivity: "collection/:id/activity",
     NFTDetail: "nft/:id",
+    // ==== Staking
+    Staking: "staking",
   },
 };
 
