@@ -2,7 +2,7 @@ import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import {
-  ASSET_RATION_MARGIN_RIGHT,
+  ASSET_RATIO_MARGIN_RIGHT,
   ASSET_RATIO_WIDTH,
   OVERVIEW_FLEX_BREAK_WIDTH,
   TOKEN_ALLOCATION_WIDTH,
@@ -27,7 +27,7 @@ export const Overview: React.FC = () => {
       <AssetRatioByChain
         style={{
           width: isBreakPoint ? "100%" : ASSET_RATIO_WIDTH,
-          marginRight: isBreakPoint ? ASSET_RATION_MARGIN_RIGHT : 0,
+          marginRight: isBreakPoint ? ASSET_RATIO_MARGIN_RIGHT : 0,
         }}
       />
       <TokenAllocation
