@@ -1,4 +1,3 @@
-import { RouteProp } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ListRenderItem,
@@ -16,7 +15,7 @@ import { NFTView } from "../../components/NFTView";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { backendClient } from "../../utils/backend";
 import { prettyPrice } from "../../utils/coins";
-import { RootStackParamList } from "../../utils/navigation";
+import { ScreenFC } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 
 const useCollectionNFTs = (
@@ -136,9 +135,7 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
   );
 });
 
-export const CollectionScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "Collection">;
-}> = ({ route }) => {
+export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   return (
     <ScreenContainer noMargin noScroll>
       <Content key={route.params.id} id={route.params.id} />

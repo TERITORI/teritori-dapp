@@ -14,7 +14,7 @@ import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
-import { useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { tokenWithoutTld } from "../../utils/tns";
 
 const NameCard: React.FC<{
@@ -75,7 +75,7 @@ const NameCard: React.FC<{
   );
 };
 
-export const TNSManageScreen: React.FC = () => {
+export const TNSManageScreen: ScreenFC<"TNSManage"> = () => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
   const { setLoadingFullScreen } = useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
@@ -112,7 +112,12 @@ export const TNSManageScreen: React.FC = () => {
     <ScreenContainer
       hideSidebar
       headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={<BackTo label="Back to home" navItem="TNSHome" />}
+      footerChildren={
+        <BackTo
+          label="Back to home"
+          onPress={() => navigation.navigate("TNSHome")}
+        />
+      }
     >
       <View style={{ flex: 1, alignItems: "center" }}>
         {/*TODO: Gradient text green-blue*/}

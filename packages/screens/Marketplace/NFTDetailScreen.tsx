@@ -1,4 +1,3 @@
-import { RouteProp } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 
@@ -28,7 +27,7 @@ import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
-import { RootStackParamList } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import {
   screenContainerContentMarginHorizontal,
@@ -80,13 +79,12 @@ export interface NFTInfo {
   collectionName: string;
 }
 
-export const NFTDetailScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "NFTDetail">;
-}> = ({
+export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   route: {
     params: { id },
   },
 }) => {
+  const navigation = useAppNavigation();
   return (
     <ScreenContainer
       noScroll
@@ -94,8 +92,11 @@ export const NFTDetailScreen: React.FC<{
       headerChildren={
         <BackTo
           label="Collection"
-          navItem="Collection"
-          navParams={{ id: id.split("-").slice(0, -1).join("-") }}
+          onPress={() =>
+            navigation.navigate("Collection", {
+              id: id.split("-").slice(0, -1).join("-"),
+            })
+          }
         />
       }
     >

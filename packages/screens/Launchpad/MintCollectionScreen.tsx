@@ -1,5 +1,5 @@
 import { logs } from "@cosmjs/stargate";
-import { RouteProp, useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -37,7 +37,7 @@ import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
-import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import {
   neutral33,
@@ -56,9 +56,7 @@ import {
 const maxImageSize = 532;
 const cardsHalfGap = 6;
 
-export const MintCollectionScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "MintCollection">;
-}> = ({
+export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   route: {
     params: { id },
   },
