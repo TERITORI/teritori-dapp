@@ -1,8 +1,15 @@
-import { StyleProp, TextStyle } from "react-native";
+import { StyleProp, StyleSheet, TextStyle } from "react-native";
 
 import { BrandText } from "../BrandText";
 
-export const GradientText: React.FC<{ style?: StyleProp<TextStyle> }> = ({
+export interface GradientTextProps {
+  style: StyleProp<Pick<TextStyle, "fontFamily" | "fontWeight" | "fontSize">>;
+}
+
+export const GradientText: React.FC<GradientTextProps> = ({
   children,
   style,
-}) => <BrandText style={style}>{children}</BrandText>;
+}) => {
+  const flatStyle = StyleSheet.flatten(style);
+  return <BrandText style={flatStyle}>{children}</BrandText>;
+};
