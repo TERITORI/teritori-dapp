@@ -10,12 +10,13 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/TNSNameFinderModal";
 import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 
-export const TNSHomeScreen: React.FC = () => {
+type NavItem = "TNSHome" | "TNSRegister" | "TNSExplore";
+
+export const TNSHomeScreen: ScreenFC<"TNSHome"> = () => {
   const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
-  const [pressedNavItem, setPressedNavItem] =
-    useState<keyof RootStackParamList>("TNSHome");
+  const [pressedNavItem, setPressedNavItem] = useState<NavItem>("TNSHome");
   const navigation = useAppNavigation();
   const landingHorizontalPadding = 25;
   const isKeplrConnected = useIsKeplrConnected();
@@ -72,8 +73,10 @@ export const TNSHomeScreen: React.FC = () => {
 
       <TNSNameFinderModal
         visible={modalNameFinderVisible}
-        onClose={() => setModalNameFinderVisible(false)}
-        navItem={pressedNavItem}
+        onClose={() => {
+          setModalNameFinderVisible(false);
+          navigation.navigate(pressedNavItem);
+        }}
       />
     </ScreenContainer>
   );

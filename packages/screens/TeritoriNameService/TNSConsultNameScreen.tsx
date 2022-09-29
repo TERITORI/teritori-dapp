@@ -1,4 +1,4 @@
-import { RouteProp, useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
@@ -15,7 +15,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { isTokenOwnedByUser } from "../../utils/tns";
 
 const NotOwnerActions = () => {
@@ -63,9 +63,7 @@ const OwnerActions = () => {
   );
 };
 
-export const TNSConsultNameScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "TNSConsultName">;
-}> = ({ route }) => {
+export const TNSConsultNameScreen: ScreenFC<"TNSConsultName"> = ({ route }) => {
   const { name, setName } = useTNS();
   const { setLoadingFullScreen } = useFeedbacks();
   const { token, notFound, loadingToken } = useToken(
@@ -86,8 +84,7 @@ export const TNSConsultNameScreen: React.FC<{
 
   // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the token is not minted
   useFocusEffect(() => {
-    // @ts-expect-error
-    if (route.params && route.params.name) setName(route.params.name);
+    setName(route.params.name);
     if (!isKeplrConnected) navigation.navigate("TNSHome");
   });
 
@@ -101,7 +98,10 @@ export const TNSConsultNameScreen: React.FC<{
         ) : !notFound ? (
           <NotOwnerActions />
         ) : (
-          <BackTo navItem="TNSHome" label="Back to home" />
+          <BackTo
+            label="Back to home"
+            onPress={() => navigation.navigate("TNSHome")}
+          />
         )
       }
     >

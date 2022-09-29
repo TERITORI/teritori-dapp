@@ -1,5 +1,6 @@
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React from "react";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -12,7 +13,6 @@ export type RootStackParamList = {
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
   Governance: undefined;
-  Mint: undefined;
 
   Launchpad: undefined;
   MintCollection: { id: string };
@@ -21,11 +21,11 @@ export type RootStackParamList = {
   TNSExplore: undefined;
   TNSManage: undefined;
   TNSRegister: undefined;
-  TNSConsultName: undefined;
-  TNSMintName: undefined;
-  TNSUpdateName: undefined;
-  TNSBurnName: undefined;
-  TNSMintPath: undefined;
+  TNSConsultName: { name: string };
+  TNSMintName: { name: string };
+  TNSUpdateName: { name: string };
+  TNSBurnName: { name: string };
+  TNSMintPath: { name: string };
 
   Marketplace: undefined;
   Collection: { id: string };
@@ -35,9 +35,12 @@ export type RootStackParamList = {
   Staking: undefined;
 };
 
-export type AppNavigationProp = NativeStackNavigationProp<
-  RootStackParamList | any
->;
+export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
+  navigation: NativeStackNavigationProp<RootStackParamList, T>;
+  route: RouteProp<RootStackParamList, T>;
+}>;
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
@@ -59,7 +62,6 @@ const navConfig: {
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
     GuardiansGame: "guardians-game",
-    Mint: "mint",
     Governance: "governance",
     // ==== Launchpad
     Launchpad: "launchpad",
@@ -91,8 +93,3 @@ export const linking = {
   prefixes: [],
   config: navConfig,
 };
-
-// export type RootStackComponent<RouteName extends keyof RootStackParamList> = React.FC<{
-//   navigation: NativeStackNavigationProp<RootStackParamList, RouteName>,
-//   route: RouteProp<RootStackParamList, RouteName>
-// }>

@@ -8,6 +8,7 @@ import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ALL_WALLETS } from "../../utils/fakeData/walletManager";
+import { ScreenFC } from "../../utils/navigation";
 import { neutral33, neutralA3 } from "../../utils/style/colors";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 import { WalletItem, WalletItemProps } from "./WalletItem";
@@ -96,7 +97,9 @@ const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
     </TertiaryBox>
   );
 };
-export const WalletMangerWalletsScreen: React.FC = () => {
+export const WalletManagerWalletsScreen: ScreenFC<
+  "WalletManagerWallets" | "WalletManagerChains"
+> = () => {
   return (
     <WalletManagerScreenContainer>
       <View

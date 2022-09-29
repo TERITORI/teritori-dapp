@@ -1,6 +1,7 @@
 import React from "react";
 
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
+import { ScreenFC } from "../../utils/navigation";
 import { MyNFTs } from "./MyNFTs";
 import { Overview } from "./Overview/Overview";
 import { TotalAssets } from "./TotalAssets";
@@ -19,7 +20,7 @@ const screenTabItems: TabItem[] = [
   },
 ];
 
-export const WalletManagerScreen: React.FC = () => {
+export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   const { onPressTabItem, tabItems, selectedTabItem } = useTabs(screenTabItems);
   return (
     <WalletManagerScreenContainer>

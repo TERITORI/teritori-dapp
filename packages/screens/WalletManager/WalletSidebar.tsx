@@ -1,5 +1,6 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
+import { SvgProps } from "react-native-svg";
 
 import chainNeutralA3SVG from "../../../assets/icons/chain-neutralA3.svg";
 import chainWhiteSVG from "../../../assets/icons/chain-white.svg";
@@ -13,7 +14,14 @@ import { getCurrentRouteName, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutralA3 } from "../../utils/style/colors";
 import { WALLET_SIDEBAR_WIDTH } from "./constants";
 
-const LIST = [
+type ListItem = {
+  activeIcon: React.FC<SvgProps>;
+  inactiveIcon: React.FC<SvgProps>;
+  title: string;
+  routeName: "WalletManager" | "WalletManagerWallets" | "WalletManagerChains";
+};
+
+const LIST: ListItem[] = [
   {
     activeIcon: gridWhiteSVG,
     inactiveIcon: gridNeutralA3SVG,
