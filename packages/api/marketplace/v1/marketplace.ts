@@ -61,6 +61,8 @@ export interface NFT {
   price: string;
   denom: string;
   isListed: boolean;
+  textInsert: string;
+  collectionName: string;
 }
 
 export interface Collection {
@@ -200,7 +202,18 @@ export interface NFTPriceHistoryResponse {
 }
 
 function createBaseNFT(): NFT {
-  return { id: "", network: 0, imageUri: "", name: "", mintAddress: "", price: "", denom: "", isListed: false };
+  return {
+    id: "",
+    network: 0,
+    imageUri: "",
+    name: "",
+    mintAddress: "",
+    price: "",
+    denom: "",
+    isListed: false,
+    textInsert: "",
+    collectionName: "",
+  };
 }
 
 export const NFT = {
@@ -228,6 +241,12 @@ export const NFT = {
     }
     if (message.isListed === true) {
       writer.uint32(64).bool(message.isListed);
+    }
+    if (message.textInsert !== "") {
+      writer.uint32(74).string(message.textInsert);
+    }
+    if (message.collectionName !== "") {
+      writer.uint32(82).string(message.collectionName);
     }
     return writer;
   },
@@ -263,6 +282,12 @@ export const NFT = {
         case 8:
           message.isListed = reader.bool();
           break;
+        case 9:
+          message.textInsert = reader.string();
+          break;
+        case 10:
+          message.collectionName = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -281,6 +306,8 @@ export const NFT = {
       price: isSet(object.price) ? String(object.price) : "",
       denom: isSet(object.denom) ? String(object.denom) : "",
       isListed: isSet(object.isListed) ? Boolean(object.isListed) : false,
+      textInsert: isSet(object.textInsert) ? String(object.textInsert) : "",
+      collectionName: isSet(object.collectionName) ? String(object.collectionName) : "",
     };
   },
 
@@ -294,6 +321,8 @@ export const NFT = {
     message.price !== undefined && (obj.price = message.price);
     message.denom !== undefined && (obj.denom = message.denom);
     message.isListed !== undefined && (obj.isListed = message.isListed);
+    message.textInsert !== undefined && (obj.textInsert = message.textInsert);
+    message.collectionName !== undefined && (obj.collectionName = message.collectionName);
     return obj;
   },
 
@@ -307,6 +336,8 @@ export const NFT = {
     message.price = object.price ?? "";
     message.denom = object.denom ?? "";
     message.isListed = object.isListed ?? false;
+    message.textInsert = object.textInsert ?? "";
+    message.collectionName = object.collectionName ?? "";
     return message;
   },
 };

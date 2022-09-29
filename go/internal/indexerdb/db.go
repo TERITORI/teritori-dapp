@@ -10,13 +10,6 @@ import (
 // Teritori: tori-<bech32_address>
 type UserID string
 
-type Network string
-
-const (
-	NetworkUnknown  = Network("")
-	NetworkTeritori = Network("teritori")
-)
-
 type App struct {
 	ID     uint
 	Height int64

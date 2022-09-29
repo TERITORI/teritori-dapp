@@ -3,7 +3,6 @@ import React, { useCallback, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
-import { NFTView } from "../../components/NFTView";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Section } from "../../components/Section";
 import { HubIntro } from "../../components/hub/HubIntro";
@@ -87,7 +86,8 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
                 flexWrap: "wrap",
               }}
             >
-              {collection.nfts.map((nft) => {
+              {/* FIXME: add back:
+                collection.nfts.map((nft) => {
                 return (
                   <NFTView
                     key={nft.id}
@@ -95,7 +95,7 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
                     style={{ margin: gridHalfGutter }}
                   />
                 );
-              })}
+              }) */}
             </View>
           </Section>
         ))}

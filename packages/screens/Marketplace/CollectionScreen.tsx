@@ -28,13 +28,11 @@ import {
   useCollectionInfo,
 } from "../../hooks/useCollectionInfo";
 import { useCollectionNFTs } from "../../hooks/useCollectionNFTs";
-import { prettyPrice } from "../../utils/coins";
+import { alignDown } from "../../utils/align";
 import { ScreenFC } from "../../utils/navigation";
-import { Network } from "../../utils/network";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
-import { alignDown } from "../../utils/align";
 
 const collectionScreenTabItems: TabItem[] = [
   {
@@ -73,19 +71,7 @@ const renderItem: ListRenderItem<NFT> = (info) => {
   return (
     <NFTView
       key={nft.mintAddress}
-      data={{
-        network: Network.Solana, // FIXME
-        name: nft.name,
-        owned: false,
-        imageURI: nft.imageUri,
-        collectionName: "Collection",
-        collectionId: "TODO",
-        collectionDiscriminator: "TODO",
-        isCertified: true,
-        floorPrice: nft.isListed ? prettyPrice(nft.price, nft.denom) : "",
-        favoritesCount: 420,
-        id: nft.id,
-      }}
+      data={nft}
       style={{ marginHorizontal: gap / 2 }}
     />
   );
@@ -97,7 +83,7 @@ const FlatListHeader: React.FC<{
 }> = ({ collectionInfo = {} }) => {
   const { onPressTabItem, tabItems } = useTabs(collectionScreenTabItems);
   return (
-    <View style={{ maxWidth: screenContentMaxWidth }}>
+    <View style={{ maxWidth: screenContentMaxWidth, alignItems: "center" }}>
       <Image
         source={bannerCollection}
         style={{
@@ -109,7 +95,11 @@ const FlatListHeader: React.FC<{
       />
 
       <View
-        style={{ flexDirection: "row", alignItems: "center", marginBottom: 24 }}
+        style={{
+          flexDirection: "row",
+          width: "100%",
+          marginBottom: 24,
+        }}
       >
         <RoundedGradientImage
           imageSource={{ uri: collectionInfo.image }}
@@ -207,8 +197,6 @@ const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
   // } else
   return (
     <FlatList
-      style={{ width: "100%" }}
-      contentContainerStyle={{ alignItems: "center" }}
       key={numColumns}
       data={nfts}
       numColumns={numColumns}
@@ -217,6 +205,7 @@ const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
       keyExtractor={keyExtractor}
       onEndReachedThreshold={4}
       renderItem={renderItem}
+      ListHeaderComponentStyle={{ alignItems: "center" }}
       ListHeaderComponent={<FlatListHeader collectionInfo={info} />}
       ListFooterComponent={<FlatListFooter />}
     />

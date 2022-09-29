@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
 	"github.com/pkg/errors"
@@ -143,7 +144,10 @@ func fetchIPFSJSON(uri string, dst interface{}) error {
 	jsonURL := ipfsutil.IPFSURIToURL(uri)
 	jsonReply, err := http.Get(jsonURL)
 	if err != nil {
-		return errors.Wrap(err, "failed to fetch ipfs json")
+		return errors.Wrap(err, "failed to GET ipfs json")
+	}
+	if jsonReply.StatusCode != http.StatusOK {
+		return fmt.Errorf("bad GET status: %s", jsonReply.Status)
 	}
 	jsonBody, err := ioutil.ReadAll(jsonReply.Body)
 	if err != nil {
@@ -153,4 +157,13 @@ func fetchIPFSJSON(uri string, dst interface{}) error {
 		return errors.Wrap(err, "failed to unmarshal ipfs json")
 	}
 	return nil
+}
+
+func uriJoin(base string, paths ...string) string {
+	cleanPaths := make([]string, len(paths)+1)
+	cleanPaths[0] = strings.TrimRight(base, "/")
+	for i, p := range paths {
+		cleanPaths[i+1] = strings.TrimRight(strings.TrimLeft(p, "/"), "/")
+	}
+	return strings.Join(cleanPaths, "/")
 }

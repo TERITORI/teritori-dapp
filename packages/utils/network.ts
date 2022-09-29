@@ -1,7 +1,10 @@
 import { PublicKey } from "@solana/web3.js";
 import { bech32 } from "bech32";
 
+import { Network as ProtobufNetwork } from "../api/marketplace/v1/marketplace";
+
 export enum Network {
+  Unknown = "Unknown",
   Solana = "Solana",
   Teritori = "Teritori",
   Ethereum = "Ethereum",
@@ -23,5 +26,16 @@ export const addressToNetwork = (address: string) => {
     new PublicKey(address); // this will throw if the address is invalid
     return Network.Solana;
   } catch {}
-  return undefined;
+  return Network.Unknown;
+};
+
+export const protobufNetworkToNetwork = (network: ProtobufNetwork) => {
+  switch (network) {
+    case ProtobufNetwork.NETWORK_SOLANA:
+      return Network.Solana;
+    case ProtobufNetwork.NETWORK_TERITORI:
+      return Network.Teritori;
+    default:
+      return Network.Unknown;
+  }
 };

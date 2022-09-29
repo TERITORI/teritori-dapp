@@ -8,17 +8,19 @@ import {
   StyleSheet,
 } from "react-native";
 
+import { NFT } from "../api/marketplace/v1/marketplace";
+import { prettyPrice } from "../utils/coins";
 import { useAppNavigation } from "../utils/navigation";
+import { protobufNetworkToNetwork } from "../utils/network";
 import { heightButton } from "../utils/style/buttons";
 import { neutral33, neutral77 } from "../utils/style/colors";
-import { NFTData } from "../utils/types/nft";
 import { BrandText } from "./BrandText";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SecondaryButton } from "./buttons/SecondaryButton";
 import { NetworkIcon } from "./images/NetworkIcon";
 
 export const NFTView: React.FC<{
-  data: NFTData; // FIXME: replace by NFT pb
+  data: NFT;
   style?: StyleProp<ViewStyle>;
 }> = React.memo(({ data, style }) => {
   const collectionFontSize = 12;
@@ -61,16 +63,31 @@ export const NFTView: React.FC<{
         style={styleWithoutMargins}
         mainContainerStyle={{ paddingVertical: 16 }}
       >
-        <Image
-          source={{ uri: data.imageURI }}
-          style={{
-            width: contentWidth,
-            height: 236,
-            alignSelf: "center",
-            borderRadius: 12,
-          }}
-        />
-
+        <View>
+          <Image
+            source={{ uri: data.imageUri }}
+            style={{
+              width: contentWidth,
+              height: contentWidth,
+              alignSelf: "center",
+              borderRadius: 12,
+            }}
+          />
+          {data.textInsert && (
+            <BrandText
+              style={{
+                color: "white",
+                position: "absolute",
+                fontSize: 14,
+                bottom: 10,
+                right: 10,
+                maxWidth: contentWidth - 10,
+              }}
+            >
+              {data.textInsert}
+            </BrandText>
+          )}
+        </View>
         <View style={{ marginHorizontal: 16, width: contentWidth }}>
           <BrandText
             style={{ marginTop: 16, fontSize: 14 }}
@@ -93,7 +110,11 @@ export const NFTView: React.FC<{
                 alignItems: "center",
               }}
             >
-              <NetworkIcon network={data.network} circle size={24} />
+              <NetworkIcon
+                network={protobufNetworkToNetwork(data.network)}
+                circle
+                size={24}
+              />
               <BrandText
                 style={{
                   fontSize: collectionFontSize,
@@ -133,7 +154,11 @@ export const NFTView: React.FC<{
               minHeight: heightButton("XS"),
             }}
           >
-            <NetworkIcon network={data.network} circle size={24} />
+            <NetworkIcon
+              network={protobufNetworkToNetwork(data.network)}
+              circle
+              size={24}
+            />
             <BrandText
               style={{
                 marginLeft: 6,
@@ -142,11 +167,14 @@ export const NFTView: React.FC<{
                 color: neutral77,
               }}
             >
-              {data.floorPrice ? "Floor Price" : "Not Listed"}
+              {data.price ? "Price" : "Not Listed"}
             </BrandText>
           </View>
-          {!!data.floorPrice && (
-            <SecondaryButton size="XS" text={data.floorPrice} />
+          {!!data.price && (
+            <SecondaryButton
+              size="XS"
+              text={prettyPrice(data.price, data.denom)}
+            />
           )}
         </View>
       </TertiaryBox>

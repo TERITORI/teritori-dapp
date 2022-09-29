@@ -28,6 +28,8 @@ export interface CollectionInfo {
   publicSaleEnded?: boolean;
 }
 
+// NOTE: consider using the indexer for this
+
 export const useCollectionInfo = (id: string) => {
   const [info, setInfo] = useState<CollectionInfo>({});
   const [notFound, setNotFound] = useState(false);
@@ -35,6 +37,15 @@ export const useCollectionInfo = (id: string) => {
 
   const refresh = useCallback(() => {
     const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
+    if (mintAddress === process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS) {
+      setInfo({
+        name: "Teritori Name Service", // FIXME: should fetch from contract or be in env
+        image: ipfsURLToHTTPURL(
+          process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
+        ),
+      });
+      return;
+    }
     let canceled = false;
     const effect = async () => {
       setLoading(true);

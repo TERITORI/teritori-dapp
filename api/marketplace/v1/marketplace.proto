@@ -27,6 +27,8 @@ message NFT {
   string price = 6;
   string denom = 7;
   bool is_listed = 8;
+  string text_insert = 9;
+  string collection_name = 10;
 }
 
 message Collection {

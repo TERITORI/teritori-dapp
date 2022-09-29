@@ -31,7 +31,8 @@ export const TNSUpdateNameScreen: ScreenFC<"TNSUpdateName"> = ({ route }) => {
   const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
-  const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+  const contractAddress = process.env
+    .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const navigation = useAppNavigation();
 
   const initData = async () => {
