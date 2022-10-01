@@ -33,6 +33,7 @@ export const PrimaryButton: React.FC<{
   disabled?: boolean;
   fullWidth?: boolean;
   loader?: boolean;
+  touchableStyle?: StyleProp<ViewStyle>;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -45,6 +46,7 @@ export const PrimaryButton: React.FC<{
   disabled = false,
   fullWidth = false,
   loader,
+  touchableStyle = {},
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -75,7 +77,7 @@ export const PrimaryButton: React.FC<{
     <TouchableOpacity
       onPress={onPress ? handlePress : undefined}
       disabled={isDisabled}
-      style={{ width: fullWidth ? "100%" : width }}
+      style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
     >
       <SecondaryBox
         height={heightButton(size)}

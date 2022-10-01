@@ -1,4 +1,3 @@
-import { RouteProp } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 
@@ -8,6 +7,7 @@ import { BackTo } from "../../components/navigation/BackTo";
 import { NFTActivity } from "../../components/nftDetails/NFTActivity";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
 import { NFTPriceHistory } from "../../components/nftDetails/NFTPriceHistory";
+import { SpacerColumn } from "../../components/spacer";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
 import {
   initialToastError,
@@ -27,7 +27,7 @@ import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
-import { RootStackParamList } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import {
   screenContainerContentMarginHorizontal,
@@ -79,13 +79,12 @@ export interface NFTInfo {
   collectionName: string;
 }
 
-export const NFTDetailScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "NFTDetail">;
-}> = ({
+export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   route: {
     params: { id },
   },
 }) => {
+  const navigation = useAppNavigation();
   return (
     <ScreenContainer
       noScroll
@@ -93,8 +92,11 @@ export const NFTDetailScreen: React.FC<{
       headerChildren={
         <BackTo
           label="Collection"
-          navItem="Collection"
-          navParams={{ id: id.split("-").slice(0, -1).join("-") }}
+          onPress={() =>
+            navigation.navigate("Collection", {
+              id: id.split("-").slice(0, -1).join("-"),
+            })
+          }
         />
       }
     >
@@ -256,6 +258,7 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
             maxWidth: screenContentMaxWidth,
           }}
         >
+          <SpacerColumn size={1.5} />
           {/*====== Tabs Menu for whole screen */}
           <Tabs
             items={tabItems}

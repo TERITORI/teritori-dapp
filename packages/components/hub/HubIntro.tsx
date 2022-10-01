@@ -125,6 +125,7 @@ const ConnectedIntro: React.FC = () => {
 
 const DisconnectedIntro: React.FC = () => {
   const navigation = useAppNavigation();
+
   return (
     <View style={{ alignItems: "center", marginBottom: 72, marginTop: 180 }}>
       <SVG width={200} height={200} source={logoSVG} />

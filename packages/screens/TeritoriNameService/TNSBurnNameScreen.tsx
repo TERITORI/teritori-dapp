@@ -1,4 +1,4 @@
-import { RouteProp, useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 
@@ -20,13 +20,11 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 
-export const TNSBurnNameScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "TNSBurnName">;
-}> = ({ route }) => {
+export const TNSBurnNameScreen: ScreenFC<"TNSBurnName"> = ({ route }) => {
   const { name, setName } = useTNS();
   const { setToastError, setToastSuccess, setLoadingFullScreen } =
     useFeedbacks();
@@ -45,8 +43,7 @@ export const TNSBurnNameScreen: React.FC<{
   // ==== Init
   useFocusEffect(() => {
     // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token
-    // @ts-expect-error
-    if (route.params && route.params.name) setName(route.params.name);
+    setName(route.params.name);
     // ===== Controls many things, be careful TODO: Still redirects to TNSHome, weird..
     if (
       (name &&
@@ -88,11 +85,12 @@ export const TNSBurnNameScreen: React.FC<{
         setLoadingFullScreen(false);
       }
     } catch (e) {
-      // TODO env var for dev logging (?)
-      setToastError({
-        title: "Something went wrong!",
-        message: e.message,
-      });
+      if (e instanceof Error) {
+        setToastError({
+          title: "Something went wrong!",
+          message: e.message,
+        });
+      }
       console.warn(e);
       setLoadingFullScreen(false);
     }
@@ -105,8 +103,7 @@ export const TNSBurnNameScreen: React.FC<{
       footerChildren={
         <BackTo
           label={"Back to " + name}
-          navItem="TNSConsultName"
-          navParams={{ name }}
+          onPress={() => navigation.navigate("TNSConsultName", { name })}
         />
       }
     >

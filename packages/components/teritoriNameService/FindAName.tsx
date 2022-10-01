@@ -33,13 +33,15 @@ export const FindAName: React.FC<{
         Find a name
       </BrandText>
 
-      <TextInputCustom
+      <TextInputCustom<{ name: string }>
+        name="name"
         label="NAME"
         placeHolder="Type name here"
         style={{ marginBottom: 12 }}
         onChangeText={setName}
         value={name || ""}
         regexp={new RegExp(/^[a-zA-Z]+$/)}
+        width={322}
       />
 
       {!loading ? (

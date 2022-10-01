@@ -12,10 +12,10 @@ import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { isTokenOwnedByUser } from "../../utils/tns";
 
-export const TNSExploreScreen: React.FC = () => {
+export const TNSExploreScreen: ScreenFC<"TNSExplore"> = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const { name, setName } = useTNS();
   const navigation = useAppNavigation();
@@ -36,7 +36,12 @@ export const TNSExploreScreen: React.FC = () => {
     <ScreenContainer
       hideSidebar
       headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={<BackTo label="Back to home" navItem="TNSHome" />}
+      footerChildren={
+        <BackTo
+          label="Back to home"
+          onPress={() => navigation.navigate("TNSHome")}
+        />
+      }
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName

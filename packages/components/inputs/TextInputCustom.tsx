@@ -1,46 +1,71 @@
-import React from "react";
+import React, { useMemo } from "react";
+import {
+  RegisterOptions,
+  useController,
+  Control,
+  Path,
+  PathValue,
+} from "react-hook-form";
 import {
   NativeSyntheticEvent,
   StyleProp,
+  StyleSheet,
   TextInput,
   TextInputKeyPressEventData,
+  TextInputProps,
   View,
   ViewStyle,
 } from "react-native";
 
+import { DEFAULT_ERRORS } from "../../utils/errors";
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
 } from "../../utils/numbers";
-import { neutral22, neutral77 } from "../../utils/style/colors";
+import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
+import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { SpacerColumn } from "../spacer";
 
-// A custom TextInput. You can add children (Ex: An icon or a small container)
-export const TextInputCustom: React.FC<{
+export interface TextInputCustomProps<T>
+  extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
-  value: string;
-  placeHolder: string;
+  placeHolder?: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
-  onChangeText?: (text: string) => void;
   onPressEnter?: () => void;
   onlyNumbers?: boolean;
   disabled?: boolean;
   regexp?: RegExp;
-}> = ({
+  width?: number;
+  variant?: "regular" | "labelOutside";
+  control?: Control<T>;
+  name: Path<T>;
+  rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
+  defaultValue?: PathValue<T, Path<T>>;
+}
+
+// A custom TextInput. You can add children (Ex: An icon or a small container)
+export const TextInputCustom = <T,>({
   label,
-  value,
   placeHolder,
   onPressEnter,
   style,
   regexp,
   children,
-  onChangeText,
   onlyNumbers,
   disabled,
   squaresBackgroundColor,
-}) => {
+  width,
+  variant,
+  name,
+  control,
+  defaultValue,
+  rules,
+  ...restProps
+}: TextInputCustomProps<T>) => {
   // Handling key pressing
   const handleKeyPress = (
     event: NativeSyntheticEvent<TextInputKeyPressEventData>
@@ -54,9 +79,26 @@ export const TextInputCustom: React.FC<{
     }
   };
 
+  const { field, fieldState } = useController({
+    name,
+    control,
+    rules,
+    defaultValue,
+  });
+
+  const error = useMemo(() => {
+    if (fieldState.error) {
+      if (fieldState.error?.message) {
+        return fieldState.error?.message;
+      }
+      return DEFAULT_ERRORS.required;
+    }
+  }, [fieldState.error]);
+
   // Replace the comma if number and controls
   const handleChangeText = (value: string) => {
-    if (!onChangeText) {
+    if (restProps?.onChangeText) {
+      restProps.onChangeText(value);
       return;
     }
     // ---- If you want only number in the TextInputCustom, we apply comma as a thousand separator
@@ -64,58 +106,92 @@ export const TextInputCustom: React.FC<{
       const withoutCommaValue = thousandSeparatedToNumber(value);
       // Set value only if fully number
       const reg = new RegExp(/^\d+$/);
-      if (reg.test(withoutCommaValue)) {
-        onChangeText(numberWithThousandsSeparator(withoutCommaValue));
+
+      if (
+        rules?.max &&
+        parseInt(withoutCommaValue, 10) >= (rules.max as number) + 1
+      ) {
+        return;
       }
+
+      if (reg.test(withoutCommaValue) || !value) {
+        field.onChange(numberWithThousandsSeparator(withoutCommaValue));
+      }
+      return;
     }
     // ---- Apply onChange respecting the regexp (Allow empty string)
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
-      onChangeText(value);
+      field.onChange(value);
     }
   };
 
   return (
-    <TertiaryBox
-      height={48}
-      width={332}
-      squaresBackgroundColor={squaresBackgroundColor}
-      style={style}
-      mainContainerStyle={{
-        alignItems: "flex-start",
-        paddingHorizontal: 12,
-        backgroundColor: neutral22,
-      }}
-    >
-      <View
-        style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
-      >
-        <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
-          <BrandText
-            style={{ color: neutral77, fontSize: 10, fontWeight: "500" }}
-          >
+    <>
+      {variant === "labelOutside" && (
+        <View>
+          <BrandText style={[styles.labelText, fontSemibold14]}>
             {label}
           </BrandText>
-          <TextInput
-            editable={!disabled}
-            placeholder={placeHolder}
-            value={value}
-            onChangeText={handleChangeText}
-            onKeyPress={handleKeyPress}
-            placeholderTextColor="#999999"
-            style={[
-              {
-                fontSize: 14,
-                marginTop: 4,
-                color: "white",
-                fontFamily: "Exo_600SemiBold",
-              },
-              { outlineStyle: "none" } as any,
-            ]}
-          />
+          <SpacerColumn size={1} />
         </View>
+      )}
 
-        <>{children}</>
-      </View>
-    </TertiaryBox>
+      <TertiaryBox
+        squaresBackgroundColor={squaresBackgroundColor}
+        style={style}
+        mainContainerStyle={styles.mainContainer}
+        fullWidth
+        width={width}
+      >
+        <View style={styles.innerContainer}>
+          <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
+            {variant !== "labelOutside" && (
+              <View>
+                <BrandText style={[styles.labelText, fontMedium10]}>
+                  {label}
+                </BrandText>
+                <SpacerColumn size={0.5} />
+              </View>
+            )}
+            <TextInput
+              editable={!disabled}
+              placeholder={placeHolder}
+              onChangeText={handleChangeText}
+              onKeyPress={handleKeyPress}
+              placeholderTextColor="#999999"
+              value={field.value as string}
+              style={styles.textInput}
+              {...restProps}
+            />
+          </View>
+
+          <>{children}</>
+        </View>
+      </TertiaryBox>
+      <ErrorText>{error}</ErrorText>
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    alignItems: "flex-start",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: neutral22,
+  },
+  labelText: {
+    color: neutral77,
+  },
+  textInput: {
+    fontSize: 14,
+    color: secondaryColor,
+    fontFamily: "Exo_600SemiBold",
+    outlineStyle: "none",
+  },
+  innerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+  },
+});

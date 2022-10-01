@@ -134,7 +134,6 @@ Connect & Manage"
 
 const NewsBox: React.FC = () => {
   const { width } = useWindowDimensions();
-  const navigation = useAppNavigation();
 
   const titleFontSize = 20;
 
@@ -199,7 +198,6 @@ const NewsBox: React.FC = () => {
               color="#000000"
               size="SM"
               text="Join the Mint"
-              onPress={() => navigation.navigate("Mint")}
             />
           </View>
         </View>
@@ -237,6 +235,7 @@ export const HubLanding: React.FC = () => {
           >
             <MyWalletsCard onPress={() => navigation.navigate("Wallets")} />
             <DAppCard
+              onPress={() => navigation.navigate("Staking")}
               label="Staking"
               description="Participate to the Security
 Get rewards by delegating to Teritori validators"

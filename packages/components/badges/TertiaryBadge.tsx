@@ -6,7 +6,7 @@ import { fontSemibold13 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 
 export const TertiaryBadge: React.FC<{
-  label: string;
+  label: string | number;
   style?: StyleProp<ViewStyle>;
 }> = ({ label, style }) => {
   return (

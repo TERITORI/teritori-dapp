@@ -33,6 +33,7 @@ export const ScreenContainer: React.FC<{
   footerChildren?: JSX.Element;
   headerStyle?: StyleProp<ViewStyle>;
   hideSidebar?: boolean;
+  customSidebar?: React.ReactNode;
   noMargin?: boolean;
   noScroll?: boolean;
 }> = ({
@@ -43,6 +44,7 @@ export const ScreenContainer: React.FC<{
   hideSidebar,
   noMargin,
   noScroll,
+  customSidebar,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { height } = useWindowDimensions();
@@ -77,6 +79,7 @@ export const ScreenContainer: React.FC<{
           >
             {["android", "ios"].includes(Platform.OS) ||
               (!hideSidebar ? <Sidebar /> : null)}
+            {!["android", "ios"].includes(Platform.OS) && customSidebar}
 
             {/*==== Scrollable screen content*/}
             <View style={{ flex: 1 }}>

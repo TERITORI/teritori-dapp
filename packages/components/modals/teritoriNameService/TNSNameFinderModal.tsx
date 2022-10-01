@@ -1,26 +1,21 @@
 import React, { useEffect } from "react";
 
 import { useTNS } from "../../../context/TNSProvider";
-import {
-  RootStackParamList,
-  useAppNavigation,
-} from "../../../utils/navigation";
+import { NameFinderFormType } from "../../../utils/types/tns";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
 
 // "Find a name" modal
+
 export const TNSNameFinderModal: React.FC<{
   visible?: boolean;
   onClose: () => void;
-  navItem: keyof RootStackParamList;
-}> = ({ visible, navItem, onClose }) => {
-  const navigation = useAppNavigation();
+}> = ({ visible, onClose }) => {
   const { name, setName } = useTNS();
 
   const onPressEnter = () => {
     if (name) {
       onClose();
-      navigation.navigate(navItem);
     }
   };
 
@@ -36,7 +31,8 @@ export const TNSNameFinderModal: React.FC<{
       label="Find a name"
       // childrenBottom={<DomainsAvailability/>} TODO: Uncomment this when the functionality is done
     >
-      <TextInputCustom
+      <TextInputCustom<NameFinderFormType>
+        name="name"
         label="NAME"
         placeHolder="Type name here"
         onPressEnter={onPressEnter}

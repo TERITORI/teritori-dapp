@@ -22,11 +22,13 @@ export const NFTSellCard: React.FC<{
         justifyContent: "space-between",
       }}
     >
-      <TextInputCustom
+      <TextInputCustom<{ price: string }>
+        name="price"
         label="Price in TORI"
         value={price}
         placeHolder=""
         onChangeText={setPrice}
+        width={322}
       />
       <PrimaryButton size="XL" text="Sell this NFT" onPress={handleSell} />
     </TertiaryBox>
