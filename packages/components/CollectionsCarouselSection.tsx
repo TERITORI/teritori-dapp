@@ -14,7 +14,7 @@ import {
   CollectionView,
 } from "./CollectionView";
 
-const useCollections = (
+export const useCollections = (
   req: CollectionsRequest
 ): [Collection[], (index: number) => Promise<void>] => {
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -71,6 +71,7 @@ export const CollectionsCarouselSection: React.FC<{
     offset: 0,
   });
   const [viewWidth, setWidth] = useState(0);
+
   return (
     <View onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
       <CarouselSection

@@ -2,11 +2,12 @@ import React, { memo } from "react";
 import { Image } from "react-native";
 import { DraxView } from "react-native-drax";
 
+import { NFT } from "../../api/marketplace/v1/marketplace";
 import { nftDropedAdjustmentType } from "../../screens/RiotersFooter/RiotersFooterScreen.types";
 import { primaryColor } from "../../utils/style/colors";
 
 const DragAndDropNftInReceiverView: React.FC<{
-  nftDroped: any;
+  nftDroped: NFT;
   nftDropedAdjustment: nftDropedAdjustmentType;
   oldNftPositionsWithZIndexOrder: any;
 }> = memo(
@@ -38,10 +39,10 @@ const DragAndDropNftInReceiverView: React.FC<{
     return (
       <DraxView
         onDragStart={() => {
-          console.log("start drag id", nftDroped.id);
+          console.log("start drag id", JSON.stringify(nftDroped));
         }}
         animateSnapback={false}
-        dragPayload={nftDroped.id}
+        dragPayload={JSON.stringify(nftDroped)}
         style={{
           position: "absolute",
           left: nftDropedAdjustment.x,
@@ -59,7 +60,7 @@ const DragAndDropNftInReceiverView: React.FC<{
             height,
             borderRadius,
           }}
-          source={nftDroped.svg}
+          source={{ uri: nftDroped.imageUri }}
         />
       </DraxView>
     );

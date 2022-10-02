@@ -1,8 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  NativeScrollEvent,
+  Image,
+} from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
 
-import avaSvg from "../../../assets/icons/ava.svg";
 import teritorriSvg from "../../../assets/icons/teritori.svg";
 import apeOneSvg from "../../../assets/nft/ape-one.svg";
 import etherumGangSvg from "../../../assets/nft/etherum-gang.svg";
@@ -12,7 +17,13 @@ import privacySvg from "../../../assets/nft/privacy.svg";
 import rideOrDieSvg from "../../../assets/nft/ride-or-die.svg";
 import satoshiSvg from "../../../assets/nft/satoshi.svg";
 import solFarmSvg from "../../../assets/nft/sol-farm.svg";
+import {
+  Collection,
+  CollectionsRequest_Kind,
+  NFT,
+} from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
+import { useCollections } from "../../components/CollectionsCarouselSection";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
@@ -24,123 +35,9 @@ import ExistingNftType from "../../components/riotersFooter/ExistingNftType";
 import NewNftType from "../../components/riotersFooter/NewNftType";
 import NftAdjustments from "../../components/riotersFooter/NftAdjustments";
 import NftTypeTab from "../../components/riotersFooter/NftTypeTab";
-import SelectNewNft, {
-  fakeNft,
-} from "../../components/riotersFooter/SelectedNewNft";
-import { neutral33, neutral77 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import SelectNewNft from "../../components/riotersFooter/SelectedNewNft";
+import { neutral33 } from "../../utils/style/colors";
 import { nftDropedAdjustmentType } from "./RiotersFooterScreen.types";
-
-const fakeNewNtfCollections = [
-  {
-    id: "0",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "1",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "2",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "3",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "4",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "5",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "6",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "7",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "8",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "9",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "10",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "12",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "13",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "14",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "15",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "16",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "17",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-  {
-    id: "18",
-    avatar: avaSvg,
-    name: "throwbackpushchair",
-    badge: true,
-  },
-];
 
 const oldNftPositions = [
   {
@@ -250,8 +147,10 @@ export const RiotersFooterScreen: React.FC = () => {
     useState<string>("");
   const [searchNft, setSearchNft] = useState<string>("");
   const [nftCollectionId, setNftCollectionId] = useState<string>("");
-  const [currentCollection, setCurrentCollection] = useState<any>(undefined);
-  const [nftDroped, setNftDroped] = useState<any>(null);
+  const [currentCollection, setCurrentCollection] = useState<
+    Collection | undefined
+  >(undefined);
+  const [nftDroped, setNftDroped] = useState<NFT | undefined>(undefined);
   const [nftDropedAdjustment, setNftDropedAdjustment] = useState<
     nftDropedAdjustmentType | undefined
   >(undefined);
@@ -269,20 +168,23 @@ export const RiotersFooterScreen: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionHash, setTransactionHash] = useState("");
 
+  const [collections, fetchMoreCollections] = useCollections({
+    kind: CollectionsRequest_Kind.KIND_BY_VOLUME,
+    limit: 24,
+    offset: 0,
+  });
+
   useEffect(() => {
     setOldNftPositionsWithZIndexOrder(
-      oldNftPositions.sort((a, b) => a.date.getTime() - b.date.getTime())
-    );
-    console.log(
       oldNftPositions.sort((a, b) => a.date.getTime() - b.date.getTime())
     );
   }, [oldNftPositions]);
 
   useEffect(() => {
-    const currentCollection = fakeNewNtfCollections.find(
+    const current: Collection | undefined = collections.find(
       (collection) => collection.id === nftCollectionId
     );
-    setCurrentCollection(currentCollection);
+    setCurrentCollection(current);
   }, [nftCollectionId]);
 
   const MapNftType = new Map([
@@ -292,29 +194,31 @@ export const RiotersFooterScreen: React.FC = () => {
         searchNewNftCollection={searchNewNftCollection}
         setSearchNewNftCollection={setSearchNewNftCollection}
         setNftCollectionId={setNftCollectionId}
-        newNftCollections={fakeNewNtfCollections}
+        newNftCollections={collections}
       />,
     ],
     ["Existing", <ExistingNftType />],
   ]);
 
-  const onReceiveDragDrop = useCallback(
-    (event) => {
-      if (!nftDroped || nftDroped.id === event.dragged.payload) {
-        if (!nftDroped) {
-          setNftDroped(fakeNft.find((nft) => nft.id === event.dragged.payload));
-        }
-        setNftDropedAdjustment({
-          width: 104,
-          height: 104,
-          borderRadius: 0,
-          ...nftDropedAdjustment,
-          x: event.receiver.receiveOffset.x - event.dragged.grabOffset.x,
-          y: event.receiver.receiveOffset.y - event.dragged.grabOffset.y,
-        });
-      }
+  const handleBuy = useCallback(() => {
+    console.log("buy");
+    setTransactionPaymentModalVisible(false);
+    setTransactionPendingModalVisible(true);
+    setTimeout(() => {
+      setTransactionPendingModalVisible(false);
+      setTransactionSuccessModalVisible(true);
+    }, 3000);
+  }, []);
+
+  const isCloseToBottom = useCallback(
+    ({ layoutMeasurement, contentOffset, contentSize }: NativeScrollEvent) => {
+      const paddingToBottom = 60;
+      return (
+        layoutMeasurement.height + contentOffset.y >=
+        contentSize.height - paddingToBottom
+      );
     },
-    [nftDroped, nftDropedAdjustment]
+    []
   );
 
   const renderContent = useCallback(
@@ -330,15 +234,28 @@ export const RiotersFooterScreen: React.FC = () => {
     [oldNftPositionsWithZIndexOrder, nftDroped, nftDropedAdjustment]
   );
 
-  const handleBuy = useCallback(() => {
-    console.log("buy");
-    setTransactionPaymentModalVisible(false);
-    setTransactionPendingModalVisible(true);
-    setTimeout(() => {
-      setTransactionPendingModalVisible(false);
-      setTransactionSuccessModalVisible(true);
-    }, 3000);
-  }, []);
+  const onReceiveDragDrop = useCallback(
+    (event) => {
+      const nft: NFT = JSON.parse(event.dragged.payload);
+      if (
+        !nftDroped ||
+        (nftDroped && nftDroped.name === event.dragged.payload)
+      ) {
+        if (!nftDroped) {
+          setNftDroped(nft);
+        }
+      }
+      setNftDropedAdjustment({
+        width: 104,
+        height: 104,
+        borderRadius: 0,
+        ...nftDropedAdjustment,
+        x: event.receiver.receiveOffset.x - event.dragged.grabOffset.x,
+        y: event.receiver.receiveOffset.y - event.dragged.grabOffset.y,
+      });
+    },
+    [nftDroped, nftDropedAdjustment]
+  );
 
   return (
     <ScreenContainer hideSidebar={isPreview}>
@@ -355,16 +272,21 @@ export const RiotersFooterScreen: React.FC = () => {
                     <NftTypeTab tabName={tabName} setTabName={setTabName} />
                     <View style={styles.separator} />
                   </View>
-                  <ScrollView>
+                  <ScrollView
+                    onScroll={({ nativeEvent }) => {
+                      if (tabName === "New" && isCloseToBottom(nativeEvent)) {
+                        fetchMoreCollections(24);
+                      }
+                    }}
+                    scrollEventThrottle={16}
+                  >
                     <View style={{ width: 220 }}>
                       {MapNftType.get(tabName)}
                     </View>
                   </ScrollView>
                 </>
-              ) : nftDroped && nftDropedAdjustment ? (
+              ) : nftDroped && nftDropedAdjustment && currentCollection ? (
                 <NftAdjustments
-                  nftCollectionId={nftCollectionId}
-                  newNftCollections={fakeNewNtfCollections}
                   nftDroped={nftDroped}
                   setNftDroped={setNftDroped}
                   nftDropedAdjustment={nftDropedAdjustment}
@@ -374,15 +296,18 @@ export const RiotersFooterScreen: React.FC = () => {
                   setTransactionPaymentModalVisible={
                     setTransactionPaymentModalVisible
                   }
+                  currentCollection={currentCollection}
                 />
               ) : (
-                <SelectNewNft
-                  nftCollectionId={nftCollectionId}
-                  setNftCollectionId={setNftCollectionId}
-                  searchNft={searchNft}
-                  setSearchNft={setSearchNft}
-                  newNftCollections={fakeNewNtfCollections}
-                />
+                currentCollection && (
+                  <SelectNewNft
+                    nftCollectionId={nftCollectionId}
+                    setNftCollectionId={setNftCollectionId}
+                    searchNft={searchNft}
+                    setSearchNft={setSearchNft}
+                    currentCollection={currentCollection}
+                  />
+                )
               )}
             </View>
             <View style={{ width: "100%" }}>
@@ -423,7 +348,7 @@ export const RiotersFooterScreen: React.FC = () => {
               size="M"
             />
           </View>
-          <View style={[{ marginTop: 100 }, styles.chosePositionContainer]}>
+          <View style={[styles.chosePositionContainer, { marginTop: 100 }]}>
             <SVG
               width={94}
               height={102}
@@ -460,25 +385,24 @@ export const RiotersFooterScreen: React.FC = () => {
                   zIndex: oldNftPositionsWithZIndexOrder.length,
                 }}
               >
-                <View
-                  style={{ borderRadius: nftDropedAdjustment.borderRadius }}
-                >
-                  <SVG
-                    width={nftDropedAdjustment.width}
-                    height={nftDropedAdjustment.height}
-                    source={nftDroped.svg}
-                  />
-                </View>
+                <Image
+                  style={{
+                    width: nftDropedAdjustment.width,
+                    height: nftDropedAdjustment.height,
+                    borderRadius: nftDropedAdjustment.borderRadius,
+                  }}
+                  source={{ uri: nftDroped.imageUri }}
+                />
               </View>
             )}
           </View>
         </View>
       )}
       {/* ====== "Buy this NFT" three modals*/}
-      {/*TODO: Handle these 3 modales with a component, or a hook*/}
+      {/* TODO: Handle these 3 modales with a component, or a hook
 
       {/* ----- Modal to process payment*/}
-      <TransactionPaymentModal
+      {/* <TransactionPaymentModal
         onPressProceed={handleBuy}
         onClose={() => setTransactionPaymentModalVisible(false)}
         visible={transactionPaymentModalVisible}
@@ -498,17 +422,17 @@ export const RiotersFooterScreen: React.FC = () => {
             {currentCollection?.name}
           </BrandText>
         }
-      />
+      /> */}
 
       {/* ----- Modal with loader, witing for wallet approbation*/}
-      <TransactionPendingModal
+      {/* <TransactionPendingModal
         operationLabel="Purchase"
         visible={transactionPendingModalVisible}
         onClose={() => setTransactionPendingModalVisible(false)}
-      />
+      /> */}
 
       {/* ----- Success modal*/}
-      <TransactionSuccessModal
+      {/* <TransactionSuccessModal
         transactionHash={transactionHash}
         visible={transactionSuccessModalVisible}
         textComponent={
@@ -525,7 +449,7 @@ export const RiotersFooterScreen: React.FC = () => {
           </BrandText>
         }
         onClose={() => setTransactionSuccessModalVisible(false)}
-      />
+      />  */}
     </ScreenContainer>
   );
 };

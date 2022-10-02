@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import addSvg from "../../../assets/icons/add.svg";
+import { Collection } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
@@ -11,7 +12,7 @@ const NewNftType: React.FC<{
   searchNewNftCollection: string;
   setSearchNewNftCollection: (text: string) => void;
   setNftCollectionId: (text: string) => void;
-  newNftCollections: any[];
+  newNftCollections: Collection[];
 }> = memo(
   ({
     searchNewNftCollection,
@@ -51,7 +52,7 @@ const NewNftType: React.FC<{
           />
           <BrandText style={{ fontSize: 14 }}>Mint new NFT</BrandText>
         </TouchableOpacity>
-        {newNftCollections.map((collection) => (
+        {newNftCollections.map((collection: Collection) => (
           <TouchableOpacity
             onPress={() => {
               setNftCollectionId(collection.id);
@@ -60,8 +61,8 @@ const NewNftType: React.FC<{
           >
             <View style={{ marginTop: 12 }} />
             <CollectionInfoInline
-              imageSource={collection.avatar}
-              name={collection.name}
+              imageSource={{ uri: collection.imageUri }}
+              name={collection.collectionName}
             />
           </TouchableOpacity>
         ))}

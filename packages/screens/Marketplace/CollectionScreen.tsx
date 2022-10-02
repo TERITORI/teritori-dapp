@@ -18,7 +18,7 @@ import { prettyPrice } from "../../utils/coins";
 import { ScreenFC } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 
-const useCollectionNFTs = (
+export const useCollectionNFTs = (
   req: CollectionNFTsRequest
 ): [NFT[], () => Promise<void>] => {
   const [nfts, setNFTs] = useState<NFT[]>([]);
@@ -87,7 +87,7 @@ const viewStyle: ViewStyle = {
   height: "100%",
 };
 
-const alignDown = (count: number, stride: number) => {
+export const alignDown = (count: number, stride: number) => {
   const factor = Math.floor(count / stride);
   return factor * stride;
 };

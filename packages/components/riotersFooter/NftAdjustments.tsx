@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
+import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { nftDropedAdjustmentType } from "../../screens/RiotersFooter/RiotersFooterScreen.types";
 import {
@@ -16,10 +17,8 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 
 const NftAdjustments: React.FC<{
-  nftCollectionId: string;
-  newNftCollections: any[];
-  nftDroped: any;
-  setNftDroped: (nftDroped: any) => void;
+  nftDroped: NFT;
+  setNftDroped: (nftDroped: NFT | undefined) => void;
   nftDropedAdjustment: nftDropedAdjustmentType;
   setNftDropedAdjustment: (
     nftDropedAdjustment: nftDropedAdjustmentType | undefined
@@ -27,10 +26,9 @@ const NftAdjustments: React.FC<{
   price: number;
   setPrice: (price: number) => void;
   setTransactionPaymentModalVisible: (visible: boolean) => void;
+  currentCollection: Collection;
 }> = memo(
   ({
-    nftCollectionId,
-    newNftCollections,
     nftDroped,
     setNftDroped,
     nftDropedAdjustment,
@@ -38,6 +36,7 @@ const NftAdjustments: React.FC<{
     price,
     setPrice,
     setTransactionPaymentModalVisible,
+    currentCollection,
   }) => {
     const [sliderValue, setSliderValue] = useState(0);
     const [percentage, setPercentage] = useState(0);
@@ -53,10 +52,6 @@ const NftAdjustments: React.FC<{
       setPercentage((Math.round((sliderValue * 100) / 220) * 2) / 2);
     }, [sliderValue]);
 
-    const currentCollection = newNftCollections.find(
-      (collection) => collection.id === nftCollectionId
-    );
-
     return (
       <View style={styles.container}>
         <BrandText style={styles.textTitle}>NFT info & adjustments</BrandText>
@@ -65,15 +60,20 @@ const NftAdjustments: React.FC<{
           <BrandText style={styles.textTitle}>Collection</BrandText>
           <View style={{ marginTop: 12 }} />
           <CollectionInfoInline
-            name={currentCollection.name}
-            imageSource={currentCollection.avatar}
+            name={currentCollection.collectionName}
+            imageSource={{ uri: currentCollection.imageUri }}
           />
         </View>
         <View style={styles.separator} />
         <BrandText style={styles.textTitle}>NFT artwork</BrandText>
         <Image
-          source={nftDroped.svg}
-          style={{ aspectRatio: 1, width: 220, marginVertical: 12 }}
+          source={{ uri: nftDroped.imageUri }}
+          style={{
+            aspectRatio: 1,
+            width: 220,
+            marginVertical: 12,
+            borderRadius: 12,
+          }}
           resizeMode="contain"
         />
         <BrandText style={{ fontSize: 13 }}>{nftDroped.name}</BrandText>
