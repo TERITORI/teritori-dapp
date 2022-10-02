@@ -36,6 +36,10 @@ import NewNftType from "../../components/riotersFooter/NewNftType";
 import NftAdjustments from "../../components/riotersFooter/NftAdjustments";
 import NftTypeTab from "../../components/riotersFooter/NftTypeTab";
 import SelectNewNft from "../../components/riotersFooter/SelectedNewNft";
+import { RioterFooterNftClient } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.client";
+import { Uint128 } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { neutral33 } from "../../utils/style/colors";
 import { nftDropedAdjustmentType } from "./RiotersFooterScreen.types";
 
@@ -167,6 +171,34 @@ export const RiotersFooterScreen: React.FC = () => {
     useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [transactionHash, setTransactionHash] = useState("");
+  const [client, setClient] = useState<RioterFooterNftClient | undefined>(
+    undefined
+  );
+  const [mapSize, setMapsize] = useState<{ height: Uint128; width: Uint128 }>({
+    height: "552",
+    width: "1030",
+  });
+  const wallet = useSelectedWallet();
+
+  useEffect(() => {
+    const effect = async () => {
+      if (!wallet?.publicKey) {
+        return;
+      }
+      const cosmwasmClient = await getSigningCosmWasmClient();
+
+      const rioterFooterClient = new RioterFooterNftClient(
+        cosmwasmClient,
+        wallet?.publicKey,
+        "tori1xfxjrxhgjqtvfcmfemu89lxftf0fq4hxz7vcg9shgczta26nt4lqefstyc"
+      );
+      await rioterFooterClient.updateMapSize({ height: "552", width: "1030" });
+
+      setMapsize(await rioterFooterClient.queryMapSize());
+      setClient(rioterFooterClient);
+    };
+    effect();
+  }, []);
 
   const [collections, fetchMoreCollections] = useCollections({
     kind: CollectionsRequest_Kind.KIND_BY_VOLUME,
@@ -329,7 +361,13 @@ export const RiotersFooterScreen: React.FC = () => {
                 </View>
               </View>
               <DraxView
-                style={styles.chosePositionContainer}
+                style={[
+                  styles.chosePositionContainer,
+                  {
+                    height: parseInt(mapSize.height, 10),
+                    width: parseInt(mapSize.width, 10),
+                  },
+                ]}
                 onReceiveDragDrop={onReceiveDragDrop}
                 renderContent={renderContent}
               />
@@ -348,7 +386,16 @@ export const RiotersFooterScreen: React.FC = () => {
               size="M"
             />
           </View>
-          <View style={[styles.chosePositionContainer, { marginTop: 100 }]}>
+          <View
+            style={[
+              styles.chosePositionContainer,
+              {
+                height: parseInt(mapSize.height, 10),
+                width: parseInt(mapSize.width, 10),
+                marginTop: 100,
+              },
+            ]}
+          >
             <SVG
               width={94}
               height={102}
@@ -477,8 +524,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   chosePositionContainer: {
-    width: 1030,
-    height: 552,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: neutral33,
