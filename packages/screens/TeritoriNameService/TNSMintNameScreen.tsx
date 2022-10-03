@@ -1,4 +1,4 @@
-import { RouteProp, useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
@@ -21,7 +21,7 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
 
@@ -65,9 +65,7 @@ const CostContainer: React.FC = () => {
 };
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
-export const TNSMintNameScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "TNSMintName">;
-}> = ({ route }) => {
+export const TNSMintNameScreen: ScreenFC<"TNSMintName"> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();
@@ -125,8 +123,7 @@ export const TNSMintNameScreen: React.FC<{
   // ==== Init
   useFocusEffect(() => {
     // ---- Setting the name from TNSContext. Redirects to TNSManage if this screen is called when the user owns the token. Redirects to TNSHome if no connected wallet
-    // @ts-expect-error
-    if (route.params && route.params.name) setName(route.params.name);
+    setName(route.params.name);
     // ===== Controls many things, be careful
     if (!userHasCoWallet || !isKeplrConnected) navigation.navigate("TNSHome");
     if (name && userHasCoWallet && isTokenOwnedByUser(tokens, name))
@@ -221,7 +218,12 @@ export const TNSMintNameScreen: React.FC<{
     <ScreenContainer
       hideSidebar
       headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={<BackTo label="Back to search" navItem="TNSRegister" />}
+      footerChildren={
+        <BackTo
+          label="Back to search"
+          onPress={() => navigation.navigate("TNSRegister")}
+        />
+      }
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
         <CostContainer />

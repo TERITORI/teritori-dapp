@@ -127,7 +127,7 @@ export const TextInputCustom = <T,>({
 
   return (
     <>
-      {variant === "labelOutside" && label && (
+      {variant === "labelOutside" && (
         <View>
           <BrandText style={[styles.labelText, fontSemibold14]}>
             {label}

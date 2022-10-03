@@ -1,4 +1,3 @@
-import { RouteProp } from "@react-navigation/native";
 import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, ListRenderItem, View, Image } from "react-native";
@@ -12,7 +11,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { backendClient } from "../../utils/backend";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { RootStackParamList } from "../../utils/navigation";
+import { ScreenFC } from "../../utils/navigation";
 
 const useCollectionActivity = (
   req: CollectionActivityRequest
@@ -81,9 +80,7 @@ const renderItem: ListRenderItem<Activity> = (info) => {
 
 const BoundariesSpacer: React.FC = () => <View style={{ height: 100 }} />;
 
-export const CollectionActivityScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "CollectionActivity">;
-}> = ({
+export const CollectionActivityScreen: ScreenFC<"CollectionActivity"> = ({
   route: {
     params: { id },
   },

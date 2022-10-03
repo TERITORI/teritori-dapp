@@ -1,4 +1,4 @@
-import { RouteProp, useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
@@ -17,7 +17,7 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { isTokenOwnedByUser, tokenWithoutTld } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
 
@@ -27,9 +27,7 @@ const normalize = (inputString: string) => {
 };
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
-export const TNSMintPathScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "TNSMintPath">;
-}> = ({ route }) => {
+export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();
@@ -86,8 +84,7 @@ export const TNSMintPathScreen: React.FC<{
   // ==== Init
   useFocusEffect(() => {
     // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token
-    // @ts-expect-error
-    if (route.params && route.params.name) setName(route.params.name);
+    setName(route.params.name);
     // ===== Controls many things, be careful
     if (
       (name &&
@@ -194,8 +191,7 @@ export const TNSMintPathScreen: React.FC<{
       footerChildren={
         <BackTo
           label={"Back to " + name}
-          navItem="TNSConsultName"
-          navParams={{ name }}
+          onPress={() => navigation.navigate("TNSConsultName", { name })}
         />
       }
     >

@@ -13,6 +13,7 @@ import { useWallets } from "../../context/WalletsProvider";
 import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../../utils/keplr";
+import { ScreenFC } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import { neutral77 } from "../../utils/style/colors";
 import { fontMedium13 } from "../../utils/style/fonts";
@@ -26,7 +27,7 @@ const nftContractCodeID = 6;
 NOTE: this whole thing need to be rewritten using indexers and better data organisation
 */
 
-export const MyCollectionScreen: React.FC = () => {
+export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
   const teritoriNFTs = useTeritoriOwnedNFTs();
   const { solanaNFTs } = useSolanaOwnedNFTs();
 

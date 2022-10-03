@@ -4,8 +4,9 @@ import { View } from "react-native";
 import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
 import { CollectionsCarouselSection } from "../../components/CollectionsCarouselSection";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { ScreenFC } from "../../utils/navigation";
 
-export const MarketplaceScreen: React.FC = () => {
+export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   return (
     <ScreenContainer>
       <View style={{ paddingTop: 100 }}>

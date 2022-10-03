@@ -3,25 +3,21 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import backSVG from "../../../assets/icons/back.svg";
-import { RootStackParamList, useAppNavigation } from "../../utils/navigation";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral22 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 
 export const BackTo: React.FC<{
   label?: string;
-  navItem?: keyof RootStackParamList;
   onPress?: () => void;
-  navParams?: object;
-}> = ({ label = "", navItem, onPress, navParams }) => {
+}> = ({ label = "", onPress }) => {
   const navigation = useAppNavigation();
   const labelFontSize = 16;
 
   const handleOnPress = () => {
     if (onPress) onPress();
-    if (!navItem) navigation.goBack();
-    else if (navItem && navParams) navigation.navigate(navItem, navParams);
-    else if (navItem) navigation.navigate(navItem);
+    else navigation.goBack();
   };
 
   return (

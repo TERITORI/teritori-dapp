@@ -11,7 +11,6 @@ import { CollectionActivityScreen } from "../../screens/Marketplace/CollectionAc
 import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
-import { MintScreen } from "../../screens/Mint/MintScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSBurnNameScreen } from "../../screens/TeritoriNameService/TNSBurnNameScreen";
@@ -23,6 +22,8 @@ import { TNSMintNameScreen } from "../../screens/TeritoriNameService/TNSMintName
 import { TNSMintPathScreen } from "../../screens/TeritoriNameService/TNSMintPathScreen";
 import { TNSRegisterScreen } from "../../screens/TeritoriNameService/TNSRegisterScreen";
 import { TNSUpdateNameScreen } from "../../screens/TeritoriNameService/TNSUpdateNameScreen";
+import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
+import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { WalletsScreen } from "../../screens/Wallets/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
 
@@ -62,16 +63,27 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="Mint"
-        component={MintScreen}
-        options={{ header: () => null }}
-      />
-      <Stack.Screen
         name="Wallets"
         component={WalletsScreen}
         options={{ presentation: "transparentModal", header: () => null }}
       />
 
+      {/* ==== Wallet Manager */}
+      <Stack.Screen
+        name="WalletManager"
+        component={WalletManagerScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="WalletManagerWallets"
+        component={WalletManagerWalletsScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="WalletManagerChains"
+        component={WalletManagerWalletsScreen}
+        options={{ header: () => null }}
+      />
       {/* ==== Launchpad */}
       <Stack.Screen
         name="Launchpad"
