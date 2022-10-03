@@ -109,7 +109,7 @@ export const keplrSuggestTeritori = (keplr: Keplr) =>
     // Currently, Keplr doesn't support dynamic calculation of the gas prices based on on-chain data.
     // Make sure that the gas prices are higher than the minimum gas prices accepted by chain validators and RPC/REST endpoint.
     gasPriceStep: {
-      low: 0.01,
+      low: 0.0,
       average: 0.025,
       high: 0.04,
     },
