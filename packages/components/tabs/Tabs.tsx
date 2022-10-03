@@ -119,12 +119,3 @@ const styles = StyleSheet.create({
     bottom: -2,
   },
 });
-
-const styles = StyleSheet.create({
-  selectedBorder: {
-    height: 2,
-    width: "100%",
-    position: "absolute",
-    bottom: -2,
-  },
-});

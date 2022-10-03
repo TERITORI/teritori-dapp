@@ -49,9 +49,7 @@ const TABLE_ROWS: { [key in keyof NFTActivityType]: TableRowHeading } = {
   },
 };
 
-type CollapsableActivitiesProps = object;
-
-export const CollapsableActivities = ({}: CollapsableActivitiesProps) => {
+export const CollapsableActivities = () => {
   // variables
   const customRowData = useMemo(
     (): TableRowDataItem[][] =>
@@ -110,6 +108,7 @@ export const CollapsableActivities = ({}: CollapsableActivitiesProps) => {
   );
 
   return (
+    // TODO: add white color to svg after implementing color change in SVG component
     <CollapsableSection icon={starSVG} title="Activities">
       <TableRow headings={Object.values(TABLE_ROWS)} />
       <FlatList

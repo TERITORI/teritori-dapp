@@ -72,13 +72,13 @@ export const StakeScreen: React.FC = () => {
             ["rank", "name", "votingPower", "commission"].includes(f)
           )
           .map((k) => ({
-            label: d[k as keyof typeof d],
+            value: d[k as keyof typeof d],
             keyId: k,
             flex: TABLE_ROWS[k].flex,
             uid: d.rank,
           })),
         {
-          label: "",
+          value: "",
           keyId: "actions",
           flex: TABLE_ROWS.actions.flex,
           uid: d.rank,
@@ -106,7 +106,7 @@ export const StakeScreen: React.FC = () => {
           <View style={styles.nameContainer}>
             <Avatar uri={TEMP_IMAGE} />
             <SpacerRow size={1} />
-            <BrandText style={fontSemibold13}>{item.label}</BrandText>
+            <BrandText style={fontSemibold13}>{item.value}</BrandText>
           </View>
         );
 
