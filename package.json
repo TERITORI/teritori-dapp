@@ -46,6 +46,7 @@
     "react-dom": "17.0.2",
     "react-hook-form": "^7.36.1",
     "react-native": "0.68.2",
+    "react-native-chart-kit": "^6.12.0",
     "react-native-confetti-cannon": "^1.5.2",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-reanimated": "~2.8.0",
@@ -57,7 +58,8 @@
     "react-native-toast-message": "^2.1.5",
     "react-native-web": "0.17.7",
     "react-redux": "^8.0.2",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "victory-native": "^36.6.8"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -67,6 +69,7 @@
     "@expo/webpack-config": "^0.16.25",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.67.6",
+    "@types/react-native-svg-charts": "^5.0.12",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "electron": "^19.0.8",

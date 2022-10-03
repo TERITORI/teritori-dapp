@@ -143,7 +143,7 @@ export const StakeScreen: React.FC = () => {
 
       <TableRow
         headings={Object.values(TABLE_ROWS)}
-        labelStyle={genericStyles.upperCase}
+        labelStyle={styles.upperCase}
       />
 
       <FlatList
@@ -152,7 +152,7 @@ export const StakeScreen: React.FC = () => {
           <TableRowData
             data={item}
             specialRender={specialRender}
-            labelStyle={genericStyles.upperCase}
+            labelStyle={styles.upperCase}
           />
         )}
       />
@@ -188,5 +188,8 @@ const styles = StyleSheet.create({
   rowWithCenter: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  upperCase: {
+    textTransform: "uppercase",
   },
 });

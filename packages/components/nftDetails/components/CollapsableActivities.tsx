@@ -1,7 +1,6 @@
 // libraries
 import React, { useCallback, useMemo } from "react";
-import { StyleSheet } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { StyleSheet, FlatList } from "react-native";
 
 import starSVG from "../../../../assets/icons/star.svg";
 import { NFTActivityType } from "../../../screens/Marketplace/types";
@@ -81,7 +80,7 @@ export const CollapsableActivities = ({}: CollapsableActivitiesProps) => {
         case "transactionId":
           return (
             <BrandText
-              style={styles.AddressText}
+              style={styles.addressText}
               numberOfLines={1}
               ellipsizeMode="head"
             >
@@ -92,11 +91,11 @@ export const CollapsableActivities = ({}: CollapsableActivitiesProps) => {
         case "transactionType":
           if (item.value?.includes("Sold via")) {
             return (
-              <BrandText style={styles.SoldViaText}>{item.value}</BrandText>
+              <BrandText style={styles.soldViaText}>{item.value}</BrandText>
             );
           } else if (item.value?.includes("Cancel")) {
             return (
-              <BrandText style={styles.CancelListingText}>
+              <BrandText style={styles.cancelListingText}>
                 {item.value}
               </BrandText>
             );
@@ -118,6 +117,7 @@ export const CollapsableActivities = ({}: CollapsableActivitiesProps) => {
         renderItem={({ item }) => (
           <TableRowData data={item} specialRender={specialRender} />
         )}
+        keyExtractor={(item, index) => (item.length + index).toString()}
       />
       <SpacerColumn size={2} />
       <Pagination currentPage={1} maxPage={2} />
@@ -127,17 +127,17 @@ export const CollapsableActivities = ({}: CollapsableActivitiesProps) => {
 };
 
 const styles = StyleSheet.create({
-  AddressText: {
+  addressText: {
     ...(fontMedium14 as object),
     color: primaryColor,
   },
 
-  SoldViaText: {
+  soldViaText: {
     ...(fontMedium14 as object),
     color: reefColor,
   },
 
-  CancelListingText: {
+  cancelListingText: {
     ...(fontMedium14 as object),
     color: neutral77,
   },

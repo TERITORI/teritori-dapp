@@ -24,6 +24,7 @@ import { TransactionSuccessModal } from "../modals/transaction/TransactionSucces
 import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
 import { NFTAttributes } from "./NFTAttributes";
 import { CollapsableActivities } from "./components/CollapsableActivities";
+import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";
 
 const mainInfoTabItems: TabItem[] = [
   {
@@ -76,7 +77,7 @@ export const NFTMainInfo: React.FC<{
     switch (selectedTabItem.label) {
       case "About":
         return (
-          <View style={styles.SectionContainer}>
+          <View style={styles.sectionContainer}>
             <BrandText
               style={[fontSemibold14, { marginBottom: 24, width: "100%" }]}
             >
@@ -86,13 +87,13 @@ export const NFTMainInfo: React.FC<{
         );
       case "Attributes":
         return (
-          <View style={styles.SectionContainer}>
+          <View style={styles.sectionContainer}>
             <NFTAttributes nftAttributes={nftInfo?.attributes} />
           </View>
         );
       case "Details":
         return (
-          <View style={styles.SectionContainer}>
+          <View style={styles.sectionContainer}>
             <View
               style={{
                 flexDirection: "row",
@@ -211,7 +212,12 @@ export const NFTMainInfo: React.FC<{
         {/*TODO: About  = Big text*/}
         <SelectedTabItemRendering />
       </View>
-      <CollapsableActivities />
+      <View style={styles.collapsableContainer}>
+        <CollapsablePiceHistory />
+      </View>
+      <View style={styles.collapsableContainer}>
+        <CollapsableActivities />
+      </View>
 
       {/* ====== "Buy this NFT" three modals*/}
       {/*TODO: Handle these 3 modales with a component, or a hook*/}
@@ -270,8 +276,12 @@ export const NFTMainInfo: React.FC<{
 };
 
 const styles = StyleSheet.create({
-  SectionContainer: {
+  sectionContainer: {
     width: 600,
     paddingVertical: layout.padding_x3,
+  },
+  collapsableContainer: {
+    width: "100%",
+    marginBottom: layout.padding_x2,
   },
 });

@@ -5,6 +5,7 @@ export const footerHeight = 82;
 export const screenContentMaxWidth = 1092;
 export const headerMarginHorizontal = 22;
 export const avatarWidth = 40;
+export const sidebarWidth = 94;
 
 export const layout = {
   padding_x1: 8,

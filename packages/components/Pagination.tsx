@@ -8,14 +8,12 @@ import chevronRightDoubleSVG from "../../assets/icons/chevron-right-double.svg";
 import chevronRightSVG from "../../assets/icons/chevron-right.svg";
 import { neutral77 } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
-import { genericStyles } from "../utils/style/genericStyles";
 import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { PrimaryButton } from "./buttons/PrimaryButton";
 import { SecondaryButton } from "./buttons/SecondaryButton";
-import { DivRow } from "./div";
 import { TextInputCustom } from "./inputs/TextInputCustom";
 import { SpacerRow } from "./spacer";
 
@@ -40,14 +38,14 @@ export const Pagination = ({
 
   // returns
   return (
-    <View style={styles.Container}>
-      <DivRow jc="center" ai="center">
-        <BrandText style={styles.GrayText}>
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <BrandText style={styles.grayText}>
           Page {currentPage} of {maxPage}
         </BrandText>
-        <BrandText style={styles.GrayText}>|</BrandText>
-        <BrandText style={styles.GrayText}>Go to page:</BrandText>
-        <View style={styles.InputContainer}>
+        <BrandText style={styles.grayText}>|</BrandText>
+        <BrandText style={styles.grayText}>Go to page:</BrandText>
+        <View style={styles.inputContainer}>
           <TextInputCustom
             name="page"
             label=""
@@ -55,9 +53,9 @@ export const Pagination = ({
             defaultValue={currentPage}
           />
         </View>
-      </DivRow>
+      </View>
 
-      <DivRow>
+      <View style={styles.section}>
         <TertiaryBox height={42} width={56}>
           <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
         </TertiaryBox>
@@ -79,11 +77,11 @@ export const Pagination = ({
         <TertiaryBox height={42} width={56}>
           <SVG source={chevronRightDoubleSVG} height={16} width={16} />
         </TertiaryBox>
-      </DivRow>
+      </View>
 
-      <DivRow jc="center" ai="center">
-        <BrandText style={styles.GrayText}>Items per page:</BrandText>
-        <View style={styles.InputContainer}>
+      <View style={styles.section}>
+        <BrandText style={styles.grayText}>Items per page:</BrandText>
+        <View style={styles.inputContainer}>
           <TextInputCustom
             name="page"
             label=""
@@ -91,25 +89,30 @@ export const Pagination = ({
             defaultValue={currentPage}
           />
         </View>
-      </DivRow>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  Container: {
-    ...StyleSheet.flatten(genericStyles.rowWithCenterAndSB),
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: layout.padding_x2,
   },
-
-  GrayText: {
+  section: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  grayText: {
     ...(fontSemibold14 as object),
     color: neutral77,
     paddingRight: layout.padding_x1,
     lineHeight: 14,
   },
-
-  InputContainer: {
+  inputContainer: {
     width: 80,
   },
 });

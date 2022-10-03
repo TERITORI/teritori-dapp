@@ -12,9 +12,11 @@ export const NFTPriceHistory: React.FC<{
   style: StyleProp<ViewStyle>;
 }> = ({ id, style }) => {
   const { priceHistory } = useNFTPriceHistory(id);
+
   if (!priceHistory.length) {
     return null;
   }
+
   return (
     <LineChart
       style={style}

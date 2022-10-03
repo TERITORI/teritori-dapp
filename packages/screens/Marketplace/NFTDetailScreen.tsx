@@ -30,7 +30,6 @@ import {
 } from "../../utils/keplr";
 import { RootStackParamList } from "../../utils/navigation";
 import { Network } from "../../utils/network";
-import { genericStyles } from "../../utils/style/genericStyles";
 import {
   screenContainerContentMarginHorizontal,
   screenContentMaxWidth,
@@ -262,7 +261,9 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
           {/*====== Tabs Menu for whole screen */}
           <Tabs
             items={tabItems}
-            style={genericStyles.jcEnd}
+            style={{
+              justifyContent: "flex-end",
+            }}
             onPressTabItem={onPressTabItem}
           />
 

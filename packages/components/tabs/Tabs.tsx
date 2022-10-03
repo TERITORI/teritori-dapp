@@ -9,7 +9,6 @@ import {
 
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { genericStyles } from "../../utils/style/genericStyles";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { PrimaryBadge } from "../badges/PrimaryBadge";

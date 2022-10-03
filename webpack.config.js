@@ -7,6 +7,14 @@ module.exports = async function (env, argv) {
   // needed to use environment variables
   config.plugins.push(new Dotenv());
 
+  // victory native specific code
+  config.module.rules.push({
+    test: /.*victory-native\/.*\.js/,
+    use: {
+      loader: "babel-loader",
+    },
+  });
+
   // needed by solana libs
   config.module.rules.unshift({
     type: "javascript/auto",
