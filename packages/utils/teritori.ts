@@ -1,5 +1,7 @@
+import { Decimal } from "@cosmjs/math";
+import { OfflineSigner } from "@cosmjs/proto-signing";
+import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { Currency, Keplr } from "@keplr-wallet/types";
-import { Decimal, GasPrice } from "cosmwasm";
 
 import { Metadata } from "./types/tns";
 
@@ -63,6 +65,11 @@ export const teritoriGasPrice = new GasPrice(
   Decimal.fromUserInput("0.025", toriCurrency.coinDecimals),
   toriCurrency.coinMinimalDenom
 );
+
+export const getTeritoriSigningStargateClient = (signer: OfflineSigner) =>
+  SigningStargateClient.connectWithSigner(teritoriRPCProvider, signer, {
+    gasPrice: teritoriGasPrice,
+  });
 
 export const keplrSuggestTeritori = (keplr: Keplr) =>
   keplr.experimentalSuggestChain({

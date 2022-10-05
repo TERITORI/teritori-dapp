@@ -2422,7 +2422,7 @@
     ledger-cosmos-js "^2.1.8"
     semver "^7.3.2"
 
-"@cosmjs/math@0.28.13", "@cosmjs/math@^0.28.3":
+"@cosmjs/math@0.28.13", "@cosmjs/math@^0.28.13", "@cosmjs/math@^0.28.3":
   version "0.28.13"
   resolved "https://registry.yarnpkg.com/@cosmjs/math/-/math-0.28.13.tgz#50c05bc67007a04216f7f5e0c93f57270f8cc077"
   integrity sha512-PDpL8W/kbyeWi0mQ2OruyqE8ZUAdxPs1xCbDX3WXJwy2oU+X2UTbkuweJHVpS9CIqmZulBoWQAmlf6t6zr1N/g==
@@ -2443,7 +2443,7 @@
   dependencies:
     bn.js "^4.11.8"
 
-"@cosmjs/proto-signing@0.28.13", "@cosmjs/proto-signing@^0.28.3":
+"@cosmjs/proto-signing@0.28.13", "@cosmjs/proto-signing@^0.28.13", "@cosmjs/proto-signing@^0.28.3":
   version "0.28.13"
   resolved "https://registry.yarnpkg.com/@cosmjs/proto-signing/-/proto-signing-0.28.13.tgz#95ac12f0da0f0814f348f5ae996c3e96d015df61"
   integrity sha512-nSl/2ZLsUJYz3Ad0RY3ihZUgRHIow2OnYqKsESMu+3RA/jTi9bDYhiBu8mNMHI0xrEJry918B2CyI56pOUHdPQ==
@@ -2475,7 +2475,7 @@
     ws "^7"
     xstream "^11.14.0"
 
-"@cosmjs/stargate@0.28.13", "@cosmjs/stargate@^0.28.3":
+"@cosmjs/stargate@0.28.13", "@cosmjs/stargate@^0.28.13", "@cosmjs/stargate@^0.28.3":
   version "0.28.13"
   resolved "https://registry.yarnpkg.com/@cosmjs/stargate/-/stargate-0.28.13.tgz#a73d837a46ee8944e6eafe162f2ff6943c14350e"
   integrity sha512-dVBMazDz8/eActHsRcZjDHHptOBMqvibj5CFgEtZBp22gP6ASzoAUXTlkSVk5FBf4sfuUHoff6st134/+PGMAg==
@@ -20612,10 +20612,8 @@ watchpack@^1.6.1:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
-    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
