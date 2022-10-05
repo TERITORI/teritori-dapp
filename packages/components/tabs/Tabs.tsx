@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { TouchableOpacity, View, StyleProp, StyleSheet, ViewStyle } from "react-native";
+import {
+  TouchableOpacity,
+  View,
+  StyleProp,
+  StyleSheet,
+  ViewStyle,
+} from "react-native";
 
-import { neutral33, primaryTextColor } from "../../utils/style/colors";
+import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { BrandText } from "../BrandText";
-import {TertiaryBadge} from "../badges/TertiaryBadge"
 import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
 import { PrimaryBadge } from "../badges/PrimaryBadge";
+import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { SpacerRow } from "../spacer";
 
 export type TabItem = {
@@ -70,7 +76,6 @@ export const Tabs: React.FC<{
             <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
               {item.label}
             </BrandText>
-
 
             {item.badgeCount && <SpacerRow size={1} />}
             {item.badgeCount ? (

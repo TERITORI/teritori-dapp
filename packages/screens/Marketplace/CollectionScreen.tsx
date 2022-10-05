@@ -32,30 +32,30 @@ import {
   useCollectionInfo,
 } from "../../hooks/useCollectionInfo";
 import { useCollectionNFTs } from "../../hooks/useCollectionNFTs";
+import { prettyPrice } from "../../utils/coins";
+import { ScreenFC } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { screenContentMaxWidth } from "../../utils/style/layout";
-import { prettyPrice } from "../../utils/coins";
-import { ScreenFC } from "../../utils/navigation";
 
 const collectionScreenTabItems: TabItem[] = [
   {
     label: "Owned",
     isSelected: true,
-    badgeLabel: "87"
+    badgeLabel: "87",
   },
   {
     label: "Collections",
-    badgeLabel: "5760"
+    badgeLabel: "5760",
   },
   {
-    label: "Activity"
+    label: "Activity",
   },
   {
-    label: "Offers"
-  }
-]
+    label: "Offers",
+  },
+];
 
 const keyExtractor = (item: NFT) => item.mintAddress;
 

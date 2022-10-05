@@ -1,5 +1,4 @@
 import { logs } from "@cosmjs/stargate";
-import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,

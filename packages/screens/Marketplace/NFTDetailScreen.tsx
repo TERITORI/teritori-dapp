@@ -262,13 +262,13 @@ type CollectionInfoSmall = {
   mintAddress: string;
 };
 
-export const NFTDetailScreen: React.FC<{
-  route: RouteProp<RootStackParamList, "NFTDetail">;
-}> = ({
+export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   route: {
     params: { id },
   },
 }) => {
+  const navigation = useAppNavigation();
+
   const [collectionInfo, setCollectionInfo] = useState<CollectionInfoSmall>();
 
   return (
@@ -279,8 +279,11 @@ export const NFTDetailScreen: React.FC<{
         collectionInfo?.mintAddress ? (
           <BackTo
             label={collectionInfo.name}
-            navItem="Collection"
-            navParams={{ id: id.split("-").slice(0, -1).join("-") }}
+            onPress={() =>
+              navigation.navigate("Collection", {
+                id: id.split("-").slice(0, -1).join("-"),
+              })
+            }
           />
         ) : undefined
       }
