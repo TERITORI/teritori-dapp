@@ -48,55 +48,24 @@ export const NetworkSelector: React.FC<{
           width={172}
           style={{ position: "absolute", top: 44 }}
           mainContainerStyle={{
-            padding: 16,
+            paddingHorizontal: 16,
+            paddingTop: 16,
             backgroundColor: neutral17,
             alignItems: "flex-start",
           }}
         >
-          <TouchableOpacity style={{ marginBottom: 16 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <NetworkIcon network={Network.Solana} size={16} />
-              <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
-                Solana
-              </BrandText>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={{ marginBottom: 16 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <NetworkIcon network={Network.Ethereum} size={16} />
-              <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
-                Ethereum
-              </BrandText>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={{ marginBottom: 16 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <NetworkIcon network={Network.Atom} size={16} />
-              <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
-                Atom
-              </BrandText>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={{ marginBottom: 16 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <NetworkIcon network={Network.Juno} size={16} />
-              <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
-                Juno
-              </BrandText>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <NetworkIcon network={Network.Osmosis} size={16} />
-              <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
-                Osmosis
-              </BrandText>
-            </View>
-          </TouchableOpacity>
+          {(Object.keys(Network) as Network[]).map((network, index) => {
+            return (
+              <TouchableOpacity style={{ marginBottom: 16 }} key={index}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <NetworkIcon network={network} size={16} />
+                  <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
+                    {network}
+                  </BrandText>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </TertiaryBox>
       )}
     </View>

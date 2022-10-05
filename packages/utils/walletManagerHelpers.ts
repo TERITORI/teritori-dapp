@@ -17,14 +17,3 @@ export const getWalletIconFromTitle = (title: string) => {
       return solanaSVG;
   }
 };
-
-export const getWalletPieColor = (title: string): string => {
-  switch (title) {
-    case "Solana":
-      return "#16BBFF";
-    case "Cosmos Hub":
-      return "#5C26F5";
-    default:
-      return "black";
-  }
-};

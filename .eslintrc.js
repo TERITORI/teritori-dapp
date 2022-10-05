@@ -15,8 +15,5 @@ module.exports = {
         "packages/candymachine/**",
       ],
     },
-  ],
-  settings: {
-    "import/ignore": ["react-native"],
-  },
+  ]
 };

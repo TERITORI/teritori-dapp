@@ -57,7 +57,8 @@
     "react-native-toast-message": "^2.1.5",
     "react-native-web": "0.17.7",
     "react-redux": "^8.0.2",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "victory-native": "^36.6.8"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -69,6 +70,7 @@
     "@types/react-native": "~0.67.6",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
+    "babel-loader": "^8.2.5",
     "electron": "^19.0.8",
     "electron-builder": "^23.1.0",
     "eslint": "^8.19.0",

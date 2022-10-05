@@ -16,7 +16,7 @@ import { Section } from "../Section";
 import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { DAppCard } from "../cards/DAppCard";
 import { LabelCard } from "../cards/LabelCard";
-import { MyWalletsCard } from "../cards/MyWalletCard";
+import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
 
