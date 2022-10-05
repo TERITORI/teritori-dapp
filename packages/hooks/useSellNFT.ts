@@ -5,7 +5,7 @@ import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import { getSigningCosmWasmClient } from "../utils/keplr";
 import { Network } from "../utils/network";
-import { teritoriVaultContractAddress, toriCurrency } from "../utils/teritori";
+import { vaultContractAddress, toriCurrency } from "../utils/teritori";
 import useSelectedWallet from "./useSelectedWallet";
 
 export const useSellNFT = () => {
@@ -36,7 +36,7 @@ export const useSellNFT = () => {
         const atomicPrice = Decimal.fromUserInput(price, currency.coinDecimals);
         const amount = atomicPrice.atomics;
         const reply = await nftClient.sendNft({
-          contract: teritoriVaultContractAddress,
+          contract: vaultContractAddress,
           tokenId,
           msg: Buffer.from(
             JSON.stringify({

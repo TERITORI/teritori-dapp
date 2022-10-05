@@ -4,7 +4,7 @@ import { useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftVaultClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { getSigningCosmWasmClient } from "../utils/keplr";
 import { Network } from "../utils/network";
-import { teritoriVaultContractAddress } from "../utils/teritori";
+import { vaultContractAddress } from "../utils/teritori";
 import useSelectedWallet from "./useSelectedWallet";
 
 export const useCancelNFTListing = (
@@ -30,7 +30,7 @@ export const useCancelNFTListing = (
       const vaultClient = new TeritoriNftVaultClient(
         cosmwasmClient,
         wallet.publicKey,
-        teritoriVaultContractAddress
+        vaultContractAddress
       );
       const reply = await vaultClient.withdraw({
         nftContractAddr: nftContractAddress,
