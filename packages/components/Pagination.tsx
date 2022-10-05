@@ -46,11 +46,11 @@ export const Pagination = ({
         <BrandText style={styles.grayText}>|</BrandText>
         <BrandText style={styles.grayText}>Go to page:</BrandText>
         <View style={styles.inputContainer}>
-          <TextInputCustom
+          <TextInputCustom<{ page: string }>
             name="page"
             label=""
             variant="labelOutside"
-            defaultValue={currentPage}
+            defaultValue={currentPage.toString()}
           />
         </View>
       </View>
@@ -82,11 +82,11 @@ export const Pagination = ({
       <View style={styles.section}>
         <BrandText style={styles.grayText}>Items per page:</BrandText>
         <View style={styles.inputContainer}>
-          <TextInputCustom
+          <TextInputCustom<{ page: string }>
             name="page"
             label=""
             variant="labelOutside"
-            defaultValue={currentPage}
+            defaultValue={currentPage.toString()}
           />
         </View>
       </View>
