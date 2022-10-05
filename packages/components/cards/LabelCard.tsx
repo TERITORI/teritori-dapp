@@ -11,7 +11,7 @@ export const LabelCard: React.FC<{
   label?: string;
   style?: StyleProp<ViewStyle>;
 }> = ({ label, highlighted, style }) => {
-  const width = 164;
+  const width = 162;
   const height = 166;
   const fontSize = 12;
   return (

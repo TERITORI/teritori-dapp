@@ -17,7 +17,7 @@ export const MyNFTs: React.FC = () => {
   return (
     <View
       style={{
-        paddingVertical: 40,
+        paddingTop: 32,
         borderTopWidth: 1,
         borderColor: neutral33,
       }}

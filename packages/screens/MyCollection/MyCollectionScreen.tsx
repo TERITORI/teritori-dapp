@@ -60,7 +60,7 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
 
   return (
     <ScreenContainer>
-      <HubIntro hubPage="MyCollection" />
+      <HubIntro />
       <View style={{ marginHorizontal: 24 }}>
         {!Object.keys(byCollection).length && (
           <ActivityIndicator size="large" style={{ marginBottom: 72 }} />

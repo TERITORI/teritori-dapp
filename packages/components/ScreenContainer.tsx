@@ -19,10 +19,12 @@ import {
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
+  walletSelectorWidth,
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
+import { NetworkSelector } from "./NetworkSelector";
 import { SVG } from "./SVG";
 import { WalletSelector } from "./WalletSelector";
 import { WalletsManager } from "./WalletsManager";
@@ -104,7 +106,6 @@ export const ScreenContainer: React.FC<{
               )}
             </View>
           </View>
-
           {/* 
             We render the wallet selector here with absolute position to make sure 
             the popup is on top of everything else, otherwise it's unusable
@@ -112,12 +113,15 @@ export const ScreenContainer: React.FC<{
           <View
             style={{
               position: "absolute",
+              flexDirection: "row",
               top: 0,
               right: headerMarginHorizontal,
               height: headerHeight,
-              justifyContent: "center",
+              alignItems: "center",
             }}
           >
+            <NetworkSelector style={{ marginRight: 12 }} />
+
             {areThereWallets ? (
               <WalletSelector
                 style={{ marginRight: headerMarginHorizontal }}
@@ -130,6 +134,7 @@ export const ScreenContainer: React.FC<{
               />
             )}
           </View>
+
           <WalletsManager
             visible={walletsManagerVisible}
             onClose={() => setWalletsManagerVisible(false)}
@@ -155,12 +160,11 @@ const ConnectWalletButton: React.FC<{
   onPress: () => void;
 }> = ({ style, onPress }) => {
   const height = 40;
-  const width = 220;
 
   return (
     <TouchableOpacity style={style} onPress={onPress}>
       <SVG
-        width={width}
+        width={walletSelectorWidth}
         height={height}
         source={secondaryCardSmSVG}
         style={{ position: "absolute" }}
@@ -173,8 +177,8 @@ const ConnectWalletButton: React.FC<{
           justifyContent: "center",
           height,
           minHeight: height,
-          width,
-          minWidth: width,
+          width: walletSelectorWidth,
+          minWidth: walletSelectorWidth,
         }}
       >
         <BrandText

@@ -31,9 +31,9 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
         onPressTabItem={onPressTabItem}
       />
       {selectedTabItem.label === "Overview" && <Overview />}
+      {selectedTabItem.label === "NFTs" && <MyNFTs />}
       <TotalAssets />
       <Wallets />
-      <MyNFTs />
     </WalletManagerScreenContainer>
   );
 };

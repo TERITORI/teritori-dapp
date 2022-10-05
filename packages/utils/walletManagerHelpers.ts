@@ -1,7 +1,7 @@
-import cosmosHubSVG from "../../assets/icons/cosmos-hub-circle.svg";
-import solanaSVG from "../../assets/icons/solana-circle.svg";
-import teritoriSVG from "../../assets/icons/teritori.svg";
-import terraSVG from "../../assets/icons/terra-circle.svg";
+import cosmosHubSVG from "../../assets/icons/networks/cosmos-hub-circle.svg";
+import solanaSVG from "../../assets/icons/networks/solana-circle.svg";
+import teritoriSVG from "../../assets/icons/networks/teritori.svg";
+import terraSVG from "../../assets/icons/networks/terra-circle.svg";
 
 export const getWalletIconFromTitle = (title: string) => {
   switch (title) {

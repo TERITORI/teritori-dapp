@@ -17,8 +17,6 @@ export const Overview: React.FC = () => {
   return (
     <View
       style={{
-        paddingTop: 32,
-        paddingBottom: 40,
         flexDirection: "row",
         justifyContent: "space-between",
         flexWrap: "wrap",
@@ -26,12 +24,14 @@ export const Overview: React.FC = () => {
     >
       <AssetRatioByChain
         style={{
+          paddingTop: 32,
           width: isBreakPoint ? "100%" : ASSET_RATIO_WIDTH,
           marginRight: isBreakPoint ? ASSET_RATIO_MARGIN_RIGHT : 0,
         }}
       />
       <TokenAllocation
         style={{
+          paddingTop: 32,
           width: isBreakPoint ? "100%" : TOKEN_ALLOCATION_WIDTH,
         }}
       />
