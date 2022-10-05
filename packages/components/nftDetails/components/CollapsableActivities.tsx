@@ -119,7 +119,7 @@ export const CollapsableActivities = () => {
         keyExtractor={(item, index) => (item.length + index).toString()}
       />
       <SpacerColumn size={2} />
-      <Pagination currentPage={1} maxPage={2} />
+      <Pagination currentPage={1} maxPage={2} itemsPerPage={5} />
       <SpacerColumn size={2} />
     </CollapsableSection>
   );

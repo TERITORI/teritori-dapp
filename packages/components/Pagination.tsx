@@ -22,7 +22,7 @@ import { SpacerRow } from "./spacer";
 type PaginationProps = {
   currentPage: number;
   maxPage: number;
-  itemsPerPage?: number;
+  itemsPerPage: number;
 };
 
 export const Pagination = ({
@@ -86,7 +86,7 @@ export const Pagination = ({
             name="page"
             label=""
             variant="labelOutside"
-            defaultValue={currentPage.toString()}
+            defaultValue={itemsPerPage.toString()}
           />
         </View>
       </View>
