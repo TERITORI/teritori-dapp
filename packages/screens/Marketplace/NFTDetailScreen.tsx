@@ -18,7 +18,7 @@ import {
   TeritoriNftVaultQueryClient,
 } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
-import { useNFTInfo, vaultContractAddress } from "../../hooks/useNFTInfo";
+import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
 import {
@@ -31,6 +31,7 @@ import {
   screenContainerContentMarginHorizontal,
   screenContentMaxWidth,
 } from "../../utils/style/layout";
+import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
 
 const screenTabItems: TabItem[] = [

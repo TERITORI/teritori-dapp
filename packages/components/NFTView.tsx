@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   ViewStyle,
   Image,
@@ -26,10 +26,6 @@ export const NFTView: React.FC<{
   const contentWidth = 236;
   const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
-
-  useEffect(() => {
-    console.log("zyfgazkgzioufagioufzgiouagiufz", data);
-  }, [data]);
 
   // put margins on touchable opacity
   const {

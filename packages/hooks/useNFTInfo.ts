@@ -6,9 +6,7 @@ import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/Terito
 import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
-
-export const vaultContractAddress =
-  "tori17ww32dvhrxa9ga57vk65dzu8746nm0cqlqxq06zfrkd0wffpkleslfmjtq";
+import { vaultContractAddress } from "../utils/teritori";
 
 export const useNFTInfo = (id: string, wallet: string | undefined) => {
   const [info, setInfo] = useState<NFTInfo>();
