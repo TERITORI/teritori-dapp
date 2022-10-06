@@ -15,7 +15,12 @@ import { SvgProps } from "react-native-svg";
 
 // misc
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
-import { neutral33, neutral44 } from "../../utils/style/colors";
+import {
+  neutral33,
+  neutral44,
+  primaryColor,
+  secondaryColor,
+} from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -83,7 +88,7 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
     <TertiaryBox fullWidth>
       <View style={styles.header}>
         <View style={styles.rowWithCenter}>
-          <SVG source={icon} width={14} height={14} />
+          <SVG source={icon} width={14} height={14} color={secondaryColor} />
           <SpacerRow size={1.5} />
           <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
             {title}
@@ -92,7 +97,12 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
 
         <Animated.View style={[styles.chevronContainer, rotateStyle]}>
           <Pressable onPress={toggleExpansion}>
-            <SVG source={chevronDownSVG} fill="red" width={16} height={16} />
+            <SVG
+              source={chevronDownSVG}
+              width={16}
+              height={16}
+              color={isExpandable ? secondaryColor : primaryColor}
+            />
           </Pressable>
         </Animated.View>
       </View>

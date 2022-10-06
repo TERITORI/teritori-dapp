@@ -37,7 +37,7 @@ export const CollapsablePiceHistory = () => {
   const convertedData = useMemo(
     () =>
       data.map((d) => ({
-        y: parseInt(d.price),
+        y: parseInt(d.price, 10),
         x: moment(d.time).format("D MMM"),
       })),
     []

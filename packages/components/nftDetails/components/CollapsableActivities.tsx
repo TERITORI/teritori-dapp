@@ -64,12 +64,6 @@ export const CollapsableActivities = () => {
     [data]
   );
 
-  // hooks
-
-  // functions
-
-  // returns
-
   const specialRender = useCallback(
     (item: TableRowDataItem<NFTActivityType>) => {
       switch (item.keyId) {

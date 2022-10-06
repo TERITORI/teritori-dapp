@@ -180,7 +180,12 @@ export const MyNFTs: React.FC = () => {
                       >
                         {item.stars}
                       </BrandText>
-                      <SVG height={16} width={16} source={starSVG} />
+                      <SVG
+                        height={16}
+                        width={16}
+                        source={starSVG}
+                        color={neutral77}
+                      />
                     </View>
                   </View>
                 </View>

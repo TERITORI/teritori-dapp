@@ -30,12 +30,6 @@ export const Pagination = ({
   maxPage,
   itemsPerPage,
 }: PaginationProps) => {
-  // variables
-
-  // hooks
-
-  // functions
-
   // returns
   return (
     <View style={styles.container}>
