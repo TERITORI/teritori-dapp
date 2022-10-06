@@ -7,7 +7,7 @@ import { ScreenFC } from "../../utils/navigation";
 export const GuardiansScreen: ScreenFC<"Guardians"> = () => {
   return (
     <ScreenContainer>
-      <HubIntro hubPage="Guardians" />
+      <HubIntro />
     </ScreenContainer>
   );
 };

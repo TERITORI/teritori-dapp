@@ -3,11 +3,11 @@ import React from "react";
 import { useWindowDimensions, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import busdSVG from "../../../../assets/icons/busd-circle.svg";
-import cosmosHubSVG from "../../../../assets/icons/cosmos-hub-circle.svg";
-import ethereumSVG from "../../../../assets/icons/ethereum-circle.svg";
-import solanaSVG from "../../../../assets/icons/solana-circle.svg";
-import terraSVG from "../../../../assets/icons/terra-circle.svg";
+import busdSVG from "../../../../assets/icons/networks/busd-circle.svg";
+import cosmosHubSVG from "../../../../assets/icons/networks/cosmos-hub-circle.svg";
+import ethereumSVG from "../../../../assets/icons/networks/ethereum-circle.svg";
+import solanaSVG from "../../../../assets/icons/networks/solana-circle.svg";
+import terraSVG from "../../../../assets/icons/networks/terra-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { ProgressLine } from "../../../components/ProgressLine";
 import { SVG } from "../../../components/SVG";
@@ -116,9 +116,8 @@ export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
         style={{
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "flex-end",
           paddingTop: 20,
-          paddingBottom: 40,
         }}
       >
         <View
@@ -152,7 +151,6 @@ export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginRight: 32,
           }}
         >
           <View
