@@ -34,13 +34,17 @@ export const useCollectionInfo = (id: string) => {
   const [loading, setLoading] = useState(false);
 
   const refresh = useCallback(() => {
+    const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
     let canceled = false;
     const effect = async () => {
       setLoading(true);
       try {
         const cosmwasm = await getNonSigningCosmWasmClient();
 
-        const minterClient = new TeritoriNftMinterQueryClient(cosmwasm, id);
+        const minterClient = new TeritoriNftMinterQueryClient(
+          cosmwasm,
+          mintAddress
+        );
         const conf = await minterClient.config();
 
         const nftClient = new TeritoriNftQueryClient(cosmwasm, conf.nft_addr);
