@@ -66,7 +66,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE): node_modules
 	rm -fr $(NAME_SERVICE_REPO)
 	git clone git@github.com:TERITORI/$(NAME_SERVICE_REPO).git
-	cd $(NAME_SERVICE_REPO) && git checkout 251733d569b931fdfcc15cedb7414bafe5ba2598
+	cd $(NAME_SERVICE_REPO) && git checkout 7109dd7ff44fd9ba627d50c132a3028216fbb23c
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
