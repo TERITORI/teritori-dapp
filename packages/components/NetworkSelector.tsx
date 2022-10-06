@@ -54,7 +54,7 @@ export const NetworkSelector: React.FC<{
             alignItems: "flex-start",
           }}
         >
-          {(Object.keys(Network) as Network[]).map((network, index) => {
+          {Object.values(Network).map((network, index) => {
             return (
               <TouchableOpacity style={{ marginBottom: 16 }} key={index}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
