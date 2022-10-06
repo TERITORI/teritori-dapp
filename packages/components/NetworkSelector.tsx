@@ -8,7 +8,7 @@ import { Network } from "../utils/network";
 import { neutral17 } from "../utils/style/colors";
 import { fontSemibold12 } from "../utils/style/fonts";
 import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
+import { NetworkIcon } from "./images/NetworkIcon";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 
