@@ -8,9 +8,9 @@ import { Network } from "../utils/network";
 import { neutral17 } from "../utils/style/colors";
 import { fontSemibold12 } from "../utils/style/fonts";
 import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./images/NetworkIcon";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
+import { NetworkIcon } from "./images/NetworkIcon";
 
 export const NetworkSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
