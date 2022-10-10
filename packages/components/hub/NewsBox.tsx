@@ -24,7 +24,7 @@ export type News = {
   button1Action?: () => void;
   button2Label?: string;
   button2Action?: () => void;
-  isTNS?: boolean;
+  author?: string;
 };
 
 const breakPoint = 768;
@@ -114,14 +114,14 @@ export const NewsBox: React.FC<{
               borderRadius: 10,
             }}
           />
-          {news.isTNS && (
+          {news.author && (
             <BrandText
               style={[
                 fontMedium14,
                 { position: "absolute", bottom: 22, right: 20 },
               ]}
             >
-              Ferryman.tori
+              {news.author}
             </BrandText>
           )}
         </View>
