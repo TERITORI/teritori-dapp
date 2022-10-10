@@ -1,4 +1,10 @@
-import React, { createContext, RefObject, useContext, useState } from "react";
+import React, {
+  createContext,
+  RefObject,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface DefaultValue {
   onPressDropdownButton: (dropdownRef: RefObject<any>) => void;
@@ -16,21 +22,43 @@ export const DropdownsContext = createContext(defaultValue);
 export const DropdownsContextProvider: React.FC = ({ children }) => {
   const [openedDropdownRef, setOpenedDropdownRef] = useState<RefObject<any>>();
 
-  const onPressDropdownButton = (dropdownRef: React.RefObject<any>) => {
+  const closeOpenedDropdown = () => {
+    setOpenedDropdownRef(undefined);
+  };
+
+  const onPressDropdownButton = (dropdownRef: RefObject<any>) => {
     if (dropdownRef === openedDropdownRef) {
-      setOpenedDropdownRef(undefined);
+      closeOpenedDropdown();
     } else {
       setOpenedDropdownRef(dropdownRef);
     }
   };
 
-  const closeOpenedDropdown = () => {
-    setOpenedDropdownRef(undefined);
-  };
-
-  const isDropdownOpen = (dropdownRef: React.RefObject<any>) => {
+  const isDropdownOpen = (dropdownRef: RefObject<any>) => {
     return dropdownRef === openedDropdownRef;
   };
+
+  useEffect(() => {
+    function handleClickOutside(event: Event) {
+      if (
+        openedDropdownRef &&
+        openedDropdownRef.current &&
+        !openedDropdownRef.current.contains(event.target)
+      ) {
+        closeOpenedDropdown();
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [openedDropdownRef]);
+
+  useEffect(() => {
+    console.log("openedDropdownRef", openedDropdownRef);
+  }, [openedDropdownRef]);
 
   return (
     <DropdownsContext.Provider
