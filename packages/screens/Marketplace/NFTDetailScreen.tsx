@@ -7,7 +7,6 @@ import { BackTo } from "../../components/navigation/BackTo";
 import { NFTActivity } from "../../components/nftDetails/NFTActivity";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
 import { NFTPriceHistory } from "../../components/nftDetails/NFTPriceHistory";
-import { SpacerColumn } from "../../components/spacer";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
 import {
   initialToastError,
@@ -28,6 +27,7 @@ import {
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import {
+  layout,
   screenContainerContentMarginHorizontal,
   screenContentMaxWidth,
 } from "../../utils/style/layout";
@@ -239,11 +239,14 @@ const Content: React.FC<{
             maxWidth: screenContentMaxWidth,
           }}
         >
-          <SpacerColumn size={1.5} />
           {/*====== Tabs Menu for whole screen */}
           <Tabs
             items={tabItems}
-            style={{ height: 64, justifyContent: "flex-end" }}
+            style={{
+              height: 40,
+              justifyContent: "flex-end",
+              marginTop: layout.padding_x2_5,
+            }}
             onPressTabItem={onPressTabItem}
           />
 

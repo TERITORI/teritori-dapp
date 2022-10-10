@@ -3,23 +3,19 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
-  Linking,
   StyleProp,
   View,
   ViewStyle,
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 
-import discordSVG from "../../../assets/icons/discord.svg";
-import twitterSVG from "../../../assets/icons/twitter.svg";
-import websiteSVG from "../../../assets/icons/website.svg";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SocialButton } from "../../components/buttons/SocialButton";
 import { ProgressionCard } from "../../components/cards/ProgressionCard";
+import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
 import {
   initialToastError,
   useFeedbacks,
@@ -219,30 +215,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     margin: -cardsHalfGap,
                   }}
                 >
-                  {discordLink && (
-                    <SocialButton
-                      text="Discord"
-                      iconSvg={discordSVG}
-                      style={{ margin: cardsHalfGap }}
-                      onPress={() => Linking.openURL(discordLink)}
-                    />
-                  )}
-                  {websiteLink && (
-                    <SocialButton
-                      text="Website"
-                      iconSvg={websiteSVG}
-                      style={{ margin: cardsHalfGap }}
-                      onPress={() => Linking.openURL(websiteLink)}
-                    />
-                  )}
-                  {twitterLink && (
-                    <SocialButton
-                      style={{ margin: cardsHalfGap }}
-                      text="Twitter"
-                      iconSvg={twitterSVG}
-                      onPress={() => Linking.openURL(twitterLink)}
-                    />
-                  )}
+                  <CollectionSocialButtons collectionInfo={info} />
                 </View>
               </View>
             )}

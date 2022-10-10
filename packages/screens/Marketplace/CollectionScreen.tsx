@@ -6,22 +6,18 @@ import {
   View,
   ViewStyle,
   Image,
-  Linking,
 } from "react-native";
 
 import bannerCollection from "../../../assets/default-images/banner-collection.png";
-import discordSVG from "../../../assets/icons/discord.svg";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
-import mediumSVG from "../../../assets/icons/medium.svg";
 import shareSVG from "../../../assets/icons/share.svg";
-import twitterSVG from "../../../assets/icons/twitter.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { NFTView } from "../../components/NFTView";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryBox } from "../../components/boxes/PrimaryBox";
-import { SocialButton } from "../../components/buttons/SocialButton";
 import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSecondary";
+import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { BackTo } from "../../components/navigation/BackTo";
 import { SortButton } from "../../components/sorts/SortButton";
@@ -37,17 +33,17 @@ import { ScreenFC } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
-import { screenContentMaxWidth } from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 
 const collectionScreenTabItems: TabItem[] = [
   {
     label: "Owned",
     isSelected: true,
-    badgeLabel: "87",
+    badgeCount: 87,
   },
   {
     label: "Collections",
-    badgeLabel: "5760",
+    badgeCount: 5760,
   },
   {
     label: "Activity",
@@ -104,7 +100,6 @@ const FlatListHeader: React.FC<{
   collectionInfo: CollectionInfo;
 }> = ({ collectionInfo = {} }) => {
   const { onPressTabItem, tabItems } = useTabs(collectionScreenTabItems);
-
   return (
     <View style={{ maxWidth: screenContentMaxWidth }}>
       <Image
@@ -133,23 +128,7 @@ const FlatListHeader: React.FC<{
               alignItems: "center",
             }}
           >
-            <SocialButton
-              text="Medium"
-              iconSvg={mediumSVG}
-              style={{ marginRight: 12 }}
-            />
-            <SocialButton
-              text="Discord"
-              iconSvg={discordSVG}
-              style={{ marginRight: 12 }}
-              onPress={() => Linking.openURL(collectionInfo.discord || "")}
-            />
-            <SocialButton
-              text="Twitter"
-              iconSvg={twitterSVG}
-              style={{ marginRight: 12 }}
-              onPress={() => Linking.openURL(collectionInfo.twitter || "")}
-            />
+            <CollectionSocialButtons collectionInfo={collectionInfo} />
             <View
               style={{
                 height: 24,
@@ -181,7 +160,12 @@ const FlatListHeader: React.FC<{
         <Tabs
           items={tabItems}
           onPressTabItem={onPressTabItem}
-          style={{ width: "fit-content", height: 64, borderBottomWidth: 0 }}
+          style={{
+            width: "fit-content",
+            height: "100%",
+            paddingTop: layout.padding_x2_5,
+            borderBottomWidth: 0,
+          }}
         />
         <SortButton />
       </PrimaryBox>

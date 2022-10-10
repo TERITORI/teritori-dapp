@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import chevronUpSVG from "../../assets/icons/chevron-down.svg";
 import chevronDownSVG from "../../assets/icons/chevron-up.svg";
 import teritoriSVG from "../../assets/icons/networks/teritori.svg";
+import { useDropdowns } from "../context/DropdownsProvider";
 import { Network } from "../utils/network";
 import { neutral17 } from "../utils/style/colors";
 import { fontSemibold12 } from "../utils/style/fonts";
@@ -15,11 +16,18 @@ import { NetworkIcon } from "./images/NetworkIcon";
 export const NetworkSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ style }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
+    useDropdowns();
+  const dropdownRef = useRef<View>(null);
+
+  const onPressNetwork = () => {
+    //TODO:
+    closeOpenedDropdown();
+  };
 
   return (
-    <View style={style}>
-      <TouchableOpacity onPress={() => setIsExpanded((value) => !value)}>
+    <View style={style} ref={dropdownRef}>
+      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
         <TertiaryBox
           width={60}
           mainContainerStyle={{
@@ -36,14 +44,14 @@ export const NetworkSelector: React.FC<{
             height={16}
           />
           <SVG
-            source={isExpanded ? chevronUpSVG : chevronDownSVG}
+            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
           />
         </TertiaryBox>
       </TouchableOpacity>
 
-      {isExpanded && (
+      {isDropdownOpen(dropdownRef) && (
         <TertiaryBox
           width={172}
           style={{ position: "absolute", top: 44 }}
@@ -56,7 +64,11 @@ export const NetworkSelector: React.FC<{
         >
           {Object.values(Network).map((network, index) => {
             return (
-              <TouchableOpacity style={{ marginBottom: 16 }} key={index}>
+              <TouchableOpacity
+                style={{ marginBottom: 16 }}
+                key={index}
+                onPress={onPressNetwork}
+              >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <NetworkIcon network={network} size={16} />
                   <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
