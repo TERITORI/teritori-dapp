@@ -4,6 +4,10 @@ import { bech32 } from "bech32";
 export enum Network {
   Solana = "Solana",
   Teritori = "Teritori",
+  Ethereum = "Ethereum",
+  Atom = "Atom",
+  Juno = "Juno",
+  Osmosis = "Osmosis",
 }
 
 export const addressToNetwork = (address: string) => {

@@ -14,6 +14,7 @@ import useSelectedWallet from "../hooks/useSelectedWallet";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 import { neutral17, neutral44 } from "../utils/style/colors";
+import { walletSelectorWidth } from "../utils/style/layout";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
@@ -81,7 +82,7 @@ export const WalletSelector: React.FC<{
     <View style={style}>
       <TouchableOpacity onPress={() => setIsExpanded((value) => !value)}>
         <TertiaryBox
-          width={220}
+          width={walletSelectorWidth}
           mainContainerStyle={{
             justifyContent: "space-between",
             flexDirection: "row",

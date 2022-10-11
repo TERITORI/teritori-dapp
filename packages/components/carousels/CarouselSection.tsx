@@ -5,10 +5,10 @@ import Carousel, {
   TCarouselProps,
 } from "react-native-reanimated-carousel";
 
-import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
-import chevronRightSVG from "../../assets/icons/chevron-right.svg";
-import { SVG } from "./SVG";
-import { Section } from "./Section";
+import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
+import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
+import { SVG } from "../SVG";
+import { Section } from "../Section";
 
 export const CarouselSection: React.FC<
   {

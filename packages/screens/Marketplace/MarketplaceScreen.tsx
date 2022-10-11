@@ -2,8 +2,8 @@ import React from "react";
 import { View } from "react-native";
 
 import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
-import { CollectionsCarouselSection } from "../../components/CollectionsCarouselSection";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
 import { ScreenFC } from "../../utils/navigation";
 
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {

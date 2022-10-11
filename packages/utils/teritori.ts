@@ -1,5 +1,7 @@
+import { Decimal } from "@cosmjs/math";
+import { OfflineSigner } from "@cosmjs/proto-signing";
+import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { Currency, Keplr } from "@keplr-wallet/types";
-import { Decimal, GasPrice } from "cosmwasm";
 
 import { Metadata } from "./types/tns";
 
@@ -64,6 +66,11 @@ export const teritoriGasPrice = new GasPrice(
   toriCurrency.coinMinimalDenom
 );
 
+export const getTeritoriSigningStargateClient = (signer: OfflineSigner) =>
+  SigningStargateClient.connectWithSigner(teritoriRPCProvider, signer, {
+    gasPrice: teritoriGasPrice,
+  });
+
 export const keplrSuggestTeritori = (keplr: Keplr) =>
   keplr.experimentalSuggestChain({
     // Chain-id of the Cosmos SDK chain.
@@ -109,7 +116,7 @@ export const keplrSuggestTeritori = (keplr: Keplr) =>
     // Currently, Keplr doesn't support dynamic calculation of the gas prices based on on-chain data.
     // Make sure that the gas prices are higher than the minimum gas prices accepted by chain validators and RPC/REST endpoint.
     gasPriceStep: {
-      low: 0.01,
+      low: 0.0,
       average: 0.025,
       high: 0.04,
     },

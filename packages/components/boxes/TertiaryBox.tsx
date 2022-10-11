@@ -1,3 +1,4 @@
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 
@@ -9,6 +10,7 @@ export const TertiaryBox: React.FC<{
   fullWidth?: boolean;
   squaresBackgroundColor?: string;
   disabled?: boolean;
+  hasGradientBackground?: boolean;
   style?: StyleProp<ViewStyle>;
   mainContainerStyle?: StyleProp<ViewStyle>;
 }> = ({
@@ -18,6 +20,7 @@ export const TertiaryBox: React.FC<{
   squaresBackgroundColor = "#000000",
   children,
   disabled = false,
+  hasGradientBackground = false,
   style,
   mainContainerStyle,
 }) => {
@@ -62,8 +65,23 @@ export const TertiaryBox: React.FC<{
               mainContainerStyle,
             ]}
           >
+            {hasGradientBackground ? (
+              <LinearGradient
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: borderRadius - 1,
+                  zIndex: -1,
+                }}
+                colors={["#9C4CEA", "#336AFF", "#26C5FB"]}
+              />
+            ) : null}
             <>{children}</>
           </View>
+
           {/* Left top broken corner */}
           <View
             style={{
@@ -79,7 +97,6 @@ export const TertiaryBox: React.FC<{
               zIndex: 2,
             }}
           />
-
           {/* Right bottom broken corner */}
           <View
             style={{

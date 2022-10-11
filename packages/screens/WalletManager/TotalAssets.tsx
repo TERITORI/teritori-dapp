@@ -26,6 +26,7 @@ export const TotalAssets: React.FC = () => {
   return (
     <View
       style={{
+        marginTop: 40,
         paddingTop: 40,
         borderTopWidth: 1,
         borderColor: neutral33,

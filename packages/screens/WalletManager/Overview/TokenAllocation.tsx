@@ -1,15 +1,12 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
-import { PieChart } from "react-native-svg-charts";
+import { VictoryPie } from "victory-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { WALLET_TOKEN_PIE } from "../../../utils/fakeData/walletManager";
 import { neutral33 } from "../../../utils/style/colors";
-import {
-  getWalletIconFromTitle,
-  getWalletPieColor,
-} from "../../../utils/walletManagerHelpers";
+import { getWalletIconFromTitle } from "../../../utils/walletManagerHelpers";
 
 interface TokenAllocationProps {
   style?: ViewStyle;
@@ -28,20 +25,16 @@ export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
           justifyContent: "space-between",
         }}
       >
-        <PieChart
-          style={{ height: 216, width: 216, marginRight: 32 }}
-          data={WALLET_TOKEN_PIE.map((data) => ({
-            ...data,
-            key: data.title,
-            value: data.percent,
-            svg: {
-              fill: getWalletPieColor(data.title),
-            },
-          }))}
-          innerRadius="80%"
-          padAngle={0.02}
+        <VictoryPie
+          innerRadius={160}
+          padAngle={0.8}
+          colorScale={["#5C26F5", "#16BBFF"]}
+          labels={() => null}
+          data={WALLET_TOKEN_PIE}
+          padding={0}
         />
-        <View>
+
+        <View style={{ marginLeft: 32 }}>
           {WALLET_TOKEN_PIE.map((item) => (
             <View
               key={item.title}

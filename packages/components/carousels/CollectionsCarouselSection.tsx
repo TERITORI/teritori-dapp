@@ -5,14 +5,14 @@ import {
   Collection,
   CollectionsRequest,
   CollectionsRequest_Kind,
-} from "../api/marketplace/v1/marketplace";
-import { backendClient } from "../utils/backend";
-import { CarouselSection } from "./CarouselSection";
+} from "../../api/marketplace/v1/marketplace";
+import { backendClient } from "../../utils/backend";
 import {
   collectionItemHeight,
   collectionItemWidth,
   CollectionView,
-} from "./CollectionView";
+} from "../CollectionView";
+import { CarouselSection } from "./CarouselSection";
 
 export const useCollections = (
   req: CollectionsRequest
