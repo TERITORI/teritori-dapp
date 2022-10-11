@@ -13,6 +13,7 @@ export type RootStackParamList = {
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
   Governance: undefined;
+  UserPublicProfile: { id: string };
   RiotersFooter: undefined;
 
   Launchpad: undefined;
@@ -61,6 +62,7 @@ const navConfig: {
     WalletManagerChains: "wallet-manager/chains",
     GuardiansGame: "guardians-game",
     Governance: "governance",
+    UserPublicProfile: "user/:id/profile",
     RiotersFooter: "rioters-footer",
     // ==== Launchpad
     Launchpad: "launchpad",

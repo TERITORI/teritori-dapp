@@ -24,6 +24,7 @@ import { TNSMintNameScreen } from "../../screens/TeritoriNameService/TNSMintName
 import { TNSMintPathScreen } from "../../screens/TeritoriNameService/TNSMintPathScreen";
 import { TNSRegisterScreen } from "../../screens/TeritoriNameService/TNSRegisterScreen";
 import { TNSUpdateNameScreen } from "../../screens/TeritoriNameService/TNSUpdateNameScreen";
+import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { WalletsScreen } from "../../screens/Wallets/WalletsScreen";
@@ -73,6 +74,11 @@ export const Navigator: React.FC = () => {
           header: () => null,
           title: screenTitle("Wallets"),
         }}
+      />
+      <Stack.Screen
+        name="UserPublicProfile"
+        component={UserPublicProfileScreen}
+        options={{ header: () => null }}
       />
       <Stack.Screen
         name="RiotersFooter"

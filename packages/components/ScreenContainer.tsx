@@ -20,6 +20,7 @@ import {
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
+  screenContainerContentMarginHorizontalSmall,
   walletSelectorWidth,
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
@@ -39,6 +40,7 @@ export const ScreenContainer: React.FC<{
   customSidebar?: React.ReactNode;
   noMargin?: boolean;
   noScroll?: boolean;
+  smallMargin?: boolean;
 }> = ({
   children,
   headerChildren,
@@ -47,15 +49,23 @@ export const ScreenContainer: React.FC<{
   hideSidebar,
   noMargin,
   noScroll,
+  smallMargin,
   customSidebar,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
-  const marginStyle = hasMargin && {
-    marginHorizontal: screenContainerContentMarginHorizontal,
-  };
+  const marginStyle =
+    hasMargin && !smallMargin
+      ? {
+          marginHorizontal: screenContainerContentMarginHorizontal,
+        }
+      : hasMargin && smallMargin
+      ? {
+          marginHorizontal: screenContainerContentMarginHorizontalSmall,
+        }
+      : undefined;
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
   const areThereWallets = useAreThereWallets();
   const navigation = useAppNavigation();
