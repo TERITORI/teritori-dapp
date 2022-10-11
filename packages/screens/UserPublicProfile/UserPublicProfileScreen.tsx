@@ -4,10 +4,12 @@ import { View } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
-import { ProfileIntro } from "../../components/userPublicProfile/ProfileIntro";
+import { UPPActivity } from "../../components/userPublicProfile/UPPActivity";
+import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
+import { UPPSucceedQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { ScreenFC } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
-import { screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 
 const screenTabItems: TabItem[] = [
   {
@@ -57,9 +59,9 @@ const SelectedTabContent: React.FC<{
     case "NFTs":
       return <BrandText>bbbb</BrandText>;
     case "Activity":
-      return <BrandText>cccc</BrandText>;
+      return <UPPActivity />;
     case "Succeed Quests":
-      return <BrandText>dddd</BrandText>;
+      return <UPPSucceedQuests />;
     case "Pathwar Challenges":
       return <BrandText>eeee</BrandText>;
     case "Gig Services":
@@ -83,12 +85,16 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = () => {
     <ScreenContainer smallMargin>
       <View style={{ flex: 1, alignItems: "center" }}>
         <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-          <ProfileIntro />
+          <UPPIntro />
 
           <Tabs
             items={tabItems}
             onPressTabItem={onPressTabItem}
-            style={{ marginTop: 32, height: 32 }}
+            style={{
+              marginTop: 32,
+              height: 32,
+              marginBottom: layout.padding_x2_5,
+            }}
             borderColorTabSelected={primaryColor}
           />
 

@@ -19,7 +19,7 @@ import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 
-export const ProfileIntro: React.FC = () => {
+export const UPPIntro: React.FC = () => {
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
 

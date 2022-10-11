@@ -10,8 +10,6 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
-// TODO: Continue that (Props, dropdown menu, etc...)
-
 export const SortButton: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const handlePress = () => {
