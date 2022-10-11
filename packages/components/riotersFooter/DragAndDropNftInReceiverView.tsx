@@ -3,13 +3,14 @@ import { Image } from "react-native";
 import { DraxView } from "react-native-drax";
 
 import { NFT } from "../../api/marketplace/v1/marketplace";
+import { NftData } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
 import { nftDropedAdjustmentType } from "../../screens/RiotersFooter/RiotersFooterScreen.types";
 import { primaryColor } from "../../utils/style/colors";
 
 const DragAndDropNftInReceiverView: React.FC<{
   nftDroped: NFT;
   nftDropedAdjustment: nftDropedAdjustmentType;
-  oldNftPositionsWithZIndexOrder: any;
+  oldNftPositionsWithZIndexOrder: NftData[];
 }> = memo(
   ({ nftDroped, nftDropedAdjustment, oldNftPositionsWithZIndexOrder }) => {
     const width =

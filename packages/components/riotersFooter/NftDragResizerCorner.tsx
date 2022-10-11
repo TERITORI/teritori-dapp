@@ -4,12 +4,13 @@ import { PanGestureHandler } from "react-native-gesture-handler";
 import { useAnimatedGestureHandler } from "react-native-reanimated";
 import { clamp } from "react-native-redash";
 
+import { NftData } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
 import { nftDropedAdjustmentType } from "../../screens/RiotersFooter/RiotersFooterScreen.types";
 import { primaryColor } from "../../utils/style/colors";
 
 const NftDragResizerCorner: React.FC<{
   nftDropedAdjustment: nftDropedAdjustmentType;
-  oldNftPositionsWithZIndexOrder: any;
+  oldNftPositionsWithZIndexOrder: NftData[];
   style: ViewStyle | ViewStyle[];
   onResize: (adjustment: {
     x?: number;

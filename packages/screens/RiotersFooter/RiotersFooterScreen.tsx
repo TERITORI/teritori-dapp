@@ -9,14 +9,6 @@ import {
 import { DraxProvider, DraxView } from "react-native-drax";
 
 import teritorriSvg from "../../../assets/icons/teritori.svg";
-import apeOneSvg from "../../../assets/nft/ape-one.svg";
-import etherumGangSvg from "../../../assets/nft/etherum-gang.svg";
-import freeSnowDenSvg from "../../../assets/nft/free-snowden.svg";
-import notACrimeSvg from "../../../assets/nft/not-a-crime.svg";
-import privacySvg from "../../../assets/nft/privacy.svg";
-import rideOrDieSvg from "../../../assets/nft/ride-or-die.svg";
-import satoshiSvg from "../../../assets/nft/satoshi.svg";
-import solFarmSvg from "../../../assets/nft/sol-farm.svg";
 import {
   Collection,
   CollectionsRequest_Kind,
@@ -37,130 +29,39 @@ import NftAdjustments from "../../components/riotersFooter/NftAdjustments";
 import NftTypeTab from "../../components/riotersFooter/NftTypeTab";
 import SelectNewNft from "../../components/riotersFooter/SelectedNewNft";
 import { RioterFooterNftClient } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.client";
-import { Uint128 } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
+import {
+  Uint128,
+  NftData,
+} from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
+import { TeritoriNftMinterQueryClient } from "../../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
-import { neutral33 } from "../../utils/style/colors";
+import { neutral33, neutral77 } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { nftDropedAdjustmentType } from "./RiotersFooterScreen.types";
-
-const oldNftPositions = [
-  {
-    id: "0",
-    svg: apeOneSvg,
-    width: 74,
-    height: 74,
-    top: 388,
-    left: 0,
-    date: new Date("August 15, 2022 15:00:00"),
-  },
-  {
-    id: "1",
-    svg: etherumGangSvg,
-    width: 74,
-    height: 43,
-    top: 229,
-    left: 478,
-    date: new Date("August 16, 2022 15:00:00"),
-  },
-  {
-    id: "2",
-    svg: freeSnowDenSvg,
-    width: 114,
-    height: 77,
-    top: 415,
-    left: 575,
-    date: new Date("August 17, 2022 15:00:00"),
-  },
-  {
-    id: "3",
-    svg: notACrimeSvg,
-    width: 130,
-    height: 72,
-    top: 279,
-    left: 654,
-    date: new Date("August 18, 2022 15:00:00"),
-  },
-  {
-    id: "4",
-    svg: rideOrDieSvg,
-    width: 40,
-    height: 36,
-    top: 289,
-    left: 38,
-    date: new Date("August 19, 2022 15:00:00"),
-  },
-  {
-    id: "5",
-    svg: satoshiSvg,
-    width: 56,
-    height: 59,
-    top: 333,
-    left: 446,
-    date: new Date("August 20, 2022 15:00:00"),
-  },
-  {
-    id: "6",
-    svg: solFarmSvg,
-    width: 82,
-    height: 82,
-    top: 253,
-    left: 174,
-    date: new Date("August 21, 2022 15:00:00"),
-  },
-  {
-    id: "7",
-    svg: apeOneSvg,
-    width: 74,
-    height: 74,
-    top: 388,
-    left: 747,
-    date: new Date("August 22, 2022 15:00:00"),
-  },
-  {
-    id: "8",
-    svg: solFarmSvg,
-    width: 82,
-    height: 82,
-    top: 253,
-    left: 922,
-    date: new Date("August 23, 2022 15:00:00"),
-  },
-  {
-    id: "9",
-    svg: privacySvg,
-    width: 148,
-    height: 100,
-    top: 396,
-    left: 159,
-    date: new Date("August 24, 2022 15:00:00"),
-  },
-  {
-    id: "10",
-    svg: privacySvg,
-    width: 148,
-    height: 100,
-    top: 396,
-    left: 850,
-    date: new Date("August 25, 2022 15:00:00"),
-  },
-];
 
 export const RiotersFooterScreen: React.FC = () => {
   const [tabName, setTabName] = useState<string>("New");
   const [searchNewNftCollection, setSearchNewNftCollection] =
     useState<string>("");
   const [searchNft, setSearchNft] = useState<string>("");
+
   const [nftCollectionId, setNftCollectionId] = useState<string>("");
   const [currentCollection, setCurrentCollection] = useState<
     Collection | undefined
   >(undefined);
+
   const [nftDroped, setNftDroped] = useState<NFT | undefined>(undefined);
   const [nftDropedAdjustment, setNftDropedAdjustment] = useState<
     nftDropedAdjustmentType | undefined
   >(undefined);
+
+  const [oldNftPositions, setOldNftPositions] = useState<NftData[]>([]);
   const [oldNftPositionsWithZIndexOrder, setOldNftPositionsWithZIndexOrder] =
-    useState<any | undefined>(undefined);
-  const [price, setPrice] = useState<number>(7.8);
+    useState<NftData[]>([]);
+
+  const [price, setPrice] = useState<number | undefined>(undefined);
+
   const [isPreview, setIsPreview] = useState<boolean>(false);
 
   const [transactionPaymentModalVisible, setTransactionPaymentModalVisible] =
@@ -177,8 +78,47 @@ export const RiotersFooterScreen: React.FC = () => {
   const [mapSize, setMapsize] = useState<{ height: Uint128; width: Uint128 }>({
     height: "552",
     width: "1030",
-  });
+  }); // TODO: useCallback mapSize
   const wallet = useSelectedWallet();
+
+  useEffect(() => {
+    console.log("nftDroped", nftDroped);
+
+    // const part = nftDroped?.id.split("-");
+    // const minterContractAddress = part?.[1];
+    // const tokenId = part?.[2];
+    // const cosmwasmClient = await getSigningCosmWasmClient();
+    // const a = new TeritoriNftMinterQueryClient(
+    //   cosmwasmClient,
+    //   minterContractAddress
+    // );
+    // const b = await a.config();
+    // const nftContractAdress = b.nft_addr;
+  }, [nftDroped]);
+
+  const getFeeConfig = useCallback(async () => {
+    if (client) {
+      const { fee_per_size } = await client.queryFeeConfig();
+      return parseFloat(fee_per_size);
+    }
+    return 1;
+  }, [client]);
+
+  useEffect(() => {
+    const effect = async () => {
+      console.log("oiajaa", nftDropedAdjustment, client);
+      if (nftDropedAdjustment && client) {
+        const feePerSize = await getFeeConfig();
+        setPrice(
+          nftDropedAdjustment.width *
+            nftDropedAdjustment.height *
+            feePerSize *
+            parseFloat(nftDroped?.price || "1")
+        );
+      }
+    };
+    effect();
+  }, [nftDropedAdjustment?.width, nftDropedAdjustment?.height, client]);
 
   useEffect(() => {
     const effect = async () => {
@@ -192,23 +132,48 @@ export const RiotersFooterScreen: React.FC = () => {
         wallet?.publicKey,
         "tori1xfxjrxhgjqtvfcmfemu89lxftf0fq4hxz7vcg9shgczta26nt4lqefstyc"
       );
-      await rioterFooterClient.updateMapSize({ height: "552", width: "1030" });
+      try {
+        await rioterFooterClient.updateMapSize({
+          height: "552",
+          width: "1030",
+        });
+      } catch (error) {
+        console.log("error", error);
+      }
 
-      setMapsize(await rioterFooterClient.queryMapSize());
+      // setMapsize(await rioterFooterClient.queryMapSize());
       setClient(rioterFooterClient);
     };
     effect();
   }, []);
 
+  useEffect(() => {
+    const effect = async () => {
+      if (!client) {
+        return;
+      }
+      const nftCount = await client.queryNftCount();
+      for (let i = 0; i < nftCount; i += 11) {
+        const nfts = await client.queryNfts({ from: i, to: i + 10 });
+        setOldNftPositions([...oldNftPositions, ...nfts]);
+      }
+    };
+    effect();
+  }, [client]);
+
   const [collections, fetchMoreCollections] = useCollections({
-    kind: CollectionsRequest_Kind.KIND_BY_VOLUME,
+    kind: CollectionsRequest_Kind.KIND_TERITORI_FEATURES,
     limit: 24,
     offset: 0,
   });
 
   useEffect(() => {
     setOldNftPositionsWithZIndexOrder(
-      oldNftPositions.sort((a, b) => a.date.getTime() - b.date.getTime())
+      oldNftPositions.sort(
+        (a, b) =>
+          JSON.parse(a.additional)?.created_at.getTime() -
+          JSON.parse(b.additional)?.created_at.getTime()
+      )
     );
   }, [oldNftPositions]);
 
@@ -324,7 +289,6 @@ export const RiotersFooterScreen: React.FC = () => {
                   nftDropedAdjustment={nftDropedAdjustment}
                   setNftDropedAdjustment={setNftDropedAdjustment}
                   price={price}
-                  setPrice={setPrice}
                   setTransactionPaymentModalVisible={
                     setTransactionPaymentModalVisible
                   }
@@ -407,22 +371,24 @@ export const RiotersFooterScreen: React.FC = () => {
               }}
             />
             {oldNftPositionsWithZIndexOrder &&
-              oldNftPositionsWithZIndexOrder.map((nft: any, index: number) => (
-                <SVG
-                  key={nft.id}
-                  width={nft.width}
-                  height={nft.height}
-                  source={nft.svg}
-                  style={[
-                    styles.oldNftPositions,
-                    {
-                      left: nft.left,
-                      top: nft.top,
-                      zIndex: index,
-                    },
-                  ]}
-                />
-              ))}
+              oldNftPositionsWithZIndexOrder.map(
+                (nft: NftData, index: number) => (
+                  <Image
+                    key={nft.token_id}
+                    source={{ uri: JSON.parse(nft.additional)?.image || "" }}
+                    style={[
+                      styles.oldNftPositions,
+                      {
+                        left: nft.position.x,
+                        top: nft.position.y,
+                        width: nft.position.width,
+                        height: nft.position.height,
+                        zIndex: index,
+                      },
+                    ]}
+                  />
+                )
+              )}
             {nftDroped && nftDropedAdjustment && (
               <View
                 style={{
@@ -438,7 +404,9 @@ export const RiotersFooterScreen: React.FC = () => {
                     height: nftDropedAdjustment.height,
                     borderRadius: nftDropedAdjustment.borderRadius,
                   }}
-                  source={{ uri: nftDroped.imageUri }}
+                  source={{
+                    uri: "",
+                  }}
                 />
               </View>
             )}
@@ -449,37 +417,39 @@ export const RiotersFooterScreen: React.FC = () => {
       {/* TODO: Handle these 3 modales with a component, or a hook
 
       {/* ----- Modal to process payment*/}
-      {/* <TransactionPaymentModal
-        onPressProceed={handleBuy}
-        onClose={() => setTransactionPaymentModalVisible(false)}
-        visible={transactionPaymentModalVisible}
-        price={price.toString()}
-        // priceDenom={nftInfo?.priceDenom}
-        label="Checkout"
-        textComponent={
-          <BrandText style={fontSemibold14}>
-            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              You are about to purchase a{" "}
+      {price !== undefined && (
+        <TransactionPaymentModal
+          onPressProceed={handleBuy}
+          onClose={() => setTransactionPaymentModalVisible(false)}
+          visible={transactionPaymentModalVisible}
+          price={price.toString()}
+          // priceDenom={nftInfo?.priceDenom}
+          label="Checkout"
+          textComponent={
+            <BrandText style={fontSemibold14}>
+              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                You are about to purchase a{" "}
+              </BrandText>
+              {nftDroped?.name}
+              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                {" "}
+                from{" "}
+              </BrandText>
+              {currentCollection?.collectionName}
             </BrandText>
-            {nftDroped?.name}
-            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              {" "}
-              from{" "}
-            </BrandText>
-            {currentCollection?.name}
-          </BrandText>
-        }
-      /> */}
+          }
+        />
+      )}
 
       {/* ----- Modal with loader, witing for wallet approbation*/}
-      {/* <TransactionPendingModal
+      <TransactionPendingModal
         operationLabel="Purchase"
         visible={transactionPendingModalVisible}
         onClose={() => setTransactionPendingModalVisible(false)}
-      /> */}
+      />
 
       {/* ----- Success modal*/}
-      {/* <TransactionSuccessModal
+      <TransactionSuccessModal
         transactionHash={transactionHash}
         visible={transactionSuccessModalVisible}
         textComponent={
@@ -492,11 +462,11 @@ export const RiotersFooterScreen: React.FC = () => {
               {" "}
               from{" "}
             </BrandText>
-            {currentCollection?.name}
+            {currentCollection?.collectionName}
           </BrandText>
         }
         onClose={() => setTransactionSuccessModalVisible(false)}
-      />  */}
+      />
     </ScreenContainer>
   );
 };

@@ -23,8 +23,7 @@ const NftAdjustments: React.FC<{
   setNftDropedAdjustment: (
     nftDropedAdjustment: nftDropedAdjustmentType | undefined
   ) => void;
-  price: number;
-  setPrice: (price: number) => void;
+  price: number | undefined;
   setTransactionPaymentModalVisible: (visible: boolean) => void;
   currentCollection: Collection;
 }> = memo(
@@ -34,7 +33,6 @@ const NftAdjustments: React.FC<{
     nftDropedAdjustment,
     setNftDropedAdjustment,
     price,
-    setPrice,
     setTransactionPaymentModalVisible,
     currentCollection,
   }) => {

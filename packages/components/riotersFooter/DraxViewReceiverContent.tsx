@@ -1,7 +1,9 @@
 import React, { memo, useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 
 import teritorriSvg from "../../../assets/icons/teritori.svg";
+import { NFT } from "../../api/marketplace/v1/marketplace";
+import { NftData } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
 import { nftDropedAdjustmentType } from "../../screens/RiotersFooter/RiotersFooterScreen.types";
 import { neutral33 } from "../../utils/style/colors";
 import { SVG } from "../SVG";
@@ -9,8 +11,8 @@ import DragAndDropNftInReceiverView from "./DragAndDropNftInReceiverView";
 import NftDragResizerCorner from "./NftDragResizerCorner";
 
 const DraxViewReceiverContent: React.FC<{
-  oldNftPositionsWithZIndexOrder: any;
-  nftDroped: any;
+  oldNftPositionsWithZIndexOrder: NftData[];
+  nftDroped: NFT | undefined;
   nftDropedAdjustment: nftDropedAdjustmentType | undefined;
   setNftDropedAdjustment: (
     nftDropedAdjustment: nftDropedAdjustmentType
@@ -56,17 +58,17 @@ const DraxViewReceiverContent: React.FC<{
           }}
         />
         {oldNftPositionsWithZIndexOrder &&
-          oldNftPositionsWithZIndexOrder.map((nft: any, index: number) => (
-            <SVG
-              key={nft.id}
-              width={nft.width}
-              height={nft.height}
-              source={nft.svg}
+          oldNftPositionsWithZIndexOrder.map((nft: NftData, index: number) => (
+            <Image
+              key={nft.token_id}
+              source={{ uri: nftDroped?.imageUri }}
               style={[
                 styles.oldNftPositions,
                 {
-                  left: nft.left,
-                  top: nft.top,
+                  width: nft.position.width,
+                  height: nft.position.height,
+                  left: nft.position.x,
+                  top: nft.position.y,
                   zIndex: index,
                 },
               ]}
