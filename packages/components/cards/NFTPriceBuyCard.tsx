@@ -5,9 +5,9 @@ import { prettyPrice } from "../../utils/coins";
 import { Network } from "../../utils/network";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { NetworkIcon } from "../NetworkIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+import { NetworkIcon } from "../images/NetworkIcon";
 
 // TODO: Dynamic data + props
 

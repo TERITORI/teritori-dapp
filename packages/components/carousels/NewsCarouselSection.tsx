@@ -46,6 +46,7 @@ const fakeNews: News[] = [
     button2Label: "Learn more",
     button1Action: () => {},
     button2Action: () => {},
+    author: "Ferryman.tori",
   },
   {
     title:

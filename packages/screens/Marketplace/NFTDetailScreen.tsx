@@ -7,22 +7,19 @@ import { BackTo } from "../../components/navigation/BackTo";
 import { NFTActivity } from "../../components/nftDetails/NFTActivity";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
 import { NFTPriceHistory } from "../../components/nftDetails/NFTPriceHistory";
-import { SpacerColumn } from "../../components/spacer";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
 import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
-import { TeritoriNftMinterQueryClient } from "../../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
 import {
   TeritoriNftVaultClient,
   TeritoriNftVaultQueryClient,
 } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
+import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
@@ -30,9 +27,11 @@ import {
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import {
+  layout,
   screenContainerContentMarginHorizontal,
   screenContentMaxWidth,
 } from "../../utils/style/layout";
+import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
 
 const screenTabItems: TabItem[] = [
@@ -58,9 +57,6 @@ const screenTabItems: TabItem[] = [
   },
 ];
 
-const vaultContractAddress =
-  "tori17ww32dvhrxa9ga57vk65dzu8746nm0cqlqxq06zfrkd0wffpkleslfmjtq";
-
 export interface NFTInfo {
   name: string;
   description: string;
@@ -79,33 +75,10 @@ export interface NFTInfo {
   collectionName: string;
 }
 
-export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
-  route: {
-    params: { id },
-  },
-}) => {
-  const navigation = useAppNavigation();
-  return (
-    <ScreenContainer
-      noScroll
-      noMargin
-      headerChildren={
-        <BackTo
-          label="Collection"
-          onPress={() =>
-            navigation.navigate("Collection", {
-              id: id.split("-").slice(0, -1).join("-"),
-            })
-          }
-        />
-      }
-    >
-      <Content key={id} id={id} />
-    </ScreenContainer>
-  );
-};
-
-const Content: React.FC<{ id: string }> = ({ id }) => {
+const Content: React.FC<{
+  id: string;
+  setCollectionInfo: (info: CollectionInfoSmall) => void;
+}> = ({ id, setCollectionInfo }) => {
   const { onPressTabItem, tabItems, selectedTabItem } = useTabs(screenTabItems);
   const { setToastError } = useFeedbacks();
   const { setLoadingFullScreen } = useFeedbacks();
@@ -223,6 +196,14 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
       break;
   }
 
+  // Used to send Collection name and mintAddress to the parent ScreenContainer (BackTo)
+  useEffect(() => {
+    setCollectionInfo({
+      name: info?.collectionName || "",
+      mintAddress: info?.mintAddress || "",
+    });
+  }, [info?.mintAddress]);
+
   // Sync loadingFullScreen
   useEffect(() => {
     setLoadingFullScreen(loading);
@@ -258,11 +239,14 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
             maxWidth: screenContentMaxWidth,
           }}
         >
-          <SpacerColumn size={1.5} />
           {/*====== Tabs Menu for whole screen */}
           <Tabs
             items={tabItems}
-            style={{ marginTop: 24, justifyContent: "flex-end" }}
+            style={{
+              height: 40,
+              justifyContent: "flex-end",
+              marginTop: layout.padding_x2_5,
+            }}
             onPressTabItem={onPressTabItem}
           />
 
@@ -276,109 +260,39 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
   }
 };
 
-const useNFTInfo = (id: string, wallet: string | undefined) => {
-  const [info, setInfo] = useState<NFTInfo>();
-  const [refreshIndex, setRefreshIndex] = useState(0);
-  const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(false);
+// Just name and mintAddress
+type CollectionInfoSmall = {
+  name: string;
+  mintAddress: string;
+};
 
-  const refresh = useCallback(() => {
-    setRefreshIndex((i) => i + 1);
-  }, []);
+export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
+  route: {
+    params: { id },
+  },
+}) => {
+  const navigation = useAppNavigation();
 
-  useEffect(() => {
-    const effect = async () => {
-      setLoading(true);
-      try {
-        // Getting the correct contract address by removing the prefix
-        const idParts = id.substring(5).split("-");
-        const minterContractAddress = idParts[0];
-        // Getting the token ID (suffix)
-        const tokenId = idParts[1];
-        // We use a CosmWasm non signing Client
-        const cosmwasmClient = await getNonSigningCosmWasmClient();
+  const [collectionInfo, setCollectionInfo] = useState<CollectionInfoSmall>();
 
-        // ======== Getting minter client
-        const minterClient = new TeritoriNftMinterQueryClient(
-          cosmwasmClient,
-          minterContractAddress
-        );
-        const minterConfig = await minterClient.config();
-        // ======== Getting NFT client
-        const nftClient = new TeritoriNftQueryClient(
-          cosmwasmClient,
-          minterConfig.nft_addr
-        );
-        // ======== Getting contract info (For collection name)
-        const contractInfo = await nftClient.contractInfo();
-        // ======== Getting NFT info
-        const nftInfo = await nftClient.nftInfo({ tokenId });
-        if (!nftInfo.token_uri) {
-          return;
-        }
-        // ======== Getting NFT owner
-        const { owner } = await nftClient.ownerOf({ tokenId });
-        // ======== Getting NFT metadata
-        const nftMetadata = await (
-          await fetch(ipfsURLToHTTPURL(nftInfo.token_uri))
-        ).json();
-        // ======== Getting vault stuff (For selling)
-        const vaultClient = new TeritoriNftVaultQueryClient(
-          cosmwasmClient,
-          vaultContractAddress
-        );
-        let vaultOwnerAddress;
-        let vaultInfo;
-        let isListed = false;
-
-        try {
-          vaultOwnerAddress = await vaultClient.nftOwnerInfo({
-            nftContractAddr: minterConfig.nft_addr,
-            nftTokenId: tokenId,
-          });
-          vaultInfo = await vaultClient.nftInfo({
-            nftContractAddr: minterConfig.nft_addr,
-            nftTokenId: tokenId,
-            wallet: vaultOwnerAddress,
-          });
-          isListed = true;
-        } catch {
-          // ======== The NFT is not on sale
-        }
-        const isOwner =
-          !!wallet &&
-          ((!!owner && owner === wallet) ||
-            (!!vaultOwnerAddress && vaultOwnerAddress === wallet));
-
-        // NFT base info
-        const nfo: NFTInfo = {
-          name: nftMetadata.name,
-          description: nftMetadata.description,
-          attributes: nftMetadata.attributes,
-          nftAddress: minterConfig.nft_addr,
-          mintAddress: minterContractAddress,
-          imageURL: ipfsURLToHTTPURL(nftMetadata.image),
-          tokenId,
-          ownerAddress: owner,
-          isSeller: isListed && isOwner,
-          isListed,
-          isOwner,
-          canSell: isOwner && !isListed,
-          price: vaultInfo?.amount || "",
-          priceDenom: vaultInfo?.denom || "",
-          collectionName: contractInfo.name,
-        };
-        setInfo(nfo);
-        setNotFound(false);
-        setLoading(false);
-      } catch (err) {
-        setNotFound(true);
-        setLoading(false);
-        console.error(err);
+  return (
+    <ScreenContainer
+      noScroll
+      noMargin
+      headerChildren={
+        collectionInfo?.mintAddress ? (
+          <BackTo
+            label={collectionInfo.name}
+            onPress={() =>
+              navigation.navigate("Collection", {
+                id: id.split("-").slice(0, -1).join("-"),
+              })
+            }
+          />
+        ) : undefined
       }
-    };
-    effect();
-  }, [id, wallet, refreshIndex]);
-
-  return { info, refresh, notFound, loading };
+    >
+      <Content key={id} id={id} setCollectionInfo={setCollectionInfo} />
+    </ScreenContainer>
+  );
 };

@@ -3,8 +3,8 @@ import {
   TouchableOpacity,
   View,
   StyleProp,
-  ViewStyle,
   StyleSheet,
+  ViewStyle,
 } from "react-native";
 
 import { neutral33 } from "../../utils/style/colors";
@@ -18,6 +18,7 @@ import { SpacerRow } from "../spacer";
 export type TabItem = {
   label: string;
   isSelected?: boolean;
+  // If provided, a TertiaryBadge will be added with this label
   badgeCount?: number;
 };
 
@@ -48,7 +49,6 @@ export const Tabs: React.FC<{
   onPressTabItem: (item: TabItem) => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ items, borderColorTabSelected = "#FFFFFF", onPressTabItem, style }) => {
-  // returns
   return (
     <View
       style={[
@@ -58,6 +58,7 @@ export const Tabs: React.FC<{
           borderBottomColor: neutral33,
           borderBottomWidth: 1,
         },
+        style,
       ]}
     >
       {items.map((item, index) => (
@@ -68,7 +69,7 @@ export const Tabs: React.FC<{
               alignItems: "center",
               justifyContent: "space-between",
               marginRight: index !== items.length - 1 ? layout.padding_x3 : 0,
-              paddingBottom: layout.padding_x3,
+              height: 24,
             }}
           >
             <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
@@ -79,11 +80,12 @@ export const Tabs: React.FC<{
             {item.badgeCount ? (
               item.isSelected ? (
                 <PrimaryBadge
+                  size="SM"
                   backgroundColor="secondary"
                   label={item.badgeCount}
                 />
               ) : (
-                <TertiaryBadge style={{ height: 24 }} label={item.badgeCount} />
+                <TertiaryBadge size="SM" label={item.badgeCount} />
               )
             ) : null}
           </View>
