@@ -8,17 +8,17 @@ import {
 } from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
 
-import teritorriSvg from "../../../assets/icons/teritori.svg";
+import teritorriSvg from "../../../assets/icons/networks/teritori.svg";
 import {
   Collection,
   CollectionsRequest_Kind,
   NFT,
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import { useCollections } from "../../components/CollectionsCarouselSection";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { useCollections } from "../../components/carousels/CollectionsCarouselSection";
 import { TransactionPaymentModal } from "../../components/modals/transaction/TransactionPaymentModal";
 import { TransactionPendingModal } from "../../components/modals/transaction/TransactionPendingModal";
 import { TransactionSuccessModal } from "../../components/modals/transaction/TransactionSuccessModal";
@@ -35,10 +35,15 @@ import {
 } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
 import { TeritoriNftMinterQueryClient } from "../../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getSigningCosmWasmClient } from "../../utils/keplr";
+import {
+  getNonSigningCosmWasmClient,
+  getSigningCosmWasmClient,
+} from "../../utils/keplr";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { nftDropedAdjustmentType } from "./RiotersFooterScreen.types";
+import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 
 export const RiotersFooterScreen: React.FC = () => {
   const [tabName, setTabName] = useState<string>("New");
@@ -104,18 +109,20 @@ export const RiotersFooterScreen: React.FC = () => {
     return 1;
   }, [client]);
 
+  const getFinalPrice = useCallback(async () => {
+    if (nftDropedAdjustment && client) {
+      const feePerSize = await getFeeConfig();
+      setPrice(
+        nftDropedAdjustment.width *
+          nftDropedAdjustment.height *
+          (feePerSize * 0.001)
+      );
+    }
+  }, [nftDropedAdjustment, nftDroped, client, getFeeConfig]);
+
   useEffect(() => {
     const effect = async () => {
-      console.log("oiajaa", nftDropedAdjustment, client);
-      if (nftDropedAdjustment && client) {
-        const feePerSize = await getFeeConfig();
-        setPrice(
-          nftDropedAdjustment.width *
-            nftDropedAdjustment.height *
-            feePerSize *
-            parseFloat(nftDroped?.price || "1")
-        );
-      }
+      await getFinalPrice();
     };
     effect();
   }, [nftDropedAdjustment?.width, nftDropedAdjustment?.height, client]);
@@ -132,16 +139,8 @@ export const RiotersFooterScreen: React.FC = () => {
         wallet?.publicKey,
         "tori1xfxjrxhgjqtvfcmfemu89lxftf0fq4hxz7vcg9shgczta26nt4lqefstyc"
       );
-      try {
-        await rioterFooterClient.updateMapSize({
-          height: "552",
-          width: "1030",
-        });
-      } catch (error) {
-        console.log("error", error);
-      }
 
-      // setMapsize(await rioterFooterClient.queryMapSize());
+      setMapsize(await rioterFooterClient.queryMapSize());
       setClient(rioterFooterClient);
     };
     effect();

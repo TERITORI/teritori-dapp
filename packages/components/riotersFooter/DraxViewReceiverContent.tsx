@@ -1,7 +1,7 @@
 import React, { memo, useCallback } from "react";
 import { StyleSheet, View, Image } from "react-native";
 
-import teritorriSvg from "../../../assets/icons/teritori.svg";
+import teritorriSvg from "../../../assets/icons/networks/teritori.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { NftData } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
 import { nftDropedAdjustmentType } from "../../screens/RiotersFooter/RiotersFooterScreen.types";
