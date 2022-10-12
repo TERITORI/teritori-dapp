@@ -3,7 +3,6 @@ import { Image, StyleSheet, View } from "react-native";
 
 import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import { nftDropedAdjustmentType } from "../../utils/types/nft";
 import { prettyPrice } from "../../utils/coins";
 import {
   neutral33,
@@ -13,6 +12,7 @@ import {
   errorColor,
 } from "../../utils/style/colors";
 import { toriCurrency } from "../../utils/teritori";
+import { nftDropedAdjustmentType } from "../../utils/types/nft";
 import Slider from "../Slider";
 import { IconButton } from "../buttons/IconButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
