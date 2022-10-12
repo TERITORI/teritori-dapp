@@ -64,7 +64,7 @@ const viewStyle: ViewStyle = {
   alignItems: "center",
 };
 
-const alignDown = (count: number, stride: number) => {
+export const alignDown = (count: number, stride: number) => {
   const factor = Math.floor(count / stride);
   return factor * stride;
 };

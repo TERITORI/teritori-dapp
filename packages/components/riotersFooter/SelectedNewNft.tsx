@@ -6,10 +6,8 @@ import shapeSvg from "../../../assets/icons/shape.svg";
 import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import {
-  alignDown,
-  useCollectionNFTs,
-} from "../../screens/Marketplace/CollectionScreen";
+import { useCollectionNFTs } from "../../hooks/useCollectionNFTs";
+import { alignDown } from "../../screens/Marketplace/CollectionScreen";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TextInputCustomBorder } from "../inputs/TextInputCustomBorder";
@@ -28,7 +26,7 @@ const SelectNewNft: React.FC<{
     setSearchNft,
     currentCollection,
   }) => {
-    const [nfts, fetchMoreNfts] = useCollectionNFTs({
+    const { nfts, fetchMore } = useCollectionNFTs({
       id: nftCollectionId,
       limit: alignDown(20, 2) || 2, // TODO: fix when size of list is updated
       offset: 0,
@@ -134,7 +132,7 @@ const SelectNewNft: React.FC<{
           getItemLayout={getItemLayout}
           contentContainerStyle={{ width: 220, paddingTop: 20 }}
           style={{ flex: 1 }}
-          onEndReached={fetchMoreNfts}
+          onEndReached={fetchMore}
           scrollEventThrottle={16}
         />
       </View>
