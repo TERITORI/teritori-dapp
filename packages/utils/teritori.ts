@@ -1,5 +1,7 @@
+import { Decimal } from "@cosmjs/math";
+import { OfflineSigner } from "@cosmjs/proto-signing";
+import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { Currency, Keplr } from "@keplr-wallet/types";
-import { Decimal, GasPrice } from "cosmwasm";
 
 import { Metadata } from "./types/tns";
 
@@ -8,6 +10,8 @@ export const teritoriRestProvider = process.env.PUBLIC_CHAIN_REST_ENDPOINT;
 export const teritoriRPCProvider = process.env.PUBLIC_CHAIN_RPC_ENDPOINT;
 export const teritoriChainId = process.env.PUBLIC_CHAIN_ID;
 export const toriDisplayDenom = process.env.PUBLIC_STAKING_DENOM_DISPLAY_NAME;
+export const vaultContractAddress =
+  process.env.TERITORI_VAULT_CONTRACT_ADDRESS || "";
 const toriDenom = process.env.PUBLIC_STAKING_DENOM;
 const teritoriBechPrefix = process.env.PUBLIC_CHAIN_BECH32_PREFIX;
 const toriChainName = process.env.PUBLIC_CHAIN_NAME;
@@ -36,8 +40,6 @@ const getCosmosBalances = async (address: string) => {
   return responseJSON;
 };
 
-export const teritoriVaultContractAddress =
-  "tori17ww32dvhrxa9ga57vk65dzu8746nm0cqlqxq06zfrkd0wffpkleslfmjtq";
 export const teritoriNFTVaultCodeID = 10;
 
 export const getUtoriBalance = async (address: string) => {
@@ -63,6 +65,11 @@ export const teritoriGasPrice = new GasPrice(
   Decimal.fromUserInput("0.025", toriCurrency.coinDecimals),
   toriCurrency.coinMinimalDenom
 );
+
+export const getTeritoriSigningStargateClient = (signer: OfflineSigner) =>
+  SigningStargateClient.connectWithSigner(teritoriRPCProvider, signer, {
+    gasPrice: teritoriGasPrice,
+  });
 
 export const keplrSuggestTeritori = (keplr: Keplr) =>
   keplr.experimentalSuggestChain({
@@ -109,7 +116,7 @@ export const keplrSuggestTeritori = (keplr: Keplr) =>
     // Currently, Keplr doesn't support dynamic calculation of the gas prices based on on-chain data.
     // Make sure that the gas prices are higher than the minimum gas prices accepted by chain validators and RPC/REST endpoint.
     gasPriceStep: {
-      low: 0.01,
+      low: 0.0,
       average: 0.025,
       high: 0.04,
     },

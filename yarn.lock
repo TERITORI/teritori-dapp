@@ -2605,7 +2605,7 @@
     ledger-cosmos-js "^2.1.8"
     semver "^7.3.2"
 
-"@cosmjs/math@0.28.13", "@cosmjs/math@^0.28.3":
+"@cosmjs/math@0.28.13", "@cosmjs/math@^0.28.13", "@cosmjs/math@^0.28.3":
   version "0.28.13"
   resolved "https://registry.yarnpkg.com/@cosmjs/math/-/math-0.28.13.tgz#50c05bc67007a04216f7f5e0c93f57270f8cc077"
   integrity sha512-PDpL8W/kbyeWi0mQ2OruyqE8ZUAdxPs1xCbDX3WXJwy2oU+X2UTbkuweJHVpS9CIqmZulBoWQAmlf6t6zr1N/g==
@@ -2626,7 +2626,7 @@
   dependencies:
     bn.js "^4.11.8"
 
-"@cosmjs/proto-signing@0.28.13", "@cosmjs/proto-signing@^0.28.3":
+"@cosmjs/proto-signing@0.28.13", "@cosmjs/proto-signing@^0.28.13", "@cosmjs/proto-signing@^0.28.3":
   version "0.28.13"
   resolved "https://registry.yarnpkg.com/@cosmjs/proto-signing/-/proto-signing-0.28.13.tgz#95ac12f0da0f0814f348f5ae996c3e96d015df61"
   integrity sha512-nSl/2ZLsUJYz3Ad0RY3ihZUgRHIow2OnYqKsESMu+3RA/jTi9bDYhiBu8mNMHI0xrEJry918B2CyI56pOUHdPQ==
@@ -2658,7 +2658,7 @@
     ws "^7"
     xstream "^11.14.0"
 
-"@cosmjs/stargate@0.28.13", "@cosmjs/stargate@^0.28.3":
+"@cosmjs/stargate@0.28.13", "@cosmjs/stargate@^0.28.13", "@cosmjs/stargate@^0.28.3":
   version "0.28.13"
   resolved "https://registry.yarnpkg.com/@cosmjs/stargate/-/stargate-0.28.13.tgz#a73d837a46ee8944e6eafe162f2ff6943c14350e"
   integrity sha512-dVBMazDz8/eActHsRcZjDHHptOBMqvibj5CFgEtZBp22gP6ASzoAUXTlkSVk5FBf4sfuUHoff6st134/+PGMAg==
@@ -7394,7 +7394,7 @@ babel-loader@8.1.0:
     pify "^4.0.1"
     schema-utils "^2.6.5"
 
-babel-loader@^8.1.0:
+babel-loader@^8.1.0, babel-loader@^8.2.5:
   version "8.2.5"
   resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-8.2.5.tgz#d45f585e654d5a5d90f5350a779d7647c5ed512e"
   integrity sha512-OSiFfH89LrEMiWd4pLNqGz4CwJDtbs2ZVc+iGu2HrkRfPxId9F2anQj38IxWpmRfsUY0aBZYi1EFcd3mhtRMLQ==

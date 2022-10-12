@@ -64,6 +64,7 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
             size="XS"
             text={actionButton.label}
             onPress={actionButton.onPress}
+            squaresBackgroundColor={neutral17}
             touchableStyle={{
               position: "absolute",
               bottom: 12,

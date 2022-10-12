@@ -1,5 +1,5 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
-import React, { useState } from "react";
+import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import guardian1PNG from "../../../assets/default-images/guardian_1.png";
@@ -18,9 +18,10 @@ import { NFTCancelListingCard } from "../cards/NFTCancelListingCard";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
 import { NFTSellCard } from "../cards/NFTSellCard";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
-import { TransactionPaymentModal } from "../modals/transaction/TransactionPaymentModal";
-import { TransactionPendingModal } from "../modals/transaction/TransactionPendingModal";
-import { TransactionSuccessModal } from "../modals/transaction/TransactionSuccessModal";
+import {
+  TransactionModals,
+  useTransactionModals,
+} from "../modals/transaction/TransactionModals";
 import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
 import { NFTAttributes } from "./NFTAttributes";
 import { CollapsableActivities } from "./components/CollapsableActivities";
@@ -48,27 +49,7 @@ export const NFTMainInfo: React.FC<{
   sell: (price: string) => Promise<ExecuteResult | undefined>;
   cancelListing: () => Promise<ExecuteResult | undefined>;
 }> = ({ nftInfo, buy, sell, cancelListing }) => {
-  const [transactionPaymentModalVisible, setTransactionPaymentModalVisible] =
-    useState(false);
-  const [transactionPendingModalVisible, setTransactionPendingModalVisible] =
-    useState(false);
-  const [transactionSuccessModalVisible, setTransactionSuccessModalVisible] =
-    useState(false);
-  const [transactionHash, setTransactionHash] = useState("");
-
-  const handleBuy = async () => {
-    setTransactionPaymentModalVisible(false);
-    setTransactionPendingModalVisible(true);
-    buy().then((reply) => {
-      if (!reply) {
-        setTransactionPendingModalVisible(false);
-      } else {
-        setTransactionHash(reply?.transactionHash || "");
-        setTransactionPendingModalVisible(false);
-        setTransactionSuccessModalVisible(true);
-      }
-    });
-  };
+  const { openTransactionModals } = useTransactionModals();
 
   const { onPressTabItem, selectedTabItem, tabItems } =
     useTabs(mainInfoTabItems);
@@ -183,7 +164,7 @@ export const NFTMainInfo: React.FC<{
         {nftInfo?.isListed && !nftInfo?.isOwner && (
           <NFTPriceBuyCard
             style={{ marginTop: 24, marginBottom: 40 }}
-            onPressBuy={() => setTransactionPaymentModalVisible(true)}
+            onPressBuy={openTransactionModals}
             price={nftInfo.price}
             priceDenom={nftInfo.priceDenom}
           />
@@ -220,17 +201,10 @@ export const NFTMainInfo: React.FC<{
       </View>
 
       {/* ====== "Buy this NFT" three modals*/}
-      {/*TODO: Handle these 3 modales with a component, or a hook*/}
-
-      {/* ----- Modal to process payment*/}
-      <TransactionPaymentModal
-        onPressProceed={handleBuy}
-        onClose={() => setTransactionPaymentModalVisible(false)}
-        visible={transactionPaymentModalVisible}
-        price={nftInfo?.price}
-        priceDenom={nftInfo?.priceDenom}
-        label="Checkout"
-        textComponent={
+      <TransactionModals
+        startTransaction={buy}
+        nftInfo={nftInfo}
+        textComponentPayment={
           <BrandText style={fontSemibold14}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
               You are about to purchase a{" "}
@@ -243,20 +217,7 @@ export const NFTMainInfo: React.FC<{
             {nftInfo?.collectionName}
           </BrandText>
         }
-      />
-
-      {/* ----- Modal with loader, witing for wallet approbation*/}
-      <TransactionPendingModal
-        operationLabel="Purchase"
-        visible={transactionPendingModalVisible}
-        onClose={() => setTransactionPendingModalVisible(false)}
-      />
-
-      {/* ----- Success modal*/}
-      <TransactionSuccessModal
-        transactionHash={transactionHash}
-        visible={transactionSuccessModalVisible}
-        textComponent={
+        textComponentSuccess={
           <BrandText style={fontSemibold14}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
               You successfully purchased{" "}
@@ -269,7 +230,6 @@ export const NFTMainInfo: React.FC<{
             {nftInfo?.collectionName}
           </BrandText>
         }
-        onClose={() => setTransactionSuccessModalVisible(false)}
       />
     </View>
   );

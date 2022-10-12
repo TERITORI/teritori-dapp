@@ -10,16 +10,15 @@ import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const SocialButton: React.FC<{
   text: string;
-  iconSvg: React.FC<SvgProps>; // Ugly, but it works (Removing the fragments from parent and using the type 'Element' doesn't work)
+  iconSvg: React.FC<SvgProps>;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ text, onPress, iconSvg, style }) => {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} style={style}>
       <SecondaryBox
         mainContainerStyle={{ backgroundColor: neutral22 }}
         height={44}
-        style={style}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SecondaryBox
@@ -28,7 +27,7 @@ export const SocialButton: React.FC<{
             width={32}
             height={32}
             squaresBackgroundColor={neutral22}
-            cornerWidth={4}
+            cornerWidth={5.5}
           >
             <SVG source={iconSvg} />
           </SecondaryBox>

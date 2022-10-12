@@ -8,7 +8,7 @@ import { ScreenFC } from "../../utils/navigation";
 export const HomeScreen: ScreenFC<"Home"> = () => {
   return (
     <ScreenContainer>
-      <HubIntro hubPage="Home" />
+      <HubIntro />
       <HubLanding />
     </ScreenContainer>
   );

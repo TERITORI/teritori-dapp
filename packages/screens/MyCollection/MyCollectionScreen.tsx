@@ -4,10 +4,10 @@ import { ActivityIndicator, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { NFTView } from "../../components/NFTView";
-import { NetworkIcon } from "../../components/NetworkIcon";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Section } from "../../components/Section";
 import { HubIntro } from "../../components/hub/HubIntro";
+import { NetworkIcon } from "../../components/images/NetworkIcon";
 import { useSolanaOwnedNFTs } from "../../context/SolanaOwnedNFTsProvider";
 import { useWallets } from "../../context/WalletsProvider";
 import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
@@ -60,7 +60,7 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
 
   return (
     <ScreenContainer>
-      <HubIntro hubPage="MyCollection" />
+      <HubIntro />
       <View style={{ marginHorizontal: 24 }}>
         {!Object.keys(byCollection).length && (
           <ActivityIndicator size="large" style={{ marginBottom: 72 }} />

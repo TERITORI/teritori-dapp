@@ -15,7 +15,7 @@ import { SVG } from "../SVG";
 import { SecondaryBox } from "../boxes/SecondaryBox";
 
 // Same as _PrimaryButtonTest but with customizable color and backgroundColor
-export const DropdownButton: React.FC<{
+export const ToggleableButton: React.FC<{
   size?: ButtonsSize;
   textExpanded: string;
   textCompressed: string;
