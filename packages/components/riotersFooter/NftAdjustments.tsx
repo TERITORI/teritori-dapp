@@ -3,7 +3,7 @@ import { Image, StyleSheet, View } from "react-native";
 
 import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import { nftDropedAdjustmentType } from "../../screens/RiotersFooter/RiotersFooterScreen.types";
+import { nftDropedAdjustmentType } from "../../utils/types/nft";
 import { prettyPrice } from "../../utils/coins";
 import {
   neutral33,
