@@ -5,8 +5,8 @@ import defaultUserProfileImagePNG from "../../../assets/default-images/connected
 import defaultUserProfileBannerPNG from "../../../assets/default-images/default-user-profile-banner.png";
 import discordSVG from "../../../assets/icons/discord.svg";
 import mediumSVG from "../../../assets/icons/medium.svg";
+import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import shareSVG from "../../../assets/icons/share.svg";
-import teritoriSVG from "../../../assets/icons/teritori.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
 import { neutral77, withAlpha } from "../../utils/style/colors";

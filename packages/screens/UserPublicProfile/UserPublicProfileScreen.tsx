@@ -1,11 +1,14 @@
 import React from "react";
 import { View } from "react-native";
 
-import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
 import { UPPActivity } from "../../components/userPublicProfile/UPPActivity";
+import { UPPGigServices } from "../../components/userPublicProfile/UPPGigServices";
 import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
+import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
+import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
+import { UPPSocialFeed } from "../../components/userPublicProfile/UPPSocialFeed";
 import { UPPSucceedQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { ScreenFC } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
@@ -55,23 +58,17 @@ const SelectedTabContent: React.FC<{
 }> = ({ selectedTabItemLabel }) => {
   switch (selectedTabItemLabel) {
     case "Social Feed":
-      return <BrandText>aaaa</BrandText>;
+      return <UPPSocialFeed />;
     case "NFTs":
-      return <BrandText>bbbb</BrandText>;
+      return <UPPNFTs />;
     case "Activity":
       return <UPPActivity />;
     case "Succeed Quests":
       return <UPPSucceedQuests />;
     case "Pathwar Challenges":
-      return <BrandText>eeee</BrandText>;
+      return <UPPPathwarChallenges />;
     case "Gig Services":
-      return <BrandText>ffff</BrandText>;
-    case "Governance Votes":
-      return <BrandText>gggg</BrandText>;
-    case "Putted NFT to Rioters Footer":
-      return <BrandText>hhhh</BrandText>;
-    case "Shared servers":
-      return <BrandText>iiii</BrandText>;
+      return <UPPGigServices />;
     default:
       return null;
   }
@@ -93,7 +90,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = () => {
             style={{
               marginTop: 32,
               height: 32,
-              marginBottom: layout.padding_x2_5,
+              marginBottom: layout.padding_x2_5 / 2,
             }}
             borderColorTabSelected={primaryColor}
           />
