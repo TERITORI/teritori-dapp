@@ -15,6 +15,8 @@ import Slider from "../Slider";
 import { IconButton } from "../buttons/IconButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
+import { prettyPrice } from "../../utils/coins";
+import { toriCurrency } from "../../utils/teritori";
 
 const NftAdjustments: React.FC<{
   nftDroped: NFT;
@@ -107,7 +109,10 @@ const NftAdjustments: React.FC<{
           <BrandText
             style={{ fontSize: 16, color: primaryColor, fontWeight: "700" }}
           >
-            {price} $TORI
+            {prettyPrice(
+              price?.toString() || "",
+              toriCurrency.coinMinimalDenom
+            )}
           </BrandText>
         </View>
         <View style={{ flex: 1, justifyContent: "flex-end" }}>

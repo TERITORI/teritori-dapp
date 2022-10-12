@@ -90,6 +90,13 @@ export interface RioterFooterNftInterface extends RioterFooterNftReadOnlyInterfa
     height: Uint128;
     width: Uint128;
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
+  setWhitelistedCollection: ({
+    collection,
+    whitelist
+  }: {
+    collection: string;
+    whitelist: boolean;
+  }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   addMyNft: ({
     additional,
     contractAddress,
@@ -115,6 +122,7 @@ export class RioterFooterNftClient extends RioterFooterNftQueryClient implements
     this.updateConfig = this.updateConfig.bind(this);
     this.updateFeeConfig = this.updateFeeConfig.bind(this);
     this.updateMapSize = this.updateMapSize.bind(this);
+    this.setWhitelistedCollection = this.setWhitelistedCollection.bind(this);
     this.addMyNft = this.addMyNft.bind(this);
   }
 
@@ -151,6 +159,20 @@ export class RioterFooterNftClient extends RioterFooterNftQueryClient implements
       update_map_size: {
         height,
         width
+      }
+    }, fee, memo, funds);
+  };
+  setWhitelistedCollection = async ({
+    collection,
+    whitelist
+  }: {
+    collection: string;
+    whitelist: boolean;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      set_whitelisted_collection: {
+        collection,
+        whitelist
       }
     }, fee, memo, funds);
   };

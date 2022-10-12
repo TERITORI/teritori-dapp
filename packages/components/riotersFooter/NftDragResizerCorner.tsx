@@ -4,13 +4,15 @@ import { PanGestureHandler } from "react-native-gesture-handler";
 import { useAnimatedGestureHandler } from "react-native-reanimated";
 import { clamp } from "react-native-redash";
 
-import { NftData } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
-import { nftDropedAdjustmentType } from "../../screens/RiotersFooter/RiotersFooterScreen.types";
+import {
+  NftData,
+  nftDropedAdjustmentType,
+} from "../../screens/RiotersFooter/RiotersFooterScreen.types";
 import { primaryColor } from "../../utils/style/colors";
 
 const NftDragResizerCorner: React.FC<{
   nftDropedAdjustment: nftDropedAdjustmentType;
-  oldNftPositionsWithZIndexOrder: NftData[];
+  oldNftPositions: NftData[];
   style: ViewStyle | ViewStyle[];
   onResize: (adjustment: {
     x?: number;
@@ -22,7 +24,7 @@ const NftDragResizerCorner: React.FC<{
 }> = memo(
   ({
     nftDropedAdjustment,
-    oldNftPositionsWithZIndexOrder,
+    oldNftPositions,
     style,
     onResize,
     cornerPosition,
@@ -104,7 +106,7 @@ const NftDragResizerCorner: React.FC<{
               backgroundColor: "black",
               borderWidth: 1,
               borderColor: primaryColor,
-              zIndex: oldNftPositionsWithZIndexOrder.length + 2,
+              zIndex: oldNftPositions.length + 2,
             },
             style,
           ]}

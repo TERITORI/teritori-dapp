@@ -80,7 +80,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE): node_modules
 	rm -fr $(RIOTER_FOOTER_REPO)
 	git clone git@github.com:TERITORI/$(RIOTER_FOOTER_REPO).git
-	cd $(RIOTER_FOOTER_REPO) && git checkout 6ea17e9a84b54787f711f12e0047031cb251c51c
+	cd $(RIOTER_FOOTER_REPO) && git checkout e5a5b22cc3e72e09df6b4642d62dc21d99ca34c3
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \

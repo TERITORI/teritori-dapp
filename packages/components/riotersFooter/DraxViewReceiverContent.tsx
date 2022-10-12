@@ -3,15 +3,17 @@ import { StyleSheet, View, Image } from "react-native";
 
 import teritorriSvg from "../../../assets/icons/networks/teritori.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
-import { NftData } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
-import { nftDropedAdjustmentType } from "../../screens/RiotersFooter/RiotersFooterScreen.types";
+import {
+  NftData,
+  nftDropedAdjustmentType,
+} from "../../screens/RiotersFooter/RiotersFooterScreen.types";
 import { neutral33 } from "../../utils/style/colors";
 import { SVG } from "../SVG";
 import DragAndDropNftInReceiverView from "./DragAndDropNftInReceiverView";
 import NftDragResizerCorner from "./NftDragResizerCorner";
 
 const DraxViewReceiverContent: React.FC<{
-  oldNftPositionsWithZIndexOrder: NftData[];
+  oldNftPositions: NftData[];
   nftDroped: NFT | undefined;
   nftDropedAdjustment: nftDropedAdjustmentType | undefined;
   setNftDropedAdjustment: (
@@ -19,17 +21,17 @@ const DraxViewReceiverContent: React.FC<{
   ) => void;
 }> = memo(
   ({
-    oldNftPositionsWithZIndexOrder,
+    oldNftPositions,
     nftDroped,
     nftDropedAdjustment,
     setNftDropedAdjustment,
   }) => {
     const NtfDragAndDropInReceiverViewCallback = useCallback(
-      ({ nftDroped, nftDropedAdjustment, oldNftPositionsWithZIndexOrder }) => (
+      ({ nftDroped, nftDropedAdjustment, oldNftPositions }) => (
         <DragAndDropNftInReceiverView
           nftDroped={nftDroped}
           nftDropedAdjustment={nftDropedAdjustment}
-          oldNftPositionsWithZIndexOrder={oldNftPositionsWithZIndexOrder}
+          oldNftPositions={oldNftPositions}
         />
       ),
       [nftDropedAdjustment?.x, nftDropedAdjustment?.y]
@@ -54,32 +56,35 @@ const DraxViewReceiverContent: React.FC<{
           style={{
             alignSelf: "center",
             marginTop: 43,
-            zIndex: oldNftPositionsWithZIndexOrder.length + 3,
+            zIndex: oldNftPositions.length + 3,
           }}
         />
-        {oldNftPositionsWithZIndexOrder &&
-          oldNftPositionsWithZIndexOrder.map((nft: NftData, index: number) => (
-            <Image
-              key={nft.token_id}
-              source={{ uri: nftDroped?.imageUri }}
-              style={[
-                styles.oldNftPositions,
-                {
-                  width: nft.position.width,
-                  height: nft.position.height,
-                  left: nft.position.x,
-                  top: nft.position.y,
-                  zIndex: index,
-                },
-              ]}
-            />
-          ))}
+        {oldNftPositions &&
+          oldNftPositions.map((nft: NftData, index: number) => {
+            return (
+              <Image
+                key={nft.token_id}
+                source={{ uri: nft.imageUri }}
+                style={[
+                  styles.oldNftPositions,
+                  {
+                    width: parseInt(nft.position.width, 10),
+                    height: parseInt(nft.position.height, 10),
+                    left: parseInt(nft.position.x, 10),
+                    top: parseInt(nft.position.y, 10),
+                    borderRadius: nft.borderRadius,
+                    zIndex: index,
+                  },
+                ]}
+              />
+            );
+          })}
         {nftDroped && nftDropedAdjustment && (
           <>
             <NtfDragAndDropInReceiverViewCallback
               nftDroped={nftDroped}
               nftDropedAdjustment={nftDropedAdjustment}
-              oldNftPositionsWithZIndexOrder={oldNftPositionsWithZIndexOrder}
+              oldNftPositions={oldNftPositions}
             />
             <NftDragResizerCorner
               nftDropedAdjustment={nftDropedAdjustment}
@@ -87,7 +92,7 @@ const DraxViewReceiverContent: React.FC<{
                 top: nftDropedAdjustment.y - 3.5,
                 left: nftDropedAdjustment.x - 3.5,
               }}
-              oldNftPositionsWithZIndexOrder={oldNftPositionsWithZIndexOrder}
+              oldNftPositions={oldNftPositions}
               cornerPosition="topLeft"
               onResize={OnResize}
             />
@@ -98,7 +103,7 @@ const DraxViewReceiverContent: React.FC<{
                 left:
                   nftDropedAdjustment.x + nftDropedAdjustment.width + 3.5 + 2,
               }}
-              oldNftPositionsWithZIndexOrder={oldNftPositionsWithZIndexOrder}
+              oldNftPositions={oldNftPositions}
               cornerPosition="topRight"
               onResize={OnResize}
             />
@@ -109,7 +114,7 @@ const DraxViewReceiverContent: React.FC<{
                   nftDropedAdjustment.y + nftDropedAdjustment.height + 3.5 + 2,
                 left: nftDropedAdjustment.x - 3.5,
               }}
-              oldNftPositionsWithZIndexOrder={oldNftPositionsWithZIndexOrder}
+              oldNftPositions={oldNftPositions}
               cornerPosition="bottomLeft"
               onResize={OnResize}
             />
@@ -121,7 +126,7 @@ const DraxViewReceiverContent: React.FC<{
                 left:
                   nftDropedAdjustment.x + nftDropedAdjustment.width + 3.5 + 2,
               }}
-              oldNftPositionsWithZIndexOrder={oldNftPositionsWithZIndexOrder}
+              oldNftPositions={oldNftPositions}
               cornerPosition="bottomRight"
               onResize={OnResize}
             />
