@@ -1,3 +1,4 @@
+import { NftData } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
 import { Network } from "../network";
 
 export interface NFTData {
@@ -19,3 +20,16 @@ export interface NFTAttribute {
   value: string;
   display_type?: string;
 }
+
+export type nftDropedAdjustmentType = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  borderRadius: number;
+};
+
+export type FooterNftData = NftData & {
+  imageUri: string;
+  borderRadius: number;
+};

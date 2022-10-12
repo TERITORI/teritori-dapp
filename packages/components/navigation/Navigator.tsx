@@ -12,6 +12,7 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSBurnNameScreen } from "../../screens/TeritoriNameService/TNSBurnNameScreen";
 import { TNSConsultNameScreen } from "../../screens/TeritoriNameService/TNSConsultNameScreen";
@@ -66,6 +67,11 @@ export const Navigator: React.FC = () => {
         name="Wallets"
         component={WalletsScreen}
         options={{ presentation: "transparentModal", header: () => null }}
+      />
+      <Stack.Screen
+        name="RiotersFooter"
+        component={RiotersFooterScreen}
+        options={{ header: () => null }}
       />
 
       {/* ==== Wallet Manager */}
