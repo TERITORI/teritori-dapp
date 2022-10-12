@@ -38,7 +38,7 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
     return dropdownRef === openedDropdownRef;
   };
 
-  const onPressOut = (e: NativeSyntheticEvent<NativeTouchEvent>) => {
+  const onPressOutside = (e: NativeSyntheticEvent<NativeTouchEvent>) => {
     if (
       openedDropdownRef &&
       openedDropdownRef.current &&
@@ -53,17 +53,29 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
       value={{
         onPressDropdownButton,
         isDropdownOpen,
-        closeOpenedDropdown,
+        closeOpenedDropdown
       }}
     >
-      <Pressable
-        onPressOut={(e) => onPressOut(e)}
-        style={{ height: "100%", width: "100%" }}
-      >
-        {children}
-      </Pressable>
+      {/* Used to close the opened dropdown by clicking outside it */}
+      {openedDropdownRef &&
+        <Pressable
+          style={{
+            width: "100vw",
+            height: "100vh",
+            position: "absolute",
+            top: 0,
+            right: 0,
+            zIndex: 99999,
+            // FIXME: We don't want cursor pointer. But "cursor property is not allowed on View"
+            cursor: "unset",
+
+          }}
+          onPress={onPressOutside}
+        />}
+
+      {children}
     </DropdownsContext.Provider>
-  );
+  )
 };
 
 export const useDropdowns = () => useContext(DropdownsContext);
