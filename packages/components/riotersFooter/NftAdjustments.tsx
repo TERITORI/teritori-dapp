@@ -4,6 +4,7 @@ import { Image, StyleSheet, View } from "react-native";
 import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { nftDropedAdjustmentType } from "../../screens/RiotersFooter/RiotersFooterScreen.types";
+import { prettyPrice } from "../../utils/coins";
 import {
   neutral33,
   neutral44,
@@ -11,12 +12,11 @@ import {
   primaryColor,
   errorColor,
 } from "../../utils/style/colors";
+import { toriCurrency } from "../../utils/teritori";
 import Slider from "../Slider";
 import { IconButton } from "../buttons/IconButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
-import { prettyPrice } from "../../utils/coins";
-import { toriCurrency } from "../../utils/teritori";
 
 const NftAdjustments: React.FC<{
   nftDroped: NFT;
