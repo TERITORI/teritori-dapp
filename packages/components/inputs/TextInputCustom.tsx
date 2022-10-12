@@ -25,8 +25,8 @@ import {
 import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { ErrorText } from "../forms/ErrorText";
 import { SpacerColumn } from "../spacer";
 
 export interface TextInputCustomProps<T>

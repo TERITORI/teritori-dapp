@@ -17,6 +17,7 @@
     "@cosmjs/proto-signing": "^0.28.13",
     "@cosmjs/stargate": "^0.28.13",
     "@expo-google-fonts/exo": "^0.2.2",
+    "@hookform/resolvers": "^2.9.8",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@keplr-wallet/types": "^0.10.13",
     "@metaplex-foundation/js-next": "0.7.1",
@@ -51,7 +52,9 @@
     "react-native": "0.68.2",
     "react-native-confetti-cannon": "^1.5.2",
     "react-native-drax": "^0.10.2",
+    "react-native-currency-input": "^1.0.1",
     "react-native-gesture-handler": "~2.2.1",
+    "react-native-mask-input": "^1.2.1",
     "react-native-reanimated": "~2.8.0",
     "react-native-reanimated-carousel": "^3.0.3",
     "react-native-redash": "^18.0.0",
@@ -63,7 +66,8 @@
     "react-native-web": "0.17.7",
     "react-redux": "^8.0.2",
     "redux-persist": "^6.0.0",
-    "victory-native": "^36.6.8"
+    "victory-native": "^36.6.8",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

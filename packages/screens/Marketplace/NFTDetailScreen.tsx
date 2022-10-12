@@ -33,7 +33,7 @@ import {
 } from "../../utils/style/layout";
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
-
+import { NFTDetailsUnlistedContent } from "./NFTDetailsUnlistedContent/NFTDetailsUnlistedContent";
 const screenTabItems: TabItem[] = [
   {
     label: "Main info",
@@ -221,6 +221,8 @@ const Content: React.FC<{
         <BrandText>NFT not found</BrandText>
       </View>
     );
+  } else if (info?.isOwner && !info?.isListed) {
+    return <NFTDetailsUnlistedContent id={id} nftInfo={info} />;
   }
   // TODO: Reuse this ScrollView pattern (ScrollView + View just bellow) in other Screens to provide a ScreenView (One per screen) width centered scrolling content with fixed max width. And remove it from ScreenContainer
   else {
