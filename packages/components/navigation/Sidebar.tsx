@@ -12,9 +12,8 @@ import sidebarContainerSVG from "../../../assets/sidebar/container.svg";
 import sidebarTopSVG from "../../../assets/sidebar/top.svg";
 import { getCurrentRouteName, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
+import { sidebarWidth } from "../../utils/style/layout";
 import { SVG } from "../SVG";
-
-const sidebarWidth = 94;
 
 const SidebarButton: React.FC<{
   iconSVG: React.FC<SvgProps>;

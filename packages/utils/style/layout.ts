@@ -6,6 +6,7 @@ export const screenContentMaxWidth = 1092;
 export const headerMarginHorizontal = 22;
 export const avatarWidth = 40;
 export const walletSelectorWidth = 220;
+export const sidebarWidth = 94;
 
 export const layout = {
   padding_x1: 8,
@@ -32,4 +33,5 @@ export const layout = {
   },
   borderRadius: 12,
   contentPadding: 48,
+  iconButton: 32,
 };
