@@ -137,7 +137,11 @@ export const StakeScreen: React.FC = () => {
       <View style={styles.rowHeader}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
         <View style={styles.rowWithCenter}>
-          <Tabs onPressTabItem={onPressTabItem} items={tabItems} />
+          <Tabs
+            onPressTabItem={onPressTabItem}
+            items={tabItems}
+            style={{ height: 44 }}
+          />
         </View>
       </View>
 

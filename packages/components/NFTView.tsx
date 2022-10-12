@@ -8,24 +8,20 @@ import {
   StyleSheet,
 } from "react-native";
 
-import certifiedSVG from "../../assets/icons/certified.svg";
-import outlineStarSVG from "../../assets/icons/outline-star.svg";
 import { useAppNavigation } from "../utils/navigation";
 import { heightButton } from "../utils/style/buttons";
 import { neutral33, neutral77 } from "../utils/style/colors";
 import { NFTData } from "../utils/types/nft";
 import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
-import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SecondaryButton } from "./buttons/SecondaryButton";
+import { NetworkIcon } from "./images/NetworkIcon";
 
 export const NFTView: React.FC<{
   data: NFTData; // FIXME: replace by NFT pb
   style?: StyleProp<ViewStyle>;
 }> = React.memo(({ data, style }) => {
   const collectionFontSize = 12;
-  const favoriteCountFontSize = 12;
   const floorPriceLabelFontSize = 12;
   const contentWidth = 236;
   const navigation = useAppNavigation();
@@ -109,25 +105,6 @@ export const NFTView: React.FC<{
               >
                 {data.collectionName}
               </BrandText>
-              {data.isCertified && <SVG source={certifiedSVG} />}
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginLeft: 16,
-              }}
-            >
-              <BrandText
-                style={{
-                  fontSize: favoriteCountFontSize,
-                  letterSpacing: -(favoriteCountFontSize * 0.04),
-                  color: neutral77,
-                }}
-              >
-                {data.favoritesCount}
-              </BrandText>
-              <SVG width={24} height={24} source={outlineStarSVG} />
             </View>
           </View>
         </View>

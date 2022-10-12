@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { neutral33 } from "../../utils/style/colors";
 import { NFTAttribute } from "../../utils/types/nft";
-import { DropdownButton } from "../buttons/DropdownButton";
+import { ToggleableButton } from "../buttons/ToggleableButton";
 import { NFTAttributeCard } from "../cards/NFTAttributeCard";
 
 const previewCount = 8;
@@ -49,7 +49,7 @@ export const NFTAttributes: React.FC<{
           }}
         >
           <View style={{ height: 1, width: 240, backgroundColor: neutral33 }} />
-          <DropdownButton
+          <ToggleableButton
             textCompressed="Show more"
             textExpanded="Show less"
             onPress={() => setIsMoreDisplayed(!isMoreDisplayed)}

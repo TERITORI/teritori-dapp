@@ -11,8 +11,7 @@ export const ProgressionCard: React.FC<{
   label: string;
   valueCurrent: number;
   valueMax: number;
-  fullWidth?: boolean;
-}> = ({ style, label, valueCurrent, valueMax, fullWidth }) => {
+}> = ({ style, label, valueCurrent, valueMax }) => {
   const percent = Math.round((valueCurrent * 100) / valueMax);
 
   return (

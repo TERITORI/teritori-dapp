@@ -56,7 +56,7 @@ const ConnectedIntro: React.FC = () => {
         <WalletDashboardHeader />
         <Tabs
           items={tabItems}
-          style={{ marginTop: 24 }}
+          style={{ marginTop: 24, height: 40 }}
           onPressTabItem={onPressTabItem}
         />
         {selectedTabItem.label === "Overview" && <Overview />}

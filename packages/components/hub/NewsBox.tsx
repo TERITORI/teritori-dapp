@@ -24,6 +24,7 @@ export type News = {
   button1Action?: () => void;
   button2Label?: string;
   button2Action?: () => void;
+  author?: string;
 };
 
 const breakPoint = 768;
@@ -113,14 +114,16 @@ export const NewsBox: React.FC<{
               borderRadius: 10,
             }}
           />
-          <BrandText
-            style={[
-              fontMedium14,
-              { position: "absolute", bottom: 22, right: 20 },
-            ]}
-          >
-            Ferryman.tori
-          </BrandText>
+          {news.author && (
+            <BrandText
+              style={[
+                fontMedium14,
+                { position: "absolute", bottom: 22, right: 20 },
+              ]}
+            >
+              {news.author}
+            </BrandText>
+          )}
         </View>
       </View>
     </View>

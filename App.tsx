@@ -14,6 +14,7 @@ import { Provider as ReduxProvider } from "react-redux";
 
 import DisclaimerPopup from "./packages/components/PopupDisclaimer/DisclaimerPopup";
 import { Navigator } from "./packages/components/navigation/Navigator";
+import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { SolanaBalanceProvider } from "./packages/context/SolanaBalanceProvider";
 import { SolanaOwnedNFTsProvider } from "./packages/context/SolanaOwnedNFTsProvider";
@@ -43,18 +44,20 @@ export default function App() {
           <ReduxProvider store={store}>
             <DisclaimerPopup />
             <FeedbacksContextProvider>
-              <WalletsProvider>
-                <SolanaBalanceProvider>
-                  <TeritoriBalanceProvider>
-                    <SolanaOwnedNFTsProvider>
-                      <TNSContextProvider>
-                        <StatusBar style="inverted" />
-                        <Navigator />
-                      </TNSContextProvider>
-                    </SolanaOwnedNFTsProvider>
-                  </TeritoriBalanceProvider>
-                </SolanaBalanceProvider>
-              </WalletsProvider>
+              <DropdownsContextProvider>
+                <WalletsProvider>
+                  <SolanaBalanceProvider>
+                    <TeritoriBalanceProvider>
+                      <SolanaOwnedNFTsProvider>
+                        <TNSContextProvider>
+                          <StatusBar style="inverted" />
+                          <Navigator />
+                        </TNSContextProvider>
+                      </SolanaOwnedNFTsProvider>
+                    </TeritoriBalanceProvider>
+                  </SolanaBalanceProvider>
+                </WalletsProvider>
+              </DropdownsContextProvider>
             </FeedbacksContextProvider>
           </ReduxProvider>
         </SafeAreaProvider>

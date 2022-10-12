@@ -10,6 +10,8 @@ export const teritoriRestProvider = process.env.PUBLIC_CHAIN_REST_ENDPOINT;
 export const teritoriRPCProvider = process.env.PUBLIC_CHAIN_RPC_ENDPOINT;
 export const teritoriChainId = process.env.PUBLIC_CHAIN_ID;
 export const toriDisplayDenom = process.env.PUBLIC_STAKING_DENOM_DISPLAY_NAME;
+export const vaultContractAddress =
+  process.env.TERITORI_VAULT_CONTRACT_ADDRESS || "";
 const toriDenom = process.env.PUBLIC_STAKING_DENOM;
 const teritoriBechPrefix = process.env.PUBLIC_CHAIN_BECH32_PREFIX;
 const toriChainName = process.env.PUBLIC_CHAIN_NAME;
@@ -38,8 +40,6 @@ const getCosmosBalances = async (address: string) => {
   return responseJSON;
 };
 
-export const teritoriVaultContractAddress =
-  "tori17ww32dvhrxa9ga57vk65dzu8746nm0cqlqxq06zfrkd0wffpkleslfmjtq";
 export const teritoriNFTVaultCodeID = 10;
 
 export const getUtoriBalance = async (address: string) => {

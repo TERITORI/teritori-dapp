@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import {
   View,
   ViewStyle,
@@ -9,6 +9,7 @@ import {
 
 import chevronUpSVG from "../../assets/icons/chevron-down.svg";
 import chevronDownSVG from "../../assets/icons/chevron-up.svg";
+import { useDropdowns } from "../context/DropdownsProvider";
 import { useWallets, Wallet } from "../context/WalletsProvider";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { setSelectedWalletId } from "../store/slices/settings";
@@ -17,10 +18,10 @@ import { neutral17, neutral44 } from "../utils/style/colors";
 import { walletSelectorWidth } from "../utils/style/layout";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SecondaryButton } from "./buttons/SecondaryButton";
+import { NetworkIcon } from "./images/NetworkIcon";
 
 // FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native
 
@@ -68,8 +69,11 @@ export const WalletSelector: React.FC<{
 }> = ({ onPressAddWallet, style }) => {
   const { wallets } = useWallets();
   const selectedWallet = useSelectedWallet();
-  const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useAppDispatch();
+
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
+    useDropdowns();
+  const dropdownRef = useRef<View>(null);
 
   if (!selectedWallet) {
     return null;
@@ -79,8 +83,8 @@ export const WalletSelector: React.FC<{
     (wallet) => wallet.id !== selectedWallet.id && wallet.publicKey
   );
   return (
-    <View style={style}>
-      <TouchableOpacity onPress={() => setIsExpanded((value) => !value)}>
+    <View style={style} ref={dropdownRef}>
+      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
         <TertiaryBox
           width={walletSelectorWidth}
           mainContainerStyle={{
@@ -92,13 +96,14 @@ export const WalletSelector: React.FC<{
         >
           <WalletView wallet={selectedWallet} />
           <SVG
-            source={isExpanded ? chevronUpSVG : chevronDownSVG}
+            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
           />
         </TertiaryBox>
       </TouchableOpacity>
-      {isExpanded && (
+
+      {isDropdownOpen(dropdownRef) && (
         <TertiaryBox
           style={{ position: "absolute", top: 44 }}
           mainContainerStyle={{
@@ -110,7 +115,7 @@ export const WalletSelector: React.FC<{
           {otherWallets.map((wallet) => (
             <TouchableOpacity
               onPress={() => {
-                setIsExpanded(false);
+                closeOpenedDropdown();
                 dispatch(setSelectedWalletId(wallet.id));
               }}
               key={wallet.id}
@@ -136,7 +141,7 @@ export const WalletSelector: React.FC<{
               squaresBackgroundColor={neutral17}
               text="Add wallet"
               onPress={() => {
-                setIsExpanded(false);
+                closeOpenedDropdown();
                 if (typeof onPressAddWallet === "function") {
                   onPressAddWallet();
                 }

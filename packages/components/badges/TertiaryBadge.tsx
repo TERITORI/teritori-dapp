@@ -1,35 +1,38 @@
 import * as React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
+import {
+  BadgesSize,
+  heightBadge,
+  paddingHorizontalBadge,
+} from "../../utils/style/badges";
 import { neutral33 } from "../../utils/style/colors";
-import { fontSemibold13 } from "../../utils/style/fonts";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 
 export const TertiaryBadge: React.FC<{
   label: string | number;
+  size?: BadgesSize;
+  textColor?: string;
   style?: StyleProp<ViewStyle>;
-}> = ({ label, style }) => {
+}> = ({ label, size = "M", textColor = "#FFFFFF", style }) => {
   return (
     <View
       style={[
         {
           flexDirection: "row",
           alignItems: "center",
-          height: 28,
+          height: heightBadge(size),
+          paddingHorizontal: paddingHorizontalBadge(size),
+          backgroundColor: neutral33,
+          borderRadius: 999,
         },
         style,
       ]}
     >
-      <View
-        style={{
-          paddingVertical: 5,
-          paddingHorizontal: 12,
-          backgroundColor: neutral33,
-          borderRadius: 999,
-        }}
-      >
-        <BrandText style={fontSemibold13}>{label}</BrandText>
-      </View>
+      <BrandText style={[fontSemibold14, { color: textColor }]}>
+        {label}
+      </BrandText>
     </View>
   );
 };

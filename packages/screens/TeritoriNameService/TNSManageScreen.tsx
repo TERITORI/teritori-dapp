@@ -68,7 +68,7 @@ const NameCard: React.FC<{
         </View>
 
         {isPrimary ? (
-          <PrimaryBadge label="Primary" style={{ marginRight: 20 }} />
+          <PrimaryBadge label="Primary" style={{ marginRight: 20 }} size="SM" />
         ) : null}
       </View>
     </TouchableOpacity>
