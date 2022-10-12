@@ -34,6 +34,7 @@ import { Network } from "../../utils/network";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import { alignDown } from "../../utils/align";
 
 const collectionScreenTabItems: TabItem[] = [
   {
@@ -62,11 +63,6 @@ const nftWidth = 268 + gap * 2; // FIXME: ssot
 const viewStyle: ViewStyle = {
   height: "100%",
   alignItems: "center",
-};
-
-export const alignDown = (count: number, stride: number) => {
-  const factor = Math.floor(count / stride);
-  return factor * stride;
 };
 
 // ====== Components =====

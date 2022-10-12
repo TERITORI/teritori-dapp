@@ -3,17 +3,14 @@ import { StyleSheet, View, Image } from "react-native";
 
 import teritorriSvg from "../../../assets/icons/networks/teritori.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
-import {
-  NftData,
-  nftDropedAdjustmentType,
-} from "../../screens/RiotersFooter/RiotersFooterScreen.types";
 import { neutral33 } from "../../utils/style/colors";
+import { nftDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
 import { SVG } from "../SVG";
 import DragAndDropNftInReceiverView from "./DragAndDropNftInReceiverView";
 import NftDragResizerCorner from "./NftDragResizerCorner";
 
 const DraxViewReceiverContent: React.FC<{
-  oldNftPositions: NftData[];
+  oldNftPositions: FooterNftData[];
   nftDroped: NFT | undefined;
   nftDropedAdjustment: nftDropedAdjustmentType | undefined;
   setNftDropedAdjustment: (
@@ -60,7 +57,7 @@ const DraxViewReceiverContent: React.FC<{
           }}
         />
         {oldNftPositions &&
-          oldNftPositions.map((nft: NftData, index: number) => {
+          oldNftPositions.map((nft: FooterNftData, index: number) => {
             return (
               <Image
                 key={nft.token_id}
