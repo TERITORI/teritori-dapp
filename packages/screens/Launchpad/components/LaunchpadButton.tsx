@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Linking, Pressable, StyleSheet, View } from "react-native";
 
 import ChevronRightSvg from "../../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -16,6 +16,7 @@ import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 export interface LaunchpadButtonProps {
+  url?: string;
   buttonTitle: string;
   title: string;
   description: string;
@@ -25,27 +26,33 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
   title,
   description,
   buttonTitle,
+  url,
 }) => {
   // returns
   return (
-    <TertiaryBox
+    <Pressable
+      onPress={url ? () => Linking.openURL(url) : undefined}
       style={styles.fill}
-      fullWidth
-      mainContainerStyle={styles.container}
     >
-      <View style={styles.detailContainer}>
-        <BrandText>{title}</BrandText>
-        <SpacerColumn size={3} />
-        <BrandText style={styles.descriptionText}>{description}</BrandText>
-      </View>
-      <View style={styles.buttonIconTextContainer}>
-        <BrandText style={styles.buttonTitleText}>{buttonTitle}</BrandText>
-        <SpacerRow size={2.5} />
-        <View style={styles.iconContainer}>
-          <SVG source={ChevronRightSvg} />
+      <TertiaryBox
+        style={styles.fill}
+        fullWidth
+        mainContainerStyle={styles.container}
+      >
+        <View style={styles.detailContainer}>
+          <BrandText>{title}</BrandText>
+          <SpacerColumn size={3} />
+          <BrandText style={styles.descriptionText}>{description}</BrandText>
         </View>
-      </View>
-    </TertiaryBox>
+        <View style={styles.buttonIconTextContainer}>
+          <BrandText style={styles.buttonTitleText}>{buttonTitle}</BrandText>
+          <SpacerRow size={2.5} />
+          <View style={styles.iconContainer}>
+            <SVG source={ChevronRightSvg} />
+          </View>
+        </View>
+      </TertiaryBox>
+    </Pressable>
   );
 };
 
