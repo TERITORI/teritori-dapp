@@ -50,7 +50,10 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
       </BrandText>
       <SpacerColumn size={4} />
       <View style={styles.buttonsContainer}>
-        <LaunchpadButton {...BUTTONS[0]} />
+        <LaunchpadButton
+          {...BUTTONS[0]}
+          url="https://airtable.com/shr1kU7kXW0267gNV"
+        />
         <SpacerRow size={1.2} />
         <LaunchpadButton {...BUTTONS[1]} />
         <SpacerRow size={1.2} />
