@@ -91,7 +91,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
                   marginLeft: 4,
                 }}
               >
-                <SVG source={copySVG} />
+                <SVG width={24} height={24} source={copySVG} />
               </TouchableOpacity>
             </View>
           </View>

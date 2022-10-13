@@ -187,7 +187,7 @@ export const NFTMainInfo: React.FC<{
           onPressTabItem={onPressTabItem}
           items={tabItems}
           borderColorTabSelected={primaryColor}
-          tabStyle={{ paddingBottom: layout.padding_x2 }}
+          tabStyle={{ paddingBottom: layout.padding_x1, height: 24 }}
         />
         {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
         {/*TODO: About  = Big text*/}

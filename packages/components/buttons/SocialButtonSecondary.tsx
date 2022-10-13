@@ -32,7 +32,7 @@ export const SocialButtonSecondary: React.FC<{
             squaresBackgroundColor={neutral1A}
             cornerWidth={5.5}
           >
-            <SVG source={iconSvg} />
+            <SVG source={iconSvg} width={20} height={20} />
           </SecondaryBox>
           <BrandText
             style={[

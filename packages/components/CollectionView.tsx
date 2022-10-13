@@ -66,7 +66,7 @@ export const CollectionView: React.FC<{
             </BrandText>
             {item.verified && (
               <View style={{ marginLeft: 14 }}>
-                <SVG source={certifiedIconSVG} />
+                <SVG source={certifiedIconSVG} width={16} height={16} />
               </View>
             )}
           </View>

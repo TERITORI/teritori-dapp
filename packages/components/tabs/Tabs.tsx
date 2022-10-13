@@ -64,6 +64,7 @@ export const Tabs: React.FC<{
           width: "100%",
           flexDirection: "row",
           borderBottomColor: neutral33,
+          alignItems: "center",
           borderBottomWidth: 1,
         },
         style,
@@ -78,7 +79,8 @@ export const Tabs: React.FC<{
                 alignItems: "center",
                 justifyContent: "space-between",
                 marginRight: index !== items.length - 1 ? layout.padding_x3 : 0,
-                height: 24,
+                height: 40,
+                paddingBottom: layout.padding_x2,
               },
               tabStyle,
             ]}

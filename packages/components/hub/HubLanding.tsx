@@ -160,7 +160,12 @@ Join the Bounty Program
             marginBottom: 20,
           }}
         >
-          <SVG width={68} height={68} source={logoSVG} />
+          <SVG
+            width={68}
+            height={68}
+            preserveAspectRatio="none"
+            source={logoSVG}
+          />
         </View>
       </View>
     </View>

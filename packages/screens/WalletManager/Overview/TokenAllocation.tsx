@@ -26,8 +26,10 @@ export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
         }}
       >
         <VictoryPie
-          innerRadius={160}
+          innerRadius={85}
           padAngle={0.8}
+          height={216}
+          width={216}
           colorScale={["#5C26F5", "#16BBFF"]}
           labels={() => null}
           data={WALLET_TOKEN_PIE}
