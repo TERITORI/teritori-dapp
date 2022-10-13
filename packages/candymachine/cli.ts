@@ -17,7 +17,7 @@ import { StorageResult } from "./storage";
 
 // port of https://github.com/public-awesome/stargaze-tools
 
-const rpcEndpoint = "https://teritorid.65.108.73.219.nip.io:443/rpc";
+const rpcEndpoint = "https://rpc.testnet.teritori.com:443";
 const minterCodeID = 9;
 const tokenCodeID = 6;
 

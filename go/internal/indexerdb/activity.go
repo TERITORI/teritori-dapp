@@ -14,10 +14,9 @@ const (
 type Activity struct {
 	// ID is network-dependent
 	// Teritori: tori-<tx_hash>
-	ID      string
-	Kind    ActivityKind
-	Network Network
-	Time    time.Time
+	ID   string
+	Kind ActivityKind
+	Time time.Time
 
 	// "has one" relations
 	Listing *Listing

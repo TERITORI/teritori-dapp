@@ -4,7 +4,7 @@ import { getFirstKeplrAccount, getSigningCosmWasmClient } from "../utils/keplr";
 import { useIsKeplrConnected } from "./useIsKeplrConnected";
 
 export function usePrimaryAlias() {
-  const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+  const contract = process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
 
   const [alias, setPrimaryAlias] = useState("");
 

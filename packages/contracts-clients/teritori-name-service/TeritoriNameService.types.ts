@@ -103,6 +103,8 @@ export interface SurchargeInfo {
   [k: string]: unknown;
 }
 export type ExecuteMsg = {
+  update_supported_domain: UpdateSupportedDomainMsg;
+} | {
   update_minting_fees: UpdateMintingFeesMsg;
 } | {
   update_username_length_cap: {
@@ -118,6 +120,11 @@ export type ExecuteMsg = {
   update_metadata: UpdateMetadataMsg;
 } | {
   burn: {
+    token_id: string;
+    [k: string]: unknown;
+  };
+} | {
+  burn_paths: {
     token_id: string;
     [k: string]: unknown;
   };
@@ -168,6 +175,11 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 };
+export interface UpdateSupportedDomainMsg {
+  domain: string;
+  is_supported: boolean;
+  [k: string]: unknown;
+}
 export interface UpdateMintingFeesMsg {
   base_mint_fee?: Uint128 | null;
   burn_percentage?: number | null;
@@ -222,6 +234,7 @@ export interface IsContractResponse {
   contract_address: string;
   [k: string]: unknown;
 }
+export type IsSupportedDomainResponse = boolean;
 export interface ListInfoByAliasResponse {
   users: UserInfo[];
   [k: string]: unknown;
@@ -279,6 +292,11 @@ export interface PrimaryAliasResponse {
   [k: string]: unknown;
 }
 export type QueryMsg = {
+  is_supported_domain: {
+    domain: string;
+    [k: string]: unknown;
+  };
+} | {
   primary_alias: {
     address: string;
     [k: string]: unknown;

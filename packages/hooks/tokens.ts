@@ -16,7 +16,7 @@ import { useIsKeplrConnected } from "./useIsKeplrConnected";
 export function useTokenList() {
   const isKeplrConnected = useIsKeplrConnected();
 
-  const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+  const contract = process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const perPage = 10;
 
   const [tokens, setStoreTokens] = useState<string[]>([]);
@@ -82,7 +82,7 @@ export function useTokenList() {
 }
 
 export function useToken(tokenId: string, tld: string) {
-  const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+  const contract = process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
 
   const [token, setStoreToken] = useState<any>(); // FIXME: type this
 
