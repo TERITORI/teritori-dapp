@@ -5,11 +5,11 @@ import { Quest } from "../../components/cards/QuestCard";
 import { News } from "../../components/hub/NewsBox";
 
 export const fakeQuests: Quest[] = [
-  { label: "Claim Teritori    Airdrop", isCurrent: true },
-  { label: "Book a Handle Teritori Name Service", isCurrent: false },
-  { label: "Buy your 1st NFT on Launchpad", isCurrent: false },
-  { label: "Sell your 1st NFT on Marketplace ", isCurrent: false },
-  { label: "Put your Graffiti on Rioters Footer", isCurrent: false },
+  { label: "Claim Teritori    Airdrop", isSucceed: true },
+  { label: "Book a Handle Teritori Name Service", isSucceed: false },
+  { label: "Buy your 1st NFT on Launchpad", isSucceed: false },
+  { label: "Sell your 1st NFT on Marketplace ", isSucceed: false },
+  { label: "Put your Graffiti on Rioters Footer", isSucceed: false },
 ];
 
 export const fakeNews: News[] = [

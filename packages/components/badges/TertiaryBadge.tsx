@@ -1,14 +1,15 @@
 import * as React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
+
 import {
   BadgesSize,
   heightBadge,
   paddingHorizontalBadge,
 } from "../../utils/style/badges";
 import { neutral33 } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 

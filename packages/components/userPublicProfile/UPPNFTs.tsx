@@ -44,12 +44,14 @@ export const UPPNFTs: React.FC = () => {
         <Tabs
           items={tabItems}
           onPressTabItem={onPressTabItem}
-          style={{ width: 436, height: 44 }}
+          style={{ width: 436, height: 44, alignSelf: "flex-end" }}
         />
         <FilterButton style={{ marginLeft: layout.padding_x2_5 }} />
         {/*TODO: Too long (See at right on the render)*/}
-        <SearchInput style={{ marginHorizontal: layout.padding_x2_5 }} />
-        <SortButton />
+        <SearchInput
+          style={{ marginHorizontal: layout.padding_x2_5, maxWidth: 504 }}
+        />
+        <SortButton style={{ width: 222 }} />
       </View>
 
       <View>

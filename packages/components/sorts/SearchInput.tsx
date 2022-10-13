@@ -30,7 +30,12 @@ export const SearchInput: React.FC<{
         placeholderTextColor="#FFFFFF"
         style={[
           fontMedium14,
-          { color: "#FFFFFF", outlineStyle: "none", width: "100%" },
+          {
+            color: "#FFFFFF",
+            width: "100%",
+            // FIXME: We don't want input style. But "cursor property is not allowed in TextStyle"
+            outlineStyle: "none",
+          },
         ]}
       />
     </TertiaryBox>

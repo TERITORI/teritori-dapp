@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { neutral33 } from "../../utils/style/colors";
+import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -18,6 +18,7 @@ import { SpacerRow } from "../spacer";
 export type TabItem = {
   label: string;
   isSelected?: boolean;
+  isDisabled?: boolean;
   // If provided, a TertiaryBadge will be added with this label
   badgeCount?: number;
 };
@@ -50,12 +51,12 @@ export const Tabs: React.FC<{
   style?: StyleProp<ViewStyle>;
   tabStyle?: ViewStyle;
 }> = ({
-  items,
-  borderColorTabSelected = "#FFFFFF",
-  onPressTabItem,
-  style,
-  tabStyle,
-}) => {
+        items,
+        borderColorTabSelected = "#FFFFFF",
+        onPressTabItem,
+        style,
+        tabStyle,
+      }) => {
   // returns
   return (
     <View
@@ -71,7 +72,11 @@ export const Tabs: React.FC<{
       ]}
     >
       {items.map((item, index) => (
-        <TouchableOpacity key={index} onPress={() => onPressTabItem(item)}>
+        <TouchableOpacity
+          key={index}
+          onPress={() => onPressTabItem(item)}
+          disabled={item.isDisabled}
+        >
           <View
             style={[
               {
@@ -85,8 +90,13 @@ export const Tabs: React.FC<{
               tabStyle,
             ]}
           >
-            <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
-              {item.label}
+            <BrandText
+              style={[
+                fontSemibold14,
+                { lineHeight: 14 },
+                item.isDisabled && { color: neutral77 },
+              ]}
+            >              {item.label}
             </BrandText>
 
             {item.badgeCount && <SpacerRow size={1} />}

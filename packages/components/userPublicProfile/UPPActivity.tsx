@@ -20,7 +20,7 @@ export const UPPActivity: React.FC = () => {
       >
         <FilterButton style={{ marginRight: layout.padding_x2 }} />
         {/*TODO: Too long (See at right on the render)*/}
-        <SearchInput />
+        <SearchInput style={{ maxWidth: 1206 }} />
       </View>
 
       {fakeActivities.map((activity, index) => (

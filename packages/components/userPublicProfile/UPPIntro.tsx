@@ -1,25 +1,28 @@
 import React from "react";
 import { Image, useWindowDimensions, View } from "react-native";
 
-import defaultUserProfileImagePNG from "../../../assets/default-images/connected-image-bad.png";
 import defaultUserProfileBannerPNG from "../../../assets/default-images/default-user-profile-banner.png";
 import discordSVG from "../../../assets/icons/discord.svg";
-import mediumSVG from "../../../assets/icons/medium.svg";
 import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
+import userImageFrameSVG from "../../../assets/user-image-frame.svg";
 import { neutral77, withAlpha } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
+import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 
-export const UPPIntro: React.FC = () => {
+export const UPPIntro: React.FC<{
+  id: string;
+  token: any;
+}> = ({ id, token }) => {
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
 
@@ -43,26 +46,27 @@ export const UPPIntro: React.FC = () => {
             right: 14,
           }}
         >
-          <SocialButton
-            iconSvg={websiteSVG}
-            text="Website"
-            style={socialButtonStyle}
-          />
-          <SocialButton
-            iconSvg={mediumSVG}
-            text="Medium"
-            style={socialButtonStyle}
-          />
-          <SocialButton
-            iconSvg={discordSVG}
-            text="Discord"
-            style={socialButtonStyle}
-          />
-          <SocialButton
-            iconSvg={twitterSVG}
-            text="Twitter"
-            style={socialButtonStyle}
-          />
+          {token?.external_url && (
+            <SocialButton
+              iconSvg={websiteSVG}
+              text="Website"
+              style={socialButtonStyle}
+            />
+          )}
+          {token?.discord_id && (
+            <SocialButton
+              iconSvg={discordSVG}
+              text="Discord"
+              style={socialButtonStyle}
+            />
+          )}
+          {token?.twitter_id && (
+            <SocialButton
+              iconSvg={twitterSVG}
+              text="Twitter"
+              style={socialButtonStyle}
+            />
+          )}
           {width > 670 && (
             <View
               style={[
@@ -83,16 +87,27 @@ export const UPPIntro: React.FC = () => {
         </View>
 
         {/* Absolute user image */}
-        <Image
-          source={defaultUserProfileImagePNG}
+        <View
           style={{
-            height: 196,
-            width: 196,
             position: "absolute",
             bottom: -100,
             left: 16,
           }}
-        />
+        >
+          <Image
+            source={{ uri: token?.image || "" }}
+            style={{
+              borderRadius: 24,
+              height: 132,
+              width: 132,
+              position: "absolute",
+              bottom: 32,
+              left: 32,
+              zIndex: 2,
+            }}
+          />
+          <SVG source={userImageFrameSVG} width={196} height={196} />
+        </View>
       </TertiaryBox>
 
       <View
@@ -105,15 +120,14 @@ export const UPPIntro: React.FC = () => {
       >
         <View>
           {/* Pseudo and bio */}
-          <BrandText style={fontSemibold20}>Nickname</BrandText>
+          <BrandText style={fontSemibold20}>{id}</BrandText>
           <BrandText
             style={[
               fontSemibold14,
               { color: neutral77, marginTop: 12, marginBottom: 20 },
             ]}
           >
-            {"Nickname is a creator of minimalistic/bold graphic and digital artwork.\n" +
-              "Artist / Creative Director"}
+            {token?.public_bio || ""}
           </BrandText>
           {/* Actions */}
           <View style={{ flexDirection: "row" }}>
@@ -163,7 +177,7 @@ export const UPPIntro: React.FC = () => {
           </View>
 
           <CopyToClipboardSecondary
-            text="GxF34aBF3xC45...3A31"
+            text={token?.contract_address || ""}
             iconSVG={teritoriSVG}
           />
         </TertiaryBox>

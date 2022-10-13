@@ -90,7 +90,9 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header style={headerStyle}>{headerChildren}</Header>
+          <Header style={headerStyle} smallMargin={smallMargin}>
+            {headerChildren}
+          </Header>
 
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
@@ -122,8 +124,8 @@ export const ScreenContainer: React.FC<{
               )}
             </View>
           </View>
-          {/* 
-            We render the wallet selector here with absolute position to make sure 
+          {/*
+            We render the wallet selector here with absolute position to make sure
             the popup is on top of everything else, otherwise it's unusable
           */}
           <View
