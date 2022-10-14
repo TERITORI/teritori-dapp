@@ -1,5 +1,10 @@
 package indexerdb
 
+import (
+	"database/sql"
+	"time"
+)
+
 type NFT struct {
 	// ID is network-dependent
 	// Teritori: tori-<bech32_mint_contract_address>-<token_id>
@@ -8,7 +13,7 @@ type NFT struct {
 	ImageURI    string
 	OwnerID     UserID
 	IsListed    bool
-	PriceAmount string `gorm:"type:numeric"`
+	PriceAmount sql.NullString `gorm:"type:numeric"`
 	PriceDenom  string
 
 	// "belongs to" relations
@@ -20,6 +25,7 @@ type NFT struct {
 
 	// "has many" relations
 	Activities []Activity
+	DeletedAt  *time.Time
 }
 
 type TeritoriNFT struct {

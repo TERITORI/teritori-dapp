@@ -91,10 +91,26 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 			TokenID: tokenId,
 		},
 	}
-	if err := h.db.Create(&nft).Error; err != nil {
-		return errors.Wrap(err, "failed to create nft in db")
+	var count int64
+	if err := h.db.Model(&indexerdb.NFT{}).Where(&indexerdb.NFT{ID: nftId}).Count(&count).Error; err != nil {
+		return errors.Wrap(err, "failed to count number of existent nft")
 	}
-	h.logger.Info("created tns domain", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
+	if count == 0 {
+		//New Nft
+		if err := h.db.Create(&nft).Error; err != nil {
+			return errors.Wrap(err, "failed to create nft in db")
+		}
+		h.logger.Info("created tns domain", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
+	} else {
+		//NFT existant just update it
+		err := h.db.Model(&indexerdb.NFT{ID: nftId}).UpdateColumns(map[string]interface{}{
+			"deleted_at": nil,
+			"owner_id":   string(ownerId),
+		}).Error
+		if err != nil {
+			return errors.Wrap(err, "failed to create nft in db")
+		}
+	}
 
 	// complete quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{

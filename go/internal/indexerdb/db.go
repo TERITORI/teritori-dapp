@@ -1,7 +1,10 @@
 package indexerdb
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -54,8 +57,18 @@ func NewSQLiteDB(path string) (*gorm.DB, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "open db")
 	}
-	if err := db.AutoMigrate(allModels...); err != nil {
-		return nil, errors.Wrap(err, "migrate db")
+	return db, nil
+}
+
+func NewPostgresDB(dsn string) (*gorm.DB, error) {
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		fmt.Printf("NewMySQLDB error: %s", err.Error())
+		return nil, errors.Wrap(err, "open db")
 	}
 	return db, nil
+}
+
+func MigrateDB(db *gorm.DB) error {
+	return db.AutoMigrate(allModels...)
 }

@@ -56,7 +56,7 @@ func (p *teritoriCollectionsProvider) Collections(limit int, offset int) chan *m
 		INNER JOIN nfts AS n on tc.id = n.collection_id
 	),
 	trades_by_collection as (
-		select sum(t.price) volume, nbc.id FROM trades AS t
+		select sum(CAST(t.price as decimal)) volume, nbc.id FROM trades AS t
 		INNER join activities AS a on a.id = t.activity_id 
 		INNER join nft_by_collection nbc on nbc.nft_id = a.nft_id
 		where a.time > $1 and a.kind = $2
