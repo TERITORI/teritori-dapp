@@ -31,6 +31,10 @@ var allModels = []interface{}{
 	&Activity{},
 	&Listing{},
 	&Trade{},
+
+	// quests
+	&Quest{},
+	&QuestCompletion{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

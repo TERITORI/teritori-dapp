@@ -6,6 +6,7 @@ option go_package = "./marketplacepb";
 service MarketplaceService {
   rpc Collections(CollectionsRequest) returns (stream CollectionsResponse);
   rpc NFTs(NFTsRequest) returns (stream NFTsResponse);
+  rpc Quests(QuestsRequest) returns (stream QuestsResponse);
   rpc CollectionActivity(CollectionActivityRequest) returns (stream CollectionActivityResponse);
   rpc NFTActivity(NFTActivityRequest) returns (stream NFTActivityResponse);
   rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
@@ -57,6 +58,12 @@ message Activity {
   string seller_id = 11;
 }
 
+message Quest {
+  string id = 1;
+  string title = 2;
+  bool completed = 3;
+}
+
 message PriceDatum {
   string price = 1;
   string time = 2;
@@ -91,6 +98,17 @@ message NFTsRequest {
 
 message NFTsResponse {
   NFT nft = 1;
+}
+
+message QuestsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+
+  string user_id = 3;
+}
+
+message QuestsResponse {
+  Quest quest = 1;
 }
 
 message CollectionActivityRequest {

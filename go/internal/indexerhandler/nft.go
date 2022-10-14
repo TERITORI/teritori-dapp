@@ -59,7 +59,7 @@ func (h *Handler) handleExecuteSendNFT(e *Message, execMsg *wasmtypes.MsgExecute
 	if len(senders) == 0 {
 		return errors.New("no senders")
 	}
-	seller := senders[0]
+	seller := indexerdb.TeritoriUserID(senders[0])
 
 	// get price from exec msg
 	var nftMsg SendNFTExecuteMsg
@@ -116,12 +116,22 @@ func (h *Handler) handleExecuteSendNFT(e *Message, execMsg *wasmtypes.MsgExecute
 			Listing: &indexerdb.Listing{
 				Price:      price,
 				PriceDenom: denom,
-				SellerID:   indexerdb.TeritoriUserID(seller),
+				SellerID:   seller,
 			},
 		}).Error; err != nil {
 			return errors.Wrap(err, "failed to create listing in db")
 		}
 		h.logger.Info("created listing", zap.String("id", activityID))
+
+		// complete quest
+		if err := h.db.Save(&indexerdb.QuestCompletion{
+			UserID:    string(seller),
+			QuestID:   "list_nft",
+			Completed: true,
+		}).Error; err != nil {
+			return errors.Wrap(err, "failed to save quest completion")
+		}
+
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "db tx failed")

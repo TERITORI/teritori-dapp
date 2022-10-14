@@ -10,16 +10,16 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const QuestCard: React.FC<{
   label: string;
-  isCurrent?: boolean;
+  completed?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ label, isCurrent = false, style }) => {
+}> = ({ label, completed = false, style }) => {
   return (
     <TertiaryBox
       // highlightable
       height={116}
       width={140}
       style={style}
-      hasGradientBackground={isCurrent}
+      hasGradientBackground={completed}
       mainContainerStyle={{
         backgroundColor: neutral17,
         justifyContent: "space-between",

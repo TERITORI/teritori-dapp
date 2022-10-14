@@ -83,8 +83,8 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 	if metadata.ImageURI != "" {
 		imageURI = metadata.ImageURI
 	}
-	// omg this was long
 
+	// create nft in db
 	nft := indexerdb.NFT{
 		ID:           nftId,
 		OwnerID:      ownerId,
@@ -99,6 +99,15 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		return errors.Wrap(err, "failed to create nft in db")
 	}
 	h.logger.Info("created tns domain", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
+
+	// complete quest
+	if err := h.db.Save(&indexerdb.QuestCompletion{
+		UserID:    string(ownerId),
+		QuestID:   "book_tns",
+		Completed: true,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to save quest completion")
+	}
 
 	return nil
 }
