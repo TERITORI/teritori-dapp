@@ -57,8 +57,9 @@ func (h *Handler) handleExecuteSendNFTFallback(e *Message, execMsg *wasmtypes.Ms
 	// find nft id
 	var collection *indexerdb.Collection
 	findResult := h.db.
-		Joins("TeritoriCollection").
-		Where("TeritoriCollection__nft_contract_address = ?", execMsg.Contract).
+		Preload("TeritoriCollection").
+		Joins("JOIN Teritori_collections ON Teritori_collections.collection_id = collections.id").
+		Where("Teritori_collections.nft_contract_address = ?", execMsg.Contract).
 		Find(&collection)
 	if err := findResult.
 		Error; err != nil {
@@ -103,8 +104,9 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 	// get collection
 	var collection indexerdb.Collection
 	r := h.db.
-		Joins("TeritoriCollection").
-		Where("TeritoriCollection__nft_contract_address = ?", contractAddress).
+		Preload("TeritoriCollection").
+		Joins("JOIN Teritori_collections ON Teritori_collections.collection_id = collections.id").
+		Where("Teritori_collections.nft_contract_address = ?", contractAddress).
 		Find(&collection)
 	if err := r.
 		Error; err != nil {
@@ -129,7 +131,7 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 
 	// delete
 	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
-	if err := h.db.Delete(&indexerdb.NFT{ID: nftId}).Error; err != nil {
+	if err := h.db.Model(&indexerdb.NFT{}).Where(&indexerdb.NFT{ID: nftId}).UpdateColumn("deleted_at", e.BlockTime).Error; err != nil {
 		return errors.Wrap(err, "failed to delete nft")
 	}
 
@@ -166,8 +168,9 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 	// get collection
 	var collection indexerdb.Collection
 	r := h.db.
-		Joins("TeritoriCollection").
-		Where("TeritoriCollection__nft_contract_address = ?", contractAddress).
+		Preload("TeritoriCollection").
+		Joins("JOIN Teritori_collections ON Teritori_collections.collection_id = collections.id").
+		Where("Teritori_collections.nft_contract_address = ?", contractAddress).
 		Find(&collection)
 	if err := r.
 		Error; err != nil {
