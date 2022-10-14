@@ -9,7 +9,10 @@ import {
 
 import chevronUpSVG from "../../assets/icons/chevron-down.svg";
 import chevronDownSVG from "../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../context/DropdownsProvider";
+import {
+  DropdownClickOutside,
+  useDropdowns,
+} from "../context/DropdownsProvider";
 import { useWallets, Wallet } from "../context/WalletsProvider";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { setSelectedWalletId } from "../store/slices/settings";
@@ -83,73 +86,78 @@ export const WalletSelector: React.FC<{
     (wallet) => wallet.id !== selectedWallet.id && wallet.publicKey
   );
   return (
-    <View style={style} ref={dropdownRef}>
-      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
-        <TertiaryBox
-          width={walletSelectorWidth}
-          mainContainerStyle={{
-            justifyContent: "space-between",
-            flexDirection: "row",
-            paddingHorizontal: 12,
-          }}
-          height={40}
-        >
-          <WalletView wallet={selectedWallet} />
-          <SVG
-            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
-            width={16}
-            height={16}
-          />
-        </TertiaryBox>
-      </TouchableOpacity>
+    <>
+      {isDropdownOpen(dropdownRef) && <DropdownClickOutside />}
+      <View style={[{ zIndex: 99999 }, style]} ref={dropdownRef}>
+        <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
+          <TertiaryBox
+            width={walletSelectorWidth}
+            mainContainerStyle={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              paddingHorizontal: 12,
+            }}
+            height={40}
+          >
+            <WalletView wallet={selectedWallet} />
+            <SVG
+              source={
+                isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG
+              }
+              width={16}
+              height={16}
+            />
+          </TertiaryBox>
+        </TouchableOpacity>
 
-      {isDropdownOpen(dropdownRef) && (
-        <TertiaryBox
-          style={{ position: "absolute", top: 44 }}
-          mainContainerStyle={{
-            paddingHorizontal: 12,
-            paddingVertical: 12,
-            backgroundColor: neutral17,
-          }}
-        >
-          {otherWallets.map((wallet) => (
-            <TouchableOpacity
-              onPress={() => {
-                closeOpenedDropdown();
-                dispatch(setSelectedWalletId(wallet.id));
-              }}
-              key={wallet.id}
-              style={{ width: "100%" }}
-            >
-              <WalletView wallet={wallet} style={{ marginBottom: 24 }} />
-            </TouchableOpacity>
-          ))}
-          {otherWallets.length > 0 && (
-            <View
-              style={{
-                borderBottomColor: neutral44,
-                borderBottomWidth: 1,
-                height: 1,
-                width: "100%",
-                marginBottom: 10,
-              }}
-            />
-          )}
-          <View style={{ flexDirection: "row" }}>
-            <SecondaryButton
-              size="XS"
-              squaresBackgroundColor={neutral17}
-              text="Add wallet"
-              onPress={() => {
-                closeOpenedDropdown();
-                if (typeof onPressAddWallet === "function") {
-                  onPressAddWallet();
-                }
-              }}
-            />
-          </View>
-        </TertiaryBox>
-      )}
-    </View>
+        {isDropdownOpen(dropdownRef) && (
+          <TertiaryBox
+            style={{ position: "absolute", top: 44 }}
+            mainContainerStyle={{
+              paddingHorizontal: 12,
+              paddingVertical: 12,
+              backgroundColor: neutral17,
+            }}
+          >
+            {otherWallets.map((wallet) => (
+              <TouchableOpacity
+                onPress={() => {
+                  closeOpenedDropdown();
+                  dispatch(setSelectedWalletId(wallet.id));
+                }}
+                key={wallet.id}
+                style={{ width: "100%" }}
+              >
+                <WalletView wallet={wallet} style={{ marginBottom: 24 }} />
+              </TouchableOpacity>
+            ))}
+            {otherWallets.length > 0 && (
+              <View
+                style={{
+                  borderBottomColor: neutral44,
+                  borderBottomWidth: 1,
+                  height: 1,
+                  width: "100%",
+                  marginBottom: 10,
+                }}
+              />
+            )}
+            <View style={{ flexDirection: "row" }}>
+              <SecondaryButton
+                size="XS"
+                squaresBackgroundColor={neutral17}
+                text="Add wallet"
+                onPress={() => {
+                  closeOpenedDropdown();
+                  if (typeof onPressAddWallet === "function") {
+                    onPressAddWallet();
+                  }
+                }}
+              />
+            </View>
+          </TertiaryBox>
+        )}
+      </View>
+    </>
   );
 };
