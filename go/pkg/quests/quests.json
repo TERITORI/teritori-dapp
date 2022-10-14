@@ -1,0 +1,26 @@
+[
+  {
+    "id": "claim_airdrop",
+    "title": "Claim Teritori Airdrop"
+  },
+  {
+    "id": "book_tns",
+    "title": "Book a Handle on Teritori Name Service"
+  },
+  {
+    "id": "buy_nft",
+    "title": "Buy your 1st NFT on Marketplace"
+  },
+  {
+    "id": "list_nft",
+    "title": "List your 1st NFT on Marketplace"
+  },
+   {
+    "id":"sell_nft",
+    "title": "Sell your 1st NFT on Marketplace"
+  },
+  {
+    "id": "rioters_footer",
+    "title": "Put your Graffiti on Rioters Footer"
+  }
+]

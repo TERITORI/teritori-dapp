@@ -9,6 +9,7 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerhandler"
+	"github.com/TERITORI/teritori-dapp/go/pkg/quests"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
 	tclient "github.com/tendermint/tendermint/rpc/client/http"
@@ -24,6 +25,7 @@ type ReplayInfo struct {
 }
 
 func main() {
+	// handle args
 	fs := flag.NewFlagSet("teritori-indexer", flag.ContinueOnError)
 	var (
 		tendermintRPCEndpoint = fs.String("tendermint-rpc-endpoint", "", "tendermint rpc endpoint of a teritori node")
@@ -63,6 +65,7 @@ func main() {
 		panic(errors.New("missing minter-code-id flag"))
 	}
 
+	// create replay infos
 	replayInfos := []ReplayInfo{
 		{
 			StartHeight:  0,
@@ -78,22 +81,38 @@ func main() {
 		},
 	}
 
+	// get logger
 	logger, err := zap.NewDevelopment()
 	if err != nil {
 		panic(errors.Wrap(err, "failed to init logger"))
 	}
 
+	// get db
 	db, err := indexerdb.NewSQLiteDB(*dbPath)
 	if err != nil {
 		panic(errors.Wrap(err, fmt.Sprintf(`failed to access db at "%s"`, *dbPath)))
 	}
 
+	// init/get height
 	var dbApp indexerdb.App
 	if err := db.FirstOrCreate(&dbApp).Error; err != nil {
 		panic(errors.Wrap(err, "failed to get db app"))
 	}
 	height := dbApp.Height
 
+	// inject quests
+	qs, err := quests.Quests()
+	if err != nil {
+		panic(errors.Wrap(err, "failed to get embedded quests"))
+	}
+	for _, q := range qs {
+		db.Save(&indexerdb.Quest{
+			ID:    q.ID,
+			Title: q.Title,
+		})
+	}
+
+	// find replay info to use
 	var runReplayInfos []ReplayInfo
 	for i, replayInfo := range replayInfos {
 		if replayInfo.StartHeight <= height && (replayInfo.FinalHeight == -1 || replayInfo.FinalHeight >= height) {
@@ -105,6 +124,7 @@ func main() {
 		panic(fmt.Errorf("failed to find suitable replay info for height %d", height))
 	}
 
+	// replay
 	for _, replayInfo := range runReplayInfos {
 		logger.Info("using replay info", zap.String("rpc", replayInfo.RPCEndpoint), zap.String("rest", replayInfo.RESTEndpoint), zap.Int64("start", replayInfo.StartHeight), zap.Int64("end", replayInfo.FinalHeight))
 		client, err := tclient.New(replayInfo.RPCEndpoint, "")

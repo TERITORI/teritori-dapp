@@ -431,3 +431,33 @@ func (s *MarkteplaceService) NFTPriceHistory(ctx context.Context, req *marketpla
 
 	return &marketplacepb.NFTPriceHistoryResponse{Data: data}, nil
 }
+
+type QuestWithCompletion struct {
+	ID        string
+	Title     string
+	Completed bool
+}
+
+func (s *MarkteplaceService) Quests(req *marketplacepb.QuestsRequest, srv marketplacepb.MarketplaceService_QuestsServer) error {
+	var quests []QuestWithCompletion
+	if err := s.conf.IndexerDB.
+		WithContext(srv.Context()).
+		Model(&indexerdb.Quest{}).
+		Select("quests.id as id, quests.title as title, quest_completions.completed as completed").
+		Joins("LEFT JOIN quest_completions ON quests.id = quest_completions.quest_id AND quest_completions.user_id = ?", req.GetUserId()).
+		Limit(int(req.GetLimit())).
+		Offset(int(req.GetOffset())).
+		Scan(&quests).Error; err != nil {
+		return errors.Wrap(err, "failed to query quests")
+	}
+	for _, q := range quests {
+		if err := srv.Send(&marketplacepb.QuestsResponse{Quest: &marketplacepb.Quest{
+			Id:        q.ID,
+			Title:     q.Title,
+			Completed: q.Completed,
+		}}); err != nil {
+			return errors.Wrap(err, "failed to send quest")
+		}
+	}
+	return nil
+}

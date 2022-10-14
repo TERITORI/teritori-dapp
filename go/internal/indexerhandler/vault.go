@@ -179,14 +179,14 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	if len(spenders) < buyerSpenderIndex+1 {
 		return fmt.Errorf("not enough spenders, wanted %d, got %d", buyerSpenderIndex+1, len(spenders))
 	}
-	buyer := spenders[buyerSpenderIndex]
+	buyer := indexerdb.TeritoriUserID(spenders[buyerSpenderIndex])
 
 	// get seller
 	receivers := e.Events["coin_received.receiver"]
 	if len(receivers) < sellerReceiverIndex+1 {
 		return fmt.Errorf("not enough receivers, wanted %d, got %d", sellerReceiverIndex+1, len(receivers))
 	}
-	seller := receivers[sellerReceiverIndex]
+	seller := indexerdb.TeritoriUserID(receivers[sellerReceiverIndex])
 
 	// get price
 	spentAmounts := e.Events["coin_spent.amount"]
@@ -243,13 +243,32 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 			Trade: &indexerdb.Trade{
 				Price:      price,
 				PriceDenom: denom,
-				BuyerID:    indexerdb.TeritoriUserID(buyer),
-				SellerID:   indexerdb.TeritoriUserID(seller),
+				BuyerID:    buyer,
+				SellerID:   seller,
 			},
 		}).Error; err != nil {
 			return errors.Wrap(err, "failed to create trade in db")
 		}
 		h.logger.Info("created trade", zap.String("id", activityID))
+
+		// complete buy quest
+		if err := h.db.Save(&indexerdb.QuestCompletion{
+			UserID:    string(buyer),
+			QuestID:   "buy_nft",
+			Completed: true,
+		}).Error; err != nil {
+			return errors.Wrap(err, "failed to save buy quest completion")
+		}
+
+		// complete sell quest
+		if err := h.db.Save(&indexerdb.QuestCompletion{
+			UserID:    string(seller),
+			QuestID:   "sell_nft",
+			Completed: true,
+		}).Error; err != nil {
+			return errors.Wrap(err, "failed to save sell quest completion")
+		}
+
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "db tx failed")
