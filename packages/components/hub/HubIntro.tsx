@@ -3,12 +3,11 @@ import { View, Image } from "react-native";
 
 import connectedImagePNG from "../../../assets/default-images/connected-image-bad.png";
 import logoSVG from "../../../assets/logos/logo.svg";
-import { useWallets } from "../../context/WalletsProvider";
+import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { Overview } from "../../screens/WalletManager/Overview/Overview";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
 import { useAppNavigation } from "../../utils/navigation";
-import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { Quests } from "../Quests";
@@ -86,12 +85,8 @@ const DisconnectedIntro: React.FC = () => {
 };
 
 export const HubIntro: React.FC = () => {
-  const { wallets } = useWallets();
-  if (
-    wallets.filter(
-      (wallet) => wallet.connected || wallet.provider === WalletProvider.Store
-    ).length > 0
-  ) {
+  const hasWallet = useAreThereWallets();
+  if (hasWallet) {
     return <ConnectedIntro />;
   }
   return <DisconnectedIntro />;

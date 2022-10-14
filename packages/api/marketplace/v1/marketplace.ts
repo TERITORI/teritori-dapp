@@ -163,13 +163,14 @@ export interface CollectionsResponse {
   collection: Collection | undefined;
 }
 
-export interface CollectionNFTsRequest {
-  id: string;
+export interface NFTsRequest {
   limit: number;
   offset: number;
+  collectionId: string;
+  ownerId: string;
 }
 
-export interface CollectionNFTsResponse {
+export interface NFTsResponse {
   nft: NFT | undefined;
 }
 
@@ -799,39 +800,45 @@ export const CollectionsResponse = {
   },
 };
 
-function createBaseCollectionNFTsRequest(): CollectionNFTsRequest {
-  return { id: "", limit: 0, offset: 0 };
+function createBaseNFTsRequest(): NFTsRequest {
+  return { limit: 0, offset: 0, collectionId: "", ownerId: "" };
 }
 
-export const CollectionNFTsRequest = {
-  encode(message: CollectionNFTsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
+export const NFTsRequest = {
+  encode(message: NFTsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.limit !== 0) {
-      writer.uint32(16).int32(message.limit);
+      writer.uint32(8).int32(message.limit);
     }
     if (message.offset !== 0) {
-      writer.uint32(24).int32(message.offset);
+      writer.uint32(16).int32(message.offset);
+    }
+    if (message.collectionId !== "") {
+      writer.uint32(26).string(message.collectionId);
+    }
+    if (message.ownerId !== "") {
+      writer.uint32(34).string(message.ownerId);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionNFTsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): NFTsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCollectionNFTsRequest();
+    const message = createBaseNFTsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
-          break;
-        case 2:
           message.limit = reader.int32();
           break;
-        case 3:
+        case 2:
           message.offset = reader.int32();
+          break;
+        case 3:
+          message.collectionId = reader.string();
+          break;
+        case 4:
+          message.ownerId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -841,47 +848,50 @@ export const CollectionNFTsRequest = {
     return message;
   },
 
-  fromJSON(object: any): CollectionNFTsRequest {
+  fromJSON(object: any): NFTsRequest {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
+      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
     };
   },
 
-  toJSON(message: CollectionNFTsRequest): unknown {
+  toJSON(message: NFTsRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionNFTsRequest>, I>>(object: I): CollectionNFTsRequest {
-    const message = createBaseCollectionNFTsRequest();
-    message.id = object.id ?? "";
+  fromPartial<I extends Exact<DeepPartial<NFTsRequest>, I>>(object: I): NFTsRequest {
+    const message = createBaseNFTsRequest();
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
+    message.collectionId = object.collectionId ?? "";
+    message.ownerId = object.ownerId ?? "";
     return message;
   },
 };
 
-function createBaseCollectionNFTsResponse(): CollectionNFTsResponse {
+function createBaseNFTsResponse(): NFTsResponse {
   return { nft: undefined };
 }
 
-export const CollectionNFTsResponse = {
-  encode(message: CollectionNFTsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const NFTsResponse = {
+  encode(message: NFTsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.nft !== undefined) {
       NFT.encode(message.nft, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionNFTsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): NFTsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCollectionNFTsResponse();
+    const message = createBaseNFTsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -896,18 +906,18 @@ export const CollectionNFTsResponse = {
     return message;
   },
 
-  fromJSON(object: any): CollectionNFTsResponse {
+  fromJSON(object: any): NFTsResponse {
     return { nft: isSet(object.nft) ? NFT.fromJSON(object.nft) : undefined };
   },
 
-  toJSON(message: CollectionNFTsResponse): unknown {
+  toJSON(message: NFTsResponse): unknown {
     const obj: any = {};
     message.nft !== undefined && (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionNFTsResponse>, I>>(object: I): CollectionNFTsResponse {
-    const message = createBaseCollectionNFTsResponse();
+  fromPartial<I extends Exact<DeepPartial<NFTsResponse>, I>>(object: I): NFTsResponse {
+    const message = createBaseNFTsResponse();
     message.nft = (object.nft !== undefined && object.nft !== null) ? NFT.fromPartial(object.nft) : undefined;
     return message;
   },
@@ -1245,10 +1255,7 @@ export const NFTPriceHistoryResponse = {
 
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
-  CollectionNFTs(
-    request: DeepPartial<CollectionNFTsRequest>,
-    metadata?: grpc.Metadata,
-  ): Observable<CollectionNFTsResponse>;
+  NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse>;
   CollectionActivity(
     request: DeepPartial<CollectionActivityRequest>,
     metadata?: grpc.Metadata,
@@ -1266,7 +1273,7 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Collections = this.Collections.bind(this);
-    this.CollectionNFTs = this.CollectionNFTs.bind(this);
+    this.NFTs = this.NFTs.bind(this);
     this.CollectionActivity = this.CollectionActivity.bind(this);
     this.NFTActivity = this.NFTActivity.bind(this);
     this.NFTPriceHistory = this.NFTPriceHistory.bind(this);
@@ -1276,11 +1283,8 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     return this.rpc.invoke(MarketplaceServiceCollectionsDesc, CollectionsRequest.fromPartial(request), metadata);
   }
 
-  CollectionNFTs(
-    request: DeepPartial<CollectionNFTsRequest>,
-    metadata?: grpc.Metadata,
-  ): Observable<CollectionNFTsResponse> {
-    return this.rpc.invoke(MarketplaceServiceCollectionNFTsDesc, CollectionNFTsRequest.fromPartial(request), metadata);
+  NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse> {
+    return this.rpc.invoke(MarketplaceServiceNFTsDesc, NFTsRequest.fromPartial(request), metadata);
   }
 
   CollectionActivity(
@@ -1330,20 +1334,20 @@ export const MarketplaceServiceCollectionsDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-export const MarketplaceServiceCollectionNFTsDesc: UnaryMethodDefinitionish = {
-  methodName: "CollectionNFTs",
+export const MarketplaceServiceNFTsDesc: UnaryMethodDefinitionish = {
+  methodName: "NFTs",
   service: MarketplaceServiceDesc,
   requestStream: false,
   responseStream: true,
   requestType: {
     serializeBinary() {
-      return CollectionNFTsRequest.encode(this).finish();
+      return NFTsRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...CollectionNFTsResponse.decode(data),
+        ...NFTsResponse.decode(data),
         toObject() {
           return this;
         },

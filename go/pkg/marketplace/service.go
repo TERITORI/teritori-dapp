@@ -112,7 +112,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 	return fmt.Errorf("unknown collection list kind %s", req.GetKind().String())
 }
 
-func (s *MarkteplaceService) CollectionNFTs(req *marketplacepb.CollectionNFTsRequest, srv marketplacepb.MarketplaceService_CollectionNFTsServer) error {
+func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplacepb.MarketplaceService_NFTsServer) error {
 	// NOTE: we should probably query the graphql api from the client directly in this case
 
 	limit := req.GetLimit()
@@ -125,25 +125,24 @@ func (s *MarkteplaceService) CollectionNFTs(req *marketplacepb.CollectionNFTsReq
 		return errors.New("offset must be greater or equal to 0")
 	}
 
-	id := req.GetId()
-	if id == "" {
-		return errors.New("empty id")
-	}
+	collection_id := req.GetCollectionId()
 
-	if strings.HasPrefix(id, marketplacepb.Network_NETWORK_FAKE.Prefix()) {
+	// FIXME: return fake data if any filter is fake
+	if strings.HasPrefix(collection_id, marketplacepb.Network_NETWORK_FAKE.Prefix()) {
 		for i := int32(0); i < limit; i++ {
-			if err := srv.Send(&marketplacepb.CollectionNFTsResponse{Nft: faking.FakeNFT()}); err != nil {
+			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: faking.FakeNFT()}); err != nil {
 				return errors.Wrap(err, "failed to send nft")
 			}
 		}
 		return nil
 	}
 
-	if strings.HasPrefix(id, marketplacepb.Network_NETWORK_SOLANA.Prefix()) {
+	// FIXME: support other filters on solana
+	if strings.HasPrefix(collection_id, marketplacepb.Network_NETWORK_SOLANA.Prefix()) {
 		gqlClient := graphql.NewClient(s.conf.GraphqlEndpoint, nil)
 
 		collectionNFTs, err := holagql.GetCollectionNFTs(srv.Context(), gqlClient,
-			strings.TrimPrefix(id, marketplacepb.Network_NETWORK_SOLANA.Prefix()+"-"),
+			strings.TrimPrefix(collection_id, marketplacepb.Network_NETWORK_SOLANA.Prefix()+"-"),
 			int(limit),
 			int(offset),
 		)
@@ -156,7 +155,7 @@ func (s *MarkteplaceService) CollectionNFTs(req *marketplacepb.CollectionNFTsReq
 			if len(nft.GetListings()) != 0 {
 				price = nft.GetListings()[0].GetPrice()
 			}
-			if err := srv.Send(&marketplacepb.CollectionNFTsResponse{Nft: &marketplacepb.NFT{
+			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &marketplacepb.NFT{
 				Name:        nft.GetName(),
 				MintAddress: nft.GetMintAddress(),
 				ImageUri:    nft.GetImage(),
@@ -169,37 +168,51 @@ func (s *MarkteplaceService) CollectionNFTs(req *marketplacepb.CollectionNFTsReq
 		return nil
 	}
 
-	var nfts []*indexerdb.NFT
-	if err := s.conf.IndexerDB.
+	// teritori
+
+	query := s.conf.IndexerDB.
 		Preload("TeritoriNFT").
 		Preload("Collection").
 		Offset(int(offset)).
 		Limit(int(limit)).
 		Order("is_listed DESC").
-		Order("price_amount ASC"). // FIXME: this doesn't support mixed denoms
-		Find(&nfts, &indexerdb.NFT{CollectionID: id}).
-		Error; err != nil {
+		Order("price_amount ASC")
+
+	if collection_id != "" {
+		query = query.Where("collection_id = ?", collection_id)
+	}
+
+	owner_id := req.GetOwnerId()
+	if owner_id != "" {
+		query = query.Where("owner_id = ?", owner_id)
+	}
+
+	var nfts []*indexerdb.NFT
+	if err := query. // FIXME: this doesn't support mixed denoms
+				Find(&nfts, &indexerdb.NFT{CollectionID: collection_id}).
+				Error; err != nil {
 		return errors.Wrap(err, "failed to fetch collection nfts")
 	}
 
-	isTNS := id == indexerdb.TeritoriCollectionID(s.conf.TNSContractAddress)
+	tnsId := indexerdb.TeritoriCollectionID(s.conf.TNSContractAddress)
 
 	for _, nft := range nfts {
 		if nft.Collection == nil {
 			return errors.New("no collection on nft")
 		}
 
-		// tns-specific
 		imageURI := nft.ImageURI
 		textInsert := ""
-		if isTNS {
+
+		// tns-specific
+		if nft.CollectionID == tnsId {
 			textInsert = nft.Name
 			if imageURI == "" {
 				imageURI = s.conf.TNSDefaultImageURL
 			}
 		}
 
-		if err := srv.Send(&marketplacepb.CollectionNFTsResponse{Nft: &marketplacepb.NFT{
+		if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &marketplacepb.NFT{
 			Id:             nft.ID,
 			Name:           nft.Name,
 			CollectionName: nft.Collection.Name,
