@@ -27,7 +27,7 @@ import {
   CollectionInfo,
   useCollectionInfo,
 } from "../../hooks/useCollectionInfo";
-import { useCollectionNFTs } from "../../hooks/useCollectionNFTs";
+import { useNFTs } from "../../hooks/useNFTs";
 import { alignDown } from "../../utils/align";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
@@ -175,8 +175,9 @@ const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
     nfts,
     fetchMore,
     firstLoading: firstLoadingNTFs,
-  } = useCollectionNFTs({
-    id,
+  } = useNFTs({
+    collectionId: id,
+    ownerId: "",
     limit: alignDown(20, numColumns) || numColumns,
     offset: 0,
   });

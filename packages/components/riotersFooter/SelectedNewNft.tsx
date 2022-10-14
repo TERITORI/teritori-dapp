@@ -6,7 +6,7 @@ import shapeSvg from "../../../assets/icons/shape.svg";
 import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { useCollectionNFTs } from "../../hooks/useCollectionNFTs";
+import { useNFTs } from "../../hooks/useNFTs";
 import { alignDown } from "../../utils/align";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
@@ -26,8 +26,9 @@ const SelectNewNft: React.FC<{
     setSearchNft,
     currentCollection,
   }) => {
-    const { nfts, fetchMore } = useCollectionNFTs({
-      id: nftCollectionId,
+    const { nfts, fetchMore } = useNFTs({
+      collectionId: nftCollectionId,
+      ownerId: "",
       limit: alignDown(20, 2) || 2,
       offset: 0,
     });
