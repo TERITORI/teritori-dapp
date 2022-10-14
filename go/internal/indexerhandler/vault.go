@@ -8,7 +8,6 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	cosmosproto "github.com/cosmos/gogoproto/proto"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -27,7 +26,9 @@ type VaultExecuteUpdatePriceMsgData struct {
 
 // FIXME: this is untested and probably broken
 
-func (h *Handler) handleExecuteUpdatePrice(e *Tx, contractAddress string) error {
+func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	contractAddress := execMsg.Contract
+
 	if contractAddress != h.config.VaultContractAddress {
 		return nil
 	}
@@ -55,19 +56,8 @@ func (h *Handler) handleExecuteUpdatePrice(e *Tx, contractAddress string) error 
 	tokenId := tokenIds[0]
 
 	// get message
-	if len(e.Tx.Body.Messages) == 0 {
-		return errors.New("no messages in tx")
-	}
-	txBodyMessage := e.Tx.Body.Messages[0]
-	if txBodyMessage.TypeUrl != "/cosmwasm.wasm.v1.MsgExecuteContract" {
-		return errors.New("invalid tx body message type")
-	}
-	var executeMsg wasmtypes.MsgExecuteContract
-	if err := cosmosproto.Unmarshal(txBodyMessage.Value, &executeMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal execute msg")
-	}
 	var updatePriceMsg VaultExecuteUpdatePriceMsg
-	if err := json.Unmarshal(executeMsg.Msg, &updatePriceMsg); err != nil {
+	if err := json.Unmarshal(execMsg.Msg, &updatePriceMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal update price msg")
 	}
 
@@ -87,9 +77,9 @@ func (h *Handler) handleExecuteUpdatePrice(e *Tx, contractAddress string) error 
 	return nil
 }
 
-func (h *Handler) handleExecuteWithdraw(e *Tx, contractAddress string) error {
+func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	// check that it's the correct vault contract
-	if contractAddress != h.config.VaultContractAddress {
+	if execMsg.Contract != h.config.VaultContractAddress {
 		return nil
 	}
 
@@ -140,7 +130,7 @@ func (h *Handler) handleExecuteWithdraw(e *Tx, contractAddress string) error {
 		if err := tx.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 			return errors.Wrap(err, "nft not found in db")
 		}
-		activityID := indexerdb.TeritoriActiviyID(e.Hash)
+		activityID := indexerdb.TeritoriActiviyID(e.MsgID)
 		if err := tx.Create(&indexerdb.Activity{
 			ID:    activityID,
 			NFTID: nftID,
@@ -164,9 +154,9 @@ const priceSpentAmountIndex = 0
 
 var amountRegexp = regexp.MustCompile(`(\d+)(.+)`)
 
-func (h *Handler) handleExecuteBuy(e *Tx, contractAddress string) error {
+func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	// check that it's the correct vault contract
-	if contractAddress != h.config.VaultContractAddress {
+	if execMsg.Contract != h.config.VaultContractAddress {
 		return nil
 	}
 
@@ -244,7 +234,7 @@ func (h *Handler) handleExecuteBuy(e *Tx, contractAddress string) error {
 		if err := tx.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 			return errors.Wrap(err, "nft not found in db")
 		}
-		activityID := indexerdb.TeritoriActiviyID(e.Hash)
+		activityID := indexerdb.TeritoriActiviyID(e.MsgID)
 		if err := tx.Create(&indexerdb.Activity{
 			ID:    activityID,
 			NFTID: nftID,

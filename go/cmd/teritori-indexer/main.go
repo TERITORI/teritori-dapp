@@ -34,7 +34,7 @@ func main() {
 		pollDelay             = fs.Duration("poll-delay", 2*time.Second, "delay between queries")
 		tnsContractAddress    = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
 		vaultContractAddress  = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")
-		minterCodeID          = fs.String("teritori-minter-code-id", "", "code id of the teritori minter contract")
+		minterCodeID          = fs.Uint64("teritori-minter-code-id", 0, "code id of the teritori minter contract")
 		tnsDefaultImageURL    = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
@@ -58,6 +58,9 @@ func main() {
 	}
 	if *tnsContractAddress == "" {
 		panic(errors.New("missing teritori-name-service-contract-address flag"))
+	}
+	if *minterCodeID == 0 {
+		panic(errors.New("missing minter-code-id flag"))
 	}
 
 	replayInfos := []ReplayInfo{

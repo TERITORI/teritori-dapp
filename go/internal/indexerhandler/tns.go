@@ -6,7 +6,6 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
-	cosmosproto "github.com/cosmos/gogoproto/proto"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -15,17 +14,9 @@ type TNSInstantiateMsg struct {
 	Name string `json:"name"`
 }
 
-func (h *Handler) handleInstantiateTNS(e *Tx, contractAddress string) error {
-	// FIXME: network queries should be done async
-
-	// get instantiate data
-	var wasmInstantiateMsg wasmtypes.MsgInstantiateContract
-	// FIXME: derefence possible panic
-	if err := cosmosproto.Unmarshal(e.Tx.Body.Messages[0].Value, &wasmInstantiateMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal wasm instantiate msg")
-	}
+func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, instantiateMsg *wasmtypes.MsgInstantiateContract) error {
 	var tnsInstantiateMsg TNSInstantiateMsg
-	if err := json.Unmarshal(wasmInstantiateMsg.Msg.Bytes(), &tnsInstantiateMsg); err != nil {
+	if err := json.Unmarshal(instantiateMsg.Msg.Bytes(), &tnsInstantiateMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal minter instantiate msg")
 	}
 
@@ -69,7 +60,7 @@ type ExecuteCW721MintMsg struct {
 	Mint CW721MintMsg `json:"mint"`
 }
 
-func (h *Handler) handleExecuteMintTNS(e *Tx, collection *indexerdb.Collection, tokenId string) error {
+func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collection, tokenId string, execMsg *wasmtypes.MsgExecuteContract) error {
 	minters := e.Events["wasm.minter"]
 	if len(minters) == 0 {
 		return errors.New("no minters")
@@ -80,19 +71,8 @@ func (h *Handler) handleExecuteMintTNS(e *Tx, collection *indexerdb.Collection, 
 	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
 	// get image URI
-	if len(e.Tx.Body.Messages) == 0 {
-		return errors.New("no messages in tx")
-	}
-	txBodyMessage := e.Tx.Body.Messages[0]
-	if txBodyMessage.TypeUrl != "/cosmwasm.wasm.v1.MsgExecuteContract" {
-		return errors.New("invalid tx body message type")
-	}
-	var executeMsg wasmtypes.MsgExecuteContract
-	if err := cosmosproto.Unmarshal(txBodyMessage.Value, &executeMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal execute msg")
-	}
 	var executePayload ExecuteCW721MintMsg
-	if err := json.Unmarshal(executeMsg.Msg, &executePayload); err != nil {
+	if err := json.Unmarshal(execMsg.Msg, &executePayload); err != nil {
 		return errors.Wrap(err, "failed to unmarshal mint msg")
 	}
 	var metadata TNSMetadata
@@ -132,26 +112,17 @@ type ExecuteTNSUpdateMetadataMsg struct {
 	UpdateMetadata TNSUpdateMetadataMsg `json:"update_metadata"`
 }
 
-func (h *Handler) handleExecuteUpdateMetadata(e *Tx, contractAddress string) error {
+func (h *Handler) handleExecuteUpdateMetadata(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	contractAddress := execMsg.Contract
+
 	if contractAddress != h.config.TNSContractAddress {
 		h.logger.Debug("ignored update_metadata with unknown contract address", zap.String("contract-address", contractAddress))
 		return nil
 	}
 
 	// get metadata
-	if len(e.Tx.Body.Messages) == 0 {
-		return errors.New("no messages in tx")
-	}
-	txBodyMessage := e.Tx.Body.Messages[0]
-	if txBodyMessage.TypeUrl != "/cosmwasm.wasm.v1.MsgExecuteContract" {
-		return errors.New("invalid tx body message type")
-	}
-	var executeMsg wasmtypes.MsgExecuteContract
-	if err := cosmosproto.Unmarshal(txBodyMessage.Value, &executeMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal execute msg")
-	}
 	var executePayload ExecuteTNSUpdateMetadataMsg
-	if err := json.Unmarshal(executeMsg.Msg, &executePayload); err != nil {
+	if err := json.Unmarshal(execMsg.Msg, &executePayload); err != nil {
 		return errors.Wrap(err, "failed to unmarshal mint msg")
 	}
 

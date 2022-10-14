@@ -8,13 +8,12 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/contracts/nft_minter_types"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
-	cosmosproto "github.com/cosmos/gogoproto/proto"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
-func (h *Handler) handleInstantiateMinter(e *Tx, contractAddress string) error {
+func (h *Handler) handleInstantiateMinter(e *Message, contractAddress string, instantiateMsg *wasmtypes.MsgInstantiateContract) error {
 	// get nft contract address
 	nftAddrs := e.Events["wasm.nft_addr"]
 	if len(nftAddrs) == 0 {
@@ -22,14 +21,8 @@ func (h *Handler) handleInstantiateMinter(e *Tx, contractAddress string) error {
 	}
 	nftAddr := nftAddrs[0]
 
-	// get instantiate data
-	var wasmInstantiateMsg wasmtypes.MsgInstantiateContract
-	// FIXME: derefence possible panic
-	if err := cosmosproto.Unmarshal(e.Tx.Body.Messages[0].Value, &wasmInstantiateMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal wasm instantiate msg")
-	}
 	var minterInstantiateMsg nft_minter_types.InstantiateMsg
-	if err := json.Unmarshal(wasmInstantiateMsg.Msg.Bytes(), &minterInstantiateMsg); err != nil {
+	if err := json.Unmarshal(instantiateMsg.Msg.Bytes(), &minterInstantiateMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal minter instantiate msg")
 	}
 
@@ -61,7 +54,7 @@ func (h *Handler) handleInstantiateMinter(e *Tx, contractAddress string) error {
 	return nil
 }
 
-func (h *Handler) handleExecuteMintClassic(e *Tx, collection *indexerdb.Collection, tokenId string) error {
+func (h *Handler) handleExecuteMintClassic(e *Message, collection *indexerdb.Collection, tokenId string) error {
 	owners := e.Events["wasm.owner"]
 	if len(owners) == 0 {
 		return errors.New("no owners")

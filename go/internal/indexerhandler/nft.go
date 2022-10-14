@@ -6,7 +6,6 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	cosmosproto "github.com/cosmos/gogoproto/proto"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -33,7 +32,9 @@ type SendNFTExecuteMsg struct {
 	SendNFT SendNFTMsg `json:"send_nft"`
 }
 
-func (h *Handler) handleExecuteSendNFT(e *Tx, contractAddress string) error {
+func (h *Handler) handleExecuteSendNFT(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	// FIXME: analyze execMsg instead of events
+
 	// get send_nft target contract address
 	executeContractAddresses := e.Events["execute._contract_address"]
 	if len(executeContractAddresses) < vaultContractSendNFTIndex+1 {
@@ -60,22 +61,9 @@ func (h *Handler) handleExecuteSendNFT(e *Tx, contractAddress string) error {
 	}
 	seller := senders[0]
 
-	// get price from raw tx
-	// FIXME: dedup
-	if len(e.Tx.Body.Messages) == 0 {
-		return errors.New("no messages in tx")
-	}
-	txBodyMessage := e.Tx.Body.Messages[0]
-	if txBodyMessage.TypeUrl != "/cosmwasm.wasm.v1.MsgExecuteContract" {
-		return errors.New("invalid tx body message type")
-	}
-	var executeMsg wasmtypes.MsgExecuteContract
-	if err := cosmosproto.Unmarshal(txBodyMessage.Value, &executeMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal execute msg")
-	}
-	nftMsgBytes := executeMsg.Msg
+	// get price from exec msg
 	var nftMsg SendNFTExecuteMsg
-	if err := json.Unmarshal(nftMsgBytes, &nftMsg); err != nil {
+	if err := json.Unmarshal(execMsg.Msg, &nftMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal nft execute msg")
 	}
 	var hookMsg DepositNFTHookMsg
@@ -90,7 +78,7 @@ func (h *Handler) handleExecuteSendNFT(e *Tx, contractAddress string) error {
 		var collection *indexerdb.Collection
 		findResult := tx.
 			Joins("TeritoriCollection").
-			Where("TeritoriCollection__nft_contract_address = ?", contractAddress).
+			Where("TeritoriCollection__nft_contract_address = ?", execMsg.Contract).
 			Find(&collection)
 		if err := findResult.
 			Error; err != nil {
@@ -119,7 +107,7 @@ func (h *Handler) handleExecuteSendNFT(e *Tx, contractAddress string) error {
 		if err := tx.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 			return errors.Wrap(err, "nft not found in db")
 		}
-		activityID := indexerdb.TeritoriActiviyID(e.Hash)
+		activityID := indexerdb.TeritoriActiviyID(e.MsgID)
 		if err := tx.Create(&indexerdb.Activity{
 			ID:    activityID,
 			NFTID: nftID,
@@ -141,7 +129,9 @@ func (h *Handler) handleExecuteSendNFT(e *Tx, contractAddress string) error {
 	return nil
 }
 
-func (h *Handler) handleExecuteBurn(e *Tx, contractAddress string) error {
+func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	contractAddress := execMsg.Contract
+
 	// get collection
 	var collection indexerdb.Collection
 	r := h.db.
