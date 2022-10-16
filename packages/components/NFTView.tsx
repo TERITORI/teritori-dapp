@@ -16,6 +16,7 @@ import { useAppNavigation } from "../utils/navigation";
 import { protobufNetworkToNetwork } from "../utils/network";
 import { neutral33, neutral77 } from "../utils/style/colors";
 import { BrandText } from "./BrandText";
+import { ImageWithTextInsert } from "./ImageWithTextInsert";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SecondaryButton } from "./buttons/SecondaryButton";
@@ -116,30 +117,12 @@ export const NFTView: React.FC<{
                 <SVG source={dotsCircleSVG} height={32} width={32} />
               </TouchableOpacity>
             </View>
-            <View style={{ marginTop: 15, marginBottom: 20 }}>
-              <Image
-                source={{ uri: nft.imageUri }}
-                style={{
-                  height: 223,
-                  width: 223,
-                  borderRadius: 12,
-                }}
-              />
-              {!!nft.textInsert && (
-                <BrandText
-                  style={{
-                    color: "white",
-                    position: "absolute",
-                    fontSize: 14,
-                    bottom: 10,
-                    right: 10,
-                    maxWidth: 223 - 10,
-                  }}
-                >
-                  {nft.textInsert}
-                </BrandText>
-              )}
-            </View>
+            <ImageWithTextInsert
+              size={223}
+              imageURL={nft.imageUri}
+              textInsert={nft.textInsert}
+              style={{ marginTop: 15, marginBottom: 20, borderRadius: 12 }}
+            />
             <BrandText
               style={{
                 fontSize: 14,
@@ -148,7 +131,6 @@ export const NFTView: React.FC<{
             >
               {nft.name}
             </BrandText>
-
             <View
               style={{
                 flexDirection: "row",
