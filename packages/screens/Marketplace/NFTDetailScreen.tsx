@@ -73,6 +73,7 @@ export interface NFTInfo {
   price: string;
   priceDenom: string;
   collectionName: string;
+  textInsert?: string;
 }
 
 const Content: React.FC<{

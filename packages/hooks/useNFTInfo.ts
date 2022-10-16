@@ -127,6 +127,7 @@ const getTNSNFTInfo = async (
     price: vaultInfo?.amount || "",
     priceDenom: vaultInfo?.denom || "",
     collectionName: contractInfo.name,
+    textInsert: tokenId,
   };
 
   return nfo;

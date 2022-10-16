@@ -1,6 +1,6 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import React from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
 import guardian1PNG from "../../../assets/default-images/guardian_1.png";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
@@ -12,6 +12,7 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { NFTCancelListingCard } from "../cards/NFTCancelListingCard";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
@@ -136,9 +137,11 @@ export const NFTMainInfo: React.FC<{
         height={464}
         style={{ marginRight: 28, marginBottom: 40 }}
       >
-        <Image
-          source={{ uri: nftInfo?.imageURL }}
-          style={{ width: 462, height: 462, borderRadius: 8 }}
+        <ImageWithTextInsert
+          imageURL={nftInfo?.imageURL}
+          textInsert={nftInfo?.textInsert}
+          size={462}
+          style={{ borderRadius: 8 }}
         />
       </TertiaryBox>
       {/*---- Info NFT */}
