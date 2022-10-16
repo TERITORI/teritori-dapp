@@ -18,6 +18,7 @@ export const Quests: React.FC = () => {
     ) {
       return;
     }
+    setQuests([]);
     const stream = backendClient.Quests({
       limit: 100,
       offset: 0,
