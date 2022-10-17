@@ -33,13 +33,6 @@ export const Header: React.FC<{
         style,
       ]}
     >
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Home")}
-        style={{ marginLeft: headerMarginHorizontal }}
-      >
-        <SVG width={68} height={68} source={logoTopSVG} />
-      </TouchableOpacity>
-
       <View
         style={{
           width: "100%",

@@ -72,6 +72,10 @@ export const ScreenContainer: React.FC<{
       </Modal>
 
       <View style={styles.container}>
+        {["android", "ios"].includes(Platform.OS) ||
+          (!hideSidebar ? <Sidebar /> : null)}
+        {!["android", "ios"].includes(Platform.OS) && customSidebar}
+
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
           <Header style={headerStyle}>{headerChildren}</Header>
@@ -79,10 +83,6 @@ export const ScreenContainer: React.FC<{
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
           >
-            {["android", "ios"].includes(Platform.OS) ||
-              (!hideSidebar ? <Sidebar /> : null)}
-            {!["android", "ios"].includes(Platform.OS) && customSidebar}
-
             {/*==== Scrollable screen content*/}
             <View style={{ flex: 1 }}>
               {hasScroll ? (
@@ -149,8 +149,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000000",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    flexDirection: "row",
   },
 });
 

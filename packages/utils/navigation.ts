@@ -45,11 +45,6 @@ export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
-export const getCurrentRouteName = (navigation: AppNavigationProp) => {
-  const routes = navigation.getState().routes;
-  return routes[routes.length - 1].name;
-};
-
 const navConfig: {
   screens: { [Name in keyof RootStackParamList]: string };
 } = {
