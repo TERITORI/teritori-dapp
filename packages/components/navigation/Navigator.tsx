@@ -29,6 +29,12 @@ import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsS
 import { WalletsScreen } from "../../screens/Wallets/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
 
+import { RejectedScreen } from "../../screens/Governance/RejectedScreen";
+import { AllPeriodScreen } from "../../screens/Governance/AllPeriodScreen";
+import { FailedScreen } from "../../screens/Governance/FailedScreen";
+import { PassedScreen } from "../../screens/Governance/PassedScreen";
+import { VotingScreen } from "../../screens/Governance/VotingScreen";
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
 
@@ -78,6 +84,38 @@ export const Navigator: React.FC = () => {
         name="RiotersFooter"
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
+      />
+
+      {/* ==== Governance Pages */}
+
+      <Stack.Screen
+        name="Rejected"
+        component={RejectedScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="AllPeriods"
+        component={AllPeriodScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Voting"
+        component={VotingScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Failed"
+        component={FailedScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Passed"
+        component={PassedScreen}
+        options={{ header: () => null }}
       />
 
       {/* ==== Wallet Manager */}

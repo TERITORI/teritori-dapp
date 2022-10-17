@@ -1,0 +1,136 @@
+{
+    "proposals": [
+      {
+        "proposal_id": "1",
+        "content": {
+          "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+          "title": "Block Param Change",
+          "description": "Update max gas per blocks to 8M",
+          "changes": [
+            {
+              "subspace": "baseapp",
+              "key": "BlockParams",
+              "value": "{ \"max_gas\": \"8000000\" }"
+            }
+          ]
+        },
+        "status": "PROPOSAL_STATUS_PASSED",
+        "final_tally_result": {
+          "yes": "256078559300845",
+          "abstain": "0",
+          "no": "1990000",
+          "no_with_veto": "0"
+        },
+        "submit_time": "2022-07-18T09:46:21.884113766Z",
+        "deposit_end_time": "2022-07-20T09:46:21.884113766Z",
+        "total_deposit": [
+          {
+            "denom": "utori",
+            "amount": "10000000"
+          }
+        ],
+        "voting_start_time": "2022-07-18T10:00:56.629870651Z",
+        "voting_end_time": "2022-07-20T10:00:56.629870651Z"
+      },
+      {
+        "proposal_id": "2",
+        "content": {
+          "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+          "title": "Increase the minimum deposit amount for governance proposals",
+          "description": "This proposal would increase the minimum deposit for governance proposals from the current 10TORI, to 10000TORI. This Proposal Tend To Avoid Proposal Spamming.",
+          "changes": [
+            {
+              "subspace": "gov",
+              "key": "depositparams",
+              "value": "{ \"min_deposit\": [{\"denom\": \"utori\",\"amount\": \"10000000000\"}] }"
+            }
+          ]
+        },
+        "status": "PROPOSAL_STATUS_PASSED",
+        "final_tally_result": {
+          "yes": "256071512089880",
+          "abstain": "0",
+          "no": "7626628695",
+          "no_with_veto": "0"
+        },
+        "submit_time": "2022-07-18T09:59:15.086120368Z",
+        "deposit_end_time": "2022-07-20T09:59:15.086120368Z",
+        "total_deposit": [
+          {
+            "denom": "utori",
+            "amount": "10010000"
+          }
+        ],
+        "voting_start_time": "2022-07-18T10:01:30.742076398Z",
+        "voting_end_time": "2022-07-20T10:01:30.742076398Z"
+      },
+      {
+        "proposal_id": "3",
+        "content": {
+          "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+          "title": "Increase Validator Set Size to 150",
+          "description": "Proposal to increase the validator set size to 150. The change would go into effect immeditately if the proposal passes.",
+          "changes": [
+            {
+              "subspace": "staking",
+              "key": "MaxValidators",
+              "value": "150"
+            }
+          ]
+        },
+        "status": "PROPOSAL_STATUS_REJECTED",
+        "final_tally_result": {
+          "yes": "11179794383314",
+          "abstain": "306733333624",
+          "no": "245050799507487",
+          "no_with_veto": "0"
+        },
+        "submit_time": "2022-07-18T13:40:32.581039329Z",
+        "deposit_end_time": "2022-07-20T13:40:32.581039329Z",
+        "total_deposit": [
+          {
+            "denom": "utori",
+            "amount": "10000000"
+          }
+        ],
+        "voting_start_time": "2022-07-18T13:40:32.581039329Z",
+        "voting_end_time": "2022-07-20T13:40:32.581039329Z"
+      },
+      {
+        "proposal_id": "4",
+        "content": {
+          "@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+          "title": "Teritori name service requires 100M gas to store the codebase",
+          "description": "Teritori name service requires 100M gas to store the codebase. This proposal increase max gas per block to 300M.\n\n- By voting YES on this proposal, max gas per block will increase to 300M.\n- By voting NO on this proposal, gas parameters will stay unchanged.",
+          "changes": [
+            {
+              "subspace": "baseapp",
+              "key": "BlockParams",
+              "value": "{ \"max_gas\": \"300000000\" }"
+            }
+          ]
+        },
+        "status": "PROPOSAL_STATUS_PASSED",
+        "final_tally_result": {
+          "yes": "317937454700039",
+          "abstain": "278418102383856",
+          "no": "54001000000",
+          "no_with_veto": "0"
+        },
+        "submit_time": "2022-07-27T13:28:55.523892029Z",
+        "deposit_end_time": "2022-07-29T13:28:55.523892029Z",
+        "total_deposit": [
+          {
+            "denom": "utori",
+            "amount": "10001000000"
+          }
+        ],
+        "voting_start_time": "2022-07-27T14:02:58.938556979Z",
+        "voting_end_time": "2022-07-29T14:02:58.938556979Z"
+      }
+    ],
+    "pagination": {
+      "next_key": null,
+      "total": "4"
+    }
+}

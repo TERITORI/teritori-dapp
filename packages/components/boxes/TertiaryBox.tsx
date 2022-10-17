@@ -1,4 +1,3 @@
-import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 
@@ -10,9 +9,10 @@ export const TertiaryBox: React.FC<{
   fullWidth?: boolean;
   squaresBackgroundColor?: string;
   disabled?: boolean;
-  hasGradientBackground?: boolean;
   style?: StyleProp<ViewStyle>;
   mainContainerStyle?: StyleProp<ViewStyle>;
+  backgroundColor?: string;
+  center?: boolean;
 }> = ({
   width,
   height,
@@ -20,9 +20,10 @@ export const TertiaryBox: React.FC<{
   squaresBackgroundColor = "#000000",
   children,
   disabled = false,
-  hasGradientBackground = false,
   style,
   mainContainerStyle,
+  backgroundColor,
+  center = true,
 }) => {
   const flatMainContainerStyle = mainContainerStyle
     ? StyleSheet.flatten(mainContainerStyle)
@@ -31,9 +32,9 @@ export const TertiaryBox: React.FC<{
   const borderColor = disabled
     ? neutral44
     : flatMainContainerStyle.borderColor || neutral33;
-  const backgroundColor = disabled
-    ? neutral11
-    : flatMainContainerStyle.backgroundColor || "#000000";
+  // const backgroundColor = disabled
+  //   ? neutral11
+  //   : flatMainContainerStyle.backgroundColor || "#000000";
 
   return (
     // ---- Main container, flex row to fit the horizontal content
@@ -60,28 +61,13 @@ export const TertiaryBox: React.FC<{
                 borderWidth: 1,
                 borderRadius,
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: center ? "center" : "flex-start",
               },
               mainContainerStyle,
             ]}
           >
-            {hasGradientBackground ? (
-              <LinearGradient
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: borderRadius - 1,
-                  zIndex: -1,
-                }}
-                colors={["#9C4CEA", "#336AFF", "#26C5FB"]}
-              />
-            ) : null}
             <>{children}</>
           </View>
-
           {/* Left top broken corner */}
           <View
             style={{
@@ -97,6 +83,7 @@ export const TertiaryBox: React.FC<{
               zIndex: 2,
             }}
           />
+
           {/* Right bottom broken corner */}
           <View
             style={{
