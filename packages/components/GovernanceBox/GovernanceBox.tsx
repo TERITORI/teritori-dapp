@@ -15,10 +15,10 @@ export const GovernanceBox: React.FC<{
   turnoutValue: string;
   mostVotedValue: number;
   colorMostVoted: ColorValue | undefined;
-  pourcentageYesValue: number;
-  pourcentageNoValue: number;
-  pourcentageNoWithVetoValue: number;
-  pourcentageAbstainValue: number;
+  percentageYesValue: number;
+  percentageNoValue: number;
+  percentageNoWithVetoValue: number;
+  percentageAbstainValue: number;
   votingSubmitTime: string;
   votingDepositEndTime: string;
 }> = ({
@@ -29,42 +29,42 @@ export const GovernanceBox: React.FC<{
   turnoutValue,
   mostVotedValue,
   colorMostVoted,
-  pourcentageYesValue,
-  pourcentageNoValue,
-  pourcentageNoWithVetoValue,
-  pourcentageAbstainValue,
+  percentageYesValue,
+  percentageNoValue,
+  percentageNoWithVetoValue,
+  percentageAbstainValue,
   votingStartTime,
   votingSubmitTime,
   votingDepositEndTime,
 }) => {
   let isVotingPeriod = true;
   const totalUsers =
-    pourcentageYesValue +
-    pourcentageNoValue +
-    pourcentageNoWithVetoValue +
-    pourcentageAbstainValue;
-  const totalParticipant = totalUsers - pourcentageAbstainValue;
-  const pourcentageTotalParticipant =
+    percentageYesValue +
+    percentageNoValue +
+    percentageNoWithVetoValue +
+    percentageAbstainValue;
+  const totalParticipant = totalUsers - percentageAbstainValue;
+  const percentageTotalParticipant =
     ((totalParticipant / totalUsers) * 100).toFixed(2).toString() + "%";
   const [displayGovernanceDetails, setdisplayGovernanceDetails] =
     useState(false);
 
   const test = "%";
-  let pourcentageYes = ((pourcentageYesValue / totalUsers) * 100)
+  let percentageYes = ((percentageYesValue / totalUsers) * 100)
     .toFixed(2)
     .toString();
-  pourcentageYes = pourcentageYes.substring(0, 5) + test;
-  let pourcentageNo = ((pourcentageNoValue / totalUsers) * 100)
+  percentageYes = percentageYes.substring(0, 5) + test;
+  let percentageNo = ((percentageNoValue / totalUsers) * 100)
     .toFixed(2)
     .toString();
-  pourcentageNo = pourcentageNo.substring(0, 5) + test;
+  percentageNo = percentageNo.substring(0, 5) + test;
 
-  let topPourcentage;
-  if (pourcentageYesValue > pourcentageNoValue) {
-    topPourcentage = pourcentageYes;
+  let toppercentage;
+  if (percentageYesValue > percentageNoValue) {
+    toppercentage = percentageYes;
     colorMostVoted = "#16BBFF";
   } else {
-    topPourcentage = pourcentageNo;
+    toppercentage = percentageNo;
     colorMostVoted = "#EAA54B";
   }
 
@@ -98,14 +98,14 @@ export const GovernanceBox: React.FC<{
           titleProposal={titleProposal}
           descriptionProposal={descriptionProposal}
           totalParticipant={totalParticipant}
-          pourcentageTotalParticipant={pourcentageTotalParticipant}
+          percentageTotalParticipant={percentageTotalParticipant}
           votingEndTime={votingEndTime}
           votingStartTime={votingStartTime}
           votingSubmitTime={votingSubmitTime}
           votingDepositEndTime={votingDepositEndTime}
           isVotingPeriod={isVotingPeriod}
-          pourcentageYes={pourcentageYes}
-          pourcentageNo={pourcentageNo}
+          percentageYes={percentageYes}
+          percentageNo={percentageNo}
         />
       );
     } else {
@@ -205,7 +205,7 @@ export const GovernanceBox: React.FC<{
           >
             <View
               style={{
-                width: pourcentageYes,
+                width: percentageYes,
                 height: 3,
                 borderRadius: 10,
                 position: "absolute",
@@ -223,12 +223,12 @@ export const GovernanceBox: React.FC<{
 
             <View
               style={{
-                width: pourcentageNo,
+                width: percentageNo,
                 height: 3,
                 backgroundColor: "#EAA54B",
                 borderRadius: 10,
                 position: "absolute",
-                left: pourcentageYes, //Pourcentage of the width of the first view
+                left: percentageYes, //percentage of the width of the first view
                 zIndex: 2,
               }}
             />
@@ -296,7 +296,7 @@ export const GovernanceBox: React.FC<{
               top: 250,
             }}
           >
-            {pourcentageTotalParticipant}
+            {percentageTotalParticipant}
           </BrandText>
 
           <View
@@ -346,7 +346,7 @@ export const GovernanceBox: React.FC<{
               top: 250,
             }}
           >
-            {topPourcentage}
+            {toppercentage}
           </BrandText>
         </TertiaryBox>
       </a>

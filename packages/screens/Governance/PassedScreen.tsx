@@ -84,12 +84,12 @@ export const PassedScreen: React.FC = () => {
             turnoutValue="80.69%"
             mostVotedValue={parseFloat(proposals.final_tally_result.yes)}
             colorMostVoted="#16BBFF"
-            pourcentageNoValue={parseFloat(proposals.final_tally_result.no)}
-            pourcentageYesValue={parseFloat(proposals.final_tally_result.yes)}
-            pourcentageNoWithVetoValue={parseFloat(
+            percentageNoValue={parseFloat(proposals.final_tally_result.no)}
+            percentageYesValue={parseFloat(proposals.final_tally_result.yes)}
+            percentageNoWithVetoValue={parseFloat(
               proposals.final_tally_result.no_with_veto
             )}
-            pourcentageAbstainValue={parseFloat(
+            percentageAbstainValue={parseFloat(
               proposals.final_tally_result.abstain
             )}
           />

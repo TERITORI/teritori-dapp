@@ -34,14 +34,14 @@ export const GovernanceDetails: React.FC<{
   titleProposal: string;
   descriptionProposal: string;
   totalParticipant: number;
-  pourcentageTotalParticipant: string;
+  percentageTotalParticipant: string;
   votingEndTime: string;
   votingStartTime: string;
   votingSubmitTime: string;
   votingDepositEndTime: string;
   isVotingPeriod: boolean;
-  pourcentageYes: string;
-  pourcentageNo: string;
+  percentageYes: string;
+  percentageNo: string;
 }> = ({
   visible,
   onClose,
@@ -49,14 +49,14 @@ export const GovernanceDetails: React.FC<{
   titleProposal,
   descriptionProposal,
   totalParticipant,
-  pourcentageTotalParticipant,
+  percentageTotalParticipant,
   votingStartTime,
   votingEndTime,
   votingSubmitTime,
   votingDepositEndTime,
   isVotingPeriod,
-  pourcentageYes,
-  pourcentageNo,
+  percentageYes,
+  percentageNo,
 }) => {
   const [displayVote, setdisplayVote] = useState(false);
   const [displayConfirmationVote, setdisplayConfirmationVote] = useState(false);
@@ -71,8 +71,8 @@ export const GovernanceDetails: React.FC<{
     setdisplayVote(!displayVote);
   }
 
-  const valueChartYes = parseInt(pourcentageYes.replace("%", ""), 2);
-  const valueChartNo = parseInt(pourcentageNo.replace("%", ""), 2);
+  const valueChartYes = parseInt(percentageYes.replace("%", ""), 2);
+  const valueChartNo = parseInt(percentageNo.replace("%", ""), 2);
   const valueChartAbstain = 100 - valueChartYes - valueChartNo;
 
   const selectedWallet = useSelectedWallet();
@@ -396,9 +396,9 @@ export const GovernanceDetails: React.FC<{
             innerRadius={70}
             colorScale={["#16BBFF", "#EAA54B", "#808080"]}
             data={[
-              { x: "Pourcentage Yes", y: valueChartYes },
-              { x: "Pourcentage No", y: valueChartNo },
-              { x: "Pourcentage Abstain", y: valueChartAbstain },
+              { x: "percentage Yes", y: valueChartYes },
+              { x: "percentage No", y: valueChartNo },
+              { x: "percentage Abstain", y: valueChartAbstain },
             ]}
           />
         </View>
@@ -430,7 +430,7 @@ export const GovernanceDetails: React.FC<{
               fontSize: 13,
             }}
           >
-            {pourcentageTotalParticipant}
+            {percentageTotalParticipant}
           </BrandText>
         </View>
 
