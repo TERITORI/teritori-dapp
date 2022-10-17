@@ -17,6 +17,7 @@ import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutl
 export const PassedScreen: React.FC = () => {
   const [cards, setCards] = useState([])
   const [displayCreateProposal, setdisplayCreateProposal] = useState(false)
+  const navigation = useAppNavigation();
 
   useEffect(() => {
     fetch('https://rest.testnet.teritori.com/cosmos/gov/v1beta1/proposals?proposal_status=3')

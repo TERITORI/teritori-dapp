@@ -1,8 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
-import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
-import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
+import { AllPeriodScreen } from "../../screens/Governance/AllPeriodScreen";
+import { PassedScreen } from "../../screens/Governance/PassedScreen";
+import { RejectedScreen } from "../../screens/Governance/RejectedScreen";
+import { VotingScreen } from "../../screens/Governance/VotingScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
@@ -28,12 +30,6 @@ import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerSc
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { WalletsScreen } from "../../screens/Wallets/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
-
-import { RejectedScreen } from "../../screens/Governance/RejectedScreen";
-import { AllPeriodScreen } from "../../screens/Governance/AllPeriodScreen";
-import { FailedScreen } from "../../screens/Governance/FailedScreen";
-import { PassedScreen } from "../../screens/Governance/PassedScreen";
-import { VotingScreen } from "../../screens/Governance/VotingScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
@@ -67,11 +63,6 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null, title: screenTitle("Marketplace") }}
       />
       <Stack.Screen
-        name="Governance"
-        component={GovernanceScreen}
-        options={{ header: () => null, title: screenTitle("Governance") }}
-      />
-      <Stack.Screen
         name="Wallets"
         component={WalletsScreen}
         options={{
@@ -103,12 +94,6 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="Voting"
         component={VotingScreen}
-        options={{ header: () => null }}
-      />
-
-      <Stack.Screen
-        name="Failed"
-        component={FailedScreen}
         options={{ header: () => null }}
       />
 

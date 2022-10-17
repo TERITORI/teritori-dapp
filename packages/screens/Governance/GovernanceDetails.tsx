@@ -10,11 +10,8 @@ import { neutral44 } from "../../utils/style/colors";
 import ModalBase from "../../components/modals/ModalBase";
 
 import { RadioButton } from 'react-native-paper';
-
-
 import {ConfirmationVote} from "../../components/GovernanceBox/ConfirmationVote";
 import * as Victory from 'victory'
-
 import {
   MsgVoteEncodeObject,
   MsgDelegateEncodeObject,
@@ -63,6 +60,7 @@ export const GovernanceDetails: React.FC < {
   const VictoryBar = Victory.VictoryPie;
 
   function activeVotePopup() {
+    console.log("activeVotePopup")
     onClose();
     setdisplayVote(!displayVote);
   }
@@ -73,43 +71,45 @@ export const GovernanceDetails: React.FC < {
 
   const selectedWallet = useSelectedWallet();
 
-  const handlePress = useCallback(async () => {
-    if (
-      selectedWallet?.network !== Network.Teritori ||
-      !selectedWallet.connected ||
-      !selectedWallet.publicKey
-    ) {
-      // do something about the fact that the currently selected wallet
-      // is not suited for a teritori action
-      console.error("invalid selected wallet", selectedWallet);
-      return;
-    }
+    const handlePress = useCallback(async () => {
+      
 
-    try {
-      const keplrSigner = getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(keplrSigner);
-
-      const vote: MsgVoteEncodeObject = {
-        typeUrl: "/cosmos.gov.v1beta1.MsgVote",
-        value: {
-          proposalId: Long.fromNumber(parseInt(numberProposal.substring(1))),
-          voter: String(selectedWallet.publicKey),
-          option: VoteOption.VOTE_OPTION_YES,
-        },
-      };
-      const result = await client.signAndBroadcast(
-        selectedWallet.publicKey,
-        [vote],
-        "auto"
-      );
-      if (isDeliverTxFailure(result)) {
-        // do something about the fact that the tx was a failure
-        console.error("tx failed", result);
+      if (
+        selectedWallet?.network !== Network.Teritori ||
+        !selectedWallet.connected ||
+        !selectedWallet.publicKey
+      ) {
+        // do something about the fact that the currently selected wallet
+        // is not suited for a teritori action
+        console.error("invalid selected wallet", selectedWallet);
+        return;
       }
-  } catch (err) {
-    console.error("something unexpected went wrong", err);
-  }
-}, [selectedWallet]);
+
+      try {
+        const keplrSigner = getKeplrOfflineSigner();
+        const client = await getTeritoriSigningStargateClient(keplrSigner);
+
+        const vote: MsgVoteEncodeObject = {
+          typeUrl: "/cosmos.gov.v1beta1.MsgVote",
+          value: {
+            proposalId: Long.fromNumber(3),
+            voter: String(selectedWallet.publicKey),
+            option: VoteOption.VOTE_OPTION_YES,
+          },
+        };
+        const result = await client.signAndBroadcast(
+          selectedWallet.publicKey,
+          [vote],
+          "auto"
+        );
+        if (isDeliverTxFailure(result)) {
+          // do something about the fact that the tx was a failure
+          console.error("tx failed", result);
+        }
+    } catch (err) {
+      console.error("something unexpected went wrong", err);
+    }
+  }, [selectedWallet]);
 
 
   function deleteee() {
@@ -469,6 +469,9 @@ export const GovernanceDetails: React.FC < {
                   height: 12,
                   backgroundColor: "#333333",
                   borderRadius: 12,
+                  // position: "absolute",
+                  //   left: 300,
+                  //   top: 255,
                 }}/>
                 <BrandText style={{
                     fontSize: 14,
@@ -476,6 +479,15 @@ export const GovernanceDetails: React.FC < {
                   NoWithVeto  0.01%
                 </BrandText>
             </View>
+
+            {/* {
+              isClicked ? <PrimaryButton
+              size="XL"
+              style={{ position: "absolute", left: 450, bottom: -40 }}
+              text="       Vote       "
+              onPress={() => activeVote() }
+              /> : ""
+            } */}
 
             <PrimaryButton
               size="XL"

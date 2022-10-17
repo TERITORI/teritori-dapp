@@ -68,8 +68,7 @@ export const AllPeriodScreen: React.FC = () => {
         marginTop: 110,
         marginLeft: -70,
         marginRight: -60,
-      }}
-      >
+      }}>
         {
           cards.map((proposals: any, item) => (
             <GovernanceBox
@@ -90,7 +89,6 @@ export const AllPeriodScreen: React.FC = () => {
               pourcentageAbstainValue={parseFloat(proposals.final_tally_result.abstain)}
             />
         ))}
-
       </View>
       <SVG width={200} height={200} style={{marginTop: 190, marginLeft:"40%"}} source={logoSVG} />
     </ScreenContainer>
