@@ -220,13 +220,14 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		}
 		nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
-		// update nft price
+		// update nft
 		if err := tx.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
 			"price_amount": nil,
 			"price_denom":  nil,
 			"is_listed":    false,
+			"owner_id":     buyer,
 		}).Error; err != nil {
-			return errors.Wrap(err, "failed to update nft price")
+			return errors.Wrap(err, "failed to update nft")
 		}
 
 		// create trade

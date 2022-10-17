@@ -15,9 +15,17 @@ type App struct {
 	Height int64
 }
 
+type User struct {
+	ID         UserID
+	PrimaryTNS string
+}
+
 var allModels = []interface{}{
 	// app
 	&App{},
+
+	// users
+	&User{},
 
 	// collections
 	&Collection{},

@@ -13,8 +13,11 @@ import { NameData } from "../../components/teritoriNameService/NameData";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
+import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useToken, useTokenList } from "../../hooks/tokens";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { isTokenOwnedByUser } from "../../utils/tns";
 
@@ -44,6 +47,8 @@ const NotOwnerActions = () => {
 const OwnerActions = () => {
   const navigation = useAppNavigation();
   const { name } = useTNS();
+  const wallet = useSelectedWallet();
+  const { setToastError, setToastSuccess } = useFeedbacks();
   return (
     <>
       <BackTo label="Back" />
@@ -58,6 +63,32 @@ const OwnerActions = () => {
         text="Burn"
         style={{ marginLeft: 24 }}
         onPress={() => navigation.navigate("TNSBurnName", { name })}
+      />
+      <SecondaryButton
+        size="M"
+        text="Set as Primary"
+        style={{ marginLeft: 24 }}
+        onPress={async () => {
+          try {
+            const client = new TeritoriNameServiceClient(
+              await getSigningCosmWasmClient(),
+              wallet?.publicKey || "",
+              process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || ""
+            );
+            await client.updatePrimaryAlias({
+              tokenId: `${name}.tori`,
+            });
+            setToastSuccess({ title: "Success", message: "Set as primary" });
+          } catch (err) {
+            console.error(err);
+            if (err instanceof Error) {
+              setToastError({
+                title: "Failed to set as primary",
+                message: err.message,
+              });
+            }
+          }
+        }}
       />
     </>
   );

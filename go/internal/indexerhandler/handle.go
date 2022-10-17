@@ -135,6 +135,8 @@ func (h *Handler) handleExecute(e *Message) error {
 		return errors.Wrap(err, "failed to unmarshal instantiate msg")
 	}
 
+	// FIXME: replace by exec message analysis
+
 	wasmActions := e.Events["wasm.action"]
 	if len(wasmActions) == 0 {
 		return errors.New("no wasm action")
@@ -169,6 +171,10 @@ func (h *Handler) handleExecute(e *Message) error {
 	case "update_metadata":
 		if err := h.handleExecuteUpdateMetadata(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle burn")
+		}
+	case "update_preferred_alias":
+		if err := h.handleUpdatePrimaryAlias(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to update_preferred_alias")
 		}
 	}
 

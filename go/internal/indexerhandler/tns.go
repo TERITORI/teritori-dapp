@@ -145,3 +145,37 @@ func (h *Handler) handleExecuteUpdateMetadata(e *Message, execMsg *wasmtypes.Msg
 
 	return nil
 }
+
+type UpdatePrimaryAliasMsg struct {
+	TokenID string `json:"token_id"`
+}
+
+type ExecuteUpdatePrimaryAliasMsg struct {
+	Payload UpdatePrimaryAliasMsg `json:"update_primary_alias"`
+}
+
+func (h *Handler) handleUpdatePrimaryAlias(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	contractAddress := execMsg.Contract
+	if contractAddress != h.config.TNSContractAddress {
+		h.logger.Debug("ignored update_primary_alias with unknown contract address", zap.String("contract-address", contractAddress))
+		return nil
+	}
+
+	var msg ExecuteUpdatePrimaryAliasMsg
+	if err := json.Unmarshal(execMsg.Msg, &msg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal msg payload")
+	}
+
+	userId := indexerdb.TeritoriUserID(execMsg.Sender)
+
+	if err := h.db.Save(&indexerdb.User{
+		ID:         userId,
+		PrimaryTNS: msg.Payload.TokenID,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to save user")
+	}
+
+	h.logger.Debug("updated primary tns", zap.String("user-id", string(userId)), zap.String("new-name", msg.Payload.TokenID))
+
+	return nil
+}

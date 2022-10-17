@@ -86,7 +86,7 @@ export const NFTView: React.FC<{
                 }}
               >
                 <Image
-                  source={{ uri: avatarPNG }}
+                  source={{ uri: nft.ownerImageUrl || avatarPNG }} // TODO: proper fallback
                   style={{
                     height: 32,
                     width: 32,
@@ -109,7 +109,7 @@ export const NFTView: React.FC<{
                       lineHeight: 16,
                     }}
                   >
-                    @nickname
+                    {nft.ownerName || shortUserAddressFromID(nft.ownerId, 10)}
                   </BrandText>
                 </View>
               </View>
@@ -217,3 +217,11 @@ export const NFTView: React.FC<{
     </TouchableOpacity>
   );
 });
+
+// using this because ellipizeMode seems broken
+const shortUserAddressFromID = (id: string, size: number) => {
+  if (id.startsWith("tori-")) {
+    return id.substring(5, 5 + size) + "..." + id.substring(id.length - size);
+  }
+  return id.substring(0, size) + "..." + id.substring(id.length - size);
+};

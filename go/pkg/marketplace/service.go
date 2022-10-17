@@ -112,6 +112,11 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 	return fmt.Errorf("unknown collection list kind %s", req.GetKind().String())
 }
 
+type NFTOwnerInfo struct {
+	Name     string
+	ImageURL string
+}
+
 func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplacepb.MarketplaceService_NFTsServer) error {
 	// NOTE: we should probably query the graphql api from the client directly in this case
 
@@ -182,9 +187,9 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		query = query.Where("collection_id = ?", collection_id)
 	}
 
-	owner_id := req.GetOwnerId()
-	if owner_id != "" {
-		query = query.Where("owner_id = ?", owner_id)
+	ownerId := req.GetOwnerId()
+	if ownerId != "" {
+		query = query.Where("owner_id = ?", ownerId)
 	}
 
 	var nfts []*indexerdb.NFT
@@ -212,6 +217,24 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			}
 		}
 
+		// get user info
+		// TODO: optimize into first db query
+		ownerName := ""
+		ownerImageURL := ""
+		var owner indexerdb.User
+		query := s.conf.IndexerDB.Find(&owner, "id = ?", nft.OwnerID)
+		if query.Error != nil {
+			return errors.Wrap(query.Error, "failed to query nft owner")
+		}
+		if query.RowsAffected > 0 && owner.PrimaryTNS != "" {
+			ownerName = owner.PrimaryTNS
+			var tns indexerdb.NFT
+			nftQuery := s.conf.IndexerDB.Find(&tns, "id = ?", indexerdb.TeritoriNFTID(s.conf.TNSContractAddress, owner.PrimaryTNS))
+			if nftQuery.Error == nil && nftQuery.RowsAffected > 0 {
+				ownerImageURL = tns.ImageURI
+			}
+		}
+
 		if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &marketplacepb.NFT{
 			Id:             nft.ID,
 			Name:           nft.Name,
@@ -222,6 +245,9 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			Price:          nft.PriceAmount,
 			Denom:          nft.PriceDenom,
 			TextInsert:     textInsert,
+			OwnerId:        string(nft.OwnerID),
+			OwnerName:      ownerName,
+			OwnerImageUrl:  ipfsutil.IPFSURIToURL(ownerImageURL),
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send nft")
 		}
