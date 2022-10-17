@@ -30,6 +30,9 @@ message NFT {
   bool is_listed = 8;
   string text_insert = 9;
   string collection_name = 10;
+  string owner_name = 11;
+  string owner_image_url = 12;
+  string owner_id = 13;
 }
 
 message Collection {
