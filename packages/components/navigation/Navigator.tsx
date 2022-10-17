@@ -29,6 +29,7 @@ import { WalletsScreen } from "../../screens/Wallets/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
@@ -36,137 +37,174 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Home") }}
       />
       <Stack.Screen
         name="MyCollection"
         component={MyCollectionScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("My Collection") }}
       />
       <Stack.Screen
         name="Guardians"
         component={GuardiansScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Guardians") }}
       />
       <Stack.Screen
         name="GuardiansGame"
         component={GuardiansGameScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Guardians Game") }}
       />
       <Stack.Screen
         name="Marketplace"
         component={MarketplaceScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Marketplace") }}
       />
       <Stack.Screen
         name="Governance"
         component={GovernanceScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Governance") }}
       />
       <Stack.Screen
         name="Wallets"
         component={WalletsScreen}
-        options={{ presentation: "transparentModal", header: () => null }}
+        options={{
+          presentation: "transparentModal",
+          header: () => null,
+          title: screenTitle("Wallets"),
+        }}
       />
       <Stack.Screen
         name="RiotersFooter"
         component={RiotersFooterScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Rioters Footer") }}
       />
 
       {/* ==== Wallet Manager */}
       <Stack.Screen
         name="WalletManager"
         component={WalletManagerScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Wallet Manager") }}
       />
       <Stack.Screen
         name="WalletManagerWallets"
         component={WalletManagerWalletsScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Wallet Manager (Wallets)"),
+        }}
       />
       <Stack.Screen
         name="WalletManagerChains"
         component={WalletManagerWalletsScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Wallet Manager (Chains)"),
+        }}
       />
       {/* ==== Launchpad */}
       <Stack.Screen
         name="Launchpad"
         component={LaunchpadScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Launchpad") }}
       />
       <Stack.Screen
         name="MintCollection"
         component={MintCollectionScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Mint Collection") }}
       />
 
       {/* ==== Teritori Name Service*/}
       <Stack.Screen
         name="TNSHome"
         component={TNSHomeScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Name Service") }}
       />
       <Stack.Screen
         name="TNSExplore"
         component={TNSExploreScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Name Service (Explore names)"),
+        }}
       />
       <Stack.Screen
         name="TNSManage"
         component={TNSManageScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Name Service (Manage names)"),
+        }}
       />
       <Stack.Screen
         name="TNSRegister"
         component={TNSRegisterScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Name Service (Register name)"),
+        }}
       />
       <Stack.Screen
         name="TNSConsultName"
         component={TNSConsultNameScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Name Service (Consult name)"),
+        }}
       />
       <Stack.Screen
         name="TNSUpdateName"
         component={TNSUpdateNameScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Name Service (Update name)"),
+        }}
       />
       <Stack.Screen
         name="TNSMintName"
         component={TNSMintNameScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Name Service (Register name)"),
+        }}
       />
       <Stack.Screen
         name="TNSBurnName"
         component={TNSBurnNameScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Name Service (Burn name)"),
+        }}
       />
       <Stack.Screen
         name="TNSMintPath"
         component={TNSMintPathScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Name Service (Mint path)"),
+        }}
       />
       <Stack.Screen
         name="Collection"
         component={CollectionScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Collection") }}
       />
       <Stack.Screen
         name="CollectionActivity"
         component={CollectionActivityScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Collection Activity"),
+        }}
       />
       <Stack.Screen
         name="NFTDetail"
         component={NFTDetailScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("NFT") }}
       />
       <Stack.Screen
         name="Staking"
         component={StakeScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Staking") }}
       />
     </Stack.Navigator>
   );
