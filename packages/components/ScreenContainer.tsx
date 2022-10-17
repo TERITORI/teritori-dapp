@@ -20,6 +20,7 @@ import {
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
   walletSelectorWidth,
+  screenContainerPathwar
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { Footer } from "./Footer";
@@ -29,6 +30,7 @@ import { SVG } from "./SVG";
 import { WalletSelector } from "./WalletSelector";
 import { WalletsManager } from "./WalletsManager";
 import { Sidebar } from "./navigation/Sidebar";
+import getBack from "../../assets/getBack.png"
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
@@ -38,6 +40,7 @@ export const ScreenContainer: React.FC<{
   customSidebar?: React.ReactNode;
   noMargin?: boolean;
   noScroll?: boolean;
+  sizeScreenContaier?: number;
 }> = ({
   children,
   headerChildren,
@@ -47,13 +50,14 @@ export const ScreenContainer: React.FC<{
   noMargin,
   noScroll,
   customSidebar,
+  sizeScreenContaier = 140,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
   const marginStyle = hasMargin && {
-    marginHorizontal: screenContainerContentMarginHorizontal,
+    marginHorizontal: sizeScreenContaier,
   };
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
   const areThereWallets = useAreThereWallets();
@@ -74,7 +78,11 @@ export const ScreenContainer: React.FC<{
       <View style={styles.container}>
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header style={headerStyle}>{headerChildren}</Header>
+          <Header style={headerStyle}>{headerChildren}
+            <TouchableOpacity onPress={() => {navigation.goBack()}} style={{right: 70}}>
+              <img src={getBack}></img>
+            </TouchableOpacity>
+          </Header>
 
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}

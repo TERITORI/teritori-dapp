@@ -25,6 +25,10 @@ import { TNSUpdateNameScreen } from "../../screens/TeritoriNameService/TNSUpdate
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { WalletsScreen } from "../../screens/Wallets/WalletsScreen";
+import { PathwarScreen } from "../../screens/Pathwar/PathwarScreen";
+import { ResourceScreen } from "../../screens/Pathwar/Resources/ResourceScreen";
+import { TournamentScreen } from "../../screens/Pathwar/Tournaments/TournamentScreen";
+import { StatisticScreen } from "../../screens/Pathwar/Statistics/StatisticScreen";
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -67,6 +71,33 @@ export const Navigator: React.FC = () => {
         component={WalletsScreen}
         options={{ presentation: "transparentModal", header: () => null }}
       />
+
+      {/* Pathwar */}
+
+      <Stack.Screen
+        name="Pathwar"
+        component={PathwarScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Resources"
+        component={ResourceScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Tournaments"
+        component={TournamentScreen}
+        options={{ header: () => null }}
+      />    
+
+      <Stack.Screen
+        name="Statistics"
+        component={StatisticScreen}
+        options={{ header: () => null }}
+      /> 
+
 
       {/* ==== Wallet Manager */}
       <Stack.Screen

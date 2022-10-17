@@ -13,6 +13,10 @@ export type RootStackParamList = {
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
   Governance: undefined;
+  Pathwar: undefined;
+  Resources: undefined;
+  Tournaments: undefined;
+  Statistics: undefined;
 
   Launchpad: undefined;
   MintCollection: { id: string };
@@ -63,6 +67,10 @@ const navConfig: {
     WalletManagerChains: "wallet-manager/chains",
     GuardiansGame: "guardians-game",
     Governance: "governance",
+    Pathwar : "pathwar",
+    Resources : "ressources",
+    Tournaments : "tournaments",
+    Statistics : "statistics",
     // ==== Launchpad
     Launchpad: "launchpad",
     // Mint NFT collection

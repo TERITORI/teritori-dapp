@@ -25,6 +25,7 @@ export const DropdownButton: React.FC<{
   isExpanded?: boolean;
   color?: string;
   style?: StyleProp<ViewStyle>;
+  height?: number;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -35,6 +36,7 @@ export const DropdownButton: React.FC<{
   squaresBackgroundColor,
   isExpanded = false,
   style,
+  height,
 }) => {
   const boxProps = {
     style,
@@ -46,7 +48,7 @@ export const DropdownButton: React.FC<{
     <TouchableOpacity onPress={onPress}>
       <SecondaryBox
         cornerWidth={cornerWidthDropdownButton(size)}
-        height={heightDropdownButton(size)}
+        height={height || heightDropdownButton(size)}
         mainContainerStyle={{
           flexDirection: "row",
           borderRadius: 6,

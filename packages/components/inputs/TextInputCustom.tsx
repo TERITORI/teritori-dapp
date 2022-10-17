@@ -29,6 +29,7 @@ import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerColumn } from "../spacer";
 
+
 export interface TextInputCustomProps<T>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
@@ -40,11 +41,16 @@ export interface TextInputCustomProps<T>
   disabled?: boolean;
   regexp?: RegExp;
   width?: number;
+  height?: number;
   variant?: "regular" | "labelOutside";
   control?: Control<T>;
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
+  center?: boolean;
+  multiLine?: boolean;
+  numberLines?: number;
+  mainBoxBackgroundColor?: string;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -59,10 +65,15 @@ export const TextInputCustom = <T,>({
   disabled,
   squaresBackgroundColor,
   width,
+  height,
   variant,
   name,
   control,
   defaultValue,
+  center = true,
+  multiLine = false,
+  numberLines = 0,
+  mainBoxBackgroundColor = neutral22,
   rules,
   ...restProps
 }: TextInputCustomProps<T>) => {
@@ -137,11 +148,17 @@ export const TextInputCustom = <T,>({
       )}
 
       <TertiaryBox
-        squaresBackgroundColor={squaresBackgroundColor}
+        leftSquaresBackgroundColor={squaresBackgroundColor}
+        rightSquaresBackgroundColor={squaresBackgroundColor}
         style={style}
-        mainContainerStyle={styles.mainContainer}
+        mainContainerStyle={{alignItems: "flex-start",
+              paddingHorizontal: 12,
+              paddingVertical: 10,
+              backgroundColor: mainBoxBackgroundColor,}}
         fullWidth
         width={width}
+        height={height}
+        center={center}
       >
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
@@ -160,7 +177,19 @@ export const TextInputCustom = <T,>({
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
               value={field.value as string}
-              style={styles.textInput}
+              multiline = {multiLine}
+              numberOfLines = {numberLines}
+              style={{
+                fontSize: 14,
+                color: secondaryColor,
+                fontFamily: "Exo_600SemiBold",
+                height: height ? height - 20: undefined,
+                textAlign: "top",
+                wordWrap: "break-word",
+                
+                // paddingBottom: 40,
+                outlineStyle: "none"
+              }}
               {...restProps}
             />
           </View>
@@ -178,12 +207,13 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingHorizontal: 12,
     paddingVertical: 10,
-    backgroundColor: neutral22,
+    backgroundColor: "red",
   },
   labelText: {
     color: neutral77,
   },
   textInput: {
+    backgroundColor: "red",
     fontSize: 14,
     color: secondaryColor,
     fontFamily: "Exo_600SemiBold",
@@ -191,7 +221,6 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flexDirection: "row",
-    alignItems: "center",
     width: "100%",
   },
 });

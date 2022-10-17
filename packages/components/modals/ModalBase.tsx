@@ -35,6 +35,12 @@ export const ModalBase: React.FC<{
   childrenBottom?: JSX.Element | JSX.Element[];
   children?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
+  displayHeader?: boolean;
+  labelColor?: string;
+  leftSquaresBackgroundColor?: string;
+  rightSquaresBackgroundColor?: string;
+  displayLinearGradient?: boolean;
+  ColorLinearGradient?: string[];
 }> = ({
   label,
   visible,
@@ -44,6 +50,12 @@ export const ModalBase: React.FC<{
   children,
   Header,
   hideMainSeparator,
+  displayHeader = true,
+  labelColor = "white",
+  leftSquaresBackgroundColor = "#000000",
+  rightSquaresBackgroundColor = "#000000",
+  ColorLinearGradient,
+  displayLinearGradient = false,
 }) => {
   return (
     <Modal
@@ -61,58 +73,136 @@ export const ModalBase: React.FC<{
           backgroundColor: "rgba(0, 0, 0, .8)",
         }}
       >
+        
         {/*------ Modal main container */}
-        <TertiaryBox
-          width={width}
-          style={{ margin: "auto" }}
-          mainContainerStyle={{
-            alignItems: "flex-start",
-            backgroundColor: "#000000",
-          }}
-        >
-          {/*------ Modal header */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-              padding: modalMarginPadding,
-            }}
-          >
-            {label && (
-              <BrandText style={{ color: "white", lineHeight: 24 }}>
-                {label}
-              </BrandText>
-            )}
 
-            {Header && <Header />}
-
-            <Pressable onPress={onClose}>
-              <SVG
-                width={20}
-                height={20}
-                source={closeSVG}
-                style={{ marginLeft: modalMarginPadding }}
-              />
-            </Pressable>
-          </View>
-          {children && (
-            <View
-              style={{ width: "100%", paddingHorizontal: modalMarginPadding }}
+        {
+            displayLinearGradient ? ( <TertiaryBox
+              width={width}
+              style={{ margin: "auto" }}
+              leftSquaresBackgroundColor={leftSquaresBackgroundColor}
+              rightSquaresBackgroundColor={rightSquaresBackgroundColor}
+              mainContainerStyle={{
+                alignItems: "flex-start",
+                backgroundColor: "white",
+              }}
+              // squaresBackgroundColor="#C8FFAE"
             >
-              {/*------- Modal main content */}
-              {hideMainSeparator !== true && (
-                <SeparatorGradient
-                  style={{ marginBottom: modalMarginPadding }}
-                />
+              
+              <LinearGradient
+              // end={{ x: 0.5, y: 0.5 }}
+              // Button Linear Gradient
+              locations={[0.5, 0.8]}
+              style={{borderRadius: 7}}
+              colors={ColorLinearGradient}
+              >
+                
+              {/*------ Modal header */}
+              {displayHeader ? (<View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                  padding: modalMarginPadding,
+                }}
+              >
+                {label && (
+                  <BrandText style={{ color: labelColor, lineHeight: 24 }}>
+                    {label}
+                  </BrandText>
+                )}
+    
+                {Header && <Header />}
+    
+                <Pressable onPress={onClose}>
+                  <SVG
+                    width={20}
+                    height={20}
+                    source={closeSVG}
+                    style={{ marginLeft: modalMarginPadding }}
+                  />
+                </Pressable>
+              </View>) : ""}
+              
+              {children && (
+                <View
+                  style={{ width: "100%", paddingHorizontal: modalMarginPadding }}
+                >
+                  {/*------- Modal main content */}
+                  {hideMainSeparator !== true && (
+                    <SeparatorGradient
+                      style={{ marginBottom: modalMarginPadding }}
+                    />
+                  )}
+                  {children}
+                </View>
               )}
-              {children}
-            </View>
-          )}
-          {/*------- Modal bottom content */}
-          {childrenBottom}
-        </TertiaryBox>
+              {/*------- Modal bottom content */}
+              {childrenBottom}
+            </LinearGradient> 
+            </TertiaryBox> ) :
+
+
+
+             ( <TertiaryBox
+              width={width}
+              style={{ margin: "auto" }}
+              leftSquaresBackgroundColor={leftSquaresBackgroundColor}
+              rightSquaresBackgroundColor={rightSquaresBackgroundColor}
+              mainContainerStyle={{
+                alignItems: "flex-start",
+                backgroundColor: "#000000",
+              }}
+            >
+                
+              {/*------ Modal header */}
+              {displayHeader ? (<View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                  padding: modalMarginPadding,
+                }}
+              >
+                {label && (
+                  <BrandText style={{ color: labelColor, lineHeight: 24 }}>
+                    {label}
+                  </BrandText>
+                )}
+    
+                {Header && <Header />}
+    
+                <Pressable onPress={onClose}>
+                  <SVG
+                    width={20}
+                    height={20}
+                    source={closeSVG}
+                    style={{ marginLeft: modalMarginPadding }}
+                  />
+                </Pressable>
+              </View>) : ""}
+              
+              {children && (
+                <View
+                  style={{ width: "100%", paddingHorizontal: modalMarginPadding }}
+                >
+                  {/*------- Modal main content */}
+                  {hideMainSeparator !== true && (
+                    <SeparatorGradient
+                      style={{ marginBottom: modalMarginPadding }}
+                    />
+                  )}
+                  {children}
+                </View>
+              )}
+              {/*------- Modal bottom content */}
+              {childrenBottom}
+            </TertiaryBox> )
+          }
+         
+        
       </View>
     </Modal>
   );
