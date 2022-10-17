@@ -1,5 +1,4 @@
 import { MsgVoteEncodeObject, isDeliverTxFailure } from "@cosmjs/stargate";
-import { VoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
 import Long from "long";
 import React, { useState, useCallback } from "react";
 import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
@@ -40,6 +39,8 @@ export const GovernanceDetails: React.FC<{
   votingSubmitTime: string;
   votingDepositEndTime: string;
   isVotingPeriod: boolean;
+  isRejectedPeriod: boolean;
+  isPassedPeriod: boolean;
   percentageYes: string;
   percentageNo: string;
 }> = ({
@@ -55,6 +56,8 @@ export const GovernanceDetails: React.FC<{
   votingSubmitTime,
   votingDepositEndTime,
   isVotingPeriod,
+  isRejectedPeriod,
+  isPassedPeriod,
   percentageYes,
   percentageNo,
 }) => {
@@ -76,6 +79,23 @@ export const GovernanceDetails: React.FC<{
   const valueChartAbstain = 100 - valueChartYes - valueChartNo;
 
   const selectedWallet = useSelectedWallet();
+  let voteOption = 0;
+
+  if (checked === "Yes") {
+    voteOption = 1;
+  }
+
+  if (checked === "No") {
+    voteOption = 3;
+  }
+
+  if (checked === "NoWithVeto") {
+    voteOption = 4;
+  }
+
+  if (checked === "Abstain") {
+    voteOption = 2;
+  }
 
   const handlePress = useCallback(async () => {
     if (
@@ -83,9 +103,8 @@ export const GovernanceDetails: React.FC<{
       !selectedWallet.connected ||
       !selectedWallet.publicKey
     ) {
-      // do something about the fact that the currently selected wallet
-      // is not suited for a teritori action
       console.error("invalid selected wallet", selectedWallet);
+      alert("Please connect to Teritori network");
       return;
     }
 
@@ -96,9 +115,11 @@ export const GovernanceDetails: React.FC<{
       const vote: MsgVoteEncodeObject = {
         typeUrl: "/cosmos.gov.v1beta1.MsgVote",
         value: {
-          proposalId: Long.fromNumber(3),
+          proposalId: Long.fromNumber(
+            parseInt(numberProposal.substring(1), 10)
+          ),
           voter: String(selectedWallet.publicKey),
-          option: VoteOption.VOTE_OPTION_YES,
+          option: voteOption,
         },
       };
       const result = await client.signAndBroadcast(
@@ -107,7 +128,7 @@ export const GovernanceDetails: React.FC<{
         "auto"
       );
       if (isDeliverTxFailure(result)) {
-        // do something about the fact that the tx was a failure
+        alert("Vote failed");
         console.error("tx failed", result);
       }
     } catch (err) {
@@ -150,11 +171,8 @@ export const GovernanceDetails: React.FC<{
         style={{
           flexDirection: "row",
           display: "flex",
-          // width: '70%',
-          // paddingTop: 60,
-          // right: '10%',
-          // justifyContent: "space-evenly",
           alignContent: "center",
+          alignItems: "center",
           flexWrap: "wrap",
         }}
       >
@@ -177,7 +195,7 @@ export const GovernanceDetails: React.FC<{
             {titleProposal}
           </BrandText>
         </View>
-        {isVotingPeriod ? (
+        {isVotingPeriod && (
           <View
             style={{
               alignItems: "center",
@@ -186,9 +204,6 @@ export const GovernanceDetails: React.FC<{
               borderRadius: 100,
               height: 27,
               width: 125,
-              position: "absolute",
-              left: 20,
-              top: 20,
             }}
           >
             <BrandText
@@ -200,8 +215,49 @@ export const GovernanceDetails: React.FC<{
               VOTING PERIOD
             </BrandText>
           </View>
-        ) : (
-          ""
+        )}
+        {isRejectedPeriod && (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#171717",
+              borderRadius: 100,
+              height: 27,
+              width: 95,
+            }}
+          >
+            <BrandText
+              style={{
+                fontSize: 13,
+                color: "#FFAEAE",
+              }}
+            >
+              REJECTED
+            </BrandText>
+          </View>
+        )}
+
+        {isPassedPeriod && (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#171717",
+              borderRadius: 100,
+              height: 27,
+              width: 90,
+            }}
+          >
+            <BrandText
+              style={{
+                fontSize: 13,
+                color: "#C8FFAE",
+              }}
+            >
+              PASSED
+            </BrandText>
+          </View>
         )}
       </View>
 
@@ -376,22 +432,8 @@ export const GovernanceDetails: React.FC<{
             width: 210,
             position: "absolute",
             left: 5,
-            // top: 5,
           }}
         >
-          {/* <PieChart
-                    style={{ height: 148, width: 148}}
-                    data={WALLET_TOKEN_PIE.map((data) => ({
-                      ...data,
-                      key: data.title,
-                      value: data.percent,
-                      svg: {
-                        fill: getWalletPieColor(data.title),
-                      },
-                    }))}
-                    innerRadius="50%"
-                    padAngle={0.02}
-                /> */}
           <VictoryBar
             innerRadius={70}
             colorScale={["#16BBFF", "#EAA54B", "#808080"]}
@@ -439,7 +481,6 @@ export const GovernanceDetails: React.FC<{
             flexDirection: "row",
             display: "flex",
             width: "60%",
-            // paddingTop: 50,
             top: 20,
             right: "4%",
             justifyContent: "space-evenly",
@@ -453,9 +494,6 @@ export const GovernanceDetails: React.FC<{
               height: 12,
               backgroundColor: "#16BBFF",
               borderRadius: 12,
-              // position: "absolute",
-              //   left: 300,
-              //   top: 255,
             }}
           />
           <BrandText
@@ -483,9 +521,6 @@ export const GovernanceDetails: React.FC<{
               height: 12,
               backgroundColor: "#EAA54B",
               borderRadius: 12,
-              // position: "absolute",
-              //   left: 300,
-              //   top: 255,
             }}
           />
           <BrandText
@@ -513,9 +548,6 @@ export const GovernanceDetails: React.FC<{
               height: 12,
               backgroundColor: "#F46F76",
               borderRadius: 12,
-              // position: "absolute",
-              //   left: 300,
-              //   top: 255,
             }}
           />
           <BrandText
@@ -543,9 +575,6 @@ export const GovernanceDetails: React.FC<{
               height: 12,
               backgroundColor: "#333333",
               borderRadius: 12,
-              // position: "absolute",
-              //   left: 300,
-              //   top: 255,
             }}
           />
           <BrandText
@@ -556,15 +585,6 @@ export const GovernanceDetails: React.FC<{
             NoWithVeto 0.01%
           </BrandText>
         </View>
-
-        {/* {
-              isClicked ? <PrimaryButton
-              size="XL"
-              style={{ position: "absolute", left: 450, bottom: -40 }}
-              text="       Vote       "
-              onPress={() => activeVote() }
-              /> : ""
-            } */}
 
         <PrimaryButton
           size="XL"

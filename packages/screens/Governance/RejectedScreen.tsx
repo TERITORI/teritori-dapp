@@ -30,7 +30,7 @@ export const RejectedScreen: React.FC = () => {
           onClose={() => setdisplayCreateProposal(false)}
         />
       );
-    } else return "";
+    } else return null;
   }
 
   return (

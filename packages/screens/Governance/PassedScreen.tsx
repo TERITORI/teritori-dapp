@@ -30,7 +30,7 @@ export const PassedScreen: React.FC = () => {
           onClose={() => setdisplayCreateProposal(false)}
         />
       );
-    } else return "";
+    } else return null;
   }
 
   return (

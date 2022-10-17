@@ -125,8 +125,6 @@ export const NavBarGovernance: React.FC<{
           style={{
             flexDirection: "row",
             backgroundColor: activePassed ? "#16BBFF" : "black",
-            // borderTopRightRadius: 18,
-            // borderBottomRightRadius: 18,
           }}
         >
           <BrandText

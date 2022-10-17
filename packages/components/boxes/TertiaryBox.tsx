@@ -32,9 +32,6 @@ export const TertiaryBox: React.FC<{
   const borderColor = disabled
     ? neutral44
     : flatMainContainerStyle.borderColor || neutral33;
-  // const backgroundColor = disabled
-  //   ? neutral11
-  //   : flatMainContainerStyle.backgroundColor || "#000000";
 
   return (
     // ---- Main container, flex row to fit the horizontal content

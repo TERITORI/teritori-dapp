@@ -38,6 +38,8 @@ export const GovernanceBox: React.FC<{
   votingDepositEndTime,
 }) => {
   let isVotingPeriod = true;
+  let isPassedPeriod = false;
+  let isRejectedPeriod = false;
   const totalUsers =
     percentageYesValue +
     percentageNoValue +
@@ -81,8 +83,21 @@ export const GovernanceBox: React.FC<{
   todayDate = mm + "/" + dd + "/" + yyyy;
   todayDate = yyyy + "-" + mm + "-" + dd + " " + hours + ":" + minutes;
 
-  if (todayDate > votingEndTime) isVotingPeriod = false;
-  else isVotingPeriod = true;
+  if (todayDate > votingEndTime) {
+    isPassedPeriod = true;
+    isVotingPeriod = false;
+  } else {
+    isVotingPeriod = true;
+    isPassedPeriod = false;
+  }
+
+  if (
+    percentageNoValue + percentageNoWithVetoValue > percentageYesValue &&
+    isPassedPeriod === true
+  ) {
+    isRejectedPeriod = true;
+    isPassedPeriod = false;
+  }
 
   function avctivePopupppp() {
     setdisplayGovernanceDetails(!displayGovernanceDetails);
@@ -104,6 +119,8 @@ export const GovernanceBox: React.FC<{
           votingSubmitTime={votingSubmitTime}
           votingDepositEndTime={votingDepositEndTime}
           isVotingPeriod={isVotingPeriod}
+          isPassedPeriod={isPassedPeriod}
+          isRejectedPeriod={isRejectedPeriod}
           percentageYes={percentageYes}
           percentageNo={percentageNo}
         />
@@ -124,7 +141,7 @@ export const GovernanceBox: React.FC<{
         {activeGovernanceDetailsPopup()}
 
         <TertiaryBox width={600} height={300}>
-          {isVotingPeriod ? (
+          {isVotingPeriod && (
             <View
               style={{
                 alignItems: "center",
@@ -147,8 +164,56 @@ export const GovernanceBox: React.FC<{
                 VOTING PERIOD
               </BrandText>
             </View>
-          ) : (
-            ""
+          )}
+
+          {isRejectedPeriod && (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "#171717",
+                borderRadius: 100,
+                height: 27,
+                width: 95,
+                position: "absolute",
+                left: 20,
+                top: 20,
+              }}
+            >
+              <BrandText
+                style={{
+                  fontSize: 13,
+                  color: "#FFAEAE",
+                }}
+              >
+                REJECTED
+              </BrandText>
+            </View>
+          )}
+
+          {isPassedPeriod && (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "#171717",
+                borderRadius: 100,
+                height: 27,
+                width: 90,
+                position: "absolute",
+                left: 20,
+                top: 20,
+              }}
+            >
+              <BrandText
+                style={{
+                  fontSize: 13,
+                  color: "#C8FFAE",
+                }}
+              >
+                PASSED
+              </BrandText>
+            </View>
           )}
 
           <BrandText

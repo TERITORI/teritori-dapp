@@ -80,6 +80,12 @@ export const Navigator: React.FC = () => {
       {/* ==== Governance Pages */}
 
       <Stack.Screen
+        name="Governance"
+        component={AllPeriodScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
         name="Rejected"
         component={RejectedScreen}
         options={{ header: () => null }}
