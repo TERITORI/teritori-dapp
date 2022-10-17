@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 
-import { ScrollView, ViewStyle, TouchableOpacity, Text, StyleProp, View } from "react-native";
+import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
 
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { BrandText } from "../../components/BrandText/BrandText";
@@ -14,14 +14,13 @@ import {ConfirmationVote} from "../../components/GovernanceBox/ConfirmationVote"
 import * as Victory from 'victory'
 import {
   MsgVoteEncodeObject,
-  MsgDelegateEncodeObject,
   isDeliverTxFailure,
 } from "@cosmjs/stargate";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
 import { VoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
 import Long from "long";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getTeritoriSigningStargateClient, toriCurrency } from "../../utils/teritori";
+import { getTeritoriSigningStargateClient } from "../../utils/teritori";
 import { Network } from "../../utils/network";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
@@ -54,8 +53,7 @@ export const GovernanceDetails: React.FC < {
   const [displayVote, setdisplayVote] = useState(false);
   const [displayConfirmationVote, setdisplayConfirmationVote] = useState(false);
   const [checked, setChecked] = useState('nothingChecked');
-  const [isClicked, setisClicked] = useState();
-  const [displayPopup, setdisplayPopup] = useState(visible);
+  const [displayPopup] = useState(visible);
 
   const VictoryBar = Victory.VictoryPie;
 

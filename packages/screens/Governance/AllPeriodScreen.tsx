@@ -9,14 +9,12 @@ import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { SVG } from "../../components/SVG/svg";
 
-import { useAppNavigation } from "../../utils/navigation";
 import  {NavBarGovernance} from "./NavBarGovernance";
 import { CreateProposalPopUp } from "../../components/GovernanceBox/CreateProposalPopUp"
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 
 export const AllPeriodScreen: React.FC = () => {
   const [cards, setCards] = useState([])
-  const navigation = useAppNavigation();
   const [displayCreateProposal, setdisplayCreateProposal] = useState(false)
 
   useEffect(() => {

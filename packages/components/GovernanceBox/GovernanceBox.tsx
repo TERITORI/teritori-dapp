@@ -2,23 +2,12 @@ import React, {useState} from 'react'
 
 import { LinearGradient } from "expo-linear-gradient";
 
-import { ViewStyle, StyleProp, ScrollView, ColorValue, View } from "react-native";
+import { ColorValue, View } from "react-native";
 
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { BrandText } from "../../components/BrandText/BrandText";
 
-import { PieChart } from "react-native-svg-charts";
-
-import { useAppNavigation } from "../../utils/navigation";
-
 import {GovernanceDetails} from "../../screens/Governance/GovernanceDetails";
-import {ConfirmationVote} from "../../components/GovernanceBox/ConfirmationVote";
-import ModalBase from "../../components/modals/ModalBase";
-import { neutral44 } from "../../utils/style/colors";
-import { RadioButton } from 'react-native-paper';
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-
 
 export const GovernanceBox: React.FC < {
     numberProposal: string;
@@ -43,7 +32,6 @@ export const GovernanceBox: React.FC < {
     const totalUsers = pourcentageYesValue + pourcentageNoValue + pourcentageNoWithVetoValue + pourcentageAbstainValue
     const totalParticipant = totalUsers - pourcentageAbstainValue
     var pourcentageTotalParticipant = (totalParticipant / totalUsers * 100).toFixed(2).toString() + "%"
-    const navigation = useAppNavigation();
     const [displayGovernanceDetails, setdisplayGovernanceDetails] = useState(false);
 
 

@@ -1,22 +1,9 @@
 import React, { useState } from 'react'
 
-import ModalBase from "../../components/modals/ModalBase";
 import { BrandText } from "../../components/BrandText/BrandText";
 
-import checklogo from "../../../assets/icons/checklogo.svg";
-// import { SVG } from "../SVG";
-import { View, StyleProp, ViewStyle } from 'react-native';
-import { neutral44 } from "../../utils/style/colors";
+import { View } from 'react-native';
 import { useAppNavigation, getCurrentRouteName } from "../../utils/navigation";
-
-const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
-    <View
-      style={[
-        { borderBottomWidth: 1, borderColor: neutral44, width: "100%" },
-        style,
-      ]}
-    />
-);
 
 export const NavBarGovernance: React.FC < {
     visible?: boolean;
@@ -26,10 +13,10 @@ export const NavBarGovernance: React.FC < {
     
     const currentPage = getCurrentRouteName(navigation);
 
-    const [activeAllPeriod, setactiveAllPeriod] = useState(currentPage === "AllPeriods" ? true : false);
-    const [activeVoting, setactiveVoting] = useState(currentPage === "Voting" ? true : false);
-    const [activePassed, setactivePassed] = useState(currentPage === "Passed" ? true : false);
-    const [activeRejected, setactiveRejected] = useState(currentPage === "Rejected" ? true : false);
+    const [activeAllPeriod] = useState(currentPage === "AllPeriods" ? true : false);
+    const [activeVoting] = useState(currentPage === "Voting" ? true : false);
+    const [activePassed] = useState(currentPage === "Passed" ? true : false);
+    const [activeRejected] = useState(currentPage === "Rejected" ? true : false);
 
     return (
         <View style={{

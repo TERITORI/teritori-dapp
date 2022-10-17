@@ -10,7 +10,6 @@ import {PrimaryButton} from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 
 import {TertiaryBox} from "../boxes/TertiaryBox";
-import {PrimaryBox} from "../boxes/PrimaryBox";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
 	<View

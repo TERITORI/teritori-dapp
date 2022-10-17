@@ -12,12 +12,9 @@ import {NavBarGovernance} from "./NavBarGovernance";
 import { CreateProposalPopUp } from "../../components/GovernanceBox/CreateProposalPopUp"
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 
-import { useAppNavigation } from "../../utils/navigation";
-
 export const VotingScreen: React.FC = () => {
   const [cards, setCards] = useState([])
   const [displayCreateProposal, setdisplayCreateProposal] = useState(false)
-  const navigation = useAppNavigation();
 
   useEffect(() => {
     fetch('https://rest.testnet.teritori.com/cosmos/gov/v1beta1/proposals?proposal_status=2')
@@ -84,7 +81,7 @@ export const VotingScreen: React.FC = () => {
               turnoutValue="80.69%"
               mostVotedValue={parseFloat(proposals.final_tally_result.yes)}
               colorMostVoted="#16BBFF"
-              pourcentageNoValue={parseFloat(proposals.final_tally_result.no)}
+            pourcentageNoValue={parseFloat(proposals.final_tally_result.no)}
               pourcentageYesValue={parseFloat(proposals.final_tally_result.yes)}
               pourcentageNoWithVetoValue={parseFloat(proposals.final_tally_result.no_with_veto)}
               pourcentageAbstainValue={parseFloat(proposals.final_tally_result.abstain)}

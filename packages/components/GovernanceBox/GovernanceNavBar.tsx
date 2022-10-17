@@ -1,9 +1,6 @@
 import React, { useCallback, useState } from "react";
 import {
-  ActivityIndicator,
-  StyleProp,
   TouchableOpacity,
-  ViewStyle,
   View,
 } from "react-native";
 

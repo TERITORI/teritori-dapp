@@ -9,7 +9,6 @@ import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { SVG } from "../../components/SVG/svg";
 
-import { useAppNavigation } from "../../utils/navigation";
 import  {NavBarGovernance} from "./NavBarGovernance";
 import { CreateProposalPopUp } from "../../components/GovernanceBox/CreateProposalPopUp"
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
@@ -17,7 +16,6 @@ import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutl
 export const RejectedScreen: React.FC = () => {
   const [cards, setCards] = useState([])
   const [displayCreateProposal, setdisplayCreateProposal] = useState(false)
-  const navigation = useAppNavigation();
 
   useEffect(() => {
     fetch('https://rest.testnet.teritori.com/cosmos/gov/v1beta1/proposals?proposal_status=4')

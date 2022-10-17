@@ -1,1 +1,3 @@
-import * as Victory from 'victory-native'
+import * as Victory from 'victory-native';
+
+Victory.Arc.propTypes;
