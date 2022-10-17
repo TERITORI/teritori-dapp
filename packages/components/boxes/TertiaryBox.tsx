@@ -1,7 +1,7 @@
 import React from "react";
 import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 
-import { neutral11, neutral33, neutral44 } from "../../utils/style/colors";
+import { neutral33, neutral44 } from "../../utils/style/colors";
 
 export const TertiaryBox: React.FC<{
   width?: number;
