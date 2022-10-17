@@ -6,7 +6,8 @@ export const screenContentMaxWidth = 1092;
 export const headerMarginHorizontal = 22;
 export const avatarWidth = 40;
 export const walletSelectorWidth = 220;
-export const sidebarWidth = 94;
+export const smallSidebarWidth = 76;
+export const fullSidebarWidth = 210;
 
 export const layout = {
   padding_x1: 8,

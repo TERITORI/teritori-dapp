@@ -17,8 +17,6 @@ import { WalletSelector } from "../WalletSelector";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
 
-export type HubPageName = "Home" | "MyCollection" | "Activity" | "Guardians";
-
 const walletsManagerTabItems: TabItem[] = [
   {
     label: "Overview",
