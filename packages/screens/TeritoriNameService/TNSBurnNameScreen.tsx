@@ -32,7 +32,8 @@ export const TNSBurnNameScreen: ScreenFC<"TNSBurnName"> = ({ route }) => {
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
   const navigation = useAppNavigation();
-  const contractAddress = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+  const contractAddress = process.env
+    .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const normalizedTokenId = (name + process.env.TLD).toLowerCase();
 
   // Sync loadingFullScreen

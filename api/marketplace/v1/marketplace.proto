@@ -5,7 +5,8 @@ option go_package = "./marketplacepb";
 
 service MarketplaceService {
   rpc Collections(CollectionsRequest) returns (stream CollectionsResponse);
-  rpc CollectionNFTs(CollectionNFTsRequest) returns (stream CollectionNFTsResponse);
+  rpc NFTs(NFTsRequest) returns (stream NFTsResponse);
+  rpc Quests(QuestsRequest) returns (stream QuestsResponse);
   rpc CollectionActivity(CollectionActivityRequest) returns (stream CollectionActivityResponse);
   rpc NFTActivity(NFTActivityRequest) returns (stream NFTActivityResponse);
   rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
@@ -27,6 +28,11 @@ message NFT {
   string price = 6;
   string denom = 7;
   bool is_listed = 8;
+  string text_insert = 9;
+  string collection_name = 10;
+  string owner_name = 11;
+  string owner_image_url = 12;
+  string owner_id = 13;
 }
 
 message Collection {
@@ -55,6 +61,12 @@ message Activity {
   string seller_id = 11;
 }
 
+message Quest {
+  string id = 1;
+  string title = 2;
+  bool completed = 3;
+}
+
 message PriceDatum {
   string price = 1;
   string time = 2;
@@ -79,14 +91,27 @@ message CollectionsResponse {
   Collection collection = 1;
 }
 
-message CollectionNFTsRequest {
-  string id = 1;
-  int32 limit = 2;
-  int32 offset = 3;
+message NFTsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+
+  string collection_id = 3;
+  string owner_id = 4;
 }
 
-message CollectionNFTsResponse {
+message NFTsResponse {
   NFT nft = 1;
+}
+
+message QuestsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+
+  string user_id = 3;
+}
+
+message QuestsResponse {
+  Quest quest = 1;
 }
 
 message CollectionActivityRequest {

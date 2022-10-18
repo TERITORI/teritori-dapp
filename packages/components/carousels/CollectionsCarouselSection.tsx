@@ -1,59 +1,17 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
-import { View } from "react-native";
+import React from "react";
 
 import {
   Collection,
-  CollectionsRequest,
   CollectionsRequest_Kind,
 } from "../../api/marketplace/v1/marketplace";
-import { backendClient } from "../../utils/backend";
+import { useCollections } from "../../hooks/useCollections";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import {
   collectionItemHeight,
   collectionItemWidth,
   CollectionView,
 } from "../CollectionView";
 import { CarouselSection } from "./CarouselSection";
-
-const useCollections = (
-  req: CollectionsRequest
-): [Collection[], (index: number) => Promise<void>] => {
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const fetchRef = useRef(false);
-
-  const fetchMore = useCallback(
-    async (index: number) => {
-      try {
-        if (!(index + req.limit >= collections.length)) {
-          return;
-        }
-        if (fetchRef.current) {
-          return;
-        }
-        fetchRef.current = true;
-        const stream = backendClient.Collections({
-          ...req,
-          offset: req.offset + collections.length,
-        });
-        await stream.forEach(({ collection }) => {
-          if (!collection) {
-            return;
-          }
-          setCollections((collections) => [...collections, collection]);
-        });
-      } catch (err) {
-        console.warn("failed to fetch collections:", err);
-      }
-      fetchRef.current = false;
-    },
-    [req, collections]
-  );
-
-  useEffect(() => {
-    fetchMore(0);
-  }, []);
-
-  return [collections, fetchMore];
-};
 
 const gap = 24;
 
@@ -70,22 +28,22 @@ export const CollectionsCarouselSection: React.FC<{
     limit: 16,
     offset: 0,
   });
-  const [viewWidth, setWidth] = useState(0);
+
+  const { width } = useMaxResolution();
+
   return (
-    <View onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
-      <CarouselSection
-        title={title}
-        data={collections}
-        width={collectionItemWidth + gap}
-        height={collectionItemHeight}
-        onScrollEnd={fetchMore}
-        pagingEnabled
-        loop={false}
-        style={{
-          width: viewWidth,
-        }}
-        renderItem={renderItem}
-      />
-    </View>
+    <CarouselSection
+      title={title}
+      data={collections}
+      width={collectionItemWidth + gap}
+      height={collectionItemHeight}
+      onScrollEnd={fetchMore}
+      pagingEnabled
+      loop={false}
+      style={{
+        width,
+      }}
+      renderItem={renderItem}
+    />
   );
 };

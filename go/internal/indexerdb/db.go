@@ -10,21 +10,22 @@ import (
 // Teritori: tori-<bech32_address>
 type UserID string
 
-type Network string
-
-const (
-	NetworkUnknown  = Network("")
-	NetworkTeritori = Network("teritori")
-)
-
 type App struct {
 	ID     uint
 	Height int64
 }
 
+type User struct {
+	ID         UserID
+	PrimaryTNS string
+}
+
 var allModels = []interface{}{
 	// app
 	&App{},
+
+	// users
+	&User{},
 
 	// collections
 	&Collection{},
@@ -38,6 +39,10 @@ var allModels = []interface{}{
 	&Activity{},
 	&Listing{},
 	&Trade{},
+
+	// quests
+	&Quest{},
+	&QuestCompletion{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

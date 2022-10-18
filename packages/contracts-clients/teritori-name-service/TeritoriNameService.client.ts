@@ -6,9 +6,14 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { AddressOfResponse, AdminAddressResponse, Expiration, Timestamp, Uint64, Logo, EmbeddedLogo, Binary, AllNftInfoResponse, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, AllOperatorsResponse, AllTokensResponse, BaseTokensResponse, Uint128, ContractInfoResponse, SurchargeInfo, ExecuteMsg, UpdateMintingFeesMsg, UpdateMetadataMsg, MintMsgForMetadata, GetFullPathResponse, GetParentIdResponse, GetParentInfoResponse, GetPathResponse, InstantiateMsg, IsContractResponse, ListInfoByAliasResponse, UserInfo, ListUserInfoResponse, MigrateMsg, MinterResponse, MintingFeesResponse, NftInfoResponse, NumTokensResponse, OperatorsResponse, PathsForTokenResponse, PathsResponse, PrimaryAliasResponse, QueryMsg, TokensResponse } from "./TeritoriNameService.types";
+import { AddressOfResponse, AdminAddressResponse, Expiration, Timestamp, Uint64, Logo, EmbeddedLogo, Binary, AllNftInfoResponse, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, AllOperatorsResponse, AllTokensResponse, BaseTokensResponse, Uint128, ContractInfoResponse, SurchargeInfo, ExecuteMsg, UpdateSupportedDomainMsg, UpdateMintingFeesMsg, UpdateMetadataMsg, MintMsgForMetadata, GetFullPathResponse, GetParentIdResponse, GetParentInfoResponse, GetPathResponse, InstantiateMsg, IsContractResponse, IsSupportedDomainResponse, ListInfoByAliasResponse, UserInfo, ListUserInfoResponse, MigrateMsg, MinterResponse, MintingFeesResponse, NftInfoResponse, NumTokensResponse, OperatorsResponse, PathsForTokenResponse, PathsResponse, PrimaryAliasResponse, QueryMsg, TokensResponse } from "./TeritoriNameService.types";
 export interface TeritoriNameServiceReadOnlyInterface {
   contractAddress: string;
+  isSupportedDomain: ({
+    domain
+  }: {
+    domain: string;
+  }) => Promise<IsSupportedDomainResponse>;
   primaryAlias: ({
     address
   }: {
@@ -130,6 +135,7 @@ export class TeritoriNameServiceQueryClient implements TeritoriNameServiceReadOn
   constructor(client: CosmWasmClient, contractAddress: string) {
     this.client = client;
     this.contractAddress = contractAddress;
+    this.isSupportedDomain = this.isSupportedDomain.bind(this);
     this.primaryAlias = this.primaryAlias.bind(this);
     this.ownerOf = this.ownerOf.bind(this);
     this.addressOf = this.addressOf.bind(this);
@@ -151,6 +157,17 @@ export class TeritoriNameServiceQueryClient implements TeritoriNameServiceReadOn
     this.listInfoByAlias = this.listInfoByAlias.bind(this);
   }
 
+  isSupportedDomain = async ({
+    domain
+  }: {
+    domain: string;
+  }): Promise<IsSupportedDomainResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      is_supported_domain: {
+        domain
+      }
+    });
+  };
   primaryAlias = async ({
     address
   }: {
@@ -391,6 +408,13 @@ export class TeritoriNameServiceQueryClient implements TeritoriNameServiceReadOn
 export interface TeritoriNameServiceInterface extends TeritoriNameServiceReadOnlyInterface {
   contractAddress: string;
   sender: string;
+  updateSupportedDomain: ({
+    domain,
+    isSupported
+  }: {
+    domain: string;
+    isSupported: boolean;
+  }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   updateMintingFees: ({
     baseMintFee,
     burnPercentage,
@@ -420,6 +444,11 @@ export interface TeritoriNameServiceInterface extends TeritoriNameServiceReadOnl
     tokenId: string;
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   burn: ({
+    tokenId
+  }: {
+    tokenId: string;
+  }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
+  burnPaths: ({
     tokenId
   }: {
     tokenId: string;
@@ -506,11 +535,13 @@ export class TeritoriNameServiceClient extends TeritoriNameServiceQueryClient im
     this.client = client;
     this.sender = sender;
     this.contractAddress = contractAddress;
+    this.updateSupportedDomain = this.updateSupportedDomain.bind(this);
     this.updateMintingFees = this.updateMintingFees.bind(this);
     this.updateUsernameLengthCap = this.updateUsernameLengthCap.bind(this);
     this.updatePrimaryAlias = this.updatePrimaryAlias.bind(this);
     this.updateMetadata = this.updateMetadata.bind(this);
     this.burn = this.burn.bind(this);
+    this.burnPaths = this.burnPaths.bind(this);
     this.setAdminAddress = this.setAdminAddress.bind(this);
     this.mint = this.mint.bind(this);
     this.mintPath = this.mintPath.bind(this);
@@ -522,6 +553,20 @@ export class TeritoriNameServiceClient extends TeritoriNameServiceQueryClient im
     this.revokeAll = this.revokeAll.bind(this);
   }
 
+  updateSupportedDomain = async ({
+    domain,
+    isSupported
+  }: {
+    domain: string;
+    isSupported: boolean;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      update_supported_domain: {
+        domain,
+        is_supported: isSupported
+      }
+    }, fee, memo, funds);
+  };
   updateMintingFees = async ({
     baseMintFee,
     burnPercentage,
@@ -585,6 +630,17 @@ export class TeritoriNameServiceClient extends TeritoriNameServiceQueryClient im
   }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       burn: {
+        token_id: tokenId
+      }
+    }, fee, memo, funds);
+  };
+  burnPaths = async ({
+    tokenId
+  }: {
+    tokenId: string;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      burn_paths: {
         token_id: tokenId
       }
     }, fee, memo, funds);

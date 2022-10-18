@@ -9,8 +9,9 @@ import marketplaceSVG from "../../../assets/icons/marketplace.svg";
 import stakingSVG from "../../../assets/icons/staking.svg";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
+import { useImageResizer } from "../../hooks/useImageResizer";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useAppNavigation } from "../../utils/navigation";
-import { screenContentMaxWidth } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
@@ -24,6 +25,11 @@ const gridHalfGutter = 12;
 
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
+  const { width: maxWidth } = useMaxResolution();
+  const { width, height } = useImageResizer({
+    image: defaultNewsBanner,
+    maxSize: { width: maxWidth },
+  });
 
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
@@ -37,9 +43,8 @@ export const HubLanding: React.FC = () => {
           <Image
             source={defaultNewsBanner}
             style={{
-              height: 350,
-              width: "100%",
-              maxWidth: screenContentMaxWidth,
+              height,
+              width,
               borderRadius: 20,
               marginTop: 56,
             }}

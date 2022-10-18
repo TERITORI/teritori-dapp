@@ -12,6 +12,7 @@ export const SecondaryBox: React.FC<{
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   mainContainerStyle?: StyleProp<ViewStyle>;
+  squaresBorderColor?: string;
 }> = ({
   width,
   height,
@@ -23,6 +24,7 @@ export const SecondaryBox: React.FC<{
   disabled = false,
   style,
   mainContainerStyle,
+  squaresBorderColor,
   children,
 }) => {
   const flatMainContainerStyle = mainContainerStyle
@@ -66,30 +68,46 @@ export const SecondaryBox: React.FC<{
 
           {/* Left top broken corner */}
           <View
-            style={{
-              width: cornerWidth,
-              height: 18,
-              left: -0.5,
-              top: -5.5,
-              backgroundColor: squaresBackgroundColor,
-              transform: [{ rotate: "45deg" }],
-              position: "absolute",
-              zIndex: 2,
-            }}
+            style={[
+              {
+                width: cornerWidth,
+                height: 18,
+                left: -0.5,
+                top: -5.5,
+                backgroundColor: squaresBackgroundColor,
+                transform: [{ rotate: "45deg" }],
+                position: "absolute",
+                zIndex: 2,
+              },
+              squaresBorderColor
+                ? {
+                    borderColor: squaresBorderColor,
+                    borderRightWidth: 1,
+                  }
+                : {},
+            ]}
           />
 
           {/* Right bottom broken corner */}
           <View
-            style={{
-              width: cornerWidth,
-              height: 18,
-              right: -0.5,
-              bottom: -5.5,
-              transform: [{ rotate: "225deg" }],
-              backgroundColor: squaresBackgroundColor,
-              position: "absolute",
-              zIndex: 2,
-            }}
+            style={[
+              {
+                width: cornerWidth,
+                height: 18,
+                right: -0.5,
+                bottom: -5.5,
+                transform: [{ rotate: "225deg" }],
+                backgroundColor: squaresBackgroundColor,
+                position: "absolute",
+                zIndex: 2,
+              },
+              squaresBorderColor
+                ? {
+                    borderColor: squaresBorderColor,
+                    borderRightWidth: 1,
+                  }
+                : {},
+            ]}
           />
         </View>
       </View>

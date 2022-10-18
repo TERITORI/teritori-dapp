@@ -1,19 +1,25 @@
 import React from "react";
-import { View, TouchableOpacity, Image, FlatList } from "react-native";
+import { View, TouchableOpacity, FlatList } from "react-native";
 
-import guardianPNG from "../../../assets/default-images/guardian_1.png";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
-import starSVG from "../../../assets/icons/star.svg";
 import { BrandText } from "../../components/BrandText";
+import { NFTView } from "../../components/NFTView";
 import { SVG } from "../../components/SVG";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { MY_NFT } from "../../utils/fakeData/walletManager";
-import { neutral33, neutral77 } from "../../utils/style/colors";
-import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
+import { useNFTs } from "../../hooks/useNFTs";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useAppNavigation } from "../../utils/navigation";
+import { neutral33 } from "../../utils/style/colors";
 
 export const MyNFTs: React.FC = () => {
+  const selectedWallet = useSelectedWallet();
+  const navigation = useAppNavigation();
+  const ownerId = `tori-${selectedWallet?.publicKey}`; // FIXME: make this network-independent
+  const { nfts, fetchMore } = useNFTs({
+    offset: 0,
+    limit: 20,
+    ownerId,
+    collectionId: "",
+  });
   return (
     <View
       style={{
@@ -33,7 +39,7 @@ export const MyNFTs: React.FC = () => {
         <BrandText style={{ marginRight: 20, fontSize: 20 }}>My NFTs</BrandText>
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => {}}
+          onPress={() => navigation.navigate("MyCollection")}
           style={{
             display: "flex",
             flexDirection: "row",
@@ -57,170 +63,12 @@ export const MyNFTs: React.FC = () => {
         }}
       >
         <FlatList
-          data={MY_NFT}
+          data={nfts}
           horizontal
-          keyExtractor={(item) => item.title}
-          renderItem={({ item }) => (
-            <TertiaryBox
-              key={item.title}
-              height={438}
-              width={255}
-              style={{
-                marginRight: 34,
-              }}
-            >
-              <View>
-                <View
-                  style={{
-                    paddingTop: 16,
-                    paddingBottom: 12,
-                    paddingHorizontal: 16,
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Image
-                        source={{ uri: item.owner.avatar }}
-                        style={{
-                          height: 32,
-                          width: 32,
-                          borderRadius: 18,
-                          marginRight: 6,
-                        }}
-                      />
-                      <View>
-                        <BrandText
-                          style={{
-                            fontSize: 10,
-                            color: neutral77,
-                          }}
-                        >
-                          Owned by
-                        </BrandText>
-                        <BrandText
-                          style={{
-                            fontSize: 12,
-                            lineHeight: 16,
-                          }}
-                        >
-                          {item.owner.name}
-                        </BrandText>
-                      </View>
-                    </View>
-                    <TouchableOpacity>
-                      <SVG source={dotsCircleSVG} height={32} width={32} />
-                    </TouchableOpacity>
-                  </View>
-                  <Image
-                    source={{ uri: guardianPNG }}
-                    style={{
-                      height: 223,
-                      width: 223,
-                      marginTop: 15,
-                      marginBottom: 20,
-                      borderRadius: 12,
-                    }}
-                  />
-                  <BrandText
-                    style={{
-                      fontSize: 14,
-                      marginBottom: 12,
-                    }}
-                  >
-                    {item.title}
-                  </BrandText>
-
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <SVG
-                        height={24}
-                        width={24}
-                        source={getWalletIconFromTitle(item.token)}
-                      />
-                      <BrandText
-                        style={{
-                          fontSize: 12,
-                          marginLeft: 4,
-                        }}
-                      >
-                        {item.subTitle}
-                      </BrandText>
-                    </View>
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <BrandText
-                        style={{
-                          color: neutral77,
-                          fontSize: 12,
-                          marginRight: 4,
-                        }}
-                      >
-                        {item.stars}
-                      </BrandText>
-                      <SVG
-                        height={16}
-                        width={16}
-                        source={starSVG}
-                        color={neutral77}
-                      />
-                    </View>
-                  </View>
-                </View>
-                <View
-                  style={{
-                    borderTopWidth: 1,
-                    borderTopColor: neutral33,
-                    paddingVertical: 16,
-                    paddingHorizontal: 16,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <SVG
-                      height={24}
-                      width={24}
-                      source={getWalletIconFromTitle(item.token)}
-                    />
-                    <BrandText
-                      style={{ fontSize: 12, color: neutral77, marginLeft: 6 }}
-                    >
-                      Highest bid {item.bids.highest}/{item.bids.total}
-                    </BrandText>
-                  </View>
-                  <SecondaryButton
-                    size="XS"
-                    text={`${item.points} ${item.pointsKey}`}
-                    onPress={() => {}}
-                  />
-                </View>
-              </View>
-            </TertiaryBox>
-          )}
+          keyExtractor={(nft) => nft.id}
+          onEndReached={fetchMore}
+          ItemSeparatorComponent={() => <View style={{ width: 34 }} />}
+          renderItem={({ item }) => <NFTView data={item} />}
         />
       </View>
     </View>

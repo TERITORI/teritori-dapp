@@ -15,6 +15,10 @@ VAULT_PACKAGE=teritori-nft-vault
 
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
+DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
+INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-indexer:$(shell git rev-parse --short HEAD)
+BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
+
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
@@ -60,13 +64,16 @@ $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE): node_modules
 		--out $@ \
 		--name $(CANDYMACHINE_PACKAGE) \
 		--no-bundle
+	mkdir -p go/pkg/contracts/nft_minter_types
+	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(CANDYMACHINE_REPO)/schema/nft-minter/instantiate_msg.json -o go/pkg/contracts/nft_minter_types/instantiate_msg.go -p nft_minter_types
+	go fmt ./go/pkg/contracts/nft_minter_types
 	rm -fr $(CANDYMACHINE_REPO)
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE): node_modules
 	rm -fr $(NAME_SERVICE_REPO)
 	git clone git@github.com:TERITORI/$(NAME_SERVICE_REPO).git
-	cd $(NAME_SERVICE_REPO) && git checkout 7109dd7ff44fd9ba627d50c132a3028216fbb23c
+	cd $(NAME_SERVICE_REPO) && git checkout 4124a8263a2e823b3a9b731efde37a725488253d
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
@@ -74,13 +81,16 @@ $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE): node_modules
 		--out $@ \
 		--name $(NAME_SERVICE_PACKAGE) \
 		--no-bundle
+	mkdir -p go/pkg/contracts/name_service_types
+	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(NAME_SERVICE_REPO)/schema/contract_info_response.json -o go/pkg/contracts/name_service_types/contract_info_response.go -p name_service_types
+	go fmt ./go/pkg/contracts/name_service_types
 	rm -fr $(NAME_SERVICE_REPO)
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE): node_modules
 	rm -fr $(RIOTER_FOOTER_REPO)
 	git clone git@github.com:TERITORI/$(RIOTER_FOOTER_REPO).git
-	cd $(RIOTER_FOOTER_REPO) && git checkout 6ea17e9a84b54787f711f12e0047031cb251c51c
+	cd $(RIOTER_FOOTER_REPO) && git checkout e5a5b22cc3e72e09df6b4642d62dc21d99ca34c3
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
@@ -116,7 +126,18 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 		--out $@ \
 		--name $(VAULT_PACKAGE) \
 		--no-bundle
+	mkdir -p go/pkg/contracts/vault_types
+	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(VAULT_REPO)/contracts/nft-vault/schema/execute_msg.json -o go/pkg/contracts/vault_types/execute_msg.go -p vault_types
+	go fmt ./go/pkg/contracts/vault_types
 	rm -fr $(VAULT_REPO)
 
 run.candymachine: node_modules
 	npx ts-node packages/candymachine/cli.ts
+
+publish.backend:
+	docker build -f go/cmd/teritori-dapp-backend/Dockerfile .  --platform amd64 -t $(BACKEND_DOCKER_IMAGE)
+	docker push $(BACKEND_DOCKER_IMAGE)
+
+publish.indexer:
+	docker build -f go/cmd/teritori-indexer/Dockerfile . --platform amd64 -t $(INDEXER_DOCKER_IMAGE)
+	docker push $(INDEXER_DOCKER_IMAGE)

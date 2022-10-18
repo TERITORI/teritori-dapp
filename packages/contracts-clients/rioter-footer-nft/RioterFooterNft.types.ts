@@ -30,6 +30,12 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 } | {
+  set_whitelisted_collection: {
+    collection: string;
+    whitelist: boolean;
+    [k: string]: unknown;
+  };
+} | {
   add_my_nft: {
     additional: string;
     contract_address: string;

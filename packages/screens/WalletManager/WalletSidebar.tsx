@@ -1,3 +1,4 @@
+import { useRoute } from "@react-navigation/native";
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
@@ -10,7 +11,7 @@ import walletsNeutralA3SVG from "../../../assets/icons/wallets-neutralA3.svg";
 import walletsWhiteSVG from "../../../assets/icons/wallets-white.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { getCurrentRouteName, useAppNavigation } from "../../utils/navigation";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutralA3 } from "../../utils/style/colors";
 import { WALLET_SIDEBAR_WIDTH } from "./constants";
 
@@ -44,7 +45,8 @@ const LIST: ListItem[] = [
 
 export const WalletSidebar: React.FC = () => {
   const navigation = useAppNavigation();
-  const currentRouteName = getCurrentRouteName(navigation);
+  const { name: currentRouteName } = useRoute();
+
   return (
     <View
       style={{

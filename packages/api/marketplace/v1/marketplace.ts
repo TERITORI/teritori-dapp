@@ -61,6 +61,11 @@ export interface NFT {
   price: string;
   denom: string;
   isListed: boolean;
+  textInsert: string;
+  collectionName: string;
+  ownerName: string;
+  ownerImageUrl: string;
+  ownerId: string;
 }
 
 export interface Collection {
@@ -87,6 +92,12 @@ export interface Activity {
   transactionId: string;
   buyerId: string;
   sellerId: string;
+}
+
+export interface Quest {
+  id: string;
+  title: string;
+  completed: boolean;
 }
 
 export interface PriceDatum {
@@ -161,14 +172,25 @@ export interface CollectionsResponse {
   collection: Collection | undefined;
 }
 
-export interface CollectionNFTsRequest {
-  id: string;
+export interface NFTsRequest {
   limit: number;
   offset: number;
+  collectionId: string;
+  ownerId: string;
 }
 
-export interface CollectionNFTsResponse {
+export interface NFTsResponse {
   nft: NFT | undefined;
+}
+
+export interface QuestsRequest {
+  limit: number;
+  offset: number;
+  userId: string;
+}
+
+export interface QuestsResponse {
+  quest: Quest | undefined;
 }
 
 export interface CollectionActivityRequest {
@@ -200,7 +222,21 @@ export interface NFTPriceHistoryResponse {
 }
 
 function createBaseNFT(): NFT {
-  return { id: "", network: 0, imageUri: "", name: "", mintAddress: "", price: "", denom: "", isListed: false };
+  return {
+    id: "",
+    network: 0,
+    imageUri: "",
+    name: "",
+    mintAddress: "",
+    price: "",
+    denom: "",
+    isListed: false,
+    textInsert: "",
+    collectionName: "",
+    ownerName: "",
+    ownerImageUrl: "",
+    ownerId: "",
+  };
 }
 
 export const NFT = {
@@ -228,6 +264,21 @@ export const NFT = {
     }
     if (message.isListed === true) {
       writer.uint32(64).bool(message.isListed);
+    }
+    if (message.textInsert !== "") {
+      writer.uint32(74).string(message.textInsert);
+    }
+    if (message.collectionName !== "") {
+      writer.uint32(82).string(message.collectionName);
+    }
+    if (message.ownerName !== "") {
+      writer.uint32(90).string(message.ownerName);
+    }
+    if (message.ownerImageUrl !== "") {
+      writer.uint32(98).string(message.ownerImageUrl);
+    }
+    if (message.ownerId !== "") {
+      writer.uint32(106).string(message.ownerId);
     }
     return writer;
   },
@@ -263,6 +314,21 @@ export const NFT = {
         case 8:
           message.isListed = reader.bool();
           break;
+        case 9:
+          message.textInsert = reader.string();
+          break;
+        case 10:
+          message.collectionName = reader.string();
+          break;
+        case 11:
+          message.ownerName = reader.string();
+          break;
+        case 12:
+          message.ownerImageUrl = reader.string();
+          break;
+        case 13:
+          message.ownerId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -281,6 +347,11 @@ export const NFT = {
       price: isSet(object.price) ? String(object.price) : "",
       denom: isSet(object.denom) ? String(object.denom) : "",
       isListed: isSet(object.isListed) ? Boolean(object.isListed) : false,
+      textInsert: isSet(object.textInsert) ? String(object.textInsert) : "",
+      collectionName: isSet(object.collectionName) ? String(object.collectionName) : "",
+      ownerName: isSet(object.ownerName) ? String(object.ownerName) : "",
+      ownerImageUrl: isSet(object.ownerImageUrl) ? String(object.ownerImageUrl) : "",
+      ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
     };
   },
 
@@ -294,6 +365,11 @@ export const NFT = {
     message.price !== undefined && (obj.price = message.price);
     message.denom !== undefined && (obj.denom = message.denom);
     message.isListed !== undefined && (obj.isListed = message.isListed);
+    message.textInsert !== undefined && (obj.textInsert = message.textInsert);
+    message.collectionName !== undefined && (obj.collectionName = message.collectionName);
+    message.ownerName !== undefined && (obj.ownerName = message.ownerName);
+    message.ownerImageUrl !== undefined && (obj.ownerImageUrl = message.ownerImageUrl);
+    message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     return obj;
   },
 
@@ -307,6 +383,11 @@ export const NFT = {
     message.price = object.price ?? "";
     message.denom = object.denom ?? "";
     message.isListed = object.isListed ?? false;
+    message.textInsert = object.textInsert ?? "";
+    message.collectionName = object.collectionName ?? "";
+    message.ownerName = object.ownerName ?? "";
+    message.ownerImageUrl = object.ownerImageUrl ?? "";
+    message.ownerId = object.ownerId ?? "";
     return message;
   },
 };
@@ -593,6 +674,73 @@ export const Activity = {
   },
 };
 
+function createBaseQuest(): Quest {
+  return { id: "", title: "", completed: false };
+}
+
+export const Quest = {
+  encode(message: Quest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.title !== "") {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.completed === true) {
+      writer.uint32(24).bool(message.completed);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Quest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.title = reader.string();
+          break;
+        case 3:
+          message.completed = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Quest {
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      title: isSet(object.title) ? String(object.title) : "",
+      completed: isSet(object.completed) ? Boolean(object.completed) : false,
+    };
+  },
+
+  toJSON(message: Quest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.title !== undefined && (obj.title = message.title);
+    message.completed !== undefined && (obj.completed = message.completed);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Quest>, I>>(object: I): Quest {
+    const message = createBaseQuest();
+    message.id = object.id ?? "";
+    message.title = object.title ?? "";
+    message.completed = object.completed ?? false;
+    return message;
+  },
+};
+
 function createBasePriceDatum(): PriceDatum {
   return { price: "", time: "" };
 }
@@ -768,39 +916,45 @@ export const CollectionsResponse = {
   },
 };
 
-function createBaseCollectionNFTsRequest(): CollectionNFTsRequest {
-  return { id: "", limit: 0, offset: 0 };
+function createBaseNFTsRequest(): NFTsRequest {
+  return { limit: 0, offset: 0, collectionId: "", ownerId: "" };
 }
 
-export const CollectionNFTsRequest = {
-  encode(message: CollectionNFTsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
+export const NFTsRequest = {
+  encode(message: NFTsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.limit !== 0) {
-      writer.uint32(16).int32(message.limit);
+      writer.uint32(8).int32(message.limit);
     }
     if (message.offset !== 0) {
-      writer.uint32(24).int32(message.offset);
+      writer.uint32(16).int32(message.offset);
+    }
+    if (message.collectionId !== "") {
+      writer.uint32(26).string(message.collectionId);
+    }
+    if (message.ownerId !== "") {
+      writer.uint32(34).string(message.ownerId);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionNFTsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): NFTsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCollectionNFTsRequest();
+    const message = createBaseNFTsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
-          break;
-        case 2:
           message.limit = reader.int32();
           break;
-        case 3:
+        case 2:
           message.offset = reader.int32();
+          break;
+        case 3:
+          message.collectionId = reader.string();
+          break;
+        case 4:
+          message.ownerId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -810,47 +964,50 @@ export const CollectionNFTsRequest = {
     return message;
   },
 
-  fromJSON(object: any): CollectionNFTsRequest {
+  fromJSON(object: any): NFTsRequest {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
+      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
     };
   },
 
-  toJSON(message: CollectionNFTsRequest): unknown {
+  toJSON(message: NFTsRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionNFTsRequest>, I>>(object: I): CollectionNFTsRequest {
-    const message = createBaseCollectionNFTsRequest();
-    message.id = object.id ?? "";
+  fromPartial<I extends Exact<DeepPartial<NFTsRequest>, I>>(object: I): NFTsRequest {
+    const message = createBaseNFTsRequest();
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
+    message.collectionId = object.collectionId ?? "";
+    message.ownerId = object.ownerId ?? "";
     return message;
   },
 };
 
-function createBaseCollectionNFTsResponse(): CollectionNFTsResponse {
+function createBaseNFTsResponse(): NFTsResponse {
   return { nft: undefined };
 }
 
-export const CollectionNFTsResponse = {
-  encode(message: CollectionNFTsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const NFTsResponse = {
+  encode(message: NFTsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.nft !== undefined) {
       NFT.encode(message.nft, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionNFTsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): NFTsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCollectionNFTsResponse();
+    const message = createBaseNFTsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -865,19 +1022,133 @@ export const CollectionNFTsResponse = {
     return message;
   },
 
-  fromJSON(object: any): CollectionNFTsResponse {
+  fromJSON(object: any): NFTsResponse {
     return { nft: isSet(object.nft) ? NFT.fromJSON(object.nft) : undefined };
   },
 
-  toJSON(message: CollectionNFTsResponse): unknown {
+  toJSON(message: NFTsResponse): unknown {
     const obj: any = {};
     message.nft !== undefined && (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionNFTsResponse>, I>>(object: I): CollectionNFTsResponse {
-    const message = createBaseCollectionNFTsResponse();
+  fromPartial<I extends Exact<DeepPartial<NFTsResponse>, I>>(object: I): NFTsResponse {
+    const message = createBaseNFTsResponse();
     message.nft = (object.nft !== undefined && object.nft !== null) ? NFT.fromPartial(object.nft) : undefined;
+    return message;
+  },
+};
+
+function createBaseQuestsRequest(): QuestsRequest {
+  return { limit: 0, offset: 0, userId: "" };
+}
+
+export const QuestsRequest = {
+  encode(message: QuestsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.limit !== 0) {
+      writer.uint32(8).int32(message.limit);
+    }
+    if (message.offset !== 0) {
+      writer.uint32(16).int32(message.offset);
+    }
+    if (message.userId !== "") {
+      writer.uint32(26).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuestsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuestsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.limit = reader.int32();
+          break;
+        case 2:
+          message.offset = reader.int32();
+          break;
+        case 3:
+          message.userId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuestsRequest {
+    return {
+      limit: isSet(object.limit) ? Number(object.limit) : 0,
+      offset: isSet(object.offset) ? Number(object.offset) : 0,
+      userId: isSet(object.userId) ? String(object.userId) : "",
+    };
+  },
+
+  toJSON(message: QuestsRequest): unknown {
+    const obj: any = {};
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
+    message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    message.userId !== undefined && (obj.userId = message.userId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QuestsRequest>, I>>(object: I): QuestsRequest {
+    const message = createBaseQuestsRequest();
+    message.limit = object.limit ?? 0;
+    message.offset = object.offset ?? 0;
+    message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
+function createBaseQuestsResponse(): QuestsResponse {
+  return { quest: undefined };
+}
+
+export const QuestsResponse = {
+  encode(message: QuestsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.quest !== undefined) {
+      Quest.encode(message.quest, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QuestsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuestsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.quest = Quest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuestsResponse {
+    return { quest: isSet(object.quest) ? Quest.fromJSON(object.quest) : undefined };
+  },
+
+  toJSON(message: QuestsResponse): unknown {
+    const obj: any = {};
+    message.quest !== undefined && (obj.quest = message.quest ? Quest.toJSON(message.quest) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QuestsResponse>, I>>(object: I): QuestsResponse {
+    const message = createBaseQuestsResponse();
+    message.quest = (object.quest !== undefined && object.quest !== null) ? Quest.fromPartial(object.quest) : undefined;
     return message;
   },
 };
@@ -1214,10 +1485,8 @@ export const NFTPriceHistoryResponse = {
 
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
-  CollectionNFTs(
-    request: DeepPartial<CollectionNFTsRequest>,
-    metadata?: grpc.Metadata,
-  ): Observable<CollectionNFTsResponse>;
+  NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse>;
+  Quests(request: DeepPartial<QuestsRequest>, metadata?: grpc.Metadata): Observable<QuestsResponse>;
   CollectionActivity(
     request: DeepPartial<CollectionActivityRequest>,
     metadata?: grpc.Metadata,
@@ -1235,7 +1504,8 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Collections = this.Collections.bind(this);
-    this.CollectionNFTs = this.CollectionNFTs.bind(this);
+    this.NFTs = this.NFTs.bind(this);
+    this.Quests = this.Quests.bind(this);
     this.CollectionActivity = this.CollectionActivity.bind(this);
     this.NFTActivity = this.NFTActivity.bind(this);
     this.NFTPriceHistory = this.NFTPriceHistory.bind(this);
@@ -1245,11 +1515,12 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     return this.rpc.invoke(MarketplaceServiceCollectionsDesc, CollectionsRequest.fromPartial(request), metadata);
   }
 
-  CollectionNFTs(
-    request: DeepPartial<CollectionNFTsRequest>,
-    metadata?: grpc.Metadata,
-  ): Observable<CollectionNFTsResponse> {
-    return this.rpc.invoke(MarketplaceServiceCollectionNFTsDesc, CollectionNFTsRequest.fromPartial(request), metadata);
+  NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse> {
+    return this.rpc.invoke(MarketplaceServiceNFTsDesc, NFTsRequest.fromPartial(request), metadata);
+  }
+
+  Quests(request: DeepPartial<QuestsRequest>, metadata?: grpc.Metadata): Observable<QuestsResponse> {
+    return this.rpc.invoke(MarketplaceServiceQuestsDesc, QuestsRequest.fromPartial(request), metadata);
   }
 
   CollectionActivity(
@@ -1299,20 +1570,42 @@ export const MarketplaceServiceCollectionsDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-export const MarketplaceServiceCollectionNFTsDesc: UnaryMethodDefinitionish = {
-  methodName: "CollectionNFTs",
+export const MarketplaceServiceNFTsDesc: UnaryMethodDefinitionish = {
+  methodName: "NFTs",
   service: MarketplaceServiceDesc,
   requestStream: false,
   responseStream: true,
   requestType: {
     serializeBinary() {
-      return CollectionNFTsRequest.encode(this).finish();
+      return NFTsRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...CollectionNFTsResponse.decode(data),
+        ...NFTsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceQuestsDesc: UnaryMethodDefinitionish = {
+  methodName: "Quests",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: true,
+  requestType: {
+    serializeBinary() {
+      return QuestsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...QuestsResponse.decode(data),
         toObject() {
           return this;
         },

@@ -3,12 +3,10 @@ package indexerhandler
 import (
 	"encoding/json"
 	"fmt"
-	"regexp"
-	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	cosmostypes "github.com/cosmos/cosmos-sdk/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cosmostx "github.com/cosmos/cosmos-sdk/types/tx"
 	cosmosproto "github.com/cosmos/gogoproto/proto"
 	"github.com/davecgh/go-spew/spew"
@@ -18,24 +16,31 @@ import (
 	"gorm.io/gorm"
 )
 
-const (
-	minterCodeID         = "9"
-	vaultContractAddress = "tori17ww32dvhrxa9ga57vk65dzu8746nm0cqlqxq06zfrkd0wffpkleslfmjtq"
-)
+type Message struct {
+	Msg      *codectypes.Any
+	MsgIndex int
+	MsgID    string
+	TxHash   string
+	Events   EventsMap
+	Log      TendermintTxLog
+}
 
-type Tx struct {
-	Hash   string
-	Tx     *cosmostx.Tx
-	Events EventsMap
+type Config struct {
+	TNSContractAddress   string
+	RESTEndpoint         string
+	MinterCodeID         uint64
+	VaultContractAddress string
+	TNSDefaultImageURL   string
 }
 
 type Handler struct {
-	db           *gorm.DB
-	restEndpoint string
-	logger       *zap.Logger
+	db *gorm.DB
+
+	logger *zap.Logger
+	config Config
 }
 
-func NewHandler(db *gorm.DB, restEndpoint string, logger *zap.Logger) (*Handler, error) {
+func NewHandler(db *gorm.DB, config Config, logger *zap.Logger) (*Handler, error) {
 	if db == nil {
 		return nil, errors.New("nil db")
 	}
@@ -43,148 +48,94 @@ func NewHandler(db *gorm.DB, restEndpoint string, logger *zap.Logger) (*Handler,
 		logger = zap.NewNop()
 	}
 	return &Handler{
-		db:           db,
-		logger:       logger,
-		restEndpoint: restEndpoint,
+		db:     db,
+		logger: logger,
+		config: config,
 	}, nil
 }
 
-func (h *Handler) HandleCosmosTx(tx *cosmostx.Tx, res *cosmostypes.TxResponse) error {
-	if res == nil {
-		return errors.New("empty result")
-	}
-	if res.Events == nil {
-		return errors.New("nil events map")
-	}
-
-	events := EventsMapFromEvents(res.Events)
-
-	return h.HandleTx(&Tx{
-		Hash:   res.TxHash,
-		Tx:     tx,
-		Events: events,
-	})
-}
-
 func (h *Handler) HandleTendermintResultTx(tx *tenderminttypes.ResultTx) error {
-	var log []TendermintTxLog
-	if err := json.Unmarshal([]byte(tx.TxResult.Log), &log); err != nil {
+	var logs []TendermintTxLog
+	if err := json.Unmarshal([]byte(tx.TxResult.Log), &logs); err != nil {
 		panic(errors.Wrap(err, "failed to parse tx log"))
 	}
-	allEvents := []StringEvent(nil)
-	for _, l := range log {
-		allEvents = append(allEvents, l.Events...)
-	}
-	em := EventsMapFromStringEvents(allEvents)
 
 	var cosmosTx cosmostx.Tx
 	if err := cosmosproto.Unmarshal(tx.Tx, &cosmosTx); err != nil {
 		return errors.Wrap(err, "failed to unmarshal tx")
 	}
 
-	return h.HandleTx(&Tx{
-		Hash:   tx.Hash.String(),
-		Tx:     &cosmosTx,
-		Events: em,
-	})
+	return h.HandleTx(tx.Hash.String(), cosmosTx, logs)
 }
 
-func (h *Handler) HandleTx(e *Tx) error {
-	messageActions := e.Events["message.action"]
-	if len(messageActions) == 0 {
-		return nil
-	}
-	messageAction := messageActions[0]
-
-	switch messageAction {
-	case "/cosmwasm.wasm.v1.MsgInstantiateContract":
-		if err := h.handleInstantiate(e); err != nil {
-			return errors.Wrap(err, "failed to handle instantiate")
-		}
-	case "/cosmwasm.wasm.v1.MsgExecuteContract":
-		if err := h.handleExecute(e); err != nil {
-			return errors.Wrap(err, "failed to handle execute")
-		}
+func (h *Handler) HandleTx(hash string, tx cosmostx.Tx, logs []TendermintTxLog) error {
+	if len(logs) != len(tx.Body.Messages) {
+		return errors.New("messages and results count mismatch")
 	}
 
+	codecMessages := tx.Body.Messages
+	for i, codecMsg := range codecMessages {
+		handlerMsg := Message{
+			Msg:      codecMsg,
+			MsgIndex: i,
+			MsgID:    fmt.Sprintf("%s-%d", hash, i),
+			Log:      logs[i],
+			TxHash:   hash,
+			Events:   EventsMapFromStringEvents(logs[i].Events),
+		}
+
+		switch codecMsg.TypeUrl {
+		case "/cosmwasm.wasm.v1.MsgInstantiateContract":
+			if err := h.handleInstantiate(&handlerMsg); err != nil {
+				return errors.Wrap(err, "failed to handle instantiate")
+			}
+		case "/cosmwasm.wasm.v1.MsgExecuteContract":
+			if err := h.handleExecute(&handlerMsg); err != nil {
+				return errors.Wrap(err, "failed to handle execute")
+			}
+		}
+	}
 	return nil
 }
 
-func (h *Handler) handleInstantiate(e *Tx) error {
+func (h *Handler) handleInstantiate(e *Message) error {
+	var instantiateMsg wasmtypes.MsgInstantiateContract
+	if err := cosmosproto.Unmarshal(e.Msg.Value, &instantiateMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal instantiate msg")
+	}
+
 	contractAddress, err := e.Events.InstantiateContractAddress()
 	if err != nil {
 		return errors.Wrap(err, "failed to get outer contract address")
 	}
 
-	codeId, err := e.Events.OuterInstantiateCodeID()
-	if err != nil {
-		return errors.Wrap(err, "failed to get outer code id")
+	switch contractAddress {
+	case h.config.TNSContractAddress:
+		if err := h.handleInstantiateTNS(e, contractAddress, &instantiateMsg); err != nil {
+			return errors.Wrap(err, "failed to handle tns minter instantiation")
+		}
+		return nil
 	}
 
-	switch codeId {
-	case minterCodeID:
-		if err := h.handleInstantiateMinter(e, contractAddress); err != nil {
+	switch instantiateMsg.CodeID {
+	case h.config.MinterCodeID:
+		if err := h.handleInstantiateMinter(e, contractAddress, &instantiateMsg); err != nil {
 			return errors.Wrap(err, "failed to handle minter instantiation")
 		}
 	default:
-		h.logger.Debug("ignored instantiate with unknown code id", zap.String("value", codeId))
+		h.logger.Debug("ignored instantiate with unknown code id", zap.Uint64("value", instantiateMsg.CodeID))
 	}
 
 	return nil
 }
 
-func (h *Handler) handleInstantiateMinter(e *Tx, contractAddress string) error {
-	// get nft contract address
-	nftAddrs := e.Events["wasm.nft_addr"]
-	if len(nftAddrs) == 0 {
-		return errors.New("no nft contract address")
-	}
-	nftAddr := nftAddrs[0]
-
-	// FIXME: network queries should be done async
-
-	// fetch minter config
-	var minterConfig MinterConfigResponse
-	if err := querySmartContract(h.restEndpoint, &minterConfig, contractAddress, `{ "config": {} }`); err != nil {
-		return errors.Wrap(err, "failed to query minter config")
+func (h *Handler) handleExecute(e *Message) error {
+	var executeMsg wasmtypes.MsgExecuteContract
+	if err := cosmosproto.Unmarshal(e.Msg.Value, &executeMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal instantiate msg")
 	}
 
-	// fetch collection info
-	var collectionInfo CollectionInfoResponse
-	if err := querySmartContract(h.restEndpoint, &collectionInfo, minterConfig.NFTContractAddress, `{ "contract_info": {} }`); err != nil {
-		return errors.Wrap(err, "failed to query collection info")
-	}
-
-	// fetch collection metadata
-	var metadata CollectionMetadata
-	if err := fetchIPFSJSON(minterConfig.BaseURI+"collection.json", &metadata); err != nil {
-		return errors.Wrap(err, "failed to fetch collection metadata")
-	}
-
-	// create collection
-	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
-	if err := h.db.Create(&indexerdb.Collection{
-		ID:       collectionId,
-		Network:  indexerdb.NetworkTeritori,
-		Name:     collectionInfo.Name,
-		ImageURI: metadata.ImageURI,
-		TeritoriCollection: &indexerdb.TeritoriCollection{
-			MintContractAddress: contractAddress,
-			NFTContractAddress:  nftAddr,
-		},
-	}).Error; err != nil {
-		return errors.Wrap(err, "failed to create collection")
-	}
-	h.logger.Info("created collection", zap.String("id", collectionId))
-
-	return nil
-}
-
-func (h *Handler) handleExecute(e *Tx) error {
-	contractAddress, err := e.Events.OuterContractAddress()
-	if err != nil {
-		return errors.Wrap(err, "failed to get outer contract address")
-	}
+	// FIXME: replace by exec message analysis
 
 	wasmActions := e.Events["wasm.action"]
 	if len(wasmActions) == 0 {
@@ -194,384 +145,74 @@ func (h *Handler) handleExecute(e *Tx) error {
 
 	switch wasmAction {
 	case "mint":
-		if err := h.handleExecuteMint(e, contractAddress); err != nil {
+		if err := h.handleExecuteMint(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle mint")
 		}
 	case "buy":
-		if err := h.handleExecuteBuy(e, contractAddress); err != nil {
+		if err := h.handleExecuteBuy(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle buy")
 		}
 	case "send_nft":
-		if err := h.handleExecuteSendNFT(e, contractAddress); err != nil {
+		if err := h.handleExecuteSendNFT(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle send_nft")
 		}
 	case "withdraw":
-		if err := h.handleExecuteWithdraw(e, contractAddress); err != nil {
+		if err := h.handleExecuteWithdraw(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle withdraw")
 		}
+	case "burn":
+		if err := h.handleExecuteBurn(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle burn")
+		}
+	case "update_price":
+		if err := h.handleExecuteUpdatePrice(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle burn")
+		}
+	case "update_metadata":
+		if err := h.handleExecuteUpdateMetadata(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle burn")
+		}
+	case "update_preferred_alias":
+		if err := h.handleUpdatePrimaryAlias(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to update_preferred_alias")
+		}
 	}
 
 	return nil
 }
 
-func (h *Handler) handleExecuteMint(e *Tx, contractAddress string) error {
-	if err := h.db.Transaction(func(dbtx *gorm.DB) error {
-		var collections []*indexerdb.Collection
-		if err := dbtx.Preload("TeritoriCollection").Limit(1).Find(&collections, &indexerdb.Collection{ID: indexerdb.TeritoriCollectionID(contractAddress)}).Error; err != nil {
-			return errors.Wrap(err, "find collection error")
-		}
-		if len(collections) == 0 {
-			h.logger.Debug("ignored mint from unknown collection", zap.String("address", contractAddress))
-			return nil
-		}
-		collection := collections[0]
-		if collection.TeritoriCollection == nil {
-			spew.Dump(collection)
-			return errors.New("no teritori info in collection")
-		}
+func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	contractAddress := execMsg.Contract
 
-		tokenIds := e.Events["wasm.token_id"]
-		if len(tokenIds) == 0 {
-			return errors.New("no token ids")
-		}
-		tokenId := tokenIds[0]
-
-		owners := e.Events["wasm.owner"]
-		if len(owners) == 0 {
-			return errors.New("no owners")
-		}
-		owner := owners[0]
-		ownerId := indexerdb.TeritoriUserID(owner)
-
-		var minterConfig MinterConfigResponse
-		if err := querySmartContract(h.restEndpoint, &minterConfig, collection.TeritoriCollection.MintContractAddress, `{ "config": {} }`); err != nil {
-			return errors.Wrap(err, "failed to query minter config")
-		}
-
-		var metadata NFTMetadata
-		if err := fetchIPFSJSON(fmt.Sprintf("%s/%s.json", minterConfig.BaseURI, tokenId), &metadata); err != nil {
-			return errors.Wrap(err, "failed to fetch nft metadata")
-		}
-
-		nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
-
-		nft := indexerdb.NFT{
-			ID:           nftId,
-			OwnerID:      ownerId,
-			Name:         metadata.Name,
-			ImageURI:     metadata.ImageURI,
-			CollectionID: collection.ID,
-			TeritoriNFT: &indexerdb.TeritoriNFT{
-				TokenID: tokenId,
-			},
-		}
-		if err := dbtx.Create(&nft).Error; err != nil {
-			spew.Dump(nft)
-			return errors.Wrap(err, "failed to create nft in db")
-		}
-		h.logger.Info("created nft", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
-
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "db tx failed")
+	var collections []*indexerdb.Collection
+	if err := h.db.Preload("TeritoriCollection").Limit(1).Find(&collections, &indexerdb.Collection{ID: indexerdb.TeritoriCollectionID(contractAddress)}).Error; err != nil {
+		return errors.Wrap(err, "find collection error")
 	}
-
-	return nil
-}
-
-const sellerReceiverIndex = 1
-const buyerSpenderIndex = 0
-const priceSpentAmountIndex = 0
-
-var amountRegexp = regexp.MustCompile(`(\d+)(.+)`)
-
-func (h *Handler) handleExecuteBuy(e *Tx, contractAddress string) error {
-	// check that it's the correct vault contract
-	if contractAddress != vaultContractAddress {
+	if len(collections) == 0 {
+		h.logger.Debug("ignored mint from unknown collection", zap.String("address", contractAddress))
 		return nil
 	}
-
-	// get nft contract address
-	executeContractAddresses := e.Events["execute._contract_address"]
-	if len(executeContractAddresses) < 2 {
-		return errors.New("not enough contract addresses")
+	collection := collections[0]
+	if collection.TeritoriCollection == nil {
+		spew.Dump(collection)
+		return errors.New("no teritori info in collection")
 	}
-	nftContractAddress := executeContractAddresses[1]
 
-	// get token id
 	tokenIds := e.Events["wasm.token_id"]
 	if len(tokenIds) == 0 {
 		return errors.New("no token ids")
 	}
 	tokenId := tokenIds[0]
 
-	// get buyer
-	spenders := e.Events["coin_spent.spender"]
-	if len(spenders) < buyerSpenderIndex+1 {
-		return fmt.Errorf("not enough spenders, wanted %d, got %d", buyerSpenderIndex+1, len(spenders))
-	}
-	buyer := spenders[buyerSpenderIndex]
-
-	// get seller
-	receivers := e.Events["coin_received.receiver"]
-	if len(receivers) < sellerReceiverIndex+1 {
-		return fmt.Errorf("not enough receivers, wanted %d, got %d", sellerReceiverIndex+1, len(receivers))
-	}
-	seller := receivers[sellerReceiverIndex]
-
-	// get price
-	spentAmounts := e.Events["coin_spent.amount"]
-	if len(spentAmounts) < priceSpentAmountIndex+1 {
-		return fmt.Errorf("not enough spent amounts, wanted %d, got %d", priceSpentAmountIndex+1, len(spentAmounts))
-	}
-	priceAmount := spentAmounts[priceSpentAmountIndex]
-	matches := amountRegexp.FindStringSubmatch(priceAmount)
-	if len(matches) != 3 {
-		return errors.New("failed to unmarshal price")
-	}
-	price := matches[1]
-	denom := matches[2]
-
-	if err := h.db.Transaction(func(tx *gorm.DB) error {
-		// find nft id
-		var collection indexerdb.Collection
-		if err := tx.
-			Joins("TeritoriCollection").
-			Where("TeritoriCollection__nft_contract_address = ?", nftContractAddress).
-			Find(&collection).
-			Error; err != nil {
-			return errors.Wrap(err, "collection not found")
+	if collection.TeritoriCollection != nil && collection.TeritoriCollection.MintContractAddress == h.config.TNSContractAddress {
+		if err := h.handleExecuteMintTNS(e, collection, tokenId, execMsg); err != nil {
+			return errors.Wrap(err, "failed to handle tns mint")
 		}
-		if collection.TeritoriCollection == nil {
-			return errors.New("no teritori info on collection")
-		}
-		nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
-
-		// update nft price
-		if err := tx.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
-			"price_amount": nil,
-			"price_denom":  nil,
-			"is_listed":    false,
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to update nft price")
-		}
-
-		// create trade
-		var nft indexerdb.NFT
-		if err := tx.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
-			return errors.Wrap(err, "nft not found in db")
-		}
-		activityID := indexerdb.TeritoriActiviyID(e.Hash)
-		if err := tx.Create(&indexerdb.Activity{
-			ID:      activityID,
-			Network: indexerdb.NetworkTeritori,
-			NFTID:   nftID,
-			Kind:    indexerdb.ActivityKindTrade,
-			Time:    time.Now(), // FIXME: replace by block time
-			Trade: &indexerdb.Trade{
-				Price:      price,
-				PriceDenom: denom,
-				BuyerID:    indexerdb.TeritoriUserID(buyer),
-				SellerID:   indexerdb.TeritoriUserID(seller),
-			},
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to create trade in db")
-		}
-		h.logger.Info("created trade", zap.String("id", activityID))
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "db tx failed")
-	}
-	return nil
-}
-
-const vaultContractSendNFTIndex = 1
-
-type DepositNFTMsg struct {
-	Amount string `json:"amount"`
-	Denom  string `json:"denom"`
-}
-
-type DepositNFTHookMsg struct {
-	Deposit DepositNFTMsg `json:"deposit"`
-}
-
-type SendNFTMsg struct {
-	Contract string `json:"contract"`
-	TokenID  string `json:"token_id"`
-	Msg      []byte `json:"msg"`
-}
-
-type SendNFTExecuteMsg struct {
-	SendNFT SendNFTMsg `json:"send_nft"`
-}
-
-func (h *Handler) handleExecuteSendNFT(e *Tx, contractAddress string) error {
-	// get send_nft target contract address
-	executeContractAddresses := e.Events["execute._contract_address"]
-	if len(executeContractAddresses) < vaultContractSendNFTIndex+1 {
-		return nil
-	}
-	txVaultContractAddress := executeContractAddresses[vaultContractSendNFTIndex]
-
-	// check that it's the correct vault contract
-	if txVaultContractAddress != vaultContractAddress {
 		return nil
 	}
 
-	// get token id
-	tokenIds := e.Events["wasm.token_id"]
-	if len(tokenIds) == 0 {
-		return errors.New("no token ids")
-	}
-	tokenId := tokenIds[0]
-
-	// get seller
-	senders := e.Events["wasm.sender"]
-	if len(senders) == 0 {
-		return errors.New("no senders")
-	}
-	seller := senders[0]
-
-	// get price from raw tx
-	if len(e.Tx.Body.Messages) == 0 {
-		return errors.New("no messages in tx")
-	}
-	txBodyMessage := e.Tx.Body.Messages[0]
-	if txBodyMessage.TypeUrl != "/cosmwasm.wasm.v1.MsgExecuteContract" {
-		return errors.New("invalid tx body message type")
-	}
-	var executeMsg wasmtypes.MsgExecuteContract
-	if err := cosmosproto.Unmarshal(txBodyMessage.Value, &executeMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal execute msg")
-	}
-	nftMsgBytes := executeMsg.Msg
-	var nftMsg SendNFTExecuteMsg
-	if err := json.Unmarshal(nftMsgBytes, &nftMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal nft execute msg")
-	}
-	var hookMsg DepositNFTHookMsg
-	if err := json.Unmarshal(nftMsg.SendNFT.Msg, &hookMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal hook msg")
-	}
-	price := hookMsg.Deposit.Amount
-	denom := hookMsg.Deposit.Denom
-
-	if err := h.db.Transaction(func(tx *gorm.DB) error {
-		// find nft id
-		var collection indexerdb.Collection
-		if err := tx.
-			Joins("TeritoriCollection").
-			Where("TeritoriCollection__nft_contract_address = ?", contractAddress).
-			Find(&collection).
-			Error; err != nil {
-			return errors.Wrap(err, "collection not found")
-		}
-		if collection.TeritoriCollection == nil {
-			return errors.New("no teritori info on collection")
-		}
-		nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
-
-		// update nft price
-		if err := tx.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
-			"price_amount": price,
-			"price_denom":  denom,
-			"is_listed":    true,
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to update nft")
-		}
-
-		// create listing
-		var nft indexerdb.NFT
-		if err := tx.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
-			return errors.Wrap(err, "nft not found in db")
-		}
-		activityID := indexerdb.TeritoriActiviyID(e.Hash)
-		if err := tx.Create(&indexerdb.Activity{
-			ID:      activityID,
-			Network: indexerdb.NetworkTeritori,
-			NFTID:   nftID,
-			Kind:    indexerdb.ActivityKindList,
-			Time:    time.Now(), // FIXME: replace by block time
-			Listing: &indexerdb.Listing{
-				Price:      price,
-				PriceDenom: denom,
-				SellerID:   indexerdb.TeritoriUserID(seller),
-			},
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to create listing in db")
-		}
-		h.logger.Info("created listing", zap.String("id", activityID))
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "db tx failed")
-	}
-	return nil
-}
-
-func (h *Handler) handleExecuteWithdraw(e *Tx, contractAddress string) error {
-	// check that it's the correct vault contract
-	if contractAddress != vaultContractAddress {
-		return nil
-	}
-
-	// get nft contract address
-	executeContractAddresses := e.Events["execute._contract_address"]
-	if len(executeContractAddresses) < 2 {
-		return errors.New("not enough contract addresses")
-	}
-	nftContractAddress := executeContractAddresses[1]
-
-	// get token id
-	tokenIds := e.Events["wasm.token_id"]
-	if len(tokenIds) == 0 {
-		return errors.New("no token ids")
-	}
-	tokenId := tokenIds[0]
-
-	if err := h.db.Transaction(func(tx *gorm.DB) error {
-		// find nft id
-		var collection indexerdb.Collection
-		if err := tx.
-			Joins("TeritoriCollection").
-			Where("TeritoriCollection__nft_contract_address = ?", nftContractAddress).
-			Find(&collection).
-			Error; err != nil {
-			return errors.Wrap(err, "collection not found")
-		}
-		if collection.TeritoriCollection == nil {
-			return errors.New("no teritori info on collection")
-		}
-		nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
-
-		// update nft price
-		if err := tx.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
-			"price_amount": nil,
-			"price_denom":  nil,
-			"is_listed":    false,
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to update nft")
-		}
-
-		// create cancelation
-		var nft indexerdb.NFT
-		if err := tx.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
-			return errors.Wrap(err, "nft not found in db")
-		}
-		activityID := indexerdb.TeritoriActiviyID(e.Hash)
-		if err := tx.Create(&indexerdb.Activity{
-			ID:      activityID,
-			Network: indexerdb.NetworkTeritori,
-			NFTID:   nftID,
-			Kind:    indexerdb.ActivityKindCancelListing,
-			Time:    time.Now(), // FIXME: replace by block time
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to create listing cancelation in db")
-		}
-		h.logger.Info("created listing cancelation", zap.String("id", activityID))
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "db tx failed")
+	if err := h.handleExecuteMintClassic(e, collection, tokenId); err != nil {
+		return errors.Wrap(err, "failed to handle classic mint")
 	}
 
 	return nil

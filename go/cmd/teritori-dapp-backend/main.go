@@ -24,10 +24,12 @@ var (
 func main() {
 	fs := flag.NewFlagSet("teritori-dapp-backend", flag.ContinueOnError)
 	var (
-		dbPath          = fs.String("db-path", "", "path to the database file")
-		enableTls       = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
-		tlsCertFilePath = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
-		tlsKeyFilePath  = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
+		dbPath             = fs.String("db-path", "", "path to the database file")
+		enableTls          = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
+		tlsCertFilePath    = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
+		tlsKeyFilePath     = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
+		tnsContractAddress = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
+		tnsDefaultImageURL = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -58,7 +60,13 @@ func main() {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
 
-	svc := marketplace.NewMarketplaceService(context.Background(), graphqlEndpoint, indexerDB, logger)
+	svc := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
+		Logger:             logger,
+		IndexerDB:          indexerDB,
+		GraphqlEndpoint:    graphqlEndpoint,
+		TNSContractAddress: *tnsContractAddress,
+		TNSDefaultImageURL: *tnsDefaultImageURL,
+	})
 
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, svc)
