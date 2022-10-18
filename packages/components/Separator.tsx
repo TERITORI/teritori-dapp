@@ -6,17 +6,18 @@ import { neutral44 } from "../utils/style/colors";
 
 type SeparatorProps = {
   style?: ViewStyle;
+  color?: string;
 };
 
 export const Separator: React.FC<SeparatorProps> = ({
   style,
+  color = neutral44,
 }: SeparatorProps) => {
   // returns
-  return <View style={[styles.container, style]} />;
+  return <View style={[styles.container, { backgroundColor: color }, style]} />;
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: neutral44,
     width: "100%",
     height: 1,
   },

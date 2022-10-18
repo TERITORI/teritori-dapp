@@ -9,7 +9,7 @@ import { BrandText } from "../BrandText";
 export type TableRowDataItem = {
   uid: string;
   keyId: string;
-  label?: string;
+  value?: string;
   flex: number;
 };
 
@@ -26,16 +26,16 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
 }) => {
   return (
     <Pressable style={styles.row} onPress={onPress}>
-      {data.map(({ label, flex, keyId, uid }, index) => (
+      {data.map(({ value, flex, keyId, uid }, index) => (
         <View
-          key={label}
+          key={value}
           style={{
             flex,
             paddingRight: data.length - 1 === index ? 0 : layout.padding_x1,
           }}
         >
-          {(specialRender && specialRender({ label, flex, keyId, uid })) || (
-            <BrandText style={styles.labelText}>{label}</BrandText>
+          {(specialRender && specialRender({ value, flex, keyId, uid })) || (
+            <BrandText style={styles.valueText}>{value}</BrandText>
           )}
         </View>
       ))}
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     paddingVertical: layout.padding_x2,
     paddingHorizontal: layout.padding_x2_5,
   },
-  labelText: {
+  valueText: {
     ...StyleSheet.flatten(fontSemibold13),
     color: secondaryColor,
     textTransform: "uppercase",

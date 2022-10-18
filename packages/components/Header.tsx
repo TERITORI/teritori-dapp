@@ -1,21 +1,15 @@
 import React from "react";
-import { View, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
+import { View, ViewStyle, StyleProp } from "react-native";
 
-import logoTopSVG from "../../assets/logos/logo-hexagon.svg";
-import { useAppNavigation } from "../utils/navigation";
 import { neutral33 } from "../utils/style/colors";
 import {
   headerHeight,
-  headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
-import { SVG } from "./SVG";
 
 export const Header: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ children, style }) => {
-  const navigation = useAppNavigation();
-
   return (
     <View
       style={[
@@ -33,13 +27,6 @@ export const Header: React.FC<{
         style,
       ]}
     >
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Home")}
-        style={{ marginLeft: headerMarginHorizontal }}
-      >
-        <SVG width={68} height={68} source={logoTopSVG} />
-      </TouchableOpacity>
-
       <View
         style={{
           width: "100%",

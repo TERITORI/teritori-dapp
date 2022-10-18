@@ -1,12 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  ListRenderItem,
-  FlatList,
-  LayoutChangeEvent,
-  View,
-  ViewStyle,
-  Image,
-} from "react-native";
+import React, { useEffect } from "react";
+import { FlatList, View, ViewStyle, Image } from "react-native";
 
 import bannerCollection from "../../../assets/default-images/banner-collection.png";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
@@ -21,6 +14,7 @@ import { CollectionSocialButtons } from "../../components/collections/Collection
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { BackTo } from "../../components/navigation/BackTo";
 import { SortButton } from "../../components/sorts/SortButton";
+import { SpacerColumn } from "../../components/spacer";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
@@ -28,11 +22,13 @@ import {
   useCollectionInfo,
 } from "../../hooks/useCollectionInfo";
 import { useNFTs } from "../../hooks/useNFTs";
+import { useImageResizer } from "../../hooks/useImageResizer";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { alignDown } from "../../utils/align";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
 
 const collectionScreenTabItems: TabItem[] = [
   {
@@ -55,24 +51,24 @@ const collectionScreenTabItems: TabItem[] = [
 const keyExtractor = (item: NFT) => item.mintAddress;
 
 // ====== Style =====
-const gap = 20;
-const nftWidth = 268 + gap * 2; // FIXME: ssot
+const nftWidth = 268; // FIXME: ssot
 
 const viewStyle: ViewStyle = {
   height: "100%",
   alignItems: "center",
+  flex: 1,
 };
 
 // ====== Components =====
-const ItemSeparator: React.FC = () => <View style={{ height: gap }} />;
-
-const renderItem: ListRenderItem<NFT> = (info) => {
-  const nft = info.item;
+const RenderItem: React.FC<{
+  nft: NFT;
+  marginable: boolean;
+}> = ({ nft, marginable }) => {
   return (
     <NFTView
       key={nft.mintAddress}
       data={nft}
-      style={{ marginHorizontal: gap / 2 }}
+      style={{ marginRight: marginable ? layout.padding_x2 : 0 }}
     />
   );
 };
@@ -82,15 +78,20 @@ const FlatListHeader: React.FC<{
   collectionInfo: CollectionInfo;
 }> = ({ collectionInfo = {} }) => {
   const { onPressTabItem, tabItems } = useTabs(collectionScreenTabItems);
+  const { width: maxWidth } = useMaxResolution();
+  const { width, height } = useImageResizer({
+    image: bannerCollection,
+    maxSize: { width: maxWidth },
+  });
+
   return (
-    <View style={{ maxWidth: screenContentMaxWidth, alignItems: "center" }}>
+    <View style={{ maxWidth: width, alignSelf: "center" }}>
       <Image
         source={bannerCollection}
         style={{
-          height: 311,
-          width: screenContentMaxWidth,
-          marginBottom: 42,
-          marginTop: 7,
+          height,
+          width,
+          marginBottom: layout.contentPadding,
         }}
       />
 
@@ -160,7 +161,9 @@ const FlatListHeader: React.FC<{
 };
 
 // All the screen content after the Flatlist used to display NFTs
-const FlatListFooter: React.FC = () => <View style={{ height: 100 }} />;
+const FlatListFooter: React.FC = () => (
+  <View style={{ height: layout.contentPadding }} />
+);
 
 const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
   id,
@@ -201,12 +204,16 @@ const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
       key={numColumns}
       data={nfts}
       numColumns={numColumns}
-      ItemSeparatorComponent={ItemSeparator}
       onEndReached={fetchMore}
       keyExtractor={keyExtractor}
       onEndReachedThreshold={4}
-      renderItem={renderItem}
-      ListHeaderComponentStyle={{ alignItems: "center" }}
+      renderItem={(info) => (
+        <RenderItem
+          nft={info.item}
+          marginable={!!((info.index + 1) % numColumns)}
+        />
+      )}
+      ItemSeparatorComponent={() => <SpacerColumn size={2} />}
       ListHeaderComponent={<FlatListHeader collectionInfo={info} />}
       ListFooterComponent={<FlatListFooter />}
     />
@@ -214,17 +221,12 @@ const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
 };
 
 const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
-  const [viewWidth, setViewWidth] = useState(0);
-  const numColumns = Math.floor(viewWidth / nftWidth);
-
-  const handleViewLayout = useCallback(
-    (event: LayoutChangeEvent) => setViewWidth(event.nativeEvent.layout.width),
-    []
-  );
+  const { width } = useMaxResolution();
+  const numColumns = Math.floor(width / nftWidth);
 
   return (
-    <View style={viewStyle} onLayout={handleViewLayout}>
-      {viewWidth ? <CollectionNFTs id={id} numColumns={numColumns} /> : null}
+    <View style={viewStyle}>
+      <CollectionNFTs id={id} numColumns={numColumns} />
     </View>
   );
 });

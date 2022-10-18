@@ -14,6 +14,7 @@ import {
 
 import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
 import { useAreThereWallets } from "../hooks/useAreThereWallets";
+import { useMaxResolution } from "../hooks/useMaxResolution";
 import { useAppNavigation } from "../utils/navigation";
 import {
   headerHeight,
@@ -58,6 +59,7 @@ export const ScreenContainer: React.FC<{
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
   const areThereWallets = useAreThereWallets();
   const navigation = useAppNavigation();
+  const { width } = useMaxResolution();
 
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
@@ -72,6 +74,10 @@ export const ScreenContainer: React.FC<{
       </Modal>
 
       <View style={styles.container}>
+        {["android", "ios"].includes(Platform.OS) ||
+          (!hideSidebar ? <Sidebar /> : null)}
+        {!["android", "ios"].includes(Platform.OS) && customSidebar}
+
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
           <Header style={headerStyle}>{headerChildren}</Header>
@@ -79,10 +85,6 @@ export const ScreenContainer: React.FC<{
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
           >
-            {["android", "ios"].includes(Platform.OS) ||
-              (!hideSidebar ? <Sidebar /> : null)}
-            {!["android", "ios"].includes(Platform.OS) && customSidebar}
-
             {/*==== Scrollable screen content*/}
             <View style={{ flex: 1 }}>
               {hasScroll ? (
@@ -95,11 +97,15 @@ export const ScreenContainer: React.FC<{
                     marginStyle,
                   ]}
                 >
-                  {children}
-                  {footerChildren && <Footer>{footerChildren}</Footer>}
+                  <View style={[styles.childrenContainer, { width }]}>
+                    {children}
+                    {footerChildren && <Footer>{footerChildren}</Footer>}
+                  </View>
                 </ScrollView>
               ) : (
-                <View style={[{ flex: 1, width: "100%" }, marginStyle]}>
+                <View
+                  style={[styles.childrenContainer, { width }, marginStyle]}
+                >
                   {children}
                   {footerChildren && <Footer>{footerChildren}</Footer>}
                 </View>
@@ -149,8 +155,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000000",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    flexDirection: "row",
+  },
+  childrenContainer: {
+    height: "100%",
+    alignSelf: "center",
   },
 });
 

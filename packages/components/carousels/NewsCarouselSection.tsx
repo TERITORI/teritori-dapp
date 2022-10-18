@@ -7,6 +7,7 @@ import defaultGuardianPNG from "../../../assets/default-images/default-guardian-
 import defaultToripunkPNG from "../../../assets/default-images/default-toripunk-nft.png";
 import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
@@ -67,6 +68,7 @@ const fakeNews: News[] = [
 ];
 
 export const NewsCarouselSection: React.FC = () => {
+  const { width } = useMaxResolution();
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const renderItem = (props: { item: News }) => <NewsBox news={props.item} />;
 
@@ -85,26 +87,26 @@ export const NewsCarouselSection: React.FC = () => {
     </View>
   );
 
-  // Infinite slide automatically
   useEffect(() => {
-    const timer = setTimeout(() => {
-      carouselRef.current?.next();
-    }, 3000);
-    return () => clearTimeout(timer);
-  });
+    carouselRef.current?.next();
+  }, [width]);
 
+  // returns
   return (
     <Section title="Highlighted News" topRightChild={topRightChild}>
       <FullWidthSeparator />
       {/*TODO: Async fetchMore for these data ?*/}
+
       <Carousel
-        width={1092}
+        width={width}
         data={fakeNews}
         ref={carouselRef}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
         height={382}
         pagingEnabled
         loop
+        autoPlay
+        autoPlayInterval={3000}
         renderItem={renderItem}
       />
       <FullWidthSeparator />
