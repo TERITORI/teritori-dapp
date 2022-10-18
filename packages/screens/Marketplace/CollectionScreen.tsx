@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, View, ViewStyle, Image } from "react-native";
 
 import bannerCollection from "../../../assets/default-images/banner-collection.png";
@@ -15,7 +15,7 @@ import { RoundedGradientImage } from "../../components/images/RoundedGradientIma
 import { BackTo } from "../../components/navigation/BackTo";
 import { SortButton } from "../../components/sorts/SortButton";
 import { SpacerColumn } from "../../components/spacer";
-import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
+import { Tabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
   CollectionInfo,
@@ -30,23 +30,22 @@ import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-const collectionScreenTabItems: TabItem[] = [
-  {
-    label: "Owned",
-    isSelected: true,
+const collectionScreenTabItems = {
+  owned: {
+    name: "Owned",
     badgeCount: 87,
   },
-  {
-    label: "Collections",
+  collections: {
+    name: "Collections",
     badgeCount: 5760,
   },
-  {
-    label: "Activity",
+  activity: {
+    name: "Activity",
   },
-  {
-    label: "Offers",
+  offers: {
+    name: "Offers",
   },
-];
+};
 
 const keyExtractor = (item: NFT) => item.mintAddress;
 
@@ -77,7 +76,8 @@ const RenderItem: React.FC<{
 const FlatListHeader: React.FC<{
   collectionInfo: CollectionInfo;
 }> = ({ collectionInfo = {} }) => {
-  const { onPressTabItem, tabItems } = useTabs(collectionScreenTabItems);
+  const [selectedTab, setSelectedTab] =
+    useState<keyof typeof collectionScreenTabItems>("owned");
   const { width: maxWidth } = useMaxResolution();
   const { width, height } = useImageResizer({
     image: bannerCollection,
@@ -142,19 +142,20 @@ const FlatListHeader: React.FC<{
         mainContainerStyle={{
           flexDirection: "row",
           justifyContent: "space-between",
-          paddingHorizontal: 8,
+          paddingRight: 8,
+          paddingLeft: 20,
         }}
         fullWidth
         height={64}
         style={{ marginBottom: 24 }}
       >
         <Tabs
-          items={tabItems}
-          onPressTabItem={onPressTabItem}
+          items={collectionScreenTabItems}
+          onSelect={setSelectedTab}
+          selected={selectedTab}
           style={{
             width: "fit-content",
             height: "100%",
-            paddingTop: layout.padding_x2_5,
             borderBottomWidth: 0,
           }}
         />

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { useTeritoriBalance } from "../../../context/TeritoriBalanceProvider";
 import { useWallets } from "../../../context/WalletsProvider";
 import { selectIsKeplrConnected } from "../../../store/slices/settings";
-import { decimalPrice, prettyPrice } from "../../../utils/coins";
+import { decimalFromAtomics, prettyPrice } from "../../../utils/coins";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { WalletProvider } from "../../../utils/walletProvider";
@@ -109,9 +109,7 @@ export const TransactionPaymentModal: React.FC<{
         {/*==== Buttons */}
         {
           // Can buy if only the funds are sufficient
-          price &&
-          decimalPrice(total.toString(), priceDenom) <
-            decimalPrice(price, priceDenom) ? (
+          price && total.isLessThan(decimalFromAtomics(price, priceDenom)) ? (
             <View style={{ alignItems: "center", width: "100%" }}>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
                 Insufficient funds

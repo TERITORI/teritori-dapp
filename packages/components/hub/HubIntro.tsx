@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Image } from "react-native";
 
 import connectedImagePNG from "../../../assets/default-images/connected-image-bad.png";
@@ -16,24 +16,21 @@ import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { WalletSelector } from "../WalletSelector";
 import { PrimaryButton } from "../buttons/PrimaryButton";
-import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
+import { Tabs } from "../tabs/Tabs";
 
-const walletsManagerTabItems: TabItem[] = [
-  {
-    label: "Overview",
-    isSelected: true,
+const walletsManagerTabItems = {
+  overview: {
+    name: "Overview",
   },
-  {
-    label: "NFTs",
-    isSelected: false,
+  nfts: {
+    name: "NFTs",
   },
-];
+};
 
 const ConnectedIntro: React.FC = () => {
   const navigation = useAppNavigation();
-  const { onPressTabItem, tabItems, selectedTabItem } = useTabs(
-    walletsManagerTabItems
-  );
+  const [selectedTab, setSelectedTab] =
+    useState<keyof typeof walletsManagerTabItems>("overview");
 
   return (
     <View
@@ -59,12 +56,13 @@ const ConnectedIntro: React.FC = () => {
         <FullWidthSeparator />
         <WalletDashboardHeader />
         <Tabs
-          items={tabItems}
+          items={walletsManagerTabItems}
+          selected={selectedTab}
           style={{ marginTop: 24, height: 40 }}
-          onPressTabItem={onPressTabItem}
+          onSelect={setSelectedTab}
         />
-        {selectedTabItem.label === "Overview" && <Overview />}
-        {selectedTabItem.label === "NFTs" && <MyNFTs />}
+        {selectedTab === "overview" && <Overview />}
+        {selectedTab === "nfts" && <MyNFTs />}
       </Section>
     </View>
   );

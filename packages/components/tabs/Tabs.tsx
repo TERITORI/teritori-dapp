@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   TouchableOpacity,
   View,
@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { neutral33, neutral77 } from "../../utils/style/colors";
+import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -15,54 +15,30 @@ import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { SpacerRow } from "../spacer";
 
-export type TabItem = {
-  label: string;
-  isSelected?: boolean;
-  isDisabled?: boolean;
-  // If provided, a TertiaryBadge will be added with this label
+interface TabDefinition {
+  name: string;
   badgeCount?: number;
-};
+  disabled?: boolean;
+}
 
-export const useTabs = (items: TabItem[]) => {
-  const [tabItems, setTabItems] = useState(items);
-  const [selectedTabItem, setSelectedTabItem] = useState(
-    items.filter((item: TabItem) => item.isSelected)[0]
-  );
-
-  const onPressTabItem = (pressedItem: TabItem) => {
-    // Select the pressed TabItem and unselect all the others
-    const updatedItems: TabItem[] = [];
-    tabItems.map((tabItem: TabItem) => {
-      tabItem.isSelected = tabItem.label === pressedItem.label;
-      updatedItems.push(tabItem);
-    });
-    setTabItems(updatedItems);
-
-    // Set the selected TabItem to provide it (No need to use whole tabItems to find the selected one)
-    setSelectedTabItem(pressedItem);
-  };
-  return { onPressTabItem, tabItems, selectedTabItem };
-};
-
-export const Tabs: React.FC<{
-  items: TabItem[];
-  borderColorTabSelected?: string;
-  onPressTabItem: (item: TabItem) => void;
-  style?: StyleProp<ViewStyle>;
-  tabStyle?: ViewStyle;
-}> = ({
+export const Tabs = <T extends { [key: string]: TabDefinition }>({
   items,
   borderColorTabSelected = "#FFFFFF",
-  onPressTabItem,
+  onSelect,
   style,
-  tabStyle,
+  selected,
+}: {
+  items: T;
+  selected: keyof T;
+  onSelect: (key: keyof T, def: TabDefinition) => void;
+  borderColorTabSelected?: string;
+  style?: StyleProp<ViewStyle>;
 }) => {
-  // returns
+  const itemsArray = Object.entries(items);
   return (
     <View
       style={[
         {
-          width: "100%",
           flexDirection: "row",
           borderBottomColor: neutral33,
           alignItems: "center",
@@ -71,49 +47,47 @@ export const Tabs: React.FC<{
         style,
       ]}
     >
-      {items.map((item, index) => (
-        <TouchableOpacity
-          key={index}
-          onPress={() => onPressTabItem(item)}
-          disabled={item.isDisabled}
-        >
-          <View
-            style={[
-              {
+      {itemsArray.map(([key, item], index) => {
+        const isSelected = selected === key;
+        return (
+          <TouchableOpacity
+            key={key}
+            onPress={() => onSelect(key, item)}
+            disabled={item.disabled}
+            style={{
+              height: "100%",
+              justifyContent: "center",
+              marginRight:
+                index !== itemsArray.length - 1 ? layout.padding_x3 : 0,
+            }}
+          >
+            <View
+              style={{
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-                marginRight: index !== items.length - 1 ? layout.padding_x3 : 0,
-                height: 40,
-                paddingBottom: layout.padding_x2,
-              },
-              tabStyle,
-            ]}
-          >
-            <BrandText
-              style={[
-                fontSemibold14,
-                { lineHeight: 14 },
-                item.isDisabled && { color: neutral77 },
-              ]}
-            >
-              {" "}
-              {item.label}
-            </BrandText>
 
-            {item.badgeCount && <SpacerRow size={1} />}
-            {item.badgeCount ? (
-              item.isSelected ? (
-                <PrimaryBadge
-                  size="SM"
-                  backgroundColor="secondary"
-                  label={item.badgeCount}
-                />
-              ) : (
-                <TertiaryBadge size="SM" label={item.badgeCount} />
-              )
-            ) : null}
-            {item.isSelected && (
+                height: 24,
+              }}
+            >
+              <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
+                {item.name}
+              </BrandText>
+
+              {item.badgeCount && <SpacerRow size={1} />}
+              {item.badgeCount ? (
+                isSelected ? (
+                  <PrimaryBadge
+                    size="SM"
+                    backgroundColor="secondary"
+                    label={item.badgeCount}
+                  />
+                ) : (
+                  <TertiaryBadge size="SM" label={item.badgeCount} />
+                )
+              ) : null}
+            </View>
+            {isSelected && (
               <View
                 style={[
                   styles.selectedBorder,
@@ -121,9 +95,9 @@ export const Tabs: React.FC<{
                 ]}
               />
             )}
-          </View>
-        </TouchableOpacity>
-      ))}
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
@@ -133,6 +107,6 @@ const styles = StyleSheet.create({
     height: 2,
     width: "100%",
     position: "absolute",
-    bottom: -2,
+    bottom: -1,
   },
 });

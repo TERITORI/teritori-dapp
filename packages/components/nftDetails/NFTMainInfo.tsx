@@ -1,5 +1,5 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import guardian1PNG from "../../../assets/default-images/guardian_1.png";
@@ -23,25 +23,22 @@ import {
   TransactionModals,
   useTransactionModals,
 } from "../modals/transaction/TransactionModals";
-import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
+import { Tabs } from "../tabs/Tabs";
 import { NFTAttributes } from "./NFTAttributes";
 import { CollapsableActivities } from "./components/CollapsableActivities";
 import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";
 
-const mainInfoTabItems: TabItem[] = [
-  {
-    label: "About",
-    isSelected: false,
+const mainInfoTabItems = {
+  about: {
+    name: "About",
   },
-  {
-    label: "Attributes",
-    isSelected: true,
+  attributes: {
+    name: "Attributes",
   },
-  {
-    label: "Details",
-    isSelected: false,
+  details: {
+    name: "Details",
   },
-];
+};
 
 // Displays NFT metadata and handle buying
 export const NFTMainInfo: React.FC<{
@@ -52,12 +49,12 @@ export const NFTMainInfo: React.FC<{
 }> = ({ nftInfo, buy, sell, cancelListing }) => {
   const { openTransactionModals } = useTransactionModals();
 
-  const { onPressTabItem, selectedTabItem, tabItems } =
-    useTabs(mainInfoTabItems);
+  const [selectedTab, setSelectedTab] =
+    useState<keyof typeof mainInfoTabItems>("about");
 
   const SelectedTabItemRendering: React.FC = () => {
-    switch (selectedTabItem.label) {
-      case "About":
+    switch (selectedTab) {
+      case "about":
         return (
           <View style={styles.sectionContainer}>
             <BrandText
@@ -67,13 +64,13 @@ export const NFTMainInfo: React.FC<{
             </BrandText>
           </View>
         );
-      case "Attributes":
+      case "attributes":
         return (
           <View style={styles.sectionContainer}>
             <NFTAttributes nftAttributes={nftInfo?.attributes} />
           </View>
         );
-      case "Details":
+      case "details":
         return (
           <View style={styles.sectionContainer}>
             <View
@@ -187,10 +184,10 @@ export const NFTMainInfo: React.FC<{
         )}
 
         <Tabs
-          onPressTabItem={onPressTabItem}
-          items={tabItems}
+          onSelect={setSelectedTab}
+          items={mainInfoTabItems}
+          selected={selectedTab}
           borderColorTabSelected={primaryColor}
-          tabStyle={{ paddingBottom: layout.padding_x1, height: 24 }}
         />
         {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
         {/*TODO: About  = Big text*/}

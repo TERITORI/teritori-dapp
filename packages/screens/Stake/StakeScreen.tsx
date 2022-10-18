@@ -1,94 +1,46 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
 
-import { Avatar } from "../../components/Avatar";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
-import { SpacerRow } from "../../components/spacer";
-import {
-  TableRowData,
-  TableRowDataItem,
-  TableRow,
-  TableRowHeading,
-} from "../../components/table";
-import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
-import { TEMP_IMAGE } from "../../utils/faking";
-import { fontSemibold13, fontSemibold28 } from "../../utils/style/fonts";
+import { Tabs } from "../../components/tabs/Tabs";
+import { useValidators } from "../../hooks/useValidators";
+import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { DelegateModal } from "./components/DelegateModal";
+import { RedelegateModal } from "./components/RedelegateModal";
 import { StakeDetailModal } from "./components/StakeDetailModal";
-import { StakeFormModal } from "./components/StakeFormModal";
-import stakeData from "./stakeData.json";
-import { StakeType } from "./types";
-
-const mainInfoTabItems: TabItem[] = [
-  {
-    label: "Active Validators",
-    isSelected: true,
-    badgeCount: 92,
-  },
-  {
-    label: "Inactive Validators",
-    isSelected: false,
-    badgeCount: 217,
-  },
-];
-
-const TABLE_ROWS: { [key in string]: TableRowHeading } = {
-  rank: {
-    label: "Rank",
-    flex: 1,
-  },
-  name: {
-    label: "Name",
-    flex: 4,
-  },
-  votingPower: {
-    label: "Voting Power",
-    flex: 3,
-  },
-  commission: {
-    label: "Commission",
-    flex: 4,
-  },
-  actions: {
-    label: "",
-    flex: 2,
-  },
-};
+import { UndelegateModal } from "./components/UndelegateModal";
+import { ValidatorsTable } from "./components/ValidatorsList";
+import { ValidatorInfo } from "./types";
 
 export const StakeScreen: React.FC = () => {
   //   variables
-  const { onPressTabItem, tabItems } = useTabs(mainInfoTabItems);
   const [stakeDetailModalVisible, setStakeDetailModalVisible] = useState(false);
   const [isStakeFormVisible, setIsStakeFormVisible] = useState(false);
-  const [selectedStake, setSelectedStake] = useState<StakeType | undefined>();
+  const [isUndelegateModalVisible, setIsUndelegateModalVisible] =
+    useState(false);
+  const [isRedelegateModalVisible, setIsRedelegateModalVisible] =
+    useState(false);
+  const [selectedStake, setSelectedStake] = useState<
+    ValidatorInfo | undefined
+  >();
+  const { activeValidators, inactiveValidators } = useValidators();
 
-  const customRowData = useMemo(
-    (): TableRowDataItem[][] =>
-      stakeData.map((d) => [
-        ...Object.keys(d)
-          .filter((f) =>
-            ["rank", "name", "votingPower", "commission"].includes(f)
-          )
-          .map((k) => ({
-            value: d[k as keyof typeof d],
-            keyId: k,
-            flex: TABLE_ROWS[k].flex,
-            uid: d.rank,
-          })),
-        {
-          value: "",
-          keyId: "actions",
-          flex: TABLE_ROWS.actions.flex,
-          uid: d.rank,
-        },
-      ]),
-    [stakeData]
-  );
+  const tabs = {
+    active: {
+      name: "Active Validators",
+      badgeCount: activeValidators.length,
+    },
+    inactive: {
+      name: "Inactive Validators",
+      badgeCount: inactiveValidators.length,
+    },
+  };
+  const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("active");
 
   // functions
-  const toggleDetailModal = (stakeData?: StakeType) => {
+  const toggleDetailModal = (stakeData?: ValidatorInfo) => {
     setStakeDetailModalVisible(!stakeDetailModalVisible);
     setSelectedStake(stakeData);
   };
@@ -98,39 +50,15 @@ export const StakeScreen: React.FC = () => {
     setStakeDetailModalVisible(false);
   };
 
-  // returns
-  const specialRender = useCallback((item: TableRowDataItem) => {
-    switch (item.keyId) {
-      case "name":
-        return (
-          <View style={styles.nameContainer}>
-            <Avatar uri={TEMP_IMAGE} />
-            <SpacerRow size={1} />
-            <BrandText style={fontSemibold13}>{item.value}</BrandText>
-          </View>
-        );
+  const toggleUndelegateModal = () => {
+    setIsUndelegateModalVisible(!isUndelegateModalVisible);
+    setStakeDetailModalVisible(false);
+  };
 
-      case "actions":
-        return (
-          <View
-            style={{
-              alignSelf: "center",
-            }}
-          >
-            <SecondaryButtonOutline
-              onPress={() =>
-                toggleDetailModal(stakeData.find((d) => d.rank === item.uid))
-              }
-              text="Manage"
-              size="XS"
-            />
-          </View>
-        );
-
-      default:
-        return null;
-    }
-  }, []);
+  const toggleRedelegateModal = () => {
+    setIsRedelegateModalVisible(!isRedelegateModalVisible);
+    setStakeDetailModalVisible(false);
+  };
 
   return (
     <ScreenContainer>
@@ -138,37 +66,38 @@ export const StakeScreen: React.FC = () => {
         <BrandText style={fontSemibold28}>Stake</BrandText>
         <View style={styles.rowWithCenter}>
           <Tabs
-            onPressTabItem={onPressTabItem}
-            items={tabItems}
+            items={tabs}
+            onSelect={setSelectedTab}
             style={{ height: 44 }}
+            selected={selectedTab}
           />
         </View>
       </View>
-
-      <TableRow
-        headings={Object.values(TABLE_ROWS)}
-        labelStyle={styles.upperCase}
+      <ValidatorsTable
+        validators={
+          selectedTab === "active" ? activeValidators : inactiveValidators
+        }
+        actions={() => [{ label: "Manage", onPress: toggleDetailModal }]}
       />
-
-      <FlatList
-        data={customRowData}
-        renderItem={({ item }) => (
-          <TableRowData
-            data={item}
-            specialRender={specialRender}
-            labelStyle={styles.upperCase}
-          />
-        )}
-      />
-
       <StakeDetailModal
         visible={stakeDetailModalVisible}
         onClose={toggleDetailModal}
         data={selectedStake}
         onPressDelegate={toggleStakeForm}
+        onPressUndelegate={toggleUndelegateModal}
+        onPressRedelegate={toggleRedelegateModal}
       />
-
-      <StakeFormModal
+      <UndelegateModal
+        visible={isUndelegateModalVisible}
+        onClose={toggleUndelegateModal}
+        data={selectedStake}
+      />
+      <RedelegateModal
+        visible={isRedelegateModalVisible}
+        onClose={toggleRedelegateModal}
+        data={selectedStake}
+      />
+      <DelegateModal
         visible={isStakeFormVisible}
         onClose={toggleStakeForm}
         data={selectedStake}

@@ -13,13 +13,13 @@ import { useNFTs } from "../../hooks/useNFTs";
 import { alignDown } from "../../utils/align";
 import { layout } from "../../utils/style/layout";
 import { NFTView } from "../NFTView";
-import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
+import { Tabs } from "../tabs/Tabs";
 
-const tabItemsNFTs: TabItem[] = [
-  { label: "Collected", isSelected: true, isDisabled: false },
-  { label: "Created", isSelected: false, isDisabled: true },
-  { label: "Favorited", isSelected: false, isDisabled: true },
-];
+const tabItemsNFTs = {
+  collected: { name: "Collected" },
+  created: { name: "Created", disabled: true },
+  favorited: { name: "Favorited", disabled: true },
+};
 
 const gap = 20;
 const nftWidth = 268 + gap * 2; // FIXME: ssot
@@ -82,8 +82,8 @@ const UserNFTs: React.FC<{ id: string; numColumns: number }> = ({
 
 const SelectedTabContent: React.FC<{
   userAddress: string;
-  selectedTabItemLabel: string;
-}> = React.memo(({ userAddress, selectedTabItemLabel }) => {
+  selectedTab: keyof typeof tabItemsNFTs;
+}> = React.memo(({ userAddress, selectedTab }) => {
   const [viewWidth, setViewWidth] = useState(0);
   const numColumns = Math.floor(viewWidth / nftWidth);
 
@@ -92,8 +92,8 @@ const SelectedTabContent: React.FC<{
     []
   );
 
-  switch (selectedTabItemLabel) {
-    case "Collected":
+  switch (selectedTab) {
+    case "collected":
       return (
         <View style={viewStyle} onLayout={handleViewLayout}>
           {viewWidth ? (
@@ -101,9 +101,9 @@ const SelectedTabContent: React.FC<{
           ) : null}
         </View>
       );
-    case "Created":
+    case "created":
       return <></>;
-    case "Favorited":
+    case "favorited":
       return <></>;
     default:
       return null;
@@ -111,7 +111,8 @@ const SelectedTabContent: React.FC<{
 });
 
 export const UPPNFTs: React.FC<{ userAddress: string }> = ({ userAddress }) => {
-  const { onPressTabItem, tabItems, selectedTabItem } = useTabs(tabItemsNFTs);
+  const [selectedTab, setSelectedTab] =
+    useState<keyof typeof tabItemsNFTs>("collected");
 
   return (
     <>
@@ -124,15 +125,16 @@ export const UPPNFTs: React.FC<{ userAddress: string }> = ({ userAddress }) => {
         }}
       >
         <Tabs
-          items={tabItems}
-          onPressTabItem={onPressTabItem}
+          selected={selectedTab}
+          items={tabItemsNFTs}
+          onSelect={setSelectedTab}
           style={{ width: 436, height: 44, alignSelf: "flex-end" }}
         />
       </View>
 
       {userAddress && (
         <SelectedTabContent
-          selectedTabItemLabel={selectedTabItem.label}
+          selectedTab={selectedTab}
           userAddress={userAddress}
           key={userAddress}
         />

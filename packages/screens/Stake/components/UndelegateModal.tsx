@@ -1,19 +1,23 @@
+import { Decimal } from "@cosmjs/math";
+import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
 
-import warningTriangleSVG from "../../../../assets/icons/warning-triangle.svg";
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { numberWithThousandsSeparator } from "../../../utils/numbers";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBondedToris";
+import { prettyPrice } from "../../../utils/coins";
+import { getKeplrOfflineSigner } from "../../../utils/keplr";
+import { Network } from "../../../utils/network";
 import {
-  errorColor,
   neutral22,
   neutral77,
   primaryColor,
@@ -25,22 +29,31 @@ import {
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { toriDisplayDenom } from "../../../utils/teritori";
-import { StakeFormValuesType, StakeType } from "../types";
+import {
+  getTeritoriSigningStargateClient,
+  toriCurrency,
+  toriDisplayDenom,
+} from "../../../utils/teritori";
+import { StakeFormValuesType, ValidatorInfo } from "../types";
+import { WarningBox } from "./WarningBox";
 
-interface StakeFormModalProps {
+interface UndelegateModalProps {
   onClose?: () => void;
   visible?: boolean;
-  data?: StakeType;
+  data?: ValidatorInfo;
 }
 
-const MAX_VALUE = 43554434;
-
-export const StakeFormModal: React.FC<StakeFormModalProps> = ({
+export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   onClose,
   visible,
   data,
 }) => {
+  const wallet = useSelectedWallet();
+  const { bondedTokens, refreshBondedTokens } = useSelectedWalletBondedToris(
+    data?.address
+  );
+  const { setToastError, setToastSuccess } = useFeedbacks();
+
   // variables
   const { control, setValue, handleSubmit, watch, reset } =
     useForm<StakeFormValuesType>();
@@ -52,8 +65,50 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
   }, [visible]);
 
   // functions
-  const onSubmit = (formData: StakeFormValuesType) => {
-    console.log(formData);
+  const onSubmit = async (formData: StakeFormValuesType) => {
+    if (
+      wallet?.network !== Network.Teritori ||
+      !wallet.connected ||
+      !wallet.publicKey
+    ) {
+      console.warn("invalid wallet", wallet);
+      setToastError({
+        title: "Invalid wallet",
+        message: "",
+      });
+      return;
+    }
+    if (!data) {
+      setToastError({
+        title: "Internal error",
+        message: "No data",
+      });
+      return;
+    }
+    const signer = getKeplrOfflineSigner();
+    const client = await getTeritoriSigningStargateClient(signer);
+    const txResponse = await client.undelegateTokens(
+      wallet.publicKey,
+      data.address,
+      {
+        amount: Decimal.fromUserInput(
+          formData.amount,
+          toriCurrency.coinDecimals
+        ).atomics,
+        denom: toriCurrency.coinMinimalDenom,
+      },
+      "auto"
+    );
+    if (isDeliverTxFailure(txResponse)) {
+      console.error("tx failed", txResponse);
+      setToastError({
+        title: "Transaction failed",
+        message: txResponse.rawLog || "",
+      });
+      return;
+    }
+    setToastSuccess({ title: "Undelegation success", message: "" });
+    refreshBondedTokens();
     onClose && onClose();
   };
 
@@ -61,10 +116,10 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
   const Header = useCallback(
     () => (
       <View>
-        <BrandText style={fontSemibold20}>Stake Tokens</BrandText>
+        <BrandText style={fontSemibold20}>Undelegate Tokens</BrandText>
         <SpacerColumn size={0.5} />
         <BrandText style={[styles.alternateText, fontSemibold16]}>
-          Select a validator and amount of {toriDisplayDenom} to stake.
+          Select an amount of {toriDisplayDenom} to undelegate
         </BrandText>
       </View>
     ),
@@ -85,7 +140,7 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
           <SpacerRow size={2} />
           <PrimaryButton
             size="XS"
-            text="Stake"
+            text="Undelegate"
             width={120}
             onPress={handleSubmit(onSubmit)}
           />
@@ -106,30 +161,17 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
       <View style={styles.container}>
         <Separator />
         <SpacerColumn size={2.5} />
-        <View style={styles.stakeWarningContainer}>
-          <SVG width={24} height={24} source={warningTriangleSVG} />
-          <SpacerRow size={3} />
-
-          <View>
-            <BrandText style={fontSemibold13}>
-              Staking will lock your funds for 14 days
-            </BrandText>
-            <SpacerColumn size={0.5} />
-            <View style={styles.warningDescriptionContainer}>
-              <BrandText style={styles.alternateText}>
-                Once you undelegate your staked {toriDisplayDenom}, you will
-                need to wait 14 days for your tokens to be liquid.
-              </BrandText>
-            </View>
-          </View>
-        </View>
+        <WarningBox
+          title="Undelegating will keep your funds locked for 14 days"
+          description={`Once you undelegate your staked ${toriDisplayDenom}, you will need to wait 14 days for your tokens to be liquid and you won't receive rewards during this time`}
+        />
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
           name="validatorName"
           control={control}
           variant="labelOutside"
           label="Validator Name"
-          defaultValue="Allnodes.com ⚡️ Lowest fees"
+          defaultValue={data?.moniker || ""}
           disabled
           rules={{ required: true }}
         />
@@ -140,13 +182,13 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
           label="Amount"
           control={control}
           placeHolder="0"
-          onlyNumbers
+          currency={toriCurrency}
           defaultValue=""
-          rules={{ required: true, max: MAX_VALUE }}
+          rules={{ required: true, max: bondedTokens.toString() }}
         >
           <Pressable
             onPress={() =>
-              setValue("amount", numberWithThousandsSeparator(MAX_VALUE), {
+              setValue("amount", bondedTokens.toString(), {
                 shouldValidate: true,
               })
             }
@@ -157,7 +199,8 @@ export const StakeFormModal: React.FC<StakeFormModalProps> = ({
         <SpacerColumn size={1} />
 
         <BrandText style={fontSemibold13}>
-          Available balance: {numberWithThousandsSeparator(MAX_VALUE)} [$$$]
+          Bonded tokens:{" "}
+          {prettyPrice(bondedTokens.atomics, toriCurrency.coinMinimalDenom)}
         </BrandText>
         <SpacerColumn size={2.5} />
       </View>
@@ -176,23 +219,9 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: layout.padding_x2_5,
   },
-  stakeWarningContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: errorColor,
-    borderRadius: layout.borderRadius * 0.65,
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x3,
-  },
   alternateText: {
     ...StyleSheet.flatten(fontSemibold12),
     color: neutral77,
-    flexShrink: 1,
-  },
-  warningDescriptionContainer: {
-    flexDirection: "row",
-    width: "55%",
   },
   maxText: {
     ...StyleSheet.flatten(fontSemibold12),

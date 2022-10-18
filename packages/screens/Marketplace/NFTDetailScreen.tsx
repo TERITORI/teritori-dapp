@@ -8,7 +8,7 @@ import { NFTActivity } from "../../components/nftDetails/NFTActivity";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
 import { NFTPriceHistory } from "../../components/nftDetails/NFTPriceHistory";
 import { SpacerColumn } from "../../components/spacer";
-import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
+import { Tabs } from "../../components/tabs/Tabs";
 import {
   initialToastError,
   useFeedbacks,
@@ -35,28 +35,23 @@ import {
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
 
-const screenTabItems: TabItem[] = [
-  {
-    label: "Main info",
-    isSelected: true,
+const screenTabItems = {
+  main: {
+    name: "Main info",
   },
-  {
-    label: "Price history",
-    isSelected: false,
+  price: {
+    name: "Price history",
   },
-  {
-    label: "Offers",
-    isSelected: false,
+  offers: {
+    name: "Offers",
   },
-  {
-    label: "Activity",
-    isSelected: false,
+  activity: {
+    name: "Activity",
   },
-  {
-    label: "More from collection",
-    isSelected: false,
+  more: {
+    name: "More from collection",
   },
-];
+};
 
 export interface NFTInfo {
   name: string;
@@ -81,7 +76,8 @@ const Content: React.FC<{
   id: string;
   setCollectionInfo: (info: CollectionInfoSmall) => void;
 }> = ({ id, setCollectionInfo }) => {
-  const { onPressTabItem, tabItems, selectedTabItem } = useTabs(screenTabItems);
+  const [selectedTab, setSelectedTab] =
+    useState<keyof typeof screenTabItems>("main");
   const { setToastError } = useFeedbacks();
   const { setLoadingFullScreen } = useFeedbacks();
   const wallet = useSelectedWallet();
@@ -177,8 +173,8 @@ const Content: React.FC<{
   }, [cancelListing, refresh]);
 
   let tabContent;
-  switch (selectedTabItem.label) {
-    case "Main info":
+  switch (selectedTab) {
+    case "main":
       tabContent = (
         <NFTMainInfo
           nftInfo={info}
@@ -188,12 +184,12 @@ const Content: React.FC<{
         />
       );
       break;
-    case "Price history":
+    case "price":
       tabContent = (
         <NFTPriceHistory id={id} style={{ height: 200, width: 400 }} />
       );
       break;
-    case "Activity":
+    case "activity":
       tabContent = <NFTActivity id={id} />;
       break;
   }
@@ -243,13 +239,14 @@ const Content: React.FC<{
         >
           {/*====== Tabs Menu for whole screen */}
           <Tabs
-            items={tabItems}
+            items={screenTabItems}
+            selected={selectedTab}
             style={{
               height: 40,
               justifyContent: "flex-end",
               marginTop: layout.padding_x2_5,
             }}
-            onPressTabItem={onPressTabItem}
+            onSelect={setSelectedTab}
           />
 
           {tabContent}

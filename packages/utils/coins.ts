@@ -4,14 +4,14 @@ import { toriCurrency } from "./teritori";
 
 const currencies = [toriCurrency];
 
-export const decimalPrice = (value: string, denom: string) => {
+export const decimalFromAtomics = (value: string, denom: string) => {
   const currency = currencies.find(
     (currency) => currency.coinMinimalDenom === denom
   );
   if (currency) {
     return Decimal.fromAtomics(value, currency.coinDecimals);
   }
-  return value;
+  throw new Error("unknown denom");
 };
 
 // Returns the price with denom (Text + denom)

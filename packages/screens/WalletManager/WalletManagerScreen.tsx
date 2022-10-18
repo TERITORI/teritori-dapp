@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 
-import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
+import { Tabs } from "../../components/tabs/Tabs";
 import { ScreenFC } from "../../utils/navigation";
 import { MyNFTs } from "./MyNFTs";
 import { Overview } from "./Overview/Overview";
@@ -9,29 +9,29 @@ import { WalletDashboardHeader } from "./WalletDashboardHeader";
 import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
 import { Wallets } from "./Wallets";
 
-const screenTabItems: TabItem[] = [
-  {
-    label: "Overview",
-    isSelected: true,
+const screenTabItems = {
+  overview: {
+    name: "Overview",
   },
-  {
-    label: "NFTs",
-    isSelected: false,
+  nfts: {
+    name: "NFTs",
   },
-];
+};
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
-  const { onPressTabItem, tabItems, selectedTabItem } = useTabs(screenTabItems);
+  const [selectedTab, setSelectedTab] =
+    useState<keyof typeof screenTabItems>("overview");
   return (
     <WalletManagerScreenContainer>
       <WalletDashboardHeader />
       <Tabs
-        items={tabItems}
+        items={screenTabItems}
+        selected={selectedTab}
+        onSelect={setSelectedTab}
         style={{ marginTop: 24, height: 40 }}
-        onPressTabItem={onPressTabItem}
       />
-      {selectedTabItem.label === "Overview" && <Overview />}
-      {selectedTabItem.label === "NFTs" && <MyNFTs />}
+      {selectedTab === "overview" && <Overview />}
+      {selectedTab === "nfts" && <MyNFTs />}
       <TotalAssets />
       <Wallets />
     </WalletManagerScreenContainer>
