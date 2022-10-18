@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { View } from "react-native";
+import React from "react";
 
 import {
   Collection,
   CollectionsRequest_Kind,
 } from "../../api/marketplace/v1/marketplace";
 import { useCollections } from "../../hooks/useCollections";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import {
   collectionItemHeight,
   collectionItemWidth,
@@ -28,23 +28,22 @@ export const CollectionsCarouselSection: React.FC<{
     limit: 16,
     offset: 0,
   });
-  const [viewWidth, setWidth] = useState(0);
+
+  const { width } = useMaxResolution();
 
   return (
-    <View onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
-      <CarouselSection
-        title={title}
-        data={collections}
-        width={collectionItemWidth + gap}
-        height={collectionItemHeight}
-        onScrollEnd={fetchMore}
-        pagingEnabled
-        loop={false}
-        style={{
-          width: viewWidth,
-        }}
-        renderItem={renderItem}
-      />
-    </View>
+    <CarouselSection
+      title={title}
+      data={collections}
+      width={collectionItemWidth + gap}
+      height={collectionItemHeight}
+      onScrollEnd={fetchMore}
+      pagingEnabled
+      loop={false}
+      style={{
+        width,
+      }}
+      renderItem={renderItem}
+    />
   );
 };

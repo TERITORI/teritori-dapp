@@ -15,6 +15,7 @@ import { prettyPrice } from "../utils/coins";
 import { useAppNavigation } from "../utils/navigation";
 import { protobufNetworkToNetwork } from "../utils/network";
 import { neutral33, neutral77 } from "../utils/style/colors";
+import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { ImageWithTextInsert } from "./ImageWithTextInsert";
 import { SVG } from "./SVG";
@@ -26,18 +27,19 @@ export const NFTView: React.FC<{
   data: NFT;
   style?: StyleProp<ViewStyle>;
 }> = React.memo(({ data: nft, style }) => {
+  const cardWidth = 258;
+  const insideMargin = layout.padding_x2;
+  const contentWidth = cardWidth - insideMargin * 2;
   const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
 
   // put margins on touchable opacity
   const {
-    marginLeft,
     marginBottom,
     marginHorizontal,
     marginVertical,
     margin,
     marginEnd,
-    marginRight,
     marginStart,
     marginTop,
     ...styleWithoutMargins
@@ -51,8 +53,6 @@ export const NFTView: React.FC<{
         marginBottom,
         marginEnd,
         marginHorizontal,
-        marginLeft,
-        marginRight,
         marginStart,
         marginTop,
         marginVertical,
@@ -61,15 +61,15 @@ export const NFTView: React.FC<{
       <TertiaryBox
         key={nft.name}
         height={438}
-        width={255}
+        width={cardWidth}
         style={styleWithoutMargins}
       >
         <View>
           <View
             style={{
-              paddingTop: 16,
+              paddingTop: insideMargin,
               paddingBottom: 12,
-              paddingHorizontal: 16,
+              paddingHorizontal: insideMargin,
             }}
           >
             <View
@@ -118,7 +118,7 @@ export const NFTView: React.FC<{
               </TouchableOpacity>
             </View>
             <ImageWithTextInsert
-              size={223}
+              size={contentWidth}
               imageURL={nft.imageUri}
               textInsert={nft.textInsert}
               style={{ marginTop: 15, marginBottom: 20, borderRadius: 12 }}

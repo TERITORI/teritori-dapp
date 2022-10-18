@@ -5,6 +5,7 @@ import { useSidebar } from "../context/SidebarProvider";
 import {
   fullSidebarWidth,
   screenContainerContentMarginHorizontal,
+  screenContentMaxWidth,
   smallSidebarWidth,
 } from "../utils/style/layout";
 
@@ -19,5 +20,7 @@ export const useMaxResolution = () => {
     [windowWidth, isSidebarExpanded]
   );
 
-  return { width };
+  return {
+    width: width > screenContentMaxWidth ? screenContentMaxWidth : width,
+  };
 };

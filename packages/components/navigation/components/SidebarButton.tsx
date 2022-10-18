@@ -23,6 +23,7 @@ interface SidebarButtonProps {
   selected?: boolean;
   onPress?: () => void;
   title?: string;
+  iconSize?: number;
 }
 
 export const SidebarButton: React.FC<SidebarButtonProps> = ({
@@ -30,6 +31,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   iconSVG,
   onPress,
   title,
+  iconSize = 28,
 }) => {
   // variables
   const { isSidebarExpanded } = useSidebar();
@@ -49,7 +51,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
       <View
         style={[styles.svgContainer, selected && { borderColor: primaryColor }]}
       >
-        <SVG width={28} height={28} source={iconSVG} />
+        <SVG width={iconSize} height={iconSize} source={iconSVG} />
       </View>
       <SpacerRow size={2} />
       <Animated.View style={opacityStyle}>

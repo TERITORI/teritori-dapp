@@ -34,6 +34,8 @@ export type RootStackParamList = {
   NFTDetail: { id: string };
 
   Staking: undefined;
+
+  ComingSoon: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -83,6 +85,8 @@ const navConfig: {
     NFTDetail: "nft/:id",
     // ==== Staking
     Staking: "staking",
+    // ==== ComingSoon
+    ComingSoon: "coming-soon",
   },
 };
 

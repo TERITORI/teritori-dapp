@@ -95,11 +95,13 @@ export const ScreenContainer: React.FC<{
                     marginStyle,
                   ]}
                 >
-                  {children}
-                  {footerChildren && <Footer>{footerChildren}</Footer>}
+                  <View style={styles.childrenContainer}>
+                    {children}
+                    {footerChildren && <Footer>{footerChildren}</Footer>}
+                  </View>
                 </ScrollView>
               ) : (
-                <View style={[{ flex: 1, width: "100%" }, marginStyle]}>
+                <View style={[styles.childrenContainer, marginStyle]}>
                   {children}
                   {footerChildren && <Footer>{footerChildren}</Footer>}
                 </View>
@@ -150,6 +152,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000000",
     flexDirection: "row",
+  },
+  childrenContainer: {
+    height: "100%",
+    maxWidth: 1092,
+    width: 1092,
+    alignSelf: "center",
   },
 });
 

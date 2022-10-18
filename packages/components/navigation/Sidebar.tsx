@@ -121,9 +121,7 @@ export const Sidebar: React.FC = () => {
           </Pressable>
         </Animated.View>
 
-        <View style={styles.topSeperatorContainer}>
-          <Separator color={neutral33} />
-        </View>
+        <Separator color={neutral33} />
       </View>
       <SpacerColumn size={1} />
       {Object.values(LIST).map((item) => (
@@ -135,16 +133,11 @@ export const Sidebar: React.FC = () => {
           title={item.title}
         />
       ))}
-      <SpacerColumn size={1} />
-      <View style={styles.bottomSeperatorContainer}>
-        <Separator />
-      </View>
-      <SpacerColumn size={2} />
-      <SVG
-        source={addSVG}
-        width={40}
-        height={40}
-        style={{ marginLeft: layout.padding_x2 }}
+      <SidebarButton
+        selected={currentRouteName === "ComingSoon"}
+        iconSVG={addSVG}
+        iconSize={36}
+        onPress={() => navigation.navigate("ComingSoon")}
       />
     </Animated.View>
   );
@@ -185,9 +178,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderTopRightRadius: 6,
     borderBottomRightRadius: 6,
-  },
-  topSeperatorContainer: {
-    marginHorizontal: layout.padding_x1_5,
   },
   bottomSeperatorContainer: {
     width: 40,
