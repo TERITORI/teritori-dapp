@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
+import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
-export const useConsultTNSToken = (name: string) => {
+export const useTNSMetadata = (name: string) => {
   const [loading, setLoading] = useState(false);
-  const [tokenExtension, setTokenExtension] = useState<any>(); // FIXME: type this
+  const [metadata, setMetadata] = useState<any>(); // FIXME: type this
   const [notFound, setNotFound] = useState(false);
   const { setToastError } = useFeedbacks();
 
@@ -13,28 +14,34 @@ export const useConsultTNSToken = (name: string) => {
     const getToken = async () => {
       setLoading(true);
 
-      const contract = process.env.PUBLIC_WHOAMI_ADDRESS as string;
+      const contractAddress = process.env
+        .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
       // We just want to read, so we use a non-signing client
       const cosmWasmClient = await getNonSigningCosmWasmClient();
+      const tokenId = name + process.env.TLD;
+
+      const tnsClient = new TeritoriNameServiceQueryClient(
+        cosmWasmClient,
+        contractAddress
+      );
+
       try {
-        // If this query fails it means that the token does not exist.
-        const token = await cosmWasmClient.queryContractSmart(contract, {
-          nft_info: {
-            token_id: name + process.env.TLD,
-          },
-        });
+        // ======== Getting NFT info
+        const nftInfo = await tnsClient.nftInfo({ tokenId });
+        // ======== Getting NFT owner
+        const { owner } = await tnsClient.ownerOf({ tokenId });
+        nftInfo.extension.userId = owner;
         setNotFound(false);
-        return token.extension;
+        return nftInfo.extension;
       } catch {
-        // ---- If here, "cannot contract", probably because not found
         setNotFound(true);
         return undefined;
       }
     };
 
     getToken()
-      .then((tokenExtension) => {
-        if (tokenExtension) setTokenExtension(tokenExtension);
+      .then((metadata) => {
+        if (metadata) setMetadata(metadata);
         setLoading(false);
       })
       .catch((e) => {
@@ -47,5 +54,5 @@ export const useConsultTNSToken = (name: string) => {
       });
   }, [name]);
 
-  return { loading, tokenExtension, notFound };
+  return { loading, metadata, notFound };
 };

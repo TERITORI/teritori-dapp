@@ -12,7 +12,7 @@ import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPath
 import { UPPSocialFeed } from "../../components/userPublicProfile/UPPSocialFeed";
 import { UPPSucceedQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useConsultTNSToken } from "../../hooks/useConsultTNSToken";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { ScreenFC } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
@@ -67,17 +67,18 @@ const screenTabItems: TabItem[] = [
 ];
 
 const SelectedTabContent: React.FC<{
+  metadata: any;
   selectedTabItemLabel: string;
-}> = ({ selectedTabItemLabel }) => {
+}> = ({ metadata, selectedTabItemLabel }) => {
   switch (selectedTabItemLabel) {
     case "Social Feed":
       return <UPPSocialFeed />;
     case "NFTs":
-      return <UPPNFTs />;
+      return <UPPNFTs userId={metadata?.userId || ""} />;
     case "Activity":
       return <UPPActivity />;
     case "Succeed Quests":
-      return <UPPSucceedQuests />;
+      return <UPPSucceedQuests userId={metadata?.userId || ""} />;
     case "Pathwar Challenges":
       return <UPPPathwarChallenges />;
     case "Gig Services":
@@ -87,9 +88,9 @@ const SelectedTabContent: React.FC<{
   }
 };
 
-const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
+const Content: React.FC<{ id: string }> = ({ id }) => {
   const { onPressTabItem, tabItems, selectedTabItem } = useTabs(screenTabItems);
-  const { loading, tokenExtension, notFound } = useConsultTNSToken(id);
+  const { loading, metadata, notFound } = useTNSMetadata(id);
 
   const { setLoadingFullScreen } = useFeedbacks();
 
@@ -108,7 +109,7 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
         <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-          <UPPIntro tokenExtension={tokenExtension} id={id} />
+          <UPPIntro metadata={metadata} id={id} />
 
           <Tabs
             items={tabItems}
@@ -121,12 +122,15 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
             borderColorTabSelected={primaryColor}
           />
 
-          <SelectedTabContent selectedTabItemLabel={selectedTabItem.label} />
+          <SelectedTabContent
+            selectedTabItemLabel={selectedTabItem.label}
+            metadata={metadata}
+          />
         </View>
       </View>
     );
   }
-});
+};
 
 export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   route,
@@ -138,7 +142,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
         <BrandText style={fontSemibold20}>{route.params.id}</BrandText>
       }
     >
-      <Content key={route.params.id} id={route.params.id} />
+      <Content id={route.params.id} />
     </ScreenContainer>
   );
 };

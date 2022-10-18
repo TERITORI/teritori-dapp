@@ -7,16 +7,15 @@ import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { Overview } from "../../screens/WalletManager/Overview/Overview";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
-import { fakeQuests } from "../../utils/fakeData/hub";
 import { useAppNavigation } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { FullWidthSeparator } from "../FullWidthSeparator";
+import { Quests } from "../Quests";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { WalletSelector } from "../WalletSelector";
 import { PrimaryButton } from "../buttons/PrimaryButton";
-import { QuestCard } from "../cards/QuestCard";
 import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
 
 const walletsManagerTabItems: TabItem[] = [
@@ -53,18 +52,7 @@ const ConnectedIntro: React.FC = () => {
 
       <Section title="Quests" subtitle="6">
         <FullWidthSeparator />
-        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-          {fakeQuests.map((quest, index) => (
-            <QuestCard
-              quest={quest}
-              key={index}
-              style={{
-                marginTop: 20,
-                marginRight: 16,
-              }}
-            />
-          ))}
-        </View>
+        <Quests />
       </Section>
 
       <Section title="Wallets manager">

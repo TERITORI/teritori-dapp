@@ -21,8 +21,8 @@ import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 
 export const UPPIntro: React.FC<{
   id: string;
-  tokenExtension: any;
-}> = ({ id, tokenExtension }) => {
+  metadata: any;
+}> = ({ id, metadata }) => {
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
 
@@ -46,28 +46,31 @@ export const UPPIntro: React.FC<{
             right: 14,
           }}
         >
-          {tokenExtension?.external_url && (
+          {metadata?.external_url && (
             <SocialButton
               iconSvg={websiteSVG}
               text="Website"
               style={socialButtonStyle}
             />
           )}
-          {tokenExtension?.discord_id && (
+          {metadata?.discord_id && (
             <SocialButton
               iconSvg={discordSVG}
               text="Discord"
               style={socialButtonStyle}
             />
           )}
-          {tokenExtension?.twitter_id && (
+          {metadata?.twitter_id && (
             <SocialButton
               iconSvg={twitterSVG}
               text="Twitter"
               style={socialButtonStyle}
             />
           )}
-          {width > 670 && (
+          {width > 670 &&
+          (metadata?.twitter_id ||
+            metadata?.discord_id ||
+            metadata?.external_url) ? (
             <View
               style={[
                 {
@@ -78,7 +81,7 @@ export const UPPIntro: React.FC<{
                 socialButtonStyle,
               ]}
             />
-          )}
+          ) : null}
           <SocialButtonSecondary
             style={socialButtonStyle}
             iconSvg={shareSVG}
@@ -95,7 +98,7 @@ export const UPPIntro: React.FC<{
           }}
         >
           <Image
-            source={{ uri: tokenExtension?.image || "" }}
+            source={{ uri: metadata?.image || "" }}
             style={{
               borderRadius: 24,
               height: 132,
@@ -127,7 +130,7 @@ export const UPPIntro: React.FC<{
               { color: neutral77, marginTop: 12, marginBottom: 20 },
             ]}
           >
-            {tokenExtension?.public_bio || ""}
+            {metadata?.public_bio || ""}
           </BrandText>
           {/* Actions */}
           <View style={{ flexDirection: "row" }}>
@@ -177,7 +180,7 @@ export const UPPIntro: React.FC<{
           </View>
 
           <CopyToClipboardSecondary
-            text={tokenExtension?.contract_address || ""}
+            text={metadata?.userId || ""}
             iconSVG={teritoriSVG}
           />
         </TertiaryBox>
