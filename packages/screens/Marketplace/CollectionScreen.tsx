@@ -129,7 +129,7 @@ const FlatListHeader: React.FC<{
               />
             ) : null}
             <SocialButtonSecondary
-              text="Etherscan"
+              text="Contract Address"
               iconSvg={etherscanSVG}
               style={{ marginRight: 12 }}
             />
