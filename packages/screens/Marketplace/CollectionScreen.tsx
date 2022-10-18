@@ -68,7 +68,7 @@ const RenderItem: React.FC<{
     <NFTView
       key={nft.mintAddress}
       data={nft}
-      style={{ marginHorizontal: gap / 2 }}
+      style={{ marginRight: marginable ? layout.padding_x2 : 0 }}
     />
   );
 };
