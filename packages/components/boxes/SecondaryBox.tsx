@@ -74,20 +74,20 @@ export const SecondaryBox: React.FC<{
               <View
                 style={[
                   {
-                  width: cornerWidth,
-                  height: 18,
-                  left: -0.5,
-                  top: -5.5,
-                  backgroundColor: squaresBackgroundColor,
-                  transform: [{ rotate: "45deg" }],
-                  position: "absolute",
-                  zIndex: 2,
-                },
+                    width: cornerWidth,
+                    height: 18,
+                    left: -0.5,
+                    top: -5.5,
+                    backgroundColor: squaresBackgroundColor,
+                    transform: [{ rotate: "45deg" }],
+                    position: "absolute",
+                    zIndex: 2,
+                  },
                   squaresBorderColor
                     ? {
-                      borderColor: squaresBorderColor,
-                      borderRightWidth: 1,
-                    }
+                        borderColor: squaresBorderColor,
+                        borderRightWidth: 1,
+                      }
                     : {},
                 ]}
               />
@@ -96,20 +96,20 @@ export const SecondaryBox: React.FC<{
               <View
                 style={[
                   {
-                  width: cornerWidth,
-                  height: 18,
-                  right: -0.5,
-                  bottom: -5.5,
-                  transform: [{ rotate: "225deg" }],
-                  backgroundColor: squaresBackgroundColor,
-                  position: "absolute",
-                  zIndex: 2,
-                },
+                    width: cornerWidth,
+                    height: 18,
+                    right: -0.5,
+                    bottom: -5.5,
+                    transform: [{ rotate: "225deg" }],
+                    backgroundColor: squaresBackgroundColor,
+                    position: "absolute",
+                    zIndex: 2,
+                  },
                   squaresBorderColor
                     ? {
-                      borderColor: squaresBorderColor,
-                      borderRightWidth: 1,
-                    }
+                        borderColor: squaresBorderColor,
+                        borderRightWidth: 1,
+                      }
                     : {},
                 ]}
               />

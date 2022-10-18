@@ -12,7 +12,7 @@ import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPath
 import { UPPSocialFeed } from "../../components/userPublicProfile/UPPSocialFeed";
 import { UPPSucceedQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useToken } from "../../hooks/tokens";
+import { useConsultTNSToken } from "../../hooks/useConsultTNSToken";
 import { ScreenFC } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
@@ -89,14 +89,14 @@ const SelectedTabContent: React.FC<{
 
 const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
   const { onPressTabItem, tabItems, selectedTabItem } = useTabs(screenTabItems);
-  const { loadingToken, token, notFound } = useToken(id, process.env.TLD || "");
+  const { loading, tokenExtension, notFound } = useConsultTNSToken(id);
 
   const { setLoadingFullScreen } = useFeedbacks();
 
   // Sync loadingFullScreen
   useEffect(() => {
-    setLoadingFullScreen(loadingToken);
-  }, [loadingToken]);
+    setLoadingFullScreen(loading);
+  }, [loading]);
 
   if (notFound) {
     return (
@@ -108,7 +108,7 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
     return (
       <View style={{ flex: 1, alignItems: "center" }}>
         <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-          <UPPIntro token={token} id={id} />
+          <UPPIntro tokenExtension={tokenExtension} id={id} />
 
           <Tabs
             items={tabItems}

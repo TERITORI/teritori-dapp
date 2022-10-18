@@ -21,8 +21,8 @@ import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 
 export const UPPIntro: React.FC<{
   id: string;
-  token: any;
-}> = ({ id, token }) => {
+  tokenExtension: any;
+}> = ({ id, tokenExtension }) => {
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
 
@@ -46,21 +46,21 @@ export const UPPIntro: React.FC<{
             right: 14,
           }}
         >
-          {token?.external_url && (
+          {tokenExtension?.external_url && (
             <SocialButton
               iconSvg={websiteSVG}
               text="Website"
               style={socialButtonStyle}
             />
           )}
-          {token?.discord_id && (
+          {tokenExtension?.discord_id && (
             <SocialButton
               iconSvg={discordSVG}
               text="Discord"
               style={socialButtonStyle}
             />
           )}
-          {token?.twitter_id && (
+          {tokenExtension?.twitter_id && (
             <SocialButton
               iconSvg={twitterSVG}
               text="Twitter"
@@ -95,7 +95,7 @@ export const UPPIntro: React.FC<{
           }}
         >
           <Image
-            source={{ uri: token?.image || "" }}
+            source={{ uri: tokenExtension?.image || "" }}
             style={{
               borderRadius: 24,
               height: 132,
@@ -127,7 +127,7 @@ export const UPPIntro: React.FC<{
               { color: neutral77, marginTop: 12, marginBottom: 20 },
             ]}
           >
-            {token?.public_bio || ""}
+            {tokenExtension?.public_bio || ""}
           </BrandText>
           {/* Actions */}
           <View style={{ flexDirection: "row" }}>
@@ -177,7 +177,7 @@ export const UPPIntro: React.FC<{
           </View>
 
           <CopyToClipboardSecondary
-            text={token?.contract_address || ""}
+            text={tokenExtension?.contract_address || ""}
             iconSVG={teritoriSVG}
           />
         </TertiaryBox>

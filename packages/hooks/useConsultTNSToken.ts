@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
-import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
 export const useConsultTNSToken = (name: string) => {
   const [loading, setLoading] = useState(false);
-  const [tokenExtension, setTokenExtension] =
-    useState<TeritoriNameServiceQueryClient>();
+  const [tokenExtension, setTokenExtension] = useState<any>(); // FIXME: type this
+  const [notFound, setNotFound] = useState(false);
   const { setToastError } = useFeedbacks();
 
   useEffect(() => {
@@ -24,17 +23,17 @@ export const useConsultTNSToken = (name: string) => {
             token_id: name + process.env.TLD,
           },
         });
-        console.log("========== token", token);
+        setNotFound(false);
         return token.extension;
       } catch {
-        // ---- If here, "cannot contract", probably because not found, so the token is considered as available
+        // ---- If here, "cannot contract", probably because not found
+        setNotFound(true);
         return undefined;
       }
     };
 
     getToken()
       .then((tokenExtension) => {
-        console.log("========== tokenExtension", tokenExtension);
         if (tokenExtension) setTokenExtension(tokenExtension);
         setLoading(false);
       })
@@ -48,5 +47,5 @@ export const useConsultTNSToken = (name: string) => {
       });
   }, [name]);
 
-  return { loading, tokenExtension };
+  return { loading, tokenExtension, notFound };
 };

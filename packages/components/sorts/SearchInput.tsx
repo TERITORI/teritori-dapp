@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, TextInput, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, TextInput, ViewStyle } from "react-native";
 
 import searchSVG from "../../../assets/icons/search.svg";
 import { fontMedium14 } from "../../utils/style/fonts";
@@ -28,16 +28,17 @@ export const SearchInput: React.FC<{
         placeholder="Search..."
         onChangeText={handleChangeText}
         placeholderTextColor="#FFFFFF"
-        style={[
-          fontMedium14,
-          {
-            color: "#FFFFFF",
-            width: "100%",
-            // FIXME: We don't want input style. But "cursor property is not allowed in TextStyle"
-            outlineStyle: "none",
-          },
-        ]}
+        style={textInputStyle}
       />
     </TertiaryBox>
   );
 };
+
+const styles = StyleSheet.create({
+  textInput: {
+    color: "#FFFFFF",
+    width: "100%",
+    outlineStyle: "none",
+  },
+});
+const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);
