@@ -19,12 +19,13 @@ const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
 export const ConfirmationVote: React.FC<{
   visible?: boolean;
   onClose: () => void;
-}> = ({ visible, onClose }) => {
-  const [displayConfirmation, setdisplayConfirmation] = useState(visible);
+  numberProposal: string;
+  vote: string;
+}> = ({ visible, onClose, numberProposal, vote }) => {
+  const [displayConfirmation, setDisplayConfirmation] = useState(visible);
   function handleConfirmClick() {
     onClose();
-    console.log(displayConfirmation);
-    setdisplayConfirmation(false);
+    setDisplayConfirmation(false);
   }
 
   return (
@@ -67,7 +68,7 @@ export const ConfirmationVote: React.FC<{
                       color: "#FFFFFF",
                     }}
                   >
-                    Yes
+                    {vote}
                   </BrandText>
                 </BrandText>
               </View>
@@ -88,7 +89,7 @@ export const ConfirmationVote: React.FC<{
                     color: "#FFFFFF",
                   }}
                 >
-                  #7
+                  #{numberProposal}
                 </BrandText>
               </BrandText>
             </View>

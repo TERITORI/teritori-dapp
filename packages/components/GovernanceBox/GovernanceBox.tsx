@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
-import { ColorValue, View } from "react-native";
+import { ColorValue, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -12,8 +12,6 @@ export const GovernanceBox: React.FC<{
   descriptionProposal: string;
   votingEndTime: string;
   votingStartTime: string;
-  turnoutValue: string;
-  mostVotedValue: number;
   colorMostVoted: ColorValue | undefined;
   percentageYesValue: number;
   percentageNoValue: number;
@@ -26,8 +24,6 @@ export const GovernanceBox: React.FC<{
   titleProposal,
   descriptionProposal,
   votingEndTime,
-  turnoutValue,
-  mostVotedValue,
   colorMostVoted,
   percentageYesValue,
   percentageNoValue,
@@ -48,7 +44,7 @@ export const GovernanceBox: React.FC<{
   const totalParticipant = totalUsers - percentageAbstainValue;
   const percentageTotalParticipant =
     ((totalParticipant / totalUsers) * 100).toFixed(2).toString() + "%";
-  const [displayGovernanceDetails, setdisplayGovernanceDetails] =
+  const [displayGovernanceDetails, setDisplayGovernanceDetails] =
     useState(false);
 
   const test = "%";
@@ -60,6 +56,10 @@ export const GovernanceBox: React.FC<{
     .toFixed(2)
     .toString();
   percentageNo = percentageNo.substring(0, 5) + test;
+
+  const percentageNoWithVeto = ((percentageNoWithVetoValue / totalUsers) * 100)
+    .toFixed(2)
+    .toString();
 
   let toppercentage;
   if (percentageYesValue > percentageNoValue) {
@@ -99,8 +99,8 @@ export const GovernanceBox: React.FC<{
     isPassedPeriod = false;
   }
 
-  function avctivePopupppp() {
-    setdisplayGovernanceDetails(!displayGovernanceDetails);
+  function activePopup() {
+    setDisplayGovernanceDetails(!displayGovernanceDetails);
   }
 
   function activeGovernanceDetailsPopup() {
@@ -108,7 +108,7 @@ export const GovernanceBox: React.FC<{
       return (
         <GovernanceDetails
           visible={displayGovernanceDetails}
-          onClose={() => avctivePopupppp()}
+          onClose={() => activePopup()}
           numberProposal={numberProposalHashtag}
           titleProposal={titleProposal}
           descriptionProposal={descriptionProposal}
@@ -123,6 +123,7 @@ export const GovernanceBox: React.FC<{
           isRejectedPeriod={isRejectedPeriod}
           percentageYes={percentageYes}
           percentageNo={percentageNo}
+          percentageNoWithVeto={percentageNoWithVeto}
         />
       );
     } else {
@@ -132,289 +133,284 @@ export const GovernanceBox: React.FC<{
 
   return (
     <View style={{ width: "50%", marginBottom: 20 }}>
-      <a
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          avctivePopupppp();
+      <TouchableOpacity
+        onPress={() => {
+          activePopup();
         }}
       >
         {activeGovernanceDetailsPopup()}
 
         <TertiaryBox width={600} height={300}>
-          {isVotingPeriod && (
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "#171717",
-                borderRadius: 100,
-                height: 27,
-                width: 125,
-                position: "absolute",
-                left: 20,
-                top: 20,
-              }}
-            >
-              <BrandText
-                style={{
-                  fontSize: 13,
-                  color: "#16BBFF",
-                }}
-              >
-                VOTING PERIOD
-              </BrandText>
-            </View>
-          )}
-
-          {isRejectedPeriod && (
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "#171717",
-                borderRadius: 100,
-                height: 27,
-                width: 95,
-                position: "absolute",
-                left: 20,
-                top: 20,
-              }}
-            >
-              <BrandText
-                style={{
-                  fontSize: 13,
-                  color: "#FFAEAE",
-                }}
-              >
-                REJECTED
-              </BrandText>
-            </View>
-          )}
-
-          {isPassedPeriod && (
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "#171717",
-                borderRadius: 100,
-                height: 27,
-                width: 90,
-                position: "absolute",
-                left: 20,
-                top: 20,
-              }}
-            >
-              <BrandText
-                style={{
-                  fontSize: 13,
-                  color: "#C8FFAE",
-                }}
-              >
-                PASSED
-              </BrandText>
-            </View>
-          )}
-
-          <BrandText
-            style={{
-              fontSize: 18,
-              color: "#808080",
-              position: "absolute",
-              left: 20,
-              right: 20,
-              top: 65,
-            }}
-          >
-            {numberProposalHashtag}
-          </BrandText>
-
-          <BrandText
-            style={{
-              fontSize: 18,
-              position: "absolute",
-              left: 70,
-              right: 0,
-              top: 65,
-            }}
-          >
-            {titleProposal}
-          </BrandText>
-
-          <BrandText
-            style={{
-              overflow: "scroll",
-              fontSize: 18,
-              color: "#808080",
-              width: 550,
-              height: 76,
-              position: "absolute",
-              left: 20,
-              right: 20,
-              top: 115,
-            }}
-          >
-            {descriptionProposal}
-          </BrandText>
-
           <View
             style={{
-              width: "94%",
-              height: 3,
-              alignItems: "center",
-              backgroundColor: "#333333",
-              borderRadius: 10,
-              position: "absolute",
-              top: 210,
+              flexDirection: "column",
+              top: 20,
+              width: "96%",
+              height: "100%",
             }}
           >
+            {isVotingPeriod && (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "#171717",
+                  borderRadius: 100,
+                  height: "fit-content",
+                  width: "fit-content",
+                }}
+              >
+                <BrandText
+                  style={{
+                    padding: 5,
+                    paddingRight: 15,
+                    paddingLeft: 15,
+                    fontSize: 13,
+                    color: "#16BBFF",
+                  }}
+                >
+                  VOTING PERIOD
+                </BrandText>
+              </View>
+            )}
+
+            {isRejectedPeriod && (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "#171717",
+                  borderRadius: 100,
+                  height: "fit-content",
+                  width: "fit-content",
+                }}
+              >
+                <BrandText
+                  style={{
+                    padding: 5,
+                    paddingRight: 15,
+                    paddingLeft: 15,
+                    fontSize: 13,
+                    color: "#FFAEAE",
+                  }}
+                >
+                  REJECTED
+                </BrandText>
+              </View>
+            )}
+
+            {isPassedPeriod && (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "#171717",
+                  borderRadius: 100,
+                  height: "fit-content",
+                  width: "fit-content",
+                }}
+              >
+                <BrandText
+                  style={{
+                    padding: 5,
+                    paddingRight: 15,
+                    paddingLeft: 15,
+                    fontSize: 13,
+                    color: "#C8FFAE",
+                  }}
+                >
+                  PASSED
+                </BrandText>
+              </View>
+            )}
+
+            <View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  paddingTop: 15,
+                  height: 54,
+                  paddingBottom: 15,
+                  alignItems: "center",
+                }}
+              >
+                <BrandText
+                  style={{
+                    fontSize: 18,
+                    color: "#808080",
+                  }}
+                >
+                  {numberProposalHashtag}
+                </BrandText>
+
+                <BrandText
+                  style={{
+                    fontSize: 17,
+                    paddingLeft: 10,
+                  }}
+                >
+                  {titleProposal}
+                </BrandText>
+              </View>
+            </View>
             <View
               style={{
-                width: percentageYes,
-                height: 3,
-                borderRadius: 10,
-                position: "absolute",
-                left: 0,
-                zIndex: 2,
+                width: 550,
+                height: 100,
               }}
             >
-              <LinearGradient
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={{ height: "100%", width: "100%", borderRadius: 24 }}
-                colors={["#5433FF", "#20BDFF", "#A5FECB"]}
+              <BrandText
+                style={{
+                  overflow: "scroll",
+                  fontSize: 18,
+                  color: "#808080",
+                }}
+              >
+                {descriptionProposal}
+              </BrandText>
+            </View>
+
+            <View style={{ paddingTop: 10 }}>
+              <View
+                style={{
+                  width: "94%",
+                  height: 3,
+                  alignItems: "center",
+                  backgroundColor: "#333333",
+                  borderRadius: 10,
+                }}
+              >
+                <View
+                  style={{
+                    width: percentageYes,
+                    height: 3,
+                    borderRadius: 10,
+                    position: "absolute",
+                    left: 0,
+                    zIndex: 2,
+                  }}
+                >
+                  <LinearGradient
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={{ height: "100%", width: "100%", borderRadius: 24 }}
+                    colors={["#5433FF", "#20BDFF", "#A5FECB"]}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    width: percentageNo,
+                    height: 3,
+                    backgroundColor: "#EAA54B",
+                    borderRadius: 10,
+                    position: "absolute",
+                    left: percentageYes, //percentage of the width of the first view
+                    zIndex: 2,
+                  }}
+                />
+              </View>
+            </View>
+
+            <View style={{ flexDirection: "row", paddingTop: 20 }}>
+              <View style={{ flexDirection: "column" }}>
+                <BrandText
+                  style={{
+                    fontSize: 12,
+                    color: "#808080",
+                  }}
+                >
+                  Voting End Time
+                </BrandText>
+
+                <BrandText
+                  style={{
+                    fontSize: 13,
+                  }}
+                >
+                  {votingEndTime.slice(0, 10)}
+                  {"\u00A0"}
+                  {votingEndTime.slice(11, 16)}
+                  {"\u00A0"} UTC
+                </BrandText>
+              </View>
+
+              <View
+                style={{
+                  width: 45,
+                  height: 0,
+                  borderWidth: 0.5,
+                  borderColor: "#808080",
+                  transform: [{ rotate: "90deg" }],
+                  top: 13,
+                }}
               />
+
+              <View style={{ flexDirection: "column" }}>
+                <BrandText
+                  style={{
+                    fontSize: 12,
+                    color: "#808080",
+                  }}
+                >
+                  Turnout
+                </BrandText>
+
+                <BrandText
+                  style={{
+                    fontSize: 13,
+                  }}
+                >
+                  {percentageTotalParticipant}
+                </BrandText>
+              </View>
+
+              <View
+                style={{
+                  width: 45,
+                  height: 0,
+                  borderWidth: 0.5,
+                  borderColor: "#808080",
+                  transform: [{ rotate: "90deg" }],
+                  top: 13,
+                }}
+              />
+
+              <View style={{ flexDirection: "column" }}>
+                <BrandText
+                  style={{
+                    fontSize: 12,
+                    color: "#808080",
+                  }}
+                >
+                  Most voted on
+                </BrandText>
+
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View
+                    style={{
+                      width: 8,
+                      height: 8,
+                      backgroundColor: colorMostVoted,
+                      borderRadius: 4,
+                    }}
+                  />
+
+                  <BrandText
+                    style={{
+                      fontSize: 13,
+                      paddingLeft: 5,
+                    }}
+                  >
+                    {toppercentage}
+                  </BrandText>
+                </View>
+              </View>
             </View>
-
-            <View
-              style={{
-                width: percentageNo,
-                height: 3,
-                backgroundColor: "#EAA54B",
-                borderRadius: 10,
-                position: "absolute",
-                left: percentageYes, //percentage of the width of the first view
-                zIndex: 2,
-              }}
-            />
           </View>
-          <BrandText
-            style={{
-              fontSize: 12,
-              color: "#808080",
-              position: "absolute",
-              left: 20,
-              right: 20,
-              top: 230,
-            }}
-          >
-            Voting End Time
-          </BrandText>
-
-          <BrandText
-            style={{
-              fontSize: 13,
-              position: "absolute",
-              left: 20,
-              right: 0,
-              top: 250,
-            }}
-          >
-            {votingEndTime.slice(0, 10)}
-            &nbsp;
-            {votingEndTime.slice(11, 16)}
-            &nbsp; UTC
-          </BrandText>
-
-          <View
-            style={{
-              width: 45,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              position: "absolute",
-              left: 160,
-              top: 250,
-            }}
-          />
-
-          <BrandText
-            style={{
-              fontSize: 12,
-              color: "#808080",
-              position: "absolute",
-              left: 205,
-              right: 20,
-              top: 230,
-            }}
-          >
-            Turnout
-          </BrandText>
-
-          <BrandText
-            style={{
-              fontSize: 13,
-              position: "absolute",
-              left: 205,
-              right: 0,
-              top: 250,
-            }}
-          >
-            {percentageTotalParticipant}
-          </BrandText>
-
-          <View
-            style={{
-              width: 45,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              position: "absolute",
-              left: 255,
-              top: 250,
-            }}
-          />
-
-          <BrandText
-            style={{
-              fontSize: 12,
-              color: "#808080",
-              position: "absolute",
-              left: 300,
-              right: 20,
-              top: 230,
-            }}
-          >
-            Most voted on
-          </BrandText>
-
-          <View
-            style={{
-              width: 8,
-              height: 8,
-              backgroundColor: colorMostVoted,
-              borderRadius: 4,
-              position: "absolute",
-              left: 300,
-              top: 255,
-            }}
-          />
-
-          <BrandText
-            style={{
-              fontSize: 13,
-              position: "absolute",
-              left: 315,
-              right: 0,
-              top: 250,
-            }}
-          >
-            {toppercentage}
-          </BrandText>
         </TertiaryBox>
-      </a>
+      </TouchableOpacity>
     </View>
   );
 };

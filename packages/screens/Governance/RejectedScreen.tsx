@@ -3,39 +3,28 @@ import { View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText/BrandText";
-import { CreateProposalPopUp } from "../../components/GovernanceBox/CreateProposalPopUp";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { SVG } from "../../components/SVG/svg";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { NavBarGovernance } from "./NavBarGovernance";
 
-export const RejectedScreen: React.FC = () => {
+export const GovernanceRejectedScreen: React.FC = () => {
   const [cards, setCards] = useState([]);
-  const [displayCreateProposal, setdisplayCreateProposal] = useState(false);
 
   useEffect(() => {
-    fetch(
-      "https://rest.testnet.teritori.com/cosmos/gov/v1beta1/proposals?proposal_status=4"
-    )
-      .then((res) => res.json())
-      .then((kl) => setCards(kl.proposals));
-  }, []);
-
-  function handleCreateProposal() {
-    if (displayCreateProposal === true) {
-      return (
-        <CreateProposalPopUp
-          visible
-          onClose={() => setdisplayCreateProposal(false)}
-        />
+    const fetchData = async () => {
+      const res = await fetch(
+        "https://rest.testnet.teritori.com/cosmos/gov/v1beta1/proposals?proposal_status=4"
       );
-    } else return null;
-  }
+      const data = await res.json();
+
+      setCards(data.proposals);
+    };
+    fetchData().catch(console.error);
+  }, []);
 
   return (
     <ScreenContainer>
-      {handleCreateProposal()}
       <View
         style={{
           flexDirection: "row",
@@ -51,14 +40,6 @@ export const RejectedScreen: React.FC = () => {
         <View style={{ bottom: 10, right: 100 }}>
           <NavBarGovernance visible onClose={() => {}} />
         </View>
-
-        <PrimaryButtonOutline
-          size="SM"
-          text="Create Proposal"
-          onPress={() => {
-            setdisplayCreateProposal(true);
-          }}
-        />
       </View>
 
       <View
@@ -81,8 +62,6 @@ export const RejectedScreen: React.FC = () => {
             votingStartTime={proposals.voting_start_time}
             votingSubmitTime={proposals.submit_time}
             votingDepositEndTime={proposals.deposit_end_time}
-            turnoutValue="80.69%"
-            mostVotedValue={parseFloat(proposals.final_tally_result.yes)}
             colorMostVoted="#16BBFF"
             percentageNoValue={parseFloat(proposals.final_tally_result.no)}
             percentageYesValue={parseFloat(proposals.final_tally_result.yes)}

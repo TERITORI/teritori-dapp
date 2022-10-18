@@ -19,9 +19,7 @@ export type RootStackParamList = {
   AllPeriods: undefined;
   Pending: undefined;
   Voting: undefined;
-  Failed: undefined;
   Passed: undefined;
-  GovernanceDetails: undefined;
 
   Launchpad: undefined;
   MintCollection: { id: string };
@@ -59,13 +57,6 @@ const navConfig: {
   screens: { [Name in keyof RootStackParamList]: string };
 } = {
   screens: {
-    GovernanceDetails: "governance-details",
-    Rejected: "rejected",
-    AllPeriods: "all-periods",
-    Pending: "pending",
-    Voting: "voting",
-    Failed: "failed",
-    Passed: "passed",
     Home: "",
     MyCollection: "my-collection",
     Activity: "activity",
@@ -77,6 +68,12 @@ const navConfig: {
     GuardiansGame: "guardians-game",
     Governance: "governance",
     RiotersFooter: "rioters-footer",
+    // === Governance Page
+    Rejected: "rejected",
+    AllPeriods: "all-periods",
+    Pending: "pending",
+    Voting: "voting",
+    Passed: "passed",
     // ==== Launchpad
     Launchpad: "launchpad",
     // Mint NFT collection

@@ -38,9 +38,6 @@ export interface TextInputCustomProps<T>
   onPressEnter?: () => void;
   onlyNumbers?: boolean;
   disabled?: boolean;
-  center?: boolean;
-  multiLine?: boolean;
-  numberLines?: number;
   regexp?: RegExp;
   width?: number;
   height?: number;
@@ -69,9 +66,6 @@ export const TextInputCustom = <T,>({
   control,
   defaultValue,
   rules,
-  center = true,
-  multiLine = false,
-  numberLines = 0,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // Handling key pressing
@@ -151,7 +145,6 @@ export const TextInputCustom = <T,>({
         fullWidth
         width={width}
         height={height}
-        center={center}
       >
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>

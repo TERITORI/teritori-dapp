@@ -11,6 +11,7 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
 import { Network } from "../../utils/network";
@@ -43,6 +44,7 @@ export const GovernanceDetails: React.FC<{
   isPassedPeriod: boolean;
   percentageYes: string;
   percentageNo: string;
+  percentageNoWithVeto: string;
 }> = ({
   visible,
   onClose,
@@ -60,11 +62,13 @@ export const GovernanceDetails: React.FC<{
   isPassedPeriod,
   percentageYes,
   percentageNo,
+  percentageNoWithVeto,
 }) => {
   const [displayVote, setdisplayVote] = useState(false);
   const [displayConfirmationVote, setdisplayConfirmationVote] = useState(false);
   const [checked, setChecked] = useState("nothingChecked");
   const [displayPopup] = useState(visible);
+  const { setToastError } = useFeedbacks();
 
   const VictoryBar = Victory.VictoryPie;
 
@@ -74,8 +78,8 @@ export const GovernanceDetails: React.FC<{
     setdisplayVote(!displayVote);
   }
 
-  const valueChartYes = parseInt(percentageYes.replace("%", ""), 2);
-  const valueChartNo = parseInt(percentageNo.replace("%", ""), 2);
+  const valueChartYes = parseInt(percentageYes.replace("%", ""), 10);
+  const valueChartNo = parseInt(percentageNo.replace("%", ""), 10);
   const valueChartAbstain = 100 - valueChartYes - valueChartNo;
 
   const selectedWallet = useSelectedWallet();
@@ -103,8 +107,10 @@ export const GovernanceDetails: React.FC<{
       !selectedWallet.connected ||
       !selectedWallet.publicKey
     ) {
-      console.error("invalid selected wallet", selectedWallet);
-      alert("Please connect to Teritori network");
+      setToastError({
+        title: "Wallet Error",
+        message: "You need to register your teritori wallet",
+      });
       return;
     }
 
@@ -128,15 +134,21 @@ export const GovernanceDetails: React.FC<{
         "auto"
       );
       if (isDeliverTxFailure(result)) {
-        alert("Vote failed");
-        console.error("tx failed", result);
+        setToastError({
+          title: "Error",
+          message: "Your Vote Failed",
+        });
       }
     } catch (err) {
-      console.error("something unexpected went wrong", err);
+      setToastError({
+        title: "Error",
+        message: "Something unexpected went wrong with your vote",
+      });
+      // console.error("something unexpected went wrong", err);
     }
   }, [selectedWallet]);
 
-  function deleteee() {
+  function deleteConfirmationVote() {
     setdisplayConfirmationVote(false);
     setdisplayVote(!displayVote);
   }
@@ -145,8 +157,10 @@ export const GovernanceDetails: React.FC<{
     if (displayConfirmationVote === true && checked !== "nothingChecked") {
       return (
         <ConfirmationVote
+          numberProposal={numberProposal}
+          vote={checked}
           visible={displayConfirmationVote}
-          onClose={() => deleteee()}
+          onClose={() => deleteConfirmationVote()}
         />
       );
     } else {
@@ -288,9 +302,9 @@ export const GovernanceDetails: React.FC<{
             }}
           >
             {votingSubmitTime.slice(0, 10)}
-            &nbsp;
+            {"\u00A0"}
             {votingSubmitTime.slice(11, 16)}
-            &nbsp; UTC
+            {"\u00A0"} UTC
           </BrandText>
         </View>
         <View
@@ -319,9 +333,9 @@ export const GovernanceDetails: React.FC<{
             }}
           >
             {votingDepositEndTime.slice(0, 10)}
-            &nbsp;
+            {"\u00A0"}
             {votingDepositEndTime.slice(11, 16)}
-            &nbsp; UTC
+            {"\u00A0"} UTC
           </BrandText>
         </View>
         <View
@@ -350,9 +364,9 @@ export const GovernanceDetails: React.FC<{
             }}
           >
             {votingStartTime.slice(0, 10)}
-            &nbsp;
+            {"\u00A0"}
             {votingStartTime.slice(11, 16)}
-            &nbsp; UTC
+            {"\u00A0"} UTC
           </BrandText>
         </View>
         <View
@@ -381,9 +395,9 @@ export const GovernanceDetails: React.FC<{
             }}
           >
             {votingEndTime.slice(0, 10)}
-            &nbsp;
+            {"\u00A0"}
             {votingEndTime.slice(11, 16)}
-            &nbsp; UTC
+            {"\u00A0"} UTC
           </BrandText>
         </View>
       </View>
@@ -438,9 +452,9 @@ export const GovernanceDetails: React.FC<{
             innerRadius={70}
             colorScale={["#16BBFF", "#EAA54B", "#808080"]}
             data={[
-              { x: "percentage Yes", y: valueChartYes },
-              { x: "percentage No", y: valueChartNo },
-              { x: "percentage Abstain", y: valueChartAbstain },
+              { x: "Pourcentage Yes", y: valueChartYes },
+              { x: "Pourcentage No", y: valueChartNo },
+              { x: "Pourcentage Abstain", y: valueChartAbstain },
             ]}
           />
         </View>
@@ -501,7 +515,7 @@ export const GovernanceDetails: React.FC<{
               fontSize: 14,
             }}
           >
-            Yes 99.77%
+            Yes {percentageYes}
           </BrandText>
 
           <View
@@ -528,7 +542,7 @@ export const GovernanceDetails: React.FC<{
               fontSize: 14,
             }}
           >
-            Yes 0.11%
+            Yes {percentageNo}
           </BrandText>
 
           <View
@@ -555,7 +569,7 @@ export const GovernanceDetails: React.FC<{
               fontSize: 14,
             }}
           >
-            NoWithVeto 0.01%
+            NoWithVeto {percentageNoWithVeto}
           </BrandText>
 
           <View
@@ -582,14 +596,15 @@ export const GovernanceDetails: React.FC<{
               fontSize: 14,
             }}
           >
-            NoWithVeto 0.01%
+            NoWithVeto {percentageNoWithVeto}
           </BrandText>
         </View>
 
         <PrimaryButton
+          width={150}
           size="XL"
-          style={{ position: "absolute", left: 450, bottom: -40 }}
-          text="       Vote       "
+          style={{ position: "absolute", left: 510, bottom: -40 }}
+          text="Vote"
           onPress={() => activeVote()}
         />
       </TertiaryBox>
@@ -648,7 +663,7 @@ export const GovernanceDetails: React.FC<{
             color: "#777777",
           }}
         >
-          #251
+          {numberProposal}
         </BrandText>
         <BrandText
           style={{
@@ -656,8 +671,8 @@ export const GovernanceDetails: React.FC<{
             color: "#FFFFFF",
           }}
         >
-          IncreaseMaxValidators=100 to MaxValidators=110 <br />
-          <br />
+          IncreaseMaxValidators=100 to MaxValidators=110 {"\n"}
+          {"\n"}
         </BrandText>
 
         <View style={{ paddingBottom: 10, flexDirection: "row" }}>

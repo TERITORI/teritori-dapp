@@ -1,21 +1,21 @@
+import { useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
-import { View } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
-import { useAppNavigation, getCurrentRouteName } from "../../utils/navigation";
+import { useAppNavigation } from "../../utils/navigation";
 
 export const NavBarGovernance: React.FC<{
   visible?: boolean;
   onClose: () => void;
 }> = ({ visible, onClose }) => {
   const navigation = useAppNavigation();
+  const { name: currentRouteName } = useRoute();
 
-  const currentPage = getCurrentRouteName(navigation);
-
-  const [activeAllPeriod] = useState(currentPage === "AllPeriods");
-  const [activeVoting] = useState(currentPage === "Voting");
-  const [activePassed] = useState(currentPage === "Passed");
-  const [activeRejected] = useState(currentPage === "Rejected");
+  const [activeAllPeriod] = useState(currentRouteName === "AllPeriods");
+  const [activeVoting] = useState(currentRouteName === "Voting");
+  const [activePassed] = useState(currentRouteName === "Passed");
+  const [activeRejected] = useState(currentRouteName === "Rejected");
 
   return (
     <View
@@ -33,9 +33,8 @@ export const NavBarGovernance: React.FC<{
         height: 32,
       }}
     >
-      <a
-        style={{ cursor: "pointer" }}
-        onClick={() => {
+      <TouchableOpacity
+        onPress={() => {
           navigation.navigate("AllPeriods");
         }}
       >
@@ -73,11 +72,10 @@ export const NavBarGovernance: React.FC<{
             }}
           />
         </View>
-      </a>
+      </TouchableOpacity>
 
-      <a
-        style={{ cursor: "pointer" }}
-        onClick={() => {
+      <TouchableOpacity
+        onPress={() => {
           navigation.navigate("Voting");
         }}
       >
@@ -113,11 +111,10 @@ export const NavBarGovernance: React.FC<{
             }}
           />
         </View>
-      </a>
+      </TouchableOpacity>
 
-      <a
-        style={{ cursor: "pointer" }}
-        onClick={() => {
+      <TouchableOpacity
+        onPress={() => {
           navigation.navigate("Passed");
         }}
       >
@@ -153,11 +150,10 @@ export const NavBarGovernance: React.FC<{
             }}
           />
         </View>
-      </a>
+      </TouchableOpacity>
 
-      <a
-        style={{ cursor: "pointer" }}
-        onClick={() => {
+      <TouchableOpacity
+        onPress={() => {
           navigation.navigate("Rejected");
         }}
       >
@@ -188,7 +184,7 @@ export const NavBarGovernance: React.FC<{
             Rejected
           </BrandText>
         </View>
-      </a>
+      </TouchableOpacity>
     </View>
   );
 };

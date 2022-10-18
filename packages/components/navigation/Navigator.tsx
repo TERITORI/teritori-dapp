@@ -1,10 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
-import { AllPeriodScreen } from "../../screens/Governance/AllPeriodScreen";
-import { PassedScreen } from "../../screens/Governance/PassedScreen";
-import { RejectedScreen } from "../../screens/Governance/RejectedScreen";
-import { VotingScreen } from "../../screens/Governance/VotingScreen";
+import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
+import { GovernanceAllPeriodScreen } from "../../screens/Governance/AllPeriodScreen";
+import { GovernancePassedScreen } from "../../screens/Governance/PassedScreen";
+import { GovernanceRejectedScreen } from "../../screens/Governance/RejectedScreen";
+import { GovernanceVotingScreen } from "../../screens/Governance/VotingScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
@@ -80,32 +81,26 @@ export const Navigator: React.FC = () => {
       {/* ==== Governance Pages */}
 
       <Stack.Screen
-        name="Governance"
-        component={AllPeriodScreen}
-        options={{ header: () => null }}
-      />
-
-      <Stack.Screen
         name="Rejected"
-        component={RejectedScreen}
+        component={GovernanceRejectedScreen}
         options={{ header: () => null }}
       />
 
       <Stack.Screen
         name="AllPeriods"
-        component={AllPeriodScreen}
+        component={GovernanceAllPeriodScreen}
         options={{ header: () => null }}
       />
 
       <Stack.Screen
         name="Voting"
-        component={VotingScreen}
+        component={GovernanceVotingScreen}
         options={{ header: () => null }}
       />
 
       <Stack.Screen
         name="Passed"
-        component={PassedScreen}
+        component={GovernancePassedScreen}
         options={{ header: () => null }}
       />
 

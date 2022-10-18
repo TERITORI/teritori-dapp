@@ -19,7 +19,6 @@ export const QuestCard: React.FC<{
       height={116}
       width={140}
       style={style}
-      hasGradientBackground={completed}
       mainContainerStyle={{
         backgroundColor: neutral17,
         justifyContent: "space-between",
