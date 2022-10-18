@@ -139,9 +139,9 @@ const styles = StyleSheet.create({
   chevronContainer: {
     alignItems: "center",
     justifyContent: "center",
-    height: layout.icon,
-    width: layout.icon,
-    borderRadius: layout.icon / 2,
+    height: layout.iconButton,
+    width: layout.iconButton,
+    borderRadius: layout.iconButton / 2,
     background: neutral33,
     borderWidth: 1,
     borderColor: neutral44,
