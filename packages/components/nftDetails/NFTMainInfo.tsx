@@ -1,6 +1,6 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import guardian1PNG from "../../../assets/default-images/guardian_1.png";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
