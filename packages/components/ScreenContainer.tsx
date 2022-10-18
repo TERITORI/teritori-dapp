@@ -14,6 +14,7 @@ import {
 
 import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
 import { useAreThereWallets } from "../hooks/useAreThereWallets";
+import { useMaxResolution } from "../hooks/useMaxResolution";
 import { useAppNavigation } from "../utils/navigation";
 import {
   headerHeight,
@@ -58,6 +59,7 @@ export const ScreenContainer: React.FC<{
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
   const areThereWallets = useAreThereWallets();
   const navigation = useAppNavigation();
+  const { width } = useMaxResolution();
 
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
@@ -95,13 +97,15 @@ export const ScreenContainer: React.FC<{
                     marginStyle,
                   ]}
                 >
-                  <View style={styles.childrenContainer}>
+                  <View style={[styles.childrenContainer, { width }]}>
                     {children}
                     {footerChildren && <Footer>{footerChildren}</Footer>}
                   </View>
                 </ScrollView>
               ) : (
-                <View style={[styles.childrenContainer, marginStyle]}>
+                <View
+                  style={[styles.childrenContainer, { width }, marginStyle]}
+                >
                   {children}
                   {footerChildren && <Footer>{footerChildren}</Footer>}
                 </View>
@@ -155,8 +159,6 @@ const styles = StyleSheet.create({
   },
   childrenContainer: {
     height: "100%",
-    maxWidth: 1092,
-    width: 1092,
     alignSelf: "center",
   },
 });

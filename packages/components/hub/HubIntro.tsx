@@ -74,7 +74,13 @@ const DisconnectedIntro: React.FC = () => {
   const navigation = useAppNavigation();
 
   return (
-    <View style={{ alignItems: "center", marginBottom: 72, marginTop: 180 }}>
+    <View
+      style={{
+        alignItems: "center",
+        marginBottom: 72,
+        marginTop: layout.contentPadding,
+      }}
+    >
       <SVG width={200} height={200} source={logoSVG} />
       <BrandText style={{ color: "#00C6FB", fontSize: 16 }}>
         Welcome to Teritori_
