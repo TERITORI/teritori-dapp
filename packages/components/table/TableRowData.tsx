@@ -58,8 +58,13 @@ const styles = StyleSheet.create({
     paddingVertical: layout.padding_x2,
     paddingHorizontal: layout.padding_x2_5,
   },
+  labelText: {
+    ...StyleSheet.flatten(fontSemibold13),
+    textTransform: "uppercase",
+  },
   valueText: {
     ...StyleSheet.flatten(fontSemibold13),
     color: secondaryColor,
+    textTransform: "uppercase",
   },
 });
