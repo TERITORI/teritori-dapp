@@ -116,14 +116,18 @@ const FlatListHeader: React.FC<{
             }}
           >
             <CollectionSocialButtons collectionInfo={collectionInfo} />
-            <View
-              style={{
-                height: 24,
-                width: 1,
-                backgroundColor: neutral33,
-                marginRight: 12,
-              }}
-            />
+            {collectionInfo.discord ||
+            collectionInfo.twitter ||
+            collectionInfo.website ? (
+              <View
+                style={{
+                  height: 24,
+                  width: 1,
+                  backgroundColor: neutral33,
+                  marginRight: 12,
+                }}
+              />
+            ) : null}
             <SocialButtonSecondary
               text="Etherscan"
               iconSvg={etherscanSVG}

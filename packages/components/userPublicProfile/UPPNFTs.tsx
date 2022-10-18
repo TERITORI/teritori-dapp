@@ -13,9 +13,6 @@ import { useNFTs } from "../../hooks/useNFTs";
 import { alignDown } from "../../utils/align";
 import { layout } from "../../utils/style/layout";
 import { NFTView } from "../NFTView";
-import { FilterButton } from "../sorts/FilterButton";
-import { SearchInput } from "../sorts/SearchInput";
-import { SortButton } from "../sorts/SortButton";
 import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
 
 const tabItemsNFTs: TabItem[] = [
@@ -129,12 +126,6 @@ export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
           onPressTabItem={onPressTabItem}
           style={{ width: 436, height: 44, alignSelf: "flex-end" }}
         />
-        <FilterButton style={{ marginLeft: layout.padding_x2_5 }} />
-        {/*TODO: Too long (See at right on the render)*/}
-        <SearchInput
-          style={{ marginHorizontal: layout.padding_x2_5, maxWidth: 504 }}
-        />
-        <SortButton style={{ width: 222 }} />
       </View>
 
       {userId && (

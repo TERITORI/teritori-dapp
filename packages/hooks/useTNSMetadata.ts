@@ -4,7 +4,7 @@ import { useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
-export const useTNSMetadata = (name: string) => {
+export const useTNSMetadata = (id: string) => {
   const [loading, setLoading] = useState(false);
   const [metadata, setMetadata] = useState<any>(); // FIXME: type this
   const [notFound, setNotFound] = useState(false);
@@ -18,7 +18,6 @@ export const useTNSMetadata = (name: string) => {
         .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
       // We just want to read, so we use a non-signing client
       const cosmWasmClient = await getNonSigningCosmWasmClient();
-      const tokenId = name + process.env.TLD;
 
       const tnsClient = new TeritoriNameServiceQueryClient(
         cosmWasmClient,
@@ -26,10 +25,23 @@ export const useTNSMetadata = (name: string) => {
       );
 
       try {
+        const aliasResponse = await cosmWasmClient.queryContractSmart(
+          contractAddress,
+          {
+            primary_alias: {
+              address: id,
+            },
+          }
+        );
+
         // ======== Getting NFT info
-        const nftInfo = await tnsClient.nftInfo({ tokenId });
+        const nftInfo = await tnsClient.nftInfo({
+          tokenId: aliasResponse.username,
+        });
         // ======== Getting NFT owner
-        const { owner } = await tnsClient.ownerOf({ tokenId });
+        const { owner } = await tnsClient.ownerOf({
+          tokenId: aliasResponse.username,
+        });
         nftInfo.extension.userId = owner;
         setNotFound(false);
         return nftInfo.extension;
@@ -52,7 +64,7 @@ export const useTNSMetadata = (name: string) => {
           message: e.message,
         });
       });
-  }, [name]);
+  }, [id]);
 
   return { loading, metadata, notFound };
 };

@@ -9,8 +9,7 @@ import { QuestCard } from "./cards/QuestCard";
 
 export const Quests: React.FC<{
   userId?: string;
-  wantCompleted?: boolean;
-}> = ({ userId, wantCompleted }) => {
+}> = ({ userId }) => {
   const selectedWallet = useSelectedWallet();
   const [quests, setQuests] = useState<Quest[]>([]);
 

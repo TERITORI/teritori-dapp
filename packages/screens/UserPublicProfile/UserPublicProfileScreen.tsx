@@ -10,7 +10,7 @@ import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
 import { UPPSocialFeed } from "../../components/userPublicProfile/UPPSocialFeed";
-import { UPPSucceedQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
+import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { ScreenFC } from "../../utils/navigation";
@@ -78,7 +78,7 @@ const SelectedTabContent: React.FC<{
     case "Activity":
       return <UPPActivity />;
     case "Succeed Quests":
-      return <UPPSucceedQuests userId={metadata?.userId || ""} />;
+      return <UPPQuests userId={metadata?.userId || ""} />;
     case "Pathwar Challenges":
       return <UPPPathwarChallenges />;
     case "Gig Services":
@@ -88,9 +88,11 @@ const SelectedTabContent: React.FC<{
   }
 };
 
-const Content: React.FC<{ id: string }> = ({ id }) => {
+export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
+  route,
+}) => {
   const { onPressTabItem, tabItems, selectedTabItem } = useTabs(screenTabItems);
-  const { loading, metadata, notFound } = useTNSMetadata(id);
+  const { loading, metadata, notFound } = useTNSMetadata(route.params.id);
 
   const { setLoadingFullScreen } = useFeedbacks();
 
@@ -99,50 +101,42 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
     setLoadingFullScreen(loading);
   }, [loading]);
 
-  if (notFound) {
-    return (
-      <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
-        <BrandText>User not found</BrandText>
-      </View>
-    );
-  } else {
-    return (
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-          <UPPIntro metadata={metadata} id={id} />
-
-          <Tabs
-            items={tabItems}
-            onPressTabItem={onPressTabItem}
-            style={{
-              marginTop: 32,
-              height: 32,
-              marginBottom: layout.padding_x2_5 / 2,
-            }}
-            borderColorTabSelected={primaryColor}
-          />
-
-          <SelectedTabContent
-            selectedTabItemLabel={selectedTabItem.label}
-            metadata={metadata}
-          />
-        </View>
-      </View>
-    );
-  }
-};
-
-export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
-  route,
-}) => {
   return (
     <ScreenContainer
       smallMargin
       headerChildren={
-        <BrandText style={fontSemibold20}>{route.params.id}</BrandText>
+        <BrandText style={fontSemibold20}>
+          {metadata?.public_name || ""}
+        </BrandText>
       }
     >
-      <Content id={route.params.id} />
+      {notFound ? (
+        <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
+          <BrandText>User not found</BrandText>
+        </View>
+      ) : (
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
+            <UPPIntro metadata={metadata} />
+
+            <Tabs
+              items={tabItems}
+              onPressTabItem={onPressTabItem}
+              style={{
+                marginTop: 32,
+                height: 32,
+                marginBottom: layout.padding_x2_5 / 2,
+              }}
+              borderColorTabSelected={primaryColor}
+            />
+
+            <SelectedTabContent
+              selectedTabItemLabel={selectedTabItem.label}
+              metadata={metadata}
+            />
+          </View>
+        </View>
+      )}
     </ScreenContainer>
   );
 };

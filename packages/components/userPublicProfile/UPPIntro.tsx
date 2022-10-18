@@ -14,15 +14,12 @@ import { BrandText } from "../BrandText";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { PrimaryButton } from "../buttons/PrimaryButton";
-import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 
 export const UPPIntro: React.FC<{
-  id: string;
   metadata: any;
-}> = ({ id, metadata }) => {
+}> = ({ metadata }) => {
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
 
@@ -93,7 +90,7 @@ export const UPPIntro: React.FC<{
         <View
           style={{
             position: "absolute",
-            bottom: -100,
+            top: 217,
             left: 16,
           }}
         >
@@ -104,52 +101,42 @@ export const UPPIntro: React.FC<{
               height: 132,
               width: 132,
               position: "absolute",
-              bottom: 32,
+              top: 32,
               left: 32,
               zIndex: 2,
             }}
           />
           <SVG source={userImageFrameSVG} width={196} height={196} />
+
+          {/* Pseudo and bio */}
+          <BrandText style={[fontSemibold20, { marginTop: 10 }]}>
+            {metadata?.public_name || ""}
+          </BrandText>
+          <BrandText
+            numberOfLines={6}
+            style={[
+              fontSemibold14,
+              {
+                color: neutral77,
+                marginTop: 12,
+                marginBottom: 20,
+                maxWidth: 1000,
+              },
+            ]}
+          >
+            {metadata?.public_bio || ""}
+          </BrandText>
         </View>
       </TertiaryBox>
 
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           alignItems: "center",
-          marginTop: 119,
+          marginTop: 100,
         }}
       >
-        <View>
-          {/* Pseudo and bio */}
-          <BrandText style={fontSemibold20}>{id}</BrandText>
-          <BrandText
-            style={[
-              fontSemibold14,
-              { color: neutral77, marginTop: 12, marginBottom: 20 },
-            ]}
-          >
-            {metadata?.public_bio || ""}
-          </BrandText>
-          {/* Actions */}
-          <View style={{ flexDirection: "row" }}>
-            <PrimaryButton
-              size="M"
-              text="Follow"
-              width={148}
-              touchableStyle={{ marginRight: 16 }}
-            />
-            <SecondaryButton
-              size="M"
-              text="Send request to chat"
-              width={180}
-              backgroundColor="#FFFFFF"
-              color="#000000"
-            />
-          </View>
-        </View>
-
         {/* Stats and public address */}
         <TertiaryBox mainContainerStyle={{ padding: 16 }}>
           <View

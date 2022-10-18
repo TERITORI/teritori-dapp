@@ -72,12 +72,8 @@ const getTNSNFTInfo = async (
   const contractInfo = await tnsClient.contractInfo();
   // ======== Getting NFT info
   const nftInfo = await tnsClient.nftInfo({ tokenId });
-
-  console.log("nftInfo", nftInfo);
-
   // ======== Getting NFT owner
   const { owner } = await tnsClient.ownerOf({ tokenId });
-
   // ======== Getting vault stuff (For selling)
   const vaultClient = new TeritoriNftVaultQueryClient(
     cosmwasmClient,
