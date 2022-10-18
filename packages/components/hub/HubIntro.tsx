@@ -36,7 +36,7 @@ const ConnectedIntro: React.FC = () => {
   );
 
   return (
-    <View style={{ alignItems: "center", marginTop: 80 }}>
+    <View style={{ alignItems: "center", marginTop: 80, width: "100%" }}>
       <Image
         source={connectedImagePNG}
         style={{ width: 200, aspectRatio: 1, marginBottom: 20 }}

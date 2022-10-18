@@ -11,6 +11,7 @@ import {
 import { useAppNavigation } from "../utils/navigation";
 import { heightButton } from "../utils/style/buttons";
 import { neutral33, neutral77 } from "../utils/style/colors";
+import { layout } from "../utils/style/layout";
 import { NFTData } from "../utils/types/nft";
 import { BrandText } from "./BrandText";
 import { TertiaryBox } from "./boxes/TertiaryBox";
@@ -23,19 +24,19 @@ export const NFTView: React.FC<{
 }> = React.memo(({ data, style }) => {
   const collectionFontSize = 12;
   const floorPriceLabelFontSize = 12;
-  const contentWidth = 236;
+  const cardWidth = 258;
+  const insideMargin = layout.padding_x2;
+  const contentWidth = cardWidth - insideMargin * 2;
   const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
 
   // put margins on touchable opacity
   const {
-    marginLeft,
     marginBottom,
     marginHorizontal,
     marginVertical,
     margin,
     marginEnd,
-    marginRight,
     marginStart,
     marginTop,
     ...styleWithoutMargins
@@ -49,31 +50,29 @@ export const NFTView: React.FC<{
         marginBottom,
         marginEnd,
         marginHorizontal,
-        marginLeft,
-        marginRight,
         marginStart,
         marginTop,
         marginVertical,
       }}
     >
       <TertiaryBox
-        width={268}
+        width={cardWidth}
         style={styleWithoutMargins}
-        mainContainerStyle={{ paddingVertical: 16 }}
+        mainContainerStyle={{ paddingVertical: insideMargin }}
       >
         <Image
           source={{ uri: data.imageURI }}
           style={{
             width: contentWidth,
-            height: 236,
+            height: contentWidth,
             alignSelf: "center",
             borderRadius: 12,
           }}
         />
 
-        <View style={{ marginHorizontal: 16, width: contentWidth }}>
+        <View style={{ marginHorizontal: insideMargin, width: contentWidth }}>
           <BrandText
-            style={{ marginTop: 16, fontSize: 14 }}
+            style={{ marginTop: insideMargin, fontSize: 14 }}
             ellipsizeMode="tail"
             numberOfLines={1}
           >

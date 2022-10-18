@@ -18,7 +18,7 @@ export const DAppCard: React.FC<{
   const labelFontSize = 20;
   const descriptionFontSize = 14;
   const borderRadius = 20;
-  const width = 348;
+  const width = 344;
   const height = 164;
   return (
     <TouchableOpacity style={{ margin: gridHalfGutter }} onPress={onPress}>

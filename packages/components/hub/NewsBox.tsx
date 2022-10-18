@@ -40,7 +40,7 @@ export const NewsBox: React.FC<{
         width: "100%",
         borderBottomWidth: 1,
         borderBottomColor: neutral33,
-        paddingHorizontal: 40,
+        paddingHorizontal: 10,
         paddingVertical: 20,
       }}
     >
