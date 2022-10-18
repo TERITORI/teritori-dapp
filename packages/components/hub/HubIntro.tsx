@@ -8,6 +8,7 @@ import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { Overview } from "../../screens/WalletManager/Overview/Overview";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
 import { useAppNavigation } from "../../utils/navigation";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { Quests } from "../Quests";
@@ -35,7 +36,13 @@ const ConnectedIntro: React.FC = () => {
   );
 
   return (
-    <View style={{ alignItems: "center", marginTop: 80, width: "100%" }}>
+    <View
+      style={{
+        alignItems: "center",
+        marginTop: layout.contentPadding,
+        width: "100%",
+      }}
+    >
       <Image
         source={connectedImagePNG}
         style={{ width: 200, aspectRatio: 1, marginBottom: 20 }}

@@ -5,11 +5,16 @@ import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
 import { ScreenFC } from "../../utils/navigation";
+import { layout } from "../../utils/style/layout";
 
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   return (
     <ScreenContainer>
-      <View style={{ paddingTop: 100 }}>
+      <View
+        style={{
+          paddingBottom: layout.contentPadding,
+        }}
+      >
         <CollectionsCarouselSection
           title="Upcoming Launches"
           kind={CollectionsRequest_Kind.KIND_UPCOMING}

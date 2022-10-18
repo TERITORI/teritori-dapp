@@ -91,8 +91,7 @@ const FlatListHeader: React.FC<{
         style={{
           height,
           width,
-          marginBottom: 42,
-          marginTop: 7,
+          marginBottom: layout.contentPadding,
         }}
       />
 
@@ -162,7 +161,9 @@ const FlatListHeader: React.FC<{
 };
 
 // All the screen content after the Flatlist used to display NFTs
-const FlatListFooter: React.FC = () => <View style={{ height: 100 }} />;
+const FlatListFooter: React.FC = () => (
+  <View style={{ height: layout.contentPadding }} />
+);
 
 const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
   id,

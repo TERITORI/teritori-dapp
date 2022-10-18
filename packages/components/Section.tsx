@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { neutral77 } from "../utils/style/colors";
 import { fontSemibold20 } from "../utils/style/fonts";
-import { screenContentMaxWidth } from "../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 
 export const Section: React.FC<{
@@ -15,7 +15,7 @@ export const Section: React.FC<{
   return (
     <View
       style={{
-        marginTop: 56,
+        marginTop: layout.contentPadding,
         overflow: "hidden",
         width: "100%",
         maxWidth: screenContentMaxWidth,
