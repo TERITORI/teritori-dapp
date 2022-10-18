@@ -2,6 +2,7 @@ package marketplace
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"strings"
 	"time"
@@ -15,6 +16,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/bxcodec/faker/v3"
 	"github.com/pkg/errors"
+	"github.com/volatiletech/sqlboiler/v4/queries"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -174,38 +176,52 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	}
 
 	// teritori
-
-	query := s.conf.IndexerDB.
-		Preload("TeritoriNFT").
-		Preload("Collection").
-		Offset(int(offset)).
-		Limit(int(limit)).
-		Order("is_listed DESC").
-		Order("price_amount ASC")
-
-	if collection_id != "" {
-		query = query.Where("collection_id = ?", collection_id)
+	type NFTWithExtra struct {
+		ID                string
+		Name              string
+		OwnerImage        string
+		ImageURI          string
+		Tns               string
+		CollectionName    string
+		CollectionID      string
+		CollectionNetwork int
+		IsListed          bool
+		PriceAmount       string `gorm:"type:numeric"`
+		PriceDenom        string
+		OwnerID           string
 	}
-
+	db, err := s.conf.IndexerDB.DB()
+	if err != nil {
+		return errors.Wrap(err, "failed to get database from gorm.DB object")
+	}
 	ownerId := req.GetOwnerId()
-	if ownerId != "" {
-		query = query.Where("owner_id = ?", ownerId)
+	query := fmt.Sprintf(`
+	with 
+	user_image as (
+		select id user_id, primary_tns tns, (select image_uri from nfts where id = '%s-'||'%s-'||u.primary_tns ) image_url 
+		from users u
+	)
+	SELECT nfts.*,
+	(select image_url from user_image where user_id = nfts.owner_id ) owner_image, 
+	(select tns from user_image where user_id = nfts.owner_id ) tns, c.network collection_network, c.name collection_name FROM nfts
+		INNER join teritori_nfts tn on tn.nft_id = nfts.id
+		INNER join collections c on c.id = nfts.collection_id
+		where (collection_id = $1 or $1 = '') AND (owner_id = $2 or $2 = '')
+	ORDER BY nfts.is_listed DESC, nfts.price_amount ASC
+	LIMIT $3
+	OFFSET $4
+	`, marketplacepb.Network_NETWORK_TERITORI.Prefix(), s.conf.TNSContractAddress)
+	rows, err := db.QueryContext(context.Background(), query, collection_id, ownerId, limit, offset)
+	if err != nil && err != sql.ErrNoRows {
+		return errors.Wrap(err, "failed query nfts")
 	}
-
-	var nfts []*indexerdb.NFT
-	if err := query. // FIXME: this doesn't support mixed denoms
-				Find(&nfts, &indexerdb.NFT{CollectionID: collection_id}).
-				Error; err != nil {
-		return errors.Wrap(err, "failed to fetch collection nfts")
+	var nfts []NFTWithExtra
+	err = queries.Bind(rows, &nfts)
+	if err != nil {
+		return errors.Wrap(err, "failed binding query to NFTWithExtra object")
 	}
-
 	tnsId := indexerdb.TeritoriCollectionID(s.conf.TNSContractAddress)
-
 	for _, nft := range nfts {
-		if nft.Collection == nil {
-			return errors.New("no collection on nft")
-		}
-
 		imageURI := nft.ImageURI
 		textInsert := ""
 
@@ -216,38 +232,19 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 				imageURI = s.conf.TNSDefaultImageURL
 			}
 		}
-
-		// get user info
-		// TODO: optimize into first db query
-		ownerName := ""
-		ownerImageURL := ""
-		var owner indexerdb.User
-		query := s.conf.IndexerDB.Find(&owner, "id = ?", nft.OwnerID)
-		if query.Error != nil {
-			return errors.Wrap(query.Error, "failed to query nft owner")
-		}
-		if query.RowsAffected > 0 && owner.PrimaryTNS != "" {
-			ownerName = owner.PrimaryTNS
-			var tns indexerdb.NFT
-			nftQuery := s.conf.IndexerDB.Find(&tns, "id = ?", indexerdb.TeritoriNFTID(s.conf.TNSContractAddress, owner.PrimaryTNS))
-			if nftQuery.Error == nil && nftQuery.RowsAffected > 0 {
-				ownerImageURL = tns.ImageURI
-			}
-		}
-
 		if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &marketplacepb.NFT{
 			Id:             nft.ID,
 			Name:           nft.Name,
-			CollectionName: nft.Collection.Name,
-			Network:        nft.Collection.Network,
+			CollectionName: nft.CollectionName,
+			Network:        marketplacepb.Network(nft.CollectionNetwork),
 			ImageUri:       ipfsutil.IPFSURIToURL(imageURI),
 			IsListed:       nft.IsListed,
 			Price:          nft.PriceAmount,
 			Denom:          nft.PriceDenom,
 			TextInsert:     textInsert,
 			OwnerId:        string(nft.OwnerID),
-			OwnerName:      ownerName,
-			OwnerImageUrl:  ipfsutil.IPFSURIToURL(ownerImageURL),
+			OwnerName:      nft.Tns,
+			OwnerImageUrl:  ipfsutil.IPFSURIToURL(nft.OwnerImage),
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send nft")
 		}
