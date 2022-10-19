@@ -9,23 +9,6 @@ import purchaseSVG from "../../../assets/icons/activity-types/purchase.svg";
 import salesSVG from "../../../assets/icons/activity-types/sales.svg";
 import transferSVG from "../../../assets/icons/activity-types/transfer.svg";
 import { Activity } from "../../components/cards/ActivityCard";
-import { Quest } from "../../components/cards/QuestCard";
-
-export const fakeQuests: Quest[] = [
-  { label: "Claim Teritori    Airdrop", isSucceed: true },
-  { label: "Book a Handle Teritori Name Service", isSucceed: true },
-  { label: "Buy your 1st NFT on Launchpad", isSucceed: true },
-  { label: "List your 1st  NFT on Marketplace", isSucceed: true },
-  { label: "Sell your 1st NFT on Marketplace ", isSucceed: true },
-  { label: "Put your Graffiti on Rioters Footer", isSucceed: true },
-  { label: "Put your Graffiti on Rioters Footer", isSucceed: true },
-  { label: "Put your Graffiti on Rioters Footer", isSucceed: true },
-  { label: "List your 1st  NFT on Marketplace", isSucceed: true },
-  { label: "Book a Handle Teritori Name Service", isSucceed: true },
-  { label: "Buy your 1st NFT on Launchpad", isSucceed: true },
-  { label: "Sell your 1st NFT on Marketplace ", isSucceed: true },
-  { label: "Put your Graffiti on Rioters Footer", isSucceed: true },
-];
 
 export const fakeActivities: Activity[] = [
   {
