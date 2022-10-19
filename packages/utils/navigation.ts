@@ -62,7 +62,7 @@ const navConfig: {
     WalletManagerChains: "wallet-manager/chains",
     GuardiansGame: "guardians-game",
     Governance: "governance",
-    UserPublicProfile: "user/:id/profile",
+    UserPublicProfile: "user/:id",
     RiotersFooter: "rioters-footer",
     // ==== Launchpad
     Launchpad: "launchpad",
