@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
+import { Tabs } from "../../components/tabs/Tabs";
 import { UPPActivity } from "../../components/userPublicProfile/UPPActivity";
 import { UPPGigServices } from "../../components/userPublicProfile/UPPGigServices";
 import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
@@ -18,70 +18,59 @@ import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 
-const screenTabItems: TabItem[] = [
-  {
-    label: "Social Feed",
-    isSelected: false,
-    isDisabled: true,
+const screenTabItems = {
+  "social-feed": {
+    name: "Social Feed",
+    disabled: true,
   },
-  {
-    label: "NFTs",
-    isSelected: true,
-    isDisabled: false,
+  nfts: {
+    name: "NFTs",
   },
-  {
-    label: "Activity",
-    isSelected: false,
-    isDisabled: true,
+  activity: {
+    name: "Activity",
+    disabled: true,
   },
-  {
-    label: "Succeed Quests",
-    isSelected: false,
-    isDisabled: false,
+  quests: {
+    name: "Quests",
   },
-  {
-    label: "Pathwar Challenges",
-    isSelected: false,
-    isDisabled: true,
+  pathwar: {
+    name: "Pathwar Challenges",
+    disabled: true,
   },
-  {
-    label: "Gig Services",
-    isSelected: false,
-    isDisabled: true,
+  gig: {
+    name: "Gig Services",
+    disabled: true,
   },
-  {
-    label: "Governance Votes",
-    isSelected: false,
-    isDisabled: true,
+  votes: {
+    name: "Governance Votes",
+    disabled: true,
   },
-  {
-    label: "Putted NFT to Rioters Footer",
-    isSelected: false,
-    isDisabled: true,
+  footer: {
+    name: "Putted NFT to Rioters Footer",
+    disabled: true,
   },
-  {
-    label: "Shared servers",
-    isSelected: false,
-    isDisabled: true,
+  servers: {
+    name: "Shared servers",
+    disabled: true,
   },
-];
+};
 
 const SelectedTabContent: React.FC<{
   metadata: any;
-  selectedTabItemLabel: string;
-}> = ({ metadata, selectedTabItemLabel }) => {
-  switch (selectedTabItemLabel) {
-    case "Social Feed":
+  selectedTab: keyof typeof screenTabItems;
+}> = ({ metadata, selectedTab }) => {
+  switch (selectedTab) {
+    case "social-feed":
       return <UPPSocialFeed />;
-    case "NFTs":
+    case "nfts":
       return <UPPNFTs userAddress={metadata?.userAddress || ""} />;
-    case "Activity":
+    case "activity":
       return <UPPActivity />;
-    case "Succeed Quests":
+    case "quests":
       return <UPPQuests userAddress={metadata?.userAddress || ""} />;
-    case "Pathwar Challenges":
+    case "pathwar":
       return <UPPPathwarChallenges />;
-    case "Gig Services":
+    case "gig":
       return <UPPGigServices />;
     default:
       return null;
@@ -91,7 +80,8 @@ const SelectedTabContent: React.FC<{
 export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   route,
 }) => {
-  const { onPressTabItem, tabItems, selectedTabItem } = useTabs(screenTabItems);
+  const [selectedTab, setSelectedTab] =
+    useState<keyof typeof screenTabItems>("nfts");
   const { loading, metadata, notFound } = useTNSMetadata(route.params.id);
 
   const { setLoadingFullScreen } = useFeedbacks();
@@ -120,8 +110,9 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
             <UPPIntro metadata={metadata} />
 
             <Tabs
-              items={tabItems}
-              onPressTabItem={onPressTabItem}
+              items={screenTabItems}
+              selected={selectedTab}
+              onSelect={setSelectedTab}
               style={{
                 marginTop: 32,
                 height: 32,
@@ -130,10 +121,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
               borderColorTabSelected={primaryColor}
             />
 
-            <SelectedTabContent
-              selectedTabItemLabel={selectedTabItem.label}
-              metadata={metadata}
-            />
+            <SelectedTabContent selectedTab={selectedTab} metadata={metadata} />
           </View>
         </View>
       )}

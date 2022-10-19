@@ -1,3 +1,4 @@
+import { Currency } from "@keplr-wallet/types";
 import React, { useMemo } from "react";
 import {
   RegisterOptions,
@@ -5,6 +6,7 @@ import {
   Control,
   Path,
   PathValue,
+  FieldValues,
 } from "react-hook-form";
 import {
   NativeSyntheticEvent,
@@ -18,10 +20,6 @@ import {
 } from "react-native";
 
 import { DEFAULT_ERRORS } from "../../utils/errors";
-import {
-  numberWithThousandsSeparator,
-  thousandSeparatedToNumber,
-} from "../../utils/numbers";
 import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -29,7 +27,7 @@ import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerColumn } from "../spacer";
 
-export interface TextInputCustomProps<T>
+export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
   iconSVG?: StyleProp<ViewStyle>;
@@ -37,7 +35,7 @@ export interface TextInputCustomProps<T>
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
   onPressEnter?: () => void;
-  onlyNumbers?: boolean;
+  currency?: Currency;
   disabled?: boolean;
   regexp?: RegExp;
   width?: number;
@@ -50,14 +48,14 @@ export interface TextInputCustomProps<T>
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
-export const TextInputCustom = <T,>({
+export const TextInputCustom = <T extends FieldValues>({
   label,
   placeHolder,
   onPressEnter,
   style,
   regexp,
   children,
-  onlyNumbers,
+  currency,
   disabled,
   squaresBackgroundColor,
   width,
@@ -98,33 +96,30 @@ export const TextInputCustom = <T,>({
     }
   }, [fieldState.error]);
 
-  // Replace the comma if number and controls
+  // custom validation
   const handleChangeText = (value: string) => {
-    if (restProps?.onChangeText) {
-      restProps.onChangeText(value);
-      return;
-    }
-    // ---- If you want only number in the TextInputCustom, we apply comma as a thousand separator
-    if (onlyNumbers) {
-      const withoutCommaValue = thousandSeparatedToNumber(value);
-      // Set value only if fully number
-      const reg = new RegExp(/^\d+$/);
+    if (currency) {
+      const reg = new RegExp(`^\\d+\\.?\\d{0,${currency.coinDecimals}}$`);
 
-      if (
-        rules?.max &&
-        parseInt(withoutCommaValue, 10) >= (rules.max as number) + 1
-      ) {
+      if (rules?.max && parseFloat(value) > rules.max) {
         return;
       }
 
-      if (reg.test(withoutCommaValue) || !value) {
-        field.onChange(numberWithThousandsSeparator(withoutCommaValue));
+      if (reg.test(value) || !value) {
+        field.onChange(value);
+        if (restProps?.onChangeText) {
+          restProps.onChangeText(value);
+          return;
+        }
       }
       return;
     }
-    // ---- Apply onChange respecting the regexp (Allow empty string)
+
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
       field.onChange(value);
+      if (restProps?.onChangeText) {
+        restProps.onChangeText(value);
+      }
     }
   };
 

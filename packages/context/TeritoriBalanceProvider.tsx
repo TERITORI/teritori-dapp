@@ -1,5 +1,7 @@
+import { Decimal } from "@cosmjs/math";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
+import { useRefresh } from "../hooks/useRefresh";
 import { prettyPrice } from "../utils/coins";
 import { Network } from "../utils/network";
 import { getUtoriBalance, toriCurrency } from "../utils/teritori";
@@ -8,12 +10,12 @@ import { useWallets } from "./WalletsProvider";
 const refreshInterval = 2 * 60 * 1000;
 
 type TeritoriBalanceValue = {
-  total: number;
+  total: Decimal;
   totalString: string;
 };
 
 const initialValue = {
-  total: 0,
+  total: Decimal.fromAtomics("0", toriCurrency.coinDecimals),
   totalString: "? TORI",
 };
 
@@ -22,7 +24,7 @@ const teritoriBalanceContext =
 
 export const TeritoriBalanceProvider: React.FC = ({ children }) => {
   const [value, setValue] = useState<TeritoriBalanceValue>(initialValue);
-  const [refreshIndex, setRefreshIndex] = useState(0);
+  const [refresh, refreshIndex] = useRefresh();
 
   const { wallets } = useWallets();
 
@@ -44,19 +46,22 @@ export const TeritoriBalanceProvider: React.FC = ({ children }) => {
                 wallet.publicKey,
                 err
               );
-              return 0;
+              return Decimal.fromAtomics("0", toriCurrency.coinDecimals);
             }
           })
       );
-      const total = balances.reduce((total, balance) => total + balance, 0);
+      const total = balances.reduce(
+        (total, balance) => total.plus(balance),
+        Decimal.fromAtomics("0", toriCurrency.coinDecimals)
+      );
       if (cancelled) {
         return;
       }
       setValue({
         total,
-        totalString: prettyPrice(`${total}`, toriCurrency.coinMinimalDenom),
+        totalString: prettyPrice(total.atomics, toriCurrency.coinMinimalDenom),
       });
-      setTimeout(() => setRefreshIndex((index) => index + 1), refreshInterval);
+      setTimeout(refresh, refreshInterval);
     };
     effect();
     return () => {

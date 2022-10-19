@@ -1,10 +1,15 @@
-export type StakeType = {
+export type ValidatorInfo = {
   rank: string;
-  name: string;
+  moniker: string;
+  imageURL: string;
   votingPower: string;
   commission: string;
   description: string;
   website: string;
+  identity: string;
+  status: string;
+  address: string;
+  jailed: boolean;
 };
 
 export type StakeFormValuesType = {

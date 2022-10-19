@@ -17,7 +17,7 @@ export const fakeNews: News[] = [
     button2Action: () => {},
   },
   {
-    title: "BOOK YOUR HANDLE\n" + "Check out Teritori Name Service",
+    title: "BOOK YOUR HANDLE\nCheck out Teritori Name Service",
     text:
       "Teritori Name Service is a way for you to affirm your identity as a Teritorian. TNS are NFTs that can be used throughout the Teritori dApp and of course you can also sell them on the Marketplace.\n" +
       "\n" +
@@ -27,7 +27,7 @@ export const fakeNews: News[] = [
     button1Action: () => {},
   },
   {
-    title: "NEW PLANET, NEW RULES, NEW WAYS\n" + "Introducing the ToriPunks",
+    title: "NEW PLANET, NEW RULES, NEW WAYS\nIntroducing the ToriPunks",
     text:
       "The ToriPunks are invading Teritori and the least we can say is that they did not come empty-handed.\n" +
       "\n" +

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { numberWithThousandsSeparator } from "../../../utils/numbers";
+import { toriCurrency } from "../../../utils/teritori";
 import { SendFundFormType } from "../../../utils/types/tns";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
@@ -40,10 +41,10 @@ export const SendFundModal: React.FC<{
           <TextInputCustom<SendFundFormType>
             name="amount"
             label="TORI AMOUNT ?"
-            value={numberWithThousandsSeparator(amount)}
+            value={amount}
             placeHolder="Type your amount here"
             onChangeText={setAmount}
-            onlyNumbers
+            currency={toriCurrency}
             style={{ marginRight: 12, minWidth: 0 }}
             width={322}
           />

@@ -5,6 +5,7 @@ import {
   Exo_700Bold,
 } from "@expo-google-fonts/exo";
 import { NavigationContainer } from "@react-navigation/native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
@@ -25,6 +26,8 @@ import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
+const queryClient = new QueryClient();
+
 export default function App() {
   const methods = useForm();
   const [fontsLoaded] = useFonts({
@@ -39,32 +42,34 @@ export default function App() {
   }
 
   return (
-    <FormProvider {...methods}>
-      <NavigationContainer linking={linking}>
-        <SafeAreaProvider>
-          <ReduxProvider store={store}>
-            <DisclaimerPopup />
-            <FeedbacksContextProvider>
-              <DropdownsContextProvider>
-                <WalletsProvider>
-                  <SolanaBalanceProvider>
-                    <TeritoriBalanceProvider>
-                      <SolanaOwnedNFTsProvider>
-                        <TNSContextProvider>
-                          <SidebarContextProvider>
-                            <StatusBar style="inverted" />
-                            <Navigator />
-                          </SidebarContextProvider>
-                        </TNSContextProvider>
-                      </SolanaOwnedNFTsProvider>
-                    </TeritoriBalanceProvider>
-                  </SolanaBalanceProvider>
-                </WalletsProvider>
-              </DropdownsContextProvider>
-            </FeedbacksContextProvider>
-          </ReduxProvider>
-        </SafeAreaProvider>
-      </NavigationContainer>
-    </FormProvider>
+    <QueryClientProvider client={queryClient}>
+      <FormProvider {...methods}>
+        <NavigationContainer linking={linking}>
+          <SafeAreaProvider>
+            <ReduxProvider store={store}>
+              <DisclaimerPopup />
+              <FeedbacksContextProvider>
+                <DropdownsContextProvider>
+                  <WalletsProvider>
+                    <SolanaBalanceProvider>
+                      <TeritoriBalanceProvider>
+                        <SolanaOwnedNFTsProvider>
+                          <TNSContextProvider>
+                            <SidebarContextProvider>
+                              <StatusBar style="inverted" />
+                              <Navigator />
+                            </SidebarContextProvider>
+                          </TNSContextProvider>
+                        </SolanaOwnedNFTsProvider>
+                      </TeritoriBalanceProvider>
+                    </SolanaBalanceProvider>
+                  </WalletsProvider>
+                </DropdownsContextProvider>
+              </FeedbacksContextProvider>
+            </ReduxProvider>
+          </SafeAreaProvider>
+        </NavigationContainer>
+      </FormProvider>
+    </QueryClientProvider>
   );
 }

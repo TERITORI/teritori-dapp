@@ -46,7 +46,13 @@ export const getUtoriBalance = async (address: string) => {
   const cosmosBalances = await getCosmosBalances(address);
   return cosmosBalances.balances
     .filter((balance) => balance.denom === toriDenom)
-    .reduce((total, balance) => total + parseInt(balance.amount, 10), 0);
+    .reduce(
+      (total, balance) =>
+        total.plus(
+          Decimal.fromAtomics(balance.amount, toriCurrency.coinDecimals)
+        ),
+      Decimal.fromAtomics("0", toriCurrency.coinDecimals)
+    );
 };
 
 export const toriCurrency: Currency = {

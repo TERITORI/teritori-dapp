@@ -3,13 +3,14 @@ import { StyleSheet, View } from "react-native";
 
 import { Avatar } from "../../../components/Avatar";
 import { BrandText } from "../../../components/BrandText";
+import { ExternalLink } from "../../../components/ExternalLink";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { GradientText } from "../../../components/gradientText";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { TEMP_IMAGE } from "../../../utils/faking";
+import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
 import { neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold14,
@@ -17,13 +18,15 @@ import {
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { StakeType } from "../types";
+import { ValidatorInfo } from "../types";
 
 interface StakeDetailModalProps {
   onClose?: () => void;
   visible?: boolean;
-  data?: StakeType;
+  data?: ValidatorInfo;
   onPressDelegate?: () => void;
+  onPressUndelegate?: () => void;
+  onPressRedelegate?: () => void;
 }
 
 export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
@@ -31,16 +34,19 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
   visible,
   data,
   onPressDelegate,
+  onPressUndelegate,
+  onPressRedelegate,
 }) => {
+  const imageURL = useKeybaseAvatarURL(data?.identity || "");
   // returns
   const Header = useCallback(
     () => (
       <>
         <View style={styles.rowWithCenter}>
-          <Avatar size="medium" uri={TEMP_IMAGE} />
+          <Avatar size="medium" uri={imageURL || ""} />
           <SpacerRow size={2} />
           <View>
-            <BrandText style={fontSemibold20}>{data?.name}</BrandText>
+            <BrandText style={fontSemibold20}>{data?.moniker}</BrandText>
             <SpacerColumn size={0.5} />
             <View style={styles.rowWithCenter}>
               <BrandText style={[styles.alternateText, fontSemibold16]}>
@@ -53,7 +59,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
         </View>
       </>
     ),
-    [data]
+    [data, imageURL]
   );
 
   const Footer = useCallback(
@@ -63,9 +69,17 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
         <View style={styles.footerRow}>
           <PrimaryButton size="SM" text="Close" onPress={onClose} />
           <SpacerRow size={2} />
-          <SecondaryButton size="SM" text="Undelegate" />
+          <SecondaryButton
+            size="SM"
+            text="Undelegate"
+            onPress={onPressUndelegate}
+          />
           <SpacerRow size={2} />
-          <SecondaryButton size="SM" text="Redelegate" />
+          <SecondaryButton
+            size="SM"
+            text="Redelegate"
+            onPress={onPressRedelegate}
+          />
           <SpacerRow size={2} />
           <SecondaryButton
             size="SM"
@@ -90,17 +104,23 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
       <View style={styles.container}>
         <Separator />
         <SpacerColumn size={2.5} />
-        <BrandText style={[styles.alternateText, fontSemibold14]}>
-          Website
-        </BrandText>
-        <SpacerColumn size={0.5} />
-        <BrandText style={fontSemibold16}>{data?.website}</BrandText>
-        <SpacerColumn size={2.5} />
+        {!!data?.website && (
+          <>
+            <BrandText style={[styles.alternateText, fontSemibold14]}>
+              Website
+            </BrandText>
+            <SpacerColumn size={0.5} />
+            <ExternalLink externalUrl={data.website} style={fontSemibold16}>
+              {data.website}
+            </ExternalLink>
+            <SpacerColumn size={2.5} />
+          </>
+        )}
         <BrandText style={[styles.alternateText, fontSemibold14]}>
           Description
         </BrandText>
         <SpacerColumn size={0.5} />
-        <BrandText style={fontSemibold16}>{data?.description}</BrandText>
+        <BrandText style={fontSemibold16}>{data?.description || ""}</BrandText>
         <SpacerColumn size={2.5} />
       </View>
     </ModalBase>
