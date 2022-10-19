@@ -51,12 +51,12 @@ export const Tabs: React.FC<{
   style?: StyleProp<ViewStyle>;
   tabStyle?: ViewStyle;
 }> = ({
-        items,
-        borderColorTabSelected = "#FFFFFF",
-        onPressTabItem,
-        style,
-        tabStyle,
-      }) => {
+  items,
+  borderColorTabSelected = "#FFFFFF",
+  onPressTabItem,
+  style,
+  tabStyle,
+}) => {
   // returns
   return (
     <View
@@ -96,7 +96,9 @@ export const Tabs: React.FC<{
                 { lineHeight: 14 },
                 item.isDisabled && { color: neutral77 },
               ]}
-            >              {item.label}
+            >
+              {" "}
+              {item.label}
             </BrandText>
 
             {item.badgeCount && <SpacerRow size={1} />}

@@ -81,9 +81,9 @@ const UserNFTs: React.FC<{ id: string; numColumns: number }> = ({
 };
 
 const SelectedTabContent: React.FC<{
-  userId: string;
+  userAddress: string;
   selectedTabItemLabel: string;
-}> = React.memo(({ userId, selectedTabItemLabel }) => {
+}> = React.memo(({ userAddress, selectedTabItemLabel }) => {
   const [viewWidth, setViewWidth] = useState(0);
   const numColumns = Math.floor(viewWidth / nftWidth);
 
@@ -96,7 +96,9 @@ const SelectedTabContent: React.FC<{
     case "Collected":
       return (
         <View style={viewStyle} onLayout={handleViewLayout}>
-          {viewWidth ? <UserNFTs id={userId} numColumns={numColumns} /> : null}
+          {viewWidth ? (
+            <UserNFTs id={userAddress} numColumns={numColumns} />
+          ) : null}
         </View>
       );
     case "Created":
@@ -108,7 +110,7 @@ const SelectedTabContent: React.FC<{
   }
 });
 
-export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
+export const UPPNFTs: React.FC<{ userAddress: string }> = ({ userAddress }) => {
   const { onPressTabItem, tabItems, selectedTabItem } = useTabs(tabItemsNFTs);
 
   return (
@@ -128,11 +130,11 @@ export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
         />
       </View>
 
-      {userId && (
+      {userAddress && (
         <SelectedTabContent
           selectedTabItemLabel={selectedTabItem.label}
-          userId={userId}
-          key={userId}
+          userAddress={userAddress}
+          key={userAddress}
         />
       )}
     </>

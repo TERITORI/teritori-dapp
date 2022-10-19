@@ -12,7 +12,6 @@ export const Header: React.FC<{
   smallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ smallMargin, children, style }) => {
-
   return (
     <View
       style={[
