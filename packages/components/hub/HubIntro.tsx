@@ -60,7 +60,7 @@ const ConnectedIntro: React.FC = () => {
 
       <Section title="Quests" subtitle="6">
         <FullWidthSeparator />
-        <Quests userAddress={selectedWallet?.publicKey} />
+        <Quests userId={`tori-${selectedWallet?.publicKey}`} />
       </Section>
 
       <Section title="Wallets manager">

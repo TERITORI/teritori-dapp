@@ -4,10 +4,9 @@ import { View } from "react-native";
 import { Quest } from "../api/marketplace/v1/marketplace";
 import { backendClient } from "../utils/backend";
 import { QuestCard } from "./cards/QuestCard";
-
 export const Quests: React.FC<{
-  userAddress?: string;
-}> = ({ userAddress }) => {
+  userId?: string;
+}> = ({ userId }) => {
   const [quests, setQuests] = useState<Quest[]>([]);
 
   useEffect(() => {
@@ -15,7 +14,7 @@ export const Quests: React.FC<{
     const stream = backendClient.Quests({
       limit: 100,
       offset: 0,
-      userId: `tori-${userAddress}`,
+      userId,
     });
     stream.forEach(({ quest }) => {
       if (!quest) {
@@ -23,7 +22,7 @@ export const Quests: React.FC<{
       }
       setQuests((qs) => [...qs, quest]);
     });
-  }, [userAddress]);
+  }, [userId]);
 
   const questCardStyle = {
     marginTop: 20,

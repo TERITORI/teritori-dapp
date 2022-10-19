@@ -42,7 +42,7 @@ export const useTNSMetadata = (id: string) => {
         const { owner } = await tnsClient.ownerOf({
           tokenId: aliasResponse.username,
         });
-        nftInfo.extension.userAddress = owner;
+        nftInfo.extension.userId = owner;
         setNotFound(false);
         return nftInfo.extension;
       } catch {

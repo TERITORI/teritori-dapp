@@ -63,11 +63,11 @@ const SelectedTabContent: React.FC<{
     case "social-feed":
       return <UPPSocialFeed />;
     case "nfts":
-      return <UPPNFTs userAddress={metadata?.userAddress || ""} />;
+      return <UPPNFTs userId={metadata?.userId || ""} />;
     case "activity":
       return <UPPActivity />;
     case "quests":
-      return <UPPQuests userAddress={metadata?.userAddress || ""} />;
+      return <UPPQuests userId={metadata?.userId || ""} />;
     case "pathwar":
       return <UPPPathwarChallenges />;
     case "gig":

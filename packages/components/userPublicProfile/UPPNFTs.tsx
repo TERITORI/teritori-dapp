@@ -17,15 +17,15 @@ const tabItemsNFTs = {
 const nftWidth = 268;
 
 const SelectedTabContent: React.FC<{
-  userAddress: string;
+  userId: string;
   selectedTab: keyof typeof tabItemsNFTs;
-}> = React.memo(({ userAddress, selectedTab }) => {
+}> = React.memo(({ userId, selectedTab }) => {
   const { width } = useMaxResolution();
   const numColumns = Math.floor(width / nftWidth);
 
   const nftsRequest: NFTsRequest = {
     collectionId: "",
-    ownerId: `tori-${userAddress}`,
+    ownerId: userId,
     limit: alignDown(20, numColumns) || numColumns,
     offset: 0,
   };
@@ -48,7 +48,7 @@ const SelectedTabContent: React.FC<{
   }
 });
 
-export const UPPNFTs: React.FC<{ userAddress: string }> = ({ userAddress }) => {
+export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof tabItemsNFTs>("collected");
 
@@ -70,11 +70,11 @@ export const UPPNFTs: React.FC<{ userAddress: string }> = ({ userAddress }) => {
         />
       </View>
 
-      {userAddress && (
+      {userId && (
         <SelectedTabContent
           selectedTab={selectedTab}
-          userAddress={userAddress}
-          key={userAddress}
+          userId={userId}
+          key={userId}
         />
       )}
     </>
