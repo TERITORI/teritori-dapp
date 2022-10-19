@@ -84,7 +84,6 @@ export const TextInputCustom = <T extends FieldValues>({
     name,
     control,
     rules,
-    defaultValue,
   });
 
   const error = useMemo(() => {
