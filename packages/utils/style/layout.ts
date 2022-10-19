@@ -11,6 +11,9 @@ export const fullSidebarWidth = 210;
 
 export const layout = {
   padding_x1: 8,
+  get padding_x0_25() {
+    return this.padding_x1 * 0.25; // 4
+  },
   get padding_x0_5() {
     return this.padding_x1 * 0.5; // 4
   },
