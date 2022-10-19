@@ -5,11 +5,13 @@ import { neutral33 } from "../utils/style/colors";
 import {
   headerHeight,
   screenContainerContentMarginHorizontal,
+  screenContainerContentMarginHorizontalSmall,
 } from "../utils/style/layout";
 
 export const Header: React.FC<{
+  smallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ children, style }) => {
+}> = ({ smallMargin, children, style }) => {
   return (
     <View
       style={[
@@ -33,7 +35,9 @@ export const Header: React.FC<{
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: screenContainerContentMarginHorizontal,
+          marginLeft: smallMargin
+            ? screenContainerContentMarginHorizontalSmall
+            : screenContainerContentMarginHorizontal,
         }}
       >
         <>{children}</>

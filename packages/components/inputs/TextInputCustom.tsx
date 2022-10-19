@@ -32,6 +32,7 @@ import { SpacerColumn } from "../spacer";
 export interface TextInputCustomProps<T>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
+  iconSVG?: StyleProp<ViewStyle>;
   placeHolder?: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;

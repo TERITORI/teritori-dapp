@@ -2,7 +2,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 
-import { neutral11, neutral33, neutral44 } from "../../utils/style/colors";
+import {
+  neutral11,
+  neutral33,
+  neutral44,
+  withAlpha,
+} from "../../utils/style/colors";
 
 export const TertiaryBox: React.FC<{
   width?: number;
@@ -13,6 +18,7 @@ export const TertiaryBox: React.FC<{
   hasGradientBackground?: boolean;
   style?: StyleProp<ViewStyle>;
   mainContainerStyle?: StyleProp<ViewStyle>;
+  noBrokenCorners?: boolean;
 }> = ({
   width,
   height,
@@ -23,6 +29,7 @@ export const TertiaryBox: React.FC<{
   hasGradientBackground = false,
   style,
   mainContainerStyle,
+  noBrokenCorners,
 }) => {
   const flatMainContainerStyle = mainContainerStyle
     ? StyleSheet.flatten(mainContainerStyle)
@@ -76,42 +83,51 @@ export const TertiaryBox: React.FC<{
                   borderRadius: borderRadius - 1,
                   zIndex: -1,
                 }}
-                colors={["#9C4CEA", "#336AFF", "#26C5FB"]}
+                colors={[
+                  withAlpha("#9C4CEA", 0.5),
+                  withAlpha("#336AFF", 0.5),
+                  withAlpha("#26C5FB", 0.5),
+                ]}
               />
             ) : null}
             <>{children}</>
           </View>
 
-          {/* Left top broken corner */}
-          <View
-            style={{
-              width: 8,
-              height: 18,
-              left: 0,
-              top: -5,
-              backgroundColor: squaresBackgroundColor,
-              borderRightColor: borderColor,
-              borderRightWidth: 1,
-              transform: [{ rotate: "45deg" }],
-              position: "absolute",
-              zIndex: 2,
-            }}
-          />
-          {/* Right bottom broken corner */}
-          <View
-            style={{
-              width: 8,
-              height: 18,
-              right: 0,
-              bottom: -5,
-              transform: [{ rotate: "225deg" }],
-              backgroundColor: squaresBackgroundColor,
-              borderRightColor: borderColor,
-              borderRightWidth: 1,
-              position: "absolute",
-              zIndex: 2,
-            }}
-          />
+          {!noBrokenCorners && (
+            <>
+              {/* Left top broken corner */}
+              <View
+                style={{
+                  width: 8,
+                  height: 18,
+                  left: 0,
+                  top: -5,
+                  backgroundColor: squaresBackgroundColor,
+                  borderRightColor: borderColor,
+                  borderRightWidth: 1,
+                  transform: [{ rotate: "45deg" }],
+                  position: "absolute",
+                  zIndex: 2,
+                }}
+              />
+
+              {/* Right bottom broken corner */}
+              <View
+                style={{
+                  width: 8,
+                  height: 18,
+                  right: 0,
+                  bottom: -5,
+                  transform: [{ rotate: "225deg" }],
+                  backgroundColor: squaresBackgroundColor,
+                  borderRightColor: borderColor,
+                  borderRightWidth: 1,
+                  position: "absolute",
+                  zIndex: 2,
+                }}
+              />
+            </>
+          )}
         </View>
       </View>
     </View>

@@ -3,6 +3,7 @@ import {
   NativeSyntheticEvent,
   NativeTouchEvent,
   Pressable,
+  StyleSheet,
 } from "react-native";
 
 interface DefaultValue {
@@ -56,14 +57,15 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
         closeOpenedDropdown,
       }}
     >
-      <Pressable
-        onPressOut={(e) => onPressOut(e)}
-        style={{ height: "100%", width: "100%" }}
-      >
+      <Pressable onPressOut={(e) => onPressOut(e)} style={styles.pressable}>
         {children}
       </Pressable>
     </DropdownsContext.Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  pressable: { height: "100%", width: "100%", cursor: "unset" },
+});
 
 export const useDropdowns = () => useContext(DropdownsContext);

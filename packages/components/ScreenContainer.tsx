@@ -20,6 +20,7 @@ import {
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
+  screenContainerContentMarginHorizontalSmall,
   walletSelectorWidth,
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
@@ -39,6 +40,7 @@ export const ScreenContainer: React.FC<{
   customSidebar?: React.ReactNode;
   noMargin?: boolean;
   noScroll?: boolean;
+  smallMargin?: boolean;
 }> = ({
   children,
   headerChildren,
@@ -47,15 +49,23 @@ export const ScreenContainer: React.FC<{
   hideSidebar,
   noMargin,
   noScroll,
+  smallMargin,
   customSidebar,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
-  const marginStyle = hasMargin && {
-    marginHorizontal: screenContainerContentMarginHorizontal,
-  };
+  const marginStyle =
+    hasMargin && !smallMargin
+      ? {
+          marginHorizontal: screenContainerContentMarginHorizontal,
+        }
+      : hasMargin && smallMargin
+      ? {
+          marginHorizontal: screenContainerContentMarginHorizontalSmall,
+        }
+      : undefined;
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
   const areThereWallets = useAreThereWallets();
   const navigation = useAppNavigation();
@@ -80,7 +90,9 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header style={headerStyle}>{headerChildren}</Header>
+          <Header style={headerStyle} smallMargin={smallMargin}>
+            {headerChildren}
+          </Header>
 
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
@@ -112,8 +124,8 @@ export const ScreenContainer: React.FC<{
               )}
             </View>
           </View>
-          {/* 
-            We render the wallet selector here with absolute position to make sure 
+          {/*
+            We render the wallet selector here with absolute position to make sure
             the popup is on top of everything else, otherwise it's unusable
           */}
           <View

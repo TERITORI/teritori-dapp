@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import chevronUpSVG from "../../../assets/icons/chevron-down.svg";
 import chevronDownSVG from "../../../assets/icons/chevron-up.svg";
@@ -10,32 +10,37 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
-// TODO: Continue that (Props, dropdown menu, etc...)
-
-export const SortButton: React.FC = () => {
+export const SortButton: React.FC<{
+  style?: StyleProp<ViewStyle>;
+}> = ({ style }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const handlePress = () => {
     setIsExpanded(!isExpanded);
   };
 
   return (
-    <TouchableOpacity onPress={handlePress}>
+    <TouchableOpacity onPress={handlePress} style={style}>
       <TertiaryBox
+        fullWidth
         mainContainerStyle={{
           borderColor: "#FFFFFF",
           paddingHorizontal: 13,
           flexDirection: "row",
+          justifyContent: "space-between",
           backgroundColor: neutral11,
         }}
         height={48}
       >
-        <SVG
-          source={sortSVG}
-          height={16}
-          width={16}
-          style={{ marginRight: 8 }}
-        />
-        <BrandText style={fontSemibold14}>Price Descending</BrandText>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <SVG
+            source={sortSVG}
+            height={16}
+            width={16}
+            style={{ marginRight: 8 }}
+          />
+          <BrandText style={fontSemibold14}>Price Descending</BrandText>
+        </View>
+
         <SVG
           source={isExpanded ? chevronUpSVG : chevronDownSVG}
           height={16}

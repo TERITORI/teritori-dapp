@@ -7,7 +7,9 @@ import { backendClient } from "../utils/backend";
 import { Network } from "../utils/network";
 import { QuestCard } from "./cards/QuestCard";
 
-export const Quests: React.FC = () => {
+export const Quests: React.FC<{
+  userAddress?: string;
+}> = ({ userAddress }) => {
   const selectedWallet = useSelectedWallet();
   const [quests, setQuests] = useState<Quest[]>([]);
 
@@ -22,7 +24,9 @@ export const Quests: React.FC = () => {
     const stream = backendClient.Quests({
       limit: 100,
       offset: 0,
-      userId: `tori-${selectedWallet?.publicKey}`,
+      userId: userAddress
+        ? `tori-${userAddress}`
+        : `tori-${selectedWallet?.publicKey}`,
     });
     stream.forEach(({ quest }) => {
       if (!quest) {
