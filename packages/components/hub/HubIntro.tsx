@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image } from "react-native";
 
 import connectedImagePNG from "../../../assets/default-images/connected-image-bad.png";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { Overview } from "../../screens/WalletManager/Overview/Overview";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
 import { useAppNavigation } from "../../utils/navigation";
+import { Network } from "../../utils/network";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { FullWidthSeparator } from "../FullWidthSeparator";
@@ -31,6 +33,16 @@ const ConnectedIntro: React.FC = () => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof walletsManagerTabItems>("overview");
 
+  const selectedWallet = useSelectedWallet();
+
+  useEffect(() => {
+    if (
+      !selectedWallet?.publicKey ||
+      selectedWallet?.network !== Network.Teritori
+    ) {
+    }
+  }, [selectedWallet?.publicKey, selectedWallet?.network]);
+
   return (
     <View
       style={{
@@ -48,7 +60,7 @@ const ConnectedIntro: React.FC = () => {
 
       <Section title="Quests" subtitle="6">
         <FullWidthSeparator />
-        <Quests />
+        <Quests userAddress={selectedWallet?.publicKey} />
       </Section>
 
       <Section title="Wallets manager">

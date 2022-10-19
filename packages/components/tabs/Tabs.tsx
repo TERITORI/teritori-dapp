@@ -70,9 +70,15 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                 height: 24,
               }}
             >
-              <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
-                {item.name}
-              </BrandText>
+              <BrandText
+                style={[
+                  fontSemibold14,
+                  { lineHeight: 14 },
+                  item.isDisabled && { color: neutral77 },
+                ]}
+              >
+              {item.name}
+            </BrandText>
 
               {item.badgeCount && <SpacerRow size={1} />}
               {item.badgeCount ? (

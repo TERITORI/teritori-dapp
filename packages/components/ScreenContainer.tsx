@@ -20,7 +20,6 @@ import {
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
-  screenContainerContentMarginHorizontalSmall,
   walletSelectorWidth,
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
@@ -58,16 +57,9 @@ export const ScreenContainer: React.FC<{
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
-  const marginStyle =
-    hasMargin && !smallMargin
-      ? {
-          marginHorizontal: screenContainerContentMarginHorizontal,
-        }
-      : hasMargin && smallMargin
-      ? {
-          marginHorizontal: screenContainerContentMarginHorizontalSmall,
-        }
-      : undefined;
+  const marginStyle = hasMargin && {
+    marginHorizontal: screenContainerContentMarginHorizontal,
+  };
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
   const areThereWallets = useAreThereWallets();

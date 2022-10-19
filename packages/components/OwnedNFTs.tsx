@@ -11,9 +11,9 @@ import { protobufNetworkToNetwork } from "../utils/network";
 import { neutral77 } from "../utils/style/colors";
 import { fontMedium13 } from "../utils/style/fonts";
 import { BrandText } from "./BrandText";
-import { NFTView } from "./NFTView";
 import { Section } from "./Section";
 import { NetworkIcon } from "./images/NetworkIcon";
+import { NFTView } from "./nfts/NFTView";
 
 const gridHalfGutter = 12;
 
