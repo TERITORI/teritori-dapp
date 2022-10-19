@@ -18,6 +18,6 @@ func TeritoriUserID(address string) UserID {
 	return UserID(fmt.Sprintf("%s-%s", marketplacepb.Network_NETWORK_TERITORI.Prefix(), address))
 }
 
-func TeritoriActiviyID(msgID string) string {
-	return fmt.Sprintf("%s-%s", marketplacepb.Network_NETWORK_TERITORI.Prefix(), msgID)
+func TeritoriActiviyID(txHash string, messageIndex int) string {
+	return fmt.Sprintf("%s-%s-%d", marketplacepb.Network_NETWORK_TERITORI.Prefix(), txHash, messageIndex)
 }

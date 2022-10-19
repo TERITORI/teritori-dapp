@@ -7,7 +7,7 @@ type Quest struct {
 
 type QuestCompletion struct {
 	QuestID string `gorm:"primaryKey"`
-	UserID  string `gorm:"primaryKey"`
+	UserID  UserID `gorm:"primaryKey"`
 
 	Quest     *Quest
 	Completed bool

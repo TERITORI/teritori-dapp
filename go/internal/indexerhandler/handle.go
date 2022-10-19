@@ -129,19 +129,27 @@ func (h *Handler) handleInstantiate(e *Message) error {
 	return nil
 }
 
+type ExecutePayload map[string]json.RawMessage
+
 func (h *Handler) handleExecute(e *Message) error {
 	var executeMsg wasmtypes.MsgExecuteContract
 	if err := cosmosproto.Unmarshal(e.Msg.Value, &executeMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal instantiate msg")
+		return errors.Wrap(err, "failed to unmarshal execute msg")
 	}
 
-	// FIXME: replace by exec message analysis
-
-	wasmActions := e.Events["wasm.action"]
-	if len(wasmActions) == 0 {
-		return errors.New("no wasm action")
+	var payload ExecutePayload
+	if err := json.Unmarshal(executeMsg.Msg, &payload); err != nil {
+		h.logger.Error("failed to unmarshal execute payload", zap.Error(err))
+		return nil
 	}
-	wasmAction := wasmActions[0]
+	if len(payload) != 1 {
+		h.logger.Error("unexpected execute keys count", zap.Int("count", len(payload)))
+		return nil
+	}
+	wasmAction := ""
+	for key := range payload {
+		wasmAction = key
+	}
 
 	switch wasmAction {
 	case "mint":
@@ -166,15 +174,19 @@ func (h *Handler) handleExecute(e *Message) error {
 		}
 	case "update_price":
 		if err := h.handleExecuteUpdatePrice(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle burn")
+			return errors.Wrap(err, "failed to handle update_price")
 		}
 	case "update_metadata":
 		if err := h.handleExecuteUpdateMetadata(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle burn")
+			return errors.Wrap(err, "failed to handle update_metadata")
 		}
-	case "update_preferred_alias":
+	case "update_primary_alias":
 		if err := h.handleUpdatePrimaryAlias(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to update_preferred_alias")
+			return errors.Wrap(err, "failed to handle update_primary_alias")
+		}
+	case "transfer_nft":
+		if err := h.handleExecuteTransferNFT(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle transfer")
 		}
 	}
 
@@ -197,6 +209,8 @@ func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteCon
 		spew.Dump(collection)
 		return errors.New("no teritori info in collection")
 	}
+
+	// FIXME: do message analysis instead of events
 
 	tokenIds := e.Events["wasm.token_id"]
 	if len(tokenIds) == 0 {

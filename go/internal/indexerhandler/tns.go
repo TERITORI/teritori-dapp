@@ -2,6 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -61,11 +62,7 @@ type ExecuteCW721MintMsg struct {
 }
 
 func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collection, tokenId string, execMsg *wasmtypes.MsgExecuteContract) error {
-	minters := e.Events["wasm.minter"]
-	if len(minters) == 0 {
-		return errors.New("no minters")
-	}
-	minter := minters[0]
+	minter := execMsg.Sender
 	ownerId := indexerdb.TeritoriUserID(minter)
 
 	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
@@ -102,11 +99,25 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 
 	// complete quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    string(ownerId),
+		UserID:    ownerId,
 		QuestID:   "book_tns",
 		Completed: true,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save quest completion")
+	}
+
+	// create mint activity
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		Kind: indexerdb.ActivityKindMint,
+		Time: time.Now(), // FIXME: replace by block time,
+		Mint: &indexerdb.Mint{
+			// TODO: get price
+			BuyerID: ownerId,
+		},
+		NFTID: nftId,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create mint activity")
 	}
 
 	return nil
@@ -143,6 +154,19 @@ func (h *Handler) handleExecuteUpdateMetadata(e *Message, execMsg *wasmtypes.Msg
 
 	h.logger.Info("updated tns metadata", zap.String("id", nftId))
 
+	// create activity
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		Kind: indexerdb.ActivityKindMetadataUpdate,
+		Time: time.Now(), // FIXME: replace by block time,
+		MetadataUpdate: &indexerdb.MetadataUpdate{
+			UserID: indexerdb.TeritoriUserID(execMsg.Sender),
+		},
+		NFTID: nftId,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create burn activity")
+	}
+
 	return nil
 }
 
@@ -173,6 +197,19 @@ func (h *Handler) handleUpdatePrimaryAlias(e *Message, execMsg *wasmtypes.MsgExe
 		PrimaryTNS: msg.Payload.TokenID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save user")
+	}
+
+	// create activity
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		Kind: indexerdb.ActivityKindSetAsPrimaryTNS,
+		Time: time.Now(), // FIXME: replace by block time,
+		SetAsPrimaryTNS: &indexerdb.SetAsPrimaryTNS{
+			UserID: indexerdb.TeritoriUserID(execMsg.Sender),
+		},
+		NFTID: indexerdb.TeritoriNFTID(contractAddress, msg.Payload.TokenID),
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create burn activity")
 	}
 
 	h.logger.Debug("updated primary tns", zap.String("user-id", string(userId)), zap.String("new-name", msg.Payload.TokenID))

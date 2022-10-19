@@ -3,6 +3,7 @@ package indexerhandler
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -92,7 +93,22 @@ func (h *Handler) handleExecuteMintClassic(e *Message, collection *indexerdb.Col
 		spew.Dump(nft)
 		return errors.Wrap(err, "failed to create nft in db")
 	}
-	h.logger.Info("created nft", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
+
+	// create mint activity
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		Kind: indexerdb.ActivityKindMint,
+		Time: time.Now(), // FIXME: replace by block time,
+		Mint: &indexerdb.Mint{
+			// TODO: get price
+			BuyerID: ownerId,
+		},
+		NFTID: nftId,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create mint activity")
+	}
+
+	h.logger.Info("minted nft", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
 
 	return nil
 }
