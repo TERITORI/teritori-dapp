@@ -7,6 +7,7 @@ import { BackTo } from "../../components/navigation/BackTo";
 import { NFTActivity } from "../../components/nftDetails/NFTActivity";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
 import { NFTPriceHistory } from "../../components/nftDetails/NFTPriceHistory";
+import { SpacerColumn } from "../../components/spacer";
 import { TabItem, Tabs, useTabs } from "../../components/tabs/Tabs";
 import {
   initialToastError,
@@ -255,6 +256,7 @@ const Content: React.FC<{
 
           {/*====== More from this collection */}
           {/*TODO: Fetch 4 firsts NFTs from this NFT collection*/}
+          <SpacerColumn size={6} />
         </View>
       </ScrollView>
     );

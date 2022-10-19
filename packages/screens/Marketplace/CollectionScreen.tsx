@@ -21,9 +21,9 @@ import {
   CollectionInfo,
   useCollectionInfo,
 } from "../../hooks/useCollectionInfo";
-import { useNFTs } from "../../hooks/useNFTs";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useNFTs } from "../../hooks/useNFTs";
 import { alignDown } from "../../utils/align";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";

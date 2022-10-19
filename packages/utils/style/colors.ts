@@ -11,6 +11,7 @@ export const lavenderDefault = "#AEB1FF";
 
 export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
+export const reefColor = "#D2FFAE";
 
 export const neutral00 = "#000000";
 export const white = "#FFFFFF";

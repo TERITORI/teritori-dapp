@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TextStyle } from "react-native";
 
 import { codGrayColor, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
@@ -10,9 +10,10 @@ export type TableRowHeading = { label: string; flex: number };
 
 interface TableRowProps {
   headings: TableRowHeading[];
+  labelStyle?: TextStyle;
 }
 
-export const TableRow: React.FC<TableRowProps> = ({ headings }) => {
+export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
   return (
     <View style={styles.row}>
       {headings.map(({ label, flex }, index) => (
@@ -25,6 +26,7 @@ export const TableRow: React.FC<TableRowProps> = ({ headings }) => {
               paddingRight:
                 headings.length - 1 === index ? 0 : layout.padding_x1,
             },
+            labelStyle,
           ]}
         >
           {label}
@@ -51,7 +53,6 @@ const styles = StyleSheet.create({
     {
       color: secondaryColor,
       opacity: 0.4,
-      textTransform: "uppercase",
     },
   ]),
 });

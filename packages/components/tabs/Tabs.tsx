@@ -48,7 +48,15 @@ export const Tabs: React.FC<{
   borderColorTabSelected?: string;
   onPressTabItem: (item: TabItem) => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ items, borderColorTabSelected = "#FFFFFF", onPressTabItem, style }) => {
+  tabStyle?: ViewStyle;
+}> = ({
+  items,
+  borderColorTabSelected = "#FFFFFF",
+  onPressTabItem,
+  style,
+  tabStyle,
+}) => {
+  // returns
   return (
     <View
       style={[
@@ -56,6 +64,7 @@ export const Tabs: React.FC<{
           width: "100%",
           flexDirection: "row",
           borderBottomColor: neutral33,
+          alignItems: "center",
           borderBottomWidth: 1,
         },
         style,
@@ -64,13 +73,17 @@ export const Tabs: React.FC<{
       {items.map((item, index) => (
         <TouchableOpacity key={index} onPress={() => onPressTabItem(item)}>
           <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginRight: index !== items.length - 1 ? layout.padding_x3 : 0,
-              height: 24,
-            }}
+            style={[
+              {
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginRight: index !== items.length - 1 ? layout.padding_x3 : 0,
+                height: 40,
+                paddingBottom: layout.padding_x2,
+              },
+              tabStyle,
+            ]}
           >
             <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
               {item.label}
@@ -88,15 +101,15 @@ export const Tabs: React.FC<{
                 <TertiaryBadge size="SM" label={item.badgeCount} />
               )
             ) : null}
+            {item.isSelected && (
+              <View
+                style={[
+                  styles.selectedBorder,
+                  { backgroundColor: borderColorTabSelected },
+                ]}
+              />
+            )}
           </View>
-          {item.isSelected && (
-            <View
-              style={[
-                styles.selectedBorder,
-                { backgroundColor: borderColorTabSelected },
-              ]}
-            />
-          )}
         </TouchableOpacity>
       ))}
     </View>

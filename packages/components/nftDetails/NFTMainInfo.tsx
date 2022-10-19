@@ -1,6 +1,6 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import React from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import guardian1PNG from "../../../assets/default-images/guardian_1.png";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
@@ -11,6 +11,7 @@ import {
   fontSemibold14,
   fontSemibold28,
 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -24,6 +25,8 @@ import {
 } from "../modals/transaction/TransactionModals";
 import { TabItem, Tabs, useTabs } from "../tabs/Tabs";
 import { NFTAttributes } from "./NFTAttributes";
+import { CollapsableActivities } from "./components/CollapsableActivities";
+import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";
 
 const mainInfoTabItems: TabItem[] = [
   {
@@ -56,7 +59,7 @@ export const NFTMainInfo: React.FC<{
     switch (selectedTabItem.label) {
       case "About":
         return (
-          <View style={{ width: 600 }}>
+          <View style={styles.sectionContainer}>
             <BrandText
               style={[fontSemibold14, { marginBottom: 24, width: "100%" }]}
             >
@@ -66,13 +69,13 @@ export const NFTMainInfo: React.FC<{
         );
       case "Attributes":
         return (
-          <View style={{ width: 600 }}>
+          <View style={styles.sectionContainer}>
             <NFTAttributes nftAttributes={nftInfo?.attributes} />
           </View>
         );
       case "Details":
         return (
-          <View style={{ width: 600 }}>
+          <View style={styles.sectionContainer}>
             <View
               style={{
                 flexDirection: "row",
@@ -187,11 +190,17 @@ export const NFTMainInfo: React.FC<{
           onPressTabItem={onPressTabItem}
           items={tabItems}
           borderColorTabSelected={primaryColor}
-          style={{ height: 26, marginBottom: 16 }}
+          tabStyle={{ paddingBottom: layout.padding_x1, height: 24 }}
         />
         {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
         {/*TODO: About  = Big text*/}
         <SelectedTabItemRendering />
+      </View>
+      <View style={styles.collapsableContainer}>
+        <CollapsablePiceHistory />
+      </View>
+      <View style={styles.collapsableContainer}>
+        <CollapsableActivities />
       </View>
 
       {/* ====== "Buy this NFT" three modals*/}
@@ -228,3 +237,14 @@ export const NFTMainInfo: React.FC<{
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  sectionContainer: {
+    width: 600,
+    paddingVertical: layout.padding_x3,
+  },
+  collapsableContainer: {
+    width: "100%",
+    marginBottom: layout.padding_x2,
+  },
+});

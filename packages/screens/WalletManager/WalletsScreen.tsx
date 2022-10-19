@@ -72,7 +72,11 @@ const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
             </BrandText>
           </View>
 
-          <SVG source={isExpanded ? chevronUpSVG : chevronDownSVG} />
+          <SVG
+            source={isExpanded ? chevronUpSVG : chevronDownSVG}
+            width={16}
+            height={16}
+          />
         </TertiaryBox>
       </TouchableOpacity>
       {!!isExpanded && (

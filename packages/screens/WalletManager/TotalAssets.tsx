@@ -91,7 +91,11 @@ export const TotalAssets: React.FC = () => {
               justifyContent: "center",
             }}
           >
-            <SVG source={isExpandAll ? chevronUpSVG : chevronDownSVG} />
+            <SVG
+              width={16}
+              height={16}
+              source={isExpandAll ? chevronUpSVG : chevronDownSVG}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -152,7 +156,7 @@ export const TotalAssets: React.FC = () => {
                     >
                       Chain info
                     </BrandText>
-                    <SVG source={chevronRightSVG} />
+                    <SVG height={16} width={16} source={chevronRightSVG} />
                   </View>
                 )}
               </View>
@@ -218,7 +222,7 @@ export const TotalAssets: React.FC = () => {
                         marginLeft: 4,
                       }}
                     >
-                      <SVG source={copySVG} />
+                      <SVG width={24} height={24} source={copySVG} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -257,7 +261,7 @@ export const TotalAssets: React.FC = () => {
                 justifyContent: "center",
               }}
             >
-              <SVG source={chevronDownSVG} height={16} />
+              <SVG source={chevronDownSVG} height={16} width={16} />
             </TouchableOpacity>
           </View>
         </View>

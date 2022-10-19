@@ -58,7 +58,7 @@ const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
         marginBottom: 24,
       }}
     >
-      <SVG width={24} height={24} source={icon} />
+      <SVG width={24 * 2} source={icon} />
 
       <BrandText
         style={{
