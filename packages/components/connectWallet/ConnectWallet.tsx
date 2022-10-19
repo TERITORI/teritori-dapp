@@ -44,9 +44,14 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
     >
       <ConnectWalletButton text="Metamask" isComingSoon icon={metamaskSVG} />
       <SpacerColumn size={1.5} />
-      <ConnectWalletButton text="Keplr Wallet" icon={keplrSVG} />
+      <ConnectWalletButton text="Keplr Wallet" icon={keplrSVG} iconSize={16} />
       <SpacerColumn size={1.5} />
-      <ConnectWalletButton text="Adena Wallet" isComingSoon icon={adenaSVG} />
+      <ConnectWalletButton
+        text="Adena Wallet"
+        isComingSoon
+        icon={adenaSVG}
+        iconSize={20}
+      />
       <SpacerColumn size={1.5} />
       <ConnectWalletButton
         text="Wallet Connect"

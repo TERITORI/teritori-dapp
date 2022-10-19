@@ -33,6 +33,7 @@ export const TransparentButtonOutline: React.FC<{
   disabled?: boolean;
   fullWidth?: boolean;
   RightComponent?: React.FC;
+  iconSize?: number;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -48,6 +49,7 @@ export const TransparentButtonOutline: React.FC<{
   disabled = false,
   fullWidth = false,
   RightComponent,
+  iconSize = 16,
 }) => {
   const boxProps = {
     style,
@@ -79,8 +81,8 @@ export const TransparentButtonOutline: React.FC<{
         {iconSVG ? (
           <SVG
             source={iconSVG}
-            width={16}
-            height={16}
+            width={iconSize}
+            height={iconSize}
             style={{ marginRight: 8 }}
           />
         ) : null}
