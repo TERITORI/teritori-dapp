@@ -35,14 +35,6 @@ const ConnectedIntro: React.FC = () => {
 
   const selectedWallet = useSelectedWallet();
 
-  useEffect(() => {
-    if (
-      !selectedWallet?.publicKey ||
-      selectedWallet?.network !== Network.Teritori
-    ) {
-    }
-  }, [selectedWallet?.publicKey, selectedWallet?.network]);
-
   return (
     <View
       style={{
