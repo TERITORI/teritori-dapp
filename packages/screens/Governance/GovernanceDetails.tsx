@@ -3,7 +3,7 @@ import Long from "long";
 import React, { useState, useCallback } from "react";
 import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
 import { RadioButton } from "react-native-paper";
-import * as Victory from "victory";
+import { VictoryPie } from "victory";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { ConfirmationVote } from "../../components/GovernanceBox/ConfirmationVote";
@@ -70,10 +70,7 @@ export const GovernanceDetails: React.FC<{
   const [displayPopup] = useState(visible);
   const { setToastError } = useFeedbacks();
 
-  const VictoryBar = Victory.VictoryPie;
-
   function activeVotePopup() {
-    console.log("activeVotePopup");
     onClose();
     setdisplayVote(!displayVote);
   }
@@ -135,16 +132,18 @@ export const GovernanceDetails: React.FC<{
       );
       if (isDeliverTxFailure(result)) {
         setToastError({
-          title: "Error",
-          message: "Your Vote Failed",
+          title: "Vote failed",
+          message: "Transaction failed",
         });
       }
     } catch (err) {
-      setToastError({
-        title: "Error",
-        message: "Something unexpected went wrong with your vote",
-      });
-      // console.error("something unexpected went wrong", err);
+      console.error(err);
+      if (err instanceof Error) {
+        setToastError({
+          title: "Vote failed",
+          message: err.message,
+        });
+      }
     }
   }, [selectedWallet]);
 
@@ -448,7 +447,7 @@ export const GovernanceDetails: React.FC<{
             left: 5,
           }}
         >
-          <VictoryBar
+          <VictoryPie
             innerRadius={70}
             colorScale={["#16BBFF", "#EAA54B", "#808080"]}
             data={[

@@ -6,6 +6,8 @@ import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { GovernanceDetails } from "../../screens/Governance/GovernanceDetails";
 
+// FIXME: code dedup
+
 export const GovernanceBox: React.FC<{
   numberProposal: string;
   titleProposal: string;

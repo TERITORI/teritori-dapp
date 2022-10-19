@@ -1,21 +1,33 @@
-import { useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
-import { useAppNavigation } from "../../utils/navigation";
+import { neutral33 } from "../../utils/style/colors";
+import { ProposalStatus } from "./types";
+
+const def = {
+  all: {
+    name: "All Periods",
+    filter: undefined,
+  },
+  voting: {
+    name: "Voting",
+    filter: "PROPOSAL_STATUS_VOTING",
+  },
+  passed: {
+    name: "Passed",
+    filter: "PROPOSAL_STATUS_PASSED",
+  },
+  rejected: {
+    name: "Rejected",
+    filter: "PROPOSAL_STATUS_REJECTED",
+  },
+};
 
 export const NavBarGovernance: React.FC<{
-  visible?: boolean;
-  onClose: () => void;
-}> = ({ visible, onClose }) => {
-  const navigation = useAppNavigation();
-  const { name: currentRouteName } = useRoute();
-
-  const [activeAllPeriod] = useState(currentRouteName === "AllPeriods");
-  const [activeVoting] = useState(currentRouteName === "Voting");
-  const [activePassed] = useState(currentRouteName === "Passed");
-  const [activeRejected] = useState(currentRouteName === "Rejected");
+  onChange: (filter?: ProposalStatus) => void;
+}> = ({ onChange }) => {
+  const [selected, setSelected] = useState<keyof typeof def>("all");
 
   return (
     <View
@@ -26,165 +38,52 @@ export const NavBarGovernance: React.FC<{
         alignContent: "center",
         justifyContent: "space-between",
         width: "fit-content",
-        borderWidth: 0.5,
-        borderColor: "#808080",
+        borderWidth: 1,
+        borderColor: neutral33,
         flexDirection: "row",
-        borderRadius: 20,
         height: 32,
+        borderRadius: 18,
+        overflow: "hidden",
       }}
     >
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("AllPeriods");
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            backgroundColor: activeAllPeriod ? "#16BBFF" : "black",
-            borderTopLeftRadius: 18,
-            borderBottomLeftRadius: 18,
-          }}
-        >
-          <BrandText
+      {getKeys(def).map((key) => {
+        return (
+          <TouchableOpacity
+            key={key}
+            onPress={() => {
+              onChange(def[key].filter as any); // FIXME: typing
+              setSelected(key);
+            }}
             style={{
-              color: activeAllPeriod ? "black" : "white",
-              fontSize: 14,
-              width: 85,
-              height: 32,
-              textAlign: "center",
-              position: "relative",
-              top: 6,
+              height: "100%",
+              borderRightColor: neutral33,
+              borderRightWidth: 1,
             }}
           >
-            All period
-          </BrandText>
-          <View
-            style={{
-              width: 32,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              position: "absolute",
-              top: 16,
-              left: 69,
-            }}
-          />
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Voting");
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            backgroundColor: activeVoting ? "#16BBFF" : "black",
-          }}
-        >
-          <BrandText
-            style={{
-              color: activeVoting ? "black" : "white",
-              fontSize: 14,
-              width: 80,
-              height: 32,
-              textAlign: "center",
-              position: "relative",
-              top: 6,
-            }}
-          >
-            Voting
-          </BrandText>
-          <View
-            style={{
-              width: 32,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              position: "absolute",
-              top: 16,
-              left: 64,
-            }}
-          />
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Passed");
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            backgroundColor: activePassed ? "#16BBFF" : "black",
-          }}
-        >
-          <BrandText
-            style={{
-              color: activePassed ? "black" : "white",
-              fontSize: 14,
-              width: 80,
-              height: 32,
-              textAlign: "center",
-              position: "relative",
-              top: 6,
-            }}
-          >
-            Passed
-          </BrandText>
-          <View
-            style={{
-              width: 32,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              position: "absolute",
-              top: 16,
-              left: 64,
-            }}
-          />
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Rejected");
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            flex: 1,
-            backgroundColor: activeRejected ? "#16BBFF" : "black",
-            borderTopRightRadius: 18,
-            borderBottomRightRadius: 18,
-          }}
-        >
-          <BrandText
-            style={{
-              color: activeRejected ? "black" : "white",
-              fontSize: 14,
-              width: 80,
-              height: 32,
-              textAlign: "center",
-              borderTopRightRadius: 18,
-              borderBottomRightRadius: 18,
-              position: "relative",
-              top: 6,
-            }}
-          >
-            Rejected
-          </BrandText>
-        </View>
-      </TouchableOpacity>
+            <View
+              style={{
+                backgroundColor: selected === key ? "#16BBFF" : "black",
+                height: "100%",
+                justifyContent: "center",
+              }}
+            >
+              <BrandText
+                style={{
+                  color: selected === key ? "black" : "white",
+                  fontSize: 14,
+                  paddingHorizontal: 12,
+                  textAlign: "center",
+                  top: 6,
+                }}
+              >
+                {def[key].name}
+              </BrandText>
+            </View>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
+
+const getKeys = Object.keys as <T extends object>(obj: T) => (keyof T)[];

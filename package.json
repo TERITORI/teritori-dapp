@@ -76,6 +76,7 @@
     "@svgr/webpack": "^5.5.0",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.67.6",
+    "@types/react-native-svg-charts": "^5.0.12",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "babel-loader": "^8.2.5",

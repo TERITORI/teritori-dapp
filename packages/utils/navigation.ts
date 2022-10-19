@@ -15,12 +15,6 @@ export type RootStackParamList = {
   Governance: undefined;
   RiotersFooter: undefined;
 
-  Rejected: undefined;
-  AllPeriods: undefined;
-  Pending: undefined;
-  Voting: undefined;
-  Passed: undefined;
-
   Launchpad: undefined;
   MintCollection: { id: string };
 
@@ -68,12 +62,6 @@ const navConfig: {
     GuardiansGame: "guardians-game",
     Governance: "governance",
     RiotersFooter: "rioters-footer",
-    // === Governance Page
-    Rejected: "rejected",
-    AllPeriods: "all-periods",
-    Pending: "pending",
-    Voting: "voting",
-    Passed: "passed",
     // ==== Launchpad
     Launchpad: "launchpad",
     // Mint NFT collection

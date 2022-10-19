@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
@@ -6,22 +6,36 @@ import { BrandText } from "../../components/BrandText/BrandText";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { SVG } from "../../components/SVG/svg";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { teritoriRestProvider } from "../../utils/teritori";
 import { NavBarGovernance } from "./NavBarGovernance";
+import { Proposal, ProposalStatus } from "./types";
 
-export const GovernanceRejectedScreen: React.FC = () => {
-  const [cards, setCards] = useState([]);
+// FIXME: properly handle pagination
+
+export const GovernanceScreen: React.FC = () => {
+  const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [filter, setFilter] = useState<ProposalStatus>();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch(
-        "https://rest.testnet.teritori.com/cosmos/gov/v1beta1/proposals?proposal_status=4"
-      );
-      const data = await res.json();
+    const effect = async () => {
+      try {
+        const res = await fetch(
+          `${teritoriRestProvider}/cosmos/gov/v1beta1/proposals`
+        );
+        const data = await res.json();
 
-      setCards(data.proposals);
+        setProposals(data.proposals);
+      } catch (err) {
+        console.error(err);
+      }
     };
-    fetchData().catch(console.error);
+    effect();
   }, []);
+
+  const filteredProposals = useMemo(
+    () => (filter ? proposals.filter((p) => p.status === filter) : proposals),
+    [filter, proposals]
+  );
 
   return (
     <ScreenContainer>
@@ -38,7 +52,7 @@ export const GovernanceRejectedScreen: React.FC = () => {
         <BrandText style={{ fontSize: 28 }}>Decentralized Governance</BrandText>
 
         <View style={{ bottom: 10, right: 100 }}>
-          <NavBarGovernance visible onClose={() => {}} />
+          <NavBarGovernance onChange={setFilter} />
         </View>
       </View>
 
@@ -52,9 +66,9 @@ export const GovernanceRejectedScreen: React.FC = () => {
           marginRight: -60,
         }}
       >
-        {cards.map((proposals: any, item) => (
+        {filteredProposals.map((proposals, index) => (
           <GovernanceBox
-            key={item}
+            key={index}
             numberProposal={proposals.proposal_id}
             titleProposal={proposals.content.title}
             descriptionProposal={proposals.content.description}

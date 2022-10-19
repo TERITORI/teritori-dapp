@@ -2,10 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
-import { GovernanceAllPeriodScreen } from "../../screens/Governance/AllPeriodScreen";
-import { GovernancePassedScreen } from "../../screens/Governance/PassedScreen";
-import { GovernanceRejectedScreen } from "../../screens/Governance/RejectedScreen";
-import { GovernanceVotingScreen } from "../../screens/Governance/VotingScreen";
+import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
@@ -64,6 +61,11 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null, title: screenTitle("Marketplace") }}
       />
       <Stack.Screen
+        name="Governance"
+        component={GovernanceScreen}
+        options={{ header: () => null, title: screenTitle("Governance") }}
+      />
+      <Stack.Screen
         name="Wallets"
         component={WalletsScreen}
         options={{
@@ -76,32 +78,6 @@ export const Navigator: React.FC = () => {
         name="RiotersFooter"
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
-      />
-
-      {/* ==== Governance Pages */}
-
-      <Stack.Screen
-        name="Rejected"
-        component={GovernanceRejectedScreen}
-        options={{ header: () => null }}
-      />
-
-      <Stack.Screen
-        name="AllPeriods"
-        component={GovernanceAllPeriodScreen}
-        options={{ header: () => null }}
-      />
-
-      <Stack.Screen
-        name="Voting"
-        component={GovernanceVotingScreen}
-        options={{ header: () => null }}
-      />
-
-      <Stack.Screen
-        name="Passed"
-        component={GovernancePassedScreen}
-        options={{ header: () => null }}
       />
 
       {/* ==== Wallet Manager */}
