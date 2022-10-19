@@ -40,6 +40,7 @@ export interface TextInputCustomProps<T>
   disabled?: boolean;
   regexp?: RegExp;
   width?: number;
+  height?: number;
   variant?: "regular" | "labelOutside";
   control?: Control<T>;
   name: Path<T>;
@@ -59,6 +60,7 @@ export const TextInputCustom = <T,>({
   disabled,
   squaresBackgroundColor,
   width,
+  height,
   variant,
   name,
   control,
@@ -142,6 +144,7 @@ export const TextInputCustom = <T,>({
         mainContainerStyle={styles.mainContainer}
         fullWidth
         width={width}
+        height={height}
       >
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
