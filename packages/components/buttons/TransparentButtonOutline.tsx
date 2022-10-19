@@ -13,13 +13,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import {
-  neutral11,
-  neutral22,
-  neutral33,
-  neutral44,
-  neutral77,
-} from "../../utils/style/colors";
+import { neutral22, neutral44, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
