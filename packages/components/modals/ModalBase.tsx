@@ -1,27 +1,15 @@
-import { LinearGradient } from "expo-linear-gradient";
 import React, { ComponentType } from "react";
-import { Modal, Pressable, StyleProp, View, ViewStyle } from "react-native";
+import { Modal, Pressable, View } from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
+import { neutral77 } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { SeparatorGradient } from "../SeparatorGradient";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-
-// Just an horizontal gradient separator
-const SeparatorGradient: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
-  style,
-}) => (
-  <View style={[{ height: 1, width: "100%" }, style]}>
-    {/* Background gradient */}
-    <LinearGradient
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={{ height: "100%", width: "100%" }}
-      colors={["#2AF598", "#009EFD"]}
-    />
-  </View>
-);
+import { SpacerColumn } from "../spacer";
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
@@ -35,6 +23,7 @@ export const ModalBase: React.FC<{
   childrenBottom?: JSX.Element | JSX.Element[];
   children?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
+  description?: string;
 }> = ({
   label,
   visible,
@@ -44,6 +33,7 @@ export const ModalBase: React.FC<{
   children,
   Header,
   hideMainSeparator,
+  description,
 }) => {
   return (
     <Modal
@@ -75,20 +65,35 @@ export const ModalBase: React.FC<{
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              alignItems: "center",
               width: "100%",
               padding: modalMarginPadding,
             }}
           >
-            {label && (
-              <BrandText style={{ color: "white", lineHeight: 24 }}>
-                {label}
-              </BrandText>
-            )}
+            <View style={{ flex: 1 }}>
+              {label && (
+                <BrandText style={{ color: "white", lineHeight: 24 }}>
+                  {label}
+                </BrandText>
+              )}
+
+              {description && (
+                <>
+                  <SpacerColumn size={1} />
+                  <BrandText
+                    style={[
+                      fontSemibold14,
+                      { color: neutral77, width: "100%", lineHeight: 20 },
+                    ]}
+                  >
+                    {description}
+                  </BrandText>
+                </>
+              )}
+            </View>
 
             {Header && <Header />}
 
-            <Pressable onPress={onClose}>
+            <Pressable style={{ marginTop: 2 }} onPress={onClose}>
               <SVG
                 width={20}
                 height={20}

@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import {
-  ActivityIndicator,
   StyleProp,
+  StyleSheet,
   TouchableOpacity,
+  View,
   ViewStyle,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
@@ -13,27 +14,30 @@ import {
   heightButton,
 } from "../../utils/style/buttons";
 import {
+  neutral11,
+  neutral22,
+  neutral33,
+  neutral44,
   neutral77,
-  primaryColor,
-  primaryTextColor,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
-export const PrimaryButton: React.FC<{
+export const TransparentButtonOutline: React.FC<{
   size: ButtonsSize;
   text: string;
   width?: number;
-  onPress?: (() => Promise<void>) | (() => void);
+  onPress?: () => void;
   squaresBackgroundColor?: string;
+  backgroundColor?: string;
+  color?: string;
+  borderColor?: string;
   style?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
-  loader?: boolean;
-  touchableStyle?: StyleProp<ViewStyle>;
   RightComponent?: React.FC;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
@@ -42,31 +46,15 @@ export const PrimaryButton: React.FC<{
   text,
   onPress,
   squaresBackgroundColor,
+  backgroundColor = "transparent",
+  color = "#FFFFFF",
+  borderColor = neutral44,
   style,
   iconSVG,
   disabled = false,
   fullWidth = false,
-  loader,
-  touchableStyle = {},
   RightComponent,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handlePress = useCallback(async () => {
-    if (isLoading || !onPress) {
-      return;
-    }
-    setIsLoading(true);
-    try {
-      await onPress();
-    } catch (err) {
-      console.error(err);
-    }
-    setIsLoading(false);
-  }, [onPress, isLoading]);
-
-  const isDisabled = !!(disabled || (loader && isLoading));
-
   const boxProps = {
     style,
     disabled,
@@ -77,17 +65,20 @@ export const PrimaryButton: React.FC<{
 
   return (
     <TouchableOpacity
-      onPress={onPress ? handlePress : undefined}
-      disabled={isDisabled}
-      style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
+      onPress={onPress}
+      disabled={disabled}
+      style={{ width: fullWidth ? "100%" : width }}
     >
-      <SecondaryBox
+      <TertiaryBox
+        disabledBorderColor={neutral22}
         height={heightButton(size)}
         mainContainerStyle={{
           flexDirection: "row",
           borderRadius: borderRadiusButton(size),
-          backgroundColor: primaryColor,
+          backgroundColor,
           paddingHorizontal: 20,
+          borderColor: disabled ? neutral22 : borderColor,
+          justifyContent: "flex-start",
         }}
         {...boxProps}
       >
@@ -100,23 +91,27 @@ export const PrimaryButton: React.FC<{
           />
         ) : null}
 
-        {loader && isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <BrandText
-            style={[
-              fontSemibold14,
-              {
-                color: isDisabled ? neutral77 : primaryTextColor,
-                textAlign: "center",
-              },
-            ]}
-          >
-            {text}
-          </BrandText>
+        <BrandText
+          style={[
+            fontSemibold14,
+            { color: disabled ? neutral77 : color, textAlign: "center" },
+          ]}
+        >
+          {text}
+        </BrandText>
+        {RightComponent && (
+          <View style={styles.rightComponent}>
+            <RightComponent />
+          </View>
         )}
-        {!isLoading && RightComponent && <RightComponent />}
-      </SecondaryBox>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  rightComponent: {
+    flex: 1,
+    alignItems: "flex-end",
+  },
+});
