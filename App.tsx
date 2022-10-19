@@ -13,7 +13,6 @@ import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
-import DisclaimerPopup from "./packages/components/PopupDisclaimer/DisclaimerPopup";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
@@ -47,7 +46,6 @@ export default function App() {
         <NavigationContainer linking={linking}>
           <SafeAreaProvider>
             <ReduxProvider store={store}>
-              <DisclaimerPopup />
               <FeedbacksContextProvider>
                 <DropdownsContextProvider>
                   <WalletsProvider>
