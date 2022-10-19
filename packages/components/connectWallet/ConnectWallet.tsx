@@ -1,7 +1,5 @@
 // libraries
 import React from "react";
-
-// misc
 import { StyleSheet, View } from "react-native";
 
 import adenaSVG from "../../../assets/icons/adena.svg";
