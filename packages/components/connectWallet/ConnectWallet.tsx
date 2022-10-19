@@ -1,5 +1,5 @@
 // libraries
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import adenaSVG from "../../../assets/icons/adena.svg";
@@ -10,6 +10,7 @@ import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { DisclaimerPopup } from "../PopupDisclaimer/DisclaimerPopup";
 import { SeparatorGradient } from "../SeparatorGradient";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import ModalBase from "../modals/ModalBase";
@@ -25,6 +26,12 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
   onClose,
   visible,
 }) => {
+  // variables
+  const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(false);
+
+  // functions
+  const toggleDisclaimer = () => setIsDisclaimerVisible(!isDisclaimerVisible);
+
   // returns
   return (
     <ModalBase
@@ -60,10 +67,15 @@ export const ConnectWallet: React.FC<ConnectWalletProps> = ({
         <TertiaryButton
           size="M"
           fullWidth
-          disabled
+          // disabled
           text="Read the full Disclaimer & Privacy Policy"
+          onPress={toggleDisclaimer}
         />
       </View>
+      <DisclaimerPopup
+        visible={isDisclaimerVisible}
+        onClose={toggleDisclaimer}
+      />
     </ModalBase>
   );
 };
