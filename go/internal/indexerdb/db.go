@@ -39,6 +39,13 @@ var allModels = []interface{}{
 	&Activity{},
 	&Listing{},
 	&Trade{},
+	&UpdateNFTPrice{},
+	&Mint{},
+	&Burn{},
+	&SendNFT{},
+	&TransferNFT{},
+	&MetadataUpdate{},
+	&SetAsPrimaryTNS{},
 
 	// quests
 	&Quest{},

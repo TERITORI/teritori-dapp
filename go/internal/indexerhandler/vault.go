@@ -10,7 +10,6 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 )
 
 type VaultExecuteUpdatePriceMsg struct {
@@ -62,15 +61,29 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 	}
 
 	// update
+	price := updatePriceMsg.Data.Amount
+	denom := updatePriceMsg.Data.Denom
 	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 	if err := h.db.Model(&indexerdb.NFT{ID: nftId}).UpdateColumns(map[string]interface{}{
-		"Price": updatePriceMsg.Data.Amount,
-		"Denom": updatePriceMsg.Data.Denom,
+		"Price": price,
+		"Denom": denom,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to update nft price")
 	}
 
-	// TODO: create update price activity
+	// create activity
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:    indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		NFTID: nftId,
+		Kind:  indexerdb.ActivityKindUpdateNFTPrice,
+		Time:  time.Now(), // FIXME: replace by block time
+		UpdateNFTPrice: &indexerdb.UpdateNFTPrice{
+			Price:      price,
+			PriceDenom: denom,
+		},
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create listing in db")
+	}
 
 	h.logger.Debug("updated nft price", zap.String("id", nftId))
 
@@ -97,53 +110,49 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 	}
 	tokenId := tokenIds[0]
 
-	if err := h.db.Transaction(func(tx *gorm.DB) error {
-		// find nft id
-		var collection *indexerdb.Collection
-		findResult := tx.
-			Joins("TeritoriCollection").
-			Where("TeritoriCollection__nft_contract_address = ?", nftContractAddress).
-			Find(&collection)
-		if err := findResult.Error; err != nil {
-			return errors.Wrap(err, "failed to query for collection")
-		}
-		if findResult.RowsAffected == 0 {
-			h.logger.Debug("ignored withdraw on unknown collection")
-			return nil
-		}
-		if collection.TeritoriCollection == nil {
-			return errors.New("no teritori info on collection")
-		}
-		nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
-
-		// update nft price
-		if err := tx.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
-			"price_amount": nil,
-			"price_denom":  nil,
-			"is_listed":    false,
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to update nft")
-		}
-
-		// create cancelation
-		var nft indexerdb.NFT
-		if err := tx.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
-			return errors.Wrap(err, "nft not found in db")
-		}
-		activityID := indexerdb.TeritoriActiviyID(e.MsgID)
-		if err := tx.Create(&indexerdb.Activity{
-			ID:    activityID,
-			NFTID: nftID,
-			Kind:  indexerdb.ActivityKindCancelListing,
-			Time:  time.Now(), // FIXME: replace by block time
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to create listing cancelation in db")
-		}
-		h.logger.Info("created listing cancelation", zap.String("id", activityID))
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "db tx failed")
+	// find nft id
+	var collection *indexerdb.Collection
+	findResult := h.db.
+		Joins("TeritoriCollection").
+		Where("TeritoriCollection__nft_contract_address = ?", nftContractAddress).
+		Find(&collection)
+	if err := findResult.Error; err != nil {
+		return errors.Wrap(err, "failed to query for collection")
 	}
+	if findResult.RowsAffected == 0 {
+		h.logger.Debug("ignored withdraw on unknown collection")
+		return nil
+	}
+	if collection.TeritoriCollection == nil {
+		return errors.New("no teritori info on collection")
+	}
+	nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+
+	// update nft price
+	if err := h.db.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
+		"price_amount": nil,
+		"price_denom":  nil,
+		"is_listed":    false,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to update nft")
+	}
+
+	// create cancelation
+	var nft indexerdb.NFT
+	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
+		return errors.Wrap(err, "nft not found in db")
+	}
+	activityID := indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex)
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:    activityID,
+		NFTID: nftID,
+		Kind:  indexerdb.ActivityKindCancelListing,
+		Time:  time.Now(), // FIXME: replace by block time
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create listing cancelation in db")
+	}
+
+	h.logger.Info("created listing cancelation", zap.String("id", activityID))
 
 	return nil
 }
@@ -179,14 +188,14 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	if len(spenders) < buyerSpenderIndex+1 {
 		return fmt.Errorf("not enough spenders, wanted %d, got %d", buyerSpenderIndex+1, len(spenders))
 	}
-	buyer := indexerdb.TeritoriUserID(spenders[buyerSpenderIndex])
+	buyerID := indexerdb.TeritoriUserID(spenders[buyerSpenderIndex])
 
 	// get seller
 	receivers := e.Events["coin_received.receiver"]
 	if len(receivers) < sellerReceiverIndex+1 {
 		return fmt.Errorf("not enough receivers, wanted %d, got %d", sellerReceiverIndex+1, len(receivers))
 	}
-	seller := indexerdb.TeritoriUserID(receivers[sellerReceiverIndex])
+	sellerID := indexerdb.TeritoriUserID(receivers[sellerReceiverIndex])
 
 	// get price
 	spentAmounts := e.Events["coin_spent.amount"]
@@ -201,78 +210,158 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	price := matches[1]
 	denom := matches[2]
 
-	if err := h.db.Transaction(func(tx *gorm.DB) error {
-		// find nft id
-		var collection indexerdb.Collection
-		findResult := tx.
-			Joins("TeritoriCollection").
-			Where("TeritoriCollection__nft_contract_address = ?", nftContractAddress).
-			Find(&collection)
-		if err := findResult.Error; err != nil {
-			return errors.Wrap(err, "failed to query for collection")
-		}
-		if findResult.RowsAffected == 0 {
-			h.logger.Debug("ignored withdraw on unknown collection")
-			return nil
-		}
-		if collection.TeritoriCollection == nil {
-			return errors.New("no teritori info on collection")
-		}
-		nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
-
-		// update nft
-		if err := tx.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
-			"price_amount": nil,
-			"price_denom":  nil,
-			"is_listed":    false,
-			"owner_id":     buyer,
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to update nft")
-		}
-
-		// create trade
-		var nft indexerdb.NFT
-		if err := tx.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
-			return errors.Wrap(err, "nft not found in db")
-		}
-		activityID := indexerdb.TeritoriActiviyID(e.MsgID)
-		if err := tx.Create(&indexerdb.Activity{
-			ID:    activityID,
-			NFTID: nftID,
-			Kind:  indexerdb.ActivityKindTrade,
-			Time:  time.Now(), // FIXME: replace by block time
-			Trade: &indexerdb.Trade{
-				Price:      price,
-				PriceDenom: denom,
-				BuyerID:    buyer,
-				SellerID:   seller,
-			},
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to create trade in db")
-		}
-		h.logger.Info("created trade", zap.String("id", activityID))
-
-		// complete buy quest
-		if err := h.db.Save(&indexerdb.QuestCompletion{
-			UserID:    string(buyer),
-			QuestID:   "buy_nft",
-			Completed: true,
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to save buy quest completion")
-		}
-
-		// complete sell quest
-		if err := h.db.Save(&indexerdb.QuestCompletion{
-			UserID:    string(seller),
-			QuestID:   "sell_nft",
-			Completed: true,
-		}).Error; err != nil {
-			return errors.Wrap(err, "failed to save sell quest completion")
-		}
-
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "db tx failed")
+	// find nft id
+	var collection indexerdb.Collection
+	findResult := h.db.
+		Joins("TeritoriCollection").
+		Where("TeritoriCollection__nft_contract_address = ?", nftContractAddress).
+		Find(&collection)
+	if err := findResult.Error; err != nil {
+		return errors.Wrap(err, "failed to query for collection")
 	}
+	if findResult.RowsAffected == 0 {
+		h.logger.Debug("ignored withdraw on unknown collection")
+		return nil
+	}
+	if collection.TeritoriCollection == nil {
+		return errors.New("no teritori info on collection")
+	}
+	nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+
+	// update nft
+	if err := h.db.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
+		"price_amount": nil,
+		"price_denom":  nil,
+		"is_listed":    false,
+		"owner_id":     buyerID,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to update nft")
+	}
+
+	// create trade
+	var nft indexerdb.NFT
+	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
+		return errors.Wrap(err, "nft not found in db")
+	}
+	activityID := indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex)
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:    activityID,
+		NFTID: nftID,
+		Kind:  indexerdb.ActivityKindTrade,
+		Time:  time.Now(), // FIXME: replace by block time
+		Trade: &indexerdb.Trade{
+			Price:      price,
+			PriceDenom: denom,
+			BuyerID:    buyerID,
+			SellerID:   sellerID,
+		},
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create trade in db")
+	}
+
+	// complete buy quest
+	if err := h.db.Save(&indexerdb.QuestCompletion{
+		UserID:    buyerID,
+		QuestID:   "buy_nft",
+		Completed: true,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to save buy quest completion")
+	}
+
+	// complete sell quest
+	if err := h.db.Save(&indexerdb.QuestCompletion{
+		UserID:    sellerID,
+		QuestID:   "sell_nft",
+		Completed: true,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to save sell quest completion")
+	}
+
+	h.logger.Info("created trade", zap.String("id", activityID))
+
+	return nil
+}
+
+func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgExecuteContract, sendNFTMsg *SendNFTExecuteMsg) error {
+	// get token id
+	tokenId := sendNFTMsg.Data.TokenID
+
+	// get sellerID
+	sellerID := indexerdb.TeritoriUserID(execMsg.Sender)
+
+	// get price from exec msg
+	var hookMsg DepositNFTHookMsg
+	if err := json.Unmarshal(sendNFTMsg.Data.Msg, &hookMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal hook msg")
+	}
+	price := hookMsg.Deposit.Amount
+	denom := hookMsg.Deposit.Denom
+
+	// find nft id
+	var collection *indexerdb.Collection
+	findResult := h.db.
+		Joins("TeritoriCollection").
+		Where("TeritoriCollection__nft_contract_address = ?", execMsg.Contract).
+		Find(&collection)
+	if err := findResult.
+		Error; err != nil {
+		return errors.Wrap(err, "failed to query collection")
+	}
+	if findResult.RowsAffected == 0 {
+		h.logger.Debug("ignored send_nft on unknown collection")
+		return nil
+	}
+	if collection.TeritoriCollection == nil {
+		return errors.New("no teritori info on collection")
+	}
+	nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+
+	// unset primary tns if set
+	if collection.TeritoriCollection.MintContractAddress == h.config.TNSContractAddress {
+		if err := h.db.Model(&indexerdb.User{}).Where("primary_tns = ?", tokenId).UpdateColumn("primary_tns", "").Error; err != nil {
+			return errors.Wrap(err, "failed to unset primary tns")
+		}
+	}
+
+	// update nft price
+	if err := h.db.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
+		"price_amount": price,
+		"price_denom":  denom,
+		"is_listed":    true,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to update nft")
+	}
+
+	// create listing
+	var nft indexerdb.NFT
+	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
+		return errors.Wrap(err, "nft not found in db")
+	}
+	activityID := indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex)
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:    activityID,
+		NFTID: nftID,
+		Kind:  indexerdb.ActivityKindList,
+		Time:  time.Now(), // FIXME: replace by block time
+		Listing: &indexerdb.Listing{
+			Price:      price,
+			PriceDenom: denom,
+			SellerID:   sellerID,
+		},
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create listing in db")
+	}
+
+	// complete quest
+	if err := h.db.Save(&indexerdb.QuestCompletion{
+		UserID:    sellerID,
+		QuestID:   "list_nft",
+		Completed: true,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to save quest completion")
+	}
+
+	h.logger.Info("created listing", zap.String("id", activityID))
+
 	return nil
 }
