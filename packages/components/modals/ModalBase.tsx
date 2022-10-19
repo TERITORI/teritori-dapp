@@ -4,6 +4,7 @@ import { Modal, Pressable, View } from "react-native";
 import closeSVG from "../../../assets/icons/close.svg";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -93,7 +94,10 @@ export const ModalBase: React.FC<{
 
             {Header && <Header />}
 
-            <Pressable style={{ marginTop: 2 }} onPress={onClose}>
+            <Pressable
+              style={{ marginTop: layout.padding_x0_25 }}
+              onPress={onClose}
+            >
               <SVG
                 width={20}
                 height={20}
