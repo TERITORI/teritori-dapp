@@ -13,6 +13,7 @@ interface ConnectWalletButtonProps {
   text: string;
   isComingSoon?: boolean;
   onPress?: () => void;
+  iconSize?: number;
 }
 
 export const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
@@ -20,6 +21,7 @@ export const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
   text,
   icon,
   onPress,
+  iconSize = 24,
 }) => {
   return (
     <TransparentButtonOutline
@@ -29,6 +31,7 @@ export const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
       text={text}
       onPress={onPress}
       disabled={isComingSoon}
+      iconSize={iconSize}
       RightComponent={
         isComingSoon
           ? () => (
