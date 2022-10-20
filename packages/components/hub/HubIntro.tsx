@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Image } from "react-native";
 
 import connectedImagePNG from "../../../assets/default-images/connected-image-bad.png";
@@ -9,7 +9,6 @@ import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { Overview } from "../../screens/WalletManager/Overview/Overview";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
 import { useAppNavigation } from "../../utils/navigation";
-import { Network } from "../../utils/network";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { FullWidthSeparator } from "../FullWidthSeparator";
