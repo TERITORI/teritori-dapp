@@ -12,12 +12,12 @@ interface ToastMessage {
 export const initialToastError: ToastMessage = {
   title: "",
   message: "",
-  duration: 2000,
+  duration: 8000,
 };
 export const initialToastSuccess: ToastMessage = {
   title: "",
   message: "",
-  duration: 2000,
+  duration: 8000,
 };
 
 interface DefaultValue {
@@ -48,7 +48,7 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
     const timeoutID = setTimeout(() => {
       setToastError(initialToastError);
       setToastSuccess(initialToastSuccess);
-    }, toastError.duration || toastSuccess.duration || 2000);
+    }, toastError.duration || toastSuccess.duration || 8000);
 
     return () => clearTimeout(timeoutID);
   }, [toastError, toastSuccess]);
