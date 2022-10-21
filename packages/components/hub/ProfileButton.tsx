@@ -23,7 +23,7 @@ export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   }, [loading]);
 
   if (loading) return null;
-  else if (metadata)
+  if (metadata)
     return (
       <SecondaryButtonOutline
         size="XL"
@@ -33,14 +33,13 @@ export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
         style={style}
       />
     );
-  else
-    return (
-      <SecondaryButtonOutline
-        size="XL"
-        text="Create profile"
-        backgroundColor={neutral00}
-        onPress={() => navigation.navigate("TNSRegister")}
-        style={style}
-      />
-    );
+  return (
+    <SecondaryButtonOutline
+      size="XL"
+      text="Create profile"
+      backgroundColor={neutral00}
+      onPress={() => navigation.navigate("TNSRegister")}
+      style={style}
+    />
+  );
 };
