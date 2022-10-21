@@ -14,9 +14,9 @@ import { FullWidthSeparator } from "../FullWidthSeparator";
 import { Quests } from "../Quests";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
-import { WalletSelector } from "../WalletSelector";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { Tabs } from "../tabs/Tabs";
+import { ProfileButton } from "./ProfileButton";
 
 const walletsManagerTabItems = {
   overview: {
@@ -28,7 +28,6 @@ const walletsManagerTabItems = {
 };
 
 const ConnectedIntro: React.FC = () => {
-  const navigation = useAppNavigation();
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof walletsManagerTabItems>("overview");
 
@@ -45,7 +44,7 @@ const ConnectedIntro: React.FC = () => {
         style={{ width: 200, aspectRatio: 1, marginBottom: 20 }}
       />
 
-      <WalletSelector onPressAddWallet={() => navigation.navigate("Wallets")} />
+      <ProfileButton style={{ marginTop: 72 }} />
 
       <Section title="Quests" subtitle="6">
         <FullWidthSeparator />
