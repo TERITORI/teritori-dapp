@@ -13,7 +13,6 @@ import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
-import DisclaimerPopup from "./packages/components/PopupDisclaimer/DisclaimerPopup";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
@@ -28,8 +27,13 @@ import { linking } from "./packages/utils/navigation";
 
 const queryClient = new QueryClient();
 
+// it's here just to fix a TS2589 error
+type DefaultForm = {
+  novalue: string;
+};
+
 export default function App() {
-  const methods = useForm();
+  const methods = useForm<DefaultForm>();
   const [fontsLoaded] = useFonts({
     Exo_500Medium,
     Exo_600SemiBold,
@@ -43,11 +47,10 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <FormProvider {...methods}>
+      <FormProvider<DefaultForm> {...methods}>
         <NavigationContainer linking={linking}>
           <SafeAreaProvider>
             <ReduxProvider store={store}>
-              <DisclaimerPopup />
               <FeedbacksContextProvider>
                 <DropdownsContextProvider>
                   <WalletsProvider>

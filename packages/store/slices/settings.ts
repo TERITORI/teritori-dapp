@@ -20,9 +20,6 @@ export const selectSelectedWalletId = (state: RootState) =>
 export const selectIsKeplrConnected = (state: RootState) =>
   state.settings.isKeplrConnected;
 
-export const selectAlreadyVisited = (state: RootState) =>
-  state.settings.alreadyVisited;
-
 const settingsSlice = createSlice({
   name: "settings",
   initialState,
@@ -33,13 +30,10 @@ const settingsSlice = createSlice({
     setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {
       state.isKeplrConnected = action.payload;
     },
-    setAlreadyVisited: (state, action: PayloadAction<boolean>) => {
-      state.alreadyVisited = action.payload;
-    },
   },
 });
 
-export const { setSelectedWalletId, setIsKeplrConnected, setAlreadyVisited } =
+export const { setSelectedWalletId, setIsKeplrConnected } =
   settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

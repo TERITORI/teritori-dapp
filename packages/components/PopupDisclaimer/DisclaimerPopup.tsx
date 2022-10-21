@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   useWindowDimensions,
   ScrollView,
@@ -6,13 +6,7 @@ import {
   ViewStyle,
   StyleProp,
 } from "react-native";
-import { useSelector } from "react-redux";
 
-import {
-  selectAlreadyVisited,
-  setAlreadyVisited,
-} from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
 import { neutral44 } from "../../utils/style/colors";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
@@ -127,7 +121,7 @@ const TextDisclaimer: React.FC = () => {
             sure you understand how Teritori works.
             <br />
             <br />
-            AS DESCRIBED IN TERITORI’S DOCUMENTATION, TERITORI IS PROVIDED “AS
+            AS DESCRIBED IN TERITORI'S DOCUMENTATION, TERITORI IS PROVIDED “AS
             IS”, AT YOUR OWN RISKS, AND WITHOUT WARRANTIES OF ANY KIND.
             <br />
             <br />
@@ -150,141 +144,56 @@ const TextDisclaimer: React.FC = () => {
   );
 };
 
-export default function DisclaimerPopup() {
-  const [firstVerif, setfirstVerif] = useState(false);
-  const [secondVerif, setsecondVeriff] = useState(false);
-  const alreadyVisited = useSelector(selectAlreadyVisited);
+interface DisclaimerPopupProps {
+  visible: boolean;
+  onClose: () => void;
+}
+
+export const DisclaimerPopup: React.FC<DisclaimerPopupProps> = ({
+  visible,
+  onClose,
+}) => {
   const { width, height } = useWindowDimensions();
-  const dispatch = useAppDispatch();
-
-  const handleFirstVerif = () => setfirstVerif(!firstVerif);
-  const handleSecondVerif = () => setsecondVeriff(!secondVerif);
-
-  const onPressSubmitButton = () => {
-    if (firstVerif && secondVerif) {
-      dispatch(setAlreadyVisited(true));
-    } else {
-      alert("Please read the disclaimer and check the boxes to continue");
-    }
-  };
 
   return (
-    <>
-      <View>
-        <ModalDisclaimer
-          label="WARNING"
-          visible={!alreadyVisited}
-          childrenBottom={
-            <>
-              <Separator />
-              <View
-                style={{
-                  flexDirection: "row",
-                  flex: 4,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: modalMarginPadding,
-                  height: height - 300,
-                  width: width - 200,
-                }}
-              >
-                <View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      flex: 4,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: 5,
-                    }}
-                  >
-                    <View>
-                      <input
-                        type="checkbox"
-                        onChange={handleFirstVerif}
-                        id="firstVerif"
-                        name="firstVerif"
-                      />
-                    </View>
-
-                    <View>
-                      <BrandText
-                        style={{
-                          fontSize: 12,
-                          color: "white",
-                          marginLeft: 15,
-                          width: width - 250,
-                          position: "relative",
-                          left: 0,
-                        }}
-                      >
-                        I confirm that I have read, understood and accept the
-                        Terms of Use and the Risks Statement
-                      </BrandText>
-                    </View>
-                  </View>
-
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      flex: 2,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: 5,
-                      marginBottom: 10,
-                    }}
-                  >
-                    <View>
-                      <input
-                        type="checkbox"
-                        onChange={handleSecondVerif}
-                        id="secondVerif"
-                        name="secondVerif"
-                      />
-                    </View>
-
-                    <View>
-                      <BrandText
-                        style={{
-                          fontSize: 12,
-                          color: "white",
-                          width: width - 250,
-                          position: "relative",
-                          left: 0,
-                        }}
-                      >
-                        I confirm that I do not fall under any of these
-                        exclusions
-                      </BrandText>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginTop: 10,
-                      justifyContent: "center",
-                    }}
-                  >
-                    <PrimaryButton
-                      disabled={!(firstVerif && secondVerif)}
-                      size="M"
-                      text="ENTER THE DAPP"
-                      style={{}}
-                      onPress={onPressSubmitButton}
-                    />
-                  </View>
-                </View>
-              </View>
-            </>
-          }
-        >
-          <TextDisclaimer />
-        </ModalDisclaimer>
-      </View>
-    </>
+    <ModalDisclaimer
+      label="Disclaimer & Privacy Policy"
+      visible={visible}
+      childrenBottom={
+        <>
+          <Separator />
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 4,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: modalMarginPadding,
+              height: height - 300,
+              width: width - 200,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 10,
+                justifyContent: "center",
+              }}
+            >
+              <PrimaryButton
+                size="M"
+                text="Close"
+                style={{}}
+                onPress={onClose}
+              />
+            </View>
+          </View>
+        </>
+      }
+    >
+      <TextDisclaimer />
+    </ModalDisclaimer>
   );
-}
+};

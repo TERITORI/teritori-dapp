@@ -34,6 +34,7 @@ export const PrimaryButton: React.FC<{
   fullWidth?: boolean;
   loader?: boolean;
   touchableStyle?: StyleProp<ViewStyle>;
+  RightComponent?: React.FC;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -47,6 +48,7 @@ export const PrimaryButton: React.FC<{
   fullWidth = false,
   loader,
   touchableStyle = {},
+  RightComponent,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -113,6 +115,7 @@ export const PrimaryButton: React.FC<{
             {text}
           </BrandText>
         )}
+        {!isLoading && RightComponent && <RightComponent />}
       </SecondaryBox>
     </TouchableOpacity>
   );

@@ -30,6 +30,7 @@ import { NetworkSelector } from "./NetworkSelector";
 import { SVG } from "./SVG";
 import { WalletSelector } from "./WalletSelector";
 import { WalletsManager } from "./WalletsManager";
+import { ConnectWallet } from "./connectWallet/ConnectWallet";
 import { Sidebar } from "./navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
@@ -52,6 +53,7 @@ export const ScreenContainer: React.FC<{
   smallMargin,
   customSidebar,
 }) => {
+  // variables
   const [modalVisible, setModalVisible] = useState(false);
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
@@ -67,10 +69,16 @@ export const ScreenContainer: React.FC<{
         }
       : undefined;
   const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
+  const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
   const areThereWallets = useAreThereWallets();
   const navigation = useAppNavigation();
   const { width } = useMaxResolution();
 
+  // functions
+  const toggleConnectWallet = () =>
+    setIsConnectWalletVisible(!isConnectWalletVisible);
+
+  // returns
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
       {/*TODO: Refactor this*/}
@@ -148,7 +156,7 @@ export const ScreenContainer: React.FC<{
             ) : (
               <ConnectWalletButton
                 style={{ marginRight: headerMarginHorizontal }}
-                onPress={() => setWalletsManagerVisible(true)}
+                onPress={toggleConnectWallet}
               />
             )}
           </View>
@@ -156,6 +164,11 @@ export const ScreenContainer: React.FC<{
           <WalletsManager
             visible={walletsManagerVisible}
             onClose={() => setWalletsManagerVisible(false)}
+          />
+
+          <ConnectWallet
+            visible={isConnectWalletVisible}
+            onClose={toggleConnectWallet}
           />
         </View>
       </View>

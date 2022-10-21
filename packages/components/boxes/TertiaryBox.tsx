@@ -18,6 +18,7 @@ export const TertiaryBox: React.FC<{
   hasGradientBackground?: boolean;
   style?: StyleProp<ViewStyle>;
   mainContainerStyle?: StyleProp<ViewStyle>;
+  disabledBorderColor?: string;
   noBrokenCorners?: boolean;
 }> = ({
   width,
@@ -30,13 +31,14 @@ export const TertiaryBox: React.FC<{
   style,
   mainContainerStyle,
   noBrokenCorners,
+  disabledBorderColor,
 }) => {
   const flatMainContainerStyle = mainContainerStyle
     ? StyleSheet.flatten(mainContainerStyle)
     : {};
   const borderRadius = flatMainContainerStyle.borderRadius || 8;
   const borderColor = disabled
-    ? neutral44
+    ? disabledBorderColor || neutral44
     : flatMainContainerStyle.borderColor || neutral33;
   const backgroundColor = disabled
     ? neutral11
