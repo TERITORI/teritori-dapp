@@ -12,6 +12,7 @@ import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useAppNavigation } from "../../utils/navigation";
+import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
@@ -134,7 +135,7 @@ Join the Bounty Program
         />
         <View
           style={{
-            marginTop: 274,
+            marginTop: layout.contentPadding,
             alignItems: "center",
             marginBottom: 20,
           }}
