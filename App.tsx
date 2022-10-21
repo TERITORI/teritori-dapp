@@ -27,8 +27,12 @@ import { linking } from "./packages/utils/navigation";
 
 const queryClient = new QueryClient();
 
+type StakeFormValuesType = {
+  name: string;
+};
+
 export default function App() {
-  const methods = useForm();
+  const methods = useForm<StakeFormValuesType>();
   const [fontsLoaded] = useFonts({
     Exo_500Medium,
     Exo_600SemiBold,
@@ -42,7 +46,7 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <FormProvider<object> {...methods}>
+      <FormProvider<StakeFormValuesType> {...methods}>
         <NavigationContainer linking={linking}>
           <SafeAreaProvider>
             <ReduxProvider store={store}>
