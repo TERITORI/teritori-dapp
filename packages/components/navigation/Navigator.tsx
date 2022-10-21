@@ -13,6 +13,10 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { PathwarScreen } from "../../screens/Pathwar/PathwarScreen";
+import { ResourceScreen } from "../../screens/Pathwar/Resources/ResourceScreen";
+import { StatisticScreen } from "../../screens/Pathwar/Statistics/StatisticScreen";
+import { TournamentScreen } from "../../screens/Pathwar/Tournaments/TournamentScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSBurnNameScreen } from "../../screens/TeritoriNameService/TNSBurnNameScreen";
@@ -98,6 +102,33 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Wallet Manager (Chains)"),
         }}
       />
+
+      {/* Pathwar */}
+
+      <Stack.Screen
+        name="Pathwar"
+        component={PathwarScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Resources"
+        component={ResourceScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Tournaments"
+        component={TournamentScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Statistics"
+        component={StatisticScreen}
+        options={{ header: () => null }}
+      />
+
       {/* ==== Launchpad */}
       <Stack.Screen
         name="Launchpad"

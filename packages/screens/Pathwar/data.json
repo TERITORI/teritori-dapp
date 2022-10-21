@@ -1,0 +1,816 @@
+{
+	"items": [
+	  {
+		"id": "1491162356317687808",
+		"created_at": "2022-02-08T21:29:44Z",
+		"updated_at": "2022-08-23T20:25:27Z",
+		"slug": "helloworld@default@global",
+		"flavor": {
+		  "id": "1491162355277500416",
+		  "created_at": "2022-02-08T21:29:44Z",
+		  "updated_at": "2022-08-23T20:25:26Z",
+		  "version": "default",
+		  "validation_reward": "1",
+		  "slug": "helloworld@default",
+		  "body": "Introduction challenge.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"intro"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1491162354405085184",
+			"created_at": "2022-02-08T21:29:44Z",
+			"updated_at": "2022-08-23T20:25:26Z",
+			"name": "Hello World!",
+			"author": "Pathwar Staff",
+			"locale": "en",
+			"homepage": "https://github.com/pathwar/pathwar/tree/master/challenges/web/helloworld",
+			"slug": "helloworld"
+		  },
+		  "challenge_id": "1491162354405085184",
+		  "instances": [
+			{
+			  "id": "1491162355323637760",
+			  "created_at": "2022-02-08T21:29:44Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "helloworld@default@fr2-pathwar-net",
+			  "flavor_id": "1491162355277500416"
+			},
+			{
+			  "id": "1499702685295710208",
+			  "created_at": "2022-03-04T11:05:58Z",
+			  "updated_at": "2022-08-23T20:25:27Z",
+			  "status": "NeedRedump",
+			  "slug": "helloworld@default@fwrz",
+			  "flavor_id": "1491162355277500416"
+			},
+			{
+			  "id": "1578005056697929728",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "helloworld@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1491162355277500416"
+			}
+		  ]
+		},
+		"flavor_id": "1491162355277500416",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1538867629488345088",
+		"created_at": "2022-06-20T12:53:28Z",
+		"updated_at": "2022-06-20T13:30:32Z",
+		"slug": "hexsecret@default@global",
+		"flavor": {
+		  "id": "1538867628246831104",
+		  "created_at": "2022-06-20T12:53:28Z",
+		  "updated_at": "2022-06-20T13:30:32Z",
+		  "version": "default",
+		  "validation_reward": "1",
+		  "slug": "hexsecret@default",
+		  "body": "Introduction to crypto challenges.\n\n\"Encoding, for sure, make my secret secure.\"\n",
+		  "passphrases": "1",
+		  "category": "crypto",
+		  "tags": [
+			"intro",
+			"crypto"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1538867627240198144",
+			"created_at": "2022-06-20T12:53:28Z",
+			"updated_at": "2022-06-20T13:30:32Z",
+			"name": "Hexadecimal secret!",
+			"author": "Undercover L3mon",
+			"locale": "en",
+			"homepage": "https://github.com/pathwar/pathwar/tree/master/challenges/crypto/hexsecret",
+			"slug": "hexsecret"
+		  },
+		  "challenge_id": "1538867627240198144",
+		  "instances": [
+			{
+			  "id": "1538867628347494400",
+			  "created_at": "2022-06-20T12:53:28Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "hexsecret@default@fr2-pathwar-net",
+			  "flavor_id": "1538867628246831104"
+			},
+			{
+			  "id": "1538867628389437440",
+			  "created_at": "2022-06-20T12:53:28Z",
+			  "updated_at": "2022-06-20T13:30:33Z",
+			  "status": "NeedRedump",
+			  "slug": "hexsecret@default@fwrz",
+			  "flavor_id": "1538867628246831104"
+			},
+			{
+			  "id": "1578005058543423488",
+			  "created_at": "2022-10-06T12:51:39Z",
+			  "updated_at": "2022-10-06T12:51:39Z",
+			  "status": "IsNew",
+			  "slug": "hexsecret@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1538867628246831104"
+			}
+		  ]
+		},
+		"flavor_id": "1538867628246831104",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1491162343340511232",
+		"created_at": "2022-02-08T21:29:41Z",
+		"updated_at": "2022-08-23T20:25:29Z",
+		"slug": "training-sqli@default@global",
+		"flavor": {
+		  "id": "1491162341859921920",
+		  "created_at": "2022-02-08T21:29:41Z",
+		  "updated_at": "2022-08-23T20:25:29Z",
+		  "version": "default",
+		  "validation_reward": "5",
+		  "slug": "training-sqli@default",
+		  "body": "Learn to execute custom code.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"tutorial",
+			"sql",
+			"injection"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1491162340668739584",
+			"created_at": "2022-02-08T21:29:41Z",
+			"updated_at": "2022-08-23T20:25:29Z",
+			"name": "Training: Sqli",
+			"author": "Pathwar Staff",
+			"locale": "en",
+			"homepage": "https://github.com/pathwar/pathwar/tree/master/challenges/web/training-sqli",
+			"slug": "training-sqli"
+		  },
+		  "challenge_id": "1491162340668739584",
+		  "instances": [
+			{
+			  "id": "1491162341906059264",
+			  "created_at": "2022-02-08T21:29:41Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "training-sqli@default@fr2-pathwar-net",
+			  "flavor_id": "1491162341859921920"
+			},
+			{
+			  "id": "1499702684834336768",
+			  "created_at": "2022-03-04T11:05:58Z",
+			  "updated_at": "2022-08-23T20:25:29Z",
+			  "status": "NeedRedump",
+			  "slug": "training-sqli@default@fwrz",
+			  "flavor_id": "1491162341859921920"
+			},
+			{
+			  "id": "1578005055901011968",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "training-sqli@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1491162341859921920"
+			}
+		  ]
+		},
+		"flavor_id": "1491162341859921920",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1491162347895525376",
+		"created_at": "2022-02-08T21:29:42Z",
+		"updated_at": "2022-08-23T20:25:28Z",
+		"slug": "training-brute@default@global",
+		"flavor": {
+		  "id": "1491162346863726592",
+		  "created_at": "2022-02-08T21:29:42Z",
+		  "updated_at": "2022-08-23T20:25:28Z",
+		  "version": "default",
+		  "validation_reward": "5",
+		  "slug": "training-brute@default",
+		  "body": "Learn to brute force.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"tutorial",
+			"bruteforce"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "on-validation"
+			},
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1491162345706098688",
+			"created_at": "2022-02-08T21:29:42Z",
+			"updated_at": "2022-08-23T20:25:27Z",
+			"name": "Training: Brute",
+			"author": "Pathwar Staff",
+			"locale": "en",
+			"homepage": "https://github.com/pathwar/pathwar/tree/master/challenges/web/training-brute",
+			"slug": "training-brute"
+		  },
+		  "challenge_id": "1491162345706098688",
+		  "instances": [
+			{
+			  "id": "1491162346926641152",
+			  "created_at": "2022-02-08T21:29:42Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "training-brute@default@fr2-pathwar-net",
+			  "flavor_id": "1491162346863726592"
+			},
+			{
+			  "id": "1499702684997914624",
+			  "created_at": "2022-03-04T11:05:58Z",
+			  "updated_at": "2022-08-23T20:25:28Z",
+			  "status": "NeedRedump",
+			  "slug": "training-brute@default@fwrz",
+			  "flavor_id": "1491162346863726592"
+			},
+			{
+			  "id": "1578005056156864512",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "training-brute@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1491162346863726592"
+			}
+		  ]
+		},
+		"flavor_id": "1491162346863726592",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1491162360503603200",
+		"created_at": "2022-02-08T21:29:45Z",
+		"updated_at": "2022-08-23T20:25:29Z",
+		"slug": "training-include@default@global",
+		"flavor": {
+		  "id": "1491162359383724032",
+		  "created_at": "2022-02-08T21:29:45Z",
+		  "updated_at": "2022-08-23T20:25:29Z",
+		  "version": "default",
+		  "validation_reward": "5",
+		  "slug": "training-include@default",
+		  "body": "Learn to execute custom code.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"tutorial",
+			"exec"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "on-validation"
+			},
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1491162358419034112",
+			"created_at": "2022-02-08T21:29:45Z",
+			"updated_at": "2022-08-23T20:25:29Z",
+			"name": "Training: Include",
+			"author": "Pathwar Staff",
+			"locale": "en",
+			"homepage": "https://github.com/pathwar/pathwar/tree/master/challenges/web/training-include",
+			"slug": "training-include"
+		  },
+		  "challenge_id": "1491162358419034112",
+		  "instances": [
+			{
+			  "id": "1491162359434055680",
+			  "created_at": "2022-02-08T21:29:45Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "training-include@default@fr2-pathwar-net",
+			  "flavor_id": "1491162359383724032"
+			},
+			{
+			  "id": "1499702685446705152",
+			  "created_at": "2022-03-04T11:05:58Z",
+			  "updated_at": "2022-08-23T20:25:29Z",
+			  "status": "NeedRedump",
+			  "slug": "training-include@default@fwrz",
+			  "flavor_id": "1491162359383724032"
+			},
+			{
+			  "id": "1578005056911839232",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "training-include@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1491162359383724032"
+			}
+		  ]
+		},
+		"flavor_id": "1491162359383724032",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1491162364500774912",
+		"created_at": "2022-02-08T21:29:46Z",
+		"updated_at": "2022-08-23T20:25:28Z",
+		"slug": "training-http@default@global",
+		"flavor": {
+		  "id": "1491162363397672960",
+		  "created_at": "2022-02-08T21:29:46Z",
+		  "updated_at": "2022-08-23T20:25:28Z",
+		  "version": "default",
+		  "validation_reward": "5",
+		  "slug": "training-http@default",
+		  "body": "Learn to play with HTTP.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"tutorial",
+			"http"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1491162362495897600",
+			"created_at": "2022-02-08T21:29:46Z",
+			"updated_at": "2022-08-23T20:25:28Z",
+			"name": "Training: HTTP",
+			"author": "Pathwar Staff",
+			"locale": "en",
+			"homepage": "https://github.com/pathwar/pathwar/tree/master/challenges/web/training-http",
+			"slug": "training-http"
+		  },
+		  "challenge_id": "1491162362495897600",
+		  "instances": [
+			{
+			  "id": "1491162363460587520",
+			  "created_at": "2022-02-08T21:29:46Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "training-http@default@fr2-pathwar-net",
+			  "flavor_id": "1491162363397672960"
+			},
+			{
+			  "id": "1499702685601894400",
+			  "created_at": "2022-03-04T11:05:58Z",
+			  "updated_at": "2022-08-23T20:25:28Z",
+			  "status": "NeedRedump",
+			  "slug": "training-http@default@fwrz",
+			  "flavor_id": "1491162363397672960"
+			},
+			{
+			  "id": "1578005057125748736",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "training-http@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1491162363397672960"
+			}
+		  ]
+		},
+		"flavor_id": "1491162363397672960",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1538653110912684032",
+		"created_at": "2022-06-19T22:41:03Z",
+		"updated_at": "2022-06-19T22:48:52Z",
+		"slug": "poc-directory-indexing@default@global",
+		"flavor": {
+		  "id": "1538653109675364352",
+		  "created_at": "2022-06-19T22:41:03Z",
+		  "updated_at": "2022-06-19T22:48:52Z",
+		  "version": "default",
+		  "purchase_price": "1",
+		  "validation_reward": "5",
+		  "slug": "poc-directory-indexing@default",
+		  "body": "lorem ipsum.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"data-leak"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "on-validation"
+			},
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1538653108563873792",
+			"created_at": "2022-06-19T22:41:03Z",
+			"updated_at": "2022-06-19T22:48:52Z",
+			"name": "Directory Indexing",
+			"author": "PoC",
+			"locale": "en",
+			"homepage": "https://",
+			"slug": "poc-directory-indexing"
+		  },
+		  "challenge_id": "1538653108563873792",
+		  "instances": [
+			{
+			  "id": "1538653109763444736",
+			  "created_at": "2022-06-19T22:41:03Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "poc-directory-indexing@default@fr2-pathwar-net",
+			  "flavor_id": "1538653109675364352"
+			},
+			{
+			  "id": "1538653109788610560",
+			  "created_at": "2022-06-19T22:41:03Z",
+			  "updated_at": "2022-06-19T22:48:52Z",
+			  "status": "NeedRedump",
+			  "slug": "poc-directory-indexing@default@fwrz",
+			  "flavor_id": "1538653109675364352"
+			},
+			{
+			  "id": "1578005058329513984",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "poc-directory-indexing@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1538653109675364352"
+			}
+		  ]
+		},
+		"flavor_id": "1538653109675364352",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1491162352106606592",
+		"created_at": "2022-02-08T21:29:43Z",
+		"updated_at": "2022-08-23T20:25:26Z",
+		"slug": "captcha-mario@default@global",
+		"flavor": {
+		  "id": "1491162350932201472",
+		  "created_at": "2022-02-08T21:29:43Z",
+		  "updated_at": "2022-08-23T20:25:26Z",
+		  "version": "default",
+		  "purchase_price": "5",
+		  "validation_reward": "15",
+		  "slug": "captcha-mario@default",
+		  "body": "Bypass this Captcha protection.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"bruteforce"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "on-validation"
+			},
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1491162349782962176",
+			"created_at": "2022-02-08T21:29:43Z",
+			"updated_at": "2022-08-23T20:25:26Z",
+			"name": "Mario",
+			"author": "Pathwar Staff",
+			"locale": "en",
+			"homepage": "https://github.com/pathwar/pathwar/tree/master/challenges/web/captcha-mario",
+			"slug": "captcha-mario"
+		  },
+		  "challenge_id": "1491162349782962176",
+		  "instances": [
+			{
+			  "id": "1491162350978338816",
+			  "created_at": "2022-02-08T21:29:43Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "captcha-mario@default@fr2-pathwar-net",
+			  "flavor_id": "1491162350932201472"
+			},
+			{
+			  "id": "1499702685140520960",
+			  "created_at": "2022-03-04T11:05:58Z",
+			  "updated_at": "2022-08-23T20:25:26Z",
+			  "status": "NeedRedump",
+			  "slug": "captcha-mario@default@fwrz",
+			  "flavor_id": "1491162350932201472"
+			},
+			{
+			  "id": "1578005056391745536",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "captcha-mario@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1491162350932201472"
+			}
+		  ]
+		},
+		"flavor_id": "1491162350932201472",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1491162368581832704",
+		"created_at": "2022-02-08T21:29:47Z",
+		"updated_at": "2022-08-23T20:25:30Z",
+		"slug": "upload-hi@default@global",
+		"flavor": {
+		  "id": "1491162367600365568",
+		  "created_at": "2022-02-08T21:29:47Z",
+		  "updated_at": "2022-08-23T20:25:30Z",
+		  "version": "default",
+		  "purchase_price": "5",
+		  "validation_reward": "15",
+		  "slug": "upload-hi@default",
+		  "body": "Execute your code.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"exec"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "on-validation"
+			},
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1491162366681812992",
+			"created_at": "2022-02-08T21:29:47Z",
+			"updated_at": "2022-08-23T20:25:30Z",
+			"name": "Upload Hi!",
+			"author": "Pathwar Staff",
+			"locale": "en",
+			"homepage": "https://github.com/pathwar/pathwar/tree/master/challenges/web/upload-hi",
+			"slug": "upload-hi"
+		  },
+		  "challenge_id": "1491162366681812992",
+		  "instances": [
+			{
+			  "id": "1491162367646502912",
+			  "created_at": "2022-02-08T21:29:47Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "upload-hi@default@fr2-pathwar-net",
+			  "flavor_id": "1491162367600365568"
+			},
+			{
+			  "id": "1499702685744500736",
+			  "created_at": "2022-03-04T11:05:58Z",
+			  "updated_at": "2022-08-23T20:25:30Z",
+			  "status": "NeedRedump",
+			  "slug": "upload-hi@default@fwrz",
+			  "flavor_id": "1491162367600365568"
+			},
+			{
+			  "id": "1578005057318686720",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "upload-hi@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1491162367600365568"
+			}
+		  ]
+		},
+		"flavor_id": "1491162367600365568",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1491162372818079744",
+		"created_at": "2022-02-08T21:29:48Z",
+		"updated_at": "2022-08-23T20:25:27Z",
+		"slug": "imageboard@default@global",
+		"flavor": {
+		  "id": "1491162371899527168",
+		  "created_at": "2022-02-08T21:29:48Z",
+		  "updated_at": "2022-08-23T20:25:27Z",
+		  "version": "default",
+		  "purchase_price": "5",
+		  "validation_reward": "15",
+		  "slug": "imageboard@default",
+		  "body": "The passphrase is commented somewhere in the source.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"injection"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "on-validation"
+			},
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1491162370930642944",
+			"created_at": "2022-02-08T21:29:48Z",
+			"updated_at": "2022-08-23T20:25:27Z",
+			"name": "Image Board",
+			"author": "Pathwar Staff",
+			"locale": "en",
+			"homepage": "https://github.com/pathwar/pathwar/tree/master/challenges/web/imageboard",
+			"slug": "imageboard"
+		  },
+		  "challenge_id": "1491162370930642944",
+		  "instances": [
+			{
+			  "id": "1491162371941470208",
+			  "created_at": "2022-02-08T21:29:48Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "imageboard@default@fr2-pathwar-net",
+			  "flavor_id": "1491162371899527168"
+			},
+			{
+			  "id": "1499702685887107072",
+			  "created_at": "2022-03-04T11:05:58Z",
+			  "updated_at": "2022-08-23T20:25:27Z",
+			  "status": "NeedRedump",
+			  "slug": "imageboard@default@fwrz",
+			  "flavor_id": "1491162371899527168"
+			},
+			{
+			  "id": "1578005057591316480",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "imageboard@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1491162371899527168"
+			}
+		  ]
+		},
+		"flavor_id": "1491162371899527168",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1491162376836222976",
+		"created_at": "2022-02-08T21:29:49Z",
+		"updated_at": "2022-08-23T20:25:25Z",
+		"slug": "captcha-luigi@default@global",
+		"flavor": {
+		  "id": "1491162375896698880",
+		  "created_at": "2022-02-08T21:29:49Z",
+		  "updated_at": "2022-08-23T20:25:25Z",
+		  "version": "default",
+		  "purchase_price": "5",
+		  "validation_reward": "15",
+		  "slug": "captcha-luigi@default",
+		  "body": "Bypass this Captcha protection.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"bruteforce"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "on-validation"
+			},
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1491162374852317184",
+			"created_at": "2022-02-08T21:29:49Z",
+			"updated_at": "2022-08-23T20:25:25Z",
+			"name": "Luigi",
+			"author": "Pathwar Staff",
+			"locale": "en",
+			"homepage": "https://github.com/pathwar/pathwar/tree/master/challenges/web/captcha-luigi",
+			"slug": "captcha-luigi"
+		  },
+		  "challenge_id": "1491162374852317184",
+		  "instances": [
+			{
+			  "id": "1491162375963807744",
+			  "created_at": "2022-02-08T21:29:49Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "captcha-luigi@default@fr2-pathwar-net",
+			  "flavor_id": "1491162375896698880"
+			},
+			{
+			  "id": "1499702686038102016",
+			  "created_at": "2022-03-04T11:05:58Z",
+			  "updated_at": "2022-08-23T20:25:26Z",
+			  "status": "NeedRedump",
+			  "slug": "captcha-luigi@default@fwrz",
+			  "flavor_id": "1491162375896698880"
+			},
+			{
+			  "id": "1578005057859751936",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "captcha-luigi@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1491162375896698880"
+			}
+		  ]
+		},
+		"flavor_id": "1491162375896698880",
+		"season_id": "1491161252464955392"
+	  },
+	  {
+		"id": "1491201520048279552",
+		"created_at": "2022-02-09T00:05:22Z",
+		"updated_at": "2022-02-09T14:54:54Z",
+		"slug": "goat-goat-alles-goat@default@global",
+		"flavor": {
+		  "id": "1491201518647382016",
+		  "created_at": "2022-02-09T00:05:21Z",
+		  "updated_at": "2022-02-09T14:54:53Z",
+		  "version": "default",
+		  "purchase_price": "5",
+		  "validation_reward": "15",
+		  "slug": "goat-goat-alles-goat@default",
+		  "body": "Emacs ist so goat.",
+		  "passphrases": "1",
+		  "category": "web",
+		  "tags": [
+			"data-leak"
+		  ],
+		  "redump_policy": [
+			{
+			  "strategy": "every",
+			  "delay": "1d"
+			}
+		  ],
+		  "challenge": {
+			"id": "1491201517317787648",
+			"created_at": "2022-02-09T00:05:21Z",
+			"updated_at": "2022-02-09T14:54:53Z",
+			"name": "Goat, goat, alles goat",
+			"author": "Pathwar Staff",
+			"locale": "en",
+			"slug": "goat-goat-alles-goat"
+		  },
+		  "challenge_id": "1491201517317787648",
+		  "instances": [
+			{
+			  "id": "1491201518689325056",
+			  "created_at": "2022-02-09T00:05:21Z",
+			  "updated_at": "2022-10-09T19:34:24Z",
+			  "status": "Available",
+			  "slug": "goat-goat-alles-goat@default@fr2-pathwar-net",
+			  "flavor_id": "1491201518647382016"
+			},
+			{
+			  "id": "1499702686180708352",
+			  "created_at": "2022-03-04T11:05:58Z",
+			  "updated_at": "2022-03-04T11:05:58Z",
+			  "status": "IsNew",
+			  "slug": "goat-goat-alles-goat@default@fwrz",
+			  "flavor_id": "1491201518647382016"
+			},
+			{
+			  "id": "1578005058065272832",
+			  "created_at": "2022-10-06T12:51:38Z",
+			  "updated_at": "2022-10-06T12:51:38Z",
+			  "status": "IsNew",
+			  "slug": "goat-goat-alles-goat@default@mikaelvallenet-xps-15-9510",
+			  "flavor_id": "1491201518647382016"
+			}
+		  ]
+		},
+		"flavor_id": "1491201518647382016",
+		"season_id": "1491161252464955392"
+	  }
+	]
+  }

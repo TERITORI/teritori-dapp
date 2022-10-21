@@ -52,6 +52,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: string;
   labelStyle?: TextStyle;
+  mainBoxBackgroundColor?: string;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -74,6 +75,7 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
+  mainBoxBackgroundColor = neutral22,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // Handling key pressing
@@ -159,7 +161,13 @@ export const TextInputCustom = <T extends FieldValues>({
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
-        mainContainerStyle={styles.mainContainer}
+        mainContainerStyle={{
+          alignItems: "flex-start",
+          paddingHorizontal: 12,
+          paddingVertical: 10,
+          backgroundColor: mainBoxBackgroundColor,
+        }}
+        fullWidth
         width={width}
         height={height}
       >
@@ -198,12 +206,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
-  },
-  mainContainer: {
-    alignItems: "flex-start",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    backgroundColor: neutral22,
   },
   labelText: {
     color: neutral77,

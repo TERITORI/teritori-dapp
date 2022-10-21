@@ -14,6 +14,10 @@ export type RootStackParamList = {
   Governance: undefined;
   UserPublicProfile: { id: string };
   RiotersFooter: undefined;
+  Pathwar: undefined;
+  Resources: undefined;
+  Tournaments: undefined;
+  Statistics: undefined;
 
   Launchpad: undefined;
   MintCollection: { id: string };
@@ -62,6 +66,11 @@ const navConfig: {
     Governance: "governance",
     UserPublicProfile: "user/:id",
     RiotersFooter: "rioters-footer",
+    // === Pathwar
+    Pathwar: "pathwar",
+    Resources: "ressources",
+    Tournaments: "tournaments",
+    Statistics: "statistics",
     // ==== Launchpad
     Launchpad: "launchpad",
     // Mint NFT collection
