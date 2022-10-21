@@ -28,7 +28,10 @@ import { linking } from "./packages/utils/navigation";
 const queryClient = new QueryClient();
 
 export default function App() {
-  const methods = useForm<{ name: "" }>();
+  const methods = useForm<{
+    validatorName: string;
+    amount: string;
+  }>();
   const [fontsLoaded] = useFonts({
     Exo_500Medium,
     Exo_600SemiBold,
