@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import { Currency } from "@keplr-wallet/types";
-=======
->>>>>>> 5556923 (fix(connect-wallet): redone changes)
 import React, { useMemo } from "react";
 import {
   RegisterOptions,
@@ -23,13 +20,6 @@ import {
 } from "react-native";
 
 import { DEFAULT_ERRORS } from "../../utils/errors";
-<<<<<<< HEAD
-=======
-import {
-  numberWithThousandsSeparator,
-  thousandSeparatedToNumber,
-} from "../../utils/numbers";
->>>>>>> 5556923 (fix(connect-wallet): redone changes)
 import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -94,10 +84,7 @@ export const TextInputCustom = <T extends FieldValues>({
     name,
     control,
     rules,
-<<<<<<< HEAD
-=======
     defaultValue,
->>>>>>> 5556923 (fix(connect-wallet): redone changes)
   });
 
   const error = useMemo(() => {
@@ -127,7 +114,6 @@ export const TextInputCustom = <T extends FieldValues>({
       }
       return;
     }
-<<<<<<< HEAD
 
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
       field.onChange(value);
@@ -135,30 +121,6 @@ export const TextInputCustom = <T extends FieldValues>({
         restProps.onChangeText(value);
       }
     }
-=======
-    // ---- If you want only number in the TextInputCustom, we apply comma as a thousand separator
-    if (onlyNumbers) {
-      const withoutCommaValue = thousandSeparatedToNumber(value);
-      // Set value only if fully number
-      const reg = new RegExp(/^\d+$/);
-
-      if (
-        rules?.max &&
-        parseInt(withoutCommaValue, 10) >= (rules.max as number) + 1
-      ) {
-        return;
-      }
-
-      if (reg.test(withoutCommaValue) || !value) {
-        field.onChange(numberWithThousandsSeparator(withoutCommaValue));
-      }
-      return;
-    }
-    // ---- Apply onChange respecting the regexp (Allow empty string)
-    if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
-      field.onChange(value);
-    }
->>>>>>> 5556923 (fix(connect-wallet): redone changes)
   };
 
   return (
