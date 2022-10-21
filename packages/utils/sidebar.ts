@@ -49,7 +49,7 @@ export const SIDEBAR_LIST: SidebarType = {
   },
   namespace: {
     title: "Name Service",
-    route: "ComingSoon",
+    route: "TNSHome",
     icon: tnsServiceSVG,
   },
   riotersGame: {
