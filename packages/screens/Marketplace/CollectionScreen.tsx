@@ -31,13 +31,13 @@ import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 const collectionScreenTabItems = {
+  allNFTs: {
+    name: "All NFTs",
+    badgeCount: 5760,
+  },
   owned: {
     name: "Owned",
     badgeCount: 87,
-  },
-  collections: {
-    name: "Collections",
-    badgeCount: 5760,
   },
   activity: {
     name: "Activity",
@@ -77,7 +77,7 @@ const FlatListHeader: React.FC<{
   collectionInfo: CollectionInfo;
 }> = ({ collectionInfo = {} }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof collectionScreenTabItems>("owned");
+    useState<keyof typeof collectionScreenTabItems>("allNFTs");
   const { width: maxWidth } = useMaxResolution();
   const { width, height } = useImageResizer({
     image: bannerCollection,
