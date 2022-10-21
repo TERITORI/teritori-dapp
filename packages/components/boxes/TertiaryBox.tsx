@@ -6,7 +6,6 @@ import {
   neutral11,
   neutral33,
   neutral44,
-  withAlpha,
 } from "../../utils/style/colors";
 
 export const TertiaryBox: React.FC<{
