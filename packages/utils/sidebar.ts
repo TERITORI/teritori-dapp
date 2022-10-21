@@ -64,7 +64,7 @@ export const SIDEBAR_LIST: SidebarType = {
   },
   riotersFooter: {
     title: "Rioters Footer",
-    route: "ComingSoon",
+    route: "RiotersFooter",
     icon: rioterFooterSVG,
   },
 };
