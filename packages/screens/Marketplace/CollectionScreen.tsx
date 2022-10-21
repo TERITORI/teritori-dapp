@@ -212,6 +212,9 @@ const CollectionNFTs: React.FC<{ id: string; numColumns: number }> = ({
       onEndReached={fetchMore}
       keyExtractor={keyExtractor}
       onEndReachedThreshold={4}
+      contentContainerStyle={{
+        alignItems: "center",
+      }}
       renderItem={(info) => (
         <RenderItem
           nft={info.item}

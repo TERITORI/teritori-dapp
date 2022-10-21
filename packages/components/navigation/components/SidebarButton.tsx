@@ -24,6 +24,7 @@ interface SidebarButtonProps {
   onPress?: () => void;
   title?: string;
   iconSize?: number;
+  isComingSoon?: boolean;
 }
 
 export const SidebarButton: React.FC<SidebarButtonProps> = ({
@@ -32,6 +33,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   onPress,
   title,
   iconSize = 28,
+  isComingSoon: isCommingSoon,
 }) => {
   // variables
   const { isSidebarExpanded } = useSidebar();
@@ -44,21 +46,44 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
     [isSidebarExpanded]
   );
 
+  type PressableState = Readonly<{
+    pressed: boolean;
+    hovered?: boolean;
+    focused?: boolean;
+  }>;
+
   // returns
   return (
-    <Pressable onPress={onPress} disabled={selected} style={styles.container}>
-      {selected && <SideNotch />}
-      <View
-        style={[styles.svgContainer, selected && { borderColor: primaryColor }]}
-      >
-        <SVG width={iconSize} height={iconSize} source={iconSVG} />
-      </View>
-      <SpacerRow size={2} />
-      <Animated.View style={opacityStyle}>
-        <BrandText style={[fontSemibold12, selected && { color: neutral77 }]}>
-          {title}
-        </BrandText>
-      </Animated.View>
+    <Pressable
+      onPress={isCommingSoon ? () => {} : onPress}
+      disabled={selected}
+      style={styles.container}
+    >
+      {({ hovered }: PressableState): React.ReactElement => (
+        <>
+          {selected && <SideNotch />}
+          <View
+            style={[
+              styles.svgContainer,
+              selected && { borderColor: primaryColor },
+              isCommingSoon && { opacity: 0.5 },
+            ]}
+          >
+            <SVG width={iconSize} height={iconSize} source={iconSVG} />
+          </View>
+          <SpacerRow size={2} />
+          <Animated.View style={opacityStyle}>
+            <BrandText
+              style={[
+                fontSemibold12,
+                (selected || isCommingSoon) && { color: neutral77 },
+              ]}
+            >
+              {isCommingSoon && hovered ? "Coming Soon" : title}
+            </BrandText>
+          </Animated.View>
+        </>
+      )}
     </Pressable>
   );
 };

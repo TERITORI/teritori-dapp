@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, ScrollView, StyleSheet, View } from "react-native";
 
+import TrashSVG from "../../../assets/icons/trash.svg";
 import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { prettyPrice } from "../../utils/coins";
@@ -17,6 +18,7 @@ import Slider from "../Slider";
 import { IconButton } from "../buttons/IconButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
+import { SpacerColumn } from "../spacer";
 
 const NftAdjustments: React.FC<{
   nftDroped: NFT;
@@ -53,7 +55,7 @@ const NftAdjustments: React.FC<{
     }, [sliderValue]);
 
     return (
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <BrandText style={styles.textTitle}>NFT info & adjustments</BrandText>
         <View style={styles.separator} />
         <View>
@@ -115,7 +117,8 @@ const NftAdjustments: React.FC<{
             )}
           </BrandText>
         </View>
-        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+        <SpacerColumn size={2} />
+        <View style={{ justifyContent: "flex-end" }}>
           <View
             style={{
               flexDirection: "row",
@@ -124,7 +127,7 @@ const NftAdjustments: React.FC<{
             }}
           >
             <IconButton
-              iconSVG={require("../../../assets/icons/trash.svg")}
+              iconSVG={TrashSVG}
               iconColor={errorColor}
               iconSize={12}
               onPress={() => {
@@ -148,7 +151,7 @@ const NftAdjustments: React.FC<{
             />
           </View>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 );
