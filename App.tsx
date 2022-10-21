@@ -41,7 +41,6 @@ export default function App() {
   }
 
   return (
-<<<<<<< HEAD
     <QueryClientProvider client={queryClient}>
       <FormProvider {...methods}>
         <NavigationContainer linking={linking}>
@@ -70,33 +69,5 @@ export default function App() {
         </NavigationContainer>
       </FormProvider>
     </QueryClientProvider>
-=======
-    <FormProvider {...methods}>
-      <NavigationContainer linking={linking}>
-        <SafeAreaProvider>
-          <ReduxProvider store={store}>
-            <FeedbacksContextProvider>
-              <DropdownsContextProvider>
-                <WalletsProvider>
-                  <SolanaBalanceProvider>
-                    <TeritoriBalanceProvider>
-                      <SolanaOwnedNFTsProvider>
-                        <TNSContextProvider>
-                          <SidebarContextProvider>
-                            <StatusBar style="inverted" />
-                            <Navigator />
-                          </SidebarContextProvider>
-                        </TNSContextProvider>
-                      </SolanaOwnedNFTsProvider>
-                    </TeritoriBalanceProvider>
-                  </SolanaBalanceProvider>
-                </WalletsProvider>
-              </DropdownsContextProvider>
-            </FeedbacksContextProvider>
-          </ReduxProvider>
-        </SafeAreaProvider>
-      </NavigationContainer>
-    </FormProvider>
->>>>>>> 5556923 (fix(connect-wallet): redone changes)
   );
 }
