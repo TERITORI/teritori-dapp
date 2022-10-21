@@ -14,7 +14,6 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useAppNavigation } from "../../utils/navigation";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
-import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { DAppCard } from "../cards/DAppCard";
 import { LabelCard } from "../cards/LabelCard";
 import { MyWalletsCard } from "../cards/MyWalletsCard";
@@ -133,31 +132,6 @@ Join the Bounty Program
           title="Upcoming Launches on Teritori Launch Pad"
           kind={CollectionsRequest_Kind.KIND_UPCOMING}
         />
-        <View
-          style={{
-            flexDirection: "row",
-            margin: -gridHalfGutter,
-            justifyContent: "center",
-            flexWrap: "wrap",
-            marginTop: 56,
-          }}
-        >
-          <PrimaryButtonOutline
-            size="XL"
-            text="Apply to the Launch Pad"
-            style={{ margin: gridHalfGutter }}
-          />
-          <PrimaryButtonOutline
-            size="XL"
-            text="Explore All Upcoming Launches"
-            style={{ margin: gridHalfGutter }}
-          />
-          <PrimaryButtonOutline
-            size="XL"
-            text="Vote on Upcoming Launches"
-            style={{ margin: gridHalfGutter }}
-          />
-        </View>
         <View
           style={{
             marginTop: 274,
