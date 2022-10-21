@@ -1,6 +1,12 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import { View, TouchableOpacity, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -9,14 +15,10 @@ import Animated, {
 
 import addSVG from "../../../assets/icons/add.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import launchpadSVG from "../../../assets/icons/launchpad.svg";
-import marketplaceSVG from "../../../assets/icons/marketplace.svg";
-import riotersSVG from "../../../assets/icons/rioters.svg";
-import stakingSVG from "../../../assets/icons/staking.svg";
-import walletSVG from "../../../assets/icons/wallet-sidebar.svg";
 import logoTopSVG from "../../../assets/logos/logo-hexagon.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useAppNavigation } from "../../utils/navigation";
+import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import {
   smallSidebarWidth,
@@ -29,35 +31,6 @@ import { Separator } from "../Separator";
 import { SpacerColumn } from "../spacer";
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
-import { SidebarType } from "./types";
-
-const LIST: SidebarType = {
-  wallet: {
-    title: "My Wallet",
-    route: "Wallets",
-    icon: walletSVG,
-  },
-  staking: {
-    title: "Staking",
-    route: "Staking",
-    icon: stakingSVG,
-  },
-  marketplace: {
-    title: "Marketplace",
-    route: "Marketplace",
-    icon: marketplaceSVG,
-  },
-  governance: {
-    title: "Rioters Game",
-    route: "GuardiansGame",
-    icon: riotersSVG,
-  },
-  launchpad: {
-    title: "Launchpad",
-    route: "Launchpad",
-    icon: launchpadSVG,
-  },
-};
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,
@@ -68,9 +41,7 @@ const SpringConfig: WithSpringConfig = {
 export const Sidebar: React.FC = () => {
   // variables
   const navigation = useAppNavigation();
-
   const { name: currentRouteName } = useRoute();
-
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
 
   // animations
@@ -123,22 +94,26 @@ export const Sidebar: React.FC = () => {
 
         <Separator color={neutral33} />
       </View>
-      <SpacerColumn size={1} />
-      {Object.values(LIST).map((item) => (
+      <ScrollView>
+        <SpacerColumn size={1} />
+        {Object.values(SIDEBAR_LIST).map((item) => (
+          <SidebarButton
+            key={item.title}
+            selected={currentRouteName === item.route}
+            iconSVG={item.icon}
+            onPress={() => navigation.navigate(item.route)}
+            title={item.title}
+            isComingSoon={item.route === "ComingSoon"}
+          />
+        ))}
         <SidebarButton
-          key={item.title}
-          selected={currentRouteName === item.route}
-          iconSVG={item.icon}
-          onPress={() => navigation.navigate(item.route)}
-          title={item.title}
+          selected={currentRouteName === "ComingSoon"}
+          iconSVG={addSVG}
+          iconSize={36}
+          onPress={() => navigation.navigate("ComingSoon")}
+          isComingSoon
         />
-      ))}
-      <SidebarButton
-        selected={currentRouteName === "ComingSoon"}
-        iconSVG={addSVG}
-        iconSize={36}
-        onPress={() => navigation.navigate("ComingSoon")}
-      />
+      </ScrollView>
     </Animated.View>
   );
 };
