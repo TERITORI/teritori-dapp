@@ -80,7 +80,7 @@ export const TextInputCustom = <T extends FieldValues>({
     }
   };
 
-  const { field, fieldState } = useController({
+  const { field, fieldState } = useController<T>({
     name,
     control,
     rules,
