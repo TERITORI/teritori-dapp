@@ -1,7 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 
-import { TeritoriNftMinterQueryClient } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
+import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import { prettyPrice } from "../utils/coins";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
@@ -22,7 +22,7 @@ export interface CollectionInfo {
   maxPerAddress?: string;
   hasPresale?: boolean;
   whitelistMaxPerAddress?: string;
-  whitelistSize?: string;
+  whitelistSize?: number;
   isInPresalePeriod?: boolean;
   isMintable?: boolean;
   publicSaleEnded?: boolean;
@@ -52,7 +52,7 @@ export const useCollectionInfo = (id: string) => {
       try {
         const cosmwasm = await getNonSigningCosmWasmClient();
 
-        const minterClient = new TeritoriNftMinterQueryClient(
+        const minterClient = new TeritoriBunkerMinterQueryClient(
           cosmwasm,
           mintAddress
         );
@@ -61,9 +61,9 @@ export const useCollectionInfo = (id: string) => {
         const nftClient = new TeritoriNftQueryClient(cosmwasm, conf.nft_addr);
         const nftInfo = await nftClient.contractInfo();
 
-        const baseURI = ipfsURLToHTTPURL(conf.nft_base_uri);
-        const metadataURI = baseURI + "collection.json";
-        const metadataReply = await fetch(metadataURI);
+        const metadataURL = ipfsURLToHTTPURL(conf.nft_base_uri);
+        const metadataReply = await fetch(metadataURL);
+
         const metadata = await metadataReply.json();
 
         const secondsSinceEpoch = Date.now() / 1000;
@@ -72,21 +72,24 @@ export const useCollectionInfo = (id: string) => {
         const hasWhitelistPeriod = !!conf.whitelist_mint_period;
         const publicSaleEnded = conf.minted_amount === conf.nft_max_supply;
 
+        const mintedAmount = await minterClient.currentSupply();
+        const whitelistSize = await minterClient.whitelistSize();
+
         const info: CollectionInfo = {
           name: nftInfo.name,
-          image: ipfsURLToHTTPURL(metadata.image),
+          image: ipfsURLToHTTPURL(metadata.image || ""),
           description: metadata.description,
           prettyUnitPrice: prettyPrice(conf.nft_price_amount, conf.price_denom),
           unitPrice: conf.nft_price_amount,
           priceDenom: conf.price_denom,
           maxSupply: conf.nft_max_supply,
-          mintedAmount: conf.minted_amount,
+          mintedAmount,
           discord: metadata.discord,
           twitter: metadata.twitter,
           website: metadata.website,
           maxPerAddress: conf.mint_max || undefined,
           whitelistMaxPerAddress: conf.whitelist_mint_max || undefined,
-          whitelistSize: conf.whitelisted_size,
+          whitelistSize,
           hasPresale: hasWhitelistPeriod,
           publicSaleEnded,
           isMintable: !publicSaleEnded && conf.is_mintable,

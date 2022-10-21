@@ -9,17 +9,17 @@ import { stdin, stdout } from "node:process";
 import path from "path";
 import readline, { Interface as ReadlineInterface } from "readline";
 
-import { TeritoriNftMinterClient } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
-import { InstantiateMsg } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.types";
+import { TeritoriBunkerMinterClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { InstantiateMsg } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.types";
 import { nftStorageUpload } from "./nft-storage-upload";
 import { pinataUpload } from "./pinata-upload";
 import { StorageResult } from "./storage";
 
-// port of https://github.com/public-awesome/stargaze-tools
+// based on https://github.com/public-awesome/stargaze-tools
 
-const rpcEndpoint = "https://rpc.testnet.teritori.com:443";
-const minterCodeID = 9;
-const tokenCodeID = 6;
+const rpcEndpoint = "https://rpc.testnet.teritori.com";
+const minterCodeID = 21;
+const tokenCodeID = 20;
 
 const main = async () => {
   // FIXME: validate config
@@ -105,13 +105,13 @@ const main = async () => {
     account.address,
     minterCodeID,
     msg,
-    `Mint-${minterCodeID}-${tokenCodeID} ${msg.nft_name}`,
+    `Bunker-${minterCodeID}-${tokenCodeID} ${msg.nft_name}`,
     "auto"
   );
 
   console.log(reply);
 
-  const minterClient = new TeritoriNftMinterClient(
+  const minterClient = new TeritoriBunkerMinterClient(
     client,
     account.address,
     reply.contractAddress

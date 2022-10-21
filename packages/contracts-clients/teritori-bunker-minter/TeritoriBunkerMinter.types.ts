@@ -9,7 +9,6 @@ export interface ConfigResponse {
   is_mintable: boolean;
   mint_max?: Uint128 | null;
   mint_start_time: number;
-  minted_amount: Uint128;
   nft_addr: string;
   nft_base_uri: string;
   nft_max_supply: Uint128;
@@ -17,9 +16,10 @@ export interface ConfigResponse {
   nft_symbol: string;
   owner: string;
   price_denom: string;
+  royalty_payment_address?: string | null;
+  royalty_percentage?: number | null;
   whitelist_mint_max?: Uint128 | null;
   whitelist_mint_period: number;
-  whitelisted_size: Uint128;
   [k: string]: unknown;
 }
 export type Addr = string;
@@ -34,12 +34,16 @@ export interface Config {
   nft_symbol: string;
   owner: Addr;
   price_denom: string;
+  royalty_payment_address?: string | null;
+  royalty_percentage?: number | null;
   whitelist_mint_max?: Uint128 | null;
   whitelist_mint_period: number;
   [k: string]: unknown;
 }
+export type CurrentSupplyResponse = string;
 export type ExecuteMsg = {
   update_config: {
+    nft_addr?: Addr | null;
     nft_base_uri?: string | null;
     nft_max_supply?: Uint128 | null;
     nft_price_amount?: Uint128 | null;
@@ -56,7 +60,15 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 } | {
+  request_mint: {
+    addr: Addr;
+    [k: string]: unknown;
+  };
+} | {
   mint: {
+    extension?: Metadata | null;
+    token_id: string;
+    token_uri?: string | null;
     [k: string]: unknown;
   };
 } | {
@@ -72,6 +84,22 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 };
+export interface Metadata {
+  animation_url?: string | null;
+  attributes?: Attribute[] | null;
+  description?: string | null;
+  external_url?: string | null;
+  image?: string | null;
+  name?: string | null;
+  royalty_payment_address?: string | null;
+  royalty_percentage?: number | null;
+  [k: string]: unknown;
+}
+export interface Attribute {
+  trait_type: string;
+  value: string;
+  [k: string]: unknown;
+}
 export interface InstantiateMsg {
   mint_max?: Uint128 | null;
   nft_base_uri: string;
@@ -81,12 +109,40 @@ export interface InstantiateMsg {
   nft_price_amount: Uint128;
   nft_symbol: string;
   price_denom: string;
+  royalty_payment_address?: string | null;
+  royalty_percentage?: number | null;
   whitelist_mint_max?: Uint128 | null;
   whitelist_mint_period: number;
   [k: string]: unknown;
 }
+export type IsWhitelistedResponse = boolean;
 export type QueryMsg = {
   config: {
     [k: string]: unknown;
   };
+} | {
+  is_whitelisted: {
+    addr: Addr;
+    [k: string]: unknown;
+  };
+} | {
+  whitelist_size: {
+    [k: string]: unknown;
+  };
+} | {
+  token_requests_count: {
+    [k: string]: unknown;
+  };
+} | {
+  current_supply: {
+    [k: string]: unknown;
+  };
+} | {
+  token_request_by_index: {
+    index: Uint128;
+    [k: string]: unknown;
+  };
 };
+export type TokenRequestByIndexResponse = string;
+export type TokenRequestsCountResponse = string;
+export type WhitelistSizeResponse = number;

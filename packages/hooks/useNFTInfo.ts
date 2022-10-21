@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { TeritoriNftMinterQueryClient } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
 import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
@@ -138,7 +138,7 @@ const getStandardNFTInfo = async (
   const cosmwasmClient = await getNonSigningCosmWasmClient();
 
   // ======== Getting minter client
-  const minterClient = new TeritoriNftMinterQueryClient(
+  const minterClient = new TeritoriBunkerMinterQueryClient(
     cosmwasmClient,
     minterContractAddress
   );
@@ -152,15 +152,28 @@ const getStandardNFTInfo = async (
   const contractInfo = await nftClient.contractInfo();
   // ======== Getting NFT info
   const nftInfo = await nftClient.nftInfo({ tokenId });
-  if (!nftInfo.token_uri) {
-    throw new Error("no token uri");
+  let name = "";
+  let description = "";
+  let image = "";
+  let attributes = [];
+  if (nftInfo.token_uri) {
+    const nftMetadata = await (
+      await fetch(ipfsURLToHTTPURL(nftInfo.token_uri))
+    ).json();
+    name = nftMetadata.name;
+    image = nftMetadata.image;
+    description = nftMetadata.description;
+    attributes = nftMetadata.attributes;
+  } else if (nftInfo.extension?.image) {
+    name = (nftInfo.extension?.name as any) || "";
+    image = (nftInfo.extension?.image as any) || "";
+    description = (nftInfo.extension?.description as any) || "";
+    attributes = (nftInfo.extension?.attributes as any) || [];
   }
   // ======== Getting NFT owner
   const { owner } = await nftClient.ownerOf({ tokenId });
   // ======== Getting NFT metadata
-  const nftMetadata = await (
-    await fetch(ipfsURLToHTTPURL(nftInfo.token_uri))
-  ).json();
+
   // ======== Getting vault stuff (For selling)
   const vaultClient = new TeritoriNftVaultQueryClient(
     cosmwasmClient,
@@ -191,12 +204,12 @@ const getStandardNFTInfo = async (
 
   // NFT base info
   const nfo: NFTInfo = {
-    name: nftMetadata.name,
-    description: nftMetadata.description,
-    attributes: nftMetadata.attributes,
+    name,
+    description,
+    attributes,
     nftAddress: minterConfig.nft_addr,
     mintAddress: minterContractAddress,
-    imageURL: ipfsURLToHTTPURL(nftMetadata.image),
+    imageURL: ipfsURLToHTTPURL(image),
     tokenId,
     ownerAddress: vaultOwnerAddress || owner,
     isSeller: isListed && isOwner,
