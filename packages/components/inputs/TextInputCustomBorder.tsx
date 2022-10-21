@@ -7,6 +7,7 @@ import {
   ViewStyle,
 } from "react-native";
 
+import searchSVG from "../../../assets/icons/search.svg";
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
@@ -99,11 +100,7 @@ export const TextInputCustomBorder: React.FC<{
               width: "100%",
             }}
           >
-            <SVG
-              source={require("../../../assets/icons/search.svg")}
-              width={16}
-              height={16}
-            />
+            <SVG source={searchSVG} width={16} height={16} />
             <TextInput
               editable={!disabled}
               placeholder={placeHolder}
