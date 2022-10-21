@@ -28,10 +28,7 @@ import { linking } from "./packages/utils/navigation";
 const queryClient = new QueryClient();
 
 export default function App() {
-  const methods = useForm<{
-    validatorName: string;
-    amount: string;
-  }>();
+  const methods = useForm();
   const [fontsLoaded] = useFonts({
     Exo_500Medium,
     Exo_600SemiBold,
@@ -45,7 +42,7 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <FormProvider {...methods}>
+      <FormProvider<object> {...methods}>
         <NavigationContainer linking={linking}>
           <SafeAreaProvider>
             <ReduxProvider store={store}>
