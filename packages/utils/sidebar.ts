@@ -54,7 +54,7 @@ export const SIDEBAR_LIST: SidebarType = {
   },
   riotersGame: {
     title: "Rioters Game",
-    route: "GuardiansGame",
+    route: "ComingSoon",
     icon: riotersGameSVG,
   },
   pathwar: {
