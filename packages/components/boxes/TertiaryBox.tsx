@@ -83,11 +83,7 @@ export const TertiaryBox: React.FC<{
                   borderRadius: borderRadius - 1,
                   zIndex: -1,
                 }}
-                colors={[
-                  withAlpha("#9C4CEA", 0.5),
-                  withAlpha("#336AFF", 0.5),
-                  withAlpha("#26C5FB", 0.5),
-                ]}
+                colors={["#9C4CEA", "#336AFF", "#26C5FB"]}
               />
             ) : null}
             <>{children}</>
