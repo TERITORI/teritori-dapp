@@ -1,5 +1,5 @@
 CANDYMACHINE_REPO=teritori-nfts
-CANDYMACHINE_PACKAGE=teritori-nft-minter
+BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
@@ -50,23 +50,23 @@ docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 
 .PHONY: generate.contracts-clients
-generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
+generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
 
-.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE)
-$(CONTRACTS_CLIENTS_DIR)/$(CANDYMACHINE_PACKAGE): node_modules
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
 	rm -fr $(CANDYMACHINE_REPO)
 	git clone git@github.com:TERITORI/$(CANDYMACHINE_REPO).git
-	cd $(CANDYMACHINE_REPO) && git checkout c368eba82348c0f9cc538cee7401bcf673847dcc
+	cd $(CANDYMACHINE_REPO) && git checkout 4d1658abee454a20bff504b6dce0eba25e69708c
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
 		--schema $(CANDYMACHINE_REPO)/schema/nft-minter \
 		--out $@ \
-		--name $(CANDYMACHINE_PACKAGE) \
+		--name $(BUNKER_MINTER_PACKAGE) \
 		--no-bundle
-	mkdir -p go/pkg/contracts/nft_minter_types
-	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(CANDYMACHINE_REPO)/schema/nft-minter/instantiate_msg.json -o go/pkg/contracts/nft_minter_types/instantiate_msg.go -p nft_minter_types
-	go fmt ./go/pkg/contracts/nft_minter_types
+	mkdir -p go/pkg/contracts/bunker_minter_types
+	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(CANDYMACHINE_REPO)/schema/nft-minter/instantiate_msg.json -o go/pkg/contracts/bunker_minter_types/instantiate_msg.go -p bunker_minter_types
+	go fmt ./go/pkg/contracts/bunker_minter_types
 	rm -fr $(CANDYMACHINE_REPO)
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE)

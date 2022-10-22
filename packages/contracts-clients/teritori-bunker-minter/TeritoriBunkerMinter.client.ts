@@ -6,12 +6,25 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { Uint128, ConfigResponse, Addr, Config, ExecuteMsg, InstantiateMsg, QueryMsg } from "./TeritoriNftMinter.types";
-export interface TeritoriNftMinterReadOnlyInterface {
+import { Uint128, ConfigResponse, Addr, Config, CurrentSupplyResponse, ExecuteMsg, Metadata, Attribute, InstantiateMsg, IsWhitelistedResponse, QueryMsg, TokenRequestByIndexResponse, TokenRequestsCountResponse, WhitelistSizeResponse } from "./TeritoriBunkerMinter.types";
+export interface TeritoriBunkerMinterReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<ConfigResponse>;
+  isWhitelisted: ({
+    addr
+  }: {
+    addr: Addr;
+  }) => Promise<IsWhitelistedResponse>;
+  whitelistSize: () => Promise<WhitelistSizeResponse>;
+  tokenRequestsCount: () => Promise<TokenRequestsCountResponse>;
+  currentSupply: () => Promise<CurrentSupplyResponse>;
+  tokenRequestByIndex: ({
+    index
+  }: {
+    index: Uint128;
+  }) => Promise<TokenRequestByIndexResponse>;
 }
-export class TeritoriNftMinterQueryClient implements TeritoriNftMinterReadOnlyInterface {
+export class TeritoriBunkerMinterQueryClient implements TeritoriBunkerMinterReadOnlyInterface {
   client: CosmWasmClient;
   contractAddress: string;
 
@@ -19,6 +32,11 @@ export class TeritoriNftMinterQueryClient implements TeritoriNftMinterReadOnlyIn
     this.client = client;
     this.contractAddress = contractAddress;
     this.config = this.config.bind(this);
+    this.isWhitelisted = this.isWhitelisted.bind(this);
+    this.whitelistSize = this.whitelistSize.bind(this);
+    this.tokenRequestsCount = this.tokenRequestsCount.bind(this);
+    this.currentSupply = this.currentSupply.bind(this);
+    this.tokenRequestByIndex = this.tokenRequestByIndex.bind(this);
   }
 
   config = async (): Promise<ConfigResponse> => {
@@ -26,16 +44,55 @@ export class TeritoriNftMinterQueryClient implements TeritoriNftMinterReadOnlyIn
       config: {}
     });
   };
+  isWhitelisted = async ({
+    addr
+  }: {
+    addr: Addr;
+  }): Promise<IsWhitelistedResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      is_whitelisted: {
+        addr
+      }
+    });
+  };
+  whitelistSize = async (): Promise<WhitelistSizeResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      whitelist_size: {}
+    });
+  };
+  tokenRequestsCount = async (): Promise<TokenRequestsCountResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      token_requests_count: {}
+    });
+  };
+  currentSupply = async (): Promise<CurrentSupplyResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      current_supply: {}
+    });
+  };
+  tokenRequestByIndex = async ({
+    index
+  }: {
+    index: Uint128;
+  }): Promise<TokenRequestByIndexResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      token_request_by_index: {
+        index
+      }
+    });
+  };
 }
-export interface TeritoriNftMinterInterface extends TeritoriNftMinterReadOnlyInterface {
+export interface TeritoriBunkerMinterInterface extends TeritoriBunkerMinterReadOnlyInterface {
   contractAddress: string;
   sender: string;
   updateConfig: ({
+    nftAddr,
     nftBaseUri,
     nftMaxSupply,
     nftPriceAmount,
     owner
   }: {
+    nftAddr?: Addr;
     nftBaseUri?: string;
     nftMaxSupply?: Uint128;
     nftPriceAmount?: Uint128;
@@ -47,12 +104,25 @@ export interface TeritoriNftMinterInterface extends TeritoriNftMinterReadOnlyInt
     addrs: string[];
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   startMint: (fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
-  mint: (fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
+  requestMint: ({
+    addr
+  }: {
+    addr: Addr;
+  }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
+  mint: ({
+    extension,
+    tokenId,
+    tokenUri
+  }: {
+    extension?: Metadata;
+    tokenId: string;
+    tokenUri?: string;
+  }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   pause: (fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   unpause: (fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   withdrawFund: (fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
 }
-export class TeritoriNftMinterClient extends TeritoriNftMinterQueryClient implements TeritoriNftMinterInterface {
+export class TeritoriBunkerMinterClient extends TeritoriBunkerMinterQueryClient implements TeritoriBunkerMinterInterface {
   client: SigningCosmWasmClient;
   sender: string;
   contractAddress: string;
@@ -65,6 +135,7 @@ export class TeritoriNftMinterClient extends TeritoriNftMinterQueryClient implem
     this.updateConfig = this.updateConfig.bind(this);
     this.whitelist = this.whitelist.bind(this);
     this.startMint = this.startMint.bind(this);
+    this.requestMint = this.requestMint.bind(this);
     this.mint = this.mint.bind(this);
     this.pause = this.pause.bind(this);
     this.unpause = this.unpause.bind(this);
@@ -72,11 +143,13 @@ export class TeritoriNftMinterClient extends TeritoriNftMinterQueryClient implem
   }
 
   updateConfig = async ({
+    nftAddr,
     nftBaseUri,
     nftMaxSupply,
     nftPriceAmount,
     owner
   }: {
+    nftAddr?: Addr;
     nftBaseUri?: string;
     nftMaxSupply?: Uint128;
     nftPriceAmount?: Uint128;
@@ -84,6 +157,7 @@ export class TeritoriNftMinterClient extends TeritoriNftMinterQueryClient implem
   }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       update_config: {
+        nft_addr: nftAddr,
         nft_base_uri: nftBaseUri,
         nft_max_supply: nftMaxSupply,
         nft_price_amount: nftPriceAmount,
@@ -107,9 +181,32 @@ export class TeritoriNftMinterClient extends TeritoriNftMinterQueryClient implem
       start_mint: {}
     }, fee, memo, funds);
   };
-  mint = async (fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
+  requestMint = async ({
+    addr
+  }: {
+    addr: Addr;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
-      mint: {}
+      request_mint: {
+        addr
+      }
+    }, fee, memo, funds);
+  };
+  mint = async ({
+    extension,
+    tokenId,
+    tokenUri
+  }: {
+    extension?: Metadata;
+    tokenId: string;
+    tokenUri?: string;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      mint: {
+        extension,
+        token_id: tokenId,
+        token_uri: tokenUri
+      }
     }, fee, memo, funds);
   };
   pause = async (fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {

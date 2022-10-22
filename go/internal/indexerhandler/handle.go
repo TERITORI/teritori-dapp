@@ -119,7 +119,7 @@ func (h *Handler) handleInstantiate(e *Message) error {
 
 	switch instantiateMsg.CodeID {
 	case h.config.MinterCodeID:
-		if err := h.handleInstantiateMinter(e, contractAddress, &instantiateMsg); err != nil {
+		if err := h.handleInstantiateBunker(e, contractAddress, &instantiateMsg); err != nil {
 			return errors.Wrap(err, "failed to handle minter instantiation")
 		}
 	default:
@@ -225,7 +225,7 @@ func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteCon
 		return nil
 	}
 
-	if err := h.handleExecuteMintClassic(e, collection, tokenId); err != nil {
+	if err := h.handleExecuteMintBunker(e, collection, tokenId, execMsg); err != nil {
 		return errors.Wrap(err, "failed to handle classic mint")
 	}
 

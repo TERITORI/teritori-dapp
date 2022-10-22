@@ -2,19 +2,18 @@ package indexerhandler
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/contracts/nft_minter_types"
+	"github.com/TERITORI/teritori-dapp/go/pkg/contracts/bunker_minter_types"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
-func (h *Handler) handleInstantiateMinter(e *Message, contractAddress string, instantiateMsg *wasmtypes.MsgInstantiateContract) error {
+func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, instantiateMsg *wasmtypes.MsgInstantiateContract) error {
 	// get nft contract address
 	nftAddrs := e.Events["wasm.nft_addr"]
 	if len(nftAddrs) == 0 {
@@ -22,7 +21,7 @@ func (h *Handler) handleInstantiateMinter(e *Message, contractAddress string, in
 	}
 	nftAddr := nftAddrs[0]
 
-	var minterInstantiateMsg nft_minter_types.InstantiateMsg
+	var minterInstantiateMsg bunker_minter_types.InstantiateMsg
 	if err := json.Unmarshal(instantiateMsg.Msg.Bytes(), &minterInstantiateMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal minter instantiate msg")
 	}
@@ -30,7 +29,7 @@ func (h *Handler) handleInstantiateMinter(e *Message, contractAddress string, in
 	// FIXME: network queries should be done async
 
 	// try to fetch collection metadata
-	metadataURI := uriJoin(minterInstantiateMsg.NftBaseUri, "collection.json")
+	metadataURI := minterInstantiateMsg.NftBaseUri
 	var metadata CollectionMetadata
 	if err := fetchIPFSJSON(metadataURI, &metadata); err != nil {
 		h.logger.Error("failed to fetch collection metadata", zap.String("metadata-uri", metadataURI), zap.Error(err))
@@ -55,35 +54,35 @@ func (h *Handler) handleInstantiateMinter(e *Message, contractAddress string, in
 	return nil
 }
 
-func (h *Handler) handleExecuteMintClassic(e *Message, collection *indexerdb.Collection, tokenId string) error {
-	owners := e.Events["wasm.owner"]
-	if len(owners) == 0 {
-		return errors.New("no owners")
+type BunkerMetadata struct {
+	Name     string `json:"name"`
+	ImageURL string `json:"image"`
+}
+
+func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Collection, tokenId string, execMsg *wasmtypes.MsgExecuteContract) error {
+	recipients := e.Events["wasm.recipient"]
+	if len(recipients) < 1 {
+		return errors.New("no recipients")
 	}
-	owner := owners[0]
+	owner := recipients[0]
 	ownerId := indexerdb.TeritoriUserID(owner)
 
-	// FIXME: replace by in-DB baseURI
-	var minterConfig MinterConfigResponse
-	if err := querySmartContract(h.config.RESTEndpoint, &minterConfig, collection.TeritoriCollection.MintContractAddress, `{ "config": {} }`); err != nil {
-		return errors.Wrap(err, "failed to query minter config")
-	}
-
-	// FIXME: do network queries async with retries
-
-	metadataURI := uriJoin(minterConfig.BaseURI, fmt.Sprintf("%s.json", tokenId))
-	var metadata NFTMetadata
-	if err := fetchIPFSJSON(metadataURI, &metadata); err != nil {
-		h.logger.Error("failed to fetch nft metadata", zap.String("metadata-uri", metadataURI), zap.Error(err))
-	}
-
 	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+
+	var mintMsg ExecuteCW721MintMsg
+	if err := json.Unmarshal(execMsg.Msg, &mintMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal mint msg")
+	}
+	var metadata BunkerMetadata
+	if err := json.Unmarshal(mintMsg.Mint.Extension, &metadata); err != nil {
+		return errors.Wrap(err, "failed to unmarhsal metadata")
+	}
 
 	nft := indexerdb.NFT{
 		ID:           nftId,
 		OwnerID:      ownerId,
 		Name:         metadata.Name,
-		ImageURI:     metadata.ImageURI,
+		ImageURI:     metadata.ImageURL,
 		CollectionID: collection.ID,
 		TeritoriNFT: &indexerdb.TeritoriNFT{
 			TokenID: tokenId,

@@ -20,7 +20,7 @@ import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
-import { TeritoriNftMinterClient } from "../../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
+import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
@@ -86,14 +86,17 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         return;
       }
       const cosmwasmClient = await getSigningCosmWasmClient();
-      const minterClient = new TeritoriNftMinterClient(
+      const minterClient = new TeritoriBunkerMinterClient(
         cosmwasmClient,
         sender,
         mintAddress
       );
-      const reply = await minterClient.mint("auto", "", [
-        { amount: info.unitPrice, denom: info.priceDenom },
-      ]);
+      const reply = await minterClient.requestMint(
+        { addr: sender },
+        "auto",
+        "",
+        [{ amount: info.unitPrice, denom: info.priceDenom }]
+      );
       setMinted(true);
       const tokenId = firstTokenId(reply.logs);
       setTimeout(() => {
@@ -252,7 +255,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
             {info.hasPresale && (
               <PresaleActivy
                 running={info.isInPresalePeriod || false}
-                whitelistSize={info.whitelistSize || "0"}
+                whitelistSize={info.whitelistSize || 0}
                 maxPerAddress={info.whitelistMaxPerAddress || "0"}
               />
             )}
@@ -296,7 +299,7 @@ const AttributesCard: React.FC<{
 
 const PresaleActivy: React.FC<{
   running: boolean;
-  whitelistSize: string;
+  whitelistSize: number;
   maxPerAddress: string;
 }> = ({ running, whitelistSize, maxPerAddress }) => {
   return (

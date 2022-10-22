@@ -32,7 +32,7 @@ import {
   RioterFooterNftQueryClient,
 } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.client";
 import { Uint128 } from "../../contracts-clients/rioter-footer-nft/RioterFooterNft.types";
-import { TeritoriNftMinterQueryClient } from "../../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
+import { TeritoriBunkerMinterQueryClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import { useCollections } from "../../hooks/useCollections";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -217,7 +217,7 @@ export const RiotersFooterScreen: React.FC = () => {
         return;
       }
       const cosmwasmClient = await getNonSigningCosmWasmClient();
-      const minterClient = new TeritoriNftMinterQueryClient(
+      const minterClient = new TeritoriBunkerMinterQueryClient(
         cosmwasmClient,
         nftMinterContractAddress.toString()
       );
