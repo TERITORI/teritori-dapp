@@ -157,8 +157,7 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
     ownerId: "",
     limit: alignDown(20, numColumns) || numColumns,
     offset: 0,
-  });
-  const { setLoadingFullScreen } = useFeedbacks();
+  };
 
   useEffect(() => {
     setLoadingFullScreen(loadingCollectionInfo);
