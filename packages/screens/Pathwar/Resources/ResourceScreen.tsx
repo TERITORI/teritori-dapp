@@ -1,49 +1,23 @@
-import React, { useState } from "react";
-import {
-  View,
-  StyleProp,
-  ViewStyle,
-  TouchableOpacity,
-  ImageBackground,
-} from "react-native";
-import { CheckBox } from "react-native-elements";
+import React from "react";
+import { View, TouchableOpacity, ImageBackground } from "react-native";
 
 import resourceLogo from "../../../../assets/LogoPathwarOverview/ResourceLogo.svg";
 import resourceBanner from "../../../../assets/banners/resourcesBanner.png";
-import chevronDownIcon from "../../../../assets/icons/Pathwar/chevronDownIcon.svg";
-import chevronUpIcon from "../../../../assets/icons/Pathwar/chevronUpIcon.svg";
 import SearchIcon from "../../../../assets/icons/Pathwar/searchIcon.svg";
-import SortIcon from "../../../../assets/icons/Pathwar/sortIcon.svg";
 import { BrandText } from "../../../components/BrandText";
+import { DropDownButton } from "../../../components/Pathwar/Resource/DropDownFilter";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { neutral44 } from "../../../utils/style/colors";
+import { secondaryColor, neutral00 } from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { ResourceBox } from "./ResourceBox";
 
-const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
-  <View
-    style={[
-      { borderBottomWidth: 1, borderColor: neutral44, width: "100%" },
-      style,
-    ]}
-  />
-);
-
 export const ResourceScreen: React.FC = () => {
-  const [isMoreDisplayed, setIsMoreDisplayed] = useState(false);
-  const [allShowSelected, setAllShowSelected] = useState(false);
-  const [techPostSelected, setTechPostSelected] = useState(false);
-  const [securitySelected, setSecuritySelected] = useState(false);
-  const [cosmosSelected, setCosmosSelected] = useState(false);
-  const [gnolandSelected, setGnolandSelected] = useState(false);
-  const [blogPostSelected, setBlogPostSelected] = useState(false);
-  const [videosSelected, setVideosSelected] = useState(false);
-  const [articlesSelected, setArticlesSelected] = useState(false);
-
   return (
-    <ScreenContainer sizeScreenContaier={40}>
+    <ScreenContainer>
       <View>
         <ImageBackground
           source={resourceBanner}
@@ -64,284 +38,10 @@ export const ResourceScreen: React.FC = () => {
           width: "100%",
           justifyContent: "space-between",
           alignItems: "flex-start",
-          marginTop: 10,
+          marginTop: layout.padding_x1_5,
         }}
       >
-        <View style={{ flexDirection: "column" }}>
-          <TertiaryBox
-            width={181}
-            height={50}
-            mainContainerStyle={{
-              backgroundColor: "#1C1C1C",
-              borderColor: "#3D3D3D",
-            }}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <SVG source={SortIcon} />
-              <BrandText
-                style={{ marginLeft: 5, marginRight: 5, fontSize: 14 }}
-              >
-                Content to show
-              </BrandText>
-              <TouchableOpacity
-                onPress={() => setIsMoreDisplayed(!isMoreDisplayed)}
-              >
-                {isMoreDisplayed ? (
-                  <SVG source={chevronDownIcon} />
-                ) : (
-                  <SVG source={chevronUpIcon} />
-                )}
-              </TouchableOpacity>
-            </View>
-          </TertiaryBox>
-
-          {/* DropDown Menu */}
-
-          {isMoreDisplayed && (
-            <TertiaryBox
-              width={230}
-              height={350}
-              mainContainerStyle={{ backgroundColor: "#1C1C1C" }}
-              style={{ marginTop: 10 }}
-            >
-              <View
-                style={{
-                  flexDirection: "column",
-                  width: "100%",
-                }}
-              >
-                <View style={{}}>
-                  <CheckBox
-                    title={
-                      <BrandText
-                        style={{ marginLeft: 10, marginRight: 5, fontSize: 14 }}
-                      >
-                        Show All
-                      </BrandText>
-                    }
-                    checked={allShowSelected}
-                    onPress={() => {
-                      setTechPostSelected(!allShowSelected);
-                      setSecuritySelected(!allShowSelected);
-                      setCosmosSelected(!allShowSelected);
-                      setGnolandSelected(!allShowSelected);
-                      setBlogPostSelected(!allShowSelected);
-                      setVideosSelected(!allShowSelected);
-                      setArticlesSelected(!allShowSelected);
-                      setAllShowSelected(!allShowSelected);
-                    }}
-                    size={20}
-                    containerStyle={{
-                      height: 20,
-                      marginTop: 5,
-                      backgroundColor: "#1C1C1C",
-                      borderColor: "#1C1C1C",
-                      alignContent: "center",
-                    }}
-                  />
-                </View>
-                <Separator style={{ marginTop: 20 }} />
-
-                <View style={{ margin: 1 }}>
-                  <CheckBox
-                    title={
-                      <BrandText
-                        style={{ marginLeft: 10, marginRight: 5, fontSize: 14 }}
-                      >
-                        Tech Post
-                      </BrandText>
-                    }
-                    size={20}
-                    checked={techPostSelected}
-                    onPress={() => {
-                      setTechPostSelected(!techPostSelected);
-                      setSecuritySelected(!techPostSelected);
-                      setCosmosSelected(!techPostSelected);
-                      setGnolandSelected(!techPostSelected);
-                    }}
-                    containerStyle={{
-                      height: 10,
-                      backgroundColor: "#1C1C1C",
-                      borderColor: "#1C1C1C",
-                      alignContent: "center",
-                    }}
-                  />
-                </View>
-
-                <View
-                  style={{
-                    marginLeft: 35,
-                    marginRight: 17,
-                  }}
-                >
-                  <View style={{ marginBottom: 7 }}>
-                    <CheckBox
-                      title={
-                        <BrandText
-                          style={{
-                            marginLeft: 10,
-                            marginRight: 5,
-                            fontSize: 14,
-                          }}
-                        >
-                          Security
-                        </BrandText>
-                      }
-                      size={20}
-                      checked={securitySelected}
-                      onPress={() => {
-                        setSecuritySelected(!securitySelected);
-                      }}
-                      containerStyle={{
-                        height: 10,
-                        backgroundColor: "#1C1C1C",
-                        borderColor: "#1C1C1C",
-                        alignContent: "center",
-                      }}
-                    />
-                  </View>
-
-                  <View style={{ marginBottom: 7 }}>
-                    <CheckBox
-                      title={
-                        <BrandText
-                          style={{
-                            marginLeft: 10,
-                            marginRight: 5,
-                            fontSize: 14,
-                          }}
-                        >
-                          Cosmos
-                        </BrandText>
-                      }
-                      size={20}
-                      checked={cosmosSelected}
-                      onPress={() => {
-                        setCosmosSelected(!cosmosSelected);
-                      }}
-                      containerStyle={{
-                        height: 10,
-                        backgroundColor: "#1C1C1C",
-                        borderColor: "#1C1C1C",
-                        alignContent: "center",
-                      }}
-                    />
-                  </View>
-
-                  <CheckBox
-                    title={
-                      <BrandText
-                        style={{ marginLeft: 10, marginRight: 5, fontSize: 14 }}
-                      >
-                        Gnoland
-                      </BrandText>
-                    }
-                    size={20}
-                    checked={gnolandSelected}
-                    onPress={() => {
-                      setGnolandSelected(!gnolandSelected);
-                    }}
-                    containerStyle={{
-                      height: 10,
-                      backgroundColor: "#1C1C1C",
-                      borderColor: "#1C1C1C",
-                      alignContent: "center",
-                    }}
-                  />
-                </View>
-                {/* <View> */}
-                <Separator style={{ marginTop: 20 }} />
-                {/* </View> */}
-                <View style={{}}>
-                  <CheckBox
-                    title={
-                      <BrandText
-                        style={{ marginLeft: 10, marginRight: 5, fontSize: 14 }}
-                      >
-                        Blog Post
-                      </BrandText>
-                    }
-                    size={20}
-                    checked={blogPostSelected}
-                    onPress={() => {
-                      setBlogPostSelected(!blogPostSelected);
-                      setVideosSelected(!blogPostSelected);
-                      setArticlesSelected(!blogPostSelected);
-                    }}
-                    containerStyle={{
-                      height: 10,
-                      backgroundColor: "#1C1C1C",
-                      borderColor: "#1C1C1C",
-                      alignContent: "center",
-                    }}
-                  />
-
-                  <View
-                    style={{
-                      marginTop: 2,
-                      marginLeft: 27,
-                      marginBottom: 5,
-                      marginRight: 17,
-                    }}
-                  >
-                    <View style={{ marginBottom: 7 }}>
-                      <CheckBox
-                        title={
-                          <BrandText
-                            style={{
-                              marginLeft: 10,
-                              marginRight: 5,
-                              fontSize: 14,
-                            }}
-                          >
-                            Videos
-                          </BrandText>
-                        }
-                        size={20}
-                        checked={videosSelected}
-                        onPress={() => {
-                          setVideosSelected(!videosSelected);
-                        }}
-                        containerStyle={{
-                          height: 10,
-                          backgroundColor: "#1C1C1C",
-                          borderColor: "#1C1C1C",
-                          alignContent: "center",
-                        }}
-                      />
-                    </View>
-                    <View style={{ marginBottom: 7 }}>
-                      <CheckBox
-                        title={
-                          <BrandText
-                            style={{
-                              marginLeft: 10,
-                              marginRight: 5,
-                              fontSize: 14,
-                            }}
-                          >
-                            Articles
-                          </BrandText>
-                        }
-                        size={20}
-                        checked={articlesSelected}
-                        onPress={() => {
-                          setArticlesSelected(!articlesSelected);
-                        }}
-                        containerStyle={{
-                          height: 10,
-                          backgroundColor: "#1C1C1C",
-                          borderColor: "#1C1C1C",
-                          alignContent: "center",
-                        }}
-                      />
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </TertiaryBox>
-          )}
-        </View>
+        <DropDownButton />
 
         <View style={{ alignItems: "flex-start" }}>
           <TextInputCustom<{ Search: string }>
@@ -349,17 +49,26 @@ export const ResourceScreen: React.FC = () => {
             name="Search"
             width={270}
             placeHolder="Search..."
-            mainBoxBackgroundColor="#000000"
+            mainBoxBackgroundColor={neutral00}
           >
-            <View style={{ right: 5 }}>
+            <View style={{ marginRight: layout.padding_x0_5 }}>
               <SVG source={SearchIcon} />
             </View>
           </TextInputCustom>
         </View>
         <View>
           <TouchableOpacity style={{ alignItems: "flex-start" }}>
-            <TertiaryBox width={172} height={50}>
-              <BrandText style={{ fontSize: 14 }}>+ Suggest content</BrandText>
+            <TertiaryBox mainContainerStyle={{ borderColor: secondaryColor }}>
+              <View
+                style={{ flexDirection: "row", margin: layout.padding_x1_5 }}
+              >
+                <BrandText
+                  style={[{ marginRight: layout.padding_x1 }, fontSemibold14]}
+                >
+                  +
+                </BrandText>
+                <BrandText style={fontSemibold14}>Suggest content</BrandText>
+              </View>
             </TertiaryBox>
           </TouchableOpacity>
         </View>
@@ -367,13 +76,12 @@ export const ResourceScreen: React.FC = () => {
 
       <View
         style={{
-          display: "flex",
-          width: "119%",
+          width: 1300,
           flexDirection: "row",
           flexWrap: "wrap",
           justifyContent: "center",
-          right: 90,
-          marginTop: 20,
+          alignSelf: "center",
+          marginTop: layout.padding_x2_5,
         }}
       >
         <ResourceBox />

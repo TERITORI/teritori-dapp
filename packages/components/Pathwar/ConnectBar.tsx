@@ -1,39 +1,45 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View } from "react-native";
 
 import githubLogo from "../../../assets/icons/Pathwar/github.svg";
 import informationBlueIcon from "../../../assets/icons/Pathwar/informationBlueIcon.svg";
 import twitterLogo from "../../../assets/icons/Pathwar/twitter.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
+import {
+  neutral17,
+  primaryColor,
+  neutral00,
+  secondaryColor,
+} from "../../utils/style/colors";
+import { fontSemibold13 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 
 export const ConnectBar: React.FC<object> = () => {
   return (
     <View
       style={{
-        backgroundColor: "#171717",
+        backgroundColor: neutral17,
         width: "100%",
         height: 72,
         borderRadius: 20,
         borderWidth: 1,
-        borderColor: "#16BBFF",
+        borderColor: primaryColor,
         justifyContent: "center",
       }}
     >
       <View
         style={{
-          display: "flex",
           flexDirection: "row",
-          width: "97%",
           alignItems: "center",
           justifyContent: "space-between",
-          marginLeft: 20,
+          marginLeft: layout.padding_x2_5,
         }}
       >
         <View
           style={{
-            display: "flex",
             alignItems: "center",
             flexDirection: "row",
           }}
@@ -41,7 +47,9 @@ export const ConnectBar: React.FC<object> = () => {
           <View>
             <SVG source={informationBlueIcon} />
           </View>
-          <BrandText style={{ fontSize: 13, marginLeft: 10 }}>
+          <BrandText
+            style={[{ marginLeft: layout.padding_x1_5 }, fontSemibold13]}
+          >
             Login to play challenges and learn hacking.
           </BrandText>
         </View>
@@ -49,61 +57,38 @@ export const ConnectBar: React.FC<object> = () => {
           style={{
             alignItems: "flex-end",
             justifyContent: "space-between",
-            display: "flex",
             flexDirection: "row",
+            marginRight: layout.padding_x1,
           }}
         >
-          <View style={{ marginRight: 10 }}>
-            <TouchableOpacity>
-              <TertiaryBox
-                width={169}
-                height={46}
-                mainContainerStyle={{ backgroundColor: "white" }}
-                squaresBackgroundColor="#171717"
-              >
-                <View style={{ display: "flex", flexDirection: "row" }}>
-                  <SVG source={twitterLogo} />
-                  <BrandText
-                    style={{ fontSize: 13, color: "black", marginLeft: 5 }}
-                  >
-                    Login via Twitter
-                  </BrandText>
-                </View>
-              </TertiaryBox>
-            </TouchableOpacity>
+          <View style={{ marginRight: layout.padding_x1_5 }}>
+            <SecondaryButton
+              size="SM"
+              text="Login via Twitter"
+              iconSVG={twitterLogo}
+              color={neutral00}
+              backgroundColor={secondaryColor}
+              squaresBackgroundColor={neutral17}
+            />
           </View>
-          <View style={{ marginRight: 10 }}>
-            <TouchableOpacity>
-              <TertiaryBox
-                width={169}
-                height={46}
-                mainContainerStyle={{ backgroundColor: "white" }}
-                squaresBackgroundColor="#171717"
-              >
-                <View style={{ display: "flex", flexDirection: "row" }}>
-                  <SVG source={githubLogo} />
-                  <BrandText
-                    style={{ fontSize: 13, color: "black", marginLeft: 5 }}
-                  >
-                    Login via Github
-                  </BrandText>
-                </View>
-              </TertiaryBox>
-            </TouchableOpacity>
+          <View style={{ marginRight: layout.padding_x1_5 }}>
+            <SecondaryButton
+              size="SM"
+              text="Login via Github"
+              iconSVG={githubLogo}
+              color={neutral00}
+              backgroundColor={secondaryColor}
+              squaresBackgroundColor={neutral17}
+            />
           </View>
-          <View style={{ marginRight: 10 }}>
-            <TouchableOpacity onPress={() => {}}>
-              <TertiaryBox
-                width={94}
-                height={46}
-                mainContainerStyle={{ backgroundColor: "#171717" }}
-                squaresBackgroundColor="#171717"
-              >
-                <BrandText style={{ fontSize: 13, color: "white" }}>
-                  Register
-                </BrandText>
-              </TertiaryBox>
-            </TouchableOpacity>
+          <View style={{ marginRight: layout.padding_x1 }}>
+            <SecondaryButtonOutline
+              size="SM"
+              text="Register"
+              color={secondaryColor}
+              backgroundColor={neutral00}
+              squaresBackgroundColor={neutral17}
+            />
           </View>
         </View>
       </View>

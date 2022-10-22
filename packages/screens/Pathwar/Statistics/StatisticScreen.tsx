@@ -1,109 +1,156 @@
 import React from "react";
-import { View, StyleProp, ViewStyle } from "react-native";
+import { View, Image } from "react-native";
 
 import statisticBanner from "../../../../assets/banners/statisticBanner.png";
 import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";
+import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { neutral44 } from "../../../utils/style/colors";
+import { neutral44, neutral77 } from "../../../utils/style/colors";
+import { fontSemibold14, fontSemibold12 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import ava from "./ava.png";
 import avatar from "./avatar.png";
 
-const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
-  <View
-    style={[
-      { borderBottomWidth: 1, borderColor: neutral44, width: "100%" },
-      style,
-    ]}
-  />
-);
-
 export const StatisticScreen: React.FC = () => {
   return (
-    <ScreenContainer sizeScreenContaier={40}>
-      <View>
-        <img
-          src={statisticBanner}
-          style={{
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        />
-      </View>
+    <ScreenContainer>
+      <Image
+        source={statisticBanner}
+        style={{
+          width: "100%",
+          height: 400,
+        }}
+      />
 
       <TertiaryBox
-        width={1092}
+        fullWidth
         height={44}
-        style={{ marginTop: 20, justifyContent: "center" }}
+        style={{
+          marginTop: layout.padding_x2_5,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignContent: "center",
-            width: "97%",
-          }}
-        >
-          <View>
-            <BrandText style={{ fontSize: 12, color: "#777777" }}>#</BrandText>
+        <View style={{ width: "100%" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingLeft: layout.padding_x2_5,
+            }}
+          >
+            <View
+              style={{
+                width: 40,
+                maxWidth: 40,
+              }}
+            >
+              <BrandText style={[{ color: neutral77 }, fontSemibold12]}>
+                #
+              </BrandText>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                width: 230,
+                paddingLeft: layout.padding_x0_5,
+              }}
+            >
+              <BrandText
+                style={[
+                  { marginLeft: layout.padding_x1, color: neutral77 },
+                  fontSemibold12,
+                ]}
+              >
+                Member
+              </BrandText>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                width: 303,
+                marginLeft: layout.padding_x1,
+              }}
+            >
+              <BrandText
+                style={[
+                  {
+                    width: 280,
+                    marginLeft: layout.padding_x1,
+                    color: neutral77,
+                  },
+                  fontSemibold12,
+                ]}
+              >
+                Team(s)
+              </BrandText>
+            </View>
+
+            <BrandText
+              style={[
+                {
+                  width: 263,
+                  paddingLeft: layout.padding_x3,
+                  color: neutral77,
+                },
+                fontSemibold12,
+              ]}
+            >
+              Last Tournament(s)
+            </BrandText>
+
+            <BrandText
+              style={[
+                {
+                  width: 113,
+                  paddingLeft: layout.padding_x3_5,
+                  color: neutral77,
+                },
+                fontSemibold12,
+              ]}
+            >
+              Score
+            </BrandText>
+
+            <BrandText
+              style={[
+                {
+                  width: 100,
+                  paddingLeft: layout.padding_x3_5,
+                  color: neutral77,
+                },
+                fontSemibold12,
+              ]}
+            >
+              Cash
+            </BrandText>
           </View>
-          <BrandText
-            style={{
-              fontSize: 12,
-              color: "#777777",
-              right: 130,
-              position: "relative",
-            }}
-          >
-            Member
-          </BrandText>
-          <BrandText
-            style={{
-              fontSize: 12,
-              color: "#777777",
-              right: 100,
-              position: "relative",
-            }}
-          >
-            Team(s)
-          </BrandText>
-          <BrandText style={{ fontSize: 12, color: "#777777" }}>
-            Last Tournaments
-          </BrandText>
-          <BrandText style={{ fontSize: 12, color: "#777777" }}>
-            Score
-          </BrandText>
-          <BrandText
-            style={{
-              fontSize: 12,
-              color: "#777777",
-              right: 80,
-              position: "relative",
-            }}
-          >
-            Cash
-          </BrandText>
         </View>
       </TertiaryBox>
 
       <View style={{ width: "100%", height: 80 }}>
-        <View style={{ width: "97%" }}>
+        <View style={{ width: "100%" }}>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
-              width: "97%",
-              marginTop: 20,
-              left: 20,
+              marginTop: layout.padding_x2_5,
+              paddingLeft: layout.padding_x2_5,
             }}
           >
             <View
               style={{
-                width: 35,
+                width: 40,
+                maxWidth: 40,
               }}
             >
-              <BrandText style={{ fontSize: 14 }}>1</BrandText>
+              <BrandText style={fontSemibold14}>1</BrandText>
             </View>
 
             <View
@@ -112,12 +159,17 @@ export const StatisticScreen: React.FC = () => {
                 alignItems: "center",
                 justifyContent: "flex-start",
                 width: 230,
-                overflow: "hidden",
+                paddingLeft: layout.padding_x0_5,
               }}
             >
-              <img src={avatar} width={27} height={27} />
-              <BrandText style={{ fontSize: 14, marginLeft: 10 }}>
-                @foofight3r.torie
+              <Image source={avatar} style={{ width: 27, height: 27 }} />
+              <BrandText
+                style={[
+                  { marginLeft: layout.padding_x1, width: 190 },
+                  fontSemibold14,
+                ]}
+              >
+                @foofight3r.tori
               </BrandText>
             </View>
 
@@ -125,211 +177,58 @@ export const StatisticScreen: React.FC = () => {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "flex-start",
-                width: 310,
+                width: 303,
+                marginLeft: layout.padding_x1,
               }}
             >
-              <img src={ava} width={27} height={27} />
-              <BrandText style={{ fontSize: 14, marginLeft: 10 }}>
-                Team 1lkerznfjglzengoenrzog
+              <Image source={ava} style={{ width: 27, height: 27 }} />
+              <BrandText
+                style={[
+                  { width: 280, marginLeft: layout.padding_x1 },
+                  fontSemibold14,
+                ]}
+              >
+                Team Troll
               </BrandText>
             </View>
 
-            <BrandText style={{ fontSize: 14, width: 266 }}>
+            <BrandText
+              style={[
+                { width: 263, paddingLeft: layout.padding_x3 },
+                fontSemibold14,
+              ]}
+            >
               Tournament Name
             </BrandText>
 
-            <BrandText style={{ fontSize: 14, width: 109 }}>99</BrandText>
+            <BrandText
+              style={[
+                { width: 113, paddingLeft: layout.padding_x3_5 },
+                fontSemibold14,
+              ]}
+            >
+              99
+            </BrandText>
 
-            <BrandText style={{ fontSize: 14, width: "fit-content" }}>
+            <BrandText
+              style={[
+                { width: 100, paddingLeft: layout.padding_x3_5 },
+                fontSemibold14,
+              ]}
+            >
               5000 Tori
             </BrandText>
           </View>
 
-          <Separator style={{ marginTop: 23 }} />
-        </View>
-
-        <View style={{ width: "97%" }}>
-          <View
+          <Separator
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              width: "97%",
-              marginTop: 20,
-              left: 20,
+              borderBottomWidth: 1,
+              borderColor: neutral44,
+              width: "100%",
+              marginTop: layout.padding_x2_5,
             }}
-          >
-            <View
-              style={{
-                width: 35,
-              }}
-            >
-              <BrandText style={{ fontSize: 14 }}>1</BrandText>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                width: 230,
-                overflow: "hidden",
-              }}
-            >
-              <img src={avatar} width={27} height={27} />
-              <BrandText style={{ fontSize: 14, marginLeft: 10 }}>
-                @foofight3r.torie
-              </BrandText>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                width: 310,
-              }}
-            >
-              <img src={ava} width={27} height={27} />
-              <BrandText style={{ fontSize: 14, marginLeft: 10 }}>
-                Team 1lkerznfjglzengoenrzog
-              </BrandText>
-            </View>
-
-            <BrandText style={{ fontSize: 14, width: 266 }}>
-              Tournament Name
-            </BrandText>
-
-            <BrandText style={{ fontSize: 14, width: 109 }}>99</BrandText>
-
-            <BrandText style={{ fontSize: 14, width: "fit-content" }}>
-              5000 Tori
-            </BrandText>
-          </View>
-
-          <Separator style={{ marginTop: 23 }} />
-        </View>
-
-        <View style={{ width: "97%" }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              width: "97%",
-              marginTop: 20,
-              left: 20,
-            }}
-          >
-            <View
-              style={{
-                width: 35,
-              }}
-            >
-              <BrandText style={{ fontSize: 14 }}>1</BrandText>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                width: 230,
-                overflow: "hidden",
-              }}
-            >
-              <img src={avatar} width={27} height={27} />
-              <BrandText style={{ fontSize: 14, marginLeft: 10 }}>
-                @foofight3r.torie
-              </BrandText>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                width: 310,
-              }}
-            >
-              <img src={ava} width={27} height={27} />
-              <BrandText style={{ fontSize: 14, marginLeft: 10 }}>
-                Team 1lkerznfjglzengoenrzog
-              </BrandText>
-            </View>
-
-            <BrandText style={{ fontSize: 14, width: 266 }}>
-              Tournament Name
-            </BrandText>
-
-            <BrandText style={{ fontSize: 14, width: 109 }}>99</BrandText>
-
-            <BrandText style={{ fontSize: 14, width: "fit-content" }}>
-              5000 Tori
-            </BrandText>
-          </View>
-
-          <Separator style={{ marginTop: 23 }} />
-        </View>
-
-        <View style={{ width: "97%" }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              width: "97%",
-              marginTop: 20,
-              left: 20,
-            }}
-          >
-            <View
-              style={{
-                width: 35,
-              }}
-            >
-              <BrandText style={{ fontSize: 14 }}>1</BrandText>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                width: 230,
-                overflow: "hidden",
-              }}
-            >
-              <img src={avatar} width={27} height={27} />
-              <BrandText style={{ fontSize: 14, marginLeft: 10 }}>
-                @foofight3r.torie
-              </BrandText>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                width: 310,
-              }}
-            >
-              <img src={ava} width={27} height={27} />
-              <BrandText style={{ fontSize: 14, marginLeft: 10 }}>
-                Team 1lkerznfjglzengoenrzog
-              </BrandText>
-            </View>
-
-            <BrandText style={{ fontSize: 14, width: 266 }}>
-              Tournament Name
-            </BrandText>
-
-            <BrandText style={{ fontSize: 14, width: 109 }}>99</BrandText>
-
-            <BrandText style={{ fontSize: 14, width: "fit-content" }}>
-              5000 Tori
-            </BrandText>
-          </View>
-
-          <Separator style={{ marginTop: 23 }} />
+            color={neutral44}
+          />
         </View>
       </View>
     </ScreenContainer>

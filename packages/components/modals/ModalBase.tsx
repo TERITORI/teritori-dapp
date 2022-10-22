@@ -1,8 +1,8 @@
 import React, { ComponentType } from "react";
-import { Modal, Pressable, View } from "react-native";
+import { Modal, Pressable, View, StyleProp, ViewStyle } from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
-import { neutral77 } from "../../utils/style/colors";
+import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
@@ -25,6 +25,11 @@ export const ModalBase: React.FC<{
   children?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
   description?: string;
+  displayHeader?: boolean;
+  labelColor?: string;
+  leftSquaresBackgroundColor?: string;
+  rightSquaresBackgroundColor?: string;
+  mainContainerStyle?: StyleProp<ViewStyle>;
 }> = ({
   label,
   visible,
@@ -35,6 +40,11 @@ export const ModalBase: React.FC<{
   Header,
   hideMainSeparator,
   description,
+  displayHeader = true,
+  labelColor = secondaryColor,
+  mainContainerStyle = { margin: "auto" },
+  leftSquaresBackgroundColor = "#000000",
+  rightSquaresBackgroundColor = "#000000",
 }) => {
   return (
     <Modal
@@ -55,59 +65,66 @@ export const ModalBase: React.FC<{
         {/*------ Modal main container */}
         <TertiaryBox
           width={width}
-          style={{ margin: "auto" }}
+          style={[mainContainerStyle]}
+          differentSquaresColor
+          leftSquaresBackgroundColor={leftSquaresBackgroundColor}
+          rightSquaresBackgroundColor={rightSquaresBackgroundColor}
           mainContainerStyle={{
             alignItems: "flex-start",
             backgroundColor: "#000000",
           }}
         >
           {/*------ Modal header */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "100%",
-              padding: modalMarginPadding,
-            }}
-          >
-            {(label || description) && (
-              <View style={{ flex: 1 }}>
-                {label && (
-                  <BrandText style={{ color: "white", lineHeight: 24 }}>
-                    {label}
-                  </BrandText>
-                )}
-
-                {description && (
-                  <>
-                    <SpacerColumn size={1} />
-                    <BrandText
-                      style={[
-                        fontSemibold14,
-                        { color: neutral77, width: "100%", lineHeight: 20 },
-                      ]}
-                    >
-                      {description}
-                    </BrandText>
-                  </>
-                )}
-              </View>
-            )}
-
-            {Header && <Header />}
-
-            <Pressable
-              style={{ marginTop: layout.padding_x0_25 }}
-              onPress={onClose}
+          {displayHeader && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+                padding: modalMarginPadding,
+              }}
             >
-              <SVG
-                width={20}
-                height={20}
-                source={closeSVG}
-                style={{ marginLeft: modalMarginPadding }}
-              />
-            </Pressable>
-          </View>
+              {(label || description) && (
+                <View style={{ flex: 1 }}>
+                  {label && (
+                    <BrandText style={{ color: labelColor, lineHeight: 24 }}>
+                      {label}
+                    </BrandText>
+                  )}
+
+                  {description && (
+                    <>
+                      <SpacerColumn size={1} />
+                      <BrandText
+                        style={[
+                          fontSemibold14,
+                          { color: neutral77, width: "100%", lineHeight: 20 },
+                        ]}
+                      >
+                        {description}
+                      </BrandText>
+                    </>
+                  )}
+                </View>
+              )}
+
+              {Header && <Header />}
+
+              <Pressable
+                style={{ marginTop: layout.padding_x0_25 }}
+                onPress={onClose}
+              >
+                <SVG
+                  width={20}
+                  height={20}
+                  source={closeSVG}
+                  style={{ marginLeft: modalMarginPadding }}
+                />
+              </Pressable>
+            </View>
+          )}
+
           {children && (
             <View
               style={{ width: "100%", paddingHorizontal: modalMarginPadding }}

@@ -101,7 +101,9 @@ export const TertiaryBox: React.FC<{
                   height: 18,
                   left: 0,
                   top: -5,
-                  backgroundColor: squaresBackgroundColor,
+                  backgroundColor: differentSquaresColor
+                    ? leftSquaresBackgroundColor
+                    : squaresBackgroundColor,
                   borderRightColor: borderColor,
                   borderRightWidth: 1,
                   transform: [{ rotate: "45deg" }],
@@ -118,7 +120,9 @@ export const TertiaryBox: React.FC<{
                   right: 0,
                   bottom: -5,
                   transform: [{ rotate: "225deg" }],
-                  backgroundColor: squaresBackgroundColor,
+                  backgroundColor: differentSquaresColor
+                    ? rightSquaresBackgroundColor
+                    : squaresBackgroundColor,
                   borderRightColor: borderColor,
                   borderRightWidth: 1,
                   position: "absolute",
@@ -127,40 +131,6 @@ export const TertiaryBox: React.FC<{
               />
             </>
           )}
-          {/* Left top broken corner */}
-          <View
-            style={{
-              width: 8,
-              height: 18,
-              left: 0,
-              top: -5,
-              backgroundColor: differentSquaresColor
-                ? leftSquaresBackgroundColor
-                : squaresBackgroundColor,
-              borderRightColor: borderColor,
-              borderRightWidth: 1,
-              transform: [{ rotate: "45deg" }],
-              position: "absolute",
-              zIndex: 2,
-            }}
-          />
-          {/* Right bottom broken corner */}
-          <View
-            style={{
-              width: 8,
-              height: 18,
-              right: 0,
-              bottom: -5,
-              transform: [{ rotate: "225deg" }],
-              backgroundColor: differentSquaresColor
-                ? rightSquaresBackgroundColor
-                : squaresBackgroundColor,
-              borderRightColor: borderColor,
-              borderRightWidth: 1,
-              position: "absolute",
-              zIndex: 2,
-            }}
-          />
         </View>
       </View>
     </View>

@@ -1,29 +1,33 @@
 import React from "react";
-import { ImageBackground, View } from "react-native";
+import { View, Image } from "react-native";
 
-import tournamentLogo from "../../../../assets/LogoPathwarOverview/tournamentLogo.svg";
-import tounamentBanner from "../../../../assets/banners/tournamentsBanner.png";
+import tounamentBanner from "../../../../assets/banners/tournamentBanner.png";
 import searchIcon from "../../../../assets/icons/Pathwar/searchIcon.svg";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { TournamentBox } from "./TournamentBox";
+import { neutral00 } from "../../../utils/style/colors";
+import { layout } from "../../../utils/style/layout";
+import { TournamentBox } from "./TournamentCard";
 
 export const TournamentScreen: React.FC = () => {
   return (
     <ScreenContainer>
-      <View>
-        <ImageBackground
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          margin: "auto",
+        }}
+      >
+        <Image
           source={tounamentBanner}
           style={{
-            height: 400,
             width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
+            height: 400,
           }}
-        >
-          <SVG source={tournamentLogo} />
-        </ImageBackground>
+        />
       </View>
 
       <View
@@ -32,7 +36,7 @@ export const TournamentScreen: React.FC = () => {
           width: "100%",
           justifyContent: "center",
           alignContent: "center",
-          marginTop: 20,
+          marginTop: layout.padding_x2_5,
         }}
       >
         <View>
@@ -41,9 +45,9 @@ export const TournamentScreen: React.FC = () => {
             name="Search"
             width={270}
             placeHolder="Search..."
-            mainBoxBackgroundColor="#000000"
+            mainBoxBackgroundColor={neutral00}
           >
-            <View style={{ right: 5 }}>
+            <View style={{ marginRight: layout.padding_x0_5 }}>
               <SVG source={searchIcon} />
             </View>
           </TextInputCustom>
@@ -52,13 +56,12 @@ export const TournamentScreen: React.FC = () => {
 
       <View
         style={{
-          display: "flex",
-          width: "119%",
+          width: 1320,
           flexDirection: "row",
           flexWrap: "wrap",
           justifyContent: "center",
-          right: 90,
-          marginTop: 20,
+          alignSelf: "center",
+          marginTop: layout.padding_x2_5,
         }}
       >
         <TournamentBox />

@@ -38,8 +38,6 @@ export const ScreenContainer: React.FC<{
   noMargin?: boolean;
   noScroll?: boolean;
   smallMargin?: boolean;
-  sizeScreenContaier?: number;
-  changeContainerSize?: boolean;
 }> = ({
   children,
   headerChildren,

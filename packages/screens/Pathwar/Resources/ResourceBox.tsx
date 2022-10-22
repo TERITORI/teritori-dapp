@@ -1,11 +1,14 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, ScrollView, TouchableOpacity } from "react-native";
 
 import heartIcon from "../../../../assets/icons/Pathwar/heartIcon.svg";
 import shareIcon from "../../../../assets/icons/Pathwar/shareIcon.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { neutral00, withAlpha } from "../../../utils/style/colors";
+import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 export const ResourceBox: React.FC<object> = () => {
   return (
@@ -13,93 +16,143 @@ export const ResourceBox: React.FC<object> = () => {
       width={630}
       height={330}
       mainContainerStyle={{ backgroundColor: "red" }}
-      style={{ marginBottom: 20, marginLeft: 8, marginRight: 8 }}
+      style={{
+        marginRight: layout.padding_x1_5,
+      }}
     >
       <View
         style={{
-          flexDirection: "row",
-          bottom: 130,
-          width: 610,
-          flexWrap: "wrap",
+          flexDirection: "column",
           justifyContent: "space-between",
+          width: "100%",
+          height: "100%",
         }}
       >
-        <View style={{ flexDirection: "row" }}>
-          <View
-            style={{
-              backgroundColor: "#0000004D",
-              borderRadius: 8,
-              width: "fit-content",
-              height: 28,
-              justifyContent: "center",
-              alignContent: "center",
-              marginRight: 5,
-            }}
-          >
-            <BrandText style={{ fontSize: 13 }}>{"   Video   "}</BrandText>
-          </View>
-          <View
-            style={{
-              backgroundColor: "#0000004D",
-              borderRadius: 8,
-              width: "fit-content",
-              height: 28,
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-          >
-            <BrandText style={{ fontSize: 13 }}>{"   Video   "}</BrandText>
-          </View>
-        </View>
-        <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginLeft: layout.padding_x1_5,
+            marginTop: layout.padding_x1_5,
+          }}
+        >
+          <View style={{ flexDirection: "row" }}>
             <View
               style={{
-                backgroundColor: "#0000004D",
+                backgroundColor: withAlpha(neutral00, 0.3),
                 borderRadius: 8,
-                width: 40,
-                height: 40,
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 5,
+                width: "fit-content",
+                height: "fit-content",
+                marginRight: layout.padding_x0_5,
               }}
             >
-              <SVG source={shareIcon} />
+              <BrandText
+                style={[
+                  {
+                    paddingLeft: layout.padding_x1,
+                    paddingRight: layout.padding_x1,
+                    paddingTop: layout.padding_x0_5,
+                    paddingBottom: layout.padding_x0_5,
+                  },
+                  fontSemibold13,
+                ]}
+              >
+                video
+              </BrandText>
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
             <View
               style={{
-                backgroundColor: "#0000004D",
+                backgroundColor: withAlpha(neutral00, 0.3),
                 borderRadius: 8,
-                width: 40,
-                height: 40,
-                justifyContent: "center",
-                alignItems: "center",
+                width: "fit-content",
+                height: "fit-content",
               }}
             >
-              <SVG source={heartIcon} />
+              <BrandText
+                style={[
+                  {
+                    paddingLeft: layout.padding_x1,
+                    paddingRight: layout.padding_x1,
+                    paddingTop: layout.padding_x0_5,
+                    paddingBottom: layout.padding_x0_5,
+                  },
+                  fontSemibold13,
+                ]}
+              >
+                video
+              </BrandText>
             </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+          </View>
 
-      <View
-        style={{
-          backgroundColor: "#0000004D",
-          width: 330,
-          height: 86,
-          borderRadius: 6,
-          top: 230,
-          right: 285,
-          position: "absolute",
-          alignContent: "center",
-          justifyContent: "center",
-        }}
-      >
-        <View style={{ marginLeft: 10 }}>
-          <BrandText style={{ fontSize: 20 }}>Hello World!</BrandText>
-          <BrandText style={{ fontSize: 13 }}>Video description</BrandText>
+          <View
+            style={{ flexDirection: "row", marginRight: layout.padding_x1_5 }}
+          >
+            <TouchableOpacity>
+              <View
+                style={{
+                  backgroundColor: withAlpha(neutral00, 0.3),
+                  borderRadius: 8,
+                  width: 40,
+                  height: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: layout.padding_x0_5,
+                }}
+              >
+                <SVG source={shareIcon} />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity>
+              <View
+                style={{
+                  backgroundColor: withAlpha(neutral00, 0.3),
+                  borderRadius: 8,
+                  width: 40,
+                  height: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <SVG source={heartIcon} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View
+          style={{
+            backgroundColor: withAlpha(neutral00, 0.3),
+            width: 330,
+            height: 86,
+            borderRadius: 8,
+            alignContent: "center",
+            justifyContent: "center",
+            marginLeft: layout.padding_x1_5,
+            marginBottom: layout.padding_x1_5,
+          }}
+        >
+          <View
+            style={{
+              justifyContent: "flex-start",
+              alignContent: "flex-start",
+              height: "100%",
+              marginLeft: layout.padding_x1_5,
+            }}
+          >
+            <BrandText
+              style={[{ marginTop: layout.padding_x1_5 }, fontSemibold20]}
+            >
+              Hello World!
+            </BrandText>
+            <ScrollView style={{ height: 60 }}>
+              <BrandText
+                style={[{ marginBottom: layout.padding_x0_5 }, fontSemibold13]}
+              >
+                Video description
+              </BrandText>
+            </ScrollView>
+          </View>
         </View>
       </View>
     </TertiaryBox>

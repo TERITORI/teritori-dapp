@@ -1,30 +1,63 @@
 import React, { useState } from "react";
-import { View, StyleProp, ViewStyle } from "react-native";
+import { View, Image } from "react-native";
 
-import TerritoriLogo from "../../../../assets/favicon.png";
-import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
-import clockIcon from "../../../../assets/icons/Pathwar/clockIcon.svg";
-import diamondIcon from "../../../../assets/icons/Pathwar/diamondIcon.svg";
-import starIcon from "../../../../assets/icons/Pathwar/starIcon.svg";
+import challengePic1 from "../../../../assets/PathwarIllustration/challenge1.png";
+import challengePic10 from "../../../../assets/PathwarIllustration/challenge10.png";
+import challengePic11 from "../../../../assets/PathwarIllustration/challenge11.png";
+import challengePic12 from "../../../../assets/PathwarIllustration/challenge12.png";
+import challengePic2 from "../../../../assets/PathwarIllustration/challenge2.png";
+import challengePic3 from "../../../../assets/PathwarIllustration/challenge3.png";
+import challengePic4 from "../../../../assets/PathwarIllustration/challenge4.png";
+import challengePic5 from "../../../../assets/PathwarIllustration/challenge5.png";
+import challengePic6 from "../../../../assets/PathwarIllustration/challenge6.png";
+import challengePic7 from "../../../../assets/PathwarIllustration/challenge7.png";
+import challengePic8 from "../../../../assets/PathwarIllustration/challenge8.png";
+import challengePic9 from "../../../../assets/PathwarIllustration/challenge9.png";
+import pwn from "../../../../assets/icons/Pathwar/PathwarCoin/pwn.svg";
 import { SVG } from "../../../components/SVG";
-import { neutral44 } from "../../../utils/style/colors";
+import {
+  neutral44,
+  neutral17,
+  neutral00,
+  neutral77,
+  successColor,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import {
+  fontSemibold16,
+  fontSemibold12,
+  fontSemibold13,
+} from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText/BrandText";
+import { Separator } from "../../Separator";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
-import ModalBase from "../../modals/ModalBase";
+import { ModalGradient } from "../../modals/ModalGradient";
 
-const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
-  <View
-    style={[
-      { borderBottomWidth: 1, borderColor: neutral44, width: "100%" },
-      style,
-    ]}
-  />
-);
+const listPictures = [
+  challengePic1,
+  challengePic2,
+  challengePic3,
+  challengePic4,
+  challengePic5,
+  challengePic6,
+  challengePic7,
+  challengePic8,
+  challengePic9,
+  challengePic10,
+  challengePic11,
+  challengePic12,
+];
 
 export const ChallengeValidation: React.FC<{
   visible?: boolean;
   onClose: () => void;
-}> = ({ visible, onClose }) => {
+  title: string;
+  description: string;
+  tags: string[];
+  reward: string;
+  indexPicture: number;
+}> = ({ visible, onClose, title, description, tags, reward, indexPicture }) => {
   const [displayConfirmation, setDisplayConfirmation] = useState(visible);
 
   function handleConfirmClick() {
@@ -33,99 +66,102 @@ export const ChallengeValidation: React.FC<{
   }
 
   return (
-    <ModalBase
+    <ModalGradient
       onClose={() => {
         handleConfirmClick();
       }}
       label="You have successfully passed this challenge"
       visible={displayConfirmation}
       width={500}
-      labelColor="#C8FFAE"
+      labelColor={successColor}
       hideMainSeparator
-      displayLinearGradient
-      ColorLinearGradient={["#000000", "#C8FFAE"]}
+      ColorLinearGradient={[neutral00, successColor]}
     >
       <TertiaryBox
         width={458}
-        style={{ marginBottom: 20 }}
-        mainContainerStyle={{ backgroundColor: "#171717" }}
+        style={{ marginBottom: layout.padding_x2_5 }}
+        mainContainerStyle={{ backgroundColor: neutral17 }}
         differentSquaresColor
-        rightSquaresBackgroundColor="#C8FFAE"
-        leftSquaresBackgroundColor="#000000"
+        rightSquaresBackgroundColor={successColor}
+        leftSquaresBackgroundColor={neutral00}
       >
         <View
           style={{
-            display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
             alignItems: "center",
-            marginTop: 13,
+            marginTop: layout.padding_x1_5,
+            marginBottom: layout.padding_x2_5,
           }}
         >
           <TertiaryBox
             width={430}
             height={350}
             differentSquaresColor
-            leftSquaresBackgroundColor="#171717"
-            rightSquaresBackgroundColor="#171717"
-            style={{ marginBottom: 20 }}
+            leftSquaresBackgroundColor={neutral17}
+            rightSquaresBackgroundColor={neutral17}
+            style={{ marginBottom: layout.padding_x2_5 }}
           >
-            {/* img */}
+            <Image
+              source={listPictures[indexPicture]}
+              style={{
+                width: 428,
+                height: 348,
+                borderTopRightRadius: 7,
+                borderBottomLeftRadius: 7,
+              }}
+            />
           </TertiaryBox>
 
           <View
             style={{
               flexDirection: "column",
-              width: 430,
-              justifyContent: "center",
             }}
           >
             <View
               style={{
-                display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                marginBottom: 10,
-                width: "100%",
+                marginBottom: layout.padding_x1_5,
+                width: 390,
               }}
             >
-              <View style={{ flexDirection: "column" }}>
-                <BrandText style={{ color: "white", fontSize: 16 }}>
-                  Hello World
+              <View style={{ flexDirection: "column", width: 270 }}>
+                <BrandText style={[{ color: secondaryColor }, fontSemibold16]}>
+                  {title}
                 </BrandText>
                 <BrandText
-                  style={{ color: "#777777", fontSize: 13, marginTop: 5 }}
+                  style={[
+                    { color: neutral77, marginTop: layout.padding_x0_5 },
+                    fontSemibold13,
+                  ]}
                 >
-                  Introduction Challenge.
+                  {description}
                 </BrandText>
               </View>
-              <View style={{ display: "flex", flexDirection: "row" }}>
+              <View style={{ flexDirection: "row" }}>
                 <View
                   style={{
-                    backgroundColor: "#C8FFAE1A",
-                    width: 56,
-                    height: 28,
-                    borderRadius: 100,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 10,
-                  }}
-                >
-                  <BrandText style={{ color: "#C8FFAE", fontSize: 13 }}>
-                    Easy
-                  </BrandText>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: "#777777",
-                    width: 56,
-                    height: 28,
+                    backgroundColor: neutral77,
+                    width: "fit-content",
+                    height: "fit-content",
                     borderRadius: 100,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <BrandText style={{ color: "white", fontSize: 13 }}>
+                  <BrandText
+                    style={[
+                      {
+                        color: secondaryColor,
+                        paddingLeft: layout.padding_x1_5,
+                        paddingRight: layout.padding_x1_5,
+                        paddingTop: layout.padding_x0_5,
+                        paddingBottom: layout.padding_x0_5,
+                      },
+                      fontSemibold13,
+                    ]}
+                  >
                     Open
                   </BrandText>
                 </View>
@@ -133,221 +169,142 @@ export const ChallengeValidation: React.FC<{
             </View>
             <Separator
               style={{
-                marginBottom: 15,
-                width: "100%",
+                marginBottom: layout.padding_x2,
+                width: 390,
               }}
+              color={neutral44}
             />
 
             <View
               style={{
-                width: "100%",
+                width: 390,
                 flexDirection: "row",
-                marginBottom: 10,
+                marginBottom: layout.padding_x1,
                 flexWrap: "wrap",
               }}
             >
-              <View
-                style={{
-                  width: "fit-content",
-                  height: 24,
-                  borderColor: "#444444",
-                  borderWidth: 1,
-                  borderRadius: 6,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: 8,
-                  marginBottom: 8,
-                }}
-              >
-                <BrandText style={{ color: "#777777", fontSize: 12 }}>
-                  {"  Crypt  "}
-                </BrandText>
-              </View>
-              <View
-                style={{
-                  width: "fit-content",
-                  height: 24,
-                  borderColor: "#444444",
-                  borderWidth: 1,
-                  borderRadius: 6,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: 8,
-                  marginBottom: 8,
-                }}
-              >
-                <BrandText style={{ color: "#777777", fontSize: 12 }}>
-                  {"  Etherum  "}
-                </BrandText>
-              </View>
-              <View
-                style={{
-                  width: "fit-content",
-                  height: 24,
-                  borderColor: "#444444",
-                  borderWidth: 1,
-                  borderRadius: 6,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: 8,
-                  marginBottom: 8,
-                }}
-              >
-                <BrandText style={{ color: "#777777", fontSize: 12 }}>
-                  {"  Blockchain  "}
-                </BrandText>
-              </View>
-              <View
-                style={{
-                  width: "fit-content",
-                  height: 24,
-                  borderColor: "#444444",
-                  borderWidth: 1,
-                  borderRadius: 6,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: 8,
-                  marginBottom: 8,
-                }}
-              >
-                <BrandText style={{ color: "#777777", fontSize: 12 }}>
-                  {"  NFT  "}
-                </BrandText>
-              </View>
+              {tags.map((tag, index) => (
+                <View
+                  style={{
+                    width: "fit-content",
+                    height: "fit-content",
+                    borderColor: neutral44,
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: layout.padding_x1,
+                    marginBottom: layout.padding_x1,
+                  }}
+                  key={index}
+                >
+                  <BrandText
+                    style={[
+                      {
+                        color: neutral77,
+                        paddingRight: layout.padding_x1,
+                        paddingLeft: layout.padding_x1,
+                        paddingBottom: layout.padding_x0_25,
+                        paddingTop: layout.padding_x0_25,
+                      },
+                      fontSemibold12,
+                    ]}
+                  >
+                    {tag}
+                  </BrandText>
+                </View>
+              ))}
             </View>
 
             <Separator
               style={{
-                marginBottom: 10,
-                width: "100%",
+                marginBottom: layout.padding_x2,
+                width: 390,
               }}
+              color={neutral44}
             />
 
             <BrandText
-              style={{ fontSize: 13, color: "#777777", marginBottom: 5 }}
+              style={[
+                { color: neutral77, marginBottom: layout.padding_x0_5 },
+                fontSemibold13,
+              ]}
             >
-              Statistics about this challenge:
+              Reason to do this challenge :
             </BrandText>
 
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                width: "98%",
-                justifyContent: "space-between",
-              }}
-            >
-              <View>
-                <View style={{ flexDirection: "row", marginBottom: 7 }}>
-                  <SVG source={checkIcon} />
-                  <BrandText
-                    style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 10 }}
-                  >
-                    2458 pirates solved it
-                  </BrandText>
-                </View>
-
-                <View style={{ flexDirection: "row" }}>
-                  <SVG source={starIcon} />
-                  <BrandText
-                    style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 10 }}
-                  >
-                    Current Star pirate is{" "}
-                    <BrandText style={{ color: "#16BBFF", fontSize: 12 }}>
-                      x0x0_{" "}
-                    </BrandText>
-                  </BrandText>
-                </View>
-              </View>
-
-              <View>
-                <View style={{ flexDirection: "row", marginBottom: 7 }}>
-                  <SVG source={clockIcon} />
-                  <BrandText
-                    style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 10 }}
-                  >
-                    Average duration: 4’42
-                  </BrandText>
-                </View>
-
-                <View style={{ flexDirection: "row" }}>
-                  <SVG source={diamondIcon} />
-                  <BrandText
-                    style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 10 }}
-                  >
-                    Related booty
-                  </BrandText>
-                </View>
-              </View>
+            <View style={{ width: 350 }}>
+              <BrandText
+                style={[
+                  { color: "white", marginBottom: layout.padding_x0_5 },
+                  fontSemibold13,
+                ]}
+              >
+                This challenge is part of Season #0 of Pathwar, the
+                decentralized training center for hackers willing to join the
+                forces involved in the security of the Cosmos ecosystem.
+                {"\n"}Beginners welcome, it's time to learn.
+              </BrandText>
             </View>
 
-            <TertiaryBox
-              width={430}
-              height={67}
-              differentSquaresColor
-              leftSquaresBackgroundColor="#171717"
-              rightSquaresBackgroundColor="#171717"
-              style={{ marginTop: 10, marginBottom: 15 }}
-            >
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  width: "85%",
-                }}
+            <View style={{ width: "100%" }}>
+              <TertiaryBox
+                height={42}
+                differentSquaresColor
+                leftSquaresBackgroundColor={neutral17}
+                rightSquaresBackgroundColor={neutral17}
+                style={{ marginTop: layout.padding_x1_5, alignSelf: "center" }}
               >
-                <View>
-                  <View style={{ flexDirection: "row", marginBottom: 7 }}>
-                    <BrandText style={{ fontSize: 12, color: "#FFFFFF" }}>
-                      Top #1:{" "}
-                      <BrandText style={{ color: "#16BBFF", fontSize: 12 }}>
-                        x0x0_
-                      </BrandText>
-                    </BrandText>
-                  </View>
-
-                  <View style={{ flexDirection: "row" }}>
-                    <BrandText style={{ fontSize: 12, color: "#FFFFFF" }}>
-                      Top #3:{" "}
-                      <BrandText style={{ color: "#16BBFF", fontSize: 12 }}>
-                        x0x0_
-                      </BrandText>
-                    </BrandText>
-                  </View>
-                </View>
-
-                <View>
-                  <View style={{ flexDirection: "row", marginBottom: 7 }}>
-                    <BrandText style={{ fontSize: 12, color: "#FFFFFF" }}>
-                      Top #2:{" "}
-                      <BrandText style={{ color: "#16BBFF", fontSize: 12 }}>
-                        x0x0_
-                      </BrandText>
-                    </BrandText>
-                  </View>
-
-                  <View style={{ flexDirection: "row" }}>
-                    <BrandText style={{ fontSize: 12, color: "#FFFFFF" }}>
-                      50
-                    </BrandText>
-                    <img
-                      src={TerritoriLogo}
-                      style={{ width: 15, height: 15, marginLeft: 4 }}
-                    />
-                    <BrandText
-                      style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 4 }}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    width: "fit-content",
+                    paddingLeft: layout.padding_x3_5,
+                    paddingRight: layout.padding_x3_5,
+                  }}
+                >
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                      }}
                     >
-                      Rewards
-                    </BrandText>
+                      <BrandText
+                        style={[
+                          { color: neutral77, marginRight: layout.padding_x2 },
+                          fontSemibold13,
+                        ]}
+                      >
+                        Reward
+                      </BrandText>
+                      <BrandText
+                        style={[
+                          {
+                            color: secondaryColor,
+                            marginLeft: layout.padding_x0_5,
+                          },
+                          fontSemibold12,
+                        ]}
+                      >
+                        ${reward}
+                      </BrandText>
+                      <SVG
+                        source={pwn}
+                        width={30}
+                        height={30}
+                        style={{ marginBottom: layout.padding_x0_25 }}
+                      />
+                    </View>
                   </View>
                 </View>
-              </View>
-            </TertiaryBox>
+              </TertiaryBox>
+            </View>
           </View>
         </View>
       </TertiaryBox>
-    </ModalBase>
+    </ModalGradient>
   );
 };

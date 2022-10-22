@@ -5,8 +5,11 @@ import { ProgressBar } from "react-native-paper";
 import closeIcon from "../../../../assets/icons/Pathwar/closeIcon.svg";
 import warningGreenIcon from "../../../../assets/icons/Pathwar/warningGreenIcon.svg";
 import { SVG } from "../../../components/SVG";
+import { successColor } from "../../../utils/style/colors";
+import { fontSemibold16 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText/BrandText";
-import ModalBase from "../../modals/ModalBase";
+import { ModalBase } from "../../modals/ModalBase";
 
 const useProgress = (maxTimeInSeconds = 60) => {
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -48,26 +51,31 @@ export const ModalValidation: React.FC<{
       width={350}
       hideMainSeparator
       displayHeader={false}
-      mainContainerStyle={{ marginLeft: width - 355, marginTop: 5 }}
+      mainContainerStyle={{
+        marginLeft: width - 355,
+        marginTop: layout.padding_x0_5,
+      }}
     >
       <View
         style={{
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",
-          margin: 20,
+          margin: layout.padding_x2_5,
         }}
       >
         <View
           style={{
             flexDirection: "row",
-            right: 30,
+            paddingRight: layout.padding_x4,
             justifyContent: "center",
             alignItems: "center",
           }}
         >
           <SVG source={warningGreenIcon} />
-          <BrandText style={{ fontSize: 16, marginLeft: 10 }}>
+          <BrandText
+            style={[{ marginLeft: layout.padding_x1 }, fontSemibold16]}
+          >
             Validate Challenge Success!
           </BrandText>
         </View>
@@ -75,7 +83,7 @@ export const ModalValidation: React.FC<{
           onPress={() => {
             handleConfirmClick();
           }}
-          style={{ left: 30 }}
+          style={{ marginLeft: layout.padding_x2 }}
         >
           <SVG source={closeIcon} />
         </TouchableOpacity>
@@ -83,7 +91,7 @@ export const ModalValidation: React.FC<{
       <View style={{ width: 340, right: 19, borderRadius: 1 }}>
         <ProgressBar
           progress={progress}
-          color="#C8FFAE"
+          color={successColor}
           style={{ borderBottomLeftRadius: 30 }}
         />
       </View>
