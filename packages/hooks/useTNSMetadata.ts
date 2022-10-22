@@ -29,7 +29,7 @@ export const useTNSMetadata = (id: string) => {
           contractAddress,
           {
             primary_alias: {
-              address: id,
+              address: id.replace("tori-", ""),
             },
           }
         );
@@ -42,7 +42,7 @@ export const useTNSMetadata = (id: string) => {
         const { owner } = await tnsClient.ownerOf({
           tokenId: aliasResponse.username,
         });
-        nftInfo.extension.userId = `tori-${owner}`;
+        nftInfo.extension.userId = owner;
         setNotFound(false);
         return nftInfo.extension;
       } catch {
