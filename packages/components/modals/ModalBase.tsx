@@ -1,6 +1,5 @@
-import { LinearGradient } from "expo-linear-gradient";
 import React, { ComponentType } from "react";
-import { Modal, Pressable, View, StyleProp, ViewStyle } from "react-native";
+import { Modal, Pressable, View } from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
 import { neutral77 } from "../../utils/style/colors";
