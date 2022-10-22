@@ -11,7 +11,9 @@ import {
 import avatarPNG from "../../../assets/default-images/avatar.png";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { protobufNetworkToNetwork } from "../../utils/network";
 import { neutral33, neutral77 } from "../../utils/style/colors";
@@ -32,6 +34,7 @@ export const NFTView: React.FC<{
   const contentWidth = cardWidth - insideMargin * 2;
   const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
+  const tnsMetadata = useTNSMetadata(nft.ownerId.replace("tori-", ""));
 
   // put margins on touchable opacity
   const {
@@ -86,7 +89,11 @@ export const NFTView: React.FC<{
                 }}
               >
                 <Image
-                  source={{ uri: nft.ownerImageUrl || avatarPNG }} // TODO: proper fallback
+                  source={{
+                    uri: tnsMetadata.metadata?.image
+                      ? ipfsURLToHTTPURL(tnsMetadata.metadata.image)
+                      : avatarPNG,
+                  }} // TODO: proper fallback
                   style={{
                     height: 32,
                     width: 32,
@@ -109,7 +116,8 @@ export const NFTView: React.FC<{
                       lineHeight: 16,
                     }}
                   >
-                    {nft.ownerName || shortUserAddressFromID(nft.ownerId, 10)}
+                    {tnsMetadata.metadata?.public_name ||
+                      shortUserAddressFromID(nft.ownerId, 10)}
                   </BrandText>
                 </View>
               </View>

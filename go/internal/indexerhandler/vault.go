@@ -316,13 +316,6 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 	}
 	nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
-	// unset primary tns if set
-	if collection.TeritoriCollection.MintContractAddress == h.config.TNSContractAddress {
-		if err := h.db.Model(&indexerdb.User{}).Where("primary_tns = ?", tokenId).UpdateColumn("primary_tns", "").Error; err != nil {
-			return errors.Wrap(err, "failed to unset primary tns")
-		}
-	}
-
 	// update nft price
 	if err := h.db.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
 		"price_amount": price,

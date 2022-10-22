@@ -16,8 +16,7 @@ type App struct {
 }
 
 type User struct {
-	ID         UserID
-	PrimaryTNS string
+	ID UserID
 }
 
 var allModels = []interface{}{
@@ -44,8 +43,6 @@ var allModels = []interface{}{
 	&Burn{},
 	&SendNFT{},
 	&TransferNFT{},
-	&MetadataUpdate{},
-	&SetAsPrimaryTNS{},
 
 	// quests
 	&Quest{},

@@ -176,14 +176,6 @@ func (h *Handler) handleExecute(e *Message) error {
 		if err := h.handleExecuteUpdatePrice(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle update_price")
 		}
-	case "update_metadata":
-		if err := h.handleExecuteUpdateMetadata(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle update_metadata")
-		}
-	case "update_primary_alias":
-		if err := h.handleUpdatePrimaryAlias(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle update_primary_alias")
-		}
 	case "transfer_nft":
 		if err := h.handleExecuteTransferNFT(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle transfer")

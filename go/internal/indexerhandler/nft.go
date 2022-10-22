@@ -74,13 +74,6 @@ func (h *Handler) handleExecuteSendNFTFallback(e *Message, execMsg *wasmtypes.Ms
 	}
 	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
-	// unset primary tns if set
-	if collection.TeritoriCollection.MintContractAddress == h.config.TNSContractAddress {
-		if err := h.db.Model(&indexerdb.User{}).Where("primary_tns = ?", tokenId).UpdateColumn("primary_tns", "").Error; err != nil {
-			return errors.Wrap(err, "failed to unset primary tns")
-		}
-	}
-
 	receiverID := indexerdb.TeritoriUserID(sendNFTMsg.Data.Contract)
 
 	// update owner in db
@@ -134,13 +127,6 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 		return errors.New("no token ids")
 	}
 	tokenId := tokenIds[0]
-
-	// unset primary tns if set
-	if collection.TeritoriCollection.MintContractAddress == h.config.TNSContractAddress {
-		if err := h.db.Model(&indexerdb.User{}).Where("primary_tns = ?", tokenId).UpdateColumn("primary_tns", "").Error; err != nil {
-			return errors.Wrap(err, "failed to unset primary tns")
-		}
-	}
 
 	// delete
 	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)

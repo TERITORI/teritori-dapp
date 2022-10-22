@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { neutral33, neutral77 } from "../../utils/style/colors"
+import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -77,8 +77,8 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                   item.disabled && { color: neutral77 },
                 ]}
               >
-              {item.name}
-            </BrandText>
+                {item.name}
+              </BrandText>
 
               {item.badgeCount && <SpacerRow size={1} />}
               {item.badgeCount ? (
