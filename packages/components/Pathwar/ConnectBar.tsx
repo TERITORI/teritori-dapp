@@ -1,9 +1,11 @@
 import React from "react";
-import { AiOutlineTwitter, AiOutlineGithub } from "react-icons/ai";
-import { IoIosInformationCircle } from "react-icons/io";
 import { View, TouchableOpacity } from "react-native";
 
+import githubLogo from "../../../assets/icons/Pathwar/github.svg";
+import informationBlueIcon from "../../../assets/icons/Pathwar/informationBlueIcon.svg";
+import twitterLogo from "../../../assets/icons/Pathwar/twitter.svg";
 import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 
 export const ConnectBar: React.FC<object> = () => {
@@ -37,9 +39,7 @@ export const ConnectBar: React.FC<object> = () => {
           }}
         >
           <View>
-            <IoIosInformationCircle
-              style={{ width: 20, height: 20, color: "#16BBFF" }}
-            />
+            <SVG source={informationBlueIcon} />
           </View>
           <BrandText style={{ fontSize: 13, marginLeft: 10 }}>
             Login to play challenges and learn hacking.
@@ -54,7 +54,6 @@ export const ConnectBar: React.FC<object> = () => {
           }}
         >
           <View style={{ marginRight: 10 }}>
-            {/* <a style={{cursor: "pointer"}}> */}
             <TouchableOpacity>
               <TertiaryBox
                 width={169}
@@ -63,7 +62,7 @@ export const ConnectBar: React.FC<object> = () => {
                 squaresBackgroundColor="#171717"
               >
                 <View style={{ display: "flex", flexDirection: "row" }}>
-                  <AiOutlineTwitter />
+                  <SVG source={twitterLogo} />
                   <BrandText
                     style={{ fontSize: 13, color: "black", marginLeft: 5 }}
                   >
@@ -72,10 +71,8 @@ export const ConnectBar: React.FC<object> = () => {
                 </View>
               </TertiaryBox>
             </TouchableOpacity>
-            {/* </a> */}
           </View>
           <View style={{ marginRight: 10 }}>
-            {/* <a style={{cursor: "pointer"}}> */}
             <TouchableOpacity>
               <TertiaryBox
                 width={169}
@@ -84,7 +81,7 @@ export const ConnectBar: React.FC<object> = () => {
                 squaresBackgroundColor="#171717"
               >
                 <View style={{ display: "flex", flexDirection: "row" }}>
-                  <AiOutlineGithub />
+                  <SVG source={githubLogo} />
                   <BrandText
                     style={{ fontSize: 13, color: "black", marginLeft: 5 }}
                   >
@@ -93,10 +90,8 @@ export const ConnectBar: React.FC<object> = () => {
                 </View>
               </TertiaryBox>
             </TouchableOpacity>
-            {/* </a> */}
           </View>
           <View style={{ marginRight: 10 }}>
-            {/* <a style={{cursor: "pointer"}}> */}
             <TouchableOpacity onPress={() => {}}>
               <TertiaryBox
                 width={94}
@@ -109,7 +104,6 @@ export const ConnectBar: React.FC<object> = () => {
                 </BrandText>
               </TertiaryBox>
             </TouchableOpacity>
-            {/* </a> */}
           </View>
         </View>
       </View>

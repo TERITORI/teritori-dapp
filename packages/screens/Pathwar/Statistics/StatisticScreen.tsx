@@ -1,9 +1,8 @@
 import React from "react";
 import { View, StyleProp, ViewStyle } from "react-native";
 
-import statisticBanner from "../../../../assets/Banner/statisticBanner.svg";
+import statisticBanner from "../../../../assets/banners/statisticBanner.png";
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { neutral44 } from "../../../utils/style/colors";
@@ -23,8 +22,8 @@ export const StatisticScreen: React.FC = () => {
   return (
     <ScreenContainer sizeScreenContaier={40}>
       <View>
-        <SVG
-          source={statisticBanner}
+        <img
+          src={statisticBanner}
           style={{
             width: "100%",
             justifyContent: "center",

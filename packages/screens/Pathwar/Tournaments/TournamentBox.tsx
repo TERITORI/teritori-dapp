@@ -1,10 +1,11 @@
 import React from "react";
-import { AiOutlineCheck } from "react-icons/ai";
-import { HiClock } from "react-icons/hi";
 import { View, StyleProp, ViewStyle, TouchableOpacity } from "react-native";
 
 import TerritoriLogo from "../../../../assets/favicon.png";
+import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
+import clockIcon from "../../../../assets/icons/Pathwar/clockIcon.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { neutral44 } from "../../../utils/style/colors";
 
@@ -25,7 +26,6 @@ export const TournamentBox: React.FC<object> = () => {
       mainContainerStyle={{ backgroundColor: "#171717" }}
       style={{ marginBottom: 20, marginLeft: 8, marginRight: 8 }}
     >
-      {/* {handleDisplayChallengeDetails()} */}
       <View style={{ display: "flex", flexDirection: "column", right: 205 }}>
         <TertiaryBox
           width={196}
@@ -201,7 +201,7 @@ export const TournamentBox: React.FC<object> = () => {
         >
           <View>
             <View style={{ flexDirection: "row", marginBottom: 5 }}>
-              <AiOutlineCheck color="#FFFFFF" />
+              <SVG source={checkIcon} />
               <BrandText
                 style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 10 }}
               >
@@ -212,7 +212,7 @@ export const TournamentBox: React.FC<object> = () => {
 
           <View>
             <View style={{ flexDirection: "row", marginBottom: 5 }}>
-              <HiClock color="#FFFFFF" />
+              <SVG source={clockIcon} />
               <BrandText
                 style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 10 }}
               >

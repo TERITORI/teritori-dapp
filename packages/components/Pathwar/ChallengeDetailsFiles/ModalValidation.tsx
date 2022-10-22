@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { IoMdClose } from "react-icons/io";
-import { RiErrorWarningLine } from "react-icons/ri";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 import { ProgressBar } from "react-native-paper";
 
+import closeIcon from "../../../../assets/icons/Pathwar/closeIcon.svg";
+import warningGreenIcon from "../../../../assets/icons/Pathwar/warningGreenIcon.svg";
+import { SVG } from "../../../components/SVG";
 import { BrandText } from "../../BrandText/BrandText";
 import ModalBase from "../../modals/ModalBase";
 
@@ -34,10 +35,10 @@ export const ModalValidation: React.FC<{
 }> = ({ visible, onClose }) => {
   const [displayStateValidation, setDisplayStateValidation] = useState(visible);
   const progress = useProgress();
+  const { width } = useWindowDimensions();
 
   function handleConfirmClick() {
     onClose();
-    console.log(displayStateValidation);
     setDisplayStateValidation(false);
   }
 
@@ -47,6 +48,7 @@ export const ModalValidation: React.FC<{
       width={350}
       hideMainSeparator
       displayHeader={false}
+      mainContainerStyle={{ marginLeft: width - 355, marginTop: 5 }}
     >
       <View
         style={{
@@ -59,12 +61,12 @@ export const ModalValidation: React.FC<{
         <View
           style={{
             flexDirection: "row",
-            right: 40,
+            right: 30,
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <RiErrorWarningLine color="#C8FFAE" />
+          <SVG source={warningGreenIcon} />
           <BrandText style={{ fontSize: 16, marginLeft: 10 }}>
             Validate Challenge Success!
           </BrandText>
@@ -73,9 +75,9 @@ export const ModalValidation: React.FC<{
           onPress={() => {
             handleConfirmClick();
           }}
-          style={{ left: 40 }}
+          style={{ left: 30 }}
         >
-          <IoMdClose color="white" />
+          <SVG source={closeIcon} />
         </TouchableOpacity>
       </View>
       <View style={{ width: 340, right: 19, borderRadius: 1 }}>

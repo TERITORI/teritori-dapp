@@ -1,12 +1,19 @@
 import React, { useState } from "react";
-import { BiSearch } from "react-icons/bi";
-import { CgSortAz } from "react-icons/cg";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-import { View, StyleProp, ViewStyle, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleProp,
+  ViewStyle,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { CheckBox } from "react-native-elements";
 
-import pathwarBanner from "../../../../assets/Banner/resourcesBanner.svg";
 import resourceLogo from "../../../../assets/LogoPathwarOverview/ResourceLogo.svg";
+import resourceBanner from "../../../../assets/banners/resourcesBanner.png";
+import chevronDownIcon from "../../../../assets/icons/Pathwar/chevronDownIcon.svg";
+import chevronUpIcon from "../../../../assets/icons/Pathwar/chevronUpIcon.svg";
+import SearchIcon from "../../../../assets/icons/Pathwar/searchIcon.svg";
+import SortIcon from "../../../../assets/icons/Pathwar/sortIcon.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
@@ -25,7 +32,7 @@ const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
 );
 
 export const ResourceScreen: React.FC = () => {
-  const [isMoreDisplayed, setIsMoreDisplayed] = useState(true);
+  const [isMoreDisplayed, setIsMoreDisplayed] = useState(false);
   const [allShowSelected, setAllShowSelected] = useState(false);
   const [techPostSelected, setTechPostSelected] = useState(false);
   const [securitySelected, setSecuritySelected] = useState(false);
@@ -38,8 +45,8 @@ export const ResourceScreen: React.FC = () => {
   return (
     <ScreenContainer sizeScreenContaier={40}>
       <View>
-        <SVG
-          source={pathwarBanner}
+        <ImageBackground
+          source={resourceBanner}
           style={{
             height: 400,
             width: "100%",
@@ -47,9 +54,8 @@ export const ResourceScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <SVG source={resourceLogo} style={{ width: "9%" }} />
-          <View style={{ marginTop: 30 }} />
-        </SVG>
+          <SVG source={resourceLogo} />
+        </ImageBackground>
       </View>
 
       <View
@@ -58,7 +64,7 @@ export const ResourceScreen: React.FC = () => {
           width: "100%",
           justifyContent: "space-between",
           alignItems: "flex-start",
-          marginTop: -10,
+          marginTop: 10,
         }}
       >
         <View style={{ flexDirection: "column" }}>
@@ -71,7 +77,7 @@ export const ResourceScreen: React.FC = () => {
             }}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <CgSortAz color="white" />
+              <SVG source={SortIcon} />
               <BrandText
                 style={{ marginLeft: 5, marginRight: 5, fontSize: 14 }}
               >
@@ -81,9 +87,9 @@ export const ResourceScreen: React.FC = () => {
                 onPress={() => setIsMoreDisplayed(!isMoreDisplayed)}
               >
                 {isMoreDisplayed ? (
-                  <FiChevronDown color="white" />
+                  <SVG source={chevronDownIcon} />
                 ) : (
-                  <FiChevronUp color="white" />
+                  <SVG source={chevronUpIcon} />
                 )}
               </TouchableOpacity>
             </View>
@@ -346,7 +352,7 @@ export const ResourceScreen: React.FC = () => {
             mainBoxBackgroundColor="#000000"
           >
             <View style={{ right: 5 }}>
-              <BiSearch color="white" />
+              <SVG source={SearchIcon} />
             </View>
           </TextInputCustom>
         </View>

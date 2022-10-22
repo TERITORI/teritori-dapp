@@ -1,8 +1,8 @@
 import React from "react";
-import { BiSearch } from "react-icons/bi";
 import { View, StyleProp, ViewStyle } from "react-native";
 
-import pathwarBanner from "../../../assets/Banner/pathwarBanner.svg";
+import pathwarBanner from "../../../assets/banners/pathwarBanner.png";
+import searchIcon from "../../../assets/icons/Pathwar/searchIcon.svg";
 import { BrandText } from "../../components/BrandText";
 import { ChallengeBox } from "../../components/Pathwar/ChallengeBox";
 import { ConnectBar } from "../../components/Pathwar/ConnectBar";
@@ -35,8 +35,8 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
           margin: "auto",
         }}
       >
-        <SVG
-          source={pathwarBanner}
+        <img
+          src={pathwarBanner}
           style={{
             width: "100%",
           }}
@@ -68,7 +68,7 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
             mainBoxBackgroundColor="#000000"
           >
             <View style={{ right: 5 }}>
-              <BiSearch color="white" />
+              <SVG source={searchIcon} />
             </View>
           </TextInputCustom>
         </View>

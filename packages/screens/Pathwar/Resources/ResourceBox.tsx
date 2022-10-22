@@ -1,9 +1,10 @@
 import React from "react";
-import { AiOutlineHeart } from "react-icons/ai";
-import { CgOptions } from "react-icons/cg";
 import { View, TouchableOpacity } from "react-native";
 
+import heartIcon from "../../../../assets/icons/Pathwar/heartIcon.svg";
+import shareIcon from "../../../../assets/icons/Pathwar/shareIcon.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 
 export const ResourceBox: React.FC<object> = () => {
@@ -18,7 +19,6 @@ export const ResourceBox: React.FC<object> = () => {
         style={{
           flexDirection: "row",
           bottom: 130,
-          right: 0,
           width: 610,
           flexWrap: "wrap",
           justifyContent: "space-between",
@@ -64,7 +64,7 @@ export const ResourceBox: React.FC<object> = () => {
                 marginRight: 5,
               }}
             >
-              <CgOptions color="white" style={{ width: 22, height: 22 }} />
+              <SVG source={shareIcon} />
             </View>
           </TouchableOpacity>
           <TouchableOpacity>
@@ -78,7 +78,7 @@ export const ResourceBox: React.FC<object> = () => {
                 alignItems: "center",
               }}
             >
-              <AiOutlineHeart color="white" style={{ width: 22, height: 22 }} />
+              <SVG source={heartIcon} />
             </View>
           </TouchableOpacity>
         </View>

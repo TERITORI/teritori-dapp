@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { AiOutlineCheck } from "react-icons/ai";
-import { IoMdClose } from "react-icons/io";
 import { View } from "react-native";
 
+import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
+import closeIcon from "../../../../assets/icons/Pathwar/closeIcon.svg";
+import { SVG } from "../../../components/SVG";
 import { BrandText } from "../../BrandText/BrandText";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
@@ -135,7 +136,7 @@ export const ChallengeDetails: React.FC<{
               <BrandText style={{ fontSize: 13, marginBottom: 5 }}>
                 {"http://iadu7qp6.fr2.pathwar.net  "}
               </BrandText>
-              <AiOutlineCheck color="#C8FFAE" style={{ marginLeft: 8 }} />
+              <SVG source={checkIcon} />
               <BrandText
                 style={{
                   fontSize: 13,
@@ -151,7 +152,7 @@ export const ChallengeDetails: React.FC<{
               <BrandText style={{ fontSize: 13, marginBottom: 5 }}>
                 {"http://12rchdcf.local  "}
               </BrandText>
-              <IoMdClose color="#EAA54B" style={{ marginLeft: 8 }} />
+              <SVG source={closeIcon} />
               <BrandText
                 style={{
                   fontSize: 13,

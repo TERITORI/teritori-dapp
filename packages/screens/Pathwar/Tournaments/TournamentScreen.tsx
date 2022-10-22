@@ -1,9 +1,9 @@
 import React from "react";
-import { BiSearch } from "react-icons/bi";
-import { View } from "react-native";
+import { ImageBackground, View } from "react-native";
 
-import tounamentBanner from "../../../../assets/Banner/tournamentsBanner.svg";
 import tournamentLogo from "../../../../assets/LogoPathwarOverview/tournamentLogo.svg";
+import tounamentBanner from "../../../../assets/banners/tournamentsBanner.png";
+import searchIcon from "../../../../assets/icons/Pathwar/searchIcon.svg";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
@@ -13,7 +13,7 @@ export const TournamentScreen: React.FC = () => {
   return (
     <ScreenContainer>
       <View>
-        <SVG
+        <ImageBackground
           source={tounamentBanner}
           style={{
             height: 400,
@@ -23,8 +23,7 @@ export const TournamentScreen: React.FC = () => {
           }}
         >
           <SVG source={tournamentLogo} />
-          <View style={{ marginTop: 30 }} />
-        </SVG>
+        </ImageBackground>
       </View>
 
       <View
@@ -45,7 +44,7 @@ export const TournamentScreen: React.FC = () => {
             mainBoxBackgroundColor="#000000"
           >
             <View style={{ right: 5 }}>
-              <BiSearch color="white" />
+              <SVG source={searchIcon} />
             </View>
           </TextInputCustom>
         </View>

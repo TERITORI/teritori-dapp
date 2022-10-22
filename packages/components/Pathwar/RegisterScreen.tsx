@@ -14,7 +14,6 @@ export const RegisterScreen: React.FC<{
 
   function handleConfirmClick() {
     onClose();
-    console.log(displayConfirmation);
     setDisplayConfirmation(false);
   }
 
@@ -22,7 +21,6 @@ export const RegisterScreen: React.FC<{
     <ModalBase
       onClose={() => {
         handleConfirmClick();
-        console.log(displayConfirmation);
       }}
       label="Sign Up"
       visible={displayConfirmation}

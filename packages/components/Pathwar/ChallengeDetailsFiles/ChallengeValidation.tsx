@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { AiOutlineCheck, AiFillStar } from "react-icons/ai";
-import { BsFillDiamondFill } from "react-icons/bs";
-import { HiClock } from "react-icons/hi";
 import { View, StyleProp, ViewStyle } from "react-native";
 
 import TerritoriLogo from "../../../../assets/favicon.png";
+import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
+import clockIcon from "../../../../assets/icons/Pathwar/clockIcon.svg";
+import diamondIcon from "../../../../assets/icons/Pathwar/diamondIcon.svg";
+import starIcon from "../../../../assets/icons/Pathwar/starIcon.svg";
+import { SVG } from "../../../components/SVG";
 import { neutral44 } from "../../../utils/style/colors";
 import { BrandText } from "../../BrandText/BrandText";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
@@ -49,7 +51,7 @@ export const ChallengeValidation: React.FC<{
         mainContainerStyle={{ backgroundColor: "#171717" }}
         differentSquaresColor
         rightSquaresBackgroundColor="#C8FFAE"
-        leftSquaresBackgroundColor="#171717"
+        leftSquaresBackgroundColor="#000000"
       >
         <View
           style={{
@@ -238,7 +240,7 @@ export const ChallengeValidation: React.FC<{
             >
               <View>
                 <View style={{ flexDirection: "row", marginBottom: 7 }}>
-                  <AiOutlineCheck color="#FFFFFF" />
+                  <SVG source={checkIcon} />
                   <BrandText
                     style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 10 }}
                   >
@@ -247,7 +249,7 @@ export const ChallengeValidation: React.FC<{
                 </View>
 
                 <View style={{ flexDirection: "row" }}>
-                  <AiFillStar color="#FFFFFF" />
+                  <SVG source={starIcon} />
                   <BrandText
                     style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 10 }}
                   >
@@ -261,7 +263,7 @@ export const ChallengeValidation: React.FC<{
 
               <View>
                 <View style={{ flexDirection: "row", marginBottom: 7 }}>
-                  <HiClock color="#FFFFFF" />
+                  <SVG source={clockIcon} />
                   <BrandText
                     style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 10 }}
                   >
@@ -270,7 +272,7 @@ export const ChallengeValidation: React.FC<{
                 </View>
 
                 <View style={{ flexDirection: "row" }}>
-                  <BsFillDiamondFill color="#FFFFFF" />
+                  <SVG source={diamondIcon} />
                   <BrandText
                     style={{ fontSize: 12, color: "#FFFFFF", marginLeft: 10 }}
                   >
@@ -293,7 +295,7 @@ export const ChallengeValidation: React.FC<{
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  width: "95%",
+                  width: "85%",
                 }}
               >
                 <View>
@@ -301,7 +303,7 @@ export const ChallengeValidation: React.FC<{
                     <BrandText style={{ fontSize: 12, color: "#FFFFFF" }}>
                       Top #1:{" "}
                       <BrandText style={{ color: "#16BBFF", fontSize: 12 }}>
-                        x0x0_{" "}
+                        x0x0_
                       </BrandText>
                     </BrandText>
                   </View>
@@ -310,7 +312,7 @@ export const ChallengeValidation: React.FC<{
                     <BrandText style={{ fontSize: 12, color: "#FFFFFF" }}>
                       Top #3:{" "}
                       <BrandText style={{ color: "#16BBFF", fontSize: 12 }}>
-                        x0x0_{" "}
+                        x0x0_
                       </BrandText>
                     </BrandText>
                   </View>
@@ -321,7 +323,7 @@ export const ChallengeValidation: React.FC<{
                     <BrandText style={{ fontSize: 12, color: "#FFFFFF" }}>
                       Top #2:{" "}
                       <BrandText style={{ color: "#16BBFF", fontSize: 12 }}>
-                        x0x0_{" "}
+                        x0x0_
                       </BrandText>
                     </BrandText>
                   </View>

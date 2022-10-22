@@ -1,12 +1,12 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import Book from "../../../assets/LogoPathwarOverview/Book.svg";
-import Code from "../../../assets/LogoPathwarOverview/Code.svg";
-import GoToPage from "../../../assets/LogoPathwarOverview/GoToPage.svg";
-import Planete from "../../../assets/LogoPathwarOverview/Planete.svg";
-import Stats from "../../../assets/LogoPathwarOverview/Stats.svg";
-import Tournament from "../../../assets/LogoPathwarOverview/Tournament.svg";
+import BookIcon from "../../../assets/LogoPathwarOverview/BookIcon.svg";
+import CodeIcon from "../../../assets/LogoPathwarOverview/CodeIcon.svg";
+import GoToPageIcon from "../../../assets/LogoPathwarOverview/GoToPageIcon.svg";
+import PlaneteIcon from "../../../assets/LogoPathwarOverview/PlaneteIcon.svg";
+import StatsIcon from "../../../assets/LogoPathwarOverview/StatsIcon.svg";
+import TournamentIcon from "../../../assets/LogoPathwarOverview/TournamentIcon.svg";
 import { useAppNavigation } from "../../utils/navigation";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -44,7 +44,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
             }}
           >
             <View style={{ marginTop: 8, marginLeft: 5 }}>
-              <SVG source={Stats} />
+              <SVG source={StatsIcon} />
             </View>
             <TertiaryBox
               width={120}
@@ -83,7 +83,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           >
             <BrandText style={{ fontSize: 15 }}>Statistics</BrandText>
             <TouchableOpacity onPress={() => navigation.navigate("Statistics")}>
-              <SVG source={GoToPage} />
+              <SVG source={GoToPageIcon} />
             </TouchableOpacity>
           </View>
         </TertiaryBox>
@@ -94,7 +94,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           mainContainerStyle={{ backgroundColor: "#171717" }}
         >
           <View style={{ bottom: 26, right: 70 }}>
-            <SVG source={Book} />
+            <SVG source={BookIcon} />
           </View>
           <View
             style={{
@@ -109,7 +109,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           >
             <BrandText style={{ fontSize: 15 }}>Ressources</BrandText>
             <TouchableOpacity onPress={() => navigation.navigate("Resources")}>
-              <SVG source={GoToPage} />
+              <SVG source={GoToPageIcon} />
             </TouchableOpacity>
           </View>
         </TertiaryBox>
@@ -120,7 +120,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           mainContainerStyle={{ backgroundColor: "#171717" }}
         >
           <View style={{ bottom: 26, right: 70 }}>
-            <SVG source={Planete} />
+            <SVG source={PlaneteIcon} />
           </View>
           <View
             style={{
@@ -135,7 +135,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           >
             <BrandText style={{ fontSize: 15 }}>Gno.land</BrandText>
             <TouchableOpacity>
-              <SVG source={GoToPage} />
+              <SVG source={GoToPageIcon} />
             </TouchableOpacity>
           </View>
         </TertiaryBox>
@@ -146,7 +146,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           mainContainerStyle={{ backgroundColor: "#171717" }}
         >
           <View style={{ bottom: 26, right: 70 }}>
-            <SVG source={Code} />
+            <SVG source={CodeIcon} />
           </View>
           <View
             style={{
@@ -161,7 +161,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           >
             <BrandText style={{ fontSize: 15 }}>Cosmos Academy</BrandText>
             <TouchableOpacity>
-              <SVG source={GoToPage} />
+              <SVG source={GoToPageIcon} />
             </TouchableOpacity>
           </View>
         </TertiaryBox>
@@ -172,7 +172,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           mainContainerStyle={{ backgroundColor: "#171717" }}
         >
           <View style={{ bottom: 26, right: 70 }}>
-            <SVG source={Tournament} />
+            <SVG source={TournamentIcon} />
           </View>
 
           <View
@@ -216,7 +216,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
             <TouchableOpacity
               onPress={() => navigation.navigate("Tournaments")}
             >
-              <SVG source={GoToPage} />
+              <SVG source={GoToPageIcon} />
             </TouchableOpacity>
           </View>
         </TertiaryBox>
