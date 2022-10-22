@@ -217,24 +217,6 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			}
 		}
 
-		// get user info
-		// TODO: optimize into first db query
-		ownerName := ""
-		ownerImageURL := ""
-		var owner indexerdb.User
-		query := s.conf.IndexerDB.Find(&owner, "id = ?", nft.OwnerID)
-		if query.Error != nil {
-			return errors.Wrap(query.Error, "failed to query nft owner")
-		}
-		if query.RowsAffected > 0 && owner.PrimaryTNS != "" {
-			ownerName = owner.PrimaryTNS
-			var tns indexerdb.NFT
-			nftQuery := s.conf.IndexerDB.Find(&tns, "id = ?", indexerdb.TeritoriNFTID(s.conf.TNSContractAddress, owner.PrimaryTNS))
-			if nftQuery.Error == nil && nftQuery.RowsAffected > 0 {
-				ownerImageURL = tns.ImageURI
-			}
-		}
-
 		if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &marketplacepb.NFT{
 			Id:             nft.ID,
 			Name:           nft.Name,
@@ -246,8 +228,6 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			Denom:          nft.PriceDenom,
 			TextInsert:     textInsert,
 			OwnerId:        string(nft.OwnerID),
-			OwnerName:      ownerName,
-			OwnerImageUrl:  ipfsutil.IPFSURIToURL(ownerImageURL),
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send nft")
 		}

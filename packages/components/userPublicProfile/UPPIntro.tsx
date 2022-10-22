@@ -8,6 +8,7 @@ import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
 import userImageFrameSVG from "../../../assets/user-image-frame.svg";
+import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { neutral77, withAlpha } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -18,8 +19,9 @@ import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 
 export const UPPIntro: React.FC<{
-  metadata: any;
-}> = ({ metadata }) => {
+  userId: string;
+  metadata?: Metadata;
+}> = ({ userId, metadata }) => {
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
 
@@ -167,7 +169,7 @@ export const UPPIntro: React.FC<{
           </View>
 
           <CopyToClipboardSecondary
-            text={metadata?.userId.replace("tori-", "") || ""}
+            text={userId.replace("tori-", "")}
             iconSVG={teritoriSVG}
           />
         </TertiaryBox>

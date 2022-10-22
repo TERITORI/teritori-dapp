@@ -5,17 +5,15 @@ import "time"
 type ActivityKind string
 
 const (
-	ActivityKindUnknown         = ActivityKind("")
-	ActivityKindTrade           = ActivityKind("trade")
-	ActivityKindList            = ActivityKind("list")
-	ActivityKindCancelListing   = ActivityKind("cancel-listing")
-	ActivityKindMint            = ActivityKind("mint")
-	ActivityKindBurn            = ActivityKind("burn")
-	ActivityKindMetadataUpdate  = ActivityKind("metadata-update")
-	ActivityKindSetAsPrimaryTNS = ActivityKind("set-as-primary-tns")
-	ActivityKindSendNFT         = ActivityKind("send-nft")
-	ActivityKindTransferNFT     = ActivityKind("transfer-nft")
-	ActivityKindUpdateNFTPrice  = ActivityKind("update-nft-price")
+	ActivityKindUnknown        = ActivityKind("")
+	ActivityKindTrade          = ActivityKind("trade")
+	ActivityKindList           = ActivityKind("list")
+	ActivityKindCancelListing  = ActivityKind("cancel-listing")
+	ActivityKindMint           = ActivityKind("mint")
+	ActivityKindBurn           = ActivityKind("burn")
+	ActivityKindSendNFT        = ActivityKind("send-nft")
+	ActivityKindTransferNFT    = ActivityKind("transfer-nft")
+	ActivityKindUpdateNFTPrice = ActivityKind("update-nft-price")
 )
 
 type Activity struct {
@@ -26,15 +24,13 @@ type Activity struct {
 	Time time.Time
 
 	// "has one" relations
-	Listing         *Listing
-	Trade           *Trade
-	Mint            *Mint
-	Burn            *Burn
-	SendNFT         *SendNFT
-	TransferNFT     *TransferNFT
-	UpdateNFTPrice  *UpdateNFTPrice
-	MetadataUpdate  *MetadataUpdate
-	SetAsPrimaryTNS *SetAsPrimaryTNS
+	Listing        *Listing
+	Trade          *Trade
+	Mint           *Mint
+	Burn           *Burn
+	SendNFT        *SendNFT
+	TransferNFT    *TransferNFT
+	UpdateNFTPrice *UpdateNFTPrice
 
 	// "belongs to" relations
 	NFTID string
@@ -72,16 +68,6 @@ type Mint struct {
 type Burn struct {
 	ActivityID string `gorm:"primaryKey"`
 	BurnerID   UserID
-}
-
-type MetadataUpdate struct {
-	ActivityID string `gorm:"primaryKey"`
-	UserID     UserID
-}
-
-type SetAsPrimaryTNS struct {
-	ActivityID string `gorm:"primaryKey"`
-	UserID     UserID
 }
 
 type SendNFT struct {

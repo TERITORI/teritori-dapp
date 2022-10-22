@@ -56,18 +56,18 @@ const screenTabItems = {
 };
 
 const SelectedTabContent: React.FC<{
-  metadata: any;
+  userId: string;
   selectedTab: keyof typeof screenTabItems;
-}> = ({ metadata, selectedTab }) => {
+}> = ({ userId, selectedTab }) => {
   switch (selectedTab) {
     case "social-feed":
       return <UPPSocialFeed />;
     case "nfts":
-      return <UPPNFTs userId={metadata?.userId || ""} />;
+      return <UPPNFTs userId={userId} />;
     case "activity":
       return <UPPActivity />;
     case "quests":
-      return <UPPQuests userId={metadata?.userId || ""} />;
+      return <UPPQuests userId={userId} />;
     case "pathwar":
       return <UPPPathwarChallenges />;
     case "gig":
@@ -78,11 +78,15 @@ const SelectedTabContent: React.FC<{
 };
 
 export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
-  route,
+  route: {
+    params: { id },
+  },
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("nfts");
-  const { loading, metadata, notFound } = useTNSMetadata(route.params.id);
+  const { loading, metadata, notFound } = useTNSMetadata(
+    id.replace("tori-", "")
+  );
 
   const { setLoadingFullScreen } = useFeedbacks();
 
@@ -107,7 +111,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       ) : (
         <View style={{ flex: 1, alignItems: "center" }}>
           <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-            <UPPIntro metadata={metadata} />
+            <UPPIntro userId={id} metadata={metadata} />
 
             <Tabs
               items={screenTabItems}
@@ -121,7 +125,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
               borderColorTabSelected={primaryColor}
             />
 
-            <SelectedTabContent selectedTab={selectedTab} metadata={metadata} />
+            <SelectedTabContent selectedTab={selectedTab} userId={id} />
           </View>
         </View>
       )}

@@ -1,35 +1,42 @@
 import { useEffect, useState } from "react";
 
-import { useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
-export const useTNSMetadata = (id: string) => {
+// FIXME: use react-query to prevent recalling the api all the time
+
+export const useTNSMetadata = (address?: string) => {
   const [loading, setLoading] = useState(false);
-  const [metadata, setMetadata] = useState<any>(); // FIXME: type this
+  const [metadata, setMetadata] = useState<Metadata>();
   const [notFound, setNotFound] = useState(false);
-  const { setToastError } = useFeedbacks();
 
   useEffect(() => {
-    const getToken = async () => {
+    const effect = async () => {
       setLoading(true);
 
-      const contractAddress = process.env
-        .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
-      // We just want to read, so we use a non-signing client
-      const cosmWasmClient = await getNonSigningCosmWasmClient();
-
-      const tnsClient = new TeritoriNameServiceQueryClient(
-        cosmWasmClient,
-        contractAddress
-      );
-
       try {
+        if (!address) {
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+
+        const contractAddress =
+          process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "";
+        // We just want to read, so we use a non-signing client
+        const cosmWasmClient = await getNonSigningCosmWasmClient();
+
+        const tnsClient = new TeritoriNameServiceQueryClient(
+          cosmWasmClient,
+          contractAddress
+        );
+
         const aliasResponse = await cosmWasmClient.queryContractSmart(
           contractAddress,
           {
             primary_alias: {
-              address: id.replace("tori-", ""),
+              address,
             },
           }
         );
@@ -38,33 +45,17 @@ export const useTNSMetadata = (id: string) => {
         const nftInfo = await tnsClient.nftInfo({
           tokenId: aliasResponse.username,
         });
-        // ======== Getting NFT owner
-        const { owner } = await tnsClient.ownerOf({
-          tokenId: aliasResponse.username,
-        });
-        nftInfo.extension.userId = `tori-${owner}`;
-        setNotFound(false);
-        return nftInfo.extension;
-      } catch {
+
+        setMetadata(nftInfo.extension);
+      } catch (err) {
+        console.warn(err);
         setNotFound(true);
-        return undefined;
       }
+      setLoading(false);
     };
 
-    getToken()
-      .then((metadata) => {
-        if (metadata) setMetadata(metadata);
-        setLoading(false);
-      })
-      .catch((e) => {
-        console.warn("ERROR getToken() : ", e);
-        setLoading(false);
-        setToastError({
-          title: "Something went wrong!",
-          message: e.message,
-        });
-      });
-  }, [id]);
+    effect();
+  }, [address]);
 
   return { loading, metadata, notFound };
 };

@@ -13,9 +13,9 @@ export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
 }) => {
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
-  const { loading, metadata } = useTNSMetadata(selectedWallet?.publicKey || "");
+  const { loading, metadata } = useTNSMetadata(selectedWallet?.publicKey);
   const { setLoadingFullScreen } = useFeedbacks();
-  const name = metadata?.public_name.replace(process.env.TLD, "") || "";
+  const name = (metadata?.public_name || "").replace(process.env.TLD || "", "");
 
   // Sync loadingFullScreen
   useEffect(() => {

@@ -63,8 +63,6 @@ export interface NFT {
   isListed: boolean;
   textInsert: string;
   collectionName: string;
-  ownerName: string;
-  ownerImageUrl: string;
   ownerId: string;
 }
 
@@ -233,8 +231,6 @@ function createBaseNFT(): NFT {
     isListed: false,
     textInsert: "",
     collectionName: "",
-    ownerName: "",
-    ownerImageUrl: "",
     ownerId: "",
   };
 }
@@ -270,12 +266,6 @@ export const NFT = {
     }
     if (message.collectionName !== "") {
       writer.uint32(82).string(message.collectionName);
-    }
-    if (message.ownerName !== "") {
-      writer.uint32(90).string(message.ownerName);
-    }
-    if (message.ownerImageUrl !== "") {
-      writer.uint32(98).string(message.ownerImageUrl);
     }
     if (message.ownerId !== "") {
       writer.uint32(106).string(message.ownerId);
@@ -320,12 +310,6 @@ export const NFT = {
         case 10:
           message.collectionName = reader.string();
           break;
-        case 11:
-          message.ownerName = reader.string();
-          break;
-        case 12:
-          message.ownerImageUrl = reader.string();
-          break;
         case 13:
           message.ownerId = reader.string();
           break;
@@ -349,8 +333,6 @@ export const NFT = {
       isListed: isSet(object.isListed) ? Boolean(object.isListed) : false,
       textInsert: isSet(object.textInsert) ? String(object.textInsert) : "",
       collectionName: isSet(object.collectionName) ? String(object.collectionName) : "",
-      ownerName: isSet(object.ownerName) ? String(object.ownerName) : "",
-      ownerImageUrl: isSet(object.ownerImageUrl) ? String(object.ownerImageUrl) : "",
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
     };
   },
@@ -367,8 +349,6 @@ export const NFT = {
     message.isListed !== undefined && (obj.isListed = message.isListed);
     message.textInsert !== undefined && (obj.textInsert = message.textInsert);
     message.collectionName !== undefined && (obj.collectionName = message.collectionName);
-    message.ownerName !== undefined && (obj.ownerName = message.ownerName);
-    message.ownerImageUrl !== undefined && (obj.ownerImageUrl = message.ownerImageUrl);
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     return obj;
   },
@@ -385,8 +365,6 @@ export const NFT = {
     message.isListed = object.isListed ?? false;
     message.textInsert = object.textInsert ?? "";
     message.collectionName = object.collectionName ?? "";
-    message.ownerName = object.ownerName ?? "";
-    message.ownerImageUrl = object.ownerImageUrl ?? "";
     message.ownerId = object.ownerId ?? "";
     return message;
   },
