@@ -3,8 +3,8 @@ import { View, TouchableOpacity, FlatList } from "react-native";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../components/BrandText";
-import { NFTView } from "../../components/NFTView";
 import { SVG } from "../../components/SVG";
+import { NFTView } from "../../components/nfts/NFTView";
 import { useNFTs } from "../../hooks/useNFTs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";

@@ -5,7 +5,6 @@ import { neutral33 } from "../utils/style/colors";
 import {
   headerHeight,
   screenContainerContentMarginHorizontal,
-  screenContainerContentMarginHorizontalSmall,
 } from "../utils/style/layout";
 
 export const Header: React.FC<{
@@ -35,9 +34,7 @@ export const Header: React.FC<{
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: smallMargin
-            ? screenContainerContentMarginHorizontalSmall
-            : screenContainerContentMarginHorizontal,
+          marginLeft: screenContainerContentMarginHorizontal,
         }}
       >
         <>{children}</>

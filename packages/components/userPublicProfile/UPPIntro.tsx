@@ -167,7 +167,7 @@ export const UPPIntro: React.FC<{
           </View>
 
           <CopyToClipboardSecondary
-            text={metadata?.userId || ""}
+            text={metadata?.userId.replace("tori-", "") || ""}
             iconSVG={teritoriSVG}
           />
         </TertiaryBox>

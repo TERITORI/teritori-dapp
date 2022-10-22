@@ -8,20 +8,20 @@ import {
   StyleSheet,
 } from "react-native";
 
-import avatarPNG from "../../assets/default-images/avatar.png";
-import dotsCircleSVG from "../../assets/icons/dots-circle.svg";
-import { NFT } from "../api/marketplace/v1/marketplace";
-import { prettyPrice } from "../utils/coins";
-import { useAppNavigation } from "../utils/navigation";
-import { protobufNetworkToNetwork } from "../utils/network";
-import { neutral33, neutral77 } from "../utils/style/colors";
-import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { ImageWithTextInsert } from "./ImageWithTextInsert";
-import { SVG } from "./SVG";
-import { TertiaryBox } from "./boxes/TertiaryBox";
-import { SecondaryButton } from "./buttons/SecondaryButton";
-import { NetworkIcon } from "./images/NetworkIcon";
+import avatarPNG from "../../../assets/default-images/avatar.png";
+import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
+import { NFT } from "../../api/marketplace/v1/marketplace";
+import { prettyPrice } from "../../utils/coins";
+import { useAppNavigation } from "../../utils/navigation";
+import { protobufNetworkToNetwork } from "../../utils/network";
+import { neutral33, neutral77 } from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { ImageWithTextInsert } from "../ImageWithTextInsert";
+import { SVG } from "../SVG";
+import { TertiaryBox } from "../boxes/TertiaryBox";
+import { SecondaryButton } from "../buttons/SecondaryButton";
+import { NetworkIcon } from "../images/NetworkIcon";
 
 export const NFTView: React.FC<{
   data: NFT;

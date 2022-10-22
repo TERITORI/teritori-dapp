@@ -4,6 +4,7 @@ import { View, Image } from "react-native";
 import connectedImagePNG from "../../../assets/default-images/connected-image-bad.png";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { Overview } from "../../screens/WalletManager/Overview/Overview";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
@@ -31,6 +32,8 @@ const ConnectedIntro: React.FC = () => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof walletsManagerTabItems>("overview");
 
+  const selectedWallet = useSelectedWallet();
+
   return (
     <View
       style={{
@@ -48,7 +51,7 @@ const ConnectedIntro: React.FC = () => {
 
       <Section title="Quests" subtitle="6">
         <FullWidthSeparator />
-        <Quests />
+        <Quests userId={`tori-${selectedWallet?.publicKey}`} />
       </Section>
 
       <Section title="Wallets manager">

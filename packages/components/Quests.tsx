@@ -2,31 +2,19 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { Quest } from "../api/marketplace/v1/marketplace";
-import useSelectedWallet from "../hooks/useSelectedWallet";
 import { backendClient } from "../utils/backend";
-import { Network } from "../utils/network";
 import { QuestCard } from "./cards/QuestCard";
-
 export const Quests: React.FC<{
-  userAddress?: string;
-}> = ({ userAddress }) => {
-  const selectedWallet = useSelectedWallet();
+  userId?: string;
+}> = ({ userId }) => {
   const [quests, setQuests] = useState<Quest[]>([]);
 
   useEffect(() => {
-    if (
-      !selectedWallet?.publicKey ||
-      selectedWallet?.network !== Network.Teritori
-    ) {
-      return;
-    }
     setQuests([]);
     const stream = backendClient.Quests({
       limit: 100,
       offset: 0,
-      userId: userAddress
-        ? `tori-${userAddress}`
-        : `tori-${selectedWallet?.publicKey}`,
+      userId,
     });
     stream.forEach(({ quest }) => {
       if (!quest) {
@@ -34,7 +22,7 @@ export const Quests: React.FC<{
       }
       setQuests((qs) => [...qs, quest]);
     });
-  }, [selectedWallet?.publicKey, selectedWallet?.network]);
+  }, [userId]);
 
   const questCardStyle = {
     marginTop: 20,
