@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/CosmWasm/wasmd v0.27.0
 	github.com/Khan/genqlient v0.5.0
+	github.com/allegro/bigcache/v3 v3.0.2
 	github.com/bxcodec/faker/v3 v3.8.0
 	github.com/cosmos/cosmos-sdk v0.45.4
 	github.com/cosmos/gogoproto v1.4.2

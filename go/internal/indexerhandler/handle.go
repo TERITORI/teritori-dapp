@@ -3,26 +3,30 @@ package indexerhandler
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/allegro/bigcache/v3"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cosmostx "github.com/cosmos/cosmos-sdk/types/tx"
 	cosmosproto "github.com/cosmos/gogoproto/proto"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
+	tclient "github.com/tendermint/tendermint/rpc/client/http"
 	tenderminttypes "github.com/tendermint/tendermint/rpc/core/types"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
 type Message struct {
-	Msg      *codectypes.Any
-	MsgIndex int
-	MsgID    string
-	TxHash   string
-	Events   EventsMap
-	Log      TendermintTxLog
+	Msg       *codectypes.Any
+	MsgIndex  int
+	MsgID     string
+	TxHash    string
+	Events    EventsMap
+	Log       TendermintTxLog
+	BlockTime time.Time
 }
 
 type Config struct {
@@ -31,13 +35,15 @@ type Config struct {
 	MinterCodeID         uint64
 	VaultContractAddress string
 	TNSDefaultImageURL   string
+	TendermintClient     *tclient.HTTP
 }
 
 type Handler struct {
 	db *gorm.DB
 
-	logger *zap.Logger
-	config Config
+	logger         *zap.Logger
+	config         Config
+	blockTimeCache *bigcache.BigCache
 }
 
 func NewHandler(db *gorm.DB, config Config, logger *zap.Logger) (*Handler, error) {
@@ -47,10 +53,19 @@ func NewHandler(db *gorm.DB, config Config, logger *zap.Logger) (*Handler, error
 	if logger == nil {
 		logger = zap.NewNop()
 	}
+
+	blockTimeCacheConfig := bigcache.DefaultConfig(time.Duration(0))
+	blockTimeCacheConfig.HardMaxCacheSize = 10
+	blockTimeCache, err := bigcache.NewBigCache(blockTimeCacheConfig)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to init block time cache")
+	}
+
 	return &Handler{
-		db:     db,
-		logger: logger,
-		config: config,
+		db:             db,
+		logger:         logger,
+		config:         config,
+		blockTimeCache: blockTimeCache,
 	}, nil
 }
 
@@ -65,23 +80,29 @@ func (h *Handler) HandleTendermintResultTx(tx *tenderminttypes.ResultTx) error {
 		return errors.Wrap(err, "failed to unmarshal tx")
 	}
 
-	return h.HandleTx(tx.Hash.String(), cosmosTx, logs)
+	return h.HandleTx(tx.Height, tx.Hash.String(), cosmosTx, logs)
 }
 
-func (h *Handler) HandleTx(hash string, tx cosmostx.Tx, logs []TendermintTxLog) error {
+func (h *Handler) HandleTx(height int64, hash string, tx cosmostx.Tx, logs []TendermintTxLog) error {
 	if len(logs) != len(tx.Body.Messages) {
 		return errors.New("messages and results count mismatch")
+	}
+
+	blockTime, err := h.blockTime(height)
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
 	}
 
 	codecMessages := tx.Body.Messages
 	for i, codecMsg := range codecMessages {
 		handlerMsg := Message{
-			Msg:      codecMsg,
-			MsgIndex: i,
-			MsgID:    fmt.Sprintf("%s-%d", hash, i),
-			Log:      logs[i],
-			TxHash:   hash,
-			Events:   EventsMapFromStringEvents(logs[i].Events),
+			Msg:       codecMsg,
+			MsgIndex:  i,
+			MsgID:     fmt.Sprintf("%s-%d", hash, i),
+			Log:       logs[i],
+			TxHash:    hash,
+			Events:    EventsMapFromStringEvents(logs[i].Events),
+			BlockTime: blockTime,
 		}
 
 		switch codecMsg.TypeUrl {

@@ -162,6 +162,7 @@ func main() {
 					RESTEndpoint:         replayInfo.RESTEndpoint,
 					TNSContractAddress:   *tnsContractAddress,
 					TNSDefaultImageURL:   *tnsDefaultImageURL,
+					TendermintClient:     client,
 				}, logger)
 				if err != nil {
 					return errors.Wrap(err, "failed to create handler")

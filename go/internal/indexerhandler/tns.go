@@ -2,7 +2,6 @@ package indexerhandler
 
 import (
 	"encoding/json"
-	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -110,7 +109,7 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindMint,
-		Time: time.Now(), // FIXME: replace by block time,
+		Time: e.BlockTime,
 		Mint: &indexerdb.Mint{
 			// TODO: get price
 			BuyerID: ownerId,

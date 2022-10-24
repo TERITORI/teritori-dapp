@@ -2,7 +2,6 @@ package indexerhandler
 
 import (
 	"encoding/json"
-	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -85,7 +84,7 @@ func (h *Handler) handleExecuteSendNFTFallback(e *Message, execMsg *wasmtypes.Ms
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindSendNFT,
-		Time: time.Now(), // FIXME: replace by block time,
+		Time: e.BlockTime,
 		SendNFT: &indexerdb.SendNFT{
 			Sender:   indexerdb.TeritoriUserID(execMsg.Sender),
 			Receiver: receiverID,
@@ -138,7 +137,7 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindBurn,
-		Time: time.Now(), // FIXME: replace by block time,
+		Time: e.BlockTime,
 		Burn: &indexerdb.Burn{
 			BurnerID: indexerdb.TeritoriUserID(execMsg.Sender),
 		},
@@ -200,7 +199,7 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindTransferNFT,
-		Time: time.Now(), // FIXME: replace by block time,
+		Time: e.BlockTime,
 		TransferNFT: &indexerdb.TransferNFT{
 			Sender:   indexerdb.TeritoriUserID(execMsg.Sender),
 			Receiver: receiverID,
