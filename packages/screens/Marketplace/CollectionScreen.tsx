@@ -1,6 +1,7 @@
 import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useEffect, useState } from "react";
 import { View, Image, Platform, StyleSheet } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import bannerCollection from "../../../assets/default-images/banner-collection.png";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
@@ -8,6 +9,7 @@ import shareSVG from "../../../assets/icons/share.svg";
 import { NFTsRequest } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { ActivityTable } from "../../components/activity/ActivityTable";
 import { PrimaryBox } from "../../components/boxes/PrimaryBox";
 import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSecondary";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
@@ -43,20 +45,17 @@ const collectionScreenTabItems = {
   activity: {
     name: "Activity",
   },
-  offers: {
-    name: "Offers",
-  },
 };
 
 const nftWidth = 268; // FIXME: ssot
 
 // All the screen content before the Flatlist used to display NFTs
-const FlatListHeader: React.FC<{
+const Header: React.FC<{
   collectionInfo: CollectionInfo;
-}> = ({ collectionInfo = {} }) => {
+  selectedTab: keyof typeof collectionScreenTabItems;
+  onSelectTab: (tab: keyof typeof collectionScreenTabItems) => void;
+}> = ({ collectionInfo = {}, selectedTab, onSelectTab }) => {
   // variables
-  const [selectedTab, setSelectedTab] =
-    useState<keyof typeof collectionScreenTabItems>("allNFTs");
   const { width: maxWidth } = useMaxResolution();
   const { width, height } = useImageResizer({
     image: collectionInfo.bannerImage || bannerCollection,
@@ -165,7 +164,7 @@ const FlatListHeader: React.FC<{
       >
         <Tabs
           items={collectionScreenTabItems}
-          onSelect={setSelectedTab}
+          onSelect={onSelectTab}
           selected={selectedTab}
           style={{
             width: "fit-content",
@@ -180,6 +179,9 @@ const FlatListHeader: React.FC<{
 };
 
 const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
+  const [selectedTab, setSelectedTab] =
+    useState<keyof typeof collectionScreenTabItems>("allNFTs");
+
   const {
     info,
     // notFound,
@@ -202,11 +204,48 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
     setLoadingFullScreen(loadingCollectionInfo);
   }, [loadingCollectionInfo]);
 
+  switch (selectedTab) {
+    case "allNFTs":
+      return (
+        <NFTs
+          req={nftsRequest}
+          numColumns={numColumns}
+          ListHeaderComponent={
+            <Header
+              collectionInfo={info}
+              selectedTab={selectedTab}
+              onSelectTab={setSelectedTab}
+            />
+          }
+          ListFooterComponent={
+            <View style={{ height: layout.contentPadding }} />
+          }
+        />
+      );
+    case "activity":
+      return (
+        <ScrollView>
+          <Header
+            collectionInfo={info}
+            selectedTab={selectedTab}
+            onSelectTab={setSelectedTab}
+          />
+          <ActivityTable collectionId={id} />
+        </ScrollView>
+      );
+  }
+
   return (
     <NFTs
       req={nftsRequest}
       numColumns={numColumns}
-      ListHeaderComponent={<FlatListHeader collectionInfo={info} />}
+      ListHeaderComponent={
+        <Header
+          collectionInfo={info}
+          selectedTab={selectedTab}
+          onSelectTab={setSelectedTab}
+        />
+      }
       ListFooterComponent={<View style={{ height: layout.contentPadding }} />}
     />
   );

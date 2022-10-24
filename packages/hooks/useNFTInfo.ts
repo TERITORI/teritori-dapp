@@ -124,6 +124,9 @@ const getTNSNFTInfo = async (
     priceDenom: vaultInfo?.denom || "",
     collectionName: contractInfo.name,
     textInsert: tokenId,
+    collectionImageURL: ipfsURLToHTTPURL(
+      process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
+    ),
   };
 
   return nfo;
@@ -143,6 +146,11 @@ const getStandardNFTInfo = async (
     minterContractAddress
   );
   const minterConfig = await minterClient.config();
+
+  const collectionMetadata = await (
+    await fetch(ipfsURLToHTTPURL(minterConfig.nft_base_uri))
+  ).json();
+
   // ======== Getting NFT client
   const nftClient = new TeritoriNftQueryClient(
     cosmwasmClient,
@@ -219,6 +227,7 @@ const getStandardNFTInfo = async (
     price: vaultInfo?.amount || "",
     priceDenom: vaultInfo?.denom || "",
     collectionName: contractInfo.name,
+    collectionImageURL: ipfsURLToHTTPURL(collectionMetadata.image),
   };
 
   return nfo;

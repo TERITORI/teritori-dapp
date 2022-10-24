@@ -1,8 +1,9 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+import { Target } from "@nandorojo/anchor";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import guardian1PNG from "../../../assets/default-images/guardian_1.png";
+import starSVG from "../../../assets/icons/star.svg";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
@@ -14,10 +15,12 @@ import {
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
+import { ActivityTable } from "../activity/ActivityTable";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { NFTCancelListingCard } from "../cards/NFTCancelListingCard";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
 import { NFTSellCard } from "../cards/NFTSellCard";
+import { CollapsableSection } from "../collapsable/CollapsableSection";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import {
   TransactionModals,
@@ -25,7 +28,6 @@ import {
 } from "../modals/transaction/TransactionModals";
 import { Tabs } from "../tabs/Tabs";
 import { NFTAttributes } from "./NFTAttributes";
-import { CollapsableActivities } from "./components/CollapsableActivities";
 import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";
 
 const mainInfoTabItems = {
@@ -42,11 +44,12 @@ const mainInfoTabItems = {
 
 // Displays NFT metadata and handle buying
 export const NFTMainInfo: React.FC<{
+  nftId: string;
   nftInfo?: NFTInfo;
   buy: () => Promise<ExecuteResult | undefined>;
   sell: (price: string) => Promise<ExecuteResult | undefined>;
   cancelListing: () => Promise<ExecuteResult | undefined>;
-}> = ({ nftInfo, buy, sell, cancelListing }) => {
+}> = ({ nftId, nftInfo, buy, sell, cancelListing }) => {
   const { openTransactionModals } = useTransactionModals();
 
   const [selectedTab, setSelectedTab] =
@@ -125,7 +128,6 @@ export const NFTMainInfo: React.FC<{
     <View
       style={{
         flexDirection: "row",
-        marginTop: 48,
         width: "100%",
         flexWrap: "wrap",
         justifyContent: "center",
@@ -151,7 +153,7 @@ export const NFTMainInfo: React.FC<{
         </BrandText>
 
         <CollectionInfoInline
-          imageSource={guardian1PNG}
+          imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
           name={nftInfo?.collectionName}
         />
 
@@ -182,7 +184,6 @@ export const NFTMainInfo: React.FC<{
             <BrandText style={{ color: neutral77 }}>Not listed</BrandText>
           </View>
         )}
-
         <Tabs
           onSelect={setSelectedTab}
           items={mainInfoTabItems}
@@ -193,11 +194,15 @@ export const NFTMainInfo: React.FC<{
         {/*TODO: About  = Big text*/}
         <SelectedTabItemRendering />
       </View>
-      <View style={styles.collapsableContainer}>
+      <Target style={styles.collapsableContainer} name="price-history">
         <CollapsablePiceHistory />
-      </View>
+      </Target>
       <View style={styles.collapsableContainer}>
-        <CollapsableActivities />
+        <Target name="activity">
+          <CollapsableSection icon={starSVG} title="Activity">
+            <ActivityTable nftId={nftId} />
+          </CollapsableSection>
+        </Target>
       </View>
 
       {/* ====== "Buy this NFT" three modals*/}

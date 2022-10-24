@@ -1,21 +1,29 @@
 import React from "react";
-import { TextStyle, TouchableOpacity, Linking, StyleProp } from "react-native";
+import {
+  TextStyle,
+  TouchableOpacity,
+  Linking,
+  StyleProp,
+  TextProps,
+} from "react-native";
 
 import { primaryColor } from "../utils/style/colors";
 import { BrandText } from "./BrandText";
 
-export const ExternalLink: React.FC<{
-  externalUrl: string | null | undefined;
-  style?: StyleProp<TextStyle>;
-  numberOfLines?: number;
-}> = ({ children, externalUrl, style, numberOfLines }) => {
+// FIXME: use <a> tag on web
+
+export const ExternalLink: React.FC<
+  {
+    externalUrl: string | null | undefined;
+    style?: StyleProp<TextStyle>;
+  } & TextProps
+> = ({ children, externalUrl, style, ...textProps }) => {
   if (!externalUrl) {
     return null;
   }
   return (
     <TouchableOpacity onPress={() => Linking.openURL(externalUrl)}>
       <BrandText
-        numberOfLines={numberOfLines}
         style={[
           {
             textDecorationLine: "underline",
@@ -24,6 +32,7 @@ export const ExternalLink: React.FC<{
           },
           style,
         ]}
+        {...textProps}
       >
         <>{children}</>
       </BrandText>
