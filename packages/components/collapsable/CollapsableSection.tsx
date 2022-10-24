@@ -8,7 +8,6 @@ import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 import { SvgProps } from "react-native-svg";
@@ -47,8 +46,8 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   const height = useSharedValue(0);
   const style = useAnimatedStyle(
     () => ({
-      height: open.value ? withSpring(height.value) : withTiming(0),
-      opacity: open.value ? withSpring(1) : withTiming(0),
+      height: open.value ? withTiming(height.value) : withTiming(0),
+      opacity: open.value ? withTiming(1) : withTiming(0),
     }),
     [isExpandable]
   );

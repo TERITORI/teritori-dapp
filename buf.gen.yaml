@@ -7,4 +7,6 @@ plugins:
   - name: ts
     out: packages/api
     path: node_modules/ts-proto/protoc-gen-ts_proto
-    opt: outputClientImpl=grpc-web
+    opt:
+      - outputClientImpl=grpc-web
+      - esModuleInterop=true

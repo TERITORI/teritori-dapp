@@ -121,6 +121,7 @@ message ActivityRequest {
 
 message ActivityResponse {
   Activity activity = 1;
+  int64 total = 2;
 }
 
 message NFTPriceHistoryRequest {

@@ -25,6 +25,7 @@ type Activity struct {
 
 	// "has one" relations
 	Listing        *Listing
+	CancelListing  *CancelListing
 	Trade          *Trade
 	Mint           *Mint
 	Burn           *Burn
@@ -44,8 +45,14 @@ type Listing struct {
 	SellerID   UserID
 }
 
+type CancelListing struct {
+	ActivityID string `gorm:"primaryKey"`
+	SellerID   UserID
+}
+
 type UpdateNFTPrice struct {
 	ActivityID string `gorm:"primaryKey"`
+	SellerID   UserID
 	Price      string
 	PriceDenom string
 }

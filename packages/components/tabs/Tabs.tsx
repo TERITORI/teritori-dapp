@@ -1,3 +1,4 @@
+import { useScrollTo } from "@nandorojo/anchor";
 import React from "react";
 import {
   TouchableOpacity,
@@ -19,6 +20,7 @@ interface TabDefinition {
   name: string;
   badgeCount?: number;
   disabled?: boolean;
+  scrollTo?: string;
 }
 
 export const Tabs = <T extends { [key: string]: TabDefinition }>({
@@ -27,13 +29,16 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   onSelect,
   style,
   selected,
+  hideSelector,
 }: {
   items: T;
   selected: keyof T;
   onSelect: (key: keyof T, def: TabDefinition) => void;
   borderColorTabSelected?: string;
   style?: StyleProp<ViewStyle>;
+  hideSelector?: boolean;
 }) => {
+  const { scrollTo } = useScrollTo();
   const itemsArray = Object.entries(items);
   return (
     <View
@@ -52,7 +57,11 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
         return (
           <TouchableOpacity
             key={key}
-            onPress={() => onSelect(key, item)}
+            onPress={() =>
+              item.scrollTo
+                ? scrollTo(item.scrollTo, { offset: -60 })
+                : onSelect(key, item)
+            }
             disabled={item.disabled}
             style={{
               height: "100%",
@@ -93,7 +102,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                 )
               ) : null}
             </View>
-            {isSelected && (
+            {!hideSelector && isSelected && (
               <View
                 style={[
                   styles.selectedBorder,

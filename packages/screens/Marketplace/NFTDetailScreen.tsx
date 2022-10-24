@@ -1,12 +1,11 @@
+import { ScrollView, Target } from "@nandorojo/anchor";
 import React, { useCallback, useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
-import { NFTActivity } from "../../components/nftDetails/NFTActivity";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
-import { NFTPriceHistory } from "../../components/nftDetails/NFTPriceHistory";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import {
@@ -27,26 +26,22 @@ import {
 } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { Network } from "../../utils/network";
-import {
-  layout,
-  screenContainerContentMarginHorizontal,
-  screenContentMaxWidth,
-} from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
 
 const screenTabItems = {
   main: {
     name: "Main info",
+    scrollTo: "main-info",
   },
   price: {
     name: "Price history",
-  },
-  offers: {
-    name: "Offers",
+    scrollTo: "price-history",
   },
   activity: {
     name: "Activity",
+    scrollTo: "activity",
   },
   more: {
     name: "More from collection",
@@ -70,6 +65,7 @@ export interface NFTInfo {
   priceDenom: string;
   collectionName: string;
   textInsert?: string;
+  collectionImageURL: string;
 }
 
 const Content: React.FC<{
@@ -172,28 +168,6 @@ const Content: React.FC<{
     return reply;
   }, [cancelListing, refresh]);
 
-  let tabContent;
-  switch (selectedTab) {
-    case "main":
-      tabContent = (
-        <NFTMainInfo
-          nftInfo={info}
-          buy={buy}
-          sell={handleSell}
-          cancelListing={handleCancelListing}
-        />
-      );
-      break;
-    case "price":
-      tabContent = (
-        <NFTPriceHistory id={id} style={{ height: 200, width: 400 }} />
-      );
-      break;
-    case "activity":
-      tabContent = <NFTActivity id={id} />;
-      break;
-  }
-
   // Used to send Collection name and mintAddress to the parent ScreenContainer (BackTo)
   useEffect(() => {
     setCollectionInfo({
@@ -220,42 +194,49 @@ const Content: React.FC<{
       </View>
     );
   }
+
   // TODO: Reuse this ScrollView pattern (ScrollView + View just bellow) in other Screens to provide a ScreenView (One per screen) width centered scrolling content with fixed max width. And remove it from ScreenContainer
   else {
     return (
-      <ScrollView
-        contentContainerStyle={{
-          width: "100%",
-          alignItems: "center",
-          paddingHorizontal: screenContainerContentMarginHorizontal,
-        }}
-      >
-        <View
-          style={{
-            alignItems: "center",
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          stickyHeaderIndices={[0]}
+          contentContainerStyle={{
             width: "100%",
-            maxWidth: screenContentMaxWidth,
+            alignItems: "center",
           }}
         >
-          {/*====== Tabs Menu for whole screen */}
-          <Tabs
-            items={screenTabItems}
-            selected={selectedTab}
-            style={{
-              height: 40,
-              justifyContent: "flex-end",
-              marginTop: layout.padding_x2_5,
-            }}
-            onSelect={setSelectedTab}
+          <View
+            style={{ backgroundColor: "black", width: screenContentMaxWidth }}
+          >
+            <Tabs
+              items={screenTabItems}
+              selected={selectedTab}
+              style={{
+                height: 40,
+                justifyContent: "flex-end",
+                marginTop: layout.padding_x2_5,
+                width: "100%",
+              }}
+              onSelect={setSelectedTab}
+              hideSelector
+            />
+          </View>
+
+          <Target name="main-info">
+            <SpacerColumn size={6} />
+          </Target>
+
+          <NFTMainInfo
+            nftId={id}
+            nftInfo={info}
+            buy={buy}
+            sell={handleSell}
+            cancelListing={handleCancelListing}
           />
-
-          {tabContent}
-
-          {/*====== More from this collection */}
-          {/*TODO: Fetch 4 firsts NFTs from this NFT collection*/}
           <SpacerColumn size={6} />
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     );
   }
 };
