@@ -14,7 +14,7 @@ import { useWallets, Wallet } from "../context/WalletsProvider";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
-import { neutral17, neutral44 } from "../utils/style/colors";
+import { neutral17, neutral44, secondaryColor } from "../utils/style/colors";
 import { walletSelectorWidth } from "../utils/style/layout";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
@@ -99,6 +99,7 @@ export const WalletSelector: React.FC<{
             source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
+            color={secondaryColor}
           />
         </TertiaryBox>
       </TouchableOpacity>

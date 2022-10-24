@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import { Tabs } from "../../components/tabs/Tabs";
 import { ScreenFC } from "../../utils/navigation";
 import { MyNFTs } from "./MyNFTs";
-import { Overview } from "./Overview/Overview";
 import { TotalAssets } from "./TotalAssets";
 import { WalletDashboardHeader } from "./WalletDashboardHeader";
 import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
 import { Wallets } from "./Wallets";
+import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
+import { Overview } from "./components/Overview";
 
 const screenTabItems = {
   overview: {
@@ -19,8 +20,17 @@ const screenTabItems = {
 };
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
+  // variables
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("overview");
+  const [isWithdrawVisible, setIsWithdrawVisible] = useState(false);
+  const [isDepositVisible, setIsDepositVisible] = useState(false);
+
+  // functions
+  const toggleWithdrawVisible = () => setIsWithdrawVisible(!isWithdrawVisible);
+  const toggleDepositVisible = () => setIsDepositVisible(!isDepositVisible);
+
+  // return
   return (
     <WalletManagerScreenContainer>
       <WalletDashboardHeader />
@@ -32,7 +42,20 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
       />
       {selectedTab === "overview" && <Overview />}
       {selectedTab === "nfts" && <MyNFTs />}
-      <TotalAssets />
+      <TotalAssets
+        onPressWithdraw={toggleWithdrawVisible}
+        onPressDeposit={toggleDepositVisible}
+      />
+      <DepositWithdrawModal
+        variation="deposit"
+        onClose={toggleDepositVisible}
+        isVisible={isDepositVisible}
+      />
+      <DepositWithdrawModal
+        variation="withdraw"
+        onClose={toggleWithdrawVisible}
+        isVisible={isWithdrawVisible}
+      />
       <Wallets />
     </WalletManagerScreenContainer>
   );
