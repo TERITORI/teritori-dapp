@@ -25,7 +25,7 @@ export const NewsCarouselSection: React.FC = () => {
     {
       title: "JOIN THE R!OT\nDiscover the first NFT project on Teritori",
       text:
-        "The R!ot is the first NFT project on Teritori Network. This collection tells the story of the members of The R!ot battling The Legion Club through a complete lore and P2E mechanics. \n" +
+        "The R!ot is the first NFT project on Teritori Network. This collection tells the story of the members of The R!ot battling The Legion Club through a complete lore and P2E mechanics.\n" +
         "\n" +
         "In addition to this, this collection is closely linked to the Teritori Hub and grants its holders the possibility to access Teritori features in early access.",
       image: defaultGuardianPNG,
