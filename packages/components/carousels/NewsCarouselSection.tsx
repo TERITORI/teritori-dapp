@@ -23,7 +23,7 @@ export const NewsCarouselSection: React.FC = () => {
 
   const fakeNews: News[] = [
     {
-      title: "JOIN THE R!OT \n Discover the first NFT project on Teritori",
+      title: "JOIN THE R!OT\nDiscover the first NFT project on Teritori",
       text:
         "The R!ot is the first NFT project on Teritori Network. This collection tells the story of the members of The R!ot battling The Legion Club through a complete lore and P2E mechanics. \n" +
         "\n" +
@@ -37,7 +37,7 @@ export const NewsCarouselSection: React.FC = () => {
         });
       },
       button2Action: () => {
-        Linking.openURL(" https://theriot.io/");
+        Linking.openURL("https://theriot.io/");
       },
     },
     {
