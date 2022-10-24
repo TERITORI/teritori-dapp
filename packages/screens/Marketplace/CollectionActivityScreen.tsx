@@ -4,7 +4,7 @@ import { FlatList, ListRenderItem, View, Image } from "react-native";
 
 import {
   Activity,
-  CollectionActivityRequest,
+  ActivityRequest,
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -14,7 +14,7 @@ import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { ScreenFC } from "../../utils/navigation";
 
 const useCollectionActivity = (
-  req: CollectionActivityRequest
+  req: ActivityRequest
 ): [Activity[], () => Promise<void>] => {
   const [activity, setActivity] = useState<Activity[]>([]);
 
@@ -25,7 +25,7 @@ const useCollectionActivity = (
         offset: req.offset + activity.length,
       };
       console.log("fetching", offsetReq);
-      const stream = backendClient.CollectionActivity(offsetReq);
+      const stream = backendClient.Activity(offsetReq);
       let newActivity: Activity[] = [];
       await stream.forEach((response) => {
         if (!response.activity) {
@@ -42,7 +42,7 @@ const useCollectionActivity = (
   useEffect(() => {
     setActivity([]);
     fetchMore();
-  }, [req.id]);
+  }, [req.collectionId]);
 
   return [activity, fetchMore];
 };
@@ -86,7 +86,8 @@ export const CollectionActivityScreen: ScreenFC<"CollectionActivity"> = ({
   },
 }) => {
   const [activity, fetchMore] = useCollectionActivity({
-    id,
+    nftId: "",
+    collectionId: id,
     limit: 20,
     offset: 0,
   });
