@@ -31,7 +31,7 @@ export const NewsCarouselSection: React.FC = () => {
       image: defaultGuardianPNG,
       button1Label: "Join the Mint",
       button2Label: "Discover",
-      button1Action: () => {navigation.navigate("MintCollection", {id: "tori-tori1m2jqvrk92e4tkxuax8z252mxd0etjz8yrcaqp0npj2u6emx9ltmszz6067"})},
+      button1Action: () => {navigation.navigate("MintCollection", {id: process.env.THE_RIOT_COLLECTION_ADDRESS || ""})},
       button2Action: () => {Linking.openURL(" https://theriot.io/")},
     },
     {
