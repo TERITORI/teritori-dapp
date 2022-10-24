@@ -49,7 +49,7 @@ export const NewsCarouselSection: React.FC = () => {
       image: tnsPNG,
       button1Label: "Teritori Name Service",
       button1Action: () => {
-        Linking.openURL("/tns");
+        navigation.navigate("TNSHome");
       },
     },
     {
