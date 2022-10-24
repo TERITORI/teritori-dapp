@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
-	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -76,7 +75,7 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 		ID:    indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
 		NFTID: nftId,
 		Kind:  indexerdb.ActivityKindUpdateNFTPrice,
-		Time:  time.Now(), // FIXME: replace by block time
+		Time:  e.BlockTime,
 		UpdateNFTPrice: &indexerdb.UpdateNFTPrice{
 			Price:      price,
 			PriceDenom: denom,
@@ -147,7 +146,7 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 		ID:    activityID,
 		NFTID: nftID,
 		Kind:  indexerdb.ActivityKindCancelListing,
-		Time:  time.Now(), // FIXME: replace by block time
+		Time:  e.BlockTime,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create listing cancelation in db")
 	}
@@ -248,7 +247,7 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		ID:    activityID,
 		NFTID: nftID,
 		Kind:  indexerdb.ActivityKindTrade,
-		Time:  time.Now(), // FIXME: replace by block time
+		Time:  e.BlockTime,
 		Trade: &indexerdb.Trade{
 			Price:      price,
 			PriceDenom: denom,
@@ -335,7 +334,7 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 		ID:    activityID,
 		NFTID: nftID,
 		Kind:  indexerdb.ActivityKindList,
-		Time:  time.Now(), // FIXME: replace by block time
+		Time:  e.BlockTime,
 		Listing: &indexerdb.Listing{
 			Price:      price,
 			PriceDenom: denom,

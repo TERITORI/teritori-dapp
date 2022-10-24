@@ -1,14 +1,15 @@
 package indexerhandler
 
 import (
-	"encoding/base64"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
+	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
+	"github.com/allegro/bigcache/v3"
 	"github.com/pkg/errors"
 	abcitypes "github.com/tendermint/tendermint/abci/types"
 )
@@ -117,29 +118,6 @@ type NFTMetadata struct {
 	ImageURI string `json:"image"`
 }
 
-func querySmartContract(rpcEndpoint string, dst interface{}, address string, query string) error {
-	queryEndpoint := fmt.Sprintf("%s/cosmwasm/wasm/v1/contract/%s/smart/%s", rpcEndpoint, address, base64.StdEncoding.EncodeToString(([]byte(query))))
-	reply, err := http.Get(queryEndpoint)
-	if err != nil {
-		panic(errors.Wrap(err, "failed to query smart contract"))
-	}
-	body, err := ioutil.ReadAll(reply.Body)
-	if err != nil {
-		return errors.Wrap(err, "failed to read smart contract query response body")
-	}
-	var response QuerySmartContractResponse
-	if err := json.Unmarshal(body, &response); err != nil {
-		return errors.Wrap(err, fmt.Sprintf("failed to unmarshal smart contract query response '%s'", string(body)))
-	}
-	if response.Data == nil {
-		return errors.New("nil data in smart contract query response")
-	}
-	if err := json.Unmarshal(response.Data, dst); err != nil {
-		return errors.Wrap(err, "failed to unmarshal smart contract query response data")
-	}
-	return nil
-}
-
 func fetchIPFSJSON(uri string, dst interface{}) error {
 	jsonURL := ipfsutil.IPFSURIToURL(uri)
 	jsonReply, err := http.Get(jsonURL)
@@ -159,11 +137,40 @@ func fetchIPFSJSON(uri string, dst interface{}) error {
 	return nil
 }
 
-func uriJoin(base string, paths ...string) string {
-	cleanPaths := make([]string, len(paths)+1)
-	cleanPaths[0] = strings.TrimRight(base, "/")
-	for i, p := range paths {
-		cleanPaths[i+1] = strings.TrimRight(strings.TrimLeft(p, "/"), "/")
+func (h *Handler) blockTime(height int64) (time.Time, error) {
+	cacheKey := fmt.Sprintf("%d", height)
+
+	cached, err := h.blockTimeCache.Get(cacheKey)
+
+	// cache miss
+	if err == bigcache.ErrEntryNotFound {
+		res, err := h.config.TendermintClient.Block(context.Background(), &height)
+		if err != nil {
+			return time.Time{}, errors.Wrap(err, "failed to fetch block")
+		}
+		blockTime := res.Block.Time
+
+		// cache
+		binaryBlockTime, err := blockTime.MarshalBinary()
+		if err != nil {
+			return time.Time{}, errors.Wrap(err, "failed to marshal time as binary")
+		}
+		if err := h.blockTimeCache.Set(cacheKey, binaryBlockTime); err != nil {
+			return time.Time{}, errors.Wrap(err, "failed to set in cache")
+		}
+
+		return blockTime, nil
 	}
-	return strings.Join(cleanPaths, "/")
+
+	// cache error
+	if err != nil {
+		return time.Time{}, errors.Wrap(err, "failed to check cache")
+	}
+
+	// cache hit
+	blockTime := time.Time{}
+	if err := blockTime.UnmarshalBinary(cached); err != nil {
+		return time.Time{}, errors.Wrap(err, "failed to unmarshal binary time")
+	}
+	return blockTime, nil
 }
