@@ -1,19 +1,19 @@
 import React, { useEffect, useRef } from "react";
-import {View, TouchableOpacity, Linking} from "react-native";
+import { View, TouchableOpacity, Linking } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
+import defaultGraphPNG from "../../../assets/default-images/default-graph-nft.png";
+import defaultGuardianPNG from "../../../assets/default-images/default-guardian-nft.png";
+import defaultToripunkPNG from "../../../assets/default-images/default-toripunk-nft.png";
 import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
+import tnsPNG from "../../../assets/logos/teritori-name-service.png";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useAppNavigation } from "../../utils/navigation";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { News, NewsBox } from "../hub/NewsBox";
-import defaultGraphPNG from "../../../assets/default-images/default-graph-nft.png";
-import defaultGuardianPNG from "../../../assets/default-images/default-guardian-nft.png";
-import defaultToripunkPNG from "../../../assets/default-images/default-toripunk-nft.png";
-import tnsPNG from "../../../assets/logos/tertiroti-name-service.png";
-import {useAppNavigation} from "../../utils/navigation";
 
 export const NewsCarouselSection: React.FC = () => {
   const { width } = useMaxResolution();
@@ -31,8 +31,14 @@ export const NewsCarouselSection: React.FC = () => {
       image: defaultGuardianPNG,
       button1Label: "Join the Mint",
       button2Label: "Discover",
-      button1Action: () => {navigation.navigate("MintCollection", {id: process.env.THE_RIOT_COLLECTION_ADDRESS || ""})},
-      button2Action: () => {Linking.openURL(" https://theriot.io/")},
+      button1Action: () => {
+        navigation.navigate("MintCollection", {
+          id: process.env.THE_RIOT_COLLECTION_ADDRESS || "",
+        });
+      },
+      button2Action: () => {
+        Linking.openURL(" https://theriot.io/");
+      },
     },
     {
       title: "BOOK YOUR HANDLE\nCheck out Teritori Name Service",
@@ -42,7 +48,9 @@ export const NewsCarouselSection: React.FC = () => {
         "More Name Services will be added to TNS over time so stay on the lookout for the next updates.",
       image: tnsPNG,
       button1Label: "Teritori Name Service",
-      button1Action: () => {Linking.openURL("/tns")},
+      button1Action: () => {
+        Linking.openURL("/tns");
+      },
     },
     {
       title: "NEW PLANET, NEW RULES, NEW WAYS\nIntroducing the ToriPunks",
@@ -52,7 +60,9 @@ export const NewsCarouselSection: React.FC = () => {
         "If you like to play games & earn rewards, you’re at the right place. Mint is coming soon on the launchpad.",
       image: defaultToripunkPNG,
       button1Label: "Discover",
-      button1Action: () => {Linking.openURL("https://twitter.com/ToriPunks")}
+      button1Action: () => {
+        Linking.openURL("https://twitter.com/ToriPunks");
+      },
     },
     {
       title:
@@ -68,7 +78,9 @@ export const NewsCarouselSection: React.FC = () => {
         "- Earn freemints on this community NFT collection.",
       image: defaultGraphPNG,
       button1Label: "Submit your artwork",
-      button1Action: () => {Linking.openURL("https://airtable.com/shrmFENSAEvW7b5qt")},
+      button1Action: () => {
+        Linking.openURL("https://airtable.com/shrmFENSAEvW7b5qt");
+      },
     },
   ];
 
