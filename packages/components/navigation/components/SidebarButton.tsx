@@ -1,99 +1,204 @@
+import { useRoute } from "@react-navigation/native";
+import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
+  Extrapolate,
+  interpolate,
   useAnimatedStyle,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
-import { SvgProps } from "react-native-svg";
 
+import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
 import {
+  neutral17,
   neutral33,
   neutral77,
   primaryColor,
+  secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
+import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
+import { SidebarType } from "../types";
 import { SideNotch } from "./SideNotch";
+import { SidebarNestedButton } from "./SidebarNestedButton";
 
-interface SidebarButtonProps {
-  iconSVG: React.FC<SvgProps>;
-  selected?: boolean;
-  onPress?: () => void;
-  title?: string;
+export interface SidebarButtonProps extends SidebarType {
+  onPress?: (routeName: string) => void;
   iconSize?: number;
-  isComingSoon?: boolean;
 }
 
 export const SidebarButton: React.FC<SidebarButtonProps> = ({
-  selected,
-  iconSVG,
+  icon,
   onPress,
   title,
+  route,
   iconSize = 28,
-  isComingSoon: isCommingSoon,
+  nested,
 }) => {
   // variables
   const { isSidebarExpanded } = useSidebar();
+  const { name: currentRouteName } = useRoute();
+  const [isNestedBarExpanded, setIsNestedBarExpanded] =
+    useState<boolean>(false);
+  console.log(isNestedBarExpanded);
+  const isComingSoon = route === "ComingSoon";
+  const allNestedRoutes = useMemo(
+    () => nested && Object.values(nested).map((d) => d.route),
+    [nested]
+  );
+  const isSelected = useMemo(() => {
+    if (nested) {
+      return (
+        allNestedRoutes?.includes(currentRouteName as SidebarType["route"]) &&
+        !isNestedBarExpanded
+      );
+    } else {
+      return route === currentRouteName;
+    }
+  }, [isNestedBarExpanded, currentRouteName, nested]);
+
+  // hooks
+  useEffect(() => {
+    if (
+      allNestedRoutes &&
+      allNestedRoutes.includes(currentRouteName as SidebarType["route"])
+    ) {
+      setIsNestedBarExpanded(true);
+    } else if (isNestedBarExpanded) {
+      alert("Test");
+      setIsNestedBarExpanded(false);
+    }
+  }, [currentRouteName, allNestedRoutes, isSelected, isNestedBarExpanded]);
+
+  // functions
+  const toggleNestedSidebar = () =>
+    setIsNestedBarExpanded(!isNestedBarExpanded);
 
   // animations
-  const opacityStyle = useAnimatedStyle(
-    () => ({
-      opacity: isSidebarExpanded ? withSpring(1) : withSpring(0),
-    }),
-    [isSidebarExpanded]
-  );
+  const opacityStyle = useAnimatedStyle(() => ({
+    opacity: isSidebarExpanded
+      ? withTiming(1, {
+          duration: 500,
+        })
+      : withTiming(0, {
+          duration: 100,
+        }),
+  }));
 
-  type PressableState = Readonly<{
-    pressed: boolean;
-    hovered?: boolean;
-    focused?: boolean;
-  }>;
+  const nestedBarStyle = useAnimatedStyle(() => ({
+    height: isNestedBarExpanded
+      ? withSpring(
+          32 * (allNestedRoutes?.length || 1) + layout.padding_x0_5 * 2
+        )
+      : withTiming(0),
+    opacity: isNestedBarExpanded ? withSpring(1) : withTiming(0),
+  }));
+
+  const rotateStyle = useAnimatedStyle(() => {
+    const rotate = interpolate(
+      isNestedBarExpanded ? 1 : 0,
+      [0, 1],
+      [0, 180],
+      Extrapolate.CLAMP
+    );
+
+    return {
+      transform: [{ rotate: `${rotate}deg` }],
+    };
+  }, [isNestedBarExpanded]);
 
   // returns
   return (
-    <Pressable
-      onPress={isCommingSoon ? () => {} : onPress}
-      disabled={selected}
+    <CustomPressable
+      onPress={isComingSoon ? () => {} : onPress && (() => onPress(route))}
+      disabled={isSelected}
       style={styles.container}
     >
-      {({ hovered }: PressableState): React.ReactElement => (
-        <>
-          {selected && <SideNotch />}
-          <View
-            style={[
-              styles.svgContainer,
-              selected && { borderColor: primaryColor },
-              isCommingSoon && { opacity: 0.5 },
-            ]}
-          >
-            <SVG width={iconSize} height={iconSize} source={iconSVG} />
-          </View>
-          <SpacerRow size={2} />
-          <Animated.View style={opacityStyle}>
-            <BrandText
+      {({ hovered }) => (
+        <View>
+          <View style={styles.titleContainer}>
+            {isSelected && <SideNotch style={{ left: -layout.padding_x2 }} />}
+            <View
               style={[
-                fontSemibold12,
-                (selected || isCommingSoon) && { color: neutral77 },
+                styles.svgContainer,
+                isSelected && { borderColor: primaryColor },
+                isComingSoon && { opacity: 0.5 },
               ]}
             >
-              {isCommingSoon && hovered ? "Coming Soon" : title}
-            </BrandText>
-          </Animated.View>
-        </>
+              <SVG width={iconSize} height={iconSize} source={icon} />
+            </View>
+            <SpacerRow size={2} />
+            <Animated.View style={[styles.rowCenter, opacityStyle]}>
+              <BrandText
+                style={[
+                  fontSemibold12,
+                  (isSelected || isComingSoon) && { color: neutral77 },
+                ]}
+              >
+                {isComingSoon && hovered ? "Coming Soon" : title}
+              </BrandText>
+              {nested && (
+                <Animated.View style={rotateStyle}>
+                  <Pressable
+                    style={styles.chevron}
+                    onPress={toggleNestedSidebar}
+                  >
+                    <SVG
+                      source={chevronDownSVG}
+                      height={16}
+                      width={16}
+                      color={secondaryColor}
+                    />
+                  </Pressable>
+                </Animated.View>
+              )}
+            </Animated.View>
+          </View>
+
+          {nested && (
+            <Animated.View style={nestedBarStyle}>
+              <View style={styles.nestedContainer}>
+                {Object.values(nested).map((n) => (
+                  <SidebarNestedButton
+                    key={n.title}
+                    {...n}
+                    onPress={
+                      n.route === "ComingSoon"
+                        ? () => {}
+                        : onPress && (() => onPress(n.route))
+                    }
+                  />
+                ))}
+              </View>
+            </Animated.View>
+          )}
+        </View>
       )}
-    </Pressable>
+    </CustomPressable>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: layout.padding_x2,
+    width: "100%",
+    paddingHorizontal: layout.padding_x2,
+  },
+  titleContainer: {
     paddingVertical: layout.padding_x1,
     alignItems: "center",
     flexDirection: "row",
+  },
+  rowCenter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flex: 1,
   },
   svgContainer: {
     borderWidth: 2,
@@ -103,5 +208,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderColor: neutral33,
     borderRadius: 20,
+  },
+  chevron: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: neutral17,
+  },
+  nestedContainer: {
+    flex: 1,
+    paddingVertical: layout.padding_x0_5,
+    backgroundColor: neutral17,
+    borderRadius: 8,
   },
 });

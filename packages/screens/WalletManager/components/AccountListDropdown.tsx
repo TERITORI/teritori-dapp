@@ -80,6 +80,7 @@ export const AccountListDropdown: React.FC<AccountListDropdownProps> = ({
             <SVG source={infoSVG} width={16} height={16} />
           </View>
           <SpacerColumn size={2} />
+
           {accounts.map((acc, index) => (
             <View key={acc.account} style={{ width: "100%" }}>
               <Pressable onPress={() => onPress(acc)}>
@@ -90,12 +91,6 @@ export const AccountListDropdown: React.FC<AccountListDropdownProps> = ({
                     <View style={styles.rowCenter}>
                       <BrandText style={fontSemibold20}>{acc.name}</BrandText>
                       <SpacerRow size={1.5} />
-                      <SVG
-                        source={chevronDownSVG}
-                        color={secondaryColor}
-                        width={16}
-                        height={16}
-                      />
                     </View>
                     <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
                       {acc.subtitle}

@@ -99,19 +99,16 @@ export const Sidebar: React.FC = () => {
         {Object.values(SIDEBAR_LIST).map((item) => (
           <SidebarButton
             key={item.title}
-            selected={currentRouteName === item.route}
-            iconSVG={item.icon}
-            onPress={() => navigation.navigate(item.route)}
-            title={item.title}
-            isComingSoon={item.route === "ComingSoon"}
+            onPress={navigation.navigate}
+            {...item}
           />
         ))}
         <SidebarButton
-          selected={currentRouteName === "ComingSoon"}
-          iconSVG={addSVG}
+          icon={addSVG}
           iconSize={36}
+          route="ComingSoon"
+          title=""
           onPress={() => navigation.navigate("ComingSoon")}
-          isComingSoon
         />
       </ScrollView>
     </Animated.View>

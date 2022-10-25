@@ -3,12 +3,7 @@ import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import chainNeutralA3SVG from "../../../assets/icons/chain-neutralA3.svg";
-import chainWhiteSVG from "../../../assets/icons/chain-white.svg";
-import gridNeutralA3SVG from "../../../assets/icons/grid-neutralA3.svg";
-import gridWhiteSVG from "../../../assets/icons/grid-white.svg";
-import walletsNeutralA3SVG from "../../../assets/icons/wallets-neutralA3.svg";
-import walletsWhiteSVG from "../../../assets/icons/wallets-white.svg";
+import chainWhiteSVG from "../../../assets/icons/chain.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { useAppNavigation } from "../../utils/navigation";
@@ -24,20 +19,20 @@ type ListItem = {
 
 const LIST: ListItem[] = [
   {
-    activeIcon: gridWhiteSVG,
-    inactiveIcon: gridNeutralA3SVG,
+    activeIcon: chainWhiteSVG,
+    inactiveIcon: chainWhiteSVG,
     title: "My Dashboard",
     routeName: "WalletManager",
   },
   {
-    activeIcon: walletsWhiteSVG,
-    inactiveIcon: walletsNeutralA3SVG,
+    activeIcon: chainWhiteSVG,
+    inactiveIcon: chainWhiteSVG,
     title: "Wallets",
     routeName: "WalletManagerWallets",
   },
   {
     activeIcon: chainWhiteSVG,
-    inactiveIcon: chainNeutralA3SVG,
+    inactiveIcon: chainWhiteSVG,
     title: "All Chains",
     routeName: "WalletManagerChains",
   },
