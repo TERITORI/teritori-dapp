@@ -15,7 +15,6 @@ export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   const selectedWallet = useSelectedWallet();
   const { loading, metadata } = useTNSMetadata(selectedWallet?.publicKey);
   const { setLoadingFullScreen } = useFeedbacks();
-  const name = (metadata?.public_name || "").replace(process.env.TLD || "", "");
 
   // Sync loadingFullScreen
   useEffect(() => {
@@ -23,13 +22,17 @@ export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   }, [loading]);
 
   if (loading) return null;
-  if (metadata)
+  if (selectedWallet && metadata)
     return (
       <SecondaryButtonOutline
         size="XL"
-        text="Edit profile"
+        text="My profile"
         backgroundColor={neutral00}
-        onPress={() => navigation.navigate("TNSUpdateName", { name })}
+        onPress={() =>
+          navigation.navigate("UserPublicProfile", {
+            id: selectedWallet?.publicKey,
+          })
+        }
         style={style}
       />
     );

@@ -47,7 +47,7 @@ const ConnectedIntro: React.FC = () => {
         style={{ width: 200, aspectRatio: 1, marginBottom: 20 }}
       />
 
-      <ProfileButton style={{ marginTop: 72 }} />
+      <ProfileButton style={{ marginTop: 40 }} />
 
       <Section title="Quests" subtitle="6">
         <FullWidthSeparator />

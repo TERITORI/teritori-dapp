@@ -23,6 +23,7 @@ export const SecondaryButtonOutline: React.FC<{
   color?: string;
   borderColor?: string;
   style?: StyleProp<ViewStyle>;
+  touchableStyle?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
@@ -37,6 +38,7 @@ export const SecondaryButtonOutline: React.FC<{
   color = "#FFFFFF",
   borderColor = "#FFFFFF",
   style,
+  touchableStyle,
   iconSVG,
   disabled = false,
   fullWidth = false,
@@ -53,7 +55,7 @@ export const SecondaryButtonOutline: React.FC<{
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      style={{ width: fullWidth ? "100%" : width }}
+      style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
     >
       <TertiaryBox
         height={heightButton(size)}
