@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, useWindowDimensions, View } from "react-native";
+import {Image, useWindowDimensions, View} from "react-native";
 
 import defaultUserProfileBannerPNG from "../../../assets/default-images/default-user-profile-banner.png";
 import discordSVG from "../../../assets/icons/discord.svg";
@@ -8,24 +8,24 @@ import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
 import userImageFrameSVG from "../../../assets/user-image-frame.svg";
-import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral77, withAlpha } from "../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
-import { BrandText } from "../BrandText";
-import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
-import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
-import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
-import { SocialButton } from "../buttons/SocialButton";
-import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
+import {Metadata} from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import {useAppNavigation} from "../../utils/navigation";
+import {neutral00, neutral77, withAlpha} from "../../utils/style/colors";
+import {fontSemibold14, fontSemibold20} from "../../utils/style/fonts";
+import {BrandText} from "../BrandText";
+import {CopyToClipboardSecondary} from "../CopyToClipboardSecondary";
+import {SVG} from "../SVG";
+import {TertiaryBox} from "../boxes/TertiaryBox";
+import {SecondaryButtonOutline} from "../buttons/SecondaryButtonOutline";
+import {SocialButton} from "../buttons/SocialButton";
+import {SocialButtonSecondary} from "../buttons/SocialButtonSecondary";
 
 export const UPPIntro: React.FC<{
   userId: string;
   metadata?: Metadata;
-}> = ({ userId, metadata }) => {
-  const { width } = useWindowDimensions();
-  const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
+}> = ({userId, metadata}) => {
+  const {width} = useWindowDimensions();
+  const socialButtonStyle = {marginHorizontal: 6, marginVertical: 6};
   const navigation = useAppNavigation();
   const name = (metadata?.public_name || "").replace(process.env.TLD || "", "");
 
@@ -35,7 +35,7 @@ export const UPPIntro: React.FC<{
         {/* Banner */}
         <Image
           source={defaultUserProfileBannerPNG}
-          style={{ height: "100%", width: "100%", borderRadius: 7 }}
+          style={{height: "100%", width: "100%", borderRadius: 7}}
         />
 
         {/* Absolute social buttons */}
@@ -96,8 +96,8 @@ export const UPPIntro: React.FC<{
           size="M"
           text="Edit profile"
           backgroundColor={neutral00}
-          onPress={() => navigation.navigate("TNSUpdateName", { name })}
-          touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
+          onPress={() => navigation.navigate("TNSUpdateName", {name})}
+          touchableStyle={{position: "absolute", right: 20, bottom: -76}}
         />
 
         <View
@@ -107,31 +107,22 @@ export const UPPIntro: React.FC<{
             left: 16,
           }}
         >
-          <View
+          {/* User image */}
+          <Image
+            source={{uri: metadata?.image || ""}}
             style={{
-              flexDirection: "row",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
+              borderRadius: 24,
+              height: 132,
+              width: 132,
+              position: "absolute",
+              top: 32,
+              left: 32,
+              zIndex: 2,
             }}
-          >
-            {/* User image */}
-            <Image
-              source={{ uri: metadata?.image || "" }}
-              style={{
-                borderRadius: 24,
-                height: 132,
-                width: 132,
-                position: "absolute",
-                top: 32,
-                left: 32,
-                zIndex: 2,
-              }}
-            />
-            <SVG source={userImageFrameSVG} width={196} height={196} />
-          </View>
-
+          />
+          <SVG source={userImageFrameSVG} width={196} height={196}/>
           {/* Pseudo and bio */}
-          <BrandText style={[fontSemibold20, { marginTop: 10 }]}>
+          <BrandText style={[fontSemibold20, {marginTop: 10}]}>
             {metadata?.public_name || ""}
           </BrandText>
           <BrandText
@@ -160,7 +151,7 @@ export const UPPIntro: React.FC<{
         }}
       >
         {/* Stats and public address */}
-        <TertiaryBox mainContainerStyle={{ padding: 16 }}>
+        <TertiaryBox mainContainerStyle={{padding: 16}}>
           <View
             style={{
               flexDirection: "row",
@@ -169,7 +160,7 @@ export const UPPIntro: React.FC<{
               width: "100%",
             }}
           >
-            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+            <BrandText style={[fontSemibold14, {color: neutral77}]}>
               Followers
             </BrandText>
             <BrandText style={[fontSemibold14]}>21.5k</BrandText>
@@ -182,7 +173,7 @@ export const UPPIntro: React.FC<{
               width: "100%",
             }}
           >
-            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+            <BrandText style={[fontSemibold14, {color: neutral77}]}>
               Following
             </BrandText>
             <BrandText style={[fontSemibold14]}>36</BrandText>
