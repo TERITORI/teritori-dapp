@@ -112,8 +112,9 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 	// find nft id
 	var collection *indexerdb.Collection
 	findResult := h.db.
-		Joins("TeritoriCollection").
-		Where("TeritoriCollection__nft_contract_address = ?", nftContractAddress).
+		Preload("TeritoriCollection").
+		Joins("JOIN teritori_collections on teritori_collections.collection_id = collections.id").
+		Where("teritori_collections.nft_contract_address = ?", nftContractAddress).
 		Find(&collection)
 	if err := findResult.Error; err != nil {
 		return errors.Wrap(err, "failed to query for collection")
@@ -212,8 +213,9 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	// find nft id
 	var collection indexerdb.Collection
 	findResult := h.db.
-		Joins("TeritoriCollection").
-		Where("TeritoriCollection__nft_contract_address = ?", nftContractAddress).
+		Preload("TeritoriCollection").
+		Joins("JOIN teritori_collections on teritori_collections.collection_id = collections.id").
+		Where("teritori_collections.nft_contract_address = ?", nftContractAddress).
 		Find(&collection)
 	if err := findResult.Error; err != nil {
 		return errors.Wrap(err, "failed to query for collection")
@@ -299,8 +301,9 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 	// find nft id
 	var collection *indexerdb.Collection
 	findResult := h.db.
-		Joins("TeritoriCollection").
-		Where("TeritoriCollection__nft_contract_address = ?", execMsg.Contract).
+		Preload("TeritoriCollection").
+		Joins("JOIN teritori_collections on teritori_collections.collection_id = collections.id").
+		Where("teritori_collections.nft_contract_address = ?", execMsg.Contract).
 		Find(&collection)
 	if err := findResult.
 		Error; err != nil {

@@ -30,7 +30,6 @@ func main() {
 	var (
 		tendermintRPCEndpoint = fs.String("tendermint-rpc-endpoint", "", "tendermint rpc endpoint of a teritori node")
 		cosmosRESTEndpoint    = fs.String("cosmos-rest-endpoint", "", "rest endpoint of a teritori node")
-		dbPath                = fs.String("db-path", "", "path to the database file")
 		blocksBatchSize       = fs.Int64("blocks-batch-size", 100000, "maximum number of blocks to query from tendermint at once")
 		txsBatchSize          = fs.Int("txs-batch-size", 100, "number of txs per query page")
 		pollDelay             = fs.Duration("poll-delay", 2*time.Second, "delay between queries")
@@ -38,6 +37,11 @@ func main() {
 		vaultContractAddress  = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")
 		minterCodeID          = fs.Uint64("teritori-minter-code-id", 0, "code id of the teritori minter contract")
 		tnsDefaultImageURL    = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
+		dbHost                = fs.String("db-indexer-host", "", "host postgreSQL database")
+		dbPort                = fs.String("db-indexer-port", "", "port for postgreSQL database")
+		dbPass                = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName                = fs.String("database-name", "", "database name for postgreSQL")
+		dbUser                = fs.String("postgres-user", "", "username for postgreSQL")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -54,9 +58,6 @@ func main() {
 	}
 	if *cosmosRESTEndpoint == "" {
 		panic(errors.New("missing cosmos-rest-endpoint flag"))
-	}
-	if *dbPath == "" {
-		panic(errors.New("missing db-path flag"))
 	}
 	if *tnsContractAddress == "" {
 		panic(errors.New("missing teritori-name-service-contract-address flag"))
@@ -86,11 +87,20 @@ func main() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to init logger"))
 	}
+	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
+		panic(errors.New("missing Database configuration"))
+	}
 
-	// get db
-	db, err := indexerdb.NewSQLiteDB(*dbPath)
+	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
+		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
+	db, err := indexerdb.NewPostgresDB(dataConnexion)
+
 	if err != nil {
-		panic(errors.Wrap(err, fmt.Sprintf(`failed to access db at "%s"`, *dbPath)))
+		panic(errors.Wrap(err, "failed to access db"))
+	}
+	err = indexerdb.MigrateDB(db)
+	if err != nil {
+		panic(errors.Wrap(err, "failed migrate database models"))
 	}
 
 	// init/get height

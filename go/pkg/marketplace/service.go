@@ -224,7 +224,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			Network:        nft.Collection.Network,
 			ImageUri:       ipfsutil.IPFSURIToURL(imageURI),
 			IsListed:       nft.IsListed,
-			Price:          nft.PriceAmount,
+			Price:          nft.PriceAmount.String,
 			Denom:          nft.PriceDenom,
 			TextInsert:     textInsert,
 			OwnerId:        string(nft.OwnerID),
@@ -296,11 +296,12 @@ func (s *MarkteplaceService) CollectionActivity(req *marketplacepb.CollectionAct
 	if err := s.conf.IndexerDB.
 		Preload("Listing").
 		Preload("Trade").
-		Joins("NFT").
+		Preload("NFT").
+		Joins("JOIN nfts on nfts.id = activities.nft_id").
 		Order("Time DESC").
 		Limit(int(limit)).
 		Offset(int(offset)).
-		Where("NFT__collection_id = ?", id).
+		Where("nfts.collection_id = ?", id).
 		Find(&activities).Error; err != nil {
 		return errors.Wrap(err, "failed to retrieve activities from db")
 	}
@@ -370,11 +371,12 @@ func (s *MarkteplaceService) NFTActivity(req *marketplacepb.NFTActivityRequest, 
 	if err := s.conf.IndexerDB.
 		Preload("Listing").
 		Preload("Trade").
-		Joins("NFT").
+		Preload("NFT").
+		Joins("JOIN nfts on nfts.id = activities.nft_id").
 		Order("Time DESC").
 		Limit(int(limit)).
 		Offset(int(offset)).
-		Where("NFT__id = ?", id).
+		Where("nfts.id = ?", id).
 		Find(&activities).Error; err != nil {
 		return errors.Wrap(err, "failed to retrieve activities from db")
 	}
