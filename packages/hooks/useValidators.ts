@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Decimal } from "cosmwasm";
+import { partition } from "lodash";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { ValidatorInfo } from "../screens/Stake/types";
@@ -31,7 +32,7 @@ export const useValidators = () => {
         const response = await httpResponse.json();
         const params: StakingParams = response.params;
         let key: string | null = "";
-        let validators: ValidatorInfo[] = [];
+        const validators: ValidatorInfo[] = [];
         while (key !== null) {
           const response = await fetch(
             teritoriRestProvider +
@@ -39,6 +40,7 @@ export const useValidators = () => {
               encodeURIComponent(key)
           );
           const payload = await response.json();
+
           validators.push(
             ...payload.validators.map((v: any, i: number) => {
               const info: ValidatorInfo = {
@@ -59,26 +61,39 @@ export const useValidators = () => {
                 website: v.description.website,
                 identity: v.description.identity,
                 jailed: !!v.jailed,
+                consensusPubKey: v.consensus_pubkey,
               };
               return info;
             })
           );
           key = payload.pagination.next_key as string | null;
         }
-        validators = validators.filter((v) => !v.jailed);
-        validators.sort(
-          (a, b) => parseFloat(b.votingPower) - parseFloat(a.votingPower)
+
+        const tendermintActiveValidators = await getTendermintActiveValidators(
+          params.max_validators
         );
-        let i = 0;
-        for (const v of validators) {
-          v.votingPower += " TORI";
-          v.rank = (i + 1).toString();
-          i++;
-        }
+
+        // TODO: optimize with map lookup instead of find
+        const [activeValidators, inactiveValidators] = partition(
+          validators,
+          (v) =>
+            tendermintActiveValidators.find(
+              (tv: any) =>
+                tv.pub_key.key === v.consensusPubKey.key &&
+                tv.pub_key.type === v.consensusPubKey.type
+            )
+        );
+
+        activeValidators.sort(sortByVotingPower);
+        formatValidators(activeValidators);
+
+        inactiveValidators.sort(sortByVotingPower);
+        formatValidators(inactiveValidators);
+
         return {
-          allValidators: validators,
-          activeValidators: validators.slice(0, params.max_validators),
-          inactiveValidators: validators.slice(params.max_validators),
+          allValidators: [...activeValidators, ...inactiveValidators],
+          activeValidators,
+          inactiveValidators,
         };
       } catch (err) {
         console.error(err);
@@ -100,4 +115,25 @@ export const useValidators = () => {
 
 const prettyPercent = (val: number) => {
   return (val * 100).toFixed(2) + "%"; // FIXME: cut useless zeros
+};
+
+const getTendermintActiveValidators = async (limit: number): Promise<any[]> => {
+  const activeValidators = await (
+    await fetch(
+      `${teritoriRestProvider}/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.limit=${limit}&pagination.offset=0`
+    )
+  ).json();
+  return activeValidators.validators;
+};
+
+const sortByVotingPower = (a: ValidatorInfo, b: ValidatorInfo) =>
+  parseFloat(b.votingPower) - parseFloat(a.votingPower);
+
+const formatValidators = (vals: ValidatorInfo[]) => {
+  let i = 0;
+  for (const v of vals) {
+    v.votingPower += " TORI";
+    v.rank = (i + 1).toString();
+    i++;
+  }
 };
