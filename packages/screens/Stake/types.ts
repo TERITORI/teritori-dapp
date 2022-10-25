@@ -13,6 +13,23 @@ export type ValidatorInfo = {
 };
 
 export type StakeFormValuesType = {
+  jobName: string;
+  country: string;
+  city: string;
+  jobType: string;
+  salary: string;
+  workingAtNxtpop: string;
+  outcomes: string;
+  aboutTheProject: string;
+  missionEstimates: string;
+  missionBudget: string;
+  missionName: string;
+  timezone: string;
+  location: string;
+  servicesProvided: string;
+  serviceName: string;
+  minHourRate: string;
+  createATag: string;
   validatorName: string;
   amount: string;
 };

@@ -36,6 +36,8 @@ export type RootStackParamList = {
 
   Staking: undefined;
 
+  FindAJob: undefined;
+
   ComingSoon: undefined;
 };
 
@@ -53,6 +55,7 @@ const navConfig: {
 } = {
   screens: {
     Home: "",
+    FindAJob: "find-a-job",
     MyCollection: "my-collection",
     Activity: "activity",
     Guardians: "guardians",

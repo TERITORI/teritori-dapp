@@ -55,29 +55,29 @@ const TextDisclaimer: React.FC = () => {
               width: width - 200,
             }}
           >
-            <br />
+            {"\n"}
             Teritori is not a company. Teritori is an open source community
             project experimenting decentralized social organizations and
             inter-community cooperation. Offering a brand new multi-chain
             experience, this dApp integrate various decentralized protocols and
             ecosystem into an single all-in-one software.
-            <br />
-            <br />
+            {"\n"}
+            {"\n"}
             Teritori is a decentralized peer-to-peer blockchain and is made up
             of public and open-source software.
-            <br />
-            <br />
+            {"\n"}
+            {"\n"}
             1. Restrictions. The services and products presented on this website
             https://teritori.com/ (the “Website”) may be subject to restrictions
-            in certain countries or with respect to certain persons. <br />
+            in certain countries or with respect to certain persons. {"\n"}
             However, any user of the Website should check beforehand, if
             necessary, with his usual advisers that he is entitled to use the
             services and products presented in view of his tax and legal status.
-            <br />
-            <br />
+            {"\n"}
+            {"\n"}
             This Website is not available for US citizen or national, or if you
             act for a company that is domiciled in the US or majority owned by
-            US citizens or US companies. <br />
+            US citizens or US companies. {"\n"}
             This Website is not available for citizens or companies that are
             subject to sanctions, or any prohibited person resident or national
             of the following countries: Afghanistan, Albania, Angola,
@@ -92,8 +92,8 @@ const TextDisclaimer: React.FC = () => {
             Somalia, Sri Lanka, Sudan, Syria, Tajikistan, Trinidad and Tobago,
             Turkey, Turkmenistan, United States, Uzbekistan, Vanuatu, Venezuela,
             Virgin Islands, Yemen, Zimbabwe.
-            <br />
-            <br />
+            {"\n"}
+            {"\n"}
             2. Warning. We strongly recommend that you do not purchase NFTs if
             you are not an expert in cryptocurrencies, digital assets and
             blockchain technology. Even if you have knowledge of the technology,
@@ -101,8 +101,8 @@ const TextDisclaimer: React.FC = () => {
             professionals whereso required. The company will not be responsible
             in any way for any loss incurred by you resulting from the purchase
             of NFTs.
-            <br />
-            <br />
+            {"\n"}
+            {"\n"}
             3. Risks. You are currently entering an unaudited decentralized
             application that is currently considered an experimental alpha
             version. Please be aware of the risks associated with this software
@@ -112,19 +112,19 @@ const TextDisclaimer: React.FC = () => {
             to partial or full loss of deposits. You take full responsibility
             for your use of Teritori and the Teritori protocol and acknowledge
             that you use it on the basis of your own analysis.
-            <br />
-            <br />
+            {"\n"}
+            {"\n"}
             Your use of Teritori involves various risks, including, but not
             limited to losses due to notably the fluctuation of prices of tokens
             in a trading pair or liquidity pool, impermanent loss, etc. Before
             using Teritori, you should review the relevant documentation to make
             sure you understand how Teritori works.
-            <br />
-            <br />
+            {"\n"}
+            {"\n"}
             AS DESCRIBED IN TERITORI'S DOCUMENTATION, TERITORI IS PROVIDED “AS
             IS”, AT YOUR OWN RISKS, AND WITHOUT WARRANTIES OF ANY KIND.
-            <br />
-            <br />
+            {"\n"}
+            {"\n"}
             Although the Company developed much of the initial code for the
             Teritori protocol, it does not provide, own, or control the Teritori
             protocol, which is run by a decentralized validator set. Upgrades
@@ -136,7 +136,7 @@ const TextDisclaimer: React.FC = () => {
             protocol, including any direct, indirect, incidental, special,
             exemplary, punitive or consequential damages, or loss of profits,
             cryptocurrencies, tokens, or anything else of value.
-            <br />
+            {"\n"}
           </BrandText>
         </View>
       </View>
