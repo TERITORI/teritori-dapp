@@ -51,7 +51,7 @@ export const ValidatorsTable: React.FC<{
       <FlatList
         data={validators}
         style={style}
-        keyExtractor={(item) => item.rank}
+        keyExtractor={(item) => item.address}
         renderItem={({ item }) => (
           <ValidatorRow validator={item} actions={actions} />
         )}
