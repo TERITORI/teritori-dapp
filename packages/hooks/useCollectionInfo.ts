@@ -80,7 +80,11 @@ export const useCollectionInfo = (id: string) => {
           name: nftInfo.name,
           image: ipfsURLToHTTPURL(metadata.image || ""),
           description: metadata.description,
-          prettyUnitPrice: prettyPrice(conf.nft_price_amount, conf.price_denom),
+          prettyUnitPrice: prettyPrice(
+            process.env.TERITORI_NETWORK_ID || "",
+            conf.nft_price_amount,
+            conf.price_denom
+          ),
           unitPrice: conf.nft_price_amount,
           priceDenom: conf.price_denom,
           maxSupply: conf.nft_max_supply,

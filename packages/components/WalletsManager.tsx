@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import { ScrollView, View, ViewStyle, Text, StyleProp } from "react-native";
 
 import { useWallets, Wallet } from "../context/WalletsProvider";
+import { getNetwork, keplrChainInfoFromNetworkInfo } from "../networks";
 import { setIsKeplrConnected } from "../store/slices/settings";
 import { addWallet, StoreWallet } from "../store/slices/wallets";
 import { useAppDispatch } from "../store/store";
 import { addressToNetwork, Network } from "../utils/network";
 import { neutral44, pinkDefault, yellowDefault } from "../utils/style/colors";
 import { modalMarginPadding } from "../utils/style/modals";
-import { keplrSuggestTeritori, teritoriChainId } from "../utils/teritori";
 import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { PrimaryButton } from "./buttons/PrimaryButton";
@@ -72,12 +72,18 @@ export const WalletActionButton: React.FC<{
                 if (!keplr) {
                   return;
                 }
-                await keplrSuggestTeritori(keplr);
-                if (!teritoriChainId) {
-                  console.error("missing chain id for teritori");
+                const teritoriNetworkId = process.env.TERITORI_NETWORK_ID;
+                if (!teritoriNetworkId) {
                   return;
                 }
-                await keplr.enable(teritoriChainId);
+                const network = getNetwork(teritoriNetworkId);
+                if (!network) {
+                  return;
+                }
+                await keplr.experimentalSuggestChain(
+                  keplrChainInfoFromNetworkInfo(network)
+                );
+                await keplr.enable(network.chainId);
                 dispatch(setIsKeplrConnected(true));
               }
             } catch (err) {

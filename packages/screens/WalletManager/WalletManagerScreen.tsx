@@ -1,74 +1,25 @@
-import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React from "react";
 
-import { Tabs } from "../../components/tabs/Tabs";
+import { useBalances } from "../../hooks/useBalances";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
-import { layout } from "../../utils/style/layout";
+import { Assets } from "./Assets";
 import { MyNFTs } from "./MyNFTs";
-import { TotalAssets } from "./TotalAssets";
 import { WalletDashboardHeader } from "./WalletDashboardHeader";
 import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
 import { Wallets } from "./Wallets";
-import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
-import { Overview } from "./components/Overview";
-
-const screenTabItems = {
-  overview: {
-    name: "Overview",
-  },
-  nfts: {
-    name: "NFTs",
-  },
-};
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
-  // variables
-  const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("overview");
-  const [isWithdrawVisible, setIsWithdrawVisible] = useState(false);
-  const [isDepositVisible, setIsDepositVisible] = useState(false);
-
-  // functions
-  const toggleWithdrawVisible = () => setIsWithdrawVisible(!isWithdrawVisible);
-  const toggleDepositVisible = () => setIsDepositVisible(!isDepositVisible);
-
-  // return
+  const selectedWallet = useSelectedWallet();
+  const selectedNetwork = useSelectedNetworkId();
+  const balances = useBalances(selectedNetwork, selectedWallet?.publicKey);
   return (
     <WalletManagerScreenContainer>
-      <View style={styles.container}>
-        <WalletDashboardHeader />
-        <Tabs
-          items={screenTabItems}
-          selected={selectedTab}
-          onSelect={setSelectedTab}
-          style={{ marginTop: 24, height: 40 }}
-        />
-        {selectedTab === "overview" && <Overview />}
-        {selectedTab === "nfts" && <MyNFTs />}
-        <TotalAssets
-          onPressWithdraw={toggleWithdrawVisible}
-          onPressDeposit={toggleDepositVisible}
-        />
-        <DepositWithdrawModal
-          variation="deposit"
-          onClose={toggleDepositVisible}
-          isVisible={isDepositVisible}
-        />
-        <DepositWithdrawModal
-          variation="withdraw"
-          onClose={toggleWithdrawVisible}
-          isVisible={isWithdrawVisible}
-        />
-        <Wallets />
-      </View>
+      <WalletDashboardHeader />
+      <Assets networkId={selectedNetwork} balances={balances} />
+      <Wallets />
+      <MyNFTs />
     </WalletManagerScreenContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: layout.contentPadding,
-    paddingTop: layout.contentPadding - 20,
-  },
-});

@@ -112,6 +112,7 @@ const NftAdjustments: React.FC<{
             style={{ fontSize: 16, color: primaryColor, fontWeight: "700" }}
           >
             {prettyPrice(
+              process.env.TERITORI_NETWORK_ID || "",
               price?.toString() || "",
               toriCurrency.coinMinimalDenom
             )}

@@ -35,7 +35,11 @@ export const NFTCancelListingCard: React.FC<{
           <BrandText
             style={[fontSemibold28, { color: "#DBAEFF", marginRight: 12 }]}
           >
-            {prettyPrice(price, priceDenom)}
+            {prettyPrice(
+              process.env.TERITORI_NETWORK_ID || "",
+              price,
+              priceDenom
+            )}
           </BrandText>
           <NetworkIcon network={Network.Teritori} circle size={24} />
         </View>
