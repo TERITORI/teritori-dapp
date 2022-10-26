@@ -4,7 +4,7 @@ import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import chevronUpSVG from "../../../assets/icons/chevron-down.svg";
 import chevronDownSVG from "../../../assets/icons/chevron-up.svg";
 import sortSVG from "../../../assets/icons/sort.svg";
-import { neutral11 } from "../../utils/style/colors";
+import { neutral11, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -46,6 +46,7 @@ export const SortButton: React.FC<{
           height={16}
           width={16}
           style={{ marginLeft: 8 }}
+          color={secondaryColor}
         />
       </TertiaryBox>
     </TouchableOpacity>

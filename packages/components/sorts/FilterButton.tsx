@@ -4,6 +4,7 @@ import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 import chevronUpSVG from "../../../assets/icons/chevron-down.svg";
 import chevronDownSVG from "../../../assets/icons/chevron-up.svg";
 import filterSVG from "../../../assets/icons/filter.svg";
+import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -37,6 +38,7 @@ export const FilterButton: React.FC<{
           source={isExpanded ? chevronUpSVG : chevronDownSVG}
           width={16}
           height={16}
+          color={secondaryColor}
         />
       </TertiaryBox>
     </TouchableOpacity>

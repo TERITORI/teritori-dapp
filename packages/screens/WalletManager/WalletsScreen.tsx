@@ -9,7 +9,7 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ALL_WALLETS } from "../../utils/fakeData/walletManager";
 import { ScreenFC } from "../../utils/navigation";
-import { neutral33, neutralA3 } from "../../utils/style/colors";
+import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 import { WalletItem, WalletItemProps } from "./WalletItem";
 import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
@@ -76,6 +76,7 @@ const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
             source={isExpanded ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
+            color={secondaryColor}
           />
         </TertiaryBox>
       </TouchableOpacity>

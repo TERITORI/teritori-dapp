@@ -50,6 +50,7 @@ const DATA: AssetRatioData[] = [
 
 const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
   const { width } = useWindowDimensions();
+
   return (
     <View
       style={{

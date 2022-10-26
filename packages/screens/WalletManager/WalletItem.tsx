@@ -178,14 +178,6 @@ export const WalletItem: React.FC<WalletItemProps> = ({
                 marginRight: 16,
               }}
             />
-            <SecondaryButton
-              size="XS"
-              text="Stake"
-              onPress={() => {}}
-              style={{
-                marginRight: 16,
-              }}
-            />
           </>
         )}
 
