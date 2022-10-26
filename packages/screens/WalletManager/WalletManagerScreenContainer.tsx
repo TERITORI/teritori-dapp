@@ -12,7 +12,6 @@ export const WalletManagerScreenContainer: React.FC<{
     <ScreenContainer headerChildren={<WalletHeader />}>
       <View
         style={{
-          marginVertical: 20,
           marginHorizontal: WALLET_SCREEN_CONTAINER_MARGIN_HORIZONTAL,
         }}
       >

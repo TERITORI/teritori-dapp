@@ -20,6 +20,7 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 
 interface TotalAssetsProps {
@@ -122,6 +123,8 @@ export const TotalAssets: React.FC<TotalAssetsProps> = ({
             borderBottomWidth: index !== WALLET_CHAIN_ASSETS.length - 1 ? 1 : 0,
             borderColor: neutral33,
             paddingVertical: 16,
+            flexWrap: "wrap",
+            flex: 1,
           }}
         >
           <View
@@ -255,6 +258,7 @@ export const TotalAssets: React.FC<TotalAssetsProps> = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
+              paddingVertical: layout.padding_x1,
             }}
           >
             <BrandText
