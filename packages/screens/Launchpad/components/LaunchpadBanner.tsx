@@ -8,6 +8,7 @@ import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
 import { useImageResizer } from "../../../hooks/useImageResizer";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
+import { fontSemibold28 } from "../../../utils/style/fonts";
 
 export const LaunchpadBanner: React.FC = () => {
   // variables
@@ -25,9 +26,9 @@ export const LaunchpadBanner: React.FC = () => {
         style={{ width, height, resizeMode: "contain" }}
       />
       <View style={styles.detailContainer}>
-        <SVG source={LogoSimpleSvg} />
-        <SpacerColumn size={2} />
-        <BrandText>Launchpad Submission Form</BrandText>
+        <SVG source={LogoSimpleSvg} width={88} height={88} />
+        <SpacerColumn size={1} />
+        <BrandText style={fontSemibold28}>Launchpad Submission Form</BrandText>
       </View>
     </View>
   );
