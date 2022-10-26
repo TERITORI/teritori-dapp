@@ -14,8 +14,6 @@ export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
 export const reefColor = "#D2FFAE";
 
-export const white = "#FFFFFF";
-
 export const neutral00 = "#000000";
 export const neutral17 = "#171717";
 export const neutral11 = "#111111";

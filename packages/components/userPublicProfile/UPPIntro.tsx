@@ -9,12 +9,14 @@ import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
 import userImageFrameSVG from "../../../assets/user-image-frame.svg";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { neutral77, withAlpha } from "../../utils/style/colors";
+import { useAppNavigation } from "../../utils/navigation";
+import { neutral00, neutral77, withAlpha } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 
@@ -24,6 +26,8 @@ export const UPPIntro: React.FC<{
 }> = ({ userId, metadata }) => {
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
+  const navigation = useAppNavigation();
+  const name = (metadata?.public_name || "").replace(process.env.TLD || "", "");
 
   return (
     <>
@@ -87,8 +91,15 @@ export const UPPIntro: React.FC<{
             text="Share"
           />
         </View>
+        {/* Absolute edit button */}
+        <SecondaryButtonOutline
+          size="M"
+          text="Edit profile"
+          backgroundColor={neutral00}
+          onPress={() => navigation.navigate("TNSUpdateName", { name })}
+          touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
+        />
 
-        {/* Absolute user image */}
         <View
           style={{
             position: "absolute",
@@ -96,6 +107,7 @@ export const UPPIntro: React.FC<{
             left: 16,
           }}
         >
+          {/* User image */}
           <Image
             source={{ uri: metadata?.image || "" }}
             style={{
@@ -109,7 +121,6 @@ export const UPPIntro: React.FC<{
             }}
           />
           <SVG source={userImageFrameSVG} width={196} height={196} />
-
           {/* Pseudo and bio */}
           <BrandText style={[fontSemibold20, { marginTop: 10 }]}>
             {metadata?.public_name || ""}

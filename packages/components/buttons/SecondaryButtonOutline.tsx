@@ -7,7 +7,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { neutral33, neutral77 } from "../../utils/style/colors";
+import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -23,6 +23,7 @@ export const SecondaryButtonOutline: React.FC<{
   color?: string;
   borderColor?: string;
   style?: StyleProp<ViewStyle>;
+  touchableStyle?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
@@ -34,9 +35,10 @@ export const SecondaryButtonOutline: React.FC<{
   onPress,
   squaresBackgroundColor,
   backgroundColor = neutral33,
-  color = "#FFFFFF",
-  borderColor = "#FFFFFF",
+  color = secondaryColor,
+  borderColor = secondaryColor,
   style,
+  touchableStyle,
   iconSVG,
   disabled = false,
   fullWidth = false,
@@ -53,7 +55,7 @@ export const SecondaryButtonOutline: React.FC<{
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      style={{ width: fullWidth ? "100%" : width }}
+      style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
     >
       <TertiaryBox
         height={heightButton(size)}
