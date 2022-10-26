@@ -7,7 +7,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { neutral33, neutral77 } from "../../utils/style/colors";
+import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -35,8 +35,8 @@ export const SecondaryButtonOutline: React.FC<{
   onPress,
   squaresBackgroundColor,
   backgroundColor = neutral33,
-  color = "#FFFFFF",
-  borderColor = "#FFFFFF",
+  color = secondaryColor,
+  borderColor = secondaryColor,
   style,
   touchableStyle,
   iconSVG,
