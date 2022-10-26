@@ -20,7 +20,13 @@ export const NFTActivity: React.FC<{ id: string }> = ({ id }) => {
             <BrandText style={{ marginRight: 20 }}>
               {moment(elem.time).fromNow()}
             </BrandText>
-            <BrandText>{prettyPrice(elem.amount, elem.denom)}</BrandText>
+            <BrandText>
+              {prettyPrice(
+                process.env.TERITORI_NETWORK_ID || "",
+                elem.amount,
+                elem.denom
+              )}
+            </BrandText>
           </View>
         );
       })}

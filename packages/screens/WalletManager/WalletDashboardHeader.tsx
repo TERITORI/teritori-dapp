@@ -7,6 +7,9 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { useBalances } from "../../hooks/useBalances";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 
 interface WalletDashboardHeaderProps {
@@ -78,6 +81,13 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
 };
 
 export const WalletDashboardHeader: React.FC = () => {
+  const selectedWallet = useSelectedWallet();
+  const selectedNetwork = useSelectedNetworkId();
+  const balances = useBalances(selectedNetwork, selectedWallet?.publicKey);
+  const totalUSDBalance = balances.reduce(
+    (total, bal) => total + (bal.usdAmount || 0),
+    0
+  );
   return (
     <View
       style={{
@@ -134,7 +144,7 @@ export const WalletDashboardHeader: React.FC = () => {
         <WalletDashboardHeaderCard
           {...{
             title: "Total Balance",
-            data: "$500.00",
+            data: `$${totalUSDBalance.toFixed(2)}`,
           }}
         />
         <WalletDashboardHeaderCard
