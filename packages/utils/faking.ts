@@ -1,6 +1,6 @@
-import atomSVG from "../../assets/icons/despoit-withdraw/atom.svg";
-import osmosisSVG from "../../assets/icons/despoit-withdraw/osmosis.svg";
-import teritoriSVG from "../../assets/icons/despoit-withdraw/teritori.svg";
+import atomSVG from "../../assets/icons/networks/cosmos-hub-circle.svg";
+import osmosisSVG from "../../assets/icons/networks/osmosis-circle.svg";
+import teritoriSVG from "../../assets/icons/networks/teritori-circle.svg";
 import { TransactionAccount } from "../screens/WalletManager/types";
 
 export const TEMP_IMAGE = "https://i.pravatar.cc/400?img=7";
