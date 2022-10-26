@@ -30,7 +30,7 @@ export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
         backgroundColor={neutral00}
         onPress={() =>
           navigation.navigate("UserPublicProfile", {
-            id: selectedWallet?.publicKey,
+            id: `tori-${selectedWallet?.publicKey}`,
           })
         }
         style={style}
