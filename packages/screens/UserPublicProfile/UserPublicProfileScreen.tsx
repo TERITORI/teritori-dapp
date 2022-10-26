@@ -84,6 +84,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("nfts");
+
   const { loading, metadata, notFound } = useTNSMetadata(
     id.replace("tori-", "")
   );
@@ -104,7 +105,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
         </BrandText>
       }
     >
-      {notFound ? (
+      {notFound || !id.startsWith("tori-") ? (
         <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
           <BrandText>User not found</BrandText>
         </View>
