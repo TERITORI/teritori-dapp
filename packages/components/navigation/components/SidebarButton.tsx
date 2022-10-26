@@ -1,15 +1,16 @@
-import { useRoute } from "@react-navigation/native";
+import { useIsFocused, useRoute } from "@react-navigation/native";
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
-  Extrapolate,
-  interpolate,
+  // Extrapolate,
+  // interpolate,
   useAnimatedStyle,
-  withSpring,
+  // withSpring,
   withTiming,
 } from "react-native-reanimated";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
+import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
 import {
   neutral17,
@@ -29,7 +30,7 @@ import { SideNotch } from "./SideNotch";
 import { SidebarNestedButton } from "./SidebarNestedButton";
 
 export interface SidebarButtonProps extends SidebarType {
-  onPress?: (routeName: string) => void;
+  onPress?: (routeName: SidebarType["route"]) => void;
   iconSize?: number;
 }
 
@@ -44,14 +45,14 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   // variables
   const { isSidebarExpanded } = useSidebar();
   const { name: currentRouteName } = useRoute();
-  const [isNestedBarExpanded, setIsNestedBarExpanded] =
-    useState<boolean>(false);
-  console.log(isNestedBarExpanded);
-  const isComingSoon = route === "ComingSoon";
   const allNestedRoutes = useMemo(
     () => nested && Object.values(nested).map((d) => d.route),
     [nested]
   );
+  const [isNestedBarExpanded, setIsNestedBarExpanded] =
+    useState<boolean>(false);
+  const isComingSoon = route === "ComingSoon";
+  const isFocused = useIsFocused();
   const isSelected = useMemo(() => {
     if (nested) {
       return (
@@ -67,14 +68,14 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   useEffect(() => {
     if (
       allNestedRoutes &&
-      allNestedRoutes.includes(currentRouteName as SidebarType["route"])
+      allNestedRoutes.includes(currentRouteName as SidebarType["route"]) &&
+      !isNestedBarExpanded
     ) {
       setIsNestedBarExpanded(true);
-    } else if (isNestedBarExpanded) {
-      alert("Test");
+    } else if (!isFocused && isNestedBarExpanded) {
       setIsNestedBarExpanded(false);
     }
-  }, [currentRouteName, allNestedRoutes, isSelected, isNestedBarExpanded]);
+  }, [currentRouteName, isFocused]);
 
   // functions
   const toggleNestedSidebar = () =>
@@ -91,27 +92,30 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
         }),
   }));
 
-  const nestedBarStyle = useAnimatedStyle(() => ({
-    height: isNestedBarExpanded
-      ? withSpring(
-          32 * (allNestedRoutes?.length || 1) + layout.padding_x0_5 * 2
-        )
-      : withTiming(0),
-    opacity: isNestedBarExpanded ? withSpring(1) : withTiming(0),
-  }));
+  // const nestedBarStyle = useAnimatedStyle(
+  //   () => ({
+  //     height: isNestedBarExpanded
+  //       ? withSpring(
+  //           32 * (allNestedRoutes?.length || 1) + layout.padding_x0_5 * 2
+  //         )
+  //       : withTiming(0),
+  //     opacity: isNestedBarExpanded ? withSpring(1) : withTiming(0),
+  //   }),
+  //   [isNestedBarExpanded]
+  // );
 
-  const rotateStyle = useAnimatedStyle(() => {
-    const rotate = interpolate(
-      isNestedBarExpanded ? 1 : 0,
-      [0, 1],
-      [0, 180],
-      Extrapolate.CLAMP
-    );
+  // const rotateStyle = useAnimatedStyle(() => {
+  //   const rotate = interpolate(
+  //     isNestedBarExpanded ? 1 : 0,
+  //     [0, 1],
+  //     [0, 180],
+  //     Extrapolate.CLAMP
+  //   );
 
-    return {
-      transform: [{ rotate: `${rotate}deg` }],
-    };
-  }, [isNestedBarExpanded]);
+  //   return {
+  //     transform: [{ rotate: `${rotate}deg` }],
+  //   };
+  // }, [isNestedBarExpanded]);
 
   // returns
   return (
@@ -144,13 +148,16 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
                 {isComingSoon && hovered ? "Coming Soon" : title}
               </BrandText>
               {nested && (
-                <Animated.View style={rotateStyle}>
+                // <Animated.View style={rotateStyle}>
+                <Animated.View>
                   <Pressable
                     style={styles.chevron}
                     onPress={toggleNestedSidebar}
                   >
                     <SVG
-                      source={chevronDownSVG}
+                      source={
+                        isNestedBarExpanded ? chevronUpSVG : chevronDownSVG
+                      }
                       height={16}
                       width={16}
                       color={secondaryColor}
@@ -161,8 +168,9 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
             </Animated.View>
           </View>
 
-          {nested && (
-            <Animated.View style={nestedBarStyle}>
+          {nested && isNestedBarExpanded && (
+            // <Animated.View style={nestedBarStyle}>
+            <Animated.View>
               <View style={styles.nestedContainer}>
                 {Object.values(nested).map((n) => (
                   <SidebarNestedButton

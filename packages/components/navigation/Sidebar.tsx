@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Pressable,
-  ScrollView,
+  FlatList,
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -31,6 +31,7 @@ import { Separator } from "../Separator";
 import { SpacerColumn } from "../spacer";
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
+import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,
@@ -69,6 +70,10 @@ export const Sidebar: React.FC = () => {
     [isSidebarExpanded]
   );
 
+  const onRouteChange = (name: SidebarType["route"]) => {
+    navigation.navigate(name);
+  };
+
   // returns
   return (
     <Animated.View style={[styles.container, layoutStyle]}>
@@ -94,23 +99,23 @@ export const Sidebar: React.FC = () => {
 
         <Separator color={neutral33} />
       </View>
-      <ScrollView>
-        <SpacerColumn size={1} />
-        {Object.values(SIDEBAR_LIST).map((item) => (
+      <FlatList
+        data={Object.values(SIDEBAR_LIST)}
+        keyExtractor={(item) => item.title}
+        renderItem={({ item }) => (
+          <SidebarButton key={item.title} onPress={onRouteChange} {...item} />
+        )}
+        ListHeaderComponent={<SpacerColumn size={1} />}
+        ListFooterComponent={
           <SidebarButton
-            key={item.title}
-            onPress={navigation.navigate}
-            {...item}
+            icon={addSVG}
+            iconSize={36}
+            route="ComingSoon"
+            title=""
+            onPress={() => navigation.navigate("ComingSoon")}
           />
-        ))}
-        <SidebarButton
-          icon={addSVG}
-          iconSize={36}
-          route="ComingSoon"
-          title=""
-          onPress={() => navigation.navigate("ComingSoon")}
-        />
-      </ScrollView>
+        }
+      />
     </Animated.View>
   );
 };
