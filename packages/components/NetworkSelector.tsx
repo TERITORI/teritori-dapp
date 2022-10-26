@@ -6,7 +6,7 @@ import chevronDownSVG from "../../assets/icons/chevron-up.svg";
 import teritoriSVG from "../../assets/icons/networks/teritori.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
 import { Network } from "../utils/network";
-import { neutral17 } from "../utils/style/colors";
+import { neutral17, secondaryColor } from "../utils/style/colors";
 import { fontSemibold12 } from "../utils/style/fonts";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
@@ -47,6 +47,7 @@ export const NetworkSelector: React.FC<{
             source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}
+            color={secondaryColor}
           />
         </TertiaryBox>
       </TouchableOpacity>

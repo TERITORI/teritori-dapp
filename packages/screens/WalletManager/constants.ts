@@ -1,13 +1,12 @@
-import { Platform } from "react-native";
+import { fullSidebarWidth } from "../../utils/style/layout";
 
 export const ASSET_RATIO_WIDTH = 372;
 export const ASSET_RATIO_MARGIN_RIGHT = 32;
 export const WALLET_SCREEN_CONTAINER_MARGIN_HORIZONTAL = 32;
 export const TOKEN_ALLOCATION_WIDTH = 498;
-export const WALLET_SIDEBAR_WIDTH = Platform.OS === "web" ? 262 : 0;
 export const OVERVIEW_FLEX_BREAK_WIDTH =
   ASSET_RATIO_WIDTH +
   TOKEN_ALLOCATION_WIDTH +
-  WALLET_SIDEBAR_WIDTH +
+  fullSidebarWidth +
   ASSET_RATIO_MARGIN_RIGHT +
   WALLET_SCREEN_CONTAINER_MARGIN_HORIZONTAL * 2;

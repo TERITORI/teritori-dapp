@@ -70,27 +70,29 @@ export const ModalBase: React.FC<{
               padding: modalMarginPadding,
             }}
           >
-            <View style={{ flex: 1 }}>
-              {label && (
-                <BrandText style={{ color: "white", lineHeight: 24 }}>
-                  {label}
-                </BrandText>
-              )}
-
-              {description && (
-                <>
-                  <SpacerColumn size={1} />
-                  <BrandText
-                    style={[
-                      fontSemibold14,
-                      { color: neutral77, width: "100%", lineHeight: 20 },
-                    ]}
-                  >
-                    {description}
+            {(label || description) && (
+              <View style={{ flex: 1 }}>
+                {label && (
+                  <BrandText style={{ color: "white", lineHeight: 24 }}>
+                    {label}
                   </BrandText>
-                </>
-              )}
-            </View>
+                )}
+
+                {description && (
+                  <>
+                    <SpacerColumn size={1} />
+                    <BrandText
+                      style={[
+                        fontSemibold14,
+                        { color: neutral77, width: "100%", lineHeight: 20 },
+                      ]}
+                    >
+                      {description}
+                    </BrandText>
+                  </>
+                )}
+              </View>
+            )}
 
             {Header && <Header />}
 

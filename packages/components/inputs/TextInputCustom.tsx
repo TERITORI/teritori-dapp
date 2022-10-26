@@ -21,7 +21,11 @@ import {
 
 import { DEFAULT_ERRORS } from "../../utils/errors";
 import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
-import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
+import {
+  fontMedium10,
+  fontSemibold13,
+  fontSemibold14,
+} from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -45,6 +49,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
+  subtitle?: string;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -65,6 +70,7 @@ export const TextInputCustom = <T extends FieldValues>({
   control,
   defaultValue,
   rules,
+  subtitle,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // Handling key pressing
@@ -126,12 +132,17 @@ export const TextInputCustom = <T extends FieldValues>({
   return (
     <>
       {variant === "labelOutside" && (
-        <View>
-          <BrandText style={[styles.labelText, fontSemibold14]}>
-            {label}
-          </BrandText>
+        <>
+          <View style={styles.rowEnd}>
+            <BrandText style={[styles.labelText, fontSemibold14]}>
+              {label}
+            </BrandText>
+            {subtitle && (
+              <BrandText style={fontSemibold13}>{subtitle}</BrandText>
+            )}
+          </View>
           <SpacerColumn size={1} />
-        </View>
+        </>
       )}
 
       <TertiaryBox
@@ -173,6 +184,11 @@ export const TextInputCustom = <T extends FieldValues>({
 };
 
 const styles = StyleSheet.create({
+  rowEnd: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+  },
   mainContainer: {
     alignItems: "flex-start",
     paddingHorizontal: 12,

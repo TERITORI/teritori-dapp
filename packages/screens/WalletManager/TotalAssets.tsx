@@ -9,6 +9,8 @@ import starSVG from "../../../assets/icons/star.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ButtonGroup } from "../../components/buttons/ButtonGroup";
+import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { SpacerRow } from "../../components/spacer";
 import { WALLET_CHAIN_ASSETS } from "../../utils/fakeData/walletManager";
 import {
   neutral17,
@@ -16,10 +18,20 @@ import {
   neutral33,
   neutral77,
   neutralA3,
+  secondaryColor,
 } from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 
-export const TotalAssets: React.FC = () => {
+interface TotalAssetsProps {
+  onPressDeposit: () => void;
+  onPressWithdraw: () => void;
+}
+
+export const TotalAssets: React.FC<TotalAssetsProps> = ({
+  onPressDeposit,
+  onPressWithdraw,
+}) => {
   const { width } = useWindowDimensions();
   const [activeView, setActiveView] = useState<"Chain" | "Token">("Chain");
   const [isExpandAll, setIsExpandAll] = useState(false);
@@ -95,6 +107,7 @@ export const TotalAssets: React.FC = () => {
               width={16}
               height={16}
               source={isExpandAll ? chevronUpSVG : chevronDownSVG}
+              color={secondaryColor}
             />
           </TouchableOpacity>
         </View>
@@ -110,6 +123,8 @@ export const TotalAssets: React.FC = () => {
             borderBottomWidth: index !== WALLET_CHAIN_ASSETS.length - 1 ? 1 : 0,
             borderColor: neutral33,
             paddingVertical: 16,
+            flexWrap: "wrap",
+            flex: 1,
           }}
         >
           <View
@@ -118,7 +133,7 @@ export const TotalAssets: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <SVG source={starSVG} height={16} width={16} />
+            <SVG source={starSVG} height={16} width={16} color={neutral77} />
             <SVG
               source={getWalletIconFromTitle(item.title)}
               height={64}
@@ -243,16 +258,29 @@ export const TotalAssets: React.FC = () => {
             style={{
               flexDirection: "row",
               alignItems: "center",
+              paddingVertical: layout.padding_x1,
             }}
           >
             <BrandText
               style={{
-                marginRight: 16,
                 fontSize: 20,
               }}
             >
               ${item.amount}
             </BrandText>
+            <SpacerRow size={4} />
+            <SecondaryButton
+              size="XS"
+              text="Deposit"
+              onPress={onPressDeposit}
+            />
+            <SpacerRow size={2} />
+            <SecondaryButton
+              size="XS"
+              text="Withdraw"
+              onPress={onPressWithdraw}
+            />
+            <SpacerRow size={2} />
             <TouchableOpacity
               style={{
                 height: 32,
@@ -261,7 +289,12 @@ export const TotalAssets: React.FC = () => {
                 justifyContent: "center",
               }}
             >
-              <SVG source={chevronDownSVG} height={16} width={16} />
+              <SVG
+                source={chevronDownSVG}
+                height={16}
+                width={16}
+                color={secondaryColor}
+              />
             </TouchableOpacity>
           </View>
         </View>

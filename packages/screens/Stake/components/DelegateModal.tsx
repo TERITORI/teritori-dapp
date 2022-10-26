@@ -2,10 +2,11 @@ import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
+import { MaxButton } from "../../../components/buttons/MaxButton";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
@@ -17,11 +18,7 @@ import { useSelectedWalletToriBalance } from "../../../hooks/useSelectedWalletTo
 import { prettyPrice } from "../../../utils/coins";
 import { getKeplrOfflineSigner } from "../../../utils/keplr";
 import { Network } from "../../../utils/network";
-import {
-  neutral22,
-  neutral77,
-  primaryColor,
-} from "../../../utils/style/colors";
+import { neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold13,
@@ -184,15 +181,13 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           defaultValue=""
           rules={{ required: true, max: toriBalance.toString() }}
         >
-          <Pressable
+          <MaxButton
             onPress={() =>
               setValue("amount", toriBalance.toString(), {
                 shouldValidate: true,
               })
             }
-          >
-            <BrandText style={styles.maxText}>max</BrandText>
-          </Pressable>
+          />
         </TextInputCustom>
         <SpacerColumn size={1} />
 
@@ -221,12 +216,5 @@ const styles = StyleSheet.create({
     ...StyleSheet.flatten(fontSemibold12),
     color: neutral77,
     flexShrink: 1,
-  },
-  maxText: {
-    ...StyleSheet.flatten(fontSemibold12),
-    backgroundColor: primaryColor,
-    color: neutral22,
-    borderRadius: layout.borderRadius,
-    paddingHorizontal: layout.padding_x0_5,
   },
 });

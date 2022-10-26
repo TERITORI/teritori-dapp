@@ -8,7 +8,7 @@ import {
   cornerWidthDropdownButton,
   heightDropdownButton,
 } from "../../utils/style/buttons";
-import { neutral33 } from "../../utils/style/colors";
+import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -69,6 +69,7 @@ export const ToggleableButton: React.FC<{
           source={isExpanded ? chevronUpSVG : chevronDownSVG}
           width={16}
           height={16}
+          color={secondaryColor}
         />
       </SecondaryBox>
     </TouchableOpacity>
