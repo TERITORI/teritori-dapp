@@ -85,9 +85,8 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("nfts");
 
-  const userId = id.startsWith("tori-") ? id : "tori-" + id;
   const { loading, metadata, notFound } = useTNSMetadata(
-    userId.replace("tori-", "")
+    id.replace("tori-", "")
   );
 
   const { setLoadingFullScreen } = useFeedbacks();
@@ -106,14 +105,14 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
         </BrandText>
       }
     >
-      {notFound ? (
+      {notFound || !id.startsWith("tori-") ? (
         <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
           <BrandText>User not found</BrandText>
         </View>
       ) : (
         <View style={{ flex: 1, alignItems: "center" }}>
           <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-            <UPPIntro userId={userId} metadata={metadata} />
+            <UPPIntro userId={id} metadata={metadata} />
 
             <Tabs
               items={screenTabItems}
@@ -127,7 +126,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
               borderColorTabSelected={primaryColor}
             />
 
-            <SelectedTabContent selectedTab={selectedTab} userId={userId} />
+            <SelectedTabContent selectedTab={selectedTab} userId={id} />
           </View>
         </View>
       )}
