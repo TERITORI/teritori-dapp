@@ -6,7 +6,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral77 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontSemibold14, fontSemibold28 } from "../../utils/style/fonts";
 import { LaunchpadBanner } from "./components/LaunchpadBanner";
 import {
   LaunchpadButton,
@@ -28,7 +28,7 @@ const BUTTONS: LaunchpadButtonProps[] = [
   {
     title: "My Collections",
     description: "Manage your collections with available actions and queries.",
-    buttonTitle: "Open",
+    buttonTitle: "Coming soon",
   },
 ];
 
@@ -37,7 +37,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
     <ScreenContainer>
       <LaunchpadBanner />
       <SpacerColumn size={2} />
-      <BrandText>Welcome</BrandText>
+      <BrandText style={fontSemibold28}>Welcome</BrandText>
       <SpacerColumn size={2} />
       <BrandText style={styles.descriptionText}>
         Looking for a fast and efficient way to build an NFT collection?
