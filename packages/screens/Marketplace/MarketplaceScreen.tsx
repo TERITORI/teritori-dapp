@@ -16,24 +16,13 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
         }}
       >
         <CollectionsCarouselSection
-          title="Upcoming Launches"
-          kind={CollectionsRequest_Kind.KIND_UPCOMING}
-        />
-        <CollectionsCarouselSection
-          title="Popular collections"
-          kind={CollectionsRequest_Kind.KIND_BY_VOLUME}
-        />
-        <CollectionsCarouselSection title="Auctions" />
-        <CollectionsCarouselSection
-          title="TERITORI Features Collections"
+          title="TERITORI Collections"
           kind={CollectionsRequest_Kind.KIND_TERITORI_FEATURES}
         />
         <CollectionsCarouselSection
-          title="Top Market Cap"
-          kind={CollectionsRequest_Kind.KIND_BY_MARKETCAP}
+          title="Upcoming Launches"
+          kind={CollectionsRequest_Kind.KIND_UPCOMING}
         />
-        <CollectionsCarouselSection title="Featured Art" />
-        <CollectionsCarouselSection title="Featured Games" />
       </View>
     </ScreenContainer>
   );
