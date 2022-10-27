@@ -26,6 +26,7 @@ export interface CollectionInfo {
   isInPresalePeriod?: boolean;
   isMintable?: boolean;
   publicSaleEnded?: boolean;
+  bannerImage?: string;
 }
 
 // NOTE: consider using the indexer for this

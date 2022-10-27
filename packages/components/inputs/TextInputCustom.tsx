@@ -15,6 +15,7 @@ import {
   TextInput,
   TextInputKeyPressEventData,
   TextInputProps,
+  TextStyle,
   View,
   ViewStyle,
 } from "react-native";
@@ -50,6 +51,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: string;
+  labelStyle?: TextStyle;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -71,6 +73,7 @@ export const TextInputCustom = <T extends FieldValues>({
   defaultValue,
   rules,
   subtitle,
+  labelStyle,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // Handling key pressing
@@ -134,7 +137,7 @@ export const TextInputCustom = <T extends FieldValues>({
       {variant === "labelOutside" && (
         <>
           <View style={styles.rowEnd}>
-            <BrandText style={[styles.labelText, fontSemibold14]}>
+            <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
               {label}
             </BrandText>
             {subtitle && (
@@ -157,7 +160,7 @@ export const TextInputCustom = <T extends FieldValues>({
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {variant !== "labelOutside" && (
               <View>
-                <BrandText style={[styles.labelText, fontMedium10]}>
+                <BrandText style={[styles.labelText, fontMedium10, labelStyle]}>
                   {label}
                 </BrandText>
                 <SpacerColumn size={0.5} />

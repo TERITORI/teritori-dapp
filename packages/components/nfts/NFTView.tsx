@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   ViewStyle,
   Image,
@@ -6,35 +6,48 @@ import {
   StyleProp,
   TouchableOpacity,
   StyleSheet,
+  Pressable,
 } from "react-native";
 
 import avatarPNG from "../../../assets/default-images/avatar.png";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
+import footerSVG from "../../../assets/icons/footer-regular.svg";
+import gridSVG from "../../../assets/icons/grid.svg";
+import octagonSVG from "../../../assets/icons/octagon.svg";
+import raffleSVG from "../../../assets/icons/raffle.svg";
+import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
+import { useDropdowns } from "../../context/DropdownsProvider";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { protobufNetworkToNetwork } from "../../utils/network";
-import { neutral33, neutral77 } from "../../utils/style/colors";
+import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { DropdownOption } from "../DropDownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { NetworkIcon } from "../images/NetworkIcon";
+import { SpacerColumn } from "../spacer";
 
 export const NFTView: React.FC<{
   data: NFT;
   style?: StyleProp<ViewStyle>;
-}> = React.memo(({ data: nft, style }) => {
+  onOptionTransferPress: () => void;
+}> = React.memo(({ data: nft, style, onOptionTransferPress }) => {
   const cardWidth = 258;
   const insideMargin = layout.padding_x2;
   const contentWidth = cardWidth - insideMargin * 2;
   const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
   const tnsMetadata = useTNSMetadata(nft.ownerId.replace("tori-", ""));
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
+    useDropdowns();
+  const dropdownRef = useRef<TouchableOpacity>(null);
 
   // put margins on touchable opacity
   const {
@@ -50,6 +63,7 @@ export const NFTView: React.FC<{
 
   return (
     <TouchableOpacity
+      ref={dropdownRef}
       onPress={() => navigation.navigate("NFTDetail", { id: nft.id })}
       style={{
         margin,
@@ -73,6 +87,7 @@ export const NFTView: React.FC<{
               paddingTop: insideMargin,
               paddingBottom: 12,
               paddingHorizontal: insideMargin,
+              zIndex: 1000,
             }}
           >
             <View
@@ -80,12 +95,14 @@ export const NFTView: React.FC<{
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
+                zIndex: 1000,
               }}
             >
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
+                  zIndex: 1000,
                 }}
               >
                 <Image
@@ -121,9 +138,51 @@ export const NFTView: React.FC<{
                   </BrandText>
                 </View>
               </View>
-              <TouchableOpacity>
-                <SVG source={dotsCircleSVG} height={32} width={32} />
-              </TouchableOpacity>
+              <View style={{ position: "relative", zIndex: 1000 }}>
+                <Pressable onPress={() => onPressDropdownButton(dropdownRef)}>
+                  <SVG source={dotsCircleSVG} height={32} width={32} />
+                </Pressable>
+                {isDropdownOpen(dropdownRef) && (
+                  <View style={styles.optionContainer}>
+                    <DropdownOption
+                      onPress={closeOpenedDropdown}
+                      icon={octagonSVG}
+                      isComingSoon
+                      label="Set as Avatar"
+                    />
+                    <SpacerColumn size={0.5} />
+                    <DropdownOption
+                      onPress={closeOpenedDropdown}
+                      isComingSoon
+                      icon={gridSVG}
+                      label="List this NFT"
+                    />
+                    <SpacerColumn size={0.5} />
+                    <DropdownOption
+                      onPress={closeOpenedDropdown}
+                      icon={raffleSVG}
+                      isComingSoon
+                      label="Create Raffle with this NFT"
+                    />
+                    <SpacerColumn size={0.5} />
+                    <DropdownOption
+                      onPress={() => {
+                        closeOpenedDropdown();
+                        onOptionTransferPress();
+                      }}
+                      icon={sendSVG}
+                      label="Send & Transfer this NFT"
+                    />
+                    <SpacerColumn size={0.5} />
+                    <DropdownOption
+                      onPress={closeOpenedDropdown}
+                      icon={footerSVG}
+                      isComingSoon
+                      label="Put this NFT in the Rioters Footer"
+                    />
+                  </View>
+                )}
+              </View>
             </View>
             <ImageWithTextInsert
               size={contentWidth}
@@ -224,6 +283,21 @@ export const NFTView: React.FC<{
       </TertiaryBox>
     </TouchableOpacity>
   );
+});
+
+const styles = StyleSheet.create({
+  optionContainer: {
+    position: "absolute",
+    zIndex: 2,
+    top: layout.iconButton + layout.padding_x0_5,
+    backgroundColor: neutral00,
+    padding: layout.padding_x0_5,
+    borderColor: neutral33,
+    borderWidth: 1,
+    borderRadius: 8,
+    right: -layout.padding_x1_5,
+    minWidth: 250,
+  },
 });
 
 // using this because ellipizeMode seems broken
