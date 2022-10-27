@@ -102,7 +102,6 @@ export const CollapsableActivities = () => {
   );
 
   return (
-    // TODO: add white color to svg after implementing color change in SVG component
     <CollapsableSection icon={starSVG} title="Activities">
       <TableRow headings={Object.values(TABLE_ROWS)} />
       <FlatList

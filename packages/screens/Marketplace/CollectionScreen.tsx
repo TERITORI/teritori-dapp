@@ -1,5 +1,6 @@
+import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useEffect, useState } from "react";
-import { View, Image } from "react-native";
+import { View, Image, Platform, StyleSheet } from "react-native";
 
 import bannerCollection from "../../../assets/default-images/banner-collection.png";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
@@ -14,6 +15,7 @@ import { RoundedGradientImage } from "../../components/images/RoundedGradientIma
 import { BackTo } from "../../components/navigation/BackTo";
 import { NFTs } from "../../components/nfts/NFTs";
 import { SortButton } from "../../components/sorts/SortButton";
+import { SpacerRow } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
@@ -27,6 +29,7 @@ import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { CollectionStat } from "./components/CollectionStat";
 
 const collectionScreenTabItems = {
   allNFTs: {
@@ -51,18 +54,43 @@ const nftWidth = 268; // FIXME: ssot
 const FlatListHeader: React.FC<{
   collectionInfo: CollectionInfo;
 }> = ({ collectionInfo = {} }) => {
+  // variables
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof collectionScreenTabItems>("allNFTs");
   const { width: maxWidth } = useMaxResolution();
   const { width, height } = useImageResizer({
-    image: bannerCollection,
+    image: collectionInfo.bannerImage || bannerCollection,
     maxSize: { width: maxWidth },
   });
+  const { setToastSuccess } = useFeedbacks();
 
+  // functions
+  const onShare = () => {
+    let currentUrl;
+    if (Platform.OS === "web") {
+      currentUrl = window.location.href;
+    }
+
+    try {
+      Clipboard.setString(currentUrl || "");
+      setToastSuccess({
+        title: "URL Copied!",
+        message: "",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // returns
   return (
     <View style={{ maxWidth: width, alignSelf: "center" }}>
       <Image
-        source={bannerCollection}
+        source={
+          collectionInfo?.bannerImage
+            ? { uri: collectionInfo.bannerImage }
+            : bannerCollection
+        }
         style={{
           height,
           width,
@@ -81,15 +109,22 @@ const FlatListHeader: React.FC<{
           imageSource={{ uri: collectionInfo.image }}
           style={{ marginRight: 24 }}
         />
-        <View>
+        <View style={{ flex: 1 }}>
           <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
-          <View
-            style={{
-              flexDirection: "row",
-              marginTop: 16,
-              alignItems: "center",
-            }}
-          >
+          <View style={styles.statRow}>
+            <CollectionStat label="Floor" value="7.48" addLogo />
+            <SpacerRow size={1.5} />
+            <CollectionStat label="Total Volume" value="51803.25" addLogo />
+            <SpacerRow size={1.5} />
+            <CollectionStat label="Owners" value="2,583" />
+            <SpacerRow size={1.5} />
+            <CollectionStat label="Listed" value="850" />
+            <SpacerRow size={1.5} />
+            <CollectionStat label="Avg Sale (24hr)" value="17.20" addLogo />
+            <SpacerRow size={1.5} />
+            <CollectionStat label="Total Supply" value="7.5K" addLogo />
+          </View>
+          <View style={styles.statRow}>
             <CollectionSocialButtons collectionInfo={collectionInfo} />
             {collectionInfo.discord ||
             collectionInfo.twitter ||
@@ -108,7 +143,11 @@ const FlatListHeader: React.FC<{
               iconSvg={etherscanSVG}
               style={{ marginRight: 12 }}
             />
-            <SocialButtonSecondary text="Share" iconSvg={shareSVG} />
+            <SocialButtonSecondary
+              text="Share"
+              iconSvg={shareSVG}
+              onPress={onShare}
+            />
           </View>
         </View>
       </View>
@@ -184,3 +223,12 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
     </ScreenContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  statRow: {
+    flexDirection: "row",
+    marginTop: layout.padding_x2_5,
+    alignItems: "center",
+    flex: 1,
+  },
+});
