@@ -236,7 +236,11 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
 
         <BrandText style={fontSemibold13}>
           Tokens bonded to source validator:{" "}
-          {prettyPrice(bondedTokens.atomics, toriCurrency.coinMinimalDenom)}
+          {prettyPrice(
+            process.env.TERITORI_NETWORK_ID || "",
+            bondedTokens.atomics,
+            toriCurrency.coinMinimalDenom
+          )}
         </BrandText>
         <SpacerColumn size={2.5} />
       </View>

@@ -105,6 +105,8 @@ export const TextInputCustom = <T extends FieldValues>({
     }
   }, [fieldState.error]);
 
+  // FIXME: the first input does not trigger the custom validation
+
   // custom validation
   const handleChangeText = (value: string) => {
     if (currency) {
@@ -172,7 +174,7 @@ export const TextInputCustom = <T extends FieldValues>({
               onChangeText={handleChangeText}
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
-              value={field.value as string}
+              value={field.value}
               style={styles.textInput}
               {...restProps}
             />

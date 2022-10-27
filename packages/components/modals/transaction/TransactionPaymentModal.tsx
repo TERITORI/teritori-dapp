@@ -92,7 +92,11 @@ export const TransactionPaymentModal: React.FC<{
               You will pay
             </BrandText>
             <BrandText style={fontSemibold14}>
-              {prettyPrice(price, priceDenom)}
+              {prettyPrice(
+                process.env.TERITORI_NETWORK_ID || "",
+                price,
+                priceDenom
+              )}
             </BrandText>
           </View>
         </View>

@@ -72,7 +72,11 @@ const renderItem: ListRenderItem<Activity> = (info) => {
         {moment(activity.time).fromNow()}
       </BrandText>
       <BrandText style={{ marginLeft: gap }}>
-        {prettyPrice(activity.amount, activity.denom)}
+        {prettyPrice(
+          process.env.TERITORI_NETWORK_ID || "",
+          activity.amount,
+          activity.denom
+        )}
       </BrandText>
     </View>
   );

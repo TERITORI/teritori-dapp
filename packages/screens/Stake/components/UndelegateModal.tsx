@@ -200,7 +200,11 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
 
         <BrandText style={fontSemibold13}>
           Bonded tokens:{" "}
-          {prettyPrice(bondedTokens.atomics, toriCurrency.coinMinimalDenom)}
+          {prettyPrice(
+            process.env.TERITORI_NETWORK_ID || "",
+            bondedTokens.atomics,
+            toriCurrency.coinMinimalDenom
+          )}
         </BrandText>
         <SpacerColumn size={2.5} />
       </View>

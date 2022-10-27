@@ -158,7 +158,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         <SpacerColumn size={2.5} />
         <WarningBox
           title="Staking will lock your funds for 14 days"
-          description="Once you undelegate your staked {toriDisplayDenom}, you will need to wait 14 days for your tokens to be liquid."
+          description={`Once you undelegate your staked ${toriDisplayDenom}, you will need to wait 14 days for your tokens to be liquid.`}
         />
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
@@ -193,7 +193,11 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
 
         <BrandText style={fontSemibold13}>
           Available balance:{" "}
-          {prettyPrice(toriBalance.atomics, toriCurrency.coinMinimalDenom)}
+          {prettyPrice(
+            process.env.TERITORI_NETWORK_ID || "",
+            toriBalance.atomics,
+            toriCurrency.coinMinimalDenom
+          )}
         </BrandText>
         <SpacerColumn size={2.5} />
       </View>

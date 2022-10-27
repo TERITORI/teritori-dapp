@@ -59,7 +59,11 @@ export const TeritoriBalanceProvider: React.FC = ({ children }) => {
       }
       setValue({
         total,
-        totalString: prettyPrice(total.atomics, toriCurrency.coinMinimalDenom),
+        totalString: prettyPrice(
+          process.env.TERITORI_NETWORK_ID || "",
+          total.atomics,
+          toriCurrency.coinMinimalDenom
+        ),
       });
       setTimeout(refresh, refreshInterval);
     };

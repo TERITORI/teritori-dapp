@@ -283,7 +283,11 @@ export const NFTView: React.FC<{
               {nft.isListed && (
                 <SecondaryButton
                   size="XS"
-                  text={prettyPrice(nft.price, nft.denom)}
+                  text={prettyPrice(
+                    process.env.TERITORI_NETWORK_ID || "",
+                    nft.price,
+                    nft.denom
+                  )}
                   onPress={() => {}}
                 />
               )}

@@ -1,28 +1,41 @@
 // libraries
-import React, { useCallback, useEffect, useState } from "react";
+import { Decimal } from "@cosmjs/math";
+import { isDeliverTxFailure } from "@cosmjs/stargate";
+import { bech32 } from "bech32";
+import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
 
 import arrowDivideSVG from "../../../../assets/icons/arrow-divide.svg";
-import logoSVG from "../../../../assets/logos/logo.svg";
 import { BrandText } from "../../../components/BrandText";
+import { NetworkIcon } from "../../../components/NetworkIcon";
 import { SVG } from "../../../components/SVG";
 import { MaxButton } from "../../../components/buttons/MaxButton";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { DEPOSIT_WITHDARW_TYPE } from "../../../utils/faking";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useBalances } from "../../../hooks/useBalances";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import {
+  getIBCCurrency,
+  getKeplrSigningStargateClient,
+  getNativeCurrency,
+  getNetwork,
+  keplrCurrencyFromNativeCurrencyInfo,
+} from "../../../networks";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { capitalize } from "../../../utils/text";
-import { TransactionAccount, TransactionForm } from "../types";
-import { AccountListDropdown } from "./AccountListDropdown";
+import { TransactionForm } from "../types";
 
 type DepositModalProps = {
   variation: "deposit" | "withdraw";
   isVisible: boolean;
+  targetCurrency?: string;
+  networkId: string;
   onClose: () => void;
 };
 
@@ -30,72 +43,81 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   variation,
   isVisible,
   onClose,
+  targetCurrency: targetCurrencyDenom,
+  networkId,
 }) => {
+  const { setToastError } = useFeedbacks();
+
+  const selectedWallet = useSelectedWallet(); // FIXME: this could not match networkId
+
+  const ibcTargetCurrency = getIBCCurrency(networkId, targetCurrencyDenom);
+
+  const nativeTargetCurrency = getNativeCurrency(
+    ibcTargetCurrency?.sourceNetwork,
+    ibcTargetCurrency?.sourceDenom
+  );
+
+  const sourceNetworkId =
+    variation === "withdraw" ? networkId : ibcTargetCurrency?.sourceNetwork;
+  const sourceNetwork = getNetwork(sourceNetworkId);
+  const destinationNetworkId =
+    variation === "withdraw" ? ibcTargetCurrency?.sourceNetwork : networkId;
+  const destinationNetwork = getNetwork(destinationNetworkId);
+
+  const fromAccount =
+    variation === "withdraw"
+      ? selectedWallet?.publicKey
+      : convertCosmosAddress(selectedWallet?.publicKey, sourceNetworkId);
+  const toAccount =
+    variation === "withdraw"
+      ? convertCosmosAddress(selectedWallet?.publicKey, destinationNetworkId)
+      : selectedWallet?.publicKey;
+
+  const balances = useBalances(sourceNetworkId, fromAccount);
+
   // variables
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
-  const [fromAccount, setFromAccount] = useState<TransactionAccount>(
-    DEPOSIT_WITHDARW_TYPE.atom
-  );
-  const [toAccount, setToAccount] = useState<TransactionAccount>(
-    DEPOSIT_WITHDARW_TYPE.teritori
-  );
-
-  useEffect(() => {
-    onChangeFrom(DEPOSIT_WITHDARW_TYPE.atom);
-    onChangeTo(DEPOSIT_WITHDARW_TYPE.teritori);
-  }, []);
-
-  // functions
-  const onChangeFrom = (account: TransactionAccount) => {
-    setValue("fromAddress", account.account);
-    setFromAccount(account);
-    setValue("amount", "0");
-  };
-
-  const onChangeTo = (account: TransactionAccount) => {
-    setValue("toAddress", account.account);
-    setToAccount(account);
-    setValue("amount", "0");
-  };
 
   // returns
   const ModalHeader = useCallback(
     () => (
       <View style={styles.rowCenter}>
-        <SVG source={logoSVG} width={32} height={32} />
+        <NetworkIcon networkId={networkId} size={32} />
         <SpacerRow size={3} />
         <BrandText>
-          {variation === "deposit"
-            ? "Deposit on TERITORI"
-            : "Withdraw from TERITORI"}
+          {variation === "deposit" ? "Deposit on" : "Withdraw from"}{" "}
+          {getNetwork(networkId)?.displayName || "Unknown"}
         </BrandText>
       </View>
     ),
-    [variation]
+    [variation, networkId]
   );
+
+  const maxAtomics =
+    (variation === "withdraw"
+      ? balances.find((bal) => bal.denom === ibcTargetCurrency?.denom)
+      : balances.find((bal) => bal.denom === ibcTargetCurrency?.sourceDenom)
+    )?.amount || "0";
+  const max = Decimal.fromAtomics(
+    maxAtomics,
+    nativeTargetCurrency?.decimals || 0
+  ).toString();
 
   return (
     <ModalBase visible={isVisible} onClose={onClose} Header={ModalHeader}>
       <View style={styles.container}>
         <BrandText style={[fontSemibold14, styles.selfCenter]}>
-          {capitalize(variation)} {fromAccount.name}
+          {capitalize(variation)} {nativeTargetCurrency?.displayName}
         </BrandText>
         <SpacerColumn size={1.5} />
         <View style={[styles.rowCenter, styles.w100, { zIndex: 2 }]}>
           <View style={[styles.jcCenter, { zIndex: 2 }]}>
             <View style={[styles.rowAllCenter, { zIndex: 2 }]}>
-              <View style={styles.leftChevron}>
-                <AccountListDropdown
-                  variation="left"
-                  accounts={Object.values(DEPOSIT_WITHDARW_TYPE)}
-                  onSelect={onChangeFrom}
-                />
-              </View>
-              <SVG source={fromAccount.icon} width={64} height={64} />
+              <NetworkIcon size={64} networkId={sourceNetworkId || "unknown"} />
             </View>
             <SpacerColumn size={1.5} />
             <BrandText style={fontSemibold14}>
-              From {fromAccount.name}
+              From {sourceNetwork?.displayName || "Unknown"}
             </BrandText>
             <SpacerColumn size={1} />
             <TextInputCustom<TransactionForm>
@@ -103,6 +125,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               variant="labelOutside"
               name="fromAddress"
               label=""
+              defaultValue={fromAccount}
               rules={{ required: true }}
               disabled
             />
@@ -116,22 +139,21 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 
           <View style={styles.jcCenter}>
             <View style={[styles.rowAllCenter, { zIndex: 2 }]}>
-              <SVG source={toAccount.icon} width={64} height={64} />
-              <View style={styles.rightChevron}>
-                <AccountListDropdown
-                  variation="right"
-                  accounts={Object.values(DEPOSIT_WITHDARW_TYPE)}
-                  onSelect={onChangeTo}
-                />
-              </View>
+              <NetworkIcon
+                size={64}
+                networkId={destinationNetworkId || "unknown"}
+              />
             </View>
             <SpacerColumn size={1.5} />
-            <BrandText style={fontSemibold14}>To {toAccount.name}</BrandText>
+            <BrandText style={fontSemibold14}>
+              To {destinationNetwork?.displayName || "Unknown"}
+            </BrandText>
             <SpacerColumn size={1} />
             <TextInputCustom<TransactionForm>
               control={control}
               variant="labelOutside"
               name="toAddress"
+              defaultValue={toAccount}
               label=""
               rules={{ required: true }}
               disabled
@@ -139,19 +161,20 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
           </View>
         </View>
         <SpacerColumn size={4} />
-
-        <TextInputCustom<TransactionForm>
-          control={control}
-          variant="labelOutside"
-          label="Select Amount"
-          name="amount"
-          rules={{ required: true }}
-          subtitle={`Available balance: ${fromAccount.amount}`}
-        >
-          <MaxButton
-            onPress={() => setValue("amount", fromAccount.amount.toString())}
-          />
-        </TextInputCustom>
+        {ibcTargetCurrency && (
+          <TextInputCustom<TransactionForm>
+            control={control}
+            variant="labelOutside"
+            label="Select Amount"
+            name="amount"
+            currency={keplrCurrencyFromNativeCurrencyInfo(nativeTargetCurrency)}
+            rules={{ required: true, max }}
+            placeHolder="0"
+            subtitle={`Available balance: ${max}`}
+          >
+            <MaxButton onPress={() => setValue("amount", max)} />
+          </TextInputCustom>
+        )}
         <SpacerColumn size={4} />
         <BrandText style={styles.estimatedText}>
           Estimated Time: 20 Seconds
@@ -161,7 +184,98 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
           size="M"
           text={capitalize(variation)}
           fullWidth
-          onPress={handleSubmit(onClose)}
+          loader
+          onPress={handleSubmit(async (formValues) => {
+            try {
+              const sender = fromAccount;
+              if (!sender) {
+                throw new Error("no sender");
+              }
+
+              const receiver = toAccount;
+              if (!receiver) {
+                throw new Error("no receiver");
+              }
+
+              if (!nativeTargetCurrency) {
+                throw new Error("no native target currency");
+              }
+
+              if (!ibcTargetCurrency) {
+                throw new Error("no target currency");
+              }
+
+              if (!sourceNetwork) {
+                throw new Error("no source network");
+              }
+
+              if (!sourceNetworkId) {
+                throw new Error("missing source network id");
+              }
+
+              if (!destinationNetworkId) {
+                throw new Error("missing destination network id");
+              }
+
+              const denom =
+                variation === "withdraw"
+                  ? ibcTargetCurrency.denom
+                  : ibcTargetCurrency.sourceDenom;
+
+              if (!denom) {
+                throw new Error("no source denom");
+              }
+
+              const amount = Decimal.fromUserInput(
+                formValues.amount,
+                nativeTargetCurrency.decimals
+              ).atomics;
+
+              const timeoutSeconds = 30;
+
+              const port =
+                variation === "withdraw"
+                  ? ibcTargetCurrency.destinationChannelPort
+                  : ibcTargetCurrency.sourceChannelPort;
+
+              const channelId =
+                variation === "withdraw"
+                  ? ibcTargetCurrency.destinationChannelId
+                  : ibcTargetCurrency.sourceChannelId;
+
+              const client = await getKeplrSigningStargateClient(
+                sourceNetworkId
+              );
+
+              const tx = await client.sendIbcTokens(
+                sender,
+                receiver,
+                { amount, denom },
+                port,
+                channelId,
+                undefined,
+                (Date.now() + timeoutSeconds * 1000) * 1000000,
+                "auto"
+              );
+
+              if (isDeliverTxFailure(tx)) {
+                console.error(variation, "tx failed", tx);
+                setToastError({ title: "Transaction failed", message: "" });
+              }
+
+              // FIXME: find out if it's possible to check for ibc ack
+            } catch (err) {
+              console.error(variation, "failed", err);
+              if (err instanceof Error) {
+                setToastError({
+                  title: "Failed to " + variation,
+                  message: err.message,
+                });
+              }
+            }
+
+            onClose();
+          })}
         />
       </View>
     </ModalBase>
@@ -209,3 +323,23 @@ const styles = StyleSheet.create({
     },
   ]),
 });
+
+const convertCosmosAddress = (
+  sourceAddress: string | undefined,
+  targetNetworkId: string | undefined
+) => {
+  if (!sourceAddress || !targetNetworkId) {
+    return undefined;
+  }
+  const targetNetwork = getNetwork(targetNetworkId);
+  if (!targetNetwork) {
+    return undefined;
+  }
+  try {
+    const decoded = bech32.decode(sourceAddress);
+    return bech32.encode(targetNetwork.addressPrefix, decoded.words);
+  } catch (err) {
+    console.warn("failed to convert cosmos address", sourceAddress, err);
+    return undefined;
+  }
+};

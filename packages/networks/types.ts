@@ -1,0 +1,41 @@
+export interface NetworkInfo {
+  id: string;
+  chainId: string;
+  displayName: string;
+  currencies: CurrencyInfo[];
+  icon?: string;
+  addressPrefix: string;
+  restEndpoint: string;
+  rpcEndpoint: string;
+  stakeCurrency: string;
+  gasPriceStep: {
+    low: number;
+    average: number;
+    high: number;
+  };
+  features: string[];
+}
+
+export type CurrencyKind = "native" | "ibc";
+
+export type NativeCurrencyInfo = {
+  kind: "native";
+  denom: string;
+  displayName: string;
+  decimals: number;
+  coingeckoId: string;
+  icon: string;
+};
+
+export type IBCCurrencyInfo = {
+  kind: "ibc";
+  denom: string;
+  sourceNetwork: string;
+  sourceDenom: string;
+  sourceChannelPort: string;
+  sourceChannelId: string;
+  destinationChannelPort: string;
+  destinationChannelId: string;
+};
+
+export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
