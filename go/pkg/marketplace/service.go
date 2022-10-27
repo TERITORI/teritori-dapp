@@ -236,7 +236,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	return nil
 }
 
-func (s *MarkteplaceService) CollectionActivity(req *marketplacepb.CollectionActivityRequest, srv marketplacepb.MarketplaceService_CollectionActivityServer) error {
+func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv marketplacepb.MarketplaceService_ActivityServer) error {
 	// TODO: we should use a time cursor based pagination instead of limit and offset
 
 	limit := req.GetLimit()
@@ -249,49 +249,48 @@ func (s *MarkteplaceService) CollectionActivity(req *marketplacepb.CollectionAct
 		return errors.New("offset must be greater or equal to 0")
 	}
 
-	id := req.GetId()
-	if id == "" {
-		return errors.New("empty mint address")
-	}
-
-	if strings.HasPrefix(id, marketplacepb.Network_NETWORK_FAKE.Prefix()) {
-		for i := int32(0); i < limit; i++ {
-			if err := srv.Send(&marketplacepb.CollectionActivityResponse{Activity: faking.FakeActivity()}); err != nil {
-				return errors.Wrap(err, "failed to send activity")
+	collectionID := req.GetCollectionId()
+	if collectionID != "" {
+		//Check for collection Type
+		if strings.HasPrefix(collectionID, marketplacepb.Network_NETWORK_FAKE.Prefix()) {
+			for i := int32(0); i < limit; i++ {
+				if err := srv.Send(&marketplacepb.ActivityResponse{Activity: faking.FakeActivity()}); err != nil {
+					return errors.Wrap(err, "failed to send activity")
+				}
 			}
-		}
-		return nil
-	}
-
-	if strings.HasPrefix(id, marketplacepb.Network_NETWORK_SOLANA.Prefix()) {
-		gqlClient := graphql.NewClient(s.conf.GraphqlEndpoint, nil)
-
-		collectionActivity, err := holagql.GetCollectionActivity(srv.Context(), gqlClient,
-			strings.TrimPrefix(id, marketplacepb.Network_NETWORK_SOLANA.Prefix()+"-"),
-			int(limit),
-			int(offset),
-		)
-		if err != nil {
-			return errors.Wrap(err, "failed to fetch collection activity")
+			return nil
 		}
 
-		for _, activity := range collectionActivity.Collection.Activities {
-			if err := srv.Send(&marketplacepb.CollectionActivityResponse{Activity: &marketplacepb.Activity{
-				Id:              fmt.Sprintf("%s-%s", marketplacepb.Network_NETWORK_SOLANA.Prefix(), faker.UUIDDigit()),
-				Amount:          activity.Price,
-				Denom:           "lamports",
-				TransactionKind: activity.ActivityType,
-				TargetName:      activity.Nft.Name,
-				TargetImageUri:  activity.Nft.Image,
-				Time:            activity.CreatedAt,
-			}}); err != nil {
-				return errors.Wrap(err, "failed to send activity")
+		if strings.HasPrefix(collectionID, marketplacepb.Network_NETWORK_SOLANA.Prefix()) {
+			gqlClient := graphql.NewClient(s.conf.GraphqlEndpoint, nil)
+
+			collectionActivity, err := holagql.GetCollectionActivity(srv.Context(), gqlClient,
+				strings.TrimPrefix(collectionID, marketplacepb.Network_NETWORK_SOLANA.Prefix()+"-"),
+				int(limit),
+				int(offset),
+			)
+			if err != nil {
+				return errors.Wrap(err, "failed to fetch collection activity")
 			}
+
+			for _, activity := range collectionActivity.Collection.Activities {
+				if err := srv.Send(&marketplacepb.ActivityResponse{Activity: &marketplacepb.Activity{
+					Id:              fmt.Sprintf("%s-%s", marketplacepb.Network_NETWORK_SOLANA.Prefix(), faker.UUIDDigit()),
+					Amount:          activity.Price,
+					Denom:           "lamports",
+					TransactionKind: activity.ActivityType,
+					TargetName:      activity.Nft.Name,
+					TargetImageUri:  activity.Nft.Image,
+					Time:            activity.CreatedAt,
+				}}); err != nil {
+					return errors.Wrap(err, "failed to send activity")
+				}
+			}
+
+			return nil
 		}
-
-		return nil
 	}
-
+	nftID := req.GetNftId()
 	var activities []*indexerdb.Activity
 	if err := s.conf.IndexerDB.
 		Preload("Listing").
@@ -301,7 +300,8 @@ func (s *MarkteplaceService) CollectionActivity(req *marketplacepb.CollectionAct
 		Order("Time DESC").
 		Limit(int(limit)).
 		Offset(int(offset)).
-		Where("nfts.collection_id = ?", id).
+		Where("nfts.collection_id = ? OR ? = ''", collectionID, collectionID).
+		Where("nfts.id = ? OR ? = ''", nftID, nftID).
 		Find(&activities).Error; err != nil {
 		return errors.Wrap(err, "failed to retrieve activities from db")
 	}
@@ -323,82 +323,7 @@ func (s *MarkteplaceService) CollectionActivity(req *marketplacepb.CollectionAct
 				denom = activity.Listing.PriceDenom
 			}
 		}
-		if err := srv.Send(&marketplacepb.CollectionActivityResponse{Activity: &marketplacepb.Activity{
-			Id:              activity.ID,
-			TransactionKind: string(activity.Kind),
-			TargetName:      activity.NFT.Name,
-			TargetImageUri:  activity.NFT.ImageURI,
-			ContractName:    "ToriVault",
-			Time:            activity.Time.Format(time.RFC3339),
-			Amount:          price,
-			Denom:           denom,
-		}}); err != nil {
-			return errors.Wrap(err, "failed to send activity")
-		}
-	}
-
-	return nil
-}
-
-func (s *MarkteplaceService) NFTActivity(req *marketplacepb.NFTActivityRequest, srv marketplacepb.MarketplaceService_NFTActivityServer) error {
-	// TODO: we should use a time cursor based pagination instead of limit and offset
-
-	limit := req.GetLimit()
-	if limit <= 0 {
-		return errors.New("limit must be a positive number")
-	}
-
-	offset := req.GetOffset()
-	if offset < 0 {
-		return errors.New("offset must be greater or equal to 0")
-	}
-
-	id := req.GetId()
-	if id == "" {
-		return errors.New("empty mint address")
-	}
-
-	if strings.HasPrefix(id, marketplacepb.Network_NETWORK_FAKE.Prefix()) {
-		for i := int32(0); i < limit; i++ {
-			if err := srv.Send(&marketplacepb.NFTActivityResponse{Activity: faking.FakeActivity()}); err != nil {
-				return errors.Wrap(err, "failed to send activity")
-			}
-		}
-		return nil
-	}
-
-	var activities []*indexerdb.Activity
-	if err := s.conf.IndexerDB.
-		Preload("Listing").
-		Preload("Trade").
-		Preload("NFT").
-		Joins("JOIN nfts on nfts.id = activities.nft_id").
-		Order("Time DESC").
-		Limit(int(limit)).
-		Offset(int(offset)).
-		Where("nfts.id = ?", id).
-		Find(&activities).Error; err != nil {
-		return errors.Wrap(err, "failed to retrieve activities from db")
-	}
-	for _, activity := range activities {
-		if activity.NFT == nil {
-			s.conf.Logger.Error("missing NFT on activity")
-			continue
-		}
-		var price, denom string
-		switch activity.Kind {
-		case indexerdb.ActivityKindTrade:
-			if activity.Trade != nil {
-				price = activity.Trade.Price
-				denom = activity.Trade.PriceDenom
-			}
-		case indexerdb.ActivityKindList:
-			if activity.Listing != nil {
-				price = activity.Listing.Price
-				denom = activity.Listing.PriceDenom
-			}
-		}
-		if err := srv.Send(&marketplacepb.NFTActivityResponse{Activity: &marketplacepb.Activity{
+		if err := srv.Send(&marketplacepb.ActivityResponse{Activity: &marketplacepb.Activity{
 			Id:              activity.ID,
 			TransactionKind: string(activity.Kind),
 			TargetName:      activity.NFT.Name,

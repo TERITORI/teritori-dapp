@@ -28,7 +28,7 @@ export const NFTActivity: React.FC<{ id: string }> = ({ id }) => {
   );
 };
 
-const useNFTActivity = (id: string) => {
+const useNFTActivity = (nftId: string) => {
   const [activity, setActivity] = useState<Activity[]>([]);
   const [refreshIndex, setRefreshIndex] = useState(0);
   const refresh = useCallback(() => {
@@ -37,7 +37,7 @@ const useNFTActivity = (id: string) => {
   useEffect(() => {
     const effect = async () => {
       try {
-        const stream = backendClient.NFTActivity({ id, limit: 20 });
+        const stream = backendClient.Activity({ nftId, limit: 20 });
         const act: Activity[] = [];
         await stream.forEach(({ activity: elem }) => {
           if (!elem) {
@@ -51,6 +51,6 @@ const useNFTActivity = (id: string) => {
       }
     };
     effect();
-  }, [id, refreshIndex]);
+  }, [nftId, refreshIndex]);
   return { activity, refreshActivity: refresh };
 };
