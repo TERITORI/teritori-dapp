@@ -1,7 +1,8 @@
 /* eslint-disable */
 import { grpc } from "@improbable-eng/grpc-web";
 import { BrowserHeaders } from "browser-headers";
-import * as _m0 from "protobufjs/minimal";
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 import { Observable } from "rxjs";
 import { share } from "rxjs/operators";
 
@@ -200,6 +201,7 @@ export interface ActivityRequest {
 
 export interface ActivityResponse {
   activity: Activity | undefined;
+  total: number;
 }
 
 export interface NFTPriceHistoryRequest {
@@ -1199,13 +1201,16 @@ export const ActivityRequest = {
 };
 
 function createBaseActivityResponse(): ActivityResponse {
-  return { activity: undefined };
+  return { activity: undefined, total: 0 };
 }
 
 export const ActivityResponse = {
   encode(message: ActivityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.activity !== undefined) {
       Activity.encode(message.activity, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.total !== 0) {
+      writer.uint32(16).int64(message.total);
     }
     return writer;
   },
@@ -1220,6 +1225,9 @@ export const ActivityResponse = {
         case 1:
           message.activity = Activity.decode(reader, reader.uint32());
           break;
+        case 2:
+          message.total = longToNumber(reader.int64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1229,12 +1237,16 @@ export const ActivityResponse = {
   },
 
   fromJSON(object: any): ActivityResponse {
-    return { activity: isSet(object.activity) ? Activity.fromJSON(object.activity) : undefined };
+    return {
+      activity: isSet(object.activity) ? Activity.fromJSON(object.activity) : undefined,
+      total: isSet(object.total) ? Number(object.total) : 0,
+    };
   },
 
   toJSON(message: ActivityResponse): unknown {
     const obj: any = {};
     message.activity !== undefined && (obj.activity = message.activity ? Activity.toJSON(message.activity) : undefined);
+    message.total !== undefined && (obj.total = Math.round(message.total));
     return obj;
   },
 
@@ -1243,6 +1255,7 @@ export const ActivityResponse = {
     message.activity = (object.activity !== undefined && object.activity !== null)
       ? Activity.fromPartial(object.activity)
       : undefined;
+    message.total = object.total ?? 0;
     return message;
   },
 };
@@ -1616,6 +1629,25 @@ export class GrpcWebImpl {
   }
 }
 
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
+  throw "Unable to locate global object";
+})();
+
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
@@ -1626,6 +1658,18 @@ export type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

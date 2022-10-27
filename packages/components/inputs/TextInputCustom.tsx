@@ -154,7 +154,6 @@ export const TextInputCustom = <T extends FieldValues>({
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
         mainContainerStyle={styles.mainContainer}
-        fullWidth
         width={width}
         height={height}
       >

@@ -290,9 +290,31 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			return nil
 		}
 	}
+
 	nftID := req.GetNftId()
+
+	var totalCount int64
+	if err := s.conf.IndexerDB.
+		Model(&indexerdb.Activity{}).
+		Joins("JOIN nfts on nfts.id = activities.nft_id").
+		Where("nfts.collection_id = ? OR ? = ''", collectionID, collectionID).
+		Where("nfts.id = ? OR ? = ''", nftID, nftID).
+		Count(&totalCount).Error; err != nil {
+		return errors.Wrap(err, "failed to retrieve activities from db")
+	}
+
+	if err := srv.Send(&marketplacepb.ActivityResponse{Total: totalCount}); err != nil {
+		return errors.Wrap(err, "failed to send total count")
+	}
+
 	var activities []*indexerdb.Activity
 	if err := s.conf.IndexerDB.
+		Preload("CancelListing").
+		Preload("UpdateNFTPrice").
+		Preload("TransferNFT").
+		Preload("SendNFT").
+		Preload("Burn").
+		Preload("Mint").
 		Preload("Listing").
 		Preload("Trade").
 		Preload("NFT").
@@ -310,17 +332,48 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			s.conf.Logger.Error("missing NFT on activity")
 			continue
 		}
-		var price, denom string
+		var price, denom, buyerId, sellerId string
 		switch activity.Kind {
 		case indexerdb.ActivityKindTrade:
 			if activity.Trade != nil {
 				price = activity.Trade.Price
 				denom = activity.Trade.PriceDenom
+				buyerId = string(activity.Trade.BuyerID)
+				sellerId = string(activity.Trade.SellerID)
 			}
 		case indexerdb.ActivityKindList:
 			if activity.Listing != nil {
 				price = activity.Listing.Price
 				denom = activity.Listing.PriceDenom
+				sellerId = string(activity.Listing.SellerID)
+			}
+		case indexerdb.ActivityKindMint:
+			if activity.Mint != nil {
+				buyerId = string(activity.Mint.BuyerID)
+			}
+		case indexerdb.ActivityKindBurn:
+			if activity.Burn != nil {
+				sellerId = string(activity.Burn.BurnerID)
+			}
+		case indexerdb.ActivityKindTransferNFT:
+			if activity.TransferNFT != nil {
+				sellerId = string(activity.TransferNFT.Sender)
+				buyerId = string(activity.TransferNFT.Receiver)
+			}
+		case indexerdb.ActivityKindSendNFT:
+			if activity.SendNFT != nil {
+				sellerId = string(activity.SendNFT.Sender)
+				buyerId = string(activity.SendNFT.Receiver)
+			}
+		case indexerdb.ActivityKindCancelListing:
+			if activity.CancelListing != nil {
+				sellerId = string(activity.CancelListing.SellerID)
+			}
+		case indexerdb.ActivityKindUpdateNFTPrice:
+			if activity.UpdateNFTPrice != nil {
+				sellerId = string(activity.UpdateNFTPrice.SellerID)
+				price = activity.UpdateNFTPrice.Price
+				denom = activity.UpdateNFTPrice.PriceDenom
 			}
 		}
 		if err := srv.Send(&marketplacepb.ActivityResponse{Activity: &marketplacepb.Activity{
@@ -332,6 +385,8 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			Time:            activity.Time.Format(time.RFC3339),
 			Amount:          price,
 			Denom:           denom,
+			BuyerId:         buyerId,
+			SellerId:        sellerId,
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send activity")
 		}

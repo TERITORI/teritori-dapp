@@ -40,6 +40,7 @@ var allModels = []interface{}{
 	// activity
 	&Activity{},
 	&Listing{},
+	&CancelListing{},
 	&Trade{},
 	&UpdateNFTPrice{},
 	&Mint{},

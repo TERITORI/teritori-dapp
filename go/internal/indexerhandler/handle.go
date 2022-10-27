@@ -70,6 +70,10 @@ func NewHandler(db *gorm.DB, config Config, logger *zap.Logger) (*Handler, error
 }
 
 func (h *Handler) HandleTendermintResultTx(tx *tenderminttypes.ResultTx) error {
+	if tx.TxResult.Code != 0 {
+		return nil
+	}
+
 	var logs []TendermintTxLog
 	if err := json.Unmarshal([]byte(tx.TxResult.Log), &logs); err != nil {
 		panic(errors.Wrap(err, "failed to parse tx log"))

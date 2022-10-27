@@ -79,6 +79,7 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 		UpdateNFTPrice: &indexerdb.UpdateNFTPrice{
 			Price:      price,
 			PriceDenom: denom,
+			SellerID:   indexerdb.TeritoriUserID(execMsg.Sender),
 		},
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create listing in db")
@@ -148,6 +149,9 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 		NFTID: nftID,
 		Kind:  indexerdb.ActivityKindCancelListing,
 		Time:  e.BlockTime,
+		CancelListing: &indexerdb.CancelListing{
+			SellerID: indexerdb.TeritoriUserID(execMsg.Sender),
+		},
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create listing cancelation in db")
 	}

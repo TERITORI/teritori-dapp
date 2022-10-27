@@ -1,6 +1,6 @@
 // libraries
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import chevronLeftDoubleSVG from "../../assets/icons/chevron-left-double.svg";
 import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
@@ -12,8 +12,6 @@ import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
-import { PrimaryButton } from "./buttons/PrimaryButton";
-import { SecondaryButton } from "./buttons/SecondaryButton";
 import { TextInputCustom } from "./inputs/TextInputCustom";
 import { SpacerRow } from "./spacer";
 
@@ -23,66 +21,82 @@ type PaginationProps = {
   currentPage: number;
   maxPage: number;
   itemsPerPage: number;
+  onChangePage: (page: number) => void;
 };
 
 export const Pagination = ({
   currentPage,
   maxPage,
   itemsPerPage,
+  onChangePage,
 }: PaginationProps) => {
+  const handleChangePage = (pageIndex: number) => {
+    if (pageIndex < 0) {
+      pageIndex = 0;
+    } else if (pageIndex >= maxPage) {
+      pageIndex = maxPage - 1;
+    }
+    if (pageIndex !== currentPage) {
+      onChangePage(pageIndex);
+    }
+  };
+
+  const edgeSectionsWidth = 250; // this is needed to make sure the pagination arrows are centered and don't move
+
   // returns
   return (
     <View style={styles.container}>
-      <View style={styles.section}>
+      <View
+        style={[
+          styles.section,
+          { width: edgeSectionsWidth, justifyContent: "flex-start" },
+        ]}
+      >
         <BrandText style={styles.grayText}>
-          Page {currentPage} of {maxPage}
+          Page {currentPage + 1} of {maxPage}
         </BrandText>
-        <BrandText style={styles.grayText}>|</BrandText>
-        <BrandText style={styles.grayText}>Go to page:</BrandText>
-        <View style={styles.inputContainer}>
-          <TextInputCustom<{ page: string }>
-            name="page"
-            label=""
-            variant="labelOutside"
-            defaultValue={currentPage.toString()}
-          />
-        </View>
       </View>
 
       <View style={styles.section}>
-        <TertiaryBox height={42} width={56}>
-          <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
-        </TertiaryBox>
+        <TouchableOpacity onPress={() => handleChangePage(0)}>
+          <TertiaryBox height={42} width={56}>
+            <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
+          </TertiaryBox>
+        </TouchableOpacity>
         <SpacerRow size={0.5} />
-        <TertiaryBox height={42} width={56}>
-          <SVG source={chevronLeftSVG} height={16} width={16} />
-        </TertiaryBox>
-
+        <TouchableOpacity onPress={() => handleChangePage(currentPage - 1)}>
+          <TertiaryBox height={42} width={56}>
+            <SVG source={chevronLeftSVG} height={16} width={16} />
+          </TertiaryBox>
+        </TouchableOpacity>
         <SpacerRow size={2} />
-        <PrimaryButton text={currentPage.toString()} size="XS" width={56} />
-        <SpacerRow size={1} />
-        <SecondaryButton text={maxPage.toString()} size="XS" width={56} />
-        <SpacerRow size={2} />
-
-        <TertiaryBox height={42} width={56}>
-          <SVG source={chevronRightSVG} height={16} width={16} />
-        </TertiaryBox>
+        <TouchableOpacity onPress={() => handleChangePage(currentPage + 1)}>
+          <TertiaryBox height={42} width={56}>
+            <SVG source={chevronRightSVG} height={16} width={16} />
+          </TertiaryBox>
+        </TouchableOpacity>
         <SpacerRow size={0.5} />
-        <TertiaryBox height={42} width={56}>
-          <SVG source={chevronRightDoubleSVG} height={16} width={16} />
-        </TertiaryBox>
+        <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
+          <TertiaryBox height={42} width={56}>
+            <SVG source={chevronRightDoubleSVG} height={16} width={16} />
+          </TertiaryBox>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.section}>
+      <View
+        style={[
+          styles.section,
+          { width: edgeSectionsWidth, justifyContent: "flex-end" },
+        ]}
+      >
         <BrandText style={styles.grayText}>Items per page:</BrandText>
-        <View style={styles.inputContainer}>
-          <TextInputCustom<{ page: string }>
-            name="page"
-            label=""
-            variant="labelOutside"
-            defaultValue={itemsPerPage.toString()}
-          />
-        </View>
+        <TextInputCustom<{ items: number }>
+          width={80}
+          name="items"
+          label=""
+          variant="labelOutside"
+          value={itemsPerPage.toString()}
+        />
       </View>
     </View>
   );
@@ -105,8 +119,5 @@ const styles = StyleSheet.create({
     color: neutral77,
     paddingRight: layout.padding_x1,
     lineHeight: 14,
-  },
-  inputContainer: {
-    width: 80,
   },
 });
