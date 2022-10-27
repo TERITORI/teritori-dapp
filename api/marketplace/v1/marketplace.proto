@@ -7,8 +7,7 @@ service MarketplaceService {
   rpc Collections(CollectionsRequest) returns (stream CollectionsResponse);
   rpc NFTs(NFTsRequest) returns (stream NFTsResponse);
   rpc Quests(QuestsRequest) returns (stream QuestsResponse);
-  rpc CollectionActivity(CollectionActivityRequest) returns (stream CollectionActivityResponse);
-  rpc NFTActivity(NFTActivityRequest) returns (stream NFTActivityResponse);
+  rpc Activity(ActivityRequest) returns (stream ActivityResponse);
   rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
 }
 
@@ -112,23 +111,15 @@ message QuestsResponse {
   Quest quest = 1;
 }
 
-message CollectionActivityRequest {
-  string id = 1;
+message ActivityRequest {
+  string collection_id = 1;
+  string nft_id = 2;
   int32 limit = 3;
   int32 offset = 4;
 }
 
-message CollectionActivityResponse {
-  Activity activity = 1;
-}
 
-message NFTActivityRequest {
-  string id = 1;
-  int32 limit = 3;
-  int32 offset = 4;
-}
-
-message NFTActivityResponse {
+message ActivityResponse {
   Activity activity = 1;
 }
 
