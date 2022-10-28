@@ -18,7 +18,6 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ProgressionCard } from "../../components/cards/ProgressionCard";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
-import { FooterAlt } from "../../components/footers/FooterAlt";
 import {
   initialToastError,
   useFeedbacks,
@@ -153,10 +152,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     );
   } else
     return (
-      <ScreenContainer
-        noMargin
-        footerChildren={<FooterAlt style={{ marginTop: 200 }} />}
-      >
+      <ScreenContainer noMargin>
         <View style={{ alignItems: "center" }}>
           <View
             style={{
