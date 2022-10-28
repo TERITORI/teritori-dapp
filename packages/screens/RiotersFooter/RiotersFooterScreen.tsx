@@ -18,6 +18,7 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { Footer } from "../../components/footers/Footer";
 import { TransactionPaymentModal } from "../../components/modals/transaction/TransactionPaymentModal";
 import { TransactionPendingModal } from "../../components/modals/transaction/TransactionPendingModal";
 import { TransactionSuccessModal } from "../../components/modals/transaction/TransactionSuccessModal";
@@ -302,7 +303,7 @@ export const RiotersFooterScreen: React.FC = () => {
   );
 
   return (
-    <ScreenContainer hideSidebar={isPreview}>
+    <ScreenContainer hideSidebar={isPreview} footerChildren={<Footer />}>
       {!isPreview ? (
         <DraxProvider>
           <View style={styles.container}>

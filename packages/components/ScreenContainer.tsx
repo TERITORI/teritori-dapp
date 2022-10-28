@@ -21,7 +21,6 @@ import {
   walletSelectorWidth,
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
-import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { NetworkSelector } from "./NetworkSelector";
 import { SVG } from "./SVG";
@@ -37,6 +36,7 @@ export const ScreenContainer: React.FC<{
   customSidebar?: React.ReactNode;
   noMargin?: boolean;
   noScroll?: boolean;
+  fullWidth?: boolean;
   smallMargin?: boolean;
 }> = ({
   children,
@@ -46,6 +46,7 @@ export const ScreenContainer: React.FC<{
   hideSidebar,
   noMargin,
   noScroll,
+  fullWidth,
   smallMargin,
   customSidebar,
 }) => {
@@ -58,7 +59,8 @@ export const ScreenContainer: React.FC<{
   };
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
   const areThereWallets = useAreThereWallets();
-  const { width } = useMaxResolution();
+  const { width: maxWidth } = useMaxResolution();
+  const width = fullWidth ? "100%" : maxWidth;
 
   // functions
   const toggleConnectWallet = () =>
@@ -90,22 +92,27 @@ export const ScreenContainer: React.FC<{
                   style={{ width: "100%", flex: 1 }}
                   contentContainerStyle={[
                     {
-                      flex: 1,
+                      minHeight: height - headerHeight,
                     },
-                    marginStyle,
                   ]}
                 >
-                  <View style={[styles.childrenContainer, { width }]}>
+                  <View
+                    style={[
+                      styles.childrenContainer,
+                      marginStyle,
+                      { width, flex: 1 },
+                    ]}
+                  >
                     {children}
-                    {footerChildren && <Footer>{footerChildren}</Footer>}
                   </View>
+                  {footerChildren}
                 </ScrollView>
               ) : (
                 <View
-                  style={[styles.childrenContainer, { width }, marginStyle]}
+                  style={[styles.childrenContainer, marginStyle, { width }]}
                 >
                   {children}
-                  {footerChildren && <Footer>{footerChildren}</Footer>}
+                  {footerChildren}
                 </View>
               )}
             </View>

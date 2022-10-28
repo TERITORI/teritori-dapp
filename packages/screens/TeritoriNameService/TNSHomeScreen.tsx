@@ -183,10 +183,10 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           onEnter={() => {
             setModalNameFinderVisible(false);
             pressedTNSItems &&
-              navigation.navigate("TNSHome", {
-                modal: TNSPathMap[pressedTNSItems],
-                name,
-              });
+            navigation.navigate("TNSHome", {
+              modal: TNSPathMap[pressedTNSItems],
+              name,
+            });
           }}
         />
         {activeModal === "TNSManage" && (

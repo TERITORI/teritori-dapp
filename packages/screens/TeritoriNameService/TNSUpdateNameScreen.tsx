@@ -25,8 +25,8 @@ interface TNSUpdateNameScreenProps extends TNSModalCommonProps {}
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
-  onClose,
-}) => {
+                                                                          onClose,
+                                                                        }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();

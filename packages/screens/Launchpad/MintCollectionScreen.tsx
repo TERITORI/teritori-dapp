@@ -128,27 +128,26 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     );
   } else
     return (
-      <ScreenContainer noMargin noScroll>
-        <ScrollView>
-          <View style={{ alignItems: "center", width: "100%" }}>
+      <ScreenContainer noMargin fullWidth>
+        <View style={{ alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              flexWrap: "wrap",
+              marginTop: 72,
+            }}
+            onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
+          >
+            {/* ===== Left container */}
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                flexWrap: "wrap",
-                marginTop: 72,
+                justifyContent: "flex-start",
+                width: "100%",
+                maxWidth: 534,
               }}
-              onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
             >
-              {/* ===== Left container */}
-              <View
-                style={{
-                  justifyContent: "flex-start",
-                  width: "100%",
-                  maxWidth: 534,
-                }}
-              >
-                <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
+              <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
 
                 <View style={{ marginBottom: 20 }}>
                   <View

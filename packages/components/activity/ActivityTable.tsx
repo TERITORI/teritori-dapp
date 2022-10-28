@@ -13,7 +13,7 @@ import {
   neutral77,
 } from "../../utils/style/colors";
 import { fontMedium14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { Pagination } from "../Pagination";
@@ -61,7 +61,13 @@ export const ActivityTable: React.FC<{
   });
   const maxPage = Math.max(Math.ceil(total / itemsPerPage), 1);
   return (
-    <View style={{ justifyContent: "space-between" }}>
+    <View
+      style={{
+        justifyContent: "space-between",
+        width: "100%",
+        maxWidth: screenContentMaxWidth,
+      }}
+    >
       <TableRow headings={Object.values(TABLE_ROWS)} />
       <FlatList
         data={activities}

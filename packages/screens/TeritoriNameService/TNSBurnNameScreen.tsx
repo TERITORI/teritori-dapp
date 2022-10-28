@@ -25,8 +25,8 @@ import { TNSModalCommonProps } from "./TNSHomeScreen";
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
 
 export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
-  onClose,
-}) => {
+                                                                      onClose,
+                                                                    }) => {
   const { name } = useTNS();
   const { setToastError, setToastSuccess, setLoadingFullScreen } =
     useFeedbacks();

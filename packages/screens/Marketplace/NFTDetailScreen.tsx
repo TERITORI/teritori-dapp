@@ -192,6 +192,7 @@ const Content: React.FC<{
     return (
       <View style={{ flex: 1 }}>
         <ScrollView
+          style={{ width: "100%" }}
           stickyHeaderIndices={[0]}
           contentContainerStyle={{
             width: "100%",
@@ -247,6 +248,7 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
 
   return (
     <ScreenContainer
+      fullWidth
       noScroll
       noMargin
       headerChildren={

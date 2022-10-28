@@ -43,8 +43,8 @@ const NotOwnerActions: React.FC = () => {
 };
 
 const OwnerActions = ({
-  onClose,
-}: {
+                        onClose,
+                      }: {
   onClose: TNSModalCommonProps["onClose"];
 }) => {
   const { name, setName } = useTNS();
@@ -111,9 +111,9 @@ const OwnerActions = ({
 
 interface TNSConsultNameProps extends TNSModalCommonProps {}
 export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
-  onClose,
-  navigateBackTo,
-}) => {
+                                                                      onClose,
+                                                                      navigateBackTo,
+                                                                    }) => {
   const { name } = useTNS();
 
   const { setLoadingFullScreen } = useFeedbacks();

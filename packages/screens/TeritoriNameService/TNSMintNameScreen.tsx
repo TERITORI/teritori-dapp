@@ -73,9 +73,9 @@ interface TNSMintNameScreenProps extends TNSModalCommonProps {}
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
-  onClose,
-  navigateBackTo,
-}) => {
+                                                                      onClose,
+                                                                      navigateBackTo,
+                                                                    }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const [isSuccessModal, setSuccessModal] = useState(false);

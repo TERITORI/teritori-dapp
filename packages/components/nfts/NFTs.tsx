@@ -3,7 +3,7 @@ import { FlatList, View, ViewStyle } from "react-native";
 
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
 import { useNFTs } from "../../hooks/useNFTs";
-import { layout } from "../../utils/style/layout";
+import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
 import { NFTView } from "./NFTView";
 
@@ -37,23 +37,38 @@ export const NFTs: React.FC<{
   const viewStyle: ViewStyle = {
     height: "100%",
     alignItems: "center",
+    width: "100%",
     flex: 1,
   };
   return (
     <View style={viewStyle}>
       <FlatList
+        style={{ width: "100%" }}
+        contentContainerStyle={{
+          maxWidth: screenContentMaxWidthLarge,
+          alignSelf: "center",
+        }}
         key={numColumns}
         data={nfts}
         numColumns={numColumns}
         onEndReached={handleEndReached}
         keyExtractor={keyExtractor}
         onEndReachedThreshold={4}
-        renderItem={(info) => (
-          <RenderItem
-            nft={info.item}
-            marginable={!!((info.index + 1) % numColumns)}
-          />
-        )}
+        renderItem={(info) => {
+          console.log(
+            "!!((info.index + 1) % numColumns)",
+            !!((info.index + 1) % numColumns)
+          );
+          console.log("info.indexinfo.indexinfo.index", info.index);
+          console.log("numColumnsnumColumnsnumColumnsnumColumns", numColumns);
+          // info.index + 1
+          return (
+            <RenderItem
+              nft={info.item}
+              marginable={!!((info.index + 1) % numColumns)}
+            />
+          );
+        }}
         ItemSeparatorComponent={() => <SpacerColumn size={2} />}
         ListHeaderComponent={ListHeaderComponent}
         ListFooterComponent={ListFooterComponent}

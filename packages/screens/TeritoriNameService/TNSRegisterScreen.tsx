@@ -18,8 +18,8 @@ interface TNSRegisterScreenProps {
 }
 
 export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
-  onClose,
-}) => {
+                                                                      onClose,
+                                                                    }) => {
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
   const { name, setName } = useTNS();

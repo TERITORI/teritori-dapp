@@ -18,6 +18,7 @@ import { ActivityTable } from "../../components/activity/ActivityTable";
 import { PrimaryBox } from "../../components/boxes/PrimaryBox";
 import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSecondary";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
+import { Footer } from "../../components/footers/Footer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { BackTo } from "../../components/navigation/BackTo";
 import { NFTs } from "../../components/nfts/NFTs";
@@ -76,9 +77,7 @@ const Content: React.FC<{
           key={selectedTab}
           req={nftsRequest}
           numColumns={numColumns}
-          ListFooterComponent={
-            <View style={{ height: layout.contentPadding }} />
-          }
+          ListFooterComponent={<Footer />}
         />
       );
     case "activity":
@@ -331,11 +330,15 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // returns
   return (
     <ScreenContainer
+      fullWidth
       noMargin
-      headerChildren={<BackTo label="Collection Profile" />}
       noScroll
+      headerChildren={<BackTo label="Collection Profile" />}
     >
-      <ScrollView>
+      <ScrollView
+        style={{ width: "100%" }}
+        contentContainerStyle={{ alignItems: "center" }}
+      >
         <Header
           collectionId={id}
           collectionInfo={info}

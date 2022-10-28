@@ -14,7 +14,7 @@ import {
   fontSemibold14,
   fontSemibold28,
 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { ActivityTable } from "../activity/ActivityTable";
@@ -128,6 +128,7 @@ export const NFTMainInfo: React.FC<{
   };
 
   return (
+    <>
     <View
       style={{
         flexDirection: "row",
@@ -150,22 +151,20 @@ export const NFTMainInfo: React.FC<{
         />
       </TertiaryBox>
       {/*---- Info NFT */}
-      <View style={{ maxWidth: width }}>
+      <View style={{ maxWidth: 600 }}>
         <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
           {nftInfo?.name}
         </BrandText>
 
-        <CollectionInfoInline
-          imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
-          name={nftInfo?.collectionName}
-        />
+          <CollectionInfoInline
+            imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
+            name={nftInfo?.collectionName}
+          />
 
         {nftInfo?.canSell && (
           <NFTSellCard
             style={{ marginTop: 24, marginBottom: 40 }}
             onPressSell={sell}
-            networkId={process.env.TERITORI_NETWORK_ID || ""}
-            denom={nftInfo.mintDenom}
           />
         )}
         {nftInfo?.isListed && !nftInfo?.isOwner && (
@@ -199,6 +198,8 @@ export const NFTMainInfo: React.FC<{
         {/*TODO: About  = Big text*/}
         <SelectedTabItemRendering />
       </View>
+      </View>
+
       <Target style={styles.collapsableContainer} name="price-history">
         <CollapsablePiceHistory nftId={nftId} />
       </Target>
@@ -239,7 +240,7 @@ export const NFTMainInfo: React.FC<{
           </BrandText>
         }
       />
-    </View>
+    </>
   );
 };
 
@@ -250,6 +251,7 @@ const styles = StyleSheet.create({
   },
   collapsableContainer: {
     width: "100%",
+    maxWidth: screenContentMaxWidth,
     marginBottom: layout.padding_x2,
   },
 });
