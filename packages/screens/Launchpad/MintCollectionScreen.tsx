@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   Image,
   StyleProp,
+  TextStyle,
   View,
   ViewStyle,
 } from "react-native";
@@ -24,7 +25,9 @@ import {
 } from "../../context/FeedbacksProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getNetwork } from "../../networks";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
@@ -42,9 +45,27 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdrawModal";
 
 const maxImageSize = 532;
 const cardsHalfGap = 6;
+
+const countDownTxtStyleStarts: StyleProp<TextStyle> = {
+  fontSize: 16,
+  letterSpacing: 0,
+  lineHeight: 20,
+  fontFamily: "Exo_600SemiBold",
+  fontWeight: "600",
+  color: pinkDefault,
+};
+const countDownTxtStyleProgress: StyleProp<TextStyle> = {
+  fontSize: 16,
+  letterSpacing: 0,
+  lineHeight: 20,
+  fontFamily: "Exo_600SemiBold",
+  fontWeight: "600",
+  color: primaryColor,
+};
 
 export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   route: {
@@ -54,6 +75,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
+  const [isDepositVisible, setDepositVisible] = useState(false);
+  const selectedNetwork = useSelectedNetworkId();
   const { info, notFound, loading } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const { navigate } = useAppNavigation();
@@ -114,6 +137,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       });
     }
   }, [wallet?.address, mintAddress, info.unitPrice, info.hasPresale]);
+
+  const network = getNetwork(selectedNetwork);
+  if (!network) {
+    return null;
+  }
 
   if (notFound) {
     return (
@@ -218,7 +246,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   width={160}
                   disabled={mintButtonDisabled}
                   loader
-                  // onPress={deposit}
+                  onPress={() => setDepositVisible(true)}
                 />
               </View>
 
@@ -283,6 +311,16 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
           </View>
         </View>
 
+        <DepositWithdrawModal
+          variation="deposit"
+          networkId={selectedNetwork}
+          targetCurrency={
+            network.currencies.find((c) => c.kind === "ibc")?.denom
+          }
+          onClose={() => setDepositVisible(false)}
+          isVisible={isDepositVisible}
+        />
+
         {minted && <ConfettiCannon count={200} origin={{ x: -200, y: 0 }} />}
       </ScreenContainer>
     );
@@ -338,8 +376,8 @@ const PresaleActivy: React.FC<{
               onFinish={() => console.log("Presale started")}
               size={8}
               style={{ marginLeft: layout.padding_x1 }}
-              digitTxtStyle={[fontSemibold16, { color: pinkDefault }]}
-              separatorStyle={[fontSemibold16, { color: pinkDefault }]}
+              digitTxtStyle={countDownTxtStyleStarts}
+              separatorStyle={countDownTxtStyleStarts}
               digitStyle={{ backgroundColor: "none" }}
               showSeparator
               timeLabels={{ d: "", h: "", m: "", s: "" }}
@@ -353,8 +391,8 @@ const PresaleActivy: React.FC<{
               onFinish={() => console.log("Presale ended")}
               size={8}
               style={{ marginLeft: layout.padding_x1 }}
-              digitTxtStyle={[fontSemibold16, { color: primaryColor }]}
-              separatorStyle={[fontSemibold16, { color: primaryColor }]}
+              digitTxtStyle={countDownTxtStyleProgress}
+              separatorStyle={countDownTxtStyleProgress}
               digitStyle={{ backgroundColor: "none" }}
               showSeparator
               timeLabels={{ d: "", h: "", m: "", s: "" }}
@@ -450,8 +488,8 @@ const PublicSaleActivity: React.FC<{
             onFinish={() => console.log("Public mint started")}
             size={8}
             style={{ marginLeft: layout.padding_x1 }}
-            digitTxtStyle={[fontSemibold16, { color: pinkDefault }]}
-            separatorStyle={[fontSemibold16, { color: pinkDefault }]}
+            digitTxtStyle={countDownTxtStyleStarts}
+            separatorStyle={countDownTxtStyleStarts}
             digitStyle={{ backgroundColor: "none" }}
             showSeparator
             timeLabels={{ d: "", h: "", m: "", s: "" }}
@@ -465,8 +503,8 @@ const PublicSaleActivity: React.FC<{
             onFinish={() => console.log("Presale ended")}
             size={8}
             style={{ marginLeft: layout.padding_x1 }}
-            digitTxtStyle={[fontSemibold16, { color: primaryColor }]}
-            separatorStyle={[fontSemibold16, { color: primaryColor }]}
+            digitTxtStyle={countDownTxtStyleProgress}
+            separatorStyle={countDownTxtStyleProgress}
             digitStyle={{ backgroundColor: "none" }}
             showSeparator
             timeLabels={{ d: "", h: "", m: "", s: "" }}

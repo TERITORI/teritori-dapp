@@ -185,6 +185,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
           size="M"
           text={capitalize(variation)}
           fullWidth
+          disabled={max === "0"}
           loader
           onPress={handleSubmit(async (formValues) => {
             try {
