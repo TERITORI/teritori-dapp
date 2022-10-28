@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MarketplaceServiceClient interface {
 	Collections(ctx context.Context, in *CollectionsRequest, opts ...grpc.CallOption) (MarketplaceService_CollectionsClient, error)
+	CollectionStats(ctx context.Context, in *CollectionStatsRequest, opts ...grpc.CallOption) (*CollectionStatsResponse, error)
 	NFTs(ctx context.Context, in *NFTsRequest, opts ...grpc.CallOption) (MarketplaceService_NFTsClient, error)
 	Quests(ctx context.Context, in *QuestsRequest, opts ...grpc.CallOption) (MarketplaceService_QuestsClient, error)
 	Activity(ctx context.Context, in *ActivityRequest, opts ...grpc.CallOption) (MarketplaceService_ActivityClient, error)
@@ -67,6 +68,15 @@ func (x *marketplaceServiceCollectionsClient) Recv() (*CollectionsResponse, erro
 		return nil, err
 	}
 	return m, nil
+}
+
+func (c *marketplaceServiceClient) CollectionStats(ctx context.Context, in *CollectionStatsRequest, opts ...grpc.CallOption) (*CollectionStatsResponse, error) {
+	out := new(CollectionStatsResponse)
+	err := c.cc.Invoke(ctx, "/marketplace.v1.MarketplaceService/CollectionStats", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *marketplaceServiceClient) NFTs(ctx context.Context, in *NFTsRequest, opts ...grpc.CallOption) (MarketplaceService_NFTsClient, error) {
@@ -179,6 +189,7 @@ func (c *marketplaceServiceClient) NFTPriceHistory(ctx context.Context, in *NFTP
 // for forward compatibility
 type MarketplaceServiceServer interface {
 	Collections(*CollectionsRequest, MarketplaceService_CollectionsServer) error
+	CollectionStats(context.Context, *CollectionStatsRequest) (*CollectionStatsResponse, error)
 	NFTs(*NFTsRequest, MarketplaceService_NFTsServer) error
 	Quests(*QuestsRequest, MarketplaceService_QuestsServer) error
 	Activity(*ActivityRequest, MarketplaceService_ActivityServer) error
@@ -192,6 +203,9 @@ type UnimplementedMarketplaceServiceServer struct {
 
 func (UnimplementedMarketplaceServiceServer) Collections(*CollectionsRequest, MarketplaceService_CollectionsServer) error {
 	return status.Errorf(codes.Unimplemented, "method Collections not implemented")
+}
+func (UnimplementedMarketplaceServiceServer) CollectionStats(context.Context, *CollectionStatsRequest) (*CollectionStatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollectionStats not implemented")
 }
 func (UnimplementedMarketplaceServiceServer) NFTs(*NFTsRequest, MarketplaceService_NFTsServer) error {
 	return status.Errorf(codes.Unimplemented, "method NFTs not implemented")
@@ -237,6 +251,24 @@ type marketplaceServiceCollectionsServer struct {
 
 func (x *marketplaceServiceCollectionsServer) Send(m *CollectionsResponse) error {
 	return x.ServerStream.SendMsg(m)
+}
+
+func _MarketplaceService_CollectionStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CollectionStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketplaceServiceServer).CollectionStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/marketplace.v1.MarketplaceService/CollectionStats",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketplaceServiceServer).CollectionStats(ctx, req.(*CollectionStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _MarketplaceService_NFTs_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -327,6 +359,10 @@ var MarketplaceService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "marketplace.v1.MarketplaceService",
 	HandlerType: (*MarketplaceServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CollectionStats",
+			Handler:    _MarketplaceService_CollectionStats_Handler,
+		},
 		{
 			MethodName: "NFTPriceHistory",
 			Handler:    _MarketplaceService_NFTPriceHistory_Handler,

@@ -5,6 +5,7 @@ option go_package = "./marketplacepb";
 
 service MarketplaceService {
   rpc Collections(CollectionsRequest) returns (stream CollectionsResponse);
+  rpc CollectionStats(CollectionStatsRequest) returns ( CollectionStatsResponse);
   rpc NFTs(NFTsRequest) returns (stream NFTsResponse);
   rpc Quests(QuestsRequest) returns (stream QuestsResponse);
   rpc Activity(ActivityRequest) returns (stream ActivityResponse);
@@ -42,6 +43,15 @@ message Collection {
   Network network = 7;
   string volume = 8;
   string volume_denom = 9;
+}
+
+message CollectionStats {
+  string floor_price = 1;
+  string total_volume = 2;
+  int32 owners = 3;
+  int32 listed = 4;
+  int64 total_supply = 5;
+  int32 owned = 6;
 }
 
 message Activity {
@@ -82,6 +92,15 @@ message CollectionsRequest {
   Kind kind = 1;
   int32 limit = 2;
   int32 offset = 3;
+}
+
+message CollectionStatsRequest {
+  string collection_id = 1;
+  string owner_id = 2;
+}
+
+message CollectionStatsResponse {
+  CollectionStats stats = 1;
 }
 
 message CollectionsResponse {

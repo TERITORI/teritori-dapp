@@ -15,6 +15,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/bxcodec/faker/v3"
 	"github.com/pkg/errors"
+	"github.com/volatiletech/sqlboiler/v4/queries"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -37,7 +38,7 @@ type Config struct {
 	TNSDefaultImageURL string
 }
 
-func NewMarketplaceService(ctx context.Context, conf *Config) *MarkteplaceService {
+func NewMarketplaceService(ctx context.Context, conf *Config) marketplacepb.MarketplaceServiceServer {
 	// FIXME: validate config
 	return &MarkteplaceService{
 		conf:                                conf,
@@ -448,4 +449,43 @@ func (s *MarkteplaceService) Quests(req *marketplacepb.QuestsRequest, srv market
 		}
 	}
 	return nil
+}
+
+func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketplacepb.CollectionStatsRequest) (*marketplacepb.CollectionStatsResponse, error) {
+	collectionID := req.GetCollectionId()
+	if collectionID == "" {
+		return nil, errors.New("empty collectionID")
+	}
+	ownerID := req.GetOwnerId()
+	db, err := s.conf.IndexerDB.DB()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed get DB instance")
+	}
+	var stats marketplacepb.CollectionStats
+	err = queries.Raw(`with 
+	nfts_in_collection as (
+		SELECT  *  FROM nfts n where n.collection_id = $1
+	),
+	listed_nfts as (
+		SELECT  * from nfts_in_collection nic where is_listed = true
+	),
+	trades_in_collection as (
+		select COALESCE(sum(CAST(t.price as decimal)),0) total_volume FROM trades AS t
+		INNER join activities AS a on a.id = t.activity_id 
+		INNER join nfts_in_collection nic on nic.id = a.nft_id
+	)
+	select 
+		min(price_amount) floor_price, 
+		(select total_volume from trades_in_collection),
+		(select count(distinct owner_id)  from nfts_in_collection) owners,
+		(select count(1) from listed_nfts) listed,
+		count(1) total_supply,
+		(select count(1) from nfts_in_collection where owner_id = $2) owned
+	from nfts_in_collection`, collectionID, ownerID).Bind(ctx, db, &stats)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to make query")
+	}
+	return &marketplacepb.CollectionStatsResponse{
+		Stats: &stats,
+	}, nil
 }

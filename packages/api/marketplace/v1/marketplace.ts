@@ -79,6 +79,15 @@ export interface Collection {
   volumeDenom: string;
 }
 
+export interface CollectionStats {
+  floorPrice: string;
+  totalVolume: string;
+  owners: number;
+  listed: number;
+  totalSupply: number;
+  owned: number;
+}
+
 export interface Activity {
   id: string;
   transactionKind: string;
@@ -165,6 +174,15 @@ export function collectionsRequest_KindToJSON(object: CollectionsRequest_Kind): 
     default:
       return "UNRECOGNIZED";
   }
+}
+
+export interface CollectionStatsRequest {
+  collectionId: string;
+  ownerId: string;
+}
+
+export interface CollectionStatsResponse {
+  stats: CollectionStats | undefined;
 }
 
 export interface CollectionsResponse {
@@ -490,6 +508,100 @@ export const Collection = {
     message.network = object.network ?? 0;
     message.volume = object.volume ?? "";
     message.volumeDenom = object.volumeDenom ?? "";
+    return message;
+  },
+};
+
+function createBaseCollectionStats(): CollectionStats {
+  return { floorPrice: "", totalVolume: "", owners: 0, listed: 0, totalSupply: 0, owned: 0 };
+}
+
+export const CollectionStats = {
+  encode(message: CollectionStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.floorPrice !== "") {
+      writer.uint32(10).string(message.floorPrice);
+    }
+    if (message.totalVolume !== "") {
+      writer.uint32(18).string(message.totalVolume);
+    }
+    if (message.owners !== 0) {
+      writer.uint32(24).int32(message.owners);
+    }
+    if (message.listed !== 0) {
+      writer.uint32(32).int32(message.listed);
+    }
+    if (message.totalSupply !== 0) {
+      writer.uint32(40).int64(message.totalSupply);
+    }
+    if (message.owned !== 0) {
+      writer.uint32(48).int32(message.owned);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionStats {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollectionStats();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.floorPrice = reader.string();
+          break;
+        case 2:
+          message.totalVolume = reader.string();
+          break;
+        case 3:
+          message.owners = reader.int32();
+          break;
+        case 4:
+          message.listed = reader.int32();
+          break;
+        case 5:
+          message.totalSupply = longToNumber(reader.int64() as Long);
+          break;
+        case 6:
+          message.owned = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CollectionStats {
+    return {
+      floorPrice: isSet(object.floorPrice) ? String(object.floorPrice) : "",
+      totalVolume: isSet(object.totalVolume) ? String(object.totalVolume) : "",
+      owners: isSet(object.owners) ? Number(object.owners) : 0,
+      listed: isSet(object.listed) ? Number(object.listed) : 0,
+      totalSupply: isSet(object.totalSupply) ? Number(object.totalSupply) : 0,
+      owned: isSet(object.owned) ? Number(object.owned) : 0,
+    };
+  },
+
+  toJSON(message: CollectionStats): unknown {
+    const obj: any = {};
+    message.floorPrice !== undefined && (obj.floorPrice = message.floorPrice);
+    message.totalVolume !== undefined && (obj.totalVolume = message.totalVolume);
+    message.owners !== undefined && (obj.owners = Math.round(message.owners));
+    message.listed !== undefined && (obj.listed = Math.round(message.listed));
+    message.totalSupply !== undefined && (obj.totalSupply = Math.round(message.totalSupply));
+    message.owned !== undefined && (obj.owned = Math.round(message.owned));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<CollectionStats>, I>>(object: I): CollectionStats {
+    const message = createBaseCollectionStats();
+    message.floorPrice = object.floorPrice ?? "";
+    message.totalVolume = object.totalVolume ?? "";
+    message.owners = object.owners ?? 0;
+    message.listed = object.listed ?? 0;
+    message.totalSupply = object.totalSupply ?? 0;
+    message.owned = object.owned ?? 0;
     return message;
   },
 };
@@ -833,6 +945,113 @@ export const CollectionsRequest = {
     message.kind = object.kind ?? 0;
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
+    return message;
+  },
+};
+
+function createBaseCollectionStatsRequest(): CollectionStatsRequest {
+  return { collectionId: "", ownerId: "" };
+}
+
+export const CollectionStatsRequest = {
+  encode(message: CollectionStatsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.collectionId !== "") {
+      writer.uint32(10).string(message.collectionId);
+    }
+    if (message.ownerId !== "") {
+      writer.uint32(18).string(message.ownerId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionStatsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollectionStatsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collectionId = reader.string();
+          break;
+        case 2:
+          message.ownerId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CollectionStatsRequest {
+    return {
+      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+    };
+  },
+
+  toJSON(message: CollectionStatsRequest): unknown {
+    const obj: any = {};
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<CollectionStatsRequest>, I>>(object: I): CollectionStatsRequest {
+    const message = createBaseCollectionStatsRequest();
+    message.collectionId = object.collectionId ?? "";
+    message.ownerId = object.ownerId ?? "";
+    return message;
+  },
+};
+
+function createBaseCollectionStatsResponse(): CollectionStatsResponse {
+  return { stats: undefined };
+}
+
+export const CollectionStatsResponse = {
+  encode(message: CollectionStatsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.stats !== undefined) {
+      CollectionStats.encode(message.stats, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionStatsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollectionStatsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.stats = CollectionStats.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CollectionStatsResponse {
+    return { stats: isSet(object.stats) ? CollectionStats.fromJSON(object.stats) : undefined };
+  },
+
+  toJSON(message: CollectionStatsResponse): unknown {
+    const obj: any = {};
+    message.stats !== undefined && (obj.stats = message.stats ? CollectionStats.toJSON(message.stats) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<CollectionStatsResponse>, I>>(object: I): CollectionStatsResponse {
+    const message = createBaseCollectionStatsResponse();
+    message.stats = (object.stats !== undefined && object.stats !== null)
+      ? CollectionStats.fromPartial(object.stats)
+      : undefined;
     return message;
   },
 };
@@ -1360,6 +1579,10 @@ export const NFTPriceHistoryResponse = {
 
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
+  CollectionStats(
+    request: DeepPartial<CollectionStatsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<CollectionStatsResponse>;
   NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse>;
   Quests(request: DeepPartial<QuestsRequest>, metadata?: grpc.Metadata): Observable<QuestsResponse>;
   Activity(request: DeepPartial<ActivityRequest>, metadata?: grpc.Metadata): Observable<ActivityResponse>;
@@ -1375,6 +1598,7 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Collections = this.Collections.bind(this);
+    this.CollectionStats = this.CollectionStats.bind(this);
     this.NFTs = this.NFTs.bind(this);
     this.Quests = this.Quests.bind(this);
     this.Activity = this.Activity.bind(this);
@@ -1383,6 +1607,13 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
 
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse> {
     return this.rpc.invoke(MarketplaceServiceCollectionsDesc, CollectionsRequest.fromPartial(request), metadata);
+  }
+
+  CollectionStats(
+    request: DeepPartial<CollectionStatsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<CollectionStatsResponse> {
+    return this.rpc.unary(MarketplaceServiceCollectionStatsDesc, CollectionStatsRequest.fromPartial(request), metadata);
   }
 
   NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse> {
@@ -1421,6 +1652,28 @@ export const MarketplaceServiceCollectionsDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...CollectionsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceCollectionStatsDesc: UnaryMethodDefinitionish = {
+  methodName: "CollectionStats",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return CollectionStatsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...CollectionStatsResponse.decode(data),
         toObject() {
           return this;
         },
