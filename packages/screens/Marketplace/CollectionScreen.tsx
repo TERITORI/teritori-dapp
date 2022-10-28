@@ -24,8 +24,10 @@ import {
   CollectionInfo,
   useCollectionInfo,
 } from "../../hooks/useCollectionInfo";
+import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { alignDown } from "../../utils/align";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
@@ -33,160 +35,38 @@ import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { CollectionStat } from "./components/CollectionStat";
 
-const collectionScreenTabItems = {
-  allNFTs: {
-    name: "All NFTs",
-    badgeCount: 5760,
-  },
-  owned: {
-    name: "Owned",
-    badgeCount: 87,
-  },
-  activity: {
-    name: "Activity",
-  },
-};
-
 const nftWidth = 268; // FIXME: ssot
 
-// All the screen content before the Flatlist used to display NFTs
-const Header: React.FC<{
-  collectionInfo: CollectionInfo;
-  selectedTab: keyof typeof collectionScreenTabItems;
-  onSelectTab: (tab: keyof typeof collectionScreenTabItems) => void;
-}> = ({ collectionInfo = {}, selectedTab, onSelectTab }) => {
-  // variables
-  const { width: maxWidth } = useMaxResolution();
-  const { width, height } = useImageResizer({
-    image: collectionInfo.bannerImage || bannerCollection,
-    maxSize: { width: maxWidth },
-  });
-  const { setToastSuccess } = useFeedbacks();
-
-  // functions
-  const onShare = () => {
-    let currentUrl;
-    if (Platform.OS === "web") {
-      currentUrl = window.location.href;
-    }
-
-    try {
-      Clipboard.setString(currentUrl || "");
-      setToastSuccess({
-        title: "URL Copied!",
-        message: "",
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // returns
-  return (
-    <View style={{ maxWidth: width, alignSelf: "center" }}>
-      <Image
-        source={
-          collectionInfo?.bannerImage
-            ? { uri: collectionInfo.bannerImage }
-            : bannerCollection
-        }
-        style={{
-          height,
-          width,
-          marginBottom: layout.contentPadding,
-        }}
-      />
-
-      <View
-        style={{
-          flexDirection: "row",
-          width: "100%",
-          marginBottom: 24,
-        }}
-      >
-        <RoundedGradientImage
-          imageSource={{ uri: collectionInfo.image }}
-          style={{ marginRight: 24 }}
-        />
-        <View style={{ flex: 1 }}>
-          <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
-          <View style={styles.statRow}>
-            <CollectionStat label="Floor" value="7.48" addLogo />
-            <SpacerRow size={1.5} />
-            <CollectionStat label="Total Volume" value="51803.25" addLogo />
-            <SpacerRow size={1.5} />
-            <CollectionStat label="Owners" value="2,583" />
-            <SpacerRow size={1.5} />
-            <CollectionStat label="Listed" value="850" />
-            <SpacerRow size={1.5} />
-            <CollectionStat label="Avg Sale (24hr)" value="17.20" addLogo />
-            <SpacerRow size={1.5} />
-            <CollectionStat label="Total Supply" value="7.5K" addLogo />
-          </View>
-          <View style={styles.statRow}>
-            <CollectionSocialButtons collectionInfo={collectionInfo} />
-            {collectionInfo.discord ||
-            collectionInfo.twitter ||
-            collectionInfo.website ? (
-              <View
-                style={{
-                  height: 24,
-                  width: 1,
-                  backgroundColor: neutral33,
-                  marginRight: 12,
-                }}
-              />
-            ) : null}
-            <SocialButtonSecondary
-              text="Contract Address"
-              iconSvg={etherscanSVG}
-              style={{ marginRight: 12 }}
-            />
-            <SocialButtonSecondary
-              text="Share"
-              iconSvg={shareSVG}
-              onPress={onShare}
-            />
-          </View>
-        </View>
-      </View>
-
-      <PrimaryBox
-        mainContainerStyle={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingRight: 8,
-          paddingLeft: 20,
-        }}
-        fullWidth
-        height={64}
-        style={{ marginBottom: 24 }}
-      >
-        <Tabs
-          items={collectionScreenTabItems}
-          onSelect={onSelectTab}
-          selected={selectedTab}
-          style={{
-            width: "fit-content",
-            height: "100%",
-            borderBottomWidth: 0,
-          }}
-        />
-        <SortButton />
-      </PrimaryBox>
-    </View>
-  );
-};
-
 const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
-  const [selectedTab, setSelectedTab] =
-    useState<keyof typeof collectionScreenTabItems>("allNFTs");
-
   const {
     info,
     // notFound,
     loading: loadingCollectionInfo,
   } = useCollectionInfo(id);
+
+  const wallet = useSelectedWallet();
+
+  const stats = useCollectionStats(
+    id,
+    wallet ? `tori-${wallet.address}` : undefined
+  );
+
+  const collectionScreenTabItems = {
+    allNFTs: {
+      name: "All NFTs",
+      badgeCount: stats?.totalSupply || 0,
+    },
+    owned: {
+      name: "Owned",
+      badgeCount: stats?.owned || 0,
+    },
+    activity: {
+      name: "Activity",
+    },
+  };
+
+  const [selectedTab, setSelectedTab] =
+    useState<keyof typeof collectionScreenTabItems>("allNFTs");
 
   const { setLoadingFullScreen } = useFeedbacks();
 
@@ -195,7 +75,10 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
 
   const nftsRequest: NFTsRequest = {
     collectionId: id,
-    ownerId: "",
+    ownerId:
+      selectedTab === "owned" && wallet?.address
+        ? `tori-${wallet.address}`
+        : "",
     limit: alignDown(20, numColumns) || numColumns,
     offset: 0,
   };
@@ -204,14 +87,168 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
     setLoadingFullScreen(loadingCollectionInfo);
   }, [loadingCollectionInfo]);
 
+  // All the screen content before the Flatlist used to display NFTs
+  const Header: React.FC<{
+    collectionId: string;
+    collectionInfo: CollectionInfo;
+    selectedTab: keyof typeof collectionScreenTabItems;
+    onSelectTab: (tab: keyof typeof collectionScreenTabItems) => void;
+  }> = ({ collectionInfo = {}, selectedTab, onSelectTab, collectionId }) => {
+    const wallet = useSelectedWallet();
+    // variables
+    const stats = useCollectionStats(
+      collectionId,
+      wallet ? `tori-${wallet.address}` : undefined
+    );
+    const { width: maxWidth } = useMaxResolution();
+    const { width, height } = useImageResizer({
+      image: collectionInfo.bannerImage || bannerCollection,
+      maxSize: { width: maxWidth },
+    });
+    const { setToastSuccess } = useFeedbacks();
+
+    // functions
+    const onShare = () => {
+      let currentUrl;
+      if (Platform.OS === "web") {
+        currentUrl = window.location.href;
+      }
+
+      try {
+        Clipboard.setString(currentUrl || "");
+        setToastSuccess({
+          title: "URL Copied!",
+          message: "",
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    // returns
+    return (
+      <View style={{ maxWidth: width, alignSelf: "center" }}>
+        <Image
+          source={
+            collectionInfo?.bannerImage
+              ? { uri: collectionInfo.bannerImage }
+              : bannerCollection
+          }
+          style={{
+            height,
+            width,
+            marginBottom: layout.contentPadding,
+          }}
+        />
+
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            marginBottom: 24,
+          }}
+        >
+          <RoundedGradientImage
+            imageSource={{ uri: collectionInfo.image }}
+            style={{ marginRight: 24 }}
+          />
+          <View style={{ flex: 1 }}>
+            <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
+            <View style={styles.statRow}>
+              <CollectionStat
+                label="Floor"
+                value={(stats?.floorPrice || 0).toString()}
+                addLogo
+              />
+              <SpacerRow size={1.5} />
+              <CollectionStat
+                label="Total Volume"
+                value={stats?.totalVolume || "0"}
+                addLogo
+              />
+              <SpacerRow size={1.5} />
+              <CollectionStat
+                label="Owners"
+                value={(stats?.owners || 0).toString()}
+              />
+              <SpacerRow size={1.5} />
+              <CollectionStat
+                label="Listed"
+                value={(stats?.listed || 0).toString()}
+              />
+              <SpacerRow size={1.5} />
+              <CollectionStat
+                label="Total Supply"
+                value={(stats?.totalSupply || 0).toString()}
+                addLogo
+              />
+            </View>
+            <View style={styles.statRow}>
+              <CollectionSocialButtons collectionInfo={collectionInfo} />
+              {collectionInfo.discord ||
+              collectionInfo.twitter ||
+              collectionInfo.website ? (
+                <View
+                  style={{
+                    height: 24,
+                    width: 1,
+                    backgroundColor: neutral33,
+                    marginRight: 12,
+                  }}
+                />
+              ) : null}
+              <SocialButtonSecondary
+                text="Contract Address"
+                iconSvg={etherscanSVG}
+                style={{ marginRight: 12 }}
+              />
+              <SocialButtonSecondary
+                text="Share"
+                iconSvg={shareSVG}
+                onPress={onShare}
+              />
+            </View>
+          </View>
+        </View>
+
+        <PrimaryBox
+          mainContainerStyle={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingRight: 8,
+            paddingLeft: 20,
+          }}
+          fullWidth
+          height={64}
+          style={{ marginBottom: 24 }}
+        >
+          <Tabs
+            items={collectionScreenTabItems}
+            onSelect={onSelectTab}
+            selected={selectedTab}
+            style={{
+              width: "fit-content",
+              height: "100%",
+              borderBottomWidth: 0,
+            }}
+          />
+          <SortButton />
+        </PrimaryBox>
+      </View>
+    );
+  };
+
   switch (selectedTab) {
     case "allNFTs":
+    case "owned":
       return (
         <NFTs
+          key={selectedTab}
           req={nftsRequest}
           numColumns={numColumns}
           ListHeaderComponent={
             <Header
+              collectionId={id}
               collectionInfo={info}
               selectedTab={selectedTab}
               onSelectTab={setSelectedTab}
@@ -226,6 +263,7 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
       return (
         <ScrollView>
           <Header
+            collectionId={id}
             collectionInfo={info}
             selectedTab={selectedTab}
             onSelectTab={setSelectedTab}
@@ -234,21 +272,6 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
         </ScrollView>
       );
   }
-
-  return (
-    <NFTs
-      req={nftsRequest}
-      numColumns={numColumns}
-      ListHeaderComponent={
-        <Header
-          collectionInfo={info}
-          selectedTab={selectedTab}
-          onSelectTab={setSelectedTab}
-        />
-      }
-      ListFooterComponent={<View style={{ height: layout.contentPadding }} />}
-    />
-  );
 });
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
