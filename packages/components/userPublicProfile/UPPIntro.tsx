@@ -9,6 +9,7 @@ import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
 import userImageFrameSVG from "../../../assets/user-image-frame.svg";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral77, withAlpha } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
@@ -109,7 +110,7 @@ export const UPPIntro: React.FC<{
         >
           {/* User image */}
           <Image
-            source={{ uri: metadata?.image || "" }}
+            source={{ uri: ipfsURLToHTTPURL(metadata?.image || "") }}
             style={{
               borderRadius: 24,
               height: 132,
