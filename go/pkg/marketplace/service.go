@@ -451,6 +451,11 @@ func (s *MarkteplaceService) Quests(req *marketplacepb.QuestsRequest, srv market
 	return nil
 }
 
+type CollectionStats struct {
+	marketplacepb.CollectionStats `boil:",bind"`
+	LowerPrice                    string
+}
+
 func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketplacepb.CollectionStatsRequest) (*marketplacepb.CollectionStatsResponse, error) {
 	collectionID := req.GetCollectionId()
 	if collectionID == "" {
@@ -461,7 +466,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 	if err != nil {
 		return nil, errors.Wrap(err, "failed get DB instance")
 	}
-	var stats marketplacepb.CollectionStats
+	var stats CollectionStats
 	err = queries.Raw(`with 
 	nfts_in_collection as (
 		SELECT  *  FROM nfts n where n.collection_id = $1
@@ -475,7 +480,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		INNER join nfts_in_collection nic on nic.id = a.nft_id
 	)
 	select 
-		min(price_amount) floor_price, 
+		COALESCE(min(price_amount),0) lower_price, 
 		(select total_volume from trades_in_collection),
 		(select count(distinct owner_id)  from nfts_in_collection) owners,
 		(select count(1) from listed_nfts) listed,
@@ -485,7 +490,10 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to make query")
 	}
+	if stats.LowerPrice != "0" {
+		stats.CollectionStats.FloorPrice = stats.LowerPrice
+	}
 	return &marketplacepb.CollectionStatsResponse{
-		Stats: &stats,
+		Stats: &stats.CollectionStats,
 	}, nil
 }
