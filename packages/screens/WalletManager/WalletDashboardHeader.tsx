@@ -10,6 +10,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 
 interface WalletDashboardHeaderProps {
@@ -83,6 +84,7 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
 export const WalletDashboardHeader: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkId();
+  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
   const balances = useBalances(selectedNetwork, selectedWallet?.address);
   const totalUSDBalance = balances.reduce(
     (total, bal) => total + (bal.usdAmount || 0),
@@ -130,7 +132,7 @@ export const WalletDashboardHeader: React.FC = () => {
               fontSize: 20,
             }}
           >
-            Loream ipsum
+            {tnsMetadata.metadata?.public_name || selectedWallet?.address || ""}
           </BrandText>
         </View>
       </View>

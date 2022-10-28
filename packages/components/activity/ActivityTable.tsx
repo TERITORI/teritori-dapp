@@ -4,6 +4,7 @@ import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
 import { useActivity } from "../../hooks/useActivity";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
 import {
   mineShaftColor,
@@ -88,6 +89,8 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
   const txHash = activity.id.split("-")[1];
   const buyerAddress = activity.buyerId && activity.buyerId.split("-")[1];
   const sellerAddress = activity.sellerId && activity.sellerId.split("-")[1];
+  const buyerTNSMetadata = useTNSMetadata(buyerAddress);
+  const sellerTNSMetadata = useTNSMetadata(sellerAddress);
   return (
     <View
       style={{
@@ -160,7 +163,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           ellipsizeMode="middle"
           numberOfLines={1}
         >
-          {buyerAddress}
+          {buyerTNSMetadata.metadata?.public_name || buyerAddress}
         </ExternalLink>
       </View>
       <View
@@ -175,7 +178,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           ellipsizeMode="middle"
           numberOfLines={1}
         >
-          {sellerAddress}
+          {sellerTNSMetadata.metadata?.public_name || sellerAddress}
         </ExternalLink>
       </View>
     </View>
