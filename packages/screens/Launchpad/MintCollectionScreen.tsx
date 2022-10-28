@@ -11,7 +11,6 @@ import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
 
 import { BrandText } from "../../components/BrandText";
-import { EmbeddedWeb } from "../../components/EmbeddedWeb";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -31,6 +30,7 @@ import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
   neutral33,
   neutral77,
+  pinkDefault,
   primaryColor,
   yellowDefault,
 } from "../../utils/style/colors";
@@ -41,7 +41,7 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
 
 const maxImageSize = 532;
 const cardsHalfGap = 6;
@@ -147,14 +147,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 maxWidth: 534,
               }}
             >
-              {/* ===== only for The R!ot collection */}
-              {id === process.env.THE_RIOT_COLLECTION_ADDRESS && (
-                <TertiaryBadge
-                  label="GENESIS LAUNCH"
-                  style={{ marginBottom: 24 }}
-                />
-              )}
-
               <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
 
               <View style={{ marginBottom: 20 }}>
@@ -289,17 +281,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               )}
             </View>
           </View>
-
-          {/* ===== Videos (For The R!ot collection) */}
-          {id === process.env.THE_RIOT_COLLECTION_ADDRESS && (
-            <TertiaryBox style={{ maxWidth: screenContentMaxWidth }} fullWidth>
-              <EmbeddedWeb
-                uri="https://www.youtube.com/embed/videoseries?list=PLRcO8OPsbd7zhj7PDysX2XIh095tazSWM"
-                width={screenContentMaxWidth}
-                height={616}
-              />
-            </TertiaryBox>
-          )}
         </View>
 
         {minted && <ConfettiCannon count={200} origin={{ x: -200, y: 0 }} />}
@@ -334,8 +315,8 @@ const AttributesCard: React.FC<{
 };
 
 const PresaleActivy: React.FC<{
-  running: boolean;
-  started: boolean;
+  running?: boolean;
+  started?: boolean;
   whitelistSize: number;
   maxPerAddress: string;
 }> = ({ started, running, whitelistSize, maxPerAddress }) => {
@@ -350,23 +331,34 @@ const PresaleActivy: React.FC<{
       >
         <TertiaryBadge label="Presale" />
         {!started ? (
-          <BrandText style={[fontSemibold16, { color: primaryColor }]}>
+          <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
             STARTS IN
             <CountDown
               until={3600}
-              onFinish={() => alert("finished")}
-              size={5}
+              onFinish={() => console.log("Presale started")}
+              size={8}
               style={{ marginLeft: layout.padding_x1 }}
-              digitTxtStyle={[fontSemibold16, { color: primaryColor }]}
-              separatorStyle={[fontSemibold16, { color: primaryColor }]}
-              digitStyle={{ background: "none" }}
+              digitTxtStyle={[fontSemibold16, { color: pinkDefault }]}
+              separatorStyle={[fontSemibold16, { color: pinkDefault }]}
+              digitStyle={{ backgroundColor: "none" }}
               showSeparator
-              timeLabels={{ d: null, h: null, m: null, s: null }}
+              timeLabels={{ d: "", h: "", m: "", s: "" }}
             />
           </BrandText>
         ) : running ? (
           <BrandText style={[fontSemibold16, { color: primaryColor }]}>
-            IN PROGRESS
+            IN PROGRESS, ENDS IN
+            <CountDown
+              until={3600}
+              onFinish={() => console.log("Presale ended")}
+              size={8}
+              style={{ marginLeft: layout.padding_x1 }}
+              digitTxtStyle={[fontSemibold16, { color: primaryColor }]}
+              separatorStyle={[fontSemibold16, { color: primaryColor }]}
+              digitStyle={{ backgroundColor: "none" }}
+              showSeparator
+              timeLabels={{ d: "", h: "", m: "", s: "" }}
+            />
           </BrandText>
         ) : (
           <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
@@ -438,8 +430,8 @@ const PresaleActivy: React.FC<{
 };
 
 const PublicSaleActivity: React.FC<{
-  started: boolean;
-  running: boolean;
+  started?: boolean;
+  running?: boolean;
 }> = ({ started, running }) => {
   return (
     <View
@@ -451,23 +443,34 @@ const PublicSaleActivity: React.FC<{
     >
       <TertiaryBadge label="Public Mint" />
       {!started ? (
-        <BrandText style={[fontSemibold16, { color: primaryColor }]}>
+        <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
           STARTS IN
           <CountDown
             until={3600}
-            onFinish={() => alert("finished")}
+            onFinish={() => console.log("Public mint started")}
             size={8}
             style={{ marginLeft: layout.padding_x1 }}
-            digitTxtStyle={[fontSemibold16, { color: primaryColor }]}
-            separatorStyle={[fontSemibold16, { color: primaryColor }]}
-            digitStyle={{ background: "none" }}
+            digitTxtStyle={[fontSemibold16, { color: pinkDefault }]}
+            separatorStyle={[fontSemibold16, { color: pinkDefault }]}
+            digitStyle={{ backgroundColor: "none" }}
             showSeparator
-            timeLabels={{ d: null, h: null, m: null, s: null }}
+            timeLabels={{ d: "", h: "", m: "", s: "" }}
           />
         </BrandText>
       ) : running ? (
         <BrandText style={[fontSemibold16, { color: primaryColor }]}>
-          IN PROGRESS
+          IN PROGRESS, ENDS IN
+          <CountDown
+            until={3600}
+            onFinish={() => console.log("Presale ended")}
+            size={8}
+            style={{ marginLeft: layout.padding_x1 }}
+            digitTxtStyle={[fontSemibold16, { color: primaryColor }]}
+            separatorStyle={[fontSemibold16, { color: primaryColor }]}
+            digitStyle={{ backgroundColor: "none" }}
+            showSeparator
+            timeLabels={{ d: "", h: "", m: "", s: "" }}
+          />
         </BrandText>
       ) : (
         <BrandText style={[fontSemibold16, { color: yellowDefault }]}>

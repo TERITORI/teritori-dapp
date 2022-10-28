@@ -6322,6 +6322,14 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-native-countdown-component@^2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@types/react-native-countdown-component/-/react-native-countdown-component-2.7.0.tgz#04d09923780eef3573fed9aa2ade8b49dda5985a"
+  integrity sha512-xkYhYbMJ42sQ4xrFOLArDrRBxqrvVfTXTArofeF0CEteR3u/tLJImBpj8PBAujCFoDVZmJIry/JhUHXCsWTDgQ==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-native-svg-charts@^5.0.12":
   version "5.0.12"
   resolved "https://registry.yarnpkg.com/@types/react-native-svg-charts/-/react-native-svg-charts-5.0.12.tgz#571c2207383c395047a8ae424dc37284593d96f0"
