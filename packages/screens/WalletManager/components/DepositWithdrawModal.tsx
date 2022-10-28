@@ -66,12 +66,12 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 
   const fromAccount =
     variation === "withdraw"
-      ? selectedWallet?.publicKey
-      : convertCosmosAddress(selectedWallet?.publicKey, sourceNetworkId);
+      ? selectedWallet?.address
+      : convertCosmosAddress(selectedWallet?.address, sourceNetworkId);
   const toAccount =
     variation === "withdraw"
-      ? convertCosmosAddress(selectedWallet?.publicKey, destinationNetworkId)
-      : selectedWallet?.publicKey;
+      ? convertCosmosAddress(selectedWallet?.address, destinationNetworkId)
+      : selectedWallet?.address;
 
   const balances = useBalances(sourceNetworkId, fromAccount);
 

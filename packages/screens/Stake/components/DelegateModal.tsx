@@ -13,11 +13,10 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useSelectedWalletToriBalance } from "../../../hooks/useSelectedWalletToriBalance";
 import { prettyPrice } from "../../../utils/coins";
 import { getKeplrOfflineSigner } from "../../../utils/keplr";
-import { Network } from "../../../utils/network";
 import { neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -47,7 +46,15 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
 }) => {
   const wallet = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { toriBalance, refreshToriBalance } = useSelectedWalletToriBalance();
+  const balances = useBalances(
+    process.env.TERITORI_NETWORK_ID,
+    wallet?.address
+  );
+  const toriBalance = balances.find((bal) => bal.denom === "utori");
+  const toriBalanceDecimal = Decimal.fromAtomics(
+    toriBalance?.amount || "0",
+    toriCurrency.coinDecimals
+  );
 
   // variables
   const { control, setValue, handleSubmit, watch, reset } =
@@ -61,11 +68,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
 
   // functions
   const onSubmit = async (formData: StakeFormValuesType) => {
-    if (
-      wallet?.network !== Network.Teritori ||
-      !wallet.connected ||
-      !wallet.publicKey
-    ) {
+    if (!wallet?.connected || !wallet.address) {
       console.warn("invalid wallet", wallet);
       setToastError({
         title: "Invalid wallet",
@@ -83,7 +86,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     const signer = getKeplrOfflineSigner();
     const client = await getTeritoriSigningStargateClient(signer);
     const txResponse = await client.delegateTokens(
-      wallet.publicKey,
+      wallet.address,
       data.address,
       {
         amount: Decimal.fromUserInput(
@@ -103,7 +106,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       return;
     }
     setToastSuccess({ title: "Delegation success", message: "" });
-    refreshToriBalance();
     onClose && onClose();
   };
 
@@ -179,11 +181,11 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           placeHolder="0"
           currency={toriCurrency}
           defaultValue=""
-          rules={{ required: true, max: toriBalance.toString() }}
+          rules={{ required: true, max: toriBalanceDecimal.toString() }}
         >
           <MaxButton
             onPress={() =>
-              setValue("amount", toriBalance.toString(), {
+              setValue("amount", toriBalanceDecimal.toString(), {
                 shouldValidate: true,
               })
             }
@@ -195,7 +197,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           Available balance:{" "}
           {prettyPrice(
             process.env.TERITORI_NETWORK_ID || "",
-            toriBalance.atomics,
+            toriBalanceDecimal.atomics,
             toriCurrency.coinMinimalDenom
           )}
         </BrandText>

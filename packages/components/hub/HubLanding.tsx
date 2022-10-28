@@ -61,7 +61,9 @@ export const HubLanding: React.FC = () => {
               margin: -gridHalfGutter,
             }}
           >
-            <MyWalletsCard onPress={() => navigation.navigate("Wallets")} />
+            <MyWalletsCard
+              onPress={() => navigation.navigate("WalletManager")}
+            />
             <DAppCard
               onPress={() => navigation.navigate("Staking")}
               label="Staking"

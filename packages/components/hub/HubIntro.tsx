@@ -8,14 +8,13 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
 import { Overview } from "../../screens/WalletManager/components/Overview";
-import { useAppNavigation } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { Quests } from "../Quests";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
-import { PrimaryButton } from "../buttons/PrimaryButton";
+import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
 import { Tabs } from "../tabs/Tabs";
 import { ProfileButton } from "./ProfileButton";
 
@@ -51,7 +50,7 @@ const ConnectedIntro: React.FC = () => {
 
       <Section title="Quests" subtitle="6">
         <FullWidthSeparator />
-        <Quests userId={`tori-${selectedWallet?.publicKey}`} />
+        <Quests userId={`tori-${selectedWallet?.address}`} />
       </Section>
 
       <Section title="Wallets manager">
@@ -71,8 +70,6 @@ const ConnectedIntro: React.FC = () => {
 };
 
 const DisconnectedIntro: React.FC = () => {
-  const navigation = useAppNavigation();
-
   return (
     <View
       style={{
@@ -85,12 +82,7 @@ const DisconnectedIntro: React.FC = () => {
       <BrandText style={{ color: "#00C6FB", fontSize: 16 }}>
         Welcome to Teritori_
       </BrandText>
-      <PrimaryButton
-        size="XL"
-        style={{ marginTop: 72 }}
-        text="Connect wallet"
-        onPress={() => navigation.navigate("Wallets")}
-      />
+      <MainConnectWalletButton style={{ marginTop: 72 }} />
     </View>
   );
 };

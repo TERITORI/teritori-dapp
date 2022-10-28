@@ -1,27 +1,22 @@
-import React, { useRef } from "react";
-import {
-  View,
-  ViewStyle,
-  TouchableOpacity,
-  Text,
-  StyleProp,
-} from "react-native";
+import React, { useRef, useState } from "react";
+import { View, ViewStyle, TouchableOpacity, StyleProp } from "react-native";
 
 import chevronUpSVG from "../../assets/icons/chevron-down.svg";
 import chevronDownSVG from "../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
 import { useWallets, Wallet } from "../context/WalletsProvider";
 import useSelectedWallet from "../hooks/useSelectedWallet";
+import { useTNSMetadata } from "../hooks/useTNSMetadata";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 import { neutral17, neutral44, secondaryColor } from "../utils/style/colors";
 import { walletSelectorWidth } from "../utils/style/layout";
-import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
+import { WalletProviderIcon } from "./WalletProviderIcon";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SecondaryButton } from "./buttons/SecondaryButton";
-import { NetworkIcon } from "./images/NetworkIcon";
+import { ConnectWalletModal } from "./connectWallet/ConnectWalletModal";
 
 // FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native
 
@@ -41,10 +36,13 @@ const WalletView: React.FC<{
   wallet?: Wallet;
   style?: StyleProp<ViewStyle>;
 }> = ({ wallet, style }) => {
+  const tnsMetadata = useTNSMetadata(wallet?.address);
   const fontSize = 14;
   return (
     <View style={[{ flexDirection: "row", alignItems: "center" }, style]}>
-      <NetworkIcon network={wallet?.network} />
+      <View style={{ width: 16, height: 16 }}>
+        <WalletProviderIcon size={16} walletProvider={wallet?.provider} />
+      </View>
       <BrandText
         style={{
           color: "white",
@@ -53,23 +51,22 @@ const WalletView: React.FC<{
           marginLeft: 12,
           fontWeight: "500",
         }}
+        numberOfLines={1}
+        ellipsizeMode="middle"
       >
-        {tinyAddress(wallet?.publicKey || "")}
+        {tnsMetadata?.metadata?.public_name || wallet?.address || ""}
       </BrandText>
-      {wallet?.provider === WalletProvider.Store && (
-        <Text style={{ marginLeft: 12 }}>👁️</Text>
-      )}
     </View>
   );
 };
 
 export const WalletSelector: React.FC<{
-  onPressAddWallet?: () => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ onPressAddWallet, style }) => {
+}> = ({ style }) => {
   const { wallets } = useWallets();
   const selectedWallet = useSelectedWallet();
   const dispatch = useAppDispatch();
+  const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
 
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
@@ -80,7 +77,7 @@ export const WalletSelector: React.FC<{
   }
 
   const otherWallets = wallets.filter(
-    (wallet) => wallet.id !== selectedWallet.id && wallet.publicKey
+    (wallet) => wallet.id !== selectedWallet.id && wallet.address
   );
   return (
     <View style={style} ref={dropdownRef}>
@@ -94,7 +91,10 @@ export const WalletSelector: React.FC<{
           }}
           height={40}
         >
-          <WalletView wallet={selectedWallet} />
+          <WalletView
+            wallet={selectedWallet}
+            style={{ flex: 1, marginRight: 12 }}
+          />
           <SVG
             source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
             width={16}
@@ -143,14 +143,16 @@ export const WalletSelector: React.FC<{
               text="Add wallet"
               onPress={() => {
                 closeOpenedDropdown();
-                if (typeof onPressAddWallet === "function") {
-                  onPressAddWallet();
-                }
+                setIsConnectWalletVisible(true);
               }}
             />
           </View>
         </TertiaryBox>
       )}
+      <ConnectWalletModal
+        visible={isConnectWalletVisible}
+        onClose={() => setIsConnectWalletVisible(false)}
+      />
     </View>
   );
 };

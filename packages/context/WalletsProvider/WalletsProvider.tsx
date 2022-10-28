@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useMemo } from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 
-import { selectStoreWallets, storeWalletId } from "../../store/slices/wallets";
 import { WalletProvider } from "../../utils/walletProvider";
 import { useKeplr } from "./keplr";
-import { usePhantom } from "./phantom";
 import { Wallet } from "./wallet";
+// import { usePhantom } from "./phantom";
+// import { selectStoreWallets, storeWalletId } from "../../store/slices/wallets";
+// import { WalletProvider } from "../../utils/walletProvider";
 
 /**
  * FIXME: We should change the architecture of this and split "wallets addresses"
@@ -14,23 +15,32 @@ import { Wallet } from "./wallet";
 
 type WalletsContextValue = {
   wallets: Wallet[];
+  walletProviders: WalletProvider[];
   ready: boolean;
 };
 
 const WalletsContext = createContext<WalletsContextValue>({
   wallets: [],
+  walletProviders: [],
   ready: false,
 });
+
+/*
+ * We temprorarily only support keplr when it's conencted and return only the first keplr address
+ */
 
 export const useWallets = () => useContext(WalletsContext);
 
 export const WalletsProvider: React.FC = React.memo(({ children }) => {
-  const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
+  // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
   const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
 
-  const storeWallets = useSelector(selectStoreWallets);
+  // const storeWallets = useSelector(selectStoreWallets);
 
   const value = useMemo(() => {
+    const wallets: Wallet[] = [];
+
+    /*
     const wallets = storeWallets.map((storeWallet) => {
       const wallet: Wallet = {
         id: storeWalletId(storeWallet),
@@ -41,7 +51,9 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       };
       return wallet;
     });
+    */
 
+    /*
     if (hasPhantom && phantomWallet) {
       const storePhantomWalletIndex = wallets.findIndex(
         (wallet) =>
@@ -55,7 +67,9 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
         wallets.unshift(phantomWallet);
       }
     }
+    */
 
+    /*
     if (hasKeplr && keplrWallets) {
       if (keplrWallets.length === 1 && !keplrWallets[0].connected) {
         wallets.unshift(keplrWallets[0]);
@@ -73,19 +87,42 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
         });
       }
     }
+    */
+
+    const walletProviders: WalletProvider[] = [];
+
+    if (hasKeplr) {
+      walletProviders.push(WalletProvider.Keplr);
+    }
+
+    if (
+      hasKeplr &&
+      keplrWallets &&
+      keplrWallets.length &&
+      keplrWallets[0].connected
+    ) {
+      const wallet = keplrWallets[0];
+      wallets.push({
+        id: wallet.id,
+        address: wallet.address,
+        provider: WalletProvider.Keplr,
+        connected: true,
+      });
+    }
 
     return {
       wallets,
-      ready: phantomIsReady && keplrIsReady,
+      walletProviders,
+      ready: /* phantomIsReady && */ keplrIsReady,
     };
   }, [
-    hasPhantom,
-    phantomIsReady,
-    phantomWallet,
+    // hasPhantom,
+    // phantomIsReady,
+    // phantomWallet,
     hasKeplr,
     keplrIsReady,
     keplrWallets,
-    storeWallets,
+    // storeWallets,
   ]);
 
   return (

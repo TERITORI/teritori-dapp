@@ -204,7 +204,7 @@ export const RiotersFooterScreen: React.FC = () => {
 
     const rioterFooterClient = new RioterFooterNftClient(
       cosmwasmClientSignIn,
-      wallet?.publicKey,
+      wallet?.address,
       process.env.RIOTERS_FOOTER_CONTRACT_ADDRESS || ""
     );
     if (!rioterFooterClient) return;
