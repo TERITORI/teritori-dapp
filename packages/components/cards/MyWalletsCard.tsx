@@ -10,7 +10,7 @@ export const MyWalletsCard: React.FC<{ onPress?: () => void }> = ({
   const { wallets } = useWallets();
 
   const connectedWalletsCount = wallets.filter(
-    (wallet) => wallet.publicKey
+    (wallet) => wallet.address
   ).length;
 
   return (

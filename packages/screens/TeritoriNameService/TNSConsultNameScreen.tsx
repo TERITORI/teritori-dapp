@@ -72,7 +72,7 @@ const OwnerActions = () => {
           try {
             const client = new TeritoriNameServiceClient(
               await getSigningCosmWasmClient(),
-              wallet?.publicKey || "",
+              wallet?.address || "",
               process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || ""
             );
             await client.updatePrimaryAlias({

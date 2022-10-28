@@ -27,7 +27,6 @@ import { TNSUpdateNameScreen } from "../../screens/TeritoriNameService/TNSUpdate
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
-import { WalletsScreen } from "../../screens/Wallets/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -65,15 +64,6 @@ export const Navigator: React.FC = () => {
         name="Governance"
         component={GovernanceScreen}
         options={{ header: () => null, title: screenTitle("Governance") }}
-      />
-      <Stack.Screen
-        name="Wallets"
-        component={WalletsScreen}
-        options={{
-          presentation: "transparentModal",
-          header: () => null,
-          title: screenTitle("Wallets"),
-        }}
       />
       <Stack.Screen
         name="UserPublicProfile"

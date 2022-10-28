@@ -10,18 +10,22 @@ export const Quests: React.FC<{
   const [quests, setQuests] = useState<Quest[]>([]);
 
   useEffect(() => {
-    setQuests([]);
-    const stream = backendClient.Quests({
-      limit: 100,
-      offset: 0,
-      userId,
-    });
-    stream.forEach(({ quest }) => {
-      if (!quest) {
-        return;
-      }
-      setQuests((qs) => [...qs, quest]);
-    });
+    try {
+      setQuests([]);
+      const stream = backendClient.Quests({
+        limit: 100,
+        offset: 0,
+        userId,
+      });
+      stream.forEach(({ quest }) => {
+        if (!quest) {
+          return;
+        }
+        setQuests((qs) => [...qs, quest]);
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }, [userId]);
 
   const questCardStyle = {

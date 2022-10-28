@@ -6,9 +6,8 @@ import {
   selectIsKeplrConnected,
   setIsKeplrConnected,
 } from "../../store/slices/settings";
-import { addWallet } from "../../store/slices/wallets";
+// import { addWallet } from "../../store/slices/wallets";
 import { useAppDispatch } from "../../store/store";
-import { Network } from "../../utils/network";
 import { teritoriChainId } from "../../utils/teritori";
 import { WalletProvider } from "../../utils/walletProvider";
 import { Wallet } from "./wallet";
@@ -42,6 +41,29 @@ export const useKeplr: () => UseKeplrResult = () => {
   }, []);
 
   useEffect(() => {
+    if (!hasKeplr) {
+      return;
+    }
+    const handleKeyChange = async () => {
+      if (!teritoriChainId) {
+        console.error("no teritori chain id");
+        return;
+      }
+      const keplr = (window as KeplrWindow).keplr;
+      if (!keplr) {
+        console.error("no keplr");
+        return;
+      }
+      const offlineSigner = keplr.getOfflineSigner(teritoriChainId);
+      const accounts = await offlineSigner.getAccounts();
+      setAddresses(accounts.map((account) => account.address));
+    };
+    window.addEventListener("keplr_keystorechange", handleKeyChange);
+    return () =>
+      window.removeEventListener("keplr_keystorechange", handleKeyChange);
+  }, [hasKeplr]);
+
+  useEffect(() => {
     const effect = async () => {
       if (!hasKeplr || !isKeplrConnected) {
         return;
@@ -72,6 +94,7 @@ export const useKeplr: () => UseKeplrResult = () => {
     effect();
   }, [hasKeplr, isKeplrConnected, dispatch]);
 
+  /*
   useEffect(() => {
     addresses.forEach((address) => {
       if (!address) {
@@ -85,13 +108,13 @@ export const useKeplr: () => UseKeplrResult = () => {
       );
     });
   }, [addresses]);
+  */
 
   const wallets = useMemo(() => {
     if (addresses.length === 0) {
       const wallet: Wallet = {
-        publicKey: "",
+        address: "",
         provider: WalletProvider.Keplr,
-        network: Network.Teritori,
         connected: false,
         id: `keplr`,
       };
@@ -99,9 +122,8 @@ export const useKeplr: () => UseKeplrResult = () => {
     }
     return addresses.map((address, index) => {
       const wallet: Wallet = {
-        publicKey: address,
+        address,
         provider: WalletProvider.Keplr,
-        network: Network.Teritori,
         connected: true,
         id: `keplr-${address}`,
       };

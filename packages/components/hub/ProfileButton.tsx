@@ -13,7 +13,7 @@ export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
 }) => {
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
-  const { loading, metadata } = useTNSMetadata(selectedWallet?.publicKey);
+  const { loading, metadata } = useTNSMetadata(selectedWallet?.address);
   const { setLoadingFullScreen } = useFeedbacks();
 
   // Sync loadingFullScreen
@@ -30,7 +30,7 @@ export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
         backgroundColor={neutral00}
         onPress={() =>
           navigation.navigate("UserPublicProfile", {
-            id: `tori-${selectedWallet?.publicKey}`,
+            id: `tori-${selectedWallet?.address}`,
           })
         }
         style={style}

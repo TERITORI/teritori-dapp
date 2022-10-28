@@ -18,7 +18,6 @@ import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBo
 import { useValidators } from "../../../hooks/useValidators";
 import { prettyPrice } from "../../../utils/coins";
 import { getKeplrOfflineSigner } from "../../../utils/keplr";
-import { Network } from "../../../utils/network";
 import {
   neutral22,
   neutral77,
@@ -71,11 +70,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
 
   // functions
   const onSubmit = async (formData: StakeFormValuesType) => {
-    if (
-      wallet?.network !== Network.Teritori ||
-      !wallet.connected ||
-      !wallet.publicKey
-    ) {
+    if (!wallet?.connected || !wallet.address) {
       console.warn("invalid wallet", wallet);
       setToastError({
         title: "Invalid wallet",
@@ -100,7 +95,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
     const signer = getKeplrOfflineSigner();
     const client = await getTeritoriSigningStargateClient(signer);
     const msg: MsgBeginRedelegate = {
-      delegatorAddress: wallet.publicKey,
+      delegatorAddress: wallet.address,
       validatorSrcAddress: data.address,
       validatorDstAddress: selectedValidator.address,
       amount: {
@@ -112,7 +107,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       },
     };
     const txResponse = await client.signAndBroadcast(
-      wallet.publicKey,
+      wallet.address,
       [
         {
           typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",

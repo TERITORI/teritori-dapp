@@ -14,7 +14,6 @@ import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
-import { Network } from "../../utils/network";
 import { neutral44 } from "../../utils/style/colors";
 import { getTeritoriSigningStargateClient } from "../../utils/teritori";
 
@@ -99,11 +98,7 @@ export const GovernanceDetails: React.FC<{
   }
 
   const handlePress = useCallback(async () => {
-    if (
-      selectedWallet?.network !== Network.Teritori ||
-      !selectedWallet.connected ||
-      !selectedWallet.publicKey
-    ) {
+    if (!selectedWallet?.connected || !selectedWallet.address) {
       setToastError({
         title: "Wallet Error",
         message: "You need to register your teritori wallet",
@@ -121,12 +116,12 @@ export const GovernanceDetails: React.FC<{
           proposalId: Long.fromNumber(
             parseInt(numberProposal.substring(1), 10)
           ),
-          voter: String(selectedWallet.publicKey),
+          voter: String(selectedWallet.address),
           option: voteOption,
         },
       };
       const result = await client.signAndBroadcast(
-        selectedWallet.publicKey,
+        selectedWallet.address,
         [vote],
         "auto"
       );

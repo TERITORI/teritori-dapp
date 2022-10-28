@@ -1,6 +1,3 @@
-import avatarPNG from "../../../assets/default-images/avatar.png";
-import guardianPNG from "../../../assets/default-images/guardian_1.png";
-
 export const WALLET_CHAIN_ASSETS = [
   {
     title: "Teritori",
@@ -100,77 +97,6 @@ export const ALL_WALLETS = [
         title: "Terra",
       },
     ],
-  },
-];
-
-export const MY_NFT = [
-  {
-    title: "Guardian Genesisi #0",
-    stars: 179,
-    owner: {
-      name: "@nickname",
-      avatar: avatarPNG,
-    },
-    token: "Solona",
-    subTitle: "Gurdians of Teritory",
-    points: 4.75,
-    pointsKey: "SOL",
-    bids: {
-      total: 1,
-      highest: 1,
-    },
-    image: guardianPNG,
-  },
-  {
-    title: "Guardian Genesisi #1",
-    stars: 179,
-    owner: {
-      name: "@nickname",
-      avatar: avatarPNG,
-    },
-    token: "Solona",
-    subTitle: "Gurdians of Teritory",
-    points: 4.75,
-    pointsKey: "SOL",
-    bids: {
-      total: 1,
-      highest: 1,
-    },
-    image: guardianPNG,
-  },
-  {
-    title: "Guardian Genesisi #2",
-    stars: 179,
-    owner: {
-      name: "@nickname",
-      avatar: avatarPNG,
-    },
-    token: "Solona",
-    subTitle: "Gurdians of Teritory",
-    points: 4.75,
-    pointsKey: "SOL",
-    bids: {
-      total: 1,
-      highest: 1,
-    },
-    image: guardianPNG,
-  },
-  {
-    title: "Guardian Genesisi #3",
-    stars: 179,
-    owner: {
-      name: "@nickname",
-      avatar: avatarPNG,
-    },
-    token: "Solona",
-    subTitle: "Gurdians of Teritory",
-    points: 4.75,
-    pointsKey: "SOL",
-    bids: {
-      total: 1,
-      highest: 1,
-    },
-    image: guardianPNG,
   },
 ];
 

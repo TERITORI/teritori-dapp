@@ -83,7 +83,7 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
 export const WalletDashboardHeader: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkId();
-  const balances = useBalances(selectedNetwork, selectedWallet?.publicKey);
+  const balances = useBalances(selectedNetwork, selectedWallet?.address);
   const totalUSDBalance = balances.reduce(
     (total, bal) => total + (bal.usdAmount || 0),
     0

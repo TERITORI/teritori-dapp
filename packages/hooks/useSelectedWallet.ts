@@ -1,17 +1,14 @@
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 
 import { useWallets } from "../context/WalletsProvider";
-import { selectSelectedWalletId } from "../store/slices/settings";
+// import { selectSelectedWalletId } from "../store/slices/settings";
+
+// NOTE: This was returning the actual selected wallet but for
+// sake of delivering quickly this now temporarily returns the first connected wallet
 
 const useSelectedWallet = () => {
   const { wallets } = useWallets();
-  const selectedWalletId = useSelector(selectSelectedWalletId);
-  const wallet = wallets.find((wallet) => wallet.id === selectedWalletId);
-  if (wallet) {
-    return wallet;
-  }
-  const availableWallets = wallets.filter((wallet) => wallet.publicKey);
-  return availableWallets.length > 0 ? availableWallets[0] : undefined;
+  return wallets.find((w) => w.connected);
 };
 
 export default useSelectedWallet;

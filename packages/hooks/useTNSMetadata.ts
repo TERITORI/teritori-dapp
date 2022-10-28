@@ -1,61 +1,41 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
 // FIXME: use react-query to prevent recalling the api all the time
 
 export const useTNSMetadata = (address?: string) => {
-  const [loading, setLoading] = useState(false);
-  const [metadata, setMetadata] = useState<Metadata>();
-  const [notFound, setNotFound] = useState(false);
+  const { data, isLoading, isError } = useQuery(
+    ["tns-metadata", address],
+    async () => {
+      const contractAddress =
+        process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "";
+      // We just want to read, so we use a non-signing client
+      const cosmWasmClient = await getNonSigningCosmWasmClient();
 
-  useEffect(() => {
-    const effect = async () => {
-      setLoading(true);
+      const tnsClient = new TeritoriNameServiceQueryClient(
+        cosmWasmClient,
+        contractAddress
+      );
 
-      try {
-        if (!address) {
-          setNotFound(true);
-          setLoading(false);
-          return;
+      const aliasResponse = await cosmWasmClient.queryContractSmart(
+        contractAddress,
+        {
+          primary_alias: {
+            address,
+          },
         }
+      );
 
-        const contractAddress =
-          process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "";
-        // We just want to read, so we use a non-signing client
-        const cosmWasmClient = await getNonSigningCosmWasmClient();
+      // ======== Getting NFT info
+      const nftInfo = await tnsClient.nftInfo({
+        tokenId: aliasResponse.username,
+      });
 
-        const tnsClient = new TeritoriNameServiceQueryClient(
-          cosmWasmClient,
-          contractAddress
-        );
+      return nftInfo.extension;
+    }
+  );
 
-        const aliasResponse = await cosmWasmClient.queryContractSmart(
-          contractAddress,
-          {
-            primary_alias: {
-              address,
-            },
-          }
-        );
-
-        // ======== Getting NFT info
-        const nftInfo = await tnsClient.nftInfo({
-          tokenId: aliasResponse.username,
-        });
-
-        setMetadata(nftInfo.extension);
-      } catch (err) {
-        console.warn(err);
-        setNotFound(true);
-      }
-      setLoading(false);
-    };
-
-    effect();
-  }, [address]);
-
-  return { loading, metadata, notFound };
+  return { loading: isLoading, metadata: data, notFound: isError };
 };
