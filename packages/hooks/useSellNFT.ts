@@ -4,7 +4,6 @@ import { useCallback } from "react";
 import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import { getSigningCosmWasmClient } from "../utils/keplr";
-import { Network } from "../utils/network";
 import { vaultContractAddress, toriCurrency } from "../utils/teritori";
 import useSelectedWallet from "./useSelectedWallet";
 
@@ -13,11 +12,7 @@ export const useSellNFT = () => {
   const wallet = useSelectedWallet();
   return useCallback(
     async (nftContractAddress: string, tokenId: string, price: string) => {
-      if (
-        wallet?.network !== Network.Teritori ||
-        !wallet.publicKey ||
-        !wallet.connected
-      ) {
+      if (!wallet?.address || !wallet.connected) {
         setToastError({
           title: "Failed to list NFT",
           message: "Bad wallet",
@@ -29,7 +24,7 @@ export const useSellNFT = () => {
         const cosmwasmClient = await getSigningCosmWasmClient();
         const nftClient = new TeritoriNftClient(
           cosmwasmClient,
-          wallet.publicKey,
+          wallet.address,
           nftContractAddress
         );
         const currency = toriCurrency;

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Modal,
   SafeAreaView,
   ScrollView,
   View,
@@ -15,7 +14,6 @@ import {
 import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
 import { useAreThereWallets } from "../hooks/useAreThereWallets";
 import { useMaxResolution } from "../hooks/useMaxResolution";
-import { useAppNavigation } from "../utils/navigation";
 import {
   headerHeight,
   headerMarginHorizontal,
@@ -28,8 +26,7 @@ import { Header } from "./Header";
 import { NetworkSelector } from "./NetworkSelector";
 import { SVG } from "./SVG";
 import { WalletSelector } from "./WalletSelector";
-import { WalletsManager } from "./WalletsManager";
-import { ConnectWallet } from "./connectWallet/ConnectWallet";
+import { ConnectWalletModal } from "./connectWallet/ConnectWalletModal";
 import { Sidebar } from "./navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
@@ -53,17 +50,14 @@ export const ScreenContainer: React.FC<{
   customSidebar,
 }) => {
   // variables
-  const [modalVisible, setModalVisible] = useState(false);
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
   const marginStyle = hasMargin && {
     marginHorizontal: screenContainerContentMarginHorizontal,
   };
-  const [walletsManagerVisible, setWalletsManagerVisible] = useState(false);
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
   const areThereWallets = useAreThereWallets();
-  const navigation = useAppNavigation();
   const { width } = useMaxResolution();
 
   // functions
@@ -74,14 +68,6 @@ export const ScreenContainer: React.FC<{
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
       {/*TODO: Refactor this*/}
-      <Modal
-        animationType="slide"
-        transparent
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}
-      >
-        <WalletsManager onClose={() => setModalVisible(!modalVisible)} />
-      </Modal>
 
       <View style={styles.container}>
         {["android", "ios"].includes(Platform.OS) ||
@@ -141,10 +127,7 @@ export const ScreenContainer: React.FC<{
             <NetworkSelector style={{ marginRight: 12 }} />
 
             {areThereWallets ? (
-              <WalletSelector
-                style={{ marginRight: headerMarginHorizontal }}
-                onPressAddWallet={() => navigation.navigate("Wallets")}
-              />
+              <WalletSelector style={{ marginRight: headerMarginHorizontal }} />
             ) : (
               <ConnectWalletButton
                 style={{ marginRight: headerMarginHorizontal }}
@@ -152,13 +135,7 @@ export const ScreenContainer: React.FC<{
               />
             )}
           </View>
-
-          <WalletsManager
-            visible={walletsManagerVisible}
-            onClose={() => setWalletsManagerVisible(false)}
-          />
-
-          <ConnectWallet
+          <ConnectWalletModal
             visible={isConnectWalletVisible}
             onClose={toggleConnectWallet}
           />

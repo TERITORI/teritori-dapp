@@ -16,7 +16,6 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBondedToris";
 import { prettyPrice } from "../../../utils/coins";
 import { getKeplrOfflineSigner } from "../../../utils/keplr";
-import { Network } from "../../../utils/network";
 import {
   neutral22,
   neutral77,
@@ -66,11 +65,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
 
   // functions
   const onSubmit = async (formData: StakeFormValuesType) => {
-    if (
-      wallet?.network !== Network.Teritori ||
-      !wallet.connected ||
-      !wallet.publicKey
-    ) {
+    if (!wallet?.connected || !wallet.address) {
       console.warn("invalid wallet", wallet);
       setToastError({
         title: "Invalid wallet",
@@ -88,7 +83,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
     const signer = getKeplrOfflineSigner();
     const client = await getTeritoriSigningStargateClient(signer);
     const txResponse = await client.undelegateTokens(
-      wallet.publicKey,
+      wallet.address,
       data.address,
       {
         amount: Decimal.fromUserInput(

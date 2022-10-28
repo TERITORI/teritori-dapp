@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftVaultClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { getSigningCosmWasmClient } from "../utils/keplr";
-import { Network } from "../utils/network";
 import { vaultContractAddress } from "../utils/teritori";
 import useSelectedWallet from "./useSelectedWallet";
 
@@ -14,11 +13,7 @@ export const useCancelNFTListing = (
   const wallet = useSelectedWallet();
   const { setToastError } = useFeedbacks();
   return useCallback(async () => {
-    if (
-      !wallet?.publicKey ||
-      wallet.network !== Network.Teritori ||
-      !wallet.connected
-    ) {
+    if (!wallet?.address || !wallet.connected) {
       setToastError({
         title: "Failed to cancel NFT listing",
         message: "Bad wallet",
@@ -29,7 +24,7 @@ export const useCancelNFTListing = (
       const cosmwasmClient = await getSigningCosmWasmClient();
       const vaultClient = new TeritoriNftVaultClient(
         cosmwasmClient,
-        wallet.publicKey,
+        wallet.address,
         vaultContractAddress
       );
       const reply = await vaultClient.withdraw({

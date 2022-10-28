@@ -25,7 +25,6 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { Network } from "../../utils/network";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
@@ -77,20 +76,11 @@ const Content: React.FC<{
   const { setToastError } = useFeedbacks();
   const { setLoadingFullScreen } = useFeedbacks();
   const wallet = useSelectedWallet();
-  const { info, refresh, notFound, loading } = useNFTInfo(
-    id,
-    wallet?.publicKey
-  );
+  const { info, refresh, notFound, loading } = useNFTInfo(id, wallet?.address);
 
   // Query the Vault client to buy the NFT and returns the transaction reply
   const buy = useCallback(async () => {
-    if (
-      !wallet ||
-      wallet.network !== Network.Teritori ||
-      !wallet.connected ||
-      !wallet.publicKey ||
-      !info?.nftAddress
-    ) {
+    if (!wallet?.connected || !wallet.address || !info?.nftAddress) {
       return;
     }
     setToastError(initialToastError);
@@ -112,7 +102,7 @@ const Content: React.FC<{
       const signingCosmwasmClient = await getSigningCosmWasmClient();
       const signingVaultClient = new TeritoriNftVaultClient(
         signingCosmwasmClient,
-        wallet.publicKey,
+        wallet.address,
         vaultContractAddress
       );
       const reply = await signingVaultClient.buy(

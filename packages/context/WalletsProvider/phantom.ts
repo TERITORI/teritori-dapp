@@ -1,9 +1,9 @@
 import { PublicKey } from "@solana/web3.js";
 import { useEffect, useMemo, useState } from "react";
 
-import { addWallet } from "../../store/slices/wallets";
-import { useAppDispatch } from "../../store/store";
-import { Network } from "../../utils/network";
+// import { addWallet } from "../../store/slices/wallets";
+// import { useAppDispatch } from "../../store/store";
+// import { Network } from "../../utils/network";
 import { WalletProvider } from "../../utils/walletProvider";
 import { Wallet } from "./wallet";
 
@@ -17,7 +17,7 @@ export const usePhantom: () => UsePhantomResult = () => {
 
   const [publicKey, setPublicKey] = useState("");
   const [ready, setReady] = useState(false);
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!hasPhantom) {
@@ -71,9 +71,9 @@ export const usePhantom: () => UsePhantomResult = () => {
 
   const wallet = useMemo(() => {
     const wallet: Wallet = {
-      publicKey,
+      address: publicKey,
       provider: WalletProvider.Phantom,
-      network: Network.Solana,
+      // network: Network.Solana,
       connected: !!publicKey,
       id: "phantom",
     };
@@ -81,17 +81,19 @@ export const usePhantom: () => UsePhantomResult = () => {
     return wallet;
   }, [publicKey]);
 
+  /*
   useEffect(() => {
-    if (!wallet.publicKey) {
+    if (!wallet.address) {
       return;
     }
     dispatch(
       addWallet({
-        publicKey: wallet.publicKey,
+        publicKey: wallet.address,
         network: wallet.network,
       })
     );
   }, [wallet]);
+  */
 
   return hasPhantom ? [true, ready, wallet] : [false, true, undefined];
 };

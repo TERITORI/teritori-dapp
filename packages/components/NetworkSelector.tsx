@@ -63,22 +63,24 @@ export const NetworkSelector: React.FC<{
             alignItems: "flex-start",
           }}
         >
-          {Object.values(Network).map((network, index) => {
-            return (
-              <TouchableOpacity
-                style={{ marginBottom: 16 }}
-                key={index}
-                onPress={onPressNetwork}
-              >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <NetworkIcon network={network} size={16} />
-                  <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
-                    {network}
-                  </BrandText>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+          {Object.values(Network)
+            .filter((n) => n !== Network.Unknown)
+            .map((network, index) => {
+              return (
+                <TouchableOpacity
+                  style={{ marginBottom: 16 }}
+                  key={index}
+                  onPress={onPressNetwork}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <NetworkIcon network={network} size={16} />
+                    <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
+                      {network}
+                    </BrandText>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
         </TertiaryBox>
       )}
     </View>

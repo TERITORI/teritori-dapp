@@ -36,7 +36,7 @@ export const WalletStatusCard: React.FC = () => {
             Teritori
           </BrandText>
           <BrandText style={fontSemibold13}>
-            {wallet && tinyAddress(wallet.publicKey)}
+            {wallet && tinyAddress(wallet.address)}
           </BrandText>
         </View>
       </View>

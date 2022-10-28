@@ -4,6 +4,7 @@ import { useWindowDimensions } from "react-native";
 import { useSidebar } from "../context/SidebarProvider";
 import {
   fullSidebarWidth,
+  headerHeight,
   screenContainerContentMarginHorizontal,
   screenContentMaxWidth,
   smallSidebarWidth,
@@ -22,6 +23,6 @@ export const useMaxResolution = () => {
 
   return {
     width: width > screenContentMaxWidth ? screenContentMaxWidth : width,
-    height,
+    height: height - headerHeight,
   };
 };

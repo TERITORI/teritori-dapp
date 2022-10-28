@@ -11,7 +11,7 @@ NOTE: this whole thing need to be rewritten using indexers and better data organ
 
 export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
   const selectedWallet = useSelectedWallet();
-  const ownerId = `tori-${selectedWallet?.publicKey}`; // FIXME: make this network-independent
+  const ownerId = `tori-${selectedWallet?.address}`; // FIXME: make this network-independent
   return (
     <ScreenContainer>
       <OwnedNFTs ownerId={ownerId} style={{ marginHorizontal: 24 }} />

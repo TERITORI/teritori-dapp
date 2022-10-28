@@ -25,7 +25,6 @@ import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { Network } from "../../utils/network";
 import {
   neutral33,
   neutral77,
@@ -63,11 +62,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   }, [loading]);
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
-  const mintButtonDisabled =
-    minted ||
-    !wallet ||
-    wallet.network !== Network.Teritori ||
-    !wallet.connected;
+  const mintButtonDisabled = minted || !wallet?.connected;
   const {
     discord: discordLink,
     twitter: twitterLink,
@@ -80,7 +75,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
 
       setToastError(initialToastError);
-      const sender = wallet?.publicKey;
+      const sender = wallet?.address;
       if (!sender || !info.unitPrice || !info.priceDenom) {
         console.error("invalid mint args");
         return;
@@ -114,7 +109,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         message: prettyError(err),
       });
     }
-  }, [wallet?.publicKey, mintAddress, info.unitPrice, info.hasPresale]);
+  }, [wallet?.address, mintAddress, info.unitPrice, info.hasPresale]);
 
   if (notFound) {
     return (

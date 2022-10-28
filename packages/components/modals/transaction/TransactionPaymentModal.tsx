@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { useTeritoriBalance } from "../../../context/TeritoriBalanceProvider";
-import { useWallets } from "../../../context/WalletsProvider";
+import { useBalances } from "../../../hooks/useBalances";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { selectIsKeplrConnected } from "../../../store/slices/settings";
 import { decimalFromAtomics, prettyPrice } from "../../../utils/coins";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { WalletProvider } from "../../../utils/walletProvider";
 import { BrandText } from "../../BrandText";
-import { WalletActionButton } from "../../WalletsManager";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
 import { WalletStatusCard } from "../../cards/WalletStatusCard";
+import { ConnectKeplrButton } from "../../connectWallet/ConnectKeplrButton";
 import ModalBase from "../ModalBase";
 
 // Modal with price, fee,  Teritori wallet connexion and status and Payment button
@@ -35,9 +34,11 @@ export const TransactionPaymentModal: React.FC<{
   visible = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const { wallets } = useWallets();
   const isKeplrConnected = useSelector(selectIsKeplrConnected);
-  const { totalString, total } = useTeritoriBalance();
+  const selectedWallet = useSelectedWallet();
+  const networkId = process.env.TERITORI_NETWORK_ID; // FIXME: support other networks
+  const balances = useBalances(networkId, selectedWallet?.address);
+  const balance = balances.find((bal) => bal.denom === priceDenom)?.amount;
 
   useEffect(() => {
     setIsVisible(visible);
@@ -53,17 +54,7 @@ export const TransactionPaymentModal: React.FC<{
         </View>
 
         {/*==== Teritori wallet*/}
-        {isKeplrConnected ? (
-          <WalletStatusCard />
-        ) : (
-          <WalletActionButton
-            fullWidth
-            wallet={wallets.find(
-              (wallet) => wallet.provider === WalletProvider.Keplr
-            )}
-            squaresBackgroundColor="#000000"
-          />
-        )}
+        {isKeplrConnected ? <WalletStatusCard /> : <ConnectKeplrButton />}
 
         {/*==== Amounts*/}
         <View style={{ marginTop: 16 }}>
@@ -79,7 +70,13 @@ export const TransactionPaymentModal: React.FC<{
               Balance
             </BrandText>
             {/* TODO: Refresh totalString just after connect Keplr*/}
-            <BrandText style={fontSemibold14}>{totalString}</BrandText>
+            <BrandText style={fontSemibold14}>
+              {prettyPrice(
+                process.env.TERITORI_NETWORK_ID || "",
+                balance || "0",
+                "utori"
+              )}
+            </BrandText>
           </View>
           <View
             style={{
@@ -113,7 +110,10 @@ export const TransactionPaymentModal: React.FC<{
         {/*==== Buttons */}
         {
           // Can buy if only the funds are sufficient
-          price && total.isLessThan(decimalFromAtomics(price, priceDenom)) ? (
+          price &&
+          decimalFromAtomics(balance || "0", priceDenom).isLessThan(
+            decimalFromAtomics(price, priceDenom)
+          ) ? (
             <View style={{ alignItems: "center", width: "100%" }}>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
                 Insufficient funds
