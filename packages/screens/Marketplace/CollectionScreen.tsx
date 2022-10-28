@@ -56,10 +56,14 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
       name: "All NFTs",
       badgeCount: stats?.totalSupply || 0,
     },
-    owned: {
-      name: "Owned",
-      badgeCount: stats?.owned || 0,
-    },
+    ...(stats?.owned
+      ? {
+          owned: {
+            name: "Owned",
+            badgeCount: stats.owned,
+          },
+        }
+      : {}),
     activity: {
       name: "Activity",
     },
