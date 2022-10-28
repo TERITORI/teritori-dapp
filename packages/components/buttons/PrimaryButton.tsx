@@ -12,11 +12,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import {
-  neutral77,
-  primaryColor,
-  primaryTextColor,
-} from "../../utils/style/colors";
+import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -88,6 +84,7 @@ export const PrimaryButton: React.FC<{
           borderRadius: borderRadiusButton(size),
           backgroundColor: primaryColor,
           paddingHorizontal: 20,
+          opacity: isDisabled ? 0.5 : 1,
         }}
         {...boxProps}
       >
@@ -107,7 +104,7 @@ export const PrimaryButton: React.FC<{
             style={[
               fontSemibold14,
               {
-                color: isDisabled ? neutral77 : primaryTextColor,
+                color: primaryTextColor,
                 textAlign: "center",
               },
             ]}

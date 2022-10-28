@@ -7,7 +7,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
+import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -65,6 +65,7 @@ export const SecondaryButtonOutline: React.FC<{
           backgroundColor,
           paddingHorizontal: 20,
           borderColor,
+          opacity: disabled ? 0.5 : 1,
         }}
         {...boxProps}
       >
@@ -77,12 +78,7 @@ export const SecondaryButtonOutline: React.FC<{
           />
         ) : null}
 
-        <BrandText
-          style={[
-            fontSemibold14,
-            { color: disabled ? neutral77 : color, textAlign: "center" },
-          ]}
-        >
+        <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
           {text}
         </BrandText>
       </TertiaryBox>

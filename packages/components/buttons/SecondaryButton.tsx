@@ -7,7 +7,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { neutral30, neutral77, primaryColor } from "../../utils/style/colors";
+import { neutral30, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -61,6 +61,7 @@ export const SecondaryButton: React.FC<{
           borderRadius: borderRadiusButton(size),
           backgroundColor,
           paddingHorizontal: 20,
+          opacity: disabled ? 0.5 : 1,
         }}
         {...boxProps}
       >
@@ -73,12 +74,7 @@ export const SecondaryButton: React.FC<{
           />
         ) : null}
 
-        <BrandText
-          style={[
-            fontSemibold14,
-            { color: disabled ? neutral77 : color, textAlign: "center" },
-          ]}
-        >
+        <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
           {text}
         </BrandText>
       </SecondaryBox>

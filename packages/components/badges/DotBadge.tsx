@@ -21,6 +21,7 @@ export const DotBadge: React.FC<{
           paddingHorizontal: layout.padding_x1_5,
           backgroundColor: neutral17,
           borderRadius: 999,
+          width: "fit-content",
         },
         style,
       ]}

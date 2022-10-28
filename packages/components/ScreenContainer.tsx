@@ -21,7 +21,6 @@ import {
   walletSelectorWidth,
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
-import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { NetworkSelector } from "./NetworkSelector";
 import { SVG } from "./SVG";
@@ -97,7 +96,7 @@ export const ScreenContainer: React.FC<{
                 >
                   <View style={[styles.childrenContainer, { width }]}>
                     {children}
-                    {footerChildren && <Footer>{footerChildren}</Footer>}
+                    {footerChildren}
                   </View>
                 </ScrollView>
               ) : (
@@ -105,7 +104,7 @@ export const ScreenContainer: React.FC<{
                   style={[styles.childrenContainer, { width }, marginStyle]}
                 >
                   {children}
-                  {footerChildren && <Footer>{footerChildren}</Footer>}
+                  {footerChildren}
                 </View>
               )}
             </View>

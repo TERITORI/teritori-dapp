@@ -19,6 +19,7 @@ export const SuccessBadge: React.FC<{
           paddingVertical: 5,
           paddingHorizontal: 12,
           backgroundColor: withAlpha(successColor, 0.1),
+          width: "fit-content",
         },
         style,
       ]}

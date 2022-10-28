@@ -30,6 +30,7 @@ export const TertiaryBadge: React.FC<{
           paddingHorizontal: paddingHorizontalBadge(size),
           backgroundColor: neutral33,
           borderRadius: 999,
+          width: "fit-content",
         },
         style,
       ]}
