@@ -1,5 +1,5 @@
 import { Currency } from "@keplr-wallet/types";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   RegisterOptions,
   useController,
@@ -95,6 +95,12 @@ export const TextInputCustom = <T extends FieldValues>({
     rules,
     defaultValue,
   });
+
+  useEffect(() => {
+    if (defaultValue) {
+      handleChangeText(defaultValue);
+    }
+  }, [defaultValue]);
 
   const error = useMemo(() => {
     if (fieldState.error) {
