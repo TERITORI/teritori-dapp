@@ -10,6 +10,7 @@ import arrowDivideSVG from "../../../../assets/icons/arrow-divide.svg";
 import { BrandText } from "../../../components/BrandText";
 import { NetworkIcon } from "../../../components/NetworkIcon";
 import { SVG } from "../../../components/SVG";
+import { tinyAddress } from "../../../components/WalletSelector";
 import { MaxButton } from "../../../components/buttons/MaxButton";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
@@ -125,7 +126,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               variant="labelOutside"
               name="fromAddress"
               label=""
-              defaultValue={fromAccount}
+              defaultValue={tinyAddress(fromAccount, 15)}
               rules={{ required: true }}
               disabled
             />
@@ -153,7 +154,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               control={control}
               variant="labelOutside"
               name="toAddress"
-              defaultValue={toAccount}
+              defaultValue={tinyAddress(toAccount, 15)}
               label=""
               rules={{ required: true }}
               disabled
