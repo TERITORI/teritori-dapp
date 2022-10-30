@@ -295,7 +295,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   running={info.isInPresalePeriod || false}
                   whitelistSize={info.whitelistSize || 0}
                   maxPerAddress={info.whitelistMaxPerAddress || "0"}
-                  started={false}
+                  started
                 />
               )}
               {info.isInPresalePeriod || (
