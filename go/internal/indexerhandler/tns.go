@@ -40,7 +40,7 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 }
 
 type TNSMetadata struct {
-	ImageURI string `json:"image"`
+	ImageURI *string `json:"image"`
 }
 
 type CW721MintMsg struct {
@@ -76,8 +76,8 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		return errors.Wrap(err, "failed to unmarshal metadata")
 	}
 	imageURI := ""
-	if metadata.ImageURI != "" {
-		imageURI = metadata.ImageURI
+	if metadata.ImageURI != nil {
+		imageURI = *metadata.ImageURI
 	}
 
 	// create nft in db
@@ -102,11 +102,15 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		}
 		h.logger.Info("created tns domain", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
 	} else {
-		//NFT existant just update it
-		err := h.db.Model(&indexerdb.NFT{ID: nftId}).UpdateColumns(map[string]interface{}{
+		updates := map[string]interface{}{
 			"deleted_at": nil,
 			"owner_id":   string(ownerId),
-		}).Error
+		}
+		if metadata.ImageURI != nil {
+			updates["image_uri"] = *metadata.ImageURI
+		}
+		//NFT existant just update it
+		err := h.db.Model(&indexerdb.NFT{ID: nftId}).UpdateColumns(updates).Error
 		if err != nil {
 			return errors.Wrap(err, "failed to create nft in db")
 		}
@@ -133,6 +137,39 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		NFTID: nftId,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
+	}
+
+	return nil
+}
+
+type TNSUpdateMetadataMsg struct {
+	Payload struct {
+		TokenID  string      `json:"token_id"`
+		Metadata TNSMetadata `json:"metadata"`
+	} `json:"update_metadata"`
+}
+
+func (h *Handler) handleExecuteUpdateTNSMetadata(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	if execMsg.Contract != h.config.TNSContractAddress {
+		return nil
+	}
+
+	var msg TNSUpdateMetadataMsg
+	if err := json.Unmarshal(execMsg.Msg, &msg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal tns update_metadata msg")
+	}
+
+	h.logger.Debug("tns update", zap.Any("msg", msg), zap.String("raw", string(execMsg.Msg)))
+
+	if msg.Payload.Metadata.ImageURI != nil {
+		if err := h.db.
+			Model(&indexerdb.NFT{}).
+			Where("id = ?", indexerdb.TeritoriNFTID(execMsg.Contract, msg.Payload.TokenID)).
+			UpdateColumn("ImageURI", *msg.Payload.Metadata.ImageURI).
+			Error; err != nil {
+			return errors.Wrap(err, "failed to update tns image uri")
+		}
+		h.logger.Info("updated tns image")
 	}
 
 	return nil

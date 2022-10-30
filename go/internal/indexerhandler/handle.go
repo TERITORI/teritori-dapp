@@ -176,6 +176,8 @@ func (h *Handler) handleExecute(e *Message) error {
 		wasmAction = key
 	}
 
+	h.logger.Debug(fmt.Sprintf("%s %s", wasmAction, executeMsg.Contract))
+
 	switch wasmAction {
 	case "mint":
 		if err := h.handleExecuteMint(e, &executeMsg); err != nil {
@@ -203,6 +205,10 @@ func (h *Handler) handleExecute(e *Message) error {
 		}
 	case "transfer_nft":
 		if err := h.handleExecuteTransferNFT(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle transfer")
+		}
+	case "update_metadata":
+		if err := h.handleExecuteUpdateTNSMetadata(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle transfer")
 		}
 	}
