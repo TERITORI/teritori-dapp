@@ -19,5 +19,17 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
     sourceChannelId: "channel-685",
     destinationChannelPort: "transfer",
     destinationChannelId: "channel-30",
+    deprecated: true,
+  },
+  {
+    kind: "ibc",
+    denom:
+      "ibc/8D9734B53D56DC57A92E4CC788547699853F411190F6DAA70FA12B9BD062F7AE",
+    sourceNetwork: "cosmos-hub-theta",
+    sourceDenom: "uatom",
+    sourceChannelPort: "transfer",
+    sourceChannelId: "channel-701",
+    destinationChannelPort: "transfer",
+    destinationChannelId: "channel-33",
   },
 ];

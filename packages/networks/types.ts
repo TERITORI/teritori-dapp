@@ -36,6 +36,7 @@ export type IBCCurrencyInfo = {
   sourceChannelId: string;
   destinationChannelPort: string;
   destinationChannelId: string;
+  deprecated?: boolean;
 };
 
 export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
