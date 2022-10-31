@@ -24,7 +24,7 @@ node_modules: package.json yarn.lock
 	touch $@
 
 .PHONY: generate
-generate: generate.protobuf generate.graphql generate.contracts-clients
+generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks
 
 .PHONY: generate.protobuf
 generate.protobuf: node_modules
@@ -51,6 +51,11 @@ docker.backend:
 
 .PHONY: generate.contracts-clients
 generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
+
+.PHONY: generate.go-networks
+generate.go-networks: node_modules
+	rm -fr go/pkg/networks/networks.gen.go
+	npx ts-node packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules

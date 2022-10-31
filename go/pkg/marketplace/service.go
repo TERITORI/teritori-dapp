@@ -334,6 +334,7 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			continue
 		}
 		var price, denom, buyerId, sellerId string
+		var usdPrice float64
 		switch activity.Kind {
 		case indexerdb.ActivityKindTrade:
 			if activity.Trade != nil {
@@ -341,11 +342,13 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 				denom = activity.Trade.PriceDenom
 				buyerId = string(activity.Trade.BuyerID)
 				sellerId = string(activity.Trade.SellerID)
+				usdPrice = activity.Trade.USDPrice
 			}
 		case indexerdb.ActivityKindList:
 			if activity.Listing != nil {
 				price = activity.Listing.Price
 				denom = activity.Listing.PriceDenom
+				usdPrice = activity.Listing.USDPrice // beware this will not be the real time price, consider using spot price here
 				sellerId = string(activity.Listing.SellerID)
 			}
 		case indexerdb.ActivityKindMint:
@@ -375,6 +378,7 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 				sellerId = string(activity.UpdateNFTPrice.SellerID)
 				price = activity.UpdateNFTPrice.Price
 				denom = activity.UpdateNFTPrice.PriceDenom
+				usdPrice = activity.UpdateNFTPrice.USDPrice
 			}
 		}
 		if err := srv.Send(&marketplacepb.ActivityResponse{Activity: &marketplacepb.Activity{
@@ -386,6 +390,7 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			Time:            activity.Time.Format(time.RFC3339),
 			Amount:          price,
 			Denom:           denom,
+			UsdPrice:        usdPrice,
 			BuyerId:         buyerId,
 			SellerId:        sellerId,
 		}}); err != nil {
@@ -467,6 +472,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		return nil, errors.Wrap(err, "failed get DB instance")
 	}
 	var stats CollectionStats
+	// FIXME: floor price will be broken if multiple denoms are allowed
 	err = queries.Raw(`with 
 	nfts_in_collection as (
 		SELECT  *  FROM nfts n where n.collection_id = $1
@@ -475,7 +481,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		SELECT  * from nfts_in_collection nic where is_listed = true
 	),
 	trades_in_collection as (
-		select COALESCE(sum(CAST(t.price as decimal)),0) total_volume FROM trades AS t
+		select COALESCE(sum(t.usd_price),0) total_volume FROM trades AS t
 		INNER join activities AS a on a.id = t.activity_id 
 		INNER join nfts_in_collection nic on nic.id = a.nft_id
 	)

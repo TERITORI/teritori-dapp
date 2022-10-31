@@ -13,6 +13,7 @@ module.exports = {
         "metro.config.js",
         "electron/main/**",
         "packages/candymachine/**",
+        "packages/scripts/**",
       ],
     },
   ],

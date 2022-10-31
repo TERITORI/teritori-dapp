@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/allegro/bigcache/v3"
 	"github.com/pkg/errors"
 	abcitypes "github.com/tendermint/tendermint/abci/types"
@@ -173,4 +174,16 @@ func (h *Handler) blockTime(height int64) (time.Time, error) {
 		return time.Time{}, errors.Wrap(err, "failed to unmarshal binary time")
 	}
 	return blockTime, nil
+}
+
+func (h *Handler) HistoricalPrice(denom string, t time.Time) (float64, error) {
+	nativeCurrency, err := networks.GetNativeCurrency(h.config.NetworkID, denom)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to get native currency")
+	}
+	price, err := h.config.CoinGeckoPrices.Historical(nativeCurrency.CoinGeckoID, t)
+	if err != nil {
+		return 0, errors.Wrap(err, fmt.Sprintf(`failed to get historical price for %s`, nativeCurrency.CoinGeckoID))
+	}
+	return price, nil
 }

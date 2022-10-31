@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -33,19 +33,14 @@ export const TransactionPaymentModal: React.FC<{
   onClose,
   visible = false,
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
   const isKeplrConnected = useSelector(selectIsKeplrConnected);
   const selectedWallet = useSelectedWallet();
   const networkId = process.env.TERITORI_NETWORK_ID; // FIXME: support other networks
   const balances = useBalances(networkId, selectedWallet?.address);
   const balance = balances.find((bal) => bal.denom === priceDenom)?.amount;
 
-  useEffect(() => {
-    setIsVisible(visible);
-  }, [visible]);
-
   return (
-    <ModalBase visible={isVisible} onClose={onClose} width={372} label={label}>
+    <ModalBase visible={visible} onClose={onClose} width={372} label={label}>
       <View>
         {/*==== Text*/}
         <View style={{ flexDirection: "row", marginBottom: 16 }}>
