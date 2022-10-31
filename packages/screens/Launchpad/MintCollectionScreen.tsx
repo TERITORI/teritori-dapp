@@ -26,7 +26,7 @@ import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bun
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getNetwork } from "../../networks";
+import {getCurrency, getNetwork} from "../../networks";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
@@ -236,14 +236,17 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   />
                 )}
 
-                <PrimaryButton
-                  size="XL"
-                  text="Deposit Atom"
-                  width={160}
-                  disabled={mintButtonDisabled}
-                  loader
-                  onPress={() => setDepositVisible(true)}
-                />
+                {getCurrency(process.env.TERITORI_NETWORK_ID, info.priceDenom)?.kind === "ibc" && (
+                  <PrimaryButton
+                    size="XL"
+                    text="Deposit Atom"
+                    width={160}
+                    disabled={mintButtonDisabled}
+                    loader
+                    onPress={() => setDepositVisible(true)}
+                  />
+                )}
+
               </View>
 
               {hasLinks && (
@@ -310,9 +313,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         <DepositWithdrawModal
           variation="deposit"
           networkId={selectedNetwork}
-          targetCurrency={
-            network.currencies.find((c) => c.kind === "ibc")?.denom
-          }
+          targetCurrency={info.priceDenom}
           onClose={() => setDepositVisible(false)}
           isVisible={isDepositVisible}
         />
