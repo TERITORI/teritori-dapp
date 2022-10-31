@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import starSVG from "../../../assets/icons/star.svg";
+import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
@@ -22,10 +23,7 @@ import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
 import { NFTSellCard } from "../cards/NFTSellCard";
 import { CollapsableSection } from "../collapsable/CollapsableSection";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
-import {
-  TransactionModals,
-  useTransactionModals,
-} from "../modals/transaction/TransactionModals";
+import { TransactionModals } from "../modals/transaction/TransactionModals";
 import { Tabs } from "../tabs/Tabs";
 import { NFTAttributes } from "./NFTAttributes";
 import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";

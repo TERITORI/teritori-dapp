@@ -1,3 +1,4 @@
+import { Decimal } from "@cosmjs/math";
 import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useEffect, useState } from "react";
 import { View, Image, Platform, StyleSheet } from "react-native";
@@ -33,6 +34,7 @@ import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { toriCurrency } from "../../utils/teritori";
 import { CollectionStat } from "./components/CollectionStat";
 
 const nftWidth = 268; // FIXME: ssot
@@ -161,14 +163,20 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
             <View style={styles.statRow}>
               <CollectionStat
                 label="Floor"
-                value={(stats?.floorPrice || 0).toString()}
+                value={Decimal.fromAtomics(
+                  stats?.floorPrice || "0",
+                  toriCurrency.coinDecimals
+                ).toString()}
                 addLogo
               />
               <SpacerRow size={1.5} />
               <CollectionStat
                 label="Total Volume"
-                value={stats?.totalVolume || "0"}
-                addLogo
+                value={
+                  stats?.totalVolume
+                    ? "$" + parseFloat(stats.totalVolume).toFixed(2)
+                    : "$0"
+                }
               />
               <SpacerRow size={1.5} />
               <CollectionStat
@@ -184,7 +192,6 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
               <CollectionStat
                 label="Total Supply"
                 value={(stats?.totalSupply || 0).toString()}
-                addLogo
               />
             </View>
             <View style={styles.statRow}>

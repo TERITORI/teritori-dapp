@@ -4,11 +4,7 @@ import { CosmWasmClient, SigningCosmWasmClient } from "cosmwasm";
 import { teritoriGasPrice } from "./teritori";
 
 const PUBLIC_RPC_ENDPOINT = process.env.PUBLIC_CHAIN_RPC_ENDPOINT || "";
-const PUBLIC_CHAIN_ID = process.env.PUBLIC_CHAIN_ID;
-
-if (!PUBLIC_CHAIN_ID) {
-  throw new Error("missing PUBLIC_CHAIN_ID in env");
-}
+const PUBLIC_CHAIN_ID = process.env.PUBLIC_CHAIN_ID || "";
 
 export function isKeplrInstalled() {
   return !!(window as KeplrWindow)?.keplr;

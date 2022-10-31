@@ -18,6 +18,7 @@ import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { SidebarContextProvider } from "./packages/context/SidebarProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
+import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
 import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
@@ -51,12 +52,14 @@ export default function App() {
               <FeedbacksContextProvider>
                 <DropdownsContextProvider>
                   <WalletsProvider>
-                    <TNSContextProvider>
-                      <SidebarContextProvider>
-                        <StatusBar style="inverted" />
-                        <Navigator />
-                      </SidebarContextProvider>
-                    </TNSContextProvider>
+                    <TransactionModalsProvider>
+                      <TNSContextProvider>
+                        <SidebarContextProvider>
+                          <StatusBar style="inverted" />
+                          <Navigator />
+                        </SidebarContextProvider>
+                      </TNSContextProvider>
+                    </TransactionModalsProvider>
                   </WalletsProvider>
                 </DropdownsContextProvider>
               </FeedbacksContextProvider>

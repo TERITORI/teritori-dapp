@@ -66,6 +66,7 @@ message Activity {
   string transaction_id = 9;
   string buyer_id = 10;
   string seller_id = 11;
+  double usd_price = 12;
 }
 
 message Quest {

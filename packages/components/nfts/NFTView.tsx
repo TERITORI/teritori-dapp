@@ -9,7 +9,6 @@ import {
   Pressable,
 } from "react-native";
 
-import avatarPNG from "../../../assets/default-images/avatar.png";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import footerSVG from "../../../assets/icons/footer-regular.svg";
 import gridSVG from "../../../assets/icons/grid.svg";
@@ -26,6 +25,7 @@ import { protobufNetworkToNetwork } from "../../utils/network";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { CurrencyIcon } from "../CurrencyIcon";
 import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { SVG } from "../SVG";
@@ -116,9 +116,12 @@ export const NFTView: React.FC<{
                 >
                   <Image
                     source={{
-                      uri: tnsMetadata.metadata?.image
-                        ? ipfsURLToHTTPURL(tnsMetadata.metadata.image)
-                        : avatarPNG,
+                      uri: ipfsURLToHTTPURL(
+                        tnsMetadata.metadata?.image
+                          ? tnsMetadata.metadata.image
+                          : process.env
+                              .TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
+                      ),
                     }} // TODO: proper fallback
                     style={{
                       height: 32,
@@ -254,9 +257,10 @@ export const NFTView: React.FC<{
               >
                 {nft.isListed ? (
                   <>
-                    <NetworkIcon
-                      size={12}
-                      network={protobufNetworkToNetwork(nft.network)}
+                    <CurrencyIcon
+                      size={24}
+                      networkId={process.env.TERITORI_NETWORK_ID || ""}
+                      denom={nft.denom}
                     />
                     {/* FIXME: should come from price denom */}
                     <BrandText

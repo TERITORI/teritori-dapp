@@ -9,6 +9,7 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerhandler"
+	"github.com/TERITORI/teritori-dapp/go/pkg/coingeckoprices"
 	"github.com/TERITORI/teritori-dapp/go/pkg/quests"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -42,6 +43,7 @@ func main() {
 		dbPass                = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbName                = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser                = fs.String("postgres-user", "", "username for postgreSQL")
+		teritoriNetworkID     = fs.String("teritori-network-id", "teritori", "teritori network id")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -89,6 +91,12 @@ func main() {
 	}
 	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
 		panic(errors.New("missing Database configuration"))
+	}
+
+	// get price service
+	cgp, err := coingeckoprices.NewCoinGeckoPrices()
+	if err != nil {
+		panic(errors.Wrap(err, "failed to initialize price service"))
 	}
 
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
@@ -173,6 +181,8 @@ func main() {
 					TNSContractAddress:   *tnsContractAddress,
 					TNSDefaultImageURL:   *tnsDefaultImageURL,
 					TendermintClient:     client,
+					NetworkID:            *teritoriNetworkID,
+					CoinGeckoPrices:      cgp,
 				}, logger)
 				if err != nil {
 					return errors.Wrap(err, "failed to create handler")

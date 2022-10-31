@@ -1,25 +1,11 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import React, { useState } from "react";
 
+import { useTransactionModals } from "../../../context/TransactionModalsProvider";
 import { NFTInfo } from "../../../screens/Marketplace/NFTDetailScreen";
 import { TransactionPaymentModal } from "./TransactionPaymentModal";
 import { TransactionPendingModal } from "./TransactionPendingModal";
 import { TransactionSuccessModal } from "./TransactionSuccessModal";
-
-// this hook is used to open modals from parents components. All the flow progress is handled by TransactionModals props.
-export const useTransactionModals = () => {
-  const [transactionPaymentModalVisible, setTransactionPaymentModalVisible] =
-    useState(false);
-  // The parents just want to open this modals flow. You can use openTransactionModals from the parents
-  const openTransactionModals = () => {
-    setTransactionPaymentModalVisible(true);
-  };
-  return {
-    openTransactionModals,
-    transactionPaymentModalVisible,
-    setTransactionPaymentModalVisible,
-  };
-};
 
 // It concerns only NFTs for now TODO: More global for all types of transaction ? This design could be used for all transactions ? Better to use ContextAPI instead of useTransactionModals hook ?
 export const TransactionModals: React.FC<{
@@ -33,7 +19,7 @@ export const TransactionModals: React.FC<{
   textComponentPayment,
   textComponentSuccess,
 }) => {
-  const { transactionPaymentModalVisible, setTransactionPaymentModalVisible } =
+  const { transactionPaymentModalVisible, closeTransactionPaymentModal } =
     useTransactionModals();
   const [transactionPendingModalVisible, setTransactionPendingModalVisible] =
     useState(false);
@@ -42,7 +28,7 @@ export const TransactionModals: React.FC<{
   const [transactionHash, setTransactionHash] = useState("");
 
   const handleStartTransaction = async () => {
-    setTransactionPaymentModalVisible(false);
+    closeTransactionPaymentModal();
     setTransactionPendingModalVisible(true);
     startTransaction().then((reply) => {
       if (!reply) {
@@ -60,7 +46,7 @@ export const TransactionModals: React.FC<{
       {/* ----- Modal to process payment*/}
       <TransactionPaymentModal
         onPressProceed={handleStartTransaction}
-        onClose={() => setTransactionPaymentModalVisible(false)}
+        onClose={closeTransactionPaymentModal}
         visible={transactionPaymentModalVisible}
         price={nftInfo?.price}
         priceDenom={nftInfo?.priceDenom}

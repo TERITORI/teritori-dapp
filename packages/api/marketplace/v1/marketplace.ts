@@ -100,6 +100,7 @@ export interface Activity {
   transactionId: string;
   buyerId: string;
   sellerId: string;
+  usdPrice: number;
 }
 
 export interface Quest {
@@ -619,6 +620,7 @@ function createBaseActivity(): Activity {
     transactionId: "",
     buyerId: "",
     sellerId: "",
+    usdPrice: 0,
   };
 }
 
@@ -656,6 +658,9 @@ export const Activity = {
     }
     if (message.sellerId !== "") {
       writer.uint32(90).string(message.sellerId);
+    }
+    if (message.usdPrice !== 0) {
+      writer.uint32(97).double(message.usdPrice);
     }
     return writer;
   },
@@ -700,6 +705,9 @@ export const Activity = {
         case 11:
           message.sellerId = reader.string();
           break;
+        case 12:
+          message.usdPrice = reader.double();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -721,6 +729,7 @@ export const Activity = {
       transactionId: isSet(object.transactionId) ? String(object.transactionId) : "",
       buyerId: isSet(object.buyerId) ? String(object.buyerId) : "",
       sellerId: isSet(object.sellerId) ? String(object.sellerId) : "",
+      usdPrice: isSet(object.usdPrice) ? Number(object.usdPrice) : 0,
     };
   },
 
@@ -737,6 +746,7 @@ export const Activity = {
     message.transactionId !== undefined && (obj.transactionId = message.transactionId);
     message.buyerId !== undefined && (obj.buyerId = message.buyerId);
     message.sellerId !== undefined && (obj.sellerId = message.sellerId);
+    message.usdPrice !== undefined && (obj.usdPrice = message.usdPrice);
     return obj;
   },
 
@@ -753,6 +763,7 @@ export const Activity = {
     message.transactionId = object.transactionId ?? "";
     message.buyerId = object.buyerId ?? "";
     message.sellerId = object.sellerId ?? "";
+    message.usdPrice = object.usdPrice ?? 0;
     return message;
   },
 };
