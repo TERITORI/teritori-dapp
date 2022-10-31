@@ -43,6 +43,7 @@ message Collection {
   Network network = 7;
   string volume = 8;
   string volume_denom = 9;
+  string creator_id = 10;
 }
 
 message CollectionStats {

@@ -163,7 +163,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           ellipsizeMode="middle"
           numberOfLines={1}
         >
-          {buyerTNSMetadata.metadata?.public_name || buyerAddress}
+          {buyerTNSMetadata.metadata?.tokenId || buyerAddress}
         </ExternalLink>
       </View>
       <View
@@ -178,7 +178,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           ellipsizeMode="middle"
           numberOfLines={1}
         >
-          {sellerTNSMetadata.metadata?.public_name || sellerAddress}
+          {sellerTNSMetadata.metadata?.tokenId || sellerAddress}
         </ExternalLink>
       </View>
     </View>

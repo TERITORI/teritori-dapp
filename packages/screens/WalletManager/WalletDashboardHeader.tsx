@@ -132,7 +132,7 @@ export const WalletDashboardHeader: React.FC = () => {
               fontSize: 20,
             }}
           >
-            {tnsMetadata.metadata?.public_name || selectedWallet?.address || ""}
+            {tnsMetadata.metadata?.tokenId || selectedWallet?.address || ""}
           </BrandText>
         </View>
       </View>
