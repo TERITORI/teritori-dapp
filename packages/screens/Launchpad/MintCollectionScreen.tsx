@@ -312,7 +312,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 
         <DepositWithdrawModal
           variation="deposit"
-          networkId={selectedNetwork}
+          networkId={process.env.TERITORI_NETWORK_ID || ""}
           targetCurrency={info.priceDenom}
           onClose={() => setDepositVisible(false)}
           isVisible={isDepositVisible}
