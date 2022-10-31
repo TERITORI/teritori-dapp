@@ -34,6 +34,7 @@ const NotOwnerActions = () => {
         style={{ marginBottom: 42, alignSelf: "center" }}
         // TODO: if no signed, connectKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}
+        squaresBackgroundColor={neutral17}
       />
       <SendFundModal
         onClose={() => setSendFundsModalVisible(false)}
@@ -135,7 +136,8 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
 
   // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the token is not minted
   useFocusEffect(() => {
-    if (!isKeplrConnected) navigation.navigate("TNSHome");
+    if (!isKeplrConnected)
+      navigation.navigate("TNSHome", { modal: "consult-name", name });
   });
 
   return (
@@ -180,10 +182,14 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
                     squaresBackgroundColor={neutral17}
                   />
                 ) : (
-                  <CopyToClipboard
-                    text={token.contract_address}
-                    squaresBackgroundColor={neutral17}
-                  />
+                  <>
+                    {!!token.contract_address && (
+                      <CopyToClipboard
+                        text={token.contract_address}
+                        squaresBackgroundColor={neutral17}
+                      />
+                    )}
+                  </>
                 )}
                 <NameData token={token} name={name} style={{ marginTop: 20 }} />
               </View>

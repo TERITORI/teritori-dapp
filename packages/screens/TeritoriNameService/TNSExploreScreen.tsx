@@ -11,6 +11,7 @@ import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 
@@ -76,6 +77,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
                 setName(name);
                 onClose("TNSConsultName");
               }}
+              squaresBackgroundColor={neutral17}
             />
             <PrimaryButtonOutline
               size="XL"
@@ -83,6 +85,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
               disabled={!isKeplrConnected}
               text="Send funds"
               onPress={() => setSendFundsModalVisible(true)}
+              squaresBackgroundColor={neutral17}
             />
           </View>
         ) : null}

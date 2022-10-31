@@ -11,7 +11,7 @@ import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral33 } from "../../utils/style/colors";
+import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSCloseHandler } from "./TNSHomeScreen";
 
@@ -74,6 +74,7 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
           <PrimaryButton
             size="XL"
             width={280}
+            squaresBackgroundColor={neutral17}
             text="Register your Username"
             onPress={() => {
               setName(name);
@@ -93,6 +94,7 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
                 id: `tori-${selectedWallet?.address}`,
               });
             }}
+            squaresBackgroundColor={neutral17}
           />
         )}
       </FindAName>

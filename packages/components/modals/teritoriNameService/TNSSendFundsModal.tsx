@@ -27,7 +27,11 @@ export const SendFundModal: React.FC<{
       width={372}
       label={`Your wallet has ${numberWithThousandsSeparator(1000)} Tori`}
     >
-      <View>
+      <View
+        style={{
+          alignItems: "center",
+        }}
+      >
         <TextInputCustom<SendFundFormType>
           name="comment"
           label="COMMENT ?"
@@ -37,19 +41,24 @@ export const SendFundModal: React.FC<{
           style={{ marginBottom: 12 }}
           width={322}
         />
-        <View style={{ flex: 1, flexDirection: "row" }}>
-          <TextInputCustom<SendFundFormType>
-            name="amount"
-            label="TORI AMOUNT ?"
-            value={amount}
-            placeHolder="Type your amount here"
-            onChangeText={setAmount}
-            currency={toriCurrency}
-            style={{ marginRight: 12, minWidth: 0 }}
-            width={322}
-          />
-          <PrimaryButton size="M" text="Send" />
-        </View>
+
+        <TextInputCustom<SendFundFormType>
+          name="amount"
+          label="TORI AMOUNT ?"
+          value={amount}
+          placeHolder="Type your amount here"
+          onChangeText={setAmount}
+          currency={toriCurrency}
+          style={{ marginRight: 12, minWidth: 0 }}
+          width={322}
+        />
+        <PrimaryButton
+          size="M"
+          text="Send"
+          style={{
+            marginVertical: 20,
+          }}
+        />
       </View>
     </ModalBase>
   );

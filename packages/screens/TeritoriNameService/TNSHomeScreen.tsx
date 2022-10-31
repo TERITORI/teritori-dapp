@@ -1,4 +1,3 @@
-import { useLinkTo } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
@@ -57,12 +56,11 @@ const MD_BREAKPOINT = 820;
 export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const { width } = useWindowDimensions();
 
-  const linkTo = useLinkTo();
   const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
   const [pressedTNSItems, setPressedTNSItems] = useState<TNSItems>();
   const [activeModal, setActiveModal] = useState<TNSModals>();
   const [navigateBackTo, setNavigateBackTo] = useState<TNSModals>();
-  const { setName } = useTNS();
+  const { name, setName } = useTNS();
   const navigation = useAppNavigation();
 
   const isKeplrConnected = useIsKeplrConnected();
@@ -78,11 +76,10 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
 
   const handleModalClose: TNSCloseHandler = (modalName, navigateBackTo) => {
     if (modalName) {
-      linkTo(`/tns/${TNSPathMap[modalName]}`);
+      navigation.navigate("TNSHome", { modal: TNSPathMap[modalName], name });
       setNavigateBackTo(navigateBackTo);
     } else {
-      linkTo("/tns");
-      setName("");
+      navigation.navigate("TNSHome", { modal: "", name });
     }
   };
 
@@ -173,7 +170,12 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           }}
           onEnter={() => {
             setModalNameFinderVisible(false);
-            pressedTNSItems && linkTo(`/tns/${TNSPathMap[pressedTNSItems]}`);
+
+            pressedTNSItems &&
+              navigation.navigate("TNSHome", {
+                modal: TNSPathMap[pressedTNSItems],
+                name,
+              });
           }}
         />
         {activeModal === "TNSManage" && (

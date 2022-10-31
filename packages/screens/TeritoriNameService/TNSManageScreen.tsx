@@ -108,7 +108,7 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
     // ===== Controls many things, be careful
     if ((tokens && !userHasCoWallet) || !isKeplrConnected)
       navigation.navigate("TNSHome", {
-        modal: "",
+        modal: "manage",
       });
     if (!tokens.length) return;
 

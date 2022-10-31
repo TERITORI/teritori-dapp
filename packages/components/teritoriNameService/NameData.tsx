@@ -1,7 +1,7 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
 
-import { neutral77 } from "../../utils/style/colors";
+import { neutral17, neutral77 } from "../../utils/style/colors";
 import {
   imageDisplayLabel,
   prettyTokenData,
@@ -29,9 +29,9 @@ export const NameData: React.FC<{
           paddingHorizontal: 24,
           paddingVertical: 24,
         },
-        style,
       ]}
-      squaresBackgroundColor={neutral77}
+      style={style}
+      squaresBackgroundColor={neutral17}
     >
       {token ? (
         <>
