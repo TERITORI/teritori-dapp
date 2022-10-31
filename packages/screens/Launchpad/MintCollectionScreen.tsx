@@ -24,9 +24,8 @@ import {
 } from "../../context/FeedbacksProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCurrency, getNetwork } from "../../networks";
+import { getCurrency } from "../../networks";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
@@ -75,7 +74,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
-  const selectedNetwork = useSelectedNetworkId();
   const { info, notFound, loading } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const { navigate } = useAppNavigation();
