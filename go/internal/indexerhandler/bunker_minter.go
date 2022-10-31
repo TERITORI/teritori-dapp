@@ -44,6 +44,7 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
+			CreatorAddress:      instantiateMsg.Sender,
 		},
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
@@ -107,6 +108,32 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 	}
 
 	h.logger.Info("minted nft", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
+
+	return nil
+}
+
+type BunkerUpdateConfigMsg struct {
+	Payload struct {
+		Owner *string `json:"owner"`
+	} `json:"update_config"`
+}
+
+func (h *Handler) handleExecuteBunkerUpdateConfig(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	var msg BunkerUpdateConfigMsg
+	if err := json.Unmarshal(execMsg.Msg, &msg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal tns set_adming_address msg")
+	}
+
+	if msg.Payload.Owner != nil {
+		if err := h.db.
+			Model(&indexerdb.TeritoriCollection{}).
+			Where("collection_id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
+			UpdateColumn("CreatorAddress", msg.Payload.Owner).
+			Error; err != nil {
+			return errors.Wrap(err, "failed to update bunker creator")
+		}
+		h.logger.Info("updated bunker creator")
+	}
 
 	return nil
 }

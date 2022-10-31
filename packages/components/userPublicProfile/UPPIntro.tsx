@@ -23,12 +23,12 @@ import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 
 export const UPPIntro: React.FC<{
   userId: string;
-  metadata?: Metadata;
+  metadata?: Metadata & { tokenId: string };
 }> = ({ userId, metadata }) => {
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
   const navigation = useAppNavigation();
-  const name = (metadata?.public_name || "").replace(process.env.TLD || "", "");
+  const name = (metadata?.tokenId || "").replace(process.env.TLD || "", "");
 
   return (
     <>
@@ -124,7 +124,7 @@ export const UPPIntro: React.FC<{
           <SVG source={userImageFrameSVG} width={196} height={196} />
           {/* Pseudo and bio */}
           <BrandText style={[fontSemibold20, { marginTop: 10 }]}>
-            {metadata?.public_name || ""}
+            {metadata?.tokenId || ""}
           </BrandText>
           <BrandText
             numberOfLines={6}

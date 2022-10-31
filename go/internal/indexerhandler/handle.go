@@ -214,6 +214,14 @@ func (h *Handler) handleExecute(e *Message) error {
 		if err := h.handleExecuteUpdateTNSMetadata(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle transfer")
 		}
+	case "set_admin_address":
+		if err := h.handleExecuteTNSSetAdminAddress(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle transfer")
+		}
+	case "update_config":
+		if err := h.handleExecuteBunkerUpdateConfig(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle transfer")
+		}
 	}
 
 	return nil

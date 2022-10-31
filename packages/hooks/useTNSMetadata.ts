@@ -33,7 +33,7 @@ export const useTNSMetadata = (address?: string) => {
         tokenId: aliasResponse.username,
       });
 
-      return nftInfo.extension;
+      return { tokenId: aliasResponse.username, ...nftInfo.extension };
     }
   );
 
