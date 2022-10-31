@@ -29,7 +29,7 @@ import {
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { capitalize } from "../../../utils/text";
+import { capitalize } from "../../../utils/common";
 import { TransactionForm } from "../types";
 
 type DepositModalProps = {

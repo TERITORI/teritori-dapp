@@ -7,6 +7,7 @@ import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryBut
 import { SpacerRow } from "../../../components/spacer";
 import { TableRow, TableRowHeading } from "../../../components/table";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
+import { removeObjectKey } from "../../../utils/common";
 import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -42,12 +43,16 @@ interface ValidatorsListAction {
 
 export const ValidatorsTable: React.FC<{
   validators: ValidatorInfo[];
-  actions: (validator: ValidatorInfo) => ValidatorsListAction[];
+  actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
   style?: StyleProp<ViewStyle>;
 }> = ({ validators, actions, style }) => {
+  // variables
+  const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
+
+  // returns
   return (
     <>
-      <TableRow headings={Object.values(TABLE_ROWS)} />
+      <TableRow headings={Object.values(ROWS)} />
       <FlatList
         data={validators}
         style={style}
@@ -62,7 +67,7 @@ export const ValidatorsTable: React.FC<{
 
 const ValidatorRow: React.FC<{
   validator: ValidatorInfo;
-  actions: (validator: ValidatorInfo) => ValidatorsListAction[];
+  actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
 }> = ({ validator, actions }) => {
   const imageURL = useKeybaseAvatarURL(validator.identity);
   return (
@@ -79,49 +84,72 @@ const ValidatorRow: React.FC<{
         paddingVertical: layout.padding_x2,
       }}
     >
-      <BrandText style={[fontSemibold13, { flex: 1, paddingRight: 8 }]}>
+      <BrandText
+        style={[
+          fontSemibold13,
+          { flex: TABLE_ROWS.rank.flex, paddingRight: layout.padding_x1 },
+        ]}
+      >
         {validator.rank}
       </BrandText>
       <View
         style={{
           flexDirection: "row",
           alignItems: "center",
-          flex: 4,
-          paddingRight: 8,
+          flex: TABLE_ROWS.name.flex,
+          paddingRight: layout.padding_x1,
         }}
       >
         <Avatar uri={imageURL || ""} />
         <SpacerRow size={1} />
         <BrandText style={fontSemibold13}>{validator?.moniker || ""}</BrandText>
       </View>
-      <BrandText style={[fontSemibold13, { flex: 3, paddingRight: 8 }]}>
+      <BrandText
+        style={[
+          fontSemibold13,
+          {
+            flex: TABLE_ROWS.votingPower.flex,
+            paddingRight: layout.padding_x1,
+          },
+        ]}
+      >
         {validator.votingPower}
       </BrandText>
-      <BrandText style={[fontSemibold13, { flex: 4, paddingRight: 8 }]}>
+      <BrandText
+        style={[
+          fontSemibold13,
+          {
+            flex: TABLE_ROWS.commission.flex,
+            paddingRight: actions ? layout.padding_x1 : 0,
+          },
+        ]}
+      >
         {validator.commission}
       </BrandText>
-      <View
-        style={{
-          flex: 2,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {actions(validator).map((action, index) => (
-          <SecondaryButtonOutline
-            key={index}
-            onPress={() => {
-              if (typeof action.onPress !== "function") {
-                return;
-              }
-              action.onPress(validator);
-            }}
-            text={action.label}
-            size="XS"
-          />
-        ))}
-      </View>
+      {actions && (
+        <View
+          style={{
+            flex: TABLE_ROWS.actions.flex,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {actions(validator).map((action, index) => (
+            <SecondaryButtonOutline
+              key={index}
+              onPress={() => {
+                if (typeof action.onPress !== "function") {
+                  return;
+                }
+                action.onPress(validator);
+              }}
+              text={action.label}
+              size="XS"
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 };

@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Tabs } from "../../components/tabs/Tabs";
+import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useValidators } from "../../hooks/useValidators";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -38,6 +39,7 @@ export const StakeScreen: React.FC = () => {
     },
   };
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("active");
+  const areThereWallets = useAreThereWallets();
 
   // functions
   const toggleDetailModal = (stakeData?: ValidatorInfo) => {
@@ -60,6 +62,7 @@ export const StakeScreen: React.FC = () => {
     setStakeDetailModalVisible(false);
   };
 
+  // returns
   return (
     <ScreenContainer>
       <View style={styles.rowHeader}>
@@ -77,7 +80,11 @@ export const StakeScreen: React.FC = () => {
         validators={
           selectedTab === "active" ? activeValidators : inactiveValidators
         }
-        actions={() => [{ label: "Manage", onPress: toggleDetailModal }]}
+        actions={
+          areThereWallets
+            ? () => [{ label: "Manage", onPress: toggleDetailModal }]
+            : undefined
+        }
       />
       <StakeDetailModal
         visible={stakeDetailModalVisible}
