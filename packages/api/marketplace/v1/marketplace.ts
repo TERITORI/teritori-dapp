@@ -77,6 +77,7 @@ export interface Collection {
   network: Network;
   volume: string;
   volumeDenom: string;
+  creatorId: string;
 }
 
 export interface CollectionStats {
@@ -393,6 +394,7 @@ function createBaseCollection(): Collection {
     network: 0,
     volume: "",
     volumeDenom: "",
+    creatorId: "",
   };
 }
 
@@ -424,6 +426,9 @@ export const Collection = {
     }
     if (message.volumeDenom !== "") {
       writer.uint32(74).string(message.volumeDenom);
+    }
+    if (message.creatorId !== "") {
+      writer.uint32(82).string(message.creatorId);
     }
     return writer;
   },
@@ -462,6 +467,9 @@ export const Collection = {
         case 9:
           message.volumeDenom = reader.string();
           break;
+        case 10:
+          message.creatorId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -481,6 +489,7 @@ export const Collection = {
       network: isSet(object.network) ? networkFromJSON(object.network) : 0,
       volume: isSet(object.volume) ? String(object.volume) : "",
       volumeDenom: isSet(object.volumeDenom) ? String(object.volumeDenom) : "",
+      creatorId: isSet(object.creatorId) ? String(object.creatorId) : "",
     };
   },
 
@@ -495,6 +504,7 @@ export const Collection = {
     message.network !== undefined && (obj.network = networkToJSON(message.network));
     message.volume !== undefined && (obj.volume = message.volume);
     message.volumeDenom !== undefined && (obj.volumeDenom = message.volumeDenom);
+    message.creatorId !== undefined && (obj.creatorId = message.creatorId);
     return obj;
   },
 
@@ -509,6 +519,7 @@ export const Collection = {
     message.network = object.network ?? 0;
     message.volume = object.volume ?? "";
     message.volumeDenom = object.volumeDenom ?? "";
+    message.creatorId = object.creatorId ?? "";
     return message;
   },
 };

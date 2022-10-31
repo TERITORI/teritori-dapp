@@ -100,9 +100,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     <ScreenContainer
       smallMargin
       headerChildren={
-        <BrandText style={fontSemibold20}>
-          {metadata?.public_name || ""}
-        </BrandText>
+        <BrandText style={fontSemibold20}>{metadata?.tokenId || ""}</BrandText>
       }
     >
       {notFound || !id.startsWith("tori-") ? (

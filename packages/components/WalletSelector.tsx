@@ -54,7 +54,7 @@ const WalletView: React.FC<{
         numberOfLines={1}
         ellipsizeMode="middle"
       >
-        {tnsMetadata?.metadata?.public_name || wallet?.address || ""}
+        {tnsMetadata?.metadata?.tokenId || wallet?.address || ""}
       </BrandText>
     </View>
   );

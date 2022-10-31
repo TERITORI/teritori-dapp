@@ -145,7 +145,7 @@ export const NFTView: React.FC<{
                         lineHeight: 16,
                       }}
                     >
-                      {tnsMetadata.metadata?.public_name ||
+                      {tnsMetadata.metadata?.tokenId ||
                         shortUserAddressFromID(nft.ownerId, 10)}
                     </BrandText>
                   </View>

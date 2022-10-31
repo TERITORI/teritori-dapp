@@ -30,6 +30,7 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  contractAddress,
+			CreatorAddress:      instantiateMsg.Sender,
 		},
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
@@ -171,6 +172,34 @@ func (h *Handler) handleExecuteUpdateTNSMetadata(e *Message, execMsg *wasmtypes.
 		}
 		h.logger.Info("updated tns image")
 	}
+
+	return nil
+}
+
+type TNSSetAdminAddressMsg struct {
+	Payload struct {
+		AdminAddress string `json:"admin_address"`
+	} `json:"set_admin_address"`
+}
+
+func (h *Handler) handleExecuteTNSSetAdminAddress(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	if execMsg.Contract != h.config.TNSContractAddress {
+		return nil
+	}
+
+	var msg TNSSetAdminAddressMsg
+	if err := json.Unmarshal(execMsg.Msg, &msg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal tns set_adming_address msg")
+	}
+
+	if err := h.db.
+		Model(&indexerdb.TeritoriCollection{}).
+		Where("collection_id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
+		UpdateColumn("CreatorAddress", msg.Payload.AdminAddress).
+		Error; err != nil {
+		return errors.Wrap(err, "failed to update tns creator")
+	}
+	h.logger.Info("updated tns creator")
 
 	return nil
 }

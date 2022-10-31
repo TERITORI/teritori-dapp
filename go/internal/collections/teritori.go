@@ -35,6 +35,7 @@ type DBCollectionWithExtra struct {
 	ImageURI            string
 	Volume              string
 	MintContractAddress string
+	CreatorAddress      string
 }
 
 func (p *teritoriCollectionsProvider) Collections(limit int, offset int) chan *marketplacepb.Collection {
@@ -48,7 +49,7 @@ func (p *teritoriCollectionsProvider) Collections(limit int, offset int) chan *m
 	}
 	rows, err := db.QueryContext(context.Background(), `
 	with tori_collections as (
-		SELECT c.*, tc.mint_contract_address  FROM collections AS c
+		SELECT c.*, tc.mint_contract_address, tc.creator_address FROM collections AS c
 		INNER join teritori_collections tc on tc.collection_id = c.id
 	),
 	nft_by_collection as (
@@ -74,12 +75,6 @@ func (p *teritoriCollectionsProvider) Collections(limit int, offset int) chan *m
 		return ch
 	}
 
-	// NOTE: You can uncomment this to dump the SQL query
-	/*
-		sql := p.indexerDB.ToSQL(func(tx *gorm.DB) *gorm.DB { return makeQuery(tx, &[]map[string]interface{}{}) })
-		fmt.Println("SQL:\n" + sql)
-	*/
-
 	var collections []DBCollectionWithExtra
 	err = queries.Bind(rows, &collections)
 	if err != nil {
@@ -99,6 +94,7 @@ func (p *teritoriCollectionsProvider) Collections(limit int, offset int) chan *m
 				MintAddress:    c.MintContractAddress,
 				Network:        marketplacepb.Network_NETWORK_TERITORI,
 				Volume:         c.Volume,
+				CreatorId:      string(indexerdb.TeritoriUserID(c.CreatorAddress)),
 			}
 		}
 	}()

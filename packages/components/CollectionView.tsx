@@ -2,12 +2,11 @@ import React from "react";
 import { Image, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import certifiedIconSVG from "../../assets/icons/certified.svg";
 import { Collection } from "../api/marketplace/v1/marketplace";
+import { useTNSMetadata } from "../hooks/useTNSMetadata";
 import { useAppNavigation } from "../utils/navigation";
 import { lavenderDefault } from "../utils/style/colors";
 import { BrandText } from "./BrandText";
-import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 
 export const collectionItemHeight = 266;
@@ -17,6 +16,8 @@ const contentWidth = 172;
 export const CollectionView: React.FC<{
   item: Collection;
 }> = ({ item }) => {
+  const creatorAddress = item.creatorId.replace("tori-", "");
+  const tnsMetadata = useTNSMetadata(creatorAddress);
   const navigation = useAppNavigation();
   return (
     <TouchableOpacity
@@ -62,13 +63,10 @@ export const CollectionView: React.FC<{
               ellipsizeMode="tail"
               numberOfLines={1}
             >
-              {item.creatorName}
+              {tnsMetadata.metadata?.tokenId ||
+                item.creatorName ||
+                creatorAddress}
             </BrandText>
-            {item.verified && (
-              <View style={{ marginLeft: 14 }}>
-                <SVG source={certifiedIconSVG} width={16} height={16} />
-              </View>
-            )}
           </View>
         </View>
       </TertiaryBox>
