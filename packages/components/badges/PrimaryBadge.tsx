@@ -31,7 +31,6 @@ export const PrimaryBadge: React.FC<{
           backgroundColor:
             backgroundColor === "primary" ? primaryColor : secondaryColor,
           borderRadius: 999,
-          width: "fit-content",
         },
         style,
       ]}
