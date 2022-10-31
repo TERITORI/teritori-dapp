@@ -331,6 +331,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   return (
     <ScreenContainer
       fullWidth
+      footerChildren={<></>}
       noMargin
       noScroll
       headerChildren={<BackTo label="Collection Profile" />}

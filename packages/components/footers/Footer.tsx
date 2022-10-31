@@ -13,19 +13,19 @@ import mediumSVG from "../../../assets/icons/medium.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { secondaryColor } from "../../utils/style/colors";
-import { screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { LegalFooter } from "./LegalFooter";
 
-export const FooterSocialNetworks: React.FC = () => {
+const FooterSocialNetworks: React.FC = () => {
   return (
     <TertiaryBox
-      mainContainerStyle={{ padding: 8, flexDirection: "row" }}
-      style={{ marginBottom: 50 }}
+      mainContainerStyle={{ padding: layout.padding_x1, flexDirection: "row" }}
+      style={{ marginBottom: layout.contentPadding }}
     >
       <TouchableOpacity
-        style={{ marginRight: 9 }}
+        style={{ marginRight: layout.padding_x1 }}
         onPress={() => Linking.openURL("https://medium.com/teritori/")}
       >
         <TertiaryBox
@@ -40,7 +40,7 @@ export const FooterSocialNetworks: React.FC = () => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={{ marginRight: 9 }}
+        style={{ marginRight: layout.padding_x1 }}
         onPress={() => Linking.openURL("https://twitter.com/TeritoriNetwork")}
       >
         <TertiaryBox
@@ -71,7 +71,7 @@ export const FooterSocialNetworks: React.FC = () => {
   );
 };
 
-export const FooterGetUp: React.FC = () => {
+const FooterGetUp: React.FC = () => {
   return (
     <View
       style={{
@@ -79,7 +79,7 @@ export const FooterGetUp: React.FC = () => {
         width: "100%",
         maxWidth: screenContentMaxWidthLarge,
         justifyContent: "space-between",
-        marginBottom: 50,
+        marginBottom: layout.contentPadding,
       }}
     >
       <SVG source={getupSVG} />
@@ -89,9 +89,9 @@ export const FooterGetUp: React.FC = () => {
   );
 };
 
-export const FooterLogo: React.FC = () => {
+const FooterLogo: React.FC = () => {
   return (
-    <View style={{ marginBottom: 32 }}>
+    <View style={{ marginBottom: layout.padding_x4 }}>
       <SVG source={logoSVG} width={88} height={88} />
     </View>
   );

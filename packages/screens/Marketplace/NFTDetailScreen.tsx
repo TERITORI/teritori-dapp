@@ -249,6 +249,7 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   return (
     <ScreenContainer
       fullWidth
+      footerChildren={<></>}
       noScroll
       noMargin
       headerChildren={

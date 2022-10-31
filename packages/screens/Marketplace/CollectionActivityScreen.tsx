@@ -8,7 +8,6 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Footer } from "../../components/footers/Footer";
 import { backendClient } from "../../utils/backend";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
@@ -96,7 +95,7 @@ export const CollectionActivityScreen: ScreenFC<"CollectionActivity"> = ({
     offset: 0,
   });
   return (
-    <ScreenContainer footerChildren={<Footer />}>
+    <ScreenContainer>
       <FlatList
         data={activity}
         onEndReached={fetchMore}

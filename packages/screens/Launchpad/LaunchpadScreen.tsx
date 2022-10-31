@@ -3,7 +3,6 @@ import { StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Footer } from "../../components/footers/Footer";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral77 } from "../../utils/style/colors";
@@ -35,7 +34,7 @@ const BUTTONS: LaunchpadButtonProps[] = [
 
 export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
   return (
-    <ScreenContainer footerChildren={<Footer />}>
+    <ScreenContainer>
       <LaunchpadBanner />
       <SpacerColumn size={2} />
       <BrandText style={fontSemibold28}>Welcome</BrandText>

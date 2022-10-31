@@ -4,13 +4,12 @@ import { View } from "react-native";
 import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
-import { Footer } from "../../components/footers/Footer";
 import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   return (
-    <ScreenContainer footerChildren={<Footer />}>
+    <ScreenContainer>
       <View
         style={{
           paddingBottom: layout.contentPadding,

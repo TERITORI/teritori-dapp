@@ -2,7 +2,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 
-import { neutral11 } from "../../utils/style/colors";
+import { neutral11, neutral67 } from "../../utils/style/colors";
 
 export const PrimaryBox: React.FC<{
   width?: number;
@@ -60,7 +60,7 @@ export const PrimaryBox: React.FC<{
                 padding: 1,
               },
             ]}
-            colors={disabled ? ["#676767", "#B7B7B7"] : ["#01B7C5", "#782C96"]}
+            colors={disabled ? [neutral67, "#B7B7B7"] : ["#01B7C5", "#782C96"]}
           >
             {/* ---- Content container */}
             <View
@@ -115,7 +115,7 @@ export const PrimaryBox: React.FC<{
               }}
               // Approximate colors for the corners border, no inconvenient visible to naked eyes.
               colors={
-                disabled ? ["#676767", "#666666"] : ["#04B4C4", "#04B3C3"]
+                disabled ? [neutral67, "#666666"] : ["#04B4C4", "#04B3C3"]
               }
             />
 

@@ -3,7 +3,6 @@ import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Footer } from "../../components/footers/Footer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { UPPActivity } from "../../components/userPublicProfile/UPPActivity";
 import { UPPGigServices } from "../../components/userPublicProfile/UPPGigServices";
@@ -103,7 +102,6 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       headerChildren={
         <BrandText style={fontSemibold20}>{metadata?.tokenId || ""}</BrandText>
       }
-      footerChildren={<Footer />}
     >
       {notFound || !id.startsWith("tori-") ? (
         <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>

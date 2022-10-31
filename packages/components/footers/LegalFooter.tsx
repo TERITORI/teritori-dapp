@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
-import { neutral33, neutral77 } from "../../utils/style/colors";
+import { neutral33, neutral67, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, legalFooterHeight } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -52,12 +52,16 @@ export const LegalFooter: React.FC = ({ children }) => {
           width: "40%",
         }}
       >
-        {/*TODO: Gradient text for these 3 ExternalLink ["#676767", "#B7B7B7"]*/}
+        {/*TODO: Gradient text for these 3 ExternalLink [neutral67, "#B7B7B7"]*/}
         <ExternalLink
           externalUrl="TODO"
           style={[
             fontSemibold14,
-            { color: "#676767", textDecorationLine: "none", marginRight: layout.padding_x1 },
+            {
+              color: neutral67,
+              textDecorationLine: "none",
+              marginRight: layout.padding_x1,
+            },
           ]}
           numberOfLines={1}
         >
@@ -68,7 +72,11 @@ export const LegalFooter: React.FC = ({ children }) => {
           externalUrl="TODO"
           style={[
             fontSemibold14,
-            { color: "#676767", textDecorationLine: "none", marginRight: layout.padding_x1 },
+            {
+              color: neutral67,
+              textDecorationLine: "none",
+              marginRight: layout.padding_x1,
+            },
           ]}
           numberOfLines={1}
         >
@@ -79,7 +87,7 @@ export const LegalFooter: React.FC = ({ children }) => {
           externalUrl="TODO"
           style={[
             fontSemibold14,
-            { color: "#676767", textDecorationLine: "none" },
+            { color: neutral67, textDecorationLine: "none" },
           ]}
           numberOfLines={1}
         >

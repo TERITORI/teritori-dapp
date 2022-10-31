@@ -4,7 +4,6 @@ import { View } from "react-native";
 import { BrandText } from "../../components/BrandText/BrandText";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Footer } from "../../components/footers/Footer";
 import { teritoriRestProvider } from "../../utils/teritori";
 import { NavBarGovernance } from "./NavBarGovernance";
 import { Proposal, ProposalStatus } from "./types";
@@ -37,7 +36,7 @@ export const GovernanceScreen: React.FC = () => {
   );
 
   return (
-    <ScreenContainer footerChildren={<Footer />}>
+    <ScreenContainer>
       <View
         style={{
           flexDirection: "row",

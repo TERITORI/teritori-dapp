@@ -3,7 +3,6 @@ import { StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Footer } from "../../components/footers/Footer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
@@ -76,7 +75,7 @@ export const StakeScreen: React.FC = () => {
 
   // returns
   return (
-    <ScreenContainer footerChildren={<Footer />}>
+    <ScreenContainer>
       <View style={styles.rowHeader}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
         <View style={styles.rowWithCenter}>

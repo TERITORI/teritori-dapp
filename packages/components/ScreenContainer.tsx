@@ -26,6 +26,7 @@ import { NetworkSelector } from "./NetworkSelector";
 import { SVG } from "./SVG";
 import { WalletSelector } from "./WalletSelector";
 import { ConnectWalletModal } from "./connectWallet/ConnectWalletModal";
+import { Footer } from "./footers/Footer";
 import { Sidebar } from "./navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
@@ -105,14 +106,14 @@ export const ScreenContainer: React.FC<{
                   >
                     {children}
                   </View>
-                  {footerChildren}
+                  {footerChildren ? footerChildren : <Footer />}
                 </ScrollView>
               ) : (
                 <View
                   style={[styles.childrenContainer, marginStyle, { width }]}
                 >
                   {children}
-                  {footerChildren}
+                  {footerChildren ? footerChildren : <Footer />}
                 </View>
               )}
             </View>
