@@ -7,6 +7,7 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/coingeckoprices"
 	"github.com/allegro/bigcache/v3"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cosmostx "github.com/cosmos/cosmos-sdk/types/tx"
@@ -36,6 +37,8 @@ type Config struct {
 	VaultContractAddress string
 	TNSDefaultImageURL   string
 	TendermintClient     *tclient.HTTP
+	NetworkID            string
+	CoinGeckoPrices      *coingeckoprices.CoinGeckoPrices
 }
 
 type Handler struct {

@@ -2,19 +2,20 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import logoSVG from "../../../../assets/logos/logo.svg";
+import toriSVG from "../../../../assets/icons/networks/teritori-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { neutral22, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 
 type CollectionStatProps = {
   label: string;
   value: string;
   addLogo?: boolean;
 };
+
+const iconSize = 16;
 
 export const CollectionStat = ({
   label,
@@ -31,7 +32,9 @@ export const CollectionStat = ({
         {addLogo && (
           <>
             <SpacerRow size={0.75} />
-            <SVG source={logoSVG} width={16} height={16} />
+            <View style={{ width: iconSize, height: iconSize }}>
+              <SVG source={toriSVG} width={iconSize} height={iconSize} />
+            </View>
           </>
         )}
       </View>
@@ -42,8 +45,8 @@ export const CollectionStat = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: layout.padding_x1,
-    paddingVertical: layout.padding_x1_5,
+    width: 176,
+    height: 64,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
@@ -59,5 +62,6 @@ const styles = StyleSheet.create({
   rowCenter: {
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
   },
 });

@@ -42,6 +42,7 @@ type Listing struct {
 	ActivityID string `gorm:"primaryKey"`
 	Price      string
 	PriceDenom string
+	USDPrice   float64
 	SellerID   UserID
 }
 
@@ -55,12 +56,14 @@ type UpdateNFTPrice struct {
 	SellerID   UserID
 	Price      string
 	PriceDenom string
+	USDPrice   float64
 }
 
 type Trade struct {
 	ActivityID string `gorm:"primaryKey"`
 	Price      string
 	PriceDenom string
+	USDPrice   float64
 	BuyerID    UserID
 	SellerID   UserID
 }
@@ -69,6 +72,7 @@ type Mint struct {
 	ActivityID string `gorm:"primaryKey"`
 	Price      string
 	PriceDenom string
+	USDPrice   float64
 	BuyerID    UserID
 }
 

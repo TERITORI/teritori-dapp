@@ -13,20 +13,6 @@ export const toriDisplayDenom = process.env.PUBLIC_STAKING_DENOM_DISPLAY_NAME;
 export const vaultContractAddress =
   process.env.TERITORI_VAULT_CONTRACT_ADDRESS || "";
 const toriDenom = process.env.PUBLIC_STAKING_DENOM;
-const teritoriBechPrefix = process.env.PUBLIC_CHAIN_BECH32_PREFIX;
-const toriChainName = process.env.PUBLIC_CHAIN_NAME;
-
-if (
-  !toriDisplayDenom ||
-  !toriDenom ||
-  !teritoriBechPrefix ||
-  !teritoriChainId ||
-  !teritoriRPCProvider ||
-  !teritoriRestProvider ||
-  !toriChainName
-) {
-  throw new Error("missing teritori environment variable(s)");
-}
 
 export interface CosmosBalancesResponse {
   balances: { denom: string; amount: string }[];
@@ -57,9 +43,9 @@ export const getUtoriBalance = async (address: string) => {
 
 export const toriCurrency: Currency = {
   // Coin denomination to be displayed to the user.
-  coinDenom: toriDisplayDenom,
+  coinDenom: toriDisplayDenom || "",
   // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-  coinMinimalDenom: toriDenom,
+  coinMinimalDenom: toriDenom || "",
   // # of decimal points to convert minimal denomination to user-facing denomination.
   coinDecimals: 6,
   // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
@@ -73,7 +59,7 @@ export const teritoriGasPrice = new GasPrice(
 );
 
 export const getTeritoriSigningStargateClient = (signer: OfflineSigner) =>
-  SigningStargateClient.connectWithSigner(teritoriRPCProvider, signer, {
+  SigningStargateClient.connectWithSigner(teritoriRPCProvider || "", signer, {
     gasPrice: teritoriGasPrice,
   });
 
