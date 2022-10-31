@@ -594,13 +594,15 @@ export const GovernanceDetails: React.FC<{
           </BrandText>
         </View>
 
-        <PrimaryButton
-          width={150}
-          size="XL"
-          style={{ position: "absolute", left: 510, bottom: -40 }}
-          text="Vote"
-          onPress={() => activeVote()}
-        />
+        {!isPassedPeriod && (
+          <PrimaryButton
+            width={150}
+            size="XL"
+            style={{ position: "absolute", left: 510, bottom: -40 }}
+            text="Vote"
+            onPress={() => activeVote()}
+          />
+        )}
       </TertiaryBox>
 
       {activeConfirmationVotePopup()}
