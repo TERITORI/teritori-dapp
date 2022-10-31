@@ -5,9 +5,8 @@ import { View } from "react-native";
 import burnSVG from "../../../assets/icons/burn.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { BackTo } from "../../components/navigation/BackTo";
+import ModalBase from "../../components/modals/ModalBase";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
@@ -20,12 +19,17 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral33 } from "../../utils/style/colors";
+import { useAppNavigation } from "../../utils/navigation";
+import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 
-export const TNSBurnNameScreen: ScreenFC<"TNSBurnName"> = ({ route }) => {
-  const { name, setName } = useTNS();
+interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
+
+export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
+  onClose,
+}) => {
+  const { name } = useTNS();
   const { setToastError, setToastSuccess, setLoadingFullScreen } =
     useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
@@ -43,8 +47,6 @@ export const TNSBurnNameScreen: ScreenFC<"TNSBurnName"> = ({ route }) => {
 
   // ==== Init
   useFocusEffect(() => {
-    // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token
-    setName(route.params.name);
     // ===== Controls many things, be careful TODO: Still redirects to TNSHome, weird..
     if (
       (name &&
@@ -82,7 +84,8 @@ export const TNSBurnNameScreen: ScreenFC<"TNSBurnName"> = ({ route }) => {
           title: normalizedTokenId + " successfully burnt",
           message: "",
         });
-        navigation.navigate("TNSManage");
+
+        onClose("TNSManage");
         setLoadingFullScreen(false);
       }
     } catch (e) {
@@ -98,42 +101,28 @@ export const TNSBurnNameScreen: ScreenFC<"TNSBurnName"> = ({ route }) => {
   };
 
   return (
-    <ScreenContainer
-      hideSidebar
-      headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={
-        <BackTo
-          label={"Back to " + name}
-          onPress={() => navigation.navigate("TNSConsultName", { name })}
-        />
-      }
+    <ModalBase
+      hideMainSeparator
+      onClose={() => onClose()}
+      width={457}
+      contentStyle={{
+        backgroundColor: neutral17,
+        borderRadius: 8,
+      }}
     >
       <View
         style={{
           flex: 1,
-          marginTop: 32,
-          flexDirection: "row",
-          justifyContent: "center",
         }}
       >
         <NameNFT name={name} />
 
         <View
           style={{
-            flex: 1,
+            marginTop: 20,
             alignItems: "center",
             justifyContent: "space-between",
-            height: 404,
-            maxHeight: 404,
-            minHeight: 404,
             width: "100%",
-            maxWidth: 396,
-            borderColor: neutral33,
-            borderWidth: 1,
-            borderRadius: 8,
-            backgroundColor: "#000000",
-            padding: 24,
-            marginLeft: 20,
           }}
         >
           <View>
@@ -156,22 +145,24 @@ export const TNSBurnNameScreen: ScreenFC<"TNSBurnName"> = ({ route }) => {
                 lineHeight: 20,
                 color: "#A3A3A3",
                 marginTop: 16,
+                marginBottom: 20,
               }}
             >
               This will permanently destroy the token. The token will no longer
               be visible from the name service and another token with the same
               name will be mintable.
             </BrandText>
+            <SecondaryButton
+              fullWidth
+              size="XS"
+              text="I understand, burn it"
+              onPress={onSubmit}
+              style={{ marginBottom: 80 }}
+              squaresBackgroundColor={neutral17}
+            />
           </View>
-
-          <SecondaryButton
-            fullWidth
-            size="XS"
-            text="I understand, burn it"
-            onPress={onSubmit}
-          />
         </View>
       </View>
-    </ScreenContainer>
+    </ModalBase>
   );
 };

@@ -17,16 +17,7 @@ export type RootStackParamList = {
 
   Launchpad: undefined;
   MintCollection: { id: string };
-
-  TNSHome: undefined;
-  TNSExplore: undefined;
-  TNSManage: undefined;
-  TNSRegister: undefined;
-  TNSConsultName: { name: string };
-  TNSMintName: { name: string };
-  TNSUpdateName: { name: string };
-  TNSBurnName: { name: string };
-  TNSMintPath: { name: string };
+  TNSHome: { modal: string; name?: string } | undefined;
 
   Marketplace: undefined;
   Collection: { id: string };
@@ -67,17 +58,8 @@ const navConfig: {
     // Mint NFT collection
     MintCollection: "collection/:id/mint",
     // ==== Teritori Name Service
-    TNSHome: "tns",
-    TNSExplore: "tns/explore",
-    TNSManage: "tns/manage",
-    TNSRegister: "tns/register",
-    // Consult token
-    TNSConsultName: "tns/token/:name",
-    // Do things on token (Necessary minted and owned by the user)
-    TNSMintName: "tns/tokens/:name/mint",
-    TNSUpdateName: "tns/tokens/:name/update",
-    TNSBurnName: "tns/tokens/:name/burn",
-    TNSMintPath: "tns/tokens/:name/mint-path",
+    TNSHome: "tns/:modal?",
+
     // ==== Marketplace
     Marketplace: "marketplace",
     Collection: "collection/:id",

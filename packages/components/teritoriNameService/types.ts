@@ -3,6 +3,7 @@ export type NameDataFormType = {
   name: string;
   public_bio: string;
   image: string;
+  user_header_image: string;
   email: string;
   external_url: string;
   twitter_id: string;

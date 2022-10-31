@@ -97,7 +97,9 @@ export const UPPIntro: React.FC<{
           size="M"
           text="Edit profile"
           backgroundColor={neutral00}
-          onPress={() => navigation.navigate("TNSUpdateName", { name })}
+          onPress={() =>
+            navigation.navigate("TNSHome", { modal: "update-name", name })
+          }
           touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
         />
 
