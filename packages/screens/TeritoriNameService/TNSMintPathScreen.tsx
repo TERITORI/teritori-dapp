@@ -201,9 +201,6 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
       contentStyle={{
         backgroundColor: neutral17,
       }}
-      containerStyle={{
-        backgroundColor: "rgba(0, 0, 0, 0.1)",
-      }}
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
         <View

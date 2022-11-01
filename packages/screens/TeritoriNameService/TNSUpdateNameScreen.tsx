@@ -174,15 +174,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   };
 
   return (
-    <ModalBase
-      hideMainSeparator
-      onClose={onClose}
-      scrollable
-      width={457}
-      containerStyle={{
-        backgroundColor: "rgba(0,0,0,0.1)",
-      }}
-    >
+    <ModalBase hideMainSeparator onClose={onClose} scrollable width={457}>
       <NameNFT name={name} />
       <View
         style={{

@@ -243,9 +243,6 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
       contentStyle={{
         backgroundColor: neutral17,
       }}
-      containerStyle={{
-        backgroundColor: "rgba(0, 0, 0, 0.1)",
-      }}
     >
       <View style={{ flex: 1, alignItems: "center", paddingBottom: 20 }}>
         <CostContainer />
