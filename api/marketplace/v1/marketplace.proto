@@ -32,6 +32,10 @@ message NFT {
   string collection_name = 10;
   string owner_id = 13;
 }
+message Amount {
+  string denom = 1;
+  int64  quantity = 2;
+}
 
 message Collection {
   string id = 1;
@@ -47,7 +51,7 @@ message Collection {
 }
 
 message CollectionStats {
-  string floor_price = 1;
+  repeated Amount floor_price = 1;
   string total_volume = 2;
   int32 owners = 3;
   int32 listed = 4;

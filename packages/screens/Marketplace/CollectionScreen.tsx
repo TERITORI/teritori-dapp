@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import Clipboard from "@react-native-clipboard/clipboard";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View, Image, Platform, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -21,6 +21,7 @@ import { SortButton } from "../../components/sorts/SortButton";
 import { SpacerRow } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useCoingeckoPrices } from "../../hooks/useCoingeckoPrices";
 import {
   CollectionInfo,
   useCollectionInfo,
@@ -29,12 +30,12 @@ import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getNativeCurrency } from "../../networks";
 import { alignDown } from "../../utils/align";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { toriCurrency } from "../../utils/teritori";
 import { CollectionStat } from "./components/CollectionStat";
 
 const nftWidth = 268; // FIXME: ssot
@@ -46,12 +47,54 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
     loading: loadingCollectionInfo,
   } = useCollectionInfo(id);
 
+  const networkId = process.env.TERITORI_NETWORK_ID || ""; // FIXME: derive from collection network
+
   const wallet = useSelectedWallet();
 
   const stats = useCollectionStats(
     id,
     wallet ? `tori-${wallet.address}` : undefined
   );
+
+  const coins = useMemo(() => {
+    if (!stats?.floorPrice) {
+      return [];
+    }
+    return stats.floorPrice.map((fp) => ({
+      networkId,
+      denom: fp.denom,
+    }));
+  }, [stats?.floorPrice]);
+
+  const prices = useCoingeckoPrices(coins);
+
+  const usdFloorPrice = useMemo(() => {
+    if (!stats?.floorPrice || stats.floorPrice.length < 1) {
+      return Infinity;
+    }
+    return [...stats.floorPrice]
+      .map((fp) => {
+        const currency = getNativeCurrency(networkId, fp.denom);
+        if (!currency) {
+          return Infinity;
+        }
+        const id = currency.coingeckoId;
+        const usdValue = id && prices[id]?.usd;
+        if (!usdValue) {
+          return Infinity;
+        }
+        return (
+          usdValue *
+          Decimal.fromAtomics(
+            fp.quantity.toFixed(0),
+            currency.decimals
+          ).toFloatApproximation()
+        );
+      })
+      .sort((a, b) => {
+        return b - a;
+      })[0];
+  }, [prices, stats?.floorPrice, networkId]);
 
   const collectionScreenTabItems = {
     allNFTs: {
@@ -163,11 +206,11 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
             <View style={styles.statRow}>
               <CollectionStat
                 label="Floor"
-                value={Decimal.fromAtomics(
-                  stats?.floorPrice || "0",
-                  toriCurrency.coinDecimals
-                ).toString()}
-                addLogo
+                value={
+                  usdFloorPrice === Infinity
+                    ? "-"
+                    : `$${usdFloorPrice.toFixed(2)}`
+                }
               />
               <SpacerRow size={1.5} />
               <CollectionStat
