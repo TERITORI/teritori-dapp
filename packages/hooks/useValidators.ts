@@ -22,7 +22,7 @@ const initialData = {
 
 export const useValidators = () => {
   const { setToastError } = useFeedbacks();
-  const { data } = useQuery(
+  const { data, isFetching } = useQuery(
     [`teritoriValidators`],
     async () => {
       try {
@@ -110,7 +110,8 @@ export const useValidators = () => {
       initialData,
     }
   );
-  return data;
+
+  return { isFetching, data };
 };
 
 const prettyPercent = (val: number) => {

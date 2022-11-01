@@ -1,16 +1,18 @@
 import React from "react";
 import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 
+import validatorIconSVG from "../../../../assets/default-images/validator-icon.svg";
 import { Avatar } from "../../../components/Avatar";
 import { BrandText } from "../../../components/BrandText";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import { SpacerRow } from "../../../components/spacer";
 import { TableRow, TableRowHeading } from "../../../components/table";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
-import { removeObjectKey } from "../../../utils/common";
+import { removeObjectKey } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { thousandSeparator } from "../../../utils/text";
 import { ValidatorInfo } from "../types";
 
 const TABLE_ROWS: { [key in string]: TableRowHeading } = {
@@ -37,7 +39,8 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
 };
 
 interface ValidatorsListAction {
-  label: string;
+  label?: string;
+  renderComponent?: () => React.ReactNode;
   onPress?: (validator: ValidatorInfo) => void;
 }
 
@@ -100,7 +103,7 @@ const ValidatorRow: React.FC<{
           paddingRight: layout.padding_x1,
         }}
       >
-        <Avatar uri={imageURL || ""} />
+        <Avatar uri={imageURL} defaultIcon={validatorIconSVG} />
         <SpacerRow size={1} />
         <BrandText style={fontSemibold13}>{validator?.moniker || ""}</BrandText>
       </View>
@@ -113,7 +116,7 @@ const ValidatorRow: React.FC<{
           },
         ]}
       >
-        {validator.votingPower}
+        {thousandSeparator(validator.votingPower, " ")}
       </BrandText>
       <BrandText
         style={[
@@ -135,19 +138,23 @@ const ValidatorRow: React.FC<{
             justifyContent: "center",
           }}
         >
-          {actions(validator).map((action, index) => (
-            <SecondaryButtonOutline
-              key={index}
-              onPress={() => {
-                if (typeof action.onPress !== "function") {
-                  return;
-                }
-                action.onPress(validator);
-              }}
-              text={action.label}
-              size="XS"
-            />
-          ))}
+          {actions(validator).map((action, index) =>
+            action?.renderComponent ? (
+              action.renderComponent()
+            ) : (
+              <SecondaryButtonOutline
+                key={index}
+                onPress={() => {
+                  if (typeof action.onPress !== "function") {
+                    return;
+                  }
+                  action.onPress(validator);
+                }}
+                text={action?.label || ""}
+                size="XS"
+              />
+            )
+          )}
         </View>
       )}
     </View>

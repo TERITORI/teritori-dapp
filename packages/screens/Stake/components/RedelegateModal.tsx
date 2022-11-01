@@ -5,7 +5,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
 
+import checkSVG from "../../../../assets/icons/check.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
@@ -50,15 +52,20 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   visible,
   data,
 }) => {
+  // variables
   const wallet = useSelectedWallet();
   const { bondedTokens, refreshBondedTokens } = useSelectedWalletBondedToris(
     data?.address
   );
+  const [modifiedValidators, setModifiedValidators] = useState<ValidatorInfo[]>(
+    []
+  );
   const [selectedValidator, setSelectedValidator] = useState<ValidatorInfo>();
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { allValidators } = useValidators();
+  const {
+    data: { allValidators },
+  } = useValidators();
 
-  // variables
   const { control, setValue, handleSubmit, watch, reset } =
     useForm<StakeFormValuesType>();
   const watchAll = watch();
@@ -67,6 +74,22 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   useEffect(() => {
     reset();
   }, [visible]);
+
+  useEffect(() => {
+    setValue("validatorName", data?.moniker || "");
+  }, [data?.moniker]);
+
+  useEffect(() => {
+    if (data?.moniker) {
+      let currentValidators = allValidators;
+      if (bondedTokens.atomics && bondedTokens.atomics !== "0") {
+        currentValidators = currentValidators.filter(
+          (d) => d.moniker !== data?.moniker
+        );
+      }
+      setModifiedValidators(currentValidators);
+    }
+  }, [bondedTokens]);
 
   // functions
   const onSubmit = async (formData: StakeFormValuesType) => {
@@ -106,6 +129,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         denom: toriCurrency.coinMinimalDenom,
       },
     };
+    alert("here");
     const txResponse = await client.signAndBroadcast(
       wallet.address,
       [
@@ -116,14 +140,18 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       ],
       "auto"
     );
+    alert(isDeliverTxFailure(txResponse));
     if (isDeliverTxFailure(txResponse)) {
       console.error("tx failed", txResponse);
+      alert("inside");
       setToastError({
         title: "Transaction failed",
         message: txResponse.rawLog || "",
       });
       return;
     }
+    console.log("lol");
+
     setToastSuccess({ title: "Redelegation success", message: "" });
     refreshBondedTokens();
     onClose && onClose();
@@ -183,7 +211,6 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           control={control}
           variant="labelOutside"
           label="Source Validator"
-          defaultValue={data?.moniker || ""}
           disabled
           rules={{ required: true }}
         />
@@ -195,11 +222,22 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           <SpacerColumn size={1} />
         </View>
         <ValidatorsTable
-          validators={allValidators}
+          validators={modifiedValidators}
           style={{ height: 200 }}
           actions={(validator) => {
             if (validator.address === selectedValidator?.address) {
-              return [];
+              return [
+                {
+                  renderComponent: () => (
+                    <SVG
+                      source={checkSVG}
+                      width={layout.iconButton}
+                      height={layout.iconButton}
+                      fill={primaryColor}
+                    />
+                  ),
+                },
+              ];
             }
             return [
               { label: "Select", onPress: (val) => setSelectedValidator(val) },

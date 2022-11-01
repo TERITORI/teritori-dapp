@@ -66,6 +66,10 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     reset();
   }, [visible]);
 
+  useEffect(() => {
+    setValue("validatorName", data?.moniker || "");
+  }, [data?.moniker]);
+
   // functions
   const onSubmit = async (formData: StakeFormValuesType) => {
     if (!wallet?.connected || !wallet.address) {
@@ -85,28 +89,34 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     }
     const signer = getKeplrOfflineSigner();
     const client = await getTeritoriSigningStargateClient(signer);
-    const txResponse = await client.delegateTokens(
-      wallet.address,
-      data.address,
-      {
-        amount: Decimal.fromUserInput(
-          formData.amount,
-          toriCurrency.coinDecimals
-        ).atomics,
-        denom: toriCurrency.coinMinimalDenom,
-      },
-      "auto"
-    );
-    if (isDeliverTxFailure(txResponse)) {
-      console.error("tx failed", txResponse);
-      setToastError({
-        title: "Transaction failed",
-        message: txResponse.rawLog || "",
-      });
-      return;
+    try {
+      const txResponse = await client.delegateTokens(
+        wallet.address,
+        data.address,
+        {
+          amount: Decimal.fromUserInput(
+            formData.amount,
+            toriCurrency.coinDecimals
+          ).atomics,
+          denom: toriCurrency.coinMinimalDenom,
+        },
+        "auto"
+      );
+
+      if (isDeliverTxFailure(txResponse)) {
+        console.error("tx failed", txResponse);
+        setToastError({
+          title: "Transaction failed",
+          message: txResponse.rawLog || "",
+        });
+        return;
+      }
+
+      setToastSuccess({ title: "Delegation success", message: "" });
+      onClose && onClose();
+    } catch (error) {
+      console.log(error);
     }
-    setToastSuccess({ title: "Delegation success", message: "" });
-    onClose && onClose();
   };
 
   // returns
@@ -168,7 +178,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           control={control}
           variant="labelOutside"
           label="Validator Name"
-          defaultValue={data?.moniker || ""}
           disabled
           rules={{ required: true }}
         />

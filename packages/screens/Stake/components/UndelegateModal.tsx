@@ -63,6 +63,10 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
     reset();
   }, [visible]);
 
+  useEffect(() => {
+    setValue("validatorName", data?.moniker || "");
+  }, [data?.moniker]);
+
   // functions
   const onSubmit = async (formData: StakeFormValuesType) => {
     if (!wallet?.connected || !wallet.address) {
@@ -166,7 +170,6 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           control={control}
           variant="labelOutside"
           label="Validator Name"
-          defaultValue={data?.moniker || ""}
           disabled
           rules={{ required: true }}
         />
