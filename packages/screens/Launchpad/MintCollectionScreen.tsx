@@ -4,10 +4,12 @@ import {
   ActivityIndicator,
   Image,
   StyleProp,
+  TextStyle,
   View,
   ViewStyle,
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
+import CountDown from "react-native-countdown-component";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -23,11 +25,13 @@ import {
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getCurrency } from "../../networks";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
   neutral33,
   neutral77,
+  pinkDefault,
   primaryColor,
   yellowDefault,
 } from "../../utils/style/colors";
@@ -38,9 +42,28 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdrawModal";
 
 const maxImageSize = 532;
 const cardsHalfGap = 6;
+
+const countDownTxtStyleStarts: StyleProp<TextStyle> = {
+  fontSize: 16,
+  letterSpacing: 0,
+  lineHeight: 20,
+  fontFamily: "Exo_600SemiBold",
+  fontWeight: "600",
+  color: pinkDefault,
+};
+const countDownTxtStyleProgress: StyleProp<TextStyle> = {
+  fontSize: 16,
+  letterSpacing: 0,
+  lineHeight: 20,
+  fontFamily: "Exo_600SemiBold",
+  fontWeight: "600",
+  color: primaryColor,
+};
 
 export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   route: {
@@ -50,6 +73,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
+  const [isDepositVisible, setDepositVisible] = useState(false);
   const { info, notFound, loading } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const { navigate } = useAppNavigation();
@@ -122,89 +146,27 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   } else
     return (
       <ScreenContainer noMargin>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            marginHorizontal: 40,
-            flexWrap: "wrap",
-            marginTop: 72,
-          }}
-          onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
-        >
-          {/* ===== Left container */}
+        <View style={{ alignItems: "center" }}>
           <View
             style={{
-              justifyContent: "flex-start",
-              width: "100%",
-              maxWidth: 534,
+              flexDirection: "row",
+              justifyContent: "center",
+              flexWrap: "wrap",
+              marginTop: 72,
             }}
+            onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
           >
-            <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
-
-            <View style={{ marginBottom: 20 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                  margin: -cardsHalfGap,
-                }}
-              >
-                <AttributesCard
-                  label="Supply"
-                  value={info.maxSupply || ""}
-                  style={{ margin: cardsHalfGap }}
-                />
-                <AttributesCard
-                  label="Price"
-                  value={info.prettyUnitPrice || ""}
-                  style={{ margin: cardsHalfGap }}
-                />
-                <AttributesCard
-                  label="Limit Buy"
-                  value={
-                    info.maxPerAddress
-                      ? `${info.maxPerAddress} by address`
-                      : "Unlimited"
-                  }
-                  style={{ margin: cardsHalfGap }}
-                />
-              </View>
-            </View>
-
-            <BrandText
-              style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
-            >
-              {info.description}
-            </BrandText>
-
-            <ProgressionCard
-              label="Tokens Minted"
-              valueCurrent={
-                info.mintedAmount ? parseInt(info.mintedAmount, 10) : 0
-              }
-              valueMax={info.maxSupply ? parseInt(info.maxSupply, 10) : 0}
+            {/* ===== Left container */}
+            <View
               style={{
-                marginBottom: 24,
-                maxWidth: 420,
+                justifyContent: "flex-start",
+                width: "100%",
+                maxWidth: 534,
               }}
-            />
+            >
+              <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
 
-            {info.isMintable && (
-              <PrimaryButton
-                size="XL"
-                text="Mint now"
-                style={{ marginBottom: 24 }}
-                width={160}
-                disabled={mintButtonDisabled}
-                loader
-                onPress={mint}
-              />
-            )}
-
-            {hasLinks && (
-              <View style={{ marginBottom: 24 }}>
+              <View style={{ marginBottom: 20 }}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -213,54 +175,142 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     margin: -cardsHalfGap,
                   }}
                 >
-                  <CollectionSocialButtons collectionInfo={info} />
+                  <AttributesCard
+                    label="Supply"
+                    value={info.maxSupply || ""}
+                    style={{ margin: cardsHalfGap }}
+                  />
+                  <AttributesCard
+                    label="Price"
+                    value={info.prettyUnitPrice || ""}
+                    style={{ margin: cardsHalfGap }}
+                  />
+                  <AttributesCard
+                    label="Limit Buy"
+                    value={
+                      info.maxPerAddress
+                        ? `${info.maxPerAddress} by address`
+                        : "Unlimited"
+                    }
+                    style={{ margin: cardsHalfGap }}
+                  />
                 </View>
               </View>
-            )}
-          </View>
 
-          {/* ===== Right container */}
-          <View
-            style={{
-              justifyContent: "flex-start",
-              width: "100%",
-              maxWidth: 534,
-              maxHeight: 806,
-              paddingBottom: 72,
-            }}
-          >
-            <TertiaryBox style={{ marginBottom: 40 }}>
-              {info.image ? (
-                <Image
-                  source={{ uri: info.image }}
-                  style={{
-                    width: imageSize,
-                    height: imageSize,
-                    borderRadius: 8,
-                  }}
-                />
-              ) : (
-                <ActivityIndicator size="large" style={{ margin: 40 }} />
+              {/*TODO: Gradient white text (see figma)*/}
+              <BrandText
+                style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
+              >
+                {info.description}
+              </BrandText>
+
+              <ProgressionCard
+                label="Tokens Minted"
+                valueCurrent={
+                  info.mintedAmount ? parseInt(info.mintedAmount, 10) : 0
+                }
+                valueMax={info.maxSupply ? parseInt(info.maxSupply, 10) : 0}
+                style={{
+                  marginBottom: 24,
+                  maxWidth: 420,
+                }}
+              />
+
+              <View style={{ flexDirection: "row", marginBottom: 24 }}>
+                {info.isMintable && (
+                  <PrimaryButton
+                    size="XL"
+                    text="Mint now"
+                    touchableStyle={{ marginRight: 36 }}
+                    width={160}
+                    disabled={mintButtonDisabled}
+                    loader
+                    onPress={mint}
+                  />
+                )}
+
+                {getCurrency(process.env.TERITORI_NETWORK_ID, info.priceDenom)
+                  ?.kind === "ibc" && (
+                  <PrimaryButton
+                    size="XL"
+                    text="Deposit Atom"
+                    width={160}
+                    disabled={mintButtonDisabled}
+                    loader
+                    onPress={() => setDepositVisible(true)}
+                  />
+                )}
+              </View>
+
+              {hasLinks && (
+                <View style={{ marginBottom: 24 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      margin: -cardsHalfGap,
+                    }}
+                  >
+                    <CollectionSocialButtons collectionInfo={info} />
+                  </View>
+                </View>
               )}
-            </TertiaryBox>
+            </View>
 
-            <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
-              Activity
-            </BrandText>
-            {info.hasPresale && (
-              <PresaleActivy
-                running={info.isInPresalePeriod || false}
-                whitelistSize={info.whitelistSize || 0}
-                maxPerAddress={info.whitelistMaxPerAddress || "0"}
-              />
-            )}
-            {info.isInPresalePeriod || (
-              <PublicSaleActivity
-                running={info.maxSupply !== info.mintedAmount}
-              />
-            )}
+            {/* ===== Right container */}
+            <View
+              style={{
+                justifyContent: "flex-start",
+                width: "100%",
+                maxWidth: 534,
+                maxHeight: 806,
+                paddingBottom: 72,
+              }}
+            >
+              <TertiaryBox style={{ marginBottom: 40 }}>
+                {info.image ? (
+                  <Image
+                    source={{ uri: info.image }}
+                    style={{
+                      width: imageSize,
+                      height: imageSize,
+                      borderRadius: 8,
+                    }}
+                  />
+                ) : (
+                  <ActivityIndicator size="large" style={{ margin: 40 }} />
+                )}
+              </TertiaryBox>
+
+              <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
+                Activity
+              </BrandText>
+              {info.hasPresale && (
+                <PresaleActivy
+                  running={info.isInPresalePeriod || false}
+                  whitelistSize={info.whitelistSize || 0}
+                  maxPerAddress={info.whitelistMaxPerAddress || "0"}
+                  started
+                />
+              )}
+              {info.isInPresalePeriod || (
+                <PublicSaleActivity
+                  running={info.maxSupply !== info.mintedAmount}
+                />
+              )}
+            </View>
           </View>
         </View>
+
+        <DepositWithdrawModal
+          variation="deposit"
+          networkId={process.env.TERITORI_NETWORK_ID || ""}
+          targetCurrency={info.priceDenom}
+          onClose={() => setDepositVisible(false)}
+          isVisible={isDepositVisible}
+        />
+
         {minted && <ConfettiCannon count={200} origin={{ x: -200, y: 0 }} />}
       </ScreenContainer>
     );
@@ -293,10 +343,11 @@ const AttributesCard: React.FC<{
 };
 
 const PresaleActivy: React.FC<{
-  running: boolean;
+  running?: boolean;
+  started?: boolean;
   whitelistSize: number;
   maxPerAddress: string;
-}> = ({ running, whitelistSize, maxPerAddress }) => {
+}> = ({ started, running, whitelistSize, maxPerAddress }) => {
   return (
     <View>
       <View
@@ -307,9 +358,35 @@ const PresaleActivy: React.FC<{
         }}
       >
         <TertiaryBadge label="Presale" />
-        {running ? (
+        {!started ? (
+          <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
+            STARTS IN
+            <CountDown
+              until={3600}
+              onFinish={() => console.log("Presale started")}
+              size={8}
+              style={{ marginLeft: layout.padding_x1 }}
+              digitTxtStyle={countDownTxtStyleStarts}
+              separatorStyle={countDownTxtStyleStarts}
+              digitStyle={{ backgroundColor: "none" }}
+              showSeparator
+              timeLabels={{ d: "", h: "", m: "", s: "" }}
+            />
+          </BrandText>
+        ) : running ? (
           <BrandText style={[fontSemibold16, { color: primaryColor }]}>
-            IN PROGRESS
+            IN PROGRESS, ENDS IN
+            <CountDown
+              until={3600}
+              onFinish={() => console.log("Presale ended")}
+              size={8}
+              style={{ marginLeft: layout.padding_x1 }}
+              digitTxtStyle={countDownTxtStyleProgress}
+              separatorStyle={countDownTxtStyleProgress}
+              digitStyle={{ backgroundColor: "none" }}
+              showSeparator
+              timeLabels={{ d: "", h: "", m: "", s: "" }}
+            />
           </BrandText>
         ) : (
           <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
@@ -380,7 +457,10 @@ const PresaleActivy: React.FC<{
   );
 };
 
-const PublicSaleActivity: React.FC<{ running: boolean }> = ({ running }) => {
+const PublicSaleActivity: React.FC<{
+  started?: boolean;
+  running?: boolean;
+}> = ({ started, running }) => {
   return (
     <View
       style={{
@@ -390,9 +470,35 @@ const PublicSaleActivity: React.FC<{ running: boolean }> = ({ running }) => {
       }}
     >
       <TertiaryBadge label="Public Mint" />
-      {running ? (
+      {!started ? (
+        <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
+          STARTS IN
+          <CountDown
+            until={3600}
+            onFinish={() => console.log("Public mint started")}
+            size={8}
+            style={{ marginLeft: layout.padding_x1 }}
+            digitTxtStyle={countDownTxtStyleStarts}
+            separatorStyle={countDownTxtStyleStarts}
+            digitStyle={{ backgroundColor: "none" }}
+            showSeparator
+            timeLabels={{ d: "", h: "", m: "", s: "" }}
+          />
+        </BrandText>
+      ) : running ? (
         <BrandText style={[fontSemibold16, { color: primaryColor }]}>
-          IN PROGRESS
+          IN PROGRESS, ENDS IN
+          <CountDown
+            until={3600}
+            onFinish={() => console.log("Presale ended")}
+            size={8}
+            style={{ marginLeft: layout.padding_x1 }}
+            digitTxtStyle={countDownTxtStyleProgress}
+            separatorStyle={countDownTxtStyleProgress}
+            digitStyle={{ backgroundColor: "none" }}
+            showSeparator
+            timeLabels={{ d: "", h: "", m: "", s: "" }}
+          />
         </BrandText>
       ) : (
         <BrandText style={[fontSemibold16, { color: yellowDefault }]}>

@@ -7,7 +7,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { neutral33, neutral44, neutral77 } from "../../utils/style/colors";
+import { neutral33, neutral44 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -57,6 +57,7 @@ export const TertiaryButton: React.FC<{
           backgroundColor: neutral33,
           paddingHorizontal: 20,
           borderColor: neutral44,
+          opacity: disabled ? 0.5 : 1,
         }}
         {...boxProps}
       >
@@ -70,10 +71,7 @@ export const TertiaryButton: React.FC<{
         ) : null}
 
         <BrandText
-          style={[
-            fontSemibold14,
-            { color: disabled ? neutral77 : "#FFFFFF", textAlign: "center" },
-          ]}
+          style={[fontSemibold14, { color: "#FFFFFF", textAlign: "center" }]}
         >
           {text}
         </BrandText>

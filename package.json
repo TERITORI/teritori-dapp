@@ -34,6 +34,7 @@
     "@solana/wallet-adapter-wallets": "^0.16.2",
     "@solana/web3.js": "^1.44.3",
     "@tanstack/react-query": "^4.12.0",
+    "@types/react-native-countdown-component": "^2.7.0",
     "airtable": "^0.11.4",
     "bech32": "^2.0.0",
     "browser-headers": "^0.4.1",
@@ -55,6 +56,7 @@
     "react-hook-form": "^7.36.1",
     "react-native": "0.68.2",
     "react-native-confetti-cannon": "^1.5.2",
+    "react-native-countdown-component": "^2.7.1",
     "react-native-drax": "^0.10.2",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-paper": "^4.12.5",
@@ -67,6 +69,7 @@
     "react-native-svg-charts": "^5.4.0",
     "react-native-toast-message": "^2.1.5",
     "react-native-web": "0.17.7",
+    "react-native-webview": "11.18.1",
     "react-redux": "^8.0.2",
     "redux-persist": "^6.0.0",
     "victory-native": "^36.6.8"

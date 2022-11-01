@@ -7,7 +7,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { neutral77, primaryColor } from "../../utils/style/colors";
+import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -57,6 +57,7 @@ export const PrimaryButtonOutline: React.FC<{
           backgroundColor: "#000000",
           paddingHorizontal: 20,
           borderColor: primaryColor,
+          opacity: disabled ? 0.5 : 1,
         }}
         {...boxProps}
       >
@@ -70,10 +71,7 @@ export const PrimaryButtonOutline: React.FC<{
         ) : null}
 
         <BrandText
-          style={[
-            fontSemibold14,
-            { color: disabled ? neutral77 : primaryColor, textAlign: "center" },
-          ]}
+          style={[fontSemibold14, { color: primaryColor, textAlign: "center" }]}
         >
           {text}
         </BrandText>
