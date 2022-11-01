@@ -108,7 +108,6 @@ export const ModalBase: React.FC<{
                   )}
                 </View>
               )}
-
               {Header && <Header />}
 
               <Pressable
