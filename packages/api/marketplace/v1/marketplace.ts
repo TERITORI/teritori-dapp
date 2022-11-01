@@ -67,6 +67,11 @@ export interface NFT {
   ownerId: string;
 }
 
+export interface Amount {
+  denom: string;
+  quantity: number;
+}
+
 export interface Collection {
   id: string;
   imageUri: string;
@@ -81,7 +86,7 @@ export interface Collection {
 }
 
 export interface CollectionStats {
-  floorPrice: string;
+  floorPrice: Amount[];
   totalVolume: string;
   owners: number;
   listed: number;
@@ -383,6 +388,64 @@ export const NFT = {
   },
 };
 
+function createBaseAmount(): Amount {
+  return { denom: "", quantity: 0 };
+}
+
+export const Amount = {
+  encode(message: Amount, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    if (message.quantity !== 0) {
+      writer.uint32(16).int64(message.quantity);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Amount {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAmount();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        case 2:
+          message.quantity = longToNumber(reader.int64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Amount {
+    return {
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      quantity: isSet(object.quantity) ? Number(object.quantity) : 0,
+    };
+  },
+
+  toJSON(message: Amount): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.quantity !== undefined && (obj.quantity = Math.round(message.quantity));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Amount>, I>>(object: I): Amount {
+    const message = createBaseAmount();
+    message.denom = object.denom ?? "";
+    message.quantity = object.quantity ?? 0;
+    return message;
+  },
+};
+
 function createBaseCollection(): Collection {
   return {
     id: "",
@@ -525,13 +588,13 @@ export const Collection = {
 };
 
 function createBaseCollectionStats(): CollectionStats {
-  return { floorPrice: "", totalVolume: "", owners: 0, listed: 0, totalSupply: 0, owned: 0 };
+  return { floorPrice: [], totalVolume: "", owners: 0, listed: 0, totalSupply: 0, owned: 0 };
 }
 
 export const CollectionStats = {
   encode(message: CollectionStats, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.floorPrice !== "") {
-      writer.uint32(10).string(message.floorPrice);
+    for (const v of message.floorPrice) {
+      Amount.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.totalVolume !== "") {
       writer.uint32(18).string(message.totalVolume);
@@ -559,7 +622,7 @@ export const CollectionStats = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.floorPrice = reader.string();
+          message.floorPrice.push(Amount.decode(reader, reader.uint32()));
           break;
         case 2:
           message.totalVolume = reader.string();
@@ -586,7 +649,7 @@ export const CollectionStats = {
 
   fromJSON(object: any): CollectionStats {
     return {
-      floorPrice: isSet(object.floorPrice) ? String(object.floorPrice) : "",
+      floorPrice: Array.isArray(object?.floorPrice) ? object.floorPrice.map((e: any) => Amount.fromJSON(e)) : [],
       totalVolume: isSet(object.totalVolume) ? String(object.totalVolume) : "",
       owners: isSet(object.owners) ? Number(object.owners) : 0,
       listed: isSet(object.listed) ? Number(object.listed) : 0,
@@ -597,7 +660,11 @@ export const CollectionStats = {
 
   toJSON(message: CollectionStats): unknown {
     const obj: any = {};
-    message.floorPrice !== undefined && (obj.floorPrice = message.floorPrice);
+    if (message.floorPrice) {
+      obj.floorPrice = message.floorPrice.map((e) => e ? Amount.toJSON(e) : undefined);
+    } else {
+      obj.floorPrice = [];
+    }
     message.totalVolume !== undefined && (obj.totalVolume = message.totalVolume);
     message.owners !== undefined && (obj.owners = Math.round(message.owners));
     message.listed !== undefined && (obj.listed = Math.round(message.listed));
@@ -608,7 +675,7 @@ export const CollectionStats = {
 
   fromPartial<I extends Exact<DeepPartial<CollectionStats>, I>>(object: I): CollectionStats {
     const message = createBaseCollectionStats();
-    message.floorPrice = object.floorPrice ?? "";
+    message.floorPrice = object.floorPrice?.map((e) => Amount.fromPartial(e)) || [];
     message.totalVolume = object.totalVolume ?? "";
     message.owners = object.owners ?? 0;
     message.listed = object.listed ?? 0;

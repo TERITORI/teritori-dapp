@@ -16,6 +16,7 @@ import (
 	"github.com/bxcodec/faker/v3"
 	"github.com/pkg/errors"
 	"github.com/volatiletech/sqlboiler/v4/queries"
+	"github.com/volatiletech/sqlboiler/v4/types"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -458,7 +459,11 @@ func (s *MarkteplaceService) Quests(req *marketplacepb.QuestsRequest, srv market
 
 type CollectionStats struct {
 	marketplacepb.CollectionStats `boil:",bind"`
-	LowerPrice                    string
+	LowerPrice                    types.JSON
+}
+type coin struct {
+	Denom  string `json:"denom"`
+	Amount int64  `json:"amount"`
 }
 
 func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketplacepb.CollectionStatsRequest) (*marketplacepb.CollectionStatsResponse, error) {
@@ -472,7 +477,6 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		return nil, errors.Wrap(err, "failed get DB instance")
 	}
 	var stats CollectionStats
-	// FIXME: floor price will be broken if multiple denoms are allowed
 	err = queries.Raw(`with 
 	nfts_in_collection as (
 		SELECT  *  FROM nfts n where n.collection_id = $1
@@ -480,13 +484,16 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 	listed_nfts as (
 		SELECT  * from nfts_in_collection nic where is_listed = true
 	),
+	min_price_by_denom as (
+		select min(price_amount) price_amount, price_denom from listed_nfts ln2 group by ln2.price_denom 
+	),
 	trades_in_collection as (
 		select COALESCE(sum(t.usd_price),0) total_volume FROM trades AS t
 		INNER join activities AS a on a.id = t.activity_id 
 		INNER join nfts_in_collection nic on nic.id = a.nft_id
 	)
 	select 
-		COALESCE(min(price_amount),0) lower_price, 
+		to_json(array( select json_build_object('amount',price_amount,'denom',ln2.price_denom) from min_price_by_denom ln2)) lower_price, 
 		(select total_volume from trades_in_collection),
 		(select count(distinct owner_id)  from nfts_in_collection) owners,
 		(select count(1) from listed_nfts) listed,
@@ -496,8 +503,14 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to make query")
 	}
-	if stats.LowerPrice != "0" {
-		stats.CollectionStats.FloorPrice = stats.LowerPrice
+	var coins []coin
+	err = stats.LowerPrice.Unmarshal(&coins)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal floor_price struct")
+	}
+	stats.FloorPrice = make([]*marketplacepb.Amount, len(coins))
+	for index, coin := range coins {
+		stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: coin.Amount}
 	}
 	return &marketplacepb.CollectionStatsResponse{
 		Stats: &stats.CollectionStats,
