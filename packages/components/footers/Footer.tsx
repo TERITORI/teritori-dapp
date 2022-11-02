@@ -32,7 +32,7 @@ const FooterSocialNetworks: React.FC = () => {
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
-            padding: 10,
+            padding: layout.padding_x1_5,
           }}
         >
           <SVG source={mediumSVG} width={20} height={20} />
@@ -47,7 +47,7 @@ const FooterSocialNetworks: React.FC = () => {
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
-            padding: 10,
+            padding: layout.padding_x1_5,
           }}
         >
           <SVG source={twitterSVG} width={20} height={20} />
@@ -61,7 +61,7 @@ const FooterSocialNetworks: React.FC = () => {
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
-            padding: 10,
+            padding: layout.padding_x1_5,
           }}
         >
           <SVG source={discordSVG} width={20} height={20} />
