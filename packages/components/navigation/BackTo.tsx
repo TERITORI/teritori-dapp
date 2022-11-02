@@ -20,6 +20,10 @@ export const BackTo: React.FC<{
     else navigation.goBack();
   };
 
+  if (!navigation.canGoBack()) {
+    return null;
+  }
+
   return (
     <TouchableOpacity onPress={handleOnPress}>
       <View

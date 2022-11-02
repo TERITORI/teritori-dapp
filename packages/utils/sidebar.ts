@@ -25,6 +25,21 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "ComingSoon",
     icon: messagesSVG,
   },
+  marketplace: {
+    title: "Marketplace",
+    route: "Marketplace",
+    icon: marketplaceSVG,
+  },
+  launchpad: {
+    title: "Launchpad",
+    route: "Launchpad",
+    icon: launchpadSVG,
+  },
+  namespace: {
+    title: "Name Service",
+    route: "TNSHome",
+    icon: tnsServiceSVG,
+  },
   wallet: {
     title: "My Wallet",
     route: "WalletManager",
@@ -57,30 +72,15 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "Governance",
     icon: governanceSVG,
   },
-  marketplace: {
-    title: "Marketplace",
-    route: "Marketplace",
-    icon: marketplaceSVG,
-  },
-  launchpad: {
-    title: "Launchpad",
-    route: "Launchpad",
-    icon: launchpadSVG,
-  },
-  namespace: {
-    title: "Name Service",
-    route: "TNSHome",
-    icon: tnsServiceSVG,
-  },
-  riotersGame: {
-    title: "Rioters Game",
-    route: "ComingSoon",
-    icon: riotersGameSVG,
-  },
   pathwar: {
     title: "Pathwar",
     route: "ComingSoon",
     icon: pathwarSVG,
+  },
+  riotersGame: {
+    title: "Join The R!ot",
+    route: "ComingSoon",
+    icon: riotersGameSVG,
   },
   riotersFooter: {
     title: "Rioters Footer",

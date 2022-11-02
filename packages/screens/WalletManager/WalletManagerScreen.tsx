@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
@@ -8,6 +8,7 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
+import { layout } from "../../utils/style/layout";
 import { Assets } from "./Assets";
 import { MyNFTs } from "./MyNFTs";
 import { WalletDashboardHeader } from "./WalletDashboardHeader";
@@ -23,12 +24,12 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   return (
     <WalletManagerScreenContainer>
       {areThereWallets ? (
-        <>
+        <View style={styles.container}>
           <WalletDashboardHeader />
           <Assets networkId={selectedNetwork} balances={balances} />
           <Wallets />
           <MyNFTs />
-        </>
+        </View>
       ) : (
         <View
           style={{
@@ -43,3 +44,10 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
     </WalletManagerScreenContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingBottom: layout.contentPadding,
+  },
+});
