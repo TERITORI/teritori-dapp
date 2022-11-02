@@ -41,6 +41,7 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       visible={visible}
       hideMainSeparator
       width={457}
+      noBrokenCorners
     >
       <ConnectWalletButton text="Metamask" isComingSoon icon={metamaskSVG} />
       <SpacerColumn size={1.5} />

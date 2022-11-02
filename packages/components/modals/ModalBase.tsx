@@ -28,6 +28,7 @@ export const ModalBase: React.FC<{
   children?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
   description?: string;
+  noBrokenCorners?: boolean;
   scrollable?: boolean;
   contentStyle?: ViewStyle;
   containerStyle?: ViewStyle;
@@ -45,6 +46,7 @@ export const ModalBase: React.FC<{
   contentStyle,
   containerStyle,
   onBackPress,
+  noBrokenCorners,
 }) => {
   return (
     <Modal
@@ -91,6 +93,7 @@ export const ModalBase: React.FC<{
             },
             contentStyle,
           ]}
+          noBrokenCorners={noBrokenCorners}
         >
           {/*------ Modal header */}
           <View
