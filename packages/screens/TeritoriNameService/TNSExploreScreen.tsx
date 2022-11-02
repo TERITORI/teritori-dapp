@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
+import ModalBase from "../../components/modals/GradientModalBase";
 import { SendFundModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
-import { BackTo } from "../../components/navigation/BackTo";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 
-export const TNSExploreScreen: ScreenFC<"TNSExplore"> = () => {
+interface TNSExploreScreenProps extends TNSModalCommonProps {}
+
+export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
+  onClose,
+}) => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const { name, setName } = useTNS();
-  const navigation = useAppNavigation();
   const isKeplrConnected = useIsKeplrConnected();
   const { setLoadingFullScreen } = useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
@@ -33,15 +36,12 @@ export const TNSExploreScreen: ScreenFC<"TNSExplore"> = () => {
   }, [loadingTokens]);
 
   return (
-    <ScreenContainer
-      hideSidebar
-      headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={
-        <BackTo
-          label="Back to home"
-          onPress={() => navigation.navigate("TNSHome")}
-        />
-      }
+    <ModalBase
+      label="Find a name"
+      hideMainSeparator
+      onClose={() => onClose()}
+      modalStatus={name && nameAvailable ? "success" : "danger"}
+      width={457}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName
@@ -73,7 +73,11 @@ export const TNSExploreScreen: ScreenFC<"TNSExplore"> = () => {
               size="XL"
               width={154}
               text="View"
-              onPress={() => navigation.navigate("TNSConsultName", { name })}
+              onPress={() => {
+                setName(name);
+                onClose("TNSConsultName");
+              }}
+              squaresBackgroundColor={neutral17}
             />
             <PrimaryButtonOutline
               size="XL"
@@ -81,6 +85,7 @@ export const TNSExploreScreen: ScreenFC<"TNSExplore"> = () => {
               disabled={!isKeplrConnected}
               text="Send funds"
               onPress={() => setSendFundsModalVisible(true)}
+              squaresBackgroundColor={neutral17}
             />
           </View>
         ) : null}
@@ -90,6 +95,6 @@ export const TNSExploreScreen: ScreenFC<"TNSExplore"> = () => {
         onClose={() => setSendFundsModalVisible(false)}
         visible={sendFundsModalVisible}
       />
-    </ScreenContainer>
+    </ModalBase>
   );
 };

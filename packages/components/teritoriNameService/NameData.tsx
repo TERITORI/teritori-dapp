@@ -1,7 +1,7 @@
 import React from "react";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
-import { neutral77 } from "../../utils/style/colors";
+import { neutral17, neutral77 } from "../../utils/style/colors";
 import {
   imageDisplayLabel,
   prettyTokenData,
@@ -15,18 +15,23 @@ import { NameAndTldText } from "./NameAndTldText";
 export const NameData: React.FC<{
   token: any;
   name: string;
-}> = ({ token, name }) => {
+  style?: ViewStyle;
+}> = ({ token, name, style }) => {
   const width = 396;
 
   return (
     <TertiaryBox
       width={width}
-      mainContainerStyle={{
-        alignItems: "flex-start",
-        justifyContent: "flex-start",
-        paddingHorizontal: 24,
-        paddingVertical: 24,
-      }}
+      mainContainerStyle={[
+        {
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+          paddingHorizontal: 24,
+          paddingVertical: 24,
+        },
+      ]}
+      style={style}
+      squaresBackgroundColor={neutral17}
     >
       {token ? (
         <>

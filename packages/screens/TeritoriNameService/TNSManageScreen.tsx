@@ -2,20 +2,19 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import nameCardSVG from "../../../assets/cards/name-card.svg";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryBadge } from "../../components/badges/PrimaryBadge";
-import { BackTo } from "../../components/navigation/BackTo";
+import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { neutral17, neutral33, neutral77 } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { tokenWithoutTld } from "../../utils/tns";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 const NameCard: React.FC<{
   fullName: string;
@@ -23,17 +22,22 @@ const NameCard: React.FC<{
   style: StyleProp<ViewStyle>;
   onPress: () => void;
 }> = ({ fullName, isPrimary, style, onPress }) => {
-  const width = 392;
   const height = 84;
 
   return (
-    <TouchableOpacity style={style} onPress={onPress}>
-      <SVG
-        width={width}
-        height={height}
-        source={nameCardSVG}
-        style={{ position: "absolute" }}
-      />
+    <TouchableOpacity
+      style={[
+        style,
+        {
+          width: "100%",
+          backgroundColor: neutral17,
+          borderWidth: 1,
+          borderColor: neutral33,
+          borderRadius: 8,
+        },
+      ]}
+      onPress={onPress}
+    >
       <View
         style={{
           flex: 1,
@@ -42,8 +46,6 @@ const NameCard: React.FC<{
           alignItems: "center",
           height,
           minHeight: height,
-          width,
-          minWidth: width,
         }}
       >
         <View
@@ -75,16 +77,17 @@ const NameCard: React.FC<{
   );
 };
 
-export const TNSManageScreen: ScreenFC<"TNSManage"> = () => {
+interface TNSManageScreenProps extends TNSModalCommonProps {}
+
+export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
+  onClose,
+}) => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
   const { setLoadingFullScreen } = useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
   const { alias, loadingAlias } = usePrimaryAlias();
-  const navigation = useAppNavigation();
-  const userHasCoWallet = useAreThereWallets();
-  const isKeplrConnected = useIsKeplrConnected();
-  const titleFontSize = 48;
-  const subTitleFontSize = 28;
+
+  const { setName } = useTNS();
 
   // Sync loadingFullScreen
   useEffect(() => {
@@ -96,10 +99,6 @@ export const TNSManageScreen: ScreenFC<"TNSManage"> = () => {
 
   // ==== Init
   useFocusEffect(() => {
-    // ---- When this screen is called, if the user has no wallet, we go home (We are waiting for tokens state)
-    // ===== Controls many things, be careful
-    if ((tokens && !userHasCoWallet) || !isKeplrConnected)
-      navigation.navigate("TNSHome");
     if (!tokens.length) return;
 
     const firstTokenOnCurrentPage = tokens[0];
@@ -109,43 +108,27 @@ export const TNSManageScreen: ScreenFC<"TNSManage"> = () => {
   });
 
   return (
-    <ScreenContainer
-      hideSidebar
-      headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={
-        <BackTo
-          label="Back to home"
-          onPress={() => navigation.navigate("TNSHome")}
-        />
-      }
+    <ModalBase
+      onClose={() => onClose()}
+      hideMainSeparator
+      label={` Welcome back, ${alias} !`}
+      width={457}
     >
       <View style={{ flex: 1, alignItems: "center" }}>
-        {/*TODO: Gradient text green-blue*/}
-        <BrandText
-          style={{
-            fontSize: titleFontSize,
-            lineHeight: 64,
-            letterSpacing: -(titleFontSize * 0.04),
-            marginTop: 32,
-          }}
-        >
-          Welcome back, {alias} !
-        </BrandText>
-        {/*TODO: Gradient text green-blue*/}
-
         {!tokens.length ? (
-          <BrandText style={{ marginTop: 40 }}>No token</BrandText>
+          <BrandText style={{ marginVertical: 40 }}>No token</BrandText>
         ) : (
           <>
             {/*// ---------- Tokens*/}
             <BrandText
-              style={{
-                fontSize: subTitleFontSize,
-                lineHeight: 32,
-                letterSpacing: -(subTitleFontSize * 0.04),
-                marginBottom: 20,
-                marginTop: 8,
-              }}
+              style={[
+                fontSemibold14,
+                {
+                  color: neutral77,
+                  alignSelf: "flex-start",
+                  marginBottom: 20,
+                },
+              ]}
             >
               Manage your names
             </BrandText>
@@ -155,12 +138,15 @@ export const TNSManageScreen: ScreenFC<"TNSManage"> = () => {
                 isPrimary={alias === token}
                 fullName={token}
                 key={token}
-                style={{ marginTop: 20 }}
-                onPress={() =>
-                  navigation.navigate("TNSConsultName", {
-                    name: tokenWithoutTld(token),
-                  })
-                }
+                style={{ marginBottom: 20 }}
+                onPress={() => {
+                  setName(tokenWithoutTld(token));
+                  onClose(
+                    "TNSConsultName",
+                    "TNSManage",
+                    tokenWithoutTld(token)
+                  );
+                }}
               />
             ))}
           </>
@@ -168,6 +154,6 @@ export const TNSManageScreen: ScreenFC<"TNSManage"> = () => {
 
         {/*TODO: PrevNext buttons*/}
       </View>
-    </ScreenContainer>
+    </ModalBase>
   );
 };

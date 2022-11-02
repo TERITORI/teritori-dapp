@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { useTNS } from "../../context/TNSProvider";
-import { neutral77 } from "../../utils/style/colors";
+import { neutral17, neutral77 } from "../../utils/style/colors";
 import { Metadata } from "../../utils/types/tns";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
-import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { NameDataFormType } from "./types";
@@ -23,6 +22,7 @@ export const NameDataForm: React.FC<{
   const { name } = useTNS();
   const [public_bio, setBio] = useState("");
   const [image, setImageUrl] = useState("");
+  const [user_header_image, setUserHeaderImageUrl] = useState("");
   const [email, setEmail] = useState("");
   const [external_url, setWebsite] = useState("");
   const [twitter_id, setTwitter] = useState("");
@@ -42,6 +42,7 @@ export const NameDataForm: React.FC<{
       public_name: name, // Useless because TNSContext ?
       public_bio,
       image,
+      user_header_image,
       email,
       external_url,
       twitter_id,
@@ -56,6 +57,7 @@ export const NameDataForm: React.FC<{
   useEffect(() => {
     setBio(initialData.public_bio || "");
     setImageUrl(initialData.image || "");
+    setUserHeaderImageUrl(initialData.user_header_image || "");
     setEmail(initialData.email || "");
     setWebsite(initialData.external_url || "");
     setTwitter(initialData.twitter_id || "");
@@ -66,9 +68,10 @@ export const NameDataForm: React.FC<{
   }, [initialData]);
 
   return (
-    <TertiaryBox
-      width={396}
-      mainContainerStyle={{ paddingHorizontal: 24, paddingVertical: 24 }}
+    <View
+      style={{
+        width: "100%",
+      }}
     >
       {isMintPath ? (
         <>
@@ -102,6 +105,8 @@ export const NameDataForm: React.FC<{
             placeHolder="Type path ID here"
             value={pathId}
             onChangeText={setPathId}
+            fullWidth
+            squaresBackgroundColor={neutral17}
           />
         </>
       ) : null}
@@ -113,6 +118,8 @@ export const NameDataForm: React.FC<{
         value={name}
         disabled
         regexp={new RegExp(/^[a-zA-Z]+$/)}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="public_bio"
@@ -121,6 +128,8 @@ export const NameDataForm: React.FC<{
         placeHolder="Type bio here"
         value={public_bio}
         onChangeText={setBio}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="image"
@@ -129,6 +138,18 @@ export const NameDataForm: React.FC<{
         placeHolder="Insert image URL here"
         value={image}
         onChangeText={setImageUrl}
+        fullWidth
+        squaresBackgroundColor={neutral17}
+      />
+      <TextInputCustom<NameDataFormType>
+        name="user_header_image"
+        style={inputStyle}
+        label="USER HEADER PROFILE"
+        placeHolder="Insert image URL here"
+        value={user_header_image}
+        onChangeText={setImageUrl}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="email"
@@ -137,6 +158,8 @@ export const NameDataForm: React.FC<{
         placeHolder="Type email here"
         value={email}
         onChangeText={setEmail}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="external_url"
@@ -145,6 +168,8 @@ export const NameDataForm: React.FC<{
         placeHolder="Type/insert link here"
         value={external_url}
         onChangeText={setWebsite}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="twitter_id"
@@ -153,6 +178,8 @@ export const NameDataForm: React.FC<{
         placeHolder="Link to Twitter account"
         value={twitter_id}
         onChangeText={setTwitter}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="discord_id"
@@ -161,6 +188,8 @@ export const NameDataForm: React.FC<{
         placeHolder="Link to Discord group"
         value={discord_id}
         onChangeText={setDiscord}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="telegram_id"
@@ -169,6 +198,8 @@ export const NameDataForm: React.FC<{
         placeHolder="@nickname"
         value={telegram_id}
         onChangeText={setTelegrameUsername}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="keybase_id"
@@ -177,6 +208,8 @@ export const NameDataForm: React.FC<{
         placeHolder="Type/insert link here"
         value={keybase_id}
         onChangeText={setKeybaseIo}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="validator_operator_address"
@@ -185,13 +218,16 @@ export const NameDataForm: React.FC<{
         placeHolder="Type/insert link here"
         value={validator_operator_address}
         onChangeText={setValidatorOperatorAddress}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <PrimaryButton
         size="XL"
         text={btnLabel}
         onPress={handlePressBtn}
-        style={{ marginTop: 8 }}
+        style={{ marginTop: 8, alignSelf: "center" }}
+        squaresBackgroundColor={neutral17}
       />
-    </TertiaryBox>
+    </View>
   );
 };

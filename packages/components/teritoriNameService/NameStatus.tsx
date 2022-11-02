@@ -2,7 +2,7 @@ import React from "react";
 
 import availableSVG from "../../../assets/icons/available.svg";
 import mintedSVG from "../../../assets/icons/minted.svg";
-import { errorColor, successColor } from "../../utils/style/colors";
+import { errorColor, neutral17, successColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -25,7 +25,8 @@ export const NameStatus: React.FC<{
           : errorColor,
       }}
       height={48}
-      width={332}
+      fullWidth
+      squaresBackgroundColor={neutral17}
     >
       <SVG
         width={24}

@@ -41,7 +41,7 @@ export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
       size="XL"
       text="Create profile"
       backgroundColor={neutral00}
-      onPress={() => navigation.navigate("TNSRegister")}
+      onPress={() => navigation.navigate("TNSHome", { modal: "register" })}
       style={style}
     />
   );

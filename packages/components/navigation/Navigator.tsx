@@ -15,15 +15,7 @@ import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
-import { TNSBurnNameScreen } from "../../screens/TeritoriNameService/TNSBurnNameScreen";
-import { TNSConsultNameScreen } from "../../screens/TeritoriNameService/TNSConsultNameScreen";
-import { TNSExploreScreen } from "../../screens/TeritoriNameService/TNSExploreScreen";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
-import { TNSManageScreen } from "../../screens/TeritoriNameService/TNSManageScreen";
-import { TNSMintNameScreen } from "../../screens/TeritoriNameService/TNSMintNameScreen";
-import { TNSMintPathScreen } from "../../screens/TeritoriNameService/TNSMintPathScreen";
-import { TNSRegisterScreen } from "../../screens/TeritoriNameService/TNSRegisterScreen";
-import { TNSUpdateNameScreen } from "../../screens/TeritoriNameService/TNSUpdateNameScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
@@ -115,70 +107,6 @@ export const Navigator: React.FC = () => {
         name="TNSHome"
         component={TNSHomeScreen}
         options={{ header: () => null, title: screenTitle("Name Service") }}
-      />
-      <Stack.Screen
-        name="TNSExplore"
-        component={TNSExploreScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Name Service (Explore names)"),
-        }}
-      />
-      <Stack.Screen
-        name="TNSManage"
-        component={TNSManageScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Name Service (Manage names)"),
-        }}
-      />
-      <Stack.Screen
-        name="TNSRegister"
-        component={TNSRegisterScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Name Service (Register name)"),
-        }}
-      />
-      <Stack.Screen
-        name="TNSConsultName"
-        component={TNSConsultNameScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Name Service (Consult name)"),
-        }}
-      />
-      <Stack.Screen
-        name="TNSUpdateName"
-        component={TNSUpdateNameScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Name Service (Update name)"),
-        }}
-      />
-      <Stack.Screen
-        name="TNSMintName"
-        component={TNSMintNameScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Name Service (Register name)"),
-        }}
-      />
-      <Stack.Screen
-        name="TNSBurnName"
-        component={TNSBurnNameScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Name Service (Burn name)"),
-        }}
-      />
-      <Stack.Screen
-        name="TNSMintPath"
-        component={TNSMintPathScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Name Service (Mint path)"),
-        }}
       />
       <Stack.Screen
         name="Collection"

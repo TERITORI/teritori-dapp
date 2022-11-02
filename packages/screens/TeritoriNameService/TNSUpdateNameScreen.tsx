@@ -2,8 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { BackTo } from "../../components/navigation/BackTo";
+import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -17,12 +16,17 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
+
+interface TNSUpdateNameScreenProps extends TNSModalCommonProps {}
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
-export const TNSUpdateNameScreen: ScreenFC<"TNSUpdateName"> = ({ route }) => {
+export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
+  onClose,
+}) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();
@@ -33,7 +37,6 @@ export const TNSUpdateNameScreen: ScreenFC<"TNSUpdateName"> = ({ route }) => {
   const userHasCoWallet = useAreThereWallets();
   const contractAddress = process.env
     .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
-  const navigation = useAppNavigation();
 
   const initData = async () => {
     try {
@@ -48,6 +51,7 @@ export const TNSUpdateNameScreen: ScreenFC<"TNSUpdateName"> = ({ route }) => {
       // return token.extension;
       const tokenData: Metadata = {
         image: token.extension.image,
+        user_header_image: token.extension.user_header_image,
         image_data: token.extension.image_data,
         email: token.extension.email,
         external_url: token.extension.external_url,
@@ -77,25 +81,29 @@ export const TNSUpdateNameScreen: ScreenFC<"TNSUpdateName"> = ({ route }) => {
 
   // ==== Init
   useFocusEffect(() => {
-    // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token.
-    setName(route.params.name);
-    // ===== Controls many things, be careful
-    if (
-      (name &&
-        tokens.length &&
-        (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))) ||
-      !isKeplrConnected
-    ) {
-      navigation.navigate("TNSHome");
-    }
     if (!initialized) initData();
   });
 
   // FIXME: typesafe data
   const submitData = async (data: any) => {
     if (!isKeplrConnected) {
+      setToastError({
+        title: "Please connect Keplr",
+        message: "",
+      });
       return;
     }
+    if (
+      tokens.length &&
+      (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))
+    ) {
+      setToastError({
+        title: "Something went wrong!",
+        message: "",
+      });
+      return;
+    }
+
     setLoadingFullScreen(true);
     const {
       image, // TODO - support later
@@ -150,7 +158,8 @@ export const TNSUpdateNameScreen: ScreenFC<"TNSUpdateName"> = ({ route }) => {
           title: normalizedTokenId + " successfully updated",
           message: "",
         });
-        navigation.navigate("TNSConsultName", { name });
+        setName(name);
+        onClose("TNSConsultName");
         setLoadingFullScreen(false);
       }
     } catch (err) {
@@ -170,34 +179,27 @@ export const TNSUpdateNameScreen: ScreenFC<"TNSUpdateName"> = ({ route }) => {
   };
 
   return (
-    <ScreenContainer
-      hideSidebar
-      headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={
-        <BackTo
-          label={"Back to " + name}
-          onPress={() => navigation.navigate("TNSConsultName", { name })}
-        />
-      }
+    <ModalBase
+      hideMainSeparator
+      onClose={() => onClose()}
+      scrollable
+      width={457}
+      contentStyle={{
+        backgroundColor: neutral17,
+      }}
     >
-      <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "center",
-            marginTop: 20,
-          }}
-        >
-          <NameNFT style={{ marginRight: 20 }} name={name} />
-
-          <NameDataForm
-            btnLabel="Update profile"
-            onPressBtn={submitData}
-            initialData={initialData}
-          />
-        </View>
+      <NameNFT name={name} />
+      <View
+        style={{
+          marginVertical: 20,
+        }}
+      >
+        <NameDataForm
+          btnLabel="Update profile"
+          onPressBtn={submitData}
+          initialData={initialData}
+        />
       </View>
-    </ScreenContainer>
+    </ModalBase>
   );
 };

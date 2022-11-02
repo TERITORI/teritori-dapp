@@ -2,8 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { BackTo } from "../../components/navigation/BackTo";
+import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -17,17 +16,24 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { useAppNavigation } from "../../utils/navigation";
+import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser, tokenWithoutTld } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 const normalize = (inputString: string) => {
   const invalidChrsRemoved = inputString.replace(/[^a-z0-9\-_]/g, "");
   return invalidChrsRemoved.replace(/[_-]{2,}/g, "");
 };
 
+interface TNSMintPathScreenProps extends TNSModalCommonProps {}
+
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
-export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
+export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
+  onClose,
+  navigateBackTo,
+}) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();
@@ -55,6 +61,7 @@ export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
       // return token.extension;
       const tokenData: Metadata = {
         image: token.extension.image,
+        user_header_image: token.extension.user_header_image,
         image_data: token.extension.image_data,
         email: token.extension.email,
         external_url: token.extension.external_url,
@@ -84,8 +91,6 @@ export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
 
   // ==== Init
   useFocusEffect(() => {
-    // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token
-    setName(route.params.name);
     // ===== Controls many things, be careful
     if (
       (name &&
@@ -164,9 +169,9 @@ export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
           title: normalizedPathId + " successfully minted",
           message: "",
         });
-        navigation.navigate("TNSConsultName", {
-          name: tokenWithoutTld(pathId),
-        });
+        setName(tokenWithoutTld(pathId));
+        onClose("TNSConsultName");
+
         setLoadingFullScreen(false);
       }
     } catch (err) {
@@ -186,15 +191,16 @@ export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
   };
 
   return (
-    <ScreenContainer
-      hideSidebar
-      headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={
-        <BackTo
-          label={"Back to " + name}
-          onPress={() => navigation.navigate("TNSConsultName", { name })}
-        />
-      }
+    <ModalBase
+      onClose={() => onClose()}
+      onBackPress={() => onClose(navigateBackTo)}
+      width={480}
+      scrollable
+      label={name}
+      hideMainSeparator
+      contentStyle={{
+        backgroundColor: neutral17,
+      }}
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
         <View
@@ -215,6 +221,6 @@ export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
           />
         </View>
       </View>
-    </ScreenContainer>
+    </ModalBase>
   );
 };

@@ -1,7 +1,7 @@
-import React from "react";
-import { View } from "react-native";
+import React, { ReactNode } from "react";
+import { View, ViewStyle } from "react-native";
 
-import { BrandText } from "../BrandText";
+import { neutral17 } from "../../utils/style/colors";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { NameNFT } from "./NameNFT";
 import { NameStatus } from "./NameStatus";
@@ -15,24 +15,21 @@ export const FindAName: React.FC<{
   nameError?: boolean;
   nameAvailable?: boolean;
   loading?: boolean;
-}> = ({ name, setName, nameError, nameAvailable, loading, children }) => {
-  const titleFontSize = 48;
-
+  containerStyle?: ViewStyle;
+  nameNFTStyle?: ViewStyle;
+  children?: ReactNode;
+}> = ({
+  name,
+  setName,
+  nameError,
+  nameAvailable,
+  loading,
+  children,
+  containerStyle,
+  nameNFTStyle,
+}) => {
   return (
-    <View style={{ flex: 1, alignItems: "center" }}>
-      {/*TODO: Gradient text green-blue*/}
-      <BrandText
-        style={{
-          fontSize: titleFontSize,
-          lineHeight: 64,
-          letterSpacing: -(titleFontSize * 0.04),
-          marginBottom: 24,
-          marginTop: 32,
-        }}
-      >
-        Find a name
-      </BrandText>
-
+    <View style={[{ flex: 1, alignItems: "center" }, containerStyle]}>
       <TextInputCustom<{ name: string }>
         name="name"
         label="NAME"
@@ -41,7 +38,8 @@ export const FindAName: React.FC<{
         onChangeText={setName}
         value={name || ""}
         regexp={new RegExp(/^[a-zA-Z]+$/)}
-        width={322}
+        fullWidth
+        squaresBackgroundColor={neutral17}
       />
 
       {!loading ? (
@@ -53,7 +51,13 @@ export const FindAName: React.FC<{
           {/*----- If name entered and no error, we display the image */}
           {name && !nameError ? (
             <NameNFT
-              style={{ marginTop: 12, marginBottom: children ? 20 : 0 }}
+              style={[
+                {
+                  marginTop: 12,
+                  marginBottom: children ? 20 : 0,
+                },
+                nameNFTStyle,
+              ]}
               name={name}
             />
           ) : null}

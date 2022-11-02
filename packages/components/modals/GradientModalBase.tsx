@@ -1,18 +1,54 @@
+import { LinearGradient } from "expo-linear-gradient";
 import React, { ComponentType } from "react";
-import { Modal, Pressable, View, ViewStyle, ScrollView } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import {
+  Modal,
+  Pressable,
+  StyleProp,
+  View,
+  ViewStyle,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/close.svg";
-import { neutral77, neutral22 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import {
+  errorColor,
+  neutral00,
+  neutral17,
+  neutral22,
+  neutral33,
+  successColor,
+} from "../../utils/style/colors";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { SeparatorGradient } from "../SeparatorGradient";
-import { TertiaryBox } from "../boxes/TertiaryBox";
-import { SpacerColumn } from "../spacer";
+
+const getModalColors = (status?: "danger" | "success") => {
+  switch (status) {
+    case "danger":
+      return [neutral00, errorColor];
+    case "success":
+      return [neutral00, successColor];
+    default:
+      return [neutral00];
+  }
+};
+
+// Just an horizontal gradient separator
+const SeparatorGradient: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
+  style,
+}) => (
+  <View style={[{ height: 1, width: "100%" }, style]}>
+    {/* Background gradient */}
+    <LinearGradient
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={{ height: "100%", width: "100%" }}
+      colors={["#2AF598", "#009EFD"]}
+    />
+  </View>
+);
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
@@ -27,28 +63,26 @@ export const ModalBase: React.FC<{
   childrenBottom?: JSX.Element | JSX.Element[];
   children?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
-  description?: string;
+  modalStatus?: "danger" | "success";
   scrollable?: boolean;
   contentStyle?: ViewStyle;
-  containerStyle?: ViewStyle;
 }> = ({
   label,
   visible,
   width,
   onClose,
+  onBackPress,
   childrenBottom,
   children,
   Header,
   hideMainSeparator,
-  description,
+  modalStatus,
   scrollable,
   contentStyle,
-  containerStyle,
-  onBackPress,
 }) => {
   return (
     <Modal
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      style={{ flex: 1 }}
       animationType="fade"
       transparent
       visible={visible}
@@ -57,14 +91,11 @@ export const ModalBase: React.FC<{
       {/*------ Modal background */}
       <ScrollView
         scrollEnabled={scrollable}
-        style={[
-          {
-            height: "100%",
-            width: "100%",
-            backgroundColor: "rgba(0, 0, 0, .8)",
-          },
-          containerStyle,
-        ]}
+        style={{
+          height: "100%",
+          width: "100%",
+          backgroundColor: "rgba(0, 0, 0, .8)",
+        }}
         contentContainerStyle={[
           {
             alignItems: "center",
@@ -81,27 +112,50 @@ export const ModalBase: React.FC<{
         ]}
       >
         {/*------ Modal main container */}
-        <TertiaryBox
-          width={width}
-          style={{ margin: "auto" }}
-          mainContainerStyle={[
+        <View
+          style={[
             {
+              margin: "auto",
+              width,
               alignItems: "flex-start",
               backgroundColor: "#000000",
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: neutral33,
+              padding: modalMarginPadding,
             },
             contentStyle,
           ]}
         >
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={{
+              position: "absolute",
+              top: "40%",
+              left: 0,
+              bottom: 0,
+              right: 0,
+            }}
+            colors={getModalColors(modalStatus)}
+          />
+
           {/*------ Modal header */}
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
+              alignItems: "center",
               width: "100%",
-              padding: modalMarginPadding,
+              paddingBottom: 20,
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
               {onBackPress && (
                 <TouchableOpacity
                   activeOpacity={0.9}
@@ -119,37 +173,16 @@ export const ModalBase: React.FC<{
                   <SVG source={chevronLeft} height={12} width={12} />
                 </TouchableOpacity>
               )}
-              {(label || description) && (
-                <View style={{ flex: 1 }}>
-                  {label && (
-                    <BrandText style={{ color: "white", lineHeight: 24 }}>
-                      {label}
-                    </BrandText>
-                  )}
-
-                  {description && (
-                    <>
-                      <SpacerColumn size={1} />
-                      <BrandText
-                        style={[
-                          fontSemibold14,
-                          { color: neutral77, width: "100%", lineHeight: 20 },
-                        ]}
-                      >
-                        {description}
-                      </BrandText>
-                    </>
-                  )}
-                </View>
+              {label && (
+                <BrandText style={{ color: "white", lineHeight: 24 }}>
+                  {label}
+                </BrandText>
               )}
             </View>
 
             {Header && <Header />}
 
-            <Pressable
-              style={{ marginTop: layout.padding_x0_25 }}
-              onPress={onClose}
-            >
+            <Pressable onPress={onClose}>
               <SVG
                 width={20}
                 height={20}
@@ -160,7 +193,15 @@ export const ModalBase: React.FC<{
           </View>
           {children && (
             <View
-              style={{ width: "100%", paddingHorizontal: modalMarginPadding }}
+              style={{
+                width: "100%",
+                paddingHorizontal: 12,
+                paddingVertical: 12,
+                backgroundColor: neutral17,
+                borderRadius: 8,
+                borderWidth: 1,
+                borderColor: neutral33,
+              }}
             >
               {/*------- Modal main content */}
               {hideMainSeparator !== true && (
@@ -173,7 +214,7 @@ export const ModalBase: React.FC<{
           )}
           {/*------- Modal bottom content */}
           {childrenBottom}
-        </TertiaryBox>
+        </View>
       </ScrollView>
     </Modal>
   );

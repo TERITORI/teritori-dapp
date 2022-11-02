@@ -1,5 +1,6 @@
 export const defaultMetaData: Metadata = {
   image: "",
+  user_header_image: "",
   image_data: "",
   email: "",
   external_url: "",
@@ -16,6 +17,7 @@ export interface Metadata {
   contract_address?: string | null;
   image: string | null;
   image_data: string | null;
+  user_header_image: string | null;
   email: string | null;
   external_url: string | null;
   public_name: string | null;

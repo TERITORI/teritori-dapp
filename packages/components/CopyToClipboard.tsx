@@ -11,7 +11,8 @@ import { TertiaryBox } from "./boxes/TertiaryBox";
 
 export const CopyToClipboard: React.FC<{
   text: string;
-}> = ({ text }) => {
+  squaresBackgroundColor?: string;
+}> = ({ text, squaresBackgroundColor }) => {
   const { setToastSuccess } = useFeedbacks();
 
   const copyToClipboard = () => {
@@ -32,6 +33,7 @@ export const CopyToClipboard: React.FC<{
           flexDirection: "row",
           backgroundColor: neutral22,
         }}
+        squaresBackgroundColor={squaresBackgroundColor}
       >
         <BrandText
           style={{ fontSize: 14, fontWeight: "500", marginLeft: 12 }}
