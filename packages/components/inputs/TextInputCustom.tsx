@@ -52,7 +52,6 @@ export interface TextInputCustomProps<T extends FieldValues>
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: string;
   labelStyle?: TextStyle;
-  fullWidth?: boolean;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -75,7 +74,6 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
-  fullWidth,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // Handling key pressing
@@ -165,7 +163,6 @@ export const TextInputCustom = <T extends FieldValues>({
         width={width}
         fullWidth={!width}
         height={height}
-        fullWidth={fullWidth}
       >
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>

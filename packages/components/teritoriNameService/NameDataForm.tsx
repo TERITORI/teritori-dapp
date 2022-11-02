@@ -105,7 +105,6 @@ export const NameDataForm: React.FC<{
             placeHolder="Type path ID here"
             value={pathId}
             onChangeText={setPathId}
-            fullWidth
             squaresBackgroundColor={neutral17}
           />
         </>
@@ -118,7 +117,6 @@ export const NameDataForm: React.FC<{
         value={name}
         disabled
         regexp={new RegExp(/^[a-zA-Z]+$/)}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
@@ -128,7 +126,6 @@ export const NameDataForm: React.FC<{
         placeHolder="Type bio here"
         value={public_bio}
         onChangeText={setBio}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
@@ -138,7 +135,6 @@ export const NameDataForm: React.FC<{
         placeHolder="Insert image URL here"
         value={image}
         onChangeText={setImageUrl}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
@@ -148,7 +144,6 @@ export const NameDataForm: React.FC<{
         placeHolder="Insert image URL here"
         value={user_header_image}
         onChangeText={setImageUrl}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
@@ -158,7 +153,6 @@ export const NameDataForm: React.FC<{
         placeHolder="Type email here"
         value={email}
         onChangeText={setEmail}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
@@ -168,7 +162,6 @@ export const NameDataForm: React.FC<{
         placeHolder="Type/insert link here"
         value={external_url}
         onChangeText={setWebsite}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
@@ -178,7 +171,6 @@ export const NameDataForm: React.FC<{
         placeHolder="Link to Twitter account"
         value={twitter_id}
         onChangeText={setTwitter}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
@@ -188,7 +180,6 @@ export const NameDataForm: React.FC<{
         placeHolder="Link to Discord group"
         value={discord_id}
         onChangeText={setDiscord}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
@@ -198,7 +189,6 @@ export const NameDataForm: React.FC<{
         placeHolder="@nickname"
         value={telegram_id}
         onChangeText={setTelegrameUsername}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
@@ -208,7 +198,6 @@ export const NameDataForm: React.FC<{
         placeHolder="Type/insert link here"
         value={keybase_id}
         onChangeText={setKeybaseIo}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
@@ -218,7 +207,6 @@ export const NameDataForm: React.FC<{
         placeHolder="Type/insert link here"
         value={validator_operator_address}
         onChangeText={setValidatorOperatorAddress}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
       <PrimaryButton
