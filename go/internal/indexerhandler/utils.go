@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
+	"math/big"
 	"net/http"
 	"time"
 
@@ -12,6 +14,7 @@ import (
 	"github.com/allegro/bigcache/v3"
 	"github.com/pkg/errors"
 	abcitypes "github.com/tendermint/tendermint/abci/types"
+	"go.uber.org/zap"
 )
 
 type StringEventAttribute struct {
@@ -185,4 +188,35 @@ func (h *Handler) HistoricalPrice(denom string, t time.Time) (float64, error) {
 		return 0, errors.Wrap(err, fmt.Sprintf(`failed to get historical price for %s`, nativeCurrency.CoinGeckoID))
 	}
 	return price, nil
+}
+
+func (h *Handler) usdAmount(denom string, amount string, t time.Time) float64 {
+	// we don't return an error because we shouldn't error-out in case a currency is not registered
+
+	currency, err := networks.GetNativeCurrency(h.config.NetworkID, denom)
+	if err != nil {
+		h.logger.Debug("failed to derive usd amount: failed to get native currency", zap.Error(err))
+		return 0
+	}
+
+	// FIXME: this could be more precise
+	bigAmount, _, err := big.ParseFloat(amount, 10, 18, big.AwayFromZero)
+	if err != nil {
+		h.logger.Debug("failed to derive usd amount: failed to parse amount into big float", zap.Error(err))
+		return 0
+	}
+	divider := big.NewFloat(math.Pow(10, float64(currency.Decimals)))
+	bigAmount.Quo(bigAmount, divider)
+
+	coinUSDPrice, err := h.HistoricalPrice(denom, t)
+	if err != nil {
+		h.logger.Debug("failed to derive usd amount: failed to get historical price", zap.Error(err))
+		return 0
+	}
+	bigCoinUSDPrice := big.NewFloat(coinUSDPrice)
+
+	bigAmount.Mul(bigAmount, bigCoinUSDPrice)
+
+	usdPrice, _ := bigAmount.Float64()
+	return usdPrice
 }

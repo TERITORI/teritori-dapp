@@ -70,12 +70,6 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 		return errors.Wrap(err, "failed to update nft price")
 	}
 
-	// get usd price
-	usdPrice, err := h.HistoricalPrice(denom, e.BlockTime)
-	if err != nil {
-		return errors.Wrap(err, "failed to get updated usd price")
-	}
-
 	// create activity
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
@@ -85,7 +79,7 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 		UpdateNFTPrice: &indexerdb.UpdateNFTPrice{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   usdPrice,
+			USDPrice:   h.usdAmount(denom, price, e.BlockTime),
 			SellerID:   indexerdb.TeritoriUserID(execMsg.Sender),
 		},
 	}).Error; err != nil {
@@ -250,12 +244,6 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		return errors.Wrap(err, "failed to update nft")
 	}
 
-	// get usd price
-	usdPrice, err := h.HistoricalPrice(denom, e.BlockTime)
-	if err != nil {
-		return errors.Wrap(err, "failed to get trade usd price")
-	}
-
 	// create trade
 	var nft indexerdb.NFT
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
@@ -270,7 +258,7 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		Trade: &indexerdb.Trade{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   usdPrice,
+			USDPrice:   h.usdAmount(denom, price, e.BlockTime),
 			BuyerID:    buyerID,
 			SellerID:   sellerID,
 		},
@@ -345,12 +333,6 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 		return errors.Wrap(err, "failed to update nft")
 	}
 
-	// get usd price
-	usdPrice, err := h.HistoricalPrice(denom, e.BlockTime)
-	if err != nil {
-		return errors.Wrap(err, "failed to get listing usd price")
-	}
-
 	// create listing
 	var nft indexerdb.NFT
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
@@ -365,7 +347,7 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 		Listing: &indexerdb.Listing{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   usdPrice,
+			USDPrice:   h.usdAmount(denom, price, e.BlockTime),
 			SellerID:   sellerID,
 		},
 	}).Error; err != nil {
