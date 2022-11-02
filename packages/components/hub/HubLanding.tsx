@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity, Linking } from "react-native";
 
 import defaultNewsBanner from "../../../assets/default-images/default-news-banner.png";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
@@ -67,17 +67,16 @@ export const HubLanding: React.FC = () => {
             <DAppCard
               onPress={() => navigation.navigate("Staking")}
               label="Staking"
-              description="Participate to the Security
-Get rewards by delegating to Teritori validators"
+              description="Participate to the Security Get rewards by delegating to Teritori validators"
               info="Staking on Keplr!"
               iconSVG={stakingSVG}
             />
             <DAppCard
               label="Airdrop"
-              description="Get $TORI
-Join Teritori Community "
-              info="Coming soon"
+              description="Get $TORI Join Teritori Community "
+              info="Let's Go!"
               iconSVG={airdropSVG}
+              onPress={() => Linking.openURL("https://teritori.com/airdrop")}
             />
             <DAppCard
               label="Marketplace"
@@ -98,6 +97,7 @@ Join Teritori Community "
               description="Get funds to develop, contribute and build new feature for Communities"
               info="Apply here"
               iconSVG={labsSVG}
+              onPress={() => Linking.openURL("https://teritori.com/grants")}
             />
           </View>
         </Section>
@@ -123,11 +123,10 @@ Launch"
             />
             <DAppCard
               label="Contribute!"
-              description="Want to build new dApps?
-Join the Bounty Program
-& get your project funded."
+              description="Want to build new dApps? Join the Bounty Program & get your project funded."
               info="Apply here"
               iconSVG={airdropSVG}
+              onPress={() => Linking.openURL("https://app.dework.xyz/teritori")}
             />
           </View>
         </Section>

@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 
+import validatorIconSVG from "../../../../assets/default-images/validator-icon.svg";
 import { Avatar } from "../../../components/Avatar";
 import { BrandText } from "../../../components/BrandText";
 import { ExternalLink } from "../../../components/ExternalLink";
@@ -43,7 +44,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
     () => (
       <>
         <View style={styles.rowWithCenter}>
-          <Avatar size="medium" uri={imageURL || ""} />
+          <Avatar size="medium" uri={imageURL} defaultIcon={validatorIconSVG} />
           <SpacerRow size={2} />
           <View>
             <BrandText style={fontSemibold20}>{data?.moniker}</BrandText>

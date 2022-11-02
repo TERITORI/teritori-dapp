@@ -5,7 +5,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
 
+import checkSVG from "../../../../assets/icons/check.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
@@ -13,6 +15,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBondedToris";
 import { useValidators } from "../../../hooks/useValidators";
@@ -50,15 +53,20 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   visible,
   data,
 }) => {
+  // variables
   const wallet = useSelectedWallet();
   const { bondedTokens, refreshBondedTokens } = useSelectedWalletBondedToris(
     data?.address
   );
+  const [modifiedValidators, setModifiedValidators] = useState<ValidatorInfo[]>(
+    []
+  );
   const [selectedValidator, setSelectedValidator] = useState<ValidatorInfo>();
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { allValidators } = useValidators();
-
-  // variables
+  const {
+    data: { allValidators },
+  } = useValidators();
+  const { triggerError } = useErrorHandler();
   const { control, setValue, handleSubmit, watch, reset } =
     useForm<StakeFormValuesType>();
   const watchAll = watch();
@@ -68,65 +76,88 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
     reset();
   }, [visible]);
 
+  useEffect(() => {
+    setValue("validatorName", data?.moniker || "");
+  }, [data?.moniker]);
+
+  useEffect(() => {
+    if (data?.moniker) {
+      let currentValidators = allValidators;
+      if (bondedTokens.atomics && bondedTokens.atomics !== "0") {
+        currentValidators = currentValidators.filter(
+          (d) => d.moniker !== data?.moniker
+        );
+      }
+      setModifiedValidators(currentValidators);
+    }
+  }, [bondedTokens]);
+
   // functions
   const onSubmit = async (formData: StakeFormValuesType) => {
-    if (!wallet?.connected || !wallet.address) {
-      console.warn("invalid wallet", wallet);
-      setToastError({
-        title: "Invalid wallet",
-        message: "",
-      });
-      return;
-    }
-    if (!data) {
-      setToastError({
-        title: "Internal error",
-        message: "No data",
-      });
-      return;
-    }
-    if (!selectedValidator) {
-      setToastError({
-        title: "Internal error",
-        message: "No validator selected",
-      });
-      return;
-    }
-    const signer = getKeplrOfflineSigner();
-    const client = await getTeritoriSigningStargateClient(signer);
-    const msg: MsgBeginRedelegate = {
-      delegatorAddress: wallet.address,
-      validatorSrcAddress: data.address,
-      validatorDstAddress: selectedValidator.address,
-      amount: {
-        amount: Decimal.fromUserInput(
-          formData.amount,
-          toriCurrency.coinDecimals
-        ).atomics,
-        denom: toriCurrency.coinMinimalDenom,
-      },
-    };
-    const txResponse = await client.signAndBroadcast(
-      wallet.address,
-      [
-        {
-          typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
-          value: msg,
+    try {
+      if (!wallet?.connected || !wallet.address) {
+        console.warn("invalid wallet", wallet);
+        setToastError({
+          title: "Invalid wallet",
+          message: "",
+        });
+        return;
+      }
+      if (!data) {
+        setToastError({
+          title: "Internal error",
+          message: "No data",
+        });
+        return;
+      }
+      if (!selectedValidator) {
+        setToastError({
+          title: "Internal error",
+          message: "No validator selected",
+        });
+        return;
+      }
+      const signer = getKeplrOfflineSigner();
+      const client = await getTeritoriSigningStargateClient(signer);
+      const msg: MsgBeginRedelegate = {
+        delegatorAddress: wallet.address,
+        validatorSrcAddress: data.address,
+        validatorDstAddress: selectedValidator.address,
+        amount: {
+          amount: Decimal.fromUserInput(
+            formData.amount,
+            toriCurrency.coinDecimals
+          ).atomics,
+          denom: toriCurrency.coinMinimalDenom,
         },
-      ],
-      "auto"
-    );
-    if (isDeliverTxFailure(txResponse)) {
-      console.error("tx failed", txResponse);
-      setToastError({
-        title: "Transaction failed",
-        message: txResponse.rawLog || "",
-      });
-      return;
+      };
+
+      const txResponse = await client.signAndBroadcast(
+        wallet.address,
+        [
+          {
+            typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
+            value: msg,
+          },
+        ],
+        "auto"
+      );
+      if (isDeliverTxFailure(txResponse)) {
+        onClose && onClose();
+        console.error("tx failed", txResponse);
+        setToastError({
+          title: "Transaction failed",
+          message: txResponse.rawLog || "",
+        });
+        return;
+      }
+
+      setToastSuccess({ title: "Redelegation success", message: "" });
+      refreshBondedTokens();
+      onClose && onClose();
+    } catch (error) {
+      triggerError({ error, callback: onClose });
     }
-    setToastSuccess({ title: "Redelegation success", message: "" });
-    refreshBondedTokens();
-    onClose && onClose();
   };
 
   // returns
@@ -183,7 +214,6 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           control={control}
           variant="labelOutside"
           label="Source Validator"
-          defaultValue={data?.moniker || ""}
           disabled
           rules={{ required: true }}
         />
@@ -195,11 +225,22 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           <SpacerColumn size={1} />
         </View>
         <ValidatorsTable
-          validators={allValidators}
+          validators={modifiedValidators}
           style={{ height: 200 }}
           actions={(validator) => {
             if (validator.address === selectedValidator?.address) {
-              return [];
+              return [
+                {
+                  renderComponent: () => (
+                    <SVG
+                      source={checkSVG}
+                      width={layout.iconButton}
+                      height={layout.iconButton}
+                      fill={primaryColor}
+                    />
+                  ),
+                },
+              ];
             }
             return [
               { label: "Select", onPress: (val) => setSelectedValidator(val) },

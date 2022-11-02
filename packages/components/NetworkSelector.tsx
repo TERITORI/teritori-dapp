@@ -68,9 +68,14 @@ export const NetworkSelector: React.FC<{
             .map((network, index) => {
               return (
                 <TouchableOpacity
-                  style={{ marginBottom: 16 }}
+                  style={{
+                    marginBottom: 16,
+                    opacity: network !== Network.Teritori ? 0.5 : 1,
+                  }}
                   key={index}
-                  onPress={onPressNetwork}
+                  onPress={
+                    network === Network.Teritori ? onPressNetwork : undefined
+                  }
                 >
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <NetworkIcon network={network} size={16} />

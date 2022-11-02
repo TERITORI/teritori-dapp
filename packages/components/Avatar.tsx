@@ -1,16 +1,23 @@
 // libraries
 import React from "react";
 import { Image } from "react-native";
+import { SvgProps } from "react-native-svg";
 
 import { avatarWidth } from "../utils/style/layout";
+import { SVG } from "./SVG";
 
 // types
 export interface AvatarProps {
-  uri: string;
+  uri?: string;
   size?: "regular" | "medium";
+  defaultIcon?: React.FC<SvgProps>;
 }
 
-export const Avatar: React.FC<AvatarProps> = ({ uri, size = "regular" }) => {
+export const Avatar: React.FC<AvatarProps> = ({
+  uri,
+  size = "regular",
+  defaultIcon,
+}) => {
   // functions
   const getSize = () => {
     switch (size) {
@@ -26,7 +33,7 @@ export const Avatar: React.FC<AvatarProps> = ({ uri, size = "regular" }) => {
   const avatarSize = getSize();
 
   // renders
-  return (
+  return uri ? (
     <Image
       source={{
         uri,
@@ -37,5 +44,7 @@ export const Avatar: React.FC<AvatarProps> = ({ uri, size = "regular" }) => {
         borderRadius: avatarSize / 2,
       }}
     />
-  );
+  ) : defaultIcon ? (
+    <SVG source={defaultIcon} width={avatarSize} height={avatarSize} />
+  ) : null;
 };

@@ -53,7 +53,7 @@ export const ActivityTable: React.FC<{
 }> = ({ nftId, collectionId }) => {
   const itemsPerPage = 5;
   const [pageIndex, setPageIndex] = useState(0);
-  const { total, activity } = useActivity({
+  const { total, activities } = useActivity({
     collectionId: collectionId || "",
     nftId: nftId || "",
     offset: pageIndex * itemsPerPage,
@@ -64,7 +64,7 @@ export const ActivityTable: React.FC<{
     <View style={{ justifyContent: "space-between" }}>
       <TableRow headings={Object.values(TABLE_ROWS)} />
       <FlatList
-        data={activity}
+        data={activities}
         renderItem={({ item }) => <ActivityRow activity={item} />}
         keyExtractor={(item) => item.id}
         style={{
