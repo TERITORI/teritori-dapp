@@ -12,6 +12,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBondedToris";
 import { prettyPrice } from "../../../utils/coins";
@@ -52,6 +53,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
     data?.address
   );
   const { setToastError, setToastSuccess } = useFeedbacks();
+  const { triggerError } = useErrorHandler();
 
   // variables
   const { control, setValue, handleSubmit, watch, reset } =
@@ -69,46 +71,51 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
 
   // functions
   const onSubmit = async (formData: StakeFormValuesType) => {
-    if (!wallet?.connected || !wallet.address) {
-      console.warn("invalid wallet", wallet);
-      setToastError({
-        title: "Invalid wallet",
-        message: "",
-      });
-      return;
+    try {
+      if (!wallet?.connected || !wallet.address) {
+        console.warn("invalid wallet", wallet);
+        setToastError({
+          title: "Invalid wallet",
+          message: "",
+        });
+        return;
+      }
+      if (!data) {
+        setToastError({
+          title: "Internal error",
+          message: "No data",
+        });
+        return;
+      }
+      const signer = getKeplrOfflineSigner();
+      const client = await getTeritoriSigningStargateClient(signer);
+      const txResponse = await client.undelegateTokens(
+        wallet.address,
+        data.address,
+        {
+          amount: Decimal.fromUserInput(
+            formData.amount,
+            toriCurrency.coinDecimals
+          ).atomics,
+          denom: toriCurrency.coinMinimalDenom,
+        },
+        "auto"
+      );
+      if (isDeliverTxFailure(txResponse)) {
+        console.error("tx failed", txResponse);
+        onClose && onClose();
+        setToastError({
+          title: "Transaction failed",
+          message: txResponse.rawLog || "",
+        });
+        return;
+      }
+      setToastSuccess({ title: "Undelegation success", message: "" });
+      refreshBondedTokens();
+      onClose && onClose();
+    } catch (error) {
+      triggerError({ error, callback: onClose });
     }
-    if (!data) {
-      setToastError({
-        title: "Internal error",
-        message: "No data",
-      });
-      return;
-    }
-    const signer = getKeplrOfflineSigner();
-    const client = await getTeritoriSigningStargateClient(signer);
-    const txResponse = await client.undelegateTokens(
-      wallet.address,
-      data.address,
-      {
-        amount: Decimal.fromUserInput(
-          formData.amount,
-          toriCurrency.coinDecimals
-        ).atomics,
-        denom: toriCurrency.coinMinimalDenom,
-      },
-      "auto"
-    );
-    if (isDeliverTxFailure(txResponse)) {
-      console.error("tx failed", txResponse);
-      setToastError({
-        title: "Transaction failed",
-        message: txResponse.rawLog || "",
-      });
-      return;
-    }
-    setToastSuccess({ title: "Undelegation success", message: "" });
-    refreshBondedTokens();
-    onClose && onClose();
   };
 
   // returns

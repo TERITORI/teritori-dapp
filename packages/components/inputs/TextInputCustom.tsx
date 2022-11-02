@@ -20,7 +20,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { DEFAULT_ERRORS } from "../../utils/errors";
+import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
 import {
   fontMedium10,
@@ -107,7 +107,7 @@ export const TextInputCustom = <T extends FieldValues>({
       if (fieldState.error?.message) {
         return fieldState.error?.message;
       }
-      return DEFAULT_ERRORS.required;
+      return DEFAULT_FORM_ERRORS.required;
     }
   }, [fieldState.error]);
 

@@ -14,6 +14,7 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
+import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { prettyPrice } from "../../../utils/coins";
 import { getKeplrOfflineSigner } from "../../../utils/keplr";
@@ -44,8 +45,10 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   visible,
   data,
 }) => {
+  // variables
   const wallet = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
+  const { triggerError } = useErrorHandler();
   const balances = useBalances(
     process.env.TERITORI_NETWORK_ID,
     wallet?.address
@@ -55,8 +58,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     toriBalance?.amount || "0",
     toriCurrency.coinDecimals
   );
-
-  // variables
   const { control, setValue, handleSubmit, watch, reset } =
     useForm<StakeFormValuesType>();
   const watchAll = watch();
@@ -72,24 +73,24 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
 
   // functions
   const onSubmit = async (formData: StakeFormValuesType) => {
-    if (!wallet?.connected || !wallet.address) {
-      console.warn("invalid wallet", wallet);
-      setToastError({
-        title: "Invalid wallet",
-        message: "",
-      });
-      return;
-    }
-    if (!data) {
-      setToastError({
-        title: "Internal error",
-        message: "No data",
-      });
-      return;
-    }
-    const signer = getKeplrOfflineSigner();
-    const client = await getTeritoriSigningStargateClient(signer);
     try {
+      if (!wallet?.connected || !wallet.address) {
+        console.warn("invalid wallet", wallet);
+        setToastError({
+          title: "Invalid wallet",
+          message: "",
+        });
+        return;
+      }
+      if (!data) {
+        setToastError({
+          title: "Internal error",
+          message: "No data",
+        });
+        return;
+      }
+      const signer = getKeplrOfflineSigner();
+      const client = await getTeritoriSigningStargateClient(signer);
       const txResponse = await client.delegateTokens(
         wallet.address,
         data.address,
@@ -105,6 +106,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
 
       if (isDeliverTxFailure(txResponse)) {
         console.error("tx failed", txResponse);
+        onClose && onClose();
         setToastError({
           title: "Transaction failed",
           message: txResponse.rawLog || "",
@@ -115,7 +117,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       setToastSuccess({ title: "Delegation success", message: "" });
       onClose && onClose();
     } catch (error) {
-      console.log(error);
+      triggerError({ error, callback: onClose });
     }
   };
 

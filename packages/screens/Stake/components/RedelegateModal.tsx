@@ -15,6 +15,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBondedToris";
 import { useValidators } from "../../../hooks/useValidators";
@@ -65,7 +66,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   const {
     data: { allValidators },
   } = useValidators();
-
+  const { triggerError } = useErrorHandler();
   const { control, setValue, handleSubmit, watch, reset } =
     useForm<StakeFormValuesType>();
   const watchAll = watch();
@@ -93,68 +94,70 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
 
   // functions
   const onSubmit = async (formData: StakeFormValuesType) => {
-    if (!wallet?.connected || !wallet.address) {
-      console.warn("invalid wallet", wallet);
-      setToastError({
-        title: "Invalid wallet",
-        message: "",
-      });
-      return;
-    }
-    if (!data) {
-      setToastError({
-        title: "Internal error",
-        message: "No data",
-      });
-      return;
-    }
-    if (!selectedValidator) {
-      setToastError({
-        title: "Internal error",
-        message: "No validator selected",
-      });
-      return;
-    }
-    const signer = getKeplrOfflineSigner();
-    const client = await getTeritoriSigningStargateClient(signer);
-    const msg: MsgBeginRedelegate = {
-      delegatorAddress: wallet.address,
-      validatorSrcAddress: data.address,
-      validatorDstAddress: selectedValidator.address,
-      amount: {
-        amount: Decimal.fromUserInput(
-          formData.amount,
-          toriCurrency.coinDecimals
-        ).atomics,
-        denom: toriCurrency.coinMinimalDenom,
-      },
-    };
-    alert("here");
-    const txResponse = await client.signAndBroadcast(
-      wallet.address,
-      [
-        {
-          typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
-          value: msg,
+    try {
+      if (!wallet?.connected || !wallet.address) {
+        console.warn("invalid wallet", wallet);
+        setToastError({
+          title: "Invalid wallet",
+          message: "",
+        });
+        return;
+      }
+      if (!data) {
+        setToastError({
+          title: "Internal error",
+          message: "No data",
+        });
+        return;
+      }
+      if (!selectedValidator) {
+        setToastError({
+          title: "Internal error",
+          message: "No validator selected",
+        });
+        return;
+      }
+      const signer = getKeplrOfflineSigner();
+      const client = await getTeritoriSigningStargateClient(signer);
+      const msg: MsgBeginRedelegate = {
+        delegatorAddress: wallet.address,
+        validatorSrcAddress: data.address,
+        validatorDstAddress: selectedValidator.address,
+        amount: {
+          amount: Decimal.fromUserInput(
+            formData.amount,
+            toriCurrency.coinDecimals
+          ).atomics,
+          denom: toriCurrency.coinMinimalDenom,
         },
-      ],
-      "auto"
-    );
-    alert(isDeliverTxFailure(txResponse));
-    if (isDeliverTxFailure(txResponse)) {
-      console.error("tx failed", txResponse);
-      alert("inside");
-      setToastError({
-        title: "Transaction failed",
-        message: txResponse.rawLog || "",
-      });
-      return;
-    }
-    console.log("lol");
+      };
 
-    setToastSuccess({ title: "Redelegation success", message: "" });
-    refreshBondedTokens();
-    onClose && onClose();
+      const txResponse = await client.signAndBroadcast(
+        wallet.address,
+        [
+          {
+            typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
+            value: msg,
+          },
+        ],
+        "auto"
+      );
+      if (isDeliverTxFailure(txResponse)) {
+        onClose && onClose();
+        console.error("tx failed", txResponse);
+        setToastError({
+          title: "Transaction failed",
+          message: txResponse.rawLog || "",
+        });
+        return;
+      }
+
+      setToastSuccess({ title: "Redelegation success", message: "" });
+      refreshBondedTokens();
+      onClose && onClose();
+    } catch (error) {
+      triggerError({ error, callback: onClose });
+    }
   };
 
   // returns
