@@ -100,6 +100,7 @@ export const useCollectionInfo = (id: string) => {
           secondsSinceEpoch >= conf.mint_start_time &&
           secondsSinceEpoch < whitelistEnd,
         publicSaleStartTime: whitelistEnd,
+        bannerImage: ipfsURLToHTTPURL(metadata.banner),
       };
 
       return info;
