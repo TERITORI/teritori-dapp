@@ -1,5 +1,6 @@
 import { MsgVoteEncodeObject, isDeliverTxFailure } from "@cosmjs/stargate";
 import Long from "long";
+import moment from "moment";
 import React, { useState, useCallback } from "react";
 import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
 import { RadioButton } from "react-native-paper";
@@ -165,6 +166,8 @@ export const GovernanceDetails: React.FC<{
   function activeVote() {
     setdisplayVote(!displayVote);
   }
+
+  const canVoteDeposit = () => moment(votingDepositEndTime).isAfter(moment());
 
   return (
     <ModalBase
@@ -594,7 +597,7 @@ export const GovernanceDetails: React.FC<{
           </BrandText>
         </View>
 
-        {!isPassedPeriod && (
+        {canVoteDeposit() && (
           <PrimaryButton
             width={150}
             size="XL"
