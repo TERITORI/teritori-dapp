@@ -8,13 +8,13 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/coingeckoprices"
+	"github.com/TERITORI/teritori-dapp/go/pkg/tmws"
 	"github.com/allegro/bigcache/v3"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cosmostx "github.com/cosmos/cosmos-sdk/types/tx"
 	cosmosproto "github.com/cosmos/gogoproto/proto"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
-	tclient "github.com/tendermint/tendermint/rpc/client/http"
 	tenderminttypes "github.com/tendermint/tendermint/rpc/core/types"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -32,11 +32,10 @@ type Message struct {
 
 type Config struct {
 	TNSContractAddress   string
-	RESTEndpoint         string
 	MinterCodeID         uint64
 	VaultContractAddress string
 	TNSDefaultImageURL   string
-	TendermintClient     *tclient.HTTP
+	TendermintClient     *tmws.Client
 	NetworkID            string
 	CoinGeckoPrices      *coingeckoprices.CoinGeckoPrices
 }
