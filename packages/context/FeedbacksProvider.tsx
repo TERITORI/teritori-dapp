@@ -65,7 +65,7 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
       }}
     >
       {/*==== Loader full screen*/}
-      {loadingFullScreen ? <LoaderFullScreen /> : null}
+      <LoaderFullScreen visible={loadingFullScreen} />
       {/*==== Toasts*/}
       {toastError && toastError.title ? (
         <ToastError
