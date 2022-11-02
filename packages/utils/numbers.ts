@@ -1,3 +1,5 @@
+import { trimRight } from "./strings";
+
 // Returns your given number (string or number), but with comma as a thousand separator (string)
 export const numberWithThousandsSeparator = (
   yourBigNumber: string | number
@@ -13,3 +15,11 @@ export const numberWithThousandsSeparator = (
 
 export const thousandSeparatedToNumber = (str: string): string =>
   str.replaceAll(",", "");
+
+export const trimFixed = (val: string) => {
+  if (!val.includes(".")) {
+    return val;
+  }
+  val = trimRight(val, "0");
+  return trimRight(val, ".");
+};
