@@ -127,6 +127,7 @@ const getTNSNFTInfo = async (
     collectionImageURL: ipfsURLToHTTPURL(
       process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
     ),
+    mintDenom: contractInfo.native_denom,
   };
 
   return nfo;
@@ -228,6 +229,7 @@ const getStandardNFTInfo = async (
     priceDenom: vaultInfo?.denom || "",
     collectionName: contractInfo.name,
     collectionImageURL: ipfsURLToHTTPURL(collectionMetadata.image),
+    mintDenom: minterConfig.price_denom,
   };
 
   return nfo;

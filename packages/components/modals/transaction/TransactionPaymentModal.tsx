@@ -69,7 +69,7 @@ export const TransactionPaymentModal: React.FC<{
               {prettyPrice(
                 process.env.TERITORI_NETWORK_ID || "",
                 balance || "0",
-                "utori"
+                priceDenom
               )}
             </BrandText>
           </View>

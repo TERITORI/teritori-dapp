@@ -45,7 +45,10 @@ export const NFTMainInfo: React.FC<{
   nftId: string;
   nftInfo?: NFTInfo;
   buy: () => Promise<ExecuteResult | undefined>;
-  sell: (price: string) => Promise<ExecuteResult | undefined>;
+  sell: (
+    price: string,
+    denom: string | undefined
+  ) => Promise<ExecuteResult | undefined>;
   cancelListing: () => Promise<ExecuteResult | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing }) => {
   const { openTransactionModals } = useTransactionModals();
@@ -159,6 +162,8 @@ export const NFTMainInfo: React.FC<{
           <NFTSellCard
             style={{ marginTop: 24, marginBottom: 40 }}
             onPressSell={sell}
+            networkId={process.env.TERITORI_NETWORK_ID || ""}
+            denom={nftInfo.mintDenom}
           />
         )}
         {nftInfo?.isListed && !nftInfo?.isOwner && (
