@@ -1,8 +1,7 @@
-import React, { ReactElement, useEffect } from "react";
+import React, { ReactElement } from "react";
 import { FlatList, View, ViewStyle } from "react-native";
 
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useNFTs } from "../../hooks/useNFTs";
 import { layout } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
@@ -29,21 +28,13 @@ export const NFTs: React.FC<{
   ListHeaderComponent?: ReactElement;
   ListFooterComponent?: ReactElement;
 }> = ({ req, numColumns, ListHeaderComponent, ListFooterComponent }) => {
-  const { nfts, fetchMore, firstLoading: firstLoadingNTFs } = useNFTs(req);
-
-  const { setLoadingFullScreen } = useFeedbacks();
+  const { nfts, fetchMore } = useNFTs(req);
 
   const viewStyle: ViewStyle = {
     height: "100%",
     alignItems: "center",
     flex: 1,
   };
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(firstLoadingNTFs);
-  }, [firstLoadingNTFs]);
-
   return (
     <View style={viewStyle}>
       <FlatList

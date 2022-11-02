@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import Clipboard from "@react-native-clipboard/clipboard";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View, Image, Platform, StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -44,14 +44,7 @@ type TabsListType = "allNFTs" | "owned" | "activity";
 
 const Content: React.FC<{ id: string; selectedTab: TabsListType }> = React.memo(
   ({ id, selectedTab }) => {
-    const {
-      // notFound,
-      loading: loadingCollectionInfo,
-    } = useCollectionInfo(id);
-
     const wallet = useSelectedWallet();
-
-    const { setLoadingFullScreen } = useFeedbacks();
 
     const { width } = useMaxResolution();
     const numColumns = Math.floor(width / nftWidth);
@@ -65,10 +58,6 @@ const Content: React.FC<{ id: string; selectedTab: TabsListType }> = React.memo(
       limit: alignDown(20, numColumns) || numColumns,
       offset: 0,
     };
-
-    useEffect(() => {
-      setLoadingFullScreen(loadingCollectionInfo);
-    }, [loadingCollectionInfo]);
 
     switch (selectedTab) {
       case "allNFTs":
@@ -92,7 +81,7 @@ const Content: React.FC<{ id: string; selectedTab: TabsListType }> = React.memo(
 // All the screen content before the Flatlist used to display NFTs
 const Header: React.FC<{
   collectionId: string;
-  collectionInfo: CollectionInfo;
+  collectionInfo?: CollectionInfo;
   selectedTab: TabsListType;
   onSelectTab: (tab: TabsListType) => void;
 }> = ({ collectionInfo = {}, selectedTab, onSelectTab, collectionId }) => {
@@ -308,10 +297,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // variables
   const { id } = route.params;
   const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
-  const {
-    info,
-    // notFound,
-  } = useCollectionInfo(id);
+  const { info } = useCollectionInfo(id);
 
   // returns
   return (
@@ -327,7 +313,6 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
           selectedTab={selectedTab}
           onSelectTab={setSelectedTab}
         />
-
         <Content key={id} id={id} selectedTab={selectedTab} />
       </ScrollView>
     </ScreenContainer>
