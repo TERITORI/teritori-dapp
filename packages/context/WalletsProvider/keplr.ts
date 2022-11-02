@@ -54,7 +54,7 @@ export const useKeplr: () => UseKeplrResult = () => {
         console.error("no keplr");
         return;
       }
-      const offlineSigner = keplr.getOfflineSigner(teritoriChainId);
+      const offlineSigner = await keplr.getOfflineSignerAuto(teritoriChainId);
       const accounts = await offlineSigner.getAccounts();
       setAddresses(accounts.map((account) => account.address));
     };
@@ -81,7 +81,7 @@ export const useKeplr: () => UseKeplrResult = () => {
           return;
         }
         await keplr.enable(chainId);
-        const offlineSigner = keplr.getOfflineSigner(chainId);
+        const offlineSigner = await keplr.getOfflineSignerAuto(chainId);
         const accounts = await offlineSigner.getAccounts();
         setAddresses(accounts.map((account) => account.address));
       } catch (err) {
