@@ -9,6 +9,7 @@ var AllNetworks = []*Network{
 			&NativeCurrency{
 				Denom:       "utori",
 				CoinGeckoID: "teritori",
+				Decimals:    6,
 			},
 		},
 	},
@@ -18,6 +19,7 @@ var AllNetworks = []*Network{
 			&NativeCurrency{
 				Denom:       "utori",
 				CoinGeckoID: "teritori",
+				Decimals:    6,
 			},
 			&IBCCurrency{
 				Denom:         "ibc/C9300DDD93DF3A3A668CAB02398A0AA081EF89EC005B2DB68832E363BAAABF85",
@@ -37,6 +39,7 @@ var AllNetworks = []*Network{
 			&NativeCurrency{
 				Denom:       "uatom",
 				CoinGeckoID: "cosmos",
+				Decimals:    6,
 			},
 		},
 	},

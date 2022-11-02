@@ -23,6 +23,7 @@ for (const network of allNetworks) {
     return `&NativeCurrency{
       Denom: ${JSON.stringify(c.denom)},
       CoinGeckoID: ${JSON.stringify(c.coingeckoId)},
+      Decimals: ${JSON.stringify(c.decimals)},
     },`;
   });
   content += `{

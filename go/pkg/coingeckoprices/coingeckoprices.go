@@ -41,7 +41,7 @@ func NewCoinGeckoPrices() (*CoinGeckoPrices, error) {
 		return nil, errors.Wrap(err, "failed to init historical cache")
 	}
 
-	spotCacheConfig := bigcache.DefaultConfig(time.Second * 5)
+	spotCacheConfig := bigcache.DefaultConfig(time.Second * 10)
 	spotCacheConfig.HardMaxCacheSize = 10
 	spotCache, err := bigcache.NewBigCache(spotCacheConfig)
 	if err != nil {
@@ -72,11 +72,9 @@ func (cgp *CoinGeckoPrices) Spot(id string) (float64, error) {
 		if !ok {
 			return 0, errors.New("missing vs price in response")
 		}
-
 		if err := cacheSetFloat64(cgp.spotCache, id, price); err != nil {
 			return 0, errors.Wrap(err, "failed to save price to cache")
 		}
-
 		return price, nil
 	}
 
@@ -84,39 +82,41 @@ func (cgp *CoinGeckoPrices) Spot(id string) (float64, error) {
 		return 0, errors.Wrap(err, "failed to check cache")
 	}
 
-	return unmarshalFloat64(val)
+	price, err := unmarshalFloat64(val)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to unmarshal price from cache")
+	}
+
+	return price, nil
 }
 
 func (cgp *CoinGeckoPrices) Historical(id string, t time.Time) (float64, error) {
 	tDay := t.In(time.UTC).Format(dayFormat)
-	cacheKey := id + "-" + tDay
+	nowDay := time.Now().In(time.UTC).Format(dayFormat)
+	if nowDay == tDay {
+		price, err := cgp.Spot(id)
+		if err != nil {
+			return 0, errors.Wrap(err, "failed to get spot price")
+		}
+		return price, nil
+	}
 
+	cacheKey := id + "-" + tDay
 	val, err := cgp.historicalCache.Get(cacheKey)
 	if err == bigcache.ErrEntryNotFound {
-		nowDay := time.Now().In(time.UTC).Format(dayFormat)
-		var price float64
-		if nowDay == tDay {
-			price, err = cgp.Spot(id)
-			if err != nil {
-				return 0, errors.Wrap(err, "failed to get spot price for today")
-			}
-			return price, nil
-		} else {
+		vals := make(url.Values)
+		vals.Set("date", tDay)
+		vals.Set("localization", "false")
 
-			vals := make(url.Values)
-			vals.Set("date", tDay)
-			vals.Set("localization", "false")
+		var resp historicalPriceResponse
+		if err := getJSON(baseURL+"/coins/"+id+"/history?"+vals.Encode(), &resp); err != nil {
+			return 0, errors.Wrap(err, "failed to fetch historical price")
+		}
 
-			var resp historicalPriceResponse
-			if err := getJSON(baseURL+"/coins/bitcoin/history?"+vals.Encode(), &resp); err != nil {
-				return 0, errors.Wrap(err, "failed to fetch historical price")
-			}
-
-			var ok bool
-			price, ok = resp.MarketData.CurrentPrice[vsCurrency]
-			if !ok {
-				return 0, errors.New("missing vs price in response")
-			}
+		var ok bool
+		price, ok := resp.MarketData.CurrentPrice[vsCurrency]
+		if !ok {
+			return 0, errors.New("missing vs price in response")
 		}
 
 		if err := cacheSetFloat64(cgp.historicalCache, id, price); err != nil {
@@ -130,7 +130,12 @@ func (cgp *CoinGeckoPrices) Historical(id string, t time.Time) (float64, error) 
 		return 0, errors.Wrap(err, "failed to check cache")
 	}
 
-	return unmarshalFloat64(val)
+	price, err := unmarshalFloat64(val)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to unmarshal price from cache")
+	}
+
+	return price, nil
 }
 
 func getJSON(u string, v interface{}) error {

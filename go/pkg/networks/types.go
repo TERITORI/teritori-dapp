@@ -22,6 +22,7 @@ func (ibcc *IBCCurrency) GetDenom() string {
 type NativeCurrency struct {
 	Denom       string `json:"denom"`
 	CoinGeckoID string `json:"coingeckoId"`
+	Decimals    uint   `json:"decimals"`
 }
 
 func (nc *NativeCurrency) GetDenom() string {
