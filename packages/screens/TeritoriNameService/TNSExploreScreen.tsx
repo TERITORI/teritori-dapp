@@ -18,8 +18,8 @@ import { TNSModalCommonProps } from "./TNSHomeScreen";
 interface TNSExploreScreenProps extends TNSModalCommonProps {}
 
 export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
-                                                                    onClose,
-                                                                  }) => {
+  onClose,
+}) => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const { name, setName } = useTNS();
   const isKeplrConnected = useIsKeplrConnected();

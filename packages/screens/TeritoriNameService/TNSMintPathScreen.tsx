@@ -31,9 +31,9 @@ interface TNSMintPathScreenProps extends TNSModalCommonProps {}
 
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
 export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
-                                                                      onClose,
-                                                                      navigateBackTo,
-                                                                    }) => {
+  onClose,
+  navigateBackTo,
+}) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();

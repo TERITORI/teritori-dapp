@@ -80,8 +80,8 @@ const NameCard: React.FC<{
 interface TNSManageScreenProps extends TNSModalCommonProps {}
 
 export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
-                                                                  onClose,
-                                                                }) => {
+  onClose,
+}) => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
   const { setLoadingFullScreen } = useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
