@@ -38,7 +38,6 @@ export const FindAName: React.FC<{
         onChangeText={setName}
         value={name || ""}
         regexp={new RegExp(/^[a-zA-Z]+$/)}
-        fullWidth
         squaresBackgroundColor={neutral17}
       />
 

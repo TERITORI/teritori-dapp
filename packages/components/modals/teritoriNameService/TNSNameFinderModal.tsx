@@ -132,7 +132,6 @@ export const TNSNameFinderModal: React.FC<{
         value={name}
         regexp={new RegExp(/^[a-zA-Z]+$/)}
         style={{ marginBottom: 20, width: "100%" }}
-        fullWidth
       />
     </ModalBase>
   );
