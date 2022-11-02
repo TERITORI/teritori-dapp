@@ -4,10 +4,8 @@ import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   Extrapolate,
   interpolate,
-  runOnUI,
   useAnimatedRef,
   useAnimatedStyle,
-  useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import { SvgProps } from "react-native-svg";
@@ -30,30 +28,29 @@ import { SpacerRow } from "../spacer";
 type CollapsableSectionProps = {
   title: string;
   icon: React.FC<SvgProps>;
+  isExpandedByDefault?: boolean;
 };
 
 export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   title,
   icon,
   children,
+  isExpandedByDefault = false,
 }) => {
   // variables
-
-  const [isExpandable, setIsExpandable] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(isExpandedByDefault);
   const aref = useAnimatedRef<View>();
-  const open = useSharedValue(false);
   const heightRef = useRef<number>(0);
-  const height = useSharedValue(0);
   const style = useAnimatedStyle(
     () => ({
-      height: open.value ? withTiming(height.value) : withTiming(0),
-      opacity: open.value ? withTiming(1) : withTiming(0),
+      height: isExpanded ? withTiming(heightRef.current) : withTiming(0),
+      opacity: isExpanded ? withTiming(1) : withTiming(0),
     }),
-    [isExpandable]
+    [isExpanded]
   );
   const rotateStyle = useAnimatedStyle(() => {
     const rotate = interpolate(
-      open.value ? 1 : 0,
+      isExpanded ? 1 : 0,
       [0, 1],
       [0, 180],
       Extrapolate.CLAMP
@@ -62,30 +59,18 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
     return {
       transform: [{ rotate: `${rotate}deg` }],
     };
-  }, [isExpandable]);
+  }, [isExpanded]);
   // hooks
 
   // functions
   const toggleExpansion = () => {
-    if (height.value === 0) {
-      runOnUI(() => {
-        "worklet";
-        height.value = heightRef.current;
-      })();
-    } else {
-      runOnUI(() => {
-        "worklet";
-        height.value = 0;
-      })();
-    }
-    open.value = !open.value;
-    setIsExpandable(!open.value);
+    setIsExpanded(!isExpanded);
   };
 
   // returns
   return (
     <TertiaryBox fullWidth>
-      <View style={styles.header}>
+      <Pressable onPress={toggleExpansion} style={styles.header}>
         <View style={styles.rowWithCenter}>
           <SVG source={icon} width={14} height={14} color={secondaryColor} />
           <SpacerRow size={1.5} />
@@ -95,16 +80,14 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
         </View>
 
         <Animated.View style={[styles.chevronContainer, rotateStyle]}>
-          <Pressable onPress={toggleExpansion}>
-            <SVG
-              source={chevronDownSVG}
-              width={16}
-              height={16}
-              color={isExpandable ? secondaryColor : primaryColor}
-            />
-          </Pressable>
+          <SVG
+            source={chevronDownSVG}
+            width={16}
+            height={16}
+            color={isExpanded ? primaryColor : secondaryColor}
+          />
         </Animated.View>
-      </View>
+      </Pressable>
       <Animated.View style={[styles.childrenContainer, style]}>
         <View
           ref={aref}

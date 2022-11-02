@@ -82,15 +82,18 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
     setIsNestedBarExpanded(!isNestedBarExpanded);
 
   // animations
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: isSidebarExpanded
-      ? withTiming(1, {
-          duration: 500,
-        })
-      : withTiming(0, {
-          duration: 100,
-        }),
-  }));
+  const opacityStyle = useAnimatedStyle(
+    () => ({
+      opacity: isSidebarExpanded
+        ? withTiming(1, {
+            duration: 500,
+          })
+        : withTiming(0, {
+            duration: 100,
+          }),
+    }),
+    [isSidebarExpanded]
+  );
 
   // const nestedBarStyle = useAnimatedStyle(
   //   () => ({

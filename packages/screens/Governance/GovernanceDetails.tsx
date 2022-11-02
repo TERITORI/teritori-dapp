@@ -453,6 +453,7 @@ export const GovernanceDetails: React.FC<{
               { x: "Pourcentage No", y: valueChartNo },
               { x: "Pourcentage Abstain", y: valueChartAbstain },
             ]}
+            labels={() => null}
           />
         </View>
 

@@ -17,6 +17,7 @@ import {
   TeritoriNftVaultQueryClient,
 } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
@@ -25,7 +26,6 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
 
@@ -77,6 +77,7 @@ const Content: React.FC<{
   const { setLoadingFullScreen } = useFeedbacks();
   const wallet = useSelectedWallet();
   const { info, refresh, notFound, loading } = useNFTInfo(id, wallet?.address);
+  const { width } = useMaxResolution();
 
   // Query the Vault client to buy the NFT and returns the transaction reply
   const buy = useCallback(async () => {
@@ -196,16 +197,13 @@ const Content: React.FC<{
             alignItems: "center",
           }}
         >
-          <View
-            style={{ backgroundColor: "black", width: screenContentMaxWidth }}
-          >
+          <View style={{ backgroundColor: "black", width }}>
             <Tabs
               items={screenTabItems}
               selected={selectedTab}
               style={{
-                height: 40,
+                height: 60,
                 justifyContent: "flex-end",
-                marginTop: layout.padding_x2_5,
                 width: "100%",
               }}
               onSelect={setSelectedTab}

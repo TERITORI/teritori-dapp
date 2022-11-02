@@ -30,7 +30,7 @@ export const NFTSellCard: React.FC<{
         onChangeText={setPrice}
         width={322}
       />
-      <PrimaryButton size="XL" text="Sell this NFT" onPress={handleSell} />
+      <PrimaryButton size="XL" text="List this NFT" onPress={handleSell} />
     </TertiaryBox>
   );
 };

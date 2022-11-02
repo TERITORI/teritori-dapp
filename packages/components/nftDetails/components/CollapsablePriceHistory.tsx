@@ -45,7 +45,11 @@ export const CollapsablePiceHistory = () => {
 
   // returns
   return (
-    <CollapsableSection icon={priceHistorySVG} title="Price history">
+    <CollapsableSection
+      icon={priceHistorySVG}
+      title="Price history"
+      isExpandedByDefault
+    >
       <View style={styles.container}>
         <View style={styles.priceLabelTextContainer}>
           <BrandText style={styles.priceLabelText}>Price (SOL)</BrandText>
