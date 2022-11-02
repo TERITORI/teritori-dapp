@@ -151,7 +151,7 @@ export const getKeplrSigningStargateClient = async (
 
   await keplr.enable(network.chainId);
 
-  const signer = keplr.getOfflineSigner(network.chainId);
+  const signer = await keplr.getOfflineSignerAuto(network.chainId);
 
   return await SigningStargateClient.connectWithSigner(
     network.rpcEndpoint,

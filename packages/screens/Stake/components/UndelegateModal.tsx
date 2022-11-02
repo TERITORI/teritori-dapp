@@ -87,7 +87,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         });
         return;
       }
-      const signer = getKeplrOfflineSigner();
+      const signer = await getKeplrOfflineSigner();
       const client = await getTeritoriSigningStargateClient(signer);
       const txResponse = await client.undelegateTokens(
         wallet.address,

@@ -108,7 +108,7 @@ export const GovernanceDetails: React.FC<{
     }
 
     try {
-      const keplrSigner = getKeplrOfflineSigner();
+      const keplrSigner = await getKeplrOfflineSigner();
       const client = await getTeritoriSigningStargateClient(keplrSigner);
 
       const vote: MsgVoteEncodeObject = {

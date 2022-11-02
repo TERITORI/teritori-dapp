@@ -89,7 +89,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         });
         return;
       }
-      const signer = getKeplrOfflineSigner();
+      const signer = await getKeplrOfflineSigner();
       const client = await getTeritoriSigningStargateClient(signer);
       const txResponse = await client.delegateTokens(
         wallet.address,

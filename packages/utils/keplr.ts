@@ -19,11 +19,11 @@ export const getKeplr = () => {
 };
 
 export const getKeplrOfflineSigner = () => {
-  return getKeplr().getOfflineSigner(PUBLIC_CHAIN_ID);
+  return getKeplr().getOfflineSignerAuto(PUBLIC_CHAIN_ID);
 };
 
 export const getKeplrAccounts = async () => {
-  const offlineSigner = getKeplrOfflineSigner();
+  const offlineSigner = await getKeplrOfflineSigner();
 
   return offlineSigner.getAccounts();
 };
@@ -39,7 +39,7 @@ export const getFirstKeplrAccount = async () => {
 };
 
 export const getSigningCosmWasmClient = async () => {
-  const offlineSigner = getKeplrOfflineSigner();
+  const offlineSigner = await getKeplrOfflineSigner();
 
   return SigningCosmWasmClient.connectWithSigner(
     PUBLIC_RPC_ENDPOINT,

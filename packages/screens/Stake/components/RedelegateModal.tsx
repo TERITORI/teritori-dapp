@@ -117,7 +117,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         });
         return;
       }
-      const signer = getKeplrOfflineSigner();
+      const signer = await getKeplrOfflineSigner();
       const client = await getTeritoriSigningStargateClient(signer);
       const msg: MsgBeginRedelegate = {
         delegatorAddress: wallet.address,
