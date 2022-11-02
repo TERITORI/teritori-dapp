@@ -1,7 +1,6 @@
 package indexerhandler
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -145,7 +144,7 @@ func (h *Handler) blockTime(height int64) (time.Time, error) {
 
 	// cache miss
 	if err == bigcache.ErrEntryNotFound {
-		res, err := h.config.TendermintClient.Block(context.Background(), &height)
+		res, err := h.config.TendermintClient.Block(&height)
 		if err != nil {
 			return time.Time{}, errors.Wrap(err, "failed to fetch block")
 		}

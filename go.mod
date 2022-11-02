@@ -10,6 +10,7 @@ require (
 	github.com/cosmos/cosmos-sdk v0.45.4
 	github.com/cosmos/gogoproto v1.4.2
 	github.com/davecgh/go-spew v1.1.1
+	github.com/gorilla/websocket v1.5.0
 	github.com/improbable-eng/grpc-web v0.14.1
 	github.com/mehanizm/airtable v0.2.6
 	github.com/peterbourgon/ff/v3 v3.3.0
@@ -118,7 +119,6 @@ require (
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
-	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/gtank/ristretto255 v0.1.2 // indirect
