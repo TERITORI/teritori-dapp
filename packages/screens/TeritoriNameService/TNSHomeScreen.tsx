@@ -42,7 +42,8 @@ const TNSPathMap = {
 
 export type TNSCloseHandler = (
   modalName?: TNSModals,
-  navigateTo?: TNSModals
+  navigateTo?: TNSModals,
+  name?: string
 ) => void;
 
 export interface TNSModalCommonProps {
@@ -65,25 +66,24 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
 
   const isKeplrConnected = useIsKeplrConnected();
 
-  const onPressRegister = () => {
-    setPressedTNSItems("TNSRegister");
-    setModalNameFinderVisible(true);
-  };
-  const onPressExplore = () => {
-    setPressedTNSItems("TNSExplore");
-    setModalNameFinderVisible(true);
-  };
-
-  const handleModalClose: TNSCloseHandler = (modalName, navigateBackTo) => {
+  const handleModalClose: TNSCloseHandler = (
+    modalName,
+    navigateBackTo,
+    _name = name
+  ) => {
     if (modalName) {
-      navigation.navigate("TNSHome", { modal: TNSPathMap[modalName], name });
+      navigation.navigate("TNSHome", {
+        modal: TNSPathMap[modalName],
+        name: _name,
+      });
       setNavigateBackTo(navigateBackTo);
     } else {
-      navigation.navigate("TNSHome", { modal: "", name });
+      setName("");
+      navigation.navigate("TNSHome", { modal: "" });
     }
   };
 
-  const handleModalChange = (modal?: string) => {
+  const handleModalChange = (modal?: string, name?: string) => {
     if (!modal) {
       setActiveModal(undefined);
       return;
@@ -95,18 +95,25 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
         (key) => TNSPathMap[key] === modal
       );
       //@ts-ignore
-      setActiveModal(routeName);
+
+      if (["register", "explore"].includes(modal) && !name) {
+        setModalNameFinderVisible(true);
+        setPressedTNSItems(modal === "register" ? "TNSRegister" : "TNSExplore");
+      } else {
+        //@ts-ignore
+        setActiveModal(routeName);
+      }
     } catch (err) {
       console.log("route path parsing failed", err);
     }
   };
 
   useEffect(() => {
-    handleModalChange(route.params?.modal);
+    handleModalChange(route.params?.modal, route.params?.name);
     if (route.params?.name) {
       setName(route.params.name);
     }
-  }, [route.params?.modal]);
+  }, [route.params?.modal, route.params?.name]);
 
   const tnsModalCommonProps = {
     onClose: handleModalClose,
@@ -141,7 +148,9 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             label="Register"
             description="Register and configure a new name"
             iconSVG={registerSVG}
-            onPress={onPressRegister}
+            onPress={() =>
+              navigation.navigate("TNSHome", { modal: "register" })
+            }
           />
           <FlowCard
             disabled={!isKeplrConnected}
@@ -158,7 +167,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             label="Explore"
             description="Lookup addresses and explore registered names"
             iconSVG={exploreSVG}
-            onPress={onPressExplore}
+            onPress={() => navigation.navigate("TNSHome", { modal: "explore" })}
             style={{}}
           />
         </View>

@@ -1,4 +1,3 @@
-import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect } from "react";
 
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -8,7 +7,6 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
@@ -27,7 +25,6 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
   const { name, setName } = useTNS();
   const { setLoadingFullScreen } = useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
-  const isKeplrConnected = useIsKeplrConnected();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
@@ -38,14 +35,9 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
     setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
-  // ==== Init
-  useFocusEffect(() => {
-    if (!isKeplrConnected) navigation.navigate("TNSHome");
-  });
-
   return (
     <ModalBase
-      onClose={onClose}
+      onClose={() => onClose()}
       label="Find a name"
       width={457}
       modalStatus={name && nameAvailable ? "success" : "danger"}
@@ -90,6 +82,7 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
             text="Go to User Profile"
             onPress={() => {
               onClose();
+              //TODO : get wallet address from name and redirect to correct address
               navigation.navigate("UserPublicProfile", {
                 id: `tori-${selectedWallet?.address}`,
               });

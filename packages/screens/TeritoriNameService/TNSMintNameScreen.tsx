@@ -234,7 +234,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
 
   return (
     <ModalBase
-      onClose={onClose}
+      onClose={() => onClose()}
       onBackPress={() => onClose(navigateBackTo)}
       width={480}
       scrollable

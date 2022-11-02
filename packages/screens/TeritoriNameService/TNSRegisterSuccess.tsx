@@ -80,7 +80,7 @@ export const TNSRegisterSuccess: React.FC<TNSRegisterSuccessProps> = ({
   return (
     <ModalBase
       visible={visible}
-      onClose={onClose}
+      onClose={() => onClose()}
       width={457}
       label="Success"
       childrenBottom={Footer()}

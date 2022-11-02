@@ -1,4 +1,3 @@
-import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
@@ -17,7 +16,6 @@ import { useToken, useTokenList } from "../../hooks/tokens";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
@@ -117,14 +115,13 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
   navigateBackTo,
 }) => {
   const { name } = useTNS();
+
   const { setLoadingFullScreen } = useFeedbacks();
   const { token, notFound, loadingToken } = useToken(
     name,
     process.env.TLD || ""
   );
   const { tokens, loadingTokens } = useTokenList();
-  const isKeplrConnected = useIsKeplrConnected();
-  const navigation = useAppNavigation();
 
   // Sync loadingFullScreen
   useEffect(() => {
@@ -134,15 +131,9 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
     setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
-  // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the token is not minted
-  useFocusEffect(() => {
-    if (!isKeplrConnected)
-      navigation.navigate("TNSHome", { modal: "consult-name", name });
-  });
-
   return (
     <ModalBase
-      onClose={onClose}
+      onClose={() => onClose()}
       onBackPress={() => onClose(navigateBackTo)}
       hideMainSeparator
       label={name}

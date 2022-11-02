@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { useTNS } from "../../context/TNSProvider";
-import { neutral77 } from "../../utils/style/colors";
+import { neutral17, neutral77 } from "../../utils/style/colors";
 import { Metadata } from "../../utils/types/tns";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
@@ -106,6 +106,7 @@ export const NameDataForm: React.FC<{
             value={pathId}
             onChangeText={setPathId}
             fullWidth
+            squaresBackgroundColor={neutral17}
           />
         </>
       ) : null}
@@ -118,6 +119,7 @@ export const NameDataForm: React.FC<{
         disabled
         regexp={new RegExp(/^[a-zA-Z]+$/)}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="public_bio"
@@ -127,6 +129,7 @@ export const NameDataForm: React.FC<{
         value={public_bio}
         onChangeText={setBio}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="image"
@@ -136,6 +139,7 @@ export const NameDataForm: React.FC<{
         value={image}
         onChangeText={setImageUrl}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="user_header_image"
@@ -145,6 +149,7 @@ export const NameDataForm: React.FC<{
         value={user_header_image}
         onChangeText={setImageUrl}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="email"
@@ -154,6 +159,7 @@ export const NameDataForm: React.FC<{
         value={email}
         onChangeText={setEmail}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="external_url"
@@ -163,6 +169,7 @@ export const NameDataForm: React.FC<{
         value={external_url}
         onChangeText={setWebsite}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="twitter_id"
@@ -172,6 +179,7 @@ export const NameDataForm: React.FC<{
         value={twitter_id}
         onChangeText={setTwitter}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="discord_id"
@@ -181,6 +189,7 @@ export const NameDataForm: React.FC<{
         value={discord_id}
         onChangeText={setDiscord}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="telegram_id"
@@ -190,6 +199,7 @@ export const NameDataForm: React.FC<{
         value={telegram_id}
         onChangeText={setTelegrameUsername}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="keybase_id"
@@ -199,6 +209,7 @@ export const NameDataForm: React.FC<{
         value={keybase_id}
         onChangeText={setKeybaseIo}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
         name="validator_operator_address"
@@ -208,12 +219,14 @@ export const NameDataForm: React.FC<{
         value={validator_operator_address}
         onChangeText={setValidatorOperatorAddress}
         fullWidth
+        squaresBackgroundColor={neutral17}
       />
       <PrimaryButton
         size="XL"
         text={btnLabel}
         onPress={handlePressBtn}
         style={{ marginTop: 8, alignSelf: "center" }}
+        squaresBackgroundColor={neutral17}
       />
     </View>
   );

@@ -16,7 +16,7 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { useAppNavigation } from "../../utils/navigation";
+import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData, Metadata } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
@@ -37,7 +37,6 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const userHasCoWallet = useAreThereWallets();
   const contractAddress = process.env
     .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
-  const navigation = useAppNavigation();
 
   const initData = async () => {
     try {
@@ -82,23 +81,29 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
 
   // ==== Init
   useFocusEffect(() => {
-    // ===== Controls many things, be careful
-    if (
-      (name &&
-        tokens.length &&
-        (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))) ||
-      !isKeplrConnected
-    ) {
-      navigation.navigate("TNSHome");
-    }
     if (!initialized) initData();
   });
 
   // FIXME: typesafe data
   const submitData = async (data: any) => {
     if (!isKeplrConnected) {
+      setToastError({
+        title: "Please connect Keplr",
+        message: "",
+      });
       return;
     }
+    if (
+      tokens.length &&
+      (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))
+    ) {
+      setToastError({
+        title: "Something went wrong!",
+        message: "",
+      });
+      return;
+    }
+
     setLoadingFullScreen(true);
     const {
       image, // TODO - support later
@@ -174,7 +179,15 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   };
 
   return (
-    <ModalBase hideMainSeparator onClose={onClose} scrollable width={457}>
+    <ModalBase
+      hideMainSeparator
+      onClose={() => onClose()}
+      scrollable
+      width={457}
+      contentStyle={{
+        backgroundColor: neutral17,
+      }}
+    >
       <NameNFT name={name} />
       <View
         style={{

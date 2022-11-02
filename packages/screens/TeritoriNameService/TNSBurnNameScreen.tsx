@@ -1,4 +1,3 @@
-import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 
@@ -19,7 +18,6 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
@@ -32,33 +30,37 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
   const { name } = useTNS();
   const { setToastError, setToastSuccess, setLoadingFullScreen } =
     useFeedbacks();
+
   const { tokens, loadingTokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
-  const navigation = useAppNavigation();
   const contractAddress = process.env
     .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const normalizedTokenId = (name + process.env.TLD).toLowerCase();
 
-  // Sync loadingFullScreen
   useEffect(() => {
     setLoadingFullScreen(loadingTokens);
   }, [loadingTokens]);
 
-  // ==== Init
-  useFocusEffect(() => {
-    // ===== Controls many things, be careful TODO: Still redirects to TNSHome, weird..
-    if (
-      (name &&
-        tokens.length &&
-        (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))) ||
-      !isKeplrConnected
-    ) {
-      navigation.navigate("TNSHome");
-    }
-  });
-
   const onSubmit = async () => {
+    if (!isKeplrConnected) {
+      setToastError({
+        title: "Please connect Keplr",
+        message: "",
+      });
+      return;
+    }
+    if (
+      tokens.length &&
+      (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))
+    ) {
+      setToastError({
+        title: "Something went wrong!",
+        message: "",
+      });
+      return;
+    }
+
     setLoadingFullScreen(true);
 
     const msg = {

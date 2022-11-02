@@ -10,10 +10,7 @@ import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { tokenWithoutTld } from "../../utils/tns";
@@ -89,9 +86,7 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
   const { setLoadingFullScreen } = useFeedbacks();
   const { tokens, loadingTokens } = useTokenList();
   const { alias, loadingAlias } = usePrimaryAlias();
-  const navigation = useAppNavigation();
-  const userHasCoWallet = useAreThereWallets();
-  const isKeplrConnected = useIsKeplrConnected();
+
   const { setName } = useTNS();
 
   // Sync loadingFullScreen
@@ -104,12 +99,6 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
 
   // ==== Init
   useFocusEffect(() => {
-    // ---- When this screen is called, if the user has no wallet, we go home (We are waiting for tokens state)
-    // ===== Controls many things, be careful
-    if ((tokens && !userHasCoWallet) || !isKeplrConnected)
-      navigation.navigate("TNSHome", {
-        modal: "manage",
-      });
     if (!tokens.length) return;
 
     const firstTokenOnCurrentPage = tokens[0];
@@ -120,7 +109,7 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
 
   return (
     <ModalBase
-      onClose={onClose}
+      onClose={() => onClose()}
       hideMainSeparator
       label={` Welcome back, ${alias} !`}
       width={457}
@@ -152,7 +141,11 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
                 style={{ marginBottom: 20 }}
                 onPress={() => {
                   setName(tokenWithoutTld(token));
-                  onClose("TNSConsultName", "TNSManage");
+                  onClose(
+                    "TNSConsultName",
+                    "TNSManage",
+                    tokenWithoutTld(token)
+                  );
                 }}
               />
             ))}
