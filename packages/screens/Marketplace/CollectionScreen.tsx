@@ -40,21 +40,75 @@ import { CollectionStat } from "./components/CollectionStat";
 
 const nftWidth = 268; // FIXME: ssot
 
-const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
-  const {
-    info,
-    // notFound,
-    loading: loadingCollectionInfo,
-  } = useCollectionInfo(id);
+type TabsListType = "allNFTs" | "owned" | "activity";
 
-  const networkId = process.env.TERITORI_NETWORK_ID || ""; // FIXME: derive from collection network
+const Content: React.FC<{ id: string; selectedTab: TabsListType }> = React.memo(
+  ({ id, selectedTab }) => {
+    const {
+      // notFound,
+      loading: loadingCollectionInfo,
+    } = useCollectionInfo(id);
 
+    const wallet = useSelectedWallet();
+
+    const { setLoadingFullScreen } = useFeedbacks();
+
+    const { width } = useMaxResolution();
+    const numColumns = Math.floor(width / nftWidth);
+
+    const nftsRequest: NFTsRequest = {
+      collectionId: id,
+      ownerId:
+        selectedTab === "owned" && wallet?.address
+          ? `tori-${wallet.address}`
+          : "",
+      limit: alignDown(20, numColumns) || numColumns,
+      offset: 0,
+    };
+
+    useEffect(() => {
+      setLoadingFullScreen(loadingCollectionInfo);
+    }, [loadingCollectionInfo]);
+
+    switch (selectedTab) {
+      case "allNFTs":
+      case "owned":
+        return (
+          <NFTs
+            key={selectedTab}
+            req={nftsRequest}
+            numColumns={numColumns}
+            ListFooterComponent={
+              <View style={{ height: layout.contentPadding }} />
+            }
+          />
+        );
+      case "activity":
+        return <ActivityTable collectionId={id} />;
+    }
+  }
+);
+
+// All the screen content before the Flatlist used to display NFTs
+const Header: React.FC<{
+  collectionId: string;
+  collectionInfo: CollectionInfo;
+  selectedTab: TabsListType;
+  onSelectTab: (tab: TabsListType) => void;
+}> = ({ collectionInfo = {}, selectedTab, onSelectTab, collectionId }) => {
   const wallet = useSelectedWallet();
-
+  // variables
   const stats = useCollectionStats(
-    id,
+    collectionId,
     wallet ? `tori-${wallet.address}` : undefined
   );
+  const { width: maxWidth } = useMaxResolution();
+  const { width, height } = useImageResizer({
+    image: collectionInfo.bannerImage || bannerCollection,
+    maxSize: { width: maxWidth },
+  });
+  const { setToastSuccess } = useFeedbacks();
+  const networkId = process.env.TERITORI_NETWORK_ID || ""; // FIXME: derive from collection network
 
   const coins = useMemo(() => {
     if (!stats?.floorPrice) {
@@ -67,6 +121,24 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
   }, [stats?.floorPrice]);
 
   const prices = useCoingeckoPrices(coins);
+
+  const collectionScreenTabItems = {
+    allNFTs: {
+      name: "All NFTs",
+      badgeCount: stats?.totalSupply || 0,
+    },
+    ...(stats?.owned
+      ? {
+          owned: {
+            name: "Owned",
+            badgeCount: stats.owned,
+          },
+        }
+      : {}),
+    activity: {
+      name: "Activity",
+    },
+  };
 
   const usdFloorPrice = useMemo(() => {
     if (!stats?.floorPrice || stats.floorPrice.length < 1) {
@@ -96,246 +168,168 @@ const Content: React.FC<{ id: string }> = React.memo(({ id }) => {
       })[0];
   }, [prices, stats?.floorPrice, networkId]);
 
-  const collectionScreenTabItems = {
-    allNFTs: {
-      name: "All NFTs",
-      badgeCount: stats?.totalSupply || 0,
-    },
-    ...(stats?.owned
-      ? {
-          owned: {
-            name: "Owned",
-            badgeCount: stats.owned,
-          },
+  // functions
+  const onShare = () => {
+    let currentUrl;
+    if (Platform.OS === "web") {
+      currentUrl = window.location.href;
+    }
+
+    try {
+      Clipboard.setString(currentUrl || "");
+      setToastSuccess({
+        title: "URL Copied!",
+        message: "",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // returns
+  return (
+    <View style={{ maxWidth: width, alignSelf: "center" }}>
+      <Image
+        source={
+          collectionInfo?.bannerImage
+            ? { uri: collectionInfo.bannerImage }
+            : bannerCollection
         }
-      : {}),
-    activity: {
-      name: "Activity",
-    },
-  };
+        style={{
+          height,
+          width,
+          marginBottom: layout.contentPadding,
+        }}
+      />
 
-  const [selectedTab, setSelectedTab] =
-    useState<keyof typeof collectionScreenTabItems>("allNFTs");
-
-  const { setLoadingFullScreen } = useFeedbacks();
-
-  const { width } = useMaxResolution();
-  const numColumns = Math.floor(width / nftWidth);
-
-  const nftsRequest: NFTsRequest = {
-    collectionId: id,
-    ownerId:
-      selectedTab === "owned" && wallet?.address
-        ? `tori-${wallet.address}`
-        : "",
-    limit: alignDown(20, numColumns) || numColumns,
-    offset: 0,
-  };
-
-  useEffect(() => {
-    setLoadingFullScreen(loadingCollectionInfo);
-  }, [loadingCollectionInfo]);
-
-  // All the screen content before the Flatlist used to display NFTs
-  const Header: React.FC<{
-    collectionId: string;
-    collectionInfo: CollectionInfo;
-    selectedTab: keyof typeof collectionScreenTabItems;
-    onSelectTab: (tab: keyof typeof collectionScreenTabItems) => void;
-  }> = ({ collectionInfo = {}, selectedTab, onSelectTab, collectionId }) => {
-    const wallet = useSelectedWallet();
-    // variables
-    const stats = useCollectionStats(
-      collectionId,
-      wallet ? `tori-${wallet.address}` : undefined
-    );
-    const { width: maxWidth } = useMaxResolution();
-    const { width, height } = useImageResizer({
-      image: collectionInfo.bannerImage || bannerCollection,
-      maxSize: { width: maxWidth },
-    });
-    const { setToastSuccess } = useFeedbacks();
-
-    // functions
-    const onShare = () => {
-      let currentUrl;
-      if (Platform.OS === "web") {
-        currentUrl = window.location.href;
-      }
-
-      try {
-        Clipboard.setString(currentUrl || "");
-        setToastSuccess({
-          title: "URL Copied!",
-          message: "",
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    // returns
-    return (
-      <View style={{ maxWidth: width, alignSelf: "center" }}>
-        <Image
-          source={
-            collectionInfo?.bannerImage
-              ? { uri: collectionInfo.bannerImage }
-              : bannerCollection
-          }
-          style={{
-            height,
-            width,
-            marginBottom: layout.contentPadding,
-          }}
+      <View
+        style={{
+          flexDirection: "row",
+          width: "100%",
+          marginBottom: 24,
+        }}
+      >
+        <RoundedGradientImage
+          imageSource={{ uri: collectionInfo.image }}
+          style={{ marginRight: 24 }}
         />
-
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            marginBottom: 24,
-          }}
-        >
-          <RoundedGradientImage
-            imageSource={{ uri: collectionInfo.image }}
-            style={{ marginRight: 24 }}
-          />
-          <View style={{ flex: 1 }}>
-            <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
-            <View style={styles.statRow}>
-              <CollectionStat
-                label="Floor"
-                value={
-                  usdFloorPrice === Infinity
-                    ? "-"
-                    : `$${usdFloorPrice.toFixed(2)}`
-                }
+        <View style={{ flex: 1 }}>
+          <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
+          <View style={styles.statRow}>
+            <CollectionStat
+              label="Floor"
+              value={
+                usdFloorPrice === Infinity
+                  ? "-"
+                  : `$${usdFloorPrice.toFixed(2)}`
+              }
+            />
+            <SpacerRow size={1.5} />
+            <CollectionStat
+              label="Total Volume"
+              value={
+                stats?.totalVolume
+                  ? "$" + parseFloat(stats.totalVolume).toFixed(2)
+                  : "$0"
+              }
+            />
+            <SpacerRow size={1.5} />
+            <CollectionStat
+              label="Owners"
+              value={(stats?.owners || 0).toString()}
+            />
+            <SpacerRow size={1.5} />
+            <CollectionStat
+              label="Listed"
+              value={(stats?.listed || 0).toString()}
+            />
+            <SpacerRow size={1.5} />
+            <CollectionStat
+              label="Total Supply"
+              value={(stats?.totalSupply || 0).toString()}
+            />
+          </View>
+          <View style={styles.statRow}>
+            <CollectionSocialButtons collectionInfo={collectionInfo} />
+            {collectionInfo.discord ||
+            collectionInfo.twitter ||
+            collectionInfo.website ? (
+              <View
+                style={{
+                  height: 24,
+                  width: 1,
+                  backgroundColor: neutral33,
+                  marginRight: 12,
+                }}
               />
-              <SpacerRow size={1.5} />
-              <CollectionStat
-                label="Total Volume"
-                value={
-                  stats?.totalVolume
-                    ? "$" + parseFloat(stats.totalVolume).toFixed(2)
-                    : "$0"
-                }
-              />
-              <SpacerRow size={1.5} />
-              <CollectionStat
-                label="Owners"
-                value={(stats?.owners || 0).toString()}
-              />
-              <SpacerRow size={1.5} />
-              <CollectionStat
-                label="Listed"
-                value={(stats?.listed || 0).toString()}
-              />
-              <SpacerRow size={1.5} />
-              <CollectionStat
-                label="Total Supply"
-                value={(stats?.totalSupply || 0).toString()}
-              />
-            </View>
-            <View style={styles.statRow}>
-              <CollectionSocialButtons collectionInfo={collectionInfo} />
-              {collectionInfo.discord ||
-              collectionInfo.twitter ||
-              collectionInfo.website ? (
-                <View
-                  style={{
-                    height: 24,
-                    width: 1,
-                    backgroundColor: neutral33,
-                    marginRight: 12,
-                  }}
-                />
-              ) : null}
-              <SocialButtonSecondary
-                text="Contract Address"
-                iconSvg={etherscanSVG}
-                style={{ marginRight: 12 }}
-              />
-              <SocialButtonSecondary
-                text="Share"
-                iconSvg={shareSVG}
-                onPress={onShare}
-              />
-            </View>
+            ) : null}
+            <SocialButtonSecondary
+              text="Contract Address"
+              iconSvg={etherscanSVG}
+              style={{ marginRight: 12 }}
+            />
+            <SocialButtonSecondary
+              text="Share"
+              iconSvg={shareSVG}
+              onPress={onShare}
+            />
           </View>
         </View>
-
-        <PrimaryBox
-          mainContainerStyle={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingRight: 8,
-            paddingLeft: 20,
-          }}
-          fullWidth
-          height={64}
-          style={{ marginBottom: 24 }}
-        >
-          <Tabs
-            items={collectionScreenTabItems}
-            onSelect={onSelectTab}
-            selected={selectedTab}
-            style={{
-              width: "fit-content",
-              height: "100%",
-              borderBottomWidth: 0,
-            }}
-          />
-          <SortButton />
-        </PrimaryBox>
       </View>
-    );
-  };
 
-  switch (selectedTab) {
-    case "allNFTs":
-    case "owned":
-      return (
-        <NFTs
-          key={selectedTab}
-          req={nftsRequest}
-          numColumns={numColumns}
-          ListHeaderComponent={
-            <Header
-              collectionId={id}
-              collectionInfo={info}
-              selectedTab={selectedTab}
-              onSelectTab={setSelectedTab}
-            />
-          }
-          ListFooterComponent={
-            <View style={{ height: layout.contentPadding }} />
-          }
+      <PrimaryBox
+        mainContainerStyle={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingRight: 8,
+          paddingLeft: 20,
+        }}
+        fullWidth
+        height={64}
+        style={{ marginBottom: 24 }}
+      >
+        <Tabs
+          items={collectionScreenTabItems}
+          onSelect={onSelectTab}
+          selected={selectedTab}
+          style={{
+            width: "fit-content",
+            height: "100%",
+            borderBottomWidth: 0,
+          }}
         />
-      );
-    case "activity":
-      return (
-        <ScrollView>
-          <Header
-            collectionId={id}
-            collectionInfo={info}
-            selectedTab={selectedTab}
-            onSelectTab={setSelectedTab}
-          />
-          <ActivityTable collectionId={id} />
-        </ScrollView>
-      );
-  }
-});
+        <SortButton />
+      </PrimaryBox>
+    </View>
+  );
+};
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
+  // variables
+  const { id } = route.params;
+  const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
+  const {
+    info,
+    // notFound,
+  } = useCollectionInfo(id);
+
+  // returns
   return (
     <ScreenContainer
       noMargin
-      noScroll
       headerChildren={<BackTo label="Collection Profile" />}
+      noScroll
     >
-      <Content key={route.params.id} id={route.params.id} />
+      <ScrollView>
+        <Header
+          collectionId={id}
+          collectionInfo={info}
+          selectedTab={selectedTab}
+          onSelectTab={setSelectedTab}
+        />
+
+        <Content key={id} id={id} selectedTab={selectedTab} />
+      </ScrollView>
     </ScreenContainer>
   );
 };
