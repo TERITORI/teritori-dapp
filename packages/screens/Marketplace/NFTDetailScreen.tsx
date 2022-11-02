@@ -65,6 +65,7 @@ export interface NFTInfo {
   collectionName: string;
   textInsert?: string;
   collectionImageURL: string;
+  mintDenom: string;
 }
 
 const Content: React.FC<{
@@ -135,11 +136,11 @@ const Content: React.FC<{
   const sell = useSellNFT();
 
   const handleSell = useCallback(
-    async (price: string) => {
+    async (price: string, denom: string | undefined) => {
       if (!info) {
         return;
       }
-      const reply = await sell(info.nftAddress, info.tokenId, price);
+      const reply = await sell(info.nftAddress, info.tokenId, price, denom);
       console.log(reply);
       refresh();
       return reply;

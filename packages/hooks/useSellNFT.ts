@@ -3,15 +3,21 @@ import { useCallback } from "react";
 
 import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { getNativeCurrency } from "../networks";
 import { getSigningCosmWasmClient } from "../utils/keplr";
-import { vaultContractAddress, toriCurrency } from "../utils/teritori";
+import { vaultContractAddress } from "../utils/teritori";
 import useSelectedWallet from "./useSelectedWallet";
 
 export const useSellNFT = () => {
   const { setToastError } = useFeedbacks();
   const wallet = useSelectedWallet();
   return useCallback(
-    async (nftContractAddress: string, tokenId: string, price: string) => {
+    async (
+      nftContractAddress: string,
+      tokenId: string,
+      price: string,
+      denom: string | undefined
+    ) => {
       if (!wallet?.address || !wallet.connected) {
         setToastError({
           title: "Failed to list NFT",
@@ -21,14 +27,31 @@ export const useSellNFT = () => {
       }
       setToastError(initialToastError);
       try {
+        if (!denom) {
+          setToastError({
+            title: "Failed to list NFT",
+            message: "No denom",
+          });
+          return;
+        }
         const cosmwasmClient = await getSigningCosmWasmClient();
         const nftClient = new TeritoriNftClient(
           cosmwasmClient,
           wallet.address,
           nftContractAddress
         );
-        const currency = toriCurrency;
-        const atomicPrice = Decimal.fromUserInput(price, currency.coinDecimals);
+        const currency = getNativeCurrency(
+          process.env.TERITORI_NETWORK_ID,
+          denom
+        );
+        if (!currency) {
+          setToastError({
+            title: "Failed to list NFT",
+            message: "Unknown currency",
+          });
+          return;
+        }
+        const atomicPrice = Decimal.fromUserInput(price, currency.decimals);
         const amount = atomicPrice.atomics;
         const reply = await nftClient.sendNft({
           contract: vaultContractAddress,
@@ -36,7 +59,7 @@ export const useSellNFT = () => {
           msg: Buffer.from(
             JSON.stringify({
               deposit: {
-                denom: currency.coinMinimalDenom,
+                denom,
                 amount,
               },
             })

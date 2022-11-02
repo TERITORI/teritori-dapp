@@ -1,7 +1,6 @@
 import { Decimal } from "cosmwasm";
 
 import { getNativeCurrency } from "../networks";
-import { toriCurrency } from "./teritori";
 
 export interface Balance {
   amount: string;
@@ -9,14 +8,10 @@ export interface Balance {
   denom: string;
 }
 
-const currencies = [toriCurrency];
-
 export const decimalFromAtomics = (value: string, denom: string) => {
-  const currency = currencies.find(
-    (currency) => currency.coinMinimalDenom === denom
-  );
+  const currency = getNativeCurrency(process.env.TERITORI_NETWORK_ID, denom);
   if (currency) {
-    return Decimal.fromAtomics(value, currency.coinDecimals);
+    return Decimal.fromAtomics(value, currency.decimals);
   }
   throw new Error("unknown denom");
 };

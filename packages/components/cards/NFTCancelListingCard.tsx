@@ -2,12 +2,11 @@ import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { prettyPrice } from "../../utils/coins";
-import { Network } from "../../utils/network";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { CurrencyIcon } from "../CurrencyIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
-import { NetworkIcon } from "../images/NetworkIcon";
 
 export const NFTCancelListingCard: React.FC<{
   price?: string;
@@ -41,7 +40,11 @@ export const NFTCancelListingCard: React.FC<{
               priceDenom
             )}
           </BrandText>
-          <NetworkIcon network={Network.Teritori} circle size={24} />
+          <CurrencyIcon
+            networkId={process.env.TERITORI_NETWORK_ID || ""}
+            denom={priceDenom}
+            size={24}
+          />
         </View>
       </View>
       <PrimaryButton size="XL" text="Cancel listing" onPress={onPressCancel} />
