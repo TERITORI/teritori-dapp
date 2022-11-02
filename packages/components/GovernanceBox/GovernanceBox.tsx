@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
-import { ColorValue, TouchableOpacity, View } from "react-native";
+import { ColorValue, ScrollView, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -262,15 +262,16 @@ export const GovernanceBox: React.FC<{
                 height: 100,
               }}
             >
-              <BrandText
-                style={{
-                  overflow: "scroll",
-                  fontSize: 18,
-                  color: "#808080",
-                }}
-              >
-                {descriptionProposal}
-              </BrandText>
+              <ScrollView>
+                <BrandText
+                  style={{
+                    fontSize: 18,
+                    color: "#808080",
+                  }}
+                >
+                  {descriptionProposal}
+                </BrandText>
+              </ScrollView>
             </View>
 
             <View style={{ paddingTop: 10 }}>
