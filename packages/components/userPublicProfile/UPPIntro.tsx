@@ -164,7 +164,7 @@ export const UPPIntro: React.FC<{
             }}
           >
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Followers
+              Coming Soon
             </BrandText>
             <BrandText style={[fontSemibold14]}>21.5k</BrandText>
           </View>
@@ -177,7 +177,7 @@ export const UPPIntro: React.FC<{
             }}
           >
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Following
+              Coming Soon
             </BrandText>
             <BrandText style={[fontSemibold14]}>36</BrandText>
           </View>

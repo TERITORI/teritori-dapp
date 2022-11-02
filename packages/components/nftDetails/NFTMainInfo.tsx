@@ -195,13 +195,11 @@ export const NFTMainInfo: React.FC<{
       <Target style={styles.collapsableContainer} name="price-history">
         <CollapsablePiceHistory />
       </Target>
-      <View style={styles.collapsableContainer}>
-        <Target name="activity">
-          <CollapsableSection icon={starSVG} title="Activity">
-            <ActivityTable nftId={nftId} />
-          </CollapsableSection>
-        </Target>
-      </View>
+      <Target name="activity" style={styles.collapsableContainer}>
+        <CollapsableSection icon={starSVG} title="Activity" isExpandedByDefault>
+          <ActivityTable nftId={nftId} />
+        </CollapsableSection>
+      </Target>
 
       {/* ====== "Buy this NFT" three modals*/}
       <TransactionModals
