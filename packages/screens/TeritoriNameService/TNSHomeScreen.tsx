@@ -86,6 +86,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const handleModalChange = (modal?: string, name?: string) => {
     if (!modal) {
       setActiveModal(undefined);
+      setModalNameFinderVisible(false);
       return;
     }
     try {
@@ -102,6 +103,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
       } else {
         //@ts-ignore
         setActiveModal(routeName);
+        setModalNameFinderVisible(false);
       }
     } catch (err) {
       console.log("route path parsing failed", err);
@@ -113,7 +115,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     if (route.params?.name) {
       setName(route.params.name);
     }
-  }, [route.params?.modal, route.params?.name]);
+  }, [route]);
 
   const tnsModalCommonProps = {
     onClose: handleModalClose,
@@ -176,10 +178,10 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           visible={modalNameFinderVisible}
           onClose={() => {
             setModalNameFinderVisible(false);
+            navigation.navigate("TNSHome", { modal: "" });
           }}
           onEnter={() => {
             setModalNameFinderVisible(false);
-
             pressedTNSItems &&
               navigation.navigate("TNSHome", {
                 modal: TNSPathMap[pressedTNSItems],
