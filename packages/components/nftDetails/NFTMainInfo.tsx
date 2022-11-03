@@ -5,7 +5,6 @@ import { StyleSheet, View } from "react-native";
 
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
@@ -53,7 +52,6 @@ export const NFTMainInfo: React.FC<{
   cancelListing: () => Promise<ExecuteResult | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing }) => {
   const { openTransactionModals } = useTransactionModals();
-  const { width } = useMaxResolution();
 
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("about");
@@ -129,75 +127,75 @@ export const NFTMainInfo: React.FC<{
 
   return (
     <>
-    <View
-      style={{
-        flexDirection: "row",
-        width: "100%",
-        flexWrap: "wrap",
-        justifyContent: "center",
-      }}
-    >
-      {/*---- Image NFT */}
-      <TertiaryBox
-        width={464}
-        height={464}
-        style={{ marginRight: 28, marginBottom: 40 }}
+      <View
+        style={{
+          flexDirection: "row",
+          width: "100%",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
       >
-        <ImageWithTextInsert
-          imageURL={nftInfo?.imageURL}
-          textInsert={nftInfo?.textInsert}
-          size={462}
-          style={{ borderRadius: 8 }}
-        />
-      </TertiaryBox>
-      {/*---- Info NFT */}
-      <View style={{ maxWidth: 600 }}>
-        <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
-          {nftInfo?.name}
-        </BrandText>
+        {/*---- Image NFT */}
+        <TertiaryBox
+          width={464}
+          height={464}
+          style={{ marginRight: 28, marginBottom: 40 }}
+        >
+          <ImageWithTextInsert
+            imageURL={nftInfo?.imageURL}
+            textInsert={nftInfo?.textInsert}
+            size={462}
+            style={{ borderRadius: 8 }}
+          />
+        </TertiaryBox>
+        {/*---- Info NFT */}
+        <View style={{ maxWidth: 600 }}>
+          <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
+            {nftInfo?.name}
+          </BrandText>
 
           <CollectionInfoInline
             imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
             name={nftInfo?.collectionName}
           />
 
-        {nftInfo?.canSell && (
-          <NFTSellCard
-            style={{ marginTop: 24, marginBottom: 40 }}
-            onPressSell={sell}
+          {nftInfo?.canSell && (
+            <NFTSellCard
+              style={{ marginTop: 24, marginBottom: 40 }}
+              onPressSell={sell}
+            />
+          )}
+          {nftInfo?.isListed && !nftInfo?.isOwner && (
+            <NFTPriceBuyCard
+              style={{ marginTop: 24, marginBottom: 40 }}
+              onPressBuy={openTransactionModals}
+              price={nftInfo.price}
+              priceDenom={nftInfo.priceDenom}
+            />
+          )}
+          {nftInfo?.isListed && nftInfo?.isOwner && (
+            <NFTCancelListingCard
+              style={{ marginTop: 24, marginBottom: 40 }}
+              price={nftInfo.price}
+              priceDenom={nftInfo.priceDenom}
+              onPressCancel={cancelListing}
+            />
+          )}
+          {!nftInfo?.isListed && !nftInfo?.isOwner && (
+            <View style={{ marginTop: 24, marginBottom: 40 }}>
+              <BrandText style={{ color: neutral77 }}>Not listed</BrandText>
+            </View>
+          )}
+          <Tabs
+            onSelect={setSelectedTab}
+            items={mainInfoTabItems}
+            selected={selectedTab}
+            borderColorTabSelected={primaryColor}
           />
-        )}
-        {nftInfo?.isListed && !nftInfo?.isOwner && (
-          <NFTPriceBuyCard
-            style={{ marginTop: 24, marginBottom: 40 }}
-            onPressBuy={openTransactionModals}
-            price={nftInfo.price}
-            priceDenom={nftInfo.priceDenom}
-          />
-        )}
-        {nftInfo?.isListed && nftInfo?.isOwner && (
-          <NFTCancelListingCard
-            style={{ marginTop: 24, marginBottom: 40 }}
-            price={nftInfo.price}
-            priceDenom={nftInfo.priceDenom}
-            onPressCancel={cancelListing}
-          />
-        )}
-        {!nftInfo?.isListed && !nftInfo?.isOwner && (
-          <View style={{ marginTop: 24, marginBottom: 40 }}>
-            <BrandText style={{ color: neutral77 }}>Not listed</BrandText>
-          </View>
-        )}
-        <Tabs
-          onSelect={setSelectedTab}
-          items={mainInfoTabItems}
-          selected={selectedTab}
-          borderColorTabSelected={primaryColor}
-        />
-        {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
-        {/*TODO: About  = Big text*/}
-        <SelectedTabItemRendering />
-      </View>
+          {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
+          {/*TODO: About  = Big text*/}
+          <SelectedTabItemRendering />
+        </View>
       </View>
 
       <Target style={styles.collapsableContainer} name="price-history">

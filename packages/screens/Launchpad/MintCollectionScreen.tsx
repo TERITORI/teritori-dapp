@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Image,
-  ScrollView,
   StyleProp,
   TextStyle,
   View,
@@ -75,6 +74,23 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
   const mintButtonDisabled = minted || !wallet?.connected;
+
+  const prettyError = (err: any) => {
+    const msg = err?.message;
+    if (typeof msg !== "string") {
+      return `${err}`;
+    }
+    if (msg.includes("Already minted maximum for whitelist period")) {
+      return "You already minted the maximum allowed per address during presale";
+    }
+    if (msg.includes("Already minted maximum")) {
+      return "You already minted the maximum allowed per address";
+    }
+    if (msg.includes("Not whitelisted!")) {
+      return "You are not in the presale whitelist";
+    }
+    return msg;
+  };
 
   const mint = useCallback(async () => {
     try {
@@ -149,7 +165,84 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
             >
               <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
 
-                <View style={{ marginBottom: 20 }}>
+              <View style={{ marginBottom: 20 }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    margin: -cardsHalfGap,
+                  }}
+                >
+                  <AttributesCard
+                    label="Supply"
+                    value={info.maxSupply || ""}
+                    style={{ margin: cardsHalfGap }}
+                  />
+                  <AttributesCard
+                    label="Price"
+                    value={info.prettyUnitPrice || ""}
+                    style={{ margin: cardsHalfGap }}
+                  />
+                  <AttributesCard
+                    label="Limit Buy"
+                    value={
+                      info.maxPerAddress
+                        ? `${info.maxPerAddress} by address`
+                        : "Unlimited"
+                    }
+                    style={{ margin: cardsHalfGap }}
+                  />
+                </View>
+              </View>
+
+              {/*TODO: Gradient white text (see figma)*/}
+              <BrandText
+                style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
+              >
+                {info.description}
+              </BrandText>
+
+              <ProgressionCard
+                label="Tokens Minted"
+                valueCurrent={
+                  info.mintedAmount ? parseInt(info.mintedAmount, 10) : 0
+                }
+                valueMax={info.maxSupply ? parseInt(info.maxSupply, 10) : 0}
+                style={{
+                  marginBottom: 24,
+                  maxWidth: 420,
+                }}
+              />
+
+              <View style={{ flexDirection: "row", marginBottom: 24 }}>
+                {info.isMintable && (
+                  <PrimaryButton
+                    size="XL"
+                    text="Mint now"
+                    touchableStyle={{ marginRight: 36 }}
+                    width={160}
+                    disabled={mintButtonDisabled}
+                    loader
+                    onPress={mint}
+                  />
+                )}
+
+                {getCurrency(process.env.TERITORI_NETWORK_ID, info.priceDenom)
+                  ?.kind === "ibc" && (
+                  <PrimaryButton
+                    size="XL"
+                    text="Deposit Atom"
+                    width={160}
+                    disabled={mintButtonDisabled}
+                    loader
+                    onPress={() => setDepositVisible(true)}
+                  />
+                )}
+              </View>
+
+              {hasLinks && (
+                <View style={{ marginBottom: 24 }}>
                   <View
                     style={{
                       flexDirection: "row",
@@ -158,156 +251,73 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       margin: -cardsHalfGap,
                     }}
                   >
-                    <AttributesCard
-                      label="Supply"
-                      value={info.maxSupply || ""}
-                      style={{ margin: cardsHalfGap }}
-                    />
-                    <AttributesCard
-                      label="Price"
-                      value={info.prettyUnitPrice || ""}
-                      style={{ margin: cardsHalfGap }}
-                    />
-                    <AttributesCard
-                      label="Limit Buy"
-                      value={
-                        info.maxPerAddress
-                          ? `${info.maxPerAddress} by address`
-                          : "Unlimited"
-                      }
-                      style={{ margin: cardsHalfGap }}
-                    />
+                    <CollectionSocialButtons collectionInfo={info} />
                   </View>
                 </View>
+              )}
+            </View>
 
-                {/*TODO: Gradient white text (see figma)*/}
-                <BrandText
-                  style={[
-                    fontSemibold14,
-                    { marginBottom: 24, marginRight: 24 },
-                  ]}
-                >
-                  {info.description}
-                </BrandText>
-
-                <ProgressionCard
-                  label="Tokens Minted"
-                  valueCurrent={
-                    info.mintedAmount ? parseInt(info.mintedAmount, 10) : 0
-                  }
-                  valueMax={info.maxSupply ? parseInt(info.maxSupply, 10) : 0}
-                  style={{
-                    marginBottom: 24,
-                    maxWidth: 420,
-                  }}
-                />
-
-                <View style={{ flexDirection: "row", marginBottom: 24 }}>
-                  {info.isMintable && (
-                    <PrimaryButton
-                      size="XL"
-                      text="Mint now"
-                      touchableStyle={{ marginRight: 36 }}
-                      width={160}
-                      disabled={mintButtonDisabled}
-                      loader
-                      onPress={mint}
-                    />
-                  )}
-
-                  {getCurrency(process.env.TERITORI_NETWORK_ID, info.priceDenom)
-                    ?.kind === "ibc" && (
-                    <PrimaryButton
-                      size="XL"
-                      text="Deposit Atom"
-                      width={160}
-                      disabled={mintButtonDisabled}
-                      loader
-                      onPress={() => setDepositVisible(true)}
-                    />
-                  )}
-                </View>
-
-                {hasLinks && (
-                  <View style={{ marginBottom: 24 }}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        flexWrap: "wrap",
-                        margin: -cardsHalfGap,
-                      }}
-                    >
-                      <CollectionSocialButtons collectionInfo={info} />
-                    </View>
-                  </View>
-                )}
-              </View>
-
-              {/* ===== Right container */}
-              <View
-                style={{
-                  justifyContent: "flex-start",
-                  width: "100%",
-                  maxWidth: 534,
-                  maxHeight: 806,
-                  paddingBottom: 72,
-                }}
-              >
-                <TertiaryBox style={{ marginBottom: 40 }}>
-                  {info.image ? (
-                    <Image
-                      source={{ uri: info.image }}
-                      style={{
-                        width: imageSize,
-                        height: imageSize,
-                        borderRadius: 8,
-                      }}
-                    />
-                  ) : (
-                    <ActivityIndicator size="large" style={{ margin: 40 }} />
-                  )}
-                </TertiaryBox>
-
-                <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
-                  Activity
-                </BrandText>
-                {info.mintStarted ? (
-                  <>
-                    {info.hasPresale && (
-                      <PresaleActivy
-                        running={
-                          !info.publicSaleEnded && info.isInPresalePeriod
-                        }
-                        whitelistSize={info.whitelistSize || 0}
-                        maxPerAddress={info.whitelistMaxPerAddress || "0"}
-                      />
-                    )}
-                    <PublicSaleActivity
-                      started={!info.isInPresalePeriod}
-                      ended={!!info.publicSaleEnded}
-                      running={info.maxSupply !== info.mintedAmount}
-                      startsAt={info.publicSaleStartTime}
-                      onCountdownEnd={refetchCollectionInfo}
-                    />
-                  </>
+            {/* ===== Right container */}
+            <View
+              style={{
+                justifyContent: "flex-start",
+                width: "100%",
+                maxWidth: 534,
+                maxHeight: 806,
+                paddingBottom: 72,
+              }}
+            >
+              <TertiaryBox style={{ marginBottom: 40 }}>
+                {info.image ? (
+                  <Image
+                    source={{ uri: info.image }}
+                    style={{
+                      width: imageSize,
+                      height: imageSize,
+                      borderRadius: 8,
+                    }}
+                  />
                 ) : (
-                  <MintNotStartedActivity />
+                  <ActivityIndicator size="large" style={{ margin: 40 }} />
                 )}
-              </View>
+              </TertiaryBox>
+
+              <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
+                Activity
+              </BrandText>
+              {info.mintStarted ? (
+                <>
+                  {info.hasPresale && (
+                    <PresaleActivy
+                      running={!info.publicSaleEnded && info.isInPresalePeriod}
+                      whitelistSize={info.whitelistSize || 0}
+                      maxPerAddress={info.whitelistMaxPerAddress || "0"}
+                    />
+                  )}
+                  <PublicSaleActivity
+                    started={!info.isInPresalePeriod}
+                    ended={!!info.publicSaleEnded}
+                    running={info.maxSupply !== info.mintedAmount}
+                    startsAt={info.publicSaleStartTime}
+                    onCountdownEnd={refetchCollectionInfo}
+                  />
+                </>
+              ) : (
+                <MintNotStartedActivity />
+              )}
             </View>
           </View>
-          <DepositWithdrawModal
-            variation="deposit"
-            networkId={process.env.TERITORI_NETWORK_ID || ""}
-            targetCurrency={info.priceDenom}
-            onClose={() => setDepositVisible(false)}
-            isVisible={isDepositVisible}
-          />
-          {minted && (
-            <ConfettiCannon count={200} origin={{ x: -400, y: 0 }} fadeOut />
-          )}
-        </ScrollView>
+        </View>
+        <DepositWithdrawModal
+          variation="deposit"
+          networkId={process.env.TERITORI_NETWORK_ID || ""}
+          targetCurrency={info.priceDenom}
+          onClose={() => setDepositVisible(false)}
+          isVisible={isDepositVisible}
+        />
+        {minted && (
+          <ConfettiCannon count={200} origin={{ x: -400, y: 0 }} fadeOut />
+        )}
       </ScreenContainer>
     );
 };
@@ -483,21 +493,4 @@ const MintNotStartedActivity: React.FC = () => {
       <TertiaryBadge label="Mint not started" />
     </View>
   );
-};
-
-const prettyError = (err: any) => {
-  const msg = err?.message;
-  if (typeof msg !== "string") {
-    return `${err}`;
-  }
-  if (msg.includes("Already minted maximum for whitelist period")) {
-    return "You already minted the maximum allowed per address during presale";
-  }
-  if (msg.includes("Already minted maximum")) {
-    return "You already minted the maximum allowed per address";
-  }
-  if (msg.includes("Not whitelisted!")) {
-    return "You are not in the presale whitelist";
-  }
-  return msg;
 };
