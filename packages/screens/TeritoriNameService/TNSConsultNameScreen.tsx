@@ -20,7 +20,7 @@ import { neutral17, neutral33 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 
-const NotOwnerActions = () => {
+const NotOwnerActions: React.FC = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const isKeplrConnected = useIsKeplrConnected();
   return (
