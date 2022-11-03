@@ -17,6 +17,7 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
@@ -45,12 +46,16 @@ export const NFTView: React.FC<{
   const contentWidth = cardWidth - insideMargin * 2;
   const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
+  const selectedWallet = useSelectedWallet();
   const tnsMetadata = useTNSMetadata(nft.ownerId.replace("tori-", ""));
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
   const dropdownRef = useRef<TouchableOpacity>(null);
+
+  const isOwner =
+    nft.ownerId === `tori-${selectedWallet?.address}` && !nft.isListed;
 
   // put margins on touchable opacity
   const {
@@ -150,51 +155,55 @@ export const NFTView: React.FC<{
                     </BrandText>
                   </View>
                 </View>
-                <View style={{ position: "relative", zIndex: 1000 }}>
-                  <Pressable onPress={() => onPressDropdownButton(dropdownRef)}>
-                    <SVG source={dotsCircleSVG} height={32} width={32} />
-                  </Pressable>
-                  {isDropdownOpen(dropdownRef) && (
-                    <View style={styles.optionContainer}>
-                      <DropdownOption
-                        onPress={closeOpenedDropdown}
-                        icon={octagonSVG}
-                        isComingSoon
-                        label="Set as Avatar"
-                      />
-                      <SpacerColumn size={0.5} />
-                      <DropdownOption
-                        onPress={closeOpenedDropdown}
-                        isComingSoon
-                        icon={gridSVG}
-                        label="List this NFT"
-                      />
-                      <SpacerColumn size={0.5} />
-                      <DropdownOption
-                        onPress={closeOpenedDropdown}
-                        icon={raffleSVG}
-                        isComingSoon
-                        label="Create Raffle with this NFT"
-                      />
-                      <SpacerColumn size={0.5} />
-                      <DropdownOption
-                        onPress={() => {
-                          closeOpenedDropdown();
-                          toggleTransferNFT();
-                        }}
-                        icon={sendSVG}
-                        label="Send & Transfer this NFT"
-                      />
-                      <SpacerColumn size={0.5} />
-                      <DropdownOption
-                        onPress={closeOpenedDropdown}
-                        icon={footerSVG}
-                        isComingSoon
-                        label="Put this NFT in the Rioters Footer"
-                      />
-                    </View>
-                  )}
-                </View>
+                {isOwner && (
+                  <View style={{ position: "relative", zIndex: 1000 }}>
+                    <Pressable
+                      onPress={() => onPressDropdownButton(dropdownRef)}
+                    >
+                      <SVG source={dotsCircleSVG} height={32} width={32} />
+                    </Pressable>
+                    {isDropdownOpen(dropdownRef) && (
+                      <View style={styles.optionContainer}>
+                        <DropdownOption
+                          onPress={closeOpenedDropdown}
+                          icon={octagonSVG}
+                          isComingSoon
+                          label="Set as Avatar"
+                        />
+                        <SpacerColumn size={0.5} />
+                        <DropdownOption
+                          onPress={closeOpenedDropdown}
+                          isComingSoon
+                          icon={gridSVG}
+                          label="List this NFT"
+                        />
+                        <SpacerColumn size={0.5} />
+                        <DropdownOption
+                          onPress={closeOpenedDropdown}
+                          icon={raffleSVG}
+                          isComingSoon
+                          label="Create Raffle with this NFT"
+                        />
+                        <SpacerColumn size={0.5} />
+                        <DropdownOption
+                          onPress={() => {
+                            closeOpenedDropdown();
+                            toggleTransferNFT();
+                          }}
+                          icon={sendSVG}
+                          label="Send & Transfer this NFT"
+                        />
+                        <SpacerColumn size={0.5} />
+                        <DropdownOption
+                          onPress={closeOpenedDropdown}
+                          icon={footerSVG}
+                          isComingSoon
+                          label="Put this NFT in the Rioters Footer"
+                        />
+                      </View>
+                    )}
+                  </View>
+                )}
               </View>
               <ImageWithTextInsert
                 size={contentWidth}

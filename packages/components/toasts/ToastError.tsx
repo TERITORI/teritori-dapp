@@ -5,6 +5,7 @@ import warningSVG from "../../../assets/icons/warning.svg";
 import { errorColor, neutral11, neutral77 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { SpacerRow } from "../spacer";
 
 export const ToastError: React.FC<{
   title: string;
@@ -33,13 +34,9 @@ export const ToastError: React.FC<{
         zIndex: 999,
       }}
     >
-      <SVG
-        width={24}
-        height={24}
-        source={warningSVG}
-        style={{ marginHorizontal: 24 }}
-      />
-
+      <SpacerRow size={3} />
+      <SVG width={24} height={24} source={warningSVG} />
+      <SpacerRow size={3} />
       <View style={{ maxWidth: 287, marginVertical: 12 }}>
         <BrandText style={{ fontSize: 13, lineHeight: 20 }}>{title}</BrandText>
         <BrandText style={{ fontSize: 13, lineHeight: 15, color: neutral77 }}>
