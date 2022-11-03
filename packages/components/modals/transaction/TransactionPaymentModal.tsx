@@ -40,7 +40,13 @@ export const TransactionPaymentModal: React.FC<{
   const balance = balances.find((bal) => bal.denom === priceDenom)?.amount;
 
   return (
-    <ModalBase visible={visible} onClose={onClose} width={372} label={label}>
+    <ModalBase
+      visible={visible}
+      onClose={onClose}
+      width={372}
+      label={label}
+      noBrokenCorners
+    >
       <View>
         {/*==== Text*/}
         <View style={{ flexDirection: "row", marginBottom: 16 }}>

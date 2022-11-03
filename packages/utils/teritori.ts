@@ -158,3 +158,10 @@ export const domainsList = [
     minted: false,
   },
 ];
+
+export const txExplorerLink = (txHash: string) => {
+  return (process.env.TERITORI_TRANSACTION_EXPLORER_URL || "").replace(
+    "$hash",
+    txHash
+  );
+};

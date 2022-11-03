@@ -84,7 +84,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("nfts");
 
-  const { metadata, notFound } = useTNSMetadata(id.replace("tori-", ""));
+  const { metadata } = useTNSMetadata(id.replace("tori-", ""));
 
   return (
     <ScreenContainer
@@ -93,31 +93,25 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
         <BrandText style={fontSemibold20}>{metadata?.tokenId || ""}</BrandText>
       }
     >
-      {notFound || !id.startsWith("tori-") ? (
-        <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
-          <BrandText>User not found</BrandText>
-        </View>
-      ) : (
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-            <UPPIntro userId={id} metadata={metadata} />
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
+          <UPPIntro userId={id} metadata={metadata} />
 
-            <Tabs
-              items={screenTabItems}
-              selected={selectedTab}
-              onSelect={setSelectedTab}
-              style={{
-                marginTop: 32,
-                height: 32,
-                marginBottom: layout.padding_x2_5 / 2,
-              }}
-              borderColorTabSelected={primaryColor}
-            />
+          <Tabs
+            items={screenTabItems}
+            selected={selectedTab}
+            onSelect={setSelectedTab}
+            style={{
+              marginTop: 32,
+              height: 32,
+              marginBottom: layout.padding_x2_5 / 2,
+            }}
+            borderColorTabSelected={primaryColor}
+          />
 
-            <SelectedTabContent selectedTab={selectedTab} userId={id} />
-          </View>
+          <SelectedTabContent selectedTab={selectedTab} userId={id} />
         </View>
-      )}
+      </View>
     </ScreenContainer>
   );
 };

@@ -4,13 +4,16 @@ import { Image, ImageSourcePropType, View } from "react-native";
 import {
   neutral44,
   neutral77,
-  primaryColor,
-  yellowDefault,
+  successColor,
 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold16 } from "../../../utils/style/fonts";
 import { modalMarginPadding } from "../../../utils/style/modals";
+import { txExplorerLink } from "../../../utils/teritori";
 import { BrandText } from "../../BrandText";
+import { CopyToClipboardIcon } from "../../CopyToClipboardIcon";
+import { ExternalLink } from "../../ExternalLink";
 import { tinyAddress } from "../../WalletSelector";
+import { SpacerRow } from "../../spacer";
 import ModalBase from "../ModalBase";
 
 // Modal with a success message after transaction
@@ -42,6 +45,7 @@ export const TransactionSuccessModal: React.FC<{
       onClose={onClose}
       width={width}
       label="Success"
+      noBrokenCorners
     >
       <>{image ? <Image source={image} /> : null}</>
       {textComponent}
@@ -71,8 +75,8 @@ export const TransactionSuccessModal: React.FC<{
             Status
           </BrandText>
           {/*// TODO: Real time status ? (Processing, processed, ...) */}
-          <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
-            Processing
+          <BrandText style={[fontSemibold16, { color: successColor }]}>
+            Sucess
           </BrandText>
         </View>
         <View>
@@ -81,9 +85,16 @@ export const TransactionSuccessModal: React.FC<{
           >
             Transaction hash
           </BrandText>
-          <BrandText style={[fontSemibold16, { color: primaryColor }]}>
-            {tinyAddress(transactionHash, 21)}
-          </BrandText>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <ExternalLink
+              style={fontSemibold16}
+              externalUrl={txExplorerLink(transactionHash)}
+            >
+              {tinyAddress(transactionHash, 21)}
+            </ExternalLink>
+            <SpacerRow size={1} />
+            <CopyToClipboardIcon text={transactionHash} />
+          </View>
         </View>
       </View>
 

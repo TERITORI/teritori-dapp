@@ -1,3 +1,4 @@
+import { Link } from "@react-navigation/native";
 import moment from "moment";
 import React, { useState } from "react";
 import { FlatList, TextStyle, View } from "react-native";
@@ -14,6 +15,7 @@ import {
 } from "../../utils/style/colors";
 import { fontMedium14 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import { txExplorerLink } from "../../utils/teritori";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { Pagination } from "../Pagination";
@@ -117,7 +119,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         }}
       >
         <ExternalLink
-          externalUrl={`https://explorer.teritori.com/teritori-testnet/tx/${txHash}`}
+          externalUrl={txExplorerLink(txHash)}
           style={[fontMedium14, { color: primaryColor }]}
           ellipsizeMode="middle"
           numberOfLines={1}
@@ -163,14 +165,14 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
       <View
         style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.padding_x1 }}
       >
-        <ExternalLink
-          externalUrl={`https://explorer.teritori.com/teritori-testnet/account/${buyerAddress}`}
-          style={fontMedium14}
-          ellipsizeMode="middle"
+        <Link
+          to={`/user/tori-${buyerAddress}`}
+          style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
+          ellipsizeMode="middle"
         >
           {buyerTNSMetadata.metadata?.tokenId || buyerAddress}
-        </ExternalLink>
+        </Link>
       </View>
       <View
         style={{
@@ -178,14 +180,14 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           paddingRight: layout.padding_x1,
         }}
       >
-        <ExternalLink
-          externalUrl={`https://explorer.teritori.com/teritori-testnet/account/${sellerAddress}`}
-          style={fontMedium14}
-          ellipsizeMode="middle"
+        <Link
+          to={`/user/tori-${sellerAddress}`}
+          style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
+          ellipsizeMode="middle"
         >
           {sellerTNSMetadata.metadata?.tokenId || sellerAddress}
-        </ExternalLink>
+        </Link>
       </View>
     </View>
   );
