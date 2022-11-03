@@ -23,9 +23,9 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
     const effect = async () => {
       setLoading(true);
       try {
-        const idParts = id.substring(5).split("-");
-        const minterContractAddress = idParts[0];
-        const tokenId = idParts[1];
+        const idParts = id.split("-");
+        const minterContractAddress = idParts[1];
+        const tokenId = idParts.slice(2).join("-");
 
         let nfo;
         if (

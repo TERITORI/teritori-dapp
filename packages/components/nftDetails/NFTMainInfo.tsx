@@ -198,7 +198,7 @@ export const NFTMainInfo: React.FC<{
         <SelectedTabItemRendering />
       </View>
       <Target style={styles.collapsableContainer} name="price-history">
-        <CollapsablePiceHistory />
+        <CollapsablePiceHistory nftId={nftId} />
       </Target>
       <Target name="activity" style={styles.collapsableContainer}>
         <CollapsableSection icon={starSVG} title="Activity" isExpandedByDefault>

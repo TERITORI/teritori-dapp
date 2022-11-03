@@ -116,7 +116,7 @@ export interface Quest {
 }
 
 export interface PriceDatum {
-  price: string;
+  price: number;
   time: string;
 }
 
@@ -914,13 +914,13 @@ export const Quest = {
 };
 
 function createBasePriceDatum(): PriceDatum {
-  return { price: "", time: "" };
+  return { price: 0, time: "" };
 }
 
 export const PriceDatum = {
   encode(message: PriceDatum, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.price !== "") {
-      writer.uint32(10).string(message.price);
+    if (message.price !== 0) {
+      writer.uint32(9).double(message.price);
     }
     if (message.time !== "") {
       writer.uint32(18).string(message.time);
@@ -936,7 +936,7 @@ export const PriceDatum = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.price = reader.string();
+          message.price = reader.double();
           break;
         case 2:
           message.time = reader.string();
@@ -951,7 +951,7 @@ export const PriceDatum = {
 
   fromJSON(object: any): PriceDatum {
     return {
-      price: isSet(object.price) ? String(object.price) : "",
+      price: isSet(object.price) ? Number(object.price) : 0,
       time: isSet(object.time) ? String(object.time) : "",
     };
   },
@@ -965,7 +965,7 @@ export const PriceDatum = {
 
   fromPartial<I extends Exact<DeepPartial<PriceDatum>, I>>(object: I): PriceDatum {
     const message = createBasePriceDatum();
-    message.price = object.price ?? "";
+    message.price = object.price ?? 0;
     message.time = object.time ?? "";
     return message;
   },

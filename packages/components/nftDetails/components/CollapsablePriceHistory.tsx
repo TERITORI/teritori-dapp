@@ -1,4 +1,5 @@
 // libraries
+import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
@@ -11,6 +12,7 @@ import {
 } from "victory-native";
 
 import priceHistorySVG from "../../../../assets/icons/price-history.svg";
+import { backendClient } from "../../../utils/backend";
 import {
   neutral33,
   neutral77,
@@ -20,7 +22,6 @@ import { fontMedium10, fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { CollapsableSection } from "../../collapsable/CollapsableSection";
-import data from "../nftPriceHistoryData.json";
 
 const axisStyle = {
   grid: { strokeDasharray: "none", stroke: "none", padding: 20 },
@@ -32,18 +33,19 @@ const dependentAxisStyle = {
   grid: { ...axisStyle, stroke: neutral33 },
 };
 
-export const CollapsablePiceHistory = () => {
-  // variables
+export const CollapsablePiceHistory: React.FC<{ nftId: string }> = ({
+  nftId,
+}) => {
+  const data = useNFTPriceHistory(nftId);
   const convertedData = useMemo(
     () =>
       data.map((d) => ({
-        y: parseInt(d.price, 10),
-        x: moment(d.time).format("D MMM"),
+        y: d.price,
+        x: new Date(d.time),
       })),
-    []
+    [data]
   );
 
-  // returns
   return (
     <CollapsableSection
       icon={priceHistorySVG}
@@ -52,14 +54,18 @@ export const CollapsablePiceHistory = () => {
     >
       <View style={styles.container}>
         <View style={styles.priceLabelTextContainer}>
-          <BrandText style={styles.priceLabelText}>Price (SOL)</BrandText>
+          <BrandText style={styles.priceLabelText}>Price (USD)</BrandText>
         </View>
         <VictoryChart
           minDomain={{ y: 0 }}
           padding={{ top: 10, bottom: 40, left: 80, right: 0 }}
           height={200}
         >
-          <VictoryAxis domainPadding={layout.padding_x4} style={axisStyle} />
+          <VictoryAxis
+            domainPadding={layout.padding_x4}
+            style={axisStyle}
+            tickFormat={(val) => moment(val).format("D MMM")}
+          />
           <VictoryAxis dependentAxis style={dependentAxisStyle} />
 
           <VictoryLine
@@ -76,6 +82,30 @@ export const CollapsablePiceHistory = () => {
       </View>
     </CollapsableSection>
   );
+};
+
+const useNFTPriceHistory = (nftId: string) => {
+  const { data } = useQuery(
+    ["nftPriceHistory", nftId],
+    async () => {
+      const { data } = await backendClient.NFTPriceHistory({ id: nftId });
+      if (data.length === 0) {
+        return data;
+      }
+      data.unshift({
+        price: data[0].price,
+        time: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      });
+      data.push({
+        price: data[data.length - 1].price,
+        time: new Date().toISOString(),
+      });
+      console.log("data", data);
+      return data;
+    },
+    { initialData: [] }
+  );
+  return data;
 };
 
 const styles = StyleSheet.create({
