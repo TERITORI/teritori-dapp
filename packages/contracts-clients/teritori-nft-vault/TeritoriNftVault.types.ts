@@ -101,3 +101,13 @@ export type QueryMsg = {
     [k: string]: unknown;
   };
 };
+export interface RoyaltiesInfoResponse {
+  address: string;
+  royalty_amount: Uint128;
+  [k: string]: unknown;
+}
+export interface RoyaltyInfo {
+  sale_price: Uint128;
+  token_id: string;
+  [k: string]: unknown;
+}

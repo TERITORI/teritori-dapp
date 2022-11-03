@@ -10,24 +10,13 @@ import (
 
 // ContractInfoResponse
 type ContractInfoResponse struct {
-	BaseMintFee        interface{} `json:"base_mint_fee,omitempty"`
-	BurnPercentage     interface{} `json:"burn_percentage,omitempty"`
-	Name               string      `json:"name"`
-	NativeDecimals     int         `json:"native_decimals"`
-	NativeDenom        string      `json:"native_denom"`
-	ShortNameSurcharge interface{} `json:"short_name_surcharge,omitempty"`
-	Symbol             string      `json:"symbol"`
-	TokenCap           interface{} `json:"token_cap,omitempty"`
-}
-
-// SurchargeInfo
-type SurchargeInfo struct {
-
-	// The surcharge fee. This plus any base mint fee add up to the total fixed cost of minting an NFT username this is assumed to be in native_denom for now, no other option is available, so if you e.g. want 1 POP, use 1000000 as this value (i.e. it is upop)
-	SurchargeFee interface{} `json:"surcharge_fee"`
-
-	// Max characters that are affected by the surcharge e.g. 5
-	SurchargeMaxCharacters int `json:"surcharge_max_characters"`
+	BaseMintFee    interface{} `json:"base_mint_fee,omitempty"`
+	BurnPercentage interface{} `json:"burn_percentage,omitempty"`
+	Name           string      `json:"name"`
+	NativeDecimals int         `json:"native_decimals"`
+	NativeDenom    string      `json:"native_denom"`
+	Symbol         string      `json:"symbol"`
+	TokenCap       interface{} `json:"token_cap,omitempty"`
 }
 
 func (strct *ContractInfoResponse) MarshalJSON() ([]byte, error) {
@@ -90,17 +79,6 @@ func (strct *ContractInfoResponse) MarshalJSON() ([]byte, error) {
 	}
 	buf.WriteString("\"native_denom\": ")
 	if tmp, err := json.Marshal(strct.NativeDenom); err != nil {
-		return nil, err
-	} else {
-		buf.Write(tmp)
-	}
-	comma = true
-	// Marshal the "short_name_surcharge" field
-	if comma {
-		buf.WriteString(",")
-	}
-	buf.WriteString("\"short_name_surcharge\": ")
-	if tmp, err := json.Marshal(strct.ShortNameSurcharge); err != nil {
 		return nil, err
 	} else {
 		buf.Write(tmp)
@@ -171,10 +149,6 @@ func (strct *ContractInfoResponse) UnmarshalJSON(b []byte) error {
 				return err
 			}
 			native_denomReceived = true
-		case "short_name_surcharge":
-			if err := json.Unmarshal([]byte(v), &strct.ShortNameSurcharge); err != nil {
-				return err
-			}
 		case "symbol":
 			if err := json.Unmarshal([]byte(v), &strct.Symbol); err != nil {
 				return err
@@ -201,75 +175,6 @@ func (strct *ContractInfoResponse) UnmarshalJSON(b []byte) error {
 	// check if symbol (a required property) was received
 	if !symbolReceived {
 		return errors.New("\"symbol\" is required but was not present")
-	}
-	return nil
-}
-
-func (strct *SurchargeInfo) MarshalJSON() ([]byte, error) {
-	buf := bytes.NewBuffer(make([]byte, 0))
-	buf.WriteString("{")
-	comma := false
-	// "SurchargeFee" field is required
-	// only required object types supported for marshal checking (for now)
-	// Marshal the "surcharge_fee" field
-	if comma {
-		buf.WriteString(",")
-	}
-	buf.WriteString("\"surcharge_fee\": ")
-	if tmp, err := json.Marshal(strct.SurchargeFee); err != nil {
-		return nil, err
-	} else {
-		buf.Write(tmp)
-	}
-	comma = true
-	// "SurchargeMaxCharacters" field is required
-	// only required object types supported for marshal checking (for now)
-	// Marshal the "surcharge_max_characters" field
-	if comma {
-		buf.WriteString(",")
-	}
-	buf.WriteString("\"surcharge_max_characters\": ")
-	if tmp, err := json.Marshal(strct.SurchargeMaxCharacters); err != nil {
-		return nil, err
-	} else {
-		buf.Write(tmp)
-	}
-	comma = true
-
-	buf.WriteString("}")
-	rv := buf.Bytes()
-	return rv, nil
-}
-
-func (strct *SurchargeInfo) UnmarshalJSON(b []byte) error {
-	surcharge_feeReceived := false
-	surcharge_max_charactersReceived := false
-	var jsonMap map[string]json.RawMessage
-	if err := json.Unmarshal(b, &jsonMap); err != nil {
-		return err
-	}
-	// parse all the defined properties
-	for k, v := range jsonMap {
-		switch k {
-		case "surcharge_fee":
-			if err := json.Unmarshal([]byte(v), &strct.SurchargeFee); err != nil {
-				return err
-			}
-			surcharge_feeReceived = true
-		case "surcharge_max_characters":
-			if err := json.Unmarshal([]byte(v), &strct.SurchargeMaxCharacters); err != nil {
-				return err
-			}
-			surcharge_max_charactersReceived = true
-		}
-	}
-	// check if surcharge_fee (a required property) was received
-	if !surcharge_feeReceived {
-		return errors.New("\"surcharge_fee\" is required but was not present")
-	}
-	// check if surcharge_max_characters (a required property) was received
-	if !surcharge_max_charactersReceived {
-		return errors.New("\"surcharge_max_characters\" is required but was not present")
 	}
 	return nil
 }

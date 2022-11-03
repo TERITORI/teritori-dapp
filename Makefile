@@ -78,7 +78,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE): node_modules
 	rm -fr $(NAME_SERVICE_REPO)
 	git clone git@github.com:TERITORI/$(NAME_SERVICE_REPO).git
-	cd $(NAME_SERVICE_REPO) && git checkout 4124a8263a2e823b3a9b731efde37a725488253d
+	cd $(NAME_SERVICE_REPO) && git checkout e117c117af55437e1a00f835f590d384737cda3d
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
@@ -123,7 +123,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	rm -fr $(VAULT_REPO)
 	git clone git@github.com:TERITORI/$(VAULT_REPO).git
-	cd $(VAULT_REPO) && git checkout a04e44fe54ed798d96659098914af72a0c36d8f5
+	cd $(VAULT_REPO) && git checkout f48c7fe8869f2d83dc61308ceb37c64d3bb7e4c6
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
