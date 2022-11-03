@@ -20,7 +20,7 @@ export const UserImageAddressInline: React.FC<{
       <BrandText
         style={[fontSemibold12, { marginLeft: layout.padding_x1_5 / 2 }]}
       >
-        {tinyAddress(address, 11)}
+        {tinyAddress(address, 16)}
       </BrandText>
     </View>
   );

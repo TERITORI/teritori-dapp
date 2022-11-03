@@ -5,6 +5,7 @@ import { StyleSheet, View } from "react-native";
 
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
@@ -52,6 +53,7 @@ export const NFTMainInfo: React.FC<{
   cancelListing: () => Promise<ExecuteResult | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing }) => {
   const { openTransactionModals } = useTransactionModals();
+  const { width } = useMaxResolution();
 
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("about");
@@ -148,7 +150,7 @@ export const NFTMainInfo: React.FC<{
         />
       </TertiaryBox>
       {/*---- Info NFT */}
-      <View style={{ maxWidth: 600 }}>
+      <View style={{ maxWidth: width }}>
         <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
           {nftInfo?.name}
         </BrandText>

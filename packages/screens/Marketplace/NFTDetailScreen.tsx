@@ -81,7 +81,7 @@ const Content: React.FC<{
   const { width } = useMaxResolution();
 
   // Query the Vault client to buy the NFT and returns the transaction reply
-  const buy = useCallback(async () => {
+  const handleBuy = useCallback(async () => {
     if (!wallet?.connected || !wallet.address || !info?.nftAddress) {
       return;
     }
@@ -219,7 +219,7 @@ const Content: React.FC<{
           <NFTMainInfo
             nftId={id}
             nftInfo={info}
-            buy={buy}
+            buy={handleBuy}
             sell={handleSell}
             cancelListing={handleCancelListing}
           />

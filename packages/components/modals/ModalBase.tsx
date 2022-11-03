@@ -104,26 +104,29 @@ export const ModalBase: React.FC<{
               padding: modalMarginPadding,
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {onBackPress && (
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  style={{
-                    height: 32,
-                    width: 32,
-                    backgroundColor: neutral22,
-                    borderRadius: 20,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 12,
-                  }}
-                  onPress={onBackPress}
-                >
-                  <SVG source={chevronLeft} height={12} width={12} />
-                </TouchableOpacity>
-              )}
-              {(label || description) && (
-                <View style={{ flex: 1 }}>
+            {(label || description) && (
+              <View
+                style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
+              >
+                {onBackPress && (
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={{
+                      height: 32,
+                      width: 32,
+                      backgroundColor: neutral22,
+                      borderRadius: 20,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginRight: 12,
+                    }}
+                    onPress={onBackPress}
+                  >
+                    <SVG source={chevronLeft} height={12} width={12} />
+                  </TouchableOpacity>
+                )}
+
+                <View style={{ flex: 1, width: "100%" }}>
                   {label && (
                     <BrandText style={{ color: "white", lineHeight: 24 }}>
                       {label}
@@ -136,7 +139,12 @@ export const ModalBase: React.FC<{
                       <BrandText
                         style={[
                           fontSemibold14,
-                          { color: neutral77, width: "100%", lineHeight: 20 },
+                          {
+                            color: neutral77,
+                            width: "100%",
+                            lineHeight: 20,
+                            flexWrap: "wrap",
+                          },
                         ]}
                       >
                         {description}
@@ -144,8 +152,8 @@ export const ModalBase: React.FC<{
                     </>
                   )}
                 </View>
-              )}
-            </View>
+              </View>
+            )}
 
             {Header && <Header />}
 

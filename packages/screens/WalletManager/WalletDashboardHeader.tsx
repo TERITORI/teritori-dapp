@@ -13,6 +13,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
 
 interface WalletDashboardHeaderProps {
   title: string;
@@ -98,13 +99,17 @@ export const WalletDashboardHeader: React.FC = () => {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingTop: 20,
+        paddingTop: layout.contentPadding,
         paddingBottom: 16,
+        flex: 1,
+        flexWrap: "wrap",
+        marginTop: -layout.padding_x3,
       }}
     >
       <View
         style={{
           flexDirection: "row",
+          marginTop: layout.padding_x3,
         }}
       >
         <TouchableOpacity
@@ -144,6 +149,7 @@ export const WalletDashboardHeader: React.FC = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          marginTop: layout.padding_x3,
         }}
       >
         <WalletDashboardHeaderCard
