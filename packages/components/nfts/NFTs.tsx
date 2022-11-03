@@ -1,9 +1,9 @@
 import React, { ReactElement, useCallback } from "react";
-import { FlatList, View, ViewStyle } from "react-native";
+import { FlatList, View } from "react-native";
 
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
 import { useNFTs } from "../../hooks/useNFTs";
-import { layout } from "../../utils/style/layout";
+import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
 import { NFTView } from "./NFTView";
 
@@ -34,14 +34,21 @@ export const NFTs: React.FC<{
     fetchMore();
   }, [fetchMore]);
 
-  const viewStyle: ViewStyle = {
-    height: "100%",
-    alignItems: "center",
-    flex: 1,
-  };
   return (
-    <View style={viewStyle}>
+    <View
+      style={{
+        height: "100%",
+        alignItems: "center",
+        width: "100%",
+        flex: 1,
+      }}
+    >
       <FlatList
+        style={{ width: "100%" }}
+        contentContainerStyle={{
+          maxWidth: screenContentMaxWidthLarge,
+          alignSelf: "center",
+        }}
         key={numColumns}
         data={nfts}
         numColumns={numColumns}

@@ -7,13 +7,10 @@ import labsSVG from "../../../assets/icons/labs.svg";
 import launchpadSVG from "../../../assets/icons/launchpad.svg";
 import marketplaceSVG from "../../../assets/icons/marketplace.svg";
 import stakingSVG from "../../../assets/icons/staking.svg";
-import logoSVG from "../../../assets/logos/logo.svg";
 import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useAppNavigation } from "../../utils/navigation";
-import { layout } from "../../utils/style/layout";
-import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
 import { LabelCard } from "../cards/LabelCard";
@@ -136,20 +133,6 @@ Launch"
           title="Upcoming Launches on Teritori Launch Pad"
           kind={CollectionsRequest_Kind.KIND_UPCOMING}
         />
-        <View
-          style={{
-            marginTop: layout.contentPadding,
-            alignItems: "center",
-            marginBottom: 20,
-          }}
-        >
-          <SVG
-            width={68}
-            height={68}
-            preserveAspectRatio="none"
-            source={logoSVG}
-          />
-        </View>
       </View>
     </View>
   );

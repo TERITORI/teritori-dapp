@@ -1,10 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
-import logoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText/BrandText";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
-import { SVG } from "../../components/SVG/svg";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { teritoriRestProvider } from "../../utils/teritori";
 import { NavBarGovernance } from "./NavBarGovernance";
@@ -88,12 +86,6 @@ export const GovernanceScreen: React.FC = () => {
           />
         ))}
       </View>
-      <SVG
-        width={200}
-        height={200}
-        style={{ marginTop: 190, marginLeft: "40%" }}
-        source={logoSVG}
-      />
     </ScreenContainer>
   );
 };
