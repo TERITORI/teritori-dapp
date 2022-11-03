@@ -196,7 +196,7 @@ const prettyActivityName = (kind: string) => {
     case "mint":
       return "Mint";
     case "list":
-      return "Listing";
+      return "List";
     case "trade":
       return "Trade";
     case "cancel-listing":
