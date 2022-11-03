@@ -1,8 +1,23 @@
+import { isDeliverTxFailure } from "@cosmjs/stargate";
+import { Decimal } from "cosmwasm";
 import React, { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { numberWithThousandsSeparator } from "../../../utils/numbers";
-import { toriCurrency } from "../../../utils/teritori";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useTNS } from "../../../context/TNSProvider";
+import { TeritoriNameServiceQueryClient } from "../../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { useBalances } from "../../../hooks/useBalances";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { prettyPrice } from "../../../utils/coins";
+import {
+  getKeplrOfflineSigner,
+  getNonSigningCosmWasmClient,
+} from "../../../utils/keplr";
+import {
+  getTeritoriSigningStargateClient,
+  toriCurrency,
+} from "../../../utils/teritori";
 import { SendFundFormType } from "../../../utils/types/tns";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
@@ -12,20 +27,109 @@ export const SendFundModal: React.FC<{
   onClose: () => void;
   visible?: boolean;
 }> = ({ onClose, visible }) => {
-  const [comment, setComment] = useState("Sent from Teritori");
-  const [amount, setAmount] = useState("1000");
+  const { name } = useTNS();
   const [isVisible, setIsVisible] = useState(false);
+  const { control, handleSubmit: formHandleSubmit } =
+    useForm<SendFundFormType>();
+  const selectedWallet = useSelectedWallet();
+  const { setToastError, setToastSuccess } = useFeedbacks();
+  const balances = useBalances(
+    process.env.TERITORI_NETWORK_ID,
+    selectedWallet?.address
+  );
+  const toriBalance = balances.find(
+    (bal) => bal.denom === toriCurrency.coinMinimalDenom
+  );
 
   useEffect(() => {
     setIsVisible(visible || false);
   }, [visible]);
 
+  const handleSubmit: SubmitHandler<SendFundFormType> = async (fieldValues) => {
+    try {
+      // get contract address
+      const contractAddress =
+        process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS;
+      if (!contractAddress) {
+        setToastError({
+          title: "Internal error",
+          message: "No TNS contract address",
+        });
+        onClose();
+        return;
+      }
+
+      // get sender address
+      const sender = selectedWallet?.address;
+      if (!sender) {
+        setToastError({
+          title: "Internal error",
+          message: "No sender address",
+        });
+        onClose();
+        return;
+      }
+
+      // get token id
+      const tokenId = name + process.env.TLD || "";
+
+      // get tns client
+      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const tnsClient = new TeritoriNameServiceQueryClient(
+        cosmwasmClient,
+        contractAddress
+      );
+
+      // get recipient address
+      const { owner: recipientAddress } = await tnsClient.ownerOf({ tokenId });
+
+      // get stargate client
+      const signer = await getKeplrOfflineSigner();
+      const client = await getTeritoriSigningStargateClient(signer);
+
+      // send tokens
+      const response = await client.sendTokens(
+        sender,
+        recipientAddress,
+        [
+          {
+            denom: toriCurrency.coinMinimalDenom,
+            amount: Decimal.fromUserInput(
+              fieldValues.amount,
+              toriCurrency.coinDecimals
+            ).atomics,
+          },
+        ],
+        "auto",
+        fieldValues.comment
+      );
+      if (isDeliverTxFailure(response)) {
+        setToastError({ title: "Send failed", message: response.rawLog || "" });
+        onClose();
+        return;
+      }
+
+      // signal success
+      setToastSuccess({ title: "Send success", message: "" });
+    } catch (err) {
+      console.error(err);
+      if (err instanceof Error) {
+        setToastError({ title: "Send failed", message: err.message });
+      }
+    }
+    onClose();
+  };
+
   return (
     <ModalBase
       visible={isVisible}
       onClose={onClose}
-      width={372}
-      label={`Your wallet has ${numberWithThousandsSeparator(1000)} Tori`}
+      width={400}
+      label={`Your wallet has ${prettyPrice(
+        process.env.TERITORI_NETWORK_ID || "",
+        toriBalance?.amount || "0",
+        toriBalance?.denom || ""
+      )}`}
     >
       <View
         style={{
@@ -35,22 +139,25 @@ export const SendFundModal: React.FC<{
         <TextInputCustom<SendFundFormType>
           name="comment"
           label="COMMENT ?"
-          value={comment}
+          control={control}
+          defaultValue="Sent from Teritori"
           placeHolder="Type your comment here"
-          onChangeText={setComment}
           style={{ marginBottom: 12 }}
-          width={322}
         />
 
         <TextInputCustom<SendFundFormType>
           name="amount"
-          label="TORI AMOUNT ?"
-          value={amount}
+          label={`${toriCurrency.coinDenom} AMOUNT ?`}
+          control={control}
           placeHolder="Type your amount here"
-          onChangeText={setAmount}
+          rules={{
+            max: Decimal.fromAtomics(
+              toriBalance?.amount || "0",
+              toriCurrency.coinDecimals
+            ).toString(),
+            required: true,
+          }}
           currency={toriCurrency}
-          style={{ marginRight: 12, minWidth: 0 }}
-          width={322}
         />
         <PrimaryButton
           size="M"
@@ -58,6 +165,8 @@ export const SendFundModal: React.FC<{
           style={{
             marginVertical: 20,
           }}
+          loader
+          onPress={formHandleSubmit(handleSubmit)}
         />
       </View>
     </ModalBase>
