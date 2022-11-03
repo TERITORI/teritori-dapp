@@ -18,11 +18,10 @@ export const ExternalLink: React.FC<
     style?: StyleProp<TextStyle>;
   } & TextProps
 > = ({ children, externalUrl, style, ...textProps }) => {
-  if (!externalUrl) {
-    return null;
-  }
   return (
-    <TouchableOpacity onPress={() => Linking.openURL(externalUrl)}>
+    <TouchableOpacity
+      onPress={() => externalUrl && Linking.openURL(externalUrl)}
+    >
       <BrandText
         style={[
           {
@@ -34,7 +33,7 @@ export const ExternalLink: React.FC<
         ]}
         {...textProps}
       >
-        <>{children}</>
+        {children}
       </BrandText>
     </TouchableOpacity>
   );
