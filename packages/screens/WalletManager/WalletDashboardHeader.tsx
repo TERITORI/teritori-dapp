@@ -11,6 +11,7 @@ import { useBalances } from "../../hooks/useBalances";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 
 interface WalletDashboardHeaderProps {
@@ -86,6 +87,7 @@ export const WalletDashboardHeader: React.FC = () => {
   const selectedNetwork = useSelectedNetworkId();
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
   const balances = useBalances(selectedNetwork, selectedWallet?.address);
+  const navigation = useAppNavigation();
   const totalUSDBalance = balances.reduce(
     (total, bal) => total + (bal.usdAmount || 0),
     0
@@ -115,6 +117,7 @@ export const WalletDashboardHeader: React.FC = () => {
             justifyContent: "center",
             marginRight: 16,
           }}
+          onPress={() => navigation.navigate("TNSHome", { modal: "manage" })}
         >
           <SVG width={24} height={24} source={penSVG} />
         </TouchableOpacity>
