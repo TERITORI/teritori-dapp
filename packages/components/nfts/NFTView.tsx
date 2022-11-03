@@ -307,6 +307,7 @@ export const NFTView: React.FC<{
                     onPress={() => {}}
                     fullWidth
                     numberOfLines={1}
+                    activeOpacity={1}
                   />
                 </View>
               )}

@@ -1,5 +1,5 @@
 // libraries
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   Extrapolate,
@@ -38,7 +38,7 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   isExpandedByDefault = false,
 }) => {
   // variables
-  const [isExpanded, setIsExpanded] = useState(isExpandedByDefault);
+  const [isExpanded, setIsExpanded] = useState(false);
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);
   const style = useAnimatedStyle(
@@ -60,7 +60,15 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
       transform: [{ rotate: `${rotate}deg` }],
     };
   }, [isExpanded]);
+
   // hooks
+  useEffect(() => {
+    setTimeout(() => {
+      if (isExpandedByDefault) {
+        setIsExpanded(true);
+      }
+    }, 1000);
+  }, []);
 
   // functions
   const toggleExpansion = () => {
