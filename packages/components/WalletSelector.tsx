@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { View, ViewStyle, TouchableOpacity, StyleProp } from "react-native";
 
-import chevronUpSVG from "../../assets/icons/chevron-down.svg";
-import chevronDownSVG from "../../assets/icons/chevron-up.svg";
+import chevronDownSVG from "../../assets/icons/chevron-down.svg";
+import chevronUpSVG from "../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
 import { useWallets, Wallet } from "../context/WalletsProvider";
 import useSelectedWallet from "../hooks/useSelectedWallet";
