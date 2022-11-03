@@ -149,6 +149,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           <SpacerRow size={2} />
           <PrimaryButton
             size="XS"
+            loader
             text="Stake"
             width={120}
             onPress={handleSubmit(onSubmit)}
@@ -171,8 +172,8 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         <Separator />
         <SpacerColumn size={2.5} />
         <WarningBox
-          title="Staking will lock your funds for 14 days"
-          description={`Once you undelegate your staked ${toriDisplayDenom}, you will need to wait 14 days for your tokens to be liquid.`}
+          title="Staking will lock your funds for 21 days"
+          description={`Once you undelegate your staked ${toriDisplayDenom}, you will need to wait 21 days for your tokens to be liquid.`}
         />
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>

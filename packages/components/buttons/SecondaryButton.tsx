@@ -1,5 +1,10 @@
-import React from "react";
-import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import React, { useCallback, useState } from "react";
+import {
+  ActivityIndicator,
+  StyleProp,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import {
@@ -18,7 +23,7 @@ export const SecondaryButton: React.FC<{
   size: ButtonsSize;
   text: string;
   width?: number;
-  onPress?: () => void;
+  onPress?: (() => Promise<void>) | (() => void);
   squaresBackgroundColor?: string;
   backgroundColor?: string;
   color?: string;
@@ -28,6 +33,7 @@ export const SecondaryButton: React.FC<{
   fullWidth?: boolean;
   numberOfLines?: number;
   activeOpacity?: number | undefined;
+  loader?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -43,7 +49,23 @@ export const SecondaryButton: React.FC<{
   fullWidth = false,
   numberOfLines,
   activeOpacity,
+  loader,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handlePress = useCallback(async () => {
+    if (isLoading || !onPress) {
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await onPress();
+    } catch (err) {
+      console.error(err);
+    }
+    setIsLoading(false);
+  }, [onPress, isLoading]);
+
   const boxProps = {
     style,
     disabled,
@@ -54,7 +76,7 @@ export const SecondaryButton: React.FC<{
 
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={handlePress}
       disabled={disabled}
       style={{ width: fullWidth ? "100%" : width }}
       activeOpacity={activeOpacity}
@@ -71,24 +93,30 @@ export const SecondaryButton: React.FC<{
         }}
         {...boxProps}
       >
-        {iconSVG ? (
-          <SVG
-            source={iconSVG}
-            width={16}
-            height={16}
-            style={{ marginRight: 8 }}
-          />
-        ) : null}
+        {loader && isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <>
+            {iconSVG ? (
+              <SVG
+                source={iconSVG}
+                width={16}
+                height={16}
+                style={{ marginRight: 8 }}
+              />
+            ) : null}
 
-        <BrandText
-          style={[
-            fontSemibold14,
-            { color, textAlign: "center", width: "100%" },
-          ]}
-          numberOfLines={numberOfLines}
-        >
-          {text}
-        </BrandText>
+            <BrandText
+              style={[
+                fontSemibold14,
+                { color, textAlign: "center", width: "100%" },
+              ]}
+              numberOfLines={numberOfLines}
+            >
+              {text}
+            </BrandText>
+          </>
+        )}
       </SecondaryBox>
     </TouchableOpacity>
   );

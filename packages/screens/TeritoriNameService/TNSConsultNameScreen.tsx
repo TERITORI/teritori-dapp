@@ -81,6 +81,7 @@ const OwnerActions = ({
       <SecondaryButton
         size="M"
         text="Set as Primary"
+        loader
         style={{ marginLeft: 24 }}
         squaresBackgroundColor={neutral17}
         onPress={async () => {

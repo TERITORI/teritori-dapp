@@ -149,6 +149,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
             text="Undelegate"
             width={120}
             onPress={handleSubmit(onSubmit)}
+            loader
           />
         </View>
       </>
@@ -168,8 +169,8 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         <Separator />
         <SpacerColumn size={2.5} />
         <WarningBox
-          title="Undelegating will keep your funds locked for 14 days"
-          description={`Once you undelegate your staked ${toriDisplayDenom}, you will need to wait 14 days for your tokens to be liquid and you won't receive rewards during this time`}
+          title="Undelegating will keep your funds locked for 21 days"
+          description={`Once you undelegate your staked ${toriDisplayDenom}, you will need to wait 21 days for your tokens to be liquid and you won't receive rewards during this time`}
         />
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>

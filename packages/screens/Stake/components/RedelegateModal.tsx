@@ -191,6 +191,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
             text="Redelegate"
             width={120}
             onPress={handleSubmit(onSubmit)}
+            loader
           />
         </View>
       </>
