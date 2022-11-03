@@ -1,77 +1,95 @@
-import React, { useRef, useState } from "react"
-import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native"
+import React, { useRef } from "react";
+import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
-import { Collection, CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace"
+import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
+import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
+import {
+  Collection,
+  CollectionsRequest_Kind,
+} from "../../api/marketplace/v1/marketplace";
+import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { Section } from "../../components/Section";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
-import { ScreenFC } from "../../utils/navigation";
+import { useCollections } from "../../hooks/useCollections";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { primaryColor } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { BrandText } from "../../components/BrandText"
-import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts"
-import { ProgressionCard } from "../../components/cards/ProgressionCard"
-import { PrimaryButton } from "../../components/buttons/PrimaryButton"
-import { getCurrency } from "../../networks"
-import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons"
-import { TertiaryBox } from "../../components/boxes/TertiaryBox"
-import { useCollectionInfo } from "../../hooks/useCollectionInfo"
-import { useCollections } from "../../hooks/useCollections"
-import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel"
-import { useMaxResolution } from "../../hooks/useMaxResolution"
-import { SVG } from "../../components/SVG"
-import chevronLeftSVG from "../../../assets/icons/chevron-left.svg"
-import chevronRightSVG from "../../../assets/icons/chevron-right.svg"
-import { Section } from "../../components/Section"
 
-const renderCarouselCollectionItem = (props: { item: Collection }) => (
-  <View
-    style={{
-      flexDirection: "row",
-      alignItems: "center",
-      flexWrap: "wrap",
-      justifyContent: "space-evenly"
-    }}
+const CarouselCollectionItem: React.FC<{
+  collection: Collection;
+}> = ({ collection }) => {
+  const navigation = useAppNavigation();
 
-  >
-    {/* Left container */}
+  return (
     <View
       style={{
-        justifyContent: "flex-start",
+        flexDirection: "row",
+        alignItems: "center",
+        flexWrap: "wrap",
+        justifyContent: "space-evenly",
       }}
     >
-      <BrandText style={{ marginBottom: layout.padding_x1_5 }}>
-        {props.item.collectionName}
-      </BrandText>
-
-      {/*TODO: blue white text */}
-      <BrandText
-        style={[fontSemibold14, { marginBottom: layout.padding_x3, marginRight: layout.padding_x3 }]}
+      {/* Left container */}
+      <View
+        style={{
+          justifyContent: "flex-start",
+        }}
       >
-        EXCLUSIVE GENESIS TERITORI COLLECTION
-      </BrandText>
+        <BrandText style={{ marginBottom: layout.padding_x1_5 }}>
+          {collection.collectionName}
+        </BrandText>
 
-      <PrimaryButton size="M" text="explore collection"/>
-    </View>
+        {/*TODO: blue white text */}
+        <BrandText
+          style={[
+            fontSemibold14,
+            {
+              color: primaryColor,
+              marginBottom: layout.padding_x3,
+              marginRight: layout.padding_x3,
+            },
+          ]}
+        >
+          TERITORI Collections
+        </BrandText>
 
-    {/* Right container */}
-    <TertiaryBox style={{ marginBottom: 40 }}>
-      {props.item.imageUri ? (
-        <Image
-          source={{ uri: props.item.imageUri }}
-          style={{
-            height: 368,
-            width: 368,
-            borderRadius: 8,
-          }}
+        <PrimaryButton
+          size="M"
+          text="Explore collection"
+          onPress={() =>
+            navigation.navigate("Collection", { id: collection.id })
+          }
         />
-      ) : (
-        <ActivityIndicator size="large" style={{ margin: 40 }} />
-      )}
-    </TertiaryBox>
-  </View>
-);
+      </View>
+
+      {/* Right container */}
+      <TertiaryBox style={{ marginBottom: 40 }}>
+        {collection.imageUri ? (
+          <Image
+            source={{ uri: collection.imageUri }}
+            style={{
+              height: 368,
+              width: 368,
+              borderRadius: 8,
+            }}
+          />
+        ) : (
+          <ActivityIndicator size="large" style={{ margin: 40 }} />
+        )}
+      </TertiaryBox>
+    </View>
+  );
+};
 
 const CollectionsCarouselHeader: React.FC = () => {
-  const [collections, fetchMore] = useCollections({
+  const [collections] = useCollections({
     kind: CollectionsRequest_Kind.KIND_TERITORI_FEATURES,
     limit: 16,
     offset: 0,
@@ -94,8 +112,6 @@ const CollectionsCarouselHeader: React.FC = () => {
     </View>
   );
 
-  console.log('collectionscollectionscollectionscollections', collections)
-
   return (
     <Section title="" topRightChild={topRightChild}>
       <Carousel
@@ -105,13 +121,13 @@ const CollectionsCarouselHeader: React.FC = () => {
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
         height={370}
         pagingEnabled
-        // autoPlay
+        autoPlay
         autoPlayInterval={3000}
-        renderItem={renderCarouselCollectionItem}
+        renderItem={({ item }) => <CarouselCollectionItem collection={item} />}
       />
     </Section>
-  )
-}
+  );
+};
 
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   return (
@@ -122,7 +138,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
         }}
       >
         {/* ===== Marketplace Header */}
-        <CollectionsCarouselHeader/>
+        <CollectionsCarouselHeader />
 
         <CollectionsCarouselSection
           title="TERITORI Collections"

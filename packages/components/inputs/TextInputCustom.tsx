@@ -161,7 +161,7 @@ export const TextInputCustom = <T extends FieldValues>({
         style={style}
         mainContainerStyle={styles.mainContainer}
         width={width}
-        fullWidth={!width}
+        fullWidth={!width || fullWidth}
         height={height}
       >
         <View style={styles.innerContainer}>
