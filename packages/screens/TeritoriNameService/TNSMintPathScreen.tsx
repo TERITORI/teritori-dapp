@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import ModalBase from "../../components/modals/ModalBase";
@@ -7,19 +7,21 @@ import { NameDataForm } from "../../components/teritoriNameService/NameDataForm"
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
+import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { defaultMintFee } from "../../utils/fee";
 import {
   getFirstKeplrAccount,
+  getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser, tokenWithoutTld } from "../../utils/tns";
-import { defaultMetaData, Metadata } from "../../utils/types/tns";
+import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 const normalize = (inputString: string) => {
@@ -37,9 +39,8 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();
-  const { setLoadingFullScreen, setToastError, setToastSuccess } =
-    useFeedbacks();
-  const { tokens, loadingTokens } = useTokenList();
+  const { setToastError, setToastSuccess } = useFeedbacks();
+  const { tokens } = useTokenList();
   const navigation = useAppNavigation();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
@@ -50,44 +51,25 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
 
   const initData = async () => {
     try {
-      const signingClient = await getSigningCosmWasmClient();
+      const cosmwasmClient = await getNonSigningCosmWasmClient();
+
+      const client = new TeritoriNameServiceQueryClient(
+        cosmwasmClient,
+        contractAddress
+      );
 
       // If this query fails it means that the token does not exist.
-      const token = await signingClient.queryContractSmart(contractAddress, {
-        nft_info: {
-          token_id: normalizedTokenId,
-        },
+      const { extension } = await client.nftInfo({
+        tokenId: normalizedTokenId,
       });
-      // return token.extension;
-      const tokenData: Metadata = {
-        image: token.extension.image,
-        user_header_image: token.extension.user_header_image,
-        image_data: token.extension.image_data,
-        email: token.extension.email,
-        external_url: token.extension.external_url,
-        public_name: token.extension.public_name,
-        public_bio: token.extension.public_bio,
-        twitter_id: token.extension.twitter_id,
-        discord_id: token.extension.discord_id,
-        telegram_id: token.extension.telegram_id,
-        keybase_id: token.extension.keybase_id,
-        validator_operator_address: token.extension.validator_operator_address,
-      };
       setInitialized(true);
-      setLoadingFullScreen(false);
-      setInitialData(tokenData);
+      setInitialData(extension);
     } catch {
       setInitialized(true);
-      setLoadingFullScreen(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
@@ -101,7 +83,6 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
       navigation.navigate("TNSHome");
     }
     if (!initialized) {
-      setLoadingFullScreen(true);
       initData();
     }
   });
@@ -111,7 +92,6 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
     if (!isKeplrConnected) {
       return;
     }
-    setLoadingFullScreen(true);
     const {
       token_id: pathId,
       image, // TODO - support later
@@ -171,8 +151,6 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
         });
         setName(tokenWithoutTld(pathId));
         onClose("TNSConsultName");
-
-        setLoadingFullScreen(false);
       }
     } catch (err) {
       console.warn(err);
@@ -186,7 +164,6 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
         title: "Something went wrong!",
         message,
       });
-      setLoadingFullScreen(false);
     }
   };
 

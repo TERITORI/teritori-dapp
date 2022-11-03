@@ -36,7 +36,11 @@ export const UPPIntro: React.FC<{
       <TertiaryBox fullWidth height={320}>
         {/* Banner */}
         <Image
-          source={defaultUserProfileBannerPNG}
+          source={{
+            uri: ipfsURLToHTTPURL(
+              metadata?.public_profile_header || defaultUserProfileBannerPNG
+            ),
+          }}
           style={{ height: "100%", width: "100%", borderRadius: 7 }}
         />
 

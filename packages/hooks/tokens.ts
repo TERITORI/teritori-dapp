@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
-import {
-  getFirstKeplrAccount,
-  getKeplrAccounts,
-  getNonSigningCosmWasmClient,
-} from "../utils/keplr";
+import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { getKeplrAccounts, getNonSigningCosmWasmClient } from "../utils/keplr";
 import { isPath, isToken } from "../utils/tns";
 import { useIsKeplrConnected } from "./useIsKeplrConnected";
+import useSelectedWallet from "./useSelectedWallet";
 
 // start_after starts after the token_id
 // so simply take the last token_id from the last page
@@ -15,6 +13,7 @@ import { useIsKeplrConnected } from "./useIsKeplrConnected";
 // note that 30 is the limit for that
 export function useTokenList() {
   const isKeplrConnected = useIsKeplrConnected();
+  const selectedWallet = useSelectedWallet();
 
   const contract = process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const perPage = 10;
@@ -40,7 +39,7 @@ export function useTokenList() {
 
         const query = {
           tokens: {
-            owner: (await getFirstKeplrAccount()).address, // FIXME: use selected teritori account
+            owner: selectedWallet?.address,
             limit: perPage,
             start_after: startAfter,
           },
@@ -67,7 +66,7 @@ export function useTokenList() {
     };
 
     getTokens();
-  }, [tokens.length, isKeplrConnected, startAfter]);
+  }, [tokens.length, isKeplrConnected, startAfter, selectedWallet?.address]);
 
   return {
     pathsAndTokens,
@@ -84,7 +83,7 @@ export function useTokenList() {
 export function useToken(tokenId: string, tld: string) {
   const contract = process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
 
-  const [token, setStoreToken] = useState<any>(); // FIXME: type this
+  const [token, setStoreToken] = useState<Metadata | null>();
 
   //const [token, setToken] = useState<Metadata>()
   const [loadingToken, setLoading] = useState(false);
@@ -99,7 +98,7 @@ export function useToken(tokenId: string, tld: string) {
       return;
     }
 
-    const getTokenWithSigningClient = async () => {
+    const getToken = async () => {
       setLoading(true);
 
       try {
@@ -136,7 +135,7 @@ export function useToken(tokenId: string, tld: string) {
 
     // If no entered name (tokenId), we don't handle getTokenWithSigningClient() to avoid useless errors
     if (tokenId) {
-      getTokenWithSigningClient()
+      getToken()
         .then()
         .catch((e) => {
           console.warn("ERROR getToken() : ", e);
