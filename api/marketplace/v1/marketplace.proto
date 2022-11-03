@@ -81,7 +81,7 @@ message Quest {
 }
 
 message PriceDatum {
-  string price = 1;
+  double price = 1;
   string time = 2;
 }
 

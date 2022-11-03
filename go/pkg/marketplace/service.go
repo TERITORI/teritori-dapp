@@ -415,7 +415,7 @@ func (s *MarkteplaceService) NFTPriceHistory(ctx context.Context, req *marketpla
 	if err := s.conf.IndexerDB.
 		WithContext(ctx).
 		Model(&indexerdb.Trade{}).
-		Select("trades.price as price, activities.time as time").
+		Select("trades.usd_price as price, activities.time as time").
 		Joins("JOIN activities ON trades.activity_id = activities.id").
 		Where("activities.time > ?", time.Now().AddDate(0, 0, -7)).
 		Where("activities.nft_id = ?", id).
