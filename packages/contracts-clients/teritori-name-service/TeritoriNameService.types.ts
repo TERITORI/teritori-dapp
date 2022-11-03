@@ -68,6 +68,7 @@ export interface Metadata {
   pgp_public_key?: string | null;
   public_bio?: string | null;
   public_name?: string | null;
+  public_profile_header?: string | null;
   telegram_id?: string | null;
   twitter_id?: string | null;
   validator_operator_address?: string | null;
@@ -92,14 +93,8 @@ export interface ContractInfoResponse {
   name: string;
   native_decimals: number;
   native_denom: string;
-  short_name_surcharge?: SurchargeInfo | null;
   symbol: string;
   token_cap?: number | null;
-  [k: string]: unknown;
-}
-export interface SurchargeInfo {
-  surcharge_fee: Uint128;
-  surcharge_max_characters: number;
   [k: string]: unknown;
 }
 export type ExecuteMsg = {
@@ -120,11 +115,6 @@ export type ExecuteMsg = {
   update_metadata: UpdateMetadataMsg;
 } | {
   burn: {
-    token_id: string;
-    [k: string]: unknown;
-  };
-} | {
-  burn_paths: {
     token_id: string;
     [k: string]: unknown;
   };
@@ -183,7 +173,6 @@ export interface UpdateSupportedDomainMsg {
 export interface UpdateMintingFeesMsg {
   base_mint_fee?: Uint128 | null;
   burn_percentage?: number | null;
-  short_name_surcharge?: SurchargeInfo | null;
   token_cap?: number | null;
   [k: string]: unknown;
 }
@@ -224,7 +213,6 @@ export interface InstantiateMsg {
   name: string;
   native_decimals: number;
   native_denom: string;
-  short_name_surcharge?: SurchargeInfo | null;
   symbol: string;
   token_cap?: number | null;
   username_length_cap?: number | null;
@@ -253,6 +241,7 @@ export interface MigrateMsg {
   target_version: string;
   [k: string]: unknown;
 }
+export type MintPriceResponse = Uint128 | null;
 export interface MinterResponse {
   minter: string;
   [k: string]: unknown;
@@ -262,7 +251,6 @@ export interface MintingFeesResponse {
   burn_percentage?: number | null;
   native_decimals: number;
   native_denom: string;
-  short_name_surcharge?: SurchargeInfo | null;
   token_cap?: number | null;
   [k: string]: unknown;
 }
@@ -401,6 +389,11 @@ export type QueryMsg = {
 } | {
   list_info_by_alias: {
     aliases: string[];
+    [k: string]: unknown;
+  };
+} | {
+  mint_price: {
+    token_id: string;
     [k: string]: unknown;
   };
 };
