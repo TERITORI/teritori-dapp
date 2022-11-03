@@ -21,7 +21,12 @@ export const useCoingeckoPrices = (
       const prices: { [key: string]: { usd: number } } = await response.json();
       return prices;
     },
-    { initialData: {}, refetchInterval: 5000 }
+    {
+      initialData: {},
+      refetchInterval: 20000,
+      staleTime: Infinity,
+      initialDataUpdatedAt: 0,
+    }
   );
   return data;
 };
