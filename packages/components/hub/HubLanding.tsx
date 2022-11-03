@@ -37,7 +37,9 @@ export const HubLanding: React.FC = () => {
         {/*TODO: redirect to rioters collection using collection id*/}
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("Collection", { id: "rioters_collection_id" })
+            navigation.navigate("Collection", {
+              id: `tori-${process.env.THE_RIOT_COLLECTION_ADDRESS}`,
+            })
           }
         >
           <Image

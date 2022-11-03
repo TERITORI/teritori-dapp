@@ -33,7 +33,7 @@ export const NewsCarouselSection: React.FC = () => {
       button2Label: "Discover",
       button1Action: () => {
         navigation.navigate("MintCollection", {
-          id: process.env.THE_RIOT_COLLECTION_ADDRESS || "",
+          id: `tori-${process.env.THE_RIOT_COLLECTION_ADDRESS}`,
         });
       },
       button2Action: () => {
