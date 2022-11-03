@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import chevronUpSVG from "../../assets/icons/chevron-down.svg";
-import chevronDownSVG from "../../assets/icons/chevron-up.svg";
+import chevronDownSVG from "../../assets/icons/chevron-down.svg";
+import chevronUpSVG from "../../assets/icons/chevron-up.svg";
 import teritoriSVG from "../../assets/icons/networks/teritori.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
 import { Network } from "../utils/network";
