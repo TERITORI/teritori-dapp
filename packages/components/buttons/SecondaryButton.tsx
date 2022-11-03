@@ -27,6 +27,7 @@ export const SecondaryButton: React.FC<{
   disabled?: boolean;
   fullWidth?: boolean;
   numberOfLines?: number;
+  activeOpacity?: number | undefined;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -41,6 +42,7 @@ export const SecondaryButton: React.FC<{
   disabled = false,
   fullWidth = false,
   numberOfLines,
+  activeOpacity,
 }) => {
   const boxProps = {
     style,
@@ -55,6 +57,7 @@ export const SecondaryButton: React.FC<{
       onPress={onPress}
       disabled={disabled}
       style={{ width: fullWidth ? "100%" : width }}
+      activeOpacity={activeOpacity}
     >
       <SecondaryBox
         height={heightButton(size)}
