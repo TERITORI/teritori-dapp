@@ -1,44 +1,47 @@
-import { useCallback, useEffect, useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useMemo, useRef } from "react";
 
 import { NFTsRequest, NFT } from "../api/marketplace/v1/marketplace";
 import { backendClient } from "../utils/backend";
 
 export const useNFTs = (req: NFTsRequest) => {
-  const [nfts, setNFTs] = useState<NFT[]>([]);
-  const [firstLoading, setFirstLoading] = useState(false);
-  const [isFirstLoadDone, setIsFirstLoadDone] = useState(false);
-
-  const fetchMore = useCallback(async () => {
-    if (!isFirstLoadDone) setFirstLoading(true);
-    try {
-      const offsetReq = {
+  const baseOffset = useRef(req.offset);
+  const { data, fetchNextPage } = useInfiniteQuery(
+    [
+      "nfts",
+      req.collectionId,
+      req.ownerId,
+      req.sort,
+      req.sortDirection,
+      baseOffset.current,
+    ],
+    async ({ pageParam = 0 }) => {
+      const nfts: NFT[] = [];
+      const stream = backendClient.NFTs({
         ...req,
-        offset: req.offset + nfts.length,
-      };
-      const stream = backendClient.NFTs(offsetReq);
-
-      let newNFTS: NFT[] = [];
+        offset: baseOffset.current + pageParam,
+      });
       await stream.forEach((response) => {
         if (!response.nft) {
           return;
         }
-        newNFTS = [...newNFTS, response.nft];
+        nfts.push(response.nft);
       });
+      return { nextCursor: pageParam + req.limit, nfts };
+    },
+    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+  );
 
-      setNFTs((collec) => [...collec, ...newNFTS]);
-    } catch (err) {
-      console.warn("failed to fetch collection nfts:", err);
+  const nfts = useMemo(() => {
+    if (!data?.pages) {
+      return [];
     }
-    if (!isFirstLoadDone) {
-      setFirstLoading(false);
-      setIsFirstLoadDone(true);
+    const flat = [];
+    for (const page of data.pages) {
+      flat.push(...page.nfts);
     }
-  }, [req, nfts]);
+    return flat;
+  }, [data?.pages]);
 
-  useEffect(() => {
-    setNFTs([]);
-    fetchMore();
-  }, [req.collectionId, req.ownerId]);
-
-  return { nfts, fetchMore, firstLoading };
+  return { nfts, fetchMore: fetchNextPage };
 };

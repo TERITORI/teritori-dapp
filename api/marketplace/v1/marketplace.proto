@@ -19,6 +19,17 @@ enum Network {
   NETWORK_SOLANA = 3;
 }
 
+enum Sort {
+  SORTING_UNSPECIFIED = 0;
+  SORTING_PRICE = 1;
+}
+
+enum SortDirection {
+  SORT_DIRECTION_UNSPECIFIED = 0;
+  SORT_DIRECTION_ASCENDING = 1;
+  SORT_DIRECTION_DESCENDING = 2;
+}
+
 message NFT {
   string id = 1;
   Network network = 2;
@@ -119,6 +130,9 @@ message NFTsRequest {
 
   string collection_id = 3;
   string owner_id = 4;
+
+  Sort sort = 5;
+  SortDirection sort_direction = 6;
 }
 
 message NFTsResponse {

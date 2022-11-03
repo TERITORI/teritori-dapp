@@ -7,7 +7,11 @@ import { ScrollView } from "react-native-gesture-handler";
 import bannerCollection from "../../../assets/default-images/banner-collection.png";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
 import shareSVG from "../../../assets/icons/share.svg";
-import { NFTsRequest } from "../../api/marketplace/v1/marketplace";
+import {
+  NFTsRequest,
+  Sort,
+  SortDirection,
+} from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { ActivityTable } from "../../components/activity/ActivityTable";
@@ -42,41 +46,45 @@ const nftWidth = 268; // FIXME: ssot
 
 type TabsListType = "allNFTs" | "owned" | "activity";
 
-const Content: React.FC<{ id: string; selectedTab: TabsListType }> = React.memo(
-  ({ id, selectedTab }) => {
-    const wallet = useSelectedWallet();
+const Content: React.FC<{
+  id: string;
+  selectedTab: TabsListType;
+  sortDirection: SortDirection;
+}> = React.memo(({ id, selectedTab, sortDirection }) => {
+  const wallet = useSelectedWallet();
 
-    const { width } = useMaxResolution();
-    const numColumns = Math.floor(width / nftWidth);
+  const { width } = useMaxResolution();
+  const numColumns = Math.floor(width / nftWidth);
 
-    const nftsRequest: NFTsRequest = {
-      collectionId: id,
-      ownerId:
-        selectedTab === "owned" && wallet?.address
-          ? `tori-${wallet.address}`
-          : "",
-      limit: alignDown(20, numColumns) || numColumns,
-      offset: 0,
-    };
+  const nftsRequest: NFTsRequest = {
+    collectionId: id,
+    ownerId:
+      selectedTab === "owned" && wallet?.address
+        ? `tori-${wallet.address}`
+        : "",
+    limit: alignDown(20, numColumns) || numColumns,
+    offset: 0,
+    sort: Sort.SORTING_PRICE,
+    sortDirection,
+  };
 
-    switch (selectedTab) {
-      case "allNFTs":
-      case "owned":
-        return (
-          <NFTs
-            key={selectedTab}
-            req={nftsRequest}
-            numColumns={numColumns}
-            ListFooterComponent={
-              <View style={{ height: layout.contentPadding }} />
-            }
-          />
-        );
-      case "activity":
-        return <ActivityTable collectionId={id} />;
-    }
+  switch (selectedTab) {
+    case "allNFTs":
+    case "owned":
+      return (
+        <NFTs
+          key={selectedTab}
+          req={nftsRequest}
+          numColumns={numColumns}
+          ListFooterComponent={
+            <View style={{ height: layout.contentPadding }} />
+          }
+        />
+      );
+    case "activity":
+      return <ActivityTable collectionId={id} />;
   }
-);
+});
 
 // All the screen content before the Flatlist used to display NFTs
 const Header: React.FC<{
@@ -84,7 +92,16 @@ const Header: React.FC<{
   collectionInfo?: CollectionInfo;
   selectedTab: TabsListType;
   onSelectTab: (tab: TabsListType) => void;
-}> = ({ collectionInfo = {}, selectedTab, onSelectTab, collectionId }) => {
+  sortDirection: SortDirection;
+  onChangeSortDirection: (val: SortDirection) => void;
+}> = ({
+  collectionInfo = {},
+  selectedTab,
+  onSelectTab,
+  collectionId,
+  sortDirection,
+  onChangeSortDirection,
+}) => {
   const wallet = useSelectedWallet();
   // variables
   const stats = useCollectionStats(
@@ -293,7 +310,10 @@ const Header: React.FC<{
             borderBottomWidth: 0,
           }}
         />
-        <SortButton />
+        <SortButton
+          sortDirection={sortDirection}
+          onChangeSortDirection={onChangeSortDirection}
+        />
       </PrimaryBox>
     </View>
   );
@@ -304,6 +324,9 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   const { id } = route.params;
   const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
   const { info } = useCollectionInfo(id);
+  const [sortDirection, setSortDirection] = useState(
+    SortDirection.SORT_DIRECTION_ASCENDING
+  );
 
   // returns
   return (
@@ -318,8 +341,15 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
           collectionInfo={info}
           selectedTab={selectedTab}
           onSelectTab={setSelectedTab}
+          onChangeSortDirection={setSortDirection}
+          sortDirection={sortDirection}
         />
-        <Content key={id} id={id} selectedTab={selectedTab} />
+        <Content
+          key={id}
+          id={id}
+          selectedTab={selectedTab}
+          sortDirection={sortDirection}
+        />
       </ScrollView>
     </ScreenContainer>
   );
