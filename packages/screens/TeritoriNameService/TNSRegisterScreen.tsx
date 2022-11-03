@@ -42,6 +42,7 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
       width={457}
       modalStatus={name && nameAvailable ? "success" : "danger"}
       hideMainSeparator
+      scrollable
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName

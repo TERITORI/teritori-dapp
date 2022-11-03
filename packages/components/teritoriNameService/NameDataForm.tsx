@@ -143,7 +143,7 @@ export const NameDataForm: React.FC<{
         label="USER HEADER PROFILE"
         placeHolder="Insert image URL here"
         value={user_header_image}
-        onChangeText={setImageUrl}
+        onChangeText={setUserHeaderImageUrl}
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<NameDataFormType>
