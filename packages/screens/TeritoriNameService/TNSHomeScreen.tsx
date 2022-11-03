@@ -125,7 +125,6 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   return (
     <ScreenContainer
       noMargin={width <= 1600}
-      headerStyle={{ borderBottomColor: "transparent" }}
       headerChildren={<BrandText>Name Service</BrandText>}
     >
       <View
