@@ -149,6 +149,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
             text="Undelegate"
             width={120}
             onPress={handleSubmit(onSubmit)}
+            loader
           />
         </View>
       </>

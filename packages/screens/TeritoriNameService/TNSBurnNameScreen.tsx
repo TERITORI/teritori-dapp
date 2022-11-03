@@ -161,6 +161,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
               onPress={onSubmit}
               style={{ marginBottom: 80 }}
               squaresBackgroundColor={neutral17}
+              loader
             />
           </View>
         </View>

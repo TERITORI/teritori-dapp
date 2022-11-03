@@ -47,7 +47,12 @@ export const NFTCancelListingCard: React.FC<{
           />
         </View>
       </View>
-      <PrimaryButton size="XL" text="Cancel listing" onPress={onPressCancel} />
+      <PrimaryButton
+        size="XL"
+        text="Cancel listing"
+        loader
+        onPress={onPressCancel}
+      />
     </TertiaryBox>
   );
 };

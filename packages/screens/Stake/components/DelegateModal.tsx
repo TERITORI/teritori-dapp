@@ -149,6 +149,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           <SpacerRow size={2} />
           <PrimaryButton
             size="XS"
+            loader
             text="Stake"
             width={120}
             onPress={handleSubmit(onSubmit)}
