@@ -132,6 +132,16 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		return errors.New("offset must be greater or equal to 0")
 	}
 
+	sort := req.GetSort()
+	if sort == marketplacepb.Sort_SORTING_UNSPECIFIED {
+		sort = marketplacepb.Sort_SORTING_PRICE
+	}
+
+	sortDirection := req.GetSortDirection()
+	if sortDirection == marketplacepb.SortDirection_SORT_DIRECTION_UNSPECIFIED {
+		sortDirection = marketplacepb.SortDirection_SORT_DIRECTION_ASCENDING
+	}
+
 	collection_id := req.GetCollectionId()
 
 	// FIXME: return fake data if any filter is fake
@@ -182,8 +192,13 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		Preload("Collection").
 		Offset(int(offset)).
 		Limit(int(limit)).
-		Order("is_listed DESC").
-		Order("price_amount ASC")
+		Order("is_listed DESC")
+
+	if sortDirection == marketplacepb.SortDirection_SORT_DIRECTION_ASCENDING {
+		query = query.Order("price_amount ASC")
+	} else {
+		query = query.Order("price_amount DESC")
+	}
 
 	if collection_id != "" {
 		query = query.Where("collection_id = ?", collection_id)

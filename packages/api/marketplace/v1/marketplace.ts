@@ -53,6 +53,78 @@ export function networkToJSON(object: Network): string {
   }
 }
 
+export enum Sort {
+  SORTING_UNSPECIFIED = 0,
+  SORTING_PRICE = 1,
+  UNRECOGNIZED = -1,
+}
+
+export function sortFromJSON(object: any): Sort {
+  switch (object) {
+    case 0:
+    case "SORTING_UNSPECIFIED":
+      return Sort.SORTING_UNSPECIFIED;
+    case 1:
+    case "SORTING_PRICE":
+      return Sort.SORTING_PRICE;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return Sort.UNRECOGNIZED;
+  }
+}
+
+export function sortToJSON(object: Sort): string {
+  switch (object) {
+    case Sort.SORTING_UNSPECIFIED:
+      return "SORTING_UNSPECIFIED";
+    case Sort.SORTING_PRICE:
+      return "SORTING_PRICE";
+    case Sort.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export enum SortDirection {
+  SORT_DIRECTION_UNSPECIFIED = 0,
+  SORT_DIRECTION_ASCENDING = 1,
+  SORT_DIRECTION_DESCENDING = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function sortDirectionFromJSON(object: any): SortDirection {
+  switch (object) {
+    case 0:
+    case "SORT_DIRECTION_UNSPECIFIED":
+      return SortDirection.SORT_DIRECTION_UNSPECIFIED;
+    case 1:
+    case "SORT_DIRECTION_ASCENDING":
+      return SortDirection.SORT_DIRECTION_ASCENDING;
+    case 2:
+    case "SORT_DIRECTION_DESCENDING":
+      return SortDirection.SORT_DIRECTION_DESCENDING;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return SortDirection.UNRECOGNIZED;
+  }
+}
+
+export function sortDirectionToJSON(object: SortDirection): string {
+  switch (object) {
+    case SortDirection.SORT_DIRECTION_UNSPECIFIED:
+      return "SORT_DIRECTION_UNSPECIFIED";
+    case SortDirection.SORT_DIRECTION_ASCENDING:
+      return "SORT_DIRECTION_ASCENDING";
+    case SortDirection.SORT_DIRECTION_DESCENDING:
+      return "SORT_DIRECTION_DESCENDING";
+    case SortDirection.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export interface NFT {
   id: string;
   network: Network;
@@ -201,6 +273,8 @@ export interface NFTsRequest {
   offset: number;
   collectionId: string;
   ownerId: string;
+  sort: Sort;
+  sortDirection: SortDirection;
 }
 
 export interface NFTsResponse {
@@ -1196,7 +1270,7 @@ export const CollectionsResponse = {
 };
 
 function createBaseNFTsRequest(): NFTsRequest {
-  return { limit: 0, offset: 0, collectionId: "", ownerId: "" };
+  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0 };
 }
 
 export const NFTsRequest = {
@@ -1212,6 +1286,12 @@ export const NFTsRequest = {
     }
     if (message.ownerId !== "") {
       writer.uint32(34).string(message.ownerId);
+    }
+    if (message.sort !== 0) {
+      writer.uint32(40).int32(message.sort);
+    }
+    if (message.sortDirection !== 0) {
+      writer.uint32(48).int32(message.sortDirection);
     }
     return writer;
   },
@@ -1235,6 +1315,12 @@ export const NFTsRequest = {
         case 4:
           message.ownerId = reader.string();
           break;
+        case 5:
+          message.sort = reader.int32() as any;
+          break;
+        case 6:
+          message.sortDirection = reader.int32() as any;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1249,6 +1335,8 @@ export const NFTsRequest = {
       offset: isSet(object.offset) ? Number(object.offset) : 0,
       collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+      sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
+      sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
     };
   },
 
@@ -1258,6 +1346,8 @@ export const NFTsRequest = {
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     message.collectionId !== undefined && (obj.collectionId = message.collectionId);
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    message.sort !== undefined && (obj.sort = sortToJSON(message.sort));
+    message.sortDirection !== undefined && (obj.sortDirection = sortDirectionToJSON(message.sortDirection));
     return obj;
   },
 
@@ -1267,6 +1357,8 @@ export const NFTsRequest = {
     message.offset = object.offset ?? 0;
     message.collectionId = object.collectionId ?? "";
     message.ownerId = object.ownerId ?? "";
+    message.sort = object.sort ?? 0;
+    message.sortDirection = object.sortDirection ?? 0;
     return message;
   },
 };

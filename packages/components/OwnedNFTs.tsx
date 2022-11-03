@@ -4,6 +4,8 @@ import { View, ActivityIndicator, ViewStyle, StyleProp } from "react-native";
 import {
   Collection,
   CollectionsRequest_Kind,
+  Sort,
+  SortDirection,
 } from "../api/marketplace/v1/marketplace";
 import { useCollections } from "../hooks/useCollections";
 import { useNFTs } from "../hooks/useNFTs";
@@ -55,6 +57,8 @@ const OwnedNFTsSection: React.FC<{
     limit: 100, // FIXME: pagination
     ownerId,
     collectionId: collection.id,
+    sort: Sort.SORTING_PRICE,
+    sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
   });
 
   if (nfts.length === 0) {

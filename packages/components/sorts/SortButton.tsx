@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import chevronUpSVG from "../../../assets/icons/chevron-down.svg";
-import chevronDownSVG from "../../../assets/icons/chevron-up.svg";
+import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
+import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import sortSVG from "../../../assets/icons/sort.svg";
+import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { neutral11, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -11,11 +12,16 @@ import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SortButton: React.FC<{
+  sortDirection: SortDirection;
+  onChangeSortDirection: (val: SortDirection) => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+}> = ({ style, sortDirection, onChangeSortDirection }) => {
   const handlePress = () => {
-    setIsExpanded(!isExpanded);
+    if (sortDirection === SortDirection.SORT_DIRECTION_DESCENDING) {
+      onChangeSortDirection(SortDirection.SORT_DIRECTION_ASCENDING);
+    } else {
+      onChangeSortDirection(SortDirection.SORT_DIRECTION_DESCENDING);
+    }
   };
 
   return (
@@ -38,11 +44,20 @@ export const SortButton: React.FC<{
             width={16}
             style={{ marginRight: 8 }}
           />
-          <BrandText style={fontSemibold14}>Price Descending</BrandText>
+          <BrandText style={fontSemibold14}>
+            Price{" "}
+            {sortDirection === SortDirection.SORT_DIRECTION_ASCENDING
+              ? "Ascending"
+              : "Descending"}
+          </BrandText>
         </View>
 
         <SVG
-          source={isExpanded ? chevronUpSVG : chevronDownSVG}
+          source={
+            sortDirection === SortDirection.SORT_DIRECTION_ASCENDING
+              ? chevronUpSVG
+              : chevronDownSVG
+          }
           height={16}
           width={16}
           style={{ marginLeft: 8 }}

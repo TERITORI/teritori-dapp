@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useCallback } from "react";
 import { FlatList, View, ViewStyle } from "react-native";
 
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
@@ -7,7 +7,7 @@ import { layout } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
 import { NFTView } from "./NFTView";
 
-const keyExtractor = (item: NFT) => item.mintAddress;
+const keyExtractor = (item: NFT) => item.id;
 
 const RenderItem: React.FC<{
   nft: NFT;
@@ -30,6 +30,10 @@ export const NFTs: React.FC<{
 }> = ({ req, numColumns, ListHeaderComponent, ListFooterComponent }) => {
   const { nfts, fetchMore } = useNFTs(req);
 
+  const handleEndReached = useCallback(() => {
+    fetchMore();
+  }, [fetchMore]);
+
   const viewStyle: ViewStyle = {
     height: "100%",
     alignItems: "center",
@@ -41,7 +45,7 @@ export const NFTs: React.FC<{
         key={numColumns}
         data={nfts}
         numColumns={numColumns}
-        onEndReached={fetchMore}
+        onEndReached={handleEndReached}
         keyExtractor={keyExtractor}
         onEndReachedThreshold={4}
         renderItem={(info) => (
