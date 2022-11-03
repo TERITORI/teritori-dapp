@@ -24,7 +24,6 @@ const useCollectionActivity = (
         ...req,
         offset: req.offset + activity.length,
       };
-      console.log("fetching", offsetReq);
       const stream = backendClient.Activity(offsetReq);
       let newActivity: Activity[] = [];
       await stream.forEach((response) => {
