@@ -15,7 +15,6 @@ export const useNFTs = (req: NFTsRequest) => {
         ...req,
         offset: req.offset + nfts.length,
       };
-      console.log("fetching", offsetReq);
       const stream = backendClient.NFTs(offsetReq);
 
       let newNFTS: NFT[] = [];

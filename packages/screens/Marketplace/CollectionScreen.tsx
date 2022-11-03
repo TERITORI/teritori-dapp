@@ -1,7 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useMemo, useState } from "react";
-import { View, Image, Platform, StyleSheet } from "react-native";
+import { View, Image, Platform, StyleSheet, Linking } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import bannerCollection from "../../../assets/default-images/banner-collection.png";
@@ -253,9 +253,15 @@ const Header: React.FC<{
               />
             ) : null}
             <SocialButtonSecondary
-              text="Contract Address"
+              text="Explorer"
               iconSvg={etherscanSVG}
               style={{ marginRight: 12 }}
+              onPress={() => {
+                const url = (
+                  process.env.TERITORI_CONTRACT_EXPLORER_URL || ""
+                ).replace("$address", collectionId.replace("tori-", ""));
+                Linking.openURL(url);
+              }}
             />
             <SocialButtonSecondary
               text="Share"
