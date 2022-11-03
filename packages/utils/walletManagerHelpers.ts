@@ -1,7 +1,6 @@
 import cosmosHubSVG from "../../assets/icons/networks/cosmos-hub-circle.svg";
 import solanaSVG from "../../assets/icons/networks/solana-circle.svg";
-import teritoriSVG from "../../assets/icons/networks/teritori.svg";
-import terraSVG from "../../assets/icons/networks/terra-circle.svg";
+import teritoriSVG from "../../assets/icons/networks/teritori-circle.svg";
 
 export const getWalletIconFromTitle = (title: string) => {
   switch (title) {
@@ -11,8 +10,6 @@ export const getWalletIconFromTitle = (title: string) => {
       return cosmosHubSVG;
     case "Teritori":
       return teritoriSVG;
-    case "Terra":
-      return terraSVG;
     default:
       return solanaSVG;
   }

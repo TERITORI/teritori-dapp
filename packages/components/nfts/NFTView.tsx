@@ -33,7 +33,7 @@ import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { NetworkIcon } from "../images/NetworkIcon";
-import { SpacerColumn } from "../spacer";
+import { SpacerColumn, SpacerRow } from "../spacer";
 import { NFTTransferModal } from "./NFTTransferModal";
 
 export const NFTView: React.FC<{
@@ -95,7 +95,7 @@ export const NFTView: React.FC<{
           width={cardWidth}
           style={styleWithoutMargins}
         >
-          <View>
+          <View style={{ width: "100%" }}>
             <View
               style={{
                 paddingTop: insideMargin,
@@ -256,6 +256,7 @@ export const NFTView: React.FC<{
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
+                width: "100%",
               }}
             >
               <View
@@ -293,16 +294,20 @@ export const NFTView: React.FC<{
                   </BrandText>
                 )}
               </View>
+              <SpacerRow size={2} />
               {nft.isListed && (
-                <SecondaryButton
-                  size="XS"
-                  text={prettyPrice(
-                    process.env.TERITORI_NETWORK_ID || "",
-                    nft.price,
-                    nft.denom
-                  )}
-                  onPress={() => {}}
-                />
+                <View style={{ flex: 1 }}>
+                  <SecondaryButton
+                    size="XS"
+                    text={prettyPrice(
+                      process.env.TERITORI_NETWORK_ID || "",
+                      nft.price,
+                      nft.denom
+                    )}
+                    onPress={() => {}}
+                    fullWidth
+                  />
+                </View>
               )}
             </View>
           </View>

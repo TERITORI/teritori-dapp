@@ -62,6 +62,7 @@ export const SecondaryButton: React.FC<{
           backgroundColor,
           paddingHorizontal: 20,
           opacity: disabled ? 0.5 : 1,
+          width: "100%",
         }}
         {...boxProps}
       >
@@ -74,7 +75,13 @@ export const SecondaryButton: React.FC<{
           />
         ) : null}
 
-        <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
+        <BrandText
+          style={[
+            fontSemibold14,
+            { color, textAlign: "center", width: "100%" },
+          ]}
+          numberOfLines={1}
+        >
           {text}
         </BrandText>
       </SecondaryBox>

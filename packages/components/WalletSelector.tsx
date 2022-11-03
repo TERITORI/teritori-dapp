@@ -22,14 +22,21 @@ import { ConnectWalletModal } from "./connectWallet/ConnectWalletModal";
 
 export const tinyAddress = (
   fullAddress: string = "",
-  nbCharBefore: number = 5
+  totalCount: number = 10
 ) => {
   if (fullAddress.length <= 13) {
     return fullAddress;
   }
-  return `${fullAddress.substring(0, nbCharBefore)}...${fullAddress.substring(
-    fullAddress.length - 5
-  )}`;
+  const chainIdReg = fullAddress.match(/.+?(?=\d+)/);
+  const chainIdName = chainIdReg?.length ? chainIdReg[0] : "";
+  const startingCharLength =
+    Math.ceil(totalCount / 2) - chainIdName?.length / 2;
+  const endingCharLength = Math.floor(totalCount / 2) - chainIdName?.length / 2;
+
+  return `${fullAddress.substring(
+    0,
+    startingCharLength + chainIdName.length
+  )}...${fullAddress.substring(fullAddress.length - endingCharLength)}`;
 };
 
 const WalletView: React.FC<{
@@ -51,10 +58,12 @@ const WalletView: React.FC<{
           marginLeft: 12,
           fontWeight: "500",
         }}
-        numberOfLines={1}
         ellipsizeMode="middle"
       >
-        {tnsMetadata?.metadata?.tokenId || wallet?.address || ""}
+        {tinyAddress(
+          tnsMetadata?.metadata?.tokenId || wallet?.address || "",
+          19
+        )}
       </BrandText>
     </View>
   );

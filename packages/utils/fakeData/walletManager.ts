@@ -77,27 +77,6 @@ export const ALL_WALLETS = [
       },
     ],
   },
-  {
-    title: "Terra",
-    data: [
-      {
-        id: 6,
-        staked: 535053.812943,
-        pendingReward: 56469.54635563,
-        address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-        isDefault: true,
-        title: "Terra",
-      },
-      {
-        id: 7,
-        staked: 535053.812943,
-        pendingReward: 56469.54635563,
-        address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-        isDefault: false,
-        title: "Terra",
-      },
-    ],
-  },
 ];
 
 export const WALLETS = [
@@ -111,13 +90,6 @@ export const WALLETS = [
   {
     id: 2,
     title: "Cosmos Hub",
-    staked: 535053.812943,
-    pendingReward: 56469.54635563,
-    address: "GxF3432432904320430SDSDSFDS@S>!3A31",
-  },
-  {
-    id: 3,
-    title: "Terra",
     staked: 535053.812943,
     pendingReward: 56469.54635563,
     address: "GxF3432432904320430SDSDSFDS@S>!3A31",

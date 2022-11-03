@@ -82,7 +82,7 @@ export const TransactionSuccessModal: React.FC<{
             Transaction hash
           </BrandText>
           <BrandText style={[fontSemibold16, { color: primaryColor }]}>
-            {tinyAddress(transactionHash, 16)}
+            {tinyAddress(transactionHash, 21)}
           </BrandText>
         </View>
       </View>

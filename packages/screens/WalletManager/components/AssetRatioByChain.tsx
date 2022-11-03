@@ -7,7 +7,6 @@ import busdSVG from "../../../../assets/icons/networks/busd-circle.svg";
 import cosmosHubSVG from "../../../../assets/icons/networks/cosmos-hub-circle.svg";
 import ethereumSVG from "../../../../assets/icons/networks/ethereum-circle.svg";
 import solanaSVG from "../../../../assets/icons/networks/solana-circle.svg";
-import terraSVG from "../../../../assets/icons/networks/terra-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { ProgressLine } from "../../../components/ProgressLine";
 import { SVG } from "../../../components/SVG";
@@ -34,11 +33,6 @@ const DATA: AssetRatioData[] = [
   {
     icon: ethereumSVG,
     title: "Ethereum",
-    percent: 0,
-  },
-  {
-    icon: terraSVG,
-    title: "Terra",
     percent: 0,
   },
   {
