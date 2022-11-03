@@ -84,7 +84,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   },
   riotersFooter: {
     title: "Rioters Footer",
-    route: "RiotersFooter",
+    route: "ComingSoon",
     icon: rioterFooterSVG,
   },
 };
