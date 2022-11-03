@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Tabs } from "../../components/tabs/Tabs";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useValidators } from "../../hooks/useValidators";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -30,9 +29,7 @@ export const StakeScreen: React.FC = () => {
 
   const {
     data: { activeValidators, inactiveValidators },
-    isFetching,
   } = useValidators();
-  const { setLoadingFullScreen } = useFeedbacks();
 
   const tabs = {
     active: {
@@ -46,11 +43,6 @@ export const StakeScreen: React.FC = () => {
   };
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("active");
   const areThereWallets = useAreThereWallets();
-
-  // hooks
-  useEffect(() => {
-    setLoadingFullScreen(isFetching);
-  }, [isFetching]);
 
   // functions
   const toggleDetailModal = (stakeData?: ValidatorInfo) => {

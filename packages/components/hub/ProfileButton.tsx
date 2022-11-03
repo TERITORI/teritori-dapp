@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
@@ -14,12 +13,6 @@ export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
   const { loading, metadata } = useTNSMetadata(selectedWallet?.address);
-  const { setLoadingFullScreen } = useFeedbacks();
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loading);
-  }, [loading]);
 
   if (loading) return null;
   if (selectedWallet && metadata)

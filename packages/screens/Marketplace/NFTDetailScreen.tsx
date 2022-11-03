@@ -75,9 +75,8 @@ const Content: React.FC<{
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("main");
   const { setToastError } = useFeedbacks();
-  const { setLoadingFullScreen } = useFeedbacks();
   const wallet = useSelectedWallet();
-  const { info, refresh, notFound, loading } = useNFTInfo(id, wallet?.address);
+  const { info, refresh, notFound } = useNFTInfo(id, wallet?.address);
   const { width } = useMaxResolution();
 
   // Query the Vault client to buy the NFT and returns the transaction reply
@@ -167,11 +166,6 @@ const Content: React.FC<{
       mintAddress: info?.mintAddress || "",
     });
   }, [info?.mintAddress]);
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loading);
-  }, [loading]);
 
   if (!id.startsWith("tori-")) {
     return (

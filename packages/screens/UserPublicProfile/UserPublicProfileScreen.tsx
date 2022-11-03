@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -11,7 +11,6 @@ import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
 import { UPPSocialFeed } from "../../components/userPublicProfile/UPPSocialFeed";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { ScreenFC } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
@@ -85,16 +84,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("nfts");
 
-  const { loading, metadata, notFound } = useTNSMetadata(
-    id.replace("tori-", "")
-  );
-
-  const { setLoadingFullScreen } = useFeedbacks();
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loading);
-  }, [loading]);
+  const { metadata, notFound } = useTNSMetadata(id.replace("tori-", ""));
 
   return (
     <ScreenContainer

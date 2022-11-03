@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View } from "react-native";
 
 import burnSVG from "../../../assets/icons/burn.svg";
@@ -28,19 +28,14 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
   onClose,
 }) => {
   const { name } = useTNS();
-  const { setToastError, setToastSuccess, setLoadingFullScreen } =
-    useFeedbacks();
+  const { setToastError, setToastSuccess } = useFeedbacks();
 
-  const { tokens, loadingTokens } = useTokenList();
+  const { tokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
   const contractAddress = process.env
     .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const normalizedTokenId = (name + process.env.TLD).toLowerCase();
-
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
 
   const onSubmit = async () => {
     if (!isKeplrConnected) {
@@ -60,8 +55,6 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       });
       return;
     }
-
-    setLoadingFullScreen(true);
 
     const msg = {
       burn: {
@@ -88,7 +81,6 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
         });
 
         onClose("TNSManage");
-        setLoadingFullScreen(false);
       }
     } catch (e) {
       if (e instanceof Error) {
@@ -98,7 +90,6 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
         });
       }
       console.warn(e);
-      setLoadingFullScreen(false);
     }
   };
 
