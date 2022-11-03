@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import ModalBase from "../../components/modals/GradientModalBase";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
@@ -23,17 +22,11 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
   const { name, setName } = useTNS();
-  const { setLoadingFullScreen } = useFeedbacks();
-  const { tokens, loadingTokens } = useTokenList();
+  const { tokens } = useTokenList();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
   );
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
 
   return (
     <ModalBase

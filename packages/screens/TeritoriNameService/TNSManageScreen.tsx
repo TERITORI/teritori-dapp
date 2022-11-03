@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
@@ -7,7 +7,6 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { PrimaryBadge } from "../../components/badges/PrimaryBadge";
 import ModalBase from "../../components/modals/ModalBase";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
@@ -83,19 +82,10 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
   onClose,
 }) => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
-  const { setLoadingFullScreen } = useFeedbacks();
-  const { tokens, loadingTokens } = useTokenList();
-  const { alias, loadingAlias } = usePrimaryAlias();
+  const { tokens } = useTokenList();
+  const { alias } = usePrimaryAlias();
 
   const { setName } = useTNS();
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
-  useEffect(() => {
-    setLoadingFullScreen(loadingAlias);
-  }, [loadingAlias]);
 
   // ==== Init
   useFocusEffect(() => {

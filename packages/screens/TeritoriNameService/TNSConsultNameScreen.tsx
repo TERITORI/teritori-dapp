@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -117,20 +117,8 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
 }) => {
   const { name } = useTNS();
 
-  const { setLoadingFullScreen } = useFeedbacks();
-  const { token, notFound, loadingToken } = useToken(
-    name,
-    process.env.TLD || ""
-  );
-  const { tokens, loadingTokens } = useTokenList();
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loadingToken);
-  }, [loadingToken]);
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
+  const { token, notFound } = useToken(name, process.env.TLD || "");
+  const { tokens } = useTokenList();
 
   return (
     <ModalBase

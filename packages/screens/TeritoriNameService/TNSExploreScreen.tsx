@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -6,7 +6,6 @@ import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutl
 import ModalBase from "../../components/modals/GradientModalBase";
 import { SendFundModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
@@ -23,17 +22,11 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const { name, setName } = useTNS();
   const isKeplrConnected = useIsKeplrConnected();
-  const { setLoadingFullScreen } = useFeedbacks();
-  const { tokens, loadingTokens } = useTokenList();
+  const { tokens } = useTokenList();
   const { nameAvailable, nameError, loading } = useCheckNameAvailability(
     name,
     tokens
   );
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
 
   return (
     <ModalBase
