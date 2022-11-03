@@ -26,6 +26,7 @@ export const SecondaryButton: React.FC<{
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
+  numberOfLines?: number;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -39,6 +40,7 @@ export const SecondaryButton: React.FC<{
   iconSVG,
   disabled = false,
   fullWidth = false,
+  numberOfLines,
 }) => {
   const boxProps = {
     style,
@@ -80,7 +82,7 @@ export const SecondaryButton: React.FC<{
             fontSemibold14,
             { color, textAlign: "center", width: "100%" },
           ]}
-          numberOfLines={1}
+          numberOfLines={numberOfLines}
         >
           {text}
         </BrandText>
