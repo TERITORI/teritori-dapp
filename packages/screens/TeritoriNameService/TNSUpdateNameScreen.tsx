@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import ModalBase from "../../components/modals/ModalBase";
@@ -7,18 +7,21 @@ import { NameDataForm } from "../../components/teritoriNameService/NameDataForm"
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
+import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { defaultMintFee } from "../../utils/fee";
 import {
   getFirstKeplrAccount,
+  getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
 import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
-import { defaultMetaData, Metadata } from "../../utils/types/tns";
+import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 interface TNSUpdateNameScreenProps extends TNSModalCommonProps {}
@@ -30,62 +33,43 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();
-  const { setLoadingFullScreen, setToastSuccess, setToastError } =
-    useFeedbacks();
-  const { tokens, loadingTokens } = useTokenList();
+  const { setToastSuccess, setToastError } = useFeedbacks();
+  const { tokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
-  const contractAddress = process.env
-    .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
+  const contractAddress =
+    process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "";
 
   const initData = async () => {
     try {
-      const signingClient = await getSigningCosmWasmClient();
+      const cosmwasmClient = await getNonSigningCosmWasmClient();
+
+      const client = new TeritoriNameServiceQueryClient(
+        cosmwasmClient,
+        contractAddress
+      );
 
       // If this query fails it means that the token does not exist.
-      const token = await signingClient.queryContractSmart(contractAddress, {
-        nft_info: {
-          token_id: name + process.env.TLD,
-        },
+      const { extension } = await client.nftInfo({
+        tokenId: name + process.env.TLD,
       });
-      // return token.extension;
-      const tokenData: Metadata = {
-        image: token.extension.image,
-        user_header_image: token.extension.user_header_image,
-        image_data: token.extension.image_data,
-        email: token.extension.email,
-        external_url: token.extension.external_url,
-        public_name: token.extension.public_name,
-        public_bio: token.extension.public_bio,
-        twitter_id: token.extension.twitter_id,
-        discord_id: token.extension.discord_id,
-        telegram_id: token.extension.telegram_id,
-        keybase_id: token.extension.keybase_id,
-        validator_operator_address: token.extension.validator_operator_address,
-      };
+      console.log("in data", extension);
       setInitialized(true);
-      setInitialData(tokenData);
-      setLoadingFullScreen(false);
+      setInitialData(extension);
     } catch {
       setInitialized(true);
-      setLoadingFullScreen(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
     if (!initialized) initData();
   });
 
-  // FIXME: typesafe data
-  const submitData = async (data: any) => {
+  const submitData = async (data: Metadata) => {
+    console.log("data", data);
     if (!isKeplrConnected) {
       setToastError({
         title: "Please connect Keplr",
@@ -104,39 +88,12 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
       return;
     }
 
-    setLoadingFullScreen(true);
-    const {
-      image, // TODO - support later
-      // image_data
-      email,
-      external_url,
-      // public_name, // Useless because TNSContext ?
-      public_bio,
-      twitter_id,
-      discord_id,
-      telegram_id,
-      keybase_id,
-      validator_operator_address,
-    } = data;
-
     const normalizedTokenId = (name + process.env.TLD).toLowerCase();
 
     const msg = {
       update_metadata: {
         token_id: normalizedTokenId,
-        metadata: {
-          image,
-          image_data: null, // TODO - support later
-          email,
-          external_url,
-          public_name: name + process.env.TLD,
-          public_bio,
-          twitter_id,
-          discord_id,
-          telegram_id,
-          keybase_id,
-          validator_operator_address,
-        },
+        metadata: data,
       },
     };
 
@@ -160,7 +117,6 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
         });
         setName(name);
         onClose("TNSConsultName");
-        setLoadingFullScreen(false);
       }
     } catch (err) {
       console.warn(err);
@@ -174,7 +130,6 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
         title: "Something went wrong!",
         message,
       });
-      setLoadingFullScreen(false);
     }
   };
 

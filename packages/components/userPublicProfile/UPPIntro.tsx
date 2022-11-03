@@ -16,6 +16,7 @@ import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
 import { SVG } from "../SVG";
+import { tinyAddress } from "../WalletSelector";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { SocialButton } from "../buttons/SocialButton";
@@ -35,7 +36,11 @@ export const UPPIntro: React.FC<{
       <TertiaryBox fullWidth height={320}>
         {/* Banner */}
         <Image
-          source={defaultUserProfileBannerPNG}
+          source={{
+            uri: ipfsURLToHTTPURL(
+              metadata?.public_profile_header || defaultUserProfileBannerPNG
+            ),
+          }}
           style={{ height: "100%", width: "100%", borderRadius: 7 }}
         />
 
@@ -183,7 +188,7 @@ export const UPPIntro: React.FC<{
           </View>
 
           <CopyToClipboardSecondary
-            text={userId.replace("tori-", "")}
+            text={tinyAddress(userId.replace("tori-", ""), 19)}
             iconSVG={teritoriSVG}
           />
         </TertiaryBox>

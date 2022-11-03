@@ -1,5 +1,5 @@
 import { Currency } from "@keplr-wallet/types";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import {
   RegisterOptions,
   useController,
@@ -10,6 +10,7 @@ import {
 } from "react-hook-form";
 import {
   NativeSyntheticEvent,
+  Pressable,
   StyleProp,
   StyleSheet,
   TextInput,
@@ -76,26 +77,16 @@ export const TextInputCustom = <T extends FieldValues>({
   labelStyle,
   ...restProps
 }: TextInputCustomProps<T>) => {
-  // Handling key pressing
-  const handleKeyPress = (
-    event: NativeSyntheticEvent<TextInputKeyPressEventData>
-  ) => {
-    const {
-      nativeEvent: { key: keyValue },
-    } = event;
-    switch (keyValue) {
-      case "Enter":
-        if (onPressEnter) onPressEnter();
-    }
-  };
-
+  // variables
   const { field, fieldState } = useController<T>({
     name,
     control,
     rules,
     defaultValue,
   });
+  const inputRef = useRef<TextInput>(null);
 
+  // hooks
   useEffect(() => {
     if (defaultValue) {
       handleChangeText(defaultValue);
@@ -140,6 +131,19 @@ export const TextInputCustom = <T extends FieldValues>({
     }
   };
 
+  // Handling key pressing
+  const handleKeyPress = (
+    event: NativeSyntheticEvent<TextInputKeyPressEventData>
+  ) => {
+    const {
+      nativeEvent: { key: keyValue },
+    } = event;
+    switch (keyValue) {
+      case "Enter":
+        if (onPressEnter) onPressEnter();
+    }
+  };
+
   return (
     <>
       {variant === "labelOutside" && (
@@ -167,14 +171,15 @@ export const TextInputCustom = <T extends FieldValues>({
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {variant !== "labelOutside" && (
-              <View>
+              <Pressable onPress={() => inputRef.current?.focus()}>
                 <BrandText style={[styles.labelText, fontMedium10, labelStyle]}>
                   {label}
                 </BrandText>
                 <SpacerColumn size={0.5} />
-              </View>
+              </Pressable>
             )}
             <TextInput
+              ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
               onChangeText={handleChangeText}

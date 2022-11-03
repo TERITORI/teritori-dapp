@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import longCardSVG from "../../../assets/cards/long-card.svg";
@@ -11,12 +11,15 @@ import { NameDataForm } from "../../components/teritoriNameService/NameDataForm"
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
+import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { defaultMintFee, getMintCost } from "../../utils/fee";
 import {
   getFirstKeplrAccount,
+  getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
@@ -24,7 +27,7 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { isTokenOwnedByUser } from "../../utils/tns";
-import { defaultMetaData, Metadata } from "../../utils/types/tns";
+import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 
@@ -80,9 +83,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const [initialized, setInitialized] = useState(false);
   const [isSuccessModal, setSuccessModal] = useState(false);
   const { name } = useTNS();
-  const { setLoadingFullScreen, setToastError, setToastSuccess } =
-    useFeedbacks();
-  const { tokens, loadingTokens } = useTokenList();
+  const { setToastError, setToastSuccess } = useFeedbacks();
+  const { tokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
   const contractAddress = process.env
@@ -94,44 +96,25 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
 
   const initData = async () => {
     try {
-      const signingClient = await getSigningCosmWasmClient();
+      const cosmwasmClient = await getNonSigningCosmWasmClient();
+
+      const client = new TeritoriNameServiceQueryClient(
+        cosmwasmClient,
+        contractAddress
+      );
 
       // If this query fails it means that the token does not exist.
-      const token = await signingClient.queryContractSmart(contractAddress, {
-        nft_info: {
-          token_id: normalizedTokenId,
-        },
+      const { extension } = await client.nftInfo({
+        tokenId: normalizedTokenId,
       });
-      // return token.extension;
-      const tokenData: Metadata = {
-        image: token.extension.image,
-        user_header_image: token.extension.user_header_image,
-        image_data: token.extension.image_data,
-        email: token.extension.email,
-        external_url: token.extension.external_url,
-        public_name: token.extension.public_name,
-        public_bio: token.extension.public_bio,
-        twitter_id: token.extension.twitter_id,
-        discord_id: token.extension.discord_id,
-        telegram_id: token.extension.telegram_id,
-        keybase_id: token.extension.keybase_id,
-        validator_operator_address: token.extension.validator_operator_address,
-      };
-      setInitialData(tokenData);
+      setInitialData(extension);
       setInitialized(true);
-      setLoadingFullScreen(false);
     } catch {
       setInitialized(true);
-      setLoadingFullScreen(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
 
   // ==== Init
   useFocusEffect(() => {
@@ -140,31 +123,15 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     if (name && userHasCoWallet && isTokenOwnedByUser(tokens, name)) onClose();
 
     if (!initialized) {
-      setLoadingFullScreen(true);
       initData();
     }
   });
 
   // FIXME: typesafe data
-  const submitData = async (data: any) => {
+  const submitData = async (data: Metadata) => {
     if (!isKeplrConnected) {
       return;
     }
-    setLoadingFullScreen(true);
-    const {
-      image, // TODO - support later
-      user_header_image,
-      // image_data
-      email,
-      external_url,
-      // public_name, // Useless because TNSContext ?
-      public_bio,
-      twitter_id,
-      discord_id,
-      telegram_id,
-      keybase_id,
-      validator_operator_address,
-    } = data;
 
     try {
       const walletAddress = (await getFirstKeplrAccount()).address;
@@ -173,21 +140,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
         mint: {
           owner: walletAddress,
           token_id: normalizedTokenId,
-          token_uri: null, // TODO - support later
-          extension: {
-            image,
-            user_header_image,
-            image_data: null, // TODO - support later
-            email,
-            external_url,
-            public_name: name + process.env.TLD,
-            public_bio,
-            twitter_id,
-            discord_id,
-            telegram_id,
-            keybase_id,
-            validator_operator_address,
-          },
+          extension: data,
         },
       };
 
@@ -209,7 +162,6 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
         });
 
         setSuccessModal(true);
-        setLoadingFullScreen(false);
       }
     } catch (err) {
       console.warn(err);
@@ -223,7 +175,6 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
         title: "Something went wrong!",
         message,
       });
-      setLoadingFullScreen(false);
     }
   };
 
