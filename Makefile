@@ -123,7 +123,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	rm -fr $(VAULT_REPO)
 	git clone git@github.com:TERITORI/$(VAULT_REPO).git
-	cd $(VAULT_REPO) && git checkout f48c7fe8869f2d83dc61308ceb37c64d3bb7e4c6
+	cd $(VAULT_REPO) && git checkout 75a692533b9188587ebfa909c5576376b8d65999
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \

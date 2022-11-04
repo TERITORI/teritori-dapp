@@ -6,38 +6,17 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { Uint128, Addr, AllNftsInVaultResponse, NFTInfo, ConfigResponse, ExecuteMsg, Binary, Cw721ReceiveMsg, InstantiateMsg, NftInfoResponse, NftListResponse, NftOwnerInfoResponse, QueryMsg, RoyaltiesInfoResponse, RoyaltyInfo } from "./TeritoriNftVault.types";
+import { Uint128, AllNftsInVaultResponse, NFTInfo, ConfigResponse, ExecuteMsg, Binary, Cw721ReceiveMsg, InstantiateMsg, NftInfoResponse, NftListResponse, NftOwnerInfoResponse, NftQueryMsg, Cw2981QueryMsg, QueryMsg, RoyaltiesInfoResponse } from "./TeritoriNftVault.types";
 export interface TeritoriNftVaultReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<ConfigResponse>;
-  nftList: ({
-    wallet
-  }: {
-    wallet: string;
-  }) => Promise<NftListResponse>;
-  allNftsInVault: ({
-    limit,
-    startAfter
-  }: {
-    limit?: number;
-    startAfter?: string;
-  }) => Promise<AllNftsInVaultResponse>;
   nftInfo: ({
-    nftContractAddr,
-    nftTokenId,
-    wallet
-  }: {
-    nftContractAddr: string;
-    nftTokenId: string;
-    wallet: string;
-  }) => Promise<NftInfoResponse>;
-  nftOwnerInfo: ({
     nftContractAddr,
     nftTokenId
   }: {
     nftContractAddr: string;
     nftTokenId: string;
-  }) => Promise<NftOwnerInfoResponse>;
+  }) => Promise<NftInfoResponse>;
 }
 export class TeritoriNftVaultQueryClient implements TeritoriNftVaultReadOnlyInterface {
   client: CosmWasmClient;
@@ -47,10 +26,7 @@ export class TeritoriNftVaultQueryClient implements TeritoriNftVaultReadOnlyInte
     this.client = client;
     this.contractAddress = contractAddress;
     this.config = this.config.bind(this);
-    this.nftList = this.nftList.bind(this);
-    this.allNftsInVault = this.allNftsInVault.bind(this);
     this.nftInfo = this.nftInfo.bind(this);
-    this.nftOwnerInfo = this.nftOwnerInfo.bind(this);
   }
 
   config = async (): Promise<ConfigResponse> => {
@@ -58,57 +34,15 @@ export class TeritoriNftVaultQueryClient implements TeritoriNftVaultReadOnlyInte
       config: {}
     });
   };
-  nftList = async ({
-    wallet
-  }: {
-    wallet: string;
-  }): Promise<NftListResponse> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      nft_list: {
-        wallet
-      }
-    });
-  };
-  allNftsInVault = async ({
-    limit,
-    startAfter
-  }: {
-    limit?: number;
-    startAfter?: string;
-  }): Promise<AllNftsInVaultResponse> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      all_nfts_in_vault: {
-        limit,
-        start_after: startAfter
-      }
-    });
-  };
   nftInfo = async ({
-    nftContractAddr,
-    nftTokenId,
-    wallet
-  }: {
-    nftContractAddr: string;
-    nftTokenId: string;
-    wallet: string;
-  }): Promise<NftInfoResponse> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      nft_info: {
-        nft_contract_addr: nftContractAddr,
-        nft_token_id: nftTokenId,
-        wallet
-      }
-    });
-  };
-  nftOwnerInfo = async ({
     nftContractAddr,
     nftTokenId
   }: {
     nftContractAddr: string;
     nftTokenId: string;
-  }): Promise<NftOwnerInfoResponse> => {
+  }): Promise<NftInfoResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
-      nft_owner_info: {
+      nft_info: {
         nft_contract_addr: nftContractAddr,
         nft_token_id: nftTokenId
       }
