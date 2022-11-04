@@ -11,21 +11,29 @@ export const UserImage: React.FC<{
 }> = ({ image, style, children }) => {
   return (
     <View style={style}>
-      {image && (
-        <Image
-          source={{ uri: ipfsURLToHTTPURL(image || "") }}
-          style={{
-            width: 132,
-            aspectRatio: 1,
-            marginBottom: 20,
-            position: "absolute",
-            borderRadius: 24,
+      <Image
+        source={{
+          uri: ipfsURLToHTTPURL(
+            image
+              ? image
+              : process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
+          ),
+        }} // TODO: proper fallback
+        style={[
+          {
             top: 32,
             left: 32,
             zIndex: 2,
-          }}
-        />
-      )}
+            marginBottom: 20,
+            position: "absolute",
+            borderRadius: 24,
+          },
+          {
+            width: 132,
+            aspectRatio: 1,
+          },
+        ]}
+      />
       <SVG source={userImageFrameSVG} width={200} height={200} />
       {children}
     </View>
