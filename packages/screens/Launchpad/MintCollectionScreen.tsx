@@ -32,6 +32,7 @@ import {
   neutral33,
   neutral67,
   neutral77,
+  neutralA3,
   pinkDefault,
   primaryColor,
   yellowDefault,
@@ -259,20 +260,32 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               )}
 
               {mintAddress === process.env.THE_RIOT_COLLECTION_ADDRESS && (
-                <ExternalLink
-                  externalUrl="https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b"
-                  style={[
-                    fontSemibold14,
-                    {
-                      color: neutral67,
-                      textDecorationLine: "none",
-                      marginBottom: 24,
-                    },
-                  ]}
-                  numberOfLines={1}
-                >
-                  Terms of Service
-                </ExternalLink>
+                <View style={{ flexDirection: "row", marginBottom: 24 }}>
+                  <BrandText
+                    style={[
+                      fontSemibold14,
+                      {
+                        color: neutralA3,
+                        textDecorationLine: "none",
+                      },
+                    ]}
+                  >
+                    {'By clicking "Mint now", you agree to the '}
+                  </BrandText>
+                  <ExternalLink
+                    externalUrl="https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b"
+                    style={[
+                      fontSemibold14,
+                      {
+                        color: neutral67,
+                        textDecorationLine: "none",
+                      },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    Terms of Service
+                  </ExternalLink>
+                </View>
               )}
             </View>
 
