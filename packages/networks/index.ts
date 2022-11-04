@@ -4,6 +4,7 @@ import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { GasPrice } from "cosmwasm";
 
 import { getKeplr } from "../utils/keplr";
+import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
@@ -12,6 +13,7 @@ export * from "./types";
 
 export const allNetworks = [
   teritoriNetwork,
+  cosmosNetwork,
   teritoriTestnetNetwork,
   cosmosThetaNetwork,
 ];
