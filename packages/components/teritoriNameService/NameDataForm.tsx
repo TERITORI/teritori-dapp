@@ -175,7 +175,7 @@ export const NameDataForm: React.FC<{
         name="discord_id"
         style={inputStyle}
         label="DISCORD"
-        placeHolder="Link to Discord group"
+        placeHolder="Link to Discord"
         value={discord_id}
         onChangeText={setDiscord}
         squaresBackgroundColor={neutral17}

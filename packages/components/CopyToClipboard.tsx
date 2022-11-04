@@ -9,22 +9,28 @@ import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 
-export const CopyToClipboard: React.FC<{
-  text: string;
-  squaresBackgroundColor?: string;
-}> = ({ text, squaresBackgroundColor }) => {
+export const useCopyToClipboard = () => {
   const { setToastSuccess } = useFeedbacks();
 
-  const copyToClipboard = () => {
+  const copyToClipboard = (text: string, successText?: string) => {
     setToastSuccess({
-      title: "Copied",
+      title: successText || "Copied",
       message: "",
     });
     Clipboard.setString(text);
   };
 
+  return { copyToClipboard };
+};
+
+export const CopyToClipboard: React.FC<{
+  text: string;
+  squaresBackgroundColor?: string;
+}> = ({ text, squaresBackgroundColor }) => {
+  const { copyToClipboard } = useCopyToClipboard();
+
   return (
-    <TouchableOpacity onPress={copyToClipboard}>
+    <TouchableOpacity onPress={() => copyToClipboard(text)}>
       <TertiaryBox
         height={40}
         width={332}

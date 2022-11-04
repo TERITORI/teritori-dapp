@@ -103,7 +103,7 @@ export const prettyTokenData = (tokenData: Metadata): PrettyTokenData[] => {
         break;
       case "discord_id":
         finalDatas[5] = {
-          displayLabel: "Discord group",
+          displayLabel: "Discord",
           value: value as string,
         };
         break;

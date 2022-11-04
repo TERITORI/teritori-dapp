@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, useWindowDimensions, View } from "react-native";
+import { Image, Linking, useWindowDimensions, View } from "react-native";
 
 import defaultUserProfileBannerPNG from "../../../assets/default-images/default-user-profile-banner.png";
 import discordSVG from "../../../assets/icons/discord.svg";
@@ -14,6 +14,7 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral77, withAlpha } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { useCopyToClipboard } from "../CopyToClipboard";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
 import { SVG } from "../SVG";
 import { tinyAddress } from "../WalletSelector";
@@ -27,6 +28,7 @@ export const UPPIntro: React.FC<{
   metadata?: (Metadata & { tokenId: string }) | null;
   isUserOwner?: boolean;
 }> = ({ userId, metadata, isUserOwner }) => {
+  const { copyToClipboard } = useCopyToClipboard();
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
   const navigation = useAppNavigation();
@@ -61,6 +63,7 @@ export const UPPIntro: React.FC<{
               iconSvg={websiteSVG}
               text="Website"
               style={socialButtonStyle}
+              onPress={() => Linking.openURL(metadata.external_url || "")}
             />
           )}
           {metadata?.discord_id && (
@@ -68,6 +71,7 @@ export const UPPIntro: React.FC<{
               iconSvg={discordSVG}
               text="Discord"
               style={socialButtonStyle}
+              onPress={() => Linking.openURL(metadata.discord_id || "")}
             />
           )}
           {metadata?.twitter_id && (
@@ -75,6 +79,7 @@ export const UPPIntro: React.FC<{
               iconSvg={twitterSVG}
               text="Twitter"
               style={socialButtonStyle}
+              onPress={() => Linking.openURL(metadata.twitter_id || "")}
             />
           )}
           {width > 670 &&
@@ -92,10 +97,12 @@ export const UPPIntro: React.FC<{
               ]}
             />
           ) : null}
+          {/* This Share button link works only on web */}
           <SocialButtonSecondary
             style={socialButtonStyle}
             iconSvg={shareSVG}
             text="Share"
+            onPress={() => copyToClipboard(window.location.href, "URL copied")}
           />
         </View>
         {isUserOwner && (
