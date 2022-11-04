@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { View, Image } from "react-native";
+import { View } from "react-native";
 
-import connectedImagePNG from "../../../assets/default-images/connected-image-bad.png";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
 import { Overview } from "../../screens/WalletManager/components/Overview";
@@ -15,6 +15,7 @@ import { Quests } from "../Quests";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
+import { UserImage } from "../images/UserImage";
 import { Tabs } from "../tabs/Tabs";
 import { ProfileButton } from "./ProfileButton";
 
@@ -34,6 +35,8 @@ const ConnectedIntro: React.FC = () => {
     useState<keyof typeof walletsManagerTabItems>("overview");
 
   const selectedWallet = useSelectedWallet();
+  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+  console.log("tnsMetadatatnsMetadatatnsMetadata", tnsMetadata);
 
   return (
     <View
@@ -43,10 +46,7 @@ const ConnectedIntro: React.FC = () => {
         width: "100%",
       }}
     >
-      <Image
-        source={connectedImagePNG}
-        style={{ width: 200, aspectRatio: 1, marginBottom: 20 }}
-      />
+      <UserImage image={tnsMetadata?.metadata?.image} />
 
       <ProfileButton style={{ marginTop: 40 }} />
 

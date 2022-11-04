@@ -7,7 +7,6 @@ import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
-import userImageFrameSVG from "../../../assets/user-image-frame.svg";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
@@ -16,12 +15,12 @@ import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { useCopyToClipboard } from "../CopyToClipboard";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
-import { SVG } from "../SVG";
 import { tinyAddress } from "../WalletSelector";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
+import { UserImage } from "../images/UserImage";
 
 export const UPPIntro: React.FC<{
   userId: string;
@@ -117,28 +116,14 @@ export const UPPIntro: React.FC<{
             touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
           />
         )}
-
-        <View
+        <UserImage
+          image={metadata?.image}
           style={{
             position: "absolute",
             top: 217,
             left: 16,
           }}
         >
-          {/* User image */}
-          <Image
-            source={{ uri: ipfsURLToHTTPURL(metadata?.image || "") }}
-            style={{
-              borderRadius: 24,
-              height: 132,
-              width: 132,
-              position: "absolute",
-              top: 32,
-              left: 32,
-              zIndex: 2,
-            }}
-          />
-          <SVG source={userImageFrameSVG} width={196} height={196} />
           {/* Pseudo and bio */}
           <BrandText style={[fontSemibold20, { marginTop: 10 }]}>
             {metadata?.tokenId || ""}
@@ -157,7 +142,7 @@ export const UPPIntro: React.FC<{
           >
             {metadata?.public_bio || ""}
           </BrandText>
-        </View>
+        </UserImage>
       </TertiaryBox>
 
       <View
