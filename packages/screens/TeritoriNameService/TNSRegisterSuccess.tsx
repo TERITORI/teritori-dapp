@@ -1,70 +1,72 @@
 import React from "react";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 
-import discordSVG from "../../../assets/icons/discord.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
-import websiteSVG from "../../../assets/icons/website.svg";
 import { BrandText } from "../../components/BrandText";
 import { SocialButton } from "../../components/buttons/SocialButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useTNS } from "../../context/TNSProvider";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 
-const SOCIAL_BUTTONS = [
-  {
-    text: "Discord",
-    iconSvg: discordSVG,
-    onPress: () => {},
-  },
-  {
-    text: "Website",
-    iconSvg: websiteSVG,
-  },
-  {
-    text: "Twitter",
-    iconSvg: twitterSVG,
-  },
-];
-
-const Footer = () => (
-  <View
-    style={{
-      paddingVertical: 20,
-      paddingHorizontal: 12,
-      borderTopWidth: 1,
-      borderColor: neutral33,
-      width: "100%",
-      alignItems: "center",
-    }}
-  >
-    <BrandText
-      style={{
-        fontSize: 16,
-        color: neutral77,
-        textAlign: "center",
-      }}
-    >
-      Share with friends via
-    </BrandText>
+const Footer: React.FC<{ tokenId: string }> = ({ tokenId }) => {
+  const selectedWallet = useSelectedWallet();
+  // FIXME: this only works on web
+  const SOCIAL_BUTTONS = [
+    {
+      text: "Twitter",
+      iconSvg: twitterSVG,
+      onPress: () => {
+        const message = `I just acquired my '${tokenId}' handle on @TeritoriNetwork, which will allow me to use the decentralized Social Hub! ⛩️
+Alpha v0.1 is live 🔥
+${window.location.origin}/user/tori-${selectedWallet?.address}
+#Teritori #Alpha #SocialHub #Cosmos #IBCGang`;
+        Linking.openURL(
+          `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`
+        );
+      },
+    },
+  ];
+  return (
     <View
       style={{
-        flexDirection: "row",
-        marginTop: 16,
+        paddingVertical: 20,
+        paddingHorizontal: 12,
+        borderTopWidth: 1,
+        borderColor: neutral33,
+        width: "100%",
+        alignItems: "center",
       }}
     >
-      {SOCIAL_BUTTONS.map((button) => (
-        <SocialButton
-          key={button.text}
-          {...button}
-          style={{
-            marginHorizontal: 6,
-          }}
-        />
-      ))}
+      <BrandText
+        style={{
+          fontSize: 16,
+          color: neutral77,
+          textAlign: "center",
+        }}
+      >
+        Share with friends via
+      </BrandText>
+      <View
+        style={{
+          flexDirection: "row",
+          marginTop: 16,
+        }}
+      >
+        {SOCIAL_BUTTONS.map((button) => (
+          <SocialButton
+            key={button.text}
+            {...button}
+            style={{
+              marginHorizontal: 6,
+            }}
+          />
+        ))}
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 interface TNSRegisterSuccessProps {
   visible: boolean;
@@ -83,7 +85,7 @@ export const TNSRegisterSuccess: React.FC<TNSRegisterSuccessProps> = ({
       onClose={() => onClose()}
       width={457}
       label="Success"
-      childrenBottom={Footer()}
+      childrenBottom={<Footer tokenId={name + process.env.TLD} />}
     >
       <View style={{ flex: 1, alignItems: "center", paddingBottom: 20 }}>
         <NameNFT
