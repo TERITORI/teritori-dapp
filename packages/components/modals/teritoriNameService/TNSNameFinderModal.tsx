@@ -10,6 +10,7 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { NameFinderFormType } from "../../../utils/types/tns";
 import { BrandText } from "../../BrandText";
+import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
 
@@ -132,6 +133,14 @@ export const TNSNameFinderModal: React.FC<{
         value={name}
         regexp={new RegExp(/^[a-zA-Z]+$/)}
         style={{ marginBottom: 20, width: "100%" }}
+      />
+      <PrimaryButton
+        size="M"
+        text="Find"
+        touchableStyle={{ marginBottom: 20 }}
+        fullWidth
+        disabled={!name}
+        onPress={onPressEnter}
       />
     </ModalBase>
   );
