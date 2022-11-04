@@ -12,19 +12,13 @@ import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
-import {
-  TeritoriNftVaultClient,
-  TeritoriNftVaultQueryClient,
-} from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
-import {
-  getNonSigningCosmWasmClient,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
@@ -86,20 +80,6 @@ const Content: React.FC<{
     }
     setToastError(initialToastError);
     try {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
-      const vaultClient = new TeritoriNftVaultQueryClient(
-        cosmwasmClient,
-        vaultContractAddress
-      );
-      const ownerAddress = await vaultClient.nftOwnerInfo({
-        nftContractAddr: info.nftAddress,
-        nftTokenId: info.tokenId,
-      });
-      const vaultInfo = await vaultClient.nftInfo({
-        nftContractAddr: info.nftAddress,
-        nftTokenId: info.tokenId,
-        wallet: ownerAddress,
-      });
       const signingCosmwasmClient = await getSigningCosmWasmClient();
       const signingVaultClient = new TeritoriNftVaultClient(
         signingCosmwasmClient,
@@ -112,8 +92,8 @@ const Content: React.FC<{
         undefined,
         [
           {
-            amount: vaultInfo.amount,
-            denom: vaultInfo.denom,
+            amount: info.price,
+            denom: info.priceDenom,
           },
         ]
       );

@@ -84,15 +84,11 @@ const getTNSNFTInfo = async (
   let isListed = false;
 
   try {
-    vaultOwnerAddress = await vaultClient.nftOwnerInfo({
-      nftContractAddr: contractAddress,
-      nftTokenId: tokenId,
-    });
     vaultInfo = await vaultClient.nftInfo({
       nftContractAddr: contractAddress,
       nftTokenId: tokenId,
-      wallet: vaultOwnerAddress,
     });
+    vaultOwnerAddress = vaultInfo.owner;
     isListed = true;
   } catch {
     // ======== The NFT is not on sale
@@ -193,15 +189,11 @@ const getStandardNFTInfo = async (
   let isListed = false;
 
   try {
-    vaultOwnerAddress = await vaultClient.nftOwnerInfo({
-      nftContractAddr: minterConfig.nft_addr,
-      nftTokenId: tokenId,
-    });
     vaultInfo = await vaultClient.nftInfo({
       nftContractAddr: minterConfig.nft_addr,
       nftTokenId: tokenId,
-      wallet: vaultOwnerAddress,
     });
+    vaultOwnerAddress = vaultInfo.owner;
     isListed = true;
   } catch {
     // ======== The NFT is not on sale

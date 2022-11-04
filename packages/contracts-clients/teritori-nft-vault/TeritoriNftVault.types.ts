@@ -5,13 +5,11 @@
 */
 
 export type Uint128 = string;
-export type Addr = string;
 export type AllNftsInVaultResponse = NFTInfo[];
 export interface NFTInfo {
   amount: Uint128;
   denom: string;
-  nft_contract_addr: Addr;
-  nft_token_id: string;
+  owner: string;
   [k: string]: unknown;
 }
 export interface ConfigResponse {
@@ -66,36 +64,82 @@ export interface InstantiateMsg {
 export interface NftInfoResponse {
   amount: Uint128;
   denom: string;
-  nft_contract_addr: Addr;
-  nft_token_id: string;
+  owner: string;
   [k: string]: unknown;
 }
 export type NftListResponse = NFTInfo[];
 export type NftOwnerInfoResponse = string;
+export type NftQueryMsg = {
+  owner_of: {
+    include_expired?: boolean | null;
+    token_id: string;
+  };
+} | {
+  approval: {
+    include_expired?: boolean | null;
+    spender: string;
+    token_id: string;
+  };
+} | {
+  approvals: {
+    include_expired?: boolean | null;
+    token_id: string;
+  };
+} | {
+  all_operators: {
+    include_expired?: boolean | null;
+    limit?: number | null;
+    owner: string;
+    start_after?: string | null;
+  };
+} | {
+  num_tokens: {};
+} | {
+  contract_info: {};
+} | {
+  nft_info: {
+    token_id: string;
+  };
+} | {
+  all_nft_info: {
+    include_expired?: boolean | null;
+    token_id: string;
+  };
+} | {
+  tokens: {
+    limit?: number | null;
+    owner: string;
+    start_after?: string | null;
+  };
+} | {
+  all_tokens: {
+    limit?: number | null;
+    start_after?: string | null;
+  };
+} | {
+  minter: {};
+} | {
+  extension: {
+    msg: Cw2981QueryMsg;
+  };
+};
+export type Cw2981QueryMsg = {
+  RoyaltyInfo: {
+    sale_price: Uint128;
+    token_id: string;
+    [k: string]: unknown;
+  };
+} | {
+  CheckRoyalties: {
+    [k: string]: unknown;
+  };
+};
 export type QueryMsg = {
   config: {
     [k: string]: unknown;
   };
 } | {
-  nft_list: {
-    wallet: string;
-    [k: string]: unknown;
-  };
-} | {
-  all_nfts_in_vault: {
-    limit?: number | null;
-    start_after?: string | null;
-    [k: string]: unknown;
-  };
-} | {
   nft_info: {
-    nft_contract_addr: string;
-    nft_token_id: string;
-    wallet: string;
-    [k: string]: unknown;
-  };
-} | {
-  nft_owner_info: {
     nft_contract_addr: string;
     nft_token_id: string;
     [k: string]: unknown;
@@ -104,10 +148,5 @@ export type QueryMsg = {
 export interface RoyaltiesInfoResponse {
   address: string;
   royalty_amount: Uint128;
-  [k: string]: unknown;
-}
-export interface RoyaltyInfo {
-  sale_price: Uint128;
-  token_id: string;
   [k: string]: unknown;
 }
