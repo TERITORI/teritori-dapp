@@ -1,10 +1,7 @@
 package collections
 
 import (
-	"context"
 	"time"
-
-	"github.com/volatiletech/sqlboiler/v4/queries"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
@@ -16,14 +13,16 @@ import (
 type teritoriCollectionsProvider struct {
 	indexerDB *gorm.DB
 	logger    *zap.Logger
+	whitelist []string
 }
 
 var _ CollectionsProvider = (*teritoriCollectionsProvider)(nil)
 
-func NewTeritoriCollectionsProvider(indexerDB *gorm.DB, logger *zap.Logger) CollectionsProvider {
+func NewTeritoriCollectionsProvider(indexerDB *gorm.DB, whitelist []string, logger *zap.Logger) CollectionsProvider {
 	return &teritoriCollectionsProvider{
 		indexerDB: indexerDB,
 		logger:    logger,
+		whitelist: whitelist,
 	}
 }
 
@@ -41,16 +40,13 @@ type DBCollectionWithExtra struct {
 func (p *teritoriCollectionsProvider) Collections(limit int, offset int) chan *marketplacepb.Collection {
 	ch := make(chan *marketplacepb.Collection)
 
-	db, err := p.indexerDB.DB()
-	if err != nil {
-		p.logger.Error("failed to get database from gorm.DB object", zap.Error(err))
-		close(ch)
-		return ch
-	}
-	rows, err := db.QueryContext(context.Background(), `
+	var collections []DBCollectionWithExtra
+
+	err := p.indexerDB.Raw(`
 	with tori_collections as (
 		SELECT c.*, tc.mint_contract_address, tc.creator_address FROM collections AS c
 		INNER join teritori_collections tc on tc.collection_id = c.id
+    WHERE tc.mint_contract_address IN ?
 	),
 	nft_by_collection as (
 	SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
@@ -60,23 +56,15 @@ func (p *teritoriCollectionsProvider) Collections(limit int, offset int) chan *m
 		select sum(t.usd_price) volume, nbc.id FROM trades AS t
 		INNER join activities AS a on a.id = t.activity_id 
 		INNER join nft_by_collection nbc on nbc.nft_id = a.nft_id
-		where a.time > $1 and a.kind = $2
+		where a.time > ? and a.kind = ?
 		GROUP BY nbc.id
 	)
 	select tc.*, COALESCE((select tbc.volume from trades_by_collection tbc where tbc.id = tc.id), 0) volume 
 	from tori_collections tc
 	order by volume desc
-	limit $3
-	offset $4
-	`, time.Now().AddDate(0, 0, -30), indexerdb.ActivityKindTrade, limit, offset)
-	if err != nil {
-		p.logger.Error("failed to make query", zap.Error(err))
-		close(ch)
-		return ch
-	}
-
-	var collections []DBCollectionWithExtra
-	err = queries.Bind(rows, &collections)
+	limit ?
+	offset ?
+	`, p.whitelist, time.Now().AddDate(0, 0, -30), indexerdb.ActivityKindTrade, limit, offset).Scan(&collections).Error
 	if err != nil {
 		p.logger.Error("failed to make query", zap.Error(err))
 		close(ch)

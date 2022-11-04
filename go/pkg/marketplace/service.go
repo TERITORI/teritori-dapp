@@ -37,6 +37,7 @@ type Config struct {
 	GraphqlEndpoint    string
 	TNSContractAddress string
 	TNSDefaultImageURL string
+	Whitelist          []string
 }
 
 func NewMarketplaceService(ctx context.Context, conf *Config) marketplacepb.MarketplaceServiceServer {
@@ -46,7 +47,7 @@ func NewMarketplaceService(ctx context.Context, conf *Config) marketplacepb.Mark
 		upcomingLaunchesProvider:            collections.NewUpcomingLaunchesProvider(ctx, conf.Logger),
 		collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 		collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
-		teritoriFeaturesCollectionsProvider: collections.NewTeritoriCollectionsProvider(conf.IndexerDB, conf.Logger),
+		teritoriFeaturesCollectionsProvider: collections.NewTeritoriCollectionsProvider(conf.IndexerDB, conf.Whitelist, conf.Logger),
 	}
 }
 
