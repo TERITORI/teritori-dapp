@@ -11,7 +11,8 @@ import (
 )
 
 type TNSInstantiateMsg struct {
-	Name string `json:"name"`
+	Name         string `json:"name"`
+	AdminAddress string `json:"admin_address"`
 }
 
 func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, instantiateMsg *wasmtypes.MsgInstantiateContract) error {
@@ -30,7 +31,7 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  contractAddress,
-			CreatorAddress:      instantiateMsg.Sender,
+			CreatorAddress:      tnsInstantiateMsg.AdminAddress,
 		},
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
