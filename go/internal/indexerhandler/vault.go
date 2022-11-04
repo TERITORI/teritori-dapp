@@ -162,7 +162,6 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 	return nil
 }
 
-const sellerReceiverIndex = 1
 const buyerSpenderIndex = 0
 const priceSpentAmountIndex = 0
 
@@ -195,12 +194,12 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	}
 	buyerID := indexerdb.TeritoriUserID(spenders[buyerSpenderIndex])
 
-	// get seller
+	// get seller, it's the last receiver
 	receivers := e.Events["coin_received.receiver"]
-	if len(receivers) < sellerReceiverIndex+1 {
-		return fmt.Errorf("not enough receivers, wanted %d, got %d", sellerReceiverIndex+1, len(receivers))
+	if len(receivers) < 1 {
+		return fmt.Errorf("not enough receivers, wanted 1, got %d", len(receivers))
 	}
-	sellerID := indexerdb.TeritoriUserID(receivers[sellerReceiverIndex])
+	sellerID := indexerdb.TeritoriUserID(receivers[len(receivers)-1])
 
 	// get price
 	spentAmounts := e.Events["coin_spent.amount"]
