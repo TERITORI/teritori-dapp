@@ -54,7 +54,7 @@ export const LegalFooter: React.FC = ({ children }) => {
       >
         {/*TODO: Gradient text for these 3 ExternalLink [neutral67, "#B7B7B7"]*/}
         <ExternalLink
-          externalUrl="TODO"
+          externalUrl="https://teritori.notion.site/Important-Notice-74e66ded18164023b80602b17b284d93"
           style={[
             fontSemibold14,
             {
@@ -69,7 +69,7 @@ export const LegalFooter: React.FC = ({ children }) => {
         </ExternalLink>
 
         <ExternalLink
-          externalUrl="TODO"
+          externalUrl="https://teritori.notion.site/Privacy-Policy-16e2332744d346db9b78909a91cb44e3"
           style={[
             fontSemibold14,
             {
@@ -84,7 +84,7 @@ export const LegalFooter: React.FC = ({ children }) => {
         </ExternalLink>
 
         <ExternalLink
-          externalUrl="TODO"
+          externalUrl="https://teritori.notion.site/Terms-Conditions-6007160a0c74472cbb75a07bdfdd5f73"
           style={[
             fontSemibold14,
             { color: neutral67, textDecorationLine: "none" },
