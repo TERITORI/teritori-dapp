@@ -65,13 +65,14 @@ func main() {
 
 	// create replay infos
 	replayInfos := []ReplayInfo{
-		{
+		/*{
 			StartHeight:       0,
 			FinalHeight:       1154235,
 			WebsocketEndpoint: "wss://teritorid.65.108.73.219.nip.io/rpc/websocket",
-		},
+		},*/
 		{
-			StartHeight:       1154236,
+			//StartHeight:       1154236,
+			StartHeight:       0,
 			FinalHeight:       -1,
 			WebsocketEndpoint: *tendermintWebsocketEndpoint,
 		},

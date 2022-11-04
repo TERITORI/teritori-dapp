@@ -11,6 +11,11 @@ var AllNetworks = []*Network{
 				CoinGeckoID: "teritori",
 				Decimals:    6,
 			},
+			&IBCCurrency{
+				Denom:         "ibc/a670d9568b3e399316eede40c1181b7aa4bd0695f0b37513ce9b95b977dfc12e",
+				SourceNetwork: "cosmos-hub",
+				SourceDenom:   "uatom",
+			},
 		},
 	},
 	{
