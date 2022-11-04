@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { AddressOfResponse, AdminAddressResponse, Expiration, Timestamp, Uint64, Logo, EmbeddedLogo, Binary, AllNftInfoResponse, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, AllOperatorsResponse, AllTokensResponse, BaseTokensResponse, Uint128, ContractInfoResponse, ExecuteMsg, UpdateSupportedDomainMsg, UpdateMintingFeesMsg, UpdateMetadataMsg, MintMsgForMetadata, GetFullPathResponse, GetParentIdResponse, GetParentInfoResponse, GetPathResponse, InstantiateMsg, IsContractResponse, IsSupportedDomainResponse, ListInfoByAliasResponse, UserInfo, ListUserInfoResponse, MigrateMsg, MintPriceResponse, MinterResponse, MintingFeesResponse, NftInfoResponse, NumTokensResponse, OperatorsResponse, PathsForTokenResponse, PathsResponse, PrimaryAliasResponse, QueryMsg, TokensResponse } from "./TeritoriNameService.types";
+import { AddressOfResponse, AdminAddressResponse, Expiration, Timestamp, Uint64, Logo, EmbeddedLogo, Binary, AllNftInfoResponse, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, AllOperatorsResponse, AllTokensResponse, AuthorizedCharactersResponse, BaseTokensResponse, Uint128, ContractInfoResponse, ExecuteMsg, SetAuthorizedCharactersMsg, UpdateSupportedDomainMsg, UpdateMintingFeesMsg, UpdateMetadataMsg, MintMsgForMetadata, GetFullPathResponse, GetParentIdResponse, GetParentInfoResponse, GetPathResponse, InstantiateMsg, IsContractResponse, IsSupportedDomainResponse, ListInfoByAliasResponse, UserInfo, ListUserInfoResponse, MigrateMsg, MintPriceResponse, MinterResponse, MintingFeesResponse, NftInfoResponse, NumTokensResponse, OperatorsResponse, PathsForTokenResponse, PathsResponse, PrimaryAliasResponse, QueryMsg, TokensResponse } from "./TeritoriNameService.types";
 export interface TeritoriNameServiceReadOnlyInterface {
   contractAddress: string;
   isSupportedDomain: ({
@@ -132,6 +132,11 @@ export interface TeritoriNameServiceReadOnlyInterface {
   }: {
     tokenId: string;
   }) => Promise<MintPriceResponse>;
+  authorizedCharacters: ({
+    charType
+  }: {
+    charType: string;
+  }) => Promise<AuthorizedCharactersResponse>;
 }
 export class TeritoriNameServiceQueryClient implements TeritoriNameServiceReadOnlyInterface {
   client: CosmWasmClient;
@@ -161,6 +166,7 @@ export class TeritoriNameServiceQueryClient implements TeritoriNameServiceReadOn
     this.pathsForToken = this.pathsForToken.bind(this);
     this.listInfoByAlias = this.listInfoByAlias.bind(this);
     this.mintPrice = this.mintPrice.bind(this);
+    this.authorizedCharacters = this.authorizedCharacters.bind(this);
   }
 
   isSupportedDomain = async ({
@@ -421,10 +427,30 @@ export class TeritoriNameServiceQueryClient implements TeritoriNameServiceReadOn
       }
     });
   };
+  authorizedCharacters = async ({
+    charType
+  }: {
+    charType: string;
+  }): Promise<AuthorizedCharactersResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      authorized_characters: {
+        char_type: charType
+      }
+    });
+  };
 }
 export interface TeritoriNameServiceInterface extends TeritoriNameServiceReadOnlyInterface {
   contractAddress: string;
   sender: string;
+  setAuthorizedCharacters: ({
+    charType,
+    chars,
+    isAuthorized
+  }: {
+    charType: string;
+    chars: string;
+    isAuthorized: boolean;
+  }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   updateSupportedDomain: ({
     domain,
     isSupported
@@ -545,6 +571,7 @@ export class TeritoriNameServiceClient extends TeritoriNameServiceQueryClient im
     this.client = client;
     this.sender = sender;
     this.contractAddress = contractAddress;
+    this.setAuthorizedCharacters = this.setAuthorizedCharacters.bind(this);
     this.updateSupportedDomain = this.updateSupportedDomain.bind(this);
     this.updateMintingFees = this.updateMintingFees.bind(this);
     this.updateUsernameLengthCap = this.updateUsernameLengthCap.bind(this);
@@ -562,6 +589,23 @@ export class TeritoriNameServiceClient extends TeritoriNameServiceQueryClient im
     this.revokeAll = this.revokeAll.bind(this);
   }
 
+  setAuthorizedCharacters = async ({
+    charType,
+    chars,
+    isAuthorized
+  }: {
+    charType: string;
+    chars: string;
+    isAuthorized: boolean;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      set_authorized_characters: {
+        char_type: charType,
+        chars,
+        is_authorized: isAuthorized
+      }
+    }, fee, memo, funds);
+  };
   updateSupportedDomain = async ({
     domain,
     isSupported

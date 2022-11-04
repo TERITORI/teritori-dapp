@@ -82,6 +82,7 @@ export interface AllTokensResponse {
   tokens: string[];
   [k: string]: unknown;
 }
+export type AuthorizedCharactersResponse = string;
 export interface BaseTokensResponse {
   tokens: string[];
   [k: string]: unknown;
@@ -98,6 +99,8 @@ export interface ContractInfoResponse {
   [k: string]: unknown;
 }
 export type ExecuteMsg = {
+  set_authorized_characters: SetAuthorizedCharactersMsg;
+} | {
   update_supported_domain: UpdateSupportedDomainMsg;
 } | {
   update_minting_fees: UpdateMintingFeesMsg;
@@ -165,6 +168,12 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 };
+export interface SetAuthorizedCharactersMsg {
+  char_type: string;
+  chars: string;
+  is_authorized: boolean;
+  [k: string]: unknown;
+}
 export interface UpdateSupportedDomainMsg {
   domain: string;
   is_supported: boolean;
@@ -394,6 +403,11 @@ export type QueryMsg = {
 } | {
   mint_price: {
     token_id: string;
+    [k: string]: unknown;
+  };
+} | {
+  authorized_characters: {
+    char_type: string;
     [k: string]: unknown;
   };
 };
