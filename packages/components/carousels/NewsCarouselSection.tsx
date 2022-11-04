@@ -23,7 +23,8 @@ export const NewsCarouselSection: React.FC = () => {
 
   const fakeNews: News[] = [
     {
-      title: "JOIN THE R!OT\nDiscover the first NFT project on Teritori",
+      title: "JOIN THE R!OT",
+      subtitle: "Discover the first NFT project on Teritori",
       text:
         "The R!ot is the first NFT project on Teritori Network. This collection tells the story of the members of The R!ot battling The Legion Club through a complete lore and P2E mechanics.\n" +
         "\n" +
@@ -41,7 +42,8 @@ export const NewsCarouselSection: React.FC = () => {
       },
     },
     {
-      title: "BOOK YOUR HANDLE\nCheck out Teritori Name Service",
+      title: "BOOK YOUR HANDLE",
+      subtitle: "Check out Teritori Name Service",
       text:
         "Teritori Name Service is a way for you to affirm your identity as a Teritorian. TNS are NFTs that can be used throughout the Teritori dApp and of course you can also sell them on the Marketplace.\n" +
         "\n" +
@@ -53,7 +55,8 @@ export const NewsCarouselSection: React.FC = () => {
       },
     },
     {
-      title: "NEW PLANET, NEW RULES, NEW WAYS\nIntroducing the ToriPunks",
+      title: "NEW PLANET, NEW RULES, NEW WAYS",
+      subtitle: "Introducing the ToriPunks",
       text:
         "The ToriPunks are invading Teritori and the least we can say is that they did not come empty-handed.\n" +
         "\n" +
@@ -65,9 +68,8 @@ export const NewsCarouselSection: React.FC = () => {
       },
     },
     {
-      title:
-        "LEAVE YOUR MARK ON THE DAPP\n" +
-        "Participate in the rioters’ footer Graff Contest",
+      title: "LEAVE YOUR MARK ON THE DAPP",
+      subtitle: "Participate in the rioters’ footer Graff Contest",
       text:
         "We're hosting a contest for you to design your own graff/artwork so we can create a special community  NFT collection with your creations.\n" +
         "\n" +

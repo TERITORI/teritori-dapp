@@ -6,10 +6,11 @@ import {
   View,
 } from "react-native";
 
-import { neutral33, neutral77 } from "../../utils/style/colors";
+import { neutral33, neutral77, primaryColor } from "../../utils/style/colors";
 import {
   fontMedium14,
   fontSemibold14,
+  fontSemibold20,
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -18,6 +19,7 @@ import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 
 export type News = {
   title: string;
+  subtitle: string;
   text: string;
   image: ImageSourcePropType;
   button1Label?: string;
@@ -61,7 +63,12 @@ export const NewsBox: React.FC<{
             { justifyContent: "space-between", marginTop: 12 },
           ]}
         >
-          <BrandText style={fontSemibold28}>{news.title}</BrandText>
+          <View>
+            <BrandText style={[fontSemibold28, { color: primaryColor }]}>
+              {news.title}
+            </BrandText>
+            <BrandText style={fontSemibold20}>{news.subtitle}</BrandText>
+          </View>
 
           <BrandText
             style={[fontSemibold14, { marginTop: 28, color: neutral77 }]}
