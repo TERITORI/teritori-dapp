@@ -6,7 +6,7 @@ import { NFTAttribute } from "../../utils/types/nft";
 import { ToggleableButton } from "../buttons/ToggleableButton";
 import { NFTAttributeCard } from "../cards/NFTAttributeCard";
 
-const previewCount = 8;
+const previewCount = 9;
 
 export const NFTAttributes: React.FC<{
   nftAttributes?: NFTAttribute[];
@@ -26,7 +26,7 @@ export const NFTAttributes: React.FC<{
         {/*TODO: Responsive*/}
         {(isMoreDisplayed
           ? nftAttributes
-          : nftAttributes.slice(0, previewCount + 1)
+          : nftAttributes.slice(0, previewCount)
         ).map((attribute, index) => (
           <NFTAttributeCard
             key={index}
