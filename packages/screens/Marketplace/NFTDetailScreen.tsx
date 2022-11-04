@@ -1,10 +1,9 @@
 import { ScrollView, Target } from "@nandorojo/anchor";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { BackTo } from "../../components/navigation/BackTo";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
@@ -19,7 +18,7 @@ import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC } from "../../utils/navigation";
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
 
@@ -64,8 +63,7 @@ export interface NFTInfo {
 
 const Content: React.FC<{
   id: string;
-  setCollectionInfo: (info: CollectionInfoSmall) => void;
-}> = ({ id, setCollectionInfo }) => {
+}> = ({ id }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("main");
   const { setToastError } = useFeedbacks();
@@ -139,14 +137,6 @@ const Content: React.FC<{
     return reply;
   }, [cancelListing, refresh]);
 
-  // Used to send Collection name and mintAddress to the parent ScreenContainer (BackTo)
-  useEffect(() => {
-    setCollectionInfo({
-      name: info?.collectionName || "",
-      mintAddress: info?.mintAddress || "",
-    });
-  }, [info?.mintAddress]);
-
   if (!id.startsWith("tori-")) {
     return (
       <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
@@ -205,12 +195,6 @@ const Content: React.FC<{
   }
 };
 
-// Just name and mintAddress
-type CollectionInfoSmall = {
-  name: string;
-  mintAddress: string;
-};
-
 export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   route: {
     params: { id },
@@ -219,30 +203,9 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   // needed for emoji
   id = decodeURIComponent(id);
 
-  const navigation = useAppNavigation();
-
-  const [collectionInfo, setCollectionInfo] = useState<CollectionInfoSmall>();
-
   return (
-    <ScreenContainer
-      fullWidth
-      footerChildren={<></>}
-      noScroll
-      noMargin
-      headerChildren={
-        collectionInfo?.mintAddress ? (
-          <BackTo
-            label={collectionInfo.name}
-            onPress={() =>
-              navigation.navigate("Collection", {
-                id: id.split("-").slice(0, -1).join("-"),
-              })
-            }
-          />
-        ) : undefined
-      }
-    >
-      <Content key={id} id={id} setCollectionInfo={setCollectionInfo} />
+    <ScreenContainer fullWidth footerChildren={<></>} noScroll noMargin>
+      <Content key={id} id={id} />
     </ScreenContainer>
   );
 };

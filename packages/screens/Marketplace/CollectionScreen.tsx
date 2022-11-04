@@ -20,7 +20,6 @@ import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSeco
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
 import { Footer } from "../../components/footers/Footer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
-import { BackTo } from "../../components/navigation/BackTo";
 import { NFTs } from "../../components/nfts/NFTs";
 import { SortButton } from "../../components/sorts/SortButton";
 import { SpacerRow } from "../../components/spacer";
@@ -329,13 +328,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
 
   // returns
   return (
-    <ScreenContainer
-      fullWidth
-      footerChildren={<></>}
-      noMargin
-      noScroll
-      headerChildren={<BackTo label="Collection Profile" />}
-    >
+    <ScreenContainer fullWidth footerChildren={<></>} noMargin noScroll>
       <ScrollView
         style={{ width: "100%" }}
         contentContainerStyle={{ alignItems: "center" }}
