@@ -2,11 +2,25 @@ import React from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
-import { WALLETS } from "../../utils/fakeData/walletManager";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral33 } from "../../utils/style/colors";
 import { WalletItem } from "./WalletItem";
 
 export const Wallets: React.FC = () => {
+  const selectedWallet = useSelectedWallet();
+
+  const wallets = selectedWallet
+    ? [
+        {
+          id: 0,
+          title: "Teritori",
+          address: selectedWallet.address,
+          pendingReward: 42,
+          staked: 42,
+        },
+      ]
+    : [];
+
   return (
     <View
       style={{
@@ -18,10 +32,10 @@ export const Wallets: React.FC = () => {
     >
       <BrandText style={{ marginRight: 20, fontSize: 20 }}>Wallets</BrandText>
 
-      {WALLETS.map((item, index) => (
+      {wallets.map((item, index) => (
         <WalletItem
           key={item.title}
-          itemsCount={WALLETS.length}
+          itemsCount={wallets.length}
           item={item}
           index={index}
         />
