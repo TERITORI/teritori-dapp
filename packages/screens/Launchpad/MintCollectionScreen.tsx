@@ -11,6 +11,7 @@ import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
 
 import { BrandText } from "../../components/BrandText";
+import { ExternalLink } from "../../components/ExternalLink";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -29,6 +30,7 @@ import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import {
   neutral33,
+  neutral67,
   neutral77,
   pinkDefault,
   primaryColor,
@@ -254,6 +256,23 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     <CollectionSocialButtons collectionInfo={info} />
                   </View>
                 </View>
+              )}
+
+              {mintAddress === process.env.THE_RIOT_COLLECTION_ADDRESS && (
+                <ExternalLink
+                  externalUrl="https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b"
+                  style={[
+                    fontSemibold14,
+                    {
+                      color: neutral67,
+                      textDecorationLine: "none",
+                      marginBottom: 24,
+                    },
+                  ]}
+                  numberOfLines={1}
+                >
+                  Terms of Service
+                </ExternalLink>
               )}
             </View>
 
