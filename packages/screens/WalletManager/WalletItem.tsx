@@ -1,6 +1,11 @@
 import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
-import { View, TouchableOpacity, useWindowDimensions } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  useWindowDimensions,
+  Linking,
+} from "react-native";
 
 import copySVG from "../../../assets/icons/copy.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
@@ -9,7 +14,8 @@ import { Menu } from "../../components/Menu";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { neutral33, neutral77, neutralA3 } from "../../utils/style/colors";
+import { neutral33, neutral77 } from "../../utils/style/colors";
+import { accountExplorerLink } from "../../utils/teritori";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 export interface WalletItemProps {
   index: number;
@@ -72,8 +78,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
                   fontSize: 12,
                 }}
               >
-                {item.address.substr(0, 5)}...
-                {item.address.substr(-4)}
+                {item.address}
               </BrandText>
               <TouchableOpacity
                 onPress={() => {
@@ -124,15 +129,16 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {String(item.staked).split(".")[0]}
-            <BrandText
+            {/*String(item.staked).split(".")[0]*/}
+            Coming Soon
+            {/*<BrandText
               style={{
                 color: neutralA3,
                 fontSize: 14,
               }}
             >
               .{String(item.staked).split(".")[1]}
-            </BrandText>
+            </BrandText>*/}
           </BrandText>
         </View>
         <View
@@ -154,25 +160,27 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {String(item.pendingReward).split(".")[0]}
-            <BrandText
+            {/*String(item.pendingReward).split(".")[0]*/}
+            Coming Soon
+            {/*<BrandText
               style={{
                 color: neutralA3,
                 fontSize: 14,
               }}
             >
               .{String(item.pendingReward).split(".")[1]}
-            </BrandText>
+            </BrandText>*/}
           </BrandText>
         </View>
 
         {width > 1150 && (
           <>
-            {" "}
             <SecondaryButton
               size="XS"
               text="Claim reward"
-              onPress={() => {}}
+              onPress={() =>
+                setToastSuccess({ title: "Coming Soon", message: "" })
+              }
               style={{
                 backgroundColor: neutral33,
                 marginRight: 16,
@@ -198,7 +206,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               : []),
             {
               label: "View on Explorer",
-              onPress: () => {},
+              onPress: () => Linking.openURL(accountExplorerLink(item.address)),
             },
             {
               label: "Rename address",

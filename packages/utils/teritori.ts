@@ -165,3 +165,10 @@ export const txExplorerLink = (txHash: string) => {
     txHash
   );
 };
+
+export const accountExplorerLink = (address: string) => {
+  return (process.env.TERITORI_ACCOUNT_EXPLORER_URL || "").replace(
+    "$address",
+    address
+  );
+};

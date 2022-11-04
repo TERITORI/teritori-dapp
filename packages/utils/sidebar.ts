@@ -1,4 +1,4 @@
-import chainSVG from "../../assets/icons/chain.svg";
+// import chainSVG from "../../assets/icons/chain.svg";
 import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
@@ -55,11 +55,13 @@ export const SIDEBAR_LIST: SidebarRecordType = {
         icon: walletRegSVG,
         route: "WalletManagerWallets",
       },
+      /*
       chain: {
         title: "All Chains",
         icon: chainSVG,
         route: "WalletManagerChains",
       },
+      */
     },
   },
   staking: {
