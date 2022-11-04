@@ -17,7 +17,8 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
+import { ScreenFC } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -25,7 +26,7 @@ import { layout } from "../../utils/style/layout";
 const CarouselCollectionItem: React.FC<{
   collection: Collection;
 }> = ({ collection }) => {
-  const navigation = useAppNavigation();
+  const navigateToCollection = useNavigateToCollection(collection.id);
 
   return (
     <View
@@ -63,9 +64,7 @@ const CarouselCollectionItem: React.FC<{
         <PrimaryButton
           size="M"
           text="Explore collection"
-          onPress={() =>
-            navigation.navigate("Collection", { id: collection.id })
-          }
+          onPress={navigateToCollection}
         />
       </View>
 

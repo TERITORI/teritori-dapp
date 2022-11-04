@@ -24,6 +24,7 @@ import { NFTSellCard } from "../cards/NFTSellCard";
 import { CollapsableSection } from "../collapsable/CollapsableSection";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TransactionModals } from "../modals/transaction/TransactionModals";
+import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
 import { NFTAttributes } from "./NFTAttributes";
 import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";
@@ -45,12 +46,13 @@ export const NFTMainInfo: React.FC<{
   nftId: string;
   nftInfo?: NFTInfo;
   buy: () => Promise<ExecuteResult | undefined>;
+  showMarketplace: boolean;
   sell: (
     price: string,
     denom: string | undefined
   ) => Promise<ExecuteResult | undefined>;
   cancelListing: () => Promise<ExecuteResult | undefined>;
-}> = ({ nftId, nftInfo, buy, sell, cancelListing }) => {
+}> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const { openTransactionModals } = useTransactionModals();
 
   const [selectedTab, setSelectedTab] =
@@ -158,35 +160,40 @@ export const NFTMainInfo: React.FC<{
             imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
             name={nftInfo?.collectionName}
           />
-
-          {nftInfo?.canSell && (
-            <NFTSellCard
-              style={{ marginTop: 24, marginBottom: 40 }}
-              onPressSell={sell}
-              networkId={process.env.TERITORI_NETWORK_ID || ""}
-              denom={nftInfo.mintDenom}
-            />
-          )}
-          {nftInfo?.isListed && !nftInfo?.isOwner && (
-            <NFTPriceBuyCard
-              style={{ marginTop: 24, marginBottom: 40 }}
-              onPressBuy={openTransactionModals}
-              price={nftInfo.price}
-              priceDenom={nftInfo.priceDenom}
-            />
-          )}
-          {nftInfo?.isListed && nftInfo?.isOwner && (
-            <NFTCancelListingCard
-              style={{ marginTop: 24, marginBottom: 40 }}
-              price={nftInfo.price}
-              priceDenom={nftInfo.priceDenom}
-              onPressCancel={cancelListing}
-            />
-          )}
-          {!nftInfo?.isListed && !nftInfo?.isOwner && (
-            <View style={{ marginTop: 24, marginBottom: 40 }}>
-              <BrandText style={{ color: neutral77 }}>Not listed</BrandText>
-            </View>
+          {showMarketplace ? (
+            <>
+              {nftInfo?.canSell && (
+                <NFTSellCard
+                  style={{ marginTop: 24, marginBottom: 40 }}
+                  onPressSell={sell}
+                  networkId={process.env.TERITORI_NETWORK_ID || ""}
+                  denom={nftInfo.mintDenom}
+                />
+              )}
+              {nftInfo?.isListed && !nftInfo?.isOwner && (
+                <NFTPriceBuyCard
+                  style={{ marginTop: 24, marginBottom: 40 }}
+                  onPressBuy={openTransactionModals}
+                  price={nftInfo.price}
+                  priceDenom={nftInfo.priceDenom}
+                />
+              )}
+              {nftInfo?.isListed && nftInfo?.isOwner && (
+                <NFTCancelListingCard
+                  style={{ marginTop: 24, marginBottom: 40 }}
+                  price={nftInfo.price}
+                  priceDenom={nftInfo.priceDenom}
+                  onPressCancel={cancelListing}
+                />
+              )}
+              {!nftInfo?.isListed && !nftInfo?.isOwner && (
+                <View style={{ marginTop: 24, marginBottom: 40 }}>
+                  <BrandText style={{ color: neutral77 }}>Not listed</BrandText>
+                </View>
+              )}
+            </>
+          ) : (
+            <SpacerColumn size={2} />
           )}
           <Tabs
             onSelect={setSelectedTab}
@@ -200,9 +207,11 @@ export const NFTMainInfo: React.FC<{
         </View>
       </View>
 
-      <Target style={styles.collapsableContainer} name="price-history">
-        <CollapsablePiceHistory nftId={nftId} />
-      </Target>
+      {showMarketplace && (
+        <Target style={styles.collapsableContainer} name="price-history">
+          <CollapsablePiceHistory nftId={nftId} />
+        </Target>
+      )}
       <Target name="activity" style={styles.collapsableContainer}>
         <CollapsableSection icon={starSVG} title="Activity" isExpandedByDefault>
           <ActivityTable nftId={nftId} />

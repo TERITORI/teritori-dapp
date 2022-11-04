@@ -14,6 +14,7 @@ import {
 import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
@@ -21,25 +22,6 @@ import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
-
-const screenTabItems = {
-  main: {
-    name: "Main info",
-    scrollTo: "main-info",
-  },
-  price: {
-    name: "Price history",
-    scrollTo: "price-history",
-  },
-  activity: {
-    name: "Activity",
-    scrollTo: "activity",
-  },
-  more: {
-    name: "More from collection",
-    disabled: true,
-  },
-};
 
 export interface NFTInfo {
   name: string;
@@ -71,6 +53,32 @@ const Content: React.FC<{
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.address);
   const { width } = useMaxResolution();
+
+  const collectionAddress = id.split("-")[1];
+  const mintEnded = useMintEnded(`tori-${collectionAddress}`);
+  const showMarketplace =
+    collectionAddress !== process.env.THE_RIOT_COLLECTION_ADDRESS ||
+    (mintEnded !== undefined && mintEnded);
+
+  const screenTabItems = {
+    main: {
+      name: "Main info",
+      scrollTo: "main-info",
+    },
+    price: {
+      name: "Price history",
+      scrollTo: "price-history",
+      disabled: !showMarketplace,
+    },
+    activity: {
+      name: "Activity",
+      scrollTo: "activity",
+    },
+    more: {
+      name: "More from collection",
+      disabled: true,
+    },
+  };
 
   // Query the Vault client to buy the NFT and returns the transaction reply
   const handleBuy = useCallback(async () => {
@@ -188,6 +196,7 @@ const Content: React.FC<{
             buy={handleBuy}
             sell={handleSell}
             cancelListing={handleCancelListing}
+            showMarketplace={showMarketplace}
           />
           <SpacerColumn size={6} />
         </ScrollView>

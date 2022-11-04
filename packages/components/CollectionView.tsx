@@ -3,8 +3,8 @@ import { Image, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { Collection } from "../api/marketplace/v1/marketplace";
+import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
 import { useTNSMetadata } from "../hooks/useTNSMetadata";
-import { useAppNavigation } from "../utils/navigation";
 import { lavenderDefault } from "../utils/style/colors";
 import { BrandText } from "./BrandText";
 import { TertiaryBox } from "./boxes/TertiaryBox";
@@ -18,12 +18,9 @@ export const CollectionView: React.FC<{
 }> = ({ item }) => {
   const creatorAddress = item.creatorId.replace("tori-", "");
   const tnsMetadata = useTNSMetadata(creatorAddress);
-  const navigation = useAppNavigation();
+  const navigateToCollection = useNavigateToCollection(item.id);
   return (
-    <TouchableOpacity
-      onPress={() => navigation.navigate("Collection", { id: item.id })}
-      disabled={!item.id}
-    >
+    <TouchableOpacity onPress={navigateToCollection} disabled={!item.id}>
       <TertiaryBox
         mainContainerStyle={{
           paddingTop: 12,
