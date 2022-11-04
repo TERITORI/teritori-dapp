@@ -1,4 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -16,7 +17,8 @@ import { Metadata } from "../../contracts-clients/teritori-name-service/Teritori
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { defaultMintFee, getMintCost } from "../../utils/fee";
+import { prettyPrice } from "../../utils/coins";
+import { defaultMintFee } from "../../utils/fee";
 import {
   getFirstKeplrAccount,
   getNonSigningCosmWasmClient,
@@ -31,7 +33,9 @@ import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 
-const CostContainer: React.FC = () => {
+const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
+  price,
+}) => {
   const width = 417;
   const height = 80;
 
@@ -65,7 +69,12 @@ const CostContainer: React.FC = () => {
         />
 
         <BrandText style={[fontSemibold14]}>
-          The mint cost for this token is 1,000 Tori
+          The mint cost for this token is{" "}
+          {prettyPrice(
+            process.env.TERITORI_NETWORK_ID || "",
+            price.amount,
+            price.denom
+          )}
         </BrandText>
       </View>
     </View>
@@ -89,8 +98,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const userHasCoWallet = useAreThereWallets();
   const contractAddress = process.env
     .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
-  const mintCost = getMintCost(name);
   const navigation = useAppNavigation();
+  const price = useTNSMintPrice(name + process.env.TLD);
 
   const normalizedTokenId = (name + process.env.TLD).toLowerCase();
 
@@ -129,7 +138,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
 
   // FIXME: typesafe data
   const submitData = async (data: Metadata) => {
-    if (!isKeplrConnected) {
+    if (!isKeplrConnected || !price) {
       return;
     }
 
@@ -152,7 +161,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
         msg,
         defaultMintFee,
         defaultMemo,
-        mintCost
+        [price]
       );
       if (mintedToken) {
         console.log(normalizedTokenId + " successfully minted");
@@ -196,7 +205,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
       }}
     >
       <View style={{ flex: 1, alignItems: "center", paddingBottom: 20 }}>
-        <CostContainer />
+        {!!price && <CostContainer price={price} />}
         <NameNFT
           style={{
             backgroundColor: neutral00,
@@ -218,4 +227,26 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
       <TNSRegisterSuccess visible={isSuccessModal} onClose={handleModalClose} />
     </ModalBase>
   );
+};
+
+const useTNSMintPrice = (tokenId: string) => {
+  const { data } = useQuery(
+    ["tnsMintPrice", tokenId],
+    async () => {
+      const client = await getNonSigningCosmWasmClient();
+      const tnsClient = new TeritoriNameServiceQueryClient(
+        client,
+        process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || ""
+      );
+      console.log("fetching price for", tokenId);
+
+      const info = await tnsClient.contractInfo();
+
+      const amount = await tnsClient.mintPrice({ tokenId });
+
+      return { denom: info.native_denom, amount: amount?.toString() || "0" };
+    },
+    { staleTime: Infinity }
+  );
+  return data;
 };
