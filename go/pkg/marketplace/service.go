@@ -37,16 +37,17 @@ type Config struct {
 	GraphqlEndpoint    string
 	TNSContractAddress string
 	TNSDefaultImageURL string
+	Whitelist          []string
 }
 
 func NewMarketplaceService(ctx context.Context, conf *Config) marketplacepb.MarketplaceServiceServer {
 	// FIXME: validate config
 	return &MarkteplaceService{
-		conf:                                conf,
-		upcomingLaunchesProvider:            collections.NewUpcomingLaunchesProvider(ctx, conf.Logger),
-		collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
-		collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
-		teritoriFeaturesCollectionsProvider: collections.NewTeritoriCollectionsProvider(conf.IndexerDB, conf.Logger),
+		conf:                     conf,
+		upcomingLaunchesProvider: collections.NewUpcomingLaunchesProvider(ctx, conf.Logger),
+		// collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
+		// collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
+		teritoriFeaturesCollectionsProvider: collections.NewTeritoriCollectionsProvider(conf.IndexerDB, conf.Whitelist, conf.Logger),
 	}
 }
 
@@ -72,23 +73,27 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		}
 		return nil
 
-	case marketplacepb.CollectionsRequest_KIND_BY_VOLUME:
-		collections := s.collectionsByVolumeProvider.Collections(int(limit), int(offset))
-		for collection := range collections {
-			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: collection}); err != nil {
-				return errors.Wrap(err, "failed to send collection")
-			}
-		}
-		return nil
+		/*
+			case marketplacepb.CollectionsRequest_KIND_BY_VOLUME:
+				collections := s.collectionsByVolumeProvider.Collections(int(limit), int(offset))
+				for collection := range collections {
+					if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: collection}); err != nil {
+						return errors.Wrap(err, "failed to send collection")
+					}
+				}
+				return nil
+		*/
 
-	case marketplacepb.CollectionsRequest_KIND_BY_MARKETCAP:
-		collections := s.collectionsByMarketCapProvider.Collections(int(limit), int(offset))
-		for collection := range collections {
-			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: collection}); err != nil {
-				return errors.Wrap(err, "failed to send collection")
-			}
-		}
-		return nil
+		/*
+			case marketplacepb.CollectionsRequest_KIND_BY_MARKETCAP:
+				collections := s.collectionsByMarketCapProvider.Collections(int(limit), int(offset))
+				for collection := range collections {
+					if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: collection}); err != nil {
+						return errors.Wrap(err, "failed to send collection")
+					}
+				}
+				return nil
+		*/
 
 	case marketplacepb.CollectionsRequest_KIND_TERITORI_FEATURES:
 		s.conf.Logger.Info("fetch teritori features collections")
@@ -190,6 +195,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	query := s.conf.IndexerDB.
 		Preload("TeritoriNFT").
 		Preload("Collection").
+		Where("burnt = ?", false).
 		Offset(int(offset)).
 		Limit(int(limit)).
 		Order("is_listed DESC")

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
+	"unicode"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
@@ -34,6 +36,7 @@ func main() {
 		dbPass             = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbName             = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser             = fs.String("postgres-user", "", "username for postgreSQL")
+		whitelistString    = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -64,12 +67,18 @@ func main() {
 		panic(errors.Wrap(err, "failed to create logger"))
 	}
 
+	whitelist := strings.Split(*whitelistString, ",")
+	for i, elem := range whitelist {
+		whitelist[i] = strings.TrimFunc(elem, unicode.IsSpace)
+	}
+
 	svc := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
 		Logger:             logger,
 		IndexerDB:          indexerDB,
 		GraphqlEndpoint:    graphqlEndpoint,
 		TNSContractAddress: *tnsContractAddress,
 		TNSDefaultImageURL: *tnsDefaultImageURL,
+		Whitelist:          whitelist,
 	})
 
 	server := grpc.NewServer()

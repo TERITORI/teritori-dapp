@@ -143,7 +143,7 @@ func fetchIPFSJSON(uri string, dst interface{}) error {
 func (h *Handler) blockTime(height int64) (time.Time, error) {
 	cacheKey := fmt.Sprintf("%d", height)
 
-	cached, err := h.blockTimeCache.Get(cacheKey)
+	cached, err := h.config.BlockTimeCache.Get(cacheKey)
 
 	// cache miss
 	if err == bigcache.ErrEntryNotFound {
@@ -158,7 +158,7 @@ func (h *Handler) blockTime(height int64) (time.Time, error) {
 		if err != nil {
 			return time.Time{}, errors.Wrap(err, "failed to marshal time as binary")
 		}
-		if err := h.blockTimeCache.Set(cacheKey, binaryBlockTime); err != nil {
+		if err := h.config.BlockTimeCache.Set(cacheKey, binaryBlockTime); err != nil {
 			return time.Time{}, errors.Wrap(err, "failed to set in cache")
 		}
 

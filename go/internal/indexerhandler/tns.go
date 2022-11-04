@@ -11,7 +11,8 @@ import (
 )
 
 type TNSInstantiateMsg struct {
-	Name string `json:"name"`
+	Name         string `json:"name"`
+	AdminAddress string `json:"admin_address"`
 }
 
 func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, instantiateMsg *wasmtypes.MsgInstantiateContract) error {
@@ -30,7 +31,7 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  contractAddress,
-			CreatorAddress:      instantiateMsg.Sender,
+			CreatorAddress:      tnsInstantiateMsg.AdminAddress,
 		},
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
@@ -104,8 +105,9 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		h.logger.Info("created tns domain", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
 	} else {
 		updates := map[string]interface{}{
-			"deleted_at": nil,
-			"owner_id":   string(ownerId),
+			"burnt":     false,
+			"owner_id":  string(ownerId),
+			"image_uri": "",
 		}
 		if metadata.ImageURI != nil {
 			updates["image_uri"] = *metadata.ImageURI
@@ -126,11 +128,17 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		return errors.Wrap(err, "failed to save quest completion")
 	}
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// create mint activity
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindMint,
-		Time: e.BlockTime,
+		Time: blockTime,
 		Mint: &indexerdb.Mint{
 			// TODO: get price
 			BuyerID: ownerId,

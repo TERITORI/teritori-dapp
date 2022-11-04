@@ -21,13 +21,13 @@ import (
 )
 
 type Message struct {
-	Msg       *codectypes.Any
-	MsgIndex  int
-	MsgID     string
-	TxHash    string
-	Events    EventsMap
-	Log       TendermintTxLog
-	BlockTime time.Time
+	Msg          *codectypes.Any
+	MsgIndex     int
+	MsgID        string
+	TxHash       string
+	Events       EventsMap
+	Log          TendermintTxLog
+	GetBlockTime func() (time.Time, error)
 }
 
 type Config struct {
@@ -38,14 +38,14 @@ type Config struct {
 	TendermintClient     *tmws.Client
 	NetworkID            string
 	CoinGeckoPrices      *coingeckoprices.CoinGeckoPrices
+	BlockTimeCache       *bigcache.BigCache
 }
 
 type Handler struct {
 	db *gorm.DB
 
-	logger         *zap.Logger
-	config         Config
-	blockTimeCache *bigcache.BigCache
+	logger *zap.Logger
+	config Config
 }
 
 func NewHandler(db *gorm.DB, config Config, logger *zap.Logger) (*Handler, error) {
@@ -56,18 +56,10 @@ func NewHandler(db *gorm.DB, config Config, logger *zap.Logger) (*Handler, error
 		logger = zap.NewNop()
 	}
 
-	blockTimeCacheConfig := bigcache.DefaultConfig(time.Duration(0))
-	blockTimeCacheConfig.HardMaxCacheSize = 10
-	blockTimeCache, err := bigcache.NewBigCache(blockTimeCacheConfig)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to init block time cache")
-	}
-
 	return &Handler{
-		db:             db,
-		logger:         logger,
-		config:         config,
-		blockTimeCache: blockTimeCache,
+		db:     db,
+		logger: logger,
+		config: config,
 	}, nil
 }
 
@@ -94,21 +86,27 @@ func (h *Handler) HandleTx(height int64, hash string, tx cosmostx.Tx, logs []Ten
 		return errors.New("messages and results count mismatch")
 	}
 
-	blockTime, err := h.blockTime(height)
-	if err != nil {
-		return errors.Wrap(err, "failed to get block time")
-	}
+	var blockTime *time.Time
 
 	codecMessages := tx.Body.Messages
 	for i, codecMsg := range codecMessages {
 		handlerMsg := Message{
-			Msg:       codecMsg,
-			MsgIndex:  i,
-			MsgID:     fmt.Sprintf("%s-%d", hash, i),
-			Log:       logs[i],
-			TxHash:    hash,
-			Events:    EventsMapFromStringEvents(logs[i].Events),
-			BlockTime: blockTime,
+			Msg:      codecMsg,
+			MsgIndex: i,
+			MsgID:    fmt.Sprintf("%s-%d", hash, i),
+			Log:      logs[i],
+			TxHash:   hash,
+			Events:   EventsMapFromStringEvents(logs[i].Events),
+			GetBlockTime: func() (time.Time, error) {
+				if blockTime == nil {
+					bt, err := h.blockTime(height)
+					if err != nil {
+						return time.Time{}, err
+					}
+					blockTime = &bt
+				}
+				return *blockTime, nil
+			},
 		}
 
 		switch codecMsg.TypeUrl {

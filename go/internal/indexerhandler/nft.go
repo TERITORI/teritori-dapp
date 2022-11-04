@@ -81,11 +81,17 @@ func (h *Handler) handleExecuteSendNFTFallback(e *Message, execMsg *wasmtypes.Ms
 		return errors.Wrap(err, "failed to updated owner in db")
 	}
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// create send activity
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindSendNFT,
-		Time: e.BlockTime,
+		Time: blockTime,
 		SendNFT: &indexerdb.SendNFT{
 			Sender:   indexerdb.TeritoriUserID(execMsg.Sender),
 			Receiver: receiverID,
@@ -131,15 +137,21 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 
 	// delete
 	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
-	if err := h.db.Model(&indexerdb.NFT{}).Where(&indexerdb.NFT{ID: nftId}).UpdateColumn("deleted_at", e.BlockTime).Error; err != nil {
+	if err := h.db.Model(&indexerdb.NFT{}).Where(&indexerdb.NFT{ID: nftId}).UpdateColumn("burnt", true).Error; err != nil {
 		return errors.Wrap(err, "failed to delete nft")
+	}
+
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
 	}
 
 	// create activity
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindBurn,
-		Time: e.BlockTime,
+		Time: blockTime,
 		Burn: &indexerdb.Burn{
 			BurnerID: indexerdb.TeritoriUserID(execMsg.Sender),
 		},
@@ -198,11 +210,17 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 		return errors.Wrap(err, "failed to updated owner in db")
 	}
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// create transfer activity
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindTransferNFT,
-		Time: e.BlockTime,
+		Time: blockTime,
 		TransferNFT: &indexerdb.TransferNFT{
 			Sender:   indexerdb.TeritoriUserID(execMsg.Sender),
 			Receiver: receiverID,
