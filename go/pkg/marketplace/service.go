@@ -190,6 +190,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	query := s.conf.IndexerDB.
 		Preload("TeritoriNFT").
 		Preload("Collection").
+		Where("burnt = ?", false).
 		Offset(int(offset)).
 		Limit(int(limit)).
 		Order("is_listed DESC")

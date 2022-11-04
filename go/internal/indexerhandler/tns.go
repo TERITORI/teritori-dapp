@@ -104,8 +104,9 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		h.logger.Info("created tns domain", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
 	} else {
 		updates := map[string]interface{}{
-			"deleted_at": nil,
-			"owner_id":   string(ownerId),
+			"burnt":     false,
+			"owner_id":  string(ownerId),
+			"image_uri": "",
 		}
 		if metadata.ImageURI != nil {
 			updates["image_uri"] = *metadata.ImageURI

@@ -2,7 +2,6 @@ package indexerdb
 
 import (
 	"database/sql"
-	"time"
 )
 
 type NFT struct {
@@ -25,7 +24,7 @@ type NFT struct {
 
 	// "has many" relations
 	Activities []Activity
-	DeletedAt  *time.Time
+	Burnt      bool
 }
 
 type TeritoriNFT struct {

@@ -131,7 +131,7 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 
 	// delete
 	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
-	if err := h.db.Model(&indexerdb.NFT{}).Where(&indexerdb.NFT{ID: nftId}).UpdateColumn("deleted_at", e.BlockTime).Error; err != nil {
+	if err := h.db.Model(&indexerdb.NFT{}).Where(&indexerdb.NFT{ID: nftId}).UpdateColumn("burnt", true).Error; err != nil {
 		return errors.Wrap(err, "failed to delete nft")
 	}
 
