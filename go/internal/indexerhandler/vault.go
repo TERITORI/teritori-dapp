@@ -35,12 +35,16 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 	// get collection
 	var collection indexerdb.Collection
 	r := h.db.
-		Joins("TeritoriCollection").
-		Where("TeritoriCollection__nft_contract_address = ?", contractAddress).
+		Joins("JOIN Teritori_collections ON Teritori_collections.collection_id = collections.id").
+		Where("Teritori_collections.nft_contract_address = ?", contractAddress).
 		Find(&collection)
 	if err := r.
 		Error; err != nil {
 		return errors.Wrap(err, "failed to query collections")
+	}
+	if r.RowsAffected < 1 {
+		//Did not find any collection with the given contract address
+		return nil
 	}
 	if collection.TeritoriCollection == nil {
 		return errors.New("no teritori info on collection")
