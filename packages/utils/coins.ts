@@ -27,16 +27,21 @@ export const prettyPrice = (
 ) => {
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
-    let val = Decimal.fromAtomics(
-      value,
-      currency.decimals
-    ).toFloatApproximation();
+    const decval = Decimal.fromAtomics(value, currency.decimals);
+    if (
+      !decval.isGreaterThanOrEqual(
+        Decimal.fromUserInput("10", currency.decimals)
+      )
+    ) {
+      return `${decval.toString()} ${currency.displayName}`;
+    }
+    let val = decval.toFloatApproximation();
     let unitIndex = 0;
     while (val >= 1000 && unitIndex !== units.length - 1) {
       val /= 1000;
       unitIndex++;
     }
-    return `${trimFixed(val.toFixed(currency.decimals))} ${units[unitIndex]}${
+    return `${trimFixed(val.toFixed(2))} ${units[unitIndex]}${
       currency.displayName
     }`;
   }
