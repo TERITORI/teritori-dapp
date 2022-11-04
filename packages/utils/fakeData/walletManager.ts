@@ -16,20 +16,3 @@ export const WALLET_CHAIN_ASSETS = [
     isFavorite: false,
   },
 ];
-
-export const WALLET_TOKEN_PIE = [
-  {
-    title: "Solana",
-    x: 0,
-    y: 4,
-    amount: 400,
-    percent: 80,
-  },
-  {
-    title: "Cosmos Hub",
-    x: 0,
-    y: 1,
-    amount: 100,
-    percent: 20,
-  },
-];

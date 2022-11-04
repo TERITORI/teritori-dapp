@@ -8,6 +8,7 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
     coingeckoId: "teritori",
     icon: "icons/networks/teritori-circle.svg",
     kind: "native",
+    color: "#16BBFF",
   },
   {
     kind: "ibc",

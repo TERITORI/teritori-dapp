@@ -3,16 +3,30 @@ import { View, ViewStyle } from "react-native";
 import { VictoryPie } from "victory-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { WALLET_TOKEN_PIE } from "../../../utils/fakeData/walletManager";
+import { CurrencyIcon } from "../../../components/CurrencyIcon";
+import { useBalances } from "../../../hooks/useBalances";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getNativeCurrency } from "../../../networks";
 import { neutral33 } from "../../../utils/style/colors";
-import { getWalletIconFromTitle } from "../../../utils/walletManagerHelpers";
 
 interface TokenAllocationProps {
   style?: ViewStyle;
 }
 
 export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
+  const selectedWallet = useSelectedWallet();
+  const allBalances = useBalances(
+    process.env.TERITORI_NETWORK_ID,
+    selectedWallet?.address
+  );
+  const balances = allBalances.filter(
+    (bal) => bal.usdAmount && bal.usdAmount > 0
+  );
+  const usdSum = balances.reduce(
+    (total, bal) => total + (bal.usdAmount || 0),
+    0
+  );
+
   return (
     <View style={[style]}>
       <BrandText style={{ marginBottom: 24, fontSize: 20 }}>
@@ -30,57 +44,73 @@ export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
           padAngle={0.8}
           height={216}
           width={216}
-          colorScale={["#5C26F5", "#16BBFF"]}
+          colorScale={balances.map((bal) => {
+            const currency = getNativeCurrency(
+              process.env.TERITORI_NETWORK_ID,
+              bal.denom
+            );
+            return currency?.color || "#FFFFFF";
+          })}
           labels={() => null}
-          data={WALLET_TOKEN_PIE}
+          data={balances.map((bal) => {
+            return {
+              y: bal.usdAmount || 0,
+            };
+          })}
           padding={0}
         />
 
-        <View style={{ marginLeft: 32 }}>
-          {WALLET_TOKEN_PIE.map((item) => (
-            <View
-              key={item.title}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 16,
-              }}
-            >
-              <SVG
-                height={24}
-                width={24}
-                source={getWalletIconFromTitle(item.title)}
-              />
-              <BrandText
+        <View style={{ marginLeft: 32, width: 216 }}>
+          {balances.map((item) => {
+            const currency = getNativeCurrency(
+              process.env.TERITORI_NETWORK_ID,
+              item.denom
+            );
+            return (
+              <View
+                key={currency?.denom}
                 style={{
-                  marginLeft: 8,
-                  width: 120,
-                  fontSize: 14,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 16,
                 }}
               >
-                {item.title}
-              </BrandText>
-              <BrandText
-                style={{
-                  fontSize: 14,
-                }}
-              >
-                ${item.amount}
-              </BrandText>
-              <BrandText
-                style={{
-                  fontSize: 14,
-                  borderLeftWidth: 1,
-                  borderColor: neutral33,
-                  paddingLeft: 12,
-                  marginLeft: 12,
-                }}
-              >
-                {item.percent}%
-              </BrandText>
-            </View>
-          ))}
+                <CurrencyIcon
+                  networkId={process.env.TERITORI_NETWORK_ID || ""}
+                  denom={item.denom}
+                  size={24}
+                />
+                <BrandText
+                  style={{
+                    marginLeft: 8,
+                    width: 120,
+                    fontSize: 14,
+                  }}
+                >
+                  {currency?.displayName}
+                </BrandText>
+                <BrandText
+                  style={{
+                    fontSize: 14,
+                  }}
+                >
+                  ${item.usdAmount?.toFixed(2)}
+                </BrandText>
+                <BrandText
+                  style={{
+                    fontSize: 14,
+                    borderLeftWidth: 1,
+                    borderColor: neutral33,
+                    paddingLeft: 12,
+                    marginLeft: 12,
+                  }}
+                >
+                  {(((item.usdAmount || 0) / usdSum) * 100).toFixed(2)}%
+                </BrandText>
+              </View>
+            );
+          })}
         </View>
       </View>
     </View>

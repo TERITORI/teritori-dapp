@@ -1,16 +1,14 @@
-import { LinearGradient } from "expo-linear-gradient";
+// import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { useWindowDimensions, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import busdSVG from "../../../../assets/icons/networks/busd-circle.svg";
 import cosmosHubSVG from "../../../../assets/icons/networks/cosmos-hub-circle.svg";
 import ethereumSVG from "../../../../assets/icons/networks/ethereum-circle.svg";
-import solanaSVG from "../../../../assets/icons/networks/solana-circle.svg";
+import teritoriSVG from "../../../../assets/icons/networks/teritori-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { ProgressLine } from "../../../components/ProgressLine";
 import { SVG } from "../../../components/SVG";
-import { neutral33 } from "../../../utils/style/colors";
 import { OVERVIEW_FLEX_BREAK_WIDTH } from "../constants";
 
 interface AssetRatioData {
@@ -21,23 +19,18 @@ interface AssetRatioData {
 
 const DATA: AssetRatioData[] = [
   {
-    icon: solanaSVG,
-    title: "Solana",
-    percent: 80,
+    icon: teritoriSVG,
+    title: "Teritori",
+    percent: 100,
   },
   {
     icon: cosmosHubSVG,
     title: "Cosmos Hub",
-    percent: 20,
+    percent: 0,
   },
   {
     icon: ethereumSVG,
     title: "Ethereum",
-    percent: 0,
-  },
-  {
-    icon: busdSVG,
-    title: "BUSD",
     percent: 0,
   },
 ];
@@ -98,16 +91,16 @@ export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
         Asset Ratio by Chain
       </BrandText>
       <View
-        style={{
+      /* style={{
           borderBottomWidth: 1,
           borderColor: neutral33,
-        }}
+        }}*/
       >
         {DATA.map((item) => (
           <ListItem key={item.title} {...item} />
         ))}
       </View>
-      <View
+      {/*<View
         style={{
           flexDirection: "row",
           alignItems: "center",
@@ -165,7 +158,7 @@ export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
             Staked Balance
           </BrandText>
         </View>
-      </View>
+          </View>*/}
     </View>
   );
 };
