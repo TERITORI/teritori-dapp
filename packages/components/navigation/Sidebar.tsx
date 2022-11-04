@@ -15,7 +15,7 @@ import Animated, {
 
 import addSVG from "../../../assets/icons/add.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import logoTopSVG from "../../../assets/logos/logo-hexagon.svg";
+import logoTopVersionSVG from "../../../assets/logos/logo-hexagon-version-alpha.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useAppNavigation } from "../../utils/navigation";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
@@ -85,7 +85,7 @@ export const Sidebar: React.FC = () => {
             style={styles.topIconContainer}
             onPress={() => navigation.navigate("Home")}
           >
-            <SVG width={68} height={68} source={logoTopSVG} />
+            <SVG width={68} height={68} source={logoTopVersionSVG} />
           </TouchableOpacity>
         </View>
 
