@@ -38,6 +38,7 @@ const screenTabItems = {
   },
   more: {
     name: "More from collection",
+    disabled: true,
   },
 };
 
