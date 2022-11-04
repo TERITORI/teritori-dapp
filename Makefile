@@ -78,7 +78,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE): node_modules
 	rm -fr $(NAME_SERVICE_REPO)
 	git clone git@github.com:TERITORI/$(NAME_SERVICE_REPO).git
-	cd $(NAME_SERVICE_REPO) && git checkout e117c117af55437e1a00f835f590d384737cda3d
+	cd $(NAME_SERVICE_REPO) && git checkout 1a03f93e9d7b96712a7a2585a079cbe97e384724
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
