@@ -6,7 +6,6 @@ import { BrandText } from "../../components/BrandText";
 import { OwnedNFTs } from "../../components/OwnedNFTs";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { BackTo } from "../../components/navigation/BackTo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
@@ -32,7 +31,7 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
   );
 
   return (
-    <ScreenContainer headerChildren={<BackTo label="Home" />}>
+    <ScreenContainer>
       <OwnedNFTs
         ownerId={ownerId}
         style={{ marginHorizontal: layout.padding_x3 }}
