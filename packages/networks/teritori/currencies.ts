@@ -13,7 +13,7 @@ export const teritoriCurrencies: CurrencyInfo[] = [
   {
     kind: "ibc",
     denom:
-      "ibc/a670d9568b3e399316eede40c1181b7aa4bd0695f0b37513ce9b95b977dfc12e",
+      "ibc/A670D9568B3E399316EEDE40C1181B7AA4BD0695F0B37513CE9B95B977DFC12E",
     sourceNetwork: "cosmos-hub",
     sourceDenom: "uatom",
     sourceChannelPort: "transfer",
