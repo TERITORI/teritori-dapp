@@ -8,5 +8,6 @@ export const cosmosHubThetaCurrencies: CurrencyInfo[] = [
     coingeckoId: "cosmos",
     icon: "icons/networks/cosmos-hub-circle.svg",
     kind: "native",
+    color: "#5C26F5",
   },
 ];

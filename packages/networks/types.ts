@@ -25,6 +25,7 @@ export type NativeCurrencyInfo = {
   decimals: number;
   coingeckoId: string;
   icon: string;
+  color: string;
 };
 
 export type IBCCurrencyInfo = {
