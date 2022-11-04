@@ -10,6 +10,7 @@ import stakingSVG from "../../../assets/icons/staking.svg";
 import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
 import { useAppNavigation } from "../../utils/navigation";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
@@ -27,18 +28,15 @@ export const HubLanding: React.FC = () => {
     image: defaultNewsBanner,
     maxSize: { width: maxWidth },
   });
+  const navigateToCollection = useNavigateToCollection(
+    `tori-${process.env.THE_RIOT_COLLECTION_ADDRESS}`
+  );
 
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
         {/*TODO: redirect to rioters collection using collection id*/}
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("Collection", {
-              id: `tori-${process.env.THE_RIOT_COLLECTION_ADDRESS}`,
-            })
-          }
-        >
+        <TouchableOpacity onPress={navigateToCollection}>
           <Image
             source={defaultNewsBanner}
             style={{
