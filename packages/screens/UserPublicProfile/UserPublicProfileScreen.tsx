@@ -11,6 +11,7 @@ import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
 import { UPPSocialFeed } from "../../components/userPublicProfile/UPPSocialFeed";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { ScreenFC } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
@@ -84,7 +85,9 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("nfts");
 
-  const { metadata } = useTNSMetadata(id.replace("tori-", ""));
+  const requestedAddress = id.replace("tori-", "");
+  const { metadata } = useTNSMetadata(requestedAddress);
+  const selectedWallet = useSelectedWallet();
 
   return (
     <ScreenContainer
@@ -95,7 +98,11 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     >
       <View style={{ flex: 1, alignItems: "center" }}>
         <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-          <UPPIntro userId={id} metadata={metadata} />
+          <UPPIntro
+            userId={id}
+            metadata={metadata}
+            isUserOwner={selectedWallet?.address === requestedAddress}
+          />
 
           <Tabs
             items={screenTabItems}

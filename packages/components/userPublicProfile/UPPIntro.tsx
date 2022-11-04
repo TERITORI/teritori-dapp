@@ -25,7 +25,8 @@ import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 export const UPPIntro: React.FC<{
   userId: string;
   metadata?: (Metadata & { tokenId: string }) | null;
-}> = ({ userId, metadata }) => {
+  isUserOwner?: boolean;
+}> = ({ userId, metadata, isUserOwner }) => {
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
   const navigation = useAppNavigation();
@@ -97,16 +98,18 @@ export const UPPIntro: React.FC<{
             text="Share"
           />
         </View>
-        {/* Absolute edit button */}
-        <SecondaryButtonOutline
-          size="M"
-          text="Edit profile"
-          backgroundColor={neutral00}
-          onPress={() =>
-            navigation.navigate("TNSHome", { modal: "update-name", name })
-          }
-          touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
-        />
+        {isUserOwner && (
+          // Absolute edit button
+          <SecondaryButtonOutline
+            size="M"
+            text="Edit profile"
+            backgroundColor={neutral00}
+            onPress={() =>
+              navigation.navigate("TNSHome", { modal: "update-name", name })
+            }
+            touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
+          />
+        )}
 
         <View
           style={{
