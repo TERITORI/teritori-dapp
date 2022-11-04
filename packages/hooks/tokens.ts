@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { getKeplrAccounts, getNonSigningCosmWasmClient } from "../utils/keplr";
+import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { isPath, isToken } from "../utils/tns";
-import { useIsKeplrConnected } from "./useIsKeplrConnected";
 import useSelectedWallet from "./useSelectedWallet";
 
 // start_after starts after the token_id
@@ -12,7 +11,6 @@ import useSelectedWallet from "./useSelectedWallet";
 // and pass it in with a perPage for the limit arg
 // note that 30 is the limit for that
 export function useTokenList() {
-  const isKeplrConnected = useIsKeplrConnected();
   const selectedWallet = useSelectedWallet();
 
   const contract = process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
@@ -28,22 +26,26 @@ export function useTokenList() {
   const [loadingTokens, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!isKeplrConnected) {
-      return;
-    }
-
     const getTokens = async () => {
       setLoading(true);
       try {
-        const cosmwasmClient = await getNonSigningCosmWasmClient();
+        if (!selectedWallet?.address) {
+          setStoreTokens([]);
+          setStorePaths([]);
+          setPathsAndTokens([]);
+          setLoading(false);
+          return;
+        }
 
         const query = {
           tokens: {
-            owner: selectedWallet?.address,
+            owner: selectedWallet.address,
             limit: perPage,
             start_after: startAfter,
           },
         };
+
+        const cosmwasmClient = await getNonSigningCosmWasmClient();
 
         const tokenList = await cosmwasmClient.queryContractSmart(
           contract,
@@ -66,7 +68,7 @@ export function useTokenList() {
     };
 
     getTokens();
-  }, [tokens.length, isKeplrConnected, startAfter, selectedWallet?.address]);
+  }, [tokens.length, startAfter, selectedWallet?.address]);
 
   return {
     pathsAndTokens,
@@ -91,23 +93,11 @@ export function useToken(tokenId: string, tld: string) {
 
   const { setToastError } = useFeedbacks();
 
-  const isKeplrConnected = useIsKeplrConnected();
-
   useEffect(() => {
-    if (!isKeplrConnected) {
-      return;
-    }
-
     const getToken = async () => {
       setLoading(true);
 
       try {
-        const keplrAccounts = await getKeplrAccounts();
-
-        if (!keplrAccounts.length) {
-          throw new Error("no keplr account");
-        }
-
         const cosmwasmClient = await getNonSigningCosmWasmClient();
 
         try {
@@ -146,7 +136,7 @@ export function useToken(tokenId: string, tld: string) {
           });
         });
     }
-  }, [isKeplrConnected, tokenId]);
+  }, [tokenId]);
 
   return { token, loadingToken, notFound };
 }
