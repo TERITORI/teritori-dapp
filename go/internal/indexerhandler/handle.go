@@ -56,6 +56,7 @@ func NewHandler(db *gorm.DB, config Config, logger *zap.Logger) (*Handler, error
 		logger = zap.NewNop()
 	}
 
+	// FIXME: this is useless here, it should be extracted
 	blockTimeCacheConfig := bigcache.DefaultConfig(time.Duration(0))
 	blockTimeCacheConfig.HardMaxCacheSize = 10
 	blockTimeCache, err := bigcache.NewBigCache(blockTimeCacheConfig)

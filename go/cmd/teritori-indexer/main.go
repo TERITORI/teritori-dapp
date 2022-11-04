@@ -150,11 +150,15 @@ func main() {
 				if err != nil {
 					panic(errors.Wrap(err, "failed to query status"))
 				}
-				if res.SyncInfo.LatestBlockHeight < height {
+
+				// we lag one block behind to increase the chance that tendermint tx indexer has finished it's work
+				lbh := res.SyncInfo.LatestBlockHeight - 1
+
+				if lbh < height {
 					time.Sleep(*pollDelay)
 					continue
 				}
-				end = int64Min(height+*blocksBatchSize, res.SyncInfo.LatestBlockHeight+1)
+				end = int64Min(height+*blocksBatchSize, lbh+1)
 			} else {
 				if height > replayInfo.FinalHeight {
 					break
