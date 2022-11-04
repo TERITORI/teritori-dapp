@@ -216,6 +216,9 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
     params: { id },
   },
 }) => {
+  // needed for emoji
+  id = decodeURIComponent(id);
+
   const navigation = useAppNavigation();
 
   const [collectionInfo, setCollectionInfo] = useState<CollectionInfoSmall>();

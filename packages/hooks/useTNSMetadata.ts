@@ -7,8 +7,12 @@ import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
 export const useTNSMetadata = (address?: string) => {
   const { data, isLoading, isError } = useQuery(
-    ["tns-metadata", address],
+    ["tns-metadata", address || ""],
     async () => {
+      if (!address) {
+        return undefined;
+      }
+
       const contractAddress =
         process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "";
       // We just want to read, so we use a non-signing client
@@ -19,14 +23,9 @@ export const useTNSMetadata = (address?: string) => {
         contractAddress
       );
 
-      const aliasResponse = await cosmWasmClient.queryContractSmart(
-        contractAddress,
-        {
-          primary_alias: {
-            address,
-          },
-        }
-      );
+      const aliasResponse = await tnsClient.primaryAlias({
+        address,
+      });
 
       // ======== Getting NFT info
       const nftInfo = await tnsClient.nftInfo({
