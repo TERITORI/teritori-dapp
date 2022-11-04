@@ -70,16 +70,22 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 		return errors.Wrap(err, "failed to update nft price")
 	}
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// create activity
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
 		NFTID: nftId,
 		Kind:  indexerdb.ActivityKindUpdateNFTPrice,
-		Time:  e.BlockTime,
+		Time:  blockTime,
 		UpdateNFTPrice: &indexerdb.UpdateNFTPrice{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   h.usdAmount(denom, price, e.BlockTime),
+			USDPrice:   h.usdAmount(denom, price, blockTime),
 			SellerID:   indexerdb.TeritoriUserID(execMsg.Sender),
 		},
 	}).Error; err != nil {
@@ -139,6 +145,12 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 		return errors.Wrap(err, "failed to update nft")
 	}
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// create cancelation
 	var nft indexerdb.NFT
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
@@ -149,7 +161,7 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 		ID:    activityID,
 		NFTID: nftID,
 		Kind:  indexerdb.ActivityKindCancelListing,
-		Time:  e.BlockTime,
+		Time:  blockTime,
 		CancelListing: &indexerdb.CancelListing{
 			SellerID: indexerdb.TeritoriUserID(execMsg.Sender),
 		},
@@ -243,6 +255,12 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		return errors.Wrap(err, "failed to update nft")
 	}
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// create trade
 	var nft indexerdb.NFT
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
@@ -253,11 +271,11 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		ID:    activityID,
 		NFTID: nftID,
 		Kind:  indexerdb.ActivityKindTrade,
-		Time:  e.BlockTime,
+		Time:  blockTime,
 		Trade: &indexerdb.Trade{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   h.usdAmount(denom, price, e.BlockTime),
+			USDPrice:   h.usdAmount(denom, price, blockTime),
 			BuyerID:    buyerID,
 			SellerID:   sellerID,
 		},
@@ -332,6 +350,12 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 		return errors.Wrap(err, "failed to update nft")
 	}
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// create listing
 	var nft indexerdb.NFT
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
@@ -342,11 +366,11 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 		ID:    activityID,
 		NFTID: nftID,
 		Kind:  indexerdb.ActivityKindList,
-		Time:  e.BlockTime,
+		Time:  blockTime,
 		Listing: &indexerdb.Listing{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   h.usdAmount(denom, price, e.BlockTime),
+			USDPrice:   h.usdAmount(denom, price, blockTime),
 			SellerID:   sellerID,
 		},
 	}).Error; err != nil {

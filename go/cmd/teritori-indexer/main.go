@@ -11,6 +11,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/coingeckoprices"
 	"github.com/TERITORI/teritori-dapp/go/pkg/quests"
 	"github.com/TERITORI/teritori-dapp/go/pkg/tmws"
+	"github.com/allegro/bigcache/v3"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -28,7 +29,7 @@ func main() {
 	fs := flag.NewFlagSet("teritori-indexer", flag.ContinueOnError)
 	var (
 		blocksBatchSize             = fs.Int64("blocks-batch-size", 100000, "maximum number of blocks to query from tendermint at once")
-		txsBatchSize                = fs.Int("txs-batch-size", 100, "number of txs per query page")
+		txsBatchSize                = fs.Int("txs-batch-size", 1000, "number of txs per query page")
 		pollDelay                   = fs.Duration("poll-delay", 2*time.Second, "delay between queries")
 		tnsContractAddress          = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
 		vaultContractAddress        = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")
@@ -83,6 +84,14 @@ func main() {
 	}
 	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
 		panic(errors.New("missing Database configuration"))
+	}
+
+	// create block time cache
+	blockTimeCacheConfig := bigcache.DefaultConfig(time.Duration(0))
+	blockTimeCacheConfig.HardMaxCacheSize = 10
+	blockTimeCache, err := bigcache.NewBigCache(blockTimeCacheConfig)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to init block time cache"))
 	}
 
 	// get price service
@@ -180,6 +189,7 @@ func main() {
 					TendermintClient:     client,
 					NetworkID:            *teritoriNetworkID,
 					CoinGeckoPrices:      cgp,
+					BlockTimeCache:       blockTimeCache,
 				}, logger)
 				if err != nil {
 					return errors.Wrap(err, "failed to create handler")
