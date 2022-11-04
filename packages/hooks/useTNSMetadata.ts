@@ -7,10 +7,10 @@ import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
 export const useTNSMetadata = (address?: string) => {
   const { data, isLoading, isError } = useQuery(
-    ["tns-metadata", address || ""],
+    ["tns-metadata", address],
     async () => {
       if (!address) {
-        return undefined;
+        return null;
       }
 
       const contractAddress =

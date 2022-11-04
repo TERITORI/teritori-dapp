@@ -24,7 +24,7 @@ import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 
 export const UPPIntro: React.FC<{
   userId: string;
-  metadata?: Metadata & { tokenId: string };
+  metadata?: (Metadata & { tokenId: string }) | null;
 }> = ({ userId, metadata }) => {
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
