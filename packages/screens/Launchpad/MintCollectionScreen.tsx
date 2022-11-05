@@ -306,7 +306,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     ]}
                     numberOfLines={1}
                   >
-                    Terms of Service
+                    Sale Terms & Conditions
                   </ExternalLink>
                 </View>
               )}
