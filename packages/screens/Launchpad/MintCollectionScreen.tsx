@@ -23,9 +23,11 @@ import {
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCurrency } from "../../networks";
+import { prettyPrice } from "../../utils/coins";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import {
@@ -74,6 +76,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
+  const networkId = process.env.TERITORI_NETWORK_ID;
+  const balances = useBalances(networkId, wallet?.address);
+  const balance = balances.find((bal) => bal.denom === info?.priceDenom);
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
   const mintButtonDisabled = minted || !wallet?.connected;
@@ -218,6 +223,20 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 }}
               />
 
+              <BrandText
+                style={{
+                  fontSize: 14,
+                  marginBottom: 16,
+                }}
+              >
+                Available Balance:{" "}
+                {prettyPrice(
+                  networkId || "",
+                  balance?.amount || "0",
+                  info.priceDenom || ""
+                )}
+              </BrandText>
+
               <View style={{ flexDirection: "row", marginBottom: 24 }}>
                 {info.isMintable && (
                   <PrimaryButton
@@ -225,7 +244,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     text="Mint now"
                     touchableStyle={{ marginRight: 36 }}
                     width={160}
-                    disabled={mintButtonDisabled}
+                    disabled={
+                      mintButtonDisabled ||
+                      parseInt(balance?.amount || "0", 10) <
+                        parseInt(info.unitPrice || "0", 10)
+                    }
                     loader
                     onPress={mint}
                   />

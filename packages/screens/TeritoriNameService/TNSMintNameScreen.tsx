@@ -16,11 +16,12 @@ import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
+import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { prettyPrice } from "../../utils/coins";
 import { defaultMintFee } from "../../utils/fee";
 import {
-  getFirstKeplrAccount,
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
@@ -91,6 +92,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const [isSuccessModal, setSuccessModal] = useState(false);
+  const selectedWallet = useSelectedWallet();
   const { name } = useTNS();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { tokens } = useTokenList();
@@ -100,6 +102,9 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const navigation = useAppNavigation();
   const price = useTNSMintPrice(name + process.env.TLD);
+  const networkId = process.env.TERITORI_NETWORK_ID;
+  const balances = useBalances(networkId, selectedWallet?.address);
+  const balance = balances.find((bal) => bal.denom === price?.denom);
 
   const normalizedTokenId = (name + process.env.TLD).toLowerCase();
 
@@ -136,14 +141,13 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     }
   });
 
-  // FIXME: typesafe data
   const submitData = async (data: Metadata) => {
     if (!isKeplrConnected || !price) {
       return;
     }
 
     try {
-      const walletAddress = (await getFirstKeplrAccount()).address;
+      const walletAddress = selectedWallet?.address;
 
       const msg = {
         mint: {
@@ -206,6 +210,19 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     >
       <View style={{ flex: 1, alignItems: "center", paddingBottom: 20 }}>
         {!!price && <CostContainer price={price} />}
+        <BrandText
+          style={{
+            fontSize: 14,
+            marginBottom: 16,
+          }}
+        >
+          Available Balance:{" "}
+          {prettyPrice(
+            networkId || "",
+            balance?.amount || "0",
+            price?.denom || ""
+          )}
+        </BrandText>
         <NameNFT
           style={{
             backgroundColor: neutral00,
@@ -222,6 +239,10 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
           btnLabel="Register your username"
           onPressBtn={submitData}
           initialData={initialData}
+          disabled={
+            !price ||
+            parseInt(balance?.amount || "0", 10) < parseInt(price.amount, 10)
+          }
         />
       </View>
       <TNSRegisterSuccess visible={isSuccessModal} onClose={handleModalClose} />
