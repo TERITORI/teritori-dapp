@@ -16,7 +16,8 @@ export const NameDataForm: React.FC<{
   btnLabel: string;
   onPressBtn: (values: Metadata) => Promise<void>;
   initialData: Metadata;
-}> = ({ isMintPath, btnLabel, onPressBtn, initialData }) => {
+  disabled?: boolean;
+}> = ({ isMintPath, btnLabel, onPressBtn, initialData, disabled }) => {
   const [pathId, setPathId] = useState("");
   const { name } = useTNS();
   const [public_bio, setBio] = useState("");
@@ -210,6 +211,7 @@ export const NameDataForm: React.FC<{
       <PrimaryButton
         size="XL"
         text={btnLabel}
+        disabled={disabled}
         onPress={handlePressBtn}
         style={{ marginTop: 8, alignSelf: "center" }}
         squaresBackgroundColor={neutral17}

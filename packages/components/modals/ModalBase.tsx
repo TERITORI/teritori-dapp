@@ -25,7 +25,6 @@ export const ModalBase: React.FC<{
   visible?: boolean;
   Header?: ComponentType;
   childrenBottom?: JSX.Element | JSX.Element[];
-  children?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
   description?: string;
   noBrokenCorners?: boolean;
