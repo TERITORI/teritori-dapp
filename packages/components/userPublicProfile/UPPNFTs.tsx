@@ -66,6 +66,7 @@ export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
           alignItems: "center",
           height: 64,
           marginTop: layout.padding_x2_5 / 2,
+          marginBottom: 16,
         }}
       >
         <Tabs

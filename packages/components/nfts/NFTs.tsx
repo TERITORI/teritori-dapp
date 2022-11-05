@@ -2,6 +2,7 @@ import React, { ReactElement, useCallback } from "react";
 import { FlatList, View } from "react-native";
 
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
@@ -30,6 +31,8 @@ export const NFTs: React.FC<{
 }> = ({ req, numColumns, ListHeaderComponent, ListFooterComponent }) => {
   const { nfts, fetchMore } = useNFTs(req);
 
+  const { height } = useMaxResolution();
+
   const handleEndReached = useCallback(() => {
     fetchMore();
   }, [fetchMore]);
@@ -37,10 +40,9 @@ export const NFTs: React.FC<{
   return (
     <View
       style={{
-        height: "100%",
         alignItems: "center",
         width: "100%",
-        flex: 1,
+        height,
       }}
     >
       <FlatList
@@ -54,7 +56,7 @@ export const NFTs: React.FC<{
         numColumns={numColumns}
         onEndReached={handleEndReached}
         keyExtractor={keyExtractor}
-        onEndReachedThreshold={4}
+        // onEndReachedThreshold={4}
         renderItem={(info) => (
           <RenderItem
             nft={info.item}
@@ -62,8 +64,9 @@ export const NFTs: React.FC<{
           />
         )}
         ItemSeparatorComponent={() => <SpacerColumn size={2} />}
-        ListHeaderComponent={ListHeaderComponent}
-        ListFooterComponent={ListFooterComponent}
+        //ListHeaderComponent={ListHeaderComponent}
+        //ListFooterComponent={ListFooterComponent}
+        removeClippedSubviews
       />
     </View>
   );

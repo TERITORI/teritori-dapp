@@ -6,6 +6,7 @@ import { backendClient } from "../utils/backend";
 
 export const useNFTs = (req: NFTsRequest) => {
   const baseOffset = useRef(req.offset);
+
   const { data, fetchNextPage } = useInfiniteQuery(
     [
       "nfts",
@@ -17,10 +18,12 @@ export const useNFTs = (req: NFTsRequest) => {
     ],
     async ({ pageParam = 0 }) => {
       const nfts: NFT[] = [];
-      const stream = backendClient.NFTs({
+      const pageReq = {
         ...req,
         offset: baseOffset.current + pageParam,
-      });
+      };
+      console.log("fetching", pageReq);
+      const stream = backendClient.NFTs(pageReq);
       await stream.forEach((response) => {
         if (!response.nft) {
           return;
