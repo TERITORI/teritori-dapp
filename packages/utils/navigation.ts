@@ -27,6 +27,7 @@ export type RootStackParamList = {
   Staking: undefined;
 
   ComingSoon: undefined;
+  WithdrawBunker: { id: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -69,6 +70,7 @@ const navConfig: {
     Staking: "staking",
     // ==== ComingSoon
     ComingSoon: "coming-soon",
+    WithdrawBunker: "withdraw-bunker/:id",
   },
 };
 

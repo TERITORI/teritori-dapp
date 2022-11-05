@@ -19,6 +19,7 @@ import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
+import { WithdrawScreen } from "../../screens/Withdraw/WithdrawScreen";
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -134,6 +135,11 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="ComingSoon"
         component={ComingSoonScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="WithdrawBunker"
+        component={WithdrawScreen}
         options={{ header: () => null }}
       />
     </Stack.Navigator>
