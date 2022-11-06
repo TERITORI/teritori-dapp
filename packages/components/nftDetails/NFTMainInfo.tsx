@@ -166,8 +166,8 @@ export const NFTMainInfo: React.FC<{
                 <NFTSellCard
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressSell={sell}
+                  nftInfo={nftInfo}
                   networkId={process.env.TERITORI_NETWORK_ID || ""}
-                  denom={nftInfo.mintDenom}
                 />
               )}
               {nftInfo?.isListed && !nftInfo?.isOwner && (
