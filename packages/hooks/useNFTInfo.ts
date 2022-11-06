@@ -124,6 +124,7 @@ const getTNSNFTInfo = async (
       process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
     ),
     mintDenom: contractInfo.native_denom,
+    royalty: 0,
   };
 
   return nfo;
@@ -161,6 +162,7 @@ const getStandardNFTInfo = async (
   let description = "";
   let image = "";
   let attributes = [];
+  let royalties = 0;
   if (nftInfo.token_uri) {
     const nftMetadata = await (
       await fetch(ipfsURLToHTTPURL(nftInfo.token_uri))
@@ -170,10 +172,12 @@ const getStandardNFTInfo = async (
     description = nftMetadata.description;
     attributes = nftMetadata.attributes;
   } else if (nftInfo.extension?.image) {
+    console.log("extension", nftInfo.extension);
     name = (nftInfo.extension?.name as any) || "";
     image = (nftInfo.extension?.image as any) || "";
     description = (nftInfo.extension?.description as any) || "";
     attributes = (nftInfo.extension?.attributes as any) || [];
+    royalties = ((nftInfo.extension?.royalty_percentage as number) || 0) / 100;
   }
   // ======== Getting NFT owner
   const { owner } = await nftClient.ownerOf({ tokenId });
@@ -222,6 +226,7 @@ const getStandardNFTInfo = async (
     collectionName: contractInfo.name,
     collectionImageURL: ipfsURLToHTTPURL(collectionMetadata.image),
     mintDenom: minterConfig.price_denom,
+    royalty: royalties,
   };
 
   return nfo;
