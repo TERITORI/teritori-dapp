@@ -17,7 +17,7 @@ export const decimalFromAtomics = (value: string, denom: string) => {
   throw new Error("unknown denom");
 };
 
-const units = ["", "k", "M", "G", "T", "P", "E", "Z", "Y"];
+const units = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
 
 // Returns the price with denom (Text + denom)
 export const prettyPrice = (
@@ -41,7 +41,7 @@ export const prettyPrice = (
       val /= 1000;
       unitIndex++;
     }
-    return `${trimFixed(val.toFixed(2))} ${units[unitIndex]}${
+    return `${trimFixed(val.toFixed(2))}${units[unitIndex]} ${
       currency.displayName
     }`;
   }
