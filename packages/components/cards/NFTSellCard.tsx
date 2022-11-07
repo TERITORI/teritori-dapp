@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import {
@@ -11,17 +12,22 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { NFTSellInfo } from "../nftDetails/components/NFTSellInfo";
 
+interface SellNFTForm {
+  price: string;
+}
+
 export const NFTSellCard: React.FC<{
   onPressSell: (price: string, denom: string | undefined) => void;
   networkId?: string;
   style?: StyleProp<ViewStyle>;
   nftInfo?: NFTInfo;
 }> = ({ onPressSell: onSell, style, networkId, nftInfo }) => {
-  const [price, setPrice] = useState("");
+  const { control, handleSubmit, watch } = useForm<SellNFTForm>();
+  const values = watch();
   const currency = getNativeCurrency(networkId, nftInfo?.mintDenom);
-  const handleSell = useCallback(
-    () => onSell(price, nftInfo?.mintDenom),
-    [onSell, price]
+  const handleSell: SubmitHandler<SellNFTForm> = useCallback(
+    (formValues) => onSell(formValues.price, nftInfo?.mintDenom),
+    [onSell, nftInfo?.mintDenom]
   );
   if (!currency) {
     return null;
@@ -38,23 +44,27 @@ export const NFTSellCard: React.FC<{
           justifyContent: "space-between",
         }}
       >
-        <TextInputCustom<{ price: string }>
+        <TextInputCustom<SellNFTForm>
           name="price"
+          control={control}
           label={`Price in ${currency.displayName}`}
-          value={price}
           currency={keplrCurrencyFromNativeCurrencyInfo(currency)}
-          placeHolder=""
-          onChangeText={setPrice}
-          width={322}
+          placeHolder="0"
+          rules={{ required: true }}
+          width={250}
         />
         <PrimaryButton
           loader
           size="XL"
           text="List this NFT"
-          onPress={handleSell}
+          onPress={handleSubmit(handleSell)}
         />
       </TertiaryBox>
-      <NFTSellInfo nftInfo={nftInfo} networkId={networkId} price={price} />
+      <NFTSellInfo
+        nftInfo={nftInfo}
+        networkId={networkId}
+        price={values.price}
+      />
     </View>
   );
 };
