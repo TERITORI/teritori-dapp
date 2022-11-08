@@ -22,10 +22,13 @@ export const ProfileButton: React.FC<{
         size="XL"
         text={isEdit ? "Edit profile" : "My profile"}
         backgroundColor={neutral00}
-        onPress={() =>
-          navigation.navigate("UserPublicProfile", {
-            id: `tori-${selectedWallet?.address}`,
-          })
+        onPress={
+          isEdit
+            ? () => navigation.navigate("TNSHome", { modal: "update-name" })
+            : () =>
+                navigation.navigate("UserPublicProfile", {
+                  id: `tori-${selectedWallet?.address}`,
+                })
         }
         touchableStyle={touchableStyle}
       />
