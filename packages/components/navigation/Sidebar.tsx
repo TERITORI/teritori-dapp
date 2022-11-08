@@ -17,6 +17,8 @@ import addSVG from "../../../assets/icons/add.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import logoTopVersionSVG from "../../../assets/logos/logo-hexagon-version-alpha.svg";
 import { useSidebar } from "../../context/SidebarProvider";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
@@ -31,6 +33,7 @@ import { Separator } from "../Separator";
 import { SpacerColumn } from "../spacer";
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
+import { SidebarProfileButton } from "./components/SidebarProfileButton";
 import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
@@ -40,6 +43,9 @@ const SpringConfig: WithSpringConfig = {
 };
 
 export const Sidebar: React.FC = () => {
+  const selectedWallet = useSelectedWallet();
+  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+
   // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
@@ -106,16 +112,32 @@ export const Sidebar: React.FC = () => {
           <SidebarButton key={item.title} onPress={onRouteChange} {...item} />
         )}
         ListHeaderComponent={<SpacerColumn size={1} />}
-        ListFooterComponent={
-          <SidebarButton
-            icon={addSVG}
-            iconSize={36}
-            route="ComingSoon"
-            title=""
-            onPress={() => navigation.navigate("ComingSoon")}
-          />
-        }
       />
+      <View>
+        <View
+          style={{
+            height: 1,
+            marginHorizontal: 18,
+            backgroundColor: neutral33,
+            marginVertical: layout.padding_x1,
+          }}
+        />
+
+        <SidebarButton
+          icon={addSVG}
+          iconSize={36}
+          route="ComingSoon"
+          title=""
+          onPress={() => navigation.navigate("ComingSoon")}
+        />
+
+        {tnsMetadata.metadata && (
+          <SidebarProfileButton
+            image={tnsMetadata?.metadata?.image}
+            isExpanded={isSidebarExpanded}
+          />
+        )}
+      </View>
     </Animated.View>
   );
 };
