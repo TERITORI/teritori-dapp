@@ -83,6 +83,7 @@ export const GovernanceScreen: React.FC = () => {
             percentageAbstainValue={parseFloat(
               proposals.final_tally_result.abstain
             )}
+            status={proposals.status}
           />
         ))}
       </View>
