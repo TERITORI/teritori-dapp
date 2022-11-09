@@ -12,10 +12,11 @@ import { SVG } from "../../SVG";
 import { CustomPressable } from "../../buttons/CustomPressable";
 
 export const SidebarProfileButton: React.FC<{
-  image: string | null | undefined;
-  tokenId?: string;
+  walletAddress: string;
+  image: string;
+  tokenId: string;
   isExpanded?: boolean;
-}> = ({ image, tokenId, isExpanded }) => {
+}> = ({ walletAddress, image, tokenId, isExpanded }) => {
   const navigation = useAppNavigation();
   const imageWidth = 68;
 
@@ -23,7 +24,7 @@ export const SidebarProfileButton: React.FC<{
     <CustomPressable
       onPress={() =>
         navigation.navigate("UserPublicProfile", {
-          id: `tori-${tokenId}`,
+          id: `tori-${walletAddress}`,
         })
       }
     >
@@ -84,7 +85,7 @@ export const SidebarProfileButton: React.FC<{
           ]}
         >
           <BrandText style={fontSemibold12} numberOfLines={1}>
-            @sdqsdqsdqs.tori
+            {`@${tokenId}`}
           </BrandText>
           <BrandText style={[fontSemibold9, { color: neutral77 }]}>
             My Profile

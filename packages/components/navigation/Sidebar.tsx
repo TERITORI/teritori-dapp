@@ -112,6 +112,7 @@ export const Sidebar: React.FC = () => {
           <SidebarButton key={item.title} onPress={onRouteChange} {...item} />
         )}
         ListHeaderComponent={<SpacerColumn size={1} />}
+        ListFooterComponent={<SpacerColumn size={1} />}
       />
       <View>
         <View
@@ -119,7 +120,7 @@ export const Sidebar: React.FC = () => {
             height: 1,
             marginHorizontal: 18,
             backgroundColor: neutral33,
-            marginVertical: layout.padding_x1,
+            marginBottom: layout.padding_x1,
           }}
         />
 
@@ -133,7 +134,9 @@ export const Sidebar: React.FC = () => {
 
         {tnsMetadata.metadata && (
           <SidebarProfileButton
-            image={tnsMetadata?.metadata?.image}
+            walletAddress={selectedWallet?.address || ""}
+            tokenId={tnsMetadata?.metadata?.tokenId || ""}
+            image={tnsMetadata?.metadata?.image || ""}
             isExpanded={isSidebarExpanded}
           />
         )}
