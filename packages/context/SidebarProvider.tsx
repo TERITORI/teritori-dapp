@@ -6,7 +6,7 @@ interface DefaultValue {
 }
 
 const defaultValue: DefaultValue = {
-  isSidebarExpanded: false,
+  isSidebarExpanded: true,
   toggleSidebar: () => {},
 };
 
