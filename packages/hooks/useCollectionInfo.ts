@@ -94,13 +94,15 @@ export const useCollectionInfo = (id: string) => {
         unitPrice = conf.nft_price_amount;
       }
 
+      console.log("unitPrice", unitPrice);
+
       const info: CollectionInfo = {
         name: nftInfo.name,
         image: ipfsURLToHTTPURL(metadata.image || ""),
         description: metadata.description,
         prettyUnitPrice: prettyPrice(
           process.env.TERITORI_NETWORK_ID || "",
-          conf.nft_price_amount,
+          unitPrice,
           conf.price_denom
         ),
         unitPrice,
