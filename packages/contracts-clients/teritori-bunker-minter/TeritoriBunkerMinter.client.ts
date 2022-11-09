@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { Uint128, ConfigResponse, Addr, Config, CurrentSupplyResponse, ExecuteMsg, Metadata, Attribute, InstantiateMsg, IsWhitelistedResponse, QueryMsg, TokenRequestByIndexResponse, TokenRequestsCountResponse, WhitelistSizeResponse } from "./TeritoriBunkerMinter.types";
+import { Uint128, ConfigResponse, Addr, Config, CurrentSupplyResponse, ExecuteMsg, Metadata, Attribute, InstantiateMsg, IsWhitelistedResponse, MigrateMsg, QueryMsg, TokenRequestByIndexResponse, TokenRequestsCountResponse, WhitelistSizeResponse } from "./TeritoriBunkerMinter.types";
 export interface TeritoriBunkerMinterReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<ConfigResponse>;
@@ -86,12 +86,14 @@ export interface TeritoriBunkerMinterInterface extends TeritoriBunkerMinterReadO
   contractAddress: string;
   sender: string;
   updateConfig: ({
+    minter,
     nftAddr,
     nftBaseUri,
     nftMaxSupply,
     nftPriceAmount,
     owner
   }: {
+    minter?: string;
     nftAddr?: Addr;
     nftBaseUri?: string;
     nftMaxSupply?: Uint128;
@@ -143,12 +145,14 @@ export class TeritoriBunkerMinterClient extends TeritoriBunkerMinterQueryClient 
   }
 
   updateConfig = async ({
+    minter,
     nftAddr,
     nftBaseUri,
     nftMaxSupply,
     nftPriceAmount,
     owner
   }: {
+    minter?: string;
     nftAddr?: Addr;
     nftBaseUri?: string;
     nftMaxSupply?: Uint128;
@@ -157,6 +161,7 @@ export class TeritoriBunkerMinterClient extends TeritoriBunkerMinterQueryClient 
   }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       update_config: {
+        minter,
         nft_addr: nftAddr,
         nft_base_uri: nftBaseUri,
         nft_max_supply: nftMaxSupply,

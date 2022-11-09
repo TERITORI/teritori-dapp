@@ -9,6 +9,7 @@ export interface ConfigResponse {
   is_mintable: boolean;
   mint_max?: Uint128 | null;
   mint_start_time: number;
+  minter: string;
   nft_addr: string;
   nft_base_uri: string;
   nft_max_supply: Uint128;
@@ -20,6 +21,7 @@ export interface ConfigResponse {
   royalty_percentage?: number | null;
   whitelist_mint_max?: Uint128 | null;
   whitelist_mint_period: number;
+  whitelist_mint_price_amount?: Uint128 | null;
   [k: string]: unknown;
 }
 export type Addr = string;
@@ -27,6 +29,7 @@ export interface Config {
   is_mintable: boolean;
   mint_max?: Uint128 | null;
   mint_start_time: number;
+  minter: Addr;
   nft_addr: Addr;
   nft_base_uri: string;
   nft_max_supply: Uint128;
@@ -38,11 +41,13 @@ export interface Config {
   royalty_percentage?: number | null;
   whitelist_mint_max?: Uint128 | null;
   whitelist_mint_period: number;
+  whitelist_mint_price_amount?: Uint128 | null;
   [k: string]: unknown;
 }
 export type CurrentSupplyResponse = string;
 export type ExecuteMsg = {
   update_config: {
+    minter?: string | null;
     nft_addr?: Addr | null;
     nft_base_uri?: string | null;
     nft_max_supply?: Uint128 | null;
@@ -113,9 +118,13 @@ export interface InstantiateMsg {
   royalty_percentage?: number | null;
   whitelist_mint_max?: Uint128 | null;
   whitelist_mint_period: number;
+  whitelist_mint_price_amount?: Uint128 | null;
   [k: string]: unknown;
 }
 export type IsWhitelistedResponse = boolean;
+export interface MigrateMsg {
+  [k: string]: unknown;
+}
 export type QueryMsg = {
   config: {
     [k: string]: unknown;

@@ -61,7 +61,7 @@ generate.go-networks: node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
 	rm -fr $(CANDYMACHINE_REPO)
 	git clone git@github.com:TERITORI/$(CANDYMACHINE_REPO).git
-	cd $(CANDYMACHINE_REPO) && git checkout 4d1658abee454a20bff504b6dce0eba25e69708c
+	cd $(CANDYMACHINE_REPO) && git checkout 684eea9c0bfb14ced6fd200bf007f44d65802f5e
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
