@@ -23,9 +23,10 @@ type InstantiateMsg struct {
 	RoyaltyPaymentAddress interface{} `json:"royalty_payment_address,omitempty"`
 
 	// This is how much the minter takes as a cut when sold royalties are owed on this token if it is Some
-	RoyaltyPercentage   interface{} `json:"royalty_percentage,omitempty"`
-	WhitelistMintMax    interface{} `json:"whitelist_mint_max,omitempty"`
-	WhitelistMintPeriod int         `json:"whitelist_mint_period"`
+	RoyaltyPercentage        interface{} `json:"royalty_percentage,omitempty"`
+	WhitelistMintMax         interface{} `json:"whitelist_mint_max,omitempty"`
+	WhitelistMintPeriod      int         `json:"whitelist_mint_period"`
+	WhitelistMintPriceAmount interface{} `json:"whitelist_mint_price_amount,omitempty"`
 }
 
 func (strct *InstantiateMsg) MarshalJSON() ([]byte, error) {
@@ -180,6 +181,17 @@ func (strct *InstantiateMsg) MarshalJSON() ([]byte, error) {
 		buf.Write(tmp)
 	}
 	comma = true
+	// Marshal the "whitelist_mint_price_amount" field
+	if comma {
+		buf.WriteString(",")
+	}
+	buf.WriteString("\"whitelist_mint_price_amount\": ")
+	if tmp, err := json.Marshal(strct.WhitelistMintPriceAmount); err != nil {
+		return nil, err
+	} else {
+		buf.Write(tmp)
+	}
+	comma = true
 
 	buf.WriteString("}")
 	rv := buf.Bytes()
@@ -258,6 +270,10 @@ func (strct *InstantiateMsg) UnmarshalJSON(b []byte) error {
 				return err
 			}
 			whitelist_mint_periodReceived = true
+		case "whitelist_mint_price_amount":
+			if err := json.Unmarshal([]byte(v), &strct.WhitelistMintPriceAmount); err != nil {
+				return err
+			}
 		}
 	}
 	// check if nft_base_uri (a required property) was received

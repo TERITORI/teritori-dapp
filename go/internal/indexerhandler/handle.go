@@ -17,6 +17,7 @@ import (
 	"github.com/pkg/errors"
 	tenderminttypes "github.com/tendermint/tendermint/rpc/core/types"
 	"go.uber.org/zap"
+	"golang.org/x/exp/slices"
 	"gorm.io/gorm"
 )
 
@@ -32,7 +33,7 @@ type Message struct {
 
 type Config struct {
 	TNSContractAddress   string
-	MinterCodeID         uint64
+	MinterCodeIDs        []uint64
 	VaultContractAddress string
 	TNSDefaultImageURL   string
 	TendermintClient     *tmws.Client
@@ -142,15 +143,14 @@ func (h *Handler) handleInstantiate(e *Message) error {
 		return nil
 	}
 
-	switch instantiateMsg.CodeID {
-	case h.config.MinterCodeID:
+	if slices.Contains(h.config.MinterCodeIDs, instantiateMsg.CodeID) {
 		if err := h.handleInstantiateBunker(e, contractAddress, &instantiateMsg); err != nil {
 			return errors.Wrap(err, "failed to handle minter instantiation")
 		}
-	default:
-		h.logger.Debug("ignored instantiate with unknown code id", zap.Uint64("value", instantiateMsg.CodeID))
+		return nil
 	}
 
+	h.logger.Debug("ignored instantiate with unknown code id", zap.Uint64("value", instantiateMsg.CodeID))
 	return nil
 }
 

@@ -4,7 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 	"time"
+	"unicode"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerhandler"
@@ -33,7 +36,7 @@ func main() {
 		pollDelay                   = fs.Duration("poll-delay", 2*time.Second, "delay between queries")
 		tnsContractAddress          = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
 		vaultContractAddress        = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")
-		minterCodeID                = fs.Uint64("teritori-minter-code-id", 0, "code id of the teritori minter contract")
+		minterCodeIDs               = fs.String("teritori-minter-code-ids", "", "code id of the teritori minter contract")
 		tnsDefaultImageURL          = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
 		dbHost                      = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort                      = fs.String("db-indexer-port", "", "port for postgreSQL database")
@@ -56,11 +59,19 @@ func main() {
 	if *tnsContractAddress == "" {
 		panic(errors.New("missing teritori-name-service-contract-address flag"))
 	}
-	if *minterCodeID == 0 {
-		panic(errors.New("missing minter-code-id flag"))
-	}
 	if *tendermintWebsocketEndpoint == "" {
 		panic(errors.New("missing tendermint-websocket-endpoint flag"))
+	}
+
+	// parse minter code ids
+	mcisParts := strings.Split(*minterCodeIDs, ",")
+	mcis := make([]uint64, len(mcisParts))
+	var err error
+	for i, mciStr := range mcisParts {
+		mcis[i], err = strconv.ParseUint(strings.TrimFunc(mciStr, unicode.IsSpace), 10, 64)
+		if err != nil {
+			panic(errors.Wrap(err, "failed to parse minter code ID"))
+		}
 	}
 
 	// create replay infos
@@ -183,7 +194,7 @@ func main() {
 
 			if err := db.Transaction(func(dbtx *gorm.DB) error {
 				handler, err := indexerhandler.NewHandler(dbtx, indexerhandler.Config{
-					MinterCodeID:         *minterCodeID,
+					MinterCodeIDs:        mcis,
 					VaultContractAddress: *vaultContractAddress,
 					TNSContractAddress:   *tnsContractAddress,
 					TNSDefaultImageURL:   *tnsDefaultImageURL,

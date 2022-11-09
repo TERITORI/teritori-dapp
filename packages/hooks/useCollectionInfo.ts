@@ -6,6 +6,8 @@ import { prettyPrice } from "../utils/coins";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
+export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
+
 export interface CollectionInfo {
   image?: string;
   description?: string;
@@ -28,6 +30,7 @@ export interface CollectionInfo {
   bannerImage?: string;
   mintStarted?: boolean;
   publicSaleStartTime?: number; // seconds since epoch
+  state?: MintState;
 }
 
 // NOTE: consider using the indexer for this
@@ -71,6 +74,26 @@ export const useCollectionInfo = (id: string) => {
 
       const whitelistSize = await minterClient.whitelistSize();
 
+      const mintStarted = conf.mint_start_time !== 0;
+
+      let state: MintState;
+      if (!mintStarted) {
+        state = "not-started";
+      } else if (hasWhitelistPeriod && secondsSinceEpoch < whitelistEnd) {
+        state = "whitelist";
+      } else if (!publicSaleEnded) {
+        state = "public-sale";
+      } else {
+        state = "ended";
+      }
+
+      let unitPrice: string;
+      if (state === "not-started" || state === "whitelist") {
+        unitPrice = conf.whitelist_mint_price_amount || conf.nft_price_amount;
+      } else {
+        unitPrice = conf.nft_price_amount;
+      }
+
       const info: CollectionInfo = {
         name: nftInfo.name,
         image: ipfsURLToHTTPURL(metadata.image || ""),
@@ -80,10 +103,10 @@ export const useCollectionInfo = (id: string) => {
           conf.nft_price_amount,
           conf.price_denom
         ),
-        unitPrice: conf.nft_price_amount,
+        unitPrice,
         priceDenom: conf.price_denom,
         maxSupply: conf.nft_max_supply,
-        mintStarted: conf.mint_start_time !== 0,
+        mintStarted,
         mintedAmount,
         discord: metadata.discord,
         twitter: metadata.twitter,
@@ -94,13 +117,10 @@ export const useCollectionInfo = (id: string) => {
         hasPresale: hasWhitelistPeriod,
         publicSaleEnded,
         isMintable: !publicSaleEnded && conf.is_mintable,
-        isInPresalePeriod:
-          hasWhitelistPeriod &&
-          conf.mint_start_time !== 0 &&
-          secondsSinceEpoch >= conf.mint_start_time &&
-          secondsSinceEpoch < whitelistEnd,
+        isInPresalePeriod: state === "whitelist",
         publicSaleStartTime: whitelistEnd,
         bannerImage: ipfsURLToHTTPURL(metadata.banner),
+        state,
       };
 
       return info;
