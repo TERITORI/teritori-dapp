@@ -62,8 +62,14 @@ export const NewsCarouselSection: React.FC = () => {
         "\n" +
         "If you like to play games & earn rewards, you’re at the right place. Mint is coming soon on the launchpad.",
       image: defaultToripunkPNG,
-      button1Label: "Discover",
+      button1Label: "Join the Mint",
+      button2Label: "Discover",
       button1Action: () => {
+        navigation.navigate("MintCollection", {
+          id: `tori-${process.env.TORIPUNKS_COLLECTION_ADDRESS}`,
+        });
+      },
+      button2Action: () => {
         Linking.openURL("https://twitter.com/ToriPunks");
       },
     },
