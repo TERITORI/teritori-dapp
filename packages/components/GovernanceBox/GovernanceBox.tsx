@@ -96,6 +96,7 @@ export const GovernanceBox: React.FC<{
           percentageYes={percentageYes}
           percentageNo={percentageNo}
           percentageNoWithVeto={percentageNoWithVeto}
+          status={status}
         />
       );
     } else {

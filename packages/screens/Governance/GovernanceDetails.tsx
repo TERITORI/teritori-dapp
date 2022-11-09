@@ -17,6 +17,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
 import { neutral44 } from "../../utils/style/colors";
 import { getTeritoriSigningStargateClient } from "../../utils/teritori";
+import { ProposalStatus } from "./types";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View
@@ -42,6 +43,7 @@ export const GovernanceDetails: React.FC<{
   percentageYes: string;
   percentageNo: string;
   percentageNoWithVeto: string;
+  status: ProposalStatus;
 }> = ({
   visible,
   onClose,
@@ -57,6 +59,7 @@ export const GovernanceDetails: React.FC<{
   percentageYes,
   percentageNo,
   percentageNoWithVeto,
+  status,
 }) => {
   const [displayVote, setdisplayVote] = useState(false);
   const [displayConfirmationVote, setdisplayConfirmationVote] = useState(false);
