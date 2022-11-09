@@ -16,7 +16,7 @@ export const ProfileButton: React.FC<{
   const { loading, metadata } = useTNSMetadata(selectedWallet?.address);
 
   if (loading) return null;
-  if (selectedWallet && metadata)
+  if (selectedWallet && metadata?.tokenId)
     return (
       <SecondaryButtonOutline
         size="XL"
@@ -24,7 +24,11 @@ export const ProfileButton: React.FC<{
         backgroundColor={neutral00}
         onPress={
           isEdit
-            ? () => navigation.navigate("TNSHome", { modal: "update-name" })
+            ? () =>
+                navigation.navigate("TNSHome", {
+                  modal: "update-name",
+                  name: metadata.tokenId,
+                })
             : () =>
                 navigation.navigate("UserPublicProfile", {
                   id: `tori-${selectedWallet?.address}`,
