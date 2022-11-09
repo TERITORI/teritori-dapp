@@ -160,6 +160,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               justifyContent: "center",
               flexWrap: "wrap",
               marginTop: 72,
+              width: "100%",
             }}
             onLayout={(event) => setViewWidth(event.nativeEvent.layout.width)}
           >
