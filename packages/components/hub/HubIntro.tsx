@@ -36,7 +36,6 @@ const ConnectedIntro: React.FC = () => {
 
   const selectedWallet = useSelectedWallet();
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
-  console.log("tnsMetadatatnsMetadatatnsMetadata", tnsMetadata);
 
   return (
     <View

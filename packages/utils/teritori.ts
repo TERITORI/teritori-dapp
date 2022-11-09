@@ -14,6 +14,16 @@ export const vaultContractAddress =
   process.env.TERITORI_VAULT_CONTRACT_ADDRESS || "";
 const toriDenom = process.env.PUBLIC_STAKING_DENOM;
 
+export interface CosmosRewardsResponse {
+  rewards: {
+    validator_address: string;
+    reward: {
+      denom: string;
+      amount: string;
+    }[];
+  }[];
+}
+
 export interface CosmosBalancesResponse {
   balances: { denom: string; amount: string }[];
 }

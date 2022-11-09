@@ -9,6 +9,7 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useBalances } from "../../hooks/useBalances";
+import { useRewards } from "../../hooks/useRewards";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
@@ -95,6 +96,8 @@ export const WalletDashboardHeader: React.FC = () => {
     (total, bal) => total + (bal.usdAmount || 0),
     0
   );
+  const { totalAmount } = useRewards(selectedNetwork, selectedWallet?.address);
+
   return (
     <View
       style={{
@@ -163,7 +166,7 @@ export const WalletDashboardHeader: React.FC = () => {
         <WalletDashboardHeaderCard
           {...{
             title: "Total Claimable Rewards",
-            data: "$42.00",
+            data: `$${totalAmount?.toFixed(2) || 0}`,
             actionButton: {
               label: "Claim All",
               onPress: () =>
