@@ -67,6 +67,7 @@
     "react-native-webview": "11.18.1",
     "react-redux": "^8.0.2",
     "redux-persist": "^6.0.0",
+    "screenfull": "^6.0.2",
     "victory-native": "^36.6.8"
   },
   "devDependencies": {

@@ -6,12 +6,14 @@ import {
   StyleSheet,
   Pressable,
   FlatList,
+  Platform,
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
   WithSpringConfig,
 } from "react-native-reanimated";
+import screenfull from "screenfull";
 
 import addSVG from "../../../assets/icons/add.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
@@ -77,6 +79,9 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
+    if (name === "RiotGame" && screenfull.isEnabled && Platform.OS === "web") {
+      screenfull.request();
+    }
     navigation.navigate(name);
   };
 

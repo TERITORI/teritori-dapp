@@ -7,7 +7,7 @@ export type RootStackParamList = {
   MyCollection: undefined;
   Activity: undefined;
   Guardians: undefined;
-  GuardiansGame: undefined;
+  RiotGame: undefined;
   WalletManager: undefined;
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
@@ -49,7 +49,7 @@ const navConfig: {
     WalletManager: "wallet-manager",
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
-    GuardiansGame: "guardians-game",
+    RiotGame: "riot-game",
     Governance: "governance",
     UserPublicProfile: "user/:id",
     RiotersFooter: "rioters-footer",

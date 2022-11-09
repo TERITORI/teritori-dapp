@@ -15,6 +15,13 @@ module.exports = async function (env, argv) {
     },
   });
 
+  config.module.rules.push({
+    test: /screenfull/,
+    use: {
+      loader: "babel-loader",
+    },
+  });
+
   config.module.rules.forEach((rule) => {
     if (rule.oneOf) {
       rule.oneOf.unshift({
