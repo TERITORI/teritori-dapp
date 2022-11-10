@@ -27,7 +27,7 @@ export const ProfileButton: React.FC<{
             ? () =>
                 navigation.navigate("TNSHome", {
                   modal: "update-name",
-                  name: metadata.tokenId,
+                  name: metadata.tokenId.replace(".tori", ""),
                 })
             : () =>
                 navigation.navigate("UserPublicProfile", {
