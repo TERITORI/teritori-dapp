@@ -22,7 +22,7 @@ export const GovernanceScreen: React.FC = () => {
         );
         const data = await res.json();
 
-        setProposals(data.proposals);
+        setProposals(data.proposals.reverse());
       } catch (err) {
         console.error(err);
       }
