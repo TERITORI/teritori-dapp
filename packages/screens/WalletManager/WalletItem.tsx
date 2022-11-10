@@ -24,7 +24,7 @@ export interface WalletItemProps {
     id: number;
     title: string;
     address: string;
-    pendingReward: number;
+    pendingReward: string;
     staked: number;
   };
 }
@@ -160,16 +160,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {/*String(item.pendingReward).split(".")[0]*/}
-            Coming Soon
-            {/*<BrandText
-              style={{
-                color: neutralA3,
-                fontSize: 14,
-              }}
-            >
-              .{String(item.pendingReward).split(".")[1]}
-            </BrandText>*/}
+            {item.pendingReward}
           </BrandText>
         </View>
 
