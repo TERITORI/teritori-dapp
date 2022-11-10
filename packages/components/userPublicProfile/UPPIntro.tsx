@@ -9,17 +9,16 @@ import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral77, withAlpha } from "../../utils/style/colors";
+import { neutral77, withAlpha } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { useCopyToClipboard } from "../CopyToClipboard";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
 import { tinyAddress } from "../WalletSelector";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
+import { ProfileButton } from "../hub/ProfileButton";
 import { UserImage } from "../images/UserImage";
 
 export const UPPIntro: React.FC<{
@@ -30,8 +29,6 @@ export const UPPIntro: React.FC<{
   const { copyToClipboard } = useCopyToClipboard();
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
-  const navigation = useAppNavigation();
-  const name = (metadata?.tokenId || "").replace(process.env.TLD || "", "");
 
   return (
     <>
@@ -105,15 +102,9 @@ export const UPPIntro: React.FC<{
           />
         </View>
         {isUserOwner && (
-          // Absolute edit button
-          <SecondaryButtonOutline
-            size="M"
-            text="Edit profile"
-            backgroundColor={neutral00}
-            onPress={() =>
-              navigation.navigate("TNSHome", { modal: "update-name", name })
-            }
+          <ProfileButton
             touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
+            isEdit
           />
         )}
         <UserImage

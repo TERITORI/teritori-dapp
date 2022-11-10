@@ -47,7 +47,7 @@ const ConnectedIntro: React.FC = () => {
     >
       <UserImage image={tnsMetadata?.metadata?.image} />
 
-      <ProfileButton style={{ marginTop: 40 }} />
+      <ProfileButton touchableStyle={{ marginTop: 40 }} />
 
       <Section title="Quests" subtitle="4">
         <FullWidthSeparator />
