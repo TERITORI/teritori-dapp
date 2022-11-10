@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
+import { useRewardsTotal } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral33 } from "../../utils/style/colors";
 import { WalletItem } from "./WalletItem";
@@ -9,13 +10,18 @@ import { WalletItem } from "./WalletItem";
 export const Wallets: React.FC = () => {
   const selectedWallet = useSelectedWallet();
 
+  const { totalAmount: totalAmountTeritori } = useRewardsTotal(
+    process.env.TERITORI_NETWORK_ID || "",
+    selectedWallet?.address
+  );
+
   const wallets = selectedWallet
     ? [
         {
           id: 0,
           title: "Teritori",
           address: selectedWallet.address,
-          pendingReward: 42,
+          pendingReward: totalAmountTeritori || 0,
           staked: 42,
         },
       ]

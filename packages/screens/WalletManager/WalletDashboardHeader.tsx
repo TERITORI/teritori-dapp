@@ -7,8 +7,8 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useBalances } from "../../hooks/useBalances";
+import { useRewardsTotal } from "../../hooks/useRewards";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
@@ -87,7 +87,6 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
 export const WalletDashboardHeader: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkId();
-  const { setToastSuccess } = useFeedbacks();
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
   const balances = useBalances(selectedNetwork, selectedWallet?.address);
   const navigation = useAppNavigation();
@@ -95,6 +94,11 @@ export const WalletDashboardHeader: React.FC = () => {
     (total, bal) => total + (bal.usdAmount || 0),
     0
   );
+  const { totalAmount } = useRewardsTotal(
+    selectedNetwork,
+    selectedWallet?.address
+  );
+
   return (
     <View
       style={{
@@ -163,11 +167,10 @@ export const WalletDashboardHeader: React.FC = () => {
         <WalletDashboardHeaderCard
           {...{
             title: "Total Claimable Rewards",
-            data: "$42.00",
+            data: `$${totalAmount?.toFixed(2) || 0}`,
             actionButton: {
               label: "Claim All",
-              onPress: () =>
-                setToastSuccess({ title: "Coming Soon", message: "" }),
+              onPress: () => navigation.navigate("Staking"),
             },
           }}
         />

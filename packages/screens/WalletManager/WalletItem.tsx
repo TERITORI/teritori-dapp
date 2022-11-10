@@ -14,6 +14,7 @@ import { Menu } from "../../components/Menu";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { accountExplorerLink } from "../../utils/teritori";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
@@ -36,6 +37,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
 }) => {
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
+  const navigation = useAppNavigation();
 
   return (
     <View
@@ -160,16 +162,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {/*String(item.pendingReward).split(".")[0]*/}
-            Coming Soon
-            {/*<BrandText
-              style={{
-                color: neutralA3,
-                fontSize: 14,
-              }}
-            >
-              .{String(item.pendingReward).split(".")[1]}
-            </BrandText>*/}
+            {`$${item.pendingReward.toFixed(2)}`}
           </BrandText>
         </View>
 
@@ -178,9 +171,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
             <SecondaryButton
               size="XS"
               text="Claim reward"
-              onPress={() =>
-                setToastSuccess({ title: "Coming Soon", message: "" })
-              }
+              onPress={() => navigation.navigate("Staking")}
               style={{
                 backgroundColor: neutral33,
                 marginRight: 16,
