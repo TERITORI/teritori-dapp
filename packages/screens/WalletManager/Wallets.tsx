@@ -21,7 +21,7 @@ export const Wallets: React.FC = () => {
           id: 0,
           title: "Teritori",
           address: selectedWallet.address,
-          pendingReward: `$${totalAmountTeritori?.toFixed(2) || 0}`,
+          pendingReward: totalAmountTeritori || 0,
           staked: 42,
         },
       ]

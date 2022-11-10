@@ -25,7 +25,7 @@ export interface WalletItemProps {
     id: number;
     title: string;
     address: string;
-    pendingReward: string;
+    pendingReward: number;
     staked: number;
   };
 }
@@ -162,7 +162,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {item.pendingReward}
+            {`$${item.pendingReward.toFixed(2)}`}
           </BrandText>
         </View>
 
