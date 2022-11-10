@@ -17,6 +17,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
 import { neutral44 } from "../../utils/style/colors";
 import { getTeritoriSigningStargateClient } from "../../utils/teritori";
+import { ProposalStatus } from "./types";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View
@@ -39,12 +40,10 @@ export const GovernanceDetails: React.FC<{
   votingStartTime: string;
   votingSubmitTime: string;
   votingDepositEndTime: string;
-  isVotingPeriod: boolean;
-  isRejectedPeriod: boolean;
-  isPassedPeriod: boolean;
   percentageYes: string;
   percentageNo: string;
   percentageNoWithVeto: string;
+  status: ProposalStatus;
 }> = ({
   visible,
   onClose,
@@ -57,12 +56,10 @@ export const GovernanceDetails: React.FC<{
   votingEndTime,
   votingSubmitTime,
   votingDepositEndTime,
-  isVotingPeriod,
-  isRejectedPeriod,
-  isPassedPeriod,
   percentageYes,
   percentageNo,
   percentageNoWithVeto,
+  status,
 }) => {
   const [displayVote, setdisplayVote] = useState(false);
   const [displayConfirmationVote, setdisplayConfirmationVote] = useState(false);
@@ -206,7 +203,7 @@ export const GovernanceDetails: React.FC<{
             {titleProposal}
           </BrandText>
         </View>
-        {isVotingPeriod && (
+        {status === "PROPOSAL_STATUS_VOTING" && (
           <View
             style={{
               alignItems: "center",
@@ -227,7 +224,7 @@ export const GovernanceDetails: React.FC<{
             </BrandText>
           </View>
         )}
-        {isRejectedPeriod && (
+        {status === "PROPOSAL_STATUS_REJECTED" && (
           <View
             style={{
               alignItems: "center",
@@ -249,7 +246,7 @@ export const GovernanceDetails: React.FC<{
           </View>
         )}
 
-        {isPassedPeriod && (
+        {status === "PROPOSAL_STATUS_PASSED" && (
           <View
             style={{
               alignItems: "center",

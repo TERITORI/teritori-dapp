@@ -5,6 +5,7 @@ import { ColorValue, ScrollView, TouchableOpacity, View } from "react-native";
 import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { GovernanceDetails } from "../../screens/Governance/GovernanceDetails";
+import { ProposalStatus } from "../../screens/Governance/types";
 
 // FIXME: code dedup
 
@@ -21,6 +22,7 @@ export const GovernanceBox: React.FC<{
   percentageAbstainValue: number;
   votingSubmitTime: string;
   votingDepositEndTime: string;
+  status: ProposalStatus;
 }> = ({
   numberProposal,
   titleProposal,
@@ -34,10 +36,8 @@ export const GovernanceBox: React.FC<{
   votingStartTime,
   votingSubmitTime,
   votingDepositEndTime,
+  status,
 }) => {
-  let isVotingPeriod = true;
-  let isPassedPeriod = false;
-  let isRejectedPeriod = false;
   const totalUsers =
     percentageYesValue +
     percentageNoValue +
@@ -74,33 +74,6 @@ export const GovernanceBox: React.FC<{
 
   const numberProposalHashtag = "#" + numberProposal;
 
-  const today = new Date();
-  let todayDate = "";
-  const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  const yyyy = today.getFullYear();
-  const hours = today.getHours();
-  const minutes = today.getMinutes();
-
-  todayDate = mm + "/" + dd + "/" + yyyy;
-  todayDate = yyyy + "-" + mm + "-" + dd + " " + hours + ":" + minutes;
-
-  if (todayDate > votingEndTime) {
-    isPassedPeriod = true;
-    isVotingPeriod = false;
-  } else {
-    isVotingPeriod = true;
-    isPassedPeriod = false;
-  }
-
-  if (
-    percentageNoValue + percentageNoWithVetoValue > percentageYesValue &&
-    isPassedPeriod === true
-  ) {
-    isRejectedPeriod = true;
-    isPassedPeriod = false;
-  }
-
   function activePopup() {
     setDisplayGovernanceDetails(!displayGovernanceDetails);
   }
@@ -120,12 +93,10 @@ export const GovernanceBox: React.FC<{
           votingStartTime={votingStartTime}
           votingSubmitTime={votingSubmitTime}
           votingDepositEndTime={votingDepositEndTime}
-          isVotingPeriod={isVotingPeriod}
-          isPassedPeriod={isPassedPeriod}
-          isRejectedPeriod={isRejectedPeriod}
           percentageYes={percentageYes}
           percentageNo={percentageNo}
           percentageNoWithVeto={percentageNoWithVeto}
+          status={status}
         />
       );
     } else {
@@ -151,7 +122,7 @@ export const GovernanceBox: React.FC<{
               height: "100%",
             }}
           >
-            {isVotingPeriod && (
+            {status === "PROPOSAL_STATUS_VOTING" && (
               <View
                 style={{
                   alignItems: "center",
@@ -176,7 +147,7 @@ export const GovernanceBox: React.FC<{
               </View>
             )}
 
-            {isRejectedPeriod && (
+            {status === "PROPOSAL_STATUS_REJECTED" && (
               <View
                 style={{
                   alignItems: "center",
@@ -201,7 +172,7 @@ export const GovernanceBox: React.FC<{
               </View>
             )}
 
-            {isPassedPeriod && (
+            {status === "PROPOSAL_STATUS_PASSED" && (
               <View
                 style={{
                   alignItems: "center",
