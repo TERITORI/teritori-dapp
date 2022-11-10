@@ -12,8 +12,9 @@ import { TertiaryBox } from "./boxes/TertiaryBox";
 
 export const CopyToClipboardSecondary: React.FC<{
   text: string;
+  displayedText: string;
   iconSVG?: React.FC<SvgProps>;
-}> = ({ text, iconSVG }) => {
+}> = ({ text, displayedText, iconSVG }) => {
   const { copyToClipboard } = useCopyToClipboard();
 
   return (
@@ -35,7 +36,7 @@ export const CopyToClipboardSecondary: React.FC<{
           ]}
           numberOfLines={1}
         >
-          {text}
+          {displayedText}
         </BrandText>
         <SVG width={16} height={16} source={copySVG} />
       </TertiaryBox>

@@ -183,7 +183,8 @@ export const UPPIntro: React.FC<{
           </View>
 
           <CopyToClipboardSecondary
-            text={tinyAddress(userId.replace("tori-", ""), 19)}
+            displayedText={tinyAddress(userId.replace("tori-", ""), 19)}
+            text={userId.replace("tori-", "")}
             iconSVG={teritoriSVG}
           />
         </TertiaryBox>
