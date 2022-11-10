@@ -112,7 +112,18 @@ export const Sidebar: React.FC = () => {
           <SidebarButton key={item.title} onPress={onRouteChange} {...item} />
         )}
         ListHeaderComponent={<SpacerColumn size={1} />}
-        ListFooterComponent={<SpacerColumn size={1} />}
+        ListFooterComponent={
+          <>
+            <SidebarButton
+              icon={addSVG}
+              iconSize={36}
+              route="ComingSoon"
+              title=""
+              onPress={() => navigation.navigate("ComingSoon")}
+            />
+            <SpacerColumn size={1} />
+          </>
+        }
       />
       <View>
         <View
@@ -122,14 +133,6 @@ export const Sidebar: React.FC = () => {
             backgroundColor: neutral33,
             marginBottom: layout.padding_x1,
           }}
-        />
-
-        <SidebarButton
-          icon={addSVG}
-          iconSize={36}
-          route="ComingSoon"
-          title=""
-          onPress={() => navigation.navigate("ComingSoon")}
         />
 
         {tnsMetadata.metadata && (
