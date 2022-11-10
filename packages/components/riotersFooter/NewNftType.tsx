@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import addSvg from "../../../assets/icons/add.svg";
+import addSvg from "../../../assets/icons/add-circle.svg";
 import { Collection } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";

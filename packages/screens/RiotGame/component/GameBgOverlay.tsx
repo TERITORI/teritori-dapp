@@ -1,0 +1,86 @@
+// libraries
+import React, { useMemo } from "react";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
+
+import gameBgShadowVerticalSVG from "../../../../assets/game-bg-shadow-vertical.svg";
+import gameBgShadowSVG from "../../../../assets/game-bg-shadow.svg";
+import { SVG } from "../../../components/SVG";
+import { headerHeight } from "../../../utils/style/layout";
+
+// misc
+
+type GameBgOverlayProps = {
+  type: "top" | "bottom" | "left" | "right";
+};
+
+const DEFAULT_SIZE = 190;
+
+export const GameBgOverlay: React.FC<GameBgOverlayProps> = ({ type }) => {
+  // variables
+  const { width, height } = useWindowDimensions();
+
+  const shadowHeight = useMemo(() => {
+    switch (type) {
+      case "top":
+      case "bottom":
+        return DEFAULT_SIZE;
+
+      case "right":
+      case "left":
+        return height - headerHeight;
+
+      default:
+        return DEFAULT_SIZE;
+    }
+  }, [type, width, height]);
+
+  const shadowWidth = useMemo(() => {
+    switch (type) {
+      case "top":
+      case "bottom":
+        return width;
+
+      case "right":
+      case "left":
+        return DEFAULT_SIZE;
+
+      default:
+        return width;
+    }
+  }, [type, width, height]);
+
+  // returns
+  return (
+    <View style={[styles.absolute, styles[type]]}>
+      <SVG
+        source={
+          ["top", "bottom"].includes(type)
+            ? gameBgShadowSVG
+            : gameBgShadowVerticalSVG
+        }
+        height={shadowHeight}
+        width={shadowWidth}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  absolute: { position: "absolute" },
+  top: {
+    top: headerHeight,
+  },
+  bottom: {
+    bottom: 0,
+    transform: [{ rotate: "180deg" }],
+  },
+  left: {
+    left: 0,
+    top: headerHeight,
+  },
+  right: {
+    right: 0,
+    top: headerHeight,
+    transform: [{ rotate: "180deg" }],
+  },
+});
