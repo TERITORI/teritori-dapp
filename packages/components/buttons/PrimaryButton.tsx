@@ -26,6 +26,7 @@ export const PrimaryButton: React.FC<{
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
+  iconColor?: string;
   disabled?: boolean;
   fullWidth?: boolean;
   loader?: boolean;
@@ -45,6 +46,7 @@ export const PrimaryButton: React.FC<{
   loader,
   touchableStyle = {},
   RightComponent,
+  iconColor,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -94,6 +96,7 @@ export const PrimaryButton: React.FC<{
             width={16}
             height={16}
             style={{ marginRight: 8 }}
+            color={iconColor}
           />
         ) : null}
 
