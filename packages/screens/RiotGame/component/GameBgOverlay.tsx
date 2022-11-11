@@ -68,7 +68,7 @@ export const GameBgOverlay: React.FC<GameBgOverlayProps> = ({ type }) => {
 const styles = StyleSheet.create({
   absolute: { position: "absolute" },
   top: {
-    top: headerHeight,
+    top: 0,
   },
   bottom: {
     bottom: 0,
@@ -76,11 +76,11 @@ const styles = StyleSheet.create({
   },
   left: {
     left: 0,
-    top: headerHeight,
+    top: 0,
   },
   right: {
     right: 0,
-    top: headerHeight,
+    top: 0,
     transform: [{ rotate: "180deg" }],
   },
 });

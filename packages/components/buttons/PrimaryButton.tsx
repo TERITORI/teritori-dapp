@@ -32,6 +32,7 @@ export const PrimaryButton: React.FC<{
   loader?: boolean;
   touchableStyle?: StyleProp<ViewStyle>;
   RightComponent?: React.FC;
+  color?: string;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -47,6 +48,7 @@ export const PrimaryButton: React.FC<{
   touchableStyle = {},
   RightComponent,
   iconColor,
+  color = primaryColor,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -84,7 +86,7 @@ export const PrimaryButton: React.FC<{
         mainContainerStyle={{
           flexDirection: "row",
           borderRadius: borderRadiusButton(size),
-          backgroundColor: primaryColor,
+          backgroundColor: color,
           paddingHorizontal: 20,
           opacity: isDisabled ? 0.5 : 1,
         }}

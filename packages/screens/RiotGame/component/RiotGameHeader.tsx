@@ -10,6 +10,7 @@ import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryBut
 import { LogoTop } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
 import {
+  gameHighlight,
   neutral33,
   primaryTextColor,
   secondaryColor,
@@ -40,6 +41,7 @@ export const RiotGameHeader = () => {
           size="M"
           iconColor={primaryTextColor}
           iconSVG={gameBoxSVG}
+          color={gameHighlight}
         />
         <SpacerRow size={1.5} />
         <Separator horizontal color={neutral33} />
