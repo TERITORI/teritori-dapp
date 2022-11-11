@@ -2,6 +2,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
+import { FreelanceServicesScreen } from "../../screens/FreelanceServices/FreelanceServicesScreen";
+import { GraphicsAndDesignScreen } from "../../screens/FreelanceServices/GraphicsAndDesignScreen/GraphicsAndDesignScreen";
+import { LogoDesignDetailsScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignDetailsScreen";
+import { LogoDesignScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignScreen";
+import { SellerDetailsScreen } from "../../screens/FreelanceServices/SellersDetails/SellerDetailsScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
@@ -134,6 +139,38 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="ComingSoon"
         component={ComingSoonScreen}
+        options={{ header: () => null }}
+      />
+
+      {/* ==== Freelance Services */}
+
+      <Stack.Screen
+        name="FreelanceServices"
+        component={FreelanceServicesScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="GraphicsAndDesign"
+        component={GraphicsAndDesignScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="LogoDesign"
+        component={LogoDesignScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="LogoDesignDetails"
+        component={LogoDesignDetailsScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="SellerDetails"
+        component={SellerDetailsScreen}
         options={{ header: () => null }}
       />
     </Stack.Navigator>

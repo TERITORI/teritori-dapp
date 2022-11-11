@@ -53,6 +53,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: string;
   labelStyle?: TextStyle;
+  mainContainerStyle?: StyleProp<ViewStyle>;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -75,6 +76,7 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
+  mainContainerStyle,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -163,12 +165,13 @@ export const TextInputCustom = <T extends FieldValues>({
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
-        mainContainerStyle={styles.mainContainer}
+        mainContainerStyle={[styles.mainContainer, mainContainerStyle]}
         width={width}
         fullWidth={!width}
         height={height}
       >
         <View style={styles.innerContainer}>
+          <>{children}</>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {variant !== "labelOutside" && (
               <Pressable onPress={() => inputRef.current?.focus()}>
@@ -190,8 +193,6 @@ export const TextInputCustom = <T extends FieldValues>({
               {...restProps}
             />
           </View>
-
-          <>{children}</>
         </View>
       </TertiaryBox>
       <ErrorText>{error}</ErrorText>

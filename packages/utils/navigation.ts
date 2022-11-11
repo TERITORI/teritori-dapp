@@ -14,6 +14,11 @@ export type RootStackParamList = {
   Governance: undefined;
   UserPublicProfile: { id: string };
   RiotersFooter: undefined;
+  FreelanceServices: undefined;
+  GraphicsAndDesign: undefined;
+  LogoDesign: undefined;
+  LogoDesignDetails: { title: string };
+  SellerDetails: undefined;
 
   Launchpad: undefined;
   MintCollection: { id: string };
@@ -43,7 +48,12 @@ const navConfig: {
 } = {
   screens: {
     Home: "",
+    FreelanceServices: "freelance-services",
     MyCollection: "my-collection",
+    GraphicsAndDesign: "graphics-and-design",
+    SellerDetails: "seller-details",
+    LogoDesign: "logo-design",
+    LogoDesignDetails: "logo-design-details",
     Activity: "activity",
     Guardians: "guardians",
     WalletManager: "wallet-manager",

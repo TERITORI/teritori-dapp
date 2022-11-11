@@ -1,5 +1,12 @@
 import React, { ComponentType } from "react";
-import { Modal, Pressable, View, ViewStyle, ScrollView } from "react-native";
+import {
+  Modal,
+  Pressable,
+  View,
+  ViewStyle,
+  ScrollView,
+  TextStyle,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
@@ -31,6 +38,7 @@ export const ModalBase: React.FC<{
   scrollable?: boolean;
   contentStyle?: ViewStyle;
   containerStyle?: ViewStyle;
+  labelStyle?: TextStyle;
 }> = ({
   label,
   visible,
@@ -46,6 +54,7 @@ export const ModalBase: React.FC<{
   containerStyle,
   onBackPress,
   noBrokenCorners,
+  labelStyle,
 }) => {
   return (
     <Modal
@@ -127,7 +136,9 @@ export const ModalBase: React.FC<{
 
                 <View style={{ flex: 1, width: "100%" }}>
                   {label && (
-                    <BrandText style={{ color: "white", lineHeight: 24 }}>
+                    <BrandText
+                      style={[{ color: "white", lineHeight: 24 }, labelStyle]}
+                    >
                       {label}
                     </BrandText>
                   )}
@@ -143,6 +154,7 @@ export const ModalBase: React.FC<{
                             width: "100%",
                             lineHeight: 20,
                             flexWrap: "wrap",
+                            alignSelf: "center",
                           },
                         ]}
                       >
