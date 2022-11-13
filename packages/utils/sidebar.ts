@@ -34,6 +34,18 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     title: "Launchpad",
     route: "Launchpad",
     icon: launchpadSVG,
+    nested: {
+      launchpad: {
+        title: "Launchpad",
+        icon: launchpadSVG,
+        route: "Launchpad",
+      },
+      apply: {
+        title: "Apply",
+        icon: launchpadSVG,
+        route: "LaunchpadApply",
+      },
+    },
   },
   namespace: {
     title: "Name Service",
