@@ -16,21 +16,21 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
           paddingBottom: layout.contentPadding,
         }}
       >
-        {/*TODO: MINTABLE*/}
+        {/*TODO: LIVE MINTABLE*/}
         <CollectionsCarouselHeader kind={CollectionsRequest_Kind.KIND_FAKE} />
 
-        {/*TODO: LIVE*/}
+        {/*TODO: LIVE MINTABLE*/}
         <CollectionsCarouselSection
-          title="Live Launches (?)"
+          title="Live"
           kind={CollectionsRequest_Kind.KIND_FAKE}
         />
         <CollectionsCarouselSection
-          title="Upcoming Launches"
+          title="Upcoming"
           kind={CollectionsRequest_Kind.KIND_UPCOMING}
         />
-        {/*TODO: ENDED*/}
+        {/*TODO: ON MARKETPLACE (MINT ENDED)*/}
         <CollectionsCarouselSection
-          title="Ended Launches"
+          title="Ended"
           kind={CollectionsRequest_Kind.KIND_FAKE}
         />
       </View>

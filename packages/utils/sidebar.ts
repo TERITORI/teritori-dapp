@@ -3,6 +3,7 @@ import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
 import gridSVG from "../../assets/icons/grid.svg";
+import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
 import marketplaceSVG from "../../assets/icons/marketplace.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
@@ -42,7 +43,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
       },
       apply: {
         title: "Apply",
-        icon: launchpadSVG,
+        icon: launchpadApplySVG,
         route: "LaunchpadApply",
       },
     },

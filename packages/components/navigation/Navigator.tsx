@@ -100,7 +100,10 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="LaunchpadApply"
         component={LaunchpadApplyScreen}
-        options={{ header: () => null, title: screenTitle("LaunchpadApply") }}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad (Apply)"),
+        }}
       />
       <Stack.Screen
         name="MintCollection"
