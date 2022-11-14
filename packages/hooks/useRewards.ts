@@ -3,38 +3,65 @@ import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
 import { getNativeCurrency, getNetwork } from "../networks";
-import { CosmosRewardsTotalResponse } from "../utils/teritori";
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
+import { CosmosRewardsResponse } from "../utils/teritori";
+import { CoingeckoPrices, useCoingeckoPrices } from "./useCoingeckoPrices";
+import { useSelectedNetworkId } from "./useSelectedNetwork";
+import useSelectedWallet from "./useSelectedWallet";
+
+const initialData = { rewards: [], total: [] };
 
 // Getting the total amount of all the rewards, by user's address, and by network
-export const useRewardsTotal = (
-  networkId: string | undefined,
-  address: string | undefined
-) => {
-  // Getting rewards total from cosmos distribution
-  const { data: networkRewardsTotal } = useQuery(
+export const useRewards = () => {
+  const selectedWallet = useSelectedWallet();
+  const selectedNetwork = useSelectedNetworkId();
+  const networkId = selectedNetwork || process.env.TERITORI_NETWORK_ID || "";
+  const address = selectedWallet?.address;
+
+  // Getting rewards from cosmos distribution
+  const { data: networkRewards } = useQuery(
     ["rewards", networkId, address],
     async () => {
       if (!address || !networkId) {
-        return [];
+        return initialData;
       }
-
-      return getNetworkRewardsTotal(networkId, address);
+      return getNetworkRewards(
+        networkId,
+        "tori14grryrkwtf0ugtlthrnr59ktztc9mnfch5x2dg"
+      );
     },
-    { initialData: [], refetchInterval: 5000 }
+    { initialData, refetchInterval: 5000 }
   );
 
-  // Prices from coinGecko for each denom and network
-  const prices = useCoingeckoPrices(
-    networkRewardsTotal.map((total) => ({ networkId, denom: total.denom }))
+  // ---- rewards : Prices from coinGecko for each denom and network
+  const rewardsPricesAndValidators: {
+    rewardPrices: CoingeckoPrices;
+    validator: string;
+  }[] = [];
+
+  networkRewards.rewards.forEach(async (rew) => {
+    const rewardPrices = await useCoingeckoPrices(
+      rew.reward.map((r) => ({ networkId, denom: r.denom }))
+    );
+
+    rewardsPricesAndValidators.push({
+      rewardPrices,
+      validator: rew.validator_address,
+    });
+  });
+
+  //TODO: true prices per validator
+
+  // ---- total : Prices from coinGecko for each denom and network
+  const totalPrices = useCoingeckoPrices(
+    networkRewards.total.map((total) => ({ networkId, denom: total.denom }))
   );
 
   const totalAmount = useMemo(() => {
     let finalPrice = 0;
 
-    if (!networkRewardsTotal || !Object.keys(prices).length) return null;
+    if (!networkRewards.total || !Object.keys(totalPrices).length) return null;
 
-    networkRewardsTotal.forEach((total) => {
+    networkRewards.total.forEach((total) => {
       const currency = getNativeCurrency(networkId, total.denom);
 
       // Getting atomic prices for each total amount
@@ -43,34 +70,29 @@ export const useRewardsTotal = (
         Decimal.fromAtomics(
           Math.round(parseFloat(total.amount)).toString(),
           currency.decimals
-        ).toFloatApproximation() * (prices[currency.coingeckoId]?.usd || 0);
+        ).toFloatApproximation() *
+          (totalPrices[currency.coingeckoId]?.usd || 0);
 
       // Add total's price to the result
       finalPrice += price || 0;
     });
 
     return finalPrice;
-  }, [networkId, networkRewardsTotal, prices]);
+  }, [networkId, networkRewards.total, totalPrices]);
 
-  return { totalAmount };
+  return { totalAmount, rewardsPricesAndValidators };
 };
 
-const getNetworkRewardsTotal = async (
+const getNetworkRewards = async (
   networkId: string,
   address: string
-): Promise<
-  {
-    denom: string;
-    amount: string;
-  }[]
-> => {
+): Promise<CosmosRewardsResponse> => {
   const network = getNetwork(networkId);
   if (!network) {
-    return [];
+    return initialData;
   }
   const response = await fetch(
     `${network.restEndpoint}/cosmos/distribution/v1beta1/delegators/${address}/rewards`
   );
-  const responseJSON: CosmosRewardsTotalResponse = await response.json();
-  return responseJSON.total;
+  return await response.json();
 };

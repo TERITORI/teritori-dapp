@@ -4,6 +4,7 @@ import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 import validatorIconSVG from "../../../../assets/default-images/validator-icon.svg";
 import { Avatar } from "../../../components/Avatar";
 import { BrandText } from "../../../components/BrandText";
+import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import { SpacerRow } from "../../../components/spacer";
 import { TableRow, TableRowHeading } from "../../../components/table";
@@ -129,6 +130,11 @@ const ValidatorRow: React.FC<{
       >
         {validator.commission}
       </BrandText>
+
+      {validator.hasClaimableRewards && (
+        <PrimaryButtonOutline size="XS" text="Claim reward" />
+      )}
+
       {actions && (
         <View
           style={{

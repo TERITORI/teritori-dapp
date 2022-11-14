@@ -8,7 +8,7 @@ import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
-import { useRewardsTotal } from "../../hooks/useRewards";
+import { useRewards } from "../../hooks/useRewards";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
@@ -94,10 +94,7 @@ export const WalletDashboardHeader: React.FC = () => {
     (total, bal) => total + (bal.usdAmount || 0),
     0
   );
-  const { totalAmount } = useRewardsTotal(
-    selectedNetwork,
-    selectedWallet?.address
-  );
+  const { totalAmount } = useRewards();
 
   return (
     <View

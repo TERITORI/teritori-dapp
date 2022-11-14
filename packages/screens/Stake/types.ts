@@ -11,6 +11,7 @@ export type ValidatorInfo = {
   address: string;
   jailed: boolean;
   consensusPubKey: { type: string; key: string };
+  claimableRewardAmount?: number;
 };
 
 export type StakeFormValuesType = {
