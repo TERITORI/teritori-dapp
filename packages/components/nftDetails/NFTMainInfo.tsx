@@ -1,6 +1,6 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Target } from "@nandorojo/anchor";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import starSVG from "../../../assets/icons/star.svg";
@@ -52,7 +52,16 @@ export const NFTMainInfo: React.FC<{
     denom: string | undefined
   ) => Promise<ExecuteResult | undefined>;
   cancelListing: () => Promise<ExecuteResult | undefined>;
-}> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
+  openBuy?: boolean;
+}> = ({
+  nftId,
+  nftInfo,
+  buy,
+  sell,
+  cancelListing,
+  showMarketplace,
+  openBuy,
+}) => {
   const { openTransactionModals } = useTransactionModals();
 
   const [selectedTab, setSelectedTab] =
@@ -126,6 +135,10 @@ export const NFTMainInfo: React.FC<{
         return null;
     }
   };
+
+  useEffect(() => {
+    if (openBuy) openTransactionModals();
+  }, []);
 
   return (
     <>
