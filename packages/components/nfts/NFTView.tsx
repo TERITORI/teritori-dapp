@@ -304,7 +304,9 @@ export const NFTView: React.FC<{
                       nft.price,
                       nft.denom
                     )}
-                    onPress={() => {}}
+                    onPress={() =>
+                      navigation.navigate("NFTDetail", { id: nft.id })
+                    }
                     fullWidth
                     numberOfLines={1}
                     activeOpacity={1}
