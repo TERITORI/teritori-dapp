@@ -47,8 +47,7 @@ export interface NFTInfo {
 
 const Content: React.FC<{
   id: string;
-  openBuy?: boolean;
-}> = ({ id, openBuy }) => {
+}> = ({ id }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("main");
   const { setToastError } = useFeedbacks();
@@ -199,7 +198,6 @@ const Content: React.FC<{
             sell={handleSell}
             cancelListing={handleCancelListing}
             showMarketplace={showMarketplace}
-            openBuy={openBuy}
           />
           <SpacerColumn size={6} />
         </ScrollView>
@@ -210,7 +208,7 @@ const Content: React.FC<{
 
 export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   route: {
-    params: { id, openBuy },
+    params: { id },
   },
 }) => {
   // needed for emoji
@@ -218,7 +216,7 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
 
   return (
     <ScreenContainer fullWidth footerChildren={<></>} noScroll noMargin>
-      <Content key={id} id={id} openBuy={openBuy} />
+      <Content key={id} id={id} />
     </ScreenContainer>
   );
 };

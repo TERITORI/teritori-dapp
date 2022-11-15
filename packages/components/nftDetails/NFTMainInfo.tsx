@@ -1,11 +1,13 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Target } from "@nandorojo/anchor";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
+import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
   fontMedium14,
@@ -52,17 +54,9 @@ export const NFTMainInfo: React.FC<{
     denom: string | undefined
   ) => Promise<ExecuteResult | undefined>;
   cancelListing: () => Promise<ExecuteResult | undefined>;
-  openBuy?: boolean;
-}> = ({
-  nftId,
-  nftInfo,
-  buy,
-  sell,
-  cancelListing,
-  showMarketplace,
-  openBuy,
-}) => {
+}> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const { openTransactionModals } = useTransactionModals();
+  const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
 
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("about");
@@ -137,7 +131,7 @@ export const NFTMainInfo: React.FC<{
   };
 
   useEffect(() => {
-    if (openBuy) openTransactionModals();
+    if (params.openBuy) openTransactionModals();
   }, []);
 
   return (

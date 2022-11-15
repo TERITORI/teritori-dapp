@@ -54,8 +54,8 @@ export const NFTView: React.FC<{
     useState<boolean>(false);
   const dropdownRef = useRef<TouchableOpacity>(null);
 
-  const isOwner =
-    nft.ownerId === `tori-${selectedWallet?.address}` && !nft.isListed;
+  const isOwner = nft.ownerId === `tori-${selectedWallet?.address}`;
+  const isOwnerAndNotListed = isOwner && !nft.isListed;
 
   // put margins on touchable opacity
   const {
@@ -72,6 +72,16 @@ export const NFTView: React.FC<{
   // functions
   const toggleTransferNFT = () =>
     setIsTransferNFTVisible(!isTransferNFTVisible);
+
+  const onPressPriceButton = () => {
+    if (isOwner) navigation.navigate("NFTDetail", { id: nft.id });
+    else {
+      navigation.navigate("NFTDetail", {
+        id: nft.id,
+        openBuy: true,
+      });
+    }
+  };
 
   // returns
   return (
@@ -155,7 +165,7 @@ export const NFTView: React.FC<{
                     </BrandText>
                   </View>
                 </View>
-                {isOwner && (
+                {isOwnerAndNotListed && (
                   <View style={{ position: "relative", zIndex: 1000 }}>
                     <Pressable
                       onPress={() => onPressDropdownButton(dropdownRef)}
@@ -304,12 +314,7 @@ export const NFTView: React.FC<{
                       nft.price,
                       nft.denom
                     )}
-                    onPress={() =>
-                      navigation.navigate("NFTDetail", {
-                        id: nft.id,
-                        openBuy: true,
-                      })
-                    }
+                    onPress={onPressPriceButton}
                     fullWidth
                     numberOfLines={1}
                     activeOpacity={1}
