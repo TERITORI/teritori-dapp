@@ -21,8 +21,15 @@ import {
   ViewStyle,
 } from "react-native";
 
+import asteriskSignSVG from "../../../assets/icons/asterisk-sign.svg";
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
-import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
+import {
+  neutral00,
+  neutral22,
+  neutral33,
+  neutral77,
+  secondaryColor,
+} from "../../utils/style/colors";
 import {
   fontMedium10,
   fontSemibold13,
@@ -30,8 +37,9 @@ import {
 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
+import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { SpacerColumn } from "../spacer";
+import { SpacerColumn, SpacerRow } from "../spacer";
 
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
@@ -46,13 +54,14 @@ export interface TextInputCustomProps<T extends FieldValues>
   regexp?: RegExp;
   width?: number;
   height?: number;
-  variant?: "regular" | "labelOutside";
+  variant?: "regular" | "labelOutside" | "noCropBorder";
   control?: Control<T>;
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: string;
   labelStyle?: TextStyle;
+  isAsterickSign?: boolean;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -75,6 +84,7 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
+  isAsterickSign,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -146,12 +156,20 @@ export const TextInputCustom = <T extends FieldValues>({
 
   return (
     <>
-      {variant === "labelOutside" && (
+      {variant && ["labelOutside", "noCropBorder"].includes(variant) && (
         <>
           <View style={styles.rowEnd}>
-            <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
-              {label}
-            </BrandText>
+            <View style={styles.row}>
+              <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
+                {label}
+              </BrandText>
+              {isAsterickSign && (
+                <>
+                  <SpacerRow size={0.5} />
+                  <SVG source={asteriskSignSVG} width={6} height={6} />
+                </>
+              )}
+            </View>
             {subtitle && (
               <BrandText style={fontSemibold13}>{subtitle}</BrandText>
             )}
@@ -163,21 +181,28 @@ export const TextInputCustom = <T extends FieldValues>({
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
-        mainContainerStyle={styles.mainContainer}
+        mainContainerStyle={[
+          styles.mainContainer,
+          variant === "noCropBorder" && styles.noCropBorderBg,
+        ]}
         width={width}
         fullWidth={!width}
         height={height}
+        noBrokenCorners={variant === "noCropBorder"}
       >
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
-            {variant !== "labelOutside" && (
-              <Pressable onPress={() => inputRef.current?.focus()}>
-                <BrandText style={[styles.labelText, fontMedium10, labelStyle]}>
-                  {label}
-                </BrandText>
-                <SpacerColumn size={0.5} />
-              </Pressable>
-            )}
+            {!variant ||
+              (!["labelOutside", "noCropBorder"].includes(variant) && (
+                <Pressable onPress={() => inputRef.current?.focus()}>
+                  <BrandText
+                    style={[styles.labelText, fontMedium10, labelStyle]}
+                  >
+                    {label}
+                  </BrandText>
+                  <SpacerColumn size={0.5} />
+                </Pressable>
+              ))}
             <TextInput
               ref={inputRef}
               editable={!disabled}
@@ -205,11 +230,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-end",
   },
+  row: { flexDirection: "row" },
   mainContainer: {
     alignItems: "flex-start",
     paddingHorizontal: 12,
     paddingVertical: 10,
     backgroundColor: neutral22,
+  },
+  noCropBorderBg: {
+    backgroundColor: neutral00,
+    borderWidth: 1,
+    borderColor: neutral33,
+    borderRadius: 12,
   },
   labelText: {
     color: neutral77,

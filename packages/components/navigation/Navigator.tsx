@@ -13,6 +13,7 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { OrganizerDeployerScreen } from "../../screens/OrganizerDeployer/OrganizerDeployerScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
@@ -93,7 +94,7 @@ export const Navigator: React.FC = () => {
       {/* ==== Launchpad */}
       <Stack.Screen
         name="Launchpad"
-        component={LaunchpadScreen}
+        component={OrganizerDeployerScreen}
         options={{ header: () => null, title: screenTitle("Launchpad") }}
       />
       <Stack.Screen
