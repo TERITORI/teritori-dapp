@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { neutral33 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+import { ConfigureVotingSection } from "./components/ConfigureVotingSection";
 import { CreateDAOSection } from "./components/CreateDAOSection";
 import { RightSection } from "./components/RightSection";
 
@@ -21,16 +22,36 @@ export const OrganizerDeployerScreen = () => {
   // variables
   const [currentStep, setCurrentStep] = useState(0);
 
+  // functions
+  const onNextStep = () => {
+    setCurrentStep(currentStep + 1);
+  };
+
   // returns
+  const renderLeftSection = useCallback(() => {
+    switch (currentStep) {
+      case 0:
+        return <CreateDAOSection />;
+
+      case 1:
+        return <ConfigureVotingSection />;
+
+      default:
+        return null;
+    }
+  }, [currentStep]);
+
   return (
     <ScreenContainer footerChildren={<></>} noMargin fullWidth noScroll>
       <View style={styles.row}>
         <View style={styles.fill}>
-          <ScrollView>
-            <CreateDAOSection />
-          </ScrollView>
+          <ScrollView>{renderLeftSection()}</ScrollView>
           <View style={styles.footer}>
-            <PrimaryButton size="M" text={`Next: ${STEPS[currentStep + 1]}`} />
+            <PrimaryButton
+              size="M"
+              text={`Next: ${STEPS[currentStep + 1]}`}
+              onPress={onNextStep}
+            />
           </View>
         </View>
 
