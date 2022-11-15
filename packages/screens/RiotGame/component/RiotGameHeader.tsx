@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: headerMarginHorizontal,
+    zIndex: 1000,
   },
   section: {
     flexDirection: "row",

@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 
-// import centerGradientSVG from "../../../../assets/game/center-gradient.svg";
-
 import startButtonSVG from "../../../../assets/game/start-button.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
+import { neutral00 } from "../../../utils/style/colors";
 import { fontBold16, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
@@ -66,28 +65,31 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
           ]}
         >
           <Animated.View
-            style={[styles.positionAbsolute, { opacity: pulseOpacityRef }]}
+            style={[
+              {
+                opacity: pulseOpacityRef,
+                backgroundColor: neutral00,
+                position: "relative",
+                width: cardWidth * 2 - layout.padding_x2_5 * 2,
+                height: cardHeight * 0.37,
+                justifyContent: "center",
+                alignItems: "center",
+              },
+            ]}
           >
             <SVG
               source={startButtonSVG}
               width={cardWidth * 2 - layout.padding_x2_5 * 2}
               height={cardHeight * 0.37}
             />
+            <BrandText style={styles.startGameText}>Start the Game</BrandText>
           </Animated.View>
-          <BrandText style={fontBold16}>Start the Game</BrandText>
         </View>
         <SpacerColumn size={2.5} />
         <BrandText style={[fontSemibold14, { textAlign: "center" }]}>
           Rioters Play2Earn Fight to Defend your Squad !
         </BrandText>
       </View>
-      {/* <View style={[styles.section, { opacity: 0.5, zIndex: -2 }]}>
-        <SVG
-          source={centerGradientSVG}
-          width={cardWidth * 5}
-          height={cardHeight * 4}
-        />
-      </View> */}
     </>
   );
 };
@@ -110,4 +112,15 @@ const styles = StyleSheet.create({
   positionAbsolute: {
     position: "absolute",
   },
+  startGameText: StyleSheet.flatten([
+    fontBold16,
+    {
+      position: "absolute",
+      marginLeft: "auto",
+      marginRight: "auto",
+      left: 0,
+      right: 0,
+      textAlign: "center",
+    },
+  ]),
 });
