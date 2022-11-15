@@ -22,7 +22,7 @@ export type RootStackParamList = {
   Marketplace: undefined;
   Collection: { id: string };
   CollectionActivity: { id: string };
-  NFTDetail: { id: string };
+  NFTDetail: { id: string; openBuy?: boolean };
 
   Staking: undefined;
 
