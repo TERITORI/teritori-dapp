@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, TouchableOpacity, Linking } from "react-native";
+import { View, Image, Linking } from "react-native";
 
 import defaultNewsBanner from "../../../assets/default-images/default-news-banner.png";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
@@ -10,7 +10,7 @@ import stakingSVG from "../../../assets/icons/staking.svg";
 import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
@@ -28,25 +28,29 @@ export const HubLanding: React.FC = () => {
     image: defaultNewsBanner,
     maxSize: { width: maxWidth },
   });
-  const navigateToCollection = useNavigateToCollection(
-    `tori-${process.env.THE_RIOT_COLLECTION_ADDRESS}`
-  );
+  // const navigateToCollection = useNavigateToCollection(
+  //   `tori-${process.env.THE_RIOT_COLLECTION_ADDRESS}`
+  // );
 
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
         {/*TODO: redirect to rioters collection using collection id*/}
-        <TouchableOpacity onPress={navigateToCollection}>
-          <Image
-            source={defaultNewsBanner}
-            style={{
-              height,
-              width,
-              borderRadius: 20,
-              marginTop: 56,
-            }}
-          />
-        </TouchableOpacity>
+        {/*<TouchableOpacity onPress={navigateToCollection}>*/}
+        <Image
+          source={{
+            uri: ipfsURLToHTTPURL(
+              "ipfs://bafkreibczqgfdj54fgco2oaw6wkanglktduwgj2j5qnhuh3olsg57uxtsm"
+            ),
+          }}
+          style={{
+            height,
+            width,
+            borderRadius: 20,
+            marginTop: 56,
+          }}
+        />
+        {/*</TouchableOpacity>*/}
 
         <NewsCarouselSection />
 

@@ -87,19 +87,6 @@ export const NewsCarouselSection: React.FC = () => {
       },
     },
     {
-      title: "BOOK YOUR HANDLE",
-      subtitle: "Check out Teritori Name Service",
-      text:
-        "Teritori Name Service is a way for you to affirm your identity as a Teritorian. TNS are NFTs that can be used throughout the Teritori dApp and of course you can also sell them on the Marketplace.\n" +
-        "\n" +
-        "More Name Services will be added to TNS over time so stay on the lookout for the next updates.",
-      image: tnsPNG,
-      button1Label: "Teritori Name Service",
-      button1Action: () => {
-        navigation.navigate("TNSHome");
-      },
-    },
-    {
       title: "NEW PLANET, NEW RULES, NEW WAYS",
       subtitle: "Introducing the ToriPunks",
       text:
@@ -116,6 +103,19 @@ export const NewsCarouselSection: React.FC = () => {
       },
       button2Action: () => {
         Linking.openURL("https://twitter.com/ToriPunks");
+      },
+    },
+    {
+      title: "BOOK YOUR HANDLE",
+      subtitle: "Check out Teritori Name Service",
+      text:
+        "Teritori Name Service is a way for you to affirm your identity as a Teritorian. TNS are NFTs that can be used throughout the Teritori dApp and of course you can also sell them on the Marketplace.\n" +
+        "\n" +
+        "More Name Services will be added to TNS over time so stay on the lookout for the next updates.",
+      image: tnsPNG,
+      button1Label: "Teritori Name Service",
+      button1Action: () => {
+        navigation.navigate("TNSHome");
       },
     },
     {
