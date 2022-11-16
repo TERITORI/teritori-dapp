@@ -15,11 +15,12 @@ import { Section } from "../../components/Section";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
+import { GradientText } from "../../components/gradientText";
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
 import { ScreenFC } from "../../utils/navigation";
-import { primaryColor } from "../../utils/style/colors";
+import { gradientBlueReversed } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
@@ -47,19 +48,18 @@ const CarouselCollectionItem: React.FC<{
           {collection.collectionName}
         </BrandText>
 
-        {/*TODO: blue white text */}
-        <BrandText
+        <GradientText
+          gradient={gradientBlueReversed}
           style={[
             fontSemibold14,
             {
-              color: primaryColor,
               marginBottom: layout.padding_x3,
               marginRight: layout.padding_x3,
             },
           ]}
         >
           TERITORI Collections
-        </BrandText>
+        </GradientText>
 
         <PrimaryButton
           size="M"

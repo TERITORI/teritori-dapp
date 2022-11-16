@@ -7,8 +7,8 @@ import {
   TextProps,
 } from "react-native";
 
-import { primaryColor } from "../utils/style/colors";
-import { BrandText } from "./BrandText";
+import { gradientBlue } from "../utils/style/colors";
+import { GradientText } from "./gradientText";
 
 // FIXME: use <a> tag on web
 
@@ -16,25 +16,22 @@ export const ExternalLink: React.FC<
   {
     externalUrl: string | null | undefined;
     style?: StyleProp<TextStyle>;
+    gradient?: string;
   } & TextProps
-> = ({ children, externalUrl, style, ...textProps }) => {
+> = ({
+  children,
+  externalUrl,
+  style,
+  gradient = gradientBlue,
+  ...textProps
+}) => {
   return (
     <TouchableOpacity
       onPress={() => externalUrl && Linking.openURL(externalUrl)}
     >
-      <BrandText
-        style={[
-          {
-            textDecorationLine: "underline",
-            // TODO: color gradient blue
-            color: primaryColor,
-          },
-          style,
-        ]}
-        {...textProps}
-      >
+      <GradientText gradient={gradient} style={style} {...textProps}>
         {children}
-      </BrandText>
+      </GradientText>
     </TouchableOpacity>
   );
 };

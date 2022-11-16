@@ -4,26 +4,47 @@ import { exoFontFamilyFromFontWeight } from "../../utils/style/fonts";
 import { GradientTextProps } from "./GradientText";
 
 export const GradientText: React.FC<GradientTextProps> = ({
+  gradient,
   children,
   style,
+  ...props
 }) => {
-  const flatStyle = StyleSheet.flatten(style);
+  const flatStyle = style ? StyleSheet.flatten(style) : undefined;
+  const fontSize = 20;
+
+  const lineHeight = `${
+    flatStyle?.lineHeight || flatStyle?.fontSize || fontSize
+  }px`;
+  if (flatStyle) delete flatStyle.lineHeight;
+
+  const textOverflow =
+    props.ellipsizeMode === "tail" && props.numberOfLines === 1
+      ? "ellipsis"
+      : "unset";
+  const overflow =
+    props.ellipsizeMode === "tail" && props.numberOfLines === 1
+      ? "hidden"
+      : "unset";
 
   return (
-    <p
+    <span
       style={{
-        backgroundImage:
-          "linear-gradient(90deg, #5433FF 0%, #20BDFF 50%, #A5FECB 100%)",
+        margin: 0,
+        background: `linear-gradient(${gradient})`,
         backgroundClip: "text",
         WebkitBackgroundClip: "text",
         WebkitTextFillColor: "transparent",
-        fontFamily: exoFontFamilyFromFontWeight(flatStyle?.fontWeight || "500"),
-        fontSize: 16,
-        margin: 0,
+        color: "white",
+        fontFamily: exoFontFamilyFromFontWeight(flatStyle?.fontWeight),
+        width: "fit-content",
+        fontSize,
+        lineHeight,
+        textOverflow,
+        overflow,
         ...flatStyle,
       }}
     >
       {children}
-    </p>
+    </span>
   );
 };

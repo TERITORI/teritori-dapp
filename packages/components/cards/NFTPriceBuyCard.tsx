@@ -2,11 +2,13 @@ import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { prettyPrice } from "../../utils/coins";
+import { gradientPurple } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+import { GradientText } from "../gradientText";
 
 // TODO: Dynamic data + props
 
@@ -32,16 +34,16 @@ export const NFTPriceBuyCard: React.FC<{
           Current Price
         </BrandText>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {/*TODO: Text gradient pink*/}
-          <BrandText
-            style={[fontSemibold28, { color: "#DBAEFF", marginRight: 12 }]}
+          <GradientText
+            gradient={gradientPurple}
+            style={[fontSemibold28, { marginRight: 12 }]}
           >
             {prettyPrice(
               process.env.TERITORI_NETWORK_ID || "",
               price,
               priceDenom
             )}
-          </BrandText>
+          </GradientText>
           <CurrencyIcon
             networkId={process.env.TERITORI_NETWORK_ID || ""}
             denom={priceDenom}

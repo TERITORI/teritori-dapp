@@ -12,7 +12,7 @@ import { GradientText } from "../../../components/gradientText";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
-import { neutral77 } from "../../../utils/style/colors";
+import { gradientBlueExtended, neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold14,
   fontSemibold16,
@@ -54,7 +54,9 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
                 Commission
               </BrandText>
               <SpacerRow size={1} />
-              <GradientText>{data?.commission}</GradientText>
+              <GradientText gradient={gradientBlueExtended}>
+                {data?.commission}
+              </GradientText>
             </View>
           </View>
         </View>

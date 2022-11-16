@@ -28,6 +28,16 @@ export const neutral77 = "#777777";
 export const neutralA3 = "#A3A3A3";
 export const additionalRed = "#FFAEAE";
 
+export const gradientTest = "90deg, #FFFFFF 0%, #FFFFFF 100%";
+export const gradientBlue = "90deg, #00C6FB 0%, #005BEA 100%";
+export const gradientBlueReversed = "90deg, #005BEA 0%, #00C6FB 100%";
+export const gradientBlueExtended =
+  "90deg, #5433FF 0%, #20BDFF 50%, #A5FECB 100%";
+export const gradientPurple = "267deg, #AEB1FF 0%, #DBAEFF 100%";
+export const gradientPink = "90deg, #FFAEAE 0%, #F46FBF 100%";
+export const gradientGray = "90deg, #676767 0%, #B7B7B7 100%";
+export const gradientGrayLight = "90deg, #F5F7FA 0%, #C3CFE2 100%";
+
 // Returns hexa color modified with alpha
 export const withAlpha = (color: string, opacity: number) => {
   const _opacity = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);

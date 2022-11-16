@@ -1,16 +1,14 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
 
-import { neutral17, neutral77 } from "../../utils/style/colors";
+import { gradientBlue, neutral17, neutral77 } from "../../utils/style/colors";
 import {
   imageDisplayLabel,
   prettyTokenData,
-  publicNameDisplayLabel,
 } from "../../utils/teritori";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { NameAndTldText } from "./NameAndTldText";
 
 export const NameData: React.FC<{
   token: any;
@@ -66,11 +64,9 @@ export const NameData: React.FC<{
                     {data.displayLabel}
                   </BrandText>
                   {/*---- We want some style depending on the data type*/}
-                  {data.displayLabel === publicNameDisplayLabel ? (
-                    <NameAndTldText nameAndTldStr={data.value} />
-                  ) : data.displayLabel === imageDisplayLabel ? (
-                    // TODO: Gradient text blue-green
+                  {data.displayLabel === imageDisplayLabel ? (
                     <ExternalLink
+                      gradient={gradientBlue}
                       externalUrl={data.value}
                       style={{ letterSpacing: -(20 * 0.04) }}
                       numberOfLines={1}
