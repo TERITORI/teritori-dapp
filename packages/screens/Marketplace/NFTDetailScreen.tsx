@@ -18,6 +18,7 @@ import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
+import { noSecondaryDuringMintList } from "../../utils/collections";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import { vaultContractAddress } from "../../utils/teritori";
@@ -56,9 +57,10 @@ const Content: React.FC<{
   const { width } = useMaxResolution();
 
   const collectionAddress = id.split("-")[1];
-  const mintEnded = useMintEnded(`tori-${collectionAddress}`);
+  const collectionId = `tori-${collectionAddress}`;
+  const mintEnded = useMintEnded(collectionId);
   const showMarketplace =
-    collectionAddress !== process.env.THE_RIOT_COLLECTION_ADDRESS ||
+    !noSecondaryDuringMintList.includes(collectionId) ||
     (mintEnded !== undefined && mintEnded);
 
   const screenTabItems = {
