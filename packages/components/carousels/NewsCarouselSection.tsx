@@ -78,7 +78,7 @@ export const NewsCarouselSection: React.FC = () => {
       button1Label: "Marketplace",
       button2Label: "Discover",
       button1Action: () => {
-        navigation.navigate("MintCollection", {
+        navigation.navigate("Collection", {
           id: "tori-tori1mf6ptkssddfmxvhdx0ech0k03ktp6kf9yk59renau2gvht3nq2gqg87tkw",
         });
       },
@@ -97,7 +97,7 @@ export const NewsCarouselSection: React.FC = () => {
       button1Label: "Marketplace",
       button2Label: "Discover",
       button1Action: () => {
-        navigation.navigate("MintCollection", {
+        navigation.navigate("Collection", {
           id: "tori-tori1plr28ztj64a47a32lw7tdae8vluzm2lm7nqk364r4ws50rgwyzgsapzezt",
         });
       },
