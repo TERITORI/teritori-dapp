@@ -64,6 +64,7 @@ const NftAdjustments: React.FC<{
           <CollectionInfoInline
             name={currentCollection.collectionName}
             imageSource={{ uri: currentCollection.imageUri }}
+            id={currentCollection.id}
           />
         </View>
         <View style={styles.separator} />

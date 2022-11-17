@@ -166,6 +166,7 @@ export const NFTMainInfo: React.FC<{
           <CollectionInfoInline
             imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
             name={nftInfo?.collectionName}
+            id={`tori-${nftInfo?.mintAddress}`}
           />
           {showMarketplace ? (
             <>
