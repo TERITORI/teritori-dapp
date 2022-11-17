@@ -32,7 +32,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
       <View style={styles.row}>
         <Slider
           value={value}
-          onValueChange={onValueChange}
+          onValueChange={(val: number) => onValueChange(Math.round(val))}
           useNativeDriver
           thumbTintColor={secondaryColor}
           maximumValue={100}

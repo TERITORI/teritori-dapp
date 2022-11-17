@@ -1,85 +1,104 @@
-import React, { useCallback, useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { RangeSlider } from "../../../components/RangeSlider";
+import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import {
-  neutral33,
-  neutral77,
-  neutralA3,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+import { neutral33, neutral77, neutralA3 } from "../../../utils/style/colors";
+import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { ORGANIZER_DEPLOYER_STEPS } from "../OrganizerDeployerScreen";
+import { ConfigureVotingFormType } from "../types";
 
-export const ConfigureVotingSection = () => {
+interface ConfigureVotingSectionProps {
+  onSubmit: (form: ConfigureVotingFormType) => void;
+}
+
+export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
+  onSubmit,
+}) => {
   // variables
-  const [supportValue, setSupportValue] = useState(50);
-  const [minApprovalValue, setMinApprovalValue] = useState(15);
-  const [days, setDays] = useState<string>("1");
-  const [hours, setHours] = useState<string>("0");
-  const [minutes, setMinutes] = useState<string>("0");
-
-  // functions
-  const onSupportValueChange = (value: number) => {
-    setSupportValue(Math.round(value));
-  };
-
-  const onMinApprovalValueChange = (value: number) => {
-    setMinApprovalValue(Math.round(value));
-  };
+  const { handleSubmit, control, watch, setValue } =
+    useForm<ConfigureVotingFormType>({
+      defaultValues: {
+        days: "1",
+        hours: "0",
+        minutes: "0",
+        supportPercent: 50,
+        minimumApprovalPercent: 15,
+      },
+    });
+  const supportValue = watch("supportPercent");
+  const minApprovalValue = watch("minimumApprovalPercent");
 
   // returns
-  const DurationInput = useCallback(
-    ({
-      label,
-      value,
-      onChangeText,
-    }: {
-      label: string;
-      onChangeText: (value: string) => void;
-      value: string;
-    }) => (
-      <View style={styles.durationInputContainer}>
-        <TextInput
-          value={value}
-          onChangeText={onChangeText}
-          style={[fontSemibold14, { color: secondaryColor, width: "100%" }]}
-          defaultValue="0"
-        />
-        <BrandText style={styles.durationLabel}>{label}</BrandText>
-      </View>
-    ),
-    []
-  );
-
   return (
-    <View style={styles.container}>
-      <BrandText>Choose your voting settings below</BrandText>
-      <SpacerColumn size={2.5} />
-      <RangeSlider
-        label="Support %"
-        value={supportValue}
-        onValueChange={onSupportValueChange}
-      />
-      <SpacerColumn size={2.5} />
-      <RangeSlider
-        label="Minimum Approval %"
-        value={minApprovalValue}
-        onValueChange={onMinApprovalValueChange}
-      />
-      <SpacerColumn size={2.5} />
-      <BrandText style={styles.voteText}>Vote Duration</BrandText>
-      <View style={styles.voteInputContainer}>
-        <DurationInput label="Days" onChangeText={setDays} value={days} />
-        <SpacerRow size={1.5} />
-        <DurationInput label="Hours" onChangeText={setHours} value={hours} />
-        <SpacerRow size={1.5} />
-        <DurationInput
-          label="Minutes"
-          onChangeText={setMinutes}
-          value={minutes}
+    <View style={styles.fill}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <BrandText style={fontSemibold28}>
+          Choose your voting settings below
+        </BrandText>
+        <SpacerColumn size={2.5} />
+        <RangeSlider
+          label="Support %"
+          value={supportValue}
+          onValueChange={(val) => setValue("supportPercent", val)}
+        />
+        <SpacerColumn size={2.5} />
+        <RangeSlider
+          label="Minimum Approval %"
+          value={minApprovalValue}
+          onValueChange={(val) => setValue("minimumApprovalPercent", val)}
+        />
+        <SpacerColumn size={2.5} />
+        <BrandText style={styles.voteText}>Vote Duration</BrandText>
+        <View style={styles.voteInputContainer}>
+          <View style={styles.fill}>
+            <TextInputCustom<ConfigureVotingFormType>
+              name="days"
+              variant="noCropBorder"
+              hideLabel
+              control={control}
+              label=""
+            >
+              <BrandText style={styles.durationLabel}>Days</BrandText>
+            </TextInputCustom>
+          </View>
+          <SpacerRow size={1.5} />
+          <View style={styles.fill}>
+            <TextInputCustom<ConfigureVotingFormType>
+              name="hours"
+              variant="noCropBorder"
+              hideLabel
+              control={control}
+              label=""
+            >
+              <BrandText style={styles.durationLabel}>Hours</BrandText>
+            </TextInputCustom>
+          </View>
+          <SpacerRow size={1.5} />
+          <View style={styles.fill}>
+            <TextInputCustom<ConfigureVotingFormType>
+              name="minutes"
+              variant="noCropBorder"
+              hideLabel
+              control={control}
+              label=""
+            >
+              <BrandText style={styles.durationLabel}>Minutes</BrandText>
+            </TextInputCustom>
+          </View>
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <PrimaryButton
+          size="M"
+          text={`Next: ${ORGANIZER_DEPLOYER_STEPS[2]}`}
+          onPress={handleSubmit(onSubmit)}
         />
       </View>
     </View>
@@ -117,4 +136,13 @@ const styles = StyleSheet.create({
       color: neutral77,
     },
   ]),
+  fill: { flex: 1 },
+  footer: {
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    paddingVertical: layout.padding_x1_5,
+    paddingHorizontal: layout.padding_x2_5,
+    borderTopWidth: 1,
+    borderColor: neutral33,
+  },
 });

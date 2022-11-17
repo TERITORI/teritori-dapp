@@ -20,6 +20,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { SvgProps } from "react-native-svg";
 
 import asteriskSignSVG from "../../../assets/icons/asterisk-sign.svg";
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
@@ -35,6 +36,7 @@ import {
   fontSemibold13,
   fontSemibold14,
 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { SVG } from "../SVG";
@@ -44,7 +46,7 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
-  iconSVG?: StyleProp<ViewStyle>;
+  iconSVG?: React.FC<SvgProps>;
   placeHolder?: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
@@ -62,6 +64,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   subtitle?: string;
   labelStyle?: TextStyle;
   isAsterickSign?: boolean;
+  hideLabel?: boolean;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -85,6 +88,8 @@ export const TextInputCustom = <T extends FieldValues>({
   subtitle,
   labelStyle,
   isAsterickSign,
+  iconSVG,
+  hideLabel,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -156,27 +161,31 @@ export const TextInputCustom = <T extends FieldValues>({
 
   return (
     <>
-      {variant && ["labelOutside", "noCropBorder"].includes(variant) && (
-        <>
-          <View style={styles.rowEnd}>
-            <View style={styles.row}>
-              <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
-                {label}
-              </BrandText>
-              {isAsterickSign && (
-                <>
-                  <SpacerRow size={0.5} />
-                  <SVG source={asteriskSignSVG} width={6} height={6} />
-                </>
+      {variant &&
+        ["labelOutside", "noCropBorder"].includes(variant) &&
+        !hideLabel && (
+          <>
+            <View style={styles.rowEnd}>
+              <View style={styles.row}>
+                <BrandText
+                  style={[styles.labelText, fontSemibold14, labelStyle]}
+                >
+                  {label}
+                </BrandText>
+                {isAsterickSign && (
+                  <>
+                    <SpacerRow size={0.5} />
+                    <SVG source={asteriskSignSVG} width={6} height={6} />
+                  </>
+                )}
+              </View>
+              {subtitle && (
+                <BrandText style={fontSemibold13}>{subtitle}</BrandText>
               )}
             </View>
-            {subtitle && (
-              <BrandText style={fontSemibold13}>{subtitle}</BrandText>
-            )}
-          </View>
-          <SpacerColumn size={1} />
-        </>
-      )}
+            <SpacerColumn size={1} />
+          </>
+        )}
 
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
@@ -191,18 +200,25 @@ export const TextInputCustom = <T extends FieldValues>({
         noBrokenCorners={variant === "noCropBorder"}
       >
         <View style={styles.innerContainer}>
+          {iconSVG && (
+            <>
+              <SVG source={iconSVG} width={16} height={16} />
+              <SpacerRow size={1.5} />
+            </>
+          )}
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {!variant ||
-              (!["labelOutside", "noCropBorder"].includes(variant) && (
-                <Pressable onPress={() => inputRef.current?.focus()}>
-                  <BrandText
-                    style={[styles.labelText, fontMedium10, labelStyle]}
-                  >
-                    {label}
-                  </BrandText>
-                  <SpacerColumn size={0.5} />
-                </Pressable>
-              ))}
+              (!["labelOutside", "noCropBorder"].includes(variant) &&
+                !hideLabel && (
+                  <Pressable onPress={() => inputRef.current?.focus()}>
+                    <BrandText
+                      style={[styles.labelText, fontMedium10, labelStyle]}
+                    >
+                      {label}
+                    </BrandText>
+                    <SpacerColumn size={0.5} />
+                  </Pressable>
+                ))}
             <TextInput
               ref={inputRef}
               editable={!disabled}
@@ -242,6 +258,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 12,
+    paddingVertical: layout.padding_x1_5,
   },
   labelText: {
     color: neutral77,
