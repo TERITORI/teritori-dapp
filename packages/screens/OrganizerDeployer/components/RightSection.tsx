@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, View, ActivityIndicator } from "react-native";
 import checkCircleSVG from "../../../../assets/icons/check-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { SpacerColumn } from "../../../components/spacer";
 import {
   neutral33,
   neutral77,

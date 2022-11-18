@@ -18,6 +18,7 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { accountExplorerLink } from "../../utils/teritori";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
+
 export interface WalletItemProps {
   index: number;
   itemsCount: number;

@@ -27,6 +27,9 @@ export type RootStackParamList = {
   Staking: undefined;
 
   ComingSoon: undefined;
+  OrganizationGetStarted: undefined;
+
+  MultisigWalletManage: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -67,6 +70,9 @@ const navConfig: {
     NFTDetail: "nft/:id",
     // ==== Staking
     Staking: "staking",
+    // === Organization
+    OrganizationGetStarted: "organization-get-started",
+    MultisigWalletManage: "multisig-wallet/manage",
     // ==== ComingSoon
     ComingSoon: "coming-soon",
   },

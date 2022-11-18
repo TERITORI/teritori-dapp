@@ -13,6 +13,8 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { MultisigWalletManageScreen } from "../../screens/OrganizerDeployer/MultisigWalletManageScreen";
+import OrganizationGetStartedScreen from "../../screens/OrganizerDeployer/OrganizationGetStartedScreen";
 import { OrganizerDeployerScreen } from "../../screens/OrganizerDeployer/OrganizerDeployerScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
@@ -94,13 +96,31 @@ export const Navigator: React.FC = () => {
       {/* ==== Launchpad */}
       <Stack.Screen
         name="Launchpad"
-        component={OrganizerDeployerScreen}
+        component={MultisigWalletManageScreen}
         options={{ header: () => null, title: screenTitle("Launchpad") }}
       />
       <Stack.Screen
         name="MintCollection"
         component={MintCollectionScreen}
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
+      />
+
+      {/* ==== Organization */}
+      <Stack.Screen
+        name="OrganizationGetStarted"
+        component={OrganizationGetStartedScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Organization Name"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigWalletManage"
+        component={MultisigWalletManageScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Manage Multisig Wallet"),
+        }}
       />
 
       {/* ==== Teritori Name Service*/}

@@ -1,21 +1,33 @@
 import React from "react";
-import { StyleSheet, View, TextStyle } from "react-native";
+import { StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 import { codGrayColor, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export type TableRowHeading = { label: string; flex: number };
 
 interface TableRowProps {
   headings: TableRowHeading[];
   labelStyle?: TextStyle;
+  showBrokenCorner?: boolean;
+  style?: ViewStyle;
 }
 
-export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
+export const TableRow: React.FC<TableRowProps> = ({
+  headings,
+  labelStyle,
+  showBrokenCorner = false,
+  style,
+}) => {
   return (
-    <View style={styles.row}>
+    <TertiaryBox
+      noBrokenCorners={!showBrokenCorner}
+      mainContainerStyle={[styles.row, style]}
+      fullWidth
+    >
       {headings.map(({ label, flex }, index) => (
         <BrandText
           key={label}
@@ -32,7 +44,7 @@ export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
           {label}
         </BrandText>
       ))}
-    </View>
+    </TertiaryBox>
   );
 };
 

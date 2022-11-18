@@ -25,3 +25,11 @@ export type LaunchingProcessStepType = {
   completeText: string;
   isComplete?: boolean;
 };
+
+export type MultiSigWallet = {
+  id: number;
+  name: string;
+  asset_type: string;
+  approval: number;
+  participants: number;
+};
