@@ -31,6 +31,7 @@ import {
 } from "../../utils/style/fonts";
 import { EnrollStat } from "./component/EnrollStat";
 import { RipperSlot } from "./component/RipperSlot";
+import { SimpleButton } from "./component/SimpleButton";
 
 const rippers = [
   {
@@ -141,9 +142,7 @@ export const RiotGameEnrollScreen = () => {
         </View>
       </View>
 
-      <TouchableOpacity>
-        <BrandText style={styles.submitBtn}>Join the Fight</BrandText>
-      </TouchableOpacity>
+      <SimpleButton title="Join the Fight" />
     </View>
   );
 };
@@ -182,16 +181,6 @@ const styles = StyleSheet.create({
   subText: {
     color: neutralA3,
     ...(fontMedium14 as object),
-  },
-  submitBtn: {
-    marginTop: 40,
-    alignSelf: "center",
-    color: primaryTextColor,
-    backgroundColor: yellowDefault,
-    paddingHorizontal: 22,
-    paddingVertical: 16,
-    borderRadius: 12,
-    ...(fontSemibold14 as object),
   },
   placeholderVideo: {
     marginTop: 20,
