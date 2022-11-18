@@ -54,7 +54,7 @@ const Content: React.FC<{
   const { setToastError } = useFeedbacks();
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.address);
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ noMargin: true });
 
   const collectionAddress = id.split("-")[1];
   const collectionId = `tori-${collectionAddress}`;
