@@ -10,7 +10,7 @@ import {
   smallSidebarWidth,
 } from "../utils/style/layout";
 
-export const useMaxResolution = (noMargin?: boolean) => {
+export const useMaxResolution = ({noMargin = false}) => {
   const { width: windowWidth, height } = useWindowDimensions();
   const { isSidebarExpanded } = useSidebar();
   const width = useMemo(
