@@ -13,6 +13,11 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+<<<<<<< Updated upstream
+=======
+import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
+import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
+>>>>>>> Stashed changes
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
@@ -66,6 +71,13 @@ export const Navigator: React.FC = () => {
         name="RiotersFooter"
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
+      />
+
+      {/* === Riot Game */}
+      <Stack.Screen
+        name="RiotGameEnroll"
+        component={RiotGameEnrollScreen}
+        options={{ header: () => null, title: screenTitle("Riot Game Enroll") }}
       />
 
       {/* ==== Wallet Manager */}

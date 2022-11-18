@@ -7,7 +7,10 @@ export type RootStackParamList = {
   MyCollection: undefined;
   Activity: undefined;
   Guardians: undefined;
+<<<<<<< Updated upstream
   GuardiansGame: undefined;
+=======
+>>>>>>> Stashed changes
   WalletManager: undefined;
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
@@ -23,6 +26,9 @@ export type RootStackParamList = {
   Collection: { id: string };
   CollectionActivity: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
+
+  RiotGame: undefined;
+  RiotGameEnroll: undefined;
 
   Staking: undefined;
 
@@ -49,10 +55,17 @@ const navConfig: {
     WalletManager: "wallet-manager",
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
+<<<<<<< Updated upstream
     GuardiansGame: "guardians-game",
+=======
+>>>>>>> Stashed changes
     Governance: "governance",
     UserPublicProfile: "user/:id",
     RiotersFooter: "rioters-footer",
+    // === RiotGame
+    RiotGame: "riot-game",
+    RiotGameEnroll: "riot-game/enroll",
+
     // ==== Launchpad
     Launchpad: "launchpad",
     // Mint NFT collection
