@@ -63,6 +63,7 @@ const NewNftType: React.FC<{
             <CollectionInfoInline
               imageSource={{ uri: collection.imageUri }}
               name={collection.collectionName}
+              id={collection.id}
             />
           </TouchableOpacity>
         ))}
