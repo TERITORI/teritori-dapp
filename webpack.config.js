@@ -44,5 +44,7 @@ module.exports = async function (env, argv) {
     use: [],
   });
 
+  config.resolve.alias["victory-native"] = "victory";
+
   return config;
 };

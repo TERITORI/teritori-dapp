@@ -6,7 +6,6 @@ import { StyleSheet, View } from "react-native";
 
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
@@ -58,7 +57,6 @@ export const NFTMainInfo: React.FC<{
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const { openTransactionModals } = useTransactionModals();
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
-  const { width } = useMaxResolution();
 
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("about");
@@ -141,7 +139,7 @@ export const NFTMainInfo: React.FC<{
       <View
         style={{
           flexDirection: "row",
-          width,
+          width: "100%",
           flexWrap: "wrap",
           justifyContent: "center",
         }}
