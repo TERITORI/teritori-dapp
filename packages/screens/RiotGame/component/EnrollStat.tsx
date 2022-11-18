@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
@@ -17,7 +17,7 @@ export const EnrollStat: React.FC<EnrollStatProps> = ({ title, content }) => {
       width={160}
       style={styles.container}
       mainContainerStyle={{
-        padding: 16,
+        padding: 12,
         alignItems: "flex-start",
       }}
     >

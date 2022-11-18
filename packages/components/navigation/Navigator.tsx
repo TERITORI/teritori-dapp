@@ -13,11 +13,7 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
-<<<<<<< Updated upstream
-=======
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
-import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
->>>>>>> Stashed changes
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";

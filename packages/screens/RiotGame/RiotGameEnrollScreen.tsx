@@ -1,17 +1,33 @@
 import React from "react";
-import { FlatList, Image, StyleSheet, View } from "react-native";
+import {
+  Button,
+  FlatList,
+  Image,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 import sendToFightPNG from "../../../assets/game/send-to-fight.png";
 import { BrandText } from "../../components/BrandText";
+import { PrimaryBox } from "../../components/boxes/PrimaryBox";
+import { SecondaryBox } from "../../components/boxes/SecondaryBox";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../components/spacer";
-import { neutral00, neutralA3, yellowDefault } from "../../utils/style/colors";
+import {
+  neutral00,
+  neutralA3,
+  primaryTextColor,
+  yellowDefault,
+} from "../../utils/style/colors";
 import {
   fontMedium48,
   fontMedium32,
   fontSemibold28,
   fontMedium14,
+  fontSemibold14,
 } from "../../utils/style/fonts";
 import { EnrollStat } from "./component/EnrollStat";
 import { RipperSlot } from "./component/RipperSlot";
@@ -56,10 +72,10 @@ const rippers = [
 ];
 
 export const RiotGameEnrollScreen = () => {
+  const { width } = useWindowDimensions();
+
   return (
     <View style={styles.container}>
-      <RiotGameHeader />
-
       <View style={styles.statsSection}>
         <EnrollStat title="Number of Fighters" content="833 Rippers" />
         <EnrollStat title="Prize Pool" content="1337 TORI" />
@@ -70,9 +86,16 @@ export const RiotGameEnrollScreen = () => {
         <BrandText style={styles.pageTitle}>Send to fight</BrandText>
       </View>
 
-      <View style={styles.enrollContainer}>
+      <View
+        style={[
+          styles.enrollContainer,
+          { flexDirection: width > 920 ? "row" : "column" },
+        ]}
+      >
         <View style={styles.col}>
-          <BrandText style={fontMedium32}>Enroll your Ripper(s)</BrandText>
+          <BrandText style={styles.sectionTitle}>
+            Enroll your Ripper(s)
+          </BrandText>
 
           <FlatList
             data={rippers}
@@ -90,7 +113,7 @@ export const RiotGameEnrollScreen = () => {
         </View>
 
         <View style={styles.col}>
-          <BrandText style={fontMedium32}>Staking duration</BrandText>
+          <BrandText style={styles.sectionTitle}>Staking duration</BrandText>
 
           <TertiaryBox
             mainContainerStyle={{
@@ -118,12 +141,9 @@ export const RiotGameEnrollScreen = () => {
         </View>
       </View>
 
-      <PrimaryButton
-        style={styles.submitBtn}
-        color={yellowDefault}
-        text="Join the Fight"
-        size="M"
-      />
+      <TouchableOpacity>
+        <BrandText style={styles.submitBtn}>Join the Fight</BrandText>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -137,16 +157,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     margin: 10,
   },
-  col: {
-    // flex: 1,
-  },
   pageTitle: {
     alignSelf: "center",
     ...(fontMedium48 as object),
   },
+  sectionTitle: {
+    marginTop: 10,
+    ...(fontMedium32 as object),
+  },
   enrollContainer: {
-    flexDirection: "row",
     justifyContent: "space-around",
+    marginTop: 10,
+  },
+  col: {
+    alignSelf: "center",
   },
   ripperSlot: {
     marginRight: 20,
@@ -162,6 +186,12 @@ const styles = StyleSheet.create({
   submitBtn: {
     marginTop: 40,
     alignSelf: "center",
+    color: primaryTextColor,
+    backgroundColor: yellowDefault,
+    paddingHorizontal: 22,
+    paddingVertical: 16,
+    borderRadius: 12,
+    ...(fontSemibold14 as object),
   },
   placeholderVideo: {
     marginTop: 20,
