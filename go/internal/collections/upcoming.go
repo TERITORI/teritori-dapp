@@ -2,7 +2,7 @@ package collections
 
 import (
 	"context"
-	"strings"
+	"net/url"
 
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/mehanizm/airtable"
@@ -18,18 +18,21 @@ const airtableLaunchpadTableId = "tbla2ZD8MtljtvHKt"
 
 func NewUpcomingLaunchesProvider(ctx context.Context, logger *zap.Logger) CollectionsProvider {
 	fetch := func() ([]*marketplacepb.Collection, error) {
-		return fetchUpcomingLaunches(logger)
+		return FetchUpcomingLaunches(logger)
 	}
 	return newCachedCollectionsProvider(ctx, fetch, logger)
 }
 
-func fetchUpcomingLaunches(logger *zap.Logger) ([]*marketplacepb.Collection, error) {
+func FetchUpcomingLaunches(logger *zap.Logger) ([]*marketplacepb.Collection, error) {
 	client := airtable.NewClient(airtableAPIKey)
 
 	table := client.GetTable(airtableBaseId, airtableLaunchpadTableId)
 
-	recordsReq := table.GetRecords()
-	records, err := recordsReq.Do()
+	params := make(url.Values)
+	params.Set("sort[0][field]", "ExpectedMintDate")
+	params.Set("sort[0][direction]", "asc")
+	params.Set("filterByFormula", "{Show}")
+	records, err := table.GetRecordsWithParams(params)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to fetch records")
 	}
@@ -45,12 +48,6 @@ func fetchUpcomingLaunches(logger *zap.Logger) ([]*marketplacepb.Collection, err
 		creatorName, ok := record.Fields["CreatorName"].(string)
 		if !ok {
 			logger.Error("bad creator name type", zap.String("record", record.ID))
-			continue
-		}
-
-		isCertified, ok := record.Fields["IsCertified"].(string)
-		if !ok {
-			logger.Error("bad certified type", zap.String("record", record.ID))
 			continue
 		}
 
@@ -80,7 +77,6 @@ func fetchUpcomingLaunches(logger *zap.Logger) ([]*marketplacepb.Collection, err
 			ImageUri:       imageURI,
 			CollectionName: collectionName,
 			CreatorName:    creatorName,
-			Verified:       strings.ToLower(isCertified) == "yes",
 		})
 	}
 	return upcomingLaunches, nil
