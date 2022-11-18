@@ -110,10 +110,7 @@ export const GradientText: React.FC<GradientTextProps> = ({
     <MaskedView
       maskElement={<BrandText style={flatStyle}>{children}</BrandText>}
     >
-      <LinearGradient
-        style={{ flex: 1 }}
-        {...gradient(gradientType)}
-      />
+      <LinearGradient style={{ flex: 1 }} {...gradient(gradientType)} />
     </MaskedView>
   );
 };
