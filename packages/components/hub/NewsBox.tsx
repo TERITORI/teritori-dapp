@@ -6,7 +6,7 @@ import {
   View,
 } from "react-native";
 
-import { neutral33, neutral77, primaryColor } from "../../utils/style/colors";
+import { neutral33, neutral77 } from "../../utils/style/colors";
 import {
   fontMedium14,
   fontSemibold14,
@@ -16,6 +16,7 @@ import {
 import { BrandText } from "../BrandText";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
+import { GradientText } from "../gradientText";
 
 export type News = {
   title: string;
@@ -64,9 +65,9 @@ export const NewsBox: React.FC<{
           ]}
         >
           <View>
-            <BrandText style={[fontSemibold28, { color: primaryColor }]}>
+            <GradientText gradientType="blueExtended" style={fontSemibold28}>
               {news.title}
-            </BrandText>
+            </GradientText>
             <BrandText style={fontSemibold20}>{news.subtitle}</BrandText>
           </View>
 
