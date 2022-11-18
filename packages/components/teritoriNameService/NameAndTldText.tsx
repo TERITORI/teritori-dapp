@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { gradientGray } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { tldFromToken, tokenWithoutTld } from "../../utils/tns";
 import { BrandText } from "../BrandText";
@@ -31,7 +30,7 @@ export const NameAndTldText: React.FC<{
       >
         {tokenWithoutTld(nameAndTldStr)}
         {/*---- Gray part*/}
-        <GradientText gradient={gradientGray} style={fontSemibold20}>
+        <GradientText gradientType="gray" style={fontSemibold20}>
           {tldFromToken(nameAndTldStr)}
         </GradientText>
       </BrandText>

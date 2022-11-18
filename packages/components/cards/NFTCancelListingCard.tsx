@@ -2,7 +2,6 @@ import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { prettyPrice } from "../../utils/coins";
-import { gradientPurple } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
@@ -33,7 +32,7 @@ export const NFTCancelListingCard: React.FC<{
         </BrandText>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <GradientText
-            gradient={gradientPurple}
+            gradientType="purple"
             style={[fontSemibold28, { marginRight: 12 }]}
           >
             {prettyPrice(

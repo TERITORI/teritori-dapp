@@ -6,11 +6,7 @@ import {
   View,
 } from "react-native";
 
-import {
-  gradientBlueExtended,
-  neutral33,
-  neutral77,
-} from "../../utils/style/colors";
+import { neutral33, neutral77 } from "../../utils/style/colors";
 import {
   fontMedium14,
   fontSemibold14,
@@ -69,10 +65,7 @@ export const NewsBox: React.FC<{
           ]}
         >
           <View>
-            <GradientText
-              gradient={gradientBlueExtended}
-              style={fontSemibold28}
-            >
+            <GradientText gradientType="blueExtended" style={fontSemibold28}>
               {news.title}
             </GradientText>
             <BrandText style={fontSemibold20}>{news.subtitle}</BrandText>

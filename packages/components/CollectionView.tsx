@@ -5,7 +5,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Collection } from "../api/marketplace/v1/marketplace";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
 import { useTNSMetadata } from "../hooks/useTNSMetadata";
-import { gradientPurple } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { BrandText } from "./BrandText";
 import { TertiaryBox } from "./boxes/TertiaryBox";
@@ -61,7 +60,7 @@ export const CollectionView: React.FC<{
               style={fontSemibold14}
               ellipsizeMode="tail"
               numberOfLines={1}
-              gradient={gradientPurple}
+              gradientType="purple"
             >
               {tnsMetadata.metadata?.tokenId ||
                 item.creatorName ||

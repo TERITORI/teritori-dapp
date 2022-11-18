@@ -1,6 +1,32 @@
+import MaskedView from "@react-native-masked-view/masked-view";
+import { LinearGradient } from "expo-linear-gradient";
 import { StyleProp, StyleSheet, TextStyle } from "react-native";
 
+import {
+  gradientColorBlue,
+  gradientColorDarkBlue,
+  gradientColorDarkerBlue,
+  gradientColorGray,
+  gradientColorLavender,
+  gradientColorLightBlue,
+  gradientColorLighterGray,
+  gradientColorLightGray,
+  gradientColorLightLavender,
+  gradientColorPink,
+  gradientColorPurple,
+  gradientColorSalmon,
+  gradientColorTurquoise,
+} from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
+
+export type GradientType =
+  | "blue"
+  | "blueReversed"
+  | "blueExtended"
+  | "purple"
+  | "pink"
+  | "gray"
+  | "grayLight";
 
 export interface GradientTextProps {
   style?: StyleProp<
@@ -14,17 +40,80 @@ export interface GradientTextProps {
       | "textDecorationLine"
     >
   >;
-  gradient: string;
+  gradientType: GradientType;
   ellipsizeMode?: string;
   numberOfLines?: number;
 }
 
-//TODO: Use MaskedView + LinearGradient to make gardient working with Expo
+const gradient = (type: GradientType) => {
+  const start = { x: 0, y: 0.5 };
+  const end = { x: 1, y: 0.5 };
+
+  switch (type) {
+    case "blue":
+      return {
+        colors: [gradientColorLightBlue, gradientColorDarkBlue],
+        start,
+        end,
+      };
+    case "blueReversed":
+      return {
+        colors: [gradientColorDarkBlue, gradientColorLightBlue],
+        start,
+        end,
+      };
+    case "blueExtended":
+      return {
+        colors: [
+          gradientColorDarkerBlue,
+          gradientColorBlue,
+          gradientColorTurquoise,
+        ],
+        start,
+        end,
+      };
+    case "purple":
+      return {
+        colors: [gradientColorLavender, gradientColorPurple],
+        start,
+        end,
+      };
+    case "pink":
+      return {
+        colors: [gradientColorSalmon, gradientColorPink],
+        start,
+        end,
+      };
+    case "gray":
+      return {
+        colors: [gradientColorGray, gradientColorLightGray],
+        start,
+        end,
+      };
+    case "grayLight":
+      return {
+        colors: [gradientColorLighterGray, gradientColorLightLavender],
+        start,
+        end,
+      };
+  }
+};
 
 export const GradientText: React.FC<GradientTextProps> = ({
+  gradientType,
   children,
   style,
 }) => {
   const flatStyle = StyleSheet.flatten(style);
-  return <BrandText style={flatStyle}>{children}</BrandText>;
+
+  return (
+    <MaskedView
+      maskElement={<BrandText style={flatStyle}>{children}</BrandText>}
+    >
+      <LinearGradient
+        style={{ flex: 1 }}
+        {...gradient(gradientType)}
+      />
+    </MaskedView>
+  );
 };

@@ -32,8 +32,6 @@ import { prettyPrice } from "../../utils/coins";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import {
-  gradientGray,
-  gradientGrayLight,
   neutral33,
   neutral67,
   neutral77,
@@ -209,7 +207,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               </View>
 
               <GradientText
-                gradient={gradientGrayLight}
+                gradientType="grayLight"
                 style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
               >
                 {info.description}
@@ -300,7 +298,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     {'By clicking "Mint now", you agree to the '}
                   </BrandText>
                   <ExternalLink
-                    gradient={gradientGray}
+                    gradientType="gray"
                     externalUrl="https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b"
                     style={[
                       fontSemibold14,

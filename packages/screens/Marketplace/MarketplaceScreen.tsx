@@ -20,7 +20,6 @@ import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
 import { ScreenFC } from "../../utils/navigation";
-import { gradientBlueReversed } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
@@ -49,7 +48,7 @@ const CarouselCollectionItem: React.FC<{
         </BrandText>
 
         <GradientText
-          gradient={gradientBlueReversed}
+          gradientType="blueReversed"
           style={[
             fontSemibold14,
             {
