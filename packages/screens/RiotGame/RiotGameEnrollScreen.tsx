@@ -1,33 +1,23 @@
 import React from "react";
 import {
-  Button,
   FlatList,
   Image,
+  ScrollView,
   StyleSheet,
   useWindowDimensions,
   View,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 import sendToFightPNG from "../../../assets/game/send-to-fight.png";
 import { BrandText } from "../../components/BrandText";
-import { PrimaryBox } from "../../components/boxes/PrimaryBox";
-import { SecondaryBox } from "../../components/boxes/SecondaryBox";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../components/spacer";
-import {
-  neutral00,
-  neutralA3,
-  primaryTextColor,
-  yellowDefault,
-} from "../../utils/style/colors";
+import { neutral00, neutralA3 } from "../../utils/style/colors";
 import {
   fontMedium48,
   fontMedium32,
   fontSemibold28,
   fontMedium14,
-  fontSemibold14,
 } from "../../utils/style/fonts";
 import { EnrollStat } from "./component/EnrollStat";
 import { RipperSlot } from "./component/RipperSlot";
@@ -76,8 +66,8 @@ export const RiotGameEnrollScreen = () => {
   const { width } = useWindowDimensions();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.statsSection}>
+    <ScrollView style={styles.container}>
+      <View style={styles.stats}>
         <EnrollStat title="Number of Fighters" content="833 Rippers" />
         <EnrollStat title="Prize Pool" content="1337 TORI" />
         <EnrollStat title="Rank" content="42/1337" />
@@ -143,7 +133,7 @@ export const RiotGameEnrollScreen = () => {
       </View>
 
       <SimpleButton title="Join the Fight" />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -152,7 +142,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: neutral00,
   },
-  statsSection: {
+  stats: {
     flexDirection: "row",
     margin: 10,
   },
@@ -169,7 +159,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   col: {
-    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
   },
   ripperSlot: {
     marginRight: 20,
