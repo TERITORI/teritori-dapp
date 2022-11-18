@@ -52,11 +52,11 @@ export const GradientText: React.FC<GradientTextProps> = ({
   if (flatStyle) delete flatStyle.lineHeight;
 
   const textOverflow =
-    props.ellipsizeMode === "tail" && props.numberOfLines === 1
+    (props.ellipsizeMode === "tail" || props.ellipsizeMode === "middle") && props.numberOfLines === 1
       ? "ellipsis"
       : "unset";
   const overflow =
-    props.ellipsizeMode === "tail" && props.numberOfLines === 1
+    (props.ellipsizeMode === "tail" || props.ellipsizeMode === "middle") && props.numberOfLines === 1
       ? "hidden"
       : "unset";
 
