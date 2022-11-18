@@ -9,6 +9,7 @@ import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import tnsPNG from "../../../assets/logos/teritori-name-service.png";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { FullWidthSeparator } from "../FullWidthSeparator";
@@ -22,6 +23,13 @@ export const NewsCarouselSection: React.FC = () => {
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const renderItem = (props: { item: News }) => <NewsBox news={props.item} />;
 
+  const gorillaNavigate = useNavigateToCollection(
+    "tori-tori1999u8suptza3rtxwk7lspve02m406xe7l622erg3np3aq05gawxsrh9g0p"
+  );
+  const succubiNavigate = useNavigateToCollection(
+    "tori-tori1x22q8lfhz7qcvtzs0dakhgx2th64l79kepjujhhxk5x804taeqlqmhm4sz"
+  );
+
   const fakeNews: News[] = [
     {
       title: "JOIN THE YIELDRILLAS PARK",
@@ -34,13 +42,9 @@ export const NewsCarouselSection: React.FC = () => {
         "Find the rare one.",
       image:
         "https://bafybeihiumjqixnq5uzy3xaofryt76zf7n2vlbl7rrm27h6mc6b6qqpdmi.ipfs.nftstorage.link/collection-image.png",
-      button1Label: "Join the Mint",
+      button1Label: "Join",
       button2Label: "Discover",
-      button1Action: () => {
-        navigation.navigate("MintCollection", {
-          id: "tori-tori1999u8suptza3rtxwk7lspve02m406xe7l622erg3np3aq05gawxsrh9g0p",
-        });
-      },
+      button1Action: gorillaNavigate,
       button2Action: () => {
         Linking.openURL(
           "https://medium.com/gatadao/yield-gorilla-minting-rarities-67f03bd395b2"
@@ -58,9 +62,9 @@ export const NewsCarouselSection: React.FC = () => {
       image: ipfsURLToHTTPURL(
         "ipfs://bafybeig2gr2ykukmglkxnvdsu7nwumezrwfr53o45t2kpvnhfohi7dpimq"
       ),
-      button1Label: "Mint Nov 18",
+      button1Label: "Join",
       button2Label: "Discover",
-      button1Action: () => {},
+      button1Action: succubiNavigate,
       button2Action: () => {
         Linking.openURL(
           "https://medium.com/@SunnysideReapers/sweet-succubi-launch-faq-5861e87f4dd2"
