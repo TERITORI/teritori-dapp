@@ -80,7 +80,7 @@ export const RiotGameEnrollScreen = () => {
       <View
         style={[
           styles.enrollContainer,
-          { flexDirection: width > 920 ? "row" : "column" },
+          { flexDirection: width > 992 ? "row" : "column" },
         ]}
       >
         <View style={styles.col}>
