@@ -15,7 +15,7 @@ func (c *Client) FetchUpcomingLaunches(logger *zap.Logger) ([]*marketplacepb.Col
 	table := client.GetTable(c.config.BaseID, c.config.LaunchpadTableID)
 
 	params := make(url.Values)
-	params.Set("sort[0][field]", "ExpectedMintDate")
+	params.Set("sort[0][field]", "MintDate")
 	params.Set("sort[0][direction]", "asc")
 	params.Set("filterByFormula", "{Show}")
 	records, err := table.GetRecordsWithParams(params)

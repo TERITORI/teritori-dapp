@@ -9,7 +9,9 @@ type ClientConfig struct {
 	BaseID           string
 	LaunchpadTableID string
 	BannersTableID   string
+	BannersViewID    string
 	NewsTableID      string
+	NewsViewID       string
 }
 
 func NewClient() *Client {
@@ -18,6 +20,8 @@ func NewClient() *Client {
 		BaseID:           "appetXQzVoElrsJs5",
 		LaunchpadTableID: "tbla2ZD8MtljtvHKt",
 		BannersTableID:   "tblUXvHaNCABlq8zg",
+		BannersViewID:    "viwHEB0KsHyF7EuUQ",
 		NewsTableID:      "tblOlJKlbNsSpdAVq",
+		NewsViewID:       "viwzEqf2inBThqoFY",
 	}}
 }
