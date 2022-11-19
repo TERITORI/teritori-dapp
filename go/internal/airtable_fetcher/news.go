@@ -15,8 +15,7 @@ func (c *Client) FetchNews(testnet bool) ([]*marketplacepb.News, error) {
 	table := client.GetTable(c.config.BaseID, c.config.NewsTableID)
 
 	params := make(url.Values)
-	params.Set("sort[0][field]", "ID")
-	params.Set("sort[0][direction]", "asc")
+	params.Set("view", c.config.NewsViewID)
 	if testnet {
 		params.Set("filterByFormula", "{Status} = 'TESTNET LIVE'")
 	} else {

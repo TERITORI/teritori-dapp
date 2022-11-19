@@ -14,8 +14,7 @@ func (c *Client) FetchBanners(testnet bool) ([]*marketplacepb.Banner, error) {
 	table := client.GetTable(c.config.BaseID, c.config.BannersTableID)
 
 	params := make(url.Values)
-	params.Set("sort[0][field]", "ID")
-	params.Set("sort[0][direction]", "asc")
+	params.Set("view", c.config.BannersViewID)
 	if testnet {
 		params.Set("filterByFormula", "{Status} = 'TESTNET LIVE'")
 	} else {
