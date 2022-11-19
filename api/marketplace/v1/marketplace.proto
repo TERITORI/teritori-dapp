@@ -10,6 +10,8 @@ service MarketplaceService {
   rpc Quests(QuestsRequest) returns (stream QuestsResponse);
   rpc Activity(ActivityRequest) returns (stream ActivityResponse);
   rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
+  rpc Banners(BannersRequest) returns (BannersResponse);
+  rpc News(NewsRequest) returns (NewsResponse);
 }
 
 enum Network {
@@ -169,4 +171,38 @@ message NFTPriceHistoryRequest {
 
 message NFTPriceHistoryResponse {
   repeated PriceDatum data = 1;
+}
+
+message Action {
+  string label = 1;
+  string url = 2;
+}
+
+message News {
+  string title = 1;
+  string subtitle = 2;
+  string text = 3;
+  string image = 4;
+  repeated Action actions = 5;
+}
+
+message Banner {
+  string image = 1;
+  string url = 2;
+}
+
+message BannersRequest {
+  bool testnet = 1;
+}
+
+message BannersResponse {
+  repeated Banner banners = 1;
+}
+
+message NewsRequest {
+  bool testnet = 1;
+}
+
+message NewsResponse {
+  repeated News news = 1;
 }

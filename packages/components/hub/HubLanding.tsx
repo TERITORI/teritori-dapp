@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { View, Image, Linking, TouchableOpacity } from "react-native";
+import { View, Image, Linking } from "react-native";
 
 import defaultNewsBanner from "../../../assets/default-images/default-news-banner.png";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
@@ -10,9 +11,10 @@ import stakingSVG from "../../../assets/icons/staking.svg";
 import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
+import { backendClient } from "../../utils/backend";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
+import { Link } from "../Link";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
 import { LabelCard } from "../cards/LabelCard";
@@ -29,19 +31,18 @@ export const HubLanding: React.FC = () => {
     image: defaultNewsBanner,
     maxSize: { width: maxWidth },
   });
-  const navigateToCollection = useNavigateToCollection(
-    "tori-tori1x22q8lfhz7qcvtzs0dakhgx2th64l79kepjujhhxk5x804taeqlqmhm4sz"
+  const banners = useBanners(
+    process.env.TERITORI_NETWORK_ID === "teritori-testnet"
   );
+  const banner = banners?.length ? banners[0] : undefined;
 
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
-        <TouchableOpacity onPress={navigateToCollection}>
+        <Link to={banner?.url || ""}>
           <Image
             source={{
-              uri: ipfsURLToHTTPURL(
-                "ipfs://bafkreibczqgfdj54fgco2oaw6wkanglktduwgj2j5qnhuh3olsg57uxtsm"
-              ),
+              uri: ipfsURLToHTTPURL(banner?.image),
             }}
             style={{
               height,
@@ -50,7 +51,7 @@ export const HubLanding: React.FC = () => {
               marginTop: 56,
             }}
           />
-        </TouchableOpacity>
+        </Link>
 
         <NewsCarouselSection />
 
@@ -138,4 +139,16 @@ Launch"
       </View>
     </View>
   );
+};
+
+const useBanners = (testnet: boolean) => {
+  const { data } = useQuery(
+    ["banners", testnet],
+    async () => {
+      const { banners } = await backendClient.Banners({ testnet });
+      return banners;
+    },
+    { staleTime: Infinity }
+  );
+  return data;
 };
