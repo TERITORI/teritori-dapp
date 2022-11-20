@@ -14,7 +14,7 @@ interface SimpleButtonProps {
   onPress?(): void;
 }
 
-export const SimpleButton: React.FC<SimpleButtonProps> = ({
+const SimpleButton: React.FC<SimpleButtonProps> = ({
   title,
   size = "medium",
   style,
@@ -63,3 +63,5 @@ const styles = StyleSheet.create({
     ...(fontSemibold14 as object),
   },
 });
+
+export default SimpleButton

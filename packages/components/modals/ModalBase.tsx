@@ -17,21 +17,7 @@ import { SpacerColumn } from "../spacer";
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
-export const ModalBase: React.FC<{
-  label?: string;
-  onClose?: () => void;
-  onBackPress?: () => void;
-  width?: number;
-  visible?: boolean;
-  Header?: ComponentType;
-  childrenBottom?: JSX.Element | JSX.Element[];
-  hideMainSeparator?: boolean;
-  description?: string;
-  noBrokenCorners?: boolean;
-  scrollable?: boolean;
-  contentStyle?: ViewStyle;
-  containerStyle?: ViewStyle;
-}> = ({
+export const ModalBase: React.FC<NSModal.ModalBaseProps> = ({
   label,
   visible,
   width,
@@ -73,12 +59,12 @@ export const ModalBase: React.FC<{
           },
           scrollable
             ? {
-                marginVertical: 20,
-              }
+              marginVertical: 20,
+            }
             : {
-                height: "100%",
-                width: "100%",
-              },
+              height: "100%",
+              width: "100%",
+            },
         ]}
       >
         {/*------ Modal main container */}

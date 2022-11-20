@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 
-import sendToFightPNG from "../../../assets/game/send-to-fight.png";
+import defaultSendToFightPNG from "../../../assets/default-images/default-video-send-to-fight.png";
 import { BrandText } from "../../components/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../components/spacer";
@@ -19,51 +19,25 @@ import {
   fontSemibold28,
   fontMedium14,
 } from "../../utils/style/fonts";
-import { EnrollStat } from "./component/EnrollStat";
-import { RipperSlot } from "./component/RipperSlot";
-import { SimpleButton } from "./component/SimpleButton";
+import EnrollStat from "./component/EnrollStat";
+import RipperSlot from "./component/RipperSlot";
+import SimpleButton from "./component/SimpleButton";
+import RipperSelectorModal from "./component/RipperSelectorModal";
+import useRippers from "../../hooks/riotGame/useRippers";
 
-const rippers = [
-  {
-    id: 1,
-    stamina: 1,
-    protection: 1,
-    luck: 1,
-  },
-  {
-    id: 1,
-    stamina: 1,
-    protection: 1,
-    luck: 1,
-  },
-  {
-    id: 1,
-    stamina: 1,
-    protection: 1,
-    luck: 1,
-  },
-  {
-    id: 1,
-    stamina: 1,
-    protection: 1,
-    luck: 1,
-  },
-  {
-    id: 1,
-    stamina: 1,
-    protection: 1,
-    luck: 1,
-  },
-  {
-    id: 1,
-    stamina: 1,
-    protection: 1,
-    luck: 1,
-  },
-];
 
 export const RiotGameEnrollScreen = () => {
   const { width } = useWindowDimensions();
+  const { myRippers, selectedRippers } = useRippers();
+  const [selectedSlot, setSelectedSlot] = useState<number>();
+
+  const showRipperSelector = (slotId: number) => {
+    setSelectedSlot(slotId);
+  }
+
+  const hideRipperSelector = () => {
+    setSelectedSlot(undefined);
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -89,7 +63,7 @@ export const RiotGameEnrollScreen = () => {
           </BrandText>
 
           <FlatList
-            data={rippers}
+            data={myRippers}
             numColumns={3}
             renderItem={({ item, index }) => (
               <View style={styles.ripperSlot}>
@@ -97,6 +71,7 @@ export const RiotGameEnrollScreen = () => {
                   key={item.id}
                   isLeader={index === 0}
                   ripper={item}
+                  onPress={() => showRipperSelector(item.id)}
                 />
               </View>
             )}
@@ -128,11 +103,18 @@ export const RiotGameEnrollScreen = () => {
             </BrandText>
           </TertiaryBox>
 
-          <Image source={sendToFightPNG} style={styles.placeholderVideo} />
+          <Image source={defaultSendToFightPNG} style={styles.placeholderVideo} />
         </View>
       </View>
 
       <SimpleButton style={styles.submitBtn} title="Join the Fight" />
+      <RipperSelectorModal
+        visible={selectedSlot !== undefined}
+        onClose={hideRipperSelector}
+        slotId={selectedSlot}
+        myRippers={myRippers}
+      />
+
     </ScrollView>
   );
 };

@@ -9,6 +9,7 @@ export const yellowDefault = "#FFE768";
 export const pinkDefault = "#F46FBF";
 export const purpleDefault = "#9058EC";
 export const lavenderDefault = "#AEB1FF";
+export const orangeDefault = "#EAA54B";
 
 export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
