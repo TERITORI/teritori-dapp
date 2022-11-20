@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   FlatList,
   Image,
@@ -25,11 +25,19 @@ import SimpleButton from "./component/SimpleButton";
 import RipperSelectorModal from "./component/RipperSelectorModal";
 import useRippers from "../../hooks/riotGame/useRippers";
 
+const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
 export const RiotGameEnrollScreen = () => {
   const { width } = useWindowDimensions();
-  const { myRippers, selectedRippers } = useRippers();
+  const { myRippers } = useRippers();
   const [selectedSlot, setSelectedSlot] = useState<number>();
+
+  const [selectedRippers, setSelectedRippers] = useState<{ [slotId: string]: NSRiotGame.Ripper }>({});
+
+  const availableRippers = useMemo(() => {
+    const selectedIds = Object.values(selectedRippers).map(r => r.id);
+    return myRippers.filter(r => !selectedIds.includes(r.id));
+  }, [myRippers, selectedRippers])
 
   const showRipperSelector = (slotId: number) => {
     setSelectedSlot(slotId);
@@ -37,6 +45,11 @@ export const RiotGameEnrollScreen = () => {
 
   const hideRipperSelector = () => {
     setSelectedSlot(undefined);
+  }
+
+  const onSelectRipper = (slotId: number, ripper: NSRiotGame.Ripper) => {
+    setSelectedSlot(undefined);
+    setSelectedRippers({ ...selectedRippers, [slotId]: ripper });
   }
 
   return (
@@ -63,15 +76,15 @@ export const RiotGameEnrollScreen = () => {
           </BrandText>
 
           <FlatList
-            data={myRippers}
+            data={RIPPER_SLOTS}
             numColumns={3}
-            renderItem={({ item, index }) => (
+            renderItem={({ item: slotId }) => (
               <View style={styles.ripperSlot}>
                 <RipperSlot
-                  key={item.id}
-                  isLeader={index === 0}
-                  ripper={item}
-                  onPress={() => showRipperSelector(item.id)}
+                  key={slotId}
+                  isLeader={slotId === 0}
+                  ripper={selectedRippers[slotId]}
+                  onPress={() => showRipperSelector(slotId)}
                 />
               </View>
             )}
@@ -108,11 +121,13 @@ export const RiotGameEnrollScreen = () => {
       </View>
 
       <SimpleButton style={styles.submitBtn} title="Join the Fight" />
+
       <RipperSelectorModal
         visible={selectedSlot !== undefined}
         onClose={hideRipperSelector}
         slotId={selectedSlot}
-        myRippers={myRippers}
+        availableRippers={availableRippers}
+        onSelectRipper={onSelectRipper}
       />
 
     </ScrollView>

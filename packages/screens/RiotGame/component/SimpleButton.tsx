@@ -20,6 +20,7 @@ const SimpleButton: React.FC<SimpleButtonProps> = ({
   style,
   color = primaryTextColor,
   bgColor = yellowDefault,
+  onPress,
 }) => {
   let padH: number;
   let padV: number;
@@ -36,7 +37,7 @@ const SimpleButton: React.FC<SimpleButtonProps> = ({
   }
 
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <BrandText
         style={[
           style,
