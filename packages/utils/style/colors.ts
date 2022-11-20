@@ -29,6 +29,7 @@ export const neutral77 = "#777777";
 export const neutralA3 = "#A3A3A3";
 export const additionalRed = "#FFAEAE";
 
+export const white = '#FFFFFF';
 export const orangeLight = "#EAA54B";
 
 // Returns hexa color modified with alpha
@@ -36,3 +37,5 @@ export const withAlpha = (color: string, opacity: number) => {
   const _opacity = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
   return color + _opacity.toString(16).toUpperCase();
 };
+
+export const transparent = withAlpha(neutral00, 0);
