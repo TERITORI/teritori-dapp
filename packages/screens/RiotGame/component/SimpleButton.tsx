@@ -57,7 +57,6 @@ const SimpleButton: React.FC<SimpleButtonProps> = ({
 
 const styles = StyleSheet.create({
   btnStyle: {
-    marginTop: 40,
     alignSelf: "center",
     borderRadius: 12,
     ...(fontSemibold14 as object),

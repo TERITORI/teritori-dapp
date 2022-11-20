@@ -5,17 +5,28 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { neutral00, orangeDefault, yellowDefault, withAlpha, white } from "../../../utils/style/colors";
 import { fontMedium32, fontMedium48, fontSemibold11 } from "../../../utils/style/fonts";
 import dashedBorderSVG from '../../../../assets/game/dashed-border.svg';
+import gamepadSVG from '../../../../assets/game/gamepad.svg';
 import { SVG } from "../../../components/SVG";
+import { SpacerRow } from "../../../components/spacer/SpacerRow";
 import Carousel from 'react-native-reanimated-carousel';
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import RipperStat from './RipperStat';
 import SimpleButton from './SimpleButton';
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 type RipperSelectorModalProps = ModalProps & {
     slotId: number | undefined,
     myRippers: NSRiotGame.Ripper[],
     onClose?(): void,
 }
+
+const THUMB_CONTAINER_WIDTH = 132;
+const THUMB_CONTAINER_HEIGHT = 132;
+
+const THUMB_WIDTH = 100;
+const THUMB_HEIGHT = 100;
+
+const RIPPER_IMAGE_SIZE = 580;
 
 const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({ slotId, onClose, myRippers, ...props }) => {
     // TODO: use picker
@@ -24,7 +35,11 @@ const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({ slotId, onClo
     // TODO: do we need responsive on game ?
     // const { width, height } = useWindowDimensions();
     // const ripperImageSize = useMemo(() => Math.round(width / 3), [width]);
-    const ripperImageSize = 580;
+    const ripperImageSize = RIPPER_IMAGE_SIZE;
+
+    const selectRipper = (ripper: NSRiotGame.Ripper) => {
+        setSelectedRipper(ripper);
+    }
 
     // Normally this will never be visible
     if (props.visible && !slotId) {
@@ -47,19 +62,36 @@ const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({ slotId, onClo
                         <View style={styles.selectListContainer} >
                             <Carousel
                                 data={myRippers}
-                                width={132}
-                                height={600}
+                                width={THUMB_CONTAINER_WIDTH + 20 /* For displaying right arrow */}
+                                height={THUMB_CONTAINER_HEIGHT + 20 /* For padding between items */}
+                                loop={false}
+                                vertical
+                                style={{
+                                    height: (THUMB_CONTAINER_HEIGHT + 20) * 4,
+                                }}
                                 pagingEnabled
                                 renderItem={({ item, index }) => {
-                                    return <TertiaryBox mainContainerStyle={styles.ripperThumb} squaresBackgroundColor={'transparent'}>
-                                        <BrandText style={styles.ripperThumbName}>{item.name}</BrandText>
-                                        <Image style={{ width: 132, height: 132 }} source={item.image} />
-                                    </TertiaryBox>
+                                    const isSelected = item.id === selectedRipper.id;
+                                    return <TouchableOpacity activeOpacity={0.6} onPress={() => selectRipper(item)}>
+                                        <TertiaryBox noBrokenCorners mainContainerStyle={[
+                                            styles.ripperThumb,
+                                            isSelected && { borderColor: white, borderWidth: 1 },
+                                        ]}>
+                                            <BrandText style={styles.ripperThumbName}>{item.name}</BrandText>
+                                            <Image style={{ width: THUMB_WIDTH, height: THUMB_HEIGHT }} source={item.image} />
+
+                                            {isSelected && <View style={styles.arrowRight} />}
+                                        </TertiaryBox>
+                                    </TouchableOpacity>
                                 }}
                             />
                         </View>
                         <View style={styles.ripperImageContainer}>
-                            <Image style={{ width: ripperImageSize, height: ripperImageSize }} source={selectedRipper.image} />
+                            <SVG source={dashedBorderSVG} />
+
+                            <View style={styles.roundedContainer}>
+                                <Image style={styles.ripperImage} source={selectedRipper.image} />
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -67,11 +99,15 @@ const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({ slotId, onClo
                 <View style={styles.rightCol}>
                     <BrandText style={fontMedium32}>Stats</BrandText>
 
-                    <RipperStat containerStyle={styles.ripperStatContainer} name='Stamina' value={10.4} />
-                    <RipperStat containerStyle={styles.ripperStatContainer} name='Protection' value={65.7} />
-                    <RipperStat containerStyle={styles.ripperStatContainer} name='Luck' value={11.9} />
+                    <RipperStat containerStyle={styles.ripperStatContainer} name='Stamina' value={selectedRipper.stamina} />
+                    <RipperStat containerStyle={styles.ripperStatContainer} name='Protection' value={selectedRipper.protection} />
+                    <RipperStat containerStyle={styles.ripperStatContainer} name='Luck' value={selectedRipper.luck} />
 
-                    <SimpleButton size="small" title='Enroll this Ripper' />
+                    <View style={styles.btnGroup}>
+                        <SVG source={gamepadSVG} />
+                        <SpacerRow size={2} />
+                        <SimpleButton size="small" title='Enroll this Ripper' />
+                    </View>
                 </View>
             </View>
         </View>
@@ -85,7 +121,6 @@ const styles = StyleSheet.create({
         backgroundColor: neutral00,
         marginTop: 100,
         borderWidth: 1,
-        borderColor: 'red',
     },
     row: {
         flex: 1,
@@ -95,7 +130,8 @@ const styles = StyleSheet.create({
     },
     rightCol: {
         flex: 1,
-        paddingLeft: 40
+        paddingLeft: 40,
+        paddingTop: 40,
     },
     leftCol: {
         flex: 2,
@@ -104,15 +140,23 @@ const styles = StyleSheet.create({
     },
     leftColContent: {
         position: 'relative',
-        width: 580,
     },
     ripperImageContainer: {
         marginTop: 20,
+        position: 'relative',
+    },
+    roundedContainer: {
+        width: RIPPER_IMAGE_SIZE -2,
+        height: RIPPER_IMAGE_SIZE -2,
+        position: 'absolute',
+        left: 1,
+        top: 1,
         borderRadius: 999,
-        borderWidth: 1,
-        borderColor: orangeDefault,
-        borderStyle: 'dashed',
         overflow: 'hidden',
+    },
+    ripperImage: {
+        width: RIPPER_IMAGE_SIZE,
+        height: RIPPER_IMAGE_SIZE,
     },
     selectListContainer: {
         position: 'absolute',
@@ -120,7 +164,9 @@ const styles = StyleSheet.create({
         left: -60
     },
     ripperThumb: {
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        alignItems: 'center',
+        width: THUMB_CONTAINER_HEIGHT,
+        borderWidth: 0,
     },
     ripperThumbName: {
         marginVertical: 9,
@@ -128,7 +174,21 @@ const styles = StyleSheet.create({
     },
     ripperStatContainer: {
         marginTop: 40,
-    }
+    },
+    arrowRight: {
+        position: 'absolute',
+        borderWidth: 10,
+        borderRightWidth: 0,
+        borderStyle: 'solid',
+        borderColor: 'transparent',
+        borderLeftColor: white,
+        right: -16,
+    },
+    btnGroup: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 100,
+    },
 })
 
 export default RipperSelectorModal;
