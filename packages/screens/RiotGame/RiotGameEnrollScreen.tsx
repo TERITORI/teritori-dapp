@@ -132,7 +132,7 @@ export const RiotGameEnrollScreen = () => {
         </View>
       </View>
 
-      <SimpleButton title="Join the Fight" />
+      <SimpleButton style={styles.submitBtn} title="Join the Fight" />
     </ScrollView>
   );
 };
@@ -179,4 +179,7 @@ const styles = StyleSheet.create({
     width: 420,
     height: 240,
   },
+  submitBtn: {
+    marginBottom: 40
+  }
 });
