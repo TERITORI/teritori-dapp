@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, ViewProps } from "react-native";
+import { StyleSheet, TouchableOpacity, ViewProps, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { primaryTextColor, yellowDefault } from "../../../utils/style/colors";
@@ -8,7 +8,7 @@ import { fontSemibold14 } from "../../../utils/style/fonts";
 interface SimpleButtonProps {
   title: string;
   size?: "medium" | "small";
-  style?: ViewProps,
+  style?: ViewStyle,
   color?: string;
   bgColor?: string;
   onPress?(): void;
