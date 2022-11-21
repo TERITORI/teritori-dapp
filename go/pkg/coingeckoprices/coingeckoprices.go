@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -116,7 +117,7 @@ func (cgp *CoinGeckoPrices) Historical(id string, t time.Time) (float64, error) 
 		var ok bool
 		price, ok := resp.MarketData.CurrentPrice[vsCurrency]
 		if !ok {
-			return 0, errors.New("missing vs price in response")
+			price = 0
 		}
 
 		if err := cacheSetFloat64(cgp.historicalCache, id, price); err != nil {
@@ -138,10 +139,53 @@ func (cgp *CoinGeckoPrices) Historical(id string, t time.Time) (float64, error) 
 	return price, nil
 }
 
+type OHLC struct {
+	Time  time.Time
+	Open  float64
+	High  float64
+	Low   float64
+	Close float64
+}
+
+func (cgp *CoinGeckoPrices) OHLC(id string, days uint64) ([]*OHLC, error) {
+	vals := make(url.Values)
+	vals.Set("vs_currency", vsCurrency)
+	vals.Set("days", fmt.Sprintf("%d", days))
+
+	var resp [][]float64
+	if err := getJSON(baseURL+"/coins/"+id+"/ohlc?"+vals.Encode(), &resp); err != nil {
+		return nil, errors.Wrap(err, "failed to fetch ohlc")
+	}
+
+	// FIXME: parse time as uint64
+
+	ret := make([]*OHLC, len(resp))
+	for i, raw := range resp {
+		if len(raw) != 5 {
+			return nil, errors.New("invalid response shape")
+		}
+
+		t := time.UnixMilli(int64(raw[0]))
+
+		ret[i] = &OHLC{
+			Time:  t,
+			Open:  raw[1],
+			High:  raw[2],
+			Low:   raw[3],
+			Close: raw[4],
+		}
+	}
+
+	return ret, nil
+}
+
 func getJSON(u string, v interface{}) error {
 	resp, err := http.Get(u)
 	if err != nil {
 		return errors.Wrap(err, "failed to http get")
+	}
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("invalid response code %s", resp.Status)
 	}
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

@@ -80,6 +80,11 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 		return errors.Wrap(err, "failed to get block time")
 	}
 
+	usdAmount, err := h.usdAmount(denom, price, blockTime)
+	if err != nil {
+		return errors.Wrap(err, "failed to derive usd amount")
+	}
+
 	// create activity
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
@@ -89,7 +94,7 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 		UpdateNFTPrice: &indexerdb.UpdateNFTPrice{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   h.usdAmount(denom, price, blockTime),
+			USDPrice:   usdAmount,
 			SellerID:   indexerdb.TeritoriUserID(execMsg.Sender),
 		},
 	}).Error; err != nil {
@@ -265,6 +270,11 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		return errors.Wrap(err, "failed to get block time")
 	}
 
+	usdAmount, err := h.usdAmount(denom, price, blockTime)
+	if err != nil {
+		return errors.Wrap(err, "failed to derive usd amount")
+	}
+
 	// create trade
 	var nft indexerdb.NFT
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
@@ -279,7 +289,7 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		Trade: &indexerdb.Trade{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   h.usdAmount(denom, price, blockTime),
+			USDPrice:   usdAmount,
 			BuyerID:    buyerID,
 			SellerID:   sellerID,
 		},
@@ -360,6 +370,11 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 		return errors.Wrap(err, "failed to get block time")
 	}
 
+	usdAmount, err := h.usdAmount(denom, price, blockTime)
+	if err != nil {
+		return errors.Wrap(err, "failed to derive usd amount")
+	}
+
 	// create listing
 	var nft indexerdb.NFT
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
@@ -374,7 +389,7 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 		Listing: &indexerdb.Listing{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   h.usdAmount(denom, price, blockTime),
+			USDPrice:   usdAmount,
 			SellerID:   sellerID,
 		},
 	}).Error; err != nil {
