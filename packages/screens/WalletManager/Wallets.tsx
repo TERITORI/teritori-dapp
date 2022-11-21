@@ -10,7 +10,8 @@ import { WalletItem } from "./WalletItem";
 export const Wallets: React.FC = () => {
   const selectedWallet = useSelectedWallet();
 
-  const { totalAmount: totalAmountTeritori } = useRewards();
+  // TODO: Handle multiple wallets addresses
+  const { totalsRewards } = useRewards(selectedWallet?.address);
 
   const wallets = selectedWallet
     ? [
@@ -18,7 +19,7 @@ export const Wallets: React.FC = () => {
           id: 0,
           title: "Teritori",
           address: selectedWallet.address,
-          pendingReward: totalAmountTeritori || 0,
+          pendingRewards: totalsRewards,
           staked: 42,
         },
       ]

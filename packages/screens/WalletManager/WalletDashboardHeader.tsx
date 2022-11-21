@@ -8,7 +8,7 @@ import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
-import { useRewards } from "../../hooks/useRewards";
+import { totalsRewardsPrice, useRewards } from "../../hooks/useRewards";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
@@ -94,7 +94,9 @@ export const WalletDashboardHeader: React.FC = () => {
     (total, bal) => total + (bal.usdAmount || 0),
     0
   );
-  const { totalAmount } = useRewards();
+  const { totalsRewards } = useRewards(selectedWallet?.address);
+  // Total rewards price with all denoms
+  const totalPrice = totalsRewardsPrice(totalsRewards);
 
   return (
     <View
@@ -164,7 +166,7 @@ export const WalletDashboardHeader: React.FC = () => {
         <WalletDashboardHeaderCard
           {...{
             title: "Total Claimable Rewards",
-            data: `$${totalAmount?.toFixed(2) || 0}`,
+            data: `$${totalPrice?.toFixed(2)}`,
             actionButton: {
               label: "Claim All",
               onPress: () => navigation.navigate("Staking"),

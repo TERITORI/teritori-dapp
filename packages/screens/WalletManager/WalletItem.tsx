@@ -14,6 +14,7 @@ import { Menu } from "../../components/Menu";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { TotalRewards, totalsRewardsPrice } from "../../hooks/useRewards";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { accountExplorerLink } from "../../utils/teritori";
@@ -25,7 +26,7 @@ export interface WalletItemProps {
     id: number;
     title: string;
     address: string;
-    pendingReward: number;
+    pendingRewards: TotalRewards[];
     staked: number;
   };
 }
@@ -38,6 +39,9 @@ export const WalletItem: React.FC<WalletItemProps> = ({
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
   const navigation = useAppNavigation();
+
+  // Total rewards price with all denoms
+  const totalPrice = totalsRewardsPrice(item.pendingRewards);
 
   return (
     <View
@@ -162,7 +166,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {`$${item.pendingReward.toFixed(2)}`}
+            {`$${totalPrice.toFixed(2)}`}
           </BrandText>
         </View>
 

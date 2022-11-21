@@ -5,7 +5,6 @@ import { partition } from "lodash";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { ValidatorInfo } from "../screens/Stake/types";
 import { teritoriRestProvider, toriCurrency } from "../utils/teritori";
-import { useRewards } from "./useRewards";
 
 interface StakingParams {
   unbonding_time: string;
@@ -23,7 +22,6 @@ const initialData = {
 
 export const useValidators = () => {
   const { setToastError } = useFeedbacks();
-  const { rewardsPricesAndValidators } = useRewards();
 
   const { data, isFetching } = useQuery(
     [`teritoriValidators`],

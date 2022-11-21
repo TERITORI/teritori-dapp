@@ -9,6 +9,8 @@ import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryBut
 import { SpacerRow } from "../../../components/spacer";
 import { TableRow, TableRowHeading } from "../../../components/table";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
+import { Reward, useRewards } from "../../../hooks/useRewards";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { removeObjectKey } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
@@ -52,6 +54,8 @@ export const ValidatorsTable: React.FC<{
 }> = ({ validators, actions, style }) => {
   // variables
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
+  const wallet = useSelectedWallet();
+  const { rewards } = useRewards(wallet?.address);
 
   // returns
   return (
@@ -62,7 +66,13 @@ export const ValidatorsTable: React.FC<{
         style={style}
         keyExtractor={(item) => item.address}
         renderItem={({ item }) => (
-          <ValidatorRow validator={item} actions={actions} />
+          <ValidatorRow
+            validator={item}
+            actions={actions}
+            pendingRewards={rewards.filter(
+              (reward) => reward.validator === item.address
+            )}
+          />
         )}
       />
     </>
@@ -71,8 +81,9 @@ export const ValidatorsTable: React.FC<{
 
 const ValidatorRow: React.FC<{
   validator: ValidatorInfo;
+  pendingRewards: Reward[];
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
-}> = ({ validator, actions }) => {
+}> = ({ validator, pendingRewards, actions }) => {
   const imageURL = useKeybaseAvatarURL(validator.identity);
   return (
     <View
@@ -131,8 +142,8 @@ const ValidatorRow: React.FC<{
         {validator.commission}
       </BrandText>
 
-      {validator.hasClaimableRewards && (
-        <PrimaryButtonOutline size="XS" text="Claim reward" />
+      {pendingRewards.length && (
+        <PrimaryButtonOutline size="XS" text="Claim reward" disabled />
       )}
 
       {actions && (
