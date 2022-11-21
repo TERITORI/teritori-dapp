@@ -1,7 +1,16 @@
+import {
+  isDeliverTxFailure,
+  MsgWithdrawDelegatorRewardEncodeObject,
+} from "@cosmjs/stargate";
 import { useQuery } from "@tanstack/react-query";
 
+import { useFeedbacks } from "../context/FeedbacksProvider";
 import { getNetwork } from "../networks";
-import { CosmosRewardsResponse } from "../utils/teritori";
+import { getKeplrOfflineSigner } from "../utils/keplr";
+import {
+  CosmosRewardsResponse,
+  getTeritoriSigningStargateClient,
+} from "../utils/teritori";
 import {
   CoingeckoCoin,
   getCoingeckoPrice,
@@ -29,6 +38,38 @@ const initialData = { rewards: [], total: [] };
 export const useRewards = (walletAddress?: string) => {
   const selectedNetwork = useSelectedNetworkId();
   const networkId = selectedNetwork || process.env.TERITORI_NETWORK_ID || "";
+  const { setToastSuccess, setToastError } = useFeedbacks();
+
+  const claimReward = async (
+    validatorAddress: string,
+    callback?: () => void
+  ) => {
+    if (!walletAddress) return;
+    const signer = await getKeplrOfflineSigner();
+    const client = await getTeritoriSigningStargateClient(signer);
+    const msg: MsgWithdrawDelegatorRewardEncodeObject = {
+      typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
+      value: {
+        delegatorAddress: walletAddress,
+        validatorAddress,
+      },
+    };
+    const txResponse = await client.signAndBroadcast(
+      walletAddress,
+      [msg],
+      "auto"
+    );
+    if (isDeliverTxFailure(txResponse)) {
+      callback && callback();
+      console.error("tx failed", txResponse);
+      setToastError({
+        title: "Transaction failed",
+        message: txResponse.rawLog || "",
+      });
+      return;
+    }
+    setToastSuccess({ title: "Claim success", message: "" });
+  };
 
   // ---- Getting rewards from cosmos distribution
   const { data: networkRewards } = useQuery(
@@ -70,13 +111,15 @@ export const useRewards = (walletAddress?: string) => {
   networkRewards.rewards.forEach((rew) => {
     rew.reward.forEach((r) => {
       const price = getCoingeckoPrice(networkId, r.denom, r.amount, prices);
-      const finalReward: Reward = {
-        validator: rew.validator_address,
-        denom: r.denom,
-        amount: r.amount,
-        price: price || 0,
-      };
-      rewards.push(finalReward);
+      if (price) {
+        const finalReward: Reward = {
+          validator: rew.validator_address,
+          denom: r.denom,
+          amount: r.amount,
+          price: price || 0,
+        };
+        rewards.push(finalReward);
+      }
     });
   });
   // })
@@ -86,15 +129,17 @@ export const useRewards = (walletAddress?: string) => {
 
   networkRewards.total.forEach((t) => {
     const price = getCoingeckoPrice(networkId, t.denom, t.amount, prices);
-    const finalTotal: TotalRewards = {
-      denom: t.denom,
-      amount: t.amount,
-      price: price || 0,
-    };
-    totalsRewards.push(finalTotal);
+    if (price) {
+      const finalTotal: TotalRewards = {
+        denom: t.denom,
+        amount: t.amount,
+        price: price || 0,
+      };
+      totalsRewards.push(finalTotal);
+    }
   });
 
-  return { totalsRewards, rewards };
+  return { totalsRewards, rewards, claimReward };
 };
 
 // Returns the rewards from cosmos API. You can specify a validator address

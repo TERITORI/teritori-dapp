@@ -46,6 +46,7 @@ export const getCoingeckoPrice = (
   return (
     currency &&
     Decimal.fromAtomics(
+      // An amount with not enough decimals will be considered as zero
       Math.round(parseFloat(amount)).toString(),
       currency.decimals
     ).toFloatApproximation() * (prices[currency.coingeckoId]?.usd || 0)

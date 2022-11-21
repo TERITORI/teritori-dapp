@@ -9,7 +9,7 @@ import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryBut
 import { SpacerRow } from "../../../components/spacer";
 import { TableRow, TableRowHeading } from "../../../components/table";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
-import { Reward, useRewards } from "../../../hooks/useRewards";
+import { Reward, rewardsPrice, useRewards } from "../../../hooks/useRewards";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { removeObjectKey } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
@@ -33,6 +33,10 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
   },
   commission: {
     label: "Commission",
+    flex: 2,
+  },
+  claimable: {
+    label: "Claimable reward",
     flex: 4,
   },
   actions: {
@@ -54,8 +58,8 @@ export const ValidatorsTable: React.FC<{
 }> = ({ validators, actions, style }) => {
   // variables
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
-  const wallet = useSelectedWallet();
-  const { rewards } = useRewards(wallet?.address);
+  const selectedWallet = useSelectedWallet();
+  const { rewards } = useRewards(selectedWallet?.address);
 
   // returns
   return (
@@ -85,6 +89,12 @@ const ValidatorRow: React.FC<{
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
 }> = ({ validator, pendingRewards, actions }) => {
   const imageURL = useKeybaseAvatarURL(validator.identity);
+
+  const selectedWallet = useSelectedWallet();
+  const { claimReward } = useRewards(selectedWallet?.address);
+  // Rewards price with all denoms
+  const claimablePrice = rewardsPrice(pendingRewards);
+
   return (
     <View
       style={{
@@ -135,16 +145,37 @@ const ValidatorRow: React.FC<{
           fontSemibold13,
           {
             flex: TABLE_ROWS.commission.flex,
-            paddingRight: actions ? layout.padding_x1 : 0,
+            paddingRight: layout.padding_x1,
           },
         ]}
       >
         {validator.commission}
       </BrandText>
 
-      {pendingRewards.length && (
-        <PrimaryButtonOutline size="XS" text="Claim reward" disabled />
-      )}
+      <View
+        style={{
+          flex: TABLE_ROWS.claimable.flex,
+          paddingRight: actions ? layout.padding_x1 : 0,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <BrandText style={[fontSemibold13]}>
+          {`$${claimablePrice.toFixed(2)}`}
+        </BrandText>
+
+        {pendingRewards.length && (
+          <PrimaryButtonOutline
+            size="XS"
+            style={{ paddingLeft: layout.padding_x2 }}
+            text="Claim"
+            disabled={!selectedWallet?.address}
+            onPress={() => {
+              claimReward(validator.address);
+            }}
+          />
+        )}
+      </View>
 
       {actions && (
         <View

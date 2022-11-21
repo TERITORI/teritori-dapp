@@ -22,6 +22,7 @@ interface WalletDashboardHeaderProps {
   actionButton?: {
     label: string;
     onPress: () => void;
+    disabled?: boolean;
   };
 }
 
@@ -68,6 +69,7 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
         </BrandText>
         {!!actionButton && (
           <PrimaryButton
+            disabled={actionButton.disabled}
             size="XS"
             text={actionButton.label}
             onPress={actionButton.onPress}
@@ -96,7 +98,7 @@ export const WalletDashboardHeader: React.FC = () => {
   );
   const { totalsRewards } = useRewards(selectedWallet?.address);
   // Total rewards price with all denoms
-  const totalPrice = totalsRewardsPrice(totalsRewards);
+  const claimablePrice = totalsRewardsPrice(totalsRewards);
 
   return (
     <View
@@ -166,10 +168,11 @@ export const WalletDashboardHeader: React.FC = () => {
         <WalletDashboardHeaderCard
           {...{
             title: "Total Claimable Rewards",
-            data: `$${totalPrice?.toFixed(2)}`,
+            data: `$${claimablePrice.toFixed(2)}`,
             actionButton: {
               label: "Claim All",
               onPress: () => navigation.navigate("Staking"),
+              disabled: !claimablePrice,
             },
           }}
         />

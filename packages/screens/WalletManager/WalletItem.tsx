@@ -19,6 +19,7 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { accountExplorerLink } from "../../utils/teritori";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
+
 export interface WalletItemProps {
   index: number;
   itemsCount: number;
@@ -41,7 +42,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
   const navigation = useAppNavigation();
 
   // Total rewards price with all denoms
-  const totalPrice = totalsRewardsPrice(item.pendingRewards);
+  const claimablePrice = totalsRewardsPrice(item.pendingRewards);
 
   return (
     <View
@@ -166,22 +167,18 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {`$${totalPrice.toFixed(2)}`}
+            {`$${claimablePrice.toFixed(2)}`}
           </BrandText>
         </View>
 
         {width > 1150 && (
-          <>
-            <SecondaryButton
-              size="XS"
-              text="Claim reward"
-              onPress={() => navigation.navigate("Staking")}
-              style={{
-                backgroundColor: neutral33,
-                marginRight: 16,
-              }}
-            />
-          </>
+          <SecondaryButton
+            size="XS"
+            text="Claim reward"
+            disabled={!claimablePrice}
+            onPress={() => navigation.navigate("Staking")}
+            style={{ marginRight: 16 }}
+          />
         )}
 
         <Menu
@@ -191,7 +188,8 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               ? [
                   {
                     label: "Claim reward",
-                    onPress: () => {},
+                    onPress: () => navigation.navigate("Staking"),
+                    disabled: !claimablePrice,
                   },
                   {
                     label: "Stake",

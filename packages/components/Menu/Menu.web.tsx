@@ -4,18 +4,10 @@ import { View, TouchableOpacity } from "react-native";
 import { neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import { PrimaryBox } from "../boxes/PrimaryBox";
+import { MenuProps } from "./Menu";
 
 const DEFAULT_WIDTH = 164;
 
-export interface MenuProps {
-  component: React.ReactNode;
-  items: {
-    label: string;
-    onPress: () => void;
-  }[];
-
-  width?: number;
-}
 export const Menu: React.FC<MenuProps> = ({
   items,
   component,
@@ -81,9 +73,12 @@ export const Menu: React.FC<MenuProps> = ({
                 ]}
               >
                 <BrandText
-                  style={{
-                    fontSize: 13,
-                  }}
+                  style={[
+                    {
+                      fontSize: 13,
+                    },
+                    item.disabled && { opacity: 0.5 },
+                  ]}
                 >
                   {item.label}
                 </BrandText>
