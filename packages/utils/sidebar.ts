@@ -4,6 +4,7 @@ import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
 import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
+import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
 import marketplaceSVG from "../../assets/icons/marketplace.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
@@ -38,7 +39,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     nested: {
       launchpad: {
         title: "Launchpad",
-        icon: launchpadSVG,
+        icon: launchpadLaunchpadSVG,
         route: "Launchpad",
       },
       apply: {
