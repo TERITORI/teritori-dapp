@@ -31,11 +31,4 @@ type IconType = {
   };
 };
 
-export type RipperType = {
-  id: number;
-  stamina: number;
-  protection: number;
-  luck: number;
-};
-
 export type GameBgCardItem = BlankType | PointsType | ImageType | IconType;

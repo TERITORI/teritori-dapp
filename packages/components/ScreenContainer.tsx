@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -8,24 +8,17 @@ import {
   Platform,
   ViewStyle,
   StyleProp,
-  TouchableOpacity,
 } from "react-native";
 
-import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
-import { useAreThereWallets } from "../hooks/useAreThereWallets";
 import { useMaxResolution } from "../hooks/useMaxResolution";
 import {
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
-  walletSelectorWidth,
 } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
+import { ConnectWalletButton } from "./ConnectWalletButton";
 import { Header } from "./Header";
 import { NetworkSelector } from "./NetworkSelector";
-import { SVG } from "./SVG";
-import { WalletSelector } from "./WalletSelector";
-import { ConnectWalletModal } from "./connectWallet/ConnectWalletModal";
 import { Footer } from "./footers/Footer";
 import { Sidebar } from "./navigation/Sidebar";
 
@@ -58,14 +51,8 @@ export const ScreenContainer: React.FC<{
   const marginStyle = hasMargin && {
     marginHorizontal: screenContainerContentMarginHorizontal,
   };
-  const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
-  const areThereWallets = useAreThereWallets();
   const { width: maxWidth } = useMaxResolution();
   const width = fullWidth ? "100%" : maxWidth;
-
-  // functions
-  const toggleConnectWallet = () =>
-    setIsConnectWalletVisible(!isConnectWalletVisible);
 
   // returns
   return (
@@ -133,20 +120,8 @@ export const ScreenContainer: React.FC<{
             }}
           >
             <NetworkSelector style={{ marginRight: 12 }} />
-
-            {areThereWallets ? (
-              <WalletSelector style={{ marginRight: headerMarginHorizontal }} />
-            ) : (
-              <ConnectWalletButton
-                style={{ marginRight: headerMarginHorizontal }}
-                onPress={toggleConnectWallet}
-              />
-            )}
+            <ConnectWalletButton />
           </View>
-          <ConnectWalletModal
-            visible={isConnectWalletVisible}
-            onClose={toggleConnectWallet}
-          />
         </View>
       </View>
     </SafeAreaView>
@@ -164,42 +139,3 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
-
-// Displayed when no wallet connected. Press to connect wallet
-const ConnectWalletButton: React.FC<{
-  style?: StyleProp<ViewStyle>;
-  onPress: () => void;
-}> = ({ style, onPress }) => {
-  const height = 40;
-
-  return (
-    <TouchableOpacity style={style} onPress={onPress}>
-      <SVG
-        width={walletSelectorWidth}
-        height={height}
-        source={secondaryCardSmSVG}
-        style={{ position: "absolute" }}
-      />
-
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          height,
-          minHeight: height,
-          width: walletSelectorWidth,
-          minWidth: walletSelectorWidth,
-        }}
-      >
-        <BrandText
-          style={{
-            fontSize: 14,
-          }}
-        >
-          Connect wallet
-        </BrandText>
-      </View>
-    </TouchableOpacity>
-  );
-};

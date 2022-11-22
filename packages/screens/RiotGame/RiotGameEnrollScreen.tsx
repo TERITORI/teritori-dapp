@@ -12,6 +12,7 @@ import defaultSendToFightPNG from "../../../assets/default-images/default-video-
 import { BrandText } from "../../components/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../components/spacer";
+import useRippers from "../../hooks/riotGame/useRippers";
 import { neutral00, neutralA3 } from "../../utils/style/colors";
 import {
   fontMedium48,
@@ -20,10 +21,10 @@ import {
   fontMedium14,
 } from "../../utils/style/fonts";
 import EnrollStat from "./component/EnrollStat";
+import { RiotGameHeader } from "./component/RiotGameHeader";
+import RipperSelectorModal from "./component/RipperSelectorModal";
 import RipperSlot from "./component/RipperSlot";
 import SimpleButton from "./component/SimpleButton";
-import RipperSelectorModal from "./component/RipperSelectorModal";
-import useRippers from "../../hooks/riotGame/useRippers";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
@@ -32,95 +33,107 @@ export const RiotGameEnrollScreen = () => {
   const { myRippers } = useRippers();
   const [selectedSlot, setSelectedSlot] = useState<number>();
 
-  const [selectedRippers, setSelectedRippers] = useState<{ [slotId: string]: NSRiotGame.Ripper }>({});
+  const [selectedRippers, setSelectedRippers] = useState<{
+    [slotId: string]: NSRiotGame.Ripper;
+  }>({});
 
   const availableRippers = useMemo(() => {
-    const selectedIds = Object.values(selectedRippers).map(r => r.id);
-    return myRippers.filter(r => !selectedIds.includes(r.id));
-  }, [myRippers, selectedRippers])
+    const selectedIds = Object.values(selectedRippers).map((r) => r.id);
+    return myRippers.filter((r) => !selectedIds.includes(r.id));
+  }, [myRippers, selectedRippers]);
 
   const showRipperSelector = (slotId: number) => {
     setSelectedSlot(slotId);
-  }
+  };
 
   const hideRipperSelector = () => {
     setSelectedSlot(undefined);
-  }
+  };
 
   const onSelectRipper = (slotId: number, ripper: NSRiotGame.Ripper) => {
     setSelectedSlot(undefined);
     setSelectedRippers({ ...selectedRippers, [slotId]: ripper });
-  }
+  };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <RiotGameHeader />
+
       <View style={styles.stats}>
         <EnrollStat title="Number of Fighters" content="833 Rippers" />
         <EnrollStat title="Prize Pool" content="1337 TORI" />
         <EnrollStat title="Rank" content="42/1337" />
       </View>
 
-      <View>
-        <BrandText style={styles.pageTitle}>Send to fight</BrandText>
-      </View>
-
-      <View
-        style={[
-          styles.enrollContainer,
-          { flexDirection: width > 992 ? "row" : "column" },
-        ]}
-      >
-        <View style={styles.col}>
-          <BrandText style={styles.sectionTitle}>
-            Enroll your Ripper(s)
-          </BrandText>
-
-          <FlatList
-            data={RIPPER_SLOTS}
-            numColumns={3}
-            renderItem={({ item: slotId }) => (
-              <View style={styles.ripperSlot}>
-                <RipperSlot
-                  key={slotId}
-                  isLeader={slotId === 0}
-                  ripper={selectedRippers[slotId]}
-                  onPress={() => showRipperSelector(slotId)}
-                />
-              </View>
-            )}
-          />
+      <ScrollView>
+        <View>
+          <BrandText style={styles.pageTitle}>Send to fight</BrandText>
         </View>
 
-        <View style={styles.col}>
-          <BrandText style={styles.sectionTitle}>Staking duration</BrandText>
-
-          <TertiaryBox
-            mainContainerStyle={{
-              padding: 40,
-              alignItems: "flex-start",
-            }}
-            style={styles.countdownBlock}
-            height={148}
-          >
-            <BrandText style={fontSemibold28}>
-              23 hours 21 minutes 23 seconds
+        <View
+          style={[
+            styles.enrollContainer,
+            { flexDirection: width > 992 ? "row" : "column" },
+          ]}
+        >
+          <View style={styles.col}>
+            <BrandText style={styles.sectionTitle}>
+              Enroll your Ripper(s)
             </BrandText>
 
-            <SpacerColumn size={1} />
+            <FlatList
+              data={RIPPER_SLOTS}
+              numColumns={3}
+              renderItem={({ item: slotId }) => (
+                <View style={styles.ripperSlot}>
+                  <RipperSlot
+                    key={slotId}
+                    isLeader={slotId === 0}
+                    ripper={selectedRippers[slotId]}
+                    onPress={() => showRipperSelector(slotId)}
+                  />
+                </View>
+              )}
+            />
+          </View>
 
-            <BrandText style={styles.subText}>
-              Stamina x 0.2 for solo fightsLeader's
-            </BrandText>
-            <BrandText style={styles.subText}>
-              Leader's Stamina x 0.2 + Bonus for squad fights
-            </BrandText>
-          </TertiaryBox>
+          <View style={styles.col}>
+            <BrandText style={styles.sectionTitle}>Staking duration</BrandText>
 
-          <Image source={defaultSendToFightPNG} style={styles.placeholderVideo} />
+            <TertiaryBox
+              mainContainerStyle={{
+                padding: 40,
+                alignItems: "flex-start",
+              }}
+              style={styles.countdownBlock}
+              height={148}
+            >
+              <BrandText style={fontSemibold28}>
+                23 hours 21 minutes 23 seconds
+              </BrandText>
+
+              <SpacerColumn size={1} />
+
+              <BrandText style={styles.subText}>
+                Stamina x 0.2 for solo fightsLeader's
+              </BrandText>
+              <BrandText style={styles.subText}>
+                Leader's Stamina x 0.2 + Bonus for squad fights
+              </BrandText>
+            </TertiaryBox>
+
+            <Image
+              source={defaultSendToFightPNG}
+              style={styles.placeholderVideo}
+            />
+          </View>
         </View>
-      </View>
 
-      <SimpleButton style={styles.submitBtn} title="Join the Fight" />
+        <SimpleButton
+          containerStyle={styles.submitBtn}
+          title="Join the Fight"
+        />
+      </ScrollView>
 
       <RipperSelectorModal
         visible={selectedSlot !== undefined}
@@ -129,8 +142,7 @@ export const RiotGameEnrollScreen = () => {
         availableRippers={availableRippers}
         onSelectRipper={onSelectRipper}
       />
-
-    </ScrollView>
+    </View>
   );
 };
 
@@ -177,6 +189,6 @@ const styles = StyleSheet.create({
     height: 240,
   },
   submitBtn: {
-    marginBottom: 40
-  }
+    marginVertical: 40,
+  },
 });

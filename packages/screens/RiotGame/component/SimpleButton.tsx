@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, ViewProps, ViewStyle } from "react-native";
+import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { primaryTextColor, yellowDefault } from "../../../utils/style/colors";
@@ -8,19 +8,19 @@ import { fontSemibold14 } from "../../../utils/style/fonts";
 interface SimpleButtonProps {
   title: string;
   size?: "medium" | "small";
-  style?: ViewStyle,
   color?: string;
   bgColor?: string;
   onPress?(): void;
+  containerStyle?: ViewStyle;
 }
 
 const SimpleButton: React.FC<SimpleButtonProps> = ({
   title,
   size = "medium",
-  style,
   color = primaryTextColor,
   bgColor = yellowDefault,
   onPress,
+  containerStyle,
 }) => {
   let padH: number;
   let padV: number;
@@ -37,10 +37,9 @@ const SimpleButton: React.FC<SimpleButtonProps> = ({
   }
 
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity style={containerStyle} onPress={onPress}>
       <BrandText
         style={[
-          style,
           styles.btnStyle,
           {
             color,
@@ -64,4 +63,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SimpleButton
+export default SimpleButton;

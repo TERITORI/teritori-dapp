@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
 
 import { gameBgData } from "../../utils/game";
-import { AppNavigationProp, useAppNavigation } from "../../utils/navigation";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral00 } from "../../utils/style/colors";
 import { headerHeight } from "../../utils/style/layout";
 import { CenterSection } from "./component/CenterSection";
@@ -11,7 +11,7 @@ import { GameBgOverlay } from "./component/GameBgOverlay";
 import { RiotGameHeader } from "./component/RiotGameHeader";
 
 export const RiotGameScreen = () => {
-  const navigation: AppNavigationProp = useAppNavigation();
+  const navigation = useAppNavigation();
 
   // variables
   const { width, height } = useWindowDimensions();
@@ -23,7 +23,7 @@ export const RiotGameScreen = () => {
     [width, height]
   );
 
-  const gotoEnrollScreen = () => {
+  const gotoEnroll = () => {
     navigation.navigate("RiotGameEnroll");
   };
 
@@ -47,7 +47,7 @@ export const RiotGameScreen = () => {
           )}
         />
         <CenterSection
-          onPress={gotoEnrollScreen}
+          onPress={gotoEnroll}
           cardWidth={cardSize.width}
           cardHeight={cardSize.height}
         />
