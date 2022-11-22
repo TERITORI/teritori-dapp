@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, Image } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -13,7 +14,6 @@ import {
   withAlpha,
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface RipperSlotProps {
   isLeader?: boolean;
@@ -21,7 +21,11 @@ interface RipperSlotProps {
   onPress?(): void;
 }
 
-const RipperSlot: React.FC<RipperSlotProps> = ({ onPress, ripper, isLeader }) => {
+const RipperSlot: React.FC<RipperSlotProps> = ({
+  onPress,
+  ripper,
+  isLeader,
+}) => {
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
       <TertiaryBox
@@ -34,16 +38,17 @@ const RipperSlot: React.FC<RipperSlotProps> = ({ onPress, ripper, isLeader }) =>
           borderWidth: isLeader ? 1.2 : 1,
         }}
       >
-        {ripper
-          ? <Image style={styles.ripperImage} source={ripper.image} />
-          : <SVG
+        {ripper ? (
+          <Image style={styles.ripperImage} source={ripper.image} />
+        ) : (
+          <SVG
             source={addSVG}
             width={20}
             height={20}
             fontSize={4}
             color={isLeader ? yellowDefault : secondaryColor}
           />
-        }
+        )}
         {isLeader && (
           <BrandText style={styles.leaderTitle}>Squad Leader</BrandText>
         )}
@@ -66,7 +71,7 @@ const styles = StyleSheet.create({
   ripperImage: {
     width: 120,
     height: 120,
-  }
+  },
 });
 
 export default RipperSlot;

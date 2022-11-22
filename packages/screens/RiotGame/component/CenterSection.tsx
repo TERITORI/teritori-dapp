@@ -84,7 +84,9 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
               width={cardWidth * 2 - layout.padding_x2_5 * 2}
               height={cardHeight * 0.37}
             />
-            <BrandText onPress={onPress} style={styles.startGameText}>Start the Game</BrandText>
+            <BrandText onPress={onPress} style={styles.startGameText}>
+              Start the Game
+            </BrandText>
           </Animated.View>
         </View>
         <SpacerColumn size={2.5} />
