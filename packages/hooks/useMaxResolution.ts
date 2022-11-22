@@ -10,14 +10,14 @@ import {
   smallSidebarWidth,
 } from "../utils/style/layout";
 
-export const useMaxResolution = () => {
+export const useMaxResolution = ({ noMargin = false } = {}) => {
   const { width: windowWidth, height } = useWindowDimensions();
   const { isSidebarExpanded } = useSidebar();
   const width = useMemo(
     () =>
       windowWidth -
       (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth) -
-      screenContainerContentMarginHorizontal * 2,
+      (noMargin ? 0 : screenContainerContentMarginHorizontal * 2),
     [windowWidth, isSidebarExpanded]
   );
 

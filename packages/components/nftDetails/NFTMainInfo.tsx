@@ -1,11 +1,13 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Target } from "@nandorojo/anchor";
-import React, { useState } from "react";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
+import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
   fontMedium14,
@@ -54,6 +56,7 @@ export const NFTMainInfo: React.FC<{
   cancelListing: () => Promise<ExecuteResult | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const { openTransactionModals } = useTransactionModals();
+  const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
 
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("about");
@@ -127,6 +130,10 @@ export const NFTMainInfo: React.FC<{
     }
   };
 
+  useEffect(() => {
+    if (params.openBuy) openTransactionModals();
+  }, []);
+
   return (
     <>
       <View
@@ -159,6 +166,7 @@ export const NFTMainInfo: React.FC<{
           <CollectionInfoInline
             imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
             name={nftInfo?.collectionName}
+            id={`tori-${nftInfo?.mintAddress}`}
           />
           {showMarketplace ? (
             <>

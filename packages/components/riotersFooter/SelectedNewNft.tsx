@@ -89,6 +89,7 @@ const SelectNewNft: React.FC<{
           <CollectionInfoInline
             imageSource={{ uri: currentCollection.imageUri }}
             name={currentCollection.collectionName}
+            id={currentCollection.id}
           />
           <View style={styles.separator} />
         </View>

@@ -9,6 +9,7 @@ import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import tnsPNG from "../../../assets/logos/teritori-name-service.png";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { SVG } from "../SVG";
@@ -23,6 +24,50 @@ export const NewsCarouselSection: React.FC = () => {
 
   const fakeNews: News[] = [
     {
+      title: "JOIN THE YIELDRILLAS PARK",
+      subtitle: "Yield finds a way",
+      text:
+        "The first non-GATA series from GATA DAO, Yield gorilla is the first collection of the yield series. \n" +
+        "\n" +
+        "10K fun primates are coming your way to give you back the rewards periodically.\n" +
+        "\n" +
+        "Find the rare one.",
+      image:
+        "https://bafybeihiumjqixnq5uzy3xaofryt76zf7n2vlbl7rrm27h6mc6b6qqpdmi.ipfs.nftstorage.link/collection-image.png",
+      button1Label: "Join the Mint",
+      button2Label: "Discover",
+      button1Action: () => {
+        navigation.navigate("MintCollection", {
+          id: "tori-tori1999u8suptza3rtxwk7lspve02m406xe7l622erg3np3aq05gawxsrh9g0p",
+        });
+      },
+      button2Action: () => {
+        Linking.openURL(
+          "https://medium.com/gatadao/yield-gorilla-minting-rarities-67f03bd395b2"
+        );
+      },
+    },
+    {
+      title: "ARE YOU READY FOR THE SUCCUBI?",
+      subtitle:
+        "An original collection from the Sunnyside Reapers featuring stunning new art: exclusively on Teritori",
+      text:
+        "These 666 succubi are here to bring a world of pleasure to Teritori. \n" +
+        "\n" +
+        "The price they demand? It’s only your soul. You’ll give it to them, right?",
+      image: ipfsURLToHTTPURL(
+        "ipfs://bafybeig2gr2ykukmglkxnvdsu7nwumezrwfr53o45t2kpvnhfohi7dpimq"
+      ),
+      button1Label: "Mint Nov 18",
+      button2Label: "Discover",
+      button1Action: () => {},
+      button2Action: () => {
+        Linking.openURL(
+          "https://medium.com/@SunnysideReapers/sweet-succubi-launch-faq-5861e87f4dd2"
+        );
+      },
+    },
+    {
       title: "JOIN THE R!OT",
       subtitle: "Discover the first NFT project on Teritori",
       text:
@@ -30,15 +75,34 @@ export const NewsCarouselSection: React.FC = () => {
         "\n" +
         "In addition to this, this collection is closely linked to the Teritori Hub and grants its holders the possibility to access Teritori features in early access.",
       image: defaultGuardianPNG,
-      button1Label: "Join the Mint",
+      button1Label: "Marketplace",
       button2Label: "Discover",
       button1Action: () => {
-        navigation.navigate("MintCollection", {
-          id: `tori-${process.env.THE_RIOT_COLLECTION_ADDRESS}`,
+        navigation.navigate("Collection", {
+          id: "tori-tori1mf6ptkssddfmxvhdx0ech0k03ktp6kf9yk59renau2gvht3nq2gqg87tkw",
         });
       },
       button2Action: () => {
         Linking.openURL("https://theriot.io/");
+      },
+    },
+    {
+      title: "NEW PLANET, NEW RULES, NEW WAYS",
+      subtitle: "Introducing the ToriPunks",
+      text:
+        "The ToriPunks are invading Teritori and the least we can say is that they did not come empty-handed.\n" +
+        "\n" +
+        "If you like to play games & earn rewards, you’re at the right place. Mint is coming soon on the launchpad.",
+      image: defaultToripunkPNG,
+      button1Label: "Marketplace",
+      button2Label: "Discover",
+      button1Action: () => {
+        navigation.navigate("Collection", {
+          id: "tori-tori1plr28ztj64a47a32lw7tdae8vluzm2lm7nqk364r4ws50rgwyzgsapzezt",
+        });
+      },
+      button2Action: () => {
+        Linking.openURL("https://twitter.com/ToriPunks");
       },
     },
     {
@@ -52,25 +116,6 @@ export const NewsCarouselSection: React.FC = () => {
       button1Label: "Teritori Name Service",
       button1Action: () => {
         navigation.navigate("TNSHome");
-      },
-    },
-    {
-      title: "NEW PLANET, NEW RULES, NEW WAYS",
-      subtitle: "Introducing the ToriPunks",
-      text:
-        "The ToriPunks are invading Teritori and the least we can say is that they did not come empty-handed.\n" +
-        "\n" +
-        "If you like to play games & earn rewards, you’re at the right place. Mint is coming soon on the launchpad.",
-      image: defaultToripunkPNG,
-      button1Label: "Join the Mint",
-      button2Label: "Discover",
-      button1Action: () => {
-        navigation.navigate("MintCollection", {
-          id: `tori-${process.env.TORIPUNKS_COLLECTION_ADDRESS}`,
-        });
-      },
-      button2Action: () => {
-        Linking.openURL("https://twitter.com/ToriPunks");
       },
     },
     {
