@@ -31,8 +31,8 @@ func main() {
 	// handle args
 	fs := flag.NewFlagSet("teritori-indexer", flag.ContinueOnError)
 	var (
-		blocksBatchSize             = fs.Int64("blocks-batch-size", 100000, "maximum number of blocks to query from tendermint at once")
-		txsBatchSize                = fs.Int("txs-batch-size", 1000, "number of txs per query page")
+		blocksBatchSize             = fs.Int64("blocks-batch-size", 10000, "maximum number of blocks to query from tendermint at once")
+		txsBatchSize                = fs.Int("txs-batch-size", 10000, "number of txs per query page")
 		pollDelay                   = fs.Duration("poll-delay", 2*time.Second, "delay between queries")
 		tnsContractAddress          = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
 		vaultContractAddress        = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")

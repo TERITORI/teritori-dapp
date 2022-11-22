@@ -16,7 +16,7 @@ type NFT struct {
 	PriceDenom  string
 
 	// "belongs to" relations
-	CollectionID string
+	CollectionID string `gorm:"index"`
 	Collection   *Collection
 
 	// "has one" relations
