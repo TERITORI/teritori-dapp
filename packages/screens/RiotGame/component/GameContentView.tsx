@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, View, ViewStyle } from "react-native";
+import {
+  ImageBackground,
+  ImageSourcePropType,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { neutral00 } from "../../../utils/style/colors";
@@ -8,18 +14,37 @@ import { RiotGameHeader } from "./RiotGameHeader";
 
 type GameContentViewProps = {
   containerStyle?: ViewStyle;
+  bgImage?: ImageSourcePropType;
 };
 
-const GameContentView: React.FC<GameContentViewProps> = (props) => {
+const GameContentView: React.FC<GameContentViewProps> = ({
+  containerStyle,
+  bgImage,
+  ...props
+}) => {
+  const content = (
+    <ScrollView>
+      <EnrollStatsSection />
+
+      <>{props.children}</>
+    </ScrollView>
+  );
+
   return (
     <View style={styles.container}>
       <RiotGameHeader />
 
-      <ScrollView>
-        <EnrollStatsSection />
-
-        <>{props.children}</>
-      </ScrollView>
+      {bgImage ? (
+        <ImageBackground
+          style={{ flex: 1 }}
+          source={bgImage}
+          resizeMode="cover"
+        >
+          {content}
+        </ImageBackground>
+      ) : (
+        content
+      )}
     </View>
   );
 };

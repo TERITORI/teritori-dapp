@@ -7,7 +7,6 @@ export type RootStackParamList = {
   MyCollection: undefined;
   Activity: undefined;
   Guardians: undefined;
-  RiotGame: undefined;
   WalletManager: undefined;
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
@@ -26,6 +25,7 @@ export type RootStackParamList = {
 
   RiotGame: undefined;
   RiotGameEnroll: undefined;
+  RiotGameOngoingFight: undefined,
 
   Staking: undefined;
 
@@ -52,13 +52,13 @@ const navConfig: {
     WalletManager: "wallet-manager",
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
-    RiotGame: "riot-game",
     Governance: "governance",
     UserPublicProfile: "user/:id",
     RiotersFooter: "rioters-footer",
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",
+    RiotGameOngoingFight: "riot-game/ongoing-fight",
 
     // ==== Launchpad
     Launchpad: "launchpad",

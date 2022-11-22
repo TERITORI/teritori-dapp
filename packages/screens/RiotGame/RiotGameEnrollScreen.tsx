@@ -2,18 +2,18 @@ import React, { useState, useMemo } from "react";
 import {
   FlatList,
   Image,
-  ScrollView,
   StyleSheet,
   useWindowDimensions,
   View,
 } from "react-native";
 
-import defaultSendToFightPNG from "../../../assets/default-images/default-video-send-to-fight.png";
+import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import { BrandText } from "../../components/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../components/spacer";
 import useRippers from "../../hooks/riotGame/useRippers";
-import { neutral00, neutralA3 } from "../../utils/style/colors";
+import { useAppNavigation } from "../../utils/navigation";
+import { neutralA3 } from "../../utils/style/colors";
 import {
   fontMedium48,
   fontMedium32,
@@ -21,7 +21,6 @@ import {
   fontMedium14,
 } from "../../utils/style/fonts";
 import GameContentView from "./component/GameContentView";
-import { RiotGameHeader } from "./component/RiotGameHeader";
 import RipperSelectorModal from "./component/RipperSelectorModal";
 import RipperSlot from "./component/RipperSlot";
 import SimpleButton from "./component/SimpleButton";
@@ -29,6 +28,7 @@ import SimpleButton from "./component/SimpleButton";
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
 export const RiotGameEnrollScreen = () => {
+  const navigation = useAppNavigation();
   const { width } = useWindowDimensions();
   const { myRippers } = useRippers();
   const [selectedSlot, setSelectedSlot] = useState<number>();
@@ -53,6 +53,10 @@ export const RiotGameEnrollScreen = () => {
   const onSelectRipper = (slotId: number, ripper: NSRiotGame.Ripper) => {
     setSelectedSlot(undefined);
     setSelectedRippers({ ...selectedRippers, [slotId]: ripper });
+  };
+
+  const gotoOngoingFight = () => {
+    navigation.navigate("RiotGameOngoingFight");
   };
 
   return (
@@ -120,7 +124,11 @@ export const RiotGameEnrollScreen = () => {
         </View>
       </View>
 
-      <SimpleButton containerStyle={styles.submitBtn} title="Join the Fight" />
+      <SimpleButton
+        onPress={gotoOngoingFight}
+        containerStyle={styles.submitBtn}
+        title="Join the Fight"
+      />
 
       <RipperSelectorModal
         visible={selectedSlot !== undefined}

@@ -25,6 +25,13 @@ export const fontBold12: StyleProp<TextStyle> = {
   fontFamily: "Exo_700Bold",
   fontWeight: "700",
 };
+export const fontBold9: StyleProp<TextStyle> = {
+  fontSize: 9,
+  letterSpacing: 9 * 0.08,
+  lineHeight: 12,
+  fontFamily: "Exo_700Bold",
+  fontWeight: "700",
+};
 
 export const fontSemibold28: StyleProp<TextStyle> = {
   fontSize: 28,
@@ -93,6 +100,13 @@ export const fontMedium32: StyleProp<TextStyle> = {
   fontSize: 32,
   letterSpacing: -(32 * 0.02),
   lineHeight: 44,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "500",
+};
+export const fontMedium24: StyleProp<TextStyle> = {
+  fontSize: 24,
+  letterSpacing: -(24 * 0.02),
+  lineHeight: 34,
   fontFamily: "Exo_500Medium",
   fontWeight: "500",
 };

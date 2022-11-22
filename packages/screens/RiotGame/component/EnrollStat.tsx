@@ -16,6 +16,7 @@ const EnrollStat: React.FC<EnrollStatProps> = ({ title, content }) => {
     <TertiaryBox
       width={160}
       style={styles.container}
+      noBrokenCorners
       mainContainerStyle={{
         padding: 12,
         alignItems: "flex-start",

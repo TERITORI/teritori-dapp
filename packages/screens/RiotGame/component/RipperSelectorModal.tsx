@@ -127,6 +127,7 @@ const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   }}
                 />
               </View>
+
               <View style={styles.ripperImageContainer}>
                 <SVG source={dashedBorderSVG} />
 
