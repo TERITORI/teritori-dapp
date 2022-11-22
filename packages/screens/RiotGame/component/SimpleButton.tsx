@@ -16,7 +16,7 @@ interface SimpleButtonProps {
   containerStyle?: ViewStyle;
 }
 
-const SimpleButton: React.FC<SimpleButtonProps> = ({
+export const SimpleButton: React.FC<SimpleButtonProps> = ({
   title,
   size = "medium",
   color = primaryTextColor,
@@ -66,4 +66,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SimpleButton;

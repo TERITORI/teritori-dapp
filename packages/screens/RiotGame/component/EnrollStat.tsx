@@ -11,7 +11,7 @@ interface EnrollStatProps {
   content: string;
 }
 
-const EnrollStat: React.FC<EnrollStatProps> = ({ title, content }) => {
+export const EnrollStat: React.FC<EnrollStatProps> = ({ title, content }) => {
   return (
     <TertiaryBox
       width={160}
@@ -42,5 +42,3 @@ const styles = StyleSheet.create({
     ...(fontSemibold20 as object),
   },
 });
-
-export default EnrollStat;

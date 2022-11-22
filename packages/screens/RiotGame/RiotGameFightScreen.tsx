@@ -34,8 +34,8 @@ import {
   fontMedium14,
 } from "../../utils/style/fonts";
 import { FightProgressBar } from "./component/FightProgressBar";
-import GameContentView from "./component/GameContentView";
-import RipperAvatar from "./component/RipperAvatar";
+import { GameContentView } from "./component/GameContentView";
+import { RipperAvatar } from "./component/RipperAvatar";
 
 const ENEMY_AVATAR_SIZE = 150;
 const RIPPER_AVATAR_SIZE = 60;

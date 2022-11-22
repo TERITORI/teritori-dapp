@@ -21,7 +21,7 @@ interface RipperSlotProps {
   onPress?(): void;
 }
 
-const RipperSlot: React.FC<RipperSlotProps> = ({
+export const RipperSlot: React.FC<RipperSlotProps> = ({
   onPress,
   ripper,
   isLeader,
@@ -73,5 +73,3 @@ const styles = StyleSheet.create({
     height: 120,
   },
 });
-
-export default RipperSlot;

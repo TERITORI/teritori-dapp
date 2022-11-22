@@ -1,11 +1,5 @@
 import React, { useState, useMemo } from "react";
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { FlatList, Image, StyleSheet, View } from "react-native";
 
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import { BrandText } from "../../components/BrandText";
@@ -22,10 +16,10 @@ import {
   fontSemibold28,
   fontMedium14,
 } from "../../utils/style/fonts";
-import GameContentView from "./component/GameContentView";
-import RipperSelectorModal from "./component/RipperSelectorModal";
-import RipperSlot from "./component/RipperSlot";
-import SimpleButton from "./component/SimpleButton";
+import { GameContentView } from "./component/GameContentView";
+import { RipperSelectorModal } from "./component/RipperSelectorModal";
+import { RipperSlot } from "./component/RipperSlot";
+import { SimpleButton } from "./component/SimpleButton";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 

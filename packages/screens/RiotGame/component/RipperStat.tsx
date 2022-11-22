@@ -15,7 +15,7 @@ type RipperStatProps = {
   containerStyle?: ViewStyle;
 };
 
-const RipperStat: React.FC<RipperStatProps> = ({
+export const RipperStat: React.FC<RipperStatProps> = ({
   name,
   value,
   containerStyle,
@@ -67,5 +67,3 @@ const styles = StyleSheet.create({
     ...(fontMedium14 as object),
   },
 });
-
-export default RipperStat;

@@ -16,9 +16,9 @@ import {
   fontSemibold11,
 } from "../../../utils/style/fonts";
 import { headerHeight } from "../../../utils/style/layout";
-import RipperAvatar from "./RipperAvatar";
-import RipperStat from "./RipperStat";
-import SimpleButton from "./SimpleButton";
+import { RipperAvatar } from "./RipperAvatar";
+import { RipperStat } from "./RipperStat";
+import { SimpleButton } from "./SimpleButton";
 
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
@@ -35,7 +35,7 @@ const THUMB_HEIGHT = 100;
 
 const RIPPER_IMAGE_SIZE = 580;
 
-const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
+export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   slotId,
   onClose,
   onSelectRipper,
@@ -248,5 +248,3 @@ const styles = StyleSheet.create({
     marginTop: 100,
   },
 });
-
-export default RipperSelectorModal;

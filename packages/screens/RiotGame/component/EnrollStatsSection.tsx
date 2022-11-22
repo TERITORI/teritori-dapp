@@ -1,12 +1,12 @@
 import { StyleSheet, View, ViewStyle } from "react-native";
 
-import EnrollStat from "./EnrollStat";
+import { EnrollStat } from "./EnrollStat";
 
 type EnrollStatsSectionProps = {
   containerStyle?: ViewStyle;
 };
 
-const EnrollStatsSection: React.FC<EnrollStatsSectionProps> = ({
+export const EnrollStatsSection: React.FC<EnrollStatsSectionProps> = ({
   containerStyle,
 }) => {
   return (
@@ -17,8 +17,6 @@ const EnrollStatsSection: React.FC<EnrollStatsSectionProps> = ({
     </View>
   );
 };
-
-export default EnrollStatsSection;
 
 const styles = StyleSheet.create({
   container: {

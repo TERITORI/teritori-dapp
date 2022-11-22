@@ -9,7 +9,7 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 
 import { neutral00 } from "../../../utils/style/colors";
-import EnrollStatsSection from "./EnrollStatsSection";
+import { EnrollStatsSection } from "./EnrollStatsSection";
 import { RiotGameHeader } from "./RiotGameHeader";
 
 type GameContentViewProps = {
@@ -17,7 +17,7 @@ type GameContentViewProps = {
   bgImage?: ImageSourcePropType;
 };
 
-const GameContentView: React.FC<GameContentViewProps> = ({
+export const GameContentView: React.FC<GameContentViewProps> = ({
   containerStyle,
   bgImage,
   ...props
@@ -55,5 +55,3 @@ const styles = StyleSheet.create({
     backgroundColor: neutral00,
   },
 });
-
-export default GameContentView;

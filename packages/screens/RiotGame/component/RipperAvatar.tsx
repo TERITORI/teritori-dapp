@@ -7,7 +7,7 @@ type RipperAvatarProps = {
   rounded?: boolean;
 };
 
-const RipperAvatar: React.FC<RipperAvatarProps> = ({
+export const RipperAvatar: React.FC<RipperAvatarProps> = ({
   size,
   source,
   rounded = false,
@@ -29,5 +29,3 @@ const RipperAvatar: React.FC<RipperAvatarProps> = ({
     </View>
   );
 };
-
-export default RipperAvatar;
