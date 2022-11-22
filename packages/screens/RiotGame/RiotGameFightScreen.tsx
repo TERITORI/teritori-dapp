@@ -33,6 +33,7 @@ import {
   fontSemibold14,
   fontMedium14,
 } from "../../utils/style/fonts";
+import { FightProgressBar } from "./component/FightProgressBar";
 import GameContentView from "./component/GameContentView";
 import RipperAvatar from "./component/RipperAvatar";
 
@@ -80,6 +81,14 @@ export const RiotGameFightScreen = () => {
               <Image style={styles.enemyThumb} source={defaultEnemyPNG} />
 
               <BrandText style={fontMedium24}>Philipp Rustov</BrandText>
+
+              <FightProgressBar
+                containerStyle={{ marginVertical: 12 }}
+                width={170}
+                height={10}
+                value={66}
+              />
+
               <BrandText style={[fontBold9, { color: gameHighlight }]}>
                 BEFORE THE END OF THE FIGHT...
               </BrandText>
