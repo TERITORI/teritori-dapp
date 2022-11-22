@@ -10,6 +10,7 @@ import {
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import { BrandText } from "../../components/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import Col from "../../components/grid/Col";
 import Row from "../../components/grid/Row";
 import { SpacerColumn } from "../../components/spacer";
 import useRippers from "../../hooks/riotGame/useRippers";
@@ -25,7 +26,6 @@ import GameContentView from "./component/GameContentView";
 import RipperSelectorModal from "./component/RipperSelectorModal";
 import RipperSlot from "./component/RipperSlot";
 import SimpleButton from "./component/SimpleButton";
-import Col from "../../components/grid/Col";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
@@ -74,6 +74,7 @@ export const RiotGameEnrollScreen = () => {
           </BrandText>
 
           <FlatList
+            scrollEnabled={false}
             data={RIPPER_SLOTS}
             numColumns={3}
             renderItem={({ item: slotId }) => (

@@ -28,12 +28,13 @@ import {
   fontMedium32,
   fontSemibold20,
   fontSemibold14,
+  fontMedium14,
 } from "../../utils/style/fonts";
 import GameContentView from "./component/GameContentView";
 import RipperAvatar from "./component/RipperAvatar";
 
 const ENEMY_AVATAR_SIZE = 150;
-const RIPPER_AVATAR_SIZE = 90;
+const RIPPER_AVATAR_SIZE = 60;
 const BOX_SIZE = [380, 310];
 
 export const RiotGameOngoingFightScreen = () => {
@@ -81,6 +82,7 @@ export const RiotGameOngoingFightScreen = () => {
               <FlatList
                 data={myRippers}
                 numColumns={3}
+                scrollEnabled={false}
                 renderItem={({ item: ripper, index }) => {
                   const isCenter = (index - 1) % 3 === 0;
 
@@ -88,7 +90,7 @@ export const RiotGameOngoingFightScreen = () => {
                     <View
                       style={[
                         styles.ripperInfo,
-                        isCenter && { marginTop: RIPPER_AVATAR_SIZE / 2 },
+                        isCenter && { marginTop: RIPPER_AVATAR_SIZE / 3 },
                       ]}
                     >
                       <RipperAvatar
@@ -97,7 +99,7 @@ export const RiotGameOngoingFightScreen = () => {
                         rounded
                       />
 
-                      <BrandText style={[fontMedium24, { color: neutralA3 }]}>
+                      <BrandText style={[fontMedium14, { color: neutralA3 }]}>
                         #{ripper.id}
                       </BrandText>
                     </View>
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
   ripperInfo: {
     flexDirection: "column",
     alignItems: "center",
-    margin: 10,
+    marginHorizontal: 18,
   },
   countDownSection: {
     paddingVertical: 20,

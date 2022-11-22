@@ -34,6 +34,22 @@ const fakeRippers = [
     protection: 1,
     luck: 65,
   },
+  {
+    id: 109,
+    name: "The r!ot #109",
+    image: defaultGuardianNFTPNG,
+    stamina: 43,
+    protection: 1,
+    luck: 65,
+  },
+  {
+    id: 19,
+    name: "The r!ot #19",
+    image: defaultGuardianNFTPNG,
+    stamina: 43,
+    protection: 1,
+    luck: 65,
+  },
 ];
 
 const useRippers = () => {
