@@ -15,6 +15,7 @@ import {
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
+import { headerHeight } from "../../../utils/style/layout";
 import RipperStat from "./RipperStat";
 import SimpleButton from "./SimpleButton";
 
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: neutral00,
-    marginTop: 100,
+    marginTop: headerHeight + 90,
     borderWidth: 1,
   },
   row: {
