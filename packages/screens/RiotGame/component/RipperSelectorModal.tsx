@@ -3,19 +3,20 @@ import { Modal, ModalProps, StyleSheet, View, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Carousel from "react-native-reanimated-carousel";
 
+import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderSVG from "../../../../assets/game/dashed-border.svg";
-import gamepadSVG from "../../../../assets/game/gamepad.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
-import { neutral00, white } from "../../../utils/style/colors";
+import { neutral00, white, yellowDefault } from "../../../utils/style/colors";
 import {
   fontMedium32,
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
 import { headerHeight } from "../../../utils/style/layout";
+import RipperAvatar from "./RipperAvatar";
 import RipperStat from "./RipperStat";
 import SimpleButton from "./SimpleButton";
 
@@ -130,13 +131,12 @@ const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 
               <View style={styles.ripperImageContainer}>
                 <SVG source={dashedBorderSVG} />
-
-                <View style={styles.roundedContainer}>
-                  <Image
-                    style={styles.ripperImage}
-                    source={selectedRipper?.image}
-                  />
-                </View>
+                <RipperAvatar
+                  source={selectedRipper?.image}
+                  size={RIPPER_IMAGE_SIZE}
+                  rounded
+                  containerStyle={styles.roundedContainer}
+                />
               </View>
             </View>
           </View>
@@ -161,7 +161,7 @@ const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
             />
 
             <View style={styles.btnGroup}>
-              <SVG source={gamepadSVG} />
+              <SVG color={yellowDefault} source={controllerSVG} />
               <SpacerRow size={2} />
               <SimpleButton
                 onPress={enrollRipper}
@@ -215,10 +215,6 @@ const styles = StyleSheet.create({
     top: 1,
     borderRadius: 999,
     overflow: "hidden",
-  },
-  ripperImage: {
-    width: RIPPER_IMAGE_SIZE,
-    height: RIPPER_IMAGE_SIZE,
   },
   selectListContainer: {
     position: "absolute",

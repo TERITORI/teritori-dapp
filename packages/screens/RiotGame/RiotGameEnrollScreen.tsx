@@ -10,6 +10,7 @@ import {
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import { BrandText } from "../../components/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import Row from "../../components/grid/Row";
 import { SpacerColumn } from "../../components/spacer";
 import useRippers from "../../hooks/riotGame/useRippers";
 import { useAppNavigation } from "../../utils/navigation";
@@ -24,6 +25,7 @@ import GameContentView from "./component/GameContentView";
 import RipperSelectorModal from "./component/RipperSelectorModal";
 import RipperSlot from "./component/RipperSlot";
 import SimpleButton from "./component/SimpleButton";
+import Col from "../../components/grid/Col";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
@@ -65,13 +67,8 @@ export const RiotGameEnrollScreen = () => {
         <BrandText style={styles.pageTitle}>Send to fight</BrandText>
       </View>
 
-      <View
-        style={[
-          styles.enrollContainer,
-          { flexDirection: width > 992 ? "row" : "column" },
-        ]}
-      >
-        <View style={styles.col}>
+      <Row breakpoint={992} style={styles.enrollContainer}>
+        <Col style={styles.col}>
           <BrandText style={styles.sectionTitle}>
             Enroll your Ripper(s)
           </BrandText>
@@ -90,9 +87,9 @@ export const RiotGameEnrollScreen = () => {
               </View>
             )}
           />
-        </View>
+        </Col>
 
-        <View style={styles.col}>
+        <Col style={styles.col}>
           <BrandText style={styles.sectionTitle}>Staking duration</BrandText>
 
           <TertiaryBox
@@ -121,8 +118,8 @@ export const RiotGameEnrollScreen = () => {
             source={defaultSendToFightPNG}
             style={styles.placeholderVideo}
           />
-        </View>
-      </View>
+        </Col>
+      </Row>
 
       <SimpleButton
         onPress={gotoOngoingFight}

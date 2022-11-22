@@ -31,7 +31,7 @@ const GameContentView: React.FC<GameContentViewProps> = ({
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <RiotGameHeader />
 
       {bgImage ? (

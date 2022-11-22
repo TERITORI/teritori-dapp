@@ -10,6 +10,7 @@ export const pinkDefault = "#F46FBF";
 export const purpleDefault = "#9058EC";
 export const lavenderDefault = "#AEB1FF";
 export const orangeDefault = "#EAA54B";
+export const redDefault = "#F46F76";
 
 export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
@@ -31,7 +32,7 @@ export const neutral77 = "#777777";
 export const neutralA3 = "#A3A3A3";
 export const additionalRed = "#FFAEAE";
 
-export const white = '#FFFFFF';
+export const white = "#FFFFFF";
 export const orangeLight = "#EAA54B";
 
 // Returns hexa color modified with alpha
