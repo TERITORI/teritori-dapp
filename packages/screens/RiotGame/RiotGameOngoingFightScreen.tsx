@@ -110,12 +110,12 @@ export const RiotGameOngoingFightScreen = () => {
           </View>
         </Row>
 
-        <View style={{ width: "100%" }}>
-          <TertiaryBox
-            fullWidth
-            mainContainerStyle={styles.countDownSection}
-            noBrokenCorners
-          >
+        <TertiaryBox
+          fullWidth
+          mainContainerStyle={styles.countDownSection}
+          noBrokenCorners
+        >
+          <Row breakpoint={992}>
             <View style={{ flex: 1 }}>
               <BrandText style={fontSemibold20}>Remaining Fight Time</BrandText>
               <Row>
@@ -145,8 +145,8 @@ export const RiotGameOngoingFightScreen = () => {
               <SVG source={claimSVG} />
               <BrandText style={styles.actionLabel}>Claim</BrandText>
             </Row>
-          </TertiaryBox>
-        </View>
+          </Row>
+        </TertiaryBox>
       </View>
     </GameContentView>
   );
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   ripperInfo: {
     flexDirection: "column",
     alignItems: "center",
-    marginHorizontal: 18,
+    marginHorizontal: 12,
   },
   countDownSection: {
     paddingVertical: 20,

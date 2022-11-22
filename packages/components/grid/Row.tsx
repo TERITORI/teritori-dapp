@@ -26,6 +26,7 @@ const Row: React.FC<RowProps> = (props) => {
           flex: 1,
           flexDirection,
         },
+        flexDirection === "column" && { alignItems: "center" },
         props.style,
       ]}
     >
