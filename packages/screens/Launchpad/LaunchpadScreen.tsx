@@ -16,22 +16,20 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
           paddingBottom: layout.contentPadding,
         }}
       >
-        {/*TODO: LIVE MINTABLE*/}
-        <CollectionsCarouselHeader kind={CollectionsRequest_Kind.KIND_FAKE} />
+        {/*TODO: Need collections fetching filters*/}
+        {/*TODO: (Better) : Need to fetch collections from ??? to allows marketing team to choose which collections to display here and on MarketplaceScreen*/}
 
-        {/*TODO: LIVE MINTABLE*/}
+        <CollectionsCarouselHeader
+          kind={CollectionsRequest_Kind.KIND_TERITORI_FEATURES}
+        />
+
         <CollectionsCarouselSection
-          title="Live"
-          kind={CollectionsRequest_Kind.KIND_FAKE}
+          title="TERITORI Collections"
+          kind={CollectionsRequest_Kind.KIND_TERITORI_FEATURES}
         />
         <CollectionsCarouselSection
-          title="Upcoming"
+          title="Upcoming Launches"
           kind={CollectionsRequest_Kind.KIND_UPCOMING}
-        />
-        {/*TODO: ON MARKETPLACE (MINT ENDED)*/}
-        <CollectionsCarouselSection
-          title="Ended"
-          kind={CollectionsRequest_Kind.KIND_FAKE}
         />
       </View>
     </ScreenContainer>
