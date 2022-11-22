@@ -54,7 +54,9 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
                 Commission
               </BrandText>
               <SpacerRow size={1} />
-              <GradientText>{data?.commission}</GradientText>
+              <GradientText gradientType="blueExtended">
+                {data?.commission}
+              </GradientText>
             </View>
           </View>
         </View>

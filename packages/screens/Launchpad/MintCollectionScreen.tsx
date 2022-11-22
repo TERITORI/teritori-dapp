@@ -18,6 +18,7 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ProgressionCard } from "../../components/cards/ProgressionCard";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
+import { GradientText } from "../../components/gradientText";
 import {
   initialToastError,
   useFeedbacks,
@@ -205,12 +206,12 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 </View>
               </View>
 
-              {/*TODO: Gradient white text (see figma)*/}
-              <BrandText
+              <GradientText
+                gradientType="grayLight"
                 style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
               >
                 {info.description}
-              </BrandText>
+              </GradientText>
 
               <ProgressionCard
                 label="Tokens Minted"
@@ -297,6 +298,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     {'By clicking "Mint now", you agree to the '}
                   </BrandText>
                   <ExternalLink
+                    gradientType="gray"
                     externalUrl="https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b"
                     style={[
                       fontSemibold14,

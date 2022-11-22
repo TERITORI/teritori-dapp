@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/TERITORI/teritori-dapp/go/internal/airtable_fetcher"
 	"github.com/TERITORI/teritori-dapp/go/internal/collections"
 	"github.com/TERITORI/teritori-dapp/go/internal/faking"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -24,9 +25,9 @@ import (
 type MarkteplaceService struct {
 	marketplacepb.UnimplementedMarketplaceServiceServer
 
-	upcomingLaunchesProvider            collections.CollectionsProvider
-	collectionsByVolumeProvider         collections.CollectionsProvider
-	collectionsByMarketCapProvider      collections.CollectionsProvider
+	homeProvider *airtable_fetcher.Cache
+	// collectionsByVolumeProvider         collections.CollectionsProvider
+	// collectionsByMarketCapProvider      collections.CollectionsProvider
 	teritoriFeaturesCollectionsProvider collections.CollectionsProvider
 	conf                                *Config
 }
@@ -43,8 +44,8 @@ type Config struct {
 func NewMarketplaceService(ctx context.Context, conf *Config) marketplacepb.MarketplaceServiceServer {
 	// FIXME: validate config
 	return &MarkteplaceService{
-		conf:                     conf,
-		upcomingLaunchesProvider: collections.NewUpcomingLaunchesProvider(ctx, conf.Logger),
+		conf:         conf,
+		homeProvider: airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(), conf.Logger.Named("airtable_fetcher")),
 		// collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 		// collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 		teritoriFeaturesCollectionsProvider: collections.NewTeritoriCollectionsProvider(conf.IndexerDB, conf.Whitelist, conf.Logger),
@@ -65,8 +66,8 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 	switch req.GetKind() {
 
 	case marketplacepb.CollectionsRequest_KIND_UPCOMING:
-		launches := s.upcomingLaunchesProvider.Collections(int(limit), int(offset))
-		for launch := range launches {
+		launches := subSlice(s.homeProvider.GetUpcomingLaunches(), int(offset), int(offset+limit))
+		for _, launch := range launches {
 			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: launch}); err != nil {
 				return errors.Wrap(err, "failed to send collection")
 			}
@@ -536,4 +537,18 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 	return &marketplacepb.CollectionStatsResponse{
 		Stats: &stats.CollectionStats,
 	}, nil
+}
+
+func (s *MarkteplaceService) Banners(ctx context.Context, req *marketplacepb.BannersRequest) (*marketplacepb.BannersResponse, error) {
+	if req.GetTestnet() {
+		return &marketplacepb.BannersResponse{Banners: s.homeProvider.GetTestnetBanners()}, nil
+	}
+	return &marketplacepb.BannersResponse{Banners: s.homeProvider.GetBanners()}, nil
+}
+
+func (s *MarkteplaceService) News(ctx context.Context, req *marketplacepb.NewsRequest) (*marketplacepb.NewsResponse, error) {
+	if req.GetTestnet() {
+		return &marketplacepb.NewsResponse{News: s.homeProvider.GetTestnetNews()}, nil
+	}
+	return &marketplacepb.NewsResponse{News: s.homeProvider.GetNews()}, nil
 }

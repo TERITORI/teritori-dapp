@@ -120,7 +120,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
       >
         <ExternalLink
           externalUrl={txExplorerLink(txHash)}
-          style={[fontMedium14, { color: primaryColor }]}
+          style={[fontMedium14, { width: "100%" }]}
           ellipsizeMode="middle"
           numberOfLines={1}
         >
