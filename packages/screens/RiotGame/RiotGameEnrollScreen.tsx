@@ -20,7 +20,7 @@ import {
   fontSemibold28,
   fontMedium14,
 } from "../../utils/style/fonts";
-import EnrollStat from "./component/EnrollStat";
+import GameContentView from "./component/GameContentView";
 import { RiotGameHeader } from "./component/RiotGameHeader";
 import RipperSelectorModal from "./component/RipperSelectorModal";
 import RipperSlot from "./component/RipperSlot";
@@ -56,84 +56,71 @@ export const RiotGameEnrollScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <RiotGameHeader />
-
-      <View style={styles.stats}>
-        <EnrollStat title="Number of Fighters" content="833 Rippers" />
-        <EnrollStat title="Prize Pool" content="1337 TORI" />
-        <EnrollStat title="Rank" content="42/1337" />
+    <GameContentView>
+      <View>
+        <BrandText style={styles.pageTitle}>Send to fight</BrandText>
       </View>
 
-      <ScrollView>
-        <View>
-          <BrandText style={styles.pageTitle}>Send to fight</BrandText>
+      <View
+        style={[
+          styles.enrollContainer,
+          { flexDirection: width > 992 ? "row" : "column" },
+        ]}
+      >
+        <View style={styles.col}>
+          <BrandText style={styles.sectionTitle}>
+            Enroll your Ripper(s)
+          </BrandText>
+
+          <FlatList
+            data={RIPPER_SLOTS}
+            numColumns={3}
+            renderItem={({ item: slotId }) => (
+              <View style={styles.ripperSlot}>
+                <RipperSlot
+                  key={slotId}
+                  isLeader={slotId === 0}
+                  ripper={selectedRippers[slotId]}
+                  onPress={() => showRipperSelector(slotId)}
+                />
+              </View>
+            )}
+          />
         </View>
 
-        <View
-          style={[
-            styles.enrollContainer,
-            { flexDirection: width > 992 ? "row" : "column" },
-          ]}
-        >
-          <View style={styles.col}>
-            <BrandText style={styles.sectionTitle}>
-              Enroll your Ripper(s)
+        <View style={styles.col}>
+          <BrandText style={styles.sectionTitle}>Staking duration</BrandText>
+
+          <TertiaryBox
+            mainContainerStyle={{
+              padding: 40,
+              alignItems: "flex-start",
+            }}
+            style={styles.countdownBlock}
+            height={148}
+          >
+            <BrandText style={fontSemibold28}>
+              23 hours 21 minutes 23 seconds
             </BrandText>
 
-            <FlatList
-              data={RIPPER_SLOTS}
-              numColumns={3}
-              renderItem={({ item: slotId }) => (
-                <View style={styles.ripperSlot}>
-                  <RipperSlot
-                    key={slotId}
-                    isLeader={slotId === 0}
-                    ripper={selectedRippers[slotId]}
-                    onPress={() => showRipperSelector(slotId)}
-                  />
-                </View>
-              )}
-            />
-          </View>
+            <SpacerColumn size={1} />
 
-          <View style={styles.col}>
-            <BrandText style={styles.sectionTitle}>Staking duration</BrandText>
+            <BrandText style={styles.subText}>
+              Stamina x 0.2 for solo fightsLeader's
+            </BrandText>
+            <BrandText style={styles.subText}>
+              Leader's Stamina x 0.2 + Bonus for squad fights
+            </BrandText>
+          </TertiaryBox>
 
-            <TertiaryBox
-              mainContainerStyle={{
-                padding: 40,
-                alignItems: "flex-start",
-              }}
-              style={styles.countdownBlock}
-              height={148}
-            >
-              <BrandText style={fontSemibold28}>
-                23 hours 21 minutes 23 seconds
-              </BrandText>
-
-              <SpacerColumn size={1} />
-
-              <BrandText style={styles.subText}>
-                Stamina x 0.2 for solo fightsLeader's
-              </BrandText>
-              <BrandText style={styles.subText}>
-                Leader's Stamina x 0.2 + Bonus for squad fights
-              </BrandText>
-            </TertiaryBox>
-
-            <Image
-              source={defaultSendToFightPNG}
-              style={styles.placeholderVideo}
-            />
-          </View>
+          <Image
+            source={defaultSendToFightPNG}
+            style={styles.placeholderVideo}
+          />
         </View>
+      </View>
 
-        <SimpleButton
-          containerStyle={styles.submitBtn}
-          title="Join the Fight"
-        />
-      </ScrollView>
+      <SimpleButton containerStyle={styles.submitBtn} title="Join the Fight" />
 
       <RipperSelectorModal
         visible={selectedSlot !== undefined}
@@ -142,19 +129,11 @@ export const RiotGameEnrollScreen = () => {
         availableRippers={availableRippers}
         onSelectRipper={onSelectRipper}
       />
-    </View>
+    </GameContentView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: neutral00,
-  },
-  stats: {
-    flexDirection: "row",
-    margin: 10,
-  },
   pageTitle: {
     alignSelf: "center",
     ...(fontMedium48 as object),
