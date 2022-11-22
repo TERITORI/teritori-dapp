@@ -311,6 +311,40 @@ export interface NFTPriceHistoryResponse {
   data: PriceDatum[];
 }
 
+export interface Action {
+  label: string;
+  url: string;
+}
+
+export interface News {
+  title: string;
+  subtitle: string;
+  text: string;
+  image: string;
+  actions: Action[];
+}
+
+export interface Banner {
+  image: string;
+  url: string;
+}
+
+export interface BannersRequest {
+  testnet: boolean;
+}
+
+export interface BannersResponse {
+  banners: Banner[];
+}
+
+export interface NewsRequest {
+  testnet: boolean;
+}
+
+export interface NewsResponse {
+  news: News[];
+}
+
 function createBaseNFT(): NFT {
   return {
     id: "",
@@ -1758,6 +1792,401 @@ export const NFTPriceHistoryResponse = {
   },
 };
 
+function createBaseAction(): Action {
+  return { label: "", url: "" };
+}
+
+export const Action = {
+  encode(message: Action, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.label !== "") {
+      writer.uint32(10).string(message.label);
+    }
+    if (message.url !== "") {
+      writer.uint32(18).string(message.url);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Action {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAction();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.label = reader.string();
+          break;
+        case 2:
+          message.url = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Action {
+    return { label: isSet(object.label) ? String(object.label) : "", url: isSet(object.url) ? String(object.url) : "" };
+  },
+
+  toJSON(message: Action): unknown {
+    const obj: any = {};
+    message.label !== undefined && (obj.label = message.label);
+    message.url !== undefined && (obj.url = message.url);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Action>, I>>(object: I): Action {
+    const message = createBaseAction();
+    message.label = object.label ?? "";
+    message.url = object.url ?? "";
+    return message;
+  },
+};
+
+function createBaseNews(): News {
+  return { title: "", subtitle: "", text: "", image: "", actions: [] };
+}
+
+export const News = {
+  encode(message: News, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.subtitle !== "") {
+      writer.uint32(18).string(message.subtitle);
+    }
+    if (message.text !== "") {
+      writer.uint32(26).string(message.text);
+    }
+    if (message.image !== "") {
+      writer.uint32(34).string(message.image);
+    }
+    for (const v of message.actions) {
+      Action.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): News {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNews();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.title = reader.string();
+          break;
+        case 2:
+          message.subtitle = reader.string();
+          break;
+        case 3:
+          message.text = reader.string();
+          break;
+        case 4:
+          message.image = reader.string();
+          break;
+        case 5:
+          message.actions.push(Action.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): News {
+    return {
+      title: isSet(object.title) ? String(object.title) : "",
+      subtitle: isSet(object.subtitle) ? String(object.subtitle) : "",
+      text: isSet(object.text) ? String(object.text) : "",
+      image: isSet(object.image) ? String(object.image) : "",
+      actions: Array.isArray(object?.actions) ? object.actions.map((e: any) => Action.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: News): unknown {
+    const obj: any = {};
+    message.title !== undefined && (obj.title = message.title);
+    message.subtitle !== undefined && (obj.subtitle = message.subtitle);
+    message.text !== undefined && (obj.text = message.text);
+    message.image !== undefined && (obj.image = message.image);
+    if (message.actions) {
+      obj.actions = message.actions.map((e) => e ? Action.toJSON(e) : undefined);
+    } else {
+      obj.actions = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<News>, I>>(object: I): News {
+    const message = createBaseNews();
+    message.title = object.title ?? "";
+    message.subtitle = object.subtitle ?? "";
+    message.text = object.text ?? "";
+    message.image = object.image ?? "";
+    message.actions = object.actions?.map((e) => Action.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseBanner(): Banner {
+  return { image: "", url: "" };
+}
+
+export const Banner = {
+  encode(message: Banner, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.image !== "") {
+      writer.uint32(10).string(message.image);
+    }
+    if (message.url !== "") {
+      writer.uint32(18).string(message.url);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Banner {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBanner();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.image = reader.string();
+          break;
+        case 2:
+          message.url = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Banner {
+    return { image: isSet(object.image) ? String(object.image) : "", url: isSet(object.url) ? String(object.url) : "" };
+  },
+
+  toJSON(message: Banner): unknown {
+    const obj: any = {};
+    message.image !== undefined && (obj.image = message.image);
+    message.url !== undefined && (obj.url = message.url);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Banner>, I>>(object: I): Banner {
+    const message = createBaseBanner();
+    message.image = object.image ?? "";
+    message.url = object.url ?? "";
+    return message;
+  },
+};
+
+function createBaseBannersRequest(): BannersRequest {
+  return { testnet: false };
+}
+
+export const BannersRequest = {
+  encode(message: BannersRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.testnet === true) {
+      writer.uint32(8).bool(message.testnet);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BannersRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBannersRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.testnet = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BannersRequest {
+    return { testnet: isSet(object.testnet) ? Boolean(object.testnet) : false };
+  },
+
+  toJSON(message: BannersRequest): unknown {
+    const obj: any = {};
+    message.testnet !== undefined && (obj.testnet = message.testnet);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<BannersRequest>, I>>(object: I): BannersRequest {
+    const message = createBaseBannersRequest();
+    message.testnet = object.testnet ?? false;
+    return message;
+  },
+};
+
+function createBaseBannersResponse(): BannersResponse {
+  return { banners: [] };
+}
+
+export const BannersResponse = {
+  encode(message: BannersResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.banners) {
+      Banner.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BannersResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBannersResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.banners.push(Banner.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BannersResponse {
+    return { banners: Array.isArray(object?.banners) ? object.banners.map((e: any) => Banner.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: BannersResponse): unknown {
+    const obj: any = {};
+    if (message.banners) {
+      obj.banners = message.banners.map((e) => e ? Banner.toJSON(e) : undefined);
+    } else {
+      obj.banners = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<BannersResponse>, I>>(object: I): BannersResponse {
+    const message = createBaseBannersResponse();
+    message.banners = object.banners?.map((e) => Banner.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseNewsRequest(): NewsRequest {
+  return { testnet: false };
+}
+
+export const NewsRequest = {
+  encode(message: NewsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.testnet === true) {
+      writer.uint32(8).bool(message.testnet);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NewsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNewsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.testnet = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NewsRequest {
+    return { testnet: isSet(object.testnet) ? Boolean(object.testnet) : false };
+  },
+
+  toJSON(message: NewsRequest): unknown {
+    const obj: any = {};
+    message.testnet !== undefined && (obj.testnet = message.testnet);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<NewsRequest>, I>>(object: I): NewsRequest {
+    const message = createBaseNewsRequest();
+    message.testnet = object.testnet ?? false;
+    return message;
+  },
+};
+
+function createBaseNewsResponse(): NewsResponse {
+  return { news: [] };
+}
+
+export const NewsResponse = {
+  encode(message: NewsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.news) {
+      News.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NewsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNewsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.news.push(News.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NewsResponse {
+    return { news: Array.isArray(object?.news) ? object.news.map((e: any) => News.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: NewsResponse): unknown {
+    const obj: any = {};
+    if (message.news) {
+      obj.news = message.news.map((e) => e ? News.toJSON(e) : undefined);
+    } else {
+      obj.news = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<NewsResponse>, I>>(object: I): NewsResponse {
+    const message = createBaseNewsResponse();
+    message.news = object.news?.map((e) => News.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
   CollectionStats(
@@ -1771,6 +2200,8 @@ export interface MarketplaceService {
     request: DeepPartial<NFTPriceHistoryRequest>,
     metadata?: grpc.Metadata,
   ): Promise<NFTPriceHistoryResponse>;
+  Banners(request: DeepPartial<BannersRequest>, metadata?: grpc.Metadata): Promise<BannersResponse>;
+  News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse>;
 }
 
 export class MarketplaceServiceClientImpl implements MarketplaceService {
@@ -1784,6 +2215,8 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.Quests = this.Quests.bind(this);
     this.Activity = this.Activity.bind(this);
     this.NFTPriceHistory = this.NFTPriceHistory.bind(this);
+    this.Banners = this.Banners.bind(this);
+    this.News = this.News.bind(this);
   }
 
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse> {
@@ -1814,6 +2247,14 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     metadata?: grpc.Metadata,
   ): Promise<NFTPriceHistoryResponse> {
     return this.rpc.unary(MarketplaceServiceNFTPriceHistoryDesc, NFTPriceHistoryRequest.fromPartial(request), metadata);
+  }
+
+  Banners(request: DeepPartial<BannersRequest>, metadata?: grpc.Metadata): Promise<BannersResponse> {
+    return this.rpc.unary(MarketplaceServiceBannersDesc, BannersRequest.fromPartial(request), metadata);
+  }
+
+  News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse> {
+    return this.rpc.unary(MarketplaceServiceNewsDesc, NewsRequest.fromPartial(request), metadata);
   }
 }
 
@@ -1943,6 +2384,50 @@ export const MarketplaceServiceNFTPriceHistoryDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...NFTPriceHistoryResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceBannersDesc: UnaryMethodDefinitionish = {
+  methodName: "Banners",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return BannersRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...BannersResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceNewsDesc: UnaryMethodDefinitionish = {
+  methodName: "News",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return NewsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...NewsResponse.decode(data),
         toObject() {
           return this;
         },
