@@ -31,7 +31,6 @@ const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
 export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
-  const { width } = useWindowDimensions();
   const { myRippers } = useRippers();
   const [selectedSlot, setSelectedSlot] = useState<number>();
 
@@ -57,8 +56,8 @@ export const RiotGameEnrollScreen = () => {
     setSelectedRippers({ ...selectedRippers, [slotId]: ripper });
   };
 
-  const gotoOngoingFight = () => {
-    navigation.navigate("RiotGameOngoingFight");
+  const gotoFight = () => {
+    navigation.navigate("RiotGameFight");
   };
 
   return (
@@ -123,7 +122,7 @@ export const RiotGameEnrollScreen = () => {
       </Row>
 
       <SimpleButton
-        onPress={gotoOngoingFight}
+        onPress={gotoFight}
         containerStyle={styles.submitBtn}
         title="Join the Fight"
       />

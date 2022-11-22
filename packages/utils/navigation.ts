@@ -25,7 +25,7 @@ export type RootStackParamList = {
 
   RiotGame: undefined;
   RiotGameEnroll: undefined;
-  RiotGameOngoingFight: undefined,
+  RiotGameFight: undefined,
 
   Staking: undefined;
 
@@ -58,7 +58,7 @@ const navConfig: {
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",
-    RiotGameOngoingFight: "riot-game/ongoing-fight",
+    RiotGameFight: "riot-game/fight",
 
     // ==== Launchpad
     Launchpad: "launchpad",

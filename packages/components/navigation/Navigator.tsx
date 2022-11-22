@@ -13,7 +13,7 @@ import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
-import { RiotGameOngoingFightScreen } from "../../screens/RiotGame/RiotGameOngoingFightScreen";
+import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
@@ -77,11 +77,11 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null, title: screenTitle("Riot Game Enroll") }}
       />
       <Stack.Screen
-        name="RiotGameOngoingFight"
-        component={RiotGameOngoingFightScreen}
+        name="RiotGameFight"
+        component={RiotGameFightScreen}
         options={{
           header: () => null,
-          title: screenTitle("Riot Game Ongoing Fight"),
+          title: screenTitle("Riot Game Fight"),
         }}
       />
 
