@@ -91,7 +91,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 
   return (
     <ScreenContainer
-      smallMargin
+      isHeaderSmallMargin
       footerChildren={<></>}
       headerChildren={
         <BrandText style={fontSemibold20}>{metadata?.tokenId || ""}</BrandText>

@@ -28,7 +28,14 @@ export const OrganizationGetStartedScreen = () => {
 
   // returns
   return (
-    <ScreenContainer footerChildren={<></>} noMargin fullWidth noScroll>
+    <ScreenContainer
+      headerChildren={<BrandText>Organization Name</BrandText>}
+      footerChildren={<></>}
+      noMargin
+      fullWidth
+      noScroll
+      isHeaderSmallMargin
+    >
       <ScrollView>
         <View style={styles.container}>
           <BrandText style={fontSemibold28}>What do you want to do?</BrandText>

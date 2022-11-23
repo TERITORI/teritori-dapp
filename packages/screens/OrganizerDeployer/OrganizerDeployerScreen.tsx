@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { ConfigureVotingSection } from "./components/ConfigureVotingSection";
 import { CreateDAOSection } from "./components/CreateDAOSection";
@@ -70,7 +71,14 @@ export const OrganizerDeployerScreen = () => {
 
   // returns
   return (
-    <ScreenContainer footerChildren={<></>} noMargin fullWidth noScroll>
+    <ScreenContainer
+      headerChildren={<BrandText>Organization Deployer</BrandText>}
+      footerChildren={<></>}
+      noMargin
+      fullWidth
+      noScroll
+      isHeaderSmallMargin
+    >
       <View style={styles.row}>
         <View style={styles.fill}>
           <View style={currentStep === 0 ? styles.show : styles.hidden}>

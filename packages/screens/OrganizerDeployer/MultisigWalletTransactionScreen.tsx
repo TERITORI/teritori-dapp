@@ -5,6 +5,7 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useAppNavigation } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
@@ -45,7 +46,14 @@ export const MultisigWalletTransactionScreen = () => {
   );
 
   return (
-    <ScreenContainer footerChildren={<></>} noMargin fullWidth noScroll>
+    <ScreenContainer
+      isHeaderSmallMargin
+      headerChildren={<BackTo label="Wallet Name 1" />}
+      footerChildren={<></>}
+      noMargin
+      fullWidth
+      noScroll
+    >
       <FlatList
         data={multisigTransactions as MultiSigWalletTransactionType[]}
         renderItem={renderItem}

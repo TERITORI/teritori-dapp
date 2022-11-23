@@ -39,7 +39,6 @@
     "dotenv-webpack": "^8.0.0",
     "eslint-config-universe": "^11.0.0",
     "expo": "~45.0.0",
-    "expo-blur": "~11.1.0",
     "expo-font": "~10.1.0",
     "expo-image-picker": "~13.1.1",
     "expo-linear-gradient": "~11.3.0",

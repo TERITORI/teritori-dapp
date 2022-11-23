@@ -5,6 +5,7 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { TableRow, TableRowHeading } from "../../components/table";
 import { useAppNavigation } from "../../utils/navigation";
@@ -43,7 +44,14 @@ export const MultisigWalletManageScreen = () => {
 
   // returns
   return (
-    <ScreenContainer footerChildren={<></>} noMargin fullWidth noScroll>
+    <ScreenContainer
+      isHeaderSmallMargin
+      headerChildren={<BackTo label="Manage Multisig Wallet" />}
+      footerChildren={<></>}
+      noMargin
+      fullWidth
+      noScroll
+    >
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
           <View style={styles.rowSB}>
@@ -98,5 +106,9 @@ const styles = StyleSheet.create({
   tableRow: {
     backgroundColor: neutral00,
     minHeight: 44,
+  },
+  rowCenter: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

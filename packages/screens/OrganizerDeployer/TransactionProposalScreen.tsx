@@ -3,6 +3,7 @@ import { Animated, FlatList, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -34,6 +35,8 @@ export const TransactionProposalScreen = () => {
   // returns
   return (
     <ScreenContainer
+      isHeaderSmallMargin
+      headerChildren={<BackTo label="Transactions history" />}
       footerChildren={<></>}
       noMargin
       fullWidth

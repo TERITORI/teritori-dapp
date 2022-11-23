@@ -38,7 +38,7 @@ export const ScreenContainer: React.FC<{
   noMargin?: boolean;
   noScroll?: boolean;
   fullWidth?: boolean;
-  smallMargin?: boolean;
+  isHeaderSmallMargin?: boolean;
 }> = ({
   children,
   headerChildren,
@@ -48,7 +48,7 @@ export const ScreenContainer: React.FC<{
   noMargin,
   noScroll,
   fullWidth,
-  smallMargin,
+  isHeaderSmallMargin,
   customSidebar,
 }) => {
   // variables
@@ -79,7 +79,7 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header style={headerStyle} smallMargin={smallMargin}>
+          <Header style={headerStyle} isHeaderSmallMargin={isHeaderSmallMargin}>
             {headerChildren}
           </Header>
 

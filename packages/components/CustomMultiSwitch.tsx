@@ -24,15 +24,14 @@ interface Props {
   onChange: (value: any) => void;
 }
 
-export const CustomMultipleSwitch: FC<Props> = (props) => {
+export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
   const [elements, setElements] = useState<{ id: string; value: number }[]>([]);
-  const [active, setActive] = useState(props.value);
   const [sliderWidth, setSliderWidth] = useState(0);
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (elements.length === props.items.length) {
-      const position = elements.find((el) => el.id === props.value);
+    if (elements.length === items.length) {
+      const position = elements.find((el) => el.id === value);
       if (!position) {
         return;
       }
@@ -41,13 +40,13 @@ export const CustomMultipleSwitch: FC<Props> = (props) => {
         duration: 0,
         easing: Easing.linear,
         useNativeDriver: true,
-      });
+      }).start();
     }
   }, [elements]);
 
-  const getContainerStyle = () => {
-    return [styles.container];
-  };
+  useEffect(() => {
+    startAnimation(value);
+  }, [value]);
 
   const getSliderStyle = () => {
     return [
@@ -69,19 +68,17 @@ export const CustomMultipleSwitch: FC<Props> = (props) => {
       easing: Easing.ease,
       useNativeDriver: true,
     }).start();
-    setActive(newVal);
-    props.onChange(newVal);
   };
 
   return (
-    <View style={getContainerStyle()}>
+    <View style={styles.container}>
       <Animated.View style={[getSliderStyle()]} />
-      {props.items.map((item: string) => {
+      {items.map((item: string) => {
         return (
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.item}
-            onPress={() => startAnimation(item)}
+            onPress={() => onChange(item)}
             key={item}
             onLayout={(e) => {
               const { width, x } = e.nativeEvent.layout;
@@ -93,7 +90,7 @@ export const CustomMultipleSwitch: FC<Props> = (props) => {
             }}
           >
             <BrandText
-              style={[styles.itemText, active === item && styles.activeText]}
+              style={[styles.itemText, value === item && styles.activeText]}
               numberOfLines={1}
             >
               {capitalize(item)}
