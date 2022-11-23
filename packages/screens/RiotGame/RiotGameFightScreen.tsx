@@ -17,7 +17,6 @@ import { ButtonOutline } from "../../components/buttons/ButtonOutline";
 import Row from "../../components/grid/Row";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import useRippers from "../../hooks/riotGame/useRippers";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   gameHighlight,
   neutral33,
@@ -62,7 +61,6 @@ const PAGE_TITLE_MAP = {
 };
 
 export const RiotGameFightScreen = () => {
-  const navigation = useAppNavigation();
   const { myRippers } = useRippers();
 
   // TODO: get theses values from servers
@@ -218,7 +216,7 @@ export const RiotGameFightScreen = () => {
           mainContainerStyle={styles.countDownSection}
           noBrokenCorners
         >
-          <Row breakpoint={992}>
+          <Row style={{ flex: 1 }} breakpoint={992}>
             <View style={{ flex: 2 }}>
               <BrandText style={fontSemibold20}>
                 {isOnGoing ? "Remaining Fight Time" : "Relax Period"}

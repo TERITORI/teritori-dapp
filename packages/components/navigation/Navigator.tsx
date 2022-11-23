@@ -12,6 +12,7 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
@@ -82,6 +83,14 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Riot Game Fight"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameBreeding"
+        component={RiotGameBreedingScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Breeding"),
         }}
       />
 

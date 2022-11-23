@@ -40,6 +40,13 @@ export const fontSemibold28: StyleProp<TextStyle> = {
   fontFamily: "Exo_600SemiBold",
   fontWeight: "600",
 };
+export const fontSemibold24: StyleProp<TextStyle> = {
+  fontSize: 24,
+  letterSpacing: -(24 * 0.04),
+  lineHeight: 28,
+  fontFamily: "Exo_600SemiBold",
+  fontWeight: "600",
+};
 export const fontSemibold20: StyleProp<TextStyle> = {
   fontSize: 20,
   letterSpacing: -(20 * 0.04),
@@ -51,6 +58,13 @@ export const fontSemibold16: StyleProp<TextStyle> = {
   fontSize: 16,
   letterSpacing: 0,
   lineHeight: 20,
+  fontFamily: "Exo_600SemiBold",
+  fontWeight: "600",
+};
+export const fontSemibold15: StyleProp<TextStyle> = {
+  fontSize: 15,
+  letterSpacing: 0,
+  lineHeight: 18,
   fontFamily: "Exo_600SemiBold",
   fontWeight: "600",
 };
@@ -107,6 +121,13 @@ export const fontMedium24: StyleProp<TextStyle> = {
   fontSize: 24,
   letterSpacing: -(24 * 0.02),
   lineHeight: 34,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "500",
+};
+export const fontMedium16: StyleProp<TextStyle> = {
+  fontSize: 16,
+  letterSpacing: -(16 * 0.04),
+  lineHeight: 18,
   fontFamily: "Exo_500Medium",
   fontWeight: "500",
 };

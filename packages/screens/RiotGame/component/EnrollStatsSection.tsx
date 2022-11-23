@@ -1,6 +1,6 @@
 import { StyleSheet, View, ViewStyle } from "react-native";
 
-import { EnrollStat } from "./EnrollStat";
+import { InfoBox } from "./InfoBox";
 
 type EnrollStatsSectionProps = {
   containerStyle?: ViewStyle;
@@ -11,9 +11,14 @@ export const EnrollStatsSection: React.FC<EnrollStatsSectionProps> = ({
 }) => {
   return (
     <View style={[containerStyle, styles.container]}>
-      <EnrollStat title="Number of Fighters" content="833 Rippers" />
-      <EnrollStat title="Prize Pool" content="1337 TORI" />
-      <EnrollStat title="Rank" content="42/1337" />
+      <InfoBox
+        size="SM"
+        title="Number of Fighters"
+        content="833 Rippers"
+        width={120}
+      />
+      <InfoBox size="SM" title="Prize Pool" content="1337 TORI" width={120} />
+      <InfoBox size="SM" title="Rank" content="42/1337" width={120} />
     </View>
   );
 };

@@ -15,13 +15,13 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 
-interface RipperSlotProps {
+interface EnrollSlotProps {
   isLeader?: boolean;
   ripper?: NSRiotGame.Ripper | undefined;
   onPress?(): void;
 }
 
-export const RipperSlot: React.FC<RipperSlotProps> = ({
+export const EnrollSlot: React.FC<EnrollSlotProps> = ({
   onPress,
   ripper,
   isLeader,

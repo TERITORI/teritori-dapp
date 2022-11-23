@@ -16,9 +16,9 @@ import {
   fontSemibold28,
   fontMedium14,
 } from "../../utils/style/fonts";
+import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModal";
-import { RipperSlot } from "./component/RipperSlot";
 import { SimpleButton } from "./component/SimpleButton";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
@@ -72,7 +72,7 @@ export const RiotGameEnrollScreen = () => {
             numColumns={3}
             renderItem={({ item: slotId }) => (
               <View style={styles.ripperSlot}>
-                <RipperSlot
+                <EnrollSlot
                   key={slotId}
                   isLeader={slotId === 0}
                   ripper={selectedRippers[slotId]}
