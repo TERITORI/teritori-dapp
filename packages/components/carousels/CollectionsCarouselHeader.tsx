@@ -6,7 +6,10 @@ import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import {
   Collection,
-  CollectionsRequest_Kind,
+  CollectionsRequest,
+  MintState,
+  Sort,
+  SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -19,6 +22,16 @@ import { Section } from "../Section";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { GradientText } from "../gradientText";
+
+const defaultRequest: CollectionsRequest = {
+  networkId: "fake",
+  sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+  sort: Sort.SORTING_UNSPECIFIED,
+  limit: 16,
+  offset: 0,
+  upcoming: false,
+  mintState: MintState.MINT_STATE_UNSPECIFIED,
+};
 
 const CarouselCollectionItem: React.FC<{
   collection: Collection;
@@ -84,13 +97,9 @@ const CarouselCollectionItem: React.FC<{
 };
 
 export const CollectionsCarouselHeader: React.FC<{
-  kind: CollectionsRequest_Kind;
-}> = ({ kind }) => {
-  const [collections] = useCollections({
-    kind,
-    limit: 16,
-    offset: 0,
-  });
+  req?: CollectionsRequest;
+}> = ({ req = defaultRequest }) => {
+  const [collections, fetchMore] = useCollections(req);
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
 
@@ -116,6 +125,7 @@ export const CollectionsCarouselHeader: React.FC<{
         data={collections}
         ref={carouselRef}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
+        onScrollEnd={fetchMore}
         height={370}
         pagingEnabled
         autoPlay

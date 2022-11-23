@@ -1,14 +1,20 @@
 import React from "react";
 import { View } from "react-native";
 
-import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
+import {
+  MintState,
+  Sort,
+  SortDirection,
+} from "../../api/marketplace/v1/marketplace";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionsCarouselHeader } from "../../components/carousels/CollectionsCarouselHeader";
 import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 
 export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
+  const selectedNetworkId = useSelectedNetworkId();
   return (
     <ScreenContainer>
       <View
@@ -20,16 +26,41 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
         {/*TODO: (Better) : Need to fetch collections from ??? to allows marketing team to choose which collections to display here and on MarketplaceScreen*/}
 
         <CollectionsCarouselHeader
-          kind={CollectionsRequest_Kind.KIND_TERITORI_FEATURES}
+          req={{
+            networkId: selectedNetworkId,
+            sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+            upcoming: false,
+            sort: Sort.SORTING_VOLUME,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_RUNNING,
+          }}
         />
 
         <CollectionsCarouselSection
-          title="TERITORI Collections"
-          kind={CollectionsRequest_Kind.KIND_TERITORI_FEATURES}
+          title="Live Mintable"
+          req={{
+            networkId: selectedNetworkId,
+            sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+            upcoming: false,
+            sort: Sort.SORTING_VOLUME,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_RUNNING,
+          }}
         />
+
         <CollectionsCarouselSection
-          title="Upcoming Launches"
-          kind={CollectionsRequest_Kind.KIND_UPCOMING}
+          title="Available on Marketplace"
+          req={{
+            upcoming: true,
+            networkId: "",
+            sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+            sort: Sort.SORTING_UNSPECIFIED,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_ENDED,
+          }}
         />
       </View>
     </ScreenContainer>
