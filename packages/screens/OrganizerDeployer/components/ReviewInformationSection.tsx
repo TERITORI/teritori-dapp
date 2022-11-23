@@ -44,7 +44,7 @@ export const ReviewInformationSection: React.FC<
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <BrandText style={fontSemibold28}>Review information</BrandText>
-      <SpacerColumn size={2.5} />
+      <SpacerColumn size={3} />
 
       <ReviewCollapsable title="Organization information">
         <ReviewCollapsableItem
@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
   container: {
     padding: layout.contentPadding,
     paddingRight: layout.padding_x2_5,
+    paddingTop: layout.topContentPaddingWithHeading,
   },
   row: { flexDirection: "row", alignItems: "center", flexWrap: "wrap" },
   rowSB: {

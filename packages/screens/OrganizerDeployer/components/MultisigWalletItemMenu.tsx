@@ -19,6 +19,7 @@ import {
   errorColor,
   neutralA3,
   secondaryColor,
+  transparentColor,
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -46,7 +47,7 @@ export const MultisigWalletItemMenu: React.FC<MultisigWalletItemMenuProps> = ({
         <View
           style={[
             styles.dotCircle,
-            { borderColor: isVisible ? secondaryColor : "transparent" },
+            { borderColor: isVisible ? secondaryColor : transparentColor },
           ]}
         >
           <SVG source={dotCircleSVG} width={32} height={32} />

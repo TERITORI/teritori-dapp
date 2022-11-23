@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Pressable, StyleSheet, TextStyle, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
 import toriLogoSVG from "../../../../assets/icons/networks/teritori-circle.svg";
@@ -14,18 +14,19 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { MULTISIG_WALLET_HEADING } from "../MultisigWalletManageScreen";
-import { MultiSigWallet } from "../types";
+import { MultiSigWalletType } from "../types";
 import { MultisigWalletItemMenu } from "./MultisigWalletItemMenu";
 
 interface MultisigWalletItemProps {
-  data: MultiSigWallet;
+  data: MultiSigWalletType;
   onPress?: () => void;
-  labelStyle?: TextStyle;
+  onPressTransactions: () => void;
 }
 
 export const MultisigWalletItem: React.FC<MultisigWalletItemProps> = ({
   data,
   onPress,
+  onPressTransactions,
 }) => {
   // variables
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
@@ -102,7 +103,7 @@ export const MultisigWalletItem: React.FC<MultisigWalletItemProps> = ({
           onDeleteWalletPress={onAlertTodo}
           onParticipantsPress={onAlertTodo}
           onInvitePress={onAlertTodo}
-          onTransactionPress={onAlertTodo}
+          onTransactionPress={onPressTransactions}
         />
         <SpacerRow size={2} />
         <SVG source={chevronRightSVG} width={16} height={16} />

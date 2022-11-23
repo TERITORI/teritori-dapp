@@ -7,6 +7,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { TableRow, TableRowHeading } from "../../components/table";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -37,6 +38,9 @@ export const MULTISIG_WALLET_HEADING: { [key in string]: TableRowHeading } = {
 };
 
 export const MultisigWalletManageScreen = () => {
+  // variables
+  const navigation = useAppNavigation();
+
   // returns
   return (
     <ScreenContainer footerChildren={<></>} noMargin fullWidth noScroll>
@@ -62,7 +66,13 @@ export const MultisigWalletManageScreen = () => {
           style={styles.tableRow}
         />
         {data.map((wallet) => (
-          <MultisigWalletItem data={wallet} key={wallet.id} />
+          <MultisigWalletItem
+            data={wallet}
+            key={wallet.id}
+            onPressTransactions={() =>
+              navigation.navigate("MultisigWalletTransaction")
+            }
+          />
         ))}
       </ScrollView>
     </ScreenContainer>

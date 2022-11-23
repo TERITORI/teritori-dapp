@@ -1,5 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Pressable, StyleSheet, View, ActivityIndicator } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Pressable,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Animated,
+} from "react-native";
 
 import checkCircleSVG from "../../../../assets/icons/check-circle.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -34,12 +40,17 @@ export const RightSection: React.FC<RightSectionProps> = ({
 }) => {
   // variables
   const [unlockedSteps, setUnlockedSteps] = useState<number[]>([0]);
-  const percentage =
-    isLaunching && launchingCompleteStep
-      ? `${Math.round(
-          (launchingCompleteStep / LAUNCHING_PROCESS_STEPS.length) * 100
-        )}%`
-      : `${Math.round((unlockedSteps.length / steps.length) * 100)}%`;
+  const loadingPercentAnim = useRef(new Animated.Value(0)).current;
+
+  const percentage = `${Math.round(
+    (unlockedSteps.length / steps.length) * 100
+  )}%`;
+
+  const loadingWidth = loadingPercentAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 300],
+    extrapolate: "clamp",
+  });
 
   // hooks
   useEffect(() => {
@@ -47,6 +58,16 @@ export const RightSection: React.FC<RightSectionProps> = ({
       setUnlockedSteps([...unlockedSteps, currentStep]);
     }
   }, [currentStep]);
+
+  useEffect(() => {
+    if (isLaunching && launchingCompleteStep) {
+      Animated.timing(loadingPercentAnim, {
+        toValue: launchingCompleteStep / LAUNCHING_PROCESS_STEPS.length,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isLaunching, launchingCompleteStep]);
 
   // returns
   const SignatureProcess = useCallback(
@@ -101,7 +122,12 @@ export const RightSection: React.FC<RightSectionProps> = ({
             </BrandText>
           )}
         </View>
-        <View style={[styles.progressBar, { width: percentage }]} />
+        <Animated.View
+          style={[
+            styles.progressBar,
+            { width: isLaunching ? loadingWidth : percentage },
+          ]}
+        />
       </View>
       <View style={styles.section}>
         <BrandText style={styles.stepsText}>

@@ -12,11 +12,15 @@ import searchSVG from "../../../assets/icons/organization/search.svg";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SpacerColumn } from "../../components/spacer";
+import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GetStartedOption } from "./components/GetStartedOption";
 
-const OrganizationGetStartedScreen = () => {
+export const OrganizationGetStartedScreen = () => {
+  // variables
+  const navigation = useAppNavigation();
+
   // functions
   const onPress = () => {
     alert("TODO");
@@ -62,7 +66,7 @@ const OrganizationGetStartedScreen = () => {
             <GetStartedOption
               title="Manage Multisig Wallet"
               icon={multisigWalletSVG}
-              onPress={onPress}
+              onPress={() => navigation.navigate("MultisigWalletManage")}
             />
           </View>
         </View>
@@ -71,11 +75,10 @@ const OrganizationGetStartedScreen = () => {
   );
 };
 
-export default OrganizationGetStartedScreen;
-
 const styles = StyleSheet.create({
   container: {
     padding: layout.contentPadding,
+    paddingTop: layout.topContentPaddingWithHeading,
   },
   row: {
     flex: 1,

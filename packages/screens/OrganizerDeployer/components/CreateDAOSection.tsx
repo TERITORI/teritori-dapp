@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
   container: {
     padding: layout.contentPadding,
     paddingRight: layout.padding_x2_5,
+    paddingTop: layout.topContentPaddingWithHeading,
   },
   sectionTitle: StyleSheet.flatten([fontSemibold20, { color: neutral77 }]),
   section: {

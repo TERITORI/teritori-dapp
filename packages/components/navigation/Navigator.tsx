@@ -14,8 +14,10 @@ import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { MultisigWalletManageScreen } from "../../screens/OrganizerDeployer/MultisigWalletManageScreen";
-import OrganizationGetStartedScreen from "../../screens/OrganizerDeployer/OrganizationGetStartedScreen";
+import { MultisigWalletTransactionScreen } from "../../screens/OrganizerDeployer/MultisigWalletTransactionScreen";
+import { OrganizationGetStartedScreen } from "../../screens/OrganizerDeployer/OrganizationGetStartedScreen";
 import { OrganizerDeployerScreen } from "../../screens/OrganizerDeployer/OrganizerDeployerScreen";
+import { TransactionProposalScreen } from "../../screens/OrganizerDeployer/TransactionProposalScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
@@ -93,10 +95,11 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Wallet Manager (Chains)"),
         }}
       />
+
       {/* ==== Launchpad */}
       <Stack.Screen
         name="Launchpad"
-        component={MultisigWalletManageScreen}
+        component={LaunchpadScreen}
         options={{ header: () => null, title: screenTitle("Launchpad") }}
       />
       <Stack.Screen
@@ -106,6 +109,15 @@ export const Navigator: React.FC = () => {
       />
 
       {/* ==== Organization */}
+
+      <Stack.Screen
+        name="OrganizationDeployer"
+        component={OrganizerDeployerScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Organization Deployer"),
+        }}
+      />
       <Stack.Screen
         name="OrganizationGetStarted"
         component={OrganizationGetStartedScreen}
@@ -120,6 +132,22 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Manage Multisig Wallet"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigWalletTransaction"
+        component={MultisigWalletTransactionScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Wallet Name 1"),
+        }}
+      />
+      <Stack.Screen
+        name="TransactionProposal"
+        component={TransactionProposalScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Transactions history"),
         }}
       />
 

@@ -16,7 +16,7 @@ import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { SpacerRow } from "../spacer";
 
-interface TabDefinition {
+export interface TabDefinition {
   name: string;
   badgeCount?: number;
   disabled?: boolean;
@@ -30,6 +30,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   style,
   selected,
   hideSelector,
+  tabStyle,
 }: {
   items: T;
   selected: keyof T;
@@ -37,6 +38,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   borderColorTabSelected?: string;
   style?: StyleProp<ViewStyle>;
   hideSelector?: boolean;
+  tabStyle?: ViewStyle;
 }) => {
   const { scrollTo } = useScrollTo();
   const itemsArray = Object.entries(items);
@@ -71,13 +73,16 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
             }}
           >
             <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
+              style={[
+                {
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
 
-                height: 24,
-              }}
+                  height: 24,
+                },
+                tabStyle,
+              ]}
             >
               <BrandText
                 style={[

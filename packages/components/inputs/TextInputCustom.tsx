@@ -22,7 +22,6 @@ import {
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import asteriskSignSVG from "../../../assets/icons/asterisk-sign.svg";
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import {
   neutral00,
@@ -31,21 +30,22 @@ import {
   neutral77,
   secondaryColor,
 } from "../../utils/style/colors";
-import {
-  fontMedium10,
-  fontSemibold13,
-  fontSemibold14,
-} from "../../utils/style/fonts";
+import { fontMedium10 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../spacer";
+import {
+  TextInputOutsideLabel,
+  TextInputLabelProps,
+} from "./TextInputOutsideLabel";
 
 export interface TextInputCustomProps<T extends FieldValues>
-  extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
-  label: string;
+  extends Omit<TextInputProps, "accessibilityRole" | "defaultValue">,
+    TextInputLabelProps {
+  variant?: "regular" | "labelOutside" | "noCropBorder";
   iconSVG?: React.FC<SvgProps>;
   placeHolder?: string;
   squaresBackgroundColor?: string;
@@ -56,14 +56,12 @@ export interface TextInputCustomProps<T extends FieldValues>
   regexp?: RegExp;
   width?: number;
   height?: number;
-  variant?: "regular" | "labelOutside" | "noCropBorder";
   control?: Control<T>;
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
-  subtitle?: string;
-  labelStyle?: TextStyle;
-  isAsterickSign?: boolean;
+  mainContainerStyle?: ViewStyle;
+  inputStyle?: TextStyle;
   hideLabel?: boolean;
 }
 
@@ -89,6 +87,8 @@ export const TextInputCustom = <T extends FieldValues>({
   labelStyle,
   isAsterickSign,
   iconSVG,
+  mainContainerStyle,
+  inputStyle,
   hideLabel,
   ...restProps
 }: TextInputCustomProps<T>) => {
@@ -164,35 +164,20 @@ export const TextInputCustom = <T extends FieldValues>({
       {variant &&
         ["labelOutside", "noCropBorder"].includes(variant) &&
         !hideLabel && (
-          <>
-            <View style={styles.rowEnd}>
-              <View style={styles.row}>
-                <BrandText
-                  style={[styles.labelText, fontSemibold14, labelStyle]}
-                >
-                  {label}
-                </BrandText>
-                {isAsterickSign && (
-                  <>
-                    <SpacerRow size={0.5} />
-                    <SVG source={asteriskSignSVG} width={6} height={6} />
-                  </>
-                )}
-              </View>
-              {subtitle && (
-                <BrandText style={fontSemibold13}>{subtitle}</BrandText>
-              )}
-            </View>
-            <SpacerColumn size={1} />
-          </>
+          <TextInputOutsideLabel
+            labelStyle={labelStyle}
+            isAsterickSign={isAsterickSign}
+            subtitle={subtitle}
+            label={label}
+          />
         )}
-
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
         mainContainerStyle={[
           styles.mainContainer,
           variant === "noCropBorder" && styles.noCropBorderBg,
+          mainContainerStyle,
         ]}
         width={width}
         fullWidth={!width}
@@ -227,7 +212,7 @@ export const TextInputCustom = <T extends FieldValues>({
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
               value={field.value}
-              style={styles.textInput}
+              style={[styles.textInput, inputStyle]}
               {...restProps}
             />
           </View>
@@ -241,12 +226,6 @@ export const TextInputCustom = <T extends FieldValues>({
 };
 
 const styles = StyleSheet.create({
-  rowEnd: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-  },
-  row: { flexDirection: "row" },
   mainContainer: {
     alignItems: "flex-start",
     paddingHorizontal: 12,

@@ -16842,6 +16842,11 @@ react-native-material-menu@^2.0.0:
   resolved "https://registry.yarnpkg.com/react-native-material-menu/-/react-native-material-menu-2.0.0.tgz#139f407a52fbc0d47e5351d50ac769e05812da5c"
   integrity sha512-SmO9PLE3E469EPbVWZqvdu6JGPPZIm7YjqDcWs2PPoY0k7w2V9tFo3BmmLXNzNZDCVCAi+PPSsL7h/5WkfHcSg==
 
+react-native-multiple-switch@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-multiple-switch/-/react-native-multiple-switch-1.1.0.tgz#cb8f2aada6571f374a5b254ac0c55ab51fb869eb"
+  integrity sha512-BCzR8u6odN5WV49anoNZdPL2I3wLXz7hR1qm09/+8wmgIuqxg93rRfH8rUKMt8WdEG2HxggOLzuFTHBsuNA0YQ==
+
 react-native-paper@^4.12.5:
   version "4.12.5"
   resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-4.12.5.tgz#5ea4bbe02d416d17802a199de748700358c11d3a"
@@ -16928,6 +16933,13 @@ react-native-svg@^6.2.1:
     color "^2.0.1"
     lodash "^4.16.6"
     pegjs "^0.10.0"
+
+react-native-switch-selector@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-switch-selector/-/react-native-switch-selector-2.2.1.tgz#551ff32c018281904b1d5df79f5192c788195d87"
+  integrity sha512-HeUGoPD+rDV9F0CWJnIjZaK1JJS95dnxxVzTzufeLYCtA/iFKxhy+PS8kAyXTwfrTSgFFAmURgcpkAcAMqDg8Q==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-native-toast-message@^2.1.5:
   version "2.1.5"

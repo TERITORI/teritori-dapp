@@ -1,5 +1,6 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import React, { useRef, useEffect } from "react";
+import { StyleSheet, View, Animated } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
@@ -14,6 +15,28 @@ export const LaunchingOrganizationSection: React.FC<{
 }> = ({ isLaunched }) => {
   // variables
   const { navigate } = useAppNavigation();
+  const successAnimateValue = useRef(new Animated.Value(0)).current;
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+
+  // hooks
+  useEffect(() => {
+    if (isLaunched) {
+      Animated.timing(successAnimateValue, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+      lottieRef.current?.stop();
+      lottieRef.current?.play();
+    }
+  }, [isLaunched]);
+
+  // animation
+  const fadeOutAnim = successAnimateValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+
   // returns
   return (
     <View style={styles.container}>
@@ -34,6 +57,32 @@ export const LaunchingOrganizationSection: React.FC<{
           />
         </>
       )}
+
+      <Animated.View
+        style={[styles.lottieAnim, { opacity: successAnimateValue }]}
+      >
+        <Lottie
+          lottieRef={lottieRef}
+          style={{
+            width: 200,
+            height: 200,
+          }}
+          animationData={require("../animation-success.json")}
+          autoPlay={false}
+          loop={false}
+        />
+      </Animated.View>
+
+      <Animated.View style={[styles.lottieAnim, { opacity: fadeOutAnim }]}>
+        <Lottie
+          style={{
+            width: 200,
+            height: 200,
+          }}
+          animationData={require("../animation-loading.json")}
+          autoPlay
+        />
+      </Animated.View>
     </View>
   );
 };
@@ -42,5 +91,19 @@ const styles = StyleSheet.create({
   container: {
     padding: layout.contentPadding,
     paddingRight: layout.padding_x2_5,
+    position: "relative",
+    flex: 1,
+    paddingTop: layout.topContentPaddingWithHeading,
+  },
+  lottieAnim: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    margin: "auto",
+
+    width: 200,
+    height: 200,
   },
 });

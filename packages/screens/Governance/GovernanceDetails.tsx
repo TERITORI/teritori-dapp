@@ -15,7 +15,7 @@ import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
-import { neutral44 } from "../../utils/style/colors";
+import { neutral44, tulipTree } from "../../utils/style/colors";
 import { getTeritoriSigningStargateClient } from "../../utils/teritori";
 import { ProposalStatus } from "./types";
 
@@ -444,7 +444,7 @@ export const GovernanceDetails: React.FC<{
         >
           <VictoryPie
             innerRadius={70}
-            colorScale={["#16BBFF", "#EAA54B", "#808080"]}
+            colorScale={["#16BBFF", tulipTree, "#808080"]}
             data={[
               { x: "Pourcentage Yes", y: valueChartYes },
               { x: "Pourcentage No", y: valueChartNo },
@@ -528,7 +528,7 @@ export const GovernanceDetails: React.FC<{
             style={{
               width: 12,
               height: 12,
-              backgroundColor: "#EAA54B",
+              backgroundColor: tulipTree,
               borderRadius: 12,
             }}
           />
@@ -684,7 +684,7 @@ export const GovernanceDetails: React.FC<{
 
             <RadioButton
               value="No"
-              color="#EAA54B"
+              color={tulipTree}
               uncheckedColor="#777777"
               status={checked === "No" ? "checked" : "unchecked"}
               onPress={() => setChecked("No")}
@@ -767,7 +767,7 @@ export const GovernanceDetails: React.FC<{
               style={{
                 width: 12,
                 height: 12,
-                backgroundColor: "#EAA54B",
+                backgroundColor: tulipTree,
                 borderRadius: 12,
               }}
             />

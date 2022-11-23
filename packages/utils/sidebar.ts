@@ -1,4 +1,5 @@
 // import chainSVG from "../../assets/icons/chain.svg";
+import deployerSVG from "../../assets/icons/deployer.svg";
 import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
@@ -68,6 +69,11 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     title: "Staking",
     route: "Staking",
     icon: stakingSVG,
+  },
+  deployer: {
+    title: "Deployer",
+    route: "OrganizationDeployer",
+    icon: deployerSVG,
   },
   governance: {
     title: "Governance",

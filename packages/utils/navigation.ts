@@ -27,9 +27,13 @@ export type RootStackParamList = {
   Staking: undefined;
 
   ComingSoon: undefined;
+
+  OrganizationDeployer: undefined;
   OrganizationGetStarted: undefined;
 
   MultisigWalletManage: undefined;
+  MultisigWalletTransaction: undefined;
+  TransactionProposal: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -71,8 +75,13 @@ const navConfig: {
     // ==== Staking
     Staking: "staking",
     // === Organization
+    OrganizationDeployer: "organization-deployer",
     OrganizationGetStarted: "organization-get-started",
+    // === Multisig
     MultisigWalletManage: "multisig-wallet/manage",
+    MultisigWalletTransaction: "multisig-wallet/transaction",
+    TransactionProposal: "multisig-wallet/proposal/transaction",
+
     // ==== ComingSoon
     ComingSoon: "coming-soon",
   },

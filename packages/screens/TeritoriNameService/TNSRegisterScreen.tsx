@@ -1,7 +1,7 @@
 import React from "react";
 
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import ModalBase from "../../components/modals/GradientModalBase";
+import GradientModalBase from "../../components/modals/GradientModalBase";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
@@ -29,7 +29,7 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
   );
 
   return (
-    <ModalBase
+    <GradientModalBase
       onClose={() => onClose()}
       label="Find a name"
       width={457}
@@ -85,6 +85,6 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
           />
         )}
       </FindAName>
-    </ModalBase>
+    </GradientModalBase>
   );
 };

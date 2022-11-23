@@ -8,7 +8,6 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontMedium13, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-// misc
 
 type RadioDescriptionSelectorProps = {
   selected: boolean;
@@ -23,8 +22,6 @@ export const RadioDescriptionSelector = ({
   title,
   description,
 }: RadioDescriptionSelectorProps) => {
-  // variables
-
   // returns
   return (
     <Pressable style={styles.container} onPress={onPress}>

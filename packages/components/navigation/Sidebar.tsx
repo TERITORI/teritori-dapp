@@ -43,10 +43,9 @@ const SpringConfig: WithSpringConfig = {
 };
 
 export const Sidebar: React.FC = () => {
+  // variables
   const selectedWallet = useSelectedWallet();
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
-
-  // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
