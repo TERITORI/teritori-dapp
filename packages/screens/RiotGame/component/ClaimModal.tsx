@@ -1,6 +1,7 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
+import firePNG from "../../../../assets/game/fire.png";
 import trophiesSVG from "../../../../assets/game/trophies.svg";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
 import teritoriLogoSVG from "../../../../assets/logos/logo.svg";
@@ -29,7 +30,15 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
   return (
     <ModalBase
       contentStyle={{ alignItems: "center" }}
-      label="Success Fight!"
+      label={
+        <Row>
+          <BrandText style={fontSemibold20}>Success Fight !</BrandText>
+          <Image
+            style={{ width: 24, height: 24, marginLeft: 5 }}
+            source={firePNG}
+          />
+        </Row>
+      }
       visible={visible}
       width={372}
       onClose={onClose}

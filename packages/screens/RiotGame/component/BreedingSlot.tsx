@@ -3,7 +3,6 @@ import { StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
-import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import {
