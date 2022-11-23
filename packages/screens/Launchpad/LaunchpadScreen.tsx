@@ -22,9 +22,6 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
           paddingBottom: layout.contentPadding,
         }}
       >
-        {/*TODO: Need collections fetching filters*/}
-        {/*TODO: (Better) : Need to fetch collections from ??? to allows marketing team to choose which collections to display here and on MarketplaceScreen*/}
-
         <CollectionsCarouselHeader
           req={{
             networkId: selectedNetworkId,
@@ -53,7 +50,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
         <CollectionsCarouselSection
           title="Available on Marketplace"
           req={{
-            upcoming: true,
+            upcoming: false,
             networkId: "",
             sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
             sort: Sort.SORTING_UNSPECIFIED,
