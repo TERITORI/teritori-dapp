@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
-import { neutral33, neutral67, neutral77 } from "../../utils/style/colors";
+import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, legalFooterHeight } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -52,14 +52,12 @@ export const LegalFooter: React.FC = ({ children }) => {
           width: "40%",
         }}
       >
-        {/*TODO: Gradient text for these 3 ExternalLink [neutral67, "#B7B7B7"]*/}
         <ExternalLink
+          gradientType="gray"
           externalUrl="https://teritori.notion.site/Important-Notice-74e66ded18164023b80602b17b284d93"
           style={[
             fontSemibold14,
             {
-              color: neutral67,
-              textDecorationLine: "none",
               marginRight: layout.padding_x1,
             },
           ]}
@@ -69,12 +67,11 @@ export const LegalFooter: React.FC = ({ children }) => {
         </ExternalLink>
 
         <ExternalLink
+          gradientType="gray"
           externalUrl="https://teritori.notion.site/Privacy-Policy-16e2332744d346db9b78909a91cb44e3"
           style={[
             fontSemibold14,
             {
-              color: neutral67,
-              textDecorationLine: "none",
               marginRight: layout.padding_x1,
             },
           ]}
@@ -84,11 +81,9 @@ export const LegalFooter: React.FC = ({ children }) => {
         </ExternalLink>
 
         <ExternalLink
+          gradientType="gray"
           externalUrl="https://teritori.notion.site/Terms-Conditions-6007160a0c74472cbb75a07bdfdd5f73"
-          style={[
-            fontSemibold14,
-            { color: neutral67, textDecorationLine: "none" },
-          ]}
+          style={[fontSemibold14, { textDecorationLine: "none" }]}
           numberOfLines={1}
         >
           Terms & Conditions

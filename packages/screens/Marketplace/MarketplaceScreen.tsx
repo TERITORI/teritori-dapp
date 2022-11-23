@@ -6,7 +6,9 @@ import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import {
   Collection,
-  CollectionsRequest_Kind,
+  MintState,
+  Sort,
+  SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
@@ -15,11 +17,12 @@ import { Section } from "../../components/Section";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
+import { GradientText } from "../../components/gradientText";
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ScreenFC } from "../../utils/navigation";
-import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
@@ -47,19 +50,18 @@ const CarouselCollectionItem: React.FC<{
           {collection.collectionName}
         </BrandText>
 
-        {/*TODO: blue white text */}
-        <BrandText
+        <GradientText
+          gradientType="blueReversed"
           style={[
             fontSemibold14,
             {
-              color: primaryColor,
               marginBottom: layout.padding_x3,
               marginRight: layout.padding_x3,
             },
           ]}
         >
           TERITORI Collections
-        </BrandText>
+        </GradientText>
 
         <PrimaryButton
           size="M"
@@ -88,10 +90,16 @@ const CarouselCollectionItem: React.FC<{
 };
 
 const CollectionsCarouselHeader: React.FC = () => {
+  const selectedNetworkId = useSelectedNetworkId();
+
   const [collections] = useCollections({
-    kind: CollectionsRequest_Kind.KIND_TERITORI_FEATURES,
+    networkId: selectedNetworkId,
+    sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+    upcoming: false,
+    sort: Sort.SORTING_VOLUME,
     limit: 16,
     offset: 0,
+    mintState: MintState.MINT_STATE_ENDED,
   });
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
@@ -129,6 +137,7 @@ const CollectionsCarouselHeader: React.FC = () => {
 };
 
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
+  const selectedNetworkId = useSelectedNetworkId();
   return (
     <ScreenContainer>
       <View
@@ -141,11 +150,28 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
 
         <CollectionsCarouselSection
           title="TERITORI Collections"
-          kind={CollectionsRequest_Kind.KIND_TERITORI_FEATURES}
+          req={{
+            networkId: selectedNetworkId,
+            sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+            upcoming: false,
+            sort: Sort.SORTING_VOLUME,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_UNSPECIFIED,
+          }}
         />
+
         <CollectionsCarouselSection
           title="Upcoming Launches"
-          kind={CollectionsRequest_Kind.KIND_UPCOMING}
+          req={{
+            upcoming: true,
+            networkId: "",
+            sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+            sort: Sort.SORTING_UNSPECIFIED,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_UNSPECIFIED,
+          }}
         />
       </View>
     </ScreenContainer>
