@@ -2,11 +2,11 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"strconv"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/contracts/bunker_minter_types"
-	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -34,13 +34,20 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 		h.logger.Error("failed to fetch collection metadata", zap.String("metadata-uri", metadataURI), zap.Error(err))
 	}
 
+	maxSupply, err := strconv.Atoi(minterInstantiateMsg.NftMaxSupply)
+	if err != nil {
+		h.logger.Error("failed to parse nft max supply", zap.Error(err))
+		maxSupply = -1
+	}
+
 	// create collection
 	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
-		ID:       collectionId,
-		Network:  marketplacepb.Network_NETWORK_TERITORI,
-		Name:     minterInstantiateMsg.NftName,
-		ImageURI: metadata.ImageURI,
+		ID:        collectionId,
+		NetworkId: "teritori", // FIXME: get from networks config
+		Name:      minterInstantiateMsg.NftName,
+		ImageURI:  metadata.ImageURI,
+		MaxSupply: maxSupply,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,

@@ -8,7 +8,6 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/TERITORI/teritori-dapp/go/internal/airtable_fetcher"
-	"github.com/TERITORI/teritori-dapp/go/internal/collections"
 	"github.com/TERITORI/teritori-dapp/go/internal/faking"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
@@ -28,8 +27,7 @@ type MarkteplaceService struct {
 	homeProvider *airtable_fetcher.Cache
 	// collectionsByVolumeProvider         collections.CollectionsProvider
 	// collectionsByMarketCapProvider      collections.CollectionsProvider
-	teritoriFeaturesCollectionsProvider collections.CollectionsProvider
-	conf                                *Config
+	conf *Config
 }
 
 type Config struct {
@@ -48,8 +46,17 @@ func NewMarketplaceService(ctx context.Context, conf *Config) marketplacepb.Mark
 		homeProvider: airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(), conf.Logger.Named("airtable_fetcher")),
 		// collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 		// collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
-		teritoriFeaturesCollectionsProvider: collections.NewTeritoriCollectionsProvider(conf.IndexerDB, conf.Whitelist, conf.Logger),
 	}
+}
+
+type DBCollectionWithExtra struct {
+	Network             string
+	ID                  string
+	Name                string
+	ImageURI            string
+	Volume              string
+	MintContractAddress string
+	CreatorAddress      string
 }
 
 func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, srv marketplacepb.MarketplaceService_CollectionsServer) error {
@@ -63,9 +70,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		return errors.New("offset must be greater or equal to 0")
 	}
 
-	switch req.GetKind() {
-
-	case marketplacepb.CollectionsRequest_KIND_UPCOMING:
+	if req.GetUpcoming() {
 		launches := subSlice(s.homeProvider.GetUpcomingLaunches(), int(offset), int(offset+limit))
 		for _, launch := range launches {
 			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: launch}); err != nil {
@@ -73,41 +78,73 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 			}
 		}
 		return nil
+	}
 
-		/*
-			case marketplacepb.CollectionsRequest_KIND_BY_VOLUME:
-				collections := s.collectionsByVolumeProvider.Collections(int(limit), int(offset))
-				for collection := range collections {
-					if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: collection}); err != nil {
-						return errors.Wrap(err, "failed to send collection")
-					}
-				}
-				return nil
-		*/
+	switch req.GetNetworkId() {
 
-		/*
-			case marketplacepb.CollectionsRequest_KIND_BY_MARKETCAP:
-				collections := s.collectionsByMarketCapProvider.Collections(int(limit), int(offset))
-				for collection := range collections {
-					if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: collection}); err != nil {
-						return errors.Wrap(err, "failed to send collection")
-					}
-				}
-				return nil
-		*/
+	case "teritori", "teritori-testnet":
+		var collections []DBCollectionWithExtra
 
-	case marketplacepb.CollectionsRequest_KIND_TERITORI_FEATURES:
-		s.conf.Logger.Info("fetch teritori features collections")
-		collections := s.teritoriFeaturesCollectionsProvider.Collections(int(limit), int(offset))
-		for collection := range collections {
-			s.conf.Logger.Info("fetched teritori collection", zap.Any("collection", collection))
-			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: collection}); err != nil {
+		where := ""
+		switch req.GetMintState() {
+		case marketplacepb.MintState_MINT_STATE_RUNNING:
+			where = "where tc.max_supply != -1 and (select count(1) from nfts where nfts.collection_id = tc.id) != tc.max_supply"
+		case marketplacepb.MintState_MINT_STATE_ENDED:
+			where = "where tc.max_supply = -1 or (select count(1) from nfts where nfts.collection_id = tc.id) = tc.max_supply"
+		}
+
+		err := s.conf.IndexerDB.Raw(fmt.Sprintf(`
+      with tori_collections as (
+        SELECT c.*, tc.mint_contract_address, tc.creator_address FROM collections AS c
+        INNER join teritori_collections tc on tc.collection_id = c.id
+        WHERE tc.mint_contract_address IN ?
+      ),
+      nft_by_collection as (
+      SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
+        INNER JOIN nfts AS n on tc.id = n.collection_id
+      ),
+      trades_by_collection as (
+        select sum(t.usd_price) volume, nbc.id FROM trades AS t
+        INNER join activities AS a on a.id = t.activity_id 
+        INNER join nft_by_collection nbc on nbc.nft_id = a.nft_id
+        where a.time > ? and a.kind = ?
+        GROUP BY nbc.id
+      )
+      select tc.*, COALESCE((select tbc.volume from trades_by_collection tbc where tbc.id = tc.id), 0) volume 
+      from tori_collections tc
+      %s
+      order by volume desc
+      limit ?
+      offset ?
+    `, where),
+			s.conf.Whitelist,
+			time.Now().AddDate(0, 0, -30),
+			indexerdb.ActivityKindTrade,
+			limit,
+			offset,
+		).Scan(&collections).Error
+		if err != nil {
+			return errors.Wrap(err, "failed to query database")
+		}
+
+		for _, c := range collections {
+			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &marketplacepb.Collection{
+				Id:             c.ID,
+				CollectionName: c.Name,
+				Verified:       true,
+				ImageUri:       ipfsutil.IPFSURIToURL(c.ImageURI),
+				MintAddress:    c.MintContractAddress,
+				NetworkId:      req.GetNetworkId(),
+				Volume:         c.Volume,
+				CreatorId:      string(indexerdb.TeritoriUserID(c.CreatorAddress)),
+			}}); err != nil {
 				return errors.Wrap(err, "failed to send collection")
 			}
 		}
+
 		return nil
 
-	case marketplacepb.CollectionsRequest_KIND_FAKE:
+	case "fake":
 		for i := int32(0); i < limit; i++ {
 			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: faking.FakeCollection()}); err != nil {
 				return errors.Wrap(err, "failed to send collection")
@@ -117,7 +154,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 
 	}
 
-	return fmt.Errorf("unknown collection list kind %s", req.GetKind().String())
+	return fmt.Errorf("unknown collection network %s", req.GetNetworkId())
 }
 
 type NFTOwnerInfo struct {
@@ -151,7 +188,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	collection_id := req.GetCollectionId()
 
 	// FIXME: return fake data if any filter is fake
-	if strings.HasPrefix(collection_id, marketplacepb.Network_NETWORK_FAKE.Prefix()) {
+	if strings.HasPrefix(collection_id, "fake") {
 		for i := int32(0); i < limit; i++ {
 			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: faking.FakeNFT()}); err != nil {
 				return errors.Wrap(err, "failed to send nft")
@@ -161,11 +198,11 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	}
 
 	// FIXME: support other filters on solana
-	if strings.HasPrefix(collection_id, marketplacepb.Network_NETWORK_SOLANA.Prefix()) {
+	if strings.HasPrefix(collection_id, "sol") {
 		gqlClient := graphql.NewClient(s.conf.GraphqlEndpoint, nil)
 
 		collectionNFTs, err := holagql.GetCollectionNFTs(srv.Context(), gqlClient,
-			strings.TrimPrefix(collection_id, marketplacepb.Network_NETWORK_SOLANA.Prefix()+"-"),
+			strings.TrimPrefix(collection_id, "sol-"),
 			int(limit),
 			int(offset),
 		)
@@ -245,7 +282,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			Id:             nft.ID,
 			Name:           nft.Name,
 			CollectionName: nft.Collection.Name,
-			Network:        nft.Collection.Network,
+			NetworkId:      nft.Collection.NetworkId,
 			ImageUri:       ipfsutil.IPFSURIToURL(imageURI),
 			IsListed:       nft.IsListed,
 			Price:          nft.PriceAmount.String,
@@ -276,7 +313,7 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 	collectionID := req.GetCollectionId()
 	if collectionID != "" {
 		//Check for collection Type
-		if strings.HasPrefix(collectionID, marketplacepb.Network_NETWORK_FAKE.Prefix()) {
+		if strings.HasPrefix(collectionID, "fake") {
 			for i := int32(0); i < limit; i++ {
 				if err := srv.Send(&marketplacepb.ActivityResponse{Activity: faking.FakeActivity()}); err != nil {
 					return errors.Wrap(err, "failed to send activity")
@@ -285,11 +322,11 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			return nil
 		}
 
-		if strings.HasPrefix(collectionID, marketplacepb.Network_NETWORK_SOLANA.Prefix()) {
+		if strings.HasPrefix(collectionID, "sol") {
 			gqlClient := graphql.NewClient(s.conf.GraphqlEndpoint, nil)
 
 			collectionActivity, err := holagql.GetCollectionActivity(srv.Context(), gqlClient,
-				strings.TrimPrefix(collectionID, marketplacepb.Network_NETWORK_SOLANA.Prefix()+"-"),
+				strings.TrimPrefix(collectionID, "sol-"),
 				int(limit),
 				int(offset),
 			)
@@ -299,7 +336,7 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 
 			for _, activity := range collectionActivity.Collection.Activities {
 				if err := srv.Send(&marketplacepb.ActivityResponse{Activity: &marketplacepb.Activity{
-					Id:              fmt.Sprintf("%s-%s", marketplacepb.Network_NETWORK_SOLANA.Prefix(), faker.UUIDDigit()),
+					Id:              fmt.Sprintf("%s-%s", "sol", faker.UUIDDigit()),
 					Amount:          activity.Price,
 					Denom:           "lamports",
 					TransactionKind: activity.ActivityType,

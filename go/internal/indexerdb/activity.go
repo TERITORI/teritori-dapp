@@ -20,8 +20,8 @@ type Activity struct {
 	// ID is network-dependent
 	// Teritori: tori-<tx_hash>-<msg_index>
 	ID   string
-	Kind ActivityKind
-	Time time.Time
+	Kind ActivityKind `gorm:"index"`
+	Time time.Time    `gorm:"index"`
 
 	// "has one" relations
 	Listing        *Listing
@@ -34,7 +34,7 @@ type Activity struct {
 	UpdateNFTPrice *UpdateNFTPrice
 
 	// "belongs to" relations
-	NFTID string
+	NFTID string `gorm:"index"`
 	NFT   *NFT
 }
 
