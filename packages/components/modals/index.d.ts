@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 namespace NSModal {
   type ModalBaseProps = {
     label?: string | React.FC | ViewComponent;
