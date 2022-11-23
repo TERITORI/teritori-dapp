@@ -16,6 +16,7 @@ import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingS
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
+import { RiotGameSeasonsScreen } from "../../screens/RiotGame/RiotGameSeasonsScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
@@ -93,7 +94,14 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Breeding"),
         }}
       />
-
+      <Stack.Screen
+        name="RiotGameSeasons"
+        component={RiotGameSeasonsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Seasons"),
+        }}
+      />
       {/* ==== Wallet Manager */}
       <Stack.Screen
         name="WalletManager"
