@@ -7,25 +7,19 @@ import clockSVG from "../../../assets/game/clock.svg";
 import countDownPNG from "../../../assets/game/countdown.png";
 import defaultEnemyPNG from "../../../assets/game/default-enemy.png";
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
-import trophiesSVG from "../../../assets/game/trophies.svg";
 import addCircleSFilledVG from "../../../assets/icons/add-circle-filled.svg";
 import claimSVG from "../../../assets/icons/claim.svg";
-import twitterSVG from "../../../assets/icons/twitter.svg";
 import unstakeSVG from "../../../assets/icons/unstake.svg";
-import teritoriLogoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { ButtonOutline } from "../../components/buttons/ButtonOutline";
-import { SocialButton } from "../../components/buttons/SocialButton";
 import Row from "../../components/grid/Row";
-import ModalBase from "../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import useRippers from "../../hooks/riotGame/useRippers";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   gameHighlight,
-  mineShaftColor,
   neutral33,
   neutral77,
   neutralA3,
@@ -40,8 +34,8 @@ import {
   fontSemibold20,
   fontSemibold14,
   fontMedium14,
-  fontSemibold16,
 } from "../../utils/style/fonts";
+import { ClaimModal } from "./component/ClaimModal";
 import { FightProgressBar } from "./component/FightProgressBar";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
@@ -88,7 +82,9 @@ export const RiotGameFightScreen = () => {
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
 
   const claimRewards = () => {
-    setIsShowClaimModal(true);
+    if (fightState === FIGHT_STATE.RELAX) {
+      setIsShowClaimModal(true);
+    }
   };
 
   const updateFightState = () => {
@@ -216,18 +212,24 @@ export const RiotGameFightScreen = () => {
           </View>
         </Row>
 
+        {/* Countdown block */}
         <TertiaryBox
           fullWidth
           mainContainerStyle={styles.countDownSection}
           noBrokenCorners
         >
           <Row breakpoint={992}>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 2 }}>
               <BrandText style={fontSemibold20}>
                 {isOnGoing ? "Remaining Fight Time" : "Relax Period"}
               </BrandText>
               <Row>
-                <BrandText style={[fontMedium48, { color: countdownColor }]}>
+                <BrandText
+                  style={[
+                    fontMedium48,
+                    { color: countdownColor, minWidth: 260 },
+                  ]}
+                >
                   {isCompleted
                     ? "Completed"
                     : moment.utc(remainingTime).format("HH[h]mm[m]ss")}
@@ -278,67 +280,10 @@ export const RiotGameFightScreen = () => {
         )}
       </View>
 
-      <ModalBase
-        contentStyle={{ alignItems: "center" }}
-        label="Success Fight!"
-        visible={isShowClaimModal}
-        width={372}
+      <ClaimModal
         onClose={() => setIsShowClaimModal(false)}
-        childrenBottom={
-          <View
-            style={{
-              borderTopWidth: 1,
-              borderTopColor: mineShaftColor,
-              width: "100%",
-              alignItems: "center",
-              padding: 20,
-            }}
-          >
-            <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-              Share with friends via
-            </BrandText>
-
-            <SpacerColumn size={2} />
-
-            <SocialButton
-              noBrokenCorners={false}
-              iconSvg={twitterSVG}
-              text="Twitter"
-            />
-          </View>
-        }
-      >
-        <View style={{ alignItems: "center" }}>
-          <SVG width={200} height={200} source={teritoriLogoSVG} />
-
-          <SpacerColumn size={4} />
-
-          <BrandText style={fontSemibold20}>ferryman.tori</BrandText>
-
-          <SpacerColumn size={2} />
-
-          <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-            You made it to rank #1!
-          </BrandText>
-
-          <SpacerColumn size={2} />
-
-          <Row>
-            <SVG
-              color={neutralA3}
-              width={24}
-              height={24}
-              source={trophiesSVG}
-            />
-
-            <SpacerRow size={1} />
-
-            <BrandText style={fontSemibold20}>1337 TORI</BrandText>
-          </Row>
-
-          <SpacerColumn size={4} />
-        </View>
-      </ModalBase>
+        visible={isShowClaimModal}
+      />
     </GameContentView>
   );
 };
@@ -378,7 +323,7 @@ const styles = StyleSheet.create({
   actionsSection: {
     justifyContent: "flex-end",
     alignItems: "center",
-    flex: 1,
+    flex: 2,
   },
   actionLabel: {
     marginLeft: 5,
