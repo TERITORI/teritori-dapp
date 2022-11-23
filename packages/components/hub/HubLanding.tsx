@@ -8,7 +8,11 @@ import labsSVG from "../../../assets/icons/labs.svg";
 import launchpadSVG from "../../../assets/icons/launchpad.svg";
 import marketplaceSVG from "../../../assets/icons/marketplace.svg";
 import stakingSVG from "../../../assets/icons/staking.svg";
-import { CollectionsRequest_Kind } from "../../api/marketplace/v1/marketplace";
+import {
+  MintState,
+  Sort,
+  SortDirection,
+} from "../../api/marketplace/v1/marketplace";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { backendClient } from "../../utils/backend";
@@ -134,7 +138,15 @@ Launch"
         </Section>
         <CollectionsCarouselSection
           title="Upcoming Launches on Teritori Launch Pad"
-          kind={CollectionsRequest_Kind.KIND_UPCOMING}
+          req={{
+            upcoming: true,
+            networkId: "",
+            sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+            sort: Sort.SORTING_UNSPECIFIED,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_UNSPECIFIED,
+          }}
         />
       </View>
     </View>

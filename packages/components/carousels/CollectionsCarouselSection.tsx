@@ -2,7 +2,10 @@ import React from "react";
 
 import {
   Collection,
-  CollectionsRequest_Kind,
+  CollectionsRequest,
+  MintState,
+  Sort,
+  SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -19,15 +22,21 @@ const renderItem = (props: { item: Collection }) => (
   <CollectionView item={props.item} />
 );
 
+const defaultRequest: CollectionsRequest = {
+  networkId: "fake",
+  sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+  sort: Sort.SORTING_UNSPECIFIED,
+  limit: 16,
+  offset: 0,
+  upcoming: false,
+  mintState: MintState.MINT_STATE_UNSPECIFIED,
+};
+
 export const CollectionsCarouselSection: React.FC<{
   title: string;
-  kind?: CollectionsRequest_Kind;
-}> = ({ title, kind = CollectionsRequest_Kind.KIND_FAKE }) => {
-  const [collections, fetchMore] = useCollections({
-    kind,
-    limit: 16,
-    offset: 0,
-  });
+  req?: CollectionsRequest;
+}> = ({ title, req = defaultRequest }) => {
+  const [collections, fetchMore] = useCollections(req);
 
   const { width } = useMaxResolution();
 

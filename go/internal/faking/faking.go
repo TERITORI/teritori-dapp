@@ -54,12 +54,12 @@ func FakeCollection() *marketplacepb.Collection {
 	volume = strings.TrimRight(strings.TrimRight(volume, "0"), ".")
 	fakeMintAddress := faker.UUIDDigit()
 	return &marketplacepb.Collection{
-		Id:             marketplacepb.Network_NETWORK_FAKE.Prefix() + "-" + fakeMintAddress,
+		Id:             "fake-" + fakeMintAddress,
 		CollectionName: faker.Sentence(),
 		CreatorName:    faker.Name(),
 		Verified:       fakeBool(),
 		ImageUri:       fakeImageURI(400, 400),
-		Network:        marketplacepb.Network_NETWORK_FAKE,
+		NetworkId:      "fake",
 		MintAddress:    fakeMintAddress,
 		Volume:         volume,
 		VolumeDenom:    faker.Currency(),
@@ -77,13 +77,13 @@ func FakeNFT() *marketplacepb.NFT {
 	}
 
 	return &marketplacepb.NFT{
-		Id:          marketplacepb.Network_NETWORK_FAKE.Prefix() + "-" + faker.UUIDDigit(),
+		Id:          "fake-" + faker.UUIDDigit(),
 		Name:        faker.Sentence(),
 		MintAddress: faker.UUIDDigit(),
 		ImageUri:    fakeImageURI(400, 400),
 		Price:       price,
 		Denom:       denom,
-		Network:     marketplacepb.Network_NETWORK_FAKE,
+		NetworkId:   "fake",
 		IsListed:    isListed,
 	}
 }
@@ -93,7 +93,7 @@ func FakeActivity() *marketplacepb.Activity {
 	price = strings.TrimRight(strings.TrimRight(price, "0"), ".")
 	t := time.Unix(faker.UnixTime(), 0)
 	return &marketplacepb.Activity{
-		Id:              marketplacepb.Network_NETWORK_FAKE.Prefix() + "-" + faker.UUIDDigit(),
+		Id:              "fake-" + faker.UUIDDigit(),
 		TargetName:      faker.Sentence(),
 		ContractName:    faker.Word(),
 		Time:            t.Format(time.RFC3339),
@@ -102,7 +102,7 @@ func FakeActivity() *marketplacepb.Activity {
 		Denom:           faker.Currency(),
 		TransactionKind: faker.Word(),
 		TransactionId:   faker.UUIDDigit(),
-		BuyerId:         marketplacepb.Network_NETWORK_FAKE.Prefix() + "-" + faker.UUIDDigit(),
-		SellerId:        marketplacepb.Network_NETWORK_FAKE.Prefix() + "-" + faker.UUIDDigit(),
+		BuyerId:         "fake-" + faker.UUIDDigit(),
+		SellerId:        "fake-" + faker.UUIDDigit(),
 	}
 }
