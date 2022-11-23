@@ -63,7 +63,6 @@ export const useValidators = () => {
                 identity: v.description.identity,
                 jailed: !!v.jailed,
                 consensusPubKey: v.consensus_pubkey,
-                // claimableRewardAmount: rewardsPricesAndValidators.find(rpv => rpv.validator === v.address).....
               };
               return info;
             })

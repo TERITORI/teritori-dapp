@@ -3,6 +3,7 @@ import {
   MsgWithdrawDelegatorRewardEncodeObject,
 } from "@cosmjs/stargate";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { getNetwork } from "../networks";
@@ -11,11 +12,8 @@ import {
   CosmosRewardsResponse,
   getTeritoriSigningStargateClient,
 } from "../utils/teritori";
-import {
-  CoingeckoCoin,
-  getCoingeckoPrice,
-  useCoingeckoPrices,
-} from "./useCoingeckoPrices";
+import { CoingeckoCoin, useCoingeckoPrices } from "./useCoingeckoPrices";
+import { useErrorHandler } from "./useErrorHandler";
 import { useSelectedNetworkId } from "./useSelectedNetwork";
 
 export type Reward = {
@@ -39,36 +37,41 @@ export const useRewards = (walletAddress?: string) => {
   const selectedNetwork = useSelectedNetworkId();
   const networkId = selectedNetwork || process.env.TERITORI_NETWORK_ID || "";
   const { setToastSuccess, setToastError } = useFeedbacks();
+  const { triggerError } = useErrorHandler();
 
   const claimReward = async (
     validatorAddress: string,
     callback?: () => void
   ) => {
-    if (!walletAddress) return;
-    const signer = await getKeplrOfflineSigner();
-    const client = await getTeritoriSigningStargateClient(signer);
-    const msg: MsgWithdrawDelegatorRewardEncodeObject = {
-      typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
-      value: {
-        delegatorAddress: walletAddress,
-        validatorAddress,
-      },
-    };
-    const txResponse = await client.signAndBroadcast(
-      walletAddress,
-      [msg],
-      "auto"
-    );
-    if (isDeliverTxFailure(txResponse)) {
-      callback && callback();
-      console.error("tx failed", txResponse);
-      setToastError({
-        title: "Transaction failed",
-        message: txResponse.rawLog || "",
-      });
-      return;
+    try {
+      if (!walletAddress) return;
+      const signer = await getKeplrOfflineSigner();
+      const client = await getTeritoriSigningStargateClient(signer);
+      const msg: MsgWithdrawDelegatorRewardEncodeObject = {
+        typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
+        value: {
+          delegatorAddress: walletAddress,
+          validatorAddress,
+        },
+      };
+      const txResponse = await client.signAndBroadcast(
+        walletAddress,
+        [msg],
+        "auto"
+      );
+      if (isDeliverTxFailure(txResponse)) {
+        callback && callback();
+        console.error("tx failed", txResponse);
+        setToastError({
+          title: "Transaction failed",
+          message: txResponse.rawLog || "",
+        });
+        return;
+      }
+      setToastSuccess({ title: "Claim success", message: "" });
+    } catch (error) {
+      triggerError({ error, callback });
     }
-    setToastSuccess({ title: "Claim success", message: "" });
   };
 
   // ---- Getting rewards from cosmos distribution
@@ -84,60 +87,70 @@ export const useRewards = (walletAddress?: string) => {
   );
 
   // ---- Get all denoms used for these rewards
-  const denoms: string[] = [];
-  networkRewards.rewards.forEach((rew) => {
-    rew.reward.forEach((r) => {
-      let neverAdded = false;
-      denoms.forEach((d) => {
-        if (d === r.denom) neverAdded = true;
+  const denoms: string[] = useMemo(() => {
+    const memoDenoms: string[] = [];
+    networkRewards.rewards.forEach((rew) => {
+      rew.reward.forEach((r) => {
+        let neverAdded = false;
+        memoDenoms.forEach((d) => {
+          if (d === r.denom) neverAdded = true;
+        });
+        if (!neverAdded) memoDenoms.push(r.denom);
       });
-      if (!neverAdded) denoms.push(r.denom);
     });
-  });
+    return memoDenoms;
+  }, [networkId, networkRewards.rewards]);
 
   // ---- Get all prices for these denoms
-  const coins: CoingeckoCoin[] = [];
-  denoms.forEach((denom) => {
-    coins.push({
-      networkId,
-      denom,
+  const coins: CoingeckoCoin[] = useMemo(() => {
+    const memoCoins: CoingeckoCoin[] = [];
+    denoms.forEach((denom) => {
+      memoCoins.push({
+        networkId,
+        denom,
+      });
     });
-  });
-  const prices = useCoingeckoPrices(coins);
+    return memoCoins;
+  }, [networkId, denoms]);
+
+  const { prices, getCoingeckoPrice } = useCoingeckoPrices(coins);
 
   // ========= Handle rewards per validator
-  const rewards: Reward[] = [];
-
-  networkRewards.rewards.forEach((rew) => {
-    rew.reward.forEach((r) => {
-      const price = getCoingeckoPrice(networkId, r.denom, r.amount, prices);
-      if (price) {
-        const finalReward: Reward = {
-          validator: rew.validator_address,
-          denom: r.denom,
-          amount: r.amount,
-          price: price || 0,
-        };
-        rewards.push(finalReward);
-      }
+  const rewards: Reward[] = useMemo(() => {
+    const memoRewards: Reward[] = [];
+    networkRewards.rewards.forEach((rew) => {
+      rew.reward.forEach((r) => {
+        const price = getCoingeckoPrice(networkId, r.denom, r.amount, prices);
+        if (price) {
+          const finalReward: Reward = {
+            validator: rew.validator_address,
+            denom: r.denom,
+            amount: r.amount,
+            price: price || 0,
+          };
+          memoRewards.push(finalReward);
+        }
+      });
     });
-  });
-  // })
+    return memoRewards;
+  }, [networkId, networkRewards.rewards, prices]);
 
   // ========= Handle the rewards total
-  const totalsRewards: TotalRewards[] = [];
-
-  networkRewards.total.forEach((t) => {
-    const price = getCoingeckoPrice(networkId, t.denom, t.amount, prices);
-    if (price) {
-      const finalTotal: TotalRewards = {
-        denom: t.denom,
-        amount: t.amount,
-        price: price || 0,
-      };
-      totalsRewards.push(finalTotal);
-    }
-  });
+  const totalsRewards: TotalRewards[] = useMemo(() => {
+    const memoTotalsRewards: TotalRewards[] = [];
+    networkRewards.total.forEach((t) => {
+      const price = getCoingeckoPrice(networkId, t.denom, t.amount, prices);
+      if (price) {
+        const finalTotal: TotalRewards = {
+          denom: t.denom,
+          amount: t.amount,
+          price: price || 0,
+        };
+        memoTotalsRewards.push(finalTotal);
+      }
+    });
+    return memoTotalsRewards;
+  }, [networkId, networkRewards.total, prices]);
 
   return { totalsRewards, rewards, claimReward };
 };
@@ -158,15 +171,8 @@ const getNetworkRewards = async (
 };
 
 // Rewards total price for all denoms
-export const rewardsPrice = (rewards: Reward[]) => {
+export const rewardsPrice = (rewards: (TotalRewards | Reward)[]) => {
   return rewards.reduce((accumulatedPrice, rewards) => {
-    return accumulatedPrice + rewards.price;
-  }, 0);
-};
-
-// Rewards total price for all denoms
-export const totalsRewardsPrice = (totalsRewards: TotalRewards[]) => {
-  return totalsRewards.reduce((accumulatedPrice, rewards) => {
     return accumulatedPrice + rewards.price;
   }, 0);
 };

@@ -14,7 +14,7 @@ import { Menu } from "../../components/Menu";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { TotalRewards, totalsRewardsPrice } from "../../hooks/useRewards";
+import { rewardsPrice, TotalRewards } from "../../hooks/useRewards";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { accountExplorerLink } from "../../utils/teritori";
@@ -42,7 +42,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
   const navigation = useAppNavigation();
 
   // Total rewards price with all denoms
-  const claimablePrice = totalsRewardsPrice(item.pendingRewards);
+  const claimablePrice = rewardsPrice(item.pendingRewards);
 
   return (
     <View

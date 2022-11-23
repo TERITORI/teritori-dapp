@@ -37,7 +37,7 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
   },
   claimable: {
     label: "Claimable reward",
-    flex: 4,
+    flex: 3,
   },
   actions: {
     label: "",
@@ -160,10 +160,11 @@ const ValidatorRow: React.FC<{
           alignItems: "center",
         }}
       >
-        <BrandText style={[fontSemibold13]}>
-          {`$${claimablePrice.toFixed(2)}`}
-        </BrandText>
-
+        {claimablePrice && (
+          <BrandText style={[fontSemibold13]}>
+            {`$${claimablePrice.toFixed(2)}`}
+          </BrandText>
+        )}
         {pendingRewards.length && (
           <PrimaryButtonOutline
             size="XS"

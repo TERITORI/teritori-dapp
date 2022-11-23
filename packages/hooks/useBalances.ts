@@ -23,7 +23,7 @@ export const useBalances = (
     { initialData: [], refetchInterval: 5000 }
   );
 
-  const prices = useCoingeckoPrices(
+  const { prices } = useCoingeckoPrices(
     networkBalances.map((bal) => ({ networkId, denom: bal.denom }))
   );
 

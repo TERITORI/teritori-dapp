@@ -15,6 +15,7 @@ export const useCoingeckoPrices = (coins: CoingeckoCoin[]) => {
     .map((coin) => getNativeCurrency(coin.networkId, coin.denom)?.coingeckoId)
     .filter(isDefined)
     .sort((a, b) => a.localeCompare(b));
+
   const { data } = useQuery(
     ["coingeckoPrices", ids],
     async () => {
@@ -33,22 +34,23 @@ export const useCoingeckoPrices = (coins: CoingeckoCoin[]) => {
       initialDataUpdatedAt: 0,
     }
   );
-  return data;
-};
 
-export const getCoingeckoPrice = (
-  networkId: string,
-  denom: string,
-  amount: string,
-  prices: CoingeckoPrices
-) => {
-  const currency = getNativeCurrency(networkId, denom);
-  return (
-    currency &&
-    Decimal.fromAtomics(
-      // An amount with not enough decimals will be considered as zero
-      Math.round(parseFloat(amount)).toString(),
-      currency.decimals
-    ).toFloatApproximation() * (prices[currency.coingeckoId]?.usd || 0)
-  );
+  const getCoingeckoPrice = (
+    networkId: string,
+    denom: string,
+    amount: string,
+    prices: CoingeckoPrices
+  ) => {
+    const currency = getNativeCurrency(networkId, denom);
+    return (
+      currency &&
+      Decimal.fromAtomics(
+        // An amount with not enough decimals will be considered as zero
+        Math.round(parseFloat(amount)).toString(),
+        currency.decimals
+      ).toFloatApproximation() * (prices[currency.coingeckoId]?.usd || 0)
+    );
+  };
+
+  return { prices: data, getCoingeckoPrice };
 };
