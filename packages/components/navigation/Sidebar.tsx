@@ -27,8 +27,8 @@ import { Separator } from "../Separator";
 import { SpacerColumn } from "../spacer";
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
-import { LogoTop } from "./components/TopLogo";
 import { SidebarProfileButton } from "./components/SidebarProfileButton";
+import { LogoTop } from "./components/TopLogo";
 import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
@@ -72,7 +72,7 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
-    if (name === "RiotGame" && screenfull.isEnabled && Platform.OS === "web") {
+    if (name === "RiotGame" && Platform.OS === "web" && screenfull.isEnabled) {
       screenfull.request();
     }
     navigation.navigate(name);
