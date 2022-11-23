@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, View } from "react-native";
 
 import defaultGuardianSVG from "../../../assets/default-images/default-guardian-nft.png";
@@ -6,18 +7,25 @@ import clockSVG from "../../../assets/game/clock.svg";
 import countDownPNG from "../../../assets/game/countdown.png";
 import defaultEnemyPNG from "../../../assets/game/default-enemy.png";
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
+import trophiesSVG from "../../../assets/game/trophies.svg";
 import addCircleSFilledVG from "../../../assets/icons/add-circle-filled.svg";
 import claimSVG from "../../../assets/icons/claim.svg";
+import twitterSVG from "../../../assets/icons/twitter.svg";
 import unstakeSVG from "../../../assets/icons/unstake.svg";
+import teritoriLogoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { ButtonOutline } from "../../components/buttons/ButtonOutline";
+import { SocialButton } from "../../components/buttons/SocialButton";
 import Row from "../../components/grid/Row";
+import ModalBase from "../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import useRippers from "../../hooks/riotGame/useRippers";
+import { useAppNavigation } from "../../utils/navigation";
 import {
   gameHighlight,
+  mineShaftColor,
   neutral33,
   neutral77,
   neutralA3,
@@ -32,6 +40,7 @@ import {
   fontSemibold20,
   fontSemibold14,
   fontMedium14,
+  fontSemibold16,
 } from "../../utils/style/fonts";
 import { FightProgressBar } from "./component/FightProgressBar";
 import { GameContentView } from "./component/GameContentView";
@@ -42,23 +51,90 @@ const RIPPER_AVATAR_SIZE = 60;
 const BOX_SIZE = [380, 310];
 
 const FIGHT_STATE = {
+  UNKNOWN: "unknown",
   ONGOING: "onGoing",
   RELAX: "relax",
+  COMPLETED: "completed",
+};
+
+const FIGHT_DURATION = 5000;
+const RELAX_DURATION = 5000;
+
+const PAGE_TITLE_MAP = {
+  [FIGHT_STATE.UNKNOWN]: "There is no ongoing fight",
+  [FIGHT_STATE.ONGOING]: "Ongoing fight",
+  [FIGHT_STATE.RELAX]: "Relax time",
+  [FIGHT_STATE.COMPLETED]: "Completed",
 };
 
 export const RiotGameFightScreen = () => {
+  const navigation = useAppNavigation();
   const { myRippers } = useRippers();
-  const fightState = FIGHT_STATE.RELAX;
-  const isOnGoing = fightState === FIGHT_STATE.ONGOING;
-  const isRelax = !isOnGoing;
 
-  const { countdownColor, actionLabelColor, actionIconColor } = useMemo(() => {
-    return {
-      countdownColor: isOnGoing ? redDefault : yellowDefault,
-      actionLabelColor: isOnGoing ? neutral77 : yellowDefault,
-      actionIconColor: isOnGoing ? neutral77 : yellowDefault,
+  // TODO: get theses values from servers
+  const fightStartedAt = moment.utc();
+  const fightEndedAt = moment(fightStartedAt).add(
+    FIGHT_DURATION,
+    "milliseconds"
+  );
+  const relaxStartedAt = fightEndedAt;
+  const relaxEndedAt = moment(relaxStartedAt).add(
+    RELAX_DURATION,
+    "milliseconds"
+  );
+
+  const [remainingTime, setRemainingTime] = useState(0);
+  const [fightState, setFightState] = useState(FIGHT_STATE.UNKNOWN);
+  const [isShowClaimModal, setIsShowClaimModal] = useState(false);
+
+  const claimRewards = () => {
+    setIsShowClaimModal(true);
+  };
+
+  const updateFightState = () => {
+    const now = moment.utc();
+
+    if (now.isAfter(relaxEndedAt)) {
+      setFightState(FIGHT_STATE.COMPLETED);
+    } else if (now.isAfter(relaxStartedAt)) {
+      setFightState(FIGHT_STATE.RELAX);
+      setRemainingTime(relaxEndedAt.diff(now));
+    } else if (now.isAfter(fightStartedAt)) {
+      setFightState(FIGHT_STATE.ONGOING);
+      setRemainingTime(fightEndedAt.diff(now));
+    } else {
+      setFightState(FIGHT_STATE.UNKNOWN);
+    }
+  };
+
+  const isOnGoing = fightState === FIGHT_STATE.ONGOING;
+  const isRelax = fightState === FIGHT_STATE.RELAX;
+  const isCompleted = fightState === FIGHT_STATE.COMPLETED;
+  const isUnknown = fightState === FIGHT_STATE.UNKNOWN;
+
+  const countdownColor = isOnGoing ? redDefault : yellowDefault;
+  const actionLabelColor = isOnGoing ? neutral77 : yellowDefault;
+  const actionIconColor = isOnGoing ? neutral77 : yellowDefault;
+
+  useEffect(() => {
+    // Calculate current state and remaining time
+    updateFightState(); // Call immediately for the first time
+    const countdownInterval = setInterval(updateFightState, 1000);
+
+    return () => {
+      clearInterval(countdownInterval);
     };
-  }, [fightState]);
+  }, []);
+
+  if (isUnknown) {
+    return (
+      <GameContentView bgImage={defaultSendToFightPNG}>
+        <BrandText style={styles.pageTitle}>
+          {PAGE_TITLE_MAP[fightState]}
+        </BrandText>
+      </GameContentView>
+    );
+  }
 
   return (
     <GameContentView bgImage={defaultSendToFightPNG}>
@@ -152,7 +228,9 @@ export const RiotGameFightScreen = () => {
               </BrandText>
               <Row>
                 <BrandText style={[fontMedium48, { color: countdownColor }]}>
-                  6h 47m 56s
+                  {isCompleted
+                    ? "Completed"
+                    : moment.utc(remainingTime).format("HH[h]mm[m]ss")}
                 </BrandText>
                 <SpacerRow size={2} />
                 <SVG color={countdownColor} source={clockSVG} />
@@ -180,6 +258,7 @@ export const RiotGameFightScreen = () => {
 
               <SVG color={actionIconColor} source={claimSVG} />
               <BrandText
+                onPress={claimRewards}
                 style={[styles.actionLabel, { color: actionLabelColor }]}
               >
                 Claim
@@ -198,6 +277,68 @@ export const RiotGameFightScreen = () => {
           />
         )}
       </View>
+
+      <ModalBase
+        contentStyle={{ alignItems: "center" }}
+        label="Success Fight!"
+        visible={isShowClaimModal}
+        width={372}
+        onClose={() => setIsShowClaimModal(false)}
+        childrenBottom={
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderTopColor: mineShaftColor,
+              width: "100%",
+              alignItems: "center",
+              padding: 20,
+            }}
+          >
+            <BrandText style={[fontSemibold16, { color: neutral77 }]}>
+              Share with friends via
+            </BrandText>
+
+            <SpacerColumn size={2} />
+
+            <SocialButton
+              noBrokenCorners={false}
+              iconSvg={twitterSVG}
+              text="Twitter"
+            />
+          </View>
+        }
+      >
+        <View style={{ alignItems: "center" }}>
+          <SVG width={200} height={200} source={teritoriLogoSVG} />
+
+          <SpacerColumn size={4} />
+
+          <BrandText style={fontSemibold20}>ferryman.tori</BrandText>
+
+          <SpacerColumn size={2} />
+
+          <BrandText style={[fontSemibold16, { color: neutral77 }]}>
+            You made it to rank #1!
+          </BrandText>
+
+          <SpacerColumn size={2} />
+
+          <Row>
+            <SVG
+              color={neutralA3}
+              width={24}
+              height={24}
+              source={trophiesSVG}
+            />
+
+            <SpacerRow size={1} />
+
+            <BrandText style={fontSemibold20}>1337 TORI</BrandText>
+          </Row>
+
+          <SpacerColumn size={4} />
+        </View>
+      </ModalBase>
     </GameContentView>
   );
 };

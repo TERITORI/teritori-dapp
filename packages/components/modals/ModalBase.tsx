@@ -1,5 +1,5 @@
-import React, { ComponentType } from "react";
-import { Modal, Pressable, View, ViewStyle, ScrollView } from "react-native";
+import React from "react";
+import { Modal, Pressable, View, ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
@@ -59,12 +59,12 @@ export const ModalBase: React.FC<NSModal.ModalBaseProps> = ({
           },
           scrollable
             ? {
-              marginVertical: 20,
-            }
+                marginVertical: 20,
+              }
             : {
-              height: "100%",
-              width: "100%",
-            },
+                height: "100%",
+                width: "100%",
+              },
         ]}
       >
         {/*------ Modal main container */}
