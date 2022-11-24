@@ -111,7 +111,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
   const selectedWallet = useSelectedWallet();
 
   // TODO: Handle multiple wallets addresses
-  const { totalsRewards } = useRewards(selectedWallet?.address);
+  const { totalsRewards, claimReward } = useRewards(selectedWallet?.address);
 
   const wallets = selectedWallet
     ? [
@@ -123,6 +123,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
               title: "Teritori",
               address: selectedWallet.address,
               pendingRewards: totalsRewards,
+              claimReward,
               staked: 42,
             },
           ],
