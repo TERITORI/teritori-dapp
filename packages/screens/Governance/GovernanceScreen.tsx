@@ -4,6 +4,8 @@ import { View } from "react-native";
 import { BrandText } from "../../components/BrandText/BrandText";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { useProposals } from "../../hooks/useProposals";
 import { teritoriRestProvider } from "../../utils/teritori";
 import { NavBarGovernance } from "./NavBarGovernance";
 import { Proposal, ProposalStatus } from "./types";
@@ -13,6 +15,7 @@ import { Proposal, ProposalStatus } from "./types";
 export const GovernanceScreen: React.FC = () => {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [filter, setFilter] = useState<ProposalStatus>();
+  const { submitProposal } = useProposals();
 
   useEffect(() => {
     const effect = async () => {
@@ -48,6 +51,12 @@ export const GovernanceScreen: React.FC = () => {
         }}
       >
         <BrandText style={{ fontSize: 28 }}>Decentralized Governance</BrandText>
+
+        <PrimaryButton
+          size="XS"
+          text="Submit a Proposal"
+          onPress={() => submitProposal()}
+        />
 
         <View style={{ bottom: 10, right: 100 }}>
           <NavBarGovernance onChange={setFilter} />
