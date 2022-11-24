@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
@@ -14,6 +14,7 @@ import {
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
+import { COLLECTION_CREATOR } from "../../utils/collections";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -67,7 +68,7 @@ const CarouselCollectionItem: React.FC<{
             },
           ]}
         >
-          TERITORI Collections
+          `${COLLECTION_CREATOR.teritori} Collections`
         </GradientText>
 
         <PrimaryButton
@@ -103,19 +104,22 @@ export const CollectionsCarouselHeader: React.FC<{
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
 
-  const topRightChild = (
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <TouchableOpacity
-        onPress={() => carouselRef.current?.prev()}
-        style={{ marginRight: 24 }}
-      >
-        <SVG width={16} height={16} source={chevronLeftSVG} />
-      </TouchableOpacity>
+  const topRightChild = useCallback(
+    () => (
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <TouchableOpacity
+          onPress={() => carouselRef.current?.prev()}
+          style={{ marginRight: 24 }}
+        >
+          <SVG width={16} height={16} source={chevronLeftSVG} />
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => carouselRef.current?.next()}>
-        <SVG width={16} height={16} source={chevronRightSVG} />
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity onPress={() => carouselRef.current?.next()}>
+          <SVG width={16} height={16} source={chevronRightSVG} />
+        </TouchableOpacity>
+      </View>
+    ),
+    [carouselRef]
   );
 
   return (

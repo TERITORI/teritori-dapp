@@ -10,6 +10,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionsCarouselHeader } from "../../components/carousels/CollectionsCarouselHeader";
 import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { COLLECTION_CREATOR } from "../../utils/collections";
 import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 
@@ -35,7 +36,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
         />
 
         <CollectionsCarouselSection
-          title="TERITORI Collections"
+          title={`${COLLECTION_CREATOR.teritori} Collections`}
           req={{
             networkId: selectedNetworkId,
             sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
