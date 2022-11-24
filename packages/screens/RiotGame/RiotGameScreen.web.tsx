@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
 
 import { gameBgData } from "../../utils/game";
@@ -15,13 +15,10 @@ export const RiotGameScreen = () => {
 
   // variables
   const { width, height } = useWindowDimensions();
-  const cardSize = useMemo(
-    () => ({
-      height: (height - headerHeight) / 5,
-      width: width / 10,
-    }),
-    [width, height]
-  );
+  const cardSize = {
+    height: (height - headerHeight) / 5,
+    width: width / 10,
+  };
 
   const gotoEnroll = () => {
     navigation.navigate("RiotGameEnroll");
