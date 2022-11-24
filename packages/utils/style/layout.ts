@@ -10,8 +10,10 @@ export const walletSelectorWidth = 220;
 export const smallSidebarWidth = 76;
 export const fullSidebarWidth = 210;
 
+const BASE_SIZE = 8;
+
 export const layout = {
-  padding_x1: 8,
+  padding_x1: BASE_SIZE,
   // 2
   get padding_x0_25() {
     return this.padding_x1 * 0.25;
@@ -44,6 +46,26 @@ export const layout = {
   get padding_x4() {
     return this.padding_x1 * 4;
   },
+
+  flex_1: { flex: 1 },
+  w_100: { width: "100%" },
+
+  p_1: { padding: BASE_SIZE }, // 8
+  p_2: { padding: BASE_SIZE * 2 }, // 16
+  p_5: { padding: BASE_SIZE * 5 }, // 40
+
+  m_8: { margin: BASE_SIZE }, // 8
+  m_2: { margin: BASE_SIZE * 2 }, // 16
+  m_5: { margin: BASE_SIZE * 5 }, // 40
+
+  mt_1: { marginTop: BASE_SIZE },
+  mt_2: { marginTop: BASE_SIZE * 2 }, // 16
+  mt_5: { marginTop: BASE_SIZE * 5 }, // 40
+
+  mr_2: { marginRight: BASE_SIZE * 2 }, // 16
+
+  mv_5: { marginVertical: BASE_SIZE * 5 }, // 40
+
   borderRadius: 12,
   contentPadding: 48,
   iconButton: 32,

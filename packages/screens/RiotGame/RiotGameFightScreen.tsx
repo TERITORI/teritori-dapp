@@ -38,6 +38,8 @@ import { ClaimModal } from "./component/ClaimModal";
 import { FightProgressBar } from "./component/FightProgressBar";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
+import { layout } from "../../utils/style/layout";
+import { flex } from "../../utils/style/flex";
 
 const ENEMY_AVATAR_SIZE = 150;
 const RIPPER_AVATAR_SIZE = 60;
@@ -123,7 +125,7 @@ export const RiotGameFightScreen = () => {
   if (isUnknown) {
     return (
       <GameContentView bgImage={defaultSendToFightPNG}>
-        <BrandText style={styles.pageTitle}>
+        <BrandText style={[flex.alignSelfCenter, fontMedium48]}>
           {PAGE_TITLE_MAP[fightState]}
         </BrandText>
       </GameContentView>
@@ -132,12 +134,12 @@ export const RiotGameFightScreen = () => {
 
   return (
     <GameContentView bgImage={defaultSendToFightPNG}>
-      <BrandText style={styles.pageTitle}>
+      <BrandText style={[flex.alignSelfCenter, fontMedium48]}>
         {isOnGoing ? "Ongoing fight" : "Relax time"}
       </BrandText>
 
       <View style={styles.contentContainer}>
-        <Row style={styles.row} breakpoint={992}>
+        <Row style={flex.justifyContentBetween} breakpoint={992}>
           <View style={styles.col}>
             <TertiaryBox
               noBrokenCorners
@@ -269,7 +271,7 @@ export const RiotGameFightScreen = () => {
 
         {isRelax && (
           <ButtonOutline
-            style={styles.moreBtn}
+            style={layout.m_2}
             color={yellowDefault}
             size="M"
             text="Buy new one"
@@ -290,13 +292,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 80,
   },
-  pageTitle: {
-    alignSelf: "center",
-    ...(fontMedium48 as object),
-  },
-  row: {
-    justifyContent: "space-between",
-  },
   col: {
     justifyContent: "center",
     alignItems: "center",
@@ -314,7 +309,7 @@ const styles = StyleSheet.create({
   countDownSection: {
     paddingVertical: 20,
     paddingHorizontal: 40,
-    marginTop: 50,
+    marginTop: 40,
     flexDirection: "row",
     justifyContent: "space-around",
   },
@@ -332,8 +327,5 @@ const styles = StyleSheet.create({
     height: 56,
     width: 1,
     backgroundColor: neutral33,
-  },
-  moreBtn: {
-    marginTop: 20,
   },
 });

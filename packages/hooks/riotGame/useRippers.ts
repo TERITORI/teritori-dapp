@@ -1,7 +1,7 @@
 const defaultGuardianNFTPNG = require("../../../assets/default-images/default-guardian-nft.png");
 
 // TODO: change to real data from blockchains
-const fakeRippers = [
+const fakeRippers: NSRiotGame.Ripper[] = [
   {
     id: 333,
     name: "The r!ot #333",
@@ -9,6 +9,7 @@ const fakeRippers = [
     stamina: 1,
     protection: 1,
     luck: 1,
+    rarity: "legendary",
   },
   {
     id: 3343,
@@ -17,6 +18,7 @@ const fakeRippers = [
     stamina: 32,
     protection: 15,
     luck: 54,
+    rarity: "uncommon",
   },
   {
     id: 143,
@@ -25,6 +27,7 @@ const fakeRippers = [
     stamina: 43,
     protection: 1,
     luck: 65,
+    rarity: "rare",
   },
   {
     id: 1909,
@@ -33,6 +36,7 @@ const fakeRippers = [
     stamina: 43,
     protection: 1,
     luck: 65,
+    rarity: "epic",
   },
   {
     id: 109,
@@ -41,6 +45,7 @@ const fakeRippers = [
     stamina: 43,
     protection: 1,
     luck: 65,
+    rarity: "common",
   },
   {
     id: 19,
@@ -49,6 +54,7 @@ const fakeRippers = [
     stamina: 43,
     protection: 1,
     luck: 65,
+    rarity: "common",
   },
 ];
 

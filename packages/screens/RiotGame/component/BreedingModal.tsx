@@ -12,7 +12,9 @@ import Row from "../../../components/grid/Row";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { mineShaftColor, neutral77 } from "../../../utils/style/colors";
+import { flex } from "../../../utils/style/flex";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 type BreedingModalProps = {
   visible?: boolean;
@@ -46,7 +48,7 @@ export const BreedingModal: React.FC<BreedingModalProps> = ({
 
           <SpacerColumn size={2} />
 
-          <Row style={styles.socialContainer}>
+          <Row style={[layout.w_100, flex.justifyContentBetween]}>
             <SocialButton
               noBrokenCorners={false}
               iconSvg={discordSVG}
@@ -96,9 +98,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 20,
     paddingHorizontal: 10,
-  },
-  socialContainer: {
-    width: "100%",
-    justifyContent: "space-between",
   },
 });

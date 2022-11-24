@@ -16,6 +16,7 @@ import {
   neutral77,
   neutralA3,
 } from "../../../utils/style/colors";
+import { flex } from "../../../utils/style/flex";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
 
 type ClaimModalProps = {
@@ -73,7 +74,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
 
         <SpacerColumn size={2} />
 
-        <Row>
+        <Row style={flex.justifyContentCenter}>
           <SVG color={neutralA3} width={24} height={24} source={trophiesSVG} />
 
           <SpacerRow size={1} />

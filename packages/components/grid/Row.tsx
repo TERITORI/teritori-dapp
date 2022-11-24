@@ -23,6 +23,7 @@ const Row: React.FC<RowProps> = (props) => {
     <View
       style={[
         {
+          width: "100%",
           flexDirection,
         },
         flexDirection === "column" && { alignItems: "center" },

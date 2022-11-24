@@ -16,9 +16,10 @@ import {
   fontSemibold28,
   fontMedium14,
 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
-import { RipperSelectorModal } from "./component/RipperSelectorModal";
+import { RipperSelectorModal } from "./component/RipperSelectorModalOld";
 import { SimpleButton } from "./component/SimpleButton";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
@@ -45,7 +46,7 @@ export const RiotGameEnrollScreen = () => {
     setSelectedSlot(undefined);
   };
 
-  const onSelectRipper = (slotId: number, ripper: NSRiotGame.Ripper) => {
+  const selectRipper = (slotId: number, ripper: NSRiotGame.Ripper) => {
     setSelectedSlot(undefined);
     setSelectedRippers({ ...selectedRippers, [slotId]: ripper });
   };
@@ -91,7 +92,7 @@ export const RiotGameEnrollScreen = () => {
               padding: 40,
               alignItems: "flex-start",
             }}
-            style={styles.countdownBlock}
+            style={layout.mt_2}
             height={148}
           >
             <BrandText style={fontSemibold28}>
@@ -100,10 +101,10 @@ export const RiotGameEnrollScreen = () => {
 
             <SpacerColumn size={1} />
 
-            <BrandText style={styles.subText}>
+            <BrandText style={[fontMedium14, { color: neutralA3 }]}>
               Stamina x 0.2 for solo fightsLeader's
             </BrandText>
-            <BrandText style={styles.subText}>
+            <BrandText style={[fontMedium14, { color: neutralA3 }]}>
               Leader's Stamina x 0.2 + Bonus for squad fights
             </BrandText>
           </TertiaryBox>
@@ -117,7 +118,7 @@ export const RiotGameEnrollScreen = () => {
 
       <SimpleButton
         onPress={gotoFight}
-        containerStyle={styles.submitBtn}
+        containerStyle={layout.mv_5}
         title="Join the Fight"
       />
 
@@ -126,7 +127,7 @@ export const RiotGameEnrollScreen = () => {
         onClose={hideRipperSelector}
         slotId={selectedSlot}
         availableRippers={availableRippers}
-        onSelectRipper={onSelectRipper}
+        onSelectRipper={selectRipper}
       />
     </GameContentView>
   );
@@ -153,20 +154,10 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginTop: 20,
   },
-  countdownBlock: {
-    marginTop: 20,
-  },
-  subText: {
-    color: neutralA3,
-    ...(fontMedium14 as object),
-  },
   placeholderVideo: {
     marginTop: 20,
     alignSelf: "center",
     width: 420,
     height: 240,
-  },
-  submitBtn: {
-    marginVertical: 40,
   },
 });

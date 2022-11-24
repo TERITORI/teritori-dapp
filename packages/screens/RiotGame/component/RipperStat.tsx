@@ -7,29 +7,50 @@ import {
   neutral33,
   neutralA3,
 } from "../../../utils/style/colors";
-import { fontMedium48, fontMedium14 } from "../../../utils/style/fonts";
+import {
+  fontMedium48,
+  fontMedium14,
+  fontMedium32,
+  fontMedium10,
+} from "../../../utils/style/fonts";
 
 type RipperStatProps = {
   name: string;
   value: number;
   containerStyle?: ViewStyle;
+  size?: "MD" | "LG";
 };
 
 export const RipperStat: React.FC<RipperStatProps> = ({
   name,
   value,
   containerStyle,
+  size = "MD",
 }) => {
+  let valueFont;
+  let subTextFont;
+
+  switch (size) {
+    case "LG":
+      valueFont = fontMedium48;
+      subTextFont = fontMedium14;
+      break;
+    case "MD":
+    default:
+      valueFont = fontMedium32;
+      subTextFont = fontMedium10;
+  }
+
   return (
     <View style={[styles.container, containerStyle]}>
-      <BrandText style={styles.leftCol}>{value}</BrandText>
+      <BrandText style={[valueFont, styles.leftCol]}>{value}</BrandText>
 
       <View style={styles.rightCol}>
         <View style={styles.progressBarOuter}>
           <View style={[styles.processBarInner, { width: `${value}%` }]} />
         </View>
 
-        <BrandText style={styles.subText}>{name}</BrandText>
+        <BrandText style={[subTextFont, styles.subText]}>{name}</BrandText>
       </View>
     </View>
   );
@@ -42,7 +63,6 @@ const styles = StyleSheet.create({
   },
   leftCol: {
     minWidth: 80,
-    ...(fontMedium48 as object),
   },
   rightCol: {
     marginLeft: 40,
@@ -64,6 +84,5 @@ const styles = StyleSheet.create({
   subText: {
     color: neutralA3,
     marginTop: 6,
-    ...(fontMedium14 as object),
   },
 });

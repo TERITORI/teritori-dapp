@@ -2,11 +2,11 @@ import { StyleSheet, View, ViewStyle } from "react-native";
 
 import { InfoBox } from "./InfoBox";
 
-type EnrollStatsSectionProps = {
+type FightStatsSectionProps = {
   containerStyle?: ViewStyle;
 };
 
-export const EnrollStatsSection: React.FC<EnrollStatsSectionProps> = ({
+export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   containerStyle,
 }) => {
   return (

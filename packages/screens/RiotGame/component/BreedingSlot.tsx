@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     ...(fontSemibold13 as object),
   },
   ripperImage: {
-    width: 120,
-    height: 120,
+    width: 160,
+    height: 160,
   },
 });
