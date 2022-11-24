@@ -39,6 +39,44 @@ export const useRewards = (walletAddress?: string) => {
   const { setToastSuccess, setToastError } = useFeedbacks();
   const { triggerError } = useErrorHandler();
 
+  const claimAllRewards = async (callback?: () => void) => {
+    try {
+      if (!walletAddress) return;
+      const signer = await getKeplrOfflineSigner();
+      const client = await getTeritoriSigningStargateClient(signer);
+
+      const msgs: MsgWithdrawDelegatorRewardEncodeObject[] = [];
+      networkRewards.rewards.forEach((rew) => {
+        if (!rew.reward.length) return;
+        msgs.push({
+          typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
+          value: {
+            delegatorAddress: walletAddress,
+            validatorAddress: rew.validator_address,
+          },
+        });
+      });
+      if (!msgs.length) return;
+      const txResponse = await client.signAndBroadcast(
+        walletAddress,
+        msgs,
+        "auto"
+      );
+      if (isDeliverTxFailure(txResponse)) {
+        callback && callback();
+        console.error("tx failed", txResponse);
+        setToastError({
+          title: "Transaction failed",
+          message: txResponse.rawLog || "",
+        });
+        return;
+      }
+      setToastSuccess({ title: "Claim success", message: "" });
+    } catch (error) {
+      triggerError({ title: "Claim failed!", error, callback });
+    }
+  };
+
   const claimReward = async (
     validatorAddress: string,
     callback?: () => void
@@ -70,7 +108,7 @@ export const useRewards = (walletAddress?: string) => {
       }
       setToastSuccess({ title: "Claim success", message: "" });
     } catch (error) {
-      triggerError({ error, callback });
+      triggerError({ title: "Claim failed!", error, callback });
     }
   };
 
@@ -152,7 +190,7 @@ export const useRewards = (walletAddress?: string) => {
     return memoTotalsRewards;
   }, [networkId, networkRewards.total, prices]);
 
-  return { totalsRewards, rewards, claimReward };
+  return { totalsRewards, rewards, claimReward, claimAllRewards };
 };
 
 // Returns the rewards from cosmos API. You can specify a validator address

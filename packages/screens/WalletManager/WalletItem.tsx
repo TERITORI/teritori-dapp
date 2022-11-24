@@ -28,6 +28,7 @@ export interface WalletItemProps {
     title: string;
     address: string;
     pendingRewards: TotalRewards[];
+    claimReward: (validatorAddress: string) => Promise<void>;
     staked: number;
   };
 }
@@ -174,9 +175,11 @@ export const WalletItem: React.FC<WalletItemProps> = ({
         {width > 1150 && (
           <SecondaryButton
             size="XS"
-            text="Claim reward"
+            text="Claim rewards"
             disabled={!claimablePrice}
-            onPress={() => navigation.navigate("Staking")}
+            onPress={() => {
+              item.claimReward(item.address);
+            }}
             style={{ marginRight: 16 }}
           />
         )}
@@ -187,7 +190,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
             ...(width <= 1150
               ? [
                   {
-                    label: "Claim reward",
+                    label: "Claim rewards",
                     onPress: () => navigation.navigate("Staking"),
                     disabled: !claimablePrice,
                   },

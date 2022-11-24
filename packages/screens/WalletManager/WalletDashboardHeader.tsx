@@ -96,7 +96,9 @@ export const WalletDashboardHeader: React.FC = () => {
     (total, bal) => total + (bal.usdAmount || 0),
     0
   );
-  const { totalsRewards } = useRewards(selectedWallet?.address);
+  const { totalsRewards, claimAllRewards } = useRewards(
+    selectedWallet?.address
+  );
   // Total rewards price with all denoms
   const claimablePrice = rewardsPrice(totalsRewards);
 
@@ -171,7 +173,7 @@ export const WalletDashboardHeader: React.FC = () => {
             data: `$${claimablePrice.toFixed(2)}`,
             actionButton: {
               label: "Claim All",
-              onPress: () => navigation.navigate("Staking"),
+              onPress: claimAllRewards,
               disabled: !claimablePrice,
             },
           }}

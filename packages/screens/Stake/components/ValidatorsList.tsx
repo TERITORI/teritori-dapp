@@ -59,7 +59,7 @@ export const ValidatorsTable: React.FC<{
   // variables
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
   const selectedWallet = useSelectedWallet();
-  const { rewards } = useRewards(selectedWallet?.address);
+  const { rewards, claimReward } = useRewards(selectedWallet?.address);
 
   // returns
   return (
@@ -76,6 +76,7 @@ export const ValidatorsTable: React.FC<{
             pendingRewards={rewards.filter(
               (reward) => reward.validator === item.address
             )}
+            claimReward={claimReward}
           />
         )}
       />
@@ -86,12 +87,12 @@ export const ValidatorsTable: React.FC<{
 const ValidatorRow: React.FC<{
   validator: ValidatorInfo;
   pendingRewards: Reward[];
+  claimReward: (validatorAddress: string) => Promise<void>;
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
-}> = ({ validator, pendingRewards, actions }) => {
+}> = ({ validator, claimReward, pendingRewards, actions }) => {
   const imageURL = useKeybaseAvatarURL(validator.identity);
 
   const selectedWallet = useSelectedWallet();
-  const { claimReward } = useRewards(selectedWallet?.address);
   // Rewards price with all denoms
   const claimablePrice = rewardsPrice(pendingRewards);
 
