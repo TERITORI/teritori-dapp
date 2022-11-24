@@ -1,9 +1,9 @@
 export type CreateDaoFormType = {
-  image: string;
   organizationName: string;
   associatedTeritoriNameService: string;
   organizationDescription: string;
   structure: string;
+  imageUrl: string;
 };
 
 export type ConfigureVotingFormType = {

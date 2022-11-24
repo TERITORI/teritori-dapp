@@ -1,22 +1,35 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
+import addSVG from "../../../../assets/icons/add.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
 import { neutral22, neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-export const ImagePicker = () => {
+interface ImagePreviewerProps {
+  uri?: string;
+}
+
+export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({ uri }) => {
   return (
     <View>
-      <View style={styles.imagePicker} />
-      <BrandText style={styles.text}>Set an image</BrandText>
+      <View style={styles.imagePreviewer}>
+        {uri ? (
+          <Image source={{ uri }} style={styles.image} />
+        ) : (
+          <SVG source={addSVG} height={32} width={32} />
+        )}
+      </View>
+
+      <BrandText style={styles.text}>Preview</BrandText>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  imagePicker: {
+  imagePreviewer: {
     height: 140,
     width: 140,
     borderRadius: 12,
@@ -26,6 +39,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: layout.padding_x1_5,
+  },
+  image: {
+    height: 140,
+    width: 140,
+    borderRadius: 12,
   },
   text: StyleSheet.flatten([
     fontSemibold14,

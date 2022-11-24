@@ -11,7 +11,7 @@ import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ORGANIZER_DEPLOYER_STEPS } from "../OrganizerDeployerScreen";
 import { CreateDaoFormType } from "../types";
-import { ImagePicker } from "./ImagePicker";
+import { ImagePreviewer } from "./ImagePreviewer";
 import { RadioDescriptionSelector } from "./RadioDescriptionSelector";
 
 const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
@@ -30,6 +30,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
     }
   );
   const selectedRadioDescription = watch("structure");
+  const uri = watch("imageUrl");
 
   // returns
   return (
@@ -42,7 +43,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
         <BrandText style={styles.sectionTitle}>Claim a name</BrandText>
         <SpacerColumn size={2.5} />
         <View style={styles.section}>
-          <ImagePicker />
+          <ImagePreviewer uri={uri} />
           <SpacerRow size={2.5} />
           <View style={styles.fill}>
             <View style={styles.row}>
@@ -70,6 +71,17 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                 />
               </View>
             </View>
+
+            <SpacerColumn size={2.5} />
+            <TextInputCustom<CreateDaoFormType>
+              control={control}
+              variant="noCropBorder"
+              label="Organization's image url"
+              placeHolder="https://example.com/preview.png"
+              name="imageUrl"
+              rules={{ required: true }}
+              isAsterickSign
+            />
             <SpacerColumn size={2.5} />
             <TextInputCustom<CreateDaoFormType>
               control={control}
@@ -79,6 +91,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               name="organizationDescription"
               rules={{ required: true }}
               isAsterickSign
+              multiline
               numberOfLines={3}
             />
           </View>

@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Image, ScrollView, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
@@ -47,6 +47,16 @@ export const ReviewInformationSection: React.FC<
       <SpacerColumn size={3} />
 
       <ReviewCollapsable title="Organization information">
+        <ReviewCollapsableItem
+          title="Organization's image"
+          value={() => (
+            <Image
+              source={{ uri: organizationData?.imageUrl }}
+              style={styles.image}
+            />
+          )}
+        />
+        <SpacerColumn size={1} />
         <ReviewCollapsableItem
           title="Organization's name"
           value={organizationData?.organizationName}
@@ -162,6 +172,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     flexWrap: "wrap",
+  },
+  image: {
+    width: 140,
+    height: 140,
+    borderRadius: 12,
   },
   footerRowInside: {
     flexDirection: "row",

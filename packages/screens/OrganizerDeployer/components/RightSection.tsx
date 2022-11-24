@@ -42,9 +42,12 @@ export const RightSection: React.FC<RightSectionProps> = ({
   const [unlockedSteps, setUnlockedSteps] = useState<number[]>([0]);
   const loadingPercentAnim = useRef(new Animated.Value(0)).current;
 
-  const percentage = `${Math.round(
-    (unlockedSteps.length / steps.length) * 100
-  )}%`;
+  const percentage = isLaunching
+    ? launchingCompleteStep
+      ? launchingCompleteStep / LAUNCHING_PROCESS_STEPS.length
+      : 0
+    : unlockedSteps.length / steps.length;
+  const percentageText = `${percentage * 100}%`;
 
   const loadingWidth = loadingPercentAnim.interpolate({
     inputRange: [0, 1],
@@ -60,14 +63,12 @@ export const RightSection: React.FC<RightSectionProps> = ({
   }, [currentStep]);
 
   useEffect(() => {
-    if (isLaunching && launchingCompleteStep) {
-      Animated.timing(loadingPercentAnim, {
-        toValue: launchingCompleteStep / LAUNCHING_PROCESS_STEPS.length,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [isLaunching, launchingCompleteStep]);
+    Animated.timing(loadingPercentAnim, {
+      toValue: percentage,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [percentage]);
 
   // returns
   const SignatureProcess = useCallback(
@@ -114,7 +115,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
       <View style={styles.topSection}>
         <View style={styles.topRow}>
           <BrandText style={fontSemibold14}>
-            {isLaunching ? "Launching your organization" : percentage}
+            {isLaunching ? "Launching your organization" : percentageText}
           </BrandText>
           {!isLaunching && (
             <BrandText style={styles.progressText}>
@@ -122,12 +123,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
             </BrandText>
           )}
         </View>
-        <Animated.View
-          style={[
-            styles.progressBar,
-            { width: isLaunching ? loadingWidth : percentage },
-          ]}
-        />
+        <Animated.View style={[styles.progressBar, { width: loadingWidth }]} />
       </View>
       <View style={styles.section}>
         <BrandText style={styles.stepsText}>
