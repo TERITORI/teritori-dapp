@@ -1,21 +1,15 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Pressable,
-  FlatList,
-} from "react-native";
+import { View, StyleSheet, Pressable, FlatList, Platform } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
   WithSpringConfig,
 } from "react-native-reanimated";
+import screenfull from "screenfull";
 
-import addSVG from "../../../assets/icons/add.svg";
+import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import logoTopVersionSVG from "../../../assets/logos/logo-hexagon-version-alpha.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
@@ -34,6 +28,7 @@ import { SpacerColumn } from "../spacer";
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
 import { SidebarProfileButton } from "./components/SidebarProfileButton";
+import { LogoTop } from "./components/TopLogo";
 import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
@@ -77,6 +72,9 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
+    if (name === "RiotGame" && Platform.OS === "web" && screenfull.isEnabled) {
+      screenfull.request();
+    }
     navigation.navigate(name);
   };
 
@@ -86,15 +84,7 @@ export const Sidebar: React.FC = () => {
       <View style={styles.headerContainer}>
         {currentRouteName === "Home" && <SideNotch />}
 
-        <View style={styles.topDetailContainer}>
-          <TouchableOpacity
-            style={styles.topIconContainer}
-            onPress={() => navigation.navigate("Home")}
-          >
-            <SVG width={68} height={68} source={logoTopVersionSVG} />
-          </TouchableOpacity>
-        </View>
-
+        <LogoTop />
         <Animated.View
           style={[styles.toggleButtonContainer, toggleButtonStyle]}
         >
@@ -156,13 +146,6 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     height: headerHeight,
-  },
-  topDetailContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  topIconContainer: {
-    paddingLeft: layout.padding_x0_5,
   },
   toggleButtonContainer: {
     position: "absolute",
