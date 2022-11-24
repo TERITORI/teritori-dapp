@@ -91,6 +91,7 @@ export const RiotGameBreedingScreen = () => {
 
       <RipperSelectorModal
         visible={selectedSlot !== undefined}
+        confirmButton="Add to Breeding"
         slotId={selectedSlot}
         availableRippers={myRippers}
         onSelectRipper={selectRipper}

@@ -34,6 +34,7 @@ import { SimpleButton } from "./SimpleButton";
 
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
+  confirmButton: string;
   availableRippers: NSRiotGame.Ripper[];
   onSelectRipper?(slotId: number, ripper: NSRiotGame.Ripper): void;
   onClose?(): void;
@@ -52,6 +53,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   onSelectRipper,
   availableRippers,
   visible,
+  confirmButton,
   ...props
 }) => {
   const [selectedRipper, setSelectedRipper] = useState<
@@ -131,7 +133,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
               <SimpleButton
                 onPress={confirmRipper}
                 size="small"
-                title="Enroll this Ripper"
+                title={confirmButton}
               />
             </View>
           </Col>

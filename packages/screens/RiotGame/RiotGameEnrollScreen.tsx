@@ -128,6 +128,7 @@ export const RiotGameEnrollScreen = () => {
         slotId={selectedSlot}
         availableRippers={availableRippers}
         onSelectRipper={selectRipper}
+        confirmButton="Enroll this Ripper"
       />
     </GameContentView>
   );
