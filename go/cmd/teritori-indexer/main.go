@@ -27,16 +27,18 @@ type ReplayInfo struct {
 	WebsocketEndpoint string
 }
 
+// One assumption of this code is that there is at least one transaction of interest in the chain
+
 func main() {
 	// handle args
 	fs := flag.NewFlagSet("teritori-indexer", flag.ContinueOnError)
 	var (
-		blocksBatchSize             = fs.Int64("blocks-batch-size", 10000, "maximum number of blocks to query from tendermint at once")
-		txsBatchSize                = fs.Int("txs-batch-size", 10000, "number of txs per query page")
-		pollDelay                   = fs.Duration("poll-delay", 2*time.Second, "delay between queries")
+		chunkSize                   = fs.Int64("chunk-size", 10000, "maximum number of blocks to query from tendermint at once")
+		txsBatchSize                = fs.Int("txs-batch-size", 10000, "maximum number of txs per query page")
+		pollDelay                   = fs.Duration("poll-delay", 2*time.Second, "delay between tail queries")
 		tnsContractAddress          = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
 		vaultContractAddress        = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")
-		minterCodeIDs               = fs.String("teritori-minter-code-ids", "", "code id of the teritori minter contract")
+		minterCodeIDs               = fs.String("teritori-minter-code-ids", "", "code ids of teritori minter contracts")
 		tnsDefaultImageURL          = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
 		dbHost                      = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort                      = fs.String("db-indexer-port", "", "port for postgreSQL database")
@@ -45,6 +47,7 @@ func main() {
 		dbUser                      = fs.String("postgres-user", "", "username for postgreSQL")
 		teritoriNetworkID           = fs.String("teritori-network-id", "teritori", "teritori network id")
 		tendermintWebsocketEndpoint = fs.String("tendermint-websocket-endpoint", "", "tendermint websocket endpoint")
+		tailSize                    = fs.Int64("tail-size", 8640, "x blocks tail size means that the tendermint indexer can lag x blocks behind before the indexer misses an event")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -129,7 +132,9 @@ func main() {
 	if err := db.FirstOrCreate(&dbApp).Error; err != nil {
 		panic(errors.Wrap(err, "failed to get db app"))
 	}
-	height := dbApp.Height
+	lastProcessedHeight := dbApp.Height
+	lastProcessedHash := dbApp.TxHash
+	chunkedHeight := dbApp.ChunkedHeight
 
 	// inject quests
 	qs, err := quests.Quests()
@@ -146,13 +151,13 @@ func main() {
 	// find replay info to use
 	var runReplayInfos []ReplayInfo
 	for i, replayInfo := range replayInfos {
-		if replayInfo.StartHeight <= height && (replayInfo.FinalHeight == -1 || replayInfo.FinalHeight >= height) {
+		if replayInfo.StartHeight <= chunkedHeight && (replayInfo.FinalHeight == -1 || chunkedHeight <= replayInfo.FinalHeight) {
 			runReplayInfos = replayInfos[i:]
 			break
 		}
 	}
 	if len(runReplayInfos) == 0 {
-		panic(fmt.Errorf("failed to find suitable replay info for height %d", height))
+		panic(fmt.Errorf("failed to find suitable replay info for height %d", chunkedHeight))
 	}
 
 	// replay
@@ -165,31 +170,44 @@ func main() {
 		}
 
 		for {
-			var end int64
+			strategy := "chunk"
+			var batchStart, batchEnd int64 // batchEnd is only used in chunk strategy
+			tailStartHash := lastProcessedHash
+			txSeen := false
+			chunkElems := int64(0)
+			page := 1
+
+			// Find batch end and strategy
 			if replayInfo.FinalHeight == -1 {
 				res, err := client.Status()
 				if err != nil {
 					panic(errors.Wrap(err, "failed to query status"))
 				}
 
-				// we lag one block behind to increase the chance that tendermint tx indexer has finished it's work
-				lbh := res.SyncInfo.LatestBlockHeight - 1
+				lbh := res.SyncInfo.LatestBlockHeight
 
-				if lbh < height {
-					time.Sleep(*pollDelay)
-					continue
+				if chunkedHeight+*chunkSize > lbh-*tailSize {
+					strategy = "tail"
 				}
-				end = int64Min(height+*blocksBatchSize, lbh+1)
+
+				if strategy == "tail" {
+					batchStart = lastProcessedHeight
+				} else { // chunk strategy
+					batchStart = chunkedHeight
+					batchEnd = batchStart + *chunkSize
+				}
 			} else {
-				if height > replayInfo.FinalHeight {
+				batchStart = chunkedHeight
+				if batchStart > replayInfo.FinalHeight {
 					break
 				}
-				end = int64Min(height+*blocksBatchSize, replayInfo.FinalHeight+1)
+				batchEnd = int64Min(batchStart+*chunkSize, replayInfo.FinalHeight+1)
 			}
-			if height == end-1 {
-				logger.Info(fmt.Sprintf("indexing %d", height))
-			} else {
-				logger.Info(fmt.Sprintf("indexing [%d, %d]", height, end-1))
+
+			if strategy == "tail" {
+				logger.Info(fmt.Sprintf("indexing [%d, ∞]", batchStart), zap.String("strategy", strategy), zap.String("lptxh", lastProcessedHash))
+			} else { // chunk strategy
+				logger.Info(fmt.Sprintf("indexing [%d, %d]", batchStart, batchEnd-1), zap.String("strategy", strategy))
 			}
 
 			if err := db.Transaction(func(dbtx *gorm.DB) error {
@@ -207,12 +225,14 @@ func main() {
 					return errors.Wrap(err, "failed to create handler")
 				}
 
-				chunkElems := int64(0)
-				page := 1
 				for {
+					req := fmt.Sprintf("message.module = 'wasm' AND tx.height >= %d", batchStart)
+					if strategy == "chunk" {
+						req += fmt.Sprintf(" AND tx.height < %d", batchEnd)
+					}
 					res, err := client.TxSearch(
-						fmt.Sprintf("message.module = 'wasm' AND tx.height >= %d AND tx.height < %d", height, end),
-						true,
+						req,
+						false,
 						&page,
 						txsBatchSize,
 						"asc",
@@ -222,9 +242,26 @@ func main() {
 					}
 
 					for _, tx := range res.Txs {
+						if strategy == "tail" {
+							if lastProcessedHash != "" {
+								if tx.Hash.String() == tailStartHash {
+									txSeen = true
+									continue
+								}
+								if !txSeen {
+									continue
+								}
+							} else {
+								txSeen = true
+							}
+						}
+
 						if err := handler.HandleTendermintResultTx(tx); err != nil {
 							return errors.Wrap(err, fmt.Sprintf(`failed to handle tx "%s"`, tx.Hash))
 						}
+
+						lastProcessedHeight = tx.Height
+						lastProcessedHash = tx.Hash.String()
 					}
 
 					chunkElems += int64(len(res.Txs))
@@ -235,7 +272,17 @@ func main() {
 					page++
 				}
 
-				if err := dbtx.Model(&indexerdb.App{}).Where("id = ?", dbApp.ID).Update("height", end).Error; err != nil {
+				if strategy == "tail" {
+					chunkedHeight = lastProcessedHeight + 1
+				} else { // chunk strategy
+					chunkedHeight = batchEnd
+				}
+
+				if err := dbtx.Model(&indexerdb.App{}).Where("id = ?", dbApp.ID).UpdateColumns(map[string]interface{}{
+					"height":         lastProcessedHeight,
+					"tx_hash":        lastProcessedHash,
+					"chunked_height": chunkedHeight,
+				}).Error; err != nil {
 					return errors.Wrap(err, "failed to update app height")
 				}
 
@@ -243,7 +290,10 @@ func main() {
 			}); err != nil {
 				panic(errors.Wrap(err, "failed to commit chunk"))
 			}
-			height = end
+
+			if strategy == "tail" {
+				time.Sleep(*pollDelay)
+			}
 		}
 	}
 }
