@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
+import { BatchMingScreen } from "../../screens/BatchMint/BatchMintScreen";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
@@ -134,6 +135,11 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="ComingSoon"
         component={ComingSoonScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="BatchMint"
+        component={BatchMingScreen}
         options={{ header: () => null }}
       />
     </Stack.Navigator>

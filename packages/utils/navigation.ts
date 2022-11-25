@@ -17,6 +17,7 @@ export type RootStackParamList = {
 
   Launchpad: undefined;
   MintCollection: { id: string };
+  BatchMint: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
 
   Marketplace: undefined;
@@ -63,6 +64,7 @@ const navConfig: {
     // ==== Marketplace
     Marketplace: "marketplace",
     Collection: "collection/:id",
+    BatchMint: "batch-mint/:id",
     CollectionActivity: "collection/:id/activity",
     NFTDetail: "nft/:id",
     // ==== Staking
