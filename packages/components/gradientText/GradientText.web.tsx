@@ -43,12 +43,13 @@ export const GradientText: React.FC<GradientTextProps> = ({
   style,
   ...props
 }) => {
-  const flatStyle = style ? StyleSheet.flatten(style) : undefined;
+  const flatStyle = style ? { ...StyleSheet.flatten(style) } : undefined;
   const fontSize = 20;
 
   const lineHeight = `${
     flatStyle?.lineHeight || flatStyle?.fontSize || fontSize
   }px`;
+
   if (flatStyle) delete flatStyle.lineHeight;
 
   const textOverflow =
