@@ -16,6 +16,7 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
+import { getRipperTraitValue } from "../../../utils/game";
 import { neutral00, white, yellowDefault } from "../../../utils/style/colors";
 import {
   fontMedium32,
@@ -106,7 +107,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   }}
                   pagingEnabled
                   renderItem={({ item, index }) => {
-                    const isSelected = item.id === selectedRipper?.id;
+                    const isSelected = item.name === selectedRipper?.name;
                     return (
                       <TouchableOpacity
                         activeOpacity={0.6}
@@ -158,19 +159,26 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
             <RipperStat
               containerStyle={styles.ripperStatContainer}
               name="Stamina"
-              value={selectedRipper?.stamina || 0}
+              value={
+                selectedRipper && getRipperTraitValue(selectedRipper, "Stamina")
+              }
               size="LG"
             />
             <RipperStat
               containerStyle={styles.ripperStatContainer}
               name="Protection"
-              value={selectedRipper?.protection || 0}
+              value={
+                selectedRipper &&
+                getRipperTraitValue(selectedRipper, "Protection")
+              }
               size="LG"
             />
             <RipperStat
               containerStyle={styles.ripperStatContainer}
               name="Luck"
-              value={selectedRipper?.luck || 0}
+              value={
+                selectedRipper && getRipperTraitValue(selectedRipper, "Luck")
+              }
               size="LG"
             />
 

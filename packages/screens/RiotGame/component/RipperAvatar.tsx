@@ -20,7 +20,7 @@ type RipperAvatarProps = {
   size: number;
   source: ImageSourcePropType;
   containerStyle?: ViewStyle;
-  rarity?: NSRiotGame.Rarity;
+  rarity?: NSRiotGame.RipperRarity;
   rounded?: boolean;
 };
 
@@ -33,16 +33,16 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
 }) => {
   let rarityColor;
   switch (rarity) {
-    case "uncommon":
+    case "Uncommon":
       rarityColor = orangeDefault;
       break;
-    case "rare":
+    case "Rare":
       rarityColor = orangeDefault;
       break;
-    case "epic":
+    case "Epic":
       rarityColor = purpleDefault;
       break;
-    case "legendary":
+    case "Legendary":
       rarityColor = pinkDefault;
       break;
     default:
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: 5,
     borderRadius: 10,
-    backgroundColor: withAlpha(orangeDefault, 0.1),
+    backgroundColor: withAlpha(orangeDefault, 0.2),
     ...(fontSemibold9 as object),
   },
 });

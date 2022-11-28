@@ -16,14 +16,14 @@ import {
 
 type RipperStatProps = {
   name: string;
-  value: number;
+  value?: number;
   containerStyle?: ViewStyle;
   size?: "MD" | "LG";
 };
 
 export const RipperStat: React.FC<RipperStatProps> = ({
   name,
-  value,
+  value = 0,
   containerStyle,
   size = "MD",
 }) => {

@@ -18,61 +18,48 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 
+import nftJson from "./nft.json";
+
 // TODO: change to real data from blockchains
 const fakeRippers: NSRiotGame.Ripper[] = [
   {
-    id: 333,
-    name: "The r!ot #333",
-    image: defaultGuardianNFTPNG,
-    stamina: 1,
-    protection: 1,
-    luck: 1,
-    rarity: "legendary",
+    ...nftJson,
+    name: "The R!ot #149",
+    attributes: [{ trait_type: "Skin", value: "Iron" }, ...nftJson.attributes],
   },
   {
-    id: 3343,
-    name: "The r!ot #3343",
-    image: defaultGuardianNFTPNG,
-    stamina: 32,
-    protection: 15,
-    luck: 54,
-    rarity: "uncommon",
+    ...nftJson,
+    name: "The R!ot #5",
+    attributes: [
+      { trait_type: "Skin", value: "Pure Gold" },
+      ...nftJson.attributes,
+    ],
   },
   {
-    id: 143,
-    name: "The r!ot #143",
-    image: defaultGuardianNFTPNG,
-    stamina: 43,
-    protection: 1,
-    luck: 65,
-    rarity: "rare",
+    ...nftJson,
+    name: "The R!ot #146",
+    attributes: [
+      { trait_type: "Skin", value: "Aurora" },
+      ...nftJson.attributes,
+    ],
   },
   {
-    id: 1909,
-    name: "The r!ot #1909",
-    image: defaultGuardianNFTPNG,
-    stamina: 43,
-    protection: 1,
-    luck: 65,
-    rarity: "epic",
+    ...nftJson,
+    name: "The R!ot #17",
+    attributes: [{ trait_type: "Skin", value: "Ice" }, ...nftJson.attributes],
   },
   {
-    id: 109,
-    name: "The r!ot #109",
-    image: defaultGuardianNFTPNG,
-    stamina: 43,
-    protection: 1,
-    luck: 65,
-    rarity: "common",
+    ...nftJson,
+    name: "The R!ot #18",
+    attributes: [
+      { trait_type: "Skin", value: "Red Ether" },
+      ...nftJson.attributes,
+    ],
   },
   {
-    id: 19,
-    name: "The r!ot #19",
-    image: defaultGuardianNFTPNG,
-    stamina: 43,
-    protection: 1,
-    luck: 65,
-    rarity: "common",
+    ...nftJson,
+    name: "The R!ot #19",
+    rarity: "Uncommon",
   },
 ];
 
@@ -91,21 +78,21 @@ const useRippers = () => {
   // const tetitoriNFTClient = client as TeritoriNftClient;
   // const tetitoriNFTQueryClient = queryClient as TeritoriNftQueryClient;
 
-  const nftsRequest: NFTsRequest = {
-    collectionId: `tori-${THE_RIOT_COLLECTION_ADDRESS}`,
-    // ownerId: selectedWallet?.address ? `tori-${selectedWallet.address}` : "",
-    ownerId: "",
-    limit: 20,
-    offset: 0,
-    sort: Sort.SORTING_UNSPECIFIED,
-    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-  };
+  // const myRippersRequest: NFTsRequest = {
+  //   collectionId: `tori-${THE_RIOT_COLLECTION_ADDRESS}`,
+  //   // ownerId: selectedWallet?.address ? `tori-${selectedWallet.address}` : "",
+  //   ownerId: "",
+  //   limit: 20,
+  //   offset: 0,
+  //   sort: Sort.SORTING_UNSPECIFIED,
+  //   sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+  // };
 
-  const { nfts: myRippers, fetchMore } = useNFTs(nftsRequest);
+  // const { nfts: myRippers, fetchMore } = useNFTs(myRippersRequest);
 
   return {
-    fetchMore,
-    myRippers,
+    // fetchMore,
+    myRippers: fakeRippers,
     selectedRippers: [],
   };
 };
