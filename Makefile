@@ -3,6 +3,10 @@ BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
+MINTER_PACKAGE=teritori-nft-minter
+STAKING_PACKAGE=teritori-nft-staking
+SQUAD_STAKING_PACKAGE=teritori-squad-staking
+
 
 NAME_SERVICE_REPO=teritori-name-service
 NAME_SERVICE_PACKAGE=teritori-name-service
@@ -116,6 +120,34 @@ $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules
 		--schema $(TOKEN_REPO)/schema/nft-token \
 		--out $@ \
 		--name $(TOKEN_PACKAGE) \
+		--no-bundle
+	rm -fr $(TOKEN_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(MINTER_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(MINTER_PACKAGE): node_modules
+	rm -fr $(TOKEN_REPO)
+	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
+	cd $(TOKEN_REPO) && git checkout 70193869163128114a095a3ccece455014212041
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(TOKEN_REPO)/schema/nft-minter \
+		--out $@ \
+		--name $(MINTER_PACKAGE) \
+		--no-bundle
+	rm -fr $(TOKEN_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(STAKING_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(STAKING_PACKAGE): node_modules
+	rm -fr $(TOKEN_REPO)
+	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
+	cd $(TOKEN_REPO) && git checkout 70193869163128114a095a3ccece455014212041
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(TOKEN_REPO)/schema/nft-staking \
+		--out $@ \
+		--name $(STAKING_PACKAGE) \
 		--no-bundle
 	rm -fr $(TOKEN_REPO)
 

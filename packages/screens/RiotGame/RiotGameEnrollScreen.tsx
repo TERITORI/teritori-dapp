@@ -61,7 +61,7 @@ export const RiotGameEnrollScreen = () => {
         <BrandText style={styles.pageTitle}>Send to fight</BrandText>
       </View>
 
-      <Row breakpoint={992} style={styles.enrollContainer}>
+      <Row breakpoint={1080} style={styles.enrollContainer}>
         <Col style={styles.col}>
           <BrandText style={styles.sectionTitle}>
             Enroll your Ripper(s)
