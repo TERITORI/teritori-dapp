@@ -7,6 +7,7 @@ import { RangeSlider } from "../../../components/RangeSlider";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { patternOnlyNumbers } from "../../../utils/formRules";
 import { neutral33, neutral77, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -63,6 +64,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
               hideLabel
               control={control}
               label=""
+              rules={{ required: true, pattern: patternOnlyNumbers }}
             >
               <BrandText style={styles.durationLabel}>Days</BrandText>
             </TextInputCustom>
@@ -75,6 +77,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
               hideLabel
               control={control}
               label=""
+              rules={{ required: true, pattern: patternOnlyNumbers }}
             >
               <BrandText style={styles.durationLabel}>Hours</BrandText>
             </TextInputCustom>
@@ -87,6 +90,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
               hideLabel
               control={control}
               label=""
+              rules={{ required: true, pattern: patternOnlyNumbers }}
             >
               <BrandText style={styles.durationLabel}>Minutes</BrandText>
             </TextInputCustom>

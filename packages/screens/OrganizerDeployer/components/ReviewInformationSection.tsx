@@ -134,7 +134,11 @@ export const ReviewInformationSection: React.FC<
           <BrandText style={fontSemibold14}>Associated TNS:</BrandText>
           <SpacerRow size={1} />
           <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-            exampleclub.tori
+            {organizationData?.associatedTeritoriNameService &&
+            organizationData?.associatedTeritoriNameService +
+              organizationData?.associatedTeritoriNameService.includes(".tori")
+              ? ".tori"
+              : ""}
           </BrandText>
 
           <SpacerRow size={3} />

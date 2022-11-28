@@ -131,9 +131,9 @@ export const RightSection: React.FC<RightSectionProps> = ({
         </BrandText>
         {isLaunching && launchingCompleteStep !== undefined
           ? LAUNCHING_PROCESS_STEPS.slice(0, launchingCompleteStep + 1).map(
-              (lauchStep, index) => (
+              (launchStep, index) => (
                 <SignatureProcess
-                  {...lauchStep}
+                  {...launchStep}
                   isComplete={index < launchingCompleteStep}
                 />
               )

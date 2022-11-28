@@ -12,6 +12,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../../components/inputs/TextInputOutsideLabel";
 import GradientModalBase from "../../../components/modals/GradientModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { validateAddress } from "../../../utils/formRules";
 import {
   neutral17,
   neutral33,
@@ -21,6 +22,7 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { modalMarginPadding } from "../../../utils/style/modals";
+import { toriCurrency } from "../../../utils/teritori";
 import { MakeProposalFormType } from "../types";
 import { ProposalApprovalModal } from "./ProposalApprovalModal";
 
@@ -83,7 +85,7 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
         label="Recipient address"
         isAsterickSign
         mainContainerStyle={styles.border}
-        rules={{ required: true }}
+        rules={{ required: true, validate: validateAddress }}
       />
       <SpacerColumn size={2.5} />
       <View style={styles.row}>
@@ -97,6 +99,7 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
             width={210}
             rules={{ required: true }}
             mainContainerStyle={styles.border}
+            currency={toriCurrency}
           >
             {toriText()}
           </TextInputCustom>
