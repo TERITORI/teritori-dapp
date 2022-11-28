@@ -41,6 +41,13 @@ export const ReviewInformationSection: React.FC<
     []
   );
 
+  let associateName = organizationData?.associatedTeritoriNameService
+    ? organizationData?.associatedTeritoriNameService
+    : "";
+  associateName = associateName.includes(".tori")
+    ? associateName
+    : associateName + ".tori";
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <BrandText style={fontSemibold28}>Review information</BrandText>
@@ -69,7 +76,7 @@ export const ReviewInformationSection: React.FC<
         <SpacerColumn size={1} />
         <ReviewCollapsableItem
           title="Associated Teritori Name Service"
-          value={organizationData?.associatedTeritoriNameService}
+          value={associateName}
         />
         <SpacerColumn size={1} />
         <ReviewCollapsableItem
@@ -134,11 +141,7 @@ export const ReviewInformationSection: React.FC<
           <BrandText style={fontSemibold14}>Associated TNS:</BrandText>
           <SpacerRow size={1} />
           <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-            {organizationData?.associatedTeritoriNameService &&
-            organizationData?.associatedTeritoriNameService +
-              organizationData?.associatedTeritoriNameService.includes(".tori")
-              ? ".tori"
-              : ""}
+            {associateName}
           </BrandText>
 
           <SpacerRow size={3} />
