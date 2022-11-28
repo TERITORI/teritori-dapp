@@ -96,6 +96,7 @@ export const Sidebar: React.FC = () => {
         <Separator color={neutral33} />
       </View>
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={Object.values(SIDEBAR_LIST)}
         keyExtractor={(item) => item.title}
         renderItem={({ item }) => (
