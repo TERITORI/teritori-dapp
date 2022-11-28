@@ -25,6 +25,7 @@ import {
   redDefault,
   yellowDefault,
 } from "../../utils/style/colors";
+import { flex } from "../../utils/style/flex";
 import {
   fontMedium48,
   fontMedium24,
@@ -34,12 +35,11 @@ import {
   fontSemibold14,
   fontMedium14,
 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { ClaimModal } from "./component/ClaimModal";
 import { FightProgressBar } from "./component/FightProgressBar";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
-import { layout } from "../../utils/style/layout";
-import { flex } from "../../utils/style/flex";
 
 const ENEMY_AVATAR_SIZE = 150;
 const RIPPER_AVATAR_SIZE = 60;
