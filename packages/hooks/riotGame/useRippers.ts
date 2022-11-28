@@ -11,6 +11,12 @@ import {
 } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import useSelectedWallet from "../useSelectedWallet";
 import { useContractClients } from "../useContractClients";
+import { useNFTs } from "../useNFTs";
+import {
+  NFTsRequest,
+  Sort,
+  SortDirection,
+} from "../../api/marketplace/v1/marketplace";
 
 // TODO: change to real data from blockchains
 const fakeRippers: NSRiotGame.Ripper[] = [
@@ -70,37 +76,36 @@ const fakeRippers: NSRiotGame.Ripper[] = [
   },
 ];
 
-const RIOT_CONTRACT = process.env.THE_RIOT_COLLECTION_ADDRESS || "";
+const THE_RIOT_COLLECTION_ADDRESS =
+  process.env.THE_RIOT_COLLECTION_ADDRESS || "";
 const LIMIT = 10;
 
 const useRippers = () => {
-  const { client, queryClient, selectedWallet } = useContractClients(
-    RIOT_CONTRACT,
-    TeritoriNftClient,
-    TeritoriNftQueryClient
-  );
-  const tetitoriNFTClient = client as TeritoriNftClient;
-  const tetitoriNFTQueryClient = queryClient as TeritoriNftQueryClient;
+  const selectedWallet = useSelectedWallet();
 
-  const myRioters = async () => {
-    if (!tetitoriNFTQueryClient) return [];
+  // const { client, queryClient, selectedWallet } = useContractClients(
+  //   RIOT_CONTRACT,
+  //   TeritoriNftClient,
+  //   TeritoriNftQueryClient
+  // );
+  // const tetitoriNFTClient = client as TeritoriNftClient;
+  // const tetitoriNFTQueryClient = queryClient as TeritoriNftQueryClient;
 
-    const owner = selectedWallet?.address;
-    if (!owner) return [];
-
-    const NFTs = await tetitoriNFTQueryClient.tokens({
-      limit: LIMIT,
-      owner,
-    });
-    console.log(NFTs, "================");
+  const nftsRequest: NFTsRequest = {
+    collectionId: `tori-${THE_RIOT_COLLECTION_ADDRESS}`,
+    // ownerId: selectedWallet?.address ? `tori-${selectedWallet.address}` : "",
+    ownerId: "",
+    limit: 20,
+    offset: 0,
+    sort: Sort.SORTING_UNSPECIFIED,
+    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
   };
 
-  useEffect(() => {
-    myRioters();
-  }, [tetitoriNFTQueryClient]);
+  const { nfts: myRippers, fetchMore } = useNFTs(nftsRequest);
 
   return {
-    myRippers: fakeRippers,
+    fetchMore,
+    myRippers,
     selectedRippers: [],
   };
 };
