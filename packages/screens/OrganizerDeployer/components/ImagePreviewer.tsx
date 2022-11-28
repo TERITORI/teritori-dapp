@@ -10,14 +10,18 @@ import { layout } from "../../../utils/style/layout";
 
 interface ImagePreviewerProps {
   uri?: string;
+  onError?: () => void;
 }
 
-export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({ uri }) => {
+export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({
+  uri,
+  onError,
+}) => {
   return (
     <View>
       <View style={styles.imagePreviewer}>
         {uri ? (
-          <Image source={{ uri }} style={styles.image} />
+          <Image source={{ uri }} style={styles.image} onError={onError} />
         ) : (
           <SVG source={addSVG} height={32} width={32} />
         )}

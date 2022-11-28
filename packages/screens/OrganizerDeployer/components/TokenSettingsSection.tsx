@@ -11,6 +11,11 @@ import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
+  patternOnlyLetters,
+  patternOnlyNumbers,
+  validateAddress,
+} from "../../../utils/formRules";
+import {
   neutral33,
   neutralA3,
   trashBackground,
@@ -48,7 +53,7 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
     <View style={styles.fill}>
       <ScrollView contentContainerStyle={styles.container}>
         <BrandText style={fontSemibold28}>
-          Choose your voting settings below
+          Choose your tokens settings below
         </BrandText>
         <SpacerColumn size={2.5} />
         <View style={styles.inputContainer}>
@@ -71,7 +76,8 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
               label="Token Symbol"
               control={control}
               isAsterickSign
-              rules={{ required: true }}
+              valueModifier={(value) => value.toUpperCase()}
+              rules={{ required: true, pattern: patternOnlyLetters }}
               placeHolder="ABC"
             />
           </View>
@@ -88,7 +94,7 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
                 hideLabel={index > 0}
                 control={control}
                 isAsterickSign
-                rules={{ required: true }}
+                rules={{ required: true, validate: validateAddress }}
                 placeHolder="Account address"
                 iconSVG={walletInputSVG}
               >
@@ -111,7 +117,7 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
                 hideLabel={index > 0}
                 control={control}
                 isAsterickSign
-                rules={{ required: true }}
+                rules={{ required: true, pattern: patternOnlyNumbers }}
                 placeHolder="0"
               />
             </View>

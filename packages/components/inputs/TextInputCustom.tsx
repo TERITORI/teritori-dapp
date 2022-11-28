@@ -64,6 +64,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   inputStyle?: TextStyle;
   hideLabel?: boolean;
   errorStyle?: ViewStyle;
+  valueModifier?: (value: string) => string;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -91,6 +92,7 @@ export const TextInputCustom = <T extends FieldValues>({
   mainContainerStyle,
   inputStyle,
   hideLabel,
+  valueModifier,
   errorStyle,
   ...restProps
 }: TextInputCustomProps<T>) => {
@@ -131,7 +133,7 @@ export const TextInputCustom = <T extends FieldValues>({
       }
 
       if (reg.test(value) || !value) {
-        field.onChange(value);
+        field.onChange(valueModifier ? valueModifier(value) : value);
         if (restProps?.onChangeText) {
           restProps.onChangeText(value);
           return;
@@ -141,7 +143,7 @@ export const TextInputCustom = <T extends FieldValues>({
     }
 
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
-      field.onChange(value);
+      field.onChange(valueModifier ? valueModifier(value) : value);
       if (restProps?.onChangeText) {
         restProps.onChangeText(value);
       }

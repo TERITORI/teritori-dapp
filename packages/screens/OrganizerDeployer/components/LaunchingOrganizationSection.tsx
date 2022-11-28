@@ -44,18 +44,20 @@ export const LaunchingOrganizationSection: React.FC<{
         {isLaunched ? "All done" : "Launch organization"}
       </BrandText>
       {isLaunched && (
-        <>
+        <View>
           <SpacerColumn size={1.5} />
           <BrandText style={[fontSemibold20, { color: neutralA3 }]}>
             Your organization is ready!
           </BrandText>
           <SpacerColumn size={3} />
-          <PrimaryButton
-            size="M"
-            text="Get Started"
-            onPress={() => navigate("OrganizationGetStarted")}
-          />
-        </>
+          <View style={styles.row}>
+            <PrimaryButton
+              size="M"
+              text="Get Started"
+              onPress={() => navigate("OrganizationGetStarted")}
+            />
+          </View>
+        </View>
       )}
 
       <Animated.View
@@ -106,4 +108,5 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
   },
+  row: { flexDirection: "row" },
 });

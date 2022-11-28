@@ -44,7 +44,7 @@ export const OrganizerDeployerScreen = () => {
     setCurrentStep(1);
   };
 
-  const onSubmitConfiureVoting = (data: ConfigureVotingFormType) => {
+  const onSubmitConfigureVoting = (data: ConfigureVotingFormType) => {
     setStep2FormData(data);
     setCurrentStep(2);
   };
@@ -54,7 +54,7 @@ export const OrganizerDeployerScreen = () => {
     setCurrentStep(3);
   };
 
-  const onStartLauchingProcess = () => {
+  const onStartLaunchingProcess = () => {
     setCurrentStep(4);
     setTimeout(() => {
       setLaunchingStep(1);
@@ -86,7 +86,7 @@ export const OrganizerDeployerScreen = () => {
           </View>
 
           <View style={currentStep === 1 ? styles.show : styles.hidden}>
-            <ConfigureVotingSection onSubmit={onSubmitConfiureVoting} />
+            <ConfigureVotingSection onSubmit={onSubmitConfigureVoting} />
           </View>
 
           <View style={currentStep === 2 ? styles.show : styles.hidden}>
@@ -98,7 +98,7 @@ export const OrganizerDeployerScreen = () => {
               organizationData={step1FormData}
               votingSettingData={step2FormData}
               tokenSettingData={step3FormData}
-              onSubmit={onStartLauchingProcess}
+              onSubmit={onStartLaunchingProcess}
             />
           </View>
 

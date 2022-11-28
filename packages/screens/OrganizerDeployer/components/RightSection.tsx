@@ -51,7 +51,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
 
   const loadingWidth = loadingPercentAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 300],
+    outputRange: [0, 298],
     extrapolate: "clamp",
   });
 
@@ -131,9 +131,9 @@ export const RightSection: React.FC<RightSectionProps> = ({
         </BrandText>
         {isLaunching && launchingCompleteStep !== undefined
           ? LAUNCHING_PROCESS_STEPS.slice(0, launchingCompleteStep + 1).map(
-              (lauchStep, index) => (
+              (launchStep, index) => (
                 <SignatureProcess
-                  {...lauchStep}
+                  {...launchStep}
                   isComplete={index < launchingCompleteStep}
                 />
               )

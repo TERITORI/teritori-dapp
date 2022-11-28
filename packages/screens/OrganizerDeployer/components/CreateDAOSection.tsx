@@ -24,13 +24,27 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   onSubmit,
 }) => {
   // variables
-  const { control, handleSubmit, watch, setValue } = useForm<CreateDaoFormType>(
-    {
-      defaultValues: { structure: RADIO_DESCRIPTION_TYPES[0] },
-    }
-  );
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    setError,
+    formState: { isValid },
+  } = useForm<CreateDaoFormType>({
+    defaultValues: { structure: RADIO_DESCRIPTION_TYPES[0] },
+    mode: "all",
+  });
+
   const selectedRadioDescription = watch("structure");
   const uri = watch("imageUrl");
+
+  // functions
+  const onErrorImageLoading = () =>
+    setError("imageUrl", {
+      type: "pattern",
+      message: "This image is invalid",
+    });
 
   // returns
   return (
@@ -43,7 +57,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
         <BrandText style={styles.sectionTitle}>Claim a name</BrandText>
         <SpacerColumn size={2.5} />
         <View style={styles.section}>
-          <ImagePreviewer uri={uri} />
+          <ImagePreviewer uri={uri} onError={onErrorImageLoading} />
           <SpacerRow size={2.5} />
           <View style={styles.fill}>
             <View style={styles.row}>
@@ -64,7 +78,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                   control={control}
                   variant="noCropBorder"
                   label="Associated Teritori Name Service"
-                  placeHolder="your-organization.teri"
+                  placeHolder="your-organization.tori"
                   name="associatedTeritoriNameService"
                   rules={{ required: true }}
                   isAsterickSign
@@ -138,6 +152,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
           size="M"
           text={`Next: ${ORGANIZER_DEPLOYER_STEPS[1]}`}
           onPress={handleSubmit(onSubmit)}
+          disabled={!isValid}
         />
       </View>
     </View>
