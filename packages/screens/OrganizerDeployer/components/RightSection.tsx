@@ -51,7 +51,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
 
   const loadingWidth = loadingPercentAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 300],
+    outputRange: [0, 298],
     extrapolate: "clamp",
   });
 
