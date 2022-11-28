@@ -36,6 +36,11 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "Launchpad",
     icon: launchpadSVG,
   },
+  multisig: {
+    title: "Multisig",
+    route: "Multisig",
+    icon: launchpadSVG,
+  },
   namespace: {
     title: "Name Service",
     route: "TNSHome",

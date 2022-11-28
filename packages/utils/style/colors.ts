@@ -31,6 +31,8 @@ export const neutral77 = "#777777";
 export const neutralA3 = "#A3A3A3";
 export const additionalRed = "#FFAEAE";
 
+export const trashBackground = "rgba(244, 111, 118, 0.1)";
+
 export const gradientColorTurquoise = "#A5FECB";
 export const gradientColorLightLavender = "#C3CFE2";
 export const gradientColorLavender = "#AEB1FF";

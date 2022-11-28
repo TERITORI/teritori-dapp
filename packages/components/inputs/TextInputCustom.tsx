@@ -63,6 +63,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   mainContainerStyle?: ViewStyle;
   inputStyle?: TextStyle;
   hideLabel?: boolean;
+  errorStyle?: ViewStyle;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -90,6 +91,7 @@ export const TextInputCustom = <T extends FieldValues>({
   mainContainerStyle,
   inputStyle,
   hideLabel,
+  errorStyle,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -220,7 +222,7 @@ export const TextInputCustom = <T extends FieldValues>({
           <>{children}</>
         </View>
       </TertiaryBox>
-      <ErrorText>{error}</ErrorText>
+      <ErrorText style={errorStyle}>{error}</ErrorText>
     </>
   );
 };

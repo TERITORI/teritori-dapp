@@ -10,7 +10,11 @@ import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { neutral33, neutralA3 } from "../../../utils/style/colors";
+import {
+  neutral33,
+  neutralA3,
+  trashBackground,
+} from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ORGANIZER_DEPLOYER_STEPS } from "../OrganizerDeployerScreen";
@@ -88,12 +92,14 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
                 placeHolder="Account address"
                 iconSVG={walletInputSVG}
               >
-                <Pressable
-                  style={styles.trashContainer}
-                  onPress={() => removeAddressField(id)}
-                >
-                  <SVG source={trashSVG} width={12} height={12} />
-                </Pressable>
+                {addressIndexes.length > 1 && (
+                  <Pressable
+                    style={styles.trashContainer}
+                    onPress={() => removeAddressField(id)}
+                  >
+                    <SVG source={trashSVG} width={12} height={12} />
+                  </Pressable>
+                )}
               </TextInputCustom>
             </View>
             <SpacerRow size={2.5} />
@@ -145,12 +151,14 @@ const styles = StyleSheet.create({
     marginBottom: layout.padding_x2,
   },
   trashContainer: {
-    height: 16,
-    width: 16,
+    height: 32,
+    width: 32,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    backgroundColor: "rgba(244, 111, 118, 0.1)",
+    backgroundColor: trashBackground,
+    position: "absolute",
+    right: 0,
   },
   fill: { flex: 1 },
   footer: {

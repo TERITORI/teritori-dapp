@@ -31,6 +31,8 @@ export type RootStackParamList = {
   OrganizationDeployer: undefined;
   OrganizationGetStarted: undefined;
 
+  Multisig: undefined;
+  MultisigCreate: undefined;
   MultisigWalletManage: undefined;
   MultisigWalletTransaction: undefined;
   TransactionProposal: undefined;
@@ -60,10 +62,13 @@ const navConfig: {
     Governance: "governance",
     UserPublicProfile: "user/:id",
     RiotersFooter: "rioters-footer",
+
     // ==== Launchpad
     Launchpad: "launchpad",
-    // Mint NFT collection
+
+    // ==== Mint NFT collection
     MintCollection: "collection/:id/mint",
+
     // ==== Teritori Name Service
     TNSHome: "tns/:modal?",
 
@@ -72,12 +77,17 @@ const navConfig: {
     Collection: "collection/:id",
     CollectionActivity: "collection/:id/activity",
     NFTDetail: "nft/:id",
+
     // ==== Staking
     Staking: "staking",
     // === Organization
+
     OrganizationDeployer: "organization-deployer",
     OrganizationGetStarted: "organization-get-started",
+
     // === Multisig
+    Multisig: "multisig",
+    MultisigCreate: "multisig/create",
     MultisigWalletManage: "multisig-wallet/manage",
     MultisigWalletTransaction: "multisig-wallet/transaction",
     TransactionProposal: "multisig-wallet/proposal/transaction",

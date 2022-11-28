@@ -14,35 +14,43 @@ import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 interface GetStartedOptionProps {
+  variant?: "big" | "small";
   icon: React.FC<SvgProps>;
   title: string;
+  isBetaVersion?: boolean;
   onPress?: () => void;
 }
 
 export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
+  variant,
   icon,
   title,
   onPress,
+  isBetaVersion,
 }) => {
-  const isComingSoon = onPress === undefined;
+  const styleDarker = onPress === undefined || isBetaVersion;
 
   return (
     <Pressable
       onPress={onPress}
       style={[
         styles.container,
-        { borderColor: isComingSoon ? neutral17 : neutral33 },
+        { borderColor: styleDarker ? neutral17 : neutral33 },
+        variant === "small" && styles.smallContainer,
       ]}
     >
-      {isComingSoon && (
-        <BrandText style={styles.comingSoonText}>coming soon</BrandText>
+      {styleDarker && (
+        <BrandText style={styles.topText}>
+          {isBetaVersion ? "Beta Version" : "coming soon"}
+        </BrandText>
       )}
 
       <SVG source={icon} width={80} height={80} />
       <BrandText
         style={[
           fontSemibold14,
-          { color: isComingSoon ? neutral55 : secondaryColor },
+          { color: styleDarker ? neutral55 : secondaryColor },
+          variant === "small" && styles.smallText,
         ]}
       >
         {title}
@@ -66,7 +74,14 @@ const styles = StyleSheet.create({
     marginHorizontal: layout.padding_x2,
     marginVertical: layout.padding_x2,
   },
-  comingSoonText: StyleSheet.flatten([
+  smallContainer: {
+    width: 135,
+    height: 160,
+    paddingBottom: layout.padding_x1_5,
+    marginVertical: 0,
+  },
+  smallText: { textAlign: "center" },
+  topText: StyleSheet.flatten([
     fontSemibold12,
     {
       position: "absolute",
