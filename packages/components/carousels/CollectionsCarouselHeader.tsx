@@ -14,7 +14,7 @@ import {
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
-import { COLLECTION_CREATOR } from "../../utils/collections";
+import { getNetwork } from "../../networks";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -36,7 +36,8 @@ const defaultRequest: CollectionsRequest = {
 
 const CarouselCollectionItem: React.FC<{
   collection: Collection;
-}> = ({ collection }) => {
+  networkId: string;
+}> = ({ collection, networkId }) => {
   const navigateToCollection = useNavigateToCollection(collection.id);
 
   return (
@@ -68,7 +69,7 @@ const CarouselCollectionItem: React.FC<{
             },
           ]}
         >
-          `${COLLECTION_CREATOR.teritori} Collections`
+          {`${getNetwork(networkId)?.displayName} Collections`}
         </GradientText>
 
         <PrimaryButton
@@ -134,7 +135,12 @@ export const CollectionsCarouselHeader: React.FC<{
         pagingEnabled
         autoPlay
         autoPlayInterval={3000}
-        renderItem={({ item }) => <CarouselCollectionItem collection={item} />}
+        renderItem={({ item }) => (
+          <CarouselCollectionItem
+            collection={item}
+            networkId={req?.networkId}
+          />
+        )}
       />
     </Section>
   );
