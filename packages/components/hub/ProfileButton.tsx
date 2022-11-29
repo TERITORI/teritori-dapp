@@ -13,9 +13,8 @@ export const ProfileButton: React.FC<{
 }> = ({ touchableStyle, isEdit }) => {
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
-  const { loading, metadata } = useTNSMetadata(selectedWallet?.address);
+  const { metadata } = useTNSMetadata(selectedWallet?.address);
 
-  if (loading) return null;
   if (selectedWallet && metadata?.tokenId)
     return (
       <SecondaryButtonOutline
