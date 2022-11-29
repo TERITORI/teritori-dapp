@@ -1,13 +1,27 @@
+import { calculateFee, toUtf8 } from "cosmwasm";
+import moment from "moment";
 import React, { useState, useMemo } from "react";
-import { FlatList, Image, StyleSheet, View } from "react-native";
+import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
 
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
+import closeSVG from "../../../assets/icons/close.svg";
 import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import Col from "../../components/grid/Col";
 import Row from "../../components/grid/Row";
 import { SpacerColumn } from "../../components/spacer";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useRippers from "../../hooks/riotGame/useRippers";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { defaultExecuteFee } from "../../utils/fee";
+import {
+  buildApproveMsg,
+  buildStakingMsg,
+  calculateStakingDuration,
+} from "../../utils/game";
+import { getSigningCosmWasmClient } from "../../utils/keplr";
+import { defaultMemo } from "../../utils/memo";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutralA3 } from "../../utils/style/colors";
 import {
@@ -17,6 +31,7 @@ import {
   fontMedium14,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { teritoriGasPrice } from "../../utils/teritori";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalOld";
@@ -26,17 +41,24 @@ const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
 export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
-  const { myRippers } = useRippers();
-  const [selectedSlot, setSelectedSlot] = useState<number>();
+  const { setToastError } = useFeedbacks();
+  const selectedWallet = useSelectedWallet();
 
-  const [selectedRippers, setSelectedRippers] = useState<{
-    [slotId: string]: NSRiotGame.RipperDetail;
-  }>({});
+  const { myRippers, squadStakingQueryClient, nftClient } = useRippers();
+  const [selectedSlot, setSelectedSlot] = useState<number>();
+  const [selectedRippers, setSelectedRippers] = useState<
+    NSRiotGame.RipperDetail[]
+  >([]);
+  const [isJoiningFight, setIsJoiningFight] = useState(false);
 
   const availableRippers = useMemo(() => {
-    const selectedIds = Object.values(selectedRippers).map((r) => r.name);
+    const selectedIds = selectedRippers.map((r) => r.name);
     return myRippers.filter((r) => !selectedIds.includes(r.name));
   }, [myRippers, selectedRippers]);
+
+  const stakingDuration = useMemo<number>(() => {
+    return calculateStakingDuration(selectedRippers);
+  }, [selectedRippers]);
 
   const showRipperSelector = (slotId: number) => {
     setSelectedSlot(slotId);
@@ -48,11 +70,53 @@ export const RiotGameEnrollScreen = () => {
 
   const selectRipper = (slotId: number, ripper: NSRiotGame.RipperDetail) => {
     setSelectedSlot(undefined);
-    setSelectedRippers({ ...selectedRippers, [slotId]: ripper });
+    setSelectedRippers([...selectedRippers, ripper]);
   };
 
-  const gotoFight = () => {
-    navigation.navigate("RiotGameFight");
+  const clearSlot = (slotId: number) => {
+    const newSelectedRippers = [...selectedRippers];
+    newSelectedRippers.splice(slotId, 1);
+    setSelectedRippers(newSelectedRippers);
+  };
+
+  const joinTheFight = async () => {
+    if (selectedRippers.length === 0) return;
+
+    setIsJoiningFight(true);
+    const tokenIds = selectedRippers.map((r) => r.tokenId);
+
+    try {
+      const client = await getSigningCosmWasmClient();
+      const sender = selectedWallet?.address || "";
+
+      // const squad = await squadStakingQueryClient.getSquad({ owner: sender });
+
+      const approveMsgs = tokenIds.map((tokenId) =>
+        buildApproveMsg(sender, tokenId)
+      );
+
+      const stakeMsg = buildStakingMsg(sender, tokenIds);
+      const msgs = [...approveMsgs, stakeMsg];
+
+      const estimate = await client.simulate(sender, msgs, "");
+      const tx = await client.signAndBroadcast(
+        sender,
+        msgs,
+        calculateFee(Math.floor(estimate * 1.3), teritoriGasPrice),
+        defaultMemo
+      );
+      console.debug("Transaction:", tx);
+
+      navigation.navigate("RiotGameFight");
+    } catch (e: any) {
+      console.error(e);
+      setToastError({
+        title: "Transaction Error",
+        message: e.message,
+      });
+    } finally {
+      setIsJoiningFight(false);
+    }
   };
 
   return (
@@ -73,6 +137,14 @@ export const RiotGameEnrollScreen = () => {
             numColumns={3}
             renderItem={({ item: slotId }) => (
               <View style={styles.ripperSlot}>
+                {selectedRippers[slotId] && (
+                  <Pressable
+                    style={styles.clearIcon}
+                    onPress={() => clearSlot(slotId)}
+                  >
+                    <SVG width={20} height={20} source={closeSVG} />
+                  </Pressable>
+                )}
                 <EnrollSlot
                   key={slotId}
                   isLeader={slotId === 0}
@@ -96,7 +168,9 @@ export const RiotGameEnrollScreen = () => {
             height={148}
           >
             <BrandText style={fontSemibold28}>
-              23 hours 21 minutes 23 seconds
+              {moment
+                .utc(stakingDuration)
+                .format("HH [hours] mm [minutes] ss [seconds]")}
             </BrandText>
 
             <SpacerColumn size={1} />
@@ -117,9 +191,10 @@ export const RiotGameEnrollScreen = () => {
       </Row>
 
       <SimpleButton
-        onPress={gotoFight}
+        onPress={joinTheFight}
         containerStyle={layout.mv_5}
         title="Join the Fight"
+        loading={isJoiningFight}
       />
 
       <RipperSelectorModal
@@ -160,5 +235,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: 420,
     height: 240,
+  },
+  clearIcon: {
+    position: "absolute",
+    right: 5,
+    top: 5,
+    zIndex: 1,
   },
 });

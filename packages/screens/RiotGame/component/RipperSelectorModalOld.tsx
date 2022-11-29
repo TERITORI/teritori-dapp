@@ -84,6 +84,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 
   useEffect(() => {
     setSelectedRipper(undefined);
+    setSelectedRipperDetail(undefined);
   }, [visible]);
 
   // Normally this will never be visible
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: neutral00,
-    marginTop: headerHeight + 90,
+    marginTop: headerHeight + 80,
     borderWidth: 1,
     position: "relative",
   },
@@ -255,11 +256,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   roundedContainer: {
-    width: RIPPER_IMAGE_SIZE - 2,
-    height: RIPPER_IMAGE_SIZE - 2,
+    width: RIPPER_IMAGE_SIZE - 4,
+    height: RIPPER_IMAGE_SIZE - 4,
     position: "absolute",
-    left: 1,
-    top: 1,
+    left: 2,
+    top: 2,
     borderRadius: 999,
     overflow: "hidden",
   },

@@ -14,6 +14,7 @@ interface SimpleButtonProps {
   bgColor?: string;
   onPress?(): void;
   containerStyle?: ViewStyle;
+  loading?: boolean;
 }
 
 export const SimpleButton: React.FC<SimpleButtonProps> = ({
@@ -22,7 +23,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
   color = primaryTextColor,
   bgColor = yellowDefault,
   onPress,
-  svgIcon,
+  loading,
   containerStyle,
 }) => {
   let padH: number;
@@ -40,7 +41,10 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
   }
 
   return (
-    <TouchableOpacity style={containerStyle} onPress={onPress}>
+    <TouchableOpacity
+      style={[containerStyle, loading && { opacity: 0.6 }]}
+      onPress={() => !loading && onPress?.()}
+    >
       <BrandText
         style={[
           styles.btnStyle,
@@ -52,7 +56,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
           },
         ]}
       >
-        {title}
+        {loading ? "Loading..." : title}
       </BrandText>
     </TouchableOpacity>
   );
@@ -65,4 +69,3 @@ const styles = StyleSheet.create({
     ...(fontSemibold14 as object),
   },
 });
-

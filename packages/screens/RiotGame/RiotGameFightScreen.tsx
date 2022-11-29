@@ -33,7 +33,7 @@ import {
   fontMedium32,
   fontSemibold20,
   fontSemibold14,
-  fontMedium14,
+  fontMedium13,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { ClaimModal } from "./component/ClaimModal";
@@ -206,7 +206,7 @@ export const RiotGameFightScreen = () => {
                         rounded
                       />
 
-                      <BrandText style={[fontMedium14, { color: neutralA3 }]}>
+                      <BrandText style={[fontMedium13, { color: neutralA3 }]}>
                         {ripper.name}
                       </BrandText>
                     </View>

@@ -91,6 +91,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 
   useEffect(() => {
     setSelectedRipper(undefined);
+    setSelectedRipperDetail(undefined);
   }, [visible]);
 
   // Normally this will never be visible

@@ -41,6 +41,7 @@ namespace NSRiotGame {
   };
 
   type RipperDetail = {
+    tokenId: string;
     name: string;
     description: string;
     imageURL: ImageSourcePropType;

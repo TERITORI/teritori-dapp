@@ -1,3 +1,4 @@
+import { toUtf8 } from "cosmwasm";
 import backpackSVG from "../../assets/game/backpack.svg";
 import coinStakeSVG from "../../assets/game/coin-stake.svg";
 import controllerSVG from "../../assets/game/controller.svg";
@@ -12,6 +13,11 @@ import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
 import { GameBgCardItem } from "../screens/RiotGame/types";
+
+const THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS =
+  process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS || "";
+const THE_RIOT_NFT_CONTRACT_ADDRESS =
+  process.env.THE_RIOT_NFT_CONTRACT_ADDRESS || "";
 
 export const getRipperRarity = (
   ripper: NSRiotGame.RipperDetail
@@ -70,6 +76,71 @@ export const getRipperTraitValue = (
   }
 
   return res;
+};
+
+export const calculateStakingDuration = (
+  rippers: NSRiotGame.RipperDetail[]
+) => {
+  const COEF = 0.2;
+  const BONUS_MAP: { [totalRipper: number]: number } = {
+    1: 0,
+    2: 5,
+    3: 25,
+    4: 31,
+    5: 39,
+    6: 64,
+  };
+
+  let duration = 0;
+
+  const ripperCount = rippers.length;
+
+  if (ripperCount === 0) {
+    duration = 0;
+  } else {
+    // Get base stamina from Squad leader at slot 0
+    const baseStamina = getRipperTraitValue(rippers[0], "Stamina");
+    duration = baseStamina * COEF * (1 + BONUS_MAP[ripperCount] / 100);
+  }
+
+  return duration * 60 * 60 * 1000; // Convert to milliseconds
+};
+
+export const buildApproveMsg = (sender: string, tokenId: string) => {
+  return {
+    typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+    value: {
+      sender,
+      msg: toUtf8(
+        JSON.stringify({
+          approve: {
+            spender: THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
+            token_id: tokenId,
+          },
+        })
+      ),
+      contract: THE_RIOT_NFT_CONTRACT_ADDRESS,
+      funds: [],
+    },
+  };
+};
+
+export const buildStakingMsg = (sender: string, tokenIds: string[]) => {
+  return {
+    typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+    value: {
+      sender,
+      msg: toUtf8(
+        JSON.stringify({
+          stake: {
+            token_ids: tokenIds,
+          },
+        })
+      ),
+      contract: THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
+      funds: [],
+    },
+  };
 };
 
 export const gameBgData: GameBgCardItem[] = [
