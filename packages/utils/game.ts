@@ -13,6 +13,65 @@ import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
 import { GameBgCardItem } from "../screens/RiotGame/types";
 
+export const getRipperRarity = (
+  ripper: NSRiotGame.Ripper
+): NSRiotGame.RipperRarity => {
+  let rarity: NSRiotGame.RipperRarity;
+
+  const ripperSkin = ripper.attributes.find(
+    (attr) => attr.trait_type === "Skin"
+  )?.value;
+
+  switch (ripperSkin) {
+    case "Pure Gold":
+    case "Pure Oil":
+    case "Alloy":
+      rarity = "Uncommon";
+      break;
+    case "Aurora":
+    case "Cosmos":
+    case "Supernova":
+      rarity = "Rare";
+      break;
+    case "Marble":
+    case "Ice":
+    case "Lava":
+      rarity = "Epic";
+      break;
+    case "Grey Ether":
+    case "Green Ether":
+    case "Blue Ether":
+    case "Purple Ether":
+    case "Red Ether":
+      rarity = "Legendary";
+      break;
+    case "Iron":
+    case "Silver":
+    case "Bronze":
+    default:
+      rarity = "Common";
+  }
+
+  return rarity;
+};
+
+export const getRipperTraitValue = (
+  ripper: NSRiotGame.Ripper,
+  traitType: NSRiotGame.RipperTraitType
+) => {
+  let res: any = ripper?.attributes.find(
+    (attr) => attr.trait_type === traitType
+  )?.value;
+
+  if (res === undefined || res === "None") {
+    res = null;
+  } else if (Number.isInteger(res)) {
+    res = parseInt(res, 10);
+  }
+
+  return res;
+};
+
 export const gameBgData: GameBgCardItem[] = [
   { id: 1, type: "BLANK" },
   { id: 2, type: "BLANK" },

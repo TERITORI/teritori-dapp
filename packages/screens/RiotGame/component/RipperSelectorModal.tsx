@@ -7,6 +7,7 @@ import {
   ImageBackground,
   FlatList,
   Pressable,
+  ScrollView,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -19,6 +20,7 @@ import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import Col from "../../../components/grid/Col";
 import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
+import { getRipperRarity, getRipperTraitValue } from "../../../utils/game";
 import { neutral00, white, yellowDefault } from "../../../utils/style/colors";
 import { flex } from "../../../utils/style/flex";
 import {
@@ -91,87 +93,101 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           <SVG width={40} height={40} source={closeSVG} />
         </Pressable>
 
-        <BrandText style={[fontMedium48, layout.mt_2]}>
-          {selectedRipper?.name || "Please select a Ripper"}
-        </BrandText>
+        <ScrollView
+          style={layout.w_100}
+          contentContainerStyle={flex.alignItemsCenter}
+          showsVerticalScrollIndicator={false}
+        >
+          <BrandText style={[fontMedium48, layout.mt_2]}>
+            {selectedRipper?.name || "Please select a Ripper"}
+          </BrandText>
 
-        <Row breakpoint={992} style={{ justifyContent: "space-around" }}>
-          <Col style={flex.justifyContentAround}>
-            <View>
-              <BrandText style={[fontMedium32]}>Available Rippers</BrandText>
+          <Row breakpoint={992} style={{ justifyContent: "space-around" }}>
+            <Col style={flex.justifyContentAround}>
+              <View>
+                <BrandText style={[fontMedium32]}>Available Rippers</BrandText>
 
-              <FlatList
-                data={availableRippers}
-                numColumns={3}
-                renderItem={({ item: ripper, index }) => {
-                  return (
-                    <TouchableOpacity
-                      activeOpacity={0.6}
-                      onPress={() => selectRipper(ripper)}
-                    >
-                      <TertiaryBox
-                        style={{ margin: 10 }}
-                        width={THUMB_CONTAINER_WIDTH}
-                        height={THUMB_CONTAINER_HEIGHT}
+                <FlatList
+                  data={availableRippers}
+                  numColumns={3}
+                  renderItem={({ item: ripper, index }) => {
+                    return (
+                      <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={() => selectRipper(ripper)}
                       >
-                        <RipperAvatar
-                          size={THUMB_SIZE}
-                          source={ripper.image}
-                          rarity={ripper.rarity}
-                        />
-                      </TertiaryBox>
-                    </TouchableOpacity>
-                  );
-                }}
+                        <TertiaryBox
+                          style={{ margin: 10 }}
+                          width={THUMB_CONTAINER_WIDTH}
+                          height={THUMB_CONTAINER_HEIGHT}
+                        >
+                          <RipperAvatar
+                            size={THUMB_SIZE}
+                            source={ripper.image}
+                            rarity={getRipperRarity(ripper)}
+                          />
+                        </TertiaryBox>
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
+              </View>
+
+              <View style={styles.btnGroup}>
+                <SVG color={yellowDefault} source={controllerSVG} />
+                <SpacerRow size={2} />
+                <SimpleButton
+                  onPress={confirmRipper}
+                  size="small"
+                  title={confirmButton}
+                />
+              </View>
+            </Col>
+
+            <Col>
+              <ImageBackground
+                style={styles.dashedBorder}
+                source={dashedBorderPNG}
+              >
+                <RipperAvatar
+                  source={selectedRipper?.image}
+                  size={RIPPER_IMAGE_SIZE}
+                  rounded
+                  containerStyle={styles.roundedContainer}
+                />
+              </ImageBackground>
+
+              <BrandText style={fontMedium16}>Stats</BrandText>
+
+              <RipperStat
+                containerStyle={layout.mt_5}
+                name="Stamina"
+                value={
+                  selectedRipper &&
+                  getRipperTraitValue(selectedRipper, "Stamina")
+                }
+                size="MD"
               />
-            </View>
-
-            <View style={styles.btnGroup}>
-              <SVG color={yellowDefault} source={controllerSVG} />
-              <SpacerRow size={2} />
-              <SimpleButton
-                onPress={confirmRipper}
-                size="small"
-                title={confirmButton}
+              <RipperStat
+                containerStyle={layout.mt_5}
+                name="Protection"
+                value={
+                  selectedRipper &&
+                  getRipperTraitValue(selectedRipper, "Protection")
+                }
+                size="MD"
               />
-            </View>
-          </Col>
-
-          <Col>
-            <ImageBackground
-              style={styles.dashedBorder}
-              source={dashedBorderPNG}
-            >
-              <RipperAvatar
-                source={selectedRipper?.image}
-                size={RIPPER_IMAGE_SIZE}
-                rounded
-                containerStyle={styles.roundedContainer}
+              <RipperStat
+                containerStyle={layout.mt_5}
+                name="Luck"
+                value={
+                  selectedRipper && getRipperTraitValue(selectedRipper, "Luck")
+                }
+                size="MD"
               />
-            </ImageBackground>
-
-            <BrandText style={fontMedium16}>Stats</BrandText>
-
-            <RipperStat
-              containerStyle={layout.mt_5}
-              name="Stamina"
-              value={selectedRipper?.stamina || 0}
-              size="MD"
-            />
-            <RipperStat
-              containerStyle={layout.mt_5}
-              name="Protection"
-              value={selectedRipper?.protection || 0}
-              size="MD"
-            />
-            <RipperStat
-              containerStyle={layout.mt_5}
-              name="Luck"
-              value={selectedRipper?.luck || 0}
-              size="MD"
-            />
-          </Col>
-        </Row>
+            </Col>
+          </Row>
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -180,7 +196,6 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     backgroundColor: neutral00,
     marginTop: headerHeight,
     borderWidth: 1,

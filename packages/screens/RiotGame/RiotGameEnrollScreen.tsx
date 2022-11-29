@@ -34,8 +34,8 @@ export const RiotGameEnrollScreen = () => {
   }>({});
 
   const availableRippers = useMemo(() => {
-    const selectedIds = Object.values(selectedRippers).map((r) => r.id);
-    return myRippers.filter((r) => !selectedIds.includes(r.id));
+    const selectedIds = Object.values(selectedRippers).map((r) => r.name);
+    return myRippers.filter((r) => !selectedIds.includes(r.name));
   }, [myRippers, selectedRippers]);
 
   const showRipperSelector = (slotId: number) => {
@@ -102,7 +102,7 @@ export const RiotGameEnrollScreen = () => {
             <SpacerColumn size={1} />
 
             <BrandText style={[fontMedium14, { color: neutralA3 }]}>
-              Stamina x 0.2 for solo fightsLeader's
+              Stamina x 0.2 for solo fights
             </BrandText>
             <BrandText style={[fontMedium14, { color: neutralA3 }]}>
               Leader's Stamina x 0.2 + Bonus for squad fights
