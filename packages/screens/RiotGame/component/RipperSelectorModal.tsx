@@ -21,7 +21,7 @@ import Col from "../../../components/grid/Col";
 import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
 import { getStandardNFTInfo } from "../../../hooks/useNFTInfo";
-import { getRipperRarity, getRipperTraitValue } from "../../../utils/game";
+import { getRipperTraitValue } from "../../../utils/game";
 import {
   neutral00,
   neutral67,
@@ -65,6 +65,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   confirmButton,
   ...props
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRipper, setSelectedRipper] = useState<
     NSRiotGame.RipperListItem | undefined
   >();

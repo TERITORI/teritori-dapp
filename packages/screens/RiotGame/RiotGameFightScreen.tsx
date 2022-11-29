@@ -2,7 +2,6 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, View } from "react-native";
 
-import defaultGuardianSVG from "../../../assets/default-images/default-guardian-nft.png";
 import clockSVG from "../../../assets/game/clock.svg";
 import countDownPNG from "../../../assets/game/countdown.png";
 import defaultEnemyPNG from "../../../assets/game/default-enemy.png";

@@ -14,7 +14,7 @@ import toolSVG from "../../assets/game/tool.svg";
 import { GameBgCardItem } from "../screens/RiotGame/types";
 
 export const getRipperRarity = (
-  ripper: NSRiotGame.Ripper
+  ripper: NSRiotGame.RipperDetail
 ): NSRiotGame.RipperRarity => {
   let rarity: NSRiotGame.RipperRarity;
 
