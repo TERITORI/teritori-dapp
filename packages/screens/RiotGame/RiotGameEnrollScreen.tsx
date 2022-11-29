@@ -1,6 +1,6 @@
-import { calculateFee, toUtf8 } from "cosmwasm";
+import { calculateFee } from "cosmwasm";
 import moment from "moment";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
 
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
@@ -12,9 +12,9 @@ import Col from "../../components/grid/Col";
 import Row from "../../components/grid/Row";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { GetSquadResponse } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import useRippers from "../../hooks/riotGame/useRippers";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { defaultExecuteFee } from "../../utils/fee";
 import {
   buildApproveMsg,
   buildStakingMsg,
@@ -43,8 +43,10 @@ export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
   const { setToastError } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
+  const sender = selectedWallet?.address || "";
 
-  const { myRippers, squadStakingQueryClient, nftClient } = useRippers();
+  const { myRippers, squadStakingQueryClient } = useRippers();
+  const [stakedRipperIds, setStakedRipperIds] = useState<string[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<
     NSRiotGame.RipperDetail[]
@@ -53,8 +55,10 @@ export const RiotGameEnrollScreen = () => {
 
   const availableRippers = useMemo(() => {
     const selectedIds = selectedRippers.map((r) => r.name);
-    return myRippers.filter((r) => !selectedIds.includes(r.name));
-  }, [myRippers, selectedRippers]);
+    return myRippers
+      .filter((r) => !selectedIds.includes(r.name)) // excluded rippers already selected
+      .filter((r) => !stakedRipperIds.includes(r.id.split("-")[2])); // excluded rippers already staked 
+  }, [myRippers, selectedRippers, stakedRipperIds]);
 
   const stakingDuration = useMemo<number>(() => {
     return calculateStakingDuration(selectedRippers);
@@ -89,8 +93,6 @@ export const RiotGameEnrollScreen = () => {
       const client = await getSigningCosmWasmClient();
       const sender = selectedWallet?.address || "";
 
-      // const squad = await squadStakingQueryClient.getSquad({ owner: sender });
-
       const approveMsgs = tokenIds.map((tokenId) =>
         buildApproveMsg(sender, tokenId)
       );
@@ -118,6 +120,18 @@ export const RiotGameEnrollScreen = () => {
       setIsJoiningFight(false);
     }
   };
+
+  const fetchStakedRippers = async () => {
+    const squad: GetSquadResponse = await squadStakingQueryClient.getSquad({
+      owner: sender,
+    });
+
+    setStakedRipperIds(squad.token_ids);
+  };
+
+  useEffect(() => {
+    squadStakingQueryClient && fetchStakedRippers();
+  }, [squadStakingQueryClient]);
 
   return (
     <GameContentView>
