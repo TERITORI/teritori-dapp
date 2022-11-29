@@ -6,15 +6,19 @@ import {
   View,
   Image,
   ImageBackground,
+  ScrollView,
+  Pressable,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Carousel from "react-native-reanimated-carousel";
 
 import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
+import closeSVG from "../../../../assets/icons/close.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
 import { getStandardNFTInfo } from "../../../hooks/useNFTInfo";
 import { getRipperTraitValue } from "../../../utils/game";
@@ -24,7 +28,7 @@ import {
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { headerHeight } from "../../../utils/style/layout";
+import { headerHeight, layout } from "../../../utils/style/layout";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStat } from "./RipperStat";
 import { SimpleButton } from "./SimpleButton";
@@ -96,117 +100,128 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
       {...props}
     >
       <View style={styles.container}>
+        <Pressable style={styles.closeIcon} onPress={onClose}>
+          <SVG width={40} height={40} source={closeSVG} />
+        </Pressable>
+
         <BrandText style={fontMedium48}>
           {selectedRipperDetail?.name || "Please select a Ripper"}
         </BrandText>
 
-        <View style={styles.row}>
-          <View style={styles.leftCol}>
-            <View style={styles.leftColContent}>
-              <View style={styles.selectListContainer}>
-                <Carousel
-                  data={availableRippers}
-                  width={
-                    THUMB_CONTAINER_WIDTH + 20 /* For displaying right arrow */
-                  }
-                  height={
-                    THUMB_CONTAINER_HEIGHT + 20 /* For padding between items */
-                  }
-                  loop={false}
-                  vertical
-                  style={{
-                    height: (THUMB_CONTAINER_HEIGHT + 20) * 4,
-                  }}
-                  pagingEnabled
-                  renderItem={({ item, index }) => {
-                    const isSelected = item.name === selectedRipper?.name;
-                    return (
-                      <TouchableOpacity
-                        activeOpacity={0.6}
-                        onPress={() => selectRipper(item)}
-                      >
-                        <TertiaryBox
-                          noBrokenCorners
-                          mainContainerStyle={[
-                            styles.ripperThumb,
-                            isSelected && {
-                              borderColor: white,
-                              borderWidth: 1,
-                            },
-                          ]}
+        <ScrollView style={layout.w_100} showsVerticalScrollIndicator={false}>
+          <Row breakpoint={992}>
+            <View style={styles.leftCol}>
+              <View style={styles.leftColContent}>
+                <View style={styles.selectListContainer}>
+                  <Carousel
+                    data={availableRippers}
+                    width={
+                      THUMB_CONTAINER_WIDTH +
+                      20 /* For displaying right arrow */
+                    }
+                    height={
+                      THUMB_CONTAINER_HEIGHT +
+                      20 /* For padding between items */
+                    }
+                    loop={false}
+                    vertical
+                    style={{
+                      height: (THUMB_CONTAINER_HEIGHT + 20) * 4,
+                    }}
+                    pagingEnabled
+                    renderItem={({ item, index }) => {
+                      const isSelected = item.name === selectedRipper?.name;
+                      return (
+                        <TouchableOpacity
+                          activeOpacity={0.6}
+                          onPress={() => selectRipper(item)}
                         >
-                          <BrandText style={styles.ripperThumbName}>
-                            {item.name}
-                          </BrandText>
-                          <Image
-                            style={{ width: THUMB_WIDTH, height: THUMB_HEIGHT }}
-                            source={{ uri: item.imageUri }}
-                          />
+                          <TertiaryBox
+                            noBrokenCorners
+                            mainContainerStyle={[
+                              styles.ripperThumb,
+                              isSelected && {
+                                borderColor: white,
+                                borderWidth: 1,
+                              },
+                            ]}
+                          >
+                            <BrandText style={styles.ripperThumbName}>
+                              {item.name}
+                            </BrandText>
+                            <Image
+                              style={{
+                                width: THUMB_WIDTH,
+                                height: THUMB_HEIGHT,
+                              }}
+                              source={{ uri: item.imageUri }}
+                            />
 
-                          {isSelected && <View style={styles.arrowRight} />}
-                        </TertiaryBox>
-                      </TouchableOpacity>
-                    );
-                  }}
+                            {isSelected && <View style={styles.arrowRight} />}
+                          </TertiaryBox>
+                        </TouchableOpacity>
+                      );
+                    }}
+                  />
+                </View>
+
+                <ImageBackground
+                  style={styles.dashedBorder}
+                  source={dashedBorderPNG}
+                >
+                  <RipperAvatar
+                    source={selectedRipperDetail?.imageURL}
+                    size={RIPPER_IMAGE_SIZE}
+                    rounded
+                    containerStyle={styles.roundedContainer}
+                  />
+                </ImageBackground>
+              </View>
+            </View>
+
+            <View style={styles.rightCol}>
+              <BrandText style={fontMedium32}>Stats</BrandText>
+
+              <RipperStat
+                containerStyle={styles.ripperStatContainer}
+                name="Stamina"
+                value={
+                  selectedRipperDetail &&
+                  getRipperTraitValue(selectedRipperDetail, "Stamina")
+                }
+                size="LG"
+              />
+              <RipperStat
+                containerStyle={styles.ripperStatContainer}
+                name="Protection"
+                value={
+                  selectedRipperDetail &&
+                  getRipperTraitValue(selectedRipperDetail, "Protection")
+                }
+                size="LG"
+              />
+              <RipperStat
+                containerStyle={styles.ripperStatContainer}
+                name="Luck"
+                value={
+                  selectedRipperDetail &&
+                  getRipperTraitValue(selectedRipperDetail, "Luck")
+                }
+                size="LG"
+              />
+
+              <View style={styles.btnGroup}>
+                <SVG color={yellowDefault} source={controllerSVG} />
+                <SpacerRow size={2} />
+                <SimpleButton
+                  onPress={enrollRipper}
+                  size="small"
+                  title={confirmButton}
                 />
               </View>
-
-              <ImageBackground
-                style={styles.dashedBorder}
-                source={dashedBorderPNG}
-              >
-                <RipperAvatar
-                  source={selectedRipperDetail?.imageURL}
-                  size={RIPPER_IMAGE_SIZE}
-                  rounded
-                  containerStyle={styles.roundedContainer}
-                />
-              </ImageBackground>
             </View>
-          </View>
-
-          <View style={styles.rightCol}>
-            <BrandText style={fontMedium32}>Stats</BrandText>
-
-            <RipperStat
-              containerStyle={styles.ripperStatContainer}
-              name="Stamina"
-              value={
-                selectedRipperDetail &&
-                getRipperTraitValue(selectedRipperDetail, "Stamina")
-              }
-              size="LG"
-            />
-            <RipperStat
-              containerStyle={styles.ripperStatContainer}
-              name="Protection"
-              value={
-                selectedRipperDetail &&
-                getRipperTraitValue(selectedRipperDetail, "Protection")
-              }
-              size="LG"
-            />
-            <RipperStat
-              containerStyle={styles.ripperStatContainer}
-              name="Luck"
-              value={
-                selectedRipperDetail &&
-                getRipperTraitValue(selectedRipperDetail, "Luck")
-              }
-              size="LG"
-            />
-
-            <View style={styles.btnGroup}>
-              <SVG color={yellowDefault} source={controllerSVG} />
-              <SpacerRow size={2} />
-              <SimpleButton
-                onPress={enrollRipper}
-                size="small"
-                title={confirmButton}
-              />
-            </View>
-          </View>
-        </View>
+          </Row>
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -219,12 +234,7 @@ const styles = StyleSheet.create({
     backgroundColor: neutral00,
     marginTop: headerHeight + 90,
     borderWidth: 1,
-  },
-  row: {
-    flex: 1,
-    flexDirection: "row",
-    width: "100%",
-    minWidth: 992,
+    position: "relative",
   },
   rightCol: {
     flex: 1,
@@ -283,5 +293,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 100,
+    marginLeft: 40,
+  },
+  closeIcon: {
+    position: "absolute",
+    right: 10,
+    top: 10,
+    zIndex: 1,
   },
 });

@@ -6,8 +6,8 @@ import {
   View,
   ImageBackground,
   FlatList,
-  Pressable,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
