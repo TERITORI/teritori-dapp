@@ -89,7 +89,6 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
       <View style={styles.container}>
         <Pressable style={styles.closeIcon} onPress={onClose}>
           <SVG width={40} height={40} source={closeSVG} />
-          dsdsadsa
         </Pressable>
 
         <BrandText style={[fontMedium48, layout.mt_2]}>
