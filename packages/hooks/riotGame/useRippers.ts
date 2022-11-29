@@ -78,15 +78,15 @@ const useRippers = () => {
 
   const myRippersRequest: NFTsRequest = {
     collectionId: `tori-${THE_RIOT_COLLECTION_ADDRESS}`,
-    // ownerId: selectedWallet?.address ? `tori-${selectedWallet.address}` : "",
-    ownerId: "",
+    ownerId: selectedWallet?.address ? `tori-${selectedWallet.address}` : "",
     limit: 20,
     offset: 0,
     sort: Sort.SORTING_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
   };
-
   const { nfts, fetchMore } = useNFTs(myRippersRequest);
+  console.log(nfts)
+
   const myRippers = nfts as NSRiotGame.RipperListItem[];
 
   return {
