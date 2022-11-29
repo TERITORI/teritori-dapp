@@ -44,9 +44,9 @@ import { CollectionStat } from "./components/CollectionStat";
 
 const nftWidth = 268; // FIXME: ssot
 
-type TabsListType = "allNFTs" | "owned" | "activity";
+export type TabsListType = "allNFTs" | "owned" | "activity";
 
-const Content: React.FC<{
+export const Content: React.FC<{
   id: string;
   selectedTab: TabsListType;
   sortDirection: SortDirection;
@@ -85,7 +85,7 @@ const Content: React.FC<{
 });
 
 // All the screen content before the Flatlist used to display NFTs
-const Header: React.FC<{
+export const Header: React.FC<{
   collectionId: string;
   collectionInfo?: CollectionInfo;
   selectedTab: TabsListType;

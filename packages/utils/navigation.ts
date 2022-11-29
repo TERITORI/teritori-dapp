@@ -28,6 +28,7 @@ export type RootStackParamList = {
   RiotGameFight: undefined;
   RiotGameBreeding: undefined;
   RiotGameSeasons: undefined;
+  RiotGameMarketplace: undefined;
 
   Staking: undefined;
 
@@ -63,6 +64,7 @@ const navConfig: {
     RiotGameFight: "riot-game/fight",
     RiotGameBreeding: "riot-game/breeding",
     RiotGameSeasons: "riot-game/seasons",
+    RiotGameMarketplace: "riot-game/marketplace",
 
     // ==== Launchpad
     Launchpad: "launchpad",
