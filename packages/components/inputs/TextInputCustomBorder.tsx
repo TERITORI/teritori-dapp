@@ -12,7 +12,7 @@ import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
 } from "../../utils/numbers";
-import { neutral22, neutral33 } from "../../utils/style/colors";
+import { neutral22, neutral33, neutral77 } from "../../utils/style/colors";
 import { SVG } from "../SVG";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -107,7 +107,7 @@ export const TextInputCustomBorder: React.FC<{
               value={value}
               onChangeText={handleChangeText}
               onKeyPress={handleKeyPress}
-              placeholderTextColor="#999999"
+              placeholderTextColor={neutral77}
               style={[
                 {
                   fontSize: 14,

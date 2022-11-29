@@ -4,6 +4,7 @@ import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { Currency } from "@keplr-wallet/types";
 
 import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { ProposalStatus } from "../screens/Governance/types";
 
 export const UTORI_PER_TORI = process.env.PUBLIC_BASE_MINT_FEE;
 export const teritoriRestProvider = process.env.PUBLIC_CHAIN_REST_ENDPOINT;
@@ -13,6 +14,32 @@ export const toriDisplayDenom = process.env.PUBLIC_STAKING_DENOM_DISPLAY_NAME;
 export const vaultContractAddress =
   process.env.TERITORI_VAULT_CONTRACT_ADDRESS || "";
 const toriDenom = process.env.PUBLIC_STAKING_DENOM;
+
+export interface CosmosProposalsResponse {
+  proposals: {
+    content: {
+      type: string;
+      description: string;
+      title: string;
+    };
+    deposit_end_time: string;
+    final_tally_result: {
+      abstain: string;
+      no: string;
+      no_with_veto: string;
+      yes: string;
+    };
+    proposal_id: string;
+    status: ProposalStatus;
+    submit_time: string;
+    total_deposit: {
+      amount: string;
+      denom: string;
+    }[];
+    voting_end_time: string;
+    voting_start_time: string;
+  }[];
+}
 
 export interface CosmosRewardsTotalResponse {
   total: {

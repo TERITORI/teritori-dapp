@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import { BrandText } from "../../components/BrandText/BrandText";
-import { neutral33 } from "../../utils/style/colors";
-import { ProposalStatus } from "./types";
+import { BrandText } from "../../../components/BrandText/BrandText";
+import { neutral33 } from "../../../utils/style/colors";
+import { ProposalStatus } from "../types";
 
 const def = {
   all: {
     name: "All Periods",
     filter: undefined,
+  },
+  deposit: {
+    name: "Deposit",
+    filter: "PROPOSAL_STATUS_DEPOSIT_PERIOD",
   },
   voting: {
     name: "Voting",

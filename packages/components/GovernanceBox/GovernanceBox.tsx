@@ -4,8 +4,17 @@ import { ColorValue, ScrollView, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { GovernanceDetails } from "../../screens/Governance/GovernanceDetails";
+import { GovernanceDetails } from "../../screens/Governance/components/GovernanceDetails";
 import { ProposalStatus } from "../../screens/Governance/types";
+import {
+  additionalRed,
+  neutral17,
+  neutral77,
+  primaryColor,
+  successColor,
+} from "../../utils/style/colors";
+import { fontSemibold13 } from "../../utils/style/fonts";
+import { TertiaryBadge } from "../badges/TertiaryBadge";
 
 // FIXME: code dedup
 
@@ -45,21 +54,23 @@ export const GovernanceBox: React.FC<{
     percentageAbstainValue;
   const totalParticipant = totalUsers - percentageAbstainValue;
   const percentageTotalParticipant =
-    ((totalParticipant / totalUsers) * 100).toFixed(2).toString() + "%";
+    ((totalParticipant / totalUsers || 0) * 100).toFixed(2).toString() + "%";
   const [displayGovernanceDetails, setDisplayGovernanceDetails] =
     useState(false);
 
   const test = "%";
-  let percentageYes = ((percentageYesValue / totalUsers) * 100)
+  let percentageYes = ((percentageYesValue / totalUsers || 0) * 100)
     .toFixed(2)
     .toString();
   percentageYes = percentageYes.substring(0, 5) + test;
-  let percentageNo = ((percentageNoValue / totalUsers) * 100)
+  let percentageNo = ((percentageNoValue / totalUsers || 0) * 100)
     .toFixed(2)
     .toString();
   percentageNo = percentageNo.substring(0, 5) + test;
 
-  const percentageNoWithVeto = ((percentageNoWithVetoValue / totalUsers) * 100)
+  const percentageNoWithVeto = (
+    (percentageNoWithVetoValue / totalUsers || 0) * 100
+  )
     .toFixed(2)
     .toString();
 
@@ -122,79 +133,33 @@ export const GovernanceBox: React.FC<{
               height: "100%",
             }}
           >
-            {status === "PROPOSAL_STATUS_VOTING" && (
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "#171717",
-                  borderRadius: 100,
-                  height: "fit-content",
-                  width: "fit-content",
-                }}
-              >
-                <BrandText
-                  style={{
-                    padding: 5,
-                    paddingRight: 15,
-                    paddingLeft: 15,
-                    fontSize: 13,
-                    color: "#16BBFF",
-                  }}
-                >
-                  VOTING PERIOD
-                </BrandText>
-              </View>
-            )}
-
-            {status === "PROPOSAL_STATUS_REJECTED" && (
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "#171717",
-                  borderRadius: 100,
-                  height: "fit-content",
-                  width: "fit-content",
-                }}
-              >
-                <BrandText
-                  style={{
-                    padding: 5,
-                    paddingRight: 15,
-                    paddingLeft: 15,
-                    fontSize: 13,
-                    color: "#FFAEAE",
-                  }}
-                >
-                  REJECTED
-                </BrandText>
-              </View>
-            )}
-
             {status === "PROPOSAL_STATUS_PASSED" && (
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "#171717",
-                  borderRadius: 100,
-                  height: "fit-content",
-                  width: "fit-content",
-                }}
-              >
-                <BrandText
-                  style={{
-                    padding: 5,
-                    paddingRight: 15,
-                    paddingLeft: 15,
-                    fontSize: 13,
-                    color: "#C8FFAE",
-                  }}
-                >
-                  PASSED
-                </BrandText>
-              </View>
+              <TertiaryBadge
+                label="PASSED"
+                style={{ backgroundColor: neutral17 }}
+                textStyle={[fontSemibold13, { color: successColor }]}
+              />
+            )}
+            {status === "PROPOSAL_STATUS_REJECTED" && (
+              <TertiaryBadge
+                label="REJECTED"
+                style={{ backgroundColor: neutral17 }}
+                textStyle={[fontSemibold13, { color: additionalRed }]}
+              />
+            )}
+            {status === "PROPOSAL_STATUS_VOTING" && (
+              <TertiaryBadge
+                label="VOTING PERIOD"
+                style={{ backgroundColor: neutral17 }}
+                textStyle={[fontSemibold13, { color: primaryColor }]}
+              />
+            )}
+            {status === "PROPOSAL_STATUS_DEPOSIT_PERIOD" && (
+              <TertiaryBadge
+                label="DEPOSIT PERIOD"
+                style={{ backgroundColor: neutral17 }}
+                textStyle={[fontSemibold13, { color: primaryColor }]}
+              />
             )}
 
             <View>
@@ -211,7 +176,7 @@ export const GovernanceBox: React.FC<{
                 <BrandText
                   style={{
                     fontSize: 18,
-                    color: "#808080",
+                    color: neutral77,
                   }}
                 >
                   {numberProposalHashtag}
@@ -237,7 +202,7 @@ export const GovernanceBox: React.FC<{
                 <BrandText
                   style={{
                     fontSize: 18,
-                    color: "#808080",
+                    color: neutral77,
                   }}
                 >
                   {descriptionProposal}
@@ -292,7 +257,7 @@ export const GovernanceBox: React.FC<{
                 <BrandText
                   style={{
                     fontSize: 12,
-                    color: "#808080",
+                    color: neutral77,
                   }}
                 >
                   Voting End Time
@@ -315,7 +280,7 @@ export const GovernanceBox: React.FC<{
                   width: 45,
                   height: 0,
                   borderWidth: 0.5,
-                  borderColor: "#808080",
+                  borderColor: neutral77,
                   transform: [{ rotate: "90deg" }],
                   top: 13,
                 }}
@@ -325,7 +290,7 @@ export const GovernanceBox: React.FC<{
                 <BrandText
                   style={{
                     fontSize: 12,
-                    color: "#808080",
+                    color: neutral77,
                   }}
                 >
                   Turnout
@@ -345,7 +310,7 @@ export const GovernanceBox: React.FC<{
                   width: 45,
                   height: 0,
                   borderWidth: 0.5,
-                  borderColor: "#808080",
+                  borderColor: neutral77,
                   transform: [{ rotate: "90deg" }],
                   top: 13,
                 }}
@@ -355,7 +320,7 @@ export const GovernanceBox: React.FC<{
                 <BrandText
                   style={{
                     fontSize: 12,
-                    color: "#808080",
+                    color: neutral77,
                   }}
                 >
                   Most voted on

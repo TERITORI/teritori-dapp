@@ -46,5 +46,6 @@ export const layout = {
   },
   borderRadius: 12,
   contentPadding: 48,
+  topContentPaddingWithHeading: 42,
   iconButton: 32,
 };

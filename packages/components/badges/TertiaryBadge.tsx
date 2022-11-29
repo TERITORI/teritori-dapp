@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import {
@@ -17,15 +17,16 @@ export const TertiaryBadge: React.FC<{
   label: string | number;
   iconSVG?: React.FC<SvgProps>;
   size?: BadgesSize;
-  textColor?: string;
+  textStyle?: StyleProp<TextStyle>;
   style?: StyleProp<ViewStyle>;
-}> = ({ label, iconSVG, size = "M", textColor = "#FFFFFF", style }) => {
+}> = ({ label, iconSVG, size = "M", textStyle, style }) => {
   return (
     <View
       style={[
         {
           flexDirection: "row",
           alignItems: "center",
+          alignSelf: "flex-start",
           height: heightBadge(size),
           paddingHorizontal: paddingHorizontalBadge(size),
           backgroundColor: neutral33,
@@ -34,9 +35,7 @@ export const TertiaryBadge: React.FC<{
         style,
       ]}
     >
-      <BrandText style={[fontSemibold14, { color: textColor }]}>
-        {label}
-      </BrandText>
+      <BrandText style={[fontSemibold14, textStyle]}>{label}</BrandText>
       {iconSVG && (
         <SVG
           source={iconSVG}

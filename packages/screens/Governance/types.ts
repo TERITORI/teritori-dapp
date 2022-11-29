@@ -1,16 +1,27 @@
 export type ProposalStatus =
   | "PROPOSAL_STATUS_PASSED"
   | "PROPOSAL_STATUS_REJECTED"
-  | "PROPOSAL_STATUS_VOTING";
+  | "PROPOSAL_STATUS_VOTING"
+  | "PROPOSAL_STATUS_DEPOSIT_PERIOD";
 
-// FIXME: fully define type
-export interface Proposal {
-  content: any;
-  status: ProposalStatus;
-  proposal_id: string;
-  final_tally_result: any;
-  voting_end_time: string;
-  voting_start_time: string;
-  deposit_end_time: string;
-  submit_time: string;
+export enum ProposalType {
+  SOFTWARE_UPGRADE = "/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal",
+  PARAMETER_CHANGE = "/cosmos.params.v1beta1.ParameterChangeProposal",
+  TEXT = "/cosmos.gov.v1beta1.TextProposal",
 }
+
+export type ProposalForm = {
+  title: string;
+  description: string;
+  type: ProposalType;
+  minimumDeposit: number;
+  initialDeposit: number;
+
+  depositPeriodDays: string;
+  depositPeriodHours: string;
+  depositPeriodMinutes: string;
+
+  votingPeriodDays: string;
+  votingPeriodHours: string;
+  votingPeriodMinutes: string;
+};

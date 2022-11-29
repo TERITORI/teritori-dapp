@@ -1,42 +1,36 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
 import { useProposals } from "../../hooks/useProposals";
-import { teritoriRestProvider } from "../../utils/teritori";
-import { NavBarGovernance } from "./NavBarGovernance";
-import { Proposal, ProposalStatus } from "./types";
+import { neutral00, primaryColor } from "../../utils/style/colors";
+import { CreateProposalModal } from "./components/CreateProposalModal";
+import { NavBarGovernance } from "./components/NavBarGovernance";
+import { ProposalStatus } from "./types";
 
 // FIXME: properly handle pagination
 
 export const GovernanceScreen: React.FC = () => {
-  const [proposals, setProposals] = useState<Proposal[]>([]);
   const [filter, setFilter] = useState<ProposalStatus>();
-  const { submitProposal } = useProposals();
-
-  useEffect(() => {
-    const effect = async () => {
-      try {
-        const res = await fetch(
-          `${teritoriRestProvider}/cosmos/gov/v1beta1/proposals`
-        );
-        const data = await res.json();
-
-        setProposals(data.proposals.reverse());
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    effect();
-  }, []);
+  const { proposals, submitProposal } = useProposals();
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
 
   const filteredProposals = useMemo(
-    () => (filter ? proposals.filter((p) => p.status === filter) : proposals),
+    () =>
+      (filter
+        ? proposals.filter((p) => p.status === filter)
+        : proposals
+      ).reverse(),
     [filter, proposals]
   );
+
+  const nextProposalId = () => {
+    if (!proposals.length) return "";
+    return (parseInt(proposals.reverse()[0].proposal_id, 10) + 1).toString();
+  };
 
   return (
     <ScreenContainer>
@@ -52,15 +46,16 @@ export const GovernanceScreen: React.FC = () => {
       >
         <BrandText style={{ fontSize: 28 }}>Decentralized Governance</BrandText>
 
-        <PrimaryButton
-          size="XS"
-          text="Submit a Proposal"
-          onPress={() => submitProposal()}
-        />
-
         <View style={{ bottom: 10, right: 100 }}>
           <NavBarGovernance onChange={setFilter} />
         </View>
+
+        <SecondaryButtonOutline
+          backgroundColor={neutral00}
+          size="SM"
+          text="Create Proposal"
+          onPress={() => setIsCreateModalVisible(true)}
+        />
       </View>
 
       <View
@@ -73,29 +68,36 @@ export const GovernanceScreen: React.FC = () => {
           marginRight: -60,
         }}
       >
-        {filteredProposals.map((proposals, index) => (
+        {filteredProposals.map((proposal, index) => (
           <GovernanceBox
             key={index}
-            numberProposal={proposals.proposal_id}
-            titleProposal={proposals.content.title}
-            descriptionProposal={proposals.content.description}
-            votingEndTime={proposals.voting_end_time}
-            votingStartTime={proposals.voting_start_time}
-            votingSubmitTime={proposals.submit_time}
-            votingDepositEndTime={proposals.deposit_end_time}
-            colorMostVoted="#16BBFF"
-            percentageNoValue={parseFloat(proposals.final_tally_result.no)}
-            percentageYesValue={parseFloat(proposals.final_tally_result.yes)}
+            numberProposal={proposal.proposal_id}
+            titleProposal={proposal.content.title}
+            descriptionProposal={proposal.content.description}
+            votingEndTime={proposal.voting_end_time}
+            votingStartTime={proposal.voting_start_time}
+            votingSubmitTime={proposal.submit_time}
+            votingDepositEndTime={proposal.deposit_end_time}
+            colorMostVoted={primaryColor}
+            percentageNoValue={parseFloat(proposal.final_tally_result.no)}
+            percentageYesValue={parseFloat(proposal.final_tally_result.yes)}
             percentageNoWithVetoValue={parseFloat(
-              proposals.final_tally_result.no_with_veto
+              proposal.final_tally_result.no_with_veto
             )}
             percentageAbstainValue={parseFloat(
-              proposals.final_tally_result.abstain
+              proposal.final_tally_result.abstain
             )}
-            status={proposals.status}
+            status={proposal.status}
           />
         ))}
       </View>
+
+      <CreateProposalModal
+        isVisible={isCreateModalVisible}
+        onClose={() => setIsCreateModalVisible(false)}
+        onSubmit={submitProposal}
+        newId={nextProposalId()}
+      />
     </ScreenContainer>
   );
 };

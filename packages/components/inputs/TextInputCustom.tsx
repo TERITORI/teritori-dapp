@@ -35,7 +35,7 @@ import { SpacerColumn } from "../spacer";
 
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
-  label: string;
+  label?: string;
   iconSVG?: StyleProp<ViewStyle>;
   placeHolder?: string;
   squaresBackgroundColor?: string;
@@ -170,7 +170,7 @@ export const TextInputCustom = <T extends FieldValues>({
       >
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
-            {variant !== "labelOutside" && (
+            {variant !== "labelOutside" && label && (
               <Pressable onPress={() => inputRef.current?.focus()}>
                 <BrandText style={[styles.labelText, fontMedium10, labelStyle]}>
                   {label}
@@ -184,7 +184,7 @@ export const TextInputCustom = <T extends FieldValues>({
               placeholder={placeHolder}
               onChangeText={handleChangeText}
               onKeyPress={handleKeyPress}
-              placeholderTextColor="#999999"
+              placeholderTextColor={neutral77}
               value={field.value}
               style={styles.textInput}
               {...restProps}

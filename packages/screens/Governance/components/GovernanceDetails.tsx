@@ -6,18 +6,18 @@ import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { VictoryPie } from "victory";
 
-import { BrandText } from "../../components/BrandText/BrandText";
-import { ConfirmationVote } from "../../components/GovernanceBox/ConfirmationVote";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import ModalBase from "../../components/modals/ModalBase";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrOfflineSigner } from "../../utils/keplr";
-import { neutral44 } from "../../utils/style/colors";
-import { getTeritoriSigningStargateClient } from "../../utils/teritori";
-import { ProposalStatus } from "./types";
+import { BrandText } from "../../../components/BrandText/BrandText";
+import { ConfirmationVote } from "../../../components/GovernanceBox/ConfirmationVote";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
+import ModalBase from "../../../components/modals/ModalBase";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getKeplrOfflineSigner } from "../../../utils/keplr";
+import { neutral44, neutral77 } from "../../../utils/style/colors";
+import { getTeritoriSigningStargateClient } from "../../../utils/teritori";
+import { ProposalStatus } from "../types";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View
@@ -188,7 +188,7 @@ export const GovernanceDetails: React.FC<{
           <BrandText
             style={{
               fontSize: 28,
-              color: "#808080",
+              color: neutral77,
             }}
           >
             {numberProposal}
@@ -285,7 +285,7 @@ export const GovernanceDetails: React.FC<{
           <BrandText
             style={{
               fontSize: 12,
-              color: "#808080",
+              color: neutral77,
             }}
           >
             Submit Time
@@ -306,7 +306,7 @@ export const GovernanceDetails: React.FC<{
             width: 35,
             height: 0,
             borderWidth: 0.5,
-            borderColor: "#808080",
+            borderColor: neutral77,
             transform: [{ rotate: "90deg" }],
             marginTop: 15,
           }}
@@ -316,7 +316,7 @@ export const GovernanceDetails: React.FC<{
           <BrandText
             style={{
               fontSize: 12,
-              color: "#808080",
+              color: neutral77,
             }}
           >
             Deposit End Time
@@ -337,7 +337,7 @@ export const GovernanceDetails: React.FC<{
             width: 35,
             height: 0,
             borderWidth: 0.5,
-            borderColor: "#808080",
+            borderColor: neutral77,
             transform: [{ rotate: "90deg" }],
             marginTop: 15,
           }}
@@ -347,7 +347,7 @@ export const GovernanceDetails: React.FC<{
           <BrandText
             style={{
               fontSize: 12,
-              color: "#808080",
+              color: neutral77,
             }}
           >
             Voting Start
@@ -368,7 +368,7 @@ export const GovernanceDetails: React.FC<{
             width: 35,
             height: 0,
             borderWidth: 0.5,
-            borderColor: "#808080",
+            borderColor: neutral77,
             transform: [{ rotate: "90deg" }],
             marginTop: 15,
           }}
@@ -378,7 +378,7 @@ export const GovernanceDetails: React.FC<{
           <BrandText
             style={{
               fontSize: 12,
-              color: "#808080",
+              color: neutral77,
             }}
           >
             Voting End
@@ -418,7 +418,7 @@ export const GovernanceDetails: React.FC<{
             <BrandText
               style={{
                 fontSize: 20,
-                color: "#808080",
+                color: neutral77,
               }}
             >
               Total
@@ -444,7 +444,7 @@ export const GovernanceDetails: React.FC<{
         >
           <VictoryPie
             innerRadius={70}
-            colorScale={["#16BBFF", "#EAA54B", "#808080"]}
+            colorScale={["#16BBFF", "#EAA54B", neutral77]}
             data={[
               { x: "Pourcentage Yes", y: valueChartYes },
               { x: "Pourcentage No", y: valueChartNo },
@@ -518,7 +518,7 @@ export const GovernanceDetails: React.FC<{
               width: 40,
               height: 0,
               borderWidth: 0.5,
-              borderColor: "#808080",
+              borderColor: neutral77,
               transform: [{ rotate: "90deg" }],
               top: 10,
             }}
@@ -545,7 +545,7 @@ export const GovernanceDetails: React.FC<{
               width: 40,
               height: 0,
               borderWidth: 0.5,
-              borderColor: "#808080",
+              borderColor: neutral77,
               transform: [{ rotate: "90deg" }],
               top: 10,
             }}
@@ -572,7 +572,7 @@ export const GovernanceDetails: React.FC<{
               width: 40,
               height: 0,
               borderWidth: 0.5,
-              borderColor: "#808080",
+              borderColor: neutral77,
               transform: [{ rotate: "90deg" }],
               top: 10,
             }}
