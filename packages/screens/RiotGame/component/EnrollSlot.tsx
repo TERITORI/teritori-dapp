@@ -17,7 +17,7 @@ import { fontSemibold13 } from "../../../utils/style/fonts";
 
 interface EnrollSlotProps {
   isLeader?: boolean;
-  ripper?: NSRiotGame.Ripper | undefined;
+  ripper?: NSRiotGame.RipperDetail | undefined;
   onPress?(): void;
 }
 
@@ -39,7 +39,7 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
         }}
       >
         {ripper ? (
-          <Image style={styles.ripperImage} source={ripper.image} />
+          <Image style={styles.ripperImage} source={{ uri: ripper.imageURL }} />
         ) : (
           <SVG
             source={addSVG}

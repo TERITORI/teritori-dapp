@@ -68,31 +68,30 @@ const THE_RIOT_COLLECTION_ADDRESS =
 const LIMIT = 10;
 
 const useRippers = () => {
-  const selectedWallet = useSelectedWallet();
+  const { client, queryClient, selectedWallet } = useContractClients(
+    THE_RIOT_COLLECTION_ADDRESS,
+    TeritoriNftClient,
+    TeritoriNftQueryClient
+  );
+  const tetitoriNFTClient = client as TeritoriNftClient;
+  const tetitoriNFTQueryClient = queryClient as TeritoriNftQueryClient;
 
-  // const { client, queryClient, selectedWallet } = useContractClients(
-  //   RIOT_CONTRACT,
-  //   TeritoriNftClient,
-  //   TeritoriNftQueryClient
-  // );
-  // const tetitoriNFTClient = client as TeritoriNftClient;
-  // const tetitoriNFTQueryClient = queryClient as TeritoriNftQueryClient;
+  const myRippersRequest: NFTsRequest = {
+    collectionId: `tori-${THE_RIOT_COLLECTION_ADDRESS}`,
+    // ownerId: selectedWallet?.address ? `tori-${selectedWallet.address}` : "",
+    ownerId: "",
+    limit: 20,
+    offset: 0,
+    sort: Sort.SORTING_UNSPECIFIED,
+    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+  };
 
-  // const myRippersRequest: NFTsRequest = {
-  //   collectionId: `tori-${THE_RIOT_COLLECTION_ADDRESS}`,
-  //   // ownerId: selectedWallet?.address ? `tori-${selectedWallet.address}` : "",
-  //   ownerId: "",
-  //   limit: 20,
-  //   offset: 0,
-  //   sort: Sort.SORTING_UNSPECIFIED,
-  //   sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-  // };
-
-  // const { nfts: myRippers, fetchMore } = useNFTs(myRippersRequest);
+  const { nfts, fetchMore } = useNFTs(myRippersRequest);
+  const myRippers = nfts as NSRiotGame.RipperListItem[];
 
   return {
     // fetchMore,
-    myRippers: fakeRippers,
+    myRippers,
     selectedRippers: [],
   };
 };

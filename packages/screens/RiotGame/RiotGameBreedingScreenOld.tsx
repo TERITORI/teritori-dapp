@@ -89,7 +89,7 @@ export const RiotGameBreedingScreen = () => {
             renderItem={({ item: ripper, index }) => {
               return (
                 <TertiaryBox style={{ margin: 10 }} width={172} height={148}>
-                  <RipperAvatar size={120} source={ripper.image} />
+                  <RipperAvatar size={120} source={ripper.imageUri} />
                 </TertiaryBox>
               );
             }}

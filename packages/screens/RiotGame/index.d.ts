@@ -40,15 +40,26 @@ namespace NSRiotGame {
     value: string;
   };
 
-  type Ripper = {
+  type RipperDetail = {
     name: string;
     description: string;
-    image: ImageSourcePropType;
+    imageURL: ImageSourcePropType;
     animation_url?: string | null;
     external_url?: string | null;
     attributes: RipperAttribute[];
-    rarity?: RipperRarity;
-    royalty_percentage: number;
-    royalty_payment_address: string;
+  };
+
+  type RipperListItem = {
+    id: string;
+    denom: "";
+    collectionName: string;
+    imageUri: string;
+    isListed: boolean;
+    mintAddress: string;
+    name: string;
+    networkId: string;
+    ownerId: string;
+    price: string;
+    textInsert: string;
   };
 }

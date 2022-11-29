@@ -11,7 +11,7 @@ import {
   fontMedium48,
   fontMedium14,
   fontMedium32,
-  fontMedium10,
+  fontMedium13,
 } from "../../../utils/style/fonts";
 
 type RipperStatProps = {
@@ -38,7 +38,7 @@ export const RipperStat: React.FC<RipperStatProps> = ({
     case "MD":
     default:
       valueFont = fontMedium32;
-      subTextFont = fontMedium10;
+      subTextFont = fontMedium13;
   }
 
   return (

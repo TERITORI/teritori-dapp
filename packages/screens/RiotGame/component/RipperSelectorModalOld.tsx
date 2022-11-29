@@ -16,6 +16,7 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
+import { getStandardNFTInfo } from "../../../hooks/useNFTInfo";
 import { getRipperTraitValue } from "../../../utils/game";
 import { neutral00, white, yellowDefault } from "../../../utils/style/colors";
 import {
@@ -31,8 +32,8 @@ import { SimpleButton } from "./SimpleButton";
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
   confirmButton: string;
-  availableRippers: NSRiotGame.Ripper[];
-  onSelectRipper(slotId: number, ripper: NSRiotGame.Ripper): void;
+  availableRippers: NSRiotGame.RipperListItem[];
+  onSelectRipper(slotId: number, ripper: NSRiotGame.RipperDetail): void;
   onClose?(): void;
 };
 
@@ -54,16 +55,27 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   ...props
 }) => {
   const [selectedRipper, setSelectedRipper] = useState<
-    NSRiotGame.Ripper | undefined
+    NSRiotGame.RipperListItem | undefined
   >();
 
-  const selectRipper = (ripper: NSRiotGame.Ripper) => {
+  const [selectedRipperDetail, setSelectedRipperDetail] =
+    useState<NSRiotGame.RipperDetail>();
+
+  const selectRipper = async (ripper: NSRiotGame.RipperListItem) => {
     setSelectedRipper(ripper);
+
+    const tokenId = ripper.id.split("-")[2];
+
+    const ripperDetail: NSRiotGame.RipperDetail = await getStandardNFTInfo(
+      process.env.THE_RIOT_COLLECTION_ADDRESS || "",
+      tokenId
+    );
+    setSelectedRipperDetail(ripperDetail);
   };
 
   const enrollRipper = () => {
-    if (!selectedRipper) return;
-    onSelectRipper(slotId as number, selectedRipper);
+    if (!selectedRipperDetail) return;
+    onSelectRipper(slotId as number, selectedRipperDetail);
   };
 
   useEffect(() => {
@@ -85,7 +97,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
     >
       <View style={styles.container}>
         <BrandText style={fontMedium48}>
-          {selectedRipper?.name || "Please select a Ripper"}
+          {selectedRipperDetail?.name || "Please select a Ripper"}
         </BrandText>
 
         <View style={styles.row}>
@@ -128,7 +140,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                           </BrandText>
                           <Image
                             style={{ width: THUMB_WIDTH, height: THUMB_HEIGHT }}
-                            source={item.image}
+                            source={{ uri: item.imageUri }}
                           />
 
                           {isSelected && <View style={styles.arrowRight} />}
@@ -144,7 +156,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 source={dashedBorderPNG}
               >
                 <RipperAvatar
-                  source={selectedRipper?.image}
+                  source={selectedRipperDetail?.imageURL}
                   size={RIPPER_IMAGE_SIZE}
                   rounded
                   containerStyle={styles.roundedContainer}
@@ -160,7 +172,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
               containerStyle={styles.ripperStatContainer}
               name="Stamina"
               value={
-                selectedRipper && getRipperTraitValue(selectedRipper, "Stamina")
+                selectedRipperDetail &&
+                getRipperTraitValue(selectedRipperDetail, "Stamina")
               }
               size="LG"
             />
@@ -168,8 +181,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
               containerStyle={styles.ripperStatContainer}
               name="Protection"
               value={
-                selectedRipper &&
-                getRipperTraitValue(selectedRipper, "Protection")
+                selectedRipperDetail &&
+                getRipperTraitValue(selectedRipperDetail, "Protection")
               }
               size="LG"
             />
@@ -177,7 +190,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
               containerStyle={styles.ripperStatContainer}
               name="Luck"
               value={
-                selectedRipper && getRipperTraitValue(selectedRipper, "Luck")
+                selectedRipperDetail &&
+                getRipperTraitValue(selectedRipperDetail, "Luck")
               }
               size="LG"
             />

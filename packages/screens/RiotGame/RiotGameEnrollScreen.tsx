@@ -30,7 +30,7 @@ export const RiotGameEnrollScreen = () => {
   const [selectedSlot, setSelectedSlot] = useState<number>();
 
   const [selectedRippers, setSelectedRippers] = useState<{
-    [slotId: string]: NSRiotGame.Ripper;
+    [slotId: string]: NSRiotGame.RipperDetail;
   }>({});
 
   const availableRippers = useMemo(() => {
@@ -46,7 +46,7 @@ export const RiotGameEnrollScreen = () => {
     setSelectedSlot(undefined);
   };
 
-  const selectRipper = (slotId: number, ripper: NSRiotGame.Ripper) => {
+  const selectRipper = (slotId: number, ripper: NSRiotGame.RipperDetail) => {
     setSelectedSlot(undefined);
     setSelectedRippers({ ...selectedRippers, [slotId]: ripper });
   };

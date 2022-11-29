@@ -60,6 +60,7 @@ export const layout = {
 
   mt_1: { marginTop: BASE_SIZE },
   mt_2: { marginTop: BASE_SIZE * 2 }, // 16
+  mt_3: { marginTop: BASE_SIZE * 3 }, // 24
   mt_5: { marginTop: BASE_SIZE * 5 }, // 40
 
   mr_2: { marginRight: BASE_SIZE * 2 }, // 16

@@ -18,7 +18,7 @@ import { fontSemibold9 } from "../../../utils/style/fonts";
 
 type RipperAvatarProps = {
   size: number;
-  source: ImageSourcePropType;
+  source: string | ImageSourcePropType | undefined;
   containerStyle?: ViewStyle;
   rarity?: NSRiotGame.RipperRarity;
   rounded?: boolean;
@@ -49,6 +49,8 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
       rarityColor = white;
   }
 
+  const imageSource = typeof source === "string" ? { uri: source } : source;
+
   return (
     <View
       style={[
@@ -61,7 +63,7 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
         containerStyle,
       ]}
     >
-      <Image style={{ width: "100%", height: "100%" }} source={source} />
+      <Image style={{ width: "100%", height: "100%" }} source={imageSource} />
 
       {rarity && (
         <View style={[styles.rarityContainer]}>

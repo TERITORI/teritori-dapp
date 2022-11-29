@@ -130,7 +130,7 @@ const getTNSNFTInfo = async (
   return nfo;
 };
 
-const getStandardNFTInfo = async (
+export const getStandardNFTInfo = async (
   minterContractAddress: string,
   tokenId: string,
   wallet?: string

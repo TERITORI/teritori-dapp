@@ -20,11 +20,18 @@ import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import Col from "../../../components/grid/Col";
 import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
+import { getStandardNFTInfo } from "../../../hooks/useNFTInfo";
 import { getRipperRarity, getRipperTraitValue } from "../../../utils/game";
-import { neutral00, white, yellowDefault } from "../../../utils/style/colors";
+import {
+  neutral00,
+  neutral67,
+  white,
+  yellowDefault,
+} from "../../../utils/style/colors";
 import { flex } from "../../../utils/style/flex";
 import {
-  fontMedium16,
+  fontMedium13,
+  fontMedium24,
   fontMedium32,
   fontMedium48,
   fontSemibold11,
@@ -37,8 +44,8 @@ import { SimpleButton } from "./SimpleButton";
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
   confirmButton: string;
-  availableRippers: NSRiotGame.Ripper[];
-  onSelectRipper?(slotId: number, ripper: NSRiotGame.Ripper): void;
+  availableRippers: NSRiotGame.RipperListItem[];
+  onSelectRipper?(slotId: number, ripper: NSRiotGame.RipperDetail): void;
   onClose?(): void;
 };
 
@@ -59,16 +66,26 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   ...props
 }) => {
   const [selectedRipper, setSelectedRipper] = useState<
-    NSRiotGame.Ripper | undefined
+    NSRiotGame.RipperListItem | undefined
   >();
+  const [selectedRipperDetail, setSelectedRipperDetail] =
+    useState<NSRiotGame.RipperDetail>();
 
-  const selectRipper = (ripper: NSRiotGame.Ripper) => {
+  const selectRipper = async (ripper: NSRiotGame.RipperListItem) => {
     setSelectedRipper(ripper);
+
+    const tokenId = ripper.id.split("-")[2];
+
+    const ripperDetail: NSRiotGame.RipperDetail = await getStandardNFTInfo(
+      process.env.THE_RIOT_COLLECTION_ADDRESS || "",
+      tokenId
+    );
+    setSelectedRipperDetail(ripperDetail);
   };
 
   const confirmRipper = () => {
-    if (!selectedRipper) return;
-    onSelectRipper && onSelectRipper(slotId as number, selectedRipper);
+    if (!selectedRipperDetail) return;
+    onSelectRipper && onSelectRipper(slotId as number, selectedRipperDetail);
   };
 
   useEffect(() => {
@@ -99,7 +116,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           showsVerticalScrollIndicator={false}
         >
           <BrandText style={[fontMedium48, layout.mt_2]}>
-            {selectedRipper?.name || "Please select a Ripper"}
+            {selectedRipperDetail?.name || "Please select a Ripper"}
           </BrandText>
 
           <Row breakpoint={992} style={{ justifyContent: "space-around" }}>
@@ -110,6 +127,9 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 <FlatList
                   data={availableRippers}
                   numColumns={3}
+                  scrollEnabled
+                  style={{ height: 329 }}
+                  showsVerticalScrollIndicator={false}
                   renderItem={({ item: ripper, index }) => {
                     return (
                       <TouchableOpacity
@@ -123,14 +143,18 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                         >
                           <RipperAvatar
                             size={THUMB_SIZE}
-                            source={ripper.image}
-                            rarity={getRipperRarity(ripper)}
+                            source={ripper.imageUri}
+                            // rarity={getRipperRarity(ripper)}
                           />
                         </TertiaryBox>
                       </TouchableOpacity>
                     );
                   }}
                 />
+
+                <BrandText style={styles.showMoreText}>
+                  Scroll to show more...
+                </BrandText>
               </View>
 
               <View style={styles.btnGroup}>
@@ -150,38 +174,41 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 source={dashedBorderPNG}
               >
                 <RipperAvatar
-                  source={selectedRipper?.image}
+                  source={selectedRipperDetail?.imageURL}
                   size={RIPPER_IMAGE_SIZE}
                   rounded
                   containerStyle={styles.roundedContainer}
                 />
               </ImageBackground>
 
-              <BrandText style={fontMedium16}>Stats</BrandText>
+              <BrandText style={[fontMedium24, flex.alignCenter, layout.mt_2]}>
+                Stats
+              </BrandText>
 
               <RipperStat
-                containerStyle={layout.mt_5}
+                containerStyle={layout.mt_3}
                 name="Stamina"
                 value={
-                  selectedRipper &&
-                  getRipperTraitValue(selectedRipper, "Stamina")
+                  selectedRipperDetail &&
+                  getRipperTraitValue(selectedRipperDetail, "Stamina")
                 }
                 size="MD"
               />
               <RipperStat
-                containerStyle={layout.mt_5}
+                containerStyle={layout.mt_3}
                 name="Protection"
                 value={
-                  selectedRipper &&
-                  getRipperTraitValue(selectedRipper, "Protection")
+                  selectedRipperDetail &&
+                  getRipperTraitValue(selectedRipperDetail, "Protection")
                 }
                 size="MD"
               />
               <RipperStat
-                containerStyle={layout.mt_5}
+                containerStyle={layout.mt_3}
                 name="Luck"
                 value={
-                  selectedRipper && getRipperTraitValue(selectedRipper, "Luck")
+                  selectedRipperDetail &&
+                  getRipperTraitValue(selectedRipperDetail, "Luck")
                 }
                 size="MD"
               />
@@ -239,7 +266,14 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     position: "absolute",
-    right: 0,
+    right: 10,
     top: 10,
+    zIndex: 1,
+  },
+  showMoreText: {
+    alignSelf: "center",
+    marginTop: 8,
+    color: neutral67,
+    ...(fontMedium13 as object),
   },
 });

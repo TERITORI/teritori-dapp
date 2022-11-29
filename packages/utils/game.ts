@@ -56,7 +56,7 @@ export const getRipperRarity = (
 };
 
 export const getRipperTraitValue = (
-  ripper: NSRiotGame.Ripper,
+  ripper: NSRiotGame.RipperDetail,
   traitType: NSRiotGame.RipperTraitType
 ) => {
   let res: any = ripper?.attributes.find(
