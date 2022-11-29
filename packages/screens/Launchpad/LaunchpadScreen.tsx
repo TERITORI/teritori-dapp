@@ -51,7 +51,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
           title="Available on Marketplace"
           req={{
             upcoming: false,
-            networkId: "",
+            networkId: selectedNetworkId,
             sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
             sort: Sort.SORTING_UNSPECIFIED,
             limit: 16,
