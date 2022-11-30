@@ -18,7 +18,7 @@ import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarket
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
-import { RiotGameSeasonsScreen } from "../../screens/RiotGame/RiotGameSeasonsScreen";
+import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
@@ -105,11 +105,11 @@ export const Navigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="RiotGameSeasons"
-        component={RiotGameSeasonsScreen}
+        name="RiotGameMemories"
+        component={RiotGameMemoriesScreen}
         options={{
           header: () => null,
-          title: screenTitle("Riot Game Seasons"),
+          title: screenTitle("Riot Game Memories"),
         }}
       />
       {/* ==== Wallet Manager */}

@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   Image,
@@ -13,7 +13,7 @@ import countDownPNG from "../../../assets/game/countdown.png";
 import defaultEnemyPNG from "../../../assets/game/default-enemy.png";
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import addCircleSFilledVG from "../../../assets/icons/add-circle-filled.svg";
-import claimSVG from "../../../assets/icons/claim.svg";
+// import claimSVG from "../../../assets/icons/claim.svg";
 import unstakeSVG from "../../../assets/icons/unstake.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
@@ -24,7 +24,7 @@ import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { getRipperTokenId } from "../../utils/game";
+import { getRipperTokenId, StakingState } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   gameHighlight,
@@ -54,32 +54,34 @@ const ENEMY_AVATAR_SIZE = 150;
 const RIPPER_AVATAR_SIZE = 60;
 const BOX_SIZE = [380, 310];
 
-const FIGHT_STATE = {
-  UNKNOWN: "unknown",
-  ONGOING: "onGoing",
-  RELAX: "relax",
-  COMPLETED: "completed",
-};
-
-const RELAX_DURATION = 2 * 60 * 60 * 1000;
-
 const PAGE_TITLE_MAP = {
-  [FIGHT_STATE.UNKNOWN]: "There is no ongoing fight",
-  [FIGHT_STATE.ONGOING]: "Ongoing fight",
-  [FIGHT_STATE.RELAX]: "Relax time",
-  [FIGHT_STATE.COMPLETED]: "Completed",
+  [StakingState.UNKNOWN]: "There is no ongoing fight",
+  [StakingState.ONGOING]: "Ongoing fight",
+  [StakingState.RELAX]: "Relax time",
+  [StakingState.COMPLETED]: "Completed",
 };
 
 export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();
-  const { setToastError, setToastSuccess } = useFeedbacks();
+  const { setToastError } = useFeedbacks();
   const { myAvailableRippers } = useRippers();
-  const counterRef = useRef<NodeJS.Timer>();
 
-  const [remainingTime, setRemainingTime] = useState(0);
-  const [fightState, setFightState] = useState(FIGHT_STATE.UNKNOWN);
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
-  const { currentSquad, squadWithdraw } = useSquadStaking();
+  const {
+    currentSquad,
+    squadStakingConfig,
+    squadStakingClient,
+    squadWithdraw,
+    remainingTime,
+    remainingPercentage,
+    stakingState,
+    startStakingTimer,
+    lastStakeTime,
+    isLastStakeTimeLoaded,
+    isStakingStateLoaded,
+    isSquadLoaded,
+    setCurrentSquad,
+  } = useSquadStaking();
 
   const stakedRippers = useMemo(() => {
     return myAvailableRippers.filter((r) =>
@@ -88,12 +90,17 @@ export const RiotGameFightScreen = () => {
   }, [myAvailableRippers, currentSquad]);
 
   const unstake = async () => {
-    try {
-      await squadWithdraw();
-      setToastSuccess({
-        title: "Success",
-        message: "Unstake successfully",
+    if (!squadStakingClient) {
+      return setToastError({
+        title: "Error occurs",
+        message: "squadStakingClient is not ready",
       });
+    }
+
+    try {
+      await squadWithdraw(squadStakingClient);
+      setCurrentSquad(undefined);
+      setIsShowClaimModal(true);
     } catch (e: any) {
       setToastError({
         title: "Error occurs",
@@ -102,38 +109,9 @@ export const RiotGameFightScreen = () => {
     }
   };
 
-  const claimRewards = async () => {
-    const res = await squadWithdraw();
-    console.log(res);
-
-    setIsShowClaimModal(true);
-  };
-
-  const updateFightState = () => {
-    if (!currentSquad) return;
-
-    const now = moment();
-    const startsAt = moment(currentSquad?.start_time * 1000);
-    const endsAt = moment(currentSquad?.end_time * 1000);
-    const relaxEndsAt = moment(endsAt).add(RELAX_DURATION, "milliseconds");
-
-    if (now.isAfter(relaxEndsAt)) {
-      setFightState(FIGHT_STATE.COMPLETED);
-    } else if (now.isAfter(endsAt)) {
-      setFightState(FIGHT_STATE.RELAX);
-      setRemainingTime(relaxEndsAt.diff(now));
-    } else if (now.isAfter(startsAt)) {
-      setFightState(FIGHT_STATE.ONGOING);
-      setRemainingTime(endsAt.diff(now));
-    } else {
-      setFightState(FIGHT_STATE.UNKNOWN);
-    }
-  };
-
-  const isOnGoing = fightState === FIGHT_STATE.ONGOING;
-  const isRelax = fightState === FIGHT_STATE.RELAX;
-  const isCompleted = fightState === FIGHT_STATE.COMPLETED;
-  const isUnknown = fightState === FIGHT_STATE.UNKNOWN;
+  const isOnGoing = stakingState === StakingState.ONGOING;
+  const isRelax = stakingState === StakingState.RELAX;
+  const isCompleted = stakingState === StakingState.COMPLETED;
 
   const countdownColor = isOnGoing ? redDefault : yellowDefault;
   const actionLabelColor = isOnGoing ? neutral77 : yellowDefault;
@@ -143,34 +121,46 @@ export const RiotGameFightScreen = () => {
     navigation.navigate("RiotGameMarketplace");
   };
 
+  const onCloseClaimModal = () => {
+    navigation.navigate("RiotGameEnroll");
+  };
+
+  /*
+  - If there is squad, in all case we need to keep the fight screen
+  - If there is no squad:
+    + If state is Completed/Unknown => go to enroll screen
+    + If state is Relax => show fight screen with countdown base on lastStakeTime
+  */
   useEffect(() => {
-    if (!currentSquad) return;
-    if (counterRef.current) return;
+    if (
+      isSquadLoaded &&
+      !currentSquad &&
+      isStakingStateLoaded &&
+      [StakingState.COMPLETED, StakingState.UNKNOWN].includes(stakingState)
+    ) {
+      navigation.navigate("RiotGameEnroll");
+    }
+  }, [isSquadLoaded, isStakingStateLoaded]);
 
-    // Calculate current state and remaining time
-    updateFightState(); // Call immediately for the first time
-    counterRef.current = setInterval(updateFightState, 1000);
+  // Start the timer
+  useEffect(() => {
+    if (!isSquadLoaded || !squadStakingConfig || !isLastStakeTimeLoaded) return;
 
-    return () => {
-      counterRef.current && clearInterval(counterRef.current);
-      counterRef.current = undefined;
-    };
-  }, [currentSquad]);
+    startStakingTimer(currentSquad, lastStakeTime, squadStakingConfig);
+  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig]);
 
-  if (isUnknown) {
+  if (!isSquadLoaded && !isStakingStateLoaded) {
     return (
-      <GameContentView bgImage={defaultSendToFightPNG}>
-        <BrandText style={[flex.alignSelfCenter, fontMedium48]}>
-          {PAGE_TITLE_MAP[fightState]}
-        </BrandText>
+      <GameContentView>
+        <BrandText style={styles.pageTitle}>Loading...</BrandText>
       </GameContentView>
     );
   }
 
   return (
     <GameContentView bgImage={defaultSendToFightPNG}>
-      <BrandText style={[flex.alignSelfCenter, fontMedium48]}>
-        {isOnGoing ? "Ongoing fight" : "Relax time"}
+      <BrandText style={styles.pageTitle}>
+        {PAGE_TITLE_MAP[stakingState]}
       </BrandText>
 
       <View style={styles.contentContainer}>
@@ -193,7 +183,7 @@ export const RiotGameFightScreen = () => {
                 containerStyle={{ marginVertical: 12 }}
                 width={170}
                 height={10}
-                value={66}
+                value={remainingPercentage}
               />
 
               <BrandText style={[fontBold9, { color: gameHighlight }]}>
@@ -282,25 +272,28 @@ export const RiotGameFightScreen = () => {
             </View>
 
             <Row style={styles.actionsSection}>
-              <View style={styles.divider} />
+              {currentSquad && (
+                <>
+                  <View style={styles.divider} />
 
-              <SVG color={actionIconColor} source={unstakeSVG} />
-              <TouchableOpacity
-                disabled={fightState !== FIGHT_STATE.COMPLETED}
-                onPress={unstake}
-              >
-                <BrandText
-                  style={[styles.actionLabel, { color: actionLabelColor }]}
-                >
-                  Unstake
-                </BrandText>
-              </TouchableOpacity>
+                  <SVG color={actionIconColor} source={unstakeSVG} />
+                  <TouchableOpacity
+                    disabled={stakingState !== StakingState.COMPLETED}
+                    onPress={unstake}
+                  >
+                    <BrandText
+                      style={[styles.actionLabel, { color: actionLabelColor }]}
+                    >
+                      Unstake
+                    </BrandText>
+                  </TouchableOpacity>
 
+                  {/* TODO: activate this block when V2
               <View style={styles.divider} />
 
               <SVG color={actionIconColor} source={claimSVG} />
               <TouchableOpacity
-                disabled={fightState !== FIGHT_STATE.COMPLETED}
+                disabled={stakingState !== StakingState.COMPLETED}
                 onPress={claimRewards}
               >
                 <BrandText
@@ -309,6 +302,9 @@ export const RiotGameFightScreen = () => {
                   Claim
                 </BrandText>
               </TouchableOpacity>
+               */}
+                </>
+              )}
             </Row>
           </Row>
         </TertiaryBox>
@@ -325,15 +321,16 @@ export const RiotGameFightScreen = () => {
         )}
       </View>
 
-      <ClaimModal
-        onClose={() => setIsShowClaimModal(false)}
-        visible={isShowClaimModal}
-      />
+      <ClaimModal onClose={onCloseClaimModal} visible={isShowClaimModal} />
     </GameContentView>
   );
 };
 
 const styles = StyleSheet.create({
+  pageTitle: {
+    alignSelf: "center",
+    ...(fontMedium48 as object),
+  },
   contentContainer: {
     paddingHorizontal: 80,
   },

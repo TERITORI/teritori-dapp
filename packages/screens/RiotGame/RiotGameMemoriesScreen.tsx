@@ -13,7 +13,7 @@ import { SpacerColumn } from "../../components/spacer";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { GameContentView } from "./component/GameContentView";
 
-export const RiotGameSeasonsScreen = () => {
+export const RiotGameMemoriesScreen = () => {
   const { width } = useWindowDimensions();
 
   let numCol = 3;

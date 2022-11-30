@@ -71,7 +71,12 @@ const MENU_ITEMS: MenuItem[] = [
     route: "RiotGameMarketplace",
     iconSVG: cartSVG,
   },
-  { id: "memories", name: "Memories", route: "RiotGame", iconSVG: filmSVG },
+  {
+    id: "memories",
+    name: "Memories",
+    route: "RiotGameMemories",
+    iconSVG: filmSVG,
+  },
 ];
 
 type RiotGameHeaderProps = {
@@ -96,21 +101,27 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
           <LogoTop />
         </View>
 
-        {!hideMenu && (
-          <ScrollView
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            style={styles.menu}
-          >
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          style={styles.menu}
+        >
+          {!hideMenu && (
             <Row>
               {MENU_ITEMS.map((menuItem) => {
+                // Enroll and Fight are under the same menu item
+                let _routeName = routeName;
+                if (_routeName === "RiotGameFight")
+                  _routeName = "RiotGameEnroll";
+
                 const color =
-                  menuItem.route === routeName ? yellowDefault : neutralA3;
+                  menuItem.route === _routeName ? yellowDefault : neutralA3;
 
                 return (
                   <TouchableOpacity
                     onPress={() => onMenuItemClick(menuItem)}
                     style={layout.mr_4}
+                    key={menuItem.id}
                   >
                     <Row style={flex.alignItemsCenter}>
                       <SVG
@@ -128,8 +139,8 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                 );
               })}
             </Row>
-          </ScrollView>
-        )}
+          )}
+        </ScrollView>
 
         <View style={styles.section}>
           <Separator horizontal color={neutral33} />

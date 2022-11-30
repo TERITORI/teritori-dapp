@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
 
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
@@ -13,7 +13,7 @@ import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { calculateStakingDuration, getRipperTokenId } from "../../utils/game";
+import { getRipperTokenId, StakingState } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutralA3 } from "../../utils/style/colors";
 import {
@@ -35,7 +35,18 @@ export const RiotGameEnrollScreen = () => {
   const { setToastError } = useFeedbacks();
 
   const { myAvailableRippers } = useRippers();
-  const { currentSquad, squadStakingConfig, squadStake } = useSquadStaking();
+  const {
+    currentSquad,
+    squadStakingConfig,
+    squadStake,
+    stakingState,
+    estimateStakingDuration,
+    lastStakeTime,
+    isStakingStateLoaded,
+    isLastStakeTimeLoaded,
+    isSquadLoaded,
+    updateStakingState,
+  } = useSquadStaking();
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<
     NSRiotGame.RipperDetail[]
@@ -58,7 +69,9 @@ export const RiotGameEnrollScreen = () => {
   }, [myAvailableRippers, selectedRippers, currentSquad]);
 
   const stakingDuration = useMemo<number>(() => {
-    return calculateStakingDuration(squadStakingConfig, selectedRippers);
+    if (selectedRippers.length === 0 || !squadStakingConfig) return 0;
+
+    return estimateStakingDuration(selectedRippers, squadStakingConfig);
   }, [selectedRippers, squadStakingConfig]);
 
   const showRipperSelector = (slotId: number) => {
@@ -90,7 +103,6 @@ export const RiotGameEnrollScreen = () => {
       console.debug(tx);
       navigation.navigate("RiotGameFight");
     } catch (e: any) {
-      console.error(e);
       setToastError({
         title: "Transaction Error",
         message: e.message,
@@ -99,6 +111,33 @@ export const RiotGameEnrollScreen = () => {
       setIsJoiningFight(false);
     }
   };
+
+  // If we are in state Relax/Ongoing or there is squad the goto fight screen
+  useEffect(() => {
+    if (
+      isSquadLoaded &&
+      isStakingStateLoaded &&
+      (currentSquad ||
+        [StakingState.RELAX, StakingState.ONGOING].includes(stakingState))
+    ) {
+      navigation.navigate("RiotGameFight");
+    }
+  }, [isSquadLoaded, isStakingStateLoaded]);
+
+  // Update staking state
+  useEffect(() => {
+    if (!isSquadLoaded || !isLastStakeTimeLoaded || !squadStakingConfig) return;
+
+    updateStakingState(currentSquad, lastStakeTime, squadStakingConfig);
+  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig]);
+
+  if (!isSquadLoaded || !isStakingStateLoaded) {
+    return (
+      <GameContentView>
+        <BrandText style={styles.pageTitle}>Loading...</BrandText>
+      </GameContentView>
+    );
+  }
 
   return (
     <GameContentView>

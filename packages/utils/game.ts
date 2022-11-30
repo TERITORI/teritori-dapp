@@ -82,26 +82,12 @@ export const getRipperTraitValue = (
 export const getRipperTokenId = (ripperListItem: NSRiotGame.RipperListItem) =>
   ripperListItem.id.split("-")[2];
 
-export const calculateStakingDuration = (
-  squadStakingConfig: GetConfigResponse | undefined,
-  rippers: NSRiotGame.RipperDetail[]
-) => {
-  if (!squadStakingConfig) return 0;
-
-  const COEF = 0.2;
-  const bonusMultiplier = squadStakingConfig.bonus_multiplier;
-
-  let duration = 0;
-
-  const ripperCount = rippers.length;
-  if (ripperCount > 0) {
-    // Get base stamina from Squad leader at slot 0
-    const baseStamina = getRipperTraitValue(rippers[0], "Stamina");
-    duration = baseStamina * COEF * (bonusMultiplier[ripperCount - 1] / 100);
-  }
-
-  return duration * 60 * 60 * 1000; // Convert to milliseconds
-};
+export enum StakingState {
+  UNKNOWN = "UNKNOWN",
+  ONGOING = "ONGOING",
+  RELAX = "RELAX",
+  COMPLETED = "COMPLETED",
+}
 
 export const buildApproveMsg = (sender: string, tokenId: string) => {
   return {
