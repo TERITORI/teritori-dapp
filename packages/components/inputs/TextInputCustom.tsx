@@ -80,7 +80,7 @@ export const TextInputCustom = <T extends FieldValues>({
   squaresBackgroundColor,
   width,
   height,
-  variant,
+  variant = "regular",
   name,
   control,
   defaultValue,

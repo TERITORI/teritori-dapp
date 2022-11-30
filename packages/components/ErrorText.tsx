@@ -1,6 +1,11 @@
 // libraries
-import React from "react";
-import { TextProps, ViewStyle } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { StyleSheet, TextProps, View, ViewStyle } from "react-native";
+import Animated, {
+  useAnimatedRef,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
 import { errorColor } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
@@ -17,19 +22,55 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
   style,
   ...restProps
 }) => {
-  return children ? (
-    <BrandText
-      style={[
-        {
-          marginTop: 6,
-          color: errorColor,
-        },
-        fontSemibold14,
-        style,
-      ]}
-      {...restProps}
-    >
-      {children}
-    </BrandText>
-  ) : null;
+  // variables
+  const aref = useAnimatedRef<View>();
+  const heightRef = useRef<number>(0);
+  const [isExpandable, setIsExpandable] = useState(false);
+  const animStyle = useAnimatedStyle(
+    () => ({
+      height: isExpandable ? withTiming(heightRef.current) : withTiming(0),
+      opacity: isExpandable ? withTiming(1) : withTiming(0),
+    }),
+    [isExpandable]
+  );
+
+  // hooks
+  useEffect(() => {
+    // fix for height not calculating
+    if (children) {
+      setTimeout(() => {
+        setIsExpandable(true);
+      }, 200);
+    } else {
+      setIsExpandable(false);
+    }
+  }, [children]);
+
+  // returns
+  return (
+    <Animated.View style={animStyle}>
+      <View
+        ref={aref}
+        onLayout={({
+          nativeEvent: {
+            layout: { height: h },
+          },
+        }) => (heightRef.current = h)}
+      >
+        <BrandText style={[styles.text, style]} {...restProps}>
+          {children}
+        </BrandText>
+      </View>
+    </Animated.View>
+  );
 };
+
+const styles = StyleSheet.create({
+  text: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      marginTop: 6,
+      color: errorColor,
+    },
+  ]),
+});
