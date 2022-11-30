@@ -12,6 +12,7 @@ import nft4 from "../../assets/game/nft-4.png";
 import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
+import { GetConfigResponse } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { GameBgCardItem } from "../screens/RiotGame/types";
 
 const THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS =
@@ -78,29 +79,25 @@ export const getRipperTraitValue = (
   return res;
 };
 
+export const getRipperTokenId = (ripperListItem: NSRiotGame.RipperListItem) =>
+  ripperListItem.id.split("-")[2];
+
 export const calculateStakingDuration = (
+  squadStakingConfig: GetConfigResponse | undefined,
   rippers: NSRiotGame.RipperDetail[]
 ) => {
+  if (!squadStakingConfig) return 0;
+
   const COEF = 0.2;
-  const BONUS_MAP: { [totalRipper: number]: number } = {
-    1: 0,
-    2: 5,
-    3: 25,
-    4: 31,
-    5: 39,
-    6: 64,
-  };
+  const bonusMultiplier = squadStakingConfig.bonus_multiplier;
 
   let duration = 0;
 
   const ripperCount = rippers.length;
-
-  if (ripperCount === 0) {
-    duration = 0;
-  } else {
+  if (ripperCount > 0) {
     // Get base stamina from Squad leader at slot 0
     const baseStamina = getRipperTraitValue(rippers[0], "Stamina");
-    duration = baseStamina * COEF * (1 + BONUS_MAP[ripperCount] / 100);
+    duration = baseStamina * COEF * (bonusMultiplier[ripperCount - 1] / 100);
   }
 
   return duration * 60 * 60 * 1000; // Convert to milliseconds

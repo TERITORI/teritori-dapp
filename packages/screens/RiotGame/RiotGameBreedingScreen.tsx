@@ -8,7 +8,7 @@ import { SVG } from "../../components/SVG";
 import { ButtonOutline } from "../../components/buttons/ButtonOutline";
 import Row from "../../components/grid/Row";
 import { SpacerRow } from "../../components/spacer";
-import useRippers from "../../hooks/riotGame/useRippers";
+import { useRippers } from "../../hooks/riotGame/useRippers";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import { flex } from "../../utils/style/flex";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";

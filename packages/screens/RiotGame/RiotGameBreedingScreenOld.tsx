@@ -11,7 +11,7 @@ import { ButtonOutline } from "../../components/buttons/ButtonOutline";
 import Col from "../../components/grid/Col";
 import Row from "../../components/grid/Row";
 import { SpacerRow } from "../../components/spacer";
-import useRippers from "../../hooks/riotGame/useRippers";
+import { useRippers } from "../../hooks/riotGame/useRippers";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import {
   fontMedium14,

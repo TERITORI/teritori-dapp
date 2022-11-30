@@ -1,6 +1,12 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { FlatList, Image, StyleSheet, View } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import clockSVG from "../../../assets/game/clock.svg";
 import countDownPNG from "../../../assets/game/countdown.png";
@@ -15,7 +21,10 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { ButtonOutline } from "../../components/buttons/ButtonOutline";
 import Row from "../../components/grid/Row";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import useRippers from "../../hooks/riotGame/useRippers";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useRippers } from "../../hooks/riotGame/useRippers";
+import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
+import { getRipperTokenId } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   gameHighlight,
@@ -52,8 +61,7 @@ const FIGHT_STATE = {
   COMPLETED: "completed",
 };
 
-const FIGHT_DURATION = 5000;
-const RELAX_DURATION = 5000;
+const RELAX_DURATION = 2 * 60 * 60 * 1000;
 
 const PAGE_TITLE_MAP = {
   [FIGHT_STATE.UNKNOWN]: "There is no ongoing fight",
@@ -64,41 +72,59 @@ const PAGE_TITLE_MAP = {
 
 export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();
+  const { setToastError, setToastSuccess } = useFeedbacks();
   const { myRippers } = useRippers();
-
-  // TODO: get theses values from servers
-  const fightStartedAt = moment.utc();
-  const fightEndedAt = moment(fightStartedAt).add(
-    FIGHT_DURATION,
-    "milliseconds"
-  );
-  const relaxStartedAt = fightEndedAt;
-  const relaxEndedAt = moment(relaxStartedAt).add(
-    RELAX_DURATION,
-    "milliseconds"
-  );
+  const counterRef = useRef<NodeJS.Timer>();
 
   const [remainingTime, setRemainingTime] = useState(0);
   const [fightState, setFightState] = useState(FIGHT_STATE.UNKNOWN);
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
+  const { currentSquad, squadWithdraw } = useSquadStaking();
 
-  const claimRewards = () => {
-    if (fightState === FIGHT_STATE.RELAX) {
-      setIsShowClaimModal(true);
+  const stakedRippers = useMemo(() => {
+    return myRippers.filter((r) =>
+      currentSquad?.token_ids.includes(getRipperTokenId(r))
+    );
+  }, [myRippers, currentSquad]);
+
+  const unstake = async () => {
+    try {
+      await squadWithdraw();
+      setToastSuccess({
+        title: "Success",
+        message: "Unstake successfully",
+      });
+    } catch (e: any) {
+      setToastError({
+        title: "Error occurs",
+        message: e.message,
+      });
     }
   };
 
-  const updateFightState = () => {
-    const now = moment.utc();
+  const claimRewards = async () => {
+    const res = await squadWithdraw();
+    console.log(res);
 
-    if (now.isAfter(relaxEndedAt)) {
+    setIsShowClaimModal(true);
+  };
+
+  const updateFightState = () => {
+    if (!currentSquad) return;
+
+    const now = moment();
+    const startsAt = moment(currentSquad?.start_time * 1000);
+    const endsAt = moment(currentSquad?.end_time * 1000);
+    const relaxEndsAt = moment(endsAt).add(RELAX_DURATION, "milliseconds");
+
+    if (now.isAfter(relaxEndsAt)) {
       setFightState(FIGHT_STATE.COMPLETED);
-    } else if (now.isAfter(relaxStartedAt)) {
+    } else if (now.isAfter(endsAt)) {
       setFightState(FIGHT_STATE.RELAX);
-      setRemainingTime(relaxEndedAt.diff(now));
-    } else if (now.isAfter(fightStartedAt)) {
+      setRemainingTime(relaxEndsAt.diff(now));
+    } else if (now.isAfter(startsAt)) {
       setFightState(FIGHT_STATE.ONGOING);
-      setRemainingTime(fightEndedAt.diff(now));
+      setRemainingTime(endsAt.diff(now));
     } else {
       setFightState(FIGHT_STATE.UNKNOWN);
     }
@@ -118,14 +144,18 @@ export const RiotGameFightScreen = () => {
   };
 
   useEffect(() => {
+    if (!currentSquad) return;
+    if (counterRef.current) return;
+
     // Calculate current state and remaining time
     updateFightState(); // Call immediately for the first time
-    const countdownInterval = setInterval(updateFightState, 1000);
+    counterRef.current = setInterval(updateFightState, 1000);
 
     return () => {
-      clearInterval(countdownInterval);
+      counterRef.current && clearInterval(counterRef.current);
+      counterRef.current = undefined;
     };
-  }, []);
+  }, [currentSquad]);
 
   if (isUnknown) {
     return (
@@ -187,7 +217,7 @@ export const RiotGameFightScreen = () => {
               <SpacerColumn size={2} />
 
               <FlatList
-                data={myRippers}
+                data={stakedRippers}
                 numColumns={3}
                 scrollEnabled={false}
                 renderItem={({ item: ripper, index }) => {
@@ -255,21 +285,30 @@ export const RiotGameFightScreen = () => {
               <View style={styles.divider} />
 
               <SVG color={actionIconColor} source={unstakeSVG} />
-              <BrandText
-                style={[styles.actionLabel, { color: actionLabelColor }]}
+              <TouchableOpacity
+                disabled={fightState !== FIGHT_STATE.COMPLETED}
+                onPress={unstake}
               >
-                Unstake
-              </BrandText>
+                <BrandText
+                  style={[styles.actionLabel, { color: actionLabelColor }]}
+                >
+                  Unstake
+                </BrandText>
+              </TouchableOpacity>
 
               <View style={styles.divider} />
 
               <SVG color={actionIconColor} source={claimSVG} />
-              <BrandText
+              <TouchableOpacity
+                disabled={fightState !== FIGHT_STATE.COMPLETED}
                 onPress={claimRewards}
-                style={[styles.actionLabel, { color: actionLabelColor }]}
               >
-                Claim
-              </BrandText>
+                <BrandText
+                  style={[styles.actionLabel, { color: actionLabelColor }]}
+                >
+                  Claim
+                </BrandText>
+              </TouchableOpacity>
             </Row>
           </Row>
         </TertiaryBox>

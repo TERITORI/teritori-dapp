@@ -7,34 +7,16 @@ import {
   TeritoriNftClient,
   TeritoriNftQueryClient,
 } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
-import {
-  TeritoriSquadStakingClient,
-  TeritoriSquadStakingQueryClient,
-} from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
 import { useContractClients } from "../useContractClients";
 import { useNFTs } from "../useNFTs";
+import useSelectedWallet from "../useSelectedWallet";
 import { Wallet } from "./../../context/WalletsProvider/wallet";
-
-const THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS =
-  process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS || "";
 
 const THE_RIOT_COLLECTION_ADDRESS =
   process.env.THE_RIOT_COLLECTION_ADDRESS || "";
 
-const useRippers = () => {
-  const {
-    client: squadStakingClient,
-    queryClient: squadStakingQueryClient,
-    selectedWallet,
-  }: {
-    client: TeritoriSquadStakingClient;
-    queryClient: TeritoriSquadStakingQueryClient;
-    selectedWallet: Wallet | undefined;
-  } = useContractClients(
-    THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
-    TeritoriSquadStakingClient,
-    TeritoriSquadStakingQueryClient
-  );
+export const useRippers = () => {
+  const selectedWallet = useSelectedWallet();
 
   const {
     client: nftClient,
@@ -62,11 +44,7 @@ const useRippers = () => {
 
   return {
     myRippers,
-    squadStakingClient,
-    squadStakingQueryClient,
     nftClient,
     nftQueryClient,
   };
 };
-
-export default useRippers;
