@@ -29,8 +29,8 @@ export const GovernanceBox: React.FC<{
   percentageNoValue: number;
   percentageNoWithVetoValue: number;
   percentageAbstainValue: number;
-  votingSubmitTime: string;
-  votingDepositEndTime: string;
+  submitTime: string;
+  depositEndTime: string;
   status: ProposalStatus;
 }> = ({
   numberProposal,
@@ -43,8 +43,8 @@ export const GovernanceBox: React.FC<{
   percentageNoWithVetoValue,
   percentageAbstainValue,
   votingStartTime,
-  votingSubmitTime,
-  votingDepositEndTime,
+  submitTime,
+  depositEndTime,
   status,
 }) => {
   const totalUsers =
@@ -85,11 +85,11 @@ export const GovernanceBox: React.FC<{
 
   const numberProposalHashtag = "#" + numberProposal;
 
-  function activePopup() {
+  const activePopup = () => {
     setDisplayGovernanceDetails(!displayGovernanceDetails);
-  }
+  };
 
-  function activeGovernanceDetailsPopup() {
+  const activeGovernanceDetailsPopup = () => {
     if (displayGovernanceDetails === true) {
       return (
         <GovernanceDetails
@@ -102,8 +102,8 @@ export const GovernanceBox: React.FC<{
           percentageTotalParticipant={percentageTotalParticipant}
           votingEndTime={votingEndTime}
           votingStartTime={votingStartTime}
-          votingSubmitTime={votingSubmitTime}
-          votingDepositEndTime={votingDepositEndTime}
+          submitTime={submitTime}
+          depositEndTime={depositEndTime}
           percentageYes={percentageYes}
           percentageNo={percentageNo}
           percentageNoWithVeto={percentageNoWithVeto}
@@ -113,7 +113,7 @@ export const GovernanceBox: React.FC<{
     } else {
       return <></>;
     }
-  }
+  };
 
   return (
     <View style={{ width: "50%", marginBottom: 20 }}>

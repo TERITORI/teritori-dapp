@@ -15,22 +15,26 @@ import { ProposalStatus } from "./types";
 
 export const GovernanceScreen: React.FC = () => {
   const [filter, setFilter] = useState<ProposalStatus>();
-  const { proposals, submitProposal } = useProposals();
+  const { proposals } = useProposals();
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
 
   const filteredProposals = useMemo(
     () =>
-      (filter
-        ? proposals.filter((p) => p.status === filter)
-        : proposals
-      ).reverse(),
+      (filter ? proposals.filter((p) => p.status === filter) : proposals)
+        .slice()
+        .reverse(),
     [filter, proposals]
   );
 
-  const nextProposalId = () => {
-    if (!proposals.length) return "";
-    return (parseInt(proposals.reverse()[0].proposal_id, 10) + 1).toString();
-  };
+  const nextProposalId = useMemo(
+    () =>
+      proposals.length
+        ? (
+            parseInt(proposals[proposals.length - 1].proposal_id, 10) + 1
+          ).toString()
+        : "1",
+    [proposals]
+  );
 
   return (
     <ScreenContainer>
@@ -76,8 +80,8 @@ export const GovernanceScreen: React.FC = () => {
             descriptionProposal={proposal.content.description}
             votingEndTime={proposal.voting_end_time}
             votingStartTime={proposal.voting_start_time}
-            votingSubmitTime={proposal.submit_time}
-            votingDepositEndTime={proposal.deposit_end_time}
+            submitTime={proposal.submit_time}
+            depositEndTime={proposal.deposit_end_time}
             colorMostVoted={primaryColor}
             percentageNoValue={parseFloat(proposal.final_tally_result.no)}
             percentageYesValue={parseFloat(proposal.final_tally_result.yes)}
@@ -95,8 +99,7 @@ export const GovernanceScreen: React.FC = () => {
       <CreateProposalModal
         isVisible={isCreateModalVisible}
         onClose={() => setIsCreateModalVisible(false)}
-        onSubmit={submitProposal}
-        newId={nextProposalId()}
+        newId={nextProposalId}
       />
     </ScreenContainer>
   );

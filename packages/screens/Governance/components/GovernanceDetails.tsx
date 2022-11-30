@@ -1,32 +1,16 @@
-import { MsgVoteEncodeObject, isDeliverTxFailure } from "@cosmjs/stargate";
-import Long from "long";
 import moment from "moment";
-import React, { useState, useCallback } from "react";
-import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
-import { RadioButton } from "react-native-paper";
+import React, { useState } from "react";
+import { ScrollView, View } from "react-native";
 import { VictoryPie } from "victory";
 
 import { BrandText } from "../../../components/BrandText/BrandText";
-import { ConfirmationVote } from "../../../components/GovernanceBox/ConfirmationVote";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import ModalBase from "../../../components/modals/ModalBase";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getKeplrOfflineSigner } from "../../../utils/keplr";
-import { neutral44, neutral77 } from "../../../utils/style/colors";
-import { getTeritoriSigningStargateClient } from "../../../utils/teritori";
+import { neutral77 } from "../../../utils/style/colors";
 import { ProposalStatus } from "../types";
-
-const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
-  <View
-    style={[
-      { borderBottomWidth: 1, borderColor: neutral44, width: "100%" },
-      style,
-    ]}
-  />
-);
+import { DepositProposalModal } from "./DepositProposalModal";
+import { VoteProposalModal } from "./VoteProposalModal";
 
 export const GovernanceDetails: React.FC<{
   visible?: boolean;
@@ -38,8 +22,8 @@ export const GovernanceDetails: React.FC<{
   percentageTotalParticipant: string;
   votingEndTime: string;
   votingStartTime: string;
-  votingSubmitTime: string;
-  votingDepositEndTime: string;
+  submitTime: string;
+  depositEndTime: string;
   percentageYes: string;
   percentageNo: string;
   percentageNoWithVeto: string;
@@ -54,123 +38,36 @@ export const GovernanceDetails: React.FC<{
   percentageTotalParticipant,
   votingStartTime,
   votingEndTime,
-  votingSubmitTime,
-  votingDepositEndTime,
+  submitTime,
+  depositEndTime,
   percentageYes,
   percentageNo,
   percentageNoWithVeto,
   status,
 }) => {
-  const [displayVote, setdisplayVote] = useState(false);
-  const [displayConfirmationVote, setdisplayConfirmationVote] = useState(false);
-  const [checked, setChecked] = useState("nothingChecked");
+  const [voteModalVisible, setVoteModalVisible] = useState(false);
+  const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [displayPopup] = useState(visible);
-  const { setToastError } = useFeedbacks();
 
-  function activeVotePopup() {
+  const closeAll = () => {
     onClose();
-    setdisplayVote(!displayVote);
-  }
+    setVoteModalVisible(false);
+    setDepositModalVisible(false);
+  };
 
   const valueChartYes = parseInt(percentageYes.replace("%", ""), 10);
   const valueChartNo = parseInt(percentageNo.replace("%", ""), 10);
   const valueChartAbstain = 100 - valueChartYes - valueChartNo;
-
-  const selectedWallet = useSelectedWallet();
-  let voteOption = 0;
-
-  if (checked === "Yes") {
-    voteOption = 1;
-  }
-
-  if (checked === "No") {
-    voteOption = 3;
-  }
-
-  if (checked === "NoWithVeto") {
-    voteOption = 4;
-  }
-
-  if (checked === "Abstain") {
-    voteOption = 2;
-  }
-
-  const handlePress = useCallback(async () => {
-    if (!selectedWallet?.connected || !selectedWallet.address) {
-      setToastError({
-        title: "Wallet Error",
-        message: "You need to register your teritori wallet",
-      });
-      return;
-    }
-
-    try {
-      const keplrSigner = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(keplrSigner);
-
-      const vote: MsgVoteEncodeObject = {
-        typeUrl: "/cosmos.gov.v1beta1.MsgVote",
-        value: {
-          proposalId: Long.fromNumber(
-            parseInt(numberProposal.substring(1), 10)
-          ),
-          voter: String(selectedWallet.address),
-          option: voteOption,
-        },
-      };
-      const result = await client.signAndBroadcast(
-        selectedWallet.address,
-        [vote],
-        "auto"
-      );
-      if (isDeliverTxFailure(result)) {
-        setToastError({
-          title: "Vote failed",
-          message: "Transaction failed",
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      if (err instanceof Error) {
-        setToastError({
-          title: "Vote failed",
-          message: err.message,
-        });
-      }
-    }
-  }, [selectedWallet]);
-
-  function deleteConfirmationVote() {
-    setdisplayConfirmationVote(false);
-    setdisplayVote(!displayVote);
-  }
-
-  function activeConfirmationVotePopup() {
-    if (displayConfirmationVote === true && checked !== "nothingChecked") {
-      return (
-        <ConfirmationVote
-          numberProposal={numberProposal}
-          vote={checked}
-          visible={displayConfirmationVote}
-          onClose={() => deleteConfirmationVote()}
-        />
-      );
-    } else {
-      return <></>;
-    }
-  }
-
-  function activeVote() {
-    setdisplayVote(!displayVote);
-  }
-
-  const canVoteDeposit = () => moment(votingDepositEndTime).isAfter(moment());
+  const canVote = () =>
+    status === "PROPOSAL_STATUS_VOTING" &&
+    moment(votingEndTime).isAfter(moment());
+  const canDeposit = () =>
+    status === "PROPOSAL_STATUS_DEPOSIT_PERIOD" &&
+    moment(depositEndTime).isAfter(moment());
 
   return (
     <ModalBase
-      onClose={() => {
-        activeVotePopup();
-      }}
+      onClose={closeAll}
       label="Governance Details"
       visible={displayPopup}
       width={1300}
@@ -295,9 +192,9 @@ export const GovernanceDetails: React.FC<{
               fontSize: 13,
             }}
           >
-            {votingSubmitTime.slice(0, 10)}
+            {submitTime.slice(0, 10)}
             {"\u00A0"}
-            {votingSubmitTime.slice(11, 16)}
+            {submitTime.slice(11, 16)}
             {"\u00A0"} UTC
           </BrandText>
         </View>
@@ -326,9 +223,9 @@ export const GovernanceDetails: React.FC<{
               fontSize: 13,
             }}
           >
-            {votingDepositEndTime.slice(0, 10)}
+            {depositEndTime.slice(0, 10)}
             {"\u00A0"}
-            {votingDepositEndTime.slice(11, 16)}
+            {depositEndTime.slice(11, 16)}
             {"\u00A0"} UTC
           </BrandText>
         </View>
@@ -595,201 +492,39 @@ export const GovernanceDetails: React.FC<{
           </BrandText>
         </View>
 
-        {canVoteDeposit() && (
+        {canDeposit() && (
+          <PrimaryButton
+            width={150}
+            size="XL"
+            style={{ position: "absolute", left: 510, bottom: -40 }}
+            text="Deposit"
+            onPress={() => setDepositModalVisible(true)}
+          />
+        )}
+        {canVote() && (
           <PrimaryButton
             width={150}
             size="XL"
             style={{ position: "absolute", left: 510, bottom: -40 }}
             text="Vote"
-            onPress={() => activeVote()}
+            onPress={() => setVoteModalVisible(true)}
           />
         )}
       </TertiaryBox>
 
-      {activeConfirmationVotePopup()}
+      <VoteProposalModal
+        isVisible={voteModalVisible}
+        onClose={() => setVoteModalVisible(false)}
+        numberProposal={numberProposal}
+        onPressCancel={closeAll}
+        onPressConfirm={closeAll}
+      />
 
-      <ModalBase
-        onClose={() => setdisplayVote(false)}
-        label="Your vote"
-        visible={displayVote}
-        width={372}
-        childrenBottom={
-          <>
-            <Separator />
-
-            <View
-              style={{
-                flexDirection: "row",
-                display: "flex",
-                justifyContent: "space-evenly",
-                alignItems: "center",
-                height: 70,
-                width: 480,
-                right: 50,
-              }}
-            >
-              <View>
-                <SecondaryButton
-                  size="M"
-                  text="Cancel"
-                  style={{}}
-                  onPress={activeVotePopup}
-                />
-              </View>
-              <View>
-                <PrimaryButton
-                  size="M"
-                  text="Confirm"
-                  style={{}}
-                  onPress={() => {
-                    if (checked !== "nothingChecked") {
-                      handlePress();
-                      activeVotePopup();
-                      setdisplayConfirmationVote(true);
-                    }
-                  }}
-                />
-              </View>
-            </View>
-          </>
-        }
-      >
-        <BrandText
-          style={{
-            fontSize: 14,
-            color: "#777777",
-          }}
-        >
-          {numberProposal}
-        </BrandText>
-        <BrandText
-          style={{
-            fontSize: 16,
-            color: "#FFFFFF",
-          }}
-        >
-          IncreaseMaxValidators=100 to MaxValidators=110 {"\n"}
-          {"\n"}
-        </BrandText>
-
-        <View style={{ paddingBottom: 10, flexDirection: "row" }}>
-          <View>
-            <RadioButton
-              value="Yes"
-              color="#16BBFF"
-              uncheckedColor="#777777"
-              status={checked === "Yes" ? "checked" : "unchecked"}
-              onPress={() => setChecked("Yes")}
-            />
-
-            <RadioButton
-              value="No"
-              color="#EAA54B"
-              uncheckedColor="#777777"
-              status={checked === "No" ? "checked" : "unchecked"}
-              onPress={() => setChecked("No")}
-            />
-            <RadioButton
-              value="NoWithVeto"
-              color="#F46F76"
-              uncheckedColor="#777777"
-              status={checked === "NoWithVeto" ? "checked" : "unchecked"}
-              onPress={() => setChecked("NoWithVeto")}
-            />
-            <RadioButton
-              value="Abstain"
-              color="#333333"
-              uncheckedColor="#777777"
-              status={checked === "Abstain" ? "checked" : "unchecked"}
-              onPress={() => setChecked("Abstain")}
-            />
-          </View>
-          <View
-            style={{
-              bottom: 8,
-              height: 160,
-              justifyContent: "space-evenly",
-              alignItems: "flex-start",
-            }}
-          >
-            <BrandText
-              style={{
-                fontSize: 16,
-                color: "#FFFFFF",
-              }}
-            >
-              Yes
-            </BrandText>
-            <BrandText
-              style={{
-                fontSize: 16,
-                color: "#FFFFFF",
-              }}
-            >
-              No
-            </BrandText>
-            <BrandText
-              style={{
-                fontSize: 16,
-                color: "#FFFFFF",
-              }}
-            >
-              NoWithVeto
-            </BrandText>
-            <BrandText
-              style={{
-                fontSize: 16,
-                color: "#FFFFFF",
-                marginRight: 209,
-              }}
-            >
-              Abstain
-            </BrandText>
-          </View>
-
-          <View
-            style={{
-              bottom: 8,
-              height: 165,
-              justifyContent: "space-evenly",
-              alignItems: "flex-start",
-            }}
-          >
-            <View
-              style={{
-                width: 12,
-                height: 12,
-                backgroundColor: "#16BBFF",
-                borderRadius: 12,
-              }}
-            />
-            <View
-              style={{
-                width: 12,
-                height: 12,
-                backgroundColor: "#EAA54B",
-                borderRadius: 12,
-              }}
-            />
-            <View
-              style={{
-                width: 12,
-                height: 12,
-                backgroundColor: "#F46F76",
-                borderRadius: 12,
-              }}
-            />
-            <View
-              style={{
-                width: 12,
-                height: 12,
-                backgroundColor: "#333333",
-                borderRadius: 12,
-              }}
-            />
-          </View>
-        </View>
-      </ModalBase>
+      <DepositProposalModal
+        isVisible={depositModalVisible}
+        onClose={() => setDepositModalVisible(false)}
+        numberProposal={numberProposal}
+      />
 
       <ScrollView style={{ height: 260, marginBottom: 50 }}>
         <View style={{ width: 1200, marginTop: 50 }}>

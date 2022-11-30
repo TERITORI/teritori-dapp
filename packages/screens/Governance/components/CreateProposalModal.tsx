@@ -1,6 +1,6 @@
 // libraries
 import { Decimal } from "@cosmjs/math";
-import React, { useMemo } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
 
@@ -16,10 +16,16 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useBalances } from "../../../hooks/useBalances";
+import { useProposals } from "../../../hooks/useProposals";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getNativeCurrency } from "../../../networks";
+import {
+  getNativeCurrency,
+} from "../../../networks";
 import { decimalFromAtomics } from "../../../utils/coins";
-import { patternOnlyNumbers } from "../../../utils/formRules";
+import {
+  patternOnlyFloatNumbers,
+  patternOnlyNumbers,
+} from "../../../utils/formRules";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontMedium10, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -29,9 +35,8 @@ import { ProposalForm, ProposalType } from "../types";
 
 type CreateProposalModalProps = {
   newId: string;
-  isVisible: boolean;
+  isVisible?: boolean;
   onClose: () => void;
-  onSubmit: (form: ProposalForm) => void;
 };
 
 const proposalTypes: SelectInputItem[] = [
@@ -44,7 +49,7 @@ export const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   newId,
   isVisible,
   onClose,
-  onSubmit,
+  // onSubmit,
 }) => {
   const selectedWallet = useSelectedWallet();
   const currency = getNativeCurrency(
@@ -58,28 +63,26 @@ export const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   const toriBalance = balances.find(
     (bal) => bal.denom === toriCurrency.coinMinimalDenom
   );
-  const { handleSubmit, control, getValues, setError } =
-    useForm<ProposalForm>();
+  const { handleSubmit, control, watch, setError } = useForm<ProposalForm>();
+  const { submitProposal, loading } = useProposals();
 
-  const canDepositInitialAmount = useMemo(
-    () =>
-      getValues().initialDeposit &&
-      toriBalance &&
-      currency &&
-      decimalFromAtomics(toriBalance.amount, toriBalance.denom).isGreaterThan(
-        Decimal.fromUserInput(
-          getValues().initialDeposit.toString(),
-          currency.decimals
-        )
-      ),
-    [getValues().initialDeposit, toriBalance, currency]
-  );
+  const canDepositInitialAmount = () =>
+    watch("initialDeposit") &&
+    patternOnlyFloatNumbers.value.test(watch("initialDeposit")) &&
+    toriBalance &&
+    currency &&
+    decimalFromAtomics(toriBalance.amount, toriBalance.denom).isGreaterThan(
+      Decimal.fromUserInput(watch("initialDeposit"), currency.decimals)
+    );
 
-  const onPressSubmit = handleSubmit(
-    !canDepositInitialAmount
-      ? () => setError("initialDeposit", { message: "Insufficient funds" })
-      : onSubmit
-  );
+  const onPressSubmit = handleSubmit(async (formValues) => {
+    if (!canDepositInitialAmount()) {
+      setError("initialDeposit", { message: "Insufficient funds" });
+    } else {
+      await submitProposal(formValues);
+      onClose();
+    }
+  });
 
   return (
     <ModalBase
@@ -116,6 +119,7 @@ export const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
 
       <SpacerColumn size={2.5} />
       <SelectInputCustom<ProposalForm>
+        style={{ zIndex: 1 }}
         defaultValue={
           proposalTypes.find((type) => type.value === ProposalType.TEXT)?.value
         }
@@ -136,7 +140,7 @@ export const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
             label="MINIMUM DEPOSIT"
             placeHolder="Type amount here"
             name="minimumDeposit"
-            rules={{ required: true, pattern: patternOnlyNumbers }}
+            rules={{ required: true, pattern: patternOnlyFloatNumbers }}
           />
         </View>
         <SpacerRow size={1.5} />
@@ -147,7 +151,7 @@ export const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
             label="INITIAL DEPOSIT"
             placeHolder="Type amount here"
             name="initialDeposit"
-            rules={{ required: true, pattern: patternOnlyNumbers }}
+            rules={{ required: true, pattern: patternOnlyFloatNumbers }}
           />
         </View>
       </View>
@@ -241,6 +245,7 @@ export const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         <MainConnectWalletButton size="M" fullWidth />
       ) : (
         <PrimaryButton
+          loader={loading}
           size="M"
           text="Create Proposal"
           fullWidth

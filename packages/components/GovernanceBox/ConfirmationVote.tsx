@@ -23,10 +23,10 @@ export const ConfirmationVote: React.FC<{
   vote: string;
 }> = ({ visible, onClose, numberProposal, vote }) => {
   const [displayConfirmation, setDisplayConfirmation] = useState(visible);
-  function handleConfirmClick() {
+  const handleConfirmClick = () => {
     onClose();
     setDisplayConfirmation(false);
-  }
+  };
 
   return (
     <ModalBase

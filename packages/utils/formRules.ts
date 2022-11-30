@@ -1,5 +1,6 @@
 import { bech32 } from "bech32";
 import { ValidationRule } from "react-hook-form";
+import { ValidationValueMessage } from "react-hook-form/dist/types/validator";
 
 // validator should return false or string to trigger error
 export const validateAddress = (value: string) => {
@@ -14,5 +15,10 @@ export const validateAddress = (value: string) => {
 
 export const patternOnlyNumbers: ValidationRule<RegExp> = {
   value: /^\d+$/,
+  message: "Only numbers are allowed",
+};
+
+export const patternOnlyFloatNumbers: ValidationValueMessage<RegExp> = {
+  value: /^[0-9]\d*(\.\d+)?$/,
   message: "Only numbers are allowed",
 };
