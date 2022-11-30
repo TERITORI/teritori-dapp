@@ -69,7 +69,7 @@ export const LaunchingOrganizationSection: React.FC<{
             width: 200,
             height: 200,
           }}
-          animationData={require("../animation-success.json")}
+          animationData={require("../../../../assets/lottie/animation-success.json")}
           autoPlay={false}
           loop={false}
         />
@@ -81,7 +81,7 @@ export const LaunchingOrganizationSection: React.FC<{
             width: 200,
             height: 200,
           }}
-          animationData={require("../animation-loading.json")}
+          animationData={require("../../../../assets/lottie/animation-loading.json")}
           autoPlay
         />
       </Animated.View>

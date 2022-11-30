@@ -35,6 +35,10 @@ export type RootStackParamList = {
   MultisigCreate: undefined;
   MultisigWalletManage: undefined;
   MultisigWalletTransaction: undefined;
+  MultisigLegacy: undefined;
+  MultisigCreateTransaction: undefined;
+  MultisigDelegate: undefined;
+
   TransactionProposal: undefined;
 };
 
@@ -91,6 +95,9 @@ const navConfig: {
     MultisigWalletManage: "multisig-wallet/manage",
     MultisigWalletTransaction: "multisig-wallet/transaction",
     TransactionProposal: "multisig-wallet/proposal/transaction",
+    MultisigLegacy: "multisig/legacy",
+    MultisigCreateTransaction: "multisig/create-transaction",
+    MultisigDelegate: "multisig/delegate",
 
     // ==== ComingSoon
     ComingSoon: "coming-soon",

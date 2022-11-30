@@ -101,14 +101,13 @@ export const TextInputCustom = <T extends FieldValues>({
     name,
     control,
     rules,
-    defaultValue,
   });
   const inputRef = useRef<TextInput>(null);
 
   // hooks
   useEffect(() => {
     if (defaultValue) {
-      handleChangeText(defaultValue);
+      handleChangeText(defaultValue || "");
     }
   }, [defaultValue]);
 

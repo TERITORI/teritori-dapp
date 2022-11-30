@@ -13,6 +13,9 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
+import { MultisigCreateTransactionScreen } from "../../screens/Multisig/MultisigCreateTransactionScreen";
+import { MultisigDelegateScreen } from "../../screens/Multisig/MultisigDelegateScreen";
+import { MultisigLegacyScreen } from "../../screens/Multisig/MultisigLegacyScreen";
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { MultisigWalletManageScreen } from "../../screens/OrganizerDeployer/MultisigWalletManageScreen";
@@ -144,6 +147,30 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Multisig Wallet Create"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigLegacy"
+        component={MultisigLegacyScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Legacy"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigCreateTransaction"
+        component={MultisigCreateTransactionScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Create Transaction"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigDelegate"
+        component={MultisigDelegateScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Delegate"),
         }}
       />
       <Stack.Screen

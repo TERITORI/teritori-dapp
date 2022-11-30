@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import trashSVG from "../../../assets/icons/trash.svg";
-import walletSVG from "../../../assets/icons/wallet-grey.svg";
 import walletInputSVG from "../../../assets/icons/wallet-input.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
@@ -15,6 +14,12 @@ import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideL
 import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import {
+  patternOnlyNumbers,
+  validateAddress,
+  validateMaxNumber,
+} from "../../utils/formRules";
+import { useAppNavigation } from "../../utils/navigation";
+import {
   neutral33,
   neutral77,
   neutralA3,
@@ -23,20 +28,23 @@ import {
 import {
   fontSemibold13,
   fontSemibold14,
-  fontSemibold16,
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { CheckLoadingModal } from "./components/CheckLoadingModal";
+import { MultisigSection } from "./components/MultisigSection";
 import { CreateMultisigWalletFormType } from "./types";
 
 export const MultisigCreateScreen = () => {
   // variables
-  const {
-    control,
-    handleSubmit,
-    formState: { isValid },
-  } = useForm<CreateMultisigWalletFormType>({ mode: "all" });
-  const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
+  const { control, handleSubmit, watch } =
+    useForm<CreateMultisigWalletFormType>();
+  const [addressIndexes, setAddressIndexes] = useState<number[]>([0, 1]);
+  const [isLoadingProcessRunning, setIsLoadingProcessRunning] =
+    useState<boolean>(false);
+  const navigation = useAppNavigation();
+
+  const signatureRequiredValue = watch("signatureRequired");
 
   // functions
   const removeAddressField = (id: number) => {
@@ -48,6 +56,13 @@ export const MultisigCreateScreen = () => {
 
   const addAddressField = () => {
     setAddressIndexes([...addressIndexes, Math.floor(Math.random() * 200000)]);
+  };
+
+  const onSubmit = () => {
+    setIsLoadingProcessRunning(true);
+    setTimeout(() => {
+      setIsLoadingProcessRunning(false);
+    }, 3000);
   };
 
   // returns
@@ -64,24 +79,17 @@ export const MultisigCreateScreen = () => {
         <View style={styles.formContainer}>
           <BrandText style={fontSemibold28}>Create a Legacy Multisig</BrandText>
           <SpacerColumn size={2.5} />
-
-          <View style={styles.descriptionContainer}>
-            <View style={[styles.descriptionHeader, styles.rowCenter]}>
-              <SVG source={walletSVG} height={28} width={28} />
-              <BrandText style={[fontSemibold16, { color: neutralA3 }]}>
-                What is a Multisignature Wallet?
-              </BrandText>
-            </View>
-            <View style={styles.descriptionFooter}>
-              <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-                This wallet adress is owned managed by at least 2 different
-                addresses and require signatures from co-owners to execute a
-                transaction.
-              </BrandText>
-            </View>
-          </View>
+          <MultisigSection
+            title="What is a Multisignature Wallet?"
+            containerStyle={styles.descriptionContainer}
+          >
+            <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+              This wallet adress is owned managed by at least 2 different
+              addresses and require signatures from co-owners to execute a
+              transaction.
+            </BrandText>
+          </MultisigSection>
           <SpacerColumn size={3} />
-
           {addressIndexes.map((id, index) => (
             <View style={styles.inputContainer} key={id.toString()}>
               <TextInputCustom<CreateMultisigWalletFormType>
@@ -90,11 +98,11 @@ export const MultisigCreateScreen = () => {
                 variant="noCropBorder"
                 label={"Address #" + (index + 1)}
                 isAsterickSign
-                rules={{ required: true }}
+                rules={{ required: true, validate: validateAddress }}
                 placeHolder="Account address"
                 iconSVG={walletInputSVG}
               >
-                {addressIndexes.length > 1 && (
+                {addressIndexes.length > 2 && (
                   <Pressable
                     style={styles.trashContainer}
                     onPress={() => removeAddressField(id)}
@@ -105,13 +113,13 @@ export const MultisigCreateScreen = () => {
               </TextInputCustom>
             </View>
           ))}
-
-          <SecondaryButton
-            size="M"
-            text="Add another address"
-            onPress={addAddressField}
-          />
-
+          <View style={styles.row}>
+            <SecondaryButton
+              size="M"
+              text="Add another address"
+              onPress={addAddressField}
+            />
+          </View>
           <View style={styles.signatureContainer}>
             <TextInputOutsideLabel
               label="Number of Signatures required"
@@ -127,7 +135,12 @@ export const MultisigCreateScreen = () => {
                 hideLabel
                 width={80}
                 inputStyle={styles.textCenter}
-                rules={{ required: true }}
+                rules={{
+                  required: true,
+                  pattern: patternOnlyNumbers,
+                  validate: (value) =>
+                    validateMaxNumber(value, addressIndexes.length),
+                }}
                 errorStyle={{ paddingLeft: layout.padding_x1_5 }}
               />
               <SpacerRow size={2} />
@@ -139,29 +152,35 @@ export const MultisigCreateScreen = () => {
                 control={control}
                 variant="noCropBorder"
                 mainContainerStyle={styles.smallInputContainerStyle}
-                name="totalSignatureRequired"
+                name="maxSignature"
                 label=""
                 hideLabel
                 width={80}
                 inputStyle={styles.textCenter}
+                defaultValue={addressIndexes.length.toString()}
+                disabled
               />
             </View>
           </View>
-
           <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-            This means that each transaction this multisig makes will require 2
-            of the members to sign it for it to be accepted by the validators.
+            This means that each transaction this multisig makes will require{" "}
+            {signatureRequiredValue || 2} of the members to sign it for it to be
+            accepted by the validators.
           </BrandText>
           <SpacerColumn size={2.5} />
-
-          <PrimaryButton
-            disabled={!isValid}
-            size="XL"
-            text="Create Multisig"
-            onPress={handleSubmit(console.log)}
-          />
+          <View style={styles.row}>
+            <PrimaryButton
+              size="XL"
+              text="Create Multisig"
+              onPress={handleSubmit(onSubmit)}
+            />
+          </View>
         </View>
       </ScrollView>
+      <CheckLoadingModal
+        isVisible={isLoadingProcessRunning}
+        onComplete={() => navigation.navigate("MultisigLegacy")}
+      />
     </ScreenContainer>
   );
 };
@@ -195,20 +214,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     maxWidth: 793,
   },
-  descriptionContainer: {
-    borderColor: neutral33,
-    borderWidth: 1,
-    borderRadius: 12,
-    maxWidth: 487,
-  },
-  descriptionHeader: {
-    padding: layout.padding_x2,
-    paddingTop: layout.padding_x2_5,
-  },
-  descriptionFooter: {
-    padding: layout.padding_x2_5,
-    paddingTop: 0,
-  },
   inputContainer: {
     marginBottom: layout.padding_x2_5,
   },
@@ -228,4 +233,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textCenter: { textAlign: "center" },
+  row: { flexDirection: "row" },
+  descriptionContainer: {
+    maxWidth: 487,
+  },
 });
