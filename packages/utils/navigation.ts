@@ -15,6 +15,7 @@ export type RootStackParamList = {
   RiotersFooter: undefined;
 
   Launchpad: undefined;
+  LaunchpadApply: undefined;
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
 
@@ -68,6 +69,7 @@ const navConfig: {
 
     // ==== Launchpad
     Launchpad: "launchpad",
+    LaunchpadApply: "launchpad/apply",
     // Mint NFT collection
     MintCollection: "collection/:id/mint",
     // ==== Teritori Name Service

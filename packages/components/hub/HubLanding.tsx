@@ -5,7 +5,7 @@ import { View, Image, Linking } from "react-native";
 import defaultNewsBanner from "../../../assets/default-images/default-news-banner.png";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
 import labsSVG from "../../../assets/icons/labs.svg";
-import launchpadSVG from "../../../assets/icons/launchpad.svg";
+import launchpadSVG from "../../../assets/icons/launchpad-apply.svg";
 import marketplaceSVG from "../../../assets/icons/marketplace.svg";
 import stakingSVG from "../../../assets/icons/staking.svg";
 import {
