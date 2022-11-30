@@ -34,7 +34,7 @@ export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
   const { setToastError } = useFeedbacks();
 
-  const { myRippers } = useRippers();
+  const { myAvailableRippers } = useRippers();
   const { currentSquad, squadStakingConfig, squadStake } = useSquadStaking();
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<
@@ -47,7 +47,7 @@ export const RiotGameEnrollScreen = () => {
     const stakedIds = currentSquad?.token_ids || [];
 
     // excluded rippers already selected
-    let res = myRippers.filter(
+    let res = myAvailableRippers.filter(
       (r) => !selectedIds.includes(getRipperTokenId(r))
     );
 
@@ -55,7 +55,7 @@ export const RiotGameEnrollScreen = () => {
     res = res.filter((r) => !stakedIds.includes(getRipperTokenId(r)));
 
     return res;
-  }, [myRippers, selectedRippers, currentSquad]);
+  }, [myAvailableRippers, selectedRippers, currentSquad]);
 
   const stakingDuration = useMemo<number>(() => {
     return calculateStakingDuration(squadStakingConfig, selectedRippers);

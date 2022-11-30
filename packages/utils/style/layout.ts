@@ -54,6 +54,8 @@ export const layout = {
   p_2: { padding: BASE_SIZE * 2 }, // 16
   p_5: { padding: BASE_SIZE * 5 }, // 40
 
+  ph_5: { paddingHorizontal: BASE_SIZE * 5 }, // 40
+
   m_8: { margin: BASE_SIZE }, // 8
   m_2: { margin: BASE_SIZE * 2 }, // 16
   m_5: { margin: BASE_SIZE * 5 }, // 40
@@ -63,7 +65,17 @@ export const layout = {
   mt_3: { marginTop: BASE_SIZE * 3 }, // 24
   mt_5: { marginTop: BASE_SIZE * 5 }, // 40
 
+  ml_1: { marginRight: BASE_SIZE }, // 8
+  ml_2: { marginRight: BASE_SIZE * 2 }, // 16
+  ml_3: { marginRight: BASE_SIZE * 3 }, // 18
+  ml_4: { marginRight: BASE_SIZE * 4 }, // 32
+  ml_5: { marginRight: BASE_SIZE * 5 }, // 40
+
+  mr_1: { marginRight: BASE_SIZE }, // 8
   mr_2: { marginRight: BASE_SIZE * 2 }, // 16
+  mr_3: { marginRight: BASE_SIZE * 3 }, // 18
+  mr_4: { marginRight: BASE_SIZE * 4 }, // 32
+  mr_5: { marginRight: BASE_SIZE * 5 }, // 40
 
   mv_5: { marginVertical: BASE_SIZE * 5 }, // 40
 

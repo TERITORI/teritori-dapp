@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   NFTsRequest,
   Sort,
@@ -42,8 +43,13 @@ export const useRippers = () => {
   const { nfts } = useNFTs(myRippersRequest);
   const myRippers = nfts as NSRiotGame.RipperListItem[];
 
+  const myAvailableRippers = useMemo(() => {
+    return myRippers.filter((r) => !r.isListed);
+  }, [myRippers]);
+
   return {
     myRippers,
+    myAvailableRippers,
     nftClient,
     nftQueryClient,
   };

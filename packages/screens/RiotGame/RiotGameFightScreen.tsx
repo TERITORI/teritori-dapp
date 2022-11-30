@@ -73,7 +73,7 @@ const PAGE_TITLE_MAP = {
 export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { myRippers } = useRippers();
+  const { myAvailableRippers } = useRippers();
   const counterRef = useRef<NodeJS.Timer>();
 
   const [remainingTime, setRemainingTime] = useState(0);
@@ -82,10 +82,10 @@ export const RiotGameFightScreen = () => {
   const { currentSquad, squadWithdraw } = useSquadStaking();
 
   const stakedRippers = useMemo(() => {
-    return myRippers.filter((r) =>
+    return myAvailableRippers.filter((r) =>
       currentSquad?.token_ids.includes(getRipperTokenId(r))
     );
-  }, [myRippers, currentSquad]);
+  }, [myAvailableRippers, currentSquad]);
 
   const unstake = async () => {
     try {

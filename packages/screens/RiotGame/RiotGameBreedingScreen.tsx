@@ -20,7 +20,7 @@ import { InfoBox } from "./component/InfoBox";
 import { RipperSelectorModal } from "./component/RipperSelectorModal";
 
 export const RiotGameBreedingScreen = () => {
-  const { myRippers } = useRippers();
+  const { myAvailableRippers } = useRippers();
   const [isShowBreedingModal, setIsShowBreedingModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<number>();
 
@@ -93,7 +93,7 @@ export const RiotGameBreedingScreen = () => {
         visible={selectedSlot !== undefined}
         confirmButton="Add to Breeding"
         slotId={selectedSlot}
-        availableRippers={myRippers}
+        availableRippers={myAvailableRippers}
         onSelectRipper={selectRipper}
         onClose={() => setSelectedSlot(undefined)}
       />

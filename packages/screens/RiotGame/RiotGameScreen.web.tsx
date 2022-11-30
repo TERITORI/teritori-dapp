@@ -27,7 +27,8 @@ export const RiotGameScreen = () => {
   // returns
   return (
     <View style={styles.container}>
-      <RiotGameHeader />
+      <RiotGameHeader hideMenu />
+
       <View style={styles.positionRelative}>
         <FlatList
           data={gameBgData}

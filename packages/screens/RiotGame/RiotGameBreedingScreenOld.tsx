@@ -25,7 +25,7 @@ import { InfoBox } from "./component/InfoBox";
 import { RipperAvatar } from "./component/RipperAvatar";
 
 export const RiotGameBreedingScreen = () => {
-  const { myRippers } = useRippers();
+  const { myAvailableRippers } = useRippers();
   const [isShowBreedingModal, setIsShowBreedingModal] = useState(false);
 
   const doBreed = () => {
@@ -84,7 +84,7 @@ export const RiotGameBreedingScreen = () => {
           <BrandText style={[fontMedium32]}>Available Rippers</BrandText>
 
           <FlatList
-            data={myRippers}
+            data={myAvailableRippers}
             numColumns={3}
             renderItem={({ item: ripper, index }) => {
               return (

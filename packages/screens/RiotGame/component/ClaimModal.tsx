@@ -1,8 +1,8 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Linking, StyleSheet, View } from "react-native";
 
 import firePNG from "../../../../assets/game/fire.png";
-import trophiesSVG from "../../../../assets/game/trophies.svg";
+import trophiesSVG from "../../../../assets/icons/trophies.svg";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
 import teritoriLogoSVG from "../../../../assets/logos/logo.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -52,6 +52,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
           <SpacerColumn size={2} />
 
           <SocialButton
+            onPress={() => Linking.openURL("https://twitter.com/TheRiotNFT")}
             noBrokenCorners={false}
             iconSvg={twitterSVG}
             text="Twitter"
