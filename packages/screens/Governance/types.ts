@@ -8,7 +8,7 @@ export enum ProposalType {
   TEXT = "/cosmos.gov.v1beta1.TextProposal",
   PARAMETER_CHANGE = "/cosmos.params.v1beta1.ParameterChangeProposal",
   SOFTWARE_UPGRADE = "/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal",
-  CANCEL_SOFTWARE_UPGRADE = "/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal",
+  CANCEL_SOFTWARE_UPGRADE = "/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal",
   COMMUNITY_POOL = "/cosmos.distribution.v1beta1.CommunityPoolSpendProposal",
 }
 

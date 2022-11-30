@@ -39,11 +39,7 @@ type CreateProposalModalProps = {
   onClose: () => void;
 };
 
-const proposalTypes: SelectInputItem[] = [
-  { value: ProposalType.TEXT },
-  { value: ProposalType.PARAMETER_CHANGE },
-  { value: ProposalType.SOFTWARE_UPGRADE },
-];
+const proposalTypes: SelectInputItem[] = Object.values(ProposalType).map(value => {return { value }})
 
 export const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   newId,
