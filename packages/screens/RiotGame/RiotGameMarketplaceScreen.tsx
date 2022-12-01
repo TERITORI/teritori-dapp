@@ -9,13 +9,11 @@ import {
   Content as CollectionContent,
 } from "../Marketplace/CollectionScreen";
 import { GameContentView } from "./component/GameContentView";
-
-const THE_RIOT_COLLECTION_ID = `tori-${process.env.THE_RIOT_COLLECTION_ADDRESS}`;
+import { THE_RIOT_COLLECTION_ID } from "./settings";
 
 export const RiotGameMarketplaceScreen = () => {
-  const id = THE_RIOT_COLLECTION_ID;
   const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
-  const { info } = useCollectionInfo(id);
+  const { info } = useCollectionInfo(THE_RIOT_COLLECTION_ID);
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );
@@ -28,7 +26,7 @@ export const RiotGameMarketplaceScreen = () => {
         contentContainerStyle={{ alignItems: "center" }}
       >
         <CollectionHeader
-          collectionId={id}
+          collectionId={THE_RIOT_COLLECTION_ID}
           collectionInfo={info}
           selectedTab={selectedTab}
           onSelectTab={setSelectedTab}
@@ -36,8 +34,7 @@ export const RiotGameMarketplaceScreen = () => {
           sortDirection={sortDirection}
         />
         <CollectionContent
-          key={id}
-          id={id}
+          id={THE_RIOT_COLLECTION_ID}
           selectedTab={selectedTab}
           sortDirection={sortDirection}
         />

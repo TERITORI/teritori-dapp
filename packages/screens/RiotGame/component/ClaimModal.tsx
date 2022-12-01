@@ -1,16 +1,16 @@
 import React from "react";
-import { Image, Linking, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 import firePNG from "../../../../assets/game/fire.png";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
-import twitterSVG from "../../../../assets/icons/twitter.svg";
 import teritoriLogoSVG from "../../../../assets/logos/logo.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { SocialButton } from "../../../components/buttons/SocialButton";
+import { CollectionSocialButtons } from "../../../components/collections/CollectionSocialButtons";
 import Row from "../../../components/grid/Row";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
 import {
   mineShaftColor,
   neutral77,
@@ -18,6 +18,8 @@ import {
 } from "../../../utils/style/colors";
 import { flex } from "../../../utils/style/flex";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { THE_RIOT_COLLECTION_ID } from "../settings";
 
 type ClaimModalProps = {
   visible?: boolean;
@@ -28,6 +30,8 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
   visible = false,
   onClose,
 }) => {
+  const { info = {} } = useCollectionInfo(THE_RIOT_COLLECTION_ID);
+
   return (
     <ModalBase
       contentStyle={{ alignItems: "center" }}
@@ -51,12 +55,9 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
 
           <SpacerColumn size={2} />
 
-          <SocialButton
-            onPress={() => Linking.openURL("https://twitter.com/TheRiotNFT")}
-            noBrokenCorners={false}
-            iconSvg={twitterSVG}
-            text="Twitter"
-          />
+          <Row style={[layout.w_100, flex.justifyContentBetween]}>
+            <CollectionSocialButtons collectionInfo={info} />
+          </Row>
         </View>
       }
     >
