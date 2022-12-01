@@ -1,6 +1,10 @@
 import { StyleSheet } from "react-native";
 
 export const flex = StyleSheet.create({
+  flex_1: {
+    flex: 1,
+  },
+
   alignCenter: {
     alignItems: "center",
     alignSelf: "center",

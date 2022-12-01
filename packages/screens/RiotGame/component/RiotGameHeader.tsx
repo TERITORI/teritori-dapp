@@ -30,7 +30,8 @@ import {
 } from "../../../utils/style/colors";
 import { flex } from "../../../utils/style/flex";
 import { fontMedium16 } from "../../../utils/style/fonts";
-import { headerHeight, layout } from "../../../utils/style/layout";
+import { headerHeight } from "../../../utils/style/layout";
+import { spacing } from "../../../utils/style/spacing";
 
 type MenuItem = {
   id: string;
@@ -44,7 +45,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: "inventory",
     name: "Inventory",
-    route: "RiotGame",
+    route: "RiotGameInventory",
     iconSVG: inventorySVG,
   },
   {
@@ -56,7 +57,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: "leaderboard",
     name: "Leaderboard",
-    route: "RiotGame",
+    route: "RiotGameLeaderboard",
     iconSVG: trophiesSVG,
   },
   {
@@ -120,7 +121,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                 return (
                   <TouchableOpacity
                     onPress={() => onMenuItemClick(menuItem)}
-                    style={layout.mr_4}
+                    style={spacing.mr_4}
                     key={menuItem.id}
                   >
                     <Row style={flex.alignItemsCenter}>
@@ -129,7 +130,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                         height={16}
                         color={color}
                         source={menuItem.iconSVG}
-                        style={layout.mr_1}
+                        style={spacing.mr_1}
                       />
                       <BrandText style={[fontMedium16, { color }]}>
                         {menuItem.name}

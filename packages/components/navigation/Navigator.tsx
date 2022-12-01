@@ -14,11 +14,13 @@ import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
-import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
-import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
+import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventoryScreen";
+import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeaderboardScreen";
+import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
+import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
@@ -112,6 +114,23 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Memories"),
         }}
       />
+      <Stack.Screen
+        name="RiotGameLeaderboard"
+        component={RiotGameLeaderboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Leaderboard"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameInventory"
+        component={RiotGameInventoryScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Inventory"),
+        }}
+      />
+
       {/* ==== Wallet Manager */}
       <Stack.Screen
         name="WalletManager"

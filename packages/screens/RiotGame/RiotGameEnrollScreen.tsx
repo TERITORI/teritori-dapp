@@ -27,6 +27,7 @@ import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalOld";
 import { SimpleButton } from "./component/SimpleButton";
+import { spacing } from "../../utils/style/spacing";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
@@ -184,7 +185,7 @@ export const RiotGameEnrollScreen = () => {
               padding: 40,
               alignItems: "flex-start",
             }}
-            style={layout.mt_2}
+            style={spacing.mt_2}
             height={148}
           >
             <BrandText style={fontSemibold28}>

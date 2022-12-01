@@ -37,12 +37,16 @@ export const ButtonOutline: React.FC<{
   disabled = false,
   fullWidth = false,
 }) => {
+  const borderColor = color || primaryColor;
+
   const boxProps = {
     style,
     disabled,
     squaresBackgroundColor,
     width,
     fullWidth,
+    disabledBorderColor: borderColor,
+    brokenCornerWith: disabled ? 0.5 : undefined,
   };
 
   return (
@@ -58,7 +62,7 @@ export const ButtonOutline: React.FC<{
           borderRadius: borderRadiusButton(size),
           backgroundColor: "#000000",
           paddingHorizontal: 20,
-          borderColor: color || primaryColor,
+          borderColor,
           opacity: disabled ? 0.5 : 1,
         }}
         {...boxProps}

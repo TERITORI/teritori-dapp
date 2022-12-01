@@ -44,7 +44,7 @@ import {
   fontSemibold14,
   fontMedium13,
 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { spacing } from "../../utils/style/spacing";
 import { ClaimModal } from "./component/ClaimModal";
 import { FightProgressBar } from "./component/FightProgressBar";
 import { GameContentView } from "./component/GameContentView";
@@ -311,7 +311,7 @@ export const RiotGameFightScreen = () => {
 
         {isRelax && (
           <ButtonOutline
-            style={layout.m_2}
+            style={spacing.m_2}
             onPress={gotoMarketplace}
             color={yellowDefault}
             size="M"

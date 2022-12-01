@@ -36,7 +36,8 @@ import {
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { headerHeight, layout } from "../../../utils/style/layout";
+import { headerHeight } from "../../../utils/style/layout";
+import { spacing } from "../../../utils/style/spacing";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStat } from "./RipperStat";
 import { SimpleButton } from "./SimpleButton";
@@ -113,11 +114,11 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
         </Pressable>
 
         <ScrollView
-          style={layout.w_100}
+          style={spacing.w_100}
           contentContainerStyle={flex.alignItemsCenter}
           showsVerticalScrollIndicator={false}
         >
-          <BrandText style={[fontMedium48, layout.mt_2]}>
+          <BrandText style={[fontMedium48, spacing.mt_2]}>
             {selectedRipperDetail?.name || "Please select a Ripper"}
           </BrandText>
 
@@ -183,12 +184,12 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 />
               </ImageBackground>
 
-              <BrandText style={[fontMedium24, flex.alignCenter, layout.mt_2]}>
+              <BrandText style={[fontMedium24, flex.alignCenter, spacing.mt_2]}>
                 Stats
               </BrandText>
 
               <RipperStat
-                containerStyle={layout.mt_3}
+                containerStyle={spacing.mt_3}
                 name="Stamina"
                 value={
                   selectedRipperDetail &&
@@ -197,7 +198,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 size="MD"
               />
               <RipperStat
-                containerStyle={layout.mt_3}
+                containerStyle={spacing.mt_3}
                 name="Protection"
                 value={
                   selectedRipperDetail &&
@@ -206,7 +207,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 size="MD"
               />
               <RipperStat
-                containerStyle={layout.mt_3}
+                containerStyle={spacing.mt_3}
                 name="Luck"
                 value={
                   selectedRipperDetail &&

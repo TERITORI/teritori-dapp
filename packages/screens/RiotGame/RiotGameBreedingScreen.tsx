@@ -12,7 +12,7 @@ import { useRippers } from "../../hooks/riotGame/useRippers";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import { flex } from "../../utils/style/flex";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { spacing } from "../../utils/style/spacing";
 import { BreedingModal } from "./component/BreedingModal";
 import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
@@ -43,10 +43,10 @@ export const RiotGameBreedingScreen = () => {
 
   return (
     <GameContentView>
-      <View style={[layout.mt_5, flex.alignCenter]}>
+      <View style={[spacing.mt_5, flex.alignCenter]}>
         <BrandText style={[fontMedium48]}>Breeding</BrandText>
 
-        <Row style={[layout.mt_5, flex.justifyContentCenter]}>
+        <Row style={[spacing.mt_5, flex.justifyContentCenter]}>
           <BreedingSlot
             ripper={selectedRippers[0]}
             onPress={() => openSelectorModal(0)}
@@ -58,7 +58,7 @@ export const RiotGameBreedingScreen = () => {
           />
         </Row>
 
-        <Row style={layout.mt_5}>
+        <Row style={spacing.mt_5}>
           <InfoBox size="LG" title="Price" content="10 $ATOM" width={180} />
 
           <InfoBox
@@ -71,7 +71,7 @@ export const RiotGameBreedingScreen = () => {
           <InfoBox size="LG" title="Bonus" content="Coming soon" width={180} />
         </Row>
 
-        <View style={layout.mt_2}>
+        <View style={spacing.mt_2}>
           <SVG source={chevronDownLineSVG} color={neutral33} />
         </View>
 
@@ -81,10 +81,10 @@ export const RiotGameBreedingScreen = () => {
           size="M"
           text="Breed my Rippers"
           iconSVG={breedSVG}
-          style={layout.mt_2}
+          style={spacing.mt_2}
         />
 
-        <BrandText style={[fontMedium14, layout.mt_2, { color: neutralA3 }]}>
+        <BrandText style={[fontMedium14, spacing.mt_2, { color: neutralA3 }]}>
           Legal phrase powered by Popipou
         </BrandText>
       </View>

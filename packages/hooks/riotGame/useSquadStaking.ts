@@ -124,7 +124,7 @@ export const useSquadStaking = () => {
     rippers: NSRiotGame.RipperDetail[],
     squadStakingConfig: GetConfigResponse
   ) => {
-    const COEF = 0.2;
+    const COEF = 0.125;
     const bonusMultiplier = squadStakingConfig.bonus_multiplier;
 
     let duration = 0;

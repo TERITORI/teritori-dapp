@@ -8,7 +8,7 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 
 import { neutral00 } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
+import { flex } from "../../../utils/style/flex";
 import { FightStatsSection } from "./FightStatsSection";
 import { RiotGameHeader } from "./RiotGameHeader";
 
@@ -33,9 +33,7 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
   );
 
   return (
-    <View
-      style={[layout.flex_1, { backgroundColor: neutral00 }, containerStyle]}
-    >
+    <View style={[flex.flex_1, { backgroundColor: neutral00 }, containerStyle]}>
       <RiotGameHeader />
 
       {bgImage ? (
