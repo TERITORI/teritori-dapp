@@ -16,19 +16,25 @@ type GameContentViewProps = {
   containerStyle?: ViewStyle;
   contentStyle?: ViewStyle;
   bgImage?: ImageSourcePropType;
+  hideStats?: boolean;
 };
 
 export const GameContentView: React.FC<GameContentViewProps> = ({
   containerStyle,
   contentStyle,
   bgImage,
+  hideStats = false,
   ...props
 }) => {
   const content = (
-    <ScrollView style={contentStyle}>
-      <FightStatsSection />
+    <ScrollView>
+      {!hideStats && <FightStatsSection />}
 
-      {props.children}
+      {contentStyle ? (
+        <View style={contentStyle}>{props.children}</View>
+      ) : (
+        props.children
+      )}
     </ScrollView>
   );
 

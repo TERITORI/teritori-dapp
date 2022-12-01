@@ -12,7 +12,6 @@ import nft4 from "../../assets/game/nft-4.png";
 import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
-import { GetConfigResponse } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { GameBgCardItem } from "../screens/RiotGame/types";
 
 const THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS =

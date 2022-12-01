@@ -36,7 +36,7 @@ import {
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { headerHeight } from "../../../utils/style/layout";
+import { headerHeight, layout } from "../../../utils/style/layout";
 import { spacing } from "../../../utils/style/spacing";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStat } from "./RipperStat";
@@ -114,7 +114,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
         </Pressable>
 
         <ScrollView
-          style={spacing.w_100}
+          style={layout.w_100}
           contentContainerStyle={flex.alignItemsCenter}
           showsVerticalScrollIndicator={false}
         >

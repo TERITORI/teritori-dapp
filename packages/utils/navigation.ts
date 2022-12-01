@@ -32,6 +32,7 @@ export type RootStackParamList = {
   RiotGameMarketplace: undefined;
   RiotGameLeaderboard: undefined;
   RiotGameInventory: undefined;
+  RiotGameRarity: undefined;
 
   Staking: undefined;
 
@@ -70,6 +71,7 @@ const navConfig: {
     RiotGameMarketplace: "riot-game/marketplace",
     RiotGameLeaderboard: "riot-game/leaderboard",
     RiotGameInventory: "riot-game/inventory",
+    RiotGameRarity: "riot-game/rarity",
 
     // ==== Launchpad
     Launchpad: "launchpad",

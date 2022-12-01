@@ -47,6 +47,10 @@ export const layout = {
     return this.padding_x1 * 4;
   },
 
+  w_100: {
+    width: "100%",
+  },
+
   borderRadius: 12,
   contentPadding: 48,
   iconButton: 32,

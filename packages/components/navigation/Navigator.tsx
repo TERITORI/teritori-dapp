@@ -20,6 +20,7 @@ import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventor
 import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeaderboardScreen";
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
+import { RiotGameRarityScreen } from "../../screens/RiotGame/RiotGameRarityScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
@@ -128,6 +129,14 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Riot Game Inventory"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameRarity"
+        component={RiotGameRarityScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Rarity"),
         }}
       />
 

@@ -183,7 +183,7 @@ export const RiotGameFightScreen = () => {
                 containerStyle={{ marginVertical: 12 }}
                 width={170}
                 height={10}
-                value={remainingPercentage}
+                value={100 - remainingPercentage}
               />
 
               <BrandText style={[fontBold9, { color: gameHighlight }]}>

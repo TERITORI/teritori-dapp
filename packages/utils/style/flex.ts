@@ -5,6 +5,14 @@ export const flex = StyleSheet.create({
     flex: 1,
   },
 
+  flexRow: {
+    flexDirection: "row",
+  },
+
+  flexCol: {
+    flexDirection: "column",
+  },
+
   alignCenter: {
     alignItems: "center",
     alignSelf: "center",

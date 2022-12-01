@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+
 import {
   NFTsRequest,
   Sort,
@@ -8,13 +9,11 @@ import {
   TeritoriNftClient,
   TeritoriNftQueryClient,
 } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
+import { THE_RIOT_COLLECTION_ADDRESS } from "../../screens/RiotGame/settings";
 import { useContractClients } from "../useContractClients";
 import { useNFTs } from "../useNFTs";
 import useSelectedWallet from "../useSelectedWallet";
 import { Wallet } from "./../../context/WalletsProvider/wallet";
-
-const THE_RIOT_COLLECTION_ADDRESS =
-  process.env.THE_RIOT_COLLECTION_ADDRESS || "";
 
 export const useRippers = () => {
   const selectedWallet = useSelectedWallet();

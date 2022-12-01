@@ -6,6 +6,10 @@ import {
   TeritoriSquadStakingClient,
   TeritoriSquadStakingQueryClient,
 } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
+import {
+  SQUAD_STAKE_COEF,
+  THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
+} from "../../screens/RiotGame/settings";
 import { defaultExecuteFee } from "../../utils/fee";
 import {
   buildApproveMsg,
@@ -23,9 +27,6 @@ import {
   GetConfigResponse,
   GetLastStakeTimeResponse,
 } from "./../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
-
-const THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS =
-  process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS || "";
 
 export const useSquadStaking = () => {
   const [squadStakingConfig, setSquadStakingConfig] =
@@ -124,7 +125,6 @@ export const useSquadStaking = () => {
     rippers: NSRiotGame.RipperDetail[],
     squadStakingConfig: GetConfigResponse
   ) => {
-    const COEF = 0.125;
     const bonusMultiplier = squadStakingConfig.bonus_multiplier;
 
     let duration = 0;
@@ -133,7 +133,10 @@ export const useSquadStaking = () => {
     if (ripperCount > 0) {
       // Get base stamina from Squad leader at slot 0
       const baseStamina = getRipperTraitValue(rippers[0], "Stamina");
-      duration = baseStamina * COEF * (bonusMultiplier[ripperCount - 1] / 100);
+      duration =
+        baseStamina *
+        SQUAD_STAKE_COEF *
+        (bonusMultiplier[ripperCount - 1] / 100);
     }
 
     return duration * 60 * 60 * 1000; // Convert to milliseconds

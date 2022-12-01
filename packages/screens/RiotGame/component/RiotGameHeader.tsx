@@ -63,7 +63,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: "rarity",
     name: "Rarity",
-    route: "RiotGame",
+    route: "RiotGameRarity",
     iconSVG: diamondSVG,
   },
   {

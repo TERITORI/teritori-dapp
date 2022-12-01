@@ -28,8 +28,7 @@ import {
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { headerHeight } from "../../../utils/style/layout";
-import { spacing } from "../../../utils/style/spacing";
+import { headerHeight, layout } from "../../../utils/style/layout";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStat } from "./RipperStat";
 import { SimpleButton } from "./SimpleButton";
@@ -110,7 +109,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           {selectedRipperDetail?.name || "Please select a Ripper"}
         </BrandText>
 
-        <ScrollView style={spacing.w_100} showsVerticalScrollIndicator={false}>
+        <ScrollView style={layout.w_100} showsVerticalScrollIndicator={false}>
           <Row breakpoint={992}>
             <View style={styles.leftCol}>
               <View style={styles.leftColContent}>

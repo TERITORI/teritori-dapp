@@ -13,11 +13,11 @@ export const fullSidebarWidth = 210;
 const BASE_SIZE = 8;
 
 export const spacing = {
-  w_100: { width: "100%" },
-
   p_1: { padding: BASE_SIZE }, // 8
   p_2: { padding: BASE_SIZE * 2 }, // 16
   p_5: { padding: BASE_SIZE * 5 }, // 40
+
+  pl_2: { padding: BASE_SIZE * 2 }, // 16
 
   ph_5: { paddingHorizontal: BASE_SIZE * 5 }, // 40
 
@@ -30,11 +30,11 @@ export const spacing = {
   mt_3: { marginTop: BASE_SIZE * 3 }, // 24
   mt_5: { marginTop: BASE_SIZE * 5 }, // 40
 
-  ml_1: { marginRight: BASE_SIZE }, // 8
-  ml_2: { marginRight: BASE_SIZE * 2 }, // 16
-  ml_3: { marginRight: BASE_SIZE * 3 }, // 18
-  ml_4: { marginRight: BASE_SIZE * 4 }, // 32
-  ml_5: { marginRight: BASE_SIZE * 5 }, // 40
+  ml_1: { marginLeft: BASE_SIZE }, // 8
+  ml_2: { marginLeft: BASE_SIZE * 2 }, // 16
+  ml_3: { marginLeft: BASE_SIZE * 3 }, // 18
+  ml_4: { marginLeft: BASE_SIZE * 4 }, // 32
+  ml_5: { marginLeft: BASE_SIZE * 5 }, // 40
 
   mr_1: { marginRight: BASE_SIZE }, // 8
   mr_2: { marginRight: BASE_SIZE * 2 }, // 16

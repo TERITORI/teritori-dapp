@@ -14,7 +14,7 @@ import { SpacerColumn } from "../../../components/spacer";
 import { mineShaftColor, neutral77 } from "../../../utils/style/colors";
 import { flex } from "../../../utils/style/flex";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
-import { spacing } from "../../../utils/style/spacing";
+import { layout } from "../../../utils/style/layout";
 
 type BreedingModalProps = {
   visible?: boolean;
@@ -48,7 +48,7 @@ export const BreedingModal: React.FC<BreedingModalProps> = ({
 
           <SpacerColumn size={2} />
 
-          <Row style={[spacing.w_100, flex.justifyContentBetween]}>
+          <Row style={[layout.w_100, flex.justifyContentBetween]}>
             <SocialButton
               noBrokenCorners={false}
               iconSvg={discordSVG}
