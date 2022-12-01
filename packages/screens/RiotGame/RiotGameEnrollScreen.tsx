@@ -101,13 +101,16 @@ export const RiotGameEnrollScreen = () => {
     try {
       const tx = await squadStake(selectedRippers);
       console.debug(tx);
-      navigation.navigate("RiotGameFight");
+
+      // HACK: wait a little bit before redirection to be sure that we have passed the fight start time
+      setTimeout(() => {
+        navigation.navigate("RiotGameFight");
+      }, 2000);
     } catch (e: any) {
       setToastError({
         title: "Transaction Error",
         message: e.message,
       });
-    } finally {
       setIsJoiningFight(false);
     }
   };
@@ -155,8 +158,9 @@ export const RiotGameEnrollScreen = () => {
             scrollEnabled={false}
             data={RIPPER_SLOTS}
             numColumns={3}
+            keyExtractor={(item, index) => "" + index}
             renderItem={({ item: slotId }) => (
-              <View key={slotId} style={styles.ripperSlot}>
+              <View style={styles.ripperSlot}>
                 {selectedRippers[slotId] && (
                   <Pressable
                     style={styles.clearIcon}
