@@ -1,22 +1,9 @@
-import { QueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-
-import {
-  getNonSigningCosmWasmClient,
-  getSigningCosmWasmClient,
-} from "../utils/keplr";
-import useSelectedWallet from "./useSelectedWallet";
-
-import {
-  TeritoriNftClient,
-  TeritoriNftQueryClient,
-} from "../contracts-clients/teritori-nft/TeritoriNft.client";
 
 import {
   TeritoriNftMinterClient,
   TeritoriNftMinterQueryClient,
 } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
-
 import {
   TeritoriNftStakingClient,
   TeritoriNftStakingQueryClient,
@@ -25,11 +12,19 @@ import {
   TeritoriNftVaultClient,
   TeritoriNftVaultQueryClient,
 } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-
+import {
+  TeritoriNftClient,
+  TeritoriNftQueryClient,
+} from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import {
   TeritoriSquadStakingClient,
   TeritoriSquadStakingQueryClient,
 } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
+import {
+  getNonSigningCosmWasmClient,
+  getSigningCosmWasmClient,
+} from "../utils/keplr";
+import useSelectedWallet from "./useSelectedWallet";
 
 type ContractName =
   | "teritori-nft"

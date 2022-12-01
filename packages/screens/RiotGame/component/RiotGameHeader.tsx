@@ -1,6 +1,6 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SvgProps } from "react-native-svg";
 
@@ -36,7 +36,8 @@ import { spacing } from "../../../utils/style/spacing";
 type MenuItem = {
   id: string;
   name: string;
-  route: keyof RootStackParamList;
+  route?: keyof RootStackParamList;
+  externalRoute?: string;
   iconSVG: React.FC<SvgProps>;
 };
 
@@ -63,7 +64,8 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: "rarity",
     name: "Rarity",
-    route: "RiotGameRarity",
+    externalRoute:
+      "https://tori-live.io/allnfts.php?collid=tori1j08452mqwadp8xu25kn9rleyl2gufgfjnv0sn8dvynynakkjukcq3vtuv2",
     iconSVG: diamondSVG,
   },
   {
@@ -91,8 +93,11 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
   const { name: routeName } = useRoute();
 
   const onMenuItemClick = (item: MenuItem) => {
-    // FIXME: fix typescript here
-    navigation.navigate(item.route as any);
+    if (item.externalRoute) {
+      Linking.openURL(item.externalRoute);
+    } else if (item.route) {
+      navigation.navigate(item.route as any);
+    }
   };
 
   return (
