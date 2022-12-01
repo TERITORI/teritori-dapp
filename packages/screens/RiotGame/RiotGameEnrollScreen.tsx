@@ -22,12 +22,11 @@ import {
   fontSemibold28,
   fontMedium14,
 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { spacing } from "../../utils/style/spacing";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalOld";
 import { SimpleButton } from "./component/SimpleButton";
-import { spacing } from "../../utils/style/spacing";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
@@ -157,7 +156,7 @@ export const RiotGameEnrollScreen = () => {
             data={RIPPER_SLOTS}
             numColumns={3}
             renderItem={({ item: slotId }) => (
-              <View style={styles.ripperSlot}>
+              <View key={slotId} style={styles.ripperSlot}>
                 {selectedRippers[slotId] && (
                   <Pressable
                     style={styles.clearIcon}
@@ -213,7 +212,7 @@ export const RiotGameEnrollScreen = () => {
 
       <SimpleButton
         onPress={joinTheFight}
-        containerStyle={layout.mv_5}
+        containerStyle={spacing.mv_5}
         title="Join the Fight"
         loading={isJoiningFight}
       />

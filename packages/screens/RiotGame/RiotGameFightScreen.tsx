@@ -210,6 +210,7 @@ export const RiotGameFightScreen = () => {
                 data={stakedRippers}
                 numColumns={3}
                 scrollEnabled={false}
+                keyExtractor={(ripper) => ripper.id}
                 renderItem={({ item: ripper, index }) => {
                   const isCenter = (index - 1) % 3 === 0;
 

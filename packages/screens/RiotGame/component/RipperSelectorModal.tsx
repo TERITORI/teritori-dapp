@@ -136,6 +136,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   renderItem={({ item: ripper, index }) => {
                     return (
                       <TouchableOpacity
+                        key={ripper.id}
                         activeOpacity={0.6}
                         onPress={() => selectRipper(ripper)}
                       >

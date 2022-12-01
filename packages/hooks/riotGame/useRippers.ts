@@ -13,7 +13,6 @@ import { THE_RIOT_COLLECTION_ADDRESS } from "../../screens/RiotGame/settings";
 import { useContractClients } from "../useContractClients";
 import { useNFTs } from "../useNFTs";
 import useSelectedWallet from "../useSelectedWallet";
-import { Wallet } from "./../../context/WalletsProvider/wallet";
 
 export const useRippers = () => {
   const selectedWallet = useSelectedWallet();
@@ -24,12 +23,7 @@ export const useRippers = () => {
   }: {
     client: TeritoriNftClient;
     queryClient: TeritoriNftQueryClient;
-    selectedWallet: Wallet | undefined;
-  } = useContractClients(
-    THE_RIOT_COLLECTION_ADDRESS,
-    TeritoriNftClient,
-    TeritoriNftQueryClient
-  );
+  } = useContractClients(THE_RIOT_COLLECTION_ADDRESS, "teritori-nft");
 
   const myRippersRequest: NFTsRequest = {
     collectionId: `tori-${THE_RIOT_COLLECTION_ADDRESS}`,

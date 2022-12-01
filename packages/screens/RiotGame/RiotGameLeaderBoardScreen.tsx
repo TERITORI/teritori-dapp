@@ -55,6 +55,7 @@ export const RiotGameLeaderboardScreen = () => {
 
       <FlatList
         data={Array(20).fill(0)}
+        keyExtractor={(item, index) => " " + index}
         renderItem={({ item, index }) => {
           return (
             <Row style={styles.rowItem}>

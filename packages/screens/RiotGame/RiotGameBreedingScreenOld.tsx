@@ -86,6 +86,7 @@ export const RiotGameBreedingScreen = () => {
           <FlatList
             data={myAvailableRippers}
             numColumns={3}
+            keyExtractor={(ripper) => ripper.id}
             renderItem={({ item: ripper, index }) => {
               return (
                 <TertiaryBox style={{ margin: 10 }} width={172} height={148}>

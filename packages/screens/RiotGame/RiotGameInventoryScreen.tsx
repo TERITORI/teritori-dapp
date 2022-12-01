@@ -54,6 +54,7 @@ export const RiotGameInventoryScreen = () => {
           <FlatList
             data={Array(9).fill(0)}
             numColumns={3}
+            keyExtractor={(item, index) => "" + index}
             renderItem={({ item, index }) => {
               return (
                 <TertiaryBox style={spacing.m_1} width={150} height={150}>
@@ -82,6 +83,7 @@ export const RiotGameInventoryScreen = () => {
           <FlatList
             data={myAvailableRippers}
             numColumns={3}
+            keyExtractor={(ripper) => ripper.id}
             renderItem={({ item: ripper }) => {
               return (
                 <TertiaryBox style={spacing.m_1} width={150} height={150}>

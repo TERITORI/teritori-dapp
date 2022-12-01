@@ -39,6 +39,7 @@ export const FightProgressBar: React.FC<FightProgressBarProps> = ({
         data={Array(TOTAL_CELLS).fill(0)}
         scrollEnabled={false}
         numColumns={TOTAL_CELLS}
+        keyExtractor={(item, index) => "" + index}
         renderItem={({ index }) => {
           let bgColor;
           if (index < currentCellIndex) {

@@ -3,6 +3,7 @@ import {
   FlatList,
   Image,
   StyleSheet,
+  TouchableOpacity,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -10,10 +11,12 @@ import {
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import { BrandText } from "../../components/BrandText";
 import { SpacerColumn } from "../../components/spacer";
+import { useAppNavigation } from "../../utils/navigation";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { GameContentView } from "./component/GameContentView";
 
 export const RiotGameMemoriesScreen = () => {
+  const navigation = useAppNavigation();
   const { width } = useWindowDimensions();
 
   let numCol = 3;
@@ -29,10 +32,12 @@ export const RiotGameMemoriesScreen = () => {
       <View style={styles.contentContainer}>
         {/* Current season */}
         <BrandText style={fontMedium32}>The R!ot Season I</BrandText>
-        <Image
-          style={{ width: 516, height: 276 }}
-          source={defaultSendToFightPNG}
-        />
+        <TouchableOpacity onPress={() => navigation.navigate("RiotGameEnroll")}>
+          <Image
+            style={{ width: 516, height: 276 }}
+            source={defaultSendToFightPNG}
+          />
+        </TouchableOpacity>
 
         <SpacerColumn size={8} />
 
@@ -42,9 +47,10 @@ export const RiotGameMemoriesScreen = () => {
           data={Array(7).fill(0)}
           numColumns={numCol}
           key={numCol}
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             return (
               <Image
+                key={index}
                 style={{
                   width: 360,
                   height: 190,

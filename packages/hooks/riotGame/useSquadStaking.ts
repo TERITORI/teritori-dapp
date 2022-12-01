@@ -57,8 +57,7 @@ export const useSquadStaking = () => {
     queryClient: TeritoriSquadStakingQueryClient;
   } = useContractClients(
     THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
-    TeritoriSquadStakingClient,
-    TeritoriSquadStakingQueryClient
+    "teritori-squad-staking"
   );
 
   const squadStake = async (selectedRippers: NSRiotGame.RipperDetail[]) => {
