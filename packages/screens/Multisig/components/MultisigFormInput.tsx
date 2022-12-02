@@ -22,14 +22,16 @@ import { layout } from "../../../utils/style/layout";
 
 interface MultisigFormInputProps<T> extends TextInputCustomProps<T> {
   isCopiable?: boolean;
-  isAmount?: boolean;
+  tiker?: string;
   isDisabled?: boolean;
+  isOverrideDisabledBorder?: boolean;
 }
 
 export const MultisigFormInput = <T extends FieldValues>({
   isCopiable,
-  isAmount,
+  tiker,
   isDisabled,
+  isOverrideDisabledBorder,
   ...restProps
 }: MultisigFormInputProps<T>) => {
   // variables
@@ -40,13 +42,16 @@ export const MultisigFormInput = <T extends FieldValues>({
   });
 
   // functions
-  const onPressCopy = () => copyToClipboard(value);
+  const onPressCopy = () =>
+    copyToClipboard(value || restProps.defaultValue || "");
 
   // returns
   return (
     <TextInputCustom
       variant="noCropBorder"
-      mainContainerStyle={isDisabled ? undefined : styles.borderStyle}
+      mainContainerStyle={
+        isDisabled && !isOverrideDisabledBorder ? undefined : styles.borderStyle
+      }
       labelStyle={{ color: neutralA3 }}
       disabled={isDisabled}
       placeholderTextColor={neutral55}
@@ -60,11 +65,16 @@ export const MultisigFormInput = <T extends FieldValues>({
           </Pressable>
         </>
       )}
-      {isAmount && (
+      {tiker && (
         <>
           <SpacerRow size={3} />
-          <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-            TORI
+          <BrandText
+            style={[
+              fontSemibold14,
+              { color: neutral77, textTransform: "uppercase" },
+            ]}
+          >
+            {tiker}
           </BrandText>
         </>
       )}

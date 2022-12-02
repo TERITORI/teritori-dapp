@@ -121,7 +121,7 @@ export const MultisigTranscationDelegateForm: React.FC<
               name="amount"
               rules={{ required: true, pattern: patternOnlyNumbers }}
               isDisabled={isDisabled}
-              isAmount
+              tiker="TORI"
               placeHolder="0.00"
             />
             <SpacerColumn size={2.5} />

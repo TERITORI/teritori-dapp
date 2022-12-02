@@ -5,7 +5,7 @@ export type CreateMultisigWalletFormType = {
 };
 
 export type MultisigLegacyFormType = {
-  receiptAddress: string;
+  multisigAddress: string;
   membersAddress: { address: string }[];
   assets: string;
 };

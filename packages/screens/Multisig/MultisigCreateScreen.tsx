@@ -13,6 +13,9 @@ import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
 import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useMultisigContext } from "../../context/MultisigReducer";
+import { useCreateMultisig } from "../../hooks/useCreateMultisig";
+import { useMultisigHelpers } from "../../hooks/useMultisigHelpers";
 import {
   patternOnlyNumbers,
   validateAddress,
@@ -35,34 +38,65 @@ import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigSection } from "./components/MultisigSection";
 import { CreateMultisigWalletFormType } from "./types";
 
+const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
+
 export const MultisigCreateScreen = () => {
   // variables
   const { control, handleSubmit, watch } =
     useForm<CreateMultisigWalletFormType>();
-  const [addressIndexes, setAddressIndexes] = useState<number[]>([0, 1]);
-  const [isLoadingProcessRunning, setIsLoadingProcessRunning] =
-    useState<boolean>(false);
+  const [addressIndexes, setAddressIndexes] = useState([
+    emptyPubKeyGroup(),
+    emptyPubKeyGroup(),
+  ]);
   const navigation = useAppNavigation();
-
   const signatureRequiredValue = watch("signatureRequired");
 
+  const { getPubkeyFromNode } = useMultisigHelpers();
+  const { mutate, isLoading, data } = useCreateMultisig();
+  const { state } = useMultisigContext();
+
   // functions
-  const removeAddressField = (id: number) => {
-    if (addressIndexes.length > 1) {
-      const copyIndex = [...addressIndexes].filter((i) => i !== id);
-      setAddressIndexes(copyIndex);
-    }
+  const removeAddressField = (index: number) => {
+    const copyIndexes = [...addressIndexes];
+    copyIndexes.splice(index, 1);
+    setAddressIndexes(copyIndexes);
   };
 
   const addAddressField = () => {
-    setAddressIndexes([...addressIndexes, Math.floor(Math.random() * 200000)]);
+    setAddressIndexes([...addressIndexes, emptyPubKeyGroup()]);
   };
 
-  const onSubmit = () => {
-    setIsLoadingProcessRunning(true);
-    setTimeout(() => {
-      setIsLoadingProcessRunning(false);
-    }, 3000);
+  const onSubmit = ({ signatureRequired }: CreateMultisigWalletFormType) => {
+    if (state.chain?.chainId && state.chain?.addressPrefix) {
+      const compressedPubkeys = addressIndexes.map(
+        (item) => item.compressedPubkey
+      );
+
+      mutate({
+        compressedPubkeys,
+        chainId: state.chain.chainId,
+        addressPrefix: state.chain?.addressPrefix,
+        threshold: parseInt(signatureRequired, 10),
+      });
+    }
+  };
+
+  const onAddressChange = async (index: number, value: string) => {
+    const resValAddress = validateAddress(value);
+    if (resValAddress !== true) return resValAddress;
+    if (addressIndexes.find((a, i) => a.address === value && i !== index))
+      return "This address is already used in this form.";
+
+    try {
+      const tempPubkeys = [...addressIndexes];
+      const pubkey = await getPubkeyFromNode(value);
+      tempPubkeys[index].address = value;
+      tempPubkeys[index].compressedPubkey = pubkey;
+      setAddressIndexes(tempPubkeys);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      return error.message;
+    }
   };
 
   // returns
@@ -90,22 +124,25 @@ export const MultisigCreateScreen = () => {
             </BrandText>
           </MultisigSection>
           <SpacerColumn size={3} />
-          {addressIndexes.map((id, index) => (
-            <View style={styles.inputContainer} key={id.toString()}>
+          {addressIndexes.map((_, index) => (
+            <View style={styles.inputContainer} key={index.toString()}>
               <TextInputCustom<CreateMultisigWalletFormType>
                 control={control}
                 name={`addresses.${index}.address`}
                 variant="noCropBorder"
                 label={"Address #" + (index + 1)}
                 isAsterickSign
-                rules={{ required: true, validate: validateAddress }}
+                rules={{
+                  required: true,
+                  validate: (value) => onAddressChange(index, value),
+                }}
                 placeHolder="Account address"
                 iconSVG={walletInputSVG}
               >
                 {addressIndexes.length > 2 && (
                   <Pressable
                     style={styles.trashContainer}
-                    onPress={() => removeAddressField(id)}
+                    onPress={() => removeAddressField(index)}
                   >
                     <SVG source={trashSVG} width={12} height={12} />
                   </Pressable>
@@ -164,7 +201,7 @@ export const MultisigCreateScreen = () => {
           </View>
           <BrandText style={[fontSemibold14, { color: neutral77 }]}>
             This means that each transaction this multisig makes will require{" "}
-            {signatureRequiredValue || 2} of the members to sign it for it to be
+            {signatureRequiredValue || 0} of the members to sign it for it to be
             accepted by the validators.
           </BrandText>
           <SpacerColumn size={2.5} />
@@ -173,13 +210,16 @@ export const MultisigCreateScreen = () => {
               size="XL"
               text="Create Multisig"
               onPress={handleSubmit(onSubmit)}
+              loader
             />
           </View>
         </View>
       </ScrollView>
       <CheckLoadingModal
-        isVisible={isLoadingProcessRunning}
-        onComplete={() => navigation.navigate("MultisigLegacy")}
+        isVisible={isLoading}
+        onComplete={() => {
+          data && navigation.navigate("MultisigLegacy", { address: data });
+        }}
       />
     </ScreenContainer>
   );

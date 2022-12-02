@@ -2,7 +2,9 @@ import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   StyleProp,
+  StyleSheet,
   TouchableOpacity,
+  View,
   ViewStyle,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
@@ -12,7 +14,11 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { primaryColor, primaryTextColor } from "../../utils/style/colors";
+import {
+  primaryColor,
+  primaryTextColor,
+  secondaryColor,
+} from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -97,23 +103,35 @@ export const PrimaryButton: React.FC<{
           />
         ) : null}
 
-        {loader && isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <BrandText
-            style={[
-              fontSemibold14,
-              {
-                color: primaryTextColor,
-                textAlign: "center",
-              },
-            ]}
-          >
-            {text}
-          </BrandText>
-        )}
+        <BrandText
+          style={[
+            fontSemibold14,
+            {
+              color: primaryTextColor,
+              textAlign: "center",
+            },
+          ]}
+        >
+          {text}
+        </BrandText>
         {!isLoading && RightComponent && <RightComponent />}
+        {loader && isLoading && (
+          <View style={styles.loader}>
+            <ActivityIndicator color={secondaryColor} />
+          </View>
+        )}
       </SecondaryBox>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  loader: {
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    backgroundColor: primaryColor,
+    width: "90%",
+    height: "100%",
+  },
+});

@@ -9,6 +9,7 @@ import {
   FieldValues,
 } from "react-hook-form";
 import {
+  ActivityIndicator,
   NativeSyntheticEvent,
   Pressable,
   StyleProp,
@@ -65,6 +66,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   hideLabel?: boolean;
   errorStyle?: ViewStyle;
   valueModifier?: (value: string) => string;
+  isLoading?: boolean;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -94,6 +96,7 @@ export const TextInputCustom = <T extends FieldValues>({
   hideLabel,
   valueModifier,
   errorStyle,
+  isLoading,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -220,7 +223,11 @@ export const TextInputCustom = <T extends FieldValues>({
             />
           </View>
 
-          <>{children}</>
+          {isLoading ? (
+            <ActivityIndicator color={secondaryColor} />
+          ) : (
+            <>{children}</>
+          )}
         </View>
       </TertiaryBox>
       <ErrorText style={errorStyle}>{error}</ErrorText>
