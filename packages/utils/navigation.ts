@@ -23,6 +23,10 @@ export type RootStackParamList = {
   Collection: { id: string };
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
+  Feed: undefined;
+  FeedNewPost: undefined;
+  FeedPostView: { id: string };
+  OrganizationPublicProfile: { id: string };
 
   RiotGame: undefined;
   RiotGameEnroll: undefined;
@@ -86,6 +90,10 @@ const navConfig: {
     Collection: "collection/:id",
     CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",
+    Feed: "feed",
+    FeedNewPost: "feed/new",
+    FeedPostView: "feed/post/:id",
+    OrganizationPublicProfile: "org/:id",
     // ==== Staking
     Staking: "staking",
     // ==== ComingSoon

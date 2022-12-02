@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useMemo, useCallback } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -15,6 +15,7 @@ import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
 import { useMaxResolution } from "../hooks/useMaxResolution";
 import { NetworkInfo, NetworkKind } from "../networks";
 import {
+  getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
@@ -28,7 +29,7 @@ import { Sidebar } from "./navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
-  footerChildren?: JSX.Element;
+  footerChildren?: React.ReactNode;
   headerStyle?: StyleProp<ViewStyle>;
   hideSidebar?: boolean;
   customSidebar?: React.ReactNode;
@@ -38,6 +39,10 @@ export const ScreenContainer: React.FC<{
   smallMargin?: boolean;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
+  fixedFooterChildren?: React.ReactNode;
+  responsive?: boolean;
+  onBackPress?: () => void;
+  maxWidth?: number;
 }> = ({
   children,
   headerChildren,
@@ -49,6 +54,10 @@ export const ScreenContainer: React.FC<{
   fullWidth,
   smallMargin,
   customSidebar,
+  fixedFooterChildren,
+  responsive,
+  onBackPress,
+  maxWidth,
   forceNetworkId,
   forceNetworkKind,
 }) => {
@@ -56,11 +65,20 @@ export const ScreenContainer: React.FC<{
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
+  const { width: screenWidth } = useMaxResolution({ responsive, noMargin });
+
+  const calculatedWidth = useMemo(
+    () => (maxWidth ? Math.min(maxWidth, screenWidth) : screenWidth),
+    [screenWidth, maxWidth]
+  );
+
   const marginStyle = hasMargin && {
-    marginHorizontal: screenContainerContentMarginHorizontal,
+    marginHorizontal: responsive
+      ? getResponsiveScreenContainerMarginHorizontal(calculatedWidth)
+      : screenContainerContentMarginHorizontal,
   };
-  const { width: maxWidth } = useMaxResolution();
-  const width = fullWidth ? "100%" : maxWidth;
+
+  const width = fullWidth ? "100%" : calculatedWidth;
 
   useForceNetworkSelection(forceNetworkId);
   useForceNetworkKind(forceNetworkKind);
@@ -90,7 +108,11 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header style={headerStyle} smallMargin={smallMargin}>
+          <Header
+            style={headerStyle}
+            smallMargin={smallMargin}
+            onBackPress={onBackPress}
+          >
             {headerChildren}
           </Header>
 
@@ -126,6 +148,13 @@ export const ScreenContainer: React.FC<{
                   >
                     {children}
                     {footerChildren ? footerChildren : <Footer />}
+                  </View>
+                )}
+                {fixedFooterChildren && (
+                  <View style={{ width: "100%" }}>
+                    <View style={[{ width, alignSelf: "center" }, marginStyle]}>
+                      {fixedFooterChildren}
+                    </View>
                   </View>
                 )}
               </SelectedNetworkGate>

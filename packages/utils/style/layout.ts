@@ -12,6 +12,18 @@ export const fullSidebarWidth = 210;
 
 const BASE_SIZE = 8;
 
+export const getResponsiveScreenContainerMarginHorizontal = (width: number) => {
+  if (width >= 992) {
+    return 140;
+  } else if (width >= 768) {
+    return 80;
+  } else if (width >= 576) {
+    return 60;
+  } else {
+    return 40;
+  }
+};
+
 export const layout = {
   padding_x1: BASE_SIZE,
   // 2
@@ -21,6 +33,10 @@ export const layout = {
   // 4
   get padding_x0_5() {
     return this.padding_x1 * 0.5;
+  },
+  // 6
+  get padding_x0_75() {
+    return this.padding_x1 * 0.75;
   },
   // 12
   get padding_x1_5() {
