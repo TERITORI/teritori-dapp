@@ -6,7 +6,7 @@ TOKEN_PACKAGE=teritori-nft
 MINTER_PACKAGE=teritori-nft-minter
 STAKING_PACKAGE=teritori-nft-staking
 SQUAD_STAKING_PACKAGE=teritori-squad-staking
-
+BREEDING_PACKAGE=teritori-breeding
 
 NAME_SERVICE_REPO=teritori-name-service
 NAME_SERVICE_PACKAGE=teritori-name-service
@@ -134,6 +134,20 @@ $(CONTRACTS_CLIENTS_DIR)/$(MINTER_PACKAGE): node_modules
 		--schema $(TOKEN_REPO)/schema/nft-minter \
 		--out $@ \
 		--name $(MINTER_PACKAGE) \
+		--no-bundle
+	rm -fr $(TOKEN_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE): node_modules
+	rm -fr $(TOKEN_REPO)
+	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
+	cd $(TOKEN_REPO) && git checkout 89a891872d870615705e265b1fdddb1ea4a5a8c2
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(TOKEN_REPO)/schema/nft-breeding \
+		--out $@ \
+		--name $(BREEDING_PACKAGE) \
 		--no-bundle
 	rm -fr $(TOKEN_REPO)
 
