@@ -2,6 +2,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
+import { FeedScreen } from "../../screens/Feed/FeedScreen";
+import { FeedNewPostScreen } from "../../screens/FeedNewPost/FeedNewPostScreen";
+import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
@@ -21,6 +24,7 @@ import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeader
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
+import { OrganizationPublicProfileScreen } from "../../screens/OrganizationPublicProfile/OrganizationPublicProfileScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";
@@ -31,7 +35,7 @@ import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsS
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const screenTitle = (title: string) => "Teritori - " + title;
+export const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
@@ -209,6 +213,26 @@ export const Navigator: React.FC = () => {
         name="Settings"
         component={SettingsScreen}
         options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="FeedNewPost"
+        component={FeedNewPostScreen}
+        options={{ header: () => null, title: screenTitle("New Post") }}
+      />
+      <Stack.Screen
+        name="OrganizationPublicProfile"
+        component={OrganizationPublicProfileScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="FeedPostView"
+        component={FeedPostViewScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="Feed"
+        component={FeedScreen}
+        options={{ header: () => null, title: screenTitle("Feed") }}
       />
     </Stack.Navigator>
   );
