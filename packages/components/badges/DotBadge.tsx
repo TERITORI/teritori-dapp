@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { neutral17, purpleDefault } from "../../utils/style/colors";
+import { neutral00, purpleDefault } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -19,7 +19,7 @@ export const DotBadge: React.FC<{
           alignItems: "center",
           height: 26,
           paddingHorizontal: layout.padding_x1_5,
-          backgroundColor: neutral17,
+          backgroundColor: neutral00,
           borderRadius: 999,
         },
         style,

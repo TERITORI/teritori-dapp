@@ -1,0 +1,68 @@
+  
+   .public-DraftEditor-content {
+    color: white;
+    line-height: 20px;
+    font-size: 14px;
+    font-family: Exo_500Medium;
+  }
+
+  .public-DraftEditorPlaceholder-root {
+    color: #777777;
+    line-height: 20px;
+    font-size: 14px;
+    font-family: Exo_500Medium;
+  }
+
+  
+
+  .DraftEditor-root ~ div {
+    left: 50%;
+    transform: translate(-50%) scale(0);
+    position: absolute;
+    border: 1px solid #333333;
+    background-color: #171717;
+    border-radius: 6px;
+    box-shadow: none !important;
+    z-index: 2;
+    box-sizing: border-box;
+  }
+  
+  .DraftEditor-root ~ div:after, .DraftEditor-root ~ div:before {
+    display: none !important;
+  }
+  
+  .DraftEditor-root ~ div:after {
+    display: none !important;
+  }
+  
+  .DraftEditor-root ~ div:before {
+    display: none !important;
+  }
+
+  
+
+  .DraftEditor-root ~ div  button {
+    background: #333333;
+    border-radius: 4px;
+    color: white;
+    margin: 4px 2px;
+  }
+
+  .DraftEditor-root ~ div  button:first-child {
+    margin-left: 4px;
+  }
+
+  .DraftEditor-root ~ div  button:last-child {
+    margin-right:  4px;
+  }
+
+
+  .DraftEditor-root ~ div  button svg {
+    fill: white !important;
+  }
+ 
+  .DraftEditor-root ~ div button:hover,.DraftEditor-root ~ div button:hover svg {
+    fill:  #333333 !important;
+  }
+  
+  

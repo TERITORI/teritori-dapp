@@ -182,12 +182,7 @@ export const DisclaimerPopup: React.FC<DisclaimerPopupProps> = ({
                 justifyContent: "center",
               }}
             >
-              <PrimaryButton
-                size="M"
-                text="Close"
-                style={{}}
-                onPress={onClose}
-              />
+              <PrimaryButton size="M" text="Close" onPress={onClose} />
             </View>
           </View>
         </>

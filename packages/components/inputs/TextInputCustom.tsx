@@ -22,8 +22,19 @@ import {
 } from "react-native";
 
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
-import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
-import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
+import {
+  additionalRed,
+  neutral22,
+  neutral77,
+  secondaryColor,
+} from "../../utils/style/colors";
+import {
+  fontMedium10,
+  fontSemibold13,
+  fontSemibold14,
+  fontSemibold20,
+} from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -47,10 +58,38 @@ export interface TextInputCustomProps<T extends FieldValues>
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
-  subtitle?: React.ReactElement;
+  subtitle?: string;
   labelStyle?: TextStyle;
+  containerStyle?: ViewStyle;
+  boxMainContainerStyle?: ViewStyle;
   noBrokenCorners?: boolean;
 }
+
+export const Label: React.FC<{
+  children: string;
+  style?: TextStyle;
+  isRequired?: boolean;
+}> = ({ children, style, isRequired }) => (
+  <View
+    style={{
+      flexDirection: "row",
+    }}
+  >
+    <BrandText style={[styles.labelText, fontSemibold14, style]}>
+      {children}
+    </BrandText>
+    {!!isRequired && (
+      <BrandText
+        style={[
+          fontSemibold20,
+          { color: additionalRed, marginLeft: layout.padding_x0_5 },
+        ]}
+      >
+        *
+      </BrandText>
+    )}
+  </View>
+);
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const TextInputCustom = <T extends FieldValues>({
@@ -72,6 +111,8 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
+  containerStyle,
+  boxMainContainerStyle,
   noBrokenCorners,
   ...restProps
 }: TextInputCustomProps<T>) => {
@@ -145,14 +186,16 @@ export const TextInputCustom = <T extends FieldValues>({
   };
 
   return (
-    <>
+    <View style={containerStyle}>
       {variant === "labelOutside" && (
         <>
           <View style={styles.rowEnd}>
-            <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
+            <Label style={labelStyle} isRequired={!!rules?.required}>
               {label}
-            </BrandText>
-            {subtitle}
+            </Label>
+            {subtitle && (
+              <BrandText style={fontSemibold13}>{subtitle}</BrandText>
+            )}
           </View>
           <SpacerColumn size={1} />
         </>
@@ -161,7 +204,7 @@ export const TextInputCustom = <T extends FieldValues>({
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
-        mainContainerStyle={styles.mainContainer}
+        mainContainerStyle={[styles.mainContainer, boxMainContainerStyle]}
         width={width}
         fullWidth={!width}
         height={height}
@@ -194,7 +237,7 @@ export const TextInputCustom = <T extends FieldValues>({
         </View>
       </TertiaryBox>
       <ErrorText>{error}</ErrorText>
-    </>
+    </View>
   );
 };
 
