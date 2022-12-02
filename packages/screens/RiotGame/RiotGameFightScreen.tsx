@@ -67,6 +67,8 @@ export const RiotGameFightScreen = () => {
   const { myAvailableRippers } = useRippers();
 
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
+  const [isUnstaking, setIsUnstaking] = useState(false);
+
   const {
     currentSquad,
     squadStakingConfig,
@@ -98,6 +100,8 @@ export const RiotGameFightScreen = () => {
     }
 
     try {
+      setIsUnstaking(true);
+
       await squadWithdraw(squadStakingClient);
       setCurrentSquad(undefined);
       setIsShowClaimModal(true);
@@ -106,6 +110,8 @@ export const RiotGameFightScreen = () => {
         title: "Error occurs",
         message: e.message,
       });
+    } finally {
+      setIsUnstaking(false);
     }
   };
 
@@ -122,7 +128,7 @@ export const RiotGameFightScreen = () => {
   };
 
   const onCloseClaimModal = () => {
-    navigation.navigate("RiotGameEnroll");
+    setIsShowClaimModal(false);
   };
 
   /*
@@ -266,10 +272,7 @@ export const RiotGameFightScreen = () => {
             </View>
 
             <View style={{ flex: 1, alignItems: "center" }}>
-              <Image
-                style={{ width: 200, height: 110 }}
-                source={countDownPNG}
-              />
+              <Image style={{ width: 152, height: 88 }} source={countDownPNG} />
             </View>
 
             <Row style={styles.actionsSection}>
@@ -279,13 +282,18 @@ export const RiotGameFightScreen = () => {
 
                   <SVG color={actionIconColor} source={unstakeSVG} />
                   <TouchableOpacity
-                    disabled={stakingState !== StakingState.COMPLETED}
+                    disabled={
+                      isUnstaking ||
+                      [StakingState.UNKNOWN, StakingState.ONGOING].includes(
+                        stakingState
+                      )
+                    }
                     onPress={unstake}
                   >
                     <BrandText
                       style={[styles.actionLabel, { color: actionLabelColor }]}
                     >
-                      Unstake
+                      {isUnstaking ? "Unstaking..." : "Unstake"}
                     </BrandText>
                   </TouchableOpacity>
 

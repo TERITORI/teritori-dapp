@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Image, StyleSheet } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
@@ -17,7 +17,6 @@ import { yellowDefault } from "../../utils/style/colors";
 import { flex } from "../../utils/style/flex";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { spacing } from "../../utils/style/spacing";
-import { BreedingModal } from "./component/BreedingModal";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
 
@@ -25,7 +24,6 @@ export const RiotGameInventoryScreen = () => {
   const navigation = useAppNavigation();
 
   const { myAvailableRippers } = useRippers();
-  const [isShowBreedingModal, setIsShowBreedingModal] = useState(false);
 
   const gotoBreeding = () => {
     navigation.navigate("RiotGameBreeding");
@@ -94,11 +92,6 @@ export const RiotGameInventoryScreen = () => {
           />
         </Col>
       </Row>
-
-      <BreedingModal
-        onClose={() => setIsShowBreedingModal(false)}
-        visible={isShowBreedingModal}
-      />
     </GameContentView>
   );
 };

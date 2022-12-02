@@ -50,10 +50,10 @@ type RipperSelectorModalProps = ModalProps & {
   onClose?(): void;
 };
 
-const THUMB_CONTAINER_WIDTH = 100;
-const THUMB_CONTAINER_HEIGHT = 88;
+const THUMB_CONTAINER_WIDTH = 120;
+const THUMB_CONTAINER_HEIGHT = 120;
 
-const THUMB_SIZE = 72;
+const THUMB_SIZE = 92;
 
 const RIPPER_IMAGE_SIZE = 300;
 
@@ -134,6 +134,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   style={{ height: 329 }}
                   showsVerticalScrollIndicator={false}
                   renderItem={({ item: ripper, index }) => {
+                    const isSelected = ripper.id === selectedRipper?.id;
+
                     return (
                       <TouchableOpacity
                         key={ripper.id}
@@ -144,6 +146,12 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                           style={{ margin: 10 }}
                           width={THUMB_CONTAINER_WIDTH}
                           height={THUMB_CONTAINER_HEIGHT}
+                          mainContainerStyle={[
+                            isSelected && {
+                              borderColor: white,
+                              borderWidth: 1,
+                            },
+                          ]}
                         >
                           <RipperAvatar
                             size={THUMB_SIZE}
@@ -155,16 +163,13 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                     );
                   }}
                 />
-
-                <BrandText style={styles.showMoreText}>
-                  Scroll to show more...
-                </BrandText>
               </View>
 
               <View style={styles.btnGroup}>
                 <SVG color={yellowDefault} source={controllerSVG} />
                 <SpacerRow size={2} />
                 <SimpleButton
+                  disabled={!selectedRipperDetail}
                   onPress={confirmRipper}
                   size="small"
                   title={confirmButton}
@@ -237,11 +242,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   roundedContainer: {
-    width: RIPPER_IMAGE_SIZE - 2,
-    height: RIPPER_IMAGE_SIZE - 2,
+    width: RIPPER_IMAGE_SIZE - 4,
+    height: RIPPER_IMAGE_SIZE - 4,
     position: "absolute",
-    left: 1,
-    top: 1,
+    left: 2,
+    top: 2,
     borderRadius: 999,
     overflow: "hidden",
   },
@@ -273,11 +278,5 @@ const styles = StyleSheet.create({
     right: 10,
     top: 10,
     zIndex: 1,
-  },
-  showMoreText: {
-    alignSelf: "center",
-    marginTop: 8,
-    color: neutral67,
-    ...(fontMedium13 as object),
   },
 });

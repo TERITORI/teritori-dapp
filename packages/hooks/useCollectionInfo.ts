@@ -94,7 +94,7 @@ export const useCollectionInfo = (id: string) => {
         unitPrice = conf.nft_price_amount;
       }
 
-      console.log("unitPrice", unitPrice);
+      console.log("UnitPrice:", unitPrice);
 
       const info: CollectionInfo = {
         name: nftInfo.name,

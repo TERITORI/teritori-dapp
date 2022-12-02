@@ -149,6 +149,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
         </ScrollView>
 
         <View style={styles.section}>
+          <SpacerRow size={1.5} />
           <Separator horizontal color={neutral33} />
           <SpacerRow size={1.5} />
           <NetworkSelector />

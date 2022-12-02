@@ -215,6 +215,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 <SVG color={yellowDefault} source={controllerSVG} />
                 <SpacerRow size={2} />
                 <SimpleButton
+                  disabled={!selectedRipperDetail}
                   onPress={enrollRipper}
                   size="small"
                   title={confirmButton}

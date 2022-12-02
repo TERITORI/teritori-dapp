@@ -1,4 +1,4 @@
-import { toUtf8 } from "cosmwasm";
+import { Coin, toUtf8 } from "cosmwasm";
 import backpackSVG from "../../assets/game/backpack.svg";
 import coinStakeSVG from "../../assets/game/coin-stake.svg";
 import controllerSVG from "../../assets/game/controller.svg";
@@ -12,6 +12,7 @@ import nft4 from "../../assets/game/nft-4.png";
 import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
+import { THE_RIOT_BREEDING_CONTRACT_ADDRESS } from "../screens/RiotGame/settings";
 import { GameBgCardItem } from "../screens/RiotGame/types";
 
 const THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS =
@@ -88,7 +89,11 @@ export enum StakingState {
   COMPLETED = "COMPLETED",
 }
 
-export const buildApproveMsg = (sender: string, tokenId: string) => {
+export const buildApproveNFTMsg = (
+  sender: string,
+  spender: string,
+  tokenId: string
+) => {
   return {
     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
     value: {
@@ -96,13 +101,37 @@ export const buildApproveMsg = (sender: string, tokenId: string) => {
       msg: toUtf8(
         JSON.stringify({
           approve: {
-            spender: THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
+            spender,
             token_id: tokenId,
           },
         })
       ),
       contract: THE_RIOT_NFT_CONTRACT_ADDRESS,
       funds: [],
+    },
+  };
+};
+
+export const buildBreedingMsg = (
+  sender: string,
+  breedingPrice: Coin,
+  tokenId1: string,
+  tokeId2: string
+) => {
+  return {
+    typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+    value: {
+      sender,
+      msg: toUtf8(
+        JSON.stringify({
+          breed: {
+            nft_token_id1: tokenId1,
+            nft_token_id2: tokeId2,
+          },
+        })
+      ),
+      contract: THE_RIOT_BREEDING_CONTRACT_ADDRESS,
+      funds: [breedingPrice],
     },
   };
 };

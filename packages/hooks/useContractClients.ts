@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
 import {
+  TeritoriBreedingClient,
+  TeritoriBreedingQueryClient,
+} from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
+import {
   TeritoriNftMinterClient,
   TeritoriNftMinterQueryClient,
 } from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
@@ -31,6 +35,7 @@ type ContractName =
   | "teritori-nft-minter"
   | "teritori-nft-staking"
   | "teritori-nft-vault"
+  | "teritori-breeding"
   | "teritori-squad-staking";
 
 const CONTRACT_CLIENT_MAP: {
@@ -55,6 +60,10 @@ const CONTRACT_CLIENT_MAP: {
   "teritori-squad-staking": {
     clientClass: TeritoriSquadStakingClient,
     queryClientClass: TeritoriSquadStakingQueryClient,
+  },
+  "teritori-breeding": {
+    clientClass: TeritoriBreedingClient,
+    queryClientClass: TeritoriBreedingQueryClient,
   },
 };
 

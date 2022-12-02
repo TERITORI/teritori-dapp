@@ -15,6 +15,7 @@ interface SimpleButtonProps {
   onPress?(): void;
   containerStyle?: ViewStyle;
   loading?: boolean;
+  disabled?: boolean;
 }
 
 export const SimpleButton: React.FC<SimpleButtonProps> = ({
@@ -24,6 +25,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
   bgColor = yellowDefault,
   onPress,
   loading,
+  disabled,
   containerStyle,
 }) => {
   let padH: number;
@@ -42,7 +44,8 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
 
   return (
     <TouchableOpacity
-      style={[containerStyle, loading && { opacity: 0.6 }]}
+      disabled={disabled}
+      style={[containerStyle, (loading || disabled) && { opacity: 0.6 }]}
       onPress={() => !loading && onPress?.()}
     >
       <BrandText

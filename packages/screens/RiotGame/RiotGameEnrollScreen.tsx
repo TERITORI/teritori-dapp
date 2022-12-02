@@ -99,13 +99,12 @@ export const RiotGameEnrollScreen = () => {
     setIsJoiningFight(true);
 
     try {
-      const tx = await squadStake(selectedRippers);
-      console.debug(tx);
+      await squadStake(selectedRippers);
 
       // HACK: wait a little bit before redirection to be sure that we have passed the fight start time
       setTimeout(() => {
-        navigation.navigate("RiotGameFight");
-      }, 2000);
+        navigation.replace("RiotGameFight");
+      }, 1000);
     } catch (e: any) {
       setToastError({
         title: "Transaction Error",
@@ -215,6 +214,7 @@ export const RiotGameEnrollScreen = () => {
       </Row>
 
       <SimpleButton
+        disabled={selectedRippers.length === 0}
         onPress={joinTheFight}
         containerStyle={spacing.mv_5}
         title="Join the Fight"

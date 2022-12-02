@@ -18,7 +18,7 @@ import {
   fontMedium32,
   fontMedium48,
 } from "../../utils/style/fonts";
-import { BreedingModal } from "./component/BreedingModal";
+import { BreedingModal } from "./component/BreedingResultModal";
 import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";

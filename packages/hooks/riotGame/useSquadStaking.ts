@@ -1,4 +1,4 @@
-import { calculateFee } from "cosmwasm";
+import { isDeliverTxFailure } from "@cosmjs/stargate";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 
@@ -12,14 +12,13 @@ import {
 } from "../../screens/RiotGame/settings";
 import { defaultExecuteFee } from "../../utils/fee";
 import {
-  buildApproveMsg,
+  buildApproveNFTMsg,
   buildStakingMsg,
   getRipperTraitValue,
   StakingState,
 } from "../../utils/game";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { teritoriGasPrice } from "../../utils/teritori";
 import { useContractClients } from "../useContractClients";
 import useSelectedWallet from "../useSelectedWallet";
 import {
@@ -49,38 +48,38 @@ export const useSquadStaking = () => {
 
   const selectedWallet = useSelectedWallet();
 
-  const {
-    client: squadStakingClient,
-    queryClient: squadStakingQueryClient,
-  }: {
-    client: TeritoriSquadStakingClient;
-    queryClient: TeritoriSquadStakingQueryClient;
-  } = useContractClients(
+  const { client, queryClient } = useContractClients(
     THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
     "teritori-squad-staking"
   );
 
+  const squadStakingClient = client as TeritoriSquadStakingClient;
+  const squadStakingQueryClient =
+    queryClient as TeritoriSquadStakingQueryClient;
+
   const squadStake = async (selectedRippers: NSRiotGame.RipperDetail[]) => {
-    if (selectedRippers.length === 0) return;
     const tokenIds = selectedRippers.map((r) => r.tokenId);
 
     const client = await getSigningCosmWasmClient();
     const sender = selectedWallet?.address || "";
 
     const approveMsgs = tokenIds.map((tokenId) =>
-      buildApproveMsg(sender, tokenId)
+      buildApproveNFTMsg(
+        sender,
+        THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
+        tokenId
+      )
     );
 
     const stakeMsg = buildStakingMsg(sender, tokenIds);
     const msgs = [...approveMsgs, stakeMsg];
 
-    const estimate = await client.simulate(sender, msgs, "");
-    const tx = await client.signAndBroadcast(
-      sender,
-      msgs,
-      calculateFee(Math.floor(estimate * 1.3), teritoriGasPrice),
-      defaultMemo
-    );
+    const tx = await client.signAndBroadcast(sender, msgs, "auto", defaultMemo);
+
+    if (isDeliverTxFailure(tx)) {
+      throw Error(tx.transactionHash);
+    }
+
     return tx;
   };
 
@@ -101,8 +100,10 @@ export const useSquadStaking = () => {
       });
       setCurrentSquad(squad);
     } catch (e: any) {
-      if (!e.message.includes("squad_staking::state::Squad not found")) {
+      if (!e.message?.includes("squad_staking::state::Squad not found")) {
         console.error(e.message);
+      } else {
+        throw e;
       }
     } finally {
       setIsSquadLoaded(true);
@@ -112,12 +113,7 @@ export const useSquadStaking = () => {
   const squadWithdraw = async (
     squadStakingClient: TeritoriSquadStakingClient
   ) => {
-    const res = await squadStakingClient.withdraw(
-      defaultExecuteFee,
-      defaultMemo
-    );
-
-    return res;
+    return await squadStakingClient.withdraw(defaultExecuteFee, defaultMemo);
   };
 
   const estimateStakingDuration = (
@@ -182,10 +178,13 @@ export const useSquadStaking = () => {
 
       const totalStakingDuration = endsAt.diff(startsAt);
       const stakingTimePassed = now.diff(startsAt);
-      _remainingPercentage = Math.min(
+
+      const _passedPercentage = Math.min(
         100,
         Math.floor((stakingTimePassed * 100) / totalStakingDuration)
       );
+
+      _remainingPercentage = 100 - _passedPercentage;
 
       if (now.isAfter(completesAt)) {
         _stakingState = StakingState.COMPLETED;
@@ -226,7 +225,7 @@ export const useSquadStaking = () => {
     _fetchSquadStakingConfig(squadStakingQueryClient);
     _fetchSquadStaking(user, squadStakingQueryClient);
     _fetchLastStakeTime(user, squadStakingQueryClient);
-  }, [squadStakingQueryClient, selectedWallet]);
+  }, [squadStakingQueryClient?.contractAddress, selectedWallet?.address]); // Use attributes as dependencies to avoid deep compare
 
   useEffect(() => {
     return () => {

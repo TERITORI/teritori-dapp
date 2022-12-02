@@ -28,7 +28,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
       <TertiaryBox
-        width={230}
+        width={200}
         height={200}
         mainContainerStyle={{
           padding: 16,

@@ -15,12 +15,12 @@ import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { THE_RIOT_COLLECTION_ID } from "../settings";
 
-type BreedingModalProps = {
+type BreedingResultModalProps = {
   visible?: boolean;
   onClose?(): void;
 };
 
-export const BreedingModal: React.FC<BreedingModalProps> = ({
+export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   visible = false,
   onClose,
 }) => {
