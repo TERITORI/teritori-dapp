@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   StyleProp,
+  TextStyle,
   TouchableOpacity,
   ViewStyle,
 } from "react-native";
@@ -34,6 +35,7 @@ export const SecondaryButton: React.FC<{
   numberOfLines?: number;
   activeOpacity?: number | undefined;
   loader?: boolean;
+  textStyle?: TextStyle;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -50,6 +52,7 @@ export const SecondaryButton: React.FC<{
   numberOfLines,
   activeOpacity,
   loader,
+  textStyle,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -110,6 +113,7 @@ export const SecondaryButton: React.FC<{
               style={[
                 fontSemibold14,
                 { color, textAlign: "center", width: "100%" },
+                textStyle,
               ]}
               numberOfLines={numberOfLines}
             >

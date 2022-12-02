@@ -1,16 +1,19 @@
 import React from "react";
-import { View, ViewStyle, StyleProp } from "react-native";
+import { View, ViewStyle, StyleProp, TouchableOpacity } from "react-native";
 
-import { neutral33 } from "../utils/style/colors";
+import backSVG from "../../assets/icons/back.svg";
+import { neutral22, neutral33 } from "../utils/style/colors";
 import {
   headerHeight,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
+import { SVG } from "./SVG";
 
 export const Header: React.FC<{
   smallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ children, style }) => {
+  onBackPress?: () => void;
+}> = ({ children, style, onBackPress }) => {
   return (
     <View
       style={[
@@ -37,7 +40,24 @@ export const Header: React.FC<{
           marginLeft: screenContainerContentMarginHorizontal,
         }}
       >
-        <>{children}</>
+        {!!onBackPress && (
+          <TouchableOpacity
+            onPress={onBackPress}
+            activeOpacity={0.9}
+            style={{
+              backgroundColor: neutral22,
+              height: 32,
+              width: 32,
+              borderRadius: 32,
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: 12,
+            }}
+          >
+            <SVG source={backSVG} height={24} width={24} />
+          </TouchableOpacity>
+        )}
+        {children}
       </View>
 
       {/* Wallet selector placeholder */}
