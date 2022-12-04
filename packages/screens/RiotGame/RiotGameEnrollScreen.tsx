@@ -133,14 +133,6 @@ export const RiotGameEnrollScreen = () => {
     updateStakingState(currentSquad, lastStakeTime, squadStakingConfig);
   }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig]);
 
-  if (!isSquadLoaded || !isStakingStateLoaded) {
-    return (
-      <GameContentView>
-        <BrandText style={styles.pageTitle}>Loading...</BrandText>
-      </GameContentView>
-    );
-  }
-
   return (
     <GameContentView>
       <View>

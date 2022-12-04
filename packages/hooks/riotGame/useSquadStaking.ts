@@ -100,8 +100,8 @@ export const useSquadStaking = () => {
       });
       setCurrentSquad(squad);
     } catch (e: any) {
-      if (!e.message?.includes("squad_staking::state::Squad not found")) {
-        console.error(e.message);
+      if (e.message?.includes("Squad not found")) {
+        console.log("Squad not found:", e.message);
       } else {
         throw e;
       }

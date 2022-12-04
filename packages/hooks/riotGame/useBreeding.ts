@@ -1,11 +1,9 @@
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { Coin } from "cosmwasm";
-import { useEffect, useState } from "react";
+import moment from "moment";
+import { useEffect, useRef, useState } from "react";
 
-import {
-  TeritoriBreedingClient,
-  TeritoriBreedingQueryClient,
-} from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
+import { TeritoriBreedingQueryClient } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { THE_RIOT_BREEDING_CONTRACT_ADDRESS } from "../../screens/RiotGame/settings";
 import { buildApproveNFTMsg, buildBreedingMsg } from "../../utils/game";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
@@ -16,12 +14,13 @@ import { Config as GetConfigResponse } from "./../../contracts-clients/teritori-
 
 export const useBreeding = () => {
   const [breedingConfig, setBreedingConfig] = useState<GetConfigResponse>();
+  const [lastBreedAt, setLastBreedAt] = useState<moment.Moment>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { client, queryClient } = useContractClients(
     THE_RIOT_BREEDING_CONTRACT_ADDRESS,
     "teritori-breeding"
   );
 
-  const breedingClient = client as TeritoriBreedingClient;
   const breedingQueryClient = queryClient as TeritoriBreedingQueryClient;
 
   const selectedWallet = useSelectedWallet();
@@ -50,6 +49,7 @@ export const useBreeding = () => {
     );
     const msgs = [...approveMsgs, breedMsg];
 
+    setLastBreedAt(moment());
     const tx = await client.signAndBroadcast(sender, msgs, "auto", defaultMemo);
 
     if (isDeliverTxFailure(tx)) {
@@ -79,5 +79,6 @@ export const useBreeding = () => {
   return {
     breedingConfig,
     breed,
+    lastBreedAt,
   };
 };

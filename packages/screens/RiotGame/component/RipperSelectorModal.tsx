@@ -22,15 +22,9 @@ import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
 import { getStandardNFTInfo } from "../../../hooks/useNFTInfo";
 import { getRipperTraitValue } from "../../../utils/game";
-import {
-  neutral00,
-  neutral67,
-  white,
-  yellowDefault,
-} from "../../../utils/style/colors";
+import { neutral00, white, yellowDefault } from "../../../utils/style/colors";
 import { flex } from "../../../utils/style/flex";
 import {
-  fontMedium13,
   fontMedium24,
   fontMedium32,
   fontMedium48,

@@ -155,14 +155,6 @@ export const RiotGameFightScreen = () => {
     startStakingTimer(currentSquad, lastStakeTime, squadStakingConfig);
   }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig]);
 
-  if (!isSquadLoaded && !isStakingStateLoaded) {
-    return (
-      <GameContentView>
-        <BrandText style={styles.pageTitle}>Loading...</BrandText>
-      </GameContentView>
-    );
-  }
-
   return (
     <GameContentView bgImage={defaultSendToFightPNG}>
       <BrandText style={styles.pageTitle}>
