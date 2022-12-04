@@ -58,6 +58,7 @@ In the future (v3) it will also be a privacy first messaging application built o
     - The R!OT Play2Earn Experience: "Genesis Collection" v0.1
     - Org Deployer v0.1
     - Multisig Wallet v0.1
+    
 On this Genesis Era, core team will gather various tools, dapps, and open source code from most serious Cosmos contributors, in a Teritori User Experience, to onboard new users into the state of the art. Team is at the same time paralelizing its development and re-building this 'state of the art' code using Gnolang. This allow teritori-core team #1 to both start shipping tools quickly to community and prepare the future proof approach with a deep state of the art expertise.
 
 - *Enter the dApp - Desktop v1* 
