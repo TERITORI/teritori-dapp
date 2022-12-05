@@ -35,7 +35,9 @@ import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { AddMoreButton } from "./AddMoreButton";
 
-export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
+export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
+  route: { params },
+}) => {
   const [postFee, setPostFee] = useState(0);
   const [freePostCount, setFreePostCount] = useState(0);
   const [postCategory, setPostCategory] = useState<PostCategory>(
@@ -45,7 +47,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
   const [isAddMore, setAddMore] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { setToastSuccess } = useFeedbacks();
+  const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
   const wallet = useSelectedWallet();
   const balances = useBalances(
@@ -62,8 +64,9 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
     formState: { errors },
   } = useForm<NewPostFormValues>({
     defaultValues: {
-      title: "",
-      message: "",
+      title: params?.title || "",
+      message: params?.message || "",
+      file: params?.file,
     },
     mode: "onBlur",
   });
@@ -78,7 +81,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
 
   const updatePostFee = async () => {
     const fee = await getPostFee({ wallet, postCategory });
-    setPostFee(fee);
+    setPostFee(fee || 0);
   };
 
   const updatePostCategory = () => {
@@ -117,11 +120,20 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
 
   const onSubmit = async () => {
     setLoading(true);
-    await initSubmit();
-    reset();
-    setToastSuccess({ title: "Post submitted successfully.", message: "" });
+    try {
+      await initSubmit();
+      setToastSuccess({ title: "Post submitted successfully.", message: "" });
+      navigateBack();
+      reset();
+    } catch (err) {
+      setToastError({
+        title: "Something went wrong.",
+        message: "Couldn't submit your request, please try again later. ",
+      });
+      console.log("post submit error", err);
+    }
+
     setLoading(false);
-    navigateBack();
   };
 
   return (
@@ -144,7 +156,9 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
             disabled={loading}
             loader={loading}
             text={`Publish ${
-              postFee > 0 && !freePostCount ? `${postFee} TORI` : ""
+              postFee > 0 && !freePostCount
+                ? `${((postFee || 0) / 1000000).toFixed(4)} TORI`
+                : ""
             }`}
             size="M"
             style={{ marginLeft: layout.padding_x3 }}
@@ -166,6 +180,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
       >
         <WalletStatusBox />
         <FileUploader
+          value={formValues.file}
           label="Cover image"
           style={{
             marginTop: layout.padding_x3,
@@ -197,6 +212,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
               staticToolbar={isAddMore}
               onChange={onChange}
               onBlur={onBlur}
+              initialValue={formValues.message}
             />
           )}
         />

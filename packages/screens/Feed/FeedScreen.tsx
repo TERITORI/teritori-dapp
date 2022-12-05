@@ -63,6 +63,8 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
             style={{
               marginTop: 32,
               height: 64,
+              zIndex: 9,
+              elevation: 9,
             }}
             borderColorTabSelected={primaryColor}
             gradientText
