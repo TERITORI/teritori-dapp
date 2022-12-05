@@ -72,7 +72,7 @@ export const NotEnoughFundModal: React.FC<TNotEnoughFundModalProps> = ({
             marginRight: 20,
           }}
         >
-          <SVG source={priceSVG} height={16} width={16} color={redDefault} />
+          <SVG source={priceSVG} height={24} width={24} color={redDefault} />
         </View>
         <View>
           <BrandText style={[fontSemibold13]}>Not enough $tori</BrandText>

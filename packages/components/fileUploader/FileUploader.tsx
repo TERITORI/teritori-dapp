@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TouchableOpacity, View, ViewStyle, Image } from "react-native";
+import { TouchableOpacity, View, Image } from "react-native";
 
 import bucketSVG from "../../../assets/icons/bucket.svg";
 import uploadSVG from "../../../assets/icons/upload.svg";
@@ -10,19 +10,16 @@ import { neutral17, neutral77, redDefault } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { SVG } from "../SVG";
 import { PrimaryBox } from "../boxes/PrimaryBox";
+import { FileUploaderProps } from "./FileUploader.type";
 
 const FILE_HEIGHT = 256;
-interface FileUploaderProps {
-  label?: string;
-  style?: ViewStyle;
-  onUpload: (file: File) => void;
-}
+
 export const FileUploader: React.FC<FileUploaderProps> = ({
   label,
   style,
   onUpload,
 }) => {
-  const [file, setFile] = useState<File>();
+  const [files, setFiles] = useState<File[] | FileList>([]);
 
   const handleClick = () => {};
 
@@ -32,11 +29,11 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       <PrimaryBox
         fullWidth
         style={{
-          height: file ? FILE_HEIGHT : 80,
+          height: files.length ? FILE_HEIGHT : 80,
           borderRadius: 10,
         }}
       >
-        {file ? (
+        {files?.[0] ? (
           <View
             style={{
               height: "100%",
@@ -56,12 +53,12 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={() => setFile(undefined)}
+              onPress={() => setFiles([])}
             >
               <SVG source={bucketSVG} height={16} width={16} />
             </TouchableOpacity>
             <Image
-              source={{ uri: file.path }}
+              source={{ uri: files?.[0]?.path }}
               style={{
                 height: FILE_HEIGHT,
                 width: "100%",

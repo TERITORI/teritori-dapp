@@ -1,56 +1,51 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { TouchableOpacity, View } from "react-native";
-import { v4 as uuidv4 } from "uuid";
+import { useForm, Controller } from "react-hook-form";
+import { View } from "react-native";
 
-import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { BrandText } from "../../components/BrandText";
+import { ErrorText } from "../../components/ErrorText";
+import {
+  NewPostFormValues,
+  PostCategory,
+} from "../../components/NewsFeed/NewsFeed.type";
+import {
+  getAvailableFreePost,
+  getPostCategory,
+  getPostFee,
+  createPost,
+} from "../../components/NewsFeed/NewsFeedQueries";
 import { NotEnoughFundModal } from "../../components/NewsFeed/NotEnoughFundModal";
 import { RichText } from "../../components/RichText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { WalletStatusBox } from "../../components/WalletStatusBox";
-import { PrimaryBox } from "../../components/boxes/PrimaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { FileUploader } from "../../components/fileUploader";
 import {
   Label,
   TextInputCustom,
 } from "../../components/inputs/TextInputCustom";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { defaultSocialFeedFee } from "../../utils/fee";
+import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral22 } from "../../utils/style/colors";
-import {
-  fontMedium14,
-  fontSemibold13,
-  fontSemibold20,
-} from "../../utils/style/fonts";
+import { neutral00 } from "../../utils/style/colors";
+import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-
-enum PostCategory {
-  Reaction,
-  Comment,
-  Normal,
-  Article,
-  Picture,
-  Audio,
-  Video,
-}
-
-type NewPostValueType = {
-  title: string;
-  message: string;
-  file: File;
-};
+import { AddMoreButton } from "./AddMoreButton";
 
 export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
-  const [postCost, setPostCost] = useState(0);
+  const [postFee, setPostFee] = useState(0);
   const [freePostCount, setFreePostCount] = useState(0);
   const [postCategory, setPostCategory] = useState<PostCategory>(
     PostCategory.Normal
   );
+
+  const [isAddMore, setAddMore] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const { setToastSuccess } = useFeedbacks();
   const navigation = useAppNavigation();
   const wallet = useSelectedWallet();
   const balances = useBalances(
@@ -58,65 +53,43 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
     wallet?.address
   );
 
-  const { control, setValue, handleSubmit, reset, watch } =
-    useForm<NewPostValueType>();
+  const {
+    control,
+    setValue,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm<NewPostFormValues>({
+    defaultValues: {
+      title: "",
+      message: "",
+    },
+    mode: "onBlur",
+  });
+  const formValues = watch();
 
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
 
-  const formValues = watch();
-
-  const getAvailableFreePost = async () => {
-    try {
-      if (!wallet?.connected || !wallet.address) {
-        return;
-      }
-
-      const client = await socialFeedClient({
-        walletAddress: wallet.address,
-      });
-
-      const freePostCount = await client.queryAvailableFreePosts({
-        wallet: wallet.address,
-      });
-
-      setFreePostCount(Number(freePostCount));
-    } catch (err) {
-      console.log("getAvailableFreePost err", err);
-    }
+  const updateAvailableFreePost = async () => {
+    const freePost = await getAvailableFreePost({ wallet });
+    setFreePostCount(freePost || 0);
   };
 
-  const getPostFee = async () => {
-    try {
-      if (!wallet?.connected || !wallet.address) {
-        return;
-      }
-      const client = await socialFeedClient({
-        walletAddress: wallet.address,
-      });
-
-      const cost = await client.queryFeeByCategory({
-        category: postCategory,
-      });
-
-      setPostCost(cost);
-    } catch (err) {
-      console.log("getPostFee err", err);
-    }
+  const updatePostFee = async () => {
+    const fee = await getPostFee({ wallet, postCategory });
+    setPostFee(fee);
   };
 
-  function updatePostCategory() {
-    if (formValues.title) {
-      setPostCategory(PostCategory.Article);
-    } else {
-      setPostCategory(PostCategory.Normal);
-    }
-  }
+  const updatePostCategory = () => {
+    setPostCategory(getPostCategory(formValues));
+  };
 
   useFocusEffect(
     React.useCallback(() => {
       if (wallet?.connected && wallet?.address) {
-        getAvailableFreePost();
-        getPostFee();
+        updateAvailableFreePost();
+        updatePostFee();
       }
     }, [wallet?.address])
   );
@@ -125,64 +98,38 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
     updatePostCategory();
   }, [formValues]);
 
-  async function initSubmit() {
-    try {
-      if (!wallet?.connected || !wallet.address) {
-        return;
-      }
-
-      const client = await socialFeedClient({
-        walletAddress: wallet.address,
-      });
-
-      const freePostCount = await client.queryAvailableFreePosts({
-        wallet: wallet.address,
-      });
-      const cost = await client.queryFeeByCategory({
-        category: postCategory,
-      });
-      const toriBalance = balances.find((bal) => bal.denom === "utori");
-      if (cost > Number(toriBalance?.amount) && !freePostCount) {
-        return setNotEnoughFundModal(true);
-      }
-
-      await client.createPost(
-        {
-          category: postCategory,
-          identifier: uuidv4(),
-          metadata: JSON.stringify({
-            title: formValues.title || "",
-            message: formValues.message || "",
-            creator: wallet.address,
-          }),
-        },
-        defaultSocialFeedFee,
-        "",
-        freePostCount
-          ? undefined
-          : [
-              {
-                denom: "utori",
-                amount: cost,
-              },
-            ]
-      );
-    } catch (err) {
-      console.log("initSubmit", err);
+  const initSubmit = async () => {
+    const toriBalance = balances.find((bal) => bal.denom === "utori");
+    if (postFee > Number(toriBalance?.amount) && !freePostCount) {
+      return setNotEnoughFundModal(true);
     }
-  }
 
-  async function onSubmit() {
+    await createPost({
+      wallet,
+      freePostCount,
+      fee: postFee,
+      formValues,
+    });
+  };
+
+  const navigateBack = () =>
+    navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Feed");
+
+  const onSubmit = async () => {
+    setLoading(true);
     await initSubmit();
     reset();
-  }
+    setToastSuccess({ title: "Post submitted successfully.", message: "" });
+    setLoading(false);
+    navigateBack();
+  };
 
   return (
     <ScreenContainer
       responsive
       maxWidth={592}
       headerChildren={<BrandText style={fontSemibold20}>New Post</BrandText>}
-      onBackPress={() => navigation.navigate("Feed")}
+      onBackPress={navigateBack}
       fixedFooterChildren={
         <View
           style={{
@@ -192,34 +139,12 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
             paddingVertical: layout.padding_x2_5,
           }}
         >
-          <View style={{ flex: 1 }}>
-            <PrimaryBox fullWidth>
-              <TouchableOpacity
-                style={{
-                  padding: layout.padding_x2,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
-                <BrandText style={[fontSemibold13]}>Add more</BrandText>
-                <View
-                  style={{
-                    backgroundColor: neutral22,
-                    borderRadius: 4,
-                    paddingVertical: layout.padding_x0_25,
-                    paddingHorizontal: layout.padding_x0_75,
-                  }}
-                >
-                  <BrandText style={[fontMedium14, {}]}>⌘ + /</BrandText>
-                </View>
-              </TouchableOpacity>
-            </PrimaryBox>
-          </View>
+          <AddMoreButton onPress={() => setAddMore(true)} />
           <PrimaryButton
+            disabled={loading}
+            loader={loading}
             text={`Publish ${
-              postCost > 0 && !freePostCount ? `${postCost} TORI` : ""
+              postFee > 0 && !freePostCount ? `${postFee} TORI` : ""
             }`}
             size="M"
             style={{ marginLeft: layout.padding_x3 }}
@@ -245,9 +170,10 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
           style={{
             marginTop: layout.padding_x3,
           }}
-          onUpload={(file) => setValue("file", file)}
+          onUpload={(files) => setValue("file", files?.[0])}
+          mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
         />
-        <TextInputCustom<NewPostValueType>
+        <TextInputCustom<NewPostFormValues>
           label="Give it a title to make long post"
           placeHolder="Type title here"
           name="title"
@@ -259,7 +185,24 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = () => {
           }}
         />
         <Label isRequired>Message</Label>
-        <RichText onChange={(text) => setValue("message", text)} />
+        {/**@ts-ignore  error:TS2589: Type instantiation is excessively deep and possibly infinite. */}
+        <Controller
+          name="message"
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur } }) => (
+            <RichText
+              staticToolbar={isAddMore}
+              onChange={onChange}
+              onBlur={onBlur}
+            />
+          )}
+        />
+        {errors?.message?.type === "required" && (
+          <ErrorText>Message is required</ErrorText>
+        )}
       </View>
     </ScreenContainer>
   );

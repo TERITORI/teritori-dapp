@@ -222,12 +222,12 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="OrganizationPublicProfile"
         component={OrganizationPublicProfileScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: "Teritori" }}
       />
       <Stack.Screen
         name="FeedPostView"
         component={FeedPostViewScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: "Teritori" }}
       />
       <Stack.Screen
         name="Feed"
