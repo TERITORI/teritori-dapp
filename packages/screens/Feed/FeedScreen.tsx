@@ -7,7 +7,7 @@ import { AvatarWithFrame } from "../../components/images/AvatarWithFrame";
 import { Tabs } from "../../components/tabs/Tabs";
 import { ScreenFC } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
-import { fontSemibold20 } from "../../utils/style/fonts";
+import { fontSemibold16 } from "../../utils/style/fonts";
 import { screenContentMaxWidthLarge } from "../../utils/style/layout";
 
 const screenTabItems = {
@@ -68,7 +68,7 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
             }}
             borderColorTabSelected={primaryColor}
             gradientText
-            textStyle={fontSemibold20}
+            textStyle={fontSemibold16}
           />
           <SelectedTabContent selectedTab={selectedTab} />
         </View>
