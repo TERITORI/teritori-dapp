@@ -285,7 +285,7 @@ export const SocialThreadCard: React.FC<{
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("OrganizationPublicProfile", {
+                    navigation.navigate("PublicProfile", {
                       id: `tori-${post.post_by}`,
                     })
                   }

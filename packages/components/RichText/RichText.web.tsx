@@ -18,7 +18,7 @@ import createToolbarPlugin, {
 } from "@draft-js-plugins/static-toolbar";
 import { convertToHTML } from "draft-convert";
 import { ContentState, convertFromHTML, EditorState } from "draft-js";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 import "@draft-js-plugins/inline-toolbar/lib/plugin.css";
 import "@draft-js-plugins/static-toolbar/lib/plugin.css";
@@ -66,6 +66,7 @@ export function RichText({
   readOnly,
   staticToolbar,
 }: RichTextProps) {
+  const editorRef = useRef<Editor>(null);
   const [editorState, setEditorState] = React.useState(
     initialValue ? createStateFromHTML(initialValue) : EditorState.createEmpty()
   );
@@ -77,6 +78,12 @@ export function RichText({
     const html = convertToHTML(contentState);
     onChange(html === "<p></p>" ? "" : html);
   };
+
+  useEffect(() => {
+    if (initialValue && !readOnly) {
+      editorRef.current?.focus?.();
+    }
+  }, []);
   return (
     <div
       style={{
@@ -93,6 +100,7 @@ export function RichText({
         placeholder={readOnly ? "" : "Type message here"}
         readOnly={readOnly}
         onBlur={onBlur}
+        ref={editorRef}
       />
       {!readOnly && (
         <>

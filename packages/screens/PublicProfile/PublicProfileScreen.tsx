@@ -10,7 +10,7 @@ import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
-import { OPPIntro } from "./OPPIntro";
+import { PublicProfileIntro } from "./PublicProfileIntro";
 
 const screenTabItems = {
   news: {
@@ -49,9 +49,7 @@ const SelectedTabContent: React.FC<{
   }
 };
 
-export const OrganizationPublicProfileScreen: ScreenFC<
-  "OrganizationPublicProfile"
-> = ({
+export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
   route: {
     params: { id },
   },
@@ -93,7 +91,7 @@ export const OrganizationPublicProfileScreen: ScreenFC<
       ) : (
         <View style={{ flex: 1, alignItems: "center" }}>
           <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-            <OPPIntro userId={id} metadata={metadata} />
+            <PublicProfileIntro userId={id} metadata={metadata} />
 
             <Tabs
               items={screenTabItems}
@@ -102,6 +100,8 @@ export const OrganizationPublicProfileScreen: ScreenFC<
               style={{
                 marginTop: layout.padding_x4,
                 height: 64,
+                zIndex: 9,
+                elevation: 9,
               }}
               gradientText
             />

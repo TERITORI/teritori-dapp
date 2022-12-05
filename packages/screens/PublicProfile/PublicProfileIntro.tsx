@@ -14,7 +14,7 @@ import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral00, neutral55, purpleDefault } from "../../utils/style/colors";
 import { fontBold16, fontMedium14 } from "../../utils/style/fonts";
 
-export const OPPIntro: React.FC<{
+export const PublicProfileIntro: React.FC<{
   userId: string;
   metadata?: (Metadata & { tokenId: string }) | null;
   isUserOwner?: boolean;

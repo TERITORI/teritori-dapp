@@ -22,11 +22,13 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   multiple,
   mimeTypes,
   triggerFileUpload,
+  onTrigger,
+  value,
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
 
-  const [files, setFiles] = useState<File[] | FileList>([]);
+  const [files, setFiles] = useState<File[] | FileList>(value ? [value] : []);
 
   const handleFiles = (files: File[]) => {
     const _files = multiple ? files : [files[0]];
@@ -53,6 +55,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
   const handleChange = (event: SyntheticEvent) => {
     const targetEvent = event.target as HTMLInputElement;
+    console.log("handlechange", targetEvent.files);
     if (targetEvent.files && targetEvent.files[0]) {
       handleFiles(targetEvent?.files as unknown as File[]);
     }
@@ -60,6 +63,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
   const handleClick = () => {
     hiddenFileInput?.current?.click?.();
+    onTrigger?.();
   };
 
   const dropHandler = (ev: any) => {
@@ -183,6 +187,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                 style={{ display: "none", position: "absolute" }}
                 onChange={handleChange}
                 multiple={multiple}
+                accept={mimeTypes?.join(",")}
               />
             </div>
           </TouchableOpacity>
