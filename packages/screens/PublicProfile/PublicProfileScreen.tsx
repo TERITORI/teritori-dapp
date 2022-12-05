@@ -8,7 +8,7 @@ import { screenTitle } from "../../components/navigation/Navigator";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { fontSemibold20 } from "../../utils/style/fonts";
+import { fontSemibold16, fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { PublicProfileIntro } from "./PublicProfileIntro";
 
@@ -104,6 +104,7 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
                 elevation: 9,
               }}
               gradientText
+              textStyle={fontSemibold16}
             />
 
             <SelectedTabContent selectedTab={selectedTab} />
