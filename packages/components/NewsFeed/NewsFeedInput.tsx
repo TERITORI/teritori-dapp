@@ -98,7 +98,7 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
     updatePostFee();
   }, [formValues]);
 
-  async function initSubmit() {
+  const initSubmit = async () => {
     const toriBalance = balances.find((bal) => bal.denom === "utori");
     if (postFee > Number(toriBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
@@ -111,7 +111,7 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
       formValues,
       parentId,
     });
-  }
+  };
 
   const resetForm = () => {
     reset();
@@ -274,7 +274,7 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
             loader={isLoading}
             size="M"
             text={type === "comment" ? "Comment" : "Publish"}
-            squaresBackgroundColor={neutral22}
+            squaresBackgroundColor={neutral17}
             onPress={handleSubmit(onSubmit)}
           />
         </View>
