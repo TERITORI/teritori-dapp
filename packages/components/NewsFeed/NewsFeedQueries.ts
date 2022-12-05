@@ -95,45 +95,41 @@ export const createPost = async ({
   fee,
   parentId,
 }: CreatePostParams) => {
-  try {
-    if (!wallet?.connected || !wallet.address) {
-      return;
-    }
-
-    const postCategory = getPostCategory(formValues);
-    const client = await socialFeedClient({
-      walletAddress: wallet.address,
-    });
-
-    let fileURL = "";
-    if (formValues.file) {
-      const fileData = await nftStorageFile(formValues.file);
-      fileURL = fileData.data.image.href;
-    }
-
-    await client.createPost(
-      {
-        category: postCategory,
-        identifier: uuidv4(),
-        metadata: JSON.stringify({
-          title: formValues.title || "",
-          message: formValues.message || "",
-          fileURL,
-        }),
-        parentPostIdentifier: parentId,
-      },
-      defaultSocialFeedFee,
-      "",
-      freePostCount
-        ? undefined
-        : [
-            {
-              denom: "utori",
-              amount: String(fee),
-            },
-          ]
-    );
-  } catch (err) {
-    console.log("initSubmit", err);
+  if (!wallet?.connected || !wallet.address) {
+    return;
   }
+
+  const postCategory = getPostCategory(formValues);
+  const client = await socialFeedClient({
+    walletAddress: wallet.address,
+  });
+
+  let fileURL = "";
+  if (formValues.file) {
+    const fileData = await nftStorageFile(formValues.file);
+    fileURL = fileData.data.image.href;
+  }
+
+  await client.createPost(
+    {
+      category: postCategory,
+      identifier: uuidv4(),
+      metadata: JSON.stringify({
+        title: formValues.title || "",
+        message: formValues.message || "",
+        fileURL,
+      }),
+      parentPostIdentifier: parentId,
+    },
+    defaultSocialFeedFee,
+    "",
+    freePostCount
+      ? undefined
+      : [
+          {
+            denom: "utori",
+            amount: String(fee),
+          },
+        ]
+  );
 };
