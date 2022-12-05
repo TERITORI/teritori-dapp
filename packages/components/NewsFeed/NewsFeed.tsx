@@ -7,6 +7,7 @@ import { PostResult } from "../../contracts-clients/teritori-social-feed/Teritor
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+import { TertiaryButton } from "../buttons/TertiaryButton";
 import { SocialThreadCard } from "../cards/SocialThreadCard";
 import { NewsFeedInput } from "./NewsFeedInput";
 
@@ -14,9 +15,10 @@ export const NewsFeed: React.FC = () => {
   const wallet = useSelectedWallet();
 
   const [posts, setPosts] = useState<PostResult[]>([]);
+  const [postCount, setPostCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  async function fetchData({
+  const fetchData = async ({
     count = 10,
     from = 0,
     sort = "desc",
@@ -26,7 +28,7 @@ export const NewsFeed: React.FC = () => {
     from?: number;
     sort?: string;
     isMore?: boolean;
-  } = {}) {
+  } = {}) => {
     if (!wallet?.connected || !wallet.address) {
       return;
     }
@@ -43,12 +45,15 @@ export const NewsFeed: React.FC = () => {
       });
 
       setPosts((prev) => (isMore ? [...prev, ...mainPosts] : mainPosts));
+
+      const mainPostCount = await client.queryMainPostsCount();
+      setPostCount(mainPostCount);
     } catch (err) {
       console.log("initData err", err);
     }
 
     setLoading(false);
-  }
+  };
 
   const fetchMore = () => {
     fetchData({
@@ -82,9 +87,15 @@ export const NewsFeed: React.FC = () => {
             <SocialThreadCard post={post} style={{ marginBottom: 74 }} />
           )}
           keyExtractor={(item: PostResult) => item.identifier}
-          onEndReached={fetchMore}
-          onEndReachedThreshold={0.1}
         />
+        {!loading && posts.length < postCount && (
+          <TertiaryButton
+            onPress={fetchMore}
+            text="Load More"
+            size="SM"
+            style={{ alignSelf: "center", marginBottom: layout.padding_x1 }}
+          />
+        )}
       </View>
     </View>
   );
