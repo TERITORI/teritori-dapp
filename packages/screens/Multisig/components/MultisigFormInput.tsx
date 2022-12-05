@@ -6,6 +6,7 @@ import copySVG from "../../../../assets/icons/copy.svg";
 import { BrandText } from "../../../components/BrandText";
 import { useCopyToClipboard } from "../../../components/CopyToClipboard";
 import { SVG } from "../../../components/SVG";
+import { MaxButton } from "../../../components/buttons/MaxButton";
 import {
   TextInputCustom,
   TextInputCustomProps,
@@ -25,6 +26,7 @@ interface MultisigFormInputProps<T> extends TextInputCustomProps<T> {
   tiker?: string;
   isDisabled?: boolean;
   isOverrideDisabledBorder?: boolean;
+  onPressMax?: () => void;
 }
 
 export const MultisigFormInput = <T extends FieldValues>({
@@ -32,6 +34,7 @@ export const MultisigFormInput = <T extends FieldValues>({
   tiker,
   isDisabled,
   isOverrideDisabledBorder,
+  onPressMax,
   ...restProps
 }: MultisigFormInputProps<T>) => {
   // variables
@@ -78,6 +81,7 @@ export const MultisigFormInput = <T extends FieldValues>({
           </BrandText>
         </>
       )}
+      {onPressMax && <MaxButton onPress={onPressMax} />}
     </TextInputCustom>
   );
 };

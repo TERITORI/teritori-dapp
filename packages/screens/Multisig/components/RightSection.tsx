@@ -1,10 +1,11 @@
+import { useRoute } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../../components/spacer";
-import { useAppNavigation } from "../../../utils/navigation";
+import { AppRouteType, useAppNavigation } from "../../../utils/navigation";
 import { neutral33, neutral55 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -12,6 +13,10 @@ import { layout } from "../../../utils/style/layout";
 export const RightSection = () => {
   // variables
   const navigation = useAppNavigation();
+  const {
+    params: { address },
+  } =
+    useRoute<AppRouteType<"MultisigCreateTransaction" | "MultisigDelegate">>();
 
   // returns
   return (
@@ -26,7 +31,9 @@ export const RightSection = () => {
         size="M"
         text="Create Transaction"
         fullWidth
-        onPress={() => navigation.navigate("MultisigCreateTransaction")}
+        onPress={() =>
+          navigation.navigate("MultisigCreateTransaction", { address })
+        }
       />
 
       <SpacerColumn size={2.5} />
@@ -34,7 +41,7 @@ export const RightSection = () => {
         size="M"
         text="Create Delegation"
         fullWidth
-        onPress={() => navigation.navigate("MultisigDelegate")}
+        onPress={() => navigation.navigate("MultisigDelegate", { address })}
       />
 
       <SpacerColumn size={2.5} />

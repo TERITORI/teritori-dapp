@@ -2,16 +2,52 @@ import React, { useState } from "react";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
+import { useCreateMultisigTransaction } from "../../hooks/useCreateMultisigTransaction";
+import { useGetMultisigAccount } from "../../hooks/useGetMultisigAccount";
+import { ScreenFC } from "../../utils/navigation";
+import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTranscationDelegateForm } from "./components/MultisigTranscationDelegateForm";
 import { SignTransactionModal } from "./components/SignTransactionModal";
+import { MultisigTransactionDelegateFormType } from "./types";
 
-export const MultisigCreateTransactionScreen = () => {
+export const MultisigCreateTransactionScreen: ScreenFC<
+  "MultisigCreateTransaction"
+> = ({ route, navigation }) => {
   // variables
   const [isTransactionVisible, setIsTransactionVisible] = useState(false);
+  const {
+    isLoading,
+    mutate,
+    data: transactionId,
+  } = useCreateMultisigTransaction();
+  const { address } = route.params;
+  const { data } = useGetMultisigAccount(address);
+  const [formData, setFormData] =
+    useState<MultisigTransactionDelegateFormType>();
 
   // functions
   const toggleTransactionModal = () =>
     setIsTransactionVisible(!isTransactionVisible);
+
+  const onSubmitForm = (formData: MultisigTransactionDelegateFormType) => {
+    setFormData(formData);
+    toggleTransactionModal();
+  };
+
+  const handleCreate = () => {
+    toggleTransactionModal();
+    if (data?.accountData && formData) {
+      mutate({ formData, accountOnChain: data?.accountData[1] });
+    }
+  };
+
+  const onCompleteCreation = () => {
+    if (transactionId) {
+      navigation.navigate("MultisigTransactionProposal", {
+        address,
+      });
+    }
+  };
 
   // returns
   return (
@@ -27,13 +63,20 @@ export const MultisigCreateTransactionScreen = () => {
         title="Create a New Transaction"
         transferText="Send to"
         submitBtnText="Create Transaction"
-        onSubmit={toggleTransactionModal}
-        isDisabled
+        onSubmit={onSubmitForm}
       />
 
       <SignTransactionModal
         isVisible={isTransactionVisible}
         onCancel={toggleTransactionModal}
+        onConfirm={handleCreate}
+        amount={formData?.amount}
+        address={address}
+      />
+
+      <CheckLoadingModal
+        isVisible={isLoading}
+        onComplete={onCompleteCreation}
       />
     </ScreenContainer>
   );

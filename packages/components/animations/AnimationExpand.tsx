@@ -8,25 +8,17 @@ import Animated, {
 
 interface FadeInProps {
   style?: StyleProp<ViewStyle>;
-  duration?: number;
 }
 
-export const AnimationExpand: React.FC<FadeInProps> = ({
-  style,
-  children,
-  duration = 500,
-}) => {
+export const AnimationExpand: React.FC<FadeInProps> = ({ style, children }) => {
   // variables
   const [isExpanded, setIsExpanded] = useState(false);
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);
-  const animStyle = useAnimatedStyle(
-    () => ({
-      height: isExpanded ? withTiming(heightRef.current) : withTiming(0),
-      opacity: isExpanded ? withTiming(1) : withTiming(0),
-    }),
-    [isExpanded]
-  );
+  const animStyle = useAnimatedStyle(() => ({
+    height: isExpanded ? withTiming(heightRef.current) : withTiming(0),
+    opacity: isExpanded ? withTiming(1) : 0,
+  }));
 
   // hooks
   useEffect(() => {
@@ -34,7 +26,7 @@ export const AnimationExpand: React.FC<FadeInProps> = ({
       if (heightRef.current) {
         setIsExpanded(true);
       }
-    }, 200);
+    }, 500);
   }, []);
 
   // renders

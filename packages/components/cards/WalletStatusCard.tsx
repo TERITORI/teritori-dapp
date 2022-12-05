@@ -11,7 +11,13 @@ import { SuccessBadge } from "../badges/SuccessBadge";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { NetworkIcon } from "../images/NetworkIcon";
 
-export const WalletStatusCard: React.FC = () => {
+interface WalletStatusCardProps {
+  walletAddress?: string;
+}
+
+export const WalletStatusCard: React.FC<WalletStatusCardProps> = ({
+  walletAddress,
+}) => {
   const wallet = useSelectedWallet();
 
   return (
@@ -36,7 +42,8 @@ export const WalletStatusCard: React.FC = () => {
             Teritori
           </BrandText>
           <BrandText style={fontSemibold13}>
-            {wallet && tinyAddress(wallet.address, 21)}
+            {!walletAddress && wallet && tinyAddress(wallet.address, 21)}
+            {walletAddress && tinyAddress(walletAddress, 21)}
           </BrandText>
         </View>
       </View>

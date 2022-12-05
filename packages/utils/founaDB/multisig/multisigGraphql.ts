@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { DbAccount, DbSignature, DbTransaction } from "./types";
+import { DbAccount, DbSignature } from "./types";
 
 // Graphql base request for Faunadb
 const graphqlReq = axios.create({
@@ -17,7 +17,6 @@ const graphqlReq = axios.create({
  * @return Returns async function that makes a request to the faunadb graphql endpoint
  */
 const createMultisig = async (multisig: DbAccount) => {
-  console.log(multisig);
   return graphqlReq({
     method: "POST",
     data: {
@@ -68,7 +67,7 @@ const getMultisig = async (address: string, chainId: string) => {
  * @param {object} transaction The base transaction
  * @return Returns async function that makes a request to the faunadb graphql endpoint
  */
-const createTransaction = async (transaction: DbTransaction) => {
+const createTransaction = async (transaction: string) => {
   return graphqlReq({
     method: "POST",
     data: {

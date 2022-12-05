@@ -1,21 +1,20 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { WalletStatusCard } from "../../../components/cards/WalletStatusCard";
-import { ConnectKeplrButton } from "../../../components/connectWallet/ConnectKeplrButton";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
-import { selectIsKeplrConnected } from "../../../store/slices/settings";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 
 interface SignTransactionModalProps {
   isVisible: boolean;
+  amount?: string;
+  address?: string;
   onConfirm?: () => void;
   onCancel: () => void;
 }
@@ -24,9 +23,10 @@ export const SignTransactionModal: React.FC<SignTransactionModalProps> = ({
   isVisible,
   onCancel,
   onConfirm,
+  amount,
+  address,
 }) => {
   // variables
-  const isKeplrConnected = useSelector(selectIsKeplrConnected);
 
   // returns
   return (
@@ -41,14 +41,14 @@ export const SignTransactionModal: React.FC<SignTransactionModalProps> = ({
       </BrandText>
       <SpacerColumn size={2} />
 
-      {isKeplrConnected ? <WalletStatusCard /> : <ConnectKeplrButton />}
+      <WalletStatusCard walletAddress={address} />
       <SpacerColumn size={2.5} />
 
       <View style={styles.row}>
         <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-          Balance
+          Amount of the transaction
         </BrandText>
-        <BrandText style={fontSemibold14}>500 TORI</BrandText>
+        <BrandText style={fontSemibold14}>{amount} TORI</BrandText>
       </View>
 
       <SpacerColumn size={2.5} />

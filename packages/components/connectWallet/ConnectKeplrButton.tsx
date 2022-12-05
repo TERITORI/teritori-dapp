@@ -54,6 +54,7 @@ export const ConnectKeplrButton: React.FC<{
       }
     }
   };
+
   return (
     <ConnectWalletButton
       text="Keplr Wallet"

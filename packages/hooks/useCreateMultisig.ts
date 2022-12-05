@@ -18,10 +18,7 @@ export const useCreateMultisig = () => {
       addressPrefix,
       chainId,
     }: CreateMultisigArguement) => {
-      console.log("inside");
-
       try {
-        console.log("inside2");
         const pubkeys = compressedPubkeys.map((compressedPubkey) => {
           return {
             type: "tendermint/PubKeySecp256k1",
@@ -33,7 +30,6 @@ export const useCreateMultisig = () => {
           threshold
         );
         const multisigAddress = pubkeyToAddress(multisigPubkey, addressPrefix);
-        console.log("inside3");
 
         // save multisig to fauna
         const multisig = {
@@ -42,10 +38,7 @@ export const useCreateMultisig = () => {
           chainId,
         };
 
-        console.log("inside4");
-
         const saveRes = await createMultisig(multisig);
-        console.log("saveRes", saveRes);
 
         return saveRes.data.data.createMultisig.address;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

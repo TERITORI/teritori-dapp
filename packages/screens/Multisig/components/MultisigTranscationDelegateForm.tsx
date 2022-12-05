@@ -1,51 +1,72 @@
-import React from "react";
+import { useRoute } from "@react-navigation/native";
+import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import arrowSVG from "../../../../assets/icons/arrow-with-tail.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
+import { AnimationExpand } from "../../../components/animations";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../../components/spacer";
-import { patternOnlyNumbers, validateAddress } from "../../../utils/formRules";
+import { useMultisigContext } from "../../../context/MultisigReducer";
+import { useGetMultisigAccount } from "../../../hooks/useGetMultisigAccount";
+import { useMultisigHelpers } from "../../../hooks/useMultisigHelpers";
+import {
+  patternOnlyNumbers,
+  validateAddress,
+  validateMaxNumber,
+  validateMultisigAddress,
+} from "../../../utils/formRules";
+import { AppRouteType } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold16, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { toriCurrency } from "../../../utils/teritori";
 import { MultisigTransactionDelegateFormType } from "../types";
 import { MultisigFormInput } from "./MultisigFormInput";
 import { MultisigSection } from "./MultisigSection";
-
-const defaultValues = {
-  multisigAddress: "bc1qu5ujlp9dkvtgl98jakvw9ggj9uwyk79qhvwvrg",
-  membersAddress: [
-    { address: "bc1qu5ujlp9dkvtgl98jakvw9ggj9uwyk79qhvwvrg" },
-    { address: "bc1qu5ujlp9dkvtgl98jakvw9ggj9uwyk79qhvwvrg" },
-    { address: "bc1qu5ujlp9dkvtgl98jakvw9ggj9uwyk79qhvwvrg" },
-  ],
-};
 
 interface MultisigTranscationDelegateFormProps {
   title: string;
   transferText: string;
   submitBtnText: string;
-  isDisabled?: boolean;
   onSubmit?: (formValues: MultisigTransactionDelegateFormType) => void;
 }
 
 export const MultisigTranscationDelegateForm: React.FC<
   MultisigTranscationDelegateFormProps
-> = ({
-  title,
-  isDisabled,
-  transferText,
-  submitBtnText,
-  onSubmit = () => {},
-}) => {
+> = ({ title, transferText, submitBtnText, onSubmit = () => {} }) => {
   // variables
-  const { control, handleSubmit } =
-    useForm<MultisigTransactionDelegateFormType>({
-      defaultValues,
-    });
+  const {
+    params: { address },
+  } =
+    useRoute<AppRouteType<"MultisigCreateTransaction" | "MultisigDelegate">>();
+  const { isLoading, data } = useGetMultisigAccount(address);
+  const { control, handleSubmit, setValue } =
+    useForm<MultisigTransactionDelegateFormType>();
+  const { coinSimplified, participantAddressesFromMultisig } =
+    useMultisigHelpers();
+  const { state } = useMultisigContext();
+
+  const holidings = useMemo(() => {
+    if (data?.holdings) {
+      return coinSimplified(data.holdings);
+    }
+    return null;
+  }, [data]);
+
+  const membersAddress = useMemo(() => {
+    if (data?.accountData) {
+      return participantAddressesFromMultisig(data.accountData[0]);
+    }
+    return null;
+  }, [data]);
+
+  // functions
+  const onPressMax = () => {
+    setValue("amount", holidings?.value || "0", { shouldValidate: true });
+  };
 
   // returns
   return (
@@ -65,28 +86,45 @@ export const MultisigTranscationDelegateForm: React.FC<
               isAsterickSign
               name="multisigAddress"
               rules={{ required: true, validate: validateAddress }}
+              defaultValue={address}
+              isCopiable
+              isDisabled
+              isOverrideDisabledBorder
             />
           </MultisigSection>
 
           <MultisigSection
             title="Multisig Wallet Members"
-            tresholdCurrentCount={2}
-            tresholdMax={3}
+            tresholdCurrentCount={
+              membersAddress ? membersAddress.length : undefined
+            }
+            tresholdMax={
+              data
+                ? parseInt(data.accountData[0].value.threshold, 10)
+                : undefined
+            }
+            isLoading={isLoading}
           >
-            {defaultValues.membersAddress.map((_, index) => (
-              <View>
-                <MultisigFormInput<MultisigTransactionDelegateFormType>
-                  control={control}
-                  label={"Address #" + (index + 1)}
-                  isAsterickSign
-                  name={`membersAddress.${index}.address`}
-                  rules={{ required: true, validate: validateAddress }}
-                />
-                {index !== defaultValues.membersAddress.length - 1 && (
-                  <SpacerColumn size={2.5} />
-                )}
-              </View>
-            ))}
+            {membersAddress &&
+              membersAddress.map((address, index) => (
+                <AnimationExpand key={address}>
+                  <MultisigFormInput<MultisigTransactionDelegateFormType>
+                    control={control}
+                    label={"Address #" + (index + 1)}
+                    isAsterickSign
+                    name={`membersAddress.${index}.address`}
+                    rules={{ required: true, validate: validateAddress }}
+                    isCopiable
+                    isDisabled
+                    isOverrideDisabledBorder
+                    isLoading={isLoading}
+                    defaultValue={address}
+                  />
+                  {index !== membersAddress.length - 1 && (
+                    <SpacerColumn size={2.5} />
+                  )}
+                </AnimationExpand>
+              ))}
           </MultisigSection>
         </View>
 
@@ -107,8 +145,15 @@ export const MultisigTranscationDelegateForm: React.FC<
               hideLabel
               isAsterickSign
               name="receipientAddress"
-              isDisabled={isDisabled}
-              rules={{ required: true, validate: validateAddress }}
+              isDisabled={!membersAddress?.length}
+              rules={{
+                required: true,
+                validate: (value) =>
+                  validateMultisigAddress(
+                    value,
+                    state.chain?.addressPrefix || ""
+                  ),
+              }}
               placeHolder="E.g : torix23Jkj1ZSQJ128D928XJSkL2K30Dld1ksl"
             />
           </MultisigSection>
@@ -119,10 +164,18 @@ export const MultisigTranscationDelegateForm: React.FC<
               label="Amount"
               isAsterickSign
               name="amount"
-              rules={{ required: true, pattern: patternOnlyNumbers }}
-              isDisabled={isDisabled}
-              tiker="TORI"
+              rules={{
+                required: true,
+                validate: (value) =>
+                  validateMaxNumber(value, parseFloat(holidings?.value || "0")),
+              }}
+              currency={toriCurrency}
+              isDisabled={!membersAddress?.length}
+              subtitle={
+                holidings?.value ? `${holidings.value} ${holidings.ticker}` : ""
+              }
               placeHolder="0.00"
+              onPressMax={onPressMax}
             />
             <SpacerColumn size={2.5} />
 
@@ -132,7 +185,7 @@ export const MultisigTranscationDelegateForm: React.FC<
               isAsterickSign
               name="gasLimit"
               rules={{ required: true, pattern: patternOnlyNumbers }}
-              isDisabled={isDisabled}
+              isDisabled={!membersAddress?.length}
               placeHolder="0"
             />
             <SpacerColumn size={2.5} />
@@ -142,9 +195,11 @@ export const MultisigTranscationDelegateForm: React.FC<
               label="Gas Price"
               isAsterickSign
               name="gasPrice"
-              rules={{ required: true, pattern: patternOnlyNumbers }}
-              isDisabled={isDisabled}
+              rules={{ required: true }}
+              isDisabled
+              isOverrideDisabledBorder
               placeHolder="0"
+              defaultValue={state.chain?.gasPrice}
             />
             <SpacerColumn size={2.5} />
 
@@ -152,7 +207,7 @@ export const MultisigTranscationDelegateForm: React.FC<
               control={control}
               label="Memo"
               name="memo"
-              isDisabled={isDisabled}
+              isDisabled={!membersAddress?.length}
             />
             <SpacerColumn size={2.5} />
 
@@ -161,7 +216,7 @@ export const MultisigTranscationDelegateForm: React.FC<
                 size="XL"
                 width={218}
                 text={submitBtnText}
-                disabled={isDisabled}
+                disabled={!membersAddress?.length}
                 onPress={handleSubmit(onSubmit)}
               />
             </View>

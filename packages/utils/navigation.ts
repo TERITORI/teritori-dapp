@@ -36,10 +36,10 @@ export type RootStackParamList = {
   MultisigWalletManage: undefined;
   MultisigWalletTransaction: undefined;
   MultisigLegacy: { address: string };
-  MultisigCreateTransaction: undefined;
-  MultisigDelegate: undefined;
+  MultisigCreateTransaction: { address: string };
+  MultisigDelegate: { address: string };
 
-  TransactionProposal: undefined;
+  MultisigTransactionProposal: { address: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -48,6 +48,11 @@ export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
   navigation: NativeStackNavigationProp<RootStackParamList, T>;
   route: RouteProp<RootStackParamList, T>;
 }>;
+
+export type AppRouteType<T extends keyof RootStackParamList> = RouteProp<
+  RootStackParamList,
+  T
+>;
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
@@ -94,10 +99,10 @@ const navConfig: {
     MultisigCreate: "multisig/create",
     MultisigWalletManage: "multisig-wallet/manage",
     MultisigWalletTransaction: "multisig-wallet/transaction",
-    TransactionProposal: "multisig-wallet/proposal/transaction",
-    MultisigLegacy: "multisig/legacy/:address",
-    MultisigCreateTransaction: "multisig/create-transaction",
-    MultisigDelegate: "multisig/delegate",
+    MultisigTransactionProposal: "multisig/:address/transaction/proposals",
+    MultisigLegacy: "multisig/:address",
+    MultisigCreateTransaction: "multisig/:address/transaction/create",
+    MultisigDelegate: "multisig/:address/delegate",
 
     // ==== ComingSoon
     ComingSoon: "coming-soon",

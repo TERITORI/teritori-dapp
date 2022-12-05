@@ -190,7 +190,7 @@ export const Navigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="TransactionProposal"
+        name="MultisigTransactionProposal"
         component={TransactionProposalScreen}
         options={{
           header: () => null,

@@ -1,11 +1,17 @@
 import React from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 
 import walletSVG from "../../../../assets/icons/wallet-grey.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SpacerRow } from "../../../components/spacer";
-import { neutral33, neutral77, neutralA3 } from "../../../utils/style/colors";
+import {
+  neutral33,
+  neutral77,
+  neutralA3,
+  secondaryColor,
+} from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
@@ -15,6 +21,7 @@ interface MultisigSectionProps {
   tresholdMax?: number;
   tresholdCurrentCount?: number;
   toriText?: boolean;
+  isLoading?: boolean;
 }
 
 export const MultisigSection: React.FC<MultisigSectionProps> = ({
@@ -24,6 +31,7 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
   tresholdCurrentCount,
   tresholdMax,
   toriText,
+  isLoading,
 }) => {
   return (
     <View style={[styles.descriptionContainer, containerStyle]}>
@@ -35,7 +43,7 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
             {title}
           </BrandText>
         </View>
-        {tresholdMax && (
+        {!isLoading && tresholdMax && (
           <View style={styles.badge}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
               Treshhold: {tresholdCurrentCount}/{tresholdMax}
@@ -43,14 +51,17 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
           </View>
         )}
 
-        {toriText && (
+        {!isLoading && toriText && (
           <View style={styles.badge}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
               TORI
             </BrandText>
           </View>
         )}
+
+        {isLoading && <ActivityIndicator color={secondaryColor} />}
       </View>
+
       <View style={styles.descriptionFooter}>{children}</View>
     </View>
   );
@@ -87,4 +98,5 @@ const styles = StyleSheet.create({
     borderColor: neutral33,
     borderRadius: 10,
   },
+  activityIndicator: { marginBottom: 10 },
 });

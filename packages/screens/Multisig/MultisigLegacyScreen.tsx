@@ -89,6 +89,7 @@ export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
                 ? parseInt(data.accountData[0].value.threshold, 10)
                 : undefined
             }
+            isLoading={isLoading}
           >
             {membersAddress &&
               membersAddress.map((address, index) => (
