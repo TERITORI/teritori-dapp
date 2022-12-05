@@ -10,7 +10,10 @@ import { layout } from "../../../utils/style/layout";
 import { AddMoreButtonProps } from "./AddMoreButton.type";
 
 export const AddMoreButton: React.FC<AddMoreButtonProps> = ({ onPress }) => {
-  useHotkeys("meta+/", onPress, []);
+  useHotkeys("meta+/", onPress, {
+    enableOnFormTags: true,
+    enableOnContentEditable: true,
+  });
 
   return (
     <View style={{ flex: 1 }}>

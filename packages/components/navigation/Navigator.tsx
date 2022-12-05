@@ -25,6 +25,7 @@ import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarket
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
 import { OrganizationPublicProfileScreen } from "../../screens/OrganizationPublicProfile/OrganizationPublicProfileScreen";
+import { PublicProfileScreen } from "../../screens/PublicProfile/PublicProfileScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";
@@ -220,8 +221,8 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null, title: screenTitle("New Post") }}
       />
       <Stack.Screen
-        name="OrganizationPublicProfile"
-        component={OrganizationPublicProfileScreen}
+        name="PublicProfile"
+        component={PublicProfileScreen}
         options={{ header: () => null, title: "Teritori" }}
       />
       <Stack.Screen
