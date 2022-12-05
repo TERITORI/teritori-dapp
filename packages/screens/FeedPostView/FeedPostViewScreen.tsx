@@ -4,25 +4,22 @@ import { View } from "react-native";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { BrandText } from "../../components/BrandText";
-import { CommentInput } from "../../components/NewsFeed/CommentInput";
+import { NewsFeedInput } from "../../components/NewsFeed/NewsFeedInput";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SocialThreadCard } from "../../components/cards/SocialThreadCard";
-import { screenTitle } from "../../components/navigation/Navigator";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-
-const COMMENT_COST = 0.1;
 
 export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   route: {
     params: { id },
   },
 }) => {
-  const navigation = useAppNavigation();
   const wallet = useSelectedWallet();
+  const [refresh, setRefresh] = useState(0);
   const [post, setPost] = useState<PostResult>();
 
   const fetchPost = async () => {
@@ -40,9 +37,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   useFocusEffect(
     React.useCallback(() => {
       fetchPost();
-      navigation.setOptions({
-        title: screenTitle("GNOPUNKS"),
-      });
     }, [wallet?.connected])
   );
 
@@ -58,10 +52,10 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             marginBottom: layout.padding_x2,
           }}
         >
-          <CommentInput
-            placeholder="Hey yo! Write your comment here!_____"
-            footerText={[`The cost for comment is ${COMMENT_COST} Tori`]}
-            buttonText="Comment"
+          <NewsFeedInput
+            type="comment"
+            parentId={id}
+            onSubmitSuccess={() => setRefresh((prev) => prev + 1)}
           />
         </View>
       }
@@ -71,7 +65,9 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           paddingTop: layout.contentPadding,
         }}
       >
-        {!!post && <SocialThreadCard post={post} singleView />}
+        {!!post && (
+          <SocialThreadCard post={post} singleView refresh={refresh} />
+        )}
       </View>
     </ScreenContainer>
   );

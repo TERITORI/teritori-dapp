@@ -1,6 +1,6 @@
 import React from "react";
-import { Image, TextStyle, View, ViewStyle } from "react-native";
-import { SvgProps } from "react-native-svg";
+import { Image, Linking, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 import defaultUserProfileBannerPNG from "../../../assets/default-images/default-user-profile-banner.png";
 import linkSVG from "../../../assets/icons/link.svg";
@@ -13,38 +13,6 @@ import { Metadata } from "../../contracts-clients/teritori-name-service/Teritori
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral00, neutral55, purpleDefault } from "../../utils/style/colors";
 import { fontBold16, fontMedium14 } from "../../utils/style/fonts";
-
-interface IconTextProps {
-  icon: any;
-  text: string;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
-  iconProps?: SvgProps;
-  iconSize?: number;
-}
-const IconText: React.FC<IconTextProps> = ({
-  icon,
-  text,
-  style,
-  textStyle,
-  iconProps,
-  iconSize,
-}) => {
-  return (
-    <View style={[{ flexDirection: "row", alignItems: "center" }, style]}>
-      <SVG
-        source={icon}
-        height={iconSize}
-        width={iconSize}
-        style={{
-          marginRight: 4,
-        }}
-        {...iconProps}
-      />
-      <BrandText style={[fontMedium14, textStyle]}>{text}</BrandText>
-    </View>
-  );
-};
 
 export const OPPIntro: React.FC<{
   userId: string;
@@ -71,8 +39,8 @@ export const OPPIntro: React.FC<{
           }}
         >
           <AvatarWithFrame image={metadata?.image} />
-          <View style={{ marginTop: 5 }}>
-            <BrandText style={[fontBold16]}>gnopunks</BrandText>
+          <View style={{ marginTop: 5, alignItems: "center" }}>
+            <BrandText style={[fontBold16]}>{metadata?.public_name}</BrandText>
             <BrandText
               style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
             >
@@ -94,9 +62,7 @@ export const OPPIntro: React.FC<{
             }}
           >
             <BrandText style={[fontMedium14, { maxWidth: 500 }]}>
-              We are 10 000 NFTs living in the GNO blockchain. Pioneers
-              community exploring @Teritori dApp & Multichain Experiences!Let’s
-              Build together!
+              {metadata?.public_bio}
             </BrandText>
 
             <View
@@ -105,18 +71,42 @@ export const OPPIntro: React.FC<{
                 flexDirection: "row",
               }}
             >
-              <IconText
-                icon={linkSVG}
-                iconSize={21}
-                text="www.gnopunks.com"
-                style={{ marginRight: 16 }}
-                textStyle={{ color: purpleDefault }}
-              />
-              <IconText
-                icon={locationSVG}
-                text="Wild internets"
-                iconSize={24}
-              />
+              {!!metadata?.external_url && (
+                <View style={[{ flexDirection: "row", alignItems: "center" }]}>
+                  <SVG
+                    source={linkSVG}
+                    height={21}
+                    width={21}
+                    style={{
+                      marginRight: 4,
+                    }}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => Linking.openURL(metadata.external_url || "")}
+                  >
+                    <BrandText style={[fontMedium14, { color: purpleDefault }]}>
+                      {metadata?.external_url}
+                    </BrandText>
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {!!metadata?.validator_operator_address && (
+                <View style={[{ flexDirection: "row", alignItems: "center" }]}>
+                  <SVG
+                    source={locationSVG}
+                    height={24}
+                    width={24}
+                    style={{
+                      marginRight: 4,
+                    }}
+                  />
+                  <BrandText style={[fontMedium14]}>
+                    {metadata?.validator_operator_address}
+                  </BrandText>
+                </View>
+              )}
             </View>
           </View>
 

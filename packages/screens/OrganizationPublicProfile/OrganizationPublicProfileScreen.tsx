@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { NewsFeed } from "../../components/NewsFeed/NewsFeed";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { screenTitle } from "../../components/navigation/Navigator";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
-import { ScreenFC } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { OPPIntro } from "./OPPIntro";
@@ -55,10 +56,19 @@ export const OrganizationPublicProfileScreen: ScreenFC<
     params: { id },
   },
 }) => {
+  const navigation = useAppNavigation();
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("news");
 
   const { metadata, notFound } = useTNSMetadata(id.replace("tori-", ""));
+
+  useEffect(() => {
+    if (metadata?.public_name) {
+      navigation.setOptions({
+        title: screenTitle((metadata?.public_name).toUpperCase()),
+      });
+    }
+  }, [metadata?.public_name]);
 
   return (
     <ScreenContainer

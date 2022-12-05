@@ -1,12 +1,13 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
+import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { neutral22 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { SocialCommentCard } from "./SocialCommentCard";
 
 const CommentContainer: React.FC<{
-  comment: object;
+  comment: PostResult;
   isLast?: boolean;
 }> = ({ comment, isLast }) => {
   return (
@@ -34,7 +35,7 @@ const CommentContainer: React.FC<{
 };
 
 export const CommentsContainer: React.FC<{
-  comments: object[];
+  comments: PostResult[];
   style?: StyleProp<ViewStyle>;
 }> = ({ comments }) => {
   if (!comments?.length) {

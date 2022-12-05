@@ -63,6 +63,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
   noBrokenCorners?: boolean;
+  error?: string;
 }
 
 export const Label: React.FC<{
@@ -113,6 +114,7 @@ export const TextInputCustom = <T extends FieldValues>({
   labelStyle,
   containerStyle,
   boxMainContainerStyle,
+  error,
   noBrokenCorners,
   ...restProps
 }: TextInputCustomProps<T>) => {
@@ -134,7 +136,7 @@ export const TextInputCustom = <T extends FieldValues>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
-  const error = useMemo(() => {
+  const fieldError = useMemo(() => {
     if (fieldState.error) {
       if (fieldState.error.message) {
         return fieldState.error.message;
@@ -236,7 +238,7 @@ export const TextInputCustom = <T extends FieldValues>({
           <>{children}</>
         </View>
       </TertiaryBox>
-      <ErrorText>{error}</ErrorText>
+      <ErrorText>{error || fieldError}</ErrorText>
     </View>
   );
 };
