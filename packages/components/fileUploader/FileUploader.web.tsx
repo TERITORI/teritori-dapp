@@ -1,36 +1,60 @@
-import React, { SyntheticEvent, useState } from "react";
-import { TouchableOpacity, View, ViewStyle } from "react-native";
+import React, { SyntheticEvent, useEffect, useState } from "react";
+import { TouchableOpacity, View } from "react-native";
 
 import bucketSVG from "../../../assets/icons/bucket.svg";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import { BrandText } from "../../components/BrandText";
 import { GradientText } from "../../components/gradientText";
 import { Label } from "../../components/inputs/TextInputCustom";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { neutral17, neutral77, redDefault } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { SVG } from "../SVG";
 import { PrimaryBox } from "../boxes/PrimaryBox";
+import { FileUploaderProps } from "./FileUploader.type";
 
 const FILE_HEIGHT = 256;
-interface FileUploaderProps {
-  label?: string;
-  style?: ViewStyle;
-  onUpload: (file?: File) => void;
-}
+
 export const FileUploader: React.FC<FileUploaderProps> = ({
   label,
   style,
   onUpload,
+  multiple,
+  mimeTypes,
+  triggerFileUpload,
 }) => {
+  const { setToastError } = useFeedbacks();
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
 
-  const [file, setFile] = useState<File>();
+  const [files, setFiles] = useState<File[] | FileList>([]);
+
+  const handleFiles = (files: File[]) => {
+    const _files = multiple ? files : [files[0]];
+    const supportedFiles = [...files].filter((file) =>
+      mimeTypes?.includes(file.type)
+    );
+
+    if (supportedFiles.length === 0) {
+      setToastError({
+        title: "Unsupported file type.",
+        message: "Sorry we couldn't upload file.",
+      });
+      return;
+    } else if (multiple && supportedFiles.length !== _files.length) {
+      setToastError({
+        title: "Unsupported file type.",
+        message: "Sorry we couldn't upload some files at the moment.",
+      });
+    }
+
+    onUpload(supportedFiles);
+    setFiles(supportedFiles);
+  };
 
   const handleChange = (event: SyntheticEvent) => {
     const targetEvent = event.target as HTMLInputElement;
     if (targetEvent.files && targetEvent.files[0]) {
-      setFile(targetEvent.files[0]);
-      onUpload(targetEvent.files[0]);
+      handleFiles(targetEvent?.files as unknown as File[]);
     }
   };
 
@@ -39,42 +63,46 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   };
 
   const dropHandler = (ev: any) => {
-    // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
 
     if (ev.dataTransfer.items) {
-      // Use DataTransferItemList interface to access the file(s)
-      [...ev.dataTransfer.items].forEach((item, i) => {
-        // If dropped items aren't files, reject them
-        if (item.kind === "file") {
-          const file = item.getAsFile();
-          setFile(file);
-          onUpload(file);
-        }
-      });
+      const files = [...ev.dataTransfer.items]
+        .filter((item: any) => item.kind === "file")
+        .map((item: any) => item.getAsFile());
+      handleFiles(files);
     } else {
-      // Use DataTransfer interface to access the file(s)
-      setFile(ev.dataTransfer.files[0]);
-      onUpload(file);
+      handleFiles(ev.dataTransfer.files);
     }
   };
 
   const dragOverHandler = (ev: SyntheticEvent) => {
-    // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
   };
 
+  useEffect(() => {
+    if (triggerFileUpload) {
+      handleClick();
+    }
+  }, [triggerFileUpload]);
+
   return (
-    <View style={style}>
+    <View
+      style={[
+        style,
+        {
+          display: triggerFileUpload ? "none" : "flex",
+        },
+      ]}
+    >
       {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
       <PrimaryBox
         fullWidth
         style={{
-          height: file ? FILE_HEIGHT : 80,
+          height: files?.length ? FILE_HEIGHT : 80,
           borderRadius: 10,
         }}
       >
-        {file ? (
+        {files?.[0] ? (
           <div
             style={{
               height: "100%",
@@ -94,12 +122,12 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={() => setFile(undefined)}
+              onPress={() => setFiles([])}
             >
               <SVG source={bucketSVG} height={16} width={16} />
             </TouchableOpacity>
             <img
-              src={URL.createObjectURL(file)}
+              src={URL.createObjectURL(files?.[0])}
               style={{
                 overflow: "hidden",
                 height: FILE_HEIGHT,
@@ -154,6 +182,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                 ref={hiddenFileInput}
                 style={{ display: "none", position: "absolute" }}
                 onChange={handleChange}
+                multiple={multiple}
               />
             </div>
           </TouchableOpacity>

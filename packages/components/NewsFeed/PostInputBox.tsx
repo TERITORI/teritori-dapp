@@ -6,6 +6,7 @@ import {
   neutral11,
   neutral33,
   neutral77,
+  primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../utils/style/fonts";
@@ -51,25 +52,28 @@ export const PostInputBox: React.FC<PostInputBoxProps> = ({
       >
         Hey yo! Post something here!___
       </BrandText>
-      <TertiaryBox
-        squaresBackgroundColor={neutral11}
-        mainContainerStyle={{
-          height: 48,
-          width: 124,
-          backgroundColor: neutral11,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <SVG
-          source={sliderSVG}
-          height={16}
-          width={16}
-          color={secondaryColor}
-          style={{ marginRight: 8 }}
-        />
-        <BrandText style={[fontSemibold14]}>Publish</BrandText>
-      </TertiaryBox>
+
+      <TouchableOpacity>
+        <TertiaryBox
+          squaresBackgroundColor={neutral11}
+          mainContainerStyle={{
+            height: 48,
+            width: 124,
+            backgroundColor: primaryColor,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <SVG
+            source={sliderSVG}
+            height={16}
+            width={16}
+            color={secondaryColor}
+            style={{ marginRight: 8 }}
+          />
+          <BrandText style={[fontSemibold14, {}]}>Publish</BrandText>
+        </TertiaryBox>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };

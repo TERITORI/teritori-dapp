@@ -29,6 +29,7 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { FilePreview } from "../FilePreview/FilePreview";
 import { RichText } from "../RichText";
 import { SVG } from "../SVG";
 import { tinyAddress } from "../WalletSelector";
@@ -207,7 +208,8 @@ export const SocialThreadCard: React.FC<{
   style?: StyleProp<ViewStyle>;
   singleView?: boolean;
   isGovernance?: boolean;
-}> = ({ post, style, singleView, isGovernance }) => {
+  refresh?: number;
+}> = ({ post, style, singleView, isGovernance, refresh }) => {
   const imageMarginRight = layout.padding_x3_5;
   const tertiaryBoxPaddingHorizontal = layout.padding_x3;
   const { width: containerWidth } = useMaxResolution({
@@ -244,7 +246,7 @@ export const SocialThreadCard: React.FC<{
     if (singleView) {
       queryComments();
     }
-  }, [singleView, post?.identifier]);
+  }, [singleView, post?.identifier, refresh]);
 
   return (
     <View style={style}>
@@ -261,7 +263,7 @@ export const SocialThreadCard: React.FC<{
       >
         <View style={{ flexDirection: "row", flex: 1 }}>
           <AvatarWithFrame
-            image={null}
+            image={postByTNSMetadata?.metadata?.image}
             style={{
               marginRight: imageMarginRight,
             }}
@@ -289,7 +291,16 @@ export const SocialThreadCard: React.FC<{
                   }
                   activeOpacity={0.7}
                 >
-                  <BrandText style={fontSemibold16}>GNOPUNKS</BrandText>
+                  <BrandText
+                    style={[
+                      fontSemibold16,
+                      {
+                        textTransform: "uppercase",
+                      },
+                    ]}
+                  >
+                    {postByTNSMetadata?.metadata?.public_name}
+                  </BrandText>
                 </TouchableOpacity>
                 <BrandText
                   style={[
@@ -307,10 +318,17 @@ export const SocialThreadCard: React.FC<{
               <DotBadge label="Gnolang" />
             </View>
 
+            {!!metadata?.title && (
+              <BrandText style={{ marginTop: layout.padding_x1 }}>
+                {metadata.title}
+              </BrandText>
+            )}
+
             <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
               <RichText initialValue={metadata.message} readOnly />
             </BrandText>
 
+            {!!metadata.fileURL && <FilePreview fileURL={metadata.fileURL} />}
             <View
               style={{
                 backgroundColor: neutral22,
