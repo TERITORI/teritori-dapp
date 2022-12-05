@@ -6,12 +6,9 @@ import {
   RichToolbar,
 } from "react-native-pell-rich-editor";
 
-interface RichTextProps {
-  onChange?: (text: string) => void;
-  initialValue?: string;
-  readOnly?: boolean;
-}
-export const RichText = ({ onChange = () => {} }: RichTextProps) => {
+import { RichTextProps } from "./RichText.type";
+
+export const RichText = ({ onChange = () => {}, onBlur }: RichTextProps) => {
   const richText = React.useRef(null);
   return (
     <View>
@@ -19,7 +16,7 @@ export const RichText = ({ onChange = () => {} }: RichTextProps) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <RichEditor ref={richText} onChange={onChange} />
+        <RichEditor ref={richText} onChange={onChange} onBlur={onBlur} />
       </KeyboardAvoidingView>
       <RichToolbar
         editor={richText}
