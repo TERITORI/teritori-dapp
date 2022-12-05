@@ -53,7 +53,7 @@ export const getPostFee = async ({
       category: postCategory,
     });
 
-    return cost;
+    return +cost;
   } catch (err) {
     console.log("getPostFee err", err);
   }

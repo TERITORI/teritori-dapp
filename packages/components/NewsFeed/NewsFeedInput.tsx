@@ -9,6 +9,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
+import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral17,
   neutral22,
@@ -56,8 +57,9 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
   const [isLoading, setLoading] = useState(false);
   const [postFee, setPostFee] = useState(0);
   const [freePostCount, setFreePostCount] = useState(0);
-  const { setToastSuccess } = useFeedbacks();
+  const { setToastSuccess, setToastError } = useFeedbacks();
   const [fileUpload, setFileUpload] = useState(false);
+  const navigation = useAppNavigation();
 
   const balances = useBalances(
     process.env.TERITORI_NETWORK_ID,
@@ -82,7 +84,7 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
       wallet,
       postCategory: getPostCategory(formValues),
     });
-    setPostFee(fee);
+    setPostFee(fee || 0);
   };
 
   useEffect(() => {
@@ -119,16 +121,34 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
 
   const onSubmit = async () => {
     setLoading(true);
-    await initSubmit();
-    onSubmitSuccess?.();
-    resetForm();
-    setToastSuccess({ title: "Post submitted successfully.", message: "" });
+
+    try {
+      await initSubmit();
+      setToastSuccess({ title: "Post submitted successfully.", message: "" });
+      onSubmitSuccess?.();
+      resetForm();
+    } catch (err) {
+      setToastError({
+        title: "Something went wrong.",
+        message: "Couldn't submit your request, please try again later. ",
+      });
+      console.log("post submit error", err);
+    }
     setLoading(false);
   };
 
   const handleUpload = (file: File) => {
     setFileUpload(false);
     setValue("file", file);
+  };
+
+  const handleTextChange = (text: string) => {
+    setValue("message", text);
+
+    if (text.length > 80) {
+      reset();
+      navigation.navigate("FeedNewPost", formValues);
+    }
   };
 
   return (
@@ -138,6 +158,7 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
           triggerFileUpload
           onUpload={(files) => handleUpload(files?.[0])}
           mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
+          onTrigger={() => setFileUpload(false)}
         />
       )}
 
@@ -168,7 +189,7 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
             type === "post" ? "Post something" : "Write your comment"
           } here! _____`}
           placeholderTextColor={neutral77}
-          onChangeText={(value) => setValue("message", value)}
+          onChangeText={handleTextChange}
           multiline
           style={[
             fontSemibold16,
@@ -200,7 +221,7 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
       <View
         style={{
           backgroundColor: neutral17,
-          paddingTop: layout.padding_x3,
+          paddingTop: layout.padding_x4,
           paddingBottom: layout.padding_x1_5,
           marginTop: -layout.padding_x2_5,
           paddingHorizontal: layout.padding_x2_5,
@@ -225,7 +246,9 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
           >
             {freePostCount
               ? `You have ${freePostCount} free ${type} left`
-              : `The cost for this ${type} is ${postFee} Tori`}
+              : `The cost for this ${type} is ${(
+                  (postFee || 0) / 1000000
+                ).toFixed(4)} Tori`}
           </BrandText>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -240,7 +263,9 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
               justifyContent: "center",
               marginRight: layout.padding_x2_5,
             }}
-            onPress={() => setFileUpload(true)}
+            onPress={() => {
+              setFileUpload(true);
+            }}
           >
             <SVG source={cameraSVG} width={16} height={16} />
           </TouchableOpacity>

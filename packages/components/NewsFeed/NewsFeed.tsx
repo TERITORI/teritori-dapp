@@ -1,6 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, FlatList } from "react-native";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
@@ -16,7 +16,17 @@ export const NewsFeed: React.FC = () => {
   const [posts, setPosts] = useState<PostResult[]>([]);
   const [loading, setLoading] = useState(false);
 
-  async function initData() {
+  async function fetchData({
+    count = 10,
+    from = 0,
+    sort = "desc",
+    isMore,
+  }: {
+    count?: number;
+    from?: number;
+    sort?: string;
+    isMore?: boolean;
+  } = {}) {
     if (!wallet?.connected || !wallet.address) {
       return;
     }
@@ -27,12 +37,12 @@ export const NewsFeed: React.FC = () => {
       });
 
       const mainPosts = await client.queryMainPosts({
-        count: 10.0,
-        from: 0,
-        sort: "desc",
+        count,
+        from,
+        sort,
       });
 
-      setPosts(mainPosts);
+      setPosts((prev) => (isMore ? [...prev, ...mainPosts] : mainPosts));
     } catch (err) {
       console.log("initData err", err);
     }
@@ -40,14 +50,21 @@ export const NewsFeed: React.FC = () => {
     setLoading(false);
   }
 
+  const fetchMore = () => {
+    fetchData({
+      from: posts.length,
+      isMore: true,
+    });
+  };
+
   useFocusEffect(
     React.useCallback(() => {
-      initData();
+      fetchData();
     }, [wallet?.address])
   );
   return (
     <View>
-      <NewsFeedInput type="post" />
+      <NewsFeedInput type="post" onSubmitSuccess={fetchData} />
       <View style={{ paddingTop: layout.contentPadding }}>
         {loading && (
           <ActivityIndicator
@@ -58,13 +75,16 @@ export const NewsFeed: React.FC = () => {
             }}
           />
         )}
-        {posts.map((post) => (
-          <SocialThreadCard
-            key={post.identifier}
-            post={post}
-            style={{ marginBottom: 74 }}
-          />
-        ))}
+
+        <FlatList
+          data={posts}
+          renderItem={({ item: post }: { item: PostResult }) => (
+            <SocialThreadCard post={post} style={{ marginBottom: 74 }} />
+          )}
+          keyExtractor={(item: PostResult) => item.identifier}
+          onEndReached={fetchMore}
+          onEndReachedThreshold={0.1}
+        />
       </View>
     </View>
   );
