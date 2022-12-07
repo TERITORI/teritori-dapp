@@ -12,6 +12,8 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
+	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -72,7 +74,15 @@ func main() {
 		whitelist[i] = strings.TrimFunc(elem, unicode.IsSpace)
 	}
 
-	svc := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
+	marketplaceSvc := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
+		Logger:             logger,
+		IndexerDB:          indexerDB,
+		GraphqlEndpoint:    graphqlEndpoint,
+		TNSContractAddress: *tnsContractAddress,
+		TNSDefaultImageURL: *tnsDefaultImageURL,
+		Whitelist:          whitelist,
+	})
+	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
 		Logger:             logger,
 		IndexerDB:          indexerDB,
 		GraphqlEndpoint:    graphqlEndpoint,
@@ -82,7 +92,8 @@ func main() {
 	})
 
 	server := grpc.NewServer()
-	marketplacepb.RegisterMarketplaceServiceServer(server, svc)
+	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
+	p2epb.RegisterP2EServiceServer(server, p2eSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),

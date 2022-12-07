@@ -36,6 +36,8 @@ export const additionalRed = "#FFAEAE";
 export const white = "#FFFFFF";
 export const orangeLight = "#EAA54B";
 
+export const additionalGreen = "#C8FFAE";
+
 export const gradientColorTurquoise = "#A5FECB";
 export const gradientColorLightLavender = "#C3CFE2";
 export const gradientColorLavender = "#AEB1FF";

@@ -1,4 +1,5 @@
 import { Coin, toUtf8 } from "cosmwasm";
+
 import backpackSVG from "../../assets/game/backpack.svg";
 import coinStakeSVG from "../../assets/game/coin-stake.svg";
 import controllerSVG from "../../assets/game/controller.svg";
@@ -14,11 +15,26 @@ import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
 import { THE_RIOT_BREEDING_CONTRACT_ADDRESS } from "../screens/RiotGame/settings";
 import { GameBgCardItem } from "../screens/RiotGame/types";
+import { UserScore } from "./../api/p2e/v1/p2e";
 
 const THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS =
   process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS || "";
 const THE_RIOT_NFT_CONTRACT_ADDRESS =
   process.env.THE_RIOT_NFT_CONTRACT_ADDRESS || "";
+const REWARD_COEF = 100;
+
+export const parseUserScoreInfo = (userScore: UserScore) => {
+  const { inProgressScore, snapshotScore, rank, snapshotRank } = userScore;
+
+  // Duration is in seconds
+  const hours = Math.floor((100 * inProgressScore) / 60 / 60) / 100;
+  const xp = hours * REWARD_COEF;
+  const scoreChanges =
+    Math.floor(10_000 * ((inProgressScore - snapshotScore) / snapshotScore)) /
+    100;
+  const rankChanges = rank - snapshotRank;
+  return { xp, hours, rankChanges, scoreChanges };
+};
 
 export const getRipperRarity = (
   ripper: NSRiotGame.RipperDetail

@@ -38,6 +38,8 @@ func main() {
 		pollDelay                   = fs.Duration("poll-delay", 2*time.Second, "delay between tail queries")
 		tnsContractAddress          = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
 		vaultContractAddress        = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")
+		squadStakingContactAddress  = fs.String("the-riot-squad-staking-contract-address", "", "address of the teritori squad staking contract")
+		theRiotCollectionAddress    = fs.String("the-riot-collection-address", "", "address of the riot collection")
 		minterCodeIDs               = fs.String("teritori-minter-code-ids", "", "code ids of teritori minter contracts")
 		tnsDefaultImageURL          = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
 		dbHost                      = fs.String("db-indexer-host", "", "host postgreSQL database")
@@ -212,14 +214,16 @@ func main() {
 
 			if err := db.Transaction(func(dbtx *gorm.DB) error {
 				handler, err := indexerhandler.NewHandler(dbtx, indexerhandler.Config{
-					MinterCodeIDs:        mcis,
-					VaultContractAddress: *vaultContractAddress,
-					TNSContractAddress:   *tnsContractAddress,
-					TNSDefaultImageURL:   *tnsDefaultImageURL,
-					TendermintClient:     client,
-					NetworkID:            *teritoriNetworkID,
-					CoinGeckoPrices:      cgp,
-					BlockTimeCache:       blockTimeCache,
+					MinterCodeIDs:               mcis,
+					VaultContractAddress:        *vaultContractAddress,
+					SquadStakingContractAddress: *squadStakingContactAddress,
+					TheRiotCollectionAddress:    *theRiotCollectionAddress,
+					TNSContractAddress:          *tnsContractAddress,
+					TNSDefaultImageURL:          *tnsDefaultImageURL,
+					TendermintClient:            client,
+					NetworkID:                   *teritoriNetworkID,
+					CoinGeckoPrices:             cgp,
+					BlockTimeCache:              blockTimeCache,
 				}, logger)
 				if err != nil {
 					return errors.Wrap(err, "failed to create handler")
