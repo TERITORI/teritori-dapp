@@ -18,7 +18,7 @@ import {
   fontMedium32,
   fontMedium48,
 } from "../../utils/style/fonts";
-import { BreedingModal } from "./component/BreedingResultModal";
+import { BreedingResultModal } from "./component/BreedingResultModal";
 import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";
@@ -98,7 +98,7 @@ export const RiotGameBreedingScreen = () => {
         </Col>
       </Row>
 
-      <BreedingModal
+      <BreedingResultModal
         onClose={() => setIsShowBreedingModal(false)}
         visible={isShowBreedingModal}
       />

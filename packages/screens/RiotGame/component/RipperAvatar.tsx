@@ -18,7 +18,7 @@ import { fontSemibold9 } from "../../../utils/style/fonts";
 
 type RipperAvatarProps = {
   size: number;
-  source: string | ImageSourcePropType | undefined;
+  source: string | ImageSourcePropType;
   containerStyle?: ViewStyle;
   rarity?: NSRiotGame.RipperRarity;
   rounded?: boolean;

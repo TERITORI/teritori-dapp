@@ -24,13 +24,12 @@ import {
 type BreedingResultModalProps = {
   visible?: boolean;
   onClose?(): void;
-  lastBreedAt: moment.Moment | undefined;
+  lastBreedAt?: moment.Moment | undefined;
 };
 
 export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   visible = false,
   onClose,
-  lastBreedAt,
 }) => {
   const { info: collectionInfo = {} } = useCollectionInfo(
     THE_RIOT_COLLECTION_ID
@@ -69,11 +68,10 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   };
 
   useEffect(() => {
-    // if (!selectedWallet?.address || !lastBreedAt) return;
     if (!selectedWallet?.address) return;
 
     fetchLastBreeding();
-  }, [selectedWallet?.address, lastBreedAt]);
+  }, [selectedWallet?.address]);
 
   return (
     <ModalBase

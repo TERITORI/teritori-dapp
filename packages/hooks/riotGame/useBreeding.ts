@@ -1,7 +1,7 @@
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { Coin } from "cosmwasm";
 import moment from "moment";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { TeritoriBreedingQueryClient } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { THE_RIOT_BREEDING_CONTRACT_ADDRESS } from "../../screens/RiotGame/settings";
