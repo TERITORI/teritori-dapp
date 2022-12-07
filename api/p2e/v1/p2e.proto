@@ -22,5 +22,5 @@ message UserScore {
 }
 
 message LeaderboardResponse {
-  UserScore userScore = 1;
+  UserScore user_score = 1;
 }
