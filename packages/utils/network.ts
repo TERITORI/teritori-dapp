@@ -3,8 +3,8 @@ import { bech32 } from "bech32";
 
 export enum Network {
   Unknown = "Unknown",
-  Solana = "Solana",
   Teritori = "Teritori",
+  Solana = "Solana",
   Ethereum = "Ethereum",
   Atom = "Atom",
   Juno = "Juno",
