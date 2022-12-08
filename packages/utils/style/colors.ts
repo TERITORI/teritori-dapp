@@ -51,6 +51,10 @@ export const gradientColorGray = "#676767";
 export const gradientColorLightGray = "#B7B7B7";
 export const gradientColorLighterGray = "#F5F7FA";
 
+export const currencyTORIcolor = primaryColor;
+export const currencyATOMcolor = "#5C26F5";
+export const currencyOSMOcolor = "#A401D4";
+
 export const gradientBlue = "90deg, #00C6FB 0%, #005BEA 100%";
 export const gradientBlueReversed = "90deg, #005BEA 0%, #00C6FB 100%";
 export const gradientBlueExtended =

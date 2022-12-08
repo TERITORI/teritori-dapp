@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { View, Image, Linking } from "react-native";
+import { useSelector } from "react-redux";
 
 import defaultNewsBanner from "../../../assets/default-images/default-news-banner.png";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
@@ -15,6 +16,7 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { backendClient } from "../../utils/backend";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
@@ -35,9 +37,8 @@ export const HubLanding: React.FC = () => {
     image: defaultNewsBanner,
     maxSize: { width: maxWidth },
   });
-  const banners = useBanners(
-    process.env.TERITORI_NETWORK_ID === "teritori-testnet"
-  );
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const banners = useBanners(selectedNetworkId === "teritori-testnet");
   const banner = banners?.length ? banners[0] : undefined;
 
   return (
@@ -153,6 +154,7 @@ Launch"
   );
 };
 
+//TODO: networkId instead of testnet. ==> Wait for backend modif
 const useBanners = (testnet: boolean) => {
   const { data } = useQuery(
     ["banners", testnet],

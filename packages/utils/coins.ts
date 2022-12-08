@@ -9,7 +9,11 @@ export interface Balance {
   denom: string;
 }
 
-export const decimalFromAtomics = (value: string, denom: string) => {
+export const decimalFromAtomics = (
+  networkId: string,
+  value: string,
+  denom: string
+) => {
   const currency = getNativeCurrency(process.env.TERITORI_NETWORK_ID, denom);
   if (currency) {
     return Decimal.fromAtomics(value, currency.decimals);

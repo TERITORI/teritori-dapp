@@ -2,6 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
@@ -19,6 +20,7 @@ import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import { defaultMintFee } from "../../utils/fee";
 import {
@@ -37,6 +39,7 @@ import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,
 }) => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const width = 417;
   const height = 80;
 
@@ -71,11 +74,7 @@ const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
 
         <BrandText style={[fontSemibold14]}>
           The mint cost for this token is{" "}
-          {prettyPrice(
-            process.env.TERITORI_NETWORK_ID || "",
-            price.amount,
-            price.denom
-          )}
+          {prettyPrice(selectedNetworkId, price.amount, price.denom)}
         </BrandText>
       </View>
     </View>
@@ -102,8 +101,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const navigation = useAppNavigation();
   const price = useTNSMintPrice(name + process.env.TLD);
-  const networkId = process.env.TERITORI_NETWORK_ID;
-  const balances = useBalances(networkId, selectedWallet?.address);
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const balance = balances.find((bal) => bal.denom === price?.denom);
 
   const normalizedTokenId = (name + process.env.TLD).toLowerCase();
@@ -218,7 +217,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
         >
           Available Balance:{" "}
           {prettyPrice(
-            networkId || "",
+            selectedNetworkId,
             balance?.amount || "0",
             price?.denom || ""
           )}

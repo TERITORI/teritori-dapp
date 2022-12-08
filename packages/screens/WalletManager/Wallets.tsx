@@ -7,7 +7,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral33 } from "../../utils/style/colors";
 import { WalletItem } from "./WalletItem";
 
-export const Wallets: React.FC = () => {
+export const Wallets: React.FC<{ networkId: string }> = ({ networkId }) => {
   const selectedWallet = useSelectedWallet();
 
   // TODO: Handle multiple wallets addresses

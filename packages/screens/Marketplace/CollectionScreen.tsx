@@ -3,6 +3,7 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useMemo, useState } from "react";
 import { View, Image, Platform, StyleSheet, Linking } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
 
 import bannerCollection from "../../../assets/default-images/banner-collection.png";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
@@ -35,6 +36,7 @@ import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNativeCurrency } from "../../networks";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { alignDown } from "../../utils/align";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
@@ -112,14 +114,14 @@ export const Header: React.FC<{
     maxSize: { width: maxWidth },
   });
   const { setToastSuccess } = useFeedbacks();
-  const networkId = process.env.TERITORI_NETWORK_ID || ""; // FIXME: derive from collection network
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
 
   const coins = useMemo(() => {
     if (!stats?.floorPrice) {
       return [];
     }
     return stats.floorPrice.map((fp) => ({
-      networkId,
+      networkId: selectedNetworkId,
       denom: fp.denom,
     }));
   }, [stats?.floorPrice]);
@@ -150,7 +152,7 @@ export const Header: React.FC<{
     }
     return [...stats.floorPrice]
       .map((fp) => {
-        const currency = getNativeCurrency(networkId, fp.denom);
+        const currency = getNativeCurrency(selectedNetworkId, fp.denom);
         if (!currency) {
           return Infinity;
         }
@@ -170,7 +172,7 @@ export const Header: React.FC<{
       .sort((a, b) => {
         return b - a;
       })[0];
-  }, [prices, stats?.floorPrice, networkId]);
+  }, [prices, stats?.floorPrice, selectedNetworkId]);
 
   // functions
   const onShare = () => {

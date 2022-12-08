@@ -3,6 +3,7 @@ import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
@@ -15,6 +16,7 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBondedToris";
+import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
 import { getKeplrOfflineSigner } from "../../../utils/keplr";
 import {
@@ -49,6 +51,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   data,
 }) => {
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const { bondedTokens, refreshBondedTokens } = useSelectedWalletBondedToris(
     data?.address
   );
@@ -207,7 +210,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         <BrandText style={fontSemibold13}>
           Bonded tokens:{" "}
           {prettyPrice(
-            process.env.TERITORI_NETWORK_ID || "",
+            selectedNetworkId,
             bondedTokens.atomics,
             toriCurrency.coinMinimalDenom
           )}

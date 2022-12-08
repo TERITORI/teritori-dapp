@@ -3,6 +3,7 @@ import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
@@ -16,6 +17,7 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
 import { getKeplrOfflineSigner } from "../../../utils/keplr";
 import { neutral77 } from "../../../utils/style/colors";
@@ -47,12 +49,10 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
 }) => {
   // variables
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
-  const balances = useBalances(
-    process.env.TERITORI_NETWORK_ID,
-    wallet?.address
-  );
+  const balances = useBalances(selectedNetworkId, wallet?.address);
   const toriBalance = balances.find((bal) => bal.denom === "utori");
   const toriBalanceDecimal = Decimal.fromAtomics(
     toriBalance?.amount || "0",
@@ -208,7 +208,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         <BrandText style={fontSemibold13}>
           Available balance:{" "}
           {prettyPrice(
-            process.env.TERITORI_NETWORK_ID || "",
+            selectedNetworkId,
             toriBalanceDecimal.atomics,
             toriCurrency.coinMinimalDenom
           )}

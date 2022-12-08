@@ -4,7 +4,10 @@ import { useSelector } from "react-redux";
 
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { selectIsKeplrConnected } from "../../../store/slices/settings";
+import {
+  selectIsKeplrConnected,
+  selectSelectedNetworkId,
+} from "../../../store/slices/settings";
 import { decimalFromAtomics, prettyPrice } from "../../../utils/coins";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
@@ -35,8 +38,8 @@ export const TransactionPaymentModal: React.FC<{
 }) => {
   const isKeplrConnected = useSelector(selectIsKeplrConnected);
   const selectedWallet = useSelectedWallet();
-  const networkId = process.env.TERITORI_NETWORK_ID; // FIXME: support other networks
-  const balances = useBalances(networkId, selectedWallet?.address);
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const balance = balances.find((bal) => bal.denom === priceDenom)?.amount;
 
   return (
@@ -72,11 +75,7 @@ export const TransactionPaymentModal: React.FC<{
             </BrandText>
             {/* TODO: Refresh totalString just after connect Keplr*/}
             <BrandText style={fontSemibold14}>
-              {prettyPrice(
-                process.env.TERITORI_NETWORK_ID || "",
-                balance || "0",
-                priceDenom
-              )}
+              {prettyPrice(selectedNetworkId, balance || "0", priceDenom)}
             </BrandText>
           </View>
           <View
@@ -90,11 +89,7 @@ export const TransactionPaymentModal: React.FC<{
               You will pay
             </BrandText>
             <BrandText style={fontSemibold14}>
-              {prettyPrice(
-                process.env.TERITORI_NETWORK_ID || "",
-                price,
-                priceDenom
-              )}
+              {prettyPrice(selectedNetworkId, price, priceDenom)}
             </BrandText>
           </View>
         </View>
@@ -112,8 +107,12 @@ export const TransactionPaymentModal: React.FC<{
         {
           // Can buy if only the funds are sufficient
           price &&
-          decimalFromAtomics(balance || "0", priceDenom).isLessThan(
-            decimalFromAtomics(price, priceDenom)
+          decimalFromAtomics(
+            selectedNetworkId,
+            balance || "0",
+            priceDenom
+          ).isLessThan(
+            decimalFromAtomics(selectedNetworkId, price, priceDenom)
           ) ? (
             <View style={{ alignItems: "center", width: "100%" }}>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>

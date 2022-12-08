@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { getFirstKeplrAccount, getSigningCosmWasmClient } from "../utils/keplr";
+import { getSigningCosmWasmClient } from "../utils/keplr";
 import { useIsKeplrConnected } from "./useIsKeplrConnected";
+import useSelectedWallet from "./useSelectedWallet";
 
 export function usePrimaryAlias() {
   const contract = process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
@@ -11,9 +12,10 @@ export function usePrimaryAlias() {
   const [loadingAlias, setLoading] = useState(false);
 
   const isKeplrConnected = useIsKeplrConnected();
+  const selectedWallet = useSelectedWallet();
 
   useEffect(() => {
-    if (!isKeplrConnected) {
+    if (!isKeplrConnected || !selectedWallet) {
       return;
     }
 
@@ -22,11 +24,9 @@ export function usePrimaryAlias() {
       try {
         const signingClient = await getSigningCosmWasmClient();
 
-        const walletAddress = (await getFirstKeplrAccount()).address;
-
         const aliasResponse = await signingClient.queryContractSmart(contract, {
           primary_alias: {
-            address: walletAddress,
+            address: selectedWallet?.address,
           },
         });
         //setAlias(aliasResponse.username)

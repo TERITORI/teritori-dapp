@@ -1,25 +1,17 @@
 import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { Network } from "../../utils/network";
-import { RootState } from "../store";
-
 export interface StoreWallet {
   publicKey: string;
-  network: Network;
+  networkId: string;
 }
 
 export const storeWalletId = (wallet: StoreWallet) =>
-  `${wallet.network}-${wallet.publicKey}`;
+  `${wallet.networkId}-${wallet.publicKey}`;
 
 const storeWalletsAdapter = createEntityAdapter<StoreWallet>({
   selectId: storeWalletId,
 });
-
-const selectors = storeWalletsAdapter.getSelectors();
-
-export const selectStoreWallets = (state: RootState) =>
-  selectors.selectAll(state.wallets);
 
 export const walletsSlice = createSlice({
   name: "wallets",

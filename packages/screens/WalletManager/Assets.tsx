@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, StyleProp, ViewStyle } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
@@ -14,17 +14,18 @@ import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
 
 const collapsedCount = 5;
 
-export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
-  networkId,
-  balances,
-}) => {
+export const Assets: React.FC<{
+  networkId: string;
+  balances: Balance[];
+  style?: StyleProp<ViewStyle>;
+}> = ({ networkId, balances, style }) => {
   const [isDepositVisible, setDepositVisible] = useState(false);
   const [isWithdrawVisible, setWithdrawVisible] = useState(false);
   const [targetCurrency, setTargetCurrency] = useState<string>();
   const [expanded, setExpanded] = useState(false);
 
-  const network = getNetwork(networkId);
-  if (!network) {
+  const selectedNetwork = getNetwork(networkId);
+  if (!selectedNetwork) {
     return null;
   }
 
@@ -38,7 +39,7 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
     setWithdrawVisible(true);
   };
 
-  let currencies = [...network.currencies]
+  let currencies = [...selectedNetwork.currencies]
     .sort((a, b) => {
       const aBal = balances.find((bal) => bal.denom === a.denom);
       const bBal = balances.find((bal) => bal.denom === b.denom);
@@ -62,12 +63,15 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
 
   return (
     <View
-      style={{
-        marginTop: 40,
-        paddingTop: 40,
-        borderTopWidth: 1,
-        borderColor: neutral33,
-      }}
+      style={[
+        {
+          marginTop: 40,
+          paddingTop: 40,
+          borderTopWidth: 1,
+          borderColor: neutral33,
+        },
+        style,
+      ]}
     >
       <View
         style={{
@@ -83,10 +87,10 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
           }}
         >
           <BrandText style={{ marginRight: 20, fontSize: 20 }}>
-            Assets on {network.displayName}
+            Assets on {selectedNetwork.displayName}
           </BrandText>
         </View>
-        {network.currencies.length > collapsedCount && (
+        {selectedNetwork.currencies.length > collapsedCount && (
           <View
             style={{
               flexDirection: "row",
@@ -159,7 +163,7 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
                 >
                   <BrandText>
                     {prettyPrice(
-                      process.env.TERITORI_NETWORK_ID || "",
+                      networkId,
                       balance?.amount || "0",
                       currency.denom
                     )}

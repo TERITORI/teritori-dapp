@@ -13,12 +13,10 @@ export type RootStackParamList = {
   Governance: undefined;
   UserPublicProfile: { id: string };
   RiotersFooter: undefined;
-
   Launchpad: undefined;
   LaunchpadApply: undefined;
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
-
   Marketplace: undefined;
   Collection: { id: string };
   CollectionTools: { id: string };
@@ -36,7 +34,7 @@ export type RootStackParamList = {
   RiotGameRarity: undefined;
 
   Staking: undefined;
-
+  Swap: undefined;
   ComingSoon: undefined;
 };
 
@@ -81,7 +79,6 @@ const navConfig: {
     MintCollection: "collection/:id/mint",
     // ==== Teritori Name Service
     TNSHome: "tns/:modal?",
-
     // ==== Marketplace
     Marketplace: "marketplace",
     Collection: "collection/:id",
@@ -90,6 +87,7 @@ const navConfig: {
     NFTDetail: "nft/:id",
     // ==== Staking
     Staking: "staking",
+    Swap: "swap",
     // ==== ComingSoon
     ComingSoon: "coming-soon",
   },

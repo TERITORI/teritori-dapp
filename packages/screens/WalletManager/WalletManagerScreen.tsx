@@ -1,12 +1,13 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 import { Assets } from "./Assets";
@@ -17,17 +18,18 @@ import { Wallets } from "./Wallets";
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetwork = useSelectedNetworkId();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const areThereWallets = useAreThereWallets();
   const { height } = useMaxResolution();
-  const balances = useBalances(selectedNetwork, selectedWallet?.address);
+  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
+
   return (
     <WalletManagerScreenContainer>
       {areThereWallets ? (
         <View style={styles.container}>
           <WalletDashboardHeader />
-          <Assets networkId={selectedNetwork} balances={balances} />
-          <Wallets />
+          <Assets networkId={selectedNetworkId} balances={balances} />
+          <Wallets networkId={selectedNetworkId} />
           <MyNFTs />
         </View>
       ) : (

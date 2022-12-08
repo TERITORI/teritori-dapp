@@ -1,5 +1,6 @@
 import React from "react";
 import { View, ActivityIndicator, ViewStyle, StyleProp } from "react-native";
+import { useSelector } from "react-redux";
 
 import {
   Collection,
@@ -9,7 +10,7 @@ import {
 } from "../api/marketplace/v1/marketplace";
 import { useCollections } from "../hooks/useCollections";
 import { useNFTs } from "../hooks/useNFTs";
-import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { layout } from "../utils/style/layout";
 import { NetworkIcon } from "./NetworkIcon";
 import { Section } from "./Section";
@@ -22,7 +23,7 @@ export const OwnedNFTs: React.FC<{
   style?: StyleProp<ViewStyle>;
   EmptyListComponent?: React.ComponentType;
 }> = ({ ownerId, style, EmptyListComponent }) => {
-  const selectedNetworkId = useSelectedNetworkId();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
 
   const [collections] = useCollections({
     networkId: selectedNetworkId,
@@ -76,7 +77,7 @@ const OwnedNFTsSection: React.FC<{
       title={`${collection.collectionName} Collection`}
       topRightChild={
         <View style={{ alignItems: "flex-end", flexDirection: "row" }}>
-          <NetworkIcon size={16} networkId={collection.networkId} />
+          <NetworkIcon size={16} networkId={collection.networkId} circle />
         </View>
       }
     >

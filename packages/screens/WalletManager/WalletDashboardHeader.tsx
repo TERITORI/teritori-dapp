@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
 
 import penSVG from "../../../assets/icons/manage.svg";
 import { BrandText } from "../../components/BrandText";
@@ -9,9 +10,9 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
 import { rewardsPrice, useRewards } from "../../hooks/useRewards";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
@@ -88,9 +89,9 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
 
 export const WalletDashboardHeader: React.FC = () => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetwork = useSelectedNetworkId();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
-  const balances = useBalances(selectedNetwork, selectedWallet?.address);
+  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const navigation = useAppNavigation();
   const totalUSDBalance = balances.reduce(
     (total, bal) => total + (bal.usdAmount || 0),

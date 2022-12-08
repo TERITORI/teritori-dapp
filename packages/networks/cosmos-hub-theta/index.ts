@@ -1,11 +1,13 @@
+import { NetworkName } from "../NetworkName";
 import { NetworkInfo } from "../types";
 import { cosmosHubThetaCurrencies } from "./currencies";
 
 export const cosmosThetaNetwork: NetworkInfo = {
   id: "cosmos-hub-theta",
   chainId: "theta-testnet-001",
-  displayName: "Cosmos Hub Theta",
-  icon: "icons/networks/cosmos-hub-circle.svg",
+  displayName: NetworkName.CosmosHubTheta,
+  icon: "icons/networks/cosmos-hub.svg",
+  iconCircle: "icons/networks/cosmos-hub-circle.svg",
   currencies: cosmosHubThetaCurrencies,
   addressPrefix: "cosmos",
   restEndpoint: "https://cosmos-testnet-rpc.allthatnode.com:1317",
@@ -23,4 +25,5 @@ export const cosmosThetaNetwork: NetworkInfo = {
     "no-legacy-stdTx",
     "ibc-go",
   ],
+  hidden: true,
 };

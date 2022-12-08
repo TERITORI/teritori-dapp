@@ -101,7 +101,7 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
     <ModalBase
       onClose={() => onClose()}
       hideMainSeparator
-      label={` Welcome back, ${alias} !`}
+      label={alias ? `Welcome back, ${alias} !` : "Welcome!"}
       width={457}
     >
       <View style={{ flex: 1, alignItems: "center" }}>

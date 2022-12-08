@@ -3,12 +3,14 @@ import { Decimal } from "cosmwasm";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTNS } from "../../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
 import {
   getKeplrOfflineSigner,
@@ -32,11 +34,9 @@ export const SendFundModal: React.FC<{
   const { control, handleSubmit: formHandleSubmit } =
     useForm<SendFundFormType>();
   const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const balances = useBalances(
-    process.env.TERITORI_NETWORK_ID,
-    selectedWallet?.address
-  );
+  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const toriBalance = balances.find(
     (bal) => bal.denom === toriCurrency.coinMinimalDenom
   );
@@ -126,7 +126,7 @@ export const SendFundModal: React.FC<{
       onClose={onClose}
       width={400}
       label={`Your wallet has ${prettyPrice(
-        process.env.TERITORI_NETWORK_ID || "",
+        selectedNetworkId,
         toriBalance?.amount || "0",
         toriBalance?.denom || ""
       )}`}

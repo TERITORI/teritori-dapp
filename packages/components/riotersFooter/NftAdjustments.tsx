@@ -1,9 +1,11 @@
 import React, { memo, useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import TrashSVG from "../../../assets/icons/trash.svg";
 import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import {
   neutral33,
@@ -40,6 +42,7 @@ const NftAdjustments: React.FC<{
     setTransactionPaymentModalVisible,
     currentCollection,
   }) => {
+    const selectedNetworkId = useSelector(selectSelectedNetworkId);
     const [sliderValue, setSliderValue] = useState(0);
     const [percentage, setPercentage] = useState(0);
 
@@ -113,7 +116,7 @@ const NftAdjustments: React.FC<{
             style={{ fontSize: 16, color: primaryColor, fontWeight: "700" }}
           >
             {prettyPrice(
-              process.env.TERITORI_NETWORK_ID || "",
+              selectedNetworkId,
               price?.toString() || "",
               toriCurrency.coinMinimalDenom
             )}

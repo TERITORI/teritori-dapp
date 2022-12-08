@@ -2,10 +2,12 @@ import { Link } from "@react-navigation/native";
 import moment from "moment";
 import React, { useState } from "react";
 import { FlatList, TextStyle, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
 import { useActivity } from "../../hooks/useActivity";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import {
   mineShaftColor,
@@ -99,6 +101,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
   const sellerAddress = activity.sellerId && activity.sellerId.split("-")[1];
   const buyerTNSMetadata = useTNSMetadata(buyerAddress);
   const sellerTNSMetadata = useTNSMetadata(sellerAddress);
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   return (
     <View
       style={{
@@ -156,11 +159,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           },
         ]}
       >
-        {prettyPrice(
-          process.env.TERITORI_NETWORK_ID || "",
-          activity.amount,
-          activity.denom
-        )}
+        {prettyPrice(selectedNetworkId, activity.amount, activity.denom)}
       </BrandText>
       <View
         style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.padding_x1 }}

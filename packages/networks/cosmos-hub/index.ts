@@ -1,11 +1,13 @@
+import { NetworkName } from "../NetworkName";
 import { NetworkInfo } from "../types";
 import { cosmosHubCurrencies } from "./currencies";
 
 export const cosmosNetwork: NetworkInfo = {
   id: "cosmos-hub",
   chainId: "cosmoshub-4",
-  displayName: "Cosmos Hub",
-  icon: "icons/networks/cosmos-hub-circle.svg",
+  displayName: NetworkName.CosmosHub,
+  icon: "icons/networks/cosmos-hub.svg",
+  iconCircle: "icons/networks/cosmos-hub-circle.svg",
   currencies: cosmosHubCurrencies,
   addressPrefix: "cosmos",
   restEndpoint: "https://api-cosmoshub-ia.cosmosia.notional.ventures",

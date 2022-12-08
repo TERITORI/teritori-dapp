@@ -4,19 +4,55 @@ import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { GasPrice } from "cosmwasm";
 
 import { getKeplr } from "../utils/keplr";
+import { NetworkName } from "./NetworkName";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
+import { ethereumNetwork } from "./ethereum";
+import { junoNetwork } from "./juno";
+import { osmosisNetwork } from "./osmosis";
+import { solanaNetwork } from "./solana";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import { NativeCurrencyInfo, NetworkInfo } from "./types";
 export * from "./types";
 
-export const allNetworks = [
+export const allNetworks: NetworkInfo[] = [
   teritoriNetwork,
+  osmosisNetwork,
+  // TODO: Handle this one
   cosmosNetwork,
+  // TODO: Complete the data for these
+  junoNetwork,
+  ethereumNetwork,
+  solanaNetwork,
+  // TODO: What about these in NetworkSelector?
   teritoriTestnetNetwork,
   cosmosThetaNetwork,
 ];
+
+export const displayedNetworks = () => {
+  // Forcing Teritori Testnet network if dev environment
+  if (isTeritoriTestnet()) {
+    allNetworks.forEach((networkInfo, index) => {
+      if (networkInfo.displayName === NetworkName.Teritori) {
+        allNetworks[index].hidden = true;
+      }
+      if (networkInfo.displayName === NetworkName.TeritoriTestnet) {
+        allNetworks[index].hidden = false;
+        allNetworks.unshift(allNetworks[index]);
+        allNetworks.splice(index + 1, 1);
+      }
+    });
+  }
+  return allNetworks.filter(
+    (networkInfo) => !networkInfo.hidden
+  ) as NetworkInfo[];
+};
+
+export const isTeritoriTestnet = () => {
+  const teritoriNetworkId = process.env.TERITORI_NETWORK_ID || "";
+  return teritoriNetworkId.includes("testnet");
+};
 
 export const getCurrency = (
   networkId: string | undefined,

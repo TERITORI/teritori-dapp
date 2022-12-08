@@ -1,6 +1,7 @@
 import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, ListRenderItem, View, Image } from "react-native";
+import { useSelector } from "react-redux";
 
 import {
   Activity,
@@ -8,6 +9,7 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { backendClient } from "../../utils/backend";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
@@ -48,7 +50,8 @@ const useCollectionActivity = (
 
 const keyExtractor = (item: Activity, index: number) => `${index}`;
 
-const renderItem: ListRenderItem<Activity> = (info) => {
+const RenderItem: ListRenderItem<Activity> = (info) => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const gap = 20;
   const activity = info.item;
   return (
@@ -71,11 +74,7 @@ const renderItem: ListRenderItem<Activity> = (info) => {
         {moment(activity.time).fromNow()}
       </BrandText>
       <BrandText style={{ marginLeft: gap }}>
-        {prettyPrice(
-          process.env.TERITORI_NETWORK_ID || "",
-          activity.amount,
-          activity.denom
-        )}
+        {prettyPrice(selectedNetworkId, activity.amount, activity.denom)}
       </BrandText>
     </View>
   );
@@ -101,7 +100,7 @@ export const CollectionActivityScreen: ScreenFC<"CollectionActivity"> = ({
         onEndReached={fetchMore}
         keyExtractor={keyExtractor}
         onEndReachedThreshold={4}
-        renderItem={renderItem}
+        renderItem={RenderItem}
         ListHeaderComponent={BoundariesSpacer}
         ListFooterComponent={BoundariesSpacer}
       />

@@ -2,8 +2,10 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
+import { getNetwork } from "../../networks";
 import {
   selectIsKeplrConnected,
+  selectSelectedNetworkId,
   setIsKeplrConnected,
 } from "../../store/slices/settings";
 // import { addWallet } from "../../store/slices/wallets";
@@ -20,6 +22,8 @@ export const useKeplr: () => UseKeplrResult = () => {
   const isKeplrConnected = useSelector(selectIsKeplrConnected);
   const [hasKeplr, setHasKeplr] = useState(false);
   const dispatch = useAppDispatch();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
 
   const [addresses, setAddresses] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
@@ -75,7 +79,7 @@ export const useKeplr: () => UseKeplrResult = () => {
           console.error("no keplr");
           return;
         }
-        const chainId = teritoriChainId;
+        const chainId = selectedNetwork?.chainId || teritoriChainId;
         if (!chainId) {
           console.error("missing chain id");
           return;
@@ -92,7 +96,7 @@ export const useKeplr: () => UseKeplrResult = () => {
       setReady(true);
     };
     effect();
-  }, [hasKeplr, isKeplrConnected, dispatch]);
+  }, [hasKeplr, isKeplrConnected, dispatch, selectedNetwork?.chainId]);
 
   /*
   useEffect(() => {

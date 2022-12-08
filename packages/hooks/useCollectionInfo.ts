@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
 import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { prettyPrice } from "../utils/coins";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
@@ -37,6 +39,7 @@ export interface CollectionInfo {
 // NOTE: consider using the indexer for this
 
 export const useCollectionInfo = (id: string) => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
     async (): Promise<CollectionInfo> => {
@@ -131,7 +134,7 @@ export const useCollectionInfo = (id: string) => {
         image: ipfsURLToHTTPURL(metadata.image || ""),
         description: metadata.description,
         prettyUnitPrice: prettyPrice(
-          process.env.TERITORI_NETWORK_ID || "",
+          selectedNetworkId,
           unitPrice,
           conf.price_denom
         ),

@@ -1,11 +1,13 @@
+import { NetworkName } from "../NetworkName";
 import { NetworkInfo } from "../types";
 import { teritoriCurrencies } from "./currencies";
 
 export const teritoriNetwork: NetworkInfo = {
   id: "teritori",
   chainId: "teritori-1",
-  displayName: "Teritori",
-  icon: "icons/networks/teritori-circle.svg",
+  displayName: NetworkName.Teritori,
+  icon: "icons/networks/teritori.svg",
+  iconCircle: "icons/networks/teritori-circle.svg",
   currencies: teritoriCurrencies,
   addressPrefix: "tori",
   restEndpoint: "https://rest.mainnet.teritori.com",
