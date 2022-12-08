@@ -16,11 +16,13 @@ import { ModalHeader } from "./SwapModal";
 
 type ConnectModalProps = {
   onClose: () => void;
+  onPress: () => void;
   visible: boolean;
 };
 
 export const ConnectModal: React.FC<ConnectModalProps> = ({
   visible,
+                                                            onPress,
   onClose,
 }) => {
   return (
@@ -48,6 +50,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
           backgroundColor={secondaryColor}
           color={neutral00}
           fullWidth
+          onPress={onPress}
         />
       </View>
     </ModalBase>

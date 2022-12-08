@@ -19,10 +19,14 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { CurrencySelector } from "./CurrencySelector";
+import {NetworkInfo} from "../../../networks";
+import {Balance} from "../../../utils/coins";
 
 type SwapModalProps = {
   onClose: () => void;
   visible: boolean;
+  selectedNetwork: NetworkInfo;
+  balances:  Balance[];
 };
 
 export const ModalHeader: React.FC = () => {
@@ -34,7 +38,11 @@ export const ModalHeader: React.FC = () => {
   );
 };
 
-export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
+export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible, selectedNetwork, balances }) => {
+
+  console.log('selectedNetworkselectedNetworkselectedNetworkselectedNetwork', selectedNetwork)
+  console.log('balancesbalancesbalancesbalancesbalances', balances)
+
   const onPressInvert = () => {
     // TODO:
   };

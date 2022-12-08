@@ -11,4 +11,6 @@ export const cosmosHubThetaCurrencies: CurrencyInfo[] = [
     kind: "native",
     color: currencyATOMcolor,
   },
+
+  //TODO: ibc for teritori-testnet and osmosis-testnet
 ];

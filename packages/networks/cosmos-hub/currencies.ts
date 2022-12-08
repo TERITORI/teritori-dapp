@@ -11,4 +11,6 @@ export const cosmosHubCurrencies: CurrencyInfo[] = [
     kind: "native",
     color: currencyATOMcolor,
   },
+
+  //TODO: ibc for teritori and osmosis
 ];
