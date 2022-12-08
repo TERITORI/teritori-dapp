@@ -22,4 +22,6 @@ export const teritoriCurrencies: CurrencyInfo[] = [
     destinationChannelPort: "transfer",
     destinationChannelId: "channel-10",
   },
+
+  //TODO: ibc for osmosis
 ];

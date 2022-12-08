@@ -34,4 +34,6 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
     destinationChannelPort: "transfer",
     destinationChannelId: "channel-33",
   },
+
+  //TODO: ibc for osmosis-testnet
 ];

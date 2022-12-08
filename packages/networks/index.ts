@@ -14,24 +14,24 @@ import { solanaNetwork } from "./solana";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import { NativeCurrencyInfo, NetworkInfo } from "./types";
+import {osmosisTestnetNetwork} from "./osmosis-testnet";
 export * from "./types";
 
 export const allNetworks: NetworkInfo[] = [
   teritoriNetwork,
-  osmosisNetwork,
-  // TODO: Handle this one
+  teritoriTestnetNetwork,
   cosmosNetwork,
+  cosmosThetaNetwork,
+  osmosisNetwork,
+  osmosisTestnetNetwork,
   // TODO: Complete the data for these
   junoNetwork,
   ethereumNetwork,
   solanaNetwork,
-  // TODO: What about these in NetworkSelector?
-  teritoriTestnetNetwork,
-  cosmosThetaNetwork,
 ];
 
 export const displayedNetworks = () => {
-  // Forcing Teritori Testnet network if dev environment
+  // ----  Force displaying Testnet networks if dev environment
   if (isTeritoriTestnet()) {
     allNetworks.forEach((networkInfo, index) => {
       if (networkInfo.displayName === NetworkName.Teritori) {
@@ -39,8 +39,18 @@ export const displayedNetworks = () => {
       }
       if (networkInfo.displayName === NetworkName.TeritoriTestnet) {
         allNetworks[index].hidden = false;
-        allNetworks.unshift(allNetworks[index]);
-        allNetworks.splice(index + 1, 1);
+      }
+      if (networkInfo.displayName === NetworkName.CosmosHub) {
+        allNetworks[index].hidden = true;
+      }
+      if (networkInfo.displayName === NetworkName.CosmosHubTheta) {
+        allNetworks[index].hidden = false;
+      }
+      if (networkInfo.displayName === NetworkName.Osmosis) {
+        allNetworks[index].hidden = true;
+      }
+      if (networkInfo.displayName === NetworkName.OsmosisTestnet) {
+        allNetworks[index].hidden = false;
       }
     });
   }
