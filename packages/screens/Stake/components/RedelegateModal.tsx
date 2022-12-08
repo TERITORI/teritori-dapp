@@ -4,6 +4,7 @@ import { MsgBeginRedelegate } from "cosmjs-types/cosmos/staking/v1beta1/tx";
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import checkSVG from "../../../../assets/icons/check.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -19,6 +20,7 @@ import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBondedToris";
 import { useValidators } from "../../../hooks/useValidators";
+import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
 import { getKeplrOfflineSigner } from "../../../utils/keplr";
 import {
@@ -55,6 +57,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
 }) => {
   // variables
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const { bondedTokens, refreshBondedTokens } = useSelectedWalletBondedToris(
     data?.address
   );
@@ -274,7 +277,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         <BrandText style={fontSemibold13}>
           Tokens bonded to source validator:{" "}
           {prettyPrice(
-            process.env.TERITORI_NETWORK_ID || "",
+            selectedNetworkId,
             bondedTokens.atomics,
             toriCurrency.coinMinimalDenom
           )}

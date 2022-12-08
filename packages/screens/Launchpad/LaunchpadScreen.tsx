@@ -1,5 +1,6 @@
 import React from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import {
   MintState,
@@ -9,12 +10,12 @@ import {
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionsCarouselHeader } from "../../components/carousels/CollectionsCarouselHeader";
 import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 
 export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
-  const selectedNetworkId = useSelectedNetworkId();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   return (
     <ScreenContainer>
       <View

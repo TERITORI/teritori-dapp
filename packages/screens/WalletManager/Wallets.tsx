@@ -7,11 +7,11 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral33 } from "../../utils/style/colors";
 import { WalletItem } from "./WalletItem";
 
-export const Wallets: React.FC = () => {
+export const Wallets: React.FC<{ networkId: string }> = ({ networkId }) => {
   const selectedWallet = useSelectedWallet();
 
   const { totalAmount: totalAmountTeritori } = useRewardsTotal(
-    process.env.TERITORI_NETWORK_ID || "",
+    networkId,
     selectedWallet?.address
   );
 

@@ -83,7 +83,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   const ModalHeader = useCallback(
     () => (
       <View style={styles.rowCenter}>
-        <NetworkIcon networkId={networkId} size={32} />
+        <NetworkIcon networkId={networkId} size={32} circle />
         <SpacerRow size={3} />
         <BrandText>
           {variation === "deposit" ? "Deposit on" : "Withdraw from"}{" "}
@@ -119,7 +119,11 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
         <View style={[styles.rowCenter, styles.w100, { zIndex: 2 }]}>
           <View style={[styles.jcCenter, { zIndex: 2, flex: 1 }]}>
             <View style={[styles.rowAllCenter, { zIndex: 2 }]}>
-              <NetworkIcon size={64} networkId={sourceNetworkId || "unknown"} />
+              <NetworkIcon
+                size={64}
+                networkId={sourceNetworkId || "unknown"}
+                circle
+              />
             </View>
             <SpacerColumn size={1.5} />
             <BrandText style={fontSemibold14}>
@@ -148,6 +152,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               <NetworkIcon
                 size={64}
                 networkId={destinationNetworkId || "unknown"}
+                circle
               />
             </View>
             <SpacerColumn size={1.5} />

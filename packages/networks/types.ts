@@ -1,9 +1,12 @@
+import { NetworkName } from "./NetworkName";
+
 export interface NetworkInfo {
   id: string;
   chainId: string;
-  displayName: string;
+  displayName: NetworkName;
   currencies: CurrencyInfo[];
   icon?: string;
+  iconCircle?: string;
   addressPrefix: string;
   restEndpoint: string;
   rpcEndpoint: string;
@@ -14,6 +17,8 @@ export interface NetworkInfo {
     high: number;
   };
   features: string[];
+  disabled?: boolean;
+  hidden?: boolean;
 }
 
 export type CurrencyKind = "native" | "ibc";

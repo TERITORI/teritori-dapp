@@ -1,11 +1,13 @@
+import { NetworkName } from "../NetworkName";
 import { NetworkInfo } from "../types";
 import { teritoriTestnetCurrencies } from "./currencies";
 
 export const teritoriTestnetNetwork: NetworkInfo = {
   id: "teritori-testnet",
   chainId: "teritori-testnet-v3",
-  displayName: "Teritori Testnet",
-  icon: "icons/networks/teritori-circle.svg",
+  displayName: NetworkName.TeritoriTestnet,
+  icon: "icons/networks/teritori.svg",
+  iconCircle: "icons/networks/teritori-circle.svg",
   currencies: teritoriTestnetCurrencies,
   addressPrefix: "tori",
   restEndpoint: "https://rest.testnet.teritori.com",
@@ -23,4 +25,5 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     "no-legacy-stdTx",
     "ibc-go",
   ],
+  hidden: true,
 };

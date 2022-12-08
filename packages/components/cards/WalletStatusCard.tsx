@@ -1,18 +1,20 @@
 import React from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { Network } from "../../utils/network";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { neutral17, neutral77 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold13 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { NetworkIcon } from "../NetworkIcon";
 import { tinyAddress } from "../WalletSelector";
 import { SuccessBadge } from "../badges/SuccessBadge";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { NetworkIcon } from "../images/NetworkIcon";
 
 export const WalletStatusCard: React.FC = () => {
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
 
   return (
     <TertiaryBox
@@ -28,7 +30,7 @@ export const WalletStatusCard: React.FC = () => {
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <NetworkIcon network={Network.Teritori} circle size={24} />
+        <NetworkIcon networkId={selectedNetworkId} circle size={24} />
         <View style={{ marginLeft: 8 }}>
           <BrandText
             style={[fontSemibold12, { marginBottom: 2, color: neutral77 }]}

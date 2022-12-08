@@ -1,17 +1,22 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import React from "react";
 import { Linking } from "react-native";
+import { useSelector } from "react-redux";
 
 import keplrSVG from "../../../assets/icons/keplr.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { getNetwork, keplrChainInfoFromNetworkInfo } from "../../networks";
-import { setIsKeplrConnected } from "../../store/slices/settings";
+import {
+  selectSelectedNetworkId,
+  setIsKeplrConnected,
+} from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 
 export const ConnectKeplrButton: React.FC<{
   onDone?: (err?: unknown) => void;
 }> = ({ onDone }) => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const { setToastError } = useFeedbacks();
   const dispatch = useAppDispatch();
   const handlePress = async () => {
@@ -23,14 +28,13 @@ export const ConnectKeplrButton: React.FC<{
         );
         return;
       }
-      const teritoriNetworkId = process.env.TERITORI_NETWORK_ID;
-      if (!teritoriNetworkId) {
-        console.error("no teritori network id");
+      if (!selectedNetworkId) {
+        console.error("no network id");
         return;
       }
-      const network = getNetwork(teritoriNetworkId);
+      const network = getNetwork(selectedNetworkId);
       if (!network) {
-        console.error(`no ${teritoriNetworkId} network`);
+        console.error(`no ${selectedNetworkId} network`);
         return;
       }
       await keplr.experimentalSuggestChain(

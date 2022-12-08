@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
+import { useSelector } from "react-redux";
 
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import footerSVG from "../../../assets/icons/footer-regular.svg";
@@ -19,6 +20,7 @@ import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
@@ -46,6 +48,7 @@ export const NFTView: React.FC<{
   const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const tnsMetadata = useTNSMetadata(nft.ownerId.replace("tori-", ""));
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
@@ -241,7 +244,7 @@ export const NFTView: React.FC<{
                     alignItems: "center",
                   }}
                 >
-                  <NetworkIcon size={12} networkId={nft.networkId} />
+                  <NetworkIcon size={12} networkId={nft.networkId} circle />
                   <BrandText
                     style={{
                       fontSize: 12,
@@ -275,7 +278,7 @@ export const NFTView: React.FC<{
                   <>
                     <CurrencyIcon
                       size={24}
-                      networkId={process.env.TERITORI_NETWORK_ID || ""}
+                      networkId={selectedNetworkId}
                       denom={nft.denom}
                     />
                     {/* FIXME: should come from price denom */}
@@ -305,11 +308,7 @@ export const NFTView: React.FC<{
                 <View style={{ flex: 1 }}>
                   <SecondaryButton
                     size="XS"
-                    text={prettyPrice(
-                      process.env.TERITORI_NETWORK_ID || "",
-                      nft.price,
-                      nft.denom
-                    )}
+                    text={prettyPrice(selectedNetworkId, nft.price, nft.denom)}
                     onPress={onPressPriceButton}
                     fullWidth
                     numberOfLines={1}

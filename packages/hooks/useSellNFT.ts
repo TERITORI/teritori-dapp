@@ -1,9 +1,11 @@
 import { Decimal } from "cosmwasm";
 import { useCallback } from "react";
+import { useSelector } from "react-redux";
 
 import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import { getNativeCurrency } from "../networks";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { getSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";
 import useSelectedWallet from "./useSelectedWallet";
@@ -11,6 +13,7 @@ import useSelectedWallet from "./useSelectedWallet";
 export const useSellNFT = () => {
   const { setToastError } = useFeedbacks();
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   return useCallback(
     async (
       nftContractAddress: string,
@@ -40,10 +43,7 @@ export const useSellNFT = () => {
           wallet.address,
           nftContractAddress
         );
-        const currency = getNativeCurrency(
-          process.env.TERITORI_NETWORK_ID,
-          denom
-        );
+        const currency = getNativeCurrency(selectedNetworkId, denom);
         if (!currency) {
           setToastError({
             title: "Failed to list NFT",

@@ -7,6 +7,7 @@ import {
   Image,
 } from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
+import { useSelector } from "react-redux";
 
 import teritorriSvg from "../../../assets/icons/networks/teritori.svg";
 import {
@@ -37,8 +38,8 @@ import { Uint128 } from "../../contracts-clients/rioter-footer-nft/RioterFooterN
 import { TeritoriBunkerMinterQueryClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import { useCollections } from "../../hooks/useCollections";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   getNonSigningCosmWasmClient,
@@ -50,7 +51,7 @@ import { toriCurrency } from "../../utils/teritori";
 import { nftDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
 
 export const RiotersFooterScreen: React.FC = () => {
-  const selectedNetworkId = useSelectedNetworkId();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const [tabName, setTabName] = useState<string>("New");
   const [searchNewNftCollection, setSearchNewNftCollection] =
     useState<string>("");

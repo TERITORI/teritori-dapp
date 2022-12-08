@@ -3,10 +3,12 @@ import { Target } from "@nandorojo/anchor";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
@@ -57,6 +59,7 @@ export const NFTMainInfo: React.FC<{
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const { openTransactionModals } = useTransactionModals();
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
 
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("about");
@@ -175,7 +178,7 @@ export const NFTMainInfo: React.FC<{
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressSell={sell}
                   nftInfo={nftInfo}
-                  networkId={process.env.TERITORI_NETWORK_ID || ""}
+                  networkId={selectedNetworkId}
                 />
               )}
               {nftInfo?.isListed && !nftInfo?.isOwner && (

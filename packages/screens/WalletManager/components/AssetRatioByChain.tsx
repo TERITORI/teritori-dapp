@@ -96,6 +96,7 @@ export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
           borderColor: neutral33,
         }}*/
       >
+        {/*TODO: Display data from displayedNetworks()*/}
         {DATA.map((item) => (
           <ListItem key={item.title} {...item} />
         ))}

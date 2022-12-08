@@ -1,5 +1,6 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
+import { useSelector } from "react-redux";
 import { VictoryPie } from "victory-native";
 
 import { BrandText } from "../../../components/BrandText";
@@ -7,6 +8,7 @@ import { CurrencyIcon } from "../../../components/CurrencyIcon";
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getNativeCurrency } from "../../../networks";
+import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { neutral33 } from "../../../utils/style/colors";
 
 interface TokenAllocationProps {
@@ -15,10 +17,8 @@ interface TokenAllocationProps {
 
 export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
   const selectedWallet = useSelectedWallet();
-  const allBalances = useBalances(
-    process.env.TERITORI_NETWORK_ID,
-    selectedWallet?.address
-  );
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const allBalances = useBalances(selectedNetworkId, selectedWallet?.address);
   const balances = allBalances.filter(
     (bal) => bal.usdAmount && bal.usdAmount > 0
   );
@@ -45,10 +45,7 @@ export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
           height={216}
           width={216}
           colorScale={balances.map((bal) => {
-            const currency = getNativeCurrency(
-              process.env.TERITORI_NETWORK_ID,
-              bal.denom
-            );
+            const currency = getNativeCurrency(selectedNetworkId, bal.denom);
             return currency?.color || "#FFFFFF";
           })}
           labels={() => null}
@@ -62,10 +59,7 @@ export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
 
         <View style={{ marginLeft: 32, width: 216 }}>
           {balances.map((item) => {
-            const currency = getNativeCurrency(
-              process.env.TERITORI_NETWORK_ID,
-              item.denom
-            );
+            const currency = getNativeCurrency(selectedNetworkId, item.denom);
             return (
               <View
                 key={currency?.denom}
@@ -77,7 +71,7 @@ export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
                 }}
               >
                 <CurrencyIcon
-                  networkId={process.env.TERITORI_NETWORK_ID || ""}
+                  networkId={selectedNetworkId || ""}
                   denom={item.denom}
                   size={24}
                 />

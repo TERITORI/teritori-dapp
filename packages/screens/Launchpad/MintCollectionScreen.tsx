@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
+import { useSelector } from "react-redux";
 
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
@@ -28,6 +29,7 @@ import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCurrency } from "../../networks";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
@@ -72,13 +74,13 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 }) => {
   const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
   const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
-  const networkId = process.env.TERITORI_NETWORK_ID;
-  const balances = useBalances(networkId, wallet?.address);
+  const balances = useBalances(selectedNetworkId, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
@@ -237,7 +239,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               >
                 Available Balance:{" "}
                 {prettyPrice(
-                  networkId || "",
+                  selectedNetworkId,
                   balance?.amount || "0",
                   info.priceDenom || ""
                 )}
@@ -260,8 +262,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   />
                 )}
 
-                {getCurrency(process.env.TERITORI_NETWORK_ID, info.priceDenom)
-                  ?.kind === "ibc" && (
+                {getCurrency(selectedNetworkId, info.priceDenom)?.kind ===
+                  "ibc" && (
                   <PrimaryButton
                     size="XL"
                     text="Deposit Atom"
@@ -372,7 +374,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         </View>
         <DepositWithdrawModal
           variation="deposit"
-          networkId={process.env.TERITORI_NETWORK_ID || ""}
+          networkId={selectedNetworkId}
           targetCurrency={info.priceDenom}
           onClose={() => setDepositVisible(false)}
           isVisible={isDepositVisible}

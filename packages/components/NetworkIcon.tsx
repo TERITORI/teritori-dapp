@@ -7,13 +7,15 @@ import { SVG } from "./SVG";
 export const NetworkIcon: React.FC<{
   networkId: string;
   size: number;
-}> = ({ networkId, size }) => {
+  circle?: boolean;
+}> = ({ networkId, size, circle }) => {
   const network = getNetwork(networkId);
-  if (!network?.icon) {
+  const networkIcon = circle ? network?.iconCircle : network?.icon;
+  if (!networkIcon) {
     return null;
   }
-  const source = require("../../assets/" + network.icon).default;
-  if (network.icon.endsWith(".svg")) {
+  const source = require("../../assets/" + networkIcon).default;
+  if (networkIcon.endsWith(".svg")) {
     return <SVG source={source} width={size} height={size} />;
   }
   return (

@@ -2,6 +2,7 @@ import { bech32 } from "bech32";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Image, StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -9,6 +10,7 @@ import { TeritoriBunkerMinterQueryClient } from "../../contracts-clients/teritor
 import { TeritoriNftClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNetwork } from "../../networks";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
@@ -30,14 +32,14 @@ interface NFTTransferModalProps {
   onSubmit: (form: NFTTransferForm) => void;
 }
 
-const network = getNetwork(process.env.TERITORI_NETWORK_ID);
-
 export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
   isVisible,
   onClose,
   nft,
   onSubmit,
 }) => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const network = getNetwork(selectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const { handleSubmit: formHandleSubmit, control } =
