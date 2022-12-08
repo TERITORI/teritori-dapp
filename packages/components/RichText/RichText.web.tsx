@@ -88,9 +88,10 @@ export function RichText({
     <div
       style={{
         borderBottom: readOnly ? "" : `1px solid ${neutral33}`,
-        minHeight: readOnly ? "auto" : 126,
+        minHeight: readOnly ? "auto" : 126 + (staticToolbar ? 40 : 0),
         position: "relative",
         padding: "12px 0",
+        paddingBottom: staticToolbar ? 40 : 12,
       }}
     >
       <Editor
