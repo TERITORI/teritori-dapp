@@ -61,6 +61,7 @@ export interface Metadata {
   discord_id?: string | null;
   email?: string | null;
   external_url?: string | null;
+  medium_url?: string | null;
   image?: string | null;
   image_data?: Logo | null;
   keybase_id?: string | null;

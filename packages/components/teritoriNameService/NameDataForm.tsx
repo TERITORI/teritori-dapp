@@ -25,6 +25,7 @@ export const NameDataForm: React.FC<{
   const [bannerImage, setBannerImage] = useState("");
   const [email, setEmail] = useState("");
   const [external_url, setWebsite] = useState("");
+  const [medium_url, setMediumUrl] = useState("");
   const [twitter_id, setTwitter] = useState("");
   const [discord_id, setDiscord] = useState("");
   const [telegram_id, setTelegrameUsername] = useState("");
@@ -45,6 +46,7 @@ export const NameDataForm: React.FC<{
       public_profile_header: bannerImage,
       email,
       external_url,
+      medium_url,
       twitter_id,
       discord_id,
       telegram_id,
@@ -59,6 +61,7 @@ export const NameDataForm: React.FC<{
     setBannerImage(initialData.public_profile_header || "");
     setEmail(initialData.email || "");
     setWebsite(initialData.external_url || "");
+    setMediumUrl(initialData.medium_url || "");
     setTwitter(initialData.twitter_id || "");
     setDiscord(initialData.discord_id || "");
     setTelegrameUsername(initialData.telegram_id || "");
@@ -132,6 +135,8 @@ export const NameDataForm: React.FC<{
         style={inputStyle}
         label="AVATAR IMAGE URL"
         placeHolder="Insert image URL here"
+        numberOfLines={3}
+        multiline
         value={image}
         onChangeText={setImageUrl}
         squaresBackgroundColor={neutral17}
@@ -141,6 +146,8 @@ export const NameDataForm: React.FC<{
         style={inputStyle}
         label="BANNER IMAGE URL"
         placeHolder="Insert image URL here"
+        numberOfLines={3}
+        multiline
         value={bannerImage}
         onChangeText={setBannerImage}
         squaresBackgroundColor={neutral17}
@@ -161,6 +168,15 @@ export const NameDataForm: React.FC<{
         placeHolder="Type/insert link here"
         value={external_url}
         onChangeText={setWebsite}
+        squaresBackgroundColor={neutral17}
+      />
+      <TextInputCustom<Metadata>
+        name="medium_url"
+        style={inputStyle}
+        label="MEDIUM"
+        placeHolder="Type/insert link here"
+        value={medium_url}
+        onChangeText={setMediumUrl}
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<Metadata>
