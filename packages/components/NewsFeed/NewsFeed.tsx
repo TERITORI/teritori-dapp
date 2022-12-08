@@ -57,7 +57,7 @@ export const NewsFeed: React.FC = () => {
 
   const fetchMore = () => {
     fetchData({
-      from: posts.length,
+      from: posts.length + 1,
       isMore: true,
     });
   };
@@ -70,33 +70,32 @@ export const NewsFeed: React.FC = () => {
   return (
     <View>
       <NewsFeedInput type="post" onSubmitSuccess={fetchData} />
-      <View style={{ paddingTop: layout.contentPadding }}>
-        {loading && (
-          <ActivityIndicator
-            color={secondaryColor}
-            size="large"
-            style={{
-              marginVertical: layout.padding_x3,
-            }}
-          />
-        )}
 
-        <FlatList
-          data={posts}
-          renderItem={({ item: post }: { item: PostResult }) => (
-            <SocialThreadCard post={post} style={{ marginBottom: 74 }} />
-          )}
-          keyExtractor={(item: PostResult) => item.identifier}
-        />
-        {!loading && posts.length < postCount && (
-          <TertiaryButton
-            onPress={fetchMore}
-            text="Load More"
-            size="SM"
-            style={{ alignSelf: "center", marginBottom: layout.padding_x1 }}
-          />
-        )}
+      <View
+        style={{
+          height: layout.contentPadding,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {loading && <ActivityIndicator color={secondaryColor} size="small" />}
       </View>
+
+      <FlatList
+        data={posts}
+        renderItem={({ item: post }: { item: PostResult }) => (
+          <SocialThreadCard post={post} style={{ marginBottom: 74 }} />
+        )}
+        keyExtractor={(item: PostResult) => item.identifier}
+      />
+      {!loading && posts.length < postCount && (
+        <TertiaryButton
+          onPress={fetchMore}
+          text="Load More"
+          size="SM"
+          style={{ alignSelf: "center", marginBottom: layout.padding_x1 }}
+        />
+      )}
     </View>
   );
 };

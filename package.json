@@ -69,6 +69,7 @@
     "react-native-countdown-component": "^2.7.1",
     "react-native-drag-sort": "^2.4.4",
     "react-native-drax": "^0.10.2",
+    "react-native-emoji-modal": "^0.2.2",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-paper": "^4.12.5",
     "react-native-pell-rich-editor": "^1.8.8",
@@ -85,7 +86,8 @@
     "react-redux": "^8.0.2",
     "redux-persist": "^6.0.0",
     "uuid": "^9.0.0",
-    "victory-native": "^36.6.8"
+    "victory-native": "^36.6.8",
+    "waveform-data": "^4.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -99,6 +101,7 @@
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.67.6",
     "@types/react-native-svg-charts": "^5.0.12",
+    "@types/react-native-video": "^5.0.14",
     "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",

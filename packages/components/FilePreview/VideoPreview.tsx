@@ -1,22 +1,16 @@
+import { Video, ResizeMode } from "expo-av";
 import React from "react";
-import { View } from "react-native";
 
-import { neutral33 } from "../../utils/style/colors";
-import { fontSemibold12 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
 import { FileViewerProps } from "./FilePreview.type";
 
-export const VideoPreview: React.FC<FileViewerProps> = () => {
+export const VideoPreview: React.FC<FileViewerProps> = ({ fileURL }) => {
   return (
-    <View
-      style={{
-        backgroundColor: neutral33,
-        paddingVertical: layout.padding_x0_25,
-        paddingHorizontal: layout.padding_x1,
+    <Video
+      source={{
+        uri: fileURL,
       }}
-    >
-      <BrandText style={fontSemibold12}>Video file</BrandText>
-    </View>
+      useNativeControls
+      resizeMode={ResizeMode.CONTAIN}
+    />
   );
 };
