@@ -16,12 +16,12 @@ export const useBreeding = () => {
   const [breedingConfig, setBreedingConfig] = useState<Config>();
   const [lastBreedAt, setLastBreedAt] = useState<moment.Moment>();
 
-  const { queryClient } = useContractClients(
+  const {
+    queryClient: breedingQueryClient,
+  }: { queryClient: TeritoriBreedingQueryClient } = useContractClients(
     THE_RIOT_BREEDING_CONTRACT_ADDRESS,
     "teritori-breeding"
   );
-
-  const breedingQueryClient = queryClient as TeritoriBreedingQueryClient;
 
   const selectedWallet = useSelectedWallet();
 
@@ -55,13 +55,14 @@ export const useBreeding = () => {
     );
     const msgs = [...approveMsgs, breedMsg];
 
-    setLastBreedAt(moment());
+    const lastBreedAt = moment();
     const tx = await client.signAndBroadcast(sender, msgs, "auto", defaultMemo);
 
     if (isDeliverTxFailure(tx)) {
       throw Error(tx.transactionHash);
     }
 
+    setLastBreedAt(lastBreedAt);
     return tx;
   };
 

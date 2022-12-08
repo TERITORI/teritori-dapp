@@ -29,6 +29,7 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   visible = false,
   breedingConfig,
   onClose,
+  lastBreedAt,
 }) => {
   const { info: collectionInfo = {} } = useCollectionInfo(
     THE_RIOT_COLLECTION_ID
@@ -40,29 +41,30 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   const selectedWallet = useSelectedWallet();
   const { setToastError } = useFeedbacks();
 
-  const fetchLastBreeding = async (userAddress: string) => {
+  const fetchLastBreeding = async (
+    userAddress: string,
+    childContractAddress: string
+  ) => {
     if (!breedingConfig) {
       return setToastError({
         title: "Error",
-        message: "Failed to BreedingConfig",
+        message: "Failed to get BreedingConfig",
       });
     }
 
     const client = await getNonSigningCosmWasmClient();
-    const { tokens } = await client.queryContractSmart(
-      breedingConfig.child_contract_addr,
-      {
-        tokens: {
-          // Do not provide: start_after/limit to get 1 last result
-          owner: userAddress,
-        },
-      }
-    );
+    const { tokens } = await client.queryContractSmart(childContractAddress, {
+      tokens: {
+        // Do not provide start_after to get latest result
+        owner: userAddress,
+        limit: 1,
+      },
+    });
 
     const lastTokenId: string = tokens[0];
     const {
       extension: { image },
-    } = await client.queryContractSmart(breedingConfig.child_contract_addr, {
+    } = await client.queryContractSmart(childContractAddress, {
       nft_info: {
         token_id: lastTokenId,
       },
@@ -72,10 +74,22 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   };
 
   useEffect(() => {
-    if (!selectedWallet?.address) return;
+    if (
+      !selectedWallet?.address ||
+      !breedingConfig?.child_contract_addr ||
+      !lastBreedAt
+    )
+      return;
 
-    fetchLastBreeding(selectedWallet.address);
-  }, [selectedWallet?.address]);
+    fetchLastBreeding(
+      selectedWallet.address,
+      breedingConfig.child_contract_addr
+    );
+  }, [
+    selectedWallet?.address,
+    breedingConfig?.child_contract_addr,
+    lastBreedAt,
+  ]);
 
   return (
     <ModalBase

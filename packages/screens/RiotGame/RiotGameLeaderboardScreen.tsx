@@ -3,6 +3,8 @@ import { StyleSheet, ImageBackground, FlatList } from "react-native";
 
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
 import cryptoLogoSVG from "../../../assets/icons/crypto-logo.svg";
+import volDownSVG from "../../../assets/icons/vol-down.svg";
+import volUpSVG from "../../../assets/icons/vol-up.svg";
 import logoSVG from "../../../assets/logos/logo-white.svg";
 import { LeaderboardResponse, UserScore } from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
@@ -121,9 +123,14 @@ export const RiotGameLeaderboardScreen = () => {
                 <BrandText style={styles.colData}>{hours} hours</BrandText>
               </Col>
               <Col size={2}>
-                <BrandText style={[styles.colData, { color: rankColor }]}>
-                  {rankSign} {Math.abs(rankChanges)}
-                </BrandText>
+                <Row style={{ alignItems: "center" }}>
+                  <SVG source={rankChanges >= 0 ? volUpSVG : volDownSVG} />
+                  <BrandText
+                    style={[styles.colData, spacing.ml_1, { color: rankColor }]}
+                  >
+                    {rankSign} {Math.abs(rankChanges)}
+                  </BrandText>
+                </Row>
               </Col>
             </Row>
           );
