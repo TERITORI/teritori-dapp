@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { StyleProp, View, ViewStyle, TouchableOpacity } from "react-native";
+import EmojiModal from "react-native-emoji-modal";
 
+import emojiSVG from "../../../assets/icons/emoji.svg";
 import governanceCircleSVG from "../../../assets/icons/governance-circle.svg";
 import addThreadSVG from "../../../assets/icons/social-threads/add-thread.svg";
 import chatSVG from "../../../assets/icons/social-threads/chat.svg";
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
+import { useDropdowns } from "../../context/DropdownsProvider";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -21,6 +24,9 @@ import {
   orangeDefault,
   neutral44,
   redDefault,
+  secondaryColor,
+  neutral33,
+  neutral67,
 } from "../../utils/style/colors";
 import {
   fontSemibold13,
@@ -37,7 +43,6 @@ import { DotBadge } from "../badges/DotBadge";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { CommentsContainer } from "./CommentsContainer";
-
 const socialActionsHeight = 64;
 
 const SocialStat: React.FC<{
@@ -221,6 +226,9 @@ export const SocialThreadCard: React.FC<{
   const wallet = useSelectedWallet();
   const [subPosts, setSubPosts] = useState([]);
   const navigation = useAppNavigation();
+  const dropdownRef = useRef<View>(null);
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
+    useDropdowns();
 
   const metadata = JSON.parse(post.metadata);
 
@@ -236,7 +244,7 @@ export const SocialThreadCard: React.FC<{
       count: 5,
       from: 0,
       identifier: post.identifier,
-      sort: "desc",
+      sort: "asc",
     });
 
     setSubPosts(subPosts);
@@ -249,98 +257,155 @@ export const SocialThreadCard: React.FC<{
   }, [singleView, post?.identifier, refresh]);
 
   return (
-    <View style={style}>
-      <View
-        style={[
-          {
-            backgroundColor: neutral15,
-            paddingTop: layout.padding_x3,
-            paddingHorizontal: tertiaryBoxPaddingHorizontal,
-            paddingBottom: 52,
-            borderRadius: 12,
-          },
-        ]}
-      >
-        <View style={{ flexDirection: "row", flex: 1 }}>
-          <AvatarWithFrame
-            image={postByTNSMetadata?.metadata?.image}
-            style={{
-              marginRight: imageMarginRight,
-            }}
-            size={getResponsiveAvatarSize(containerWidth)}
-          />
+    <View style={[style]}>
+      <View style={{ position: "relative" }}>
+        <View
+          ref={dropdownRef}
+          style={{
+            position: "absolute",
+            bottom: 0,
+            right: 20,
+            zIndex: 99,
+          }}
+        >
+          {isDropdownOpen(dropdownRef) && (
+            <EmojiModal
+              onEmojiSelected={(emoji) => {
+                closeOpenedDropdown();
+              }}
+              containerStyle={{
+                backgroundColor: neutral67,
+                borderWidth: 1,
+                borderColor: neutral33,
+                paddingTop: layout.padding_x0_75,
+              }}
+              searchStyle={{
+                backgroundColor: neutral33,
+                //@ts-ignore
+                color: secondaryColor,
+              }}
+              headerStyle={{
+                color: secondaryColor,
+              }}
+              onPressOutside={() => closeOpenedDropdown()}
+            />
+          )}
+        </View>
+        <TouchableOpacity
+          onPress={() => onPressDropdownButton(dropdownRef)}
+          style={{
+            position: "absolute",
+            bottom: 20,
+            right: 20,
+            paddingVertical: 4,
+            paddingHorizontal: 10,
+            backgroundColor: neutral33,
+            height: 32,
+            width: 32,
+            borderRadius: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9,
+          }}
+        >
+          <SVG source={emojiSVG} height={16} width={16} />
+        </TouchableOpacity>
+        <View
+          style={[
+            {
+              backgroundColor: neutral15,
+              paddingTop: layout.padding_x3,
+              paddingHorizontal: tertiaryBoxPaddingHorizontal,
+              paddingBottom: 52,
+              borderRadius: 12,
+            },
+          ]}
+        >
+          <View style={{ flexDirection: "row", flex: 1 }}>
+            <AvatarWithFrame
+              image={postByTNSMetadata?.metadata?.image}
+              style={{
+                marginRight: imageMarginRight,
+              }}
+              size={getResponsiveAvatarSize(containerWidth)}
+            />
 
-          <View
-            style={{
-              flex: 1,
-            }}
-          >
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
+                flex: 1,
               }}
             >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("PublicProfile", {
-                      id: `tori-${post.post_by}`,
-                    })
-                  }
-                  activeOpacity={0.7}
-                >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("PublicProfile", {
+                        id: `tori-${post.post_by}`,
+                      })
+                    }
+                    activeOpacity={0.7}
+                  >
+                    <BrandText
+                      style={[
+                        fontSemibold16,
+                        {
+                          textTransform: "uppercase",
+                        },
+                      ]}
+                    >
+                      {postByTNSMetadata?.metadata?.public_name}
+                    </BrandText>
+                  </TouchableOpacity>
                   <BrandText
                     style={[
-                      fontSemibold16,
+                      fontSemibold14,
                       {
-                        textTransform: "uppercase",
+                        marginLeft: layout.padding_x1_5,
+                        color: neutral77,
                       },
                     ]}
                   >
-                    {postByTNSMetadata?.metadata?.public_name}
+                    @
+                    {tinyAddress(
+                      postByTNSMetadata?.metadata?.tokenId || "",
+                      19
+                    )}
                   </BrandText>
-                </TouchableOpacity>
-                <BrandText
-                  style={[
-                    fontSemibold14,
-                    {
-                      marginLeft: layout.padding_x1_5,
-                      color: neutral77,
-                    },
-                  ]}
-                >
-                  @{tinyAddress(postByTNSMetadata?.metadata?.tokenId || "", 19)}
-                </BrandText>
+                </View>
+
+                <DotBadge label="Gnolang" />
               </View>
 
-              <DotBadge label="Gnolang" />
-            </View>
+              {!!metadata?.title && (
+                <BrandText style={{ marginTop: layout.padding_x1 }}>
+                  {metadata.title}
+                </BrandText>
+              )}
 
-            {!!metadata?.title && (
-              <BrandText style={{ marginTop: layout.padding_x1 }}>
-                {metadata.title}
+              <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+                <RichText initialValue={metadata.message} readOnly />
               </BrandText>
-            )}
 
-            <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-              <RichText initialValue={metadata.message} readOnly />
-            </BrandText>
+              {!!metadata.fileURL && <FilePreview fileURL={metadata.fileURL} />}
+              <View
+                style={{
+                  backgroundColor: neutral22,
+                  width: "100%",
+                  height: 1,
+                  marginVertical: layout.padding_x2_5 / 2,
+                }}
+              />
 
-            {!!metadata.fileURL && <FilePreview fileURL={metadata.fileURL} />}
-            <View
-              style={{
-                backgroundColor: neutral22,
-                width: "100%",
-                height: 1,
-                marginVertical: layout.padding_x2_5 / 2,
-              }}
-            />
-
-            <BrandText style={[fontSemibold13, { color: neutral77 }]}>
-              {post.post_by}
-            </BrandText>
+              <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+                {post.post_by}
+              </BrandText>
+            </View>
           </View>
         </View>
 
