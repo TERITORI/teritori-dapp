@@ -18,7 +18,7 @@ import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
-import { noSecondaryDuringMintList } from "../../utils/collections";
+import { secondaryDuringMintList } from "../../utils/collections";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import { vaultContractAddress } from "../../utils/teritori";
@@ -60,7 +60,7 @@ const Content: React.FC<{
   const collectionId = `tori-${collectionAddress}`;
   const mintEnded = useMintEnded(collectionId);
   const showMarketplace =
-    !noSecondaryDuringMintList.includes(collectionId) ||
+    secondaryDuringMintList.includes(collectionId) ||
     (mintEnded !== undefined && mintEnded);
 
   const screenTabItems = {
