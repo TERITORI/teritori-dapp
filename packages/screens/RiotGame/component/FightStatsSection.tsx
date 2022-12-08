@@ -26,7 +26,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   };
 
   const fetchRank = async (address: string | undefined) => {
-    if (!address) return 0;
+    if (!address) return setUserRank(0);
 
     const { userScore } = await p2eBackendClient.FighterScore({
       collectionId: THE_RIOT_COLLECTION_ID,
