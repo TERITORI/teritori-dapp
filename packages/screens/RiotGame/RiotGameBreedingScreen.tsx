@@ -49,16 +49,24 @@ export const RiotGameBreedingScreen = () => {
   }, [myAvailableRippers, selectedRippers]);
 
   const doBreed = async () => {
+    if (!breedingConfig) {
+      return setToastError({
+        title: "Error",
+        message: "Failed to load BreedingConfig",
+      });
+    }
+
     setIsBreeding(true);
 
     try {
       await breed(
         coin(
-          breedingConfig?.breed_price_amount || "",
-          breedingConfig?.breed_price_denom || ""
+          breedingConfig.breed_price_amount,
+          breedingConfig.breed_price_denom
         ),
         selectedRippers[0]?.tokenId,
-        selectedRippers[1]?.tokenId
+        selectedRippers[1]?.tokenId,
+        breedingConfig.parent_contract_addr
       );
 
       setIsShowBreedingResultModal(true);
@@ -152,6 +160,7 @@ export const RiotGameBreedingScreen = () => {
 
       <BreedingResultModal
         lastBreedAt={lastBreedAt}
+        breedingConfig={breedingConfig}
         onClose={() => setIsShowBreedingResultModal(false)}
         visible={isShowBreedingResultModal}
       />

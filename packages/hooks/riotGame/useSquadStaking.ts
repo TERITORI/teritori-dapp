@@ -57,7 +57,10 @@ export const useSquadStaking = () => {
   const squadStakingQueryClient =
     queryClient as TeritoriSquadStakingQueryClient;
 
-  const squadStake = async (selectedRippers: NSRiotGame.RipperDetail[]) => {
+  const squadStake = async (
+    selectedRippers: NSRiotGame.RipperDetail[],
+    squadStakingConfig: GetConfigResponse
+  ) => {
     const tokenIds = selectedRippers.map((r) => r.tokenId);
 
     const client = await getSigningCosmWasmClient();
@@ -67,7 +70,8 @@ export const useSquadStaking = () => {
       buildApproveNFTMsg(
         sender,
         THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
-        tokenId
+        tokenId,
+        squadStakingConfig.nft_contract
       )
     );
 

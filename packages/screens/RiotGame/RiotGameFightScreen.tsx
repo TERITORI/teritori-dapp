@@ -144,7 +144,7 @@ export const RiotGameFightScreen = () => {
       isStakingStateLoaded &&
       [StakingState.COMPLETED, StakingState.UNKNOWN].includes(stakingState)
     ) {
-      navigation.navigate("RiotGameEnroll");
+      navigation.replace("RiotGameEnroll");
     }
   }, [isSquadLoaded, isStakingStateLoaded]);
 
@@ -322,7 +322,11 @@ export const RiotGameFightScreen = () => {
         )}
       </View>
 
-      <ClaimModal onClose={onCloseClaimModal} visible={isShowClaimModal} />
+      <ClaimModal
+        onClose={onCloseClaimModal}
+        currentSquad={currentSquad}
+        visible={isShowClaimModal}
+      />
     </GameContentView>
   );
 };

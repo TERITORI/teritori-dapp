@@ -8,6 +8,8 @@ import { CollectionSocialButtons } from "../../../components/collections/Collect
 import Row from "../../../components/grid/Row";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { Config } from "../../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
@@ -16,19 +18,18 @@ import { mineShaftColor, neutral77 } from "../../../utils/style/colors";
 import { flex } from "../../../utils/style/flex";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import {
-  THE_RIOT_BREEDING_CHILD_CONTRACT_ADDRESS,
-  THE_RIOT_COLLECTION_ID,
-} from "../settings";
+import { THE_RIOT_COLLECTION_ID } from "../settings";
 
 type BreedingResultModalProps = {
   visible?: boolean;
   onClose?(): void;
+  breedingConfig?: Config;
   lastBreedAt?: moment.Moment | undefined;
 };
 
 export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   visible = false,
+  breedingConfig,
   onClose,
 }) => {
   const { info: collectionInfo = {} } = useCollectionInfo(
@@ -39,15 +40,23 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
     imageUri: string;
   }>();
   const selectedWallet = useSelectedWallet();
+  const { setToastError } = useFeedbacks();
 
-  const fetchLastBreeding = async () => {
+  const fetchLastBreeding = async (userAddress: string) => {
+    if (!breedingConfig) {
+      return setToastError({
+        title: "Error",
+        message: "Failed to BreedingConfig",
+      });
+    }
+
     const client = await getNonSigningCosmWasmClient();
     const { tokens } = await client.queryContractSmart(
-      THE_RIOT_BREEDING_CHILD_CONTRACT_ADDRESS,
+      breedingConfig.child_contract_addr,
       {
         tokens: {
           // Do not provide: start_after/limit to get 1 last result
-          owner: selectedWallet?.address,
+          owner: userAddress,
         },
       }
     );
@@ -55,14 +64,11 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
     const lastTokenId: string = tokens[0];
     const {
       extension: { image },
-    } = await client.queryContractSmart(
-      THE_RIOT_BREEDING_CHILD_CONTRACT_ADDRESS,
-      {
-        nft_info: {
-          token_id: lastTokenId,
-        },
-      }
-    );
+    } = await client.queryContractSmart(breedingConfig.child_contract_addr, {
+      nft_info: {
+        token_id: lastTokenId,
+      },
+    });
 
     setTokenInfo({ id: lastTokenId, imageUri: ipfsURLToHTTPURL(image) });
   };
@@ -70,7 +76,7 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   useEffect(() => {
     if (!selectedWallet?.address) return;
 
-    fetchLastBreeding();
+    fetchLastBreeding(selectedWallet.address);
   }, [selectedWallet?.address]);
 
   return (

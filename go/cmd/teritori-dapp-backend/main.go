@@ -83,12 +83,8 @@ func main() {
 		Whitelist:          whitelist,
 	})
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
-		Logger:             logger,
-		IndexerDB:          indexerDB,
-		GraphqlEndpoint:    graphqlEndpoint,
-		TNSContractAddress: *tnsContractAddress,
-		TNSDefaultImageURL: *tnsDefaultImageURL,
-		Whitelist:          whitelist,
+		Logger:    logger,
+		IndexerDB: indexerDB,
 	})
 
 	server := grpc.NewServer()

@@ -3,7 +3,6 @@ package p2e
 import (
 	"context"
 
-	"github.com/TERITORI/teritori-dapp/go/internal/airtable_fetcher"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
 	"github.com/pkg/errors"
@@ -13,33 +12,66 @@ import (
 
 type P2eService struct {
 	p2epb.UnimplementedP2EServiceServer
-
-	homeProvider *airtable_fetcher.Cache
-	// collectionsByVolumeProvider         collections.CollectionsProvider
-	// collectionsByMarketCapProvider      collections.CollectionsProvider
 	conf *Config
 }
 
 type Config struct {
-	Logger             *zap.Logger
-	IndexerDB          *gorm.DB
-	GraphqlEndpoint    string
-	TNSContractAddress string
-	TNSDefaultImageURL string
-	Whitelist          []string
+	Logger    *zap.Logger
+	IndexerDB *gorm.DB
+}
+
+type UserScoreResponse struct {
+	Rank            int32
+	UserId          string
+	InProgressScore int64
+	SnapshotScore   int64
+	SnapshotRank    int32
 }
 
 func NewP2eService(ctx context.Context, conf *Config) p2epb.P2EServiceServer {
 	// FIXME: validate config
 	return &P2eService{
-		conf:         conf,
-		homeProvider: airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(), conf.Logger.Named("airtable_fetcher")),
+		conf: conf,
 	}
 }
 
-type P2eLeaderboardWithRank struct {
-	indexerdb.P2eLeaderboard
-	Rank uint32
+func (s *P2eService) FightersCount(ctx context.Context, req *p2epb.FightersCountRequest) (*p2epb.FightersCountResponse, error) {
+	var count int64
+
+	collectionId := req.GetCollectionId()
+	if collectionId == "" {
+		return nil, errors.New("missing collection_id")
+	}
+
+	if err := s.conf.IndexerDB.Model(&indexerdb.P2eLeaderboard{CollectionID: collectionId}).Count(&count).Error; err != nil {
+		return nil, errors.Wrap(err, "failed count fighters")
+	}
+
+	return &p2epb.FightersCountResponse{Count: uint32(count)}, nil
+}
+
+func (s *P2eService) FighterScore(ctx context.Context, req *p2epb.FighterScoreRequest) (*p2epb.FighterScoreResponse, error) {
+	collectionId := req.GetCollectionId()
+	if collectionId == "" {
+		return nil, errors.New("missing collection_id")
+	}
+
+	userId := req.GetUserId()
+	if userId == "" {
+		return nil, errors.New("missing user_id")
+	}
+
+	var userScore p2epb.UserScore
+	q := &indexerdb.P2eLeaderboard{
+		CollectionID: collectionId,
+		UserID:       indexerdb.UserID(userId),
+	}
+
+	if err := s.conf.IndexerDB.Model(q).First(&userScore).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to get user score")
+	}
+
+	return &p2epb.FighterScoreResponse{UserScore: &userScore}, nil
 }
 
 func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2EService_LeaderboardServer) error {
@@ -63,7 +95,7 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 		return errors.New("collectionId must be provided")
 	}
 
-	var userScores []P2eLeaderboardWithRank
+	var userScores []UserScoreResponse
 
 	err := s.conf.IndexerDB.Raw(`
 		SELECT ROW_NUMBER() OVER(ORDER BY in_progress_score desc) as rank, *
@@ -85,7 +117,7 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 	for _, userScore := range userScores {
 		if err := srv.Send(&p2epb.LeaderboardResponse{UserScore: &p2epb.UserScore{
 			Rank:            int32(userScore.Rank),
-			UserId:          string(userScore.UserID),
+			UserId:          string(userScore.UserId),
 			InProgressScore: int64(userScore.InProgressScore),
 			SnapshotScore:   int64(userScore.SnapshotScore),
 			SnapshotRank:    int32(userScore.SnapshotRank),

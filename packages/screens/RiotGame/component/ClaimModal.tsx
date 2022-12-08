@@ -6,11 +6,16 @@ import trophiesSVG from "../../../../assets/icons/trophies.svg";
 import teritoriLogoSVG from "../../../../assets/logos/logo.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
+import { tinyAddress } from "../../../components/WalletSelector";
 import { CollectionSocialButtons } from "../../../components/collections/CollectionSocialButtons";
 import Row from "../../../components/grid/Row";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { GetSquadResponse } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
+import { durationToXP } from "../../../utils/game";
 import {
   mineShaftColor,
   neutral77,
@@ -24,13 +29,21 @@ import { THE_RIOT_COLLECTION_ID } from "../settings";
 type ClaimModalProps = {
   visible?: boolean;
   onClose?(): void;
+  currentSquad?: GetSquadResponse;
 };
 
 export const ClaimModal: React.FC<ClaimModalProps> = ({
-  visible = false,
+  currentSquad,
   onClose,
+  visible = false,
 }) => {
+  const selectedWallet = useSelectedWallet();
   const { info = {} } = useCollectionInfo(THE_RIOT_COLLECTION_ID);
+  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+
+  const startTime = currentSquad?.start_time || 0;
+  const endTime = currentSquad?.end_time || 0;
+  const xp = durationToXP(endTime - startTime);
 
   return (
     <ModalBase
@@ -66,12 +79,16 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
 
         <SpacerColumn size={4} />
 
-        <BrandText style={fontSemibold20}>ferryman.tori</BrandText>
+        <BrandText style={fontSemibold20}>
+          {tinyAddress(
+            tnsMetadata?.metadata?.tokenId || selectedWallet?.address || ""
+          )}
+        </BrandText>
 
         <SpacerColumn size={2} />
 
         <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-          You made it to rank #1!
+          You made it
         </BrandText>
 
         <SpacerColumn size={2} />
@@ -81,7 +98,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
 
           <SpacerRow size={1} />
 
-          <BrandText style={fontSemibold20}>1337 TORI</BrandText>
+          <BrandText style={fontSemibold20}>{xp} XP</BrandText>
         </Row>
 
         <SpacerColumn size={4} />

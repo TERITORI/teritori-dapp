@@ -8,6 +8,23 @@ import { share } from "rxjs/operators";
 
 export const protobufPackage = "p2e.v1";
 
+export interface FighterScoreRequest {
+  collectionId: string;
+  userId: string;
+}
+
+export interface FighterScoreResponse {
+  userScore: UserScore | undefined;
+}
+
+export interface FightersCountRequest {
+  collectionId: string;
+}
+
+export interface FightersCountResponse {
+  count: number;
+}
+
 export interface LeaderboardRequest {
   collectionId: string;
   limit: number;
@@ -25,6 +42,208 @@ export interface UserScore {
 export interface LeaderboardResponse {
   userScore: UserScore | undefined;
 }
+
+function createBaseFighterScoreRequest(): FighterScoreRequest {
+  return { collectionId: "", userId: "" };
+}
+
+export const FighterScoreRequest = {
+  encode(message: FighterScoreRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.collectionId !== "") {
+      writer.uint32(10).string(message.collectionId);
+    }
+    if (message.userId !== "") {
+      writer.uint32(18).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FighterScoreRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFighterScoreRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collectionId = reader.string();
+          break;
+        case 2:
+          message.userId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FighterScoreRequest {
+    return {
+      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      userId: isSet(object.userId) ? String(object.userId) : "",
+    };
+  },
+
+  toJSON(message: FighterScoreRequest): unknown {
+    const obj: any = {};
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    message.userId !== undefined && (obj.userId = message.userId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<FighterScoreRequest>, I>>(object: I): FighterScoreRequest {
+    const message = createBaseFighterScoreRequest();
+    message.collectionId = object.collectionId ?? "";
+    message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
+function createBaseFighterScoreResponse(): FighterScoreResponse {
+  return { userScore: undefined };
+}
+
+export const FighterScoreResponse = {
+  encode(message: FighterScoreResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userScore !== undefined) {
+      UserScore.encode(message.userScore, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FighterScoreResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFighterScoreResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.userScore = UserScore.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FighterScoreResponse {
+    return { userScore: isSet(object.userScore) ? UserScore.fromJSON(object.userScore) : undefined };
+  },
+
+  toJSON(message: FighterScoreResponse): unknown {
+    const obj: any = {};
+    message.userScore !== undefined &&
+      (obj.userScore = message.userScore ? UserScore.toJSON(message.userScore) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<FighterScoreResponse>, I>>(object: I): FighterScoreResponse {
+    const message = createBaseFighterScoreResponse();
+    message.userScore = (object.userScore !== undefined && object.userScore !== null)
+      ? UserScore.fromPartial(object.userScore)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseFightersCountRequest(): FightersCountRequest {
+  return { collectionId: "" };
+}
+
+export const FightersCountRequest = {
+  encode(message: FightersCountRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.collectionId !== "") {
+      writer.uint32(10).string(message.collectionId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FightersCountRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFightersCountRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collectionId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FightersCountRequest {
+    return { collectionId: isSet(object.collectionId) ? String(object.collectionId) : "" };
+  },
+
+  toJSON(message: FightersCountRequest): unknown {
+    const obj: any = {};
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<FightersCountRequest>, I>>(object: I): FightersCountRequest {
+    const message = createBaseFightersCountRequest();
+    message.collectionId = object.collectionId ?? "";
+    return message;
+  },
+};
+
+function createBaseFightersCountResponse(): FightersCountResponse {
+  return { count: 0 };
+}
+
+export const FightersCountResponse = {
+  encode(message: FightersCountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.count !== 0) {
+      writer.uint32(8).uint32(message.count);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FightersCountResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFightersCountResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.count = reader.uint32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FightersCountResponse {
+    return { count: isSet(object.count) ? Number(object.count) : 0 };
+  },
+
+  toJSON(message: FightersCountResponse): unknown {
+    const obj: any = {};
+    message.count !== undefined && (obj.count = Math.round(message.count));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<FightersCountResponse>, I>>(object: I): FightersCountResponse {
+    const message = createBaseFightersCountResponse();
+    message.count = object.count ?? 0;
+    return message;
+  },
+};
 
 function createBaseLeaderboardRequest(): LeaderboardRequest {
   return { collectionId: "", limit: 0, offset: 0 };
@@ -230,6 +449,8 @@ export const LeaderboardResponse = {
 
 export interface P2eService {
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse>;
+  FightersCount(request: DeepPartial<FightersCountRequest>, metadata?: grpc.Metadata): Promise<FightersCountResponse>;
+  FighterScore(request: DeepPartial<FighterScoreRequest>, metadata?: grpc.Metadata): Promise<FighterScoreResponse>;
 }
 
 export class P2eServiceClientImpl implements P2eService {
@@ -238,10 +459,20 @@ export class P2eServiceClientImpl implements P2eService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Leaderboard = this.Leaderboard.bind(this);
+    this.FightersCount = this.FightersCount.bind(this);
+    this.FighterScore = this.FighterScore.bind(this);
   }
 
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse> {
     return this.rpc.invoke(P2eServiceLeaderboardDesc, LeaderboardRequest.fromPartial(request), metadata);
+  }
+
+  FightersCount(request: DeepPartial<FightersCountRequest>, metadata?: grpc.Metadata): Promise<FightersCountResponse> {
+    return this.rpc.unary(P2eServiceFightersCountDesc, FightersCountRequest.fromPartial(request), metadata);
+  }
+
+  FighterScore(request: DeepPartial<FighterScoreRequest>, metadata?: grpc.Metadata): Promise<FighterScoreResponse> {
+    return this.rpc.unary(P2eServiceFighterScoreDesc, FighterScoreRequest.fromPartial(request), metadata);
   }
 }
 
@@ -261,6 +492,50 @@ export const P2eServiceLeaderboardDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...LeaderboardResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const P2eServiceFightersCountDesc: UnaryMethodDefinitionish = {
+  methodName: "FightersCount",
+  service: P2eServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return FightersCountRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...FightersCountResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const P2eServiceFighterScoreDesc: UnaryMethodDefinitionish = {
+  methodName: "FighterScore",
+  service: P2eServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return FighterScoreRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...FighterScoreResponse.decode(data),
         toObject() {
           return this;
         },

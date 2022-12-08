@@ -4,12 +4,10 @@ import "github.com/lib/pq"
 
 // Delete the record when user unstake
 type P2eSquadStaking struct {
-	ID uint `gorm:"primaryKey"`
-
-	OwnerID      UserID         `gorm:"uniqueIndex: unique_staking"`
-	StartTime    uint64         `gorm:"uniqueIndex: unique_staking"`
+	OwnerID      UserID         `gorm:"primaryKey"`
+	CollectionID string         `gorm:"primaryKey"`
+	StartTime    uint64         `gorm:"index"`
 	EndTime      uint64         `gorm:"index"`
-	CollectionID string         `gorm:"index"`
 	TokenIDs     pq.StringArray `gorm:"type:varchar(8)[]"`
 }
 
@@ -17,10 +15,9 @@ type P2eSquadStaking struct {
 // we can use a specific ContractAddress: Ex: global
 // and aggregate all data in that
 type P2eLeaderboard struct {
-	ID uint `gorm:"primaryKey"`
-
-	UserID          UserID `gorm:"index"`
-	CollectionID    string `gorm:"index"`
+	UserID          UserID `gorm:"primaryKey"`
+	CollectionID    string `gorm:"primaryKey"`
+	Rank            uint32 `gorm:"index"`
 	Score           uint32 `gorm:"index"` // Score already claimed
 	InProgressScore uint32 `gorm:"index"` // Score including current staking
 	SnapshotScore   uint32 // Historical score used for calculating changes

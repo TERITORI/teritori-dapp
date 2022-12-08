@@ -1,5 +1,12 @@
-import React from "react";
-import { Modal, Pressable, View, ScrollView } from "react-native";
+import React, { ComponentType } from "react";
+import {
+  Modal,
+  Pressable,
+  View,
+  ScrollView,
+  ViewComponent,
+  ViewStyle,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
@@ -16,8 +23,24 @@ import { SpacerColumn } from "../spacer";
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
+type ModalBaseProps = {
+  label?: string | React.FC | ViewComponent | JSX.Element;
+  onClose?: () => void;
+  onBackPress?: () => void;
+  width?: number;
+  visible?: boolean;
+  Header?: ComponentType;
+  childrenBottom?: JSX.Element | JSX.Element[];
+  hideMainSeparator?: boolean;
+  description?: string;
+  noBrokenCorners?: boolean;
+  scrollable?: boolean;
+  contentStyle?: ViewStyle;
+  containerStyle?: ViewStyle;
+};
+
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
-export const ModalBase: React.FC<NSModal.ModalBaseProps> = ({
+export const ModalBase: React.FC<ModalBaseProps> = ({
   label,
   visible,
   width,

@@ -23,6 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type P2EServiceClient interface {
 	Leaderboard(ctx context.Context, in *LeaderboardRequest, opts ...grpc.CallOption) (P2EService_LeaderboardClient, error)
+	FightersCount(ctx context.Context, in *FightersCountRequest, opts ...grpc.CallOption) (*FightersCountResponse, error)
+	FighterScore(ctx context.Context, in *FighterScoreRequest, opts ...grpc.CallOption) (*FighterScoreResponse, error)
 }
 
 type p2EServiceClient struct {
@@ -65,11 +67,31 @@ func (x *p2EServiceLeaderboardClient) Recv() (*LeaderboardResponse, error) {
 	return m, nil
 }
 
+func (c *p2EServiceClient) FightersCount(ctx context.Context, in *FightersCountRequest, opts ...grpc.CallOption) (*FightersCountResponse, error) {
+	out := new(FightersCountResponse)
+	err := c.cc.Invoke(ctx, "/p2e.v1.P2eService/FightersCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *p2EServiceClient) FighterScore(ctx context.Context, in *FighterScoreRequest, opts ...grpc.CallOption) (*FighterScoreResponse, error) {
+	out := new(FighterScoreResponse)
+	err := c.cc.Invoke(ctx, "/p2e.v1.P2eService/FighterScore", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // P2EServiceServer is the server API for P2EService service.
 // All implementations must embed UnimplementedP2EServiceServer
 // for forward compatibility
 type P2EServiceServer interface {
 	Leaderboard(*LeaderboardRequest, P2EService_LeaderboardServer) error
+	FightersCount(context.Context, *FightersCountRequest) (*FightersCountResponse, error)
+	FighterScore(context.Context, *FighterScoreRequest) (*FighterScoreResponse, error)
 	mustEmbedUnimplementedP2EServiceServer()
 }
 
@@ -79,6 +101,12 @@ type UnimplementedP2EServiceServer struct {
 
 func (UnimplementedP2EServiceServer) Leaderboard(*LeaderboardRequest, P2EService_LeaderboardServer) error {
 	return status.Errorf(codes.Unimplemented, "method Leaderboard not implemented")
+}
+func (UnimplementedP2EServiceServer) FightersCount(context.Context, *FightersCountRequest) (*FightersCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FightersCount not implemented")
+}
+func (UnimplementedP2EServiceServer) FighterScore(context.Context, *FighterScoreRequest) (*FighterScoreResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FighterScore not implemented")
 }
 func (UnimplementedP2EServiceServer) mustEmbedUnimplementedP2EServiceServer() {}
 
@@ -114,13 +142,58 @@ func (x *p2EServiceLeaderboardServer) Send(m *LeaderboardResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _P2EService_FightersCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FightersCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(P2EServiceServer).FightersCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/p2e.v1.P2eService/FightersCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(P2EServiceServer).FightersCount(ctx, req.(*FightersCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _P2EService_FighterScore_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FighterScoreRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(P2EServiceServer).FighterScore(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/p2e.v1.P2eService/FighterScore",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(P2EServiceServer).FighterScore(ctx, req.(*FighterScoreRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // P2EService_ServiceDesc is the grpc.ServiceDesc for P2EService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var P2EService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "p2e.v1.P2eService",
 	HandlerType: (*P2EServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "FightersCount",
+			Handler:    _P2EService_FightersCount_Handler,
+		},
+		{
+			MethodName: "FighterScore",
+			Handler:    _P2EService_FighterScore_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "Leaderboard",

@@ -4,12 +4,6 @@
  * and run the @cosmwasm/ts-codegen generate command to regenerate this file.
  */
 
-// TODO: Gen auto and fix these types bellow
-type BreedRequestsCountResponse = any;
-type BreededCountResponse = any;
-type BreedFinishedCountResponse = any;
-type ConfigResponse = any;
-
 import {
   CosmWasmClient,
   SigningCosmWasmClient,
@@ -25,8 +19,15 @@ import {
   Attribute,
   InstantiateMsg,
   QueryMsg,
-  BreedInfoResponse,
 } from "./TeritoriBreeding.types";
+
+// TODO: Ask Yield to add these types
+type ConfigResponse = any;
+type BreedInfoResponse = any;
+type BreededCountResponse = any;
+type BreedRequestsCountResponse = any;
+type BreedFinishedCountResponse = any;
+
 export interface TeritoriBreedingReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<ConfigResponse>;

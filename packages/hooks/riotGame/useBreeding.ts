@@ -10,13 +10,13 @@ import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
 import { useContractClients } from "../useContractClients";
 import useSelectedWallet from "../useSelectedWallet";
-import { Config as GetConfigResponse } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
+import { Config } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 
 export const useBreeding = () => {
-  const [breedingConfig, setBreedingConfig] = useState<GetConfigResponse>();
+  const [breedingConfig, setBreedingConfig] = useState<Config>();
   const [lastBreedAt, setLastBreedAt] = useState<moment.Moment>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { client, queryClient } = useContractClients(
+
+  const { queryClient } = useContractClients(
     THE_RIOT_BREEDING_CONTRACT_ADDRESS,
     "teritori-breeding"
   );
@@ -28,7 +28,8 @@ export const useBreeding = () => {
   const breed = async (
     breedingPrice: Coin,
     tokenId1: string,
-    tokenId2: string
+    tokenId2: string,
+    parentContract: string
   ) => {
     if (!tokenId1 || !tokenId2) {
       throw Error("Not select enough rippers to breed");
@@ -38,7 +39,12 @@ export const useBreeding = () => {
     const sender = selectedWallet?.address || "";
 
     const approveMsgs = [tokenId1, tokenId2].map((tokenId) =>
-      buildApproveNFTMsg(sender, THE_RIOT_BREEDING_CONTRACT_ADDRESS, tokenId)
+      buildApproveNFTMsg(
+        sender,
+        THE_RIOT_BREEDING_CONTRACT_ADDRESS,
+        tokenId,
+        parentContract
+      )
     );
 
     const breedMsg = buildBreedingMsg(
@@ -59,13 +65,13 @@ export const useBreeding = () => {
     return tx;
   };
 
-  const _fetchBreedingConfig = async (
+  const fetchBreedingConfig = async (
     breedingQueryClient: TeritoriBreedingQueryClient
   ) => {
     // Just load config once
     if (breedingConfig) return;
 
-    const config: GetConfigResponse = await breedingQueryClient.config();
+    const config: Config = await breedingQueryClient.config();
     console.log("Breading config:", { config });
     setBreedingConfig(config);
   };
@@ -73,7 +79,7 @@ export const useBreeding = () => {
   useEffect(() => {
     if (!breedingQueryClient) return;
 
-    _fetchBreedingConfig(breedingQueryClient);
+    fetchBreedingConfig(breedingQueryClient);
   }, [breedingQueryClient?.contractAddress]); // Depend on one attribute to avoid deep compare
 
   return {

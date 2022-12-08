@@ -94,12 +94,17 @@ export const RiotGameEnrollScreen = () => {
   };
 
   const joinTheFight = async () => {
-    if (selectedRippers.length === 0) return;
+    if (!squadStakingConfig) {
+      return setToastError({
+        title: "Error",
+        message: "Failed to load SquadStakingConfig",
+      });
+    }
 
     setIsJoiningFight(true);
 
     try {
-      await squadStake(selectedRippers);
+      await squadStake(selectedRippers, squadStakingConfig);
 
       // HACK: wait a little bit before redirection to be sure that we have passed the fight start time
       setTimeout(() => {
@@ -122,7 +127,7 @@ export const RiotGameEnrollScreen = () => {
       (currentSquad ||
         [StakingState.RELAX, StakingState.ONGOING].includes(stakingState))
     ) {
-      navigation.navigate("RiotGameFight");
+      navigation.replace("RiotGameFight");
     }
   }, [isSquadLoaded, isStakingStateLoaded]);
 

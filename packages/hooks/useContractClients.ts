@@ -5,10 +5,6 @@ import {
   TeritoriBreedingQueryClient,
 } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import {
-  TeritoriNftMinterClient,
-  TeritoriNftMinterQueryClient,
-} from "../contracts-clients/teritori-nft-minter/TeritoriNftMinter.client";
-import {
   TeritoriNftStakingClient,
   TeritoriNftStakingQueryClient,
 } from "../contracts-clients/teritori-nft-staking/TeritoriNftStaking.client";
@@ -32,7 +28,6 @@ import useSelectedWallet from "./useSelectedWallet";
 
 type ContractName =
   | "teritori-nft"
-  | "teritori-nft-minter"
   | "teritori-nft-staking"
   | "teritori-nft-vault"
   | "teritori-breeding"
@@ -44,10 +39,6 @@ const CONTRACT_CLIENT_MAP: {
   "teritori-nft": {
     clientClass: TeritoriNftClient,
     queryClientClass: TeritoriNftQueryClient,
-  },
-  "teritori-nft-minter": {
-    clientClass: TeritoriNftMinterClient,
-    queryClientClass: TeritoriNftMinterQueryClient,
   },
   "teritori-nft-staking": {
     clientClass: TeritoriNftStakingClient,

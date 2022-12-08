@@ -10,13 +10,12 @@ import (
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 )
 
 func main() {
 	fs := flag.NewFlagSet("p2e-update-leaderboard", flag.ContinueOnError)
 	var (
-		snapshot     = fs.Bool("snapshot-score", false, "update the snapshot score, used for calculating changes")
+		snapshot     = fs.Bool("snapshot", false, "update the snapshot score, used for calculating changes")
 		collectionId = fs.String("collection-id", "", "id of collection to update the leaderboard")
 		dbHost       = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort       = fs.String("db-indexer-port", "", "port for postgreSQL database")
@@ -62,9 +61,7 @@ func main() {
 	// - Only counting the stakings which have been started
 	// - If staking is in progress => in progress duration = current - start_time
 	// - If staking ends => if progress duration = end_time - start_time
-	var output gorm.DB
-
-	updateErr := db.Raw(fmt.Sprint(`
+	updateScoreErr := db.Exec(fmt.Sprint(`
 		UPDATE p2e_leaderboards as lb
 		SET 
 			in_progress_score = score + LEAST(ss.end_time - ss.start_time, ? - ss.start_time)
@@ -77,22 +74,36 @@ func main() {
 		currentTimestamp,
 		*collectionId,
 		currentTimestamp,
-	).Scan(&output).Error
-	if updateErr != nil {
-		panic(errors.Wrap(updateErr, "failed to update in progress score"))
+	).Error
+	if updateScoreErr != nil {
+		panic(errors.Wrap(updateScoreErr, "failed to update in progress score"))
 	}
 	logger.Info("Update leaderboard in_progress_score successfully")
 
+	updateRankErr := db.Exec(fmt.Sprint(`
+		UPDATE p2e_leaderboards as lb
+		SET rank = orderedLb.rank
+		FROM (SELECT user_id, collection_id, row_number() OVER (ORDER BY in_progress_score) AS rank FROM p2e_leaderboards) orderedLb
+		WHERE lb.user_id = orderedLb.user_id
+			AND lb.collection_id = orderedLb.collection_id
+			AND lb.collection_id = ?
+	`),
+		*collectionId,
+	).Error
+	if updateRankErr != nil {
+		panic(errors.Wrap(updateRankErr, "failed to update rank"))
+	}
+	logger.Info("Update leaderboard rank successfully")
+
 	if *snapshot {
-		snapshotErr := db.Raw(`
+		snapshotErr := db.Exec(`
 			UPDATE p2e_leaderboards as lb
-			SET snapshot_score = in_progress_score, snapshot_rank = orderedLb.rank
-			FROM (SELECT id, row_number() OVER (ORDER BY in_progress_score) AS rank FROM p2e_leaderboards) orderedLb
-			WHERE lb.id = orderedLb.id AND lb.collection_id = ?
-		`, *collectionId).Scan(&output).Error
+			SET snapshot_score = in_progress_score, snapshot_rank = rank
+			WHERE lb.collection_id = ?
+		`, *collectionId).Error
 
 		if snapshotErr != nil {
-			panic(errors.Wrap(updateErr, "failed to snapshot"))
+			panic(errors.Wrap(snapshotErr, "failed to snapshot"))
 		}
 		logger.Info("Snapshot leaderboard successfully")
 	}

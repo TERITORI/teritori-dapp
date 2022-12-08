@@ -33,8 +33,7 @@ export const useRippers = () => {
     sort: Sort.SORTING_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
   };
-  const { nfts } = useNFTs(myRippersRequest);
-  const myRippers = nfts as NSRiotGame.RipperListItem[];
+  const { nfts: myRippers } = useNFTs(myRippersRequest);
 
   const myAvailableRippers = useMemo(() => {
     return myRippers.filter((r) => !r.isListed);

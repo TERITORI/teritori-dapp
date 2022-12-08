@@ -13,27 +13,30 @@ import nft4 from "../../assets/game/nft-4.png";
 import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
-import { THE_RIOT_BREEDING_CONTRACT_ADDRESS } from "../screens/RiotGame/settings";
+import {
+  DURATION_TO_XP_COEF,
+  THE_RIOT_BREEDING_CONTRACT_ADDRESS,
+  THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
+} from "../screens/RiotGame/settings";
 import { GameBgCardItem } from "../screens/RiotGame/types";
 import { UserScore } from "./../api/p2e/v1/p2e";
-
-const THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS =
-  process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS || "";
-const THE_RIOT_NFT_CONTRACT_ADDRESS =
-  process.env.THE_RIOT_NFT_CONTRACT_ADDRESS || "";
-const REWARD_COEF = 100;
 
 export const parseUserScoreInfo = (userScore: UserScore) => {
   const { inProgressScore, snapshotScore, rank, snapshotRank } = userScore;
 
   // Duration is in seconds
   const hours = Math.floor((100 * inProgressScore) / 60 / 60) / 100;
-  const xp = hours * REWARD_COEF;
+  const xp = hours * DURATION_TO_XP_COEF;
   const scoreChanges =
     Math.floor(10_000 * ((inProgressScore - snapshotScore) / snapshotScore)) /
     100;
   const rankChanges = rank - snapshotRank;
   return { xp, hours, rankChanges, scoreChanges };
+};
+
+export const durationToXP = (duration: number) => {
+  // Duration is in seconds
+  return Math.floor(100 * DURATION_TO_XP_COEF * (duration / 60 / 60)) / 100;
 };
 
 export const getRipperRarity = (
@@ -108,7 +111,8 @@ export enum StakingState {
 export const buildApproveNFTMsg = (
   sender: string,
   spender: string,
-  tokenId: string
+  tokenId: string,
+  nftContractAddress: string,
 ) => {
   return {
     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
@@ -122,7 +126,7 @@ export const buildApproveNFTMsg = (
           },
         })
       ),
-      contract: THE_RIOT_NFT_CONTRACT_ADDRESS,
+      contract: nftContractAddress,
       funds: [],
     },
   };

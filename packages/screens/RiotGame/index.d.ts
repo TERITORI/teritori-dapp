@@ -50,17 +50,5 @@ namespace NSRiotGame {
     attributes: RipperAttribute[];
   };
 
-  type RipperListItem = {
-    id: string;
-    denom: "";
-    collectionName: string;
-    imageUri: string;
-    isListed: boolean;
-    mintAddress: string;
-    name: string;
-    networkId: string;
-    ownerId: string;
-    price: string;
-    textInsert: string;
-  };
+  type RipperListItem = NFT;
 }

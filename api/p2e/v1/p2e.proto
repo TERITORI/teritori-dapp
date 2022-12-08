@@ -5,6 +5,25 @@ option go_package = "./p2epb";
 
 service P2eService {
   rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
+  rpc FightersCount(FightersCountRequest) returns (FightersCountResponse);
+  rpc FighterScore(FighterScoreRequest) returns (FighterScoreResponse);
+}
+
+message FighterScoreRequest {
+  string collection_id = 1;
+  string user_id = 2;
+}
+
+message FighterScoreResponse {
+  UserScore user_score = 1;
+}
+
+message FightersCountRequest {
+  string collection_id = 1;
+}
+
+message FightersCountResponse {
+  uint32 count = 1;
 }
 
 message LeaderboardRequest {
