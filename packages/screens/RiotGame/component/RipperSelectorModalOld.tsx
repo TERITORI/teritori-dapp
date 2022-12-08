@@ -28,7 +28,8 @@ import {
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { headerHeight, layout } from "../../../utils/style/layout";
+import { headerHeight } from "../../../utils/style/layout";
+import { RipperDetail, RipperListItem } from "../types";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStat } from "./RipperStat";
 import { SimpleButton } from "./SimpleButton";
@@ -36,8 +37,8 @@ import { SimpleButton } from "./SimpleButton";
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
   confirmButton: string;
-  availableRippers: NSRiotGame.RipperListItem[];
-  onSelectRipper(slotId: number, ripper: NSRiotGame.RipperDetail): void;
+  availableRippers: RipperListItem[];
+  onSelectRipper(slotId: number, ripper: RipperDetail): void;
   onClose?(): void;
 };
 
@@ -59,18 +60,18 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   ...props
 }) => {
   const [selectedRipper, setSelectedRipper] = useState<
-    NSRiotGame.RipperListItem | undefined
+    RipperListItem | undefined
   >();
 
   const [selectedRipperDetail, setSelectedRipperDetail] =
-    useState<NSRiotGame.RipperDetail>();
+    useState<RipperDetail>();
 
-  const selectRipper = async (ripper: NSRiotGame.RipperListItem) => {
+  const selectRipper = async (ripper: RipperListItem) => {
     setSelectedRipper(ripper);
 
     const tokenId = ripper.id.split("-")[2];
 
-    const ripperDetail: NSRiotGame.RipperDetail = await getStandardNFTInfo(
+    const ripperDetail: RipperDetail = await getStandardNFTInfo(
       process.env.THE_RIOT_COLLECTION_ADDRESS || "",
       tokenId
     );
@@ -109,7 +110,10 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           {selectedRipperDetail?.name || "Please select a Ripper"}
         </BrandText>
 
-        <ScrollView style={layout.w_100} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={{ width: "100%" }}
+          showsVerticalScrollIndicator={false}
+        >
           <Row breakpoint={992}>
             <View style={styles.leftCol}>
               <View style={styles.leftColContent}>
@@ -171,7 +175,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   source={dashedBorderPNG}
                 >
                   <RipperAvatar
-                    source={selectedRipperDetail?.imageURL}
+                    source={selectedRipperDetail?.imageURL || ""}
                     size={RIPPER_IMAGE_SIZE}
                     rounded
                     containerStyle={styles.roundedContainer}

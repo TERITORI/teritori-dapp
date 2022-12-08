@@ -28,7 +28,6 @@ import {
   neutralA3,
   yellowDefault,
 } from "../../../utils/style/colors";
-import { flex } from "../../../utils/style/flex";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { headerHeight } from "../../../utils/style/layout";
 import { spacing } from "../../../utils/style/spacing";
@@ -129,7 +128,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                     style={spacing.mr_4}
                     key={menuItem.id}
                   >
-                    <Row style={flex.alignItemsCenter}>
+                    <Row style={{ alignItems: "center" }}>
                       <SVG
                         width={16}
                         height={16}

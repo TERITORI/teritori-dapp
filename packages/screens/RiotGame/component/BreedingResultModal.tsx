@@ -15,9 +15,7 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../../../utils/keplr";
 import { mineShaftColor, neutral77 } from "../../../utils/style/colors";
-import { flex } from "../../../utils/style/flex";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { THE_RIOT_COLLECTION_ID } from "../settings";
 
 type BreedingResultModalProps = {
@@ -102,7 +100,7 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
 
           <SpacerColumn size={2} />
 
-          <Row style={[layout.w_100, flex.justifyContentBetween]}>
+          <Row style={{ width: "100%", justifyContent: "space-between" }}>
             <CollectionSocialButtons collectionInfo={collectionInfo} />
           </Row>
         </View>

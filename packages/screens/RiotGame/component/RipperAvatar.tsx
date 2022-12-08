@@ -15,12 +15,13 @@ import {
   withAlpha,
 } from "../../../utils/style/colors";
 import { fontSemibold9 } from "../../../utils/style/fonts";
+import { RipperRarity } from "../types";
 
 type RipperAvatarProps = {
   size: number;
   source: string | ImageSourcePropType;
   containerStyle?: ViewStyle;
-  rarity?: NSRiotGame.RipperRarity;
+  rarity?: RipperRarity;
   rounded?: boolean;
 };
 

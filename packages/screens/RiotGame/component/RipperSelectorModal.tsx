@@ -23,15 +23,15 @@ import { SpacerRow } from "../../../components/spacer/SpacerRow";
 import { getStandardNFTInfo } from "../../../hooks/useNFTInfo";
 import { getRipperTraitValue } from "../../../utils/game";
 import { neutral00, white, yellowDefault } from "../../../utils/style/colors";
-import { flex } from "../../../utils/style/flex";
 import {
   fontMedium24,
   fontMedium32,
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { headerHeight, layout } from "../../../utils/style/layout";
+import { headerHeight } from "../../../utils/style/layout";
 import { spacing } from "../../../utils/style/spacing";
+import { RipperDetail, RipperListItem } from "../types";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStat } from "./RipperStat";
 import { SimpleButton } from "./SimpleButton";
@@ -39,8 +39,8 @@ import { SimpleButton } from "./SimpleButton";
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
   confirmButton: string;
-  availableRippers: NSRiotGame.RipperListItem[];
-  onSelectRipper?(slotId: number, ripper: NSRiotGame.RipperDetail): void;
+  availableRippers: RipperListItem[];
+  onSelectRipper?(slotId: number, ripper: RipperDetail): void;
   onClose?(): void;
 };
 
@@ -62,17 +62,17 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRipper, setSelectedRipper] = useState<
-    NSRiotGame.RipperListItem | undefined
+    RipperListItem | undefined
   >();
   const [selectedRipperDetail, setSelectedRipperDetail] =
-    useState<NSRiotGame.RipperDetail>();
+    useState<RipperDetail>();
 
-  const selectRipper = async (ripper: NSRiotGame.RipperListItem) => {
+  const selectRipper = async (ripper: RipperListItem) => {
     setSelectedRipper(ripper);
 
     const tokenId = ripper.id.split("-")[2];
 
-    const ripperDetail: NSRiotGame.RipperDetail = await getStandardNFTInfo(
+    const ripperDetail: RipperDetail = await getStandardNFTInfo(
       process.env.THE_RIOT_COLLECTION_ADDRESS || "",
       tokenId
     );
@@ -108,8 +108,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
         </Pressable>
 
         <ScrollView
-          style={layout.w_100}
-          contentContainerStyle={flex.alignItemsCenter}
+          style={{ width: "100%" }}
+          contentContainerStyle={{ alignItems: "center" }}
           showsVerticalScrollIndicator={false}
         >
           <BrandText style={[fontMedium48, spacing.mt_2]}>
@@ -117,7 +117,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           </BrandText>
 
           <Row breakpoint={992} style={{ justifyContent: "space-around" }}>
-            <Col style={flex.justifyContentAround}>
+            <Col style={{ justifyContent: "space-around" }}>
               <View>
                 <BrandText style={[fontMedium32]}>Available Rippers</BrandText>
 
@@ -177,14 +177,20 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 source={dashedBorderPNG}
               >
                 <RipperAvatar
-                  source={selectedRipperDetail?.imageURL}
+                  source={selectedRipperDetail?.imageURL || ""}
                   size={RIPPER_IMAGE_SIZE}
                   rounded
                   containerStyle={styles.roundedContainer}
                 />
               </ImageBackground>
 
-              <BrandText style={[fontMedium24, flex.alignCenter, spacing.mt_2]}>
+              <BrandText
+                style={[
+                  fontMedium24,
+                  spacing.mt_2,
+                  { alignItems: "center", alignSelf: "center" },
+                ]}
+              >
                 Stats
               </BrandText>
 

@@ -10,6 +10,7 @@ import {
   SQUAD_STAKE_COEF,
   THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
 } from "../../screens/RiotGame/settings";
+import { RipperDetail } from "../../screens/RiotGame/types";
 import { defaultExecuteFee } from "../../utils/fee";
 import {
   buildApproveNFTMsg,
@@ -58,7 +59,7 @@ export const useSquadStaking = () => {
     queryClient as TeritoriSquadStakingQueryClient;
 
   const squadStake = async (
-    selectedRippers: NSRiotGame.RipperDetail[],
+    selectedRippers: RipperDetail[],
     squadStakingConfig: GetConfigResponse
   ) => {
     const tokenIds = selectedRippers.map((r) => r.tokenId);
@@ -121,7 +122,7 @@ export const useSquadStaking = () => {
   };
 
   const estimateStakingDuration = (
-    rippers: NSRiotGame.RipperDetail[],
+    rippers: RipperDetail[],
     squadStakingConfig: GetConfigResponse
   ) => {
     const bonusMultiplier = squadStakingConfig.bonus_multiplier;

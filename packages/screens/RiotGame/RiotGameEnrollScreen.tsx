@@ -27,6 +27,7 @@ import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalOld";
 import { SimpleButton } from "./component/SimpleButton";
+import { RipperDetail } from "./types";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
@@ -48,9 +49,7 @@ export const RiotGameEnrollScreen = () => {
     updateStakingState,
   } = useSquadStaking();
   const [selectedSlot, setSelectedSlot] = useState<number>();
-  const [selectedRippers, setSelectedRippers] = useState<
-    NSRiotGame.RipperDetail[]
-  >([]);
+  const [selectedRippers, setSelectedRippers] = useState<RipperDetail[]>([]);
   const [isJoiningFight, setIsJoiningFight] = useState(false);
 
   const availableRippers = useMemo(() => {
@@ -82,7 +81,7 @@ export const RiotGameEnrollScreen = () => {
     setSelectedSlot(undefined);
   };
 
-  const selectRipper = (slotId: number, ripper: NSRiotGame.RipperDetail) => {
+  const selectRipper = (slotId: number, ripper: RipperDetail) => {
     setSelectedSlot(undefined);
     setSelectedRippers([...selectedRippers, ripper]);
   };

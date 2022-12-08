@@ -9,7 +9,6 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import { LoaderFullScreen } from "../../../components/loaders/LoaderFullScreen";
 import { neutral00 } from "../../../utils/style/colors";
-import { flex } from "../../../utils/style/flex";
 import { FightStatsSection } from "./FightStatsSection";
 import { RiotGameHeader } from "./RiotGameHeader";
 
@@ -42,7 +41,7 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
   );
 
   return (
-    <View style={[flex.flex_1, { backgroundColor: neutral00 }, containerStyle]}>
+    <View style={[{ flex: 1, backgroundColor: neutral00 }, containerStyle]}>
       <RiotGameHeader />
       <LoaderFullScreen visible={loading} />
 

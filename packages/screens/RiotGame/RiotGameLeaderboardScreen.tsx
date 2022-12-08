@@ -19,7 +19,6 @@ import {
   neutral33,
   neutral77,
 } from "../../utils/style/colors";
-import { flex } from "../../utils/style/flex";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { spacing } from "../../utils/style/spacing";
 import { GameContentView } from "./component/GameContentView";
@@ -101,14 +100,20 @@ export const RiotGameLeaderboardScreen = () => {
               <Col size={5}>
                 <BrandText style={styles.colData}>{userScore.userId}</BrandText>
               </Col>
-              <Col size={2} style={[flex.flexRow, flex.alignItemsCenter]}>
+              <Col
+                size={2}
+                style={{ flexDirection: "row", alignItems: "center" }}
+              >
                 <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
 
                 <SpacerRow size={1} />
 
                 <BrandText style={styles.colData}>{xp}</BrandText>
               </Col>
-              <Col size={2} style={[flex.flexRow, flex.alignItemsCenter]}>
+              <Col
+                size={2}
+                style={{ flexDirection: "row", alignItems: "center" }}
+              >
                 <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
 
                 <SpacerRow size={1} />

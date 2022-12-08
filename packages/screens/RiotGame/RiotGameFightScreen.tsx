@@ -13,7 +13,6 @@ import countDownPNG from "../../../assets/game/countdown.png";
 import defaultEnemyPNG from "../../../assets/game/default-enemy.png";
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import addCircleSFilledVG from "../../../assets/icons/add-circle-filled.svg";
-// import claimSVG from "../../../assets/icons/claim.svg";
 import unstakeSVG from "../../../assets/icons/unstake.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
@@ -34,7 +33,6 @@ import {
   redDefault,
   yellowDefault,
 } from "../../utils/style/colors";
-import { flex } from "../../utils/style/flex";
 import {
   fontMedium48,
   fontMedium24,
@@ -162,7 +160,7 @@ export const RiotGameFightScreen = () => {
       </BrandText>
 
       <View style={styles.contentContainer}>
-        <Row style={flex.justifyContentBetween} breakpoint={992}>
+        <Row style={{ justifyContent: "space-between" }} breakpoint={992}>
           <View style={styles.col}>
             <TertiaryBox
               noBrokenCorners

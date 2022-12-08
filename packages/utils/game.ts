@@ -18,7 +18,13 @@ import {
   THE_RIOT_BREEDING_CONTRACT_ADDRESS,
   THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
 } from "../screens/RiotGame/settings";
-import { GameBgCardItem } from "../screens/RiotGame/types";
+import {
+  GameBgCardItem,
+  RipperDetail,
+  RipperListItem,
+  RipperRarity,
+  RipperTraitType,
+} from "../screens/RiotGame/types";
 import { UserScore } from "./../api/p2e/v1/p2e";
 
 export const parseUserScoreInfo = (userScore: UserScore) => {
@@ -39,10 +45,8 @@ export const durationToXP = (duration: number) => {
   return Math.floor(100 * DURATION_TO_XP_COEF * (duration / 60 / 60)) / 100;
 };
 
-export const getRipperRarity = (
-  ripper: NSRiotGame.RipperDetail
-): NSRiotGame.RipperRarity => {
-  let rarity: NSRiotGame.RipperRarity;
+export const getRipperRarity = (ripper: RipperDetail): RipperRarity => {
+  let rarity: RipperRarity;
 
   const ripperSkin = ripper.attributes.find(
     (attr) => attr.trait_type === "Skin"
@@ -82,8 +86,8 @@ export const getRipperRarity = (
 };
 
 export const getRipperTraitValue = (
-  ripper: NSRiotGame.RipperDetail,
-  traitType: NSRiotGame.RipperTraitType
+  ripper: RipperDetail,
+  traitType: RipperTraitType
 ) => {
   let res: any = ripper?.attributes.find(
     (attr) => attr.trait_type === traitType
@@ -98,7 +102,7 @@ export const getRipperTraitValue = (
   return res;
 };
 
-export const getRipperTokenId = (ripperListItem: NSRiotGame.RipperListItem) =>
+export const getRipperTokenId = (ripperListItem: RipperListItem) =>
   ripperListItem.id.split("-")[2];
 
 export enum StakingState {
@@ -112,7 +116,7 @@ export const buildApproveNFTMsg = (
   sender: string,
   spender: string,
   tokenId: string,
-  nftContractAddress: string,
+  nftContractAddress: string
 ) => {
   return {
     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",

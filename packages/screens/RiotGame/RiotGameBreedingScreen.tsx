@@ -15,7 +15,6 @@ import { useRippers } from "../../hooks/riotGame/useRippers";
 import { prettyPrice } from "../../utils/coins";
 import { getRipperTokenId } from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
-import { flex } from "../../utils/style/flex";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
 import { spacing } from "../../utils/style/spacing";
 import { BreedingResultModal } from "./component/BreedingResultModal";
@@ -23,6 +22,7 @@ import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";
 import { RipperSelectorModal } from "./component/RipperSelectorModal";
+import { RipperDetail } from "./types";
 
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();
@@ -33,7 +33,7 @@ export const RiotGameBreedingScreen = () => {
   const { setToastError } = useFeedbacks();
 
   const [selectedRippers, setSelectedRippers] = useState<{
-    [slotId: string]: NSRiotGame.RipperDetail;
+    [slotId: string]: RipperDetail;
   }>({});
 
   const { breedingConfig, breed, lastBreedAt } = useBreeding();
@@ -87,17 +87,19 @@ export const RiotGameBreedingScreen = () => {
     setSelectedSlot(slotId);
   };
 
-  const selectRipper = (slotId: number, ripper: NSRiotGame.RipperDetail) => {
+  const selectRipper = (slotId: number, ripper: RipperDetail) => {
     setSelectedSlot(undefined);
     setSelectedRippers({ ...selectedRippers, [slotId]: ripper });
   };
 
   return (
     <GameContentView>
-      <View style={[spacing.mt_5, flex.alignCenter]}>
+      <View
+        style={[spacing.mt_5, { alignItems: "center", alignSelf: "center" }]}
+      >
         <BrandText style={[fontMedium48]}>Breeding</BrandText>
 
-        <Row style={[spacing.mt_5, flex.justifyContentCenter]}>
+        <Row style={[spacing.mt_5, { justifyContent: "center" }]}>
           <BreedingSlot
             ripper={selectedRippers[0]}
             onPress={() => openSelectorModal(0)}

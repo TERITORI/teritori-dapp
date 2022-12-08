@@ -14,7 +14,6 @@ import Row from "../../components/grid/Row";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
-import { flex } from "../../utils/style/flex";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { spacing } from "../../utils/style/spacing";
 import { GameContentView } from "./component/GameContentView";
@@ -33,7 +32,9 @@ export const RiotGameInventoryScreen = () => {
     <GameContentView>
       <Row breakpoint={1200} style={styles.container}>
         <Col style={styles.overlay}>
-          <Row style={[flex.justifyContentBetween, flex.alignItemsCenter]}>
+          <Row
+            style={{ justifyContent: "space-between", alignItems: "center" }}
+          >
             <BrandText style={fontMedium32}>Available Items</BrandText>
 
             <CustomPressable>
@@ -67,7 +68,9 @@ export const RiotGameInventoryScreen = () => {
         </Col>
 
         <Col>
-          <Row style={[flex.justifyContentBetween, flex.alignItemsCenter]}>
+          <Row
+            style={{ justifyContent: "space-between", alignItems: "center" }}
+          >
             <BrandText style={fontMedium32}>Available Rippers</BrandText>
             <ButtonOutline
               onPress={gotoBreeding}

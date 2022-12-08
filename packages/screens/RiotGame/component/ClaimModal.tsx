@@ -21,9 +21,7 @@ import {
   neutral77,
   neutralA3,
 } from "../../../utils/style/colors";
-import { flex } from "../../../utils/style/flex";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { THE_RIOT_COLLECTION_ID } from "../settings";
 
 type ClaimModalProps = {
@@ -68,7 +66,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
 
           <SpacerColumn size={2} />
 
-          <Row style={[layout.w_100, flex.justifyContentBetween]}>
+          <Row style={{ width: "100%", justifyContent: "space-between" }}>
             <CollectionSocialButtons collectionInfo={info} />
           </Row>
         </View>
@@ -93,7 +91,7 @@ export const ClaimModal: React.FC<ClaimModalProps> = ({
 
         <SpacerColumn size={2} />
 
-        <Row style={flex.justifyContentCenter}>
+        <Row style={{ justifyContent: "center" }}>
           <SVG color={neutralA3} width={24} height={24} source={trophiesSVG} />
 
           <SpacerRow size={1} />

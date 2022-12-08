@@ -13,10 +13,11 @@ import {
   withAlpha,
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
+import { RipperDetail } from "../types";
 
 interface BreedingSlotProps {
   active?: boolean;
-  ripper?: NSRiotGame.RipperDetail | undefined;
+  ripper?: RipperDetail | undefined;
   onPress?(): void;
 }
 
