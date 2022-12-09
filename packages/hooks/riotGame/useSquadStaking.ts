@@ -90,14 +90,14 @@ export const useSquadStaking = () => {
     return tx;
   };
 
-  const _fetchSquadStakingConfig = async (
+  const fetchSquadStakingConfig = async (
     squadStakingQueryClient: TeritoriSquadStakingQueryClient
   ) => {
     const config: GetConfigResponse = await squadStakingQueryClient.getConfig();
     setSquadStakingConfig(config);
   };
 
-  const _fetchSquadStaking = async (
+  const fetchSquadStaking = async (
     user: string,
     squadStakingQueryClient: TeritoriSquadStakingQueryClient
   ) => {
@@ -144,7 +144,7 @@ export const useSquadStaking = () => {
     return duration * 60 * 60 * 1000; // Convert to milliseconds
   };
 
-  const _fetchLastStakeTime = async (
+  const fetchLastStakeTime = async (
     user: string,
     squadStakingQueryClient: TeritoriSquadStakingQueryClient
   ) => {
@@ -229,9 +229,9 @@ export const useSquadStaking = () => {
     const user = selectedWallet?.address || "";
     if (!user || !squadStakingQueryClient) return;
 
-    _fetchSquadStakingConfig(squadStakingQueryClient);
-    _fetchSquadStaking(user, squadStakingQueryClient);
-    _fetchLastStakeTime(user, squadStakingQueryClient);
+    fetchSquadStakingConfig(squadStakingQueryClient);
+    fetchSquadStaking(user, squadStakingQueryClient);
+    fetchLastStakeTime(user, squadStakingQueryClient);
   }, [squadStakingQueryClient?.contractAddress, selectedWallet?.address]); // Use attributes as dependencies to avoid deep compare
 
   useEffect(() => {

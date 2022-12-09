@@ -72,7 +72,7 @@ export const useBreeding = () => {
     // Just load config once
     if (breedingConfig) return;
 
-    const config: Config = await breedingQueryClient.config();
+    const config: ConfigResponse = await breedingQueryClient.config();
     console.log("Breading config:", { config });
     setBreedingConfig(config);
   };
