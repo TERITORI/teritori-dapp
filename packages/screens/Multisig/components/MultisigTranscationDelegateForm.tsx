@@ -28,6 +28,7 @@ import { MultisigFormInput } from "./MultisigFormInput";
 import { MultisigSection } from "./MultisigSection";
 
 interface MultisigTranscationDelegateFormProps {
+  type: "transfer" | "delegate";
   title: string;
   transferText: string;
   submitBtnText: string;
@@ -36,7 +37,7 @@ interface MultisigTranscationDelegateFormProps {
 
 export const MultisigTranscationDelegateForm: React.FC<
   MultisigTranscationDelegateFormProps
-> = ({ title, transferText, submitBtnText, onSubmit = () => {} }) => {
+> = ({ title, transferText, submitBtnText, onSubmit = () => {}, type }) => {
   // variables
   const {
     params: { address },
@@ -151,7 +152,9 @@ export const MultisigTranscationDelegateForm: React.FC<
                 validate: (value) =>
                   validateMultisigAddress(
                     value,
-                    state.chain?.addressPrefix || ""
+                    type === "transfer"
+                      ? state.chain?.addressPrefix || ""
+                      : state.chain?.validatorPrefix || ""
                   ),
               }}
               placeHolder="E.g : torix23Jkj1ZSQJ128D928XJSkL2K30Dld1ksl"

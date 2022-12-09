@@ -61,6 +61,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   const { control, setValue, handleSubmit, watch, reset } =
     useForm<StakeFormValuesType>();
   const watchAll = watch();
+  console.log("data?.address", data?.address);
 
   // hooks
   useEffect(() => {

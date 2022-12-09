@@ -8,7 +8,10 @@ import { ScreenFC } from "../../utils/navigation";
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTranscationDelegateForm } from "./components/MultisigTranscationDelegateForm";
 import { SignTransactionModal } from "./components/SignTransactionModal";
-import { MultisigTransactionDelegateFormType } from "./types";
+import {
+  MultisigTransactionDelegateFormType,
+  MultisigTransactionType,
+} from "./types";
 
 export const MultisigCreateTransactionScreen: ScreenFC<
   "MultisigCreateTransaction"
@@ -36,8 +39,16 @@ export const MultisigCreateTransactionScreen: ScreenFC<
 
   const handleCreate = () => {
     toggleTransactionModal();
-    if (data?.accountData && formData) {
-      mutate({ formData, accountOnChain: data?.accountData[1] });
+
+    if (data?.accountData && formData && data.id) {
+      mutate({
+        formData: {
+          ...formData,
+          multisigId: data.id,
+          type: MultisigTransactionType.TRANSFER,
+        },
+        accountOnChain: data?.accountData[1],
+      });
     }
   };
 
@@ -60,6 +71,7 @@ export const MultisigCreateTransactionScreen: ScreenFC<
       isHeaderSmallMargin
     >
       <MultisigTranscationDelegateForm
+        type="transfer"
         title="Create a New Transaction"
         transferText="Send to"
         submitBtnText="Create Transaction"

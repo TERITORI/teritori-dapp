@@ -1,5 +1,11 @@
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 
 import chatSVG from "../../../assets/icons/organization/chat.svg";
 import freelanceSVG from "../../../assets/icons/organization/freelance.svg";
@@ -12,9 +18,13 @@ import searchSVG from "../../../assets/icons/organization/search.svg";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
+import { tinyAddress } from "../../components/WalletSelector";
+import { AnimationFadeIn } from "../../components/animations";
 import { SpacerColumn } from "../../components/spacer";
+import { useFetchMultisigList } from "../../hooks/useFetchMultisigList";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
-import { neutral33, neutral77 } from "../../utils/style/colors";
+import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GetStartedOption } from "../OrganizerDeployer/components/GetStartedOption";
@@ -22,6 +32,10 @@ import { GetStartedOption } from "../OrganizerDeployer/components/GetStartedOpti
 export const MultisigScreen = () => {
   // variables
   const navigation = useAppNavigation();
+  const selectedWallet = useSelectedWallet();
+  const { data, isLoading, isFetching } = useFetchMultisigList(
+    selectedWallet?.address || ""
+  );
 
   // functions
   const onPress = () => {
@@ -105,12 +119,43 @@ export const MultisigScreen = () => {
               Overview of your Multisignatures Wallets
             </BrandText>
             <SpacerColumn size={7} />
-            <GetStartedOption
-              variant="small"
-              title="Create new"
-              icon={postJobSVG}
-              isBetaVersion
-              onPress={() => navigation.navigate("MultisigCreate")}
+            <FlatList
+              data={data}
+              horizontal
+              keyExtractor={(item) => item._id}
+              renderItem={({ item, index }) => (
+                <AnimationFadeIn>
+                  <GetStartedOption
+                    variant="small"
+                    title={`Multisig #${index + 1}`}
+                    icon={multisigWalletSVG}
+                    isBetaVersion
+                    onPress={() =>
+                      navigation.navigate("MultisigLegacy", {
+                        address: item.address,
+                      })
+                    }
+                    subtitle={tinyAddress(item.address, 21)}
+                    titleStyle={{ color: secondaryColor }}
+                  />
+                </AnimationFadeIn>
+              )}
+              ListHeaderComponent={() => (
+                <GetStartedOption
+                  variant="small"
+                  title="Create new"
+                  icon={postJobSVG}
+                  isBetaVersion
+                  onPress={() => navigation.navigate("MultisigCreate")}
+                />
+              )}
+              ListFooterComponent={() =>
+                isLoading && isFetching ? (
+                  <View style={styles.contentCenter}>
+                    <ActivityIndicator color={secondaryColor} />
+                  </View>
+                ) : null
+              }
             />
           </View>
         </View>
@@ -137,5 +182,11 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     marginHorizontal: -layout.padding_x2,
     marginVertical: -layout.padding_x2,
+  },
+  contentCenter: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 135,
   },
 });

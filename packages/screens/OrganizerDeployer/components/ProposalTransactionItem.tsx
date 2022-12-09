@@ -10,6 +10,8 @@ import { Separator } from "../../../components/Separator";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { MultisigTransactionListType } from "../../../hooks/useFetchMultisigTransactionsById";
+import { useMultisigHelpers } from "../../../hooks/useMultisigHelpers";
 import {
   errorColor,
   neutral33,
@@ -21,36 +23,32 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ProposalsTransactionType } from "../types";
+import { MultisigTransactionType } from "../../Multisig/types";
 
-interface ProposalTransactionItemProps extends ProposalsTransactionType {
+interface ProposalTransactionItemProps extends MultisigTransactionListType {
   btnSquaresBackgroundColor?: string;
 }
 
 export const ProposalTransactionItem: React.FC<
   ProposalTransactionItemProps
-> = ({
-  id,
-  type,
-  createdAt,
-  sending,
-  createdBy,
-  time,
-  amount,
-  networkFee,
-  approvedRequired,
-  approvedBy,
-  approvers,
-  btnSquaresBackgroundColor,
-}) => {
+> = ({ type, dataJSON, btnSquaresBackgroundColor }) => {
   // variables
+  const { coinSimplified } = useMultisigHelpers();
+  const fee = coinSimplified(dataJSON.fee.amount[0]);
+  const amount = coinSimplified(
+    type === MultisigTransactionType.STAKE
+      ? dataJSON.msgs[0].value.amount
+      : dataJSON.msgs[0].value.amount[0]
+  );
+  console.log(dataJSON.msgs[0]);
+
   const getIcon = useMemo(() => {
     switch (type) {
-      case "transfer":
+      case MultisigTransactionType.TRANSFER:
         return transferSVG;
 
       default:
-      case "stake":
+      case MultisigTransactionType.STAKE:
         return stakedSVG;
     }
   }, []);
@@ -72,11 +70,11 @@ export const ProposalTransactionItem: React.FC<
         <BrandText style={styles.normal}>{capitalize(type)}</BrandText>
         <SpacerColumn size={0.75} />
         <View style={styles.rowCenter}>
-          <BrandText style={styles.small77}>{createdAt}</BrandText>
+          <BrandText style={styles.small77}>123</BrandText>
           <SpacerRow size={0.5} />
           <Separator horizontal />
           <SpacerRow size={0.5} />
-          <BrandText style={styles.small77}>{time}</BrandText>
+          <BrandText style={styles.small77}>12:00</BrandText>
         </View>
       </View>
 
@@ -84,13 +82,13 @@ export const ProposalTransactionItem: React.FC<
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Sending:</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.normal}>{sending}</BrandText>
+          <BrandText style={styles.normal}>{amount?.ticker}</BrandText>
         </View>
         <SpacerColumn size={0.75} />
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Created by:</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.smallPrimary}>@{createdBy}</BrandText>
+          <BrandText style={styles.smallPrimary}>@username</BrandText>
         </View>
       </View>
 
@@ -98,13 +96,17 @@ export const ProposalTransactionItem: React.FC<
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Will receive:</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.normal}>{amount} TORI</BrandText>
+          <BrandText style={styles.normal}>
+            {amount?.value} {amount?.ticker}
+          </BrandText>
         </View>
         <SpacerColumn size={0.75} />
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Network fee:</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.small77}>{networkFee} TORI</BrandText>
+          <BrandText style={styles.small77}>
+            {fee?.value} {fee?.ticker}
+          </BrandText>
         </View>
       </View>
 
@@ -112,23 +114,18 @@ export const ProposalTransactionItem: React.FC<
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Approved by:</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.normal}>{approvedBy}</BrandText>
+          <BrandText style={styles.normal}>{1}</BrandText>
           <SpacerRow size={0.5} />
           <BrandText style={styles.normal77}>of</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.normal}>{approvers}</BrandText>
+          <BrandText style={styles.normal}>{3}</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.normal77}>
-            ({approvedRequired} required)
-          </BrandText>
+          <BrandText style={styles.normal77}>({2} required)</BrandText>
         </View>
         <SpacerColumn size={1.5} />
         <View style={styles.loadingOutside}>
           <View
-            style={[
-              styles.loadingInside,
-              { width: `${(approvedBy / approvers) * 100}%` },
-            ]}
+            style={[styles.loadingInside, { width: `${(1 / 2) * 100}%` }]}
           />
         </View>
       </View>

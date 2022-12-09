@@ -1,23 +1,30 @@
 import React from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, TextStyle, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
+import { SpacerColumn } from "../../../components/spacer";
 import {
   neutral17,
   neutral33,
   neutral55,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
+import {
+  fontSemibold12,
+  fontSemibold14,
+  fontSemibold9,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 interface GetStartedOptionProps {
   variant?: "big" | "small";
   icon: React.FC<SvgProps>;
   title: string;
+  subtitle?: string;
   isBetaVersion?: boolean;
+  titleStyle?: TextStyle;
   onPress?: () => void;
 }
 
@@ -27,6 +34,8 @@ export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
   title,
   onPress,
   isBetaVersion,
+  subtitle,
+  titleStyle,
 }) => {
   const styleDarker = onPress === undefined || isBetaVersion;
 
@@ -46,15 +55,30 @@ export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
       )}
 
       <SVG source={icon} width={80} height={80} />
-      <BrandText
-        style={[
-          fontSemibold14,
-          { color: styleDarker ? neutral55 : secondaryColor },
-          variant === "small" && styles.smallText,
-        ]}
-      >
-        {title}
-      </BrandText>
+      <View>
+        <BrandText
+          style={[
+            fontSemibold14,
+            { color: styleDarker ? neutral55 : secondaryColor },
+            variant === "small" && styles.smallText,
+            titleStyle,
+          ]}
+        >
+          {title}
+        </BrandText>
+        <SpacerColumn size={1} />
+        {subtitle && (
+          <BrandText
+            style={[
+              fontSemibold9,
+              { color: neutral55 },
+              variant === "small" && styles.smallText,
+            ]}
+          >
+            {subtitle}
+          </BrandText>
+        )}
+      </View>
     </Pressable>
   );
 };

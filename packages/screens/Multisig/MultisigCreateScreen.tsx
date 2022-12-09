@@ -72,11 +72,14 @@ export const MultisigCreateScreen = () => {
         (item) => item.compressedPubkey
       );
 
+      const userAddresses = addressIndexes.map((item) => item.address);
+
       mutate({
         compressedPubkeys,
         chainId: state.chain.chainId,
         addressPrefix: state.chain?.addressPrefix,
         threshold: parseInt(signatureRequired, 10),
+        userAddresses,
       });
     }
   };

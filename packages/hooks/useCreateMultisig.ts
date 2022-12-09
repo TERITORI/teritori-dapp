@@ -1,9 +1,11 @@
 import { createMultisigThresholdPubkey, pubkeyToAddress } from "@cosmjs/amino";
 import { useMutation } from "@tanstack/react-query";
 
-import { createMultisig } from "../utils/founaDB/multisig/multisigGraphql";
+import { createOrFindMultisig } from "../utils/founaDB/multisig/multisigGraphql";
+import { DbAccount } from "../utils/founaDB/multisig/types";
 
 type CreateMultisigArguement = {
+  userAddresses: string[];
   compressedPubkeys: string[];
   threshold: number;
   addressPrefix: string;
@@ -17,6 +19,7 @@ export const useCreateMultisig = () => {
       threshold,
       addressPrefix,
       chainId,
+      userAddresses,
     }: CreateMultisigArguement) => {
       try {
         const pubkeys = compressedPubkeys.map((compressedPubkey) => {
@@ -32,15 +35,17 @@ export const useCreateMultisig = () => {
         const multisigAddress = pubkeyToAddress(multisigPubkey, addressPrefix);
 
         // save multisig to fauna
-        const multisig = {
+        const multisig: DbAccount = {
           address: multisigAddress,
           pubkeyJSON: JSON.stringify(multisigPubkey),
           chainId,
+          userAddresses,
         };
 
-        const saveRes = await createMultisig(multisig);
+        const saveRes = await createOrFindMultisig(multisig);
+        console.log("saveRes", saveRes);
 
-        return saveRes.data.data.createMultisig.address;
+        return saveRes.data.data.createOrFindMultisig.address;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.log(err);

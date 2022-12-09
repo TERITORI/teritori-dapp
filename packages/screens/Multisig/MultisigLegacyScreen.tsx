@@ -18,14 +18,6 @@ import { MultisigSection } from "./components/MultisigSection";
 import { RightSection } from "./components/RightSection";
 import { MultisigLegacyFormType } from "./types";
 
-const defaultValues = {
-  membersAddress: [
-    { address: "bc1qu5ujlp9dkvtgl98jakvw9ggj9uwyk79qhvwvrg" },
-    { address: "bc1qu5ujlp9dkvtgl98jakvw9ggj9uwyk79qhvwvrg" },
-    { address: "bc1qu5ujlp9dkvtgl98jakvw9ggj9uwyk79qhvwvrg" },
-  ],
-};
-
 export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
   // variables
   const { control } = useForm<MultisigLegacyFormType>();
@@ -106,7 +98,7 @@ export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
                     isLoading={isLoading}
                     defaultValue={address}
                   />
-                  {index !== defaultValues.membersAddress.length - 1 && (
+                  {index !== membersAddress.length - 1 && (
                     <SpacerColumn size={2.5} />
                   )}
                 </AnimationExpand>

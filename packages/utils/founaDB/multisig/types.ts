@@ -20,6 +20,7 @@ export interface DbAccount {
   address: string;
   pubkeyJSON: string;
   chainId: string;
+  userAddresses: string[];
 }
 
 export interface WalletAccount {

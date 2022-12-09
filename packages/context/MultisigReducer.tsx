@@ -10,6 +10,7 @@ export interface ChainInfo {
   chainDisplayName?: string;
   registryName?: string;
   addressPrefix?: string;
+  validatorPrefix?: string;
   explorerLink?: string;
 }
 export interface MultisigContextType {
@@ -31,6 +32,7 @@ export const initialState: MultisigContextType = {
     registryName: process.env.PUBLIC_CHAIN_NAME,
     addressPrefix: process.env.PUBLIC_CHAIN_BECH32_PREFIX,
     explorerLink: process.env.PUBLIC_EXPLORER_LINK_TX,
+    validatorPrefix: process.env.PUBLIC_CHAIN_VALIDATOR_PREFIX,
   },
 };
 

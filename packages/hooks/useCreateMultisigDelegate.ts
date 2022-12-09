@@ -11,7 +11,7 @@ import {
 import { createTransaction } from "../utils/founaDB/multisig/multisigGraphql";
 import { DbTransaction } from "../utils/founaDB/multisig/types";
 
-export const useCreateMultisigTransaction = () => {
+export const useCreateMultisigDelegate = () => {
   const { state } = useMultisigContext();
 
   const mutation = useMutation(
@@ -39,21 +39,17 @@ export const useCreateMultisigTransaction = () => {
           amount,
           Number(state.chain.displayDenomExponent)
         ).atomics;
-
-        const msgSend = {
-          fromAddress: multisigAddress,
-          toAddress: receipientAddress,
-          amount: [
-            {
-              amount: amountInAtomics,
-              denom: state.chain.denom,
-            },
-          ],
+        const msgDelegate = {
+          delegatorAddress: multisigAddress,
+          validatorAddress: receipientAddress,
+          amount: {
+            amount: amountInAtomics,
+            denom: state.chain.denom,
+          },
         };
-
         const msg = {
-          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-          value: msgSend,
+          typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
+          value: msgDelegate,
         };
 
         const fee = calculateFee(Number(gasLimit), gasPrice);
@@ -70,14 +66,12 @@ export const useCreateMultisigTransaction = () => {
         };
 
         const stringifyData = JSON.stringify(tx);
-        console.log("data", { stringifyData, multisigId, type });
         const saveRes = await createTransaction(
           stringifyData,
           multisigId,
           type
         );
-
-        console.log(saveRes);
+        console.log("saveRes", saveRes);
 
         const transactionID = saveRes.data.data.createTransaction._id;
 

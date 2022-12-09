@@ -20,3 +20,8 @@ export type MultisigTransactionDelegateFormType = {
   gasPrice: string;
   memo: string;
 };
+
+export enum MultisigTransactionType {
+  STAKE = "STAKE",
+  TRANSFER = "TRANSFER",
+}
