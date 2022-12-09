@@ -4,8 +4,34 @@
 * and run the @cosmwasm/ts-codegen generate command to regenerate this file.
 */
 
-export type Uint128 = string;
+export type BreedFinishedCountResponse = number;
 export type Addr = string;
+export interface BreedInfoResponse {
+  child_token_id?: string | null;
+  end_time: number;
+  nft_owner: Addr;
+  nft_token_id1: string;
+  nft_token_id2: string;
+  start_time: number;
+  withdrawn: boolean;
+  [k: string]: unknown;
+}
+export type BreedRequestsCountResponse = number;
+export type BreededCountResponse = number;
+export type Uint128 = string;
+export interface ConfigResponse {
+  breed_count_limit: number;
+  breed_duration: number;
+  breed_price_amount: Uint128;
+  breed_price_denom: string;
+  breed_start_time: number;
+  child_base_uri: string;
+  child_contract_addr: Addr;
+  child_nft_max_supply: number;
+  owner: Addr;
+  parent_contract_addr: Addr;
+  [k: string]: unknown;
+}
 export interface Config {
   breed_count_limit: number;
   breed_duration: number;
@@ -84,6 +110,18 @@ export interface InstantiateMsg {
   parent_contract_addr: Addr;
   [k: string]: unknown;
 }
+export type QueryBreedingsLengthResponse = number;
+export type QueryBreedingsResponse = BreedInfo[];
+export interface BreedInfo {
+  child_token_id?: string | null;
+  end_time: number;
+  nft_owner: Addr;
+  nft_token_id1: string;
+  nft_token_id2: string;
+  start_time: number;
+  withdrawn: boolean;
+  [k: string]: unknown;
+}
 export type QueryMsg = {
   config: {
     [k: string]: unknown;
@@ -106,4 +144,30 @@ export type QueryMsg = {
   breed_finished_count: {
     [k: string]: unknown;
   };
+} | {
+  query_breedings: {
+    count: number;
+    from: number;
+    sort: string;
+    [k: string]: unknown;
+  };
+} | {
+  query_breedings_length: {
+    [k: string]: unknown;
+  };
+} | {
+  query_user_breedings: {
+    count: number;
+    from: number;
+    sort: string;
+    user: string;
+    [k: string]: unknown;
+  };
+} | {
+  query_user_breedings_length: {
+    user: string;
+    [k: string]: unknown;
+  };
 };
+export type QueryUserBreedingsLengthResponse = number;
+export type QueryUserBreedingsResponse = BreedInfo[];

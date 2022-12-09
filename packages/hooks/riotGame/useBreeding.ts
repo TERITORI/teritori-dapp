@@ -10,10 +10,10 @@ import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
 import { useContractClients } from "../useContractClients";
 import useSelectedWallet from "../useSelectedWallet";
-import { Config } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
+import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 
 export const useBreeding = () => {
-  const [breedingConfig, setBreedingConfig] = useState<Config>();
+  const [breedingConfig, setBreedingConfig] = useState<ConfigResponse>();
   const [lastBreedAt, setLastBreedAt] = useState<moment.Moment>();
 
   const {

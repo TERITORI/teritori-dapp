@@ -49,6 +49,7 @@ export interface InstantiateMsg {
   cooldown_days?: number | null;
   [k: string]: unknown;
 }
+export type IsCollectionWhitelistedResponse = boolean;
 export type QueryMsg = {
   config: {
     [k: string]: unknown;
@@ -65,3 +66,12 @@ export type QueryMsg = {
     [k: string]: unknown;
   };
 };
+export type StakeInfoResponse = StakeInfo | null;
+export type Addr = string;
+export interface StakeInfo {
+  end_time: number;
+  nft_owner: Addr;
+  start_time: number;
+  withdrawn: boolean;
+  [k: string]: unknown;
+}
