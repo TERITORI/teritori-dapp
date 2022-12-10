@@ -7,8 +7,8 @@ import { StargateClient, Account } from "@cosmjs/stargate";
 import { assert } from "@cosmjs/utils";
 import { useQuery } from "@tanstack/react-query";
 
-import { useMultisigContext } from "../context/MultisigReducer";
-import { getMultisig } from "../utils/founaDB/multisig/multisigGraphql";
+import { useMultisigContext } from "../../context/MultisigReducer";
+import { getMultisig } from "../../utils/founaDB/multisig/multisigGraphql";
 
 export const useGetMultisigAccount = (address: string) => {
   // variables

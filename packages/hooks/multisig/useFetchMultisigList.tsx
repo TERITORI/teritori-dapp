@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { multisigsByUserAddress } from "../utils/founaDB/multisig/multisigGraphql";
+import { multisigsByUserAddress } from "../../utils/founaDB/multisig/multisigGraphql";
 
 type MultisigType = {
   _id: string;

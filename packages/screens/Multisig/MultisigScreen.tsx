@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -21,20 +21,43 @@ import { Separator } from "../../components/Separator";
 import { tinyAddress } from "../../components/WalletSelector";
 import { AnimationFadeIn } from "../../components/animations";
 import { SpacerColumn } from "../../components/spacer";
-import { useFetchMultisigList } from "../../hooks/useFetchMultisigList";
+import {
+  MultisigTransactionListType,
+  useFetchMultisigList,
+  useFetchMultisigTransactionsByAddress,
+} from "../../hooks/multisig";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold28 } from "../../utils/style/fonts";
+import { fontSemibold16, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GetStartedOption } from "../OrganizerDeployer/components/GetStartedOption";
+import { ProposalTransactionItem } from "../OrganizerDeployer/components/ProposalTransactionItem";
+
+const RESULT_SIZE = 20;
 
 export const MultisigScreen = () => {
   // variables
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
-  const { data, isLoading, isFetching } = useFetchMultisigList(
-    selectedWallet?.address || ""
+  const {
+    data,
+    isLoading: isMultisigLoading,
+    isFetching: isMultisigFetching,
+  } = useFetchMultisigList(selectedWallet?.address || "");
+  const {
+    data: transactionData,
+    isLoading: isTransactionsLoading,
+    isFetching: isTransactionsFetching,
+  } = useFetchMultisigTransactionsByAddress(selectedWallet?.address || "");
+
+  const list = useMemo(
+    () =>
+      transactionData?.pages.reduce(
+        (ar: MultisigTransactionListType[], ac) => [...ar, ...ac.data],
+        []
+      ),
+    [transactionData?.pages]
   );
 
   // functions
@@ -43,6 +66,21 @@ export const MultisigScreen = () => {
   };
 
   // returns
+  const ListFooter = useCallback(
+    () => (
+      <>
+        <SpacerColumn size={6} />
+        {(isTransactionsLoading || isTransactionsFetching) && (
+          <>
+            <ActivityIndicator color={secondaryColor} />
+            <SpacerColumn size={2} />
+          </>
+        )}
+      </>
+    ),
+    [isTransactionsFetching, isTransactionsLoading]
+  );
+
   return (
     <ScreenContainer
       headerChildren={<BrandText>Multisig Wallet</BrandText>}
@@ -115,16 +153,16 @@ export const MultisigScreen = () => {
             <SpacerColumn size={3} />
             <BrandText style={fontSemibold28}>My Multisigs</BrandText>
             <SpacerColumn size={1.5} />
-            <BrandText style={{ color: neutral77 }}>
+            <BrandText style={[fontSemibold16, { color: neutral77 }]}>
               Overview of your Multisignatures Wallets
             </BrandText>
-            <SpacerColumn size={7} />
+            <SpacerColumn size={2.5} />
             <FlatList
               data={data}
               horizontal
               keyExtractor={(item) => item._id}
               renderItem={({ item, index }) => (
-                <AnimationFadeIn>
+                <AnimationFadeIn delay={index * 50}>
                   <GetStartedOption
                     variant="small"
                     title={`Multisig #${index + 1}`}
@@ -150,12 +188,32 @@ export const MultisigScreen = () => {
                 />
               )}
               ListFooterComponent={() =>
-                isLoading && isFetching ? (
+                isMultisigLoading && isMultisigFetching ? (
                   <View style={styles.contentCenter}>
                     <ActivityIndicator color={secondaryColor} />
                   </View>
                 ) : null
               }
+            />
+          </View>
+          <SpacerColumn size={3} />
+          <View style={styles.horizontalContentPadding}>
+            <Separator color={neutral33} />
+            <SpacerColumn size={3} />
+            <BrandText style={fontSemibold28}>Transactions Proposals</BrandText>
+
+            <FlatList
+              data={list}
+              renderItem={({ item, index }) => (
+                <AnimationFadeIn delay={index * 50}>
+                  <ProposalTransactionItem {...item} />
+                </AnimationFadeIn>
+              )}
+              initialNumToRender={RESULT_SIZE}
+              keyExtractor={(item) => item._id.toString()}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.transactionListContent}
+              ListFooterComponent={ListFooter}
             />
           </View>
         </View>
@@ -188,5 +246,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: 135,
+  },
+  transactionListContent: {
+    paddingBottom: layout.contentPadding,
+    marginTop: layout.padding_x2_5,
   },
 });

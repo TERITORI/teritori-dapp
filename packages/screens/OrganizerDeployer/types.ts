@@ -59,3 +59,17 @@ export type MakeProposalFormType = {
   senderAccount: string;
   approvalRequired: string;
 };
+
+export type ProposalsTransactionType = {
+  id: number;
+  type: "transfer" | "stake";
+  createdAt: string;
+  sending: "TORI";
+  createdBy: string;
+  time: string;
+  amount: string;
+  networkFee: string;
+  approvedRequired: number;
+  approvedBy: number;
+  approvers: number;
+};

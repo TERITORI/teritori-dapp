@@ -73,7 +73,9 @@ const getMultisig = async (address: string, chainId: string) => {
 const createTransaction = async (
   transaction: string,
   multisigId: string,
-  type: MultisigTransactionType
+  type: MultisigTransactionType,
+  createdAt: string,
+  createdBy: string
 ) => {
   return graphqlReq({
     method: "POST",
@@ -83,7 +85,9 @@ const createTransaction = async (
           createTransaction(data: {
             dataJSON: ${JSON.stringify(transaction)},
             multisig: {connect: ${multisigId}}, 
-            type: "${type}"
+            type: "${type}",
+            createdAt: "${createdAt}",
+            createdBy: "${createdBy}"
           }) {
             _id
           }
@@ -129,7 +133,12 @@ const findTransactionByID = async (id: string) => {
  * @param {string} multisigId Faunadb resource txHash
  * @return Returns async function that makes a request to the faunadb graphql endpoint
  */
-const transactionsByMultisigId = async (multisigId: string, type: string) => {
+const transactionsByMultisigId = async (
+  multisigId: string,
+  type: string,
+  size: number,
+  cursor: string
+) => {
   return graphqlReq({
     method: "POST",
     data: {
@@ -138,12 +147,56 @@ const transactionsByMultisigId = async (multisigId: string, type: string) => {
           transactionsByMultisigId(
             id: "${multisigId}"
             type: "${type}"
+            _size: ${size}
+            _cursor: ${cursor ? `"${cursor}"` : null}
           ) {
             data {
               _id
               dataJSON
               txHash
               type
+              createdAt
+              createdBy
+              signatures {
+                data {
+                  address
+                  signature
+                  bodyBytes
+                }
+              }
+            }
+            after
+          }
+        }
+      `,
+    },
+  });
+};
+
+/**
+ * Retrieves all transaction from faunadb
+ *
+ * @param {string} userAddress Faunadb resource txHash
+ * @return Returns async function that makes a request to the faunadb graphql endpoint
+ */
+const transactionsByUserAddress = async (userAddress: string, size: number) => {
+  return graphqlReq({
+    method: "POST",
+    data: {
+      query: `
+        query {
+          transactionsByUserAddress(
+            address: "${userAddress}"
+            type: null
+            _size: ${size}
+          ) {
+            data {
+              _id
+              dataJSON
+              txHash
+              type
+              createdAt
+              createdBy
               signatures {
                 data {
                   address
@@ -183,6 +236,32 @@ const multisigsByUserAddress = async (userAddress: string) => {
     },
   });
 };
+
+/**
+ * Retrieves all transaction from faunadb
+ *
+ * @param {string} multisigId Faunadb resource _id
+ * @param {string[]} types Faunadb resource
+ * @return Returns async function that makes a request to the faunadb graphql endpoint
+ */
+const getTransactionCountByMultisigId = async (
+  multisigId: string,
+  types: string[]
+) => {
+  return graphqlReq({
+    method: "POST",
+    data: {
+      query: `
+      query {
+        getTransactionCountByMultisigId(id:"${multisigId}", types: ${JSON.stringify(
+        types
+      )})
+      }
+      `,
+    },
+  });
+};
+
 /**
  * Updates txHash of transaction on FaunaDB
  *
@@ -256,4 +335,6 @@ export {
   createSignature,
   transactionsByMultisigId,
   multisigsByUserAddress,
+  getTransactionCountByMultisigId,
+  transactionsByUserAddress,
 };

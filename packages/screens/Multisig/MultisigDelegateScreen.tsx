@@ -2,8 +2,8 @@ import React, { useState } from "react";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
-import { useCreateMultisigDelegate } from "../../hooks/useCreateMultisigDelegate";
-import { useGetMultisigAccount } from "../../hooks/useGetMultisigAccount";
+import { useCreateMultisigDelegate } from "../../hooks/multisig/useCreateMultisigDelegate";
+import { useGetMultisigAccount } from "../../hooks/multisig/useGetMultisigAccount";
 import { ScreenFC } from "../../utils/navigation";
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTranscationDelegateForm } from "./components/MultisigTranscationDelegateForm";

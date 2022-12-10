@@ -1,7 +1,7 @@
 import { Coin, StargateClient } from "@cosmjs/stargate";
 import { Decimal, Pubkey, pubkeyToAddress } from "cosmwasm";
 
-import { useMultisigContext } from "../context/MultisigReducer";
+import { useMultisigContext } from "../../context/MultisigReducer";
 
 export const useMultisigHelpers = () => {
   // variables

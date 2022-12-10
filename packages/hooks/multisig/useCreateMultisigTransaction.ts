@@ -2,18 +2,26 @@ import { Account } from "@cosmjs/stargate";
 import { assert } from "@cosmjs/utils";
 import { useMutation } from "@tanstack/react-query";
 import { calculateFee, Decimal } from "cosmwasm";
+import moment from "moment";
 
-import { useMultisigContext } from "../context/MultisigReducer";
+import { useMultisigContext } from "../../context/MultisigReducer";
 import {
   MultisigTransactionDelegateFormType,
   MultisigTransactionType,
-} from "../screens/Multisig/types";
-import { createTransaction } from "../utils/founaDB/multisig/multisigGraphql";
-import { DbTransaction } from "../utils/founaDB/multisig/types";
+} from "../../screens/Multisig/types";
+import { createTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
+import { DbTransaction } from "../../utils/founaDB/multisig/types";
+import useSelectedWallet from "./../useSelectedWallet";
+import { useTNSMetadata } from "./../useTNSMetadata";
 
-export const useCreateMultisigDelegate = () => {
+export const useCreateMultisigTransaction = () => {
+  // variables
   const { state } = useMultisigContext();
 
+  const selectedWallet = useSelectedWallet();
+  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+
+  // req
   const mutation = useMutation(
     async ({
       formData: {
@@ -39,17 +47,21 @@ export const useCreateMultisigDelegate = () => {
           amount,
           Number(state.chain.displayDenomExponent)
         ).atomics;
-        const msgDelegate = {
-          delegatorAddress: multisigAddress,
-          validatorAddress: receipientAddress,
-          amount: {
-            amount: amountInAtomics,
-            denom: state.chain.denom,
-          },
+
+        const msgSend = {
+          fromAddress: multisigAddress,
+          toAddress: receipientAddress,
+          amount: [
+            {
+              amount: amountInAtomics,
+              denom: state.chain.denom,
+            },
+          ],
         };
+
         const msg = {
-          typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
-          value: msgDelegate,
+          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+          value: msgSend,
         };
 
         const fee = calculateFee(Number(gasLimit), gasPrice);
@@ -69,8 +81,11 @@ export const useCreateMultisigDelegate = () => {
         const saveRes = await createTransaction(
           stringifyData,
           multisigId,
-          type
+          type,
+          moment().toISOString(),
+          tnsMetadata?.metadata?.tokenId || ""
         );
+
         console.log("saveRes", saveRes);
 
         const transactionID = saveRes.data.data.createTransaction._id;

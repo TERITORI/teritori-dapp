@@ -7,8 +7,10 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { AnimationExpand } from "../../components/animations";
 import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn } from "../../components/spacer";
-import { useGetMultisigAccount } from "../../hooks/useGetMultisigAccount";
-import { useMultisigHelpers } from "../../hooks/useMultisigHelpers";
+import {
+  useGetMultisigAccount,
+  useMultisigHelpers,
+} from "../../hooks/multisig";
 import { patternOnlyNumbers, validateAddress } from "../../utils/formRules";
 import { ScreenFC } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -74,13 +76,11 @@ export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
           <MultisigSection
             title="Members Addresses"
             tresholdCurrentCount={
-              membersAddress ? membersAddress.length : undefined
-            }
-            tresholdMax={
               data
                 ? parseInt(data.accountData[0].value.threshold, 10)
                 : undefined
             }
+            tresholdMax={membersAddress ? membersAddress.length : undefined}
             isLoading={isLoading}
           >
             {membersAddress &&

@@ -2,8 +2,10 @@ import React, { useState } from "react";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
-import { useCreateMultisigTransaction } from "../../hooks/useCreateMultisigTransaction";
-import { useGetMultisigAccount } from "../../hooks/useGetMultisigAccount";
+import {
+  useCreateMultisigTransaction,
+  useGetMultisigAccount,
+} from "../../hooks/multisig";
 import { ScreenFC } from "../../utils/navigation";
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTranscationDelegateForm } from "./components/MultisigTranscationDelegateForm";
@@ -13,9 +15,10 @@ import {
   MultisigTransactionType,
 } from "./types";
 
-export const MultisigCreateTransactionScreen: ScreenFC<
-  "MultisigCreateTransaction"
-> = ({ route, navigation }) => {
+export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
+  route,
+  navigation,
+}) => {
   // variables
   const [isTransactionVisible, setIsTransactionVisible] = useState(false);
   const {

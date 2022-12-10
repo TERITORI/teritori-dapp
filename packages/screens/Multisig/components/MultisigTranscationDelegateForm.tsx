@@ -10,8 +10,8 @@ import { AnimationExpand } from "../../../components/animations";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../../components/spacer";
 import { useMultisigContext } from "../../../context/MultisigReducer";
-import { useGetMultisigAccount } from "../../../hooks/useGetMultisigAccount";
-import { useMultisigHelpers } from "../../../hooks/useMultisigHelpers";
+import { useGetMultisigAccount } from "../../../hooks/multisig";
+import { useMultisigHelpers } from "../../../hooks/multisig/useMultisigHelpers";
 import {
   patternOnlyNumbers,
   validateAddress,
@@ -41,8 +41,7 @@ export const MultisigTranscationDelegateForm: React.FC<
   // variables
   const {
     params: { address },
-  } =
-    useRoute<AppRouteType<"MultisigCreateTransaction" | "MultisigDelegate">>();
+  } = useRoute<AppRouteType<"MultisigTransfer" | "MultisigDelegate">>();
   const { isLoading, data } = useGetMultisigAccount(address);
   const { control, handleSubmit, setValue } =
     useForm<MultisigTransactionDelegateFormType>();
@@ -97,13 +96,11 @@ export const MultisigTranscationDelegateForm: React.FC<
           <MultisigSection
             title="Multisig Wallet Members"
             tresholdCurrentCount={
-              membersAddress ? membersAddress.length : undefined
-            }
-            tresholdMax={
               data
                 ? parseInt(data.accountData[0].value.threshold, 10)
                 : undefined
             }
+            tresholdMax={membersAddress ? membersAddress.length : undefined}
             isLoading={isLoading}
           >
             {membersAddress &&

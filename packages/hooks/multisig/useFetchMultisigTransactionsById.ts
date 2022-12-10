@@ -1,8 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import { MultisigTransactionType } from "../screens/Multisig/types";
-import { transactionsByMultisigId } from "../utils/founaDB/multisig/multisigGraphql";
-import { DbSignature, DbTransaction } from "../utils/founaDB/multisig/types";
+import { MultisigTransactionType } from "../../screens/Multisig/types";
+import { transactionsByMultisigId } from "../../utils/founaDB/multisig/multisigGraphql";
+import { DbSignature, DbTransaction } from "../../utils/founaDB/multisig/types";
 
 export type MultisigTransactionListType = {
   _id: string;
@@ -10,11 +10,14 @@ export type MultisigTransactionListType = {
   signatures: DbSignature[];
   txHash: string;
   type: MultisigTransactionType;
+  createdBy?: string;
+  createdAt: string;
 };
 
-export const useFetchMultisigTransactions = (
+export const useFetchMultisigTransactionsById = (
   multisigId: string,
-  type: "" | MultisigTransactionType = ""
+  type: "" | MultisigTransactionType = "",
+  size: number
 ) => {
   //  request
   const request = useInfiniteQuery<{
@@ -22,10 +25,14 @@ export const useFetchMultisigTransactions = (
     after: string;
   }>(
     ["multisig-transactions", multisigId, type],
-    async () => {
-      const saveRes = await transactionsByMultisigId(multisigId, type);
+    async ({ pageParam }) => {
+      const saveRes = await transactionsByMultisigId(
+        multisigId,
+        type,
+        size,
+        pageParam
+      );
       const { after, data } = saveRes.data.data.transactionsByMultisigId;
-      console.log("saveRes", saveRes);
 
       return {
         data: data.map(

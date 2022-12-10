@@ -15,8 +15,7 @@ export const RightSection = () => {
   const navigation = useAppNavigation();
   const {
     params: { address },
-  } =
-    useRoute<AppRouteType<"MultisigCreateTransaction" | "MultisigDelegate">>();
+  } = useRoute<AppRouteType<"MultisigTransfer" | "MultisigDelegate">>();
 
   // returns
   return (
@@ -31,9 +30,7 @@ export const RightSection = () => {
         size="M"
         text="Create Transaction"
         fullWidth
-        onPress={() =>
-          navigation.navigate("MultisigCreateTransaction", { address })
-        }
+        onPress={() => navigation.navigate("MultisigTransfer", { address })}
       />
 
       <SpacerColumn size={2.5} />
@@ -46,6 +43,16 @@ export const RightSection = () => {
 
       <SpacerColumn size={2.5} />
       <PrimaryButton size="M" text="Buy a TNS Account" fullWidth />
+
+      <SpacerColumn size={2.5} />
+      <PrimaryButton
+        size="M"
+        text="Transactions"
+        fullWidth
+        onPress={() =>
+          navigation.navigate("MultisigTransactionProposal", { address })
+        }
+      />
     </View>
   );
 };

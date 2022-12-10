@@ -14,8 +14,7 @@ import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideL
 import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useMultisigContext } from "../../context/MultisigReducer";
-import { useCreateMultisig } from "../../hooks/useCreateMultisig";
-import { useMultisigHelpers } from "../../hooks/useMultisigHelpers";
+import { useMultisigHelpers, useCreateMultisig } from "../../hooks/multisig";
 import {
   patternOnlyNumbers,
   validateAddress,

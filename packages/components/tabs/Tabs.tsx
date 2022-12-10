@@ -94,8 +94,8 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                 {item.name}
               </BrandText>
 
-              {item.badgeCount && <SpacerRow size={1} />}
-              {item.badgeCount ? (
+              {item.badgeCount !== undefined && <SpacerRow size={1} />}
+              {item.badgeCount !== undefined ? (
                 isSelected ? (
                   <PrimaryBadge
                     size="SM"

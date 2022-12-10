@@ -1,8 +1,8 @@
 import { createMultisigThresholdPubkey, pubkeyToAddress } from "@cosmjs/amino";
 import { useMutation } from "@tanstack/react-query";
 
-import { createOrFindMultisig } from "../utils/founaDB/multisig/multisigGraphql";
-import { DbAccount } from "../utils/founaDB/multisig/types";
+import { createOrFindMultisig } from "../../utils/founaDB/multisig/multisigGraphql";
+import { DbAccount } from "../../utils/founaDB/multisig/types";
 
 type CreateMultisigArguement = {
   userAddresses: string[];

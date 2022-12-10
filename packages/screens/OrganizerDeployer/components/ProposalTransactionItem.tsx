@@ -1,4 +1,6 @@
+import { MultisigThresholdPubkey } from "@cosmjs/amino";
 import { capitalize } from "lodash";
+import moment from "moment";
 import React, { useMemo } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
@@ -10,8 +12,10 @@ import { Separator } from "../../../components/Separator";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { MultisigTransactionListType } from "../../../hooks/useFetchMultisigTransactionsById";
-import { useMultisigHelpers } from "../../../hooks/useMultisigHelpers";
+import {
+  MultisigTransactionListType,
+  useMultisigHelpers,
+} from "../../../hooks/multisig";
 import {
   errorColor,
   neutral33,
@@ -27,11 +31,20 @@ import { MultisigTransactionType } from "../../Multisig/types";
 
 interface ProposalTransactionItemProps extends MultisigTransactionListType {
   btnSquaresBackgroundColor?: string;
+  pubkey?: MultisigThresholdPubkey;
 }
 
 export const ProposalTransactionItem: React.FC<
   ProposalTransactionItemProps
-> = ({ type, dataJSON, btnSquaresBackgroundColor }) => {
+> = ({
+  type,
+  dataJSON,
+  btnSquaresBackgroundColor,
+  createdAt,
+  createdBy,
+  signatures,
+  pubkey,
+}) => {
   // variables
   const { coinSimplified } = useMultisigHelpers();
   const fee = coinSimplified(dataJSON.fee.amount[0]);
@@ -40,7 +53,10 @@ export const ProposalTransactionItem: React.FC<
       ? dataJSON.msgs[0].value.amount
       : dataJSON.msgs[0].value.amount[0]
   );
-  console.log(dataJSON.msgs[0]);
+  console.log("called");
+
+  const approvedByCount = signatures.length || 0;
+  const approvalRequiredCount = parseInt(pubkey?.value.threshold || "0", 10);
 
   const getIcon = useMemo(() => {
     switch (type) {
@@ -70,11 +86,15 @@ export const ProposalTransactionItem: React.FC<
         <BrandText style={styles.normal}>{capitalize(type)}</BrandText>
         <SpacerColumn size={0.75} />
         <View style={styles.rowCenter}>
-          <BrandText style={styles.small77}>123</BrandText>
+          <BrandText style={styles.small77}>
+            {moment(createdAt).format("DD/MM/yyyy")}
+          </BrandText>
           <SpacerRow size={0.5} />
           <Separator horizontal />
           <SpacerRow size={0.5} />
-          <BrandText style={styles.small77}>12:00</BrandText>
+          <BrandText style={styles.small77}>
+            {moment(createdAt).format("h:mm")}
+          </BrandText>
         </View>
       </View>
 
@@ -88,7 +108,9 @@ export const ProposalTransactionItem: React.FC<
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Created by:</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.smallPrimary}>@username</BrandText>
+          <BrandText style={styles.smallPrimary}>
+            {createdBy ? `@${createdBy}` : "-"}
+          </BrandText>
         </View>
       </View>
 
@@ -114,18 +136,23 @@ export const ProposalTransactionItem: React.FC<
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Approved by:</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.normal}>{1}</BrandText>
+          <BrandText style={styles.normal}>{approvedByCount}</BrandText>
           <SpacerRow size={0.5} />
           <BrandText style={styles.normal77}>of</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.normal}>{3}</BrandText>
+          <BrandText style={styles.normal}>{approvalRequiredCount}</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.normal77}>({2} required)</BrandText>
+          <BrandText style={styles.normal77}>
+            ({approvalRequiredCount - approvedByCount} required)
+          </BrandText>
         </View>
         <SpacerColumn size={1.5} />
         <View style={styles.loadingOutside}>
           <View
-            style={[styles.loadingInside, { width: `${(1 / 2) * 100}%` }]}
+            style={[
+              styles.loadingInside,
+              { width: `${(approvedByCount / approvalRequiredCount) * 100}%` },
+            ]}
           />
         </View>
       </View>
@@ -162,7 +189,10 @@ const styles = StyleSheet.create({
   },
   section: { flex: 1, paddingRight: layout.padding_x1_5 },
   svgContainer: { padding: layout.padding_x2 },
-  rowCenter: { flexDirection: "row", alignItems: "center" },
+  rowCenter: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   end: {
     flexDirection: "row",
     flex: 1,
