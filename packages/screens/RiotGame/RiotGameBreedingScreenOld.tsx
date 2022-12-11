@@ -99,6 +99,7 @@ export const RiotGameBreedingScreen = () => {
       </Row>
 
       <BreedingResultModal
+        tokenInfo={undefined}
         onClose={() => setIsShowBreedingModal(false)}
         visible={isShowBreedingModal}
       />
