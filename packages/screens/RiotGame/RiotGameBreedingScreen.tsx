@@ -119,6 +119,7 @@ export const RiotGameBreedingScreen = () => {
           breedingConfig.breed_price_amount,
           breedingConfig.breed_price_denom
         ),
+        breedingConfig.breed_duration,
         selectedRippers[0]?.tokenId,
         selectedRippers[1]?.tokenId,
         breedingConfig.parent_contract_addr

@@ -1,3 +1,4 @@
+import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { Coin } from "cosmwasm";
 import { useEffect, useState } from "react";
@@ -30,6 +31,7 @@ export const useBreeding = () => {
 
   const breed = async (
     breedingPrice: Coin,
+    breedDuration: number,
     tokenId1: string,
     tokenId2: string,
     parentContract: string
@@ -41,14 +43,19 @@ export const useBreeding = () => {
     const client = await getSigningCosmWasmClient();
     const sender = selectedWallet?.address || "";
 
-    const approveMsgs = [tokenId1, tokenId2].map((tokenId) =>
-      buildApproveNFTMsg(
-        sender,
-        THE_RIOT_BREEDING_CONTRACT_ADDRESS,
-        tokenId,
-        parentContract
-      )
-    );
+    let msgs: EncodeObject[] = [];
+
+    if (breedDuration > 0) {
+      const approveMsgs = [tokenId1, tokenId2].map((tokenId) =>
+        buildApproveNFTMsg(
+          sender,
+          THE_RIOT_BREEDING_CONTRACT_ADDRESS,
+          tokenId,
+          parentContract
+        )
+      );
+      msgs = [...msgs, ...approveMsgs];
+    }
 
     const breedMsg = buildBreedingMsg(
       sender,
@@ -56,7 +63,8 @@ export const useBreeding = () => {
       tokenId1,
       tokenId2
     );
-    const msgs = [...approveMsgs, breedMsg];
+
+    msgs = [...msgs, breedMsg];
 
     const tx = await client.signAndBroadcast(sender, msgs, "auto", defaultMemo);
 
