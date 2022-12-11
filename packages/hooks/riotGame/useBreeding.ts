@@ -1,11 +1,11 @@
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { Coin } from "cosmwasm";
-import moment from "moment";
 import { useEffect, useState } from "react";
 
 import { TeritoriBreedingQueryClient } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { THE_RIOT_BREEDING_CONTRACT_ADDRESS } from "../../screens/RiotGame/settings";
 import { buildApproveNFTMsg, buildBreedingMsg } from "../../utils/game";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
@@ -17,7 +17,6 @@ import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/Teri
 
 export const useBreeding = () => {
   const [breedingConfig, setBreedingConfig] = useState<ConfigResponse>();
-  const [lastBreedAt, setLastBreedAt] = useState<moment.Moment>();
   const [remainingTokens, setRemainingTokens] = useState<number>(0);
 
   const {
@@ -59,15 +58,27 @@ export const useBreeding = () => {
     );
     const msgs = [...approveMsgs, breedMsg];
 
-    const lastBreedAt = moment();
     const tx = await client.signAndBroadcast(sender, msgs, "auto", defaultMemo);
 
     if (isDeliverTxFailure(tx)) {
       throw Error(tx.transactionHash);
     }
 
-    setLastBreedAt(lastBreedAt);
     return tx;
+  };
+
+  const getChildTokenIds = async (
+    userAddress: string,
+    childContractAddress: string
+  ) => {
+    const client = await getNonSigningCosmWasmClient();
+    const { tokens } = await client.queryContractSmart(childContractAddress, {
+      tokens: {
+        owner: userAddress,
+      },
+    });
+
+    return tokens;
   };
 
   const fetchBreedingConfig = async (
@@ -92,6 +103,24 @@ export const useBreeding = () => {
     setRemainingTokens(breedingConfig.child_nft_max_supply - count);
   };
 
+  const getTokenInfo = async (
+    tokenId: string,
+    childContractAddress: string
+  ) => {
+    const client = await getNonSigningCosmWasmClient();
+
+    const {
+      extension: { image },
+    } = await client.queryContractSmart(childContractAddress, {
+      nft_info: {
+        token_id: tokenId,
+      },
+    });
+
+    const tokenInfo = { id: tokenId, imageUri: ipfsURLToHTTPURL(image) };
+    return tokenInfo;
+  };
+
   useEffect(() => {
     if (!breedingQueryClient) return;
 
@@ -107,7 +136,8 @@ export const useBreeding = () => {
   return {
     breedingConfig,
     breed,
-    lastBreedAt,
     remainingTokens,
+    getChildTokenIds,
+    getTokenInfo,
   };
 };

@@ -1,5 +1,5 @@
 import { coin } from "cosmwasm";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
@@ -12,12 +12,16 @@ import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useBreeding } from "../../hooks/riotGame/useBreeding";
 import { useRippers } from "../../hooks/riotGame/useRippers";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { prettyPrice } from "../../utils/coins";
 import { getRipperTokenId } from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
 import { spacing } from "../../utils/style/spacing";
-import { BreedingResultModal } from "./component/BreedingResultModal";
+import {
+  BreedingResultModal,
+  TokenInfo,
+} from "./component/BreedingResultModal";
 import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";
@@ -31,12 +35,23 @@ export const RiotGameBreedingScreen = () => {
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [isBreeding, setIsBreeding] = useState(false);
   const { setToastError } = useFeedbacks();
+  const [newTokenInfo, setNewTokenInfo] = useState<TokenInfo>();
 
   const [selectedRippers, setSelectedRippers] = useState<{
     [slotId: string]: RipperDetail;
   }>({});
 
-  const { breedingConfig, breed, lastBreedAt, remainingTokens } = useBreeding();
+  const selectedWallet = useSelectedWallet();
+
+  const {
+    breedingConfig,
+    breed,
+    remainingTokens,
+    getChildTokenIds,
+    getTokenInfo,
+  } = useBreeding();
+
+  const intervalRef = useRef<NodeJS.Timer>();
 
   const availableRippers = useMemo(() => {
     const selectedIds = Object.values(selectedRippers).map((r) => r.tokenId);
@@ -48,6 +63,34 @@ export const RiotGameBreedingScreen = () => {
     return res;
   }, [myAvailableRippers, selectedRippers]);
 
+  /**
+   * NOTE: The current contract does not allow to get the newly created NFT
+   * so we have to fetch the new NFT every 2s and show only info if we have
+   */
+  const fetchNewToken = async (
+    currentChildTokenIds: string[],
+    owner: string,
+    childContractAddress: string
+  ) => {
+    const updatedTokens = await getChildTokenIds(owner, childContractAddress);
+    const newTokenIds = updatedTokens.filter(
+      (id: string) => !(currentChildTokenIds || []).includes(id)
+    );
+
+    const newTokenId = newTokenIds[0];
+
+    if (!newTokenId) {
+      return;
+    }
+
+    intervalRef.current && clearInterval(intervalRef.current);
+    const newTokenInfo = await getTokenInfo(newTokenId, childContractAddress);
+
+    setNewTokenInfo(newTokenInfo);
+    setIsBreeding(false);
+    setIsShowBreedingResultModal(true);
+  };
+
   const doBreed = async () => {
     if (!breedingConfig) {
       return setToastError({
@@ -56,7 +99,19 @@ export const RiotGameBreedingScreen = () => {
       });
     }
 
+    if (!selectedWallet?.address) {
+      return setToastError({
+        title: "Error",
+        message: "Login is required",
+      });
+    }
+
     setIsBreeding(true);
+
+    const currentChildTokenIds = await getChildTokenIds(
+      selectedWallet.address,
+      breedingConfig.child_contract_addr
+    );
 
     try {
       await breed(
@@ -69,8 +124,17 @@ export const RiotGameBreedingScreen = () => {
         breedingConfig.parent_contract_addr
       );
 
-      setIsShowBreedingResultModal(true);
+      intervalRef.current = setInterval(
+        () =>
+          fetchNewToken(
+            currentChildTokenIds,
+            selectedWallet.address,
+            breedingConfig.child_contract_addr
+          ),
+        2000
+      );
     } catch (e) {
+      setIsBreeding(false);
       console.error(e);
       if (e instanceof Error) {
         setToastError({
@@ -78,7 +142,6 @@ export const RiotGameBreedingScreen = () => {
           message: e.message,
         });
       }
-    } finally {
       setIsBreeding(false);
     }
   };
@@ -91,6 +154,12 @@ export const RiotGameBreedingScreen = () => {
     setSelectedSlot(undefined);
     setSelectedRippers({ ...selectedRippers, [slotId]: ripper });
   };
+
+  useEffect(() => {
+    return () => {
+      intervalRef.current && clearInterval(intervalRef.current);
+    };
+  }, []);
 
   return (
     <GameContentView>
@@ -161,11 +230,11 @@ export const RiotGameBreedingScreen = () => {
       />
 
       <BreedingResultModal
-        lastBreedAt={lastBreedAt}
-        breedingConfig={breedingConfig}
+        tokenInfo={newTokenInfo}
         onClose={() => {
           setIsShowBreedingResultModal(false);
           setSelectedRippers({});
+          setNewTokenInfo(undefined);
         }}
         visible={isShowBreedingResultModal}
       />

@@ -15,13 +15,12 @@ import (
 func main() {
 	fs := flag.NewFlagSet("p2e-update-leaderboard", flag.ContinueOnError)
 	var (
-		snapshot     = fs.Bool("snapshot", false, "update the snapshot score, used for calculating changes")
-		collectionId = fs.String("collection-id", "", "id of collection to update the leaderboard")
-		dbHost       = fs.String("db-indexer-host", "", "host postgreSQL database")
-		dbPort       = fs.String("db-indexer-port", "", "port for postgreSQL database")
-		dbPass       = fs.String("postgres-password", "", "password for postgreSQL database")
-		dbName       = fs.String("database-name", "", "database name for postgreSQL")
-		dbUser       = fs.String("postgres-user", "", "username for postgreSQL")
+		snapshot = fs.Bool("snapshot", false, "update the snapshot score, used for calculating changes")
+		dbHost   = fs.String("db-indexer-host", "", "host postgreSQL database")
+		dbPort   = fs.String("db-indexer-port", "", "port for postgreSQL database")
+		dbPass   = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName   = fs.String("database-name", "", "database name for postgreSQL")
+		dbUser   = fs.String("postgres-user", "", "username for postgreSQL")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -41,10 +40,6 @@ func main() {
 
 	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
 		panic(errors.New("missing Database configuration"))
-	}
-
-	if *collectionId == "" {
-		panic(errors.New("missing collectionId configuration"))
 	}
 
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
@@ -68,11 +63,9 @@ func main() {
 		FROM p2e_squad_stakings as ss
 		WHERE lb.user_id = ss.owner_id 
 			AND lb.collection_id = ss.collection_id
-			AND lb.collection_id = ?
 			AND ss.start_time < ?
 	`),
 		currentTimestamp,
-		*collectionId,
 		currentTimestamp,
 	).Error
 	if updateScoreErr != nil {
@@ -86,9 +79,7 @@ func main() {
 		FROM (SELECT user_id, collection_id, row_number() OVER (ORDER BY in_progress_score) AS rank FROM p2e_leaderboards) orderedLb
 		WHERE lb.user_id = orderedLb.user_id
 			AND lb.collection_id = orderedLb.collection_id
-			AND lb.collection_id = ?
 	`),
-		*collectionId,
 	).Error
 	if updateRankErr != nil {
 		panic(errors.Wrap(updateRankErr, "failed to update rank"))
@@ -99,8 +90,7 @@ func main() {
 		snapshotErr := db.Exec(`
 			UPDATE p2e_leaderboards as lb
 			SET snapshot_score = in_progress_score, snapshot_rank = rank
-			WHERE lb.collection_id = ?
-		`, *collectionId).Error
+		`).Error
 
 		if snapshotErr != nil {
 			panic(errors.Wrap(snapshotErr, "failed to snapshot"))
