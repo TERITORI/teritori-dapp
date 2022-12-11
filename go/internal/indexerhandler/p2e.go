@@ -7,6 +7,7 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/contracts/breeding_minter_types"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -18,6 +19,51 @@ type SquadStakeMsg struct {
 
 type ExecuteSquadStakeMsg struct {
 	Stake SquadStakeMsg `json:"stake"`
+}
+
+func (h *Handler) handleInstantiateBreeding(e *Message, contractAddress string, instantiateMsg *wasmtypes.MsgInstantiateContract) error {
+	// get nft contract address
+	nftAddrs := e.Events["wasm.nft_addr"]
+	if len(nftAddrs) == 0 {
+		return errors.New("no nft contract address")
+	}
+	nftAddr := nftAddrs[0]
+
+	var minterInstantiateMsg breeding_minter_types.InstantiateMsg
+	if err := json.Unmarshal(instantiateMsg.Msg.Bytes(), &minterInstantiateMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal breeding minter instantiate msg")
+	}
+
+	// FIXME: network queries should be done async
+
+	// try to fetch collection metadata
+	metadataURI := minterInstantiateMsg.ChildNftBaseUri
+	var metadata CollectionMetadata
+	if err := fetchIPFSJSON(metadataURI, &metadata); err != nil {
+		h.logger.Error("failed to fetch collection metadata", zap.String("metadata-uri", metadataURI), zap.Error(err))
+	}
+
+	maxSupply := minterInstantiateMsg.ChildNftMaxSupply
+
+	// create collection
+	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
+	if err := h.db.Create(&indexerdb.Collection{
+		ID:        collectionId,
+		NetworkId: "teritori", // FIXME: get from networks config
+		Name:      minterInstantiateMsg.ChildNftName,
+		ImageURI:  metadata.ImageURI,
+		MaxSupply: maxSupply,
+		TeritoriCollection: &indexerdb.TeritoriCollection{
+			MintContractAddress: contractAddress,
+			NFTContractAddress:  nftAddr,
+			CreatorAddress:      instantiateMsg.Sender,
+		},
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create collection")
+	}
+	h.logger.Info("created collection", zap.String("id", collectionId))
+
+	return nil
 }
 
 // Insert a new P2eSquadStaking record when staking begins

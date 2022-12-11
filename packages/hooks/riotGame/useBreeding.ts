@@ -6,7 +6,10 @@ import { useEffect, useState } from "react";
 import { TeritoriBreedingQueryClient } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { THE_RIOT_BREEDING_CONTRACT_ADDRESS } from "../../screens/RiotGame/settings";
 import { buildApproveNFTMsg, buildBreedingMsg } from "../../utils/game";
-import { getSigningCosmWasmClient } from "../../utils/keplr";
+import {
+  getNonSigningCosmWasmClient,
+  getSigningCosmWasmClient,
+} from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
 import { useContractClients } from "../useContractClients";
 import useSelectedWallet from "../useSelectedWallet";
@@ -15,6 +18,7 @@ import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/Teri
 export const useBreeding = () => {
   const [breedingConfig, setBreedingConfig] = useState<ConfigResponse>();
   const [lastBreedAt, setLastBreedAt] = useState<moment.Moment>();
+  const [remainingTokens, setRemainingTokens] = useState<number>(0);
 
   const {
     queryClient: breedingQueryClient,
@@ -77,15 +81,33 @@ export const useBreeding = () => {
     setBreedingConfig(config);
   };
 
+  const fetchRemainingTokens = async (breedingConfig: ConfigResponse) => {
+    const client = await getNonSigningCosmWasmClient();
+    const { count } = await client.queryContractSmart(
+      breedingConfig.child_contract_addr,
+      {
+        num_tokens: {},
+      }
+    );
+    setRemainingTokens(breedingConfig.child_nft_max_supply - count);
+  };
+
   useEffect(() => {
     if (!breedingQueryClient) return;
 
     fetchBreedingConfig(breedingQueryClient);
   }, [breedingQueryClient?.contractAddress]); // Depend on one attribute to avoid deep compare
 
+  useEffect(() => {
+    if (!breedingConfig?.child_contract_addr) return;
+
+    fetchRemainingTokens(breedingConfig);
+  }, [breedingConfig?.child_contract_addr]);
+
   return {
     breedingConfig,
     breed,
     lastBreedAt,
+    remainingTokens,
   };
 };

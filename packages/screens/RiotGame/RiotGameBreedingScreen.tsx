@@ -36,7 +36,7 @@ export const RiotGameBreedingScreen = () => {
     [slotId: string]: RipperDetail;
   }>({});
 
-  const { breedingConfig, breed, lastBreedAt } = useBreeding();
+  const { breedingConfig, breed, lastBreedAt, remainingTokens } = useBreeding();
 
   const availableRippers = useMemo(() => {
     const selectedIds = Object.values(selectedRippers).map((r) => r.tokenId);
@@ -124,8 +124,8 @@ export const RiotGameBreedingScreen = () => {
           />
           <InfoBox
             size="LG"
-            title="Breeding Cooldown"
-            content="00:00 AM"
+            title="Remaining NFTs"
+            content={`${remainingTokens}`}
             width={180}
           />
 
@@ -163,7 +163,10 @@ export const RiotGameBreedingScreen = () => {
       <BreedingResultModal
         lastBreedAt={lastBreedAt}
         breedingConfig={breedingConfig}
-        onClose={() => setIsShowBreedingResultModal(false)}
+        onClose={() => {
+          setIsShowBreedingResultModal(false);
+          setSelectedRippers({});
+        }}
         visible={isShowBreedingResultModal}
       />
     </GameContentView>

@@ -124,17 +124,20 @@ $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE): node_modules
-	rm -fr $(TOKEN_REPO)
-	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
-	cd $(TOKEN_REPO) && git checkout 731b876202cc2c7a56057afddb42a25c25aa23e7
+	rm -fr $(CANDYMACHINE_REPO)
+	git clone git@github.com:TERITORI/$(CANDYMACHINE_REPO).git
+	cd $(CANDYMACHINE_REPO) && git checkout 731b876202cc2c7a56057afddb42a25c25aa23e7
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
-		--schema $(TOKEN_REPO)/schema/nft-breeding \
+		--schema $(CANDYMACHINE_REPO)/schema/nft-breeding \
 		--out $@ \
 		--name $(BREEDING_PACKAGE) \
 		--no-bundle
-	rm -fr $(TOKEN_REPO)
+	mkdir -p go/pkg/contracts/breeding_types
+	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(CANDYMACHINE_REPO)/schema/nft-breeding/instantiate_msg.json -o go/pkg/contracts/breeding_types/instantiate_msg.go -p breeding_types
+	go fmt ./go/pkg/contracts/breeding_minter_types		
+	rm -fr $(CANDYMACHINE_REPO)
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(STAKING_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(STAKING_PACKAGE): node_modules

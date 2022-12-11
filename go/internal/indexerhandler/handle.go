@@ -32,16 +32,17 @@ type Message struct {
 }
 
 type Config struct {
-	TNSContractAddress          string
-	MinterCodeIDs               []uint64
-	VaultContractAddress        string
-	SquadStakingContractAddress string
-	TheRiotCollectionAddress    string
-	TNSDefaultImageURL          string
-	TendermintClient            *tmws.Client
-	NetworkID                   string
-	CoinGeckoPrices             *coingeckoprices.CoinGeckoPrices
-	BlockTimeCache              *bigcache.BigCache
+	TNSContractAddress             string
+	MinterCodeIDs                  []uint64
+	VaultContractAddress           string
+	SquadStakingContractAddress    string
+	TheRiotCollectionAddress       string
+	TheRiotBreedingContractAddress string
+	TNSDefaultImageURL             string
+	TendermintClient               *tmws.Client
+	NetworkID                      string
+	CoinGeckoPrices                *coingeckoprices.CoinGeckoPrices
+	BlockTimeCache                 *bigcache.BigCache
 }
 
 type Handler struct {
@@ -141,6 +142,11 @@ func (h *Handler) handleInstantiate(e *Message) error {
 	case h.config.TNSContractAddress:
 		if err := h.handleInstantiateTNS(e, contractAddress, &instantiateMsg); err != nil {
 			return errors.Wrap(err, "failed to handle tns minter instantiation")
+		}
+		return nil
+	case h.config.TheRiotBreedingContractAddress:
+		if err := h.handleInstantiateBreeding(e, contractAddress, &instantiateMsg); err != nil {
+			return errors.Wrap(err, "failed to handle breeding instantiation")
 		}
 		return nil
 	}
