@@ -10,6 +10,17 @@ services:
       - teritori-data:/var/lib/postgresql/data/ # persist data even if container shuts down  
     ports:
       - "5432:5432"
+  prices-postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    volumes:
+      - prices-data:/var/lib/postgresql/data/ # persist data even if container shuts down  
+    ports:
+      - "5433:5432"
 
 volumes:
   teritori-data: # named volumes can be managed easier using docker-compose
+  prices-data:
