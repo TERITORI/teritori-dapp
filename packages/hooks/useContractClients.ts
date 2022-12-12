@@ -5,6 +5,10 @@ import {
   TeritoriBreedingQueryClient,
 } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import {
+  TeritoriDistributorClient,
+  TeritoriDistributorQueryClient,
+} from "../contracts-clients/teritori-distributor/TeritoriDistributor.client";
+import {
   TeritoriNftStakingClient,
   TeritoriNftStakingQueryClient,
 } from "../contracts-clients/teritori-nft-staking/TeritoriNftStaking.client";
@@ -31,6 +35,7 @@ type ContractName =
   | "teritori-nft-staking"
   | "teritori-nft-vault"
   | "teritori-breeding"
+  | "teritori-distributor"
   | "teritori-squad-staking";
 
 const CONTRACT_CLIENT_MAP: {
@@ -56,6 +61,10 @@ const CONTRACT_CLIENT_MAP: {
     clientClass: TeritoriBreedingClient,
     queryClientClass: TeritoriBreedingQueryClient,
   },
+  "teritori-distributor": {
+    clientClass: TeritoriDistributorClient,
+    queryClientClass: TeritoriDistributorQueryClient,
+  },
 };
 
 export const useContractClients = (
@@ -64,6 +73,7 @@ export const useContractClients = (
 ) => {
   const { clientClass, queryClientClass } = CONTRACT_CLIENT_MAP[contractName];
 
+  const [isReady, setIsReady] = useState(false);
   const [client, setClient] = useState<typeof clientClass | null>(null);
   const [queryClient, setQueryClient] = useState<
     typeof queryClientClass | null
@@ -88,11 +98,12 @@ export const useContractClients = (
       );
       setClient(_client);
     }
+    setIsReady(true);
   };
 
   useEffect(() => {
     updateClients();
-  }, [selectedWallet]);
+  }, [selectedWallet?.address]);
 
-  return { selectedWallet, client, queryClient };
+  return { selectedWallet, client, queryClient, isReady };
 };

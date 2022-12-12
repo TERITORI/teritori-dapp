@@ -6,6 +6,7 @@ TOKEN_PACKAGE=teritori-nft
 STAKING_PACKAGE=teritori-nft-staking
 SQUAD_STAKING_PACKAGE=teritori-squad-staking
 BREEDING_PACKAGE=teritori-breeding
+DISTRIBUTOR_PACKAGE=teritori-distributor
 
 NAME_SERVICE_REPO=teritori-name-service
 NAME_SERVICE_PACKAGE=teritori-name-service
@@ -119,6 +120,20 @@ $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules
 		--schema $(TOKEN_REPO)/schema/nft-token \
 		--out $@ \
 		--name $(TOKEN_PACKAGE) \
+		--no-bundle
+	rm -fr $(TOKEN_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(DISTRIBUTOR_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(DISTRIBUTOR_PACKAGE): node_modules
+	rm -fr $(TOKEN_REPO)
+	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
+	cd $(TOKEN_REPO) && git checkout 61028f26c8ca2662bab39eff23f28c322d1aa60e
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(TOKEN_REPO)/schema/distributor \
+		--out $@ \
+		--name $(DISTRIBUTOR_PACKAGE) \
 		--no-bundle
 	rm -fr $(TOKEN_REPO)
 

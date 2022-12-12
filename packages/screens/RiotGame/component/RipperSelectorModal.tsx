@@ -52,7 +52,7 @@ type RipperSelectorModalProps = ModalProps & {
 const THUMB_CONTAINER_WIDTH = 120;
 const THUMB_CONTAINER_HEIGHT = 120;
 
-const THUMB_SIZE = 92;
+const THUMB_SIZE = 100;
 
 const RIPPER_IMAGE_SIZE = 300;
 
@@ -93,6 +93,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
     if (!selectedRipperDetail) return;
     onSelectRipper &&
       onSelectRipper(slotId as number, selectedRipperDetail, breedingsLeft);
+    setBreedingsLeft(0);
   };
 
   useEffect(() => {
