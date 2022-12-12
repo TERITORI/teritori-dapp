@@ -1,7 +1,14 @@
-import { useWindowDimensions, View, ViewProps } from "react-native";
+import {
+  FlexAlignType,
+  useWindowDimensions,
+  View,
+  ViewProps,
+} from "react-native";
 
 type RowProps = ViewProps & {
   breakpoint?: number;
+  width?: string;
+  alignItems?: FlexAlignType | undefined;
 };
 
 type Direction =
@@ -11,11 +18,16 @@ type Direction =
   | "column-reverse"
   | undefined;
 
-const Row: React.FC<RowProps> = (props) => {
-  const { width } = useWindowDimensions();
+const Row: React.FC<RowProps> = ({
+  breakpoint,
+  width = "100%",
+  alignItems,
+  ...props
+}) => {
+  const { width: currentWidth } = useWindowDimensions();
 
   let flexDirection: Direction = "row";
-  if (props.breakpoint && width < props.breakpoint) {
+  if (breakpoint && currentWidth < breakpoint) {
     flexDirection = "column";
   }
 
@@ -23,10 +35,11 @@ const Row: React.FC<RowProps> = (props) => {
     <View
       style={[
         {
-          width: "100%",
+          width,
           flexDirection,
         },
         flexDirection === "column" && { alignItems: "center" },
+        alignItems && { alignItems },
         props.style,
       ]}
     >

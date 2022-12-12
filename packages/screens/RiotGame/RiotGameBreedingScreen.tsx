@@ -1,6 +1,7 @@
 import { coin } from "cosmwasm";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
+import { Checkbox } from "react-native-paper";
 
 import breedSVG from "../../../assets/game/breed.svg";
 import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
@@ -8,6 +9,7 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ButtonOutline } from "../../components/buttons/ButtonOutline";
 import Row from "../../components/grid/Row";
+import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useBreeding } from "../../hooks/riotGame/useBreeding";
@@ -36,9 +38,13 @@ export const RiotGameBreedingScreen = () => {
   const [isBreeding, setIsBreeding] = useState(false);
   const { setToastError } = useFeedbacks();
   const [newTokenInfo, setNewTokenInfo] = useState<TokenInfo>();
+  const [isLegalChecked, setIsLegalChecked] = useState<boolean>(false);
 
   const [selectedRippers, setSelectedRippers] = useState<{
-    [slotId: string]: RipperDetail;
+    [slotId: string]: {
+      ripperDetail: RipperDetail;
+      breedingsLeft: number;
+    };
   }>({});
 
   const selectedWallet = useSelectedWallet();
@@ -54,7 +60,9 @@ export const RiotGameBreedingScreen = () => {
   const intervalRef = useRef<NodeJS.Timer>();
 
   const availableRippers = useMemo(() => {
-    const selectedIds = Object.values(selectedRippers).map((r) => r.tokenId);
+    const selectedIds = Object.values(selectedRippers).map(
+      (r) => r.ripperDetail.tokenId
+    );
 
     const res = myAvailableRippers.filter(
       (r) => !selectedIds.includes(getRipperTokenId(r))
@@ -120,8 +128,8 @@ export const RiotGameBreedingScreen = () => {
           breedingConfig.breed_price_denom
         ),
         breedingConfig.breed_duration,
-        selectedRippers[0]?.tokenId,
-        selectedRippers[1]?.tokenId,
+        selectedRippers[0]?.ripperDetail.tokenId,
+        selectedRippers[1]?.ripperDetail.tokenId,
         breedingConfig.parent_contract_addr
       );
 
@@ -151,9 +159,19 @@ export const RiotGameBreedingScreen = () => {
     setSelectedSlot(slotId);
   };
 
-  const selectRipper = (slotId: number, ripper: RipperDetail) => {
+  const selectRipper = (
+    slotId: number,
+    ripper: RipperDetail,
+    breedingsLeft: number
+  ) => {
     setSelectedSlot(undefined);
-    setSelectedRippers({ ...selectedRippers, [slotId]: ripper });
+    setSelectedRippers({
+      ...selectedRippers,
+      [slotId]: {
+        ripperDetail: ripper,
+        breedingsLeft,
+      },
+    });
   };
 
   useEffect(() => {
@@ -164,6 +182,7 @@ export const RiotGameBreedingScreen = () => {
 
   return (
     <GameContentView>
+      <LoaderFullScreen visible={isBreeding} />
       <View
         style={[spacing.mt_5, { alignItems: "center", alignSelf: "center" }]}
       >
@@ -171,12 +190,14 @@ export const RiotGameBreedingScreen = () => {
 
         <Row style={[spacing.mt_5, { justifyContent: "center" }]}>
           <BreedingSlot
-            ripper={selectedRippers[0]}
+            ripper={selectedRippers[0]?.ripperDetail}
+            breedingsLeft={selectedRippers[0]?.breedingsLeft}
             onPress={() => openSelectorModal(0)}
           />
           <SpacerRow size={3} />
           <BreedingSlot
-            ripper={selectedRippers[1]}
+            ripper={selectedRippers[1]?.ripperDetail}
+            breedingsLeft={selectedRippers[1]?.breedingsLeft}
             onPress={() => openSelectorModal(1)}
           />
         </Row>
@@ -216,9 +237,16 @@ export const RiotGameBreedingScreen = () => {
           style={spacing.mt_2}
         />
 
-        <BrandText style={[fontMedium14, spacing.mt_2, { color: neutralA3 }]}>
-          Legal phrase powered by Popipou
-        </BrandText>
+        <Row width="auto" alignItems="center" style={spacing.mt_2}>
+          <Checkbox
+            status={isLegalChecked ? "checked" : "unchecked"}
+            onPress={() => setIsLegalChecked(!isLegalChecked)}
+            uncheckedColor={neutralA3}
+          />
+          <BrandText style={[fontMedium14, { color: neutralA3 }]}>
+            Legal phrase powered by Popipou
+          </BrandText>
+        </Row>
       </View>
 
       <RipperSelectorModal

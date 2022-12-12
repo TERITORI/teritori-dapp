@@ -17,6 +17,7 @@ import {
 type RipperStatProps = {
   name: string;
   value?: number;
+  showProgress?: boolean;
   containerStyle?: ViewStyle;
   size?: "MD" | "LG";
 };
@@ -25,6 +26,7 @@ export const RipperStat: React.FC<RipperStatProps> = ({
   name,
   value = 0,
   containerStyle,
+  showProgress = true,
   size = "MD",
 }) => {
   let valueFont;
@@ -46,9 +48,11 @@ export const RipperStat: React.FC<RipperStatProps> = ({
       <BrandText style={[valueFont, styles.leftCol]}>{value}</BrandText>
 
       <View style={styles.rightCol}>
-        <View style={styles.progressBarOuter}>
-          <View style={[styles.processBarInner, { width: `${value}%` }]} />
-        </View>
+        {showProgress && (
+          <View style={styles.progressBarOuter}>
+            <View style={[styles.processBarInner, { width: `${value}%` }]} />
+          </View>
+        )}
 
         <BrandText style={[subTextFont, styles.subText]}>{name}</BrandText>
       </View>

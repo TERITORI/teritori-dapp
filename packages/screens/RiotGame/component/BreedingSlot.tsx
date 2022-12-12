@@ -3,27 +3,34 @@ import { StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
+import gameBoxSVG from "../../../../assets/icons/game-box.svg";
+import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import Row from "../../../components/grid/Row";
 import {
   yellowDefault,
   neutral33,
   secondaryColor,
   orangeLight,
   withAlpha,
+  neutralA3,
 } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
+import { fontMedium14, fontSemibold13 } from "../../../utils/style/fonts";
+import { spacing } from "../../../utils/style/spacing";
 import { RipperDetail } from "../types";
 
 interface BreedingSlotProps {
   active?: boolean;
   ripper?: RipperDetail | undefined;
+  breedingsLeft?: number;
   onPress?(): void;
 }
 
 export const BreedingSlot: React.FC<BreedingSlotProps> = ({
   onPress,
   ripper,
+  breedingsLeft,
   active,
 }) => {
   return (
@@ -39,7 +46,26 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
         }}
       >
         {ripper ? (
-          <Image style={styles.ripperImage} source={{ uri: ripper.imageURL }} />
+          <>
+            <Row style={styles.breedingsLeftTxt}>
+              <SVG
+                source={gameBoxSVG}
+                width={16}
+                height={16}
+                color={secondaryColor}
+              />
+              <BrandText
+                style={[{ color: neutralA3 }, fontMedium14, spacing.ml_1]}
+              >
+                Breedings left: {breedingsLeft}
+              </BrandText>
+            </Row>
+
+            <Image
+              style={styles.ripperImage}
+              source={{ uri: ripper.imageURL }}
+            />
+          </>
         ) : (
           <SVG
             source={addSVG}
@@ -65,8 +91,16 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     ...(fontSemibold13 as object),
   },
+  breedingsLeftTxt: {
+    position: "absolute",
+    zIndex: 1,
+    top: 10,
+    left: 10,
+    width: "auto",
+    alignItems: "center",
+  },
   ripperImage: {
-    width: 160,
-    height: 160,
+    width: 180,
+    height: 180,
   },
 });

@@ -20,6 +20,7 @@ import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import Col from "../../../components/grid/Col";
 import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
+import { useBreeding } from "../../../hooks/riotGame/useBreeding";
 import { getStandardNFTInfo } from "../../../hooks/useNFTInfo";
 import { getRipperTraitValue } from "../../../utils/game";
 import { neutral00, white, yellowDefault } from "../../../utils/style/colors";
@@ -40,7 +41,11 @@ type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
   confirmButton: string;
   availableRippers: RipperListItem[];
-  onSelectRipper?(slotId: number, ripper: RipperDetail): void;
+  onSelectRipper?(
+    slotId: number,
+    ripper: RipperDetail,
+    breedingsLeft: number
+  ): void;
   onClose?(): void;
 };
 
@@ -66,22 +71,28 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   >();
   const [selectedRipperDetail, setSelectedRipperDetail] =
     useState<RipperDetail>();
+  const [breedingsLeft, setBreedingsLeft] = useState<number>(0);
+  const { getBreedingsLefts } = useBreeding();
 
   const selectRipper = async (ripper: RipperListItem) => {
     setSelectedRipper(ripper);
 
     const tokenId = ripper.id.split("-")[2];
 
+    const breedingsLeft = await getBreedingsLefts(tokenId);
     const ripperDetail: RipperDetail = await getStandardNFTInfo(
       process.env.THE_RIOT_COLLECTION_ADDRESS || "",
       tokenId
     );
+
+    setBreedingsLeft(breedingsLeft);
     setSelectedRipperDetail(ripperDetail);
   };
 
   const confirmRipper = () => {
     if (!selectedRipperDetail) return;
-    onSelectRipper && onSelectRipper(slotId as number, selectedRipperDetail);
+    onSelectRipper &&
+      onSelectRipper(slotId as number, selectedRipperDetail, breedingsLeft);
   };
 
   useEffect(() => {
@@ -219,6 +230,14 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   selectedRipperDetail &&
                   getRipperTraitValue(selectedRipperDetail, "Luck")
                 }
+                size="MD"
+              />
+
+              <RipperStat
+                containerStyle={spacing.mt_3}
+                name="Breedings left"
+                showProgress={false}
+                value={breedingsLeft}
                 size="MD"
               />
             </Col>

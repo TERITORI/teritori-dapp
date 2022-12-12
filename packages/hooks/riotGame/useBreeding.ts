@@ -129,6 +129,13 @@ export const useBreeding = () => {
     return tokenInfo;
   };
 
+  const getBreedingsLefts = async (tokenId: string) => {
+    const breededCount = await breedingQueryClient.breededCount({
+      parentNftTokenId: tokenId,
+    });
+    return (breedingConfig?.breed_count_limit || 0) - breededCount;
+  };
+
   useEffect(() => {
     if (!breedingQueryClient) return;
 
@@ -147,5 +154,6 @@ export const useBreeding = () => {
     remainingTokens,
     getChildTokenIds,
     getTokenInfo,
+    getBreedingsLefts,
   };
 };
