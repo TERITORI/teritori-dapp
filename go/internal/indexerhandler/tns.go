@@ -23,11 +23,12 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 	// create collection
 	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
-		ID:        collectionId,
-		NetworkId: "teritori",
-		Name:      tnsInstantiateMsg.Name,
-		ImageURI:  h.config.TNSDefaultImageURL,
-		MaxSupply: -1,
+		ID:                  collectionId,
+		NetworkId:           "teritori",
+		Name:                tnsInstantiateMsg.Name,
+		ImageURI:            h.config.TNSDefaultImageURL,
+		MaxSupply:           -1,
+		SecondaryDuringMint: true,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  contractAddress,

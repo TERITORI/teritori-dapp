@@ -19,7 +19,10 @@ export const CollectionView: React.FC<{
 }> = ({ item }) => {
   const creatorAddress = item.creatorId.replace("tori-", "");
   const tnsMetadata = useTNSMetadata(creatorAddress);
-  const navigateToCollection = useNavigateToCollection(item.id);
+  const navigateToCollection = useNavigateToCollection(
+    item.id,
+    item.secondaryDuringMint
+  );
   return (
     <TouchableOpacity onPress={navigateToCollection} disabled={!item.id}>
       <TertiaryBox

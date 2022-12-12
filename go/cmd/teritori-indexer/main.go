@@ -19,6 +19,7 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"gorm.io/gorm"
 )
 
@@ -50,6 +51,7 @@ func main() {
 		tendermintWebsocketEndpoint = fs.String("tendermint-websocket-endpoint", "", "tendermint websocket endpoint")
 		tailSize                    = fs.Int64("tail-size", 8640, "x blocks tail size means that the tendermint indexer can lag x blocks behind before the indexer misses an event")
 		pricesServiceURI            = fs.String("prices-service-uri", "localhost:9091", "price service URI")
+		insecurePrices              = fs.Bool("prices-insecure-grpc", false, "do not use TLS to connect to prices service")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -112,11 +114,17 @@ func main() {
 	}
 
 	// create prices service client
-	conn, err := grpc.Dial(*pricesServiceURI, grpc.WithInsecure())
+	popts := []grpc.DialOption{}
+	if *insecurePrices {
+		popts = append(popts, grpc.WithInsecure())
+	} else {
+		popts = append(popts, grpc.WithTransportCredentials(credentials.NewTLS(nil)))
+	}
+	pconn, err := grpc.Dial(*pricesServiceURI, popts...)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to connect to price service"))
 	}
-	ps := pricespb.NewPricesServiceClient(conn)
+	ps := pricespb.NewPricesServiceClient(pconn)
 
 	// init db
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",

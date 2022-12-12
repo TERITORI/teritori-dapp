@@ -161,6 +161,7 @@ export interface Collection {
   volume: string;
   volumeDenom: string;
   creatorId: string;
+  secondaryDuringMint: boolean;
 }
 
 export interface CollectionStats {
@@ -519,6 +520,7 @@ function createBaseCollection(): Collection {
     volume: "",
     volumeDenom: "",
     creatorId: "",
+    secondaryDuringMint: false,
   };
 }
 
@@ -553,6 +555,9 @@ export const Collection = {
     }
     if (message.creatorId !== "") {
       writer.uint32(82).string(message.creatorId);
+    }
+    if (message.secondaryDuringMint === true) {
+      writer.uint32(96).bool(message.secondaryDuringMint);
     }
     return writer;
   },
@@ -594,6 +599,9 @@ export const Collection = {
         case 10:
           message.creatorId = reader.string();
           break;
+        case 12:
+          message.secondaryDuringMint = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -614,6 +622,7 @@ export const Collection = {
       volume: isSet(object.volume) ? String(object.volume) : "",
       volumeDenom: isSet(object.volumeDenom) ? String(object.volumeDenom) : "",
       creatorId: isSet(object.creatorId) ? String(object.creatorId) : "",
+      secondaryDuringMint: isSet(object.secondaryDuringMint) ? Boolean(object.secondaryDuringMint) : false,
     };
   },
 
@@ -629,6 +638,7 @@ export const Collection = {
     message.volume !== undefined && (obj.volume = message.volume);
     message.volumeDenom !== undefined && (obj.volumeDenom = message.volumeDenom);
     message.creatorId !== undefined && (obj.creatorId = message.creatorId);
+    message.secondaryDuringMint !== undefined && (obj.secondaryDuringMint = message.secondaryDuringMint);
     return obj;
   },
 
@@ -644,6 +654,7 @@ export const Collection = {
     message.volume = object.volume ?? "";
     message.volumeDenom = object.volumeDenom ?? "";
     message.creatorId = object.creatorId ?? "";
+    message.secondaryDuringMint = object.secondaryDuringMint ?? false;
     return message;
   },
 };
