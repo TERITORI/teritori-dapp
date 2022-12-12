@@ -22,6 +22,7 @@ CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
 INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-indexer:$(shell git rev-parse --short HEAD)
 BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
+P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse --short HEAD)
 
 node_modules: package.json yarn.lock
 	yarn
@@ -195,3 +196,7 @@ publish.backend:
 publish.indexer:
 	docker build -f go/cmd/teritori-indexer/Dockerfile . --platform amd64 -t $(INDEXER_DOCKER_IMAGE)
 	docker push $(INDEXER_DOCKER_IMAGE)
+
+publish.p2e-update-leaderboard:
+	docker build -f go/cmd/p2e-update-leaderboard/Dockerfile . --platform amd64 -t $(P2E_DOCKER_IMAGE)
+	docker push $(P2E_DOCKER_IMAGE)
