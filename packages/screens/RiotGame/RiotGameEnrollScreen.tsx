@@ -132,10 +132,15 @@ export const RiotGameEnrollScreen = () => {
 
   // Update staking state
   useEffect(() => {
-    if (!isSquadLoaded || !isLastStakeTimeLoaded || !squadStakingConfig) return;
+    if (
+      !isSquadLoaded ||
+      !isLastStakeTimeLoaded ||
+      !squadStakingConfig?.nft_contract
+    )
+      return;
 
     updateStakingState(currentSquad, lastStakeTime, squadStakingConfig);
-  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig]);
+  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.nft_contract]);
 
   return (
     <GameContentView>

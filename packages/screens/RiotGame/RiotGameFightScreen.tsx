@@ -148,10 +148,15 @@ export const RiotGameFightScreen = () => {
 
   // Start the timer
   useEffect(() => {
-    if (!isSquadLoaded || !squadStakingConfig || !isLastStakeTimeLoaded) return;
+    if (
+      !isSquadLoaded ||
+      !squadStakingConfig?.nft_contract ||
+      !isLastStakeTimeLoaded
+    )
+      return;
 
     startStakingTimer(currentSquad, lastStakeTime, squadStakingConfig);
-  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig]);
+  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.nft_contract]);
 
   return (
     <GameContentView bgImage={defaultSendToFightPNG}>
