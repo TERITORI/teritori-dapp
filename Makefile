@@ -24,6 +24,7 @@ INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-indexer:$(shell git rev-parse -
 BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 PRICES_SERVICE_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-service:$(shell git rev-parse --short HEAD)
 PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell git rev-parse --short HEAD)
+P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse --short HEAD)
 
 node_modules: package.json yarn.lock
 	yarn
@@ -210,3 +211,7 @@ generate.sqlboiler-prices:
 	go install github.com/volatiletech/sqlboiler/v4@latest
 	go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
 	sqlboiler psql
+
+publish.p2e-update-leaderboard:
+	docker build -f go/cmd/p2e-update-leaderboard/Dockerfile . --platform amd64 -t $(P2E_DOCKER_IMAGE)
+	docker push $(P2E_DOCKER_IMAGE)
