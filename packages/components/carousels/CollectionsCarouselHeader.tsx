@@ -38,7 +38,10 @@ const CarouselCollectionItem: React.FC<{
   collection: Collection;
   networkId: string;
 }> = ({ collection, networkId }) => {
-  const navigateToCollection = useNavigateToCollection(collection.id);
+  const navigateToCollection = useNavigateToCollection(
+    collection.id,
+    collection.secondaryDuringMint
+  );
 
   return (
     <View

@@ -62,6 +62,7 @@ message Collection {
   string volume = 8;
   string volume_denom = 9;
   string creator_id = 10;
+  bool secondary_during_mint = 12;
 }
 
 message CollectionStats {
