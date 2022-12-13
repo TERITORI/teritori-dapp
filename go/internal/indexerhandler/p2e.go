@@ -73,17 +73,17 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		return errors.Wrap(err, "failed to unmarshal squadStake execute msg")
 	}
 
-	users := e.Events["wasm.user"]
+	users := e.Events["wasm.p2e_user"]
 	if len(users) == 0 {
 		return errors.New("no user")
 	}
 
-	startTimes := e.Events["wasm.start_time"]
+	startTimes := e.Events["wasm.p2e_start_time"]
 	if len(startTimes) == 0 {
 		return errors.New("no start_time")
 	}
 
-	endTimes := e.Events["wasm.end_time"]
+	endTimes := e.Events["wasm.p2e_end_time"]
 	if len(endTimes) == 0 {
 		return errors.New("no end_time")
 	}
@@ -114,6 +114,16 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 
 	if err := h.db.FirstOrCreate(&squadStaking).Error; err != nil {
 		return errors.Wrap(err, "failed to create squad staking")
+	}
+
+	// Create leaderboard record if does not exist
+	var userScore indexerdb.P2eLeaderboard
+	q2 := &indexerdb.P2eLeaderboard{
+		UserID:       ownerId,
+		CollectionID: theRiotCollectionId,
+	}
+	if err := h.db.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
+		return errors.Wrap(err, "failed to get/create user record for leaderboard")
 	}
 
 	h.logger.Info("squad staked", zap.String("owner-id", string(ownerId)), zap.String("token-ids", strings.Join(tokenIds[:], ",")))

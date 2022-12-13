@@ -11,6 +11,7 @@ require (
 	github.com/cosmos/gogoproto v1.4.2
 	github.com/davecgh/go-spew v1.1.1
 	github.com/friendsofgo/errors v0.9.2
+	github.com/go-co-op/gocron v1.18.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/improbable-eng/grpc-web v0.14.1
 	github.com/jackc/pgx/v5 v5.1.1
@@ -144,12 +145,14 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 // indirect
 	github.com/regen-network/cosmos-proto v0.3.1 // indirect
-	github.com/stretchr/testify v1.8.0 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
+	github.com/stretchr/testify v1.8.1 // indirect
 	github.com/tendermint/btcd v0.1.1 // indirect
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15 // indirect
 	github.com/volatiletech/inflect v0.0.1 // indirect
 	github.com/volatiletech/randomize v0.0.1 // indirect
 	github.com/zondax/hid v0.9.0 // indirect
+	golang.org/x/sync v0.0.0-20220923202941-7f9b1623fab7 // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/xerrors v0.0.0-20220411194840-2f41105eb62f // indirect
 )

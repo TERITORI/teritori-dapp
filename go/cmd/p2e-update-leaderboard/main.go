@@ -7,49 +7,14 @@ import (
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/go-co-op/gocron"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
-func main() {
-	fs := flag.NewFlagSet("p2e-update-leaderboard", flag.ContinueOnError)
-	var (
-		snapshot = fs.Bool("snapshot", false, "update the snapshot score, used for calculating changes")
-		dbHost   = fs.String("db-indexer-host", "", "host postgreSQL database")
-		dbPort   = fs.String("db-indexer-port", "", "port for postgreSQL database")
-		dbPass   = fs.String("postgres-password", "", "password for postgreSQL database")
-		dbName   = fs.String("database-name", "", "database name for postgreSQL")
-		dbUser   = fs.String("postgres-user", "", "username for postgreSQL")
-	)
-	if err := ff.Parse(fs, os.Args[1:],
-		ff.WithEnvVars(),
-		ff.WithIgnoreUndefined(true),
-		ff.WithConfigFile(".env"),
-		ff.WithConfigFileParser(ff.EnvParser),
-		ff.WithAllowMissingConfigFile(true),
-	); err != nil {
-		panic(errors.Wrap(err, "failed to parse flags"))
-	}
-
-	// get logger
-	logger, err := zap.NewDevelopment()
-	if err != nil {
-		panic(errors.Wrap(err, "failed to init logger"))
-	}
-
-	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
-		panic(errors.New("missing Database configuration"))
-	}
-
-	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
-		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
-	db, err := indexerdb.NewPostgresDB(dataConnexion)
-
-	if err != nil {
-		panic(errors.Wrap(err, "failed to access db"))
-	}
-
+func updateLeaderboard(db *gorm.DB, logger *zap.Logger) {
 	currentTimestamp := time.Now().Unix()
 
 	// Update Rules:
@@ -85,16 +50,66 @@ func main() {
 		panic(errors.Wrap(updateRankErr, "failed to update rank"))
 	}
 	logger.Info("Update leaderboard rank successfully")
+}
 
-	if *snapshot {
-		snapshotErr := db.Exec(`
-			UPDATE p2e_leaderboards as lb
-			SET snapshot_score = in_progress_score, snapshot_rank = rank
-		`).Error
+func snapshotLeaderboard(db *gorm.DB, logger *zap.Logger) {
+	snapshotErr := db.Exec(`
+		UPDATE p2e_leaderboards as lb
+		SET snapshot_score = in_progress_score, snapshot_rank = rank
+	`).Error
 
-		if snapshotErr != nil {
-			panic(errors.Wrap(snapshotErr, "failed to snapshot"))
-		}
-		logger.Info("Snapshot leaderboard successfully")
+	if snapshotErr != nil {
+		panic(errors.Wrap(snapshotErr, "failed to snapshot"))
 	}
+	logger.Info("Snapshot leaderboard successfully")
+}
+
+func main() {
+	fs := flag.NewFlagSet("p2e-update-leaderboard", flag.ContinueOnError)
+	var (
+		// snapshot = fs.Bool("snapshot", false, "update the snapshot score, used for calculating changes")
+		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
+		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
+		dbPass = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName = fs.String("database-name", "", "database name for postgreSQL")
+		dbUser = fs.String("postgres-user", "", "username for postgreSQL")
+	)
+	if err := ff.Parse(fs, os.Args[1:],
+		ff.WithEnvVars(),
+		ff.WithIgnoreUndefined(true),
+		ff.WithConfigFile(".env"),
+		ff.WithConfigFileParser(ff.EnvParser),
+		ff.WithAllowMissingConfigFile(true),
+	); err != nil {
+		panic(errors.Wrap(err, "failed to parse flags"))
+	}
+
+	// get logger
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		panic(errors.Wrap(err, "failed to init logger"))
+	}
+
+	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
+		panic(errors.New("missing Database configuration"))
+	}
+
+	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
+		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
+	db, err := indexerdb.NewPostgresDB(dataConnexion)
+
+	if err != nil {
+		panic(errors.Wrap(err, "failed to access db"))
+	}
+
+	schedule := gocron.NewScheduler(time.UTC)
+	schedule.Every(1).Hour().Do(func() {
+		updateLeaderboard(db, logger)
+	})
+
+	schedule.Every(1).Day().At("00:00").Do(func() {
+		snapshotLeaderboard(db, logger)
+	})
+
+	schedule.StartBlocking()
 }

@@ -2,10 +2,12 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
+import { ButtonOutline } from "../../../components/buttons/ButtonOutline";
 import { TeritoriDistributorQueryClient } from "../../../contracts-clients/teritori-distributor/TeritoriDistributor.client";
 import { useContractClients } from "../../../hooks/useContractClients";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { p2eBackendClient } from "../../../utils/backend";
+import { yellowDefault } from "../../../utils/style/colors";
 import { spacing } from "../../../utils/style/spacing";
 import {
   PRIZE_POOL,
@@ -13,7 +15,6 @@ import {
   THE_RIOT_COLLECTION_ID,
 } from "../settings";
 import { InfoBox } from "./InfoBox";
-import { SimpleButton } from "./SimpleButton";
 
 type FightStatsSectionProps = {
   containerStyle?: ViewStyle;
@@ -52,12 +53,16 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   const fetchRank = async (address: string | undefined) => {
     if (!address) return setUserRank(0);
 
-    const { userScore } = await p2eBackendClient.FighterScore({
-      collectionId: THE_RIOT_COLLECTION_ID,
-      userId: address,
-    });
+    try {
+      const { userScore } = await p2eBackendClient.FighterScore({
+        collectionId: THE_RIOT_COLLECTION_ID,
+        userId: address,
+      });
 
-    setUserRank(userScore?.rank || 0);
+      setUserRank(userScore?.rank || 0);
+    } catch (e) {
+      console.log("Unable to fetch rank:", e);
+    }
   };
 
   const fetchClaimableAmount = async () => {
@@ -102,11 +107,12 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
         width={120}
       />
 
-      <SimpleButton
+      <ButtonOutline
         disabled={claimableAmount === 0}
-        containerStyle={spacing.ml_1}
-        title="Claim available rewards"
-        size="small"
+        color={yellowDefault}
+        size="M"
+        text="Claim available rewards"
+        style={spacing.ml_1}
       />
     </View>
   );

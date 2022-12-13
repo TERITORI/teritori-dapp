@@ -12,6 +12,7 @@ import Row from "../../components/grid/Row";
 import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { ConfigResponse } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { useBreeding } from "../../hooks/riotGame/useBreeding";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -55,6 +56,7 @@ export const RiotGameBreedingScreen = () => {
     remainingTokens,
     getChildTokenIds,
     getTokenInfo,
+    fetchRemainingTokens,
   } = useBreeding();
 
   const intervalRef = useRef<NodeJS.Timer>();
@@ -78,9 +80,12 @@ export const RiotGameBreedingScreen = () => {
   const fetchNewToken = async (
     currentChildTokenIds: string[],
     owner: string,
-    childContractAddress: string
+    breedingConfig: ConfigResponse
   ) => {
-    const updatedTokens = await getChildTokenIds(owner, childContractAddress);
+    const updatedTokens = await getChildTokenIds(
+      owner,
+      breedingConfig.child_contract_addr
+    );
     const newTokenIds = updatedTokens.filter(
       (id: string) => !(currentChildTokenIds || []).includes(id)
     );
@@ -92,11 +97,15 @@ export const RiotGameBreedingScreen = () => {
     }
 
     intervalRef.current && clearInterval(intervalRef.current);
-    const newTokenInfo = await getTokenInfo(newTokenId, childContractAddress);
+    const newTokenInfo = await getTokenInfo(
+      newTokenId,
+      breedingConfig.child_contract_addr
+    );
 
     setNewTokenInfo(newTokenInfo);
     setIsBreeding(false);
     setIsShowBreedingResultModal(true);
+    fetchRemainingTokens(breedingConfig);
   };
 
   const doBreed = async () => {
@@ -138,7 +147,7 @@ export const RiotGameBreedingScreen = () => {
           fetchNewToken(
             currentChildTokenIds,
             selectedWallet.address,
-            breedingConfig.child_contract_addr
+            breedingConfig
           ),
         2000
       );
@@ -183,6 +192,7 @@ export const RiotGameBreedingScreen = () => {
   return (
     <GameContentView>
       <LoaderFullScreen visible={isBreeding} />
+
       <View
         style={[spacing.mt_5, { alignItems: "center", alignSelf: "center" }]}
       >
@@ -228,7 +238,11 @@ export const RiotGameBreedingScreen = () => {
         </View>
 
         <ButtonOutline
-          disabled={isBreeding || Object.keys(selectedRippers).length !== 2}
+          disabled={
+            isBreeding ||
+            Object.keys(selectedRippers).length !== 2 ||
+            !isLegalChecked
+          }
           onPress={doBreed}
           color={yellowDefault}
           size="M"

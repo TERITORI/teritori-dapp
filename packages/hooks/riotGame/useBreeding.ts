@@ -155,5 +155,6 @@ export const useBreeding = () => {
     getChildTokenIds,
     getTokenInfo,
     getBreedingsLefts,
+    fetchRemainingTokens,
   };
 };

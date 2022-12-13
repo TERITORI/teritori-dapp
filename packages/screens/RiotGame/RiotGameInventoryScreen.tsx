@@ -67,7 +67,7 @@ export const RiotGameInventoryScreen = () => {
           />
         </Col>
 
-        <Col>
+        <Col style={{ minWidth: "500px" }}>
           <Row
             style={{ justifyContent: "space-between", alignItems: "center" }}
           >
@@ -88,7 +88,7 @@ export const RiotGameInventoryScreen = () => {
             renderItem={({ item: ripper }) => {
               return (
                 <TertiaryBox style={spacing.m_1} width={150} height={150}>
-                  <RipperAvatar size={120} source={ripper.imageUri} />
+                  <RipperAvatar size={132} source={ripper.imageUri} />
                 </TertiaryBox>
               );
             }}
