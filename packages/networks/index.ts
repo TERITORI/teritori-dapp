@@ -4,17 +4,16 @@ import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { GasPrice } from "cosmwasm";
 
 import { getKeplr } from "../utils/keplr";
-import { NetworkName } from "./NetworkName";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
+import { osmosisTestnetNetwork } from "./osmosis-testnet";
 import { solanaNetwork } from "./solana";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import { NativeCurrencyInfo, NetworkInfo } from "./types";
-import {osmosisTestnetNetwork} from "./osmosis-testnet";
 export * from "./types";
 
 export const allNetworks: NetworkInfo[] = [
@@ -34,22 +33,22 @@ export const displayedNetworks = () => {
   // ----  Force displaying Testnet networks if dev environment
   if (isTeritoriTestnet()) {
     allNetworks.forEach((networkInfo, index) => {
-      if (networkInfo.displayName === NetworkName.Teritori) {
+      if (networkInfo.displayName === teritoriNetwork.displayName) {
         allNetworks[index].hidden = true;
       }
-      if (networkInfo.displayName === NetworkName.TeritoriTestnet) {
+      if (networkInfo.displayName === teritoriTestnetNetwork.displayName) {
         allNetworks[index].hidden = false;
       }
-      if (networkInfo.displayName === NetworkName.CosmosHub) {
+      if (networkInfo.displayName === cosmosNetwork.displayName) {
         allNetworks[index].hidden = true;
       }
-      if (networkInfo.displayName === NetworkName.CosmosHubTheta) {
+      if (networkInfo.displayName === cosmosThetaNetwork.displayName) {
         allNetworks[index].hidden = false;
       }
-      if (networkInfo.displayName === NetworkName.Osmosis) {
+      if (networkInfo.displayName === osmosisNetwork.displayName) {
         allNetworks[index].hidden = true;
       }
-      if (networkInfo.displayName === NetworkName.OsmosisTestnet) {
+      if (networkInfo.displayName === osmosisTestnetNetwork.displayName) {
         allNetworks[index].hidden = false;
       }
     });
@@ -61,7 +60,10 @@ export const displayedNetworks = () => {
 
 export const isTeritoriTestnet = () => {
   const teritoriNetworkId = process.env.TERITORI_NETWORK_ID || "";
-  return teritoriNetworkId.includes("testnet");
+  //TODO: Unlock that after tests ===> Don't have integred Testnets with Osmosis for now!
+
+  // return teritoriNetworkId.includes("testnet");
+  return false;
 };
 
 export const getCurrency = (

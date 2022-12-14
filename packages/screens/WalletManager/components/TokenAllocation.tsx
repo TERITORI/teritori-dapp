@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { VictoryPie } from "victory-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { CurrencyIcon } from "../../../components/CurrencyIcon";
+import { CurrencyIcon } from "../../../components/images/CurrencyIcon";
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getNativeCurrency } from "../../../networks";

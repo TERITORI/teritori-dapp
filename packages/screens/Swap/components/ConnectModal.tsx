@@ -22,7 +22,7 @@ type ConnectModalProps = {
 
 export const ConnectModal: React.FC<ConnectModalProps> = ({
   visible,
-                                                            onPress,
+  onPress,
   onClose,
 }) => {
   return (

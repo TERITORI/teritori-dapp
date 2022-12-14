@@ -11,12 +11,12 @@ import {
   setSelectedNetworkId,
 } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
-import {neutral17, primaryColor, secondaryColor} from "../utils/style/colors";
+import { neutral17, primaryColor, secondaryColor } from "../utils/style/colors";
 import { fontSemibold12 } from "../utils/style/fonts";
 import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
+import { NetworkIcon } from "./images/NetworkIcon";
 
 export const NetworkSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -79,7 +79,15 @@ export const NetworkSelector: React.FC<{
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <NetworkIcon networkId={networkInfo.id} size={16} />
-                  <BrandText style={[fontSemibold12, { marginLeft: 12 }, selectedNetworkId === networkInfo.id && {color: primaryColor}]}>
+                  <BrandText
+                    style={[
+                      fontSemibold12,
+                      { marginLeft: 12 },
+                      selectedNetworkId === networkInfo.id && {
+                        color: primaryColor,
+                      },
+                    ]}
+                  >
                     {networkInfo.displayName}
                   </BrandText>
                 </View>

@@ -27,13 +27,13 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { CurrencyIcon } from "../CurrencyIcon";
 import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
-import { NetworkIcon } from "../NetworkIcon";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
+import { CurrencyIcon } from "../images/CurrencyIcon";
+import { NetworkIcon } from "../images/NetworkIcon";
 import { SpacerColumn, SpacerRow } from "../spacer";
 import { NFTTransferModal } from "./NFTTransferModal";
 

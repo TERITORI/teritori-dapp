@@ -6,10 +6,10 @@ import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { CurrencyIcon } from "../CurrencyIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { GradientText } from "../gradientText";
+import { CurrencyIcon } from "../images/CurrencyIcon";
 
 // TODO: Dynamic data + props
 

@@ -25,5 +25,5 @@ export const osmosisTestnetNetwork: NetworkInfo = {
     "no-legacy-stdTx",
     "ibc-go",
   ],
-  hidden: true
+  hidden: true,
 };

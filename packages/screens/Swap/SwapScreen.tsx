@@ -1,20 +1,24 @@
-import React, {useEffect, useState} from "react";
-import {StyleSheet, View} from "react-native";
-import {useSelector} from "react-redux";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
-import {BrandText} from "../../components/BrandText";
-import {ScreenContainer} from "../../components/ScreenContainer";
-import {PrimaryButton} from "../../components/buttons/PrimaryButton";
-import {useBalances} from "../../hooks/useBalances";
+import { BrandText } from "../../components/BrandText";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {selectSelectedNetworkId, setSelectedNetworkId} from "../../store/slices/settings";
-import {ScreenFC} from "../../utils/navigation";
-import {Assets} from "../WalletManager/Assets";
-import {ConnectModal} from "./components/ConnectModal";
-import {SwapModal} from "./components/SwapModal";
-import {allNetworks, getNetwork, isTeritoriTestnet} from "../../networks";
-import {NetworkName} from "../../networks/NetworkName";
-import {useAppDispatch} from "../../store/store";
+import { allNetworks, getNetwork, isTeritoriTestnet } from "../../networks";
+import { osmosisNetwork } from "../../networks/osmosis";
+import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
+import {
+  selectSelectedNetworkId,
+  setSelectedNetworkId,
+} from "../../store/slices/settings";
+import { useAppDispatch } from "../../store/store";
+import { ScreenFC } from "../../utils/navigation";
+import { Assets } from "../WalletManager/Assets";
+import { ConnectModal } from "./components/ConnectModal";
+import { SwapModal } from "./components/SwapModal";
 
 export const SwapScreen: ScreenFC<"Swap"> = () => {
   const selectedWallet = useSelectedWallet();
@@ -27,30 +31,40 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   // TODO: display ConnectModal if not connected to Osmosis Network
   const [connectModalVisible, setConnectModalVisible] = useState(false);
 
-  const selectedNetwork = getNetwork(selectedNetworkId)
+  const selectedNetwork = getNetwork(selectedNetworkId);
   if (!selectedNetwork) {
     return null;
   }
 
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
 
-  const osmosisConnected =  selectedNetwork?.displayName === (isTeritoriTestnet() ? NetworkName.OsmosisTestnet : NetworkName.Osmosis)
+  const osmosisConnected =
+    selectedNetwork?.displayName ===
+    (isTeritoriTestnet()
+      ? osmosisTestnetNetwork.displayName
+      : osmosisNetwork.displayName);
 
   ///// OSMOSIS ////////
   // const RPC_ENDPOINT = "https://rpc-osmosis.keplr.app"
   const RPC_ENDPOINT = process.env.PUBLIC_CHAIN_RPC_ENDPOINT || "";
 
   const onPressConnect = () => {
-    const osmosisNetworkId = allNetworks.find(networkInfo => networkInfo.displayName === (isTeritoriTestnet() ? NetworkName.OsmosisTestnet : NetworkName.Osmosis))?.id || ""
-    dispatch(setSelectedNetworkId(osmosisNetworkId))
-    setConnectModalVisible(false)
-  }
+    const osmosisNetworkId =
+      allNetworks.find(
+        (networkInfo) =>
+          networkInfo.displayName ===
+          (isTeritoriTestnet()
+            ? osmosisTestnetNetwork.displayName
+            : osmosisNetwork.displayName)
+      )?.id || "";
+    dispatch(setSelectedNetworkId(osmosisNetworkId));
+    setConnectModalVisible(false);
+  };
 
   useEffect(() => {
     if (osmosisConnected) setConnectModalVisible(false);
     else setConnectModalVisible(true);
   }, [osmosisConnected]);
-
 
   // useEffect(() => {
   //   const effect = async () => {
@@ -106,10 +120,8 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
       </View>
 
       <SwapModal
-        selectedNetwork={selectedNetwork}
         visible={swapModalVisible}
         onClose={() => setSwapModalVisible(false)}
-        balances={balances}
       />
       <ConnectModal
         onPress={onPressConnect}

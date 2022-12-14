@@ -14,7 +14,7 @@ export const NetworkIcon: React.FC<{
   if (!networkIcon) {
     return null;
   }
-  const source = require("../../assets/" + networkIcon).default;
+  const source = require("../../../assets/" + networkIcon).default;
   if (networkIcon.endsWith(".svg")) {
     return <SVG source={source} width={size} height={size} />;
   }

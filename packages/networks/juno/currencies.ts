@@ -1,14 +1,10 @@
+import { NetworkName } from "../NetworkName";
+import { allNativeCurrencies } from "../allNativeCurrencies";
 import { CurrencyInfo } from "../types";
 
-//TODO: set correct values
 export const junoCurrencies: CurrencyInfo[] = [
-  {
-    denom: "x",
-    displayName: "x",
-    decimals: 6,
-    coingeckoId: "x",
-    icon: "icons/networks/juno-circle.svg",
-    kind: "native",
-    color: "#FFFFFF",
-  },
+  allNativeCurrencies.find(
+    (nativeCurrencyInfo) =>
+      nativeCurrencyInfo.sourceNetworkDisplayName === NetworkName.Juno
+  ) as CurrencyInfo,
 ];

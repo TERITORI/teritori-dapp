@@ -1,13 +1,16 @@
 import React, { useRef } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
-import atomCircleSVG from "../../../../assets/icons/networks/cosmos-hub-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { CurrencyIcon } from "../../../components/images/CurrencyIcon";
 import { useDropdowns } from "../../../context/DropdownsProvider";
+import { CurrencyInfo } from "../../../networks";
+import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import {
   neutral17,
   neutralA3,
@@ -16,9 +19,20 @@ import {
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-export const CurrencySelector: React.FC = () => {
-  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
+export const CurrencySelector: React.FC<{
+  currencies: CurrencyInfo[];
+  selectedCurrency?: CurrencyInfo;
+  onChangeCurrency: (currency: CurrencyInfo) => void;
+}> = ({ currencies, selectedCurrency, onChangeCurrency }) => {
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
+    useDropdowns();
   const dropdownRef = useRef<View>(null);
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+
+  const onPressCurrencyItem = (currencyInfo: CurrencyInfo) => {
+    onChangeCurrency(currencyInfo);
+    closeOpenedDropdown();
+  };
 
   return (
     <View ref={dropdownRef}>
@@ -26,11 +40,18 @@ export const CurrencySelector: React.FC = () => {
         onPress={() => onPressDropdownButton(dropdownRef)}
         style={styles.container}
       >
-        <SVG source={atomCircleSVG} height={48} width={48} />
+        <CurrencyIcon
+          size={48}
+          icon={selectedCurrency?.icon}
+          denom={selectedCurrency?.denom || ""}
+          networkId={selectedNetworkId}
+        />
 
         <View style={styles.labelChevronNetwork}>
           <View style={styles.labelChevron}>
-            <BrandText style={styles.label}>ATOM</BrandText>
+            <BrandText style={styles.label}>
+              {selectedCurrency?.displayName}
+            </BrandText>
             <SVG
               source={
                 isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG
@@ -41,22 +62,33 @@ export const CurrencySelector: React.FC = () => {
             />
           </View>
           <BrandText style={[fontSemibold13, styles.network]}>
-            Cosmos Hub
+            {selectedCurrency?.sourceNetworkDisplayName}
           </BrandText>
         </View>
 
         {isDropdownOpen(dropdownRef) && (
           <TertiaryBox
             width={172}
-            style={{ position: "absolute", top: 56 }}
-            mainContainerStyle={{
-              paddingHorizontal: 16,
-              paddingVertical: 16,
-              backgroundColor: neutral17,
-              alignItems: "flex-start",
-            }}
+            style={styles.menuBox}
+            mainContainerStyle={styles.menuBoxMainContainer}
+            noBrokenCorners
           >
-            <BrandText>TODO</BrandText>
+            {currencies.map((currencyInfo) => (
+              <TouchableOpacity
+                onPress={() => onPressCurrencyItem(currencyInfo)}
+                key={currencyInfo.denom}
+                style={styles.menuItem}
+              >
+                <CurrencyIcon
+                  size={48}
+                  denom={currencyInfo.denom}
+                  networkId={selectedNetworkId}
+                />
+                <BrandText style={styles.menuItemLabel}>
+                  {currencyInfo?.displayName}
+                </BrandText>
+              </TouchableOpacity>
+            ))}
           </TertiaryBox>
         )}
       </TouchableOpacity>
@@ -81,5 +113,24 @@ const styles = StyleSheet.create({
   },
   network: {
     color: neutralA3,
+  },
+  menuBox: {
+    position: "absolute",
+    top: 56,
+    left: -17,
+  },
+  menuBoxMainContainer: {
+    paddingHorizontal: layout.padding_x2,
+    paddingTop: layout.padding_x2,
+    backgroundColor: neutral17,
+    alignItems: "flex-start",
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: layout.padding_x2,
+  },
+  menuItemLabel: {
+    marginLeft: layout.padding_x1_5,
   },
 });
