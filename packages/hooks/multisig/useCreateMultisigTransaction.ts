@@ -12,21 +12,19 @@ import {
 import { createTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
 import { DbTransaction } from "../../utils/founaDB/multisig/types";
 import useSelectedWallet from "./../useSelectedWallet";
-import { useTNSMetadata } from "./../useTNSMetadata";
 
 export const useCreateMultisigTransaction = () => {
   // variables
   const { state } = useMultisigContext();
 
   const selectedWallet = useSelectedWallet();
-  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
 
   // req
   const mutation = useMutation(
     async ({
       formData: {
         multisigAddress,
-        receipientAddress,
+        recipientAddress,
         amount,
         gasLimit,
         gasPrice,
@@ -50,7 +48,7 @@ export const useCreateMultisigTransaction = () => {
 
         const msgSend = {
           fromAddress: multisigAddress,
-          toAddress: receipientAddress,
+          toAddress: recipientAddress,
           amount: [
             {
               amount: amountInAtomics,
@@ -83,10 +81,9 @@ export const useCreateMultisigTransaction = () => {
           multisigId,
           type,
           moment().toISOString(),
-          tnsMetadata?.metadata?.tokenId || ""
+          selectedWallet?.address || "",
+          recipientAddress
         );
-
-        console.log("saveRes", saveRes);
 
         const transactionID = saveRes.data.data.createTransaction._id;
 

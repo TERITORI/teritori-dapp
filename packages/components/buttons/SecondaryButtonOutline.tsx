@@ -1,5 +1,12 @@
-import React from "react";
-import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import React, { useCallback, useState } from "react";
+import {
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { SvgProps } from "react-native-svg";
 
 import {
@@ -17,7 +24,7 @@ export const SecondaryButtonOutline: React.FC<{
   size: ButtonsSize;
   text: string;
   width?: number;
-  onPress?: () => void;
+  onPress?: (() => Promise<void>) | (() => void);
   squaresBackgroundColor?: string;
   backgroundColor?: string;
   color?: string;
@@ -27,6 +34,8 @@ export const SecondaryButtonOutline: React.FC<{
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
+  autoLoader?: boolean;
+  isLoading?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -42,7 +51,24 @@ export const SecondaryButtonOutline: React.FC<{
   iconSVG,
   disabled = false,
   fullWidth = false,
+  autoLoader,
+  isLoading,
 }) => {
+  const [isAutoLoading, setIsAutoLoading] = useState(false);
+
+  const handlePress = useCallback(async () => {
+    if (isAutoLoading || !onPress) {
+      return;
+    }
+    setIsAutoLoading(true);
+    try {
+      await onPress();
+    } catch (err) {
+      console.error(err);
+    }
+    setIsAutoLoading(false);
+  }, [onPress, isAutoLoading]);
+
   const boxProps = {
     style,
     disabled,
@@ -53,7 +79,7 @@ export const SecondaryButtonOutline: React.FC<{
 
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={handlePress}
       disabled={disabled}
       style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
     >
@@ -81,7 +107,25 @@ export const SecondaryButtonOutline: React.FC<{
         <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
           {text}
         </BrandText>
+
+        {(autoLoader && isAutoLoading) ||
+          (isLoading && (
+            <View style={[styles.loader, { backgroundColor }]}>
+              <ActivityIndicator color={color} size="small" />
+            </View>
+          ))}
       </TertiaryBox>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
+});

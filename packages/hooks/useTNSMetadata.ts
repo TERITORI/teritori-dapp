@@ -34,7 +34,7 @@ export const useTNSMetadata = (address?: string) => {
 
       return { tokenId: aliasResponse.username, ...nftInfo.extension };
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity, refetchOnWindowFocus: false }
   );
 
   return { loading: isLoading, metadata: data, notFound: isError };

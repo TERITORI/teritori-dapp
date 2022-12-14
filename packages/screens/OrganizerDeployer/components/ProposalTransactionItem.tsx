@@ -1,62 +1,83 @@
-import { MultisigThresholdPubkey } from "@cosmjs/amino";
 import { capitalize } from "lodash";
 import moment from "moment";
-import React, { useMemo } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import React, { useMemo, useState } from "react";
+import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 
 import stakedSVG from "../../../../assets/icons/staked.svg";
 import transferSVG from "../../../../assets/icons/transfer.svg";
 import { BrandText } from "../../../components/BrandText";
+import { useCopyToClipboard } from "../../../components/CopyToClipboard";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
+import { tinyAddress } from "../../../components/WalletSelector";
+import { AnimationFadeIn } from "../../../components/animations";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   MultisigTransactionListType,
   useMultisigHelpers,
 } from "../../../hooks/multisig";
+import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
+import { DbSignature } from "../../../utils/founaDB/multisig/types";
 import {
-  errorColor,
   neutral33,
   neutral55,
   neutral77,
   primaryColor,
   secondaryColor,
-  transparentColor,
 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { MultisigTransactionType } from "../../Multisig/types";
+import { TransactionItemButtons } from "./TransactionItemButtons";
 
-interface ProposalTransactionItemProps extends MultisigTransactionListType {
+export interface ProposalTransactionItemProps
+  extends MultisigTransactionListType {
   btnSquaresBackgroundColor?: string;
-  pubkey?: MultisigThresholdPubkey;
+  isUserMultisig?: boolean;
 }
 
-export const ProposalTransactionItem: React.FC<
-  ProposalTransactionItemProps
-> = ({
-  type,
-  dataJSON,
-  btnSquaresBackgroundColor,
-  createdAt,
-  createdBy,
-  signatures,
-  pubkey,
-}) => {
+export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
+  props
+) => {
   // variables
+  const {
+    type,
+    dataJSON,
+    createdAt,
+    createdBy,
+    signatures,
+    decliners,
+    recipientAddress,
+    multisig,
+  } = props;
+  const tnsMetadata = useTNSMetadata(createdBy);
+  const [currentSignatures, setCurrentSignatures] = useState(signatures.data);
+  const [currentDecliners, setCurrentDecliners] = useState(decliners || []);
   const { coinSimplified } = useMultisigHelpers();
   const fee = coinSimplified(dataJSON.fee.amount[0]);
+  const { copyToClipboard } = useCopyToClipboard();
+
   const amount = coinSimplified(
     type === MultisigTransactionType.STAKE
       ? dataJSON.msgs[0].value.amount
       : dataJSON.msgs[0].value.amount[0]
   );
-  console.log("called");
-
-  const approvedByCount = signatures.length || 0;
-  const approvalRequiredCount = parseInt(pubkey?.value.threshold || "0", 10);
+  const approvedByCount = currentSignatures.length || 0;
+  const approvalRequiredCount = parseInt(
+    JSON.parse(multisig.pubkeyJSON)?.value.threshold || "0",
+    10
+  );
+  const completedPercent =
+    ((approvedByCount > approvalRequiredCount
+      ? approvalRequiredCount
+      : approvedByCount) /
+      approvalRequiredCount) *
+    100;
+  const isCompletelyDeclined =
+    (multisig.userAddresses?.length || 0) -
+      approvedByCount -
+      currentDecliners.length <=
+    approvalRequiredCount - approvedByCount;
 
   const getIcon = useMemo(() => {
     switch (type) {
@@ -68,6 +89,18 @@ export const ProposalTransactionItem: React.FC<
         return stakedSVG;
     }
   }, []);
+
+  // functions
+  const addSignature = (signature: DbSignature) => {
+    setCurrentSignatures((prevState: DbSignature[]) => [
+      ...prevState,
+      signature,
+    ]);
+  };
+
+  const addDecliner = (address: string) => {
+    setCurrentDecliners((prevState) => [...prevState, address]);
+  };
 
   // returns
   return (
@@ -100,17 +133,37 @@ export const ProposalTransactionItem: React.FC<
 
       <View style={styles.section}>
         <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Sending:</BrandText>
+          <BrandText style={styles.normal77}>Sending to:</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.normal}>{amount?.ticker}</BrandText>
+          <Pressable onPress={() => copyToClipboard(recipientAddress || "")}>
+            <BrandText style={styles.normal}>
+              {tinyAddress(recipientAddress, 14)}
+            </BrandText>
+          </Pressable>
         </View>
         <SpacerColumn size={0.75} />
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Created by:</BrandText>
           <SpacerRow size={0.5} />
-          <BrandText style={styles.smallPrimary}>
-            {createdBy ? `@${createdBy}` : "-"}
-          </BrandText>
+          {tnsMetadata.loading ? (
+            <ActivityIndicator size="small" />
+          ) : (
+            <AnimationFadeIn>
+              <Pressable
+                onPress={() =>
+                  copyToClipboard(
+                    tnsMetadata?.metadata?.tokenId || createdBy || ""
+                  )
+                }
+              >
+                <BrandText style={styles.smallPrimary}>
+                  {tnsMetadata?.metadata?.tokenId
+                    ? `@${tnsMetadata?.metadata?.tokenId}`
+                    : tinyAddress(createdBy, 14)}
+                </BrandText>
+              </Pressable>
+            </AnimationFadeIn>
+          )}
         </View>
       </View>
 
@@ -151,28 +204,23 @@ export const ProposalTransactionItem: React.FC<
           <View
             style={[
               styles.loadingInside,
-              { width: `${(approvedByCount / approvalRequiredCount) * 100}%` },
+              {
+                width: `${completedPercent}%`,
+              },
             ]}
           />
         </View>
       </View>
 
-      <View style={styles.end}>
-        <SecondaryButton
-          text="Approve"
-          size="M"
-          squaresBackgroundColor={btnSquaresBackgroundColor}
-        />
-        <SpacerRow size={2} />
-        <SecondaryButtonOutline
-          text="Decline"
-          size="M"
-          squaresBackgroundColor={btnSquaresBackgroundColor}
-          color={errorColor}
-          borderColor={errorColor}
-          backgroundColor={transparentColor}
-        />
-      </View>
+      <TransactionItemButtons
+        {...props}
+        currentDecliners={currentDecliners}
+        currentSignatures={currentSignatures}
+        addSignature={addSignature}
+        addDecliner={addDecliner}
+        isCompletedSignature={completedPercent === 100}
+        isCompletelyDeclined={isCompletelyDeclined}
+      />
     </Pressable>
   );
 };
@@ -192,12 +240,6 @@ const styles = StyleSheet.create({
   rowCenter: {
     flexDirection: "row",
     alignItems: "center",
-  },
-  end: {
-    flexDirection: "row",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-end",
   },
   normal77: StyleSheet.flatten([fontSemibold14, { color: neutral77 }]),
   small77: StyleSheet.flatten([fontSemibold13, { color: neutral77 }]),

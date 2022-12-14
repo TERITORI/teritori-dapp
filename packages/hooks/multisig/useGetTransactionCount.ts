@@ -1,16 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { getTransactionCountByMultisigId } from "../../utils/founaDB/multisig/multisigGraphql";
+import useSelectedWallet from "../useSelectedWallet";
 
 export const useGetTransactionCount = (multisigId: string, types: string[]) => {
   // variables
+  const wallet = useSelectedWallet();
+
+  // request
   const req = useQuery<number[]>(
-    ["fetch-multisig-list", multisigId, types],
+    ["fetch-multisig-list", multisigId, types, wallet?.address],
     async () => {
       const saveRes = await getTransactionCountByMultisigId(multisigId, types);
-      console.log("saveRes", saveRes);
 
-      return saveRes.data.data.getTransactionCountByMultisigId;
+      return (
+        saveRes.data?.data?.getTransactionCountByMultisigId ||
+        types.map(() => 0)
+      );
+    },
+    {
+      refetchOnWindowFocus: false,
     }
   );
 

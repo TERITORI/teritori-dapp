@@ -14,11 +14,19 @@ export type MultisigTransactionDelegateFormType = {
   multisigAddress: string;
   membersAddress: { address: string }[];
 
-  receipientAddress: string;
+  recipientAddress: string;
   amount: string;
   gasLimit: string;
   gasPrice: string;
   memo: string;
+};
+
+export type MultisigType = {
+  _id: string;
+  address: string;
+  pubkeyJSON: string;
+  chainId: string;
+  userAddresses: string[];
 };
 
 export enum MultisigTransactionType {

@@ -43,11 +43,11 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
   const handleCreate = () => {
     toggleTransactionModal();
 
-    if (data?.accountData && formData && data.id) {
+    if (data?.accountData && formData && data.dbData._id) {
       mutate({
         formData: {
           ...formData,
-          multisigId: data.id,
+          multisigId: data.dbData._id,
           type: MultisigTransactionType.TRANSFER,
         },
         accountOnChain: data?.accountData[1],

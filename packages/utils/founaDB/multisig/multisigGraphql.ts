@@ -31,7 +31,9 @@ const createOrFindMultisig = async (multisig: DbAccount) => {
           ) {
             _id
             address
+            pubkeyJSON
             chainId
+            userAddresses
           }
         }
       `,
@@ -57,6 +59,7 @@ const getMultisig = async (address: string, chainId: string) => {
             address
             pubkeyJSON
             chainId
+            userAddresses
           }
         }
       `,
@@ -75,7 +78,8 @@ const createTransaction = async (
   multisigId: string,
   type: MultisigTransactionType,
   createdAt: string,
-  createdBy: string
+  createdBy: string,
+  recipientAddress: string
 ) => {
   return graphqlReq({
     method: "POST",
@@ -88,6 +92,7 @@ const createTransaction = async (
             type: "${type}",
             createdAt: "${createdAt}",
             createdBy: "${createdBy}"
+            recipientAddress: "${recipientAddress}"
           }) {
             _id
           }
@@ -152,11 +157,19 @@ const transactionsByMultisigId = async (
           ) {
             data {
               _id
+              recipientAddress
               dataJSON
               txHash
               type
               createdAt
               createdBy
+              decliners
+              multisig {
+                _id
+                address
+                pubkeyJSON
+                userAddresses
+              }
               signatures {
                 data {
                   address
@@ -192,11 +205,19 @@ const transactionsByUserAddress = async (userAddress: string, size: number) => {
           ) {
             data {
               _id
+              recipientAddress
               dataJSON
               txHash
               type
               createdAt
               createdBy
+              decliners
+              multisig {
+                _id
+                address
+                pubkeyJSON
+                userAddresses
+              }
               signatures {
                 data {
                   address
@@ -294,6 +315,31 @@ const updateTxHash = async (id: string, txHash: string) => {
 };
 
 /**
+ * Updates txHash of transaction on FaunaDB
+ *
+ * @param {string} id Faunadb resource id
+ * @param {string[]} decliners array of decliners address
+ * @return Returns async function that makes a request to the faunadb graphql endpoint
+ */
+const updateTransactionDecliners = async (id: string, decliners: string[]) => {
+  return graphqlReq({
+    method: "POST",
+    data: {
+      query: `
+        mutation {
+          updateTransaction(id: ${id}, data: {decliners: ${JSON.stringify(
+        decliners
+      )}}) {
+            _id
+            decliners
+          }
+        }
+      `,
+    },
+  });
+};
+
+/**
  * Creates signature record in faunadb
  *
  * @param {object} signature an object with bodyBytes (string) and signature set (Uint8 Array)
@@ -320,6 +366,7 @@ const createSignature = async (
             signature
             address
           }
+
         }
       `,
     },
@@ -337,4 +384,5 @@ export {
   multisigsByUserAddress,
   getTransactionCountByMultisigId,
   transactionsByUserAddress,
+  updateTransactionDecliners,
 };

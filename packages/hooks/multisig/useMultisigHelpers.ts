@@ -14,7 +14,7 @@ export const useMultisigHelpers = () => {
     }
     const client = await StargateClient.connect(state?.chain?.nodeAddress);
     const accountOnChain = await client.getAccount(address);
-    console.log(accountOnChain);
+
     if (!accountOnChain || !accountOnChain.pubkey) {
       throw new Error(
         "Account has no pubkey on chain, this address will need to send a transaction to appear on chain."

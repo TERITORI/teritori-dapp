@@ -1,0 +1,52 @@
+type Multisig {
+  pubkeyJSON: String!
+  userAddresses: [String!]
+  address: String!
+  chainId: String!
+}
+
+type SourceAddress {
+  nickname: String
+  address: String!
+  pubkey: String!
+  multisig: Multisig @relation
+}
+
+type Transaction {
+  signatures: [Signature] @relation
+  dataJSON: String
+  txHash: String
+  multisig: Multisig! @relation
+  type: String
+  createdAt: String
+  createdBy: String
+  decliners: [String]
+  recipientAddress: String
+}
+
+type Signature {
+  transaction: Transaction! @relation
+  bodyBytes: String!
+  signature: String!
+  address: String!
+}
+
+type Query {
+  getTransactionCountByMultisigId(id: String!, types: [String!]!): [Int]!
+    @resolver(name: "getTransactionCountByMultisigId")
+  getMultisig(address: String!, chainId: String!): Multisig
+  multisigByUserAddress(address: String!): [Multisig!] @resolver
+  transactionsByMultisigId(id: String!, type: String): [Transaction!]
+    @resolver(name: "transactionsByMultisigId", paginated: true)
+  transactionsByUserAddress(address: String!, type: String): [Transaction!]
+    @resolver(name: "transactionsByUserAddress", paginated: true)
+}
+
+type Mutation {
+  createOrFindMultisig(
+    address: String!
+    pubkeyJSON: String!
+    chainId: String!
+    userAddresses: [String!]
+  ): Multisig @resolver
+}

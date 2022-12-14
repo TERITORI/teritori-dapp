@@ -16,6 +16,7 @@ import postJobSVG from "../../../assets/icons/organization/post-job.svg";
 import profileSVG from "../../../assets/icons/organization/profile.svg";
 import searchSVG from "../../../assets/icons/organization/search.svg";
 import { BrandText } from "../../components/BrandText";
+import { EmptyList } from "../../components/EmptyList";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { tinyAddress } from "../../components/WalletSelector";
@@ -40,6 +41,7 @@ export const MultisigScreen = () => {
   // variables
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
+
   const {
     data,
     isLoading: isMultisigLoading,
@@ -69,7 +71,6 @@ export const MultisigScreen = () => {
   const ListFooter = useCallback(
     () => (
       <>
-        <SpacerColumn size={6} />
         {(isTransactionsLoading || isTransactionsFetching) && (
           <>
             <ActivityIndicator color={secondaryColor} />
@@ -206,7 +207,7 @@ export const MultisigScreen = () => {
               data={list}
               renderItem={({ item, index }) => (
                 <AnimationFadeIn delay={index * 50}>
-                  <ProposalTransactionItem {...item} />
+                  <ProposalTransactionItem {...item} isUserMultisig />
                 </AnimationFadeIn>
               )}
               initialNumToRender={RESULT_SIZE}
@@ -214,6 +215,10 @@ export const MultisigScreen = () => {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.transactionListContent}
               ListFooterComponent={ListFooter}
+              extraData={selectedWallet?.address}
+              ListEmptyComponent={() =>
+                isTransactionsLoading ? null : <EmptyList text="No proposals" />
+              }
             />
           </View>
         </View>
@@ -248,7 +253,6 @@ const styles = StyleSheet.create({
     width: 135,
   },
   transactionListContent: {
-    paddingBottom: layout.contentPadding,
     marginTop: layout.padding_x2_5,
   },
 });

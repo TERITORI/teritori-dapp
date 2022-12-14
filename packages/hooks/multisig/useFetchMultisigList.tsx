@@ -16,7 +16,6 @@ export const useFetchMultisigList = (userAddress: string) => {
     ["fetch-multisig-list", userAddress],
     async () => {
       const saveRes = await multisigsByUserAddress(userAddress);
-      console.log("saveRes", saveRes);
 
       return saveRes.data.data.multisigByUserAddress;
     }

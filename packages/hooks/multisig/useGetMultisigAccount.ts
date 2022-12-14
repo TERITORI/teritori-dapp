@@ -1,24 +1,26 @@
 import {
   MultisigThresholdPubkey,
-  isMultisigThresholdPubkey,
   Coin,
+  isMultisigThresholdPubkey,
 } from "@cosmjs/amino";
 import { StargateClient, Account } from "@cosmjs/stargate";
-import { assert } from "@cosmjs/utils";
 import { useQuery } from "@tanstack/react-query";
 
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigContext } from "../../context/MultisigReducer";
+import { MultisigType } from "../../screens/Multisig/types";
 import { getMultisig } from "../../utils/founaDB/multisig/multisigGraphql";
 
 export const useGetMultisigAccount = (address: string) => {
   // variables
   const { state } = useMultisigContext();
+  const { setToastError } = useFeedbacks();
 
   //  request
   const request = useQuery<{
     accountData: [MultisigThresholdPubkey, Account | null];
     holdings: Coin;
-    id: string;
+    dbData: MultisigType;
   } | null>(
     ["multisig-account", address],
     async () => {
@@ -31,35 +33,34 @@ export const useGetMultisigAccount = (address: string) => {
       const chainId = await client.getChainId();
       const tempHoldings = await client.getBalance(address, state.chain.denom);
 
-      let pubkey, id;
-      // if (accountOnChain?.pubkey) {
-      //   assert(
-      //     isMultisigThresholdPubkey(accountOnChain.pubkey),
-      //     "Pubkey on chain is not of type MultisigThreshold"
-      //   );
-      //   pubkey = accountOnChain.pubkey;
-      // } else {
-      //   console.log("No pubkey on chain for: ", address);
+      if (
+        accountOnChain?.pubkey &&
+        !isMultisigThresholdPubkey(accountOnChain.pubkey)
+      ) {
+        setToastError({
+          title: "Something went wrong!",
+          message: "Pubkey on chain is not of type MultisigThreshold",
+        });
+        return null;
+      }
 
       const res = await getMultisig(address, chainId);
-      console.log("res", res);
-      console.log("data", res.data.data.getMultisig);
-      console.log("id", res.data.data.getMultisig._id);
 
       if (!res.data.data.getMultisig) {
-        throw new Error(
-          "Multisig has no pubkey on node, and was not created using this tool."
-        );
+        setToastError({
+          title: "Something went wrong!",
+          message:
+            "Multisig has no pubkey on node, and was not created using this tool.",
+        });
+        return null;
       }
-      pubkey = JSON.parse(res.data.data.getMultisig.pubkeyJSON);
-      id = res.data.data.getMultisig._id;
-
-      // }
+      const pubkey = JSON.parse(res.data.data.getMultisig.pubkeyJSON);
+      const data = res.data.data.getMultisig as MultisigType;
 
       return {
         accountData: [pubkey, accountOnChain],
         holdings: tempHoldings,
-        id,
+        dbData: data,
       };
     },
     {}

@@ -1,13 +1,8 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  Animated,
-  FlatList,
-  StyleSheet,
-  View,
-} from "react-native";
+import React, { useCallback, useMemo, useState } from "react";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
+import { EmptyList } from "../../components/EmptyList";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { AnimationFadeIn } from "../../components/animations";
 import { BackTo } from "../../components/navigation/BackTo";
@@ -17,6 +12,7 @@ import {
   MultisigTransactionListType,
   useFetchMultisigTransactionsById,
   useGetMultisigAccount,
+  useMultisigValidator,
 } from "../../hooks/multisig";
 import { useGetTransactionCount } from "../../hooks/multisig/useGetTransactionCount";
 import { ScreenFC } from "../../utils/navigation";
@@ -36,13 +32,12 @@ export const TransactionProposalScreen: ScreenFC<
     setIsEndReachedCalledDuringMomentum,
   ] = useState(false);
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
-  const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const { data: multisigData } = useGetMultisigAccount(route.params.address);
-  const { data: countList } = useGetTransactionCount(multisigData?.id || "", [
-    "",
-    MultisigTransactionType.TRANSFER,
-    MultisigTransactionType.STAKE,
-  ]);
+  const { data: countList } = useGetTransactionCount(
+    multisigData?.dbData._id || "",
+    ["", MultisigTransactionType.TRANSFER, MultisigTransactionType.STAKE]
+  );
+  const { isUserMultisig } = useMultisigValidator(route.params.address);
 
   const tabs = useMemo(
     () => ({
@@ -67,7 +62,7 @@ export const TransactionProposalScreen: ScreenFC<
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
     useFetchMultisigTransactionsById(
-      multisigData?.id || "",
+      multisigData?.dbData._id || "",
       tabs[selectedTab].value,
       RESULT_SIZE
     );
@@ -112,7 +107,6 @@ export const TransactionProposalScreen: ScreenFC<
       noMargin
       fullWidth
       noScroll
-      headerStyle={{ zIndex: 1000 }}
     >
       <View style={styles.header}>
         <BrandText style={fontSemibold28}>Transaction proposals</BrandText>
@@ -128,18 +122,12 @@ export const TransactionProposalScreen: ScreenFC<
         />
       </View>
       <FlatList
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-          {
-            useNativeDriver: true,
-          }
-        )}
         data={list}
         renderItem={({ item, index }) => (
           <AnimationFadeIn delay={index * 50}>
             <ProposalTransactionItem
-              pubkey={multisigData?.accountData[0]}
               {...item}
+              isUserMultisig={isUserMultisig}
             />
           </AnimationFadeIn>
         )}
@@ -151,6 +139,9 @@ export const TransactionProposalScreen: ScreenFC<
         onEndReached={onEndReach}
         onMomentumScrollBegin={() => setIsEndReachedCalledDuringMomentum(false)}
         onEndReachedThreshold={0.1}
+        ListEmptyComponent={() =>
+          isLoading ? null : <EmptyList text="No proposals" />
+        }
       />
     </ScreenContainer>
   );

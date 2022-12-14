@@ -142,7 +142,7 @@ export const MultisigTranscationDelegateForm: React.FC<
               label=""
               hideLabel
               isAsterickSign
-              name="receipientAddress"
+              name="recipientAddress"
               isDisabled={!membersAddress?.length}
               rules={{
                 required: true,

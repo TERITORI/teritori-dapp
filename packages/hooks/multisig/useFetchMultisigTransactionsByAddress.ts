@@ -12,7 +12,6 @@ export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
     ["multisig-transactions", userAddress],
     async () => {
       const saveRes = await transactionsByUserAddress(userAddress, 5);
-      console.log("saveRes2222", saveRes);
 
       const { after, data } = saveRes.data.data.transactionsByUserAddress;
 
@@ -28,6 +27,7 @@ export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
     },
     {
       getNextPageParam: (lastPage) => lastPage.after,
+      refetchOnWindowFocus: false,
     }
   );
 

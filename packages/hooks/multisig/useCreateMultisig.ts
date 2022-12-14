@@ -32,6 +32,7 @@ export const useCreateMultisig = () => {
           pubkeys,
           threshold
         );
+
         const multisigAddress = pubkeyToAddress(multisigPubkey, addressPrefix);
 
         // save multisig to fauna
@@ -43,7 +44,6 @@ export const useCreateMultisig = () => {
         };
 
         const saveRes = await createOrFindMultisig(multisig);
-        console.log("saveRes", saveRes);
 
         return saveRes.data.data.createOrFindMultisig.address;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
