@@ -2,6 +2,7 @@ package marketplace
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -287,6 +288,18 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			}
 		}
 
+		// map => json string
+		jsonStr, err := json.Marshal(nft.Attributes)
+		if err != nil {
+			return errors.Wrap(err, "failed to convert nft attributes => json string")
+		}
+
+		// json string => struct
+		var attributes []*marketplacepb.Attribute
+		if err := json.Unmarshal(jsonStr, &attributes); err != nil {
+			return errors.Wrap(err, "failed to convert nft json string => struct")
+		}
+
 		if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &marketplacepb.NFT{
 			Id:             nft.ID,
 			Name:           nft.Name,
@@ -298,6 +311,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			Denom:          nft.PriceDenom,
 			TextInsert:     textInsert,
 			OwnerId:        string(nft.OwnerID),
+			Attributes:     attributes,
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send nft")
 		}
