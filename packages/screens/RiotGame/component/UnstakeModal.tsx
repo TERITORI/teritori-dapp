@@ -24,13 +24,13 @@ import {
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
 import { THE_RIOT_COLLECTION_ID } from "../settings";
 
-type ClaimModalProps = {
+type UnstakeModalProps = {
   visible?: boolean;
   onClose?(): void;
   currentSquad?: GetSquadResponse;
 };
 
-export const ClaimModal: React.FC<ClaimModalProps> = ({
+export const UnstakeModal: React.FC<UnstakeModalProps> = ({
   currentSquad,
   onClose,
   visible = false,

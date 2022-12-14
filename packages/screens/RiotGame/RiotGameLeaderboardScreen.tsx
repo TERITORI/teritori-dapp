@@ -9,10 +9,12 @@ import logoSVG from "../../../assets/logos/logo-white.svg";
 import { LeaderboardResponse, UserScore } from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
+import { tinyAddress } from "../../components/WalletSelector";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import Col from "../../components/grid/Col";
 import Row from "../../components/grid/Row";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { p2eBackendClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
 import {
@@ -25,6 +27,40 @@ import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { spacing } from "../../utils/style/spacing";
 import { GameContentView } from "./component/GameContentView";
 import { THE_RIOT_COLLECTION_ID } from "./settings";
+
+type RankProps = {
+  changes: number;
+};
+type PlayerNameProps = {
+  userId: string;
+};
+
+const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
+  const address = userId.split("-")[1];
+  const tnsMetadata = useTNSMetadata(address);
+
+  const name = tinyAddress(tnsMetadata?.metadata?.tokenId || address || "");
+
+  return <BrandText style={styles.colData}>{name}</BrandText>;
+};
+
+const Rank: React.FC<RankProps> = ({ changes }) => {
+  if (changes === 0) {
+    return <BrandText style={[styles.colData, spacing.ml_3]}>0</BrandText>;
+  }
+
+  const rankColor = changes >= 0 ? additionalGreen : additionalRed;
+  const rankSign = changes >= 0 ? "+" : "-";
+
+  return (
+    <Row style={{ alignItems: "center" }}>
+      <SVG source={changes >= 0 ? volUpSVG : volDownSVG} />
+      <BrandText style={[styles.colData, spacing.ml_1, { color: rankColor }]}>
+        {rankSign} {Math.abs(changes)}
+      </BrandText>
+    </Row>
+  );
+};
 
 export const RiotGameLeaderboardScreen = () => {
   const [userScores, setUserScores] = useState<UserScore[]>([]);
@@ -89,8 +125,6 @@ export const RiotGameLeaderboardScreen = () => {
         keyExtractor={(item, index) => " " + index}
         renderItem={({ item: userScore, index }) => {
           const { xp, hours, rankChanges } = parseUserScoreInfo(userScore);
-          const rankColor = rankChanges >= 0 ? additionalGreen : additionalRed;
-          const rankSign = rankChanges >= 0 ? "+" : "-";
 
           return (
             <Row style={styles.rowItem}>
@@ -100,7 +134,7 @@ export const RiotGameLeaderboardScreen = () => {
                 </BrandText>
               </Col>
               <Col size={5}>
-                <BrandText style={styles.colData}>{userScore.userId}</BrandText>
+                <PlayerName userId={userScore.userId} />
               </Col>
               <Col
                 size={2}
@@ -123,14 +157,7 @@ export const RiotGameLeaderboardScreen = () => {
                 <BrandText style={styles.colData}>{hours} hours</BrandText>
               </Col>
               <Col size={2}>
-                <Row style={{ alignItems: "center" }}>
-                  <SVG source={rankChanges >= 0 ? volUpSVG : volDownSVG} />
-                  <BrandText
-                    style={[styles.colData, spacing.ml_1, { color: rankColor }]}
-                  >
-                    {rankSign} {Math.abs(rankChanges)}
-                  </BrandText>
-                </Row>
+                <Rank changes={rankChanges} />
               </Col>
             </Row>
           );

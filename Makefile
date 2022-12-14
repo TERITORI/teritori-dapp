@@ -140,6 +140,20 @@ $(CONTRACTS_CLIENTS_DIR)/$(DISTRIBUTOR_PACKAGE): node_modules
 		--no-bundle
 	rm -fr $(TOKEN_REPO)
 
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(SQUAD_STAKING_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(SQUAD_STAKING_PACKAGE): node_modules
+	rm -fr $(TOKEN_REPO)
+	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
+	cd $(TOKEN_REPO) && git checkout d3ee332c5dd1ffd3bfefd198cc24cf834ee714b2
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(TOKEN_REPO)/schema/squad-staking \
+		--out $@ \
+		--name $(SQUAD_STAKING_PACKAGE) \
+		--no-bundle
+	rm -fr $(TOKEN_REPO)
+
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE): node_modules
 	rm -fr $(CANDYMACHINE_REPO)

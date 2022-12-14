@@ -113,6 +113,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
         size="M"
         text="Claim available rewards"
         style={spacing.ml_1}
+        noBrokenCorners
       />
     </View>
   );

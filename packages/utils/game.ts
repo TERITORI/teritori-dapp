@@ -27,12 +27,17 @@ import {
 } from "../screens/RiotGame/types";
 import { UserScore } from "./../api/p2e/v1/p2e";
 
+const round = (input: number) => {
+  return Math.floor(100 * input) / 100;
+};
+
 export const parseUserScoreInfo = (userScore: UserScore) => {
   const { inProgressScore, snapshotScore, rank, snapshotRank } = userScore;
 
   // Duration is in seconds
-  const hours = Math.floor((100 * inProgressScore) / 60 / 60) / 100;
-  const xp = hours * DURATION_TO_XP_COEF;
+  const hours = round(inProgressScore / 3600);
+  const xp = round(hours * DURATION_TO_XP_COEF);
+
   const scoreChanges =
     Math.floor(10_000 * ((inProgressScore - snapshotScore) / snapshotScore)) /
     100;

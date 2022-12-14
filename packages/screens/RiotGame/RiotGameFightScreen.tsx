@@ -11,7 +11,8 @@ import {
 import clockSVG from "../../../assets/game/clock.svg";
 import countDownPNG from "../../../assets/game/countdown.png";
 import defaultEnemyPNG from "../../../assets/game/default-enemy.png";
-import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
+import fightBgPNG from "../../../assets/game/fight-bg.png";
+import victoryBgPNG from "../../../assets/game/victory-bg.png";
 import addCircleSFilledVG from "../../../assets/icons/add-circle-filled.svg";
 import unstakeSVG from "../../../assets/icons/unstake.svg";
 import { BrandText } from "../../components/BrandText";
@@ -43,10 +44,10 @@ import {
   fontMedium13,
 } from "../../utils/style/fonts";
 import { spacing } from "../../utils/style/spacing";
-import { ClaimModal } from "./component/ClaimModal";
 import { FightProgressBar } from "./component/FightProgressBar";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
+import { UnstakeModal } from "./component/UnstakeModal";
 
 const ENEMY_AVATAR_SIZE = 150;
 const RIPPER_AVATAR_SIZE = 60;
@@ -101,7 +102,6 @@ export const RiotGameFightScreen = () => {
       setIsUnstaking(true);
 
       await squadWithdraw(squadStakingClient);
-      setCurrentSquad(undefined);
       setIsShowClaimModal(true);
     } catch (e: any) {
       setToastError({
@@ -127,6 +127,7 @@ export const RiotGameFightScreen = () => {
 
   const onCloseClaimModal = () => {
     setIsShowClaimModal(false);
+    setCurrentSquad(undefined);
   };
 
   /*
@@ -159,7 +160,11 @@ export const RiotGameFightScreen = () => {
   }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.nft_contract]);
 
   return (
-    <GameContentView bgImage={defaultSendToFightPNG}>
+    <GameContentView
+      bgImage={
+        stakingState === StakingState.ONGOING ? fightBgPNG : victoryBgPNG
+      }
+    >
       <BrandText style={styles.pageTitle}>
         {PAGE_TITLE_MAP[stakingState]}
       </BrandText>
@@ -325,7 +330,7 @@ export const RiotGameFightScreen = () => {
         )}
       </View>
 
-      <ClaimModal
+      <UnstakeModal
         onClose={onCloseClaimModal}
         currentSquad={currentSquad}
         visible={isShowClaimModal}

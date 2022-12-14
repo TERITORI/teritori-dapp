@@ -48,11 +48,12 @@ func (h *Handler) handleInstantiateBreeding(e *Message, contractAddress string, 
 	// create collection
 	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
-		ID:        collectionId,
-		NetworkId: "teritori", // FIXME: get from networks config
-		Name:      minterInstantiateMsg.ChildNftName,
-		ImageURI:  metadata.ImageURI,
-		MaxSupply: maxSupply,
+		ID:                  collectionId,
+		NetworkId:           "teritori", // FIXME: get from networks config
+		Name:                minterInstantiateMsg.ChildNftName,
+		ImageURI:            metadata.ImageURI,
+		MaxSupply:           maxSupply,
+		SecondaryDuringMint: true,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,

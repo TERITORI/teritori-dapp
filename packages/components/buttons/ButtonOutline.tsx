@@ -24,6 +24,7 @@ export const ButtonOutline: React.FC<{
   disabled?: boolean;
   fullWidth?: boolean;
   color?: string;
+  noBrokenCorners?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -36,6 +37,7 @@ export const ButtonOutline: React.FC<{
   color,
   disabled = false,
   fullWidth = false,
+  noBrokenCorners = false,
 }) => {
   const borderColor = color || primaryColor;
 
@@ -45,6 +47,7 @@ export const ButtonOutline: React.FC<{
     squaresBackgroundColor,
     width,
     fullWidth,
+    noBrokenCorners,
     disabledBorderColor: borderColor,
     brokenCornerWith: disabled ? 0.5 : undefined,
   };
