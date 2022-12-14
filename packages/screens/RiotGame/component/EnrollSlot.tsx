@@ -3,6 +3,7 @@ import { StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
+import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
@@ -14,11 +15,10 @@ import {
   withAlpha,
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
-import { RipperDetail } from "../types";
 
 interface EnrollSlotProps {
   isLeader?: boolean;
-  ripper?: RipperDetail | undefined;
+  ripper?: NFT | undefined;
   onPress?(): void;
 }
 
@@ -40,7 +40,7 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
         }}
       >
         {ripper ? (
-          <Image style={styles.ripperImage} source={{ uri: ripper.imageURL }} />
+          <Image style={styles.ripperImage} source={{ uri: ripper.imageUri }} />
         ) : (
           <SVG
             source={addSVG}

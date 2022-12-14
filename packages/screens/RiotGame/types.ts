@@ -1,9 +1,6 @@
 import { ImageSourcePropType } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { NFT } from "../../api/marketplace/v1/marketplace";
-import { NFTInfo } from "../Marketplace/NFTDetailScreen";
-
 type BlankType = {
   id: number;
   type: "BLANK";
@@ -80,6 +77,3 @@ export type RipperAttribute = {
   trait_type: string;
   value: string;
 };
-
-export type RipperDetail = NFTInfo;
-export type RipperListItem = NFT;

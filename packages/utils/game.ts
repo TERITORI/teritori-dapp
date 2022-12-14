@@ -13,6 +13,7 @@ import nft4 from "../../assets/game/nft-4.png";
 import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
+import { NFT } from "../api/marketplace/v1/marketplace";
 import {
   DURATION_TO_XP_COEF,
   THE_RIOT_BREEDING_CONTRACT_ADDRESS,
@@ -20,8 +21,6 @@ import {
 } from "../screens/RiotGame/settings";
 import {
   GameBgCardItem,
-  RipperDetail,
-  RipperListItem,
   RipperRarity,
   RipperTraitType,
 } from "../screens/RiotGame/types";
@@ -50,11 +49,11 @@ export const durationToXP = (duration: number) => {
   return Math.floor(100 * DURATION_TO_XP_COEF * (duration / 60 / 60)) / 100;
 };
 
-export const getRipperRarity = (ripper: RipperDetail): RipperRarity => {
+export const getRipperRarity = (ripper: NFT): RipperRarity => {
   let rarity: RipperRarity;
 
   const ripperSkin = ripper.attributes.find(
-    (attr) => attr.trait_type === "Skin"
+    (attr) => attr.traitType === "Skin"
   )?.value;
 
   switch (ripperSkin) {
@@ -86,16 +85,15 @@ export const getRipperRarity = (ripper: RipperDetail): RipperRarity => {
     default:
       rarity = "Common";
   }
-
   return rarity;
 };
 
 export const getRipperTraitValue = (
-  ripper: RipperDetail,
+  ripper: NFT,
   traitType: RipperTraitType
 ) => {
   let res: any = ripper?.attributes.find(
-    (attr) => attr.trait_type === traitType
+    (attr) => attr.traitType === traitType
   )?.value;
 
   if (res === undefined || res === "None") {
@@ -107,7 +105,7 @@ export const getRipperTraitValue = (
   return res;
 };
 
-export const getRipperTokenId = (ripperListItem: RipperListItem) =>
+export const getRipperTokenId = (ripperListItem: NFT) =>
   ripperListItem.id.split("-")[2];
 
 export enum StakingState {

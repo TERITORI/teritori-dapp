@@ -4,6 +4,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
 import gameBoxSVG from "../../../../assets/icons/game-box.svg";
+import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
@@ -18,11 +19,10 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium14, fontSemibold13 } from "../../../utils/style/fonts";
 import { spacing } from "../../../utils/style/spacing";
-import { RipperDetail } from "../types";
 
 interface BreedingSlotProps {
   active?: boolean;
-  ripper?: RipperDetail | undefined;
+  ripper?: NFT | undefined;
   breedingsLeft?: number;
   onPress?(): void;
 }
@@ -63,7 +63,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
 
             <Image
               style={styles.ripperImage}
-              source={{ uri: ripper.imageURL }}
+              source={{ uri: ripper.imageUri }}
             />
           </>
         ) : (

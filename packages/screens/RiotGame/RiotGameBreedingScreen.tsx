@@ -29,7 +29,7 @@ import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";
 import { RipperSelectorModal } from "./component/RipperSelectorModal";
-import { RipperDetail } from "./types";
+import { NFT } from "../../api/marketplace/v1/marketplace";
 
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();
@@ -43,7 +43,7 @@ export const RiotGameBreedingScreen = () => {
 
   const [selectedRippers, setSelectedRippers] = useState<{
     [slotId: string]: {
-      ripperDetail: RipperDetail;
+      ripper: NFT;
       breedingsLeft: number;
     };
   }>({});
@@ -62,8 +62,8 @@ export const RiotGameBreedingScreen = () => {
   const intervalRef = useRef<NodeJS.Timer>();
 
   const availableRippers = useMemo(() => {
-    const selectedIds = Object.values(selectedRippers).map(
-      (r) => r.ripperDetail.tokenId
+    const selectedIds = Object.values(selectedRippers).map((r) =>
+      getRipperTokenId(r.ripper)
     );
 
     const res = myAvailableRippers.filter(
@@ -137,8 +137,8 @@ export const RiotGameBreedingScreen = () => {
           breedingConfig.breed_price_denom
         ),
         breedingConfig.breed_duration,
-        selectedRippers[0]?.ripperDetail.tokenId,
-        selectedRippers[1]?.ripperDetail.tokenId,
+        getRipperTokenId(selectedRippers[0]?.ripper),
+        getRipperTokenId(selectedRippers[1]?.ripper),
         breedingConfig.parent_contract_addr
       );
 
@@ -170,14 +170,14 @@ export const RiotGameBreedingScreen = () => {
 
   const selectRipper = (
     slotId: number,
-    ripper: RipperDetail,
+    ripper: NFT,
     breedingsLeft: number
   ) => {
     setSelectedSlot(undefined);
     setSelectedRippers({
       ...selectedRippers,
       [slotId]: {
-        ripperDetail: ripper,
+        ripper,
         breedingsLeft,
       },
     });
@@ -200,13 +200,13 @@ export const RiotGameBreedingScreen = () => {
 
         <Row style={[spacing.mt_5, { justifyContent: "center" }]}>
           <BreedingSlot
-            ripper={selectedRippers[0]?.ripperDetail}
+            ripper={selectedRippers[0]?.ripper}
             breedingsLeft={selectedRippers[0]?.breedingsLeft}
             onPress={() => openSelectorModal(0)}
           />
           <SpacerRow size={3} />
           <BreedingSlot
-            ripper={selectedRippers[1]?.ripperDetail}
+            ripper={selectedRippers[1]?.ripper}
             breedingsLeft={selectedRippers[1]?.breedingsLeft}
             onPress={() => openSelectorModal(1)}
           />

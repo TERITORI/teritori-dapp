@@ -27,7 +27,7 @@ import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalOld";
 import { SimpleButton } from "./component/SimpleButton";
-import { RipperDetail } from "./types";
+import { NFT } from "../../api/marketplace/v1/marketplace";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
@@ -49,11 +49,11 @@ export const RiotGameEnrollScreen = () => {
     updateStakingState,
   } = useSquadStaking();
   const [selectedSlot, setSelectedSlot] = useState<number>();
-  const [selectedRippers, setSelectedRippers] = useState<RipperDetail[]>([]);
+  const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);
   const [isJoiningFight, setIsJoiningFight] = useState(false);
 
   const availableRippers = useMemo(() => {
-    const selectedIds = selectedRippers.map((r) => r.tokenId);
+    const selectedIds = selectedRippers.map(getRipperTokenId);
     const stakedIds = currentSquad?.token_ids || [];
 
     // excluded rippers already selected
@@ -81,7 +81,7 @@ export const RiotGameEnrollScreen = () => {
     setSelectedSlot(undefined);
   };
 
-  const selectRipper = (slotId: number, ripper: RipperDetail) => {
+  const selectRipper = (slotId: number, ripper: NFT) => {
     setSelectedSlot(undefined);
     setSelectedRippers([...selectedRippers, ripper]);
   };

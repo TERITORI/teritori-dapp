@@ -1,6 +1,7 @@
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
+import { NFT } from "../../api/marketplace/v1/marketplace";
 
 import {
   TeritoriSquadStakingClient,
@@ -10,13 +11,13 @@ import {
   SQUAD_STAKE_COEF,
   THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
 } from "../../screens/RiotGame/settings";
-import { RipperDetail } from "../../screens/RiotGame/types";
 import { defaultExecuteFee } from "../../utils/fee";
 import {
   buildApproveNFTMsg,
   buildStakingMsg,
   getRipperTraitValue,
   StakingState,
+  getRipperTokenId,
 } from "../../utils/game";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
@@ -61,10 +62,10 @@ export const useSquadStaking = () => {
   );
 
   const squadStake = async (
-    selectedRippers: RipperDetail[],
+    selectedRippers: NFT[],
     squadStakingConfig: GetConfigResponse
   ) => {
-    const tokenIds = selectedRippers.map((r) => r.tokenId);
+    const tokenIds = selectedRippers.map(getRipperTokenId);
 
     const client = await getSigningCosmWasmClient();
     const sender = selectedWallet?.address || "";
@@ -124,7 +125,7 @@ export const useSquadStaking = () => {
   };
 
   const estimateStakingDuration = (
-    rippers: RipperDetail[],
+    rippers: NFT[],
     squadStakingConfig: GetConfigResponse
   ) => {
     const bonusMultiplier = squadStakingConfig.bonus_multiplier;
