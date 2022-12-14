@@ -5,7 +5,7 @@ import { junoCurrencies } from "./currencies";
 //TODO: set correct values
 export const junoNetwork: NetworkInfo = {
   id: "juno",
-  chainId: "x",
+  chainId: "juno-1",
   displayName: NetworkName.Juno,
   icon: "icons/networks/juno.svg",
   iconCircle: "icons/networks/juno-circle.svg",

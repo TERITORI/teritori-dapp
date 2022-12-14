@@ -22,7 +22,12 @@ import {
 } from "react-native";
 
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
-import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
+import {
+  neutral22,
+  neutral77,
+  neutralA3,
+  secondaryColor,
+} from "../../utils/style/colors";
 import {
   fontMedium10,
   fontSemibold13,
@@ -40,13 +45,14 @@ export interface TextInputCustomProps<T extends FieldValues>
   placeHolder?: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
+  textInputStyle?: StyleProp<TextStyle>;
   onPressEnter?: () => void;
   currency?: Currency;
   disabled?: boolean;
   regexp?: RegExp;
   width?: number;
   height?: number;
-  variant?: "regular" | "labelOutside";
+  variant?: "regular" | "labelOutside" | "noStyle";
   control?: Control<T>;
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
@@ -61,6 +67,7 @@ export const TextInputCustom = <T extends FieldValues>({
   placeHolder,
   onPressEnter,
   style,
+  textInputStyle,
   regexp,
   children,
   currency,
@@ -144,59 +151,69 @@ export const TextInputCustom = <T extends FieldValues>({
     }
   };
 
-  return (
-    <>
-      {variant === "labelOutside" && (
-        <>
-          <View style={styles.rowEnd}>
-            <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
-              {label}
-            </BrandText>
-            {subtitle && (
-              <BrandText style={fontSemibold13}>{subtitle}</BrandText>
-            )}
-          </View>
-          <SpacerColumn size={1} />
-        </>
-      )}
+  const Input: React.FC = () => {
+    return (
+      <TextInput
+        ref={inputRef}
+        editable={!disabled}
+        placeholder={placeHolder}
+        onChangeText={handleChangeText}
+        onKeyPress={handleKeyPress}
+        placeholderTextColor={neutralA3}
+        value={field.value}
+        style={[styles.textInput, textInputStyle]}
+        {...restProps}
+      />
+    );
+  };
 
-      <TertiaryBox
-        squaresBackgroundColor={squaresBackgroundColor}
-        style={style}
-        mainContainerStyle={styles.mainContainer}
-        width={width}
-        fullWidth={!width}
-        height={height}
-      >
-        <View style={styles.innerContainer}>
-          <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
-            {variant !== "labelOutside" && (
-              <Pressable onPress={() => inputRef.current?.focus()}>
-                <BrandText style={[styles.labelText, fontMedium10, labelStyle]}>
-                  {label}
-                </BrandText>
-                <SpacerColumn size={0.5} />
-              </Pressable>
-            )}
-            <TextInput
-              ref={inputRef}
-              editable={!disabled}
-              placeholder={placeHolder}
-              onChangeText={handleChangeText}
-              onKeyPress={handleKeyPress}
-              placeholderTextColor="#999999"
-              value={field.value}
-              style={styles.textInput}
-              {...restProps}
-            />
-          </View>
+  if (variant === "noStyle") return <Input />;
+  else
+    return (
+      <>
+        {variant === "labelOutside" && (
+          <>
+            <View style={styles.rowEnd}>
+              <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
+                {label}
+              </BrandText>
+              {subtitle && (
+                <BrandText style={fontSemibold13}>{subtitle}</BrandText>
+              )}
+            </View>
+            <SpacerColumn size={1} />
+          </>
+        )}
 
-          <>{children}</>
-        </View>
-      </TertiaryBox>
-      <ErrorText>{error}</ErrorText>
-    </>
-  );
+        <TertiaryBox
+          squaresBackgroundColor={squaresBackgroundColor}
+          style={style}
+          mainContainerStyle={styles.mainContainer}
+          width={width}
+          fullWidth={!width}
+          height={height}
+        >
+          <View style={styles.innerContainer}>
+            <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
+              {variant !== "labelOutside" && (
+                <Pressable onPress={() => inputRef.current?.focus()}>
+                  <BrandText
+                    style={[styles.labelText, fontMedium10, labelStyle]}
+                  >
+                    {label}
+                  </BrandText>
+                  <SpacerColumn size={0.5} />
+                </Pressable>
+              )}
+              <Input />
+            </View>
+
+            <>{children}</>
+          </View>
+        </TertiaryBox>
+        <ErrorText>{error}</ErrorText>
+      </>
+    );
 };
 
 const styles = StyleSheet.create({

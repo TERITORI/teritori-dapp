@@ -12,8 +12,8 @@ import { useCollections } from "../hooks/useCollections";
 import { useNFTs } from "../hooks/useNFTs";
 import { selectSelectedNetworkId } from "../store/slices/settings";
 import { layout } from "../utils/style/layout";
-import { NetworkIcon } from "./NetworkIcon";
 import { Section } from "./Section";
+import { NetworkIcon } from "./images/NetworkIcon";
 import { NFTView } from "./nfts/NFTView";
 
 const gridHalfGutter = 12;

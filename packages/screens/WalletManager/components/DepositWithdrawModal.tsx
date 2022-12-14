@@ -8,11 +8,11 @@ import { StyleSheet, View } from "react-native";
 
 import arrowDivideSVG from "../../../../assets/icons/arrow-divide.svg";
 import { BrandText } from "../../../components/BrandText";
-import { NetworkIcon } from "../../../components/NetworkIcon";
 import { SVG } from "../../../components/SVG";
 import { tinyAddress } from "../../../components/WalletSelector";
 import { MaxButton } from "../../../components/buttons/MaxButton";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { NetworkIcon } from "../../../components/images/NetworkIcon";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";

@@ -1,27 +1,52 @@
-import { currencyOSMOcolor } from "../../utils/style/colors";
+import { NetworkName } from "../NetworkName";
+import { allNativeCurrencies } from "../allNativeCurrencies";
 import { CurrencyInfo } from "../types";
 
 export const osmosisCurrencies: CurrencyInfo[] = [
+  allNativeCurrencies.find(
+    (nativeCurrencyInfo) =>
+      nativeCurrencyInfo.sourceNetworkDisplayName === NetworkName.Osmosis
+  ) as CurrencyInfo,
   {
-    denom: "uosmo",
-    displayName: "OSMO",
-    decimals: 6,
-    coingeckoId: "osmosis",
-    icon: "icons/networks/osmosis-circle.svg",
-    kind: "native",
-    color: currencyOSMOcolor,
+    kind: "ibc",
+    denom:
+      "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+    displayName: "ATOM",
+    sourceNetwork: "cosmoshub",
+    sourceNetworkDisplayName: NetworkName.CosmosHub,
+    sourceDenom: "uatom",
+    sourceChannelPort: "transfer",
+    sourceChannelId: "channel-0",
+    destinationChannelPort: "transfer",
+    destinationChannelId: "channel-141",
+    icon: "icons/networks/cosmos-hub-circle.svg",
   },
   {
     kind: "ibc",
     denom:
-      "ibc/A670D9568B3E399316EEDE40C1181B7AA4BD0695F0B37513CE9B95B977DFC12E",
-    sourceNetwork: "cosmos-hub",
-    sourceDenom: "uatom",
+      "ibc/EB7FB9C8B425F289B63703413327C2051030E848CE4EAAEA2E51199D6D39D3EC",
+    displayName: "TORI",
+    sourceNetwork: "teritori",
+    sourceNetworkDisplayName: NetworkName.Teritori,
+    sourceDenom: "utori",
     sourceChannelPort: "transfer",
-    sourceChannelId: "channel-431",
+    sourceChannelId: "channel-0",
     destinationChannelPort: "transfer",
-    destinationChannelId: "channel-10",
+    destinationChannelId: "channel-431",
+    icon: "icons/networks/teritori-circle.svg",
   },
-
-  //TODO: ibc for teritori
+  {
+    kind: "ibc",
+    denom:
+      "ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED",
+    displayName: "JUNO",
+    sourceNetwork: "juno",
+    sourceNetworkDisplayName: NetworkName.Juno,
+    sourceDenom: "ujuno",
+    sourceChannelPort: "transfer",
+    sourceChannelId: "channel-0",
+    destinationChannelPort: "transfer",
+    destinationChannelId: "channel-42",
+    icon: "icons/networks/juno-circle.svg",
+  },
 ];

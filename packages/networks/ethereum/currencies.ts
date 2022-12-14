@@ -1,14 +1,11 @@
+import { NetworkName } from "../NetworkName";
+import { allNativeCurrencies } from "../allNativeCurrencies";
 import { CurrencyInfo } from "../types";
 
 //TODO: set correct values
 export const ethereumCurrencies: CurrencyInfo[] = [
-  {
-    denom: "x",
-    displayName: "x",
-    decimals: 6,
-    coingeckoId: "x",
-    icon: "icons/networks/ethereum-circle.svg",
-    kind: "native",
-    color: "#FFFFFF",
-  },
+  allNativeCurrencies.find(
+    (nativeCurrencyInfo) =>
+      nativeCurrencyInfo.sourceNetworkDisplayName === NetworkName.Ethereum
+  ) as CurrencyInfo,
 ];

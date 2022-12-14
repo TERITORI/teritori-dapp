@@ -1,16 +1,12 @@
-import { currencyATOMcolor } from "../../utils/style/colors";
+import { NetworkName } from "../NetworkName";
+import { allNativeCurrencies } from "../allNativeCurrencies";
 import { CurrencyInfo } from "../types";
 
 export const cosmosHubCurrencies: CurrencyInfo[] = [
-  {
-    denom: "uatom",
-    displayName: "ATOM",
-    decimals: 6,
-    coingeckoId: "cosmos",
-    icon: "icons/networks/cosmos-hub-circle.svg",
-    kind: "native",
-    color: currencyATOMcolor,
-  },
+  allNativeCurrencies.find(
+    (nativeCurrencyInfo) =>
+      nativeCurrencyInfo.sourceNetworkDisplayName === NetworkName.CosmosHub
+  ) as CurrencyInfo,
 
   //TODO: ibc for teritori and osmosis
 ];

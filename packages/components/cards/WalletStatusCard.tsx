@@ -7,10 +7,10 @@ import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { neutral17, neutral77 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold13 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { NetworkIcon } from "../NetworkIcon";
 import { tinyAddress } from "../WalletSelector";
 import { SuccessBadge } from "../badges/SuccessBadge";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { NetworkIcon } from "../images/NetworkIcon";
 
 export const WalletStatusCard: React.FC = () => {
   const wallet = useSelectedWallet();

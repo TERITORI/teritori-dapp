@@ -27,6 +27,7 @@ export type NativeCurrencyInfo = {
   kind: "native";
   denom: string;
   displayName: string;
+  sourceNetworkDisplayName: NetworkName;
   decimals: number;
   coingeckoId: string;
   icon: string;
@@ -36,12 +37,15 @@ export type NativeCurrencyInfo = {
 export type IBCCurrencyInfo = {
   kind: "ibc";
   denom: string;
+  displayName: string;
   sourceNetwork: string;
+  sourceNetworkDisplayName: NetworkName;
   sourceDenom: string;
   sourceChannelPort: string;
   sourceChannelId: string;
   destinationChannelPort: string;
   destinationChannelId: string;
+  icon: string;
   deprecated?: boolean;
 };
 
