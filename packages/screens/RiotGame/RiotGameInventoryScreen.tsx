@@ -108,6 +108,6 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   overlay: {
-    // opacity: 0.5,
+    opacity: 0.6,
   },
 });
