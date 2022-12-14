@@ -6,13 +6,14 @@ import { fromBase64 } from "cosmwasm";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigContext } from "../../context/MultisigReducer";
-import { updateTxHash } from "../../utils/founaDB/multisig/multisigGraphql";
-import { DbSignature, DbTransaction } from "../../utils/founaDB/multisig/types";
+import { completeTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
+import { DbSignature } from "../../utils/founaDB/multisig/types";
+import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
 
 export const useBrodcastTransaction = () => {
   // variables
   const { state } = useMultisigContext();
-  const { setToastError } = useFeedbacks();
+  const { setToastError, setToastSuccess } = useFeedbacks();
 
   // req
   const mutation = useMutation(
@@ -22,7 +23,7 @@ export const useBrodcastTransaction = () => {
       transactionID,
       pubkey,
     }: {
-      tx: DbTransaction;
+      tx: Pick<MultisigTransactionListType, "sequence" | "fee">;
       currentSignatures: DbSignature[];
       transactionID: string;
       pubkey?: MultisigThresholdPubkey;
@@ -49,7 +50,18 @@ export const useBrodcastTransaction = () => {
           Uint8Array.from(TxRaw.encode(signedTx).finish())
         );
 
-        await updateTxHash(transactionID, result.transactionHash);
+        await completeTransaction(
+          transactionID,
+          result.transactionHash,
+          tx.sequence + 1
+        );
+
+        setToastSuccess({
+          title: "Broadcasted successfully!",
+          message:
+            "We have also removed signatures from all the obsolute transactions so you might need sign those again.",
+          duration: 10000,
+        });
 
         return result.transactionHash;
 

@@ -60,7 +60,7 @@ export const TransactionProposalScreen: ScreenFC<
     [countList]
   );
 
-  const { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
+  const { data, isLoading, isFetching, fetchNextPage, hasNextPage, refetch } =
     useFetchMultisigTransactionsById(
       multisigData?.dbData._id || "",
       tabs[selectedTab].value,
@@ -128,6 +128,7 @@ export const TransactionProposalScreen: ScreenFC<
             <ProposalTransactionItem
               {...item}
               isUserMultisig={isUserMultisig}
+              shouldRetch={() => refetch()}
             />
           </AnimationFadeIn>
         )}

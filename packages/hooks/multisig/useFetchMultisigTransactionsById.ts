@@ -1,25 +1,38 @@
+import { EncodeObject } from "@cosmjs/proto-signing";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { StdFee } from "cosmwasm";
 
 import {
   MultisigTransactionType,
   MultisigType,
 } from "../../screens/Multisig/types";
 import { transactionsByMultisigId } from "../../utils/founaDB/multisig/multisigGraphql";
-import { DbSignature, DbTransaction } from "../../utils/founaDB/multisig/types";
+import { DbSignature } from "../../utils/founaDB/multisig/types";
 import useSelectedWallet from "../useSelectedWallet";
 
-export type MultisigTransactionListType = {
+export interface MultisigTransactionListType {
   _id: string;
-  dataJSON: DbTransaction;
-  signatures: { data: DbSignature[] };
-  txHash: string;
+  signatures?: { data: DbSignature[] };
+  txHash?: string;
   type: MultisigTransactionType;
-  createdBy?: string;
+  createdBy: string;
   createdAt: string;
   recipientAddress: string;
   decliners?: string[];
   multisig: MultisigType;
-};
+  accountNumber: number;
+  sequence: number;
+  chainId: string;
+  msgs: EncodeObject[];
+  fee: StdFee;
+  memo: string;
+}
+
+export interface MultisigTransactionResponseType
+  extends Omit<MultisigTransactionListType, "msgs" | "fee"> {
+  msgs: string;
+  fee: string;
+}
 
 export const useFetchMultisigTransactionsById = (
   multisigId: string,
@@ -48,12 +61,11 @@ export const useFetchMultisigTransactionsById = (
       };
 
       return {
-        data: data.map(
-          (s: MultisigTransactionListType & { dataJSON: string }) => ({
-            ...s,
-            dataJSON: JSON.parse(s.dataJSON),
-          })
-        ),
+        data: data.map((s: MultisigTransactionResponseType) => ({
+          ...s,
+          msgs: JSON.parse(s.msgs),
+          fee: JSON.parse(s.fee),
+        })),
         after,
       };
     },

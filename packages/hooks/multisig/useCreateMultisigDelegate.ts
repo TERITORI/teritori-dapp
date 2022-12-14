@@ -10,7 +10,7 @@ import {
   MultisigTransactionType,
 } from "../../screens/Multisig/types";
 import { createTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
-import { DbTransaction } from "../../utils/founaDB/multisig/types";
+import { DbCreateTransaction } from "../../utils/founaDB/multisig/types";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useCreateMultisigDelegate = () => {
@@ -62,24 +62,20 @@ export const useCreateMultisigDelegate = () => {
 
         assert(accountOnChain, "accountOnChain missing");
 
-        const tx: DbTransaction = {
+        const tx: DbCreateTransaction = {
           accountNumber: accountOnChain.accountNumber,
           sequence: accountOnChain.sequence,
           chainId: state.chain?.chainId || "",
-          msgs: [msg],
-          fee,
+          msgs: JSON.stringify([msg]),
+          fee: JSON.stringify(fee),
           memo,
+          type,
+          createdAt: moment().toISOString(),
+          createdBy: selectedWallet?.address || "",
+          recipientAddress,
         };
 
-        const stringifyData = JSON.stringify(tx);
-        const saveRes = await createTransaction(
-          stringifyData,
-          multisigId,
-          type,
-          moment().toISOString(),
-          selectedWallet?.address || "",
-          recipientAddress
-        );
+        const saveRes = await createTransaction(multisigId, tx);
 
         const transactionID = saveRes.data.data.createTransaction._id;
 

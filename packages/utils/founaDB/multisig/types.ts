@@ -1,19 +1,20 @@
-import { StdFee } from "@cosmjs/amino";
-import { EncodeObject } from "@cosmjs/proto-signing";
-
 export interface DbSignature {
   bodyBytes: string;
   signature: string;
   address: string;
 }
 
-export interface DbTransaction {
+export interface DbCreateTransaction {
+  type: string;
+  recipientAddress: string;
   accountNumber: number;
   sequence: number;
   chainId: string;
-  msgs: EncodeObject[];
-  fee: StdFee;
+  msgs: string;
+  fee: string;
   memo: string;
+  createdBy: string;
+  createdAt: string;
 }
 
 export interface DbAccount {

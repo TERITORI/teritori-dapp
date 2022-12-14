@@ -6,8 +6,9 @@ import { toBase64 } from "cosmwasm";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigContext } from "../../context/MultisigReducer";
 import { createSignature } from "../../utils/founaDB/multisig/multisigGraphql";
-import { DbSignature, DbTransaction } from "../../utils/founaDB/multisig/types";
+import { DbSignature } from "../../utils/founaDB/multisig/types";
 import useSelectedWallet from "../useSelectedWallet";
+import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
 
 export const useApproveTransaction = () => {
   // variables
@@ -23,7 +24,10 @@ export const useApproveTransaction = () => {
       addSignature,
       transactionID,
     }: {
-      tx: DbTransaction;
+      tx: Pick<
+        MultisigTransactionListType,
+        "sequence" | "fee" | "accountNumber" | "msgs" | "memo"
+      >;
       currentSignatures: DbSignature[];
       addSignature: (sinature: DbSignature) => void;
       transactionID: string;

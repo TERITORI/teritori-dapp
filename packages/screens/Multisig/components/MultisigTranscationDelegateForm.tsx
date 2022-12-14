@@ -187,6 +187,7 @@ export const MultisigTranscationDelegateForm: React.FC<
               rules={{ required: true, pattern: patternOnlyNumbers }}
               isDisabled={!membersAddress?.length}
               placeHolder="0"
+              defaultValue="200000"
             />
             <SpacerColumn size={2.5} />
 

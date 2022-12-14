@@ -1,6 +1,6 @@
 import { capitalize } from "lodash";
 import moment from "moment";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 
 import stakedSVG from "../../../../assets/icons/staked.svg";
@@ -34,6 +34,7 @@ export interface ProposalTransactionItemProps
   extends MultisigTransactionListType {
   btnSquaresBackgroundColor?: string;
   isUserMultisig?: boolean;
+  shouldRetch?: () => void;
 }
 
 export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
@@ -42,27 +43,30 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   // variables
   const {
     type,
-    dataJSON,
+    msgs,
     createdAt,
     createdBy,
     signatures,
     decliners,
     recipientAddress,
     multisig,
+    fee,
   } = props;
   const tnsMetadata = useTNSMetadata(createdBy);
-  const [currentSignatures, setCurrentSignatures] = useState(signatures.data);
+  const [currentSignatures, setCurrentSignatures] = useState(
+    signatures?.data || []
+  );
   const [currentDecliners, setCurrentDecliners] = useState(decliners || []);
   const { coinSimplified } = useMultisigHelpers();
-  const fee = coinSimplified(dataJSON.fee.amount[0]);
+  const feeSimple = coinSimplified(fee.amount[0]);
   const { copyToClipboard } = useCopyToClipboard();
 
   const amount = coinSimplified(
     type === MultisigTransactionType.STAKE
-      ? dataJSON.msgs[0].value.amount
-      : dataJSON.msgs[0].value.amount[0]
+      ? msgs[0].value.amount
+      : msgs[0].value.amount[0]
   );
-  const approvedByCount = currentSignatures.length || 0;
+  const approvedByCount = currentSignatures?.length || 0;
   const approvalRequiredCount = parseInt(
     JSON.parse(multisig.pubkeyJSON)?.value.threshold || "0",
     10
@@ -76,7 +80,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   const isCompletelyDeclined =
     (multisig.userAddresses?.length || 0) -
       approvedByCount -
-      currentDecliners.length <=
+      currentDecliners.length <
     approvalRequiredCount - approvedByCount;
 
   const getIcon = useMemo(() => {
@@ -89,6 +93,11 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
         return stakedSVG;
     }
   }, []);
+
+  // hooks
+  useEffect(() => {
+    setCurrentSignatures(signatures?.data || []);
+  }, [signatures?.data]);
 
   // functions
   const addSignature = (signature: DbSignature) => {
@@ -180,7 +189,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
           <BrandText style={styles.normal77}>Network fee:</BrandText>
           <SpacerRow size={0.5} />
           <BrandText style={styles.small77}>
-            {fee?.value} {fee?.ticker}
+            {feeSimple?.value} {feeSimple?.ticker}
           </BrandText>
         </View>
       </View>

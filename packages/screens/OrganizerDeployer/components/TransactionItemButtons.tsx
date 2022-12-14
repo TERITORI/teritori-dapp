@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
 import copySVG from "../../../../assets/icons/copy.svg";
 import { BrandText } from "../../../components/BrandText";
 import { useCopyToClipboard } from "../../../components/CopyToClipboard";
+import { EmptyList } from "../../../components/EmptyList";
 import { SVG } from "../../../components/SVG";
 import { tinyAddress } from "../../../components/WalletSelector";
 import { AnimationFadeIn } from "../../../components/animations";
@@ -42,13 +43,18 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   currentSignatures,
   addSignature,
   addDecliner,
-  dataJSON,
   _id,
   isCompletedSignature,
   txHash,
   isCompletelyDeclined,
   multisig,
   isUserMultisig,
+  fee,
+  accountNumber,
+  msgs,
+  sequence,
+  memo,
+  shouldRetch,
 }) => {
   // variables
   const wallet = useSelectedWallet();
@@ -73,10 +79,23 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     [currentDecliners, isCompletelyDeclined]
   );
 
+  // hooks
+  useEffect(() => {
+    if (resTxHash) {
+      shouldRetch && shouldRetch();
+    }
+  }, [resTxHash]);
+
   // functions
   const onApprove = () =>
     approve({
-      tx: dataJSON,
+      tx: {
+        fee,
+        accountNumber,
+        msgs,
+        sequence,
+        memo,
+      },
       currentSignatures,
       addSignature,
       transactionID: _id,
@@ -91,7 +110,10 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
 
   const onBrodcast = () =>
     broadcast({
-      tx: dataJSON,
+      tx: {
+        fee,
+        sequence,
+      },
       currentSignatures,
       pubkey: JSON.parse(multisig.pubkeyJSON),
       transactionID: _id,
@@ -107,7 +129,11 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   }
 
   if (isUserMultisig === false) {
-    return <View style={styles.container} />;
+    return (
+      <View style={styles.container}>
+        <EmptyList text="Connected wallet address doesn't to match any available multisig user address." />
+      </View>
+    );
   }
 
   if (

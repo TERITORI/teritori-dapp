@@ -1,7 +1,6 @@
 import axios from "axios";
 
-import { MultisigTransactionType } from "../../../screens/Multisig/types";
-import { DbAccount, DbSignature } from "./types";
+import { DbAccount, DbCreateTransaction, DbSignature } from "./types";
 
 // Graphql base request for Faunadb
 const graphqlReq = axios.create({
@@ -74,12 +73,8 @@ const getMultisig = async (address: string, chainId: string) => {
  * @return Returns async function that makes a request to the faunadb graphql endpoint
  */
 const createTransaction = async (
-  transaction: string,
   multisigId: string,
-  type: MultisigTransactionType,
-  createdAt: string,
-  createdBy: string,
-  recipientAddress: string
+  transaction: DbCreateTransaction
 ) => {
   return graphqlReq({
     method: "POST",
@@ -87,44 +82,19 @@ const createTransaction = async (
       query: `
         mutation {
           createTransaction(data: {
-            dataJSON: ${JSON.stringify(transaction)},
+            accountNumber: ${transaction.accountNumber},
+            sequence: ${transaction.sequence},
+            chainId: "${transaction.chainId}",
+            msgs: ${JSON.stringify(transaction.msgs)},
+            fee: ${JSON.stringify(transaction.fee)},
+            memo: "${transaction?.memo || ""}",
             multisig: {connect: ${multisigId}}, 
-            type: "${type}",
-            createdAt: "${createdAt}",
-            createdBy: "${createdBy}"
-            recipientAddress: "${recipientAddress}"
+            type: "${transaction.type}",
+            createdAt: "${transaction.createdAt}",
+            createdBy: "${transaction.createdBy}"
+            recipientAddress: "${transaction.recipientAddress}"
           }) {
             _id
-          }
-        }
-      `,
-    },
-  });
-};
-
-/**
- * Retrieves a transaction from faunadb
- *
- * @param {string} id Faunadb resource id
- * @return Returns async function that makes a request to the faunadb graphql endpoint
- */
-const findTransactionByID = async (id: string) => {
-  return graphqlReq({
-    method: "POST",
-    data: {
-      query: `
-        query {
-          findTransactionByID(id: "${id}") {
-            _id
-            dataJSON
-            txHash
-            signatures {
-              data {
-                address
-                signature
-                bodyBytes
-              }
-            }
           }
         }
       `,
@@ -157,8 +127,13 @@ const transactionsByMultisigId = async (
           ) {
             data {
               _id
+              accountNumber
+              sequence
+              chainId
+              msgs
+              fee
+              memo
               recipientAddress
-              dataJSON
               txHash
               type
               createdAt
@@ -205,8 +180,13 @@ const transactionsByUserAddress = async (userAddress: string, size: number) => {
           ) {
             data {
               _id
+              accountNumber
+              sequence
+              chainId
+              msgs
+              fee
+              memo
               recipientAddress
-              dataJSON
               txHash
               type
               createdAt
@@ -290,15 +270,24 @@ const getTransactionCountByMultisigId = async (
  * @param {string} txHash tx hash returned from broadcasting a tx
  * @return Returns async function that makes a request to the faunadb graphql endpoint
  */
-const updateTxHash = async (id: string, txHash: string) => {
+const completeTransaction = async (
+  id: string,
+  txHash: string,
+  updatedSequence: number
+) => {
   return graphqlReq({
     method: "POST",
     data: {
       query: `
         mutation {
-          updateTransaction(id: ${id}, data: {txHash: "${txHash}"}) {
+          completeTransaction(id: "${id}", txHash: "${txHash}", updatedSequence: ${updatedSequence}) {
             _id
-            dataJSON
+            accountNumber
+            sequence
+            chainId
+            msgs
+            fee
+            memo
             txHash
             signatures {
               data {
@@ -377,8 +366,7 @@ export {
   createOrFindMultisig,
   getMultisig,
   createTransaction,
-  findTransactionByID,
-  updateTxHash,
+  completeTransaction,
   createSignature,
   transactionsByMultisigId,
   multisigsByUserAddress,

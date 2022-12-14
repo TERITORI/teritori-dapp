@@ -13,8 +13,13 @@ type SourceAddress {
 }
 
 type Transaction {
+  accountNumber: Int
+  sequence: Int
+  chainId: String
+  msgs: String
+  fee: String
+  memo: String
   signatures: [Signature] @relation
-  dataJSON: String
   txHash: String
   multisig: Multisig! @relation
   type: String
@@ -49,4 +54,9 @@ type Mutation {
     chainId: String!
     userAddresses: [String!]
   ): Multisig @resolver
+  completeTransaction(
+    id: String!
+    txHash: String!
+    updatedSequence: Int!
+  ): Transaction @resolver
 }
