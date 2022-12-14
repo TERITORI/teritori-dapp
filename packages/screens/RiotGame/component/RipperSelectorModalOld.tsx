@@ -21,7 +21,12 @@ import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
 import { getRipperRarity, getRipperTraitValue } from "../../../utils/game";
-import { neutral00, white, yellowDefault } from "../../../utils/style/colors";
+import {
+  neutral00,
+  white,
+  withAlpha,
+  yellowDefault,
+} from "../../../utils/style/colors";
 import {
   fontMedium32,
   fontMedium48,
@@ -218,8 +223,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: neutral00,
-    marginTop: headerHeight + 80,
+    backgroundColor: withAlpha(neutral00, 0.9),
+    paddingTop: headerHeight + 80,
     borderWidth: 1,
     position: "relative",
   },

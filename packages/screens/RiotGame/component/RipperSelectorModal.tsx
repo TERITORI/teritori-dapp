@@ -23,7 +23,7 @@ import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
 import { getRipperRarity, getRipperTokenId, getRipperTraitValue } from "../../../utils/game";
-import { neutral00, white, yellowDefault } from "../../../utils/style/colors";
+import { neutral00, white, withAlpha, yellowDefault } from "../../../utils/style/colors";
 import {
   fontMedium24,
   fontMedium32,
@@ -236,8 +236,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: neutral00,
-    marginTop: headerHeight,
+    backgroundColor: withAlpha(neutral00, 0.9),
+    paddingTop: headerHeight,
     borderWidth: 1,
   },
   dashedBorder: {
