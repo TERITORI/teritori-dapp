@@ -27,17 +27,18 @@ export const TransactionProposalScreen: ScreenFC<
   "MultisigTransactionProposal"
 > = ({ route }) => {
   // variables
+  const { address, backText } = route.params;
   const [
     isEndReachedCalledDuringMomentum,
     setIsEndReachedCalledDuringMomentum,
   ] = useState(false);
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
-  const { data: multisigData } = useGetMultisigAccount(route.params.address);
+  const { data: multisigData } = useGetMultisigAccount(address);
   const { data: countList } = useGetTransactionCount(
     multisigData?.dbData._id || "",
     ["", MultisigTransactionType.TRANSFER, MultisigTransactionType.STAKE]
   );
-  const { isUserMultisig } = useMultisigValidator(route.params.address);
+  const { isUserMultisig } = useMultisigValidator(address);
 
   const tabs = useMemo(
     () => ({
@@ -102,7 +103,7 @@ export const TransactionProposalScreen: ScreenFC<
   return (
     <ScreenContainer
       isHeaderSmallMargin
-      headerChildren={<BackTo label="Transactions history" />}
+      headerChildren={<BackTo label={backText} />}
       footerChildren={<></>}
       noMargin
       fullWidth

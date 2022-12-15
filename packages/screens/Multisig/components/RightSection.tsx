@@ -14,8 +14,8 @@ export const RightSection = () => {
   // variables
   const navigation = useAppNavigation();
   const {
-    params: { address },
-  } = useRoute<AppRouteType<"MultisigTransfer" | "MultisigDelegate">>();
+    params: { address, name },
+  } = useRoute<AppRouteType<"MultisigLegacy">>();
 
   // returns
   return (
@@ -30,7 +30,9 @@ export const RightSection = () => {
         size="M"
         text="Create Transaction"
         fullWidth
-        onPress={() => navigation.navigate("MultisigTransfer", { address })}
+        onPress={() =>
+          navigation.navigate("MultisigTransfer", { address, backText: name })
+        }
       />
 
       <SpacerColumn size={2.5} />
@@ -38,7 +40,9 @@ export const RightSection = () => {
         size="M"
         text="Create Delegation"
         fullWidth
-        onPress={() => navigation.navigate("MultisigDelegate", { address })}
+        onPress={() =>
+          navigation.navigate("MultisigDelegate", { address, backText: name })
+        }
       />
 
       <SpacerColumn size={2.5} />
@@ -50,7 +54,10 @@ export const RightSection = () => {
         text="Transactions"
         fullWidth
         onPress={() =>
-          navigation.navigate("MultisigTransactionProposal", { address })
+          navigation.navigate("MultisigTransactionProposal", {
+            address,
+            backText: name,
+          })
         }
       />
     </View>

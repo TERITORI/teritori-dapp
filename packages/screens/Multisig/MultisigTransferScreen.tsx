@@ -26,7 +26,7 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
     mutate,
     data: transactionId,
   } = useCreateMultisigTransaction();
-  const { address } = route.params;
+  const { address, backText } = route.params;
   const { data } = useGetMultisigAccount(address);
   const [formData, setFormData] =
     useState<MultisigTransactionDelegateFormType>();
@@ -65,6 +65,7 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
             name: "MultisigTransactionProposal",
             params: {
               address,
+              backText: "Multisig Dashboard",
             },
           },
         ],
@@ -75,7 +76,7 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
   // returns
   return (
     <ScreenContainer
-      headerChildren={<BackTo label="Multisig Legacy" />}
+      headerChildren={<BackTo label={backText || "Multisig Legacy"} />}
       footerChildren={<></>}
       noMargin
       fullWidth

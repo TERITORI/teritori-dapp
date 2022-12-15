@@ -36,11 +36,11 @@ export type RootStackParamList = {
   MultisigCreate: undefined;
   MultisigWalletManage: undefined;
   MultisigWalletTransaction: undefined;
-  MultisigLegacy: { address: string };
-  MultisigTransfer: { address: string };
-  MultisigDelegate: { address: string };
+  MultisigLegacy: { address: string; name?: string };
+  MultisigTransfer: { address: string; backText?: string };
+  MultisigDelegate: { address: string; backText?: string };
 
-  MultisigTransactionProposal: { address: string };
+  MultisigTransactionProposal: { address: string; backText?: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;

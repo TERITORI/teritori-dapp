@@ -172,6 +172,7 @@ export const MultisigScreen = () => {
                     onPress={() =>
                       navigation.navigate("MultisigLegacy", {
                         address: item.address,
+                        name: `Multisig #${index + 1}`,
                       })
                     }
                     subtitle={tinyAddress(item.address, 21)}

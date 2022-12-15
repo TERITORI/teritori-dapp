@@ -23,7 +23,7 @@ import { MultisigLegacyFormType } from "./types";
 export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
   // variables
   const { control } = useForm<MultisigLegacyFormType>();
-  const { address } = route.params;
+  const { address, name } = route.params;
   const { isLoading, data } = useGetMultisigAccount(address);
   const { coinSimplified, participantAddressesFromMultisig } =
     useMultisigHelpers();
@@ -45,7 +45,7 @@ export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
   // returns
   return (
     <ScreenContainer
-      headerChildren={<BackTo label="Multisig Wallet" />}
+      headerChildren={<BackTo label="Multisig Dashboard" />}
       footerChildren={<></>}
       noMargin
       fullWidth
@@ -57,7 +57,9 @@ export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         >
-          <BrandText style={fontSemibold28}>Multisig Legacy Multisig</BrandText>
+          <BrandText style={fontSemibold28}>
+            {name || "Multisig Legacy"}
+          </BrandText>
           <SpacerColumn size={2.5} />
           <MultisigSection title="Multisig Address">
             <MultisigFormInput<MultisigLegacyFormType>
