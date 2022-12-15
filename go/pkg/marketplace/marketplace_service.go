@@ -89,7 +89,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		where := ""
 		switch req.GetMintState() {
 		case marketplacepb.MintState_MINT_STATE_RUNNING:
-			where = "where c.max_supply != -1 and (select count from count_by_collection where collection_id = c.id) != c.max_supply"
+			where = "where c.paused = false and c.max_supply != -1 and (select count from count_by_collection where collection_id = c.id) != c.max_supply"
 		case marketplacepb.MintState_MINT_STATE_ENDED:
 			where = "where c.max_supply = -1 or (select count from count_by_collection where collection_id = c.id) = c.max_supply"
 		}

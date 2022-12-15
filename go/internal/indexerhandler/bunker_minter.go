@@ -166,3 +166,27 @@ func (h *Handler) handleExecuteBunkerUpdateConfig(e *Message, execMsg *wasmtypes
 
 	return nil
 }
+
+func (h *Handler) handleExecuteBunkerPause(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	if err := h.db.
+		Model(&indexerdb.Collection{}).
+		Where("id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
+		UpdateColumn("Paused", true).
+		Error; err != nil {
+		return errors.Wrap(err, "failed to pause bunker")
+	}
+	h.logger.Info("paused bunker")
+	return nil
+}
+
+func (h *Handler) handleExecuteBunkerUnpause(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	if err := h.db.
+		Model(&indexerdb.Collection{}).
+		Where("id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
+		UpdateColumn("Paused", false).
+		Error; err != nil {
+		return errors.Wrap(err, "failed to unpause bunker")
+	}
+	h.logger.Info("unpaused bunker")
+	return nil
+}
