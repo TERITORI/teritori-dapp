@@ -6,6 +6,7 @@ import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
+import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScreen";
 import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScreen";
 import { CollectionActivityScreen } from "../../screens/Marketplace/CollectionActivityScreen";
@@ -106,6 +107,14 @@ export const Navigator: React.FC = () => {
         name="Launchpad"
         component={LaunchpadScreen}
         options={{ header: () => null, title: screenTitle("Launchpad") }}
+      />
+      <Stack.Screen
+        name="LaunchpadApply"
+        component={LaunchpadApplyScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad (Apply)"),
+        }}
       />
       <Stack.Screen
         name="MintCollection"

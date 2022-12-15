@@ -57,6 +57,7 @@ type DBCollectionWithExtra struct {
 	Volume              string
 	MintContractAddress string
 	CreatorAddress      string
+	SecondaryDuringMint bool
 }
 
 func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, srv marketplacepb.MarketplaceService_CollectionsServer) error {
@@ -88,38 +89,45 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		where := ""
 		switch req.GetMintState() {
 		case marketplacepb.MintState_MINT_STATE_RUNNING:
-			where = "where tc.max_supply != -1 and (select count(1) from nfts where nfts.collection_id = tc.id) != tc.max_supply"
+			where = "where c.max_supply != -1 and (select count from count_by_collection where collection_id = c.id) != c.max_supply"
 		case marketplacepb.MintState_MINT_STATE_ENDED:
-			where = "where tc.max_supply = -1 or (select count(1) from nfts where nfts.collection_id = tc.id) = tc.max_supply"
+			where = "where c.max_supply = -1 or (select count from count_by_collection where collection_id = c.id) = c.max_supply"
 		}
 
 		err := s.conf.IndexerDB.Raw(fmt.Sprintf(`
-      with tori_collections as (
-        SELECT c.*, tc.mint_contract_address, tc.creator_address FROM collections AS c
-        INNER join teritori_collections tc on tc.collection_id = c.id
-        WHERE tc.mint_contract_address IN ?
-      ),
-      nft_by_collection as (
-      SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
-        INNER JOIN nfts AS n on tc.id = n.collection_id
-      ),
-      trades_by_collection as (
-        select sum(t.usd_price) volume, nbc.id FROM trades AS t
-        INNER join activities AS a on a.id = t.activity_id 
-        INNER join nft_by_collection nbc on nbc.nft_id = a.nft_id
-        where a.time > ? and a.kind = ?
-        GROUP BY nbc.id
-      )
-      select tc.*, COALESCE((select tbc.volume from trades_by_collection tbc where tbc.id = tc.id), 0) volume 
-      from tori_collections tc
-      %s
-      order by volume desc
-      limit ?
-      offset ?
+		with count_by_collection as (
+			select count(1), collection_id from nfts group by nfts.collection_id
+		),
+		tori_collections as (
+			SELECT c.*, tc.mint_contract_address, tc.creator_address FROM collections AS c
+			INNER join teritori_collections tc on tc.collection_id = c.id
+			%s
+			AND tc.mint_contract_address IN ?
+		),
+			nft_by_collection as (
+			SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
+		INNER JOIN nfts AS n on tc.id = n.collection_id
+		),
+		activities_on_period as (
+			select * from activities a2 where a2."time" > ?
+		),
+		trades_on_period as(
+			select * from trades t2 inner join activities_on_period aop
+			on aop.id = t2.activity_id
+		),
+		trades_by_collection as (
+			select sum(t.usd_price) volume, nbc.id FROM trades_on_period AS t
+			INNER join nft_by_collection nbc on nbc.nft_id = t.nft_id
+			GROUP BY nbc.id
+		)
+		select tc.*, COALESCE((select tbc.volume from trades_by_collection tbc where tbc.id = tc.id), 0) volume 
+			from tori_collections tc
+		order by volume desc
+		limit ?
+		offset ?
     `, where),
 			s.conf.Whitelist,
 			time.Now().AddDate(0, 0, -30),
-			indexerdb.ActivityKindTrade,
 			limit,
 			offset,
 		).Scan(&collections).Error
@@ -129,14 +137,15 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 
 		for _, c := range collections {
 			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &marketplacepb.Collection{
-				Id:             c.ID,
-				CollectionName: c.Name,
-				Verified:       true,
-				ImageUri:       ipfsutil.IPFSURIToURL(c.ImageURI),
-				MintAddress:    c.MintContractAddress,
-				NetworkId:      req.GetNetworkId(),
-				Volume:         c.Volume,
-				CreatorId:      string(indexerdb.TeritoriUserID(c.CreatorAddress)),
+				Id:                  c.ID,
+				CollectionName:      c.Name,
+				Verified:            true,
+				ImageUri:            ipfsutil.IPFSURIToURL(c.ImageURI),
+				MintAddress:         c.MintContractAddress,
+				NetworkId:           req.GetNetworkId(),
+				Volume:              c.Volume,
+				CreatorId:           string(indexerdb.TeritoriUserID(c.CreatorAddress)),
+				SecondaryDuringMint: c.SecondaryDuringMint,
 			}}); err != nil {
 				return errors.Wrap(err, "failed to send collection")
 			}

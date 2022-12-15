@@ -68,6 +68,7 @@ export const NetworkSelector: React.FC<{
             .map((network, index) => {
               return (
                 <TouchableOpacity
+                  disabled={network !== Network.Teritori}
                   style={{
                     marginBottom: 16,
                     opacity: network !== Network.Teritori ? 0.5 : 1,

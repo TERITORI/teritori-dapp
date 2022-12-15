@@ -117,9 +117,13 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         sender,
         mintAddress
       );
-      await minterClient.requestMint({ addr: sender }, "auto", "", [
-        { amount: info.unitPrice, denom: info.priceDenom },
-      ]);
+
+      let funds;
+      if (info.unitPrice !== "0") {
+        funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
+      }
+
+      await minterClient.requestMint({ addr: sender }, "auto", "", funds);
       setMinted(true);
       await sleep(5000);
       setMinted(false);

@@ -40,14 +40,20 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 		maxSupply = -1
 	}
 
+	secondaryDuringMint := false
+	if sdm, ok := minterInstantiateMsg.SecondaryDuringMint.(bool); ok {
+		secondaryDuringMint = sdm
+	}
+
 	// create collection
 	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
-		ID:        collectionId,
-		NetworkId: "teritori", // FIXME: get from networks config
-		Name:      minterInstantiateMsg.NftName,
-		ImageURI:  metadata.ImageURI,
-		MaxSupply: maxSupply,
+		ID:                  collectionId,
+		NetworkId:           "teritori", // FIXME: get from networks config
+		Name:                minterInstantiateMsg.NftName,
+		ImageURI:            metadata.ImageURI,
+		MaxSupply:           maxSupply,
+		SecondaryDuringMint: secondaryDuringMint,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
@@ -127,7 +133,8 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 
 type BunkerUpdateConfigMsg struct {
 	Payload struct {
-		Owner *string `json:"owner"`
+		Owner               *string `json:"owner"`
+		SecondaryDuringMint *bool   `json:"secondary_during_mint"`
 	} `json:"update_config"`
 }
 
@@ -137,15 +144,24 @@ func (h *Handler) handleExecuteBunkerUpdateConfig(e *Message, execMsg *wasmtypes
 		return errors.Wrap(err, "failed to unmarshal tns set_adming_address msg")
 	}
 
+	updates := make(map[string]interface{})
+
 	if msg.Payload.Owner != nil {
+		updates["CreatorAddress"] = *msg.Payload.Owner
+	}
+	if msg.Payload.SecondaryDuringMint != nil {
+		updates["SecondaryDuringMint"] = *msg.Payload.SecondaryDuringMint
+	}
+
+	if len(updates) != 0 {
 		if err := h.db.
 			Model(&indexerdb.TeritoriCollection{}).
 			Where("collection_id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
-			UpdateColumn("CreatorAddress", msg.Payload.Owner).
+			UpdateColumns(updates).
 			Error; err != nil {
 			return errors.Wrap(err, "failed to update bunker creator")
 		}
-		h.logger.Info("updated bunker creator")
+		h.logger.Info("updated bunker config")
 	}
 
 	return nil
