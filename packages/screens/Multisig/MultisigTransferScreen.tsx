@@ -57,8 +57,17 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
 
   const onCompleteCreation = () => {
     if (transactionId) {
-      navigation.navigate("MultisigTransactionProposal", {
-        address,
+      navigation.reset({
+        index: 1,
+        routes: [
+          { name: "Multisig" },
+          {
+            name: "MultisigTransactionProposal",
+            params: {
+              address,
+            },
+          },
+        ],
       });
     }
   };
