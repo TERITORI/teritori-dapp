@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, ImageBackground, FlatList } from "react-native";
+import { StyleSheet, ImageBackground, FlatList, Image } from "react-native";
 
+import avatarPNG from "../../../assets/game/avatar.png";
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
+import badgeSVG from "../../../assets/icons/badge.svg";
 import cryptoLogoSVG from "../../../assets/icons/crypto-logo.svg";
 import volDownSVG from "../../../assets/icons/vol-down.svg";
 import volUpSVG from "../../../assets/icons/vol-up.svg";
@@ -22,6 +24,7 @@ import {
   additionalRed,
   neutral33,
   neutral77,
+  primaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { spacing } from "../../utils/style/spacing";
@@ -41,7 +44,19 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
 
   const name = tinyAddress(tnsMetadata?.metadata?.tokenId || address || "");
 
-  return <BrandText style={styles.colData}>{name}</BrandText>;
+  return (
+    <Row width="auto" alignItems="center">
+      <Image style={{ width: 32, height: 32 }} source={avatarPNG} />
+      <BrandText style={[styles.colData, spacing.ml_1]}>{name}</BrandText>
+      <SVG
+        width={16}
+        height={16}
+        color={primaryColor}
+        source={badgeSVG}
+        style={spacing.ml_1}
+      />
+    </Row>
+  );
 };
 
 const Rank: React.FC<RankProps> = ({ changes }) => {
