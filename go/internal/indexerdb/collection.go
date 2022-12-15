@@ -10,6 +10,7 @@ type Collection struct {
 	ImageURI            string
 	MaxSupply           int
 	SecondaryDuringMint bool
+	Paused              bool
 
 	// "has one" relations
 	TeritoriCollection *TeritoriCollection
