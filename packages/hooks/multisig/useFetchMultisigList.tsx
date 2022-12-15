@@ -1,20 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { MultisigType } from "../../screens/Multisig/types";
 import { multisigsByUserAddress } from "../../utils/founaDB/multisig/multisigGraphql";
-
-type MultisigType = {
-  _id: string;
-  address: string;
-  userAddresses: string[];
-  chainId: string;
-  pubkeyJSON: string;
-};
 
 export const useFetchMultisigList = (userAddress: string) => {
   // variables
   const req = useQuery<Omit<MultisigType, "pubkeyJSON">[]>(
     ["fetch-multisig-list", userAddress],
     async () => {
+      if (!userAddress) {
+        return [];
+      }
       const saveRes = await multisigsByUserAddress(userAddress);
 
       return saveRes.data.data.multisigByUserAddress;

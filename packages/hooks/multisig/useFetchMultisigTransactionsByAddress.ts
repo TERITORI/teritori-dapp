@@ -14,6 +14,9 @@ export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
   }>(
     ["multisig-transactions", userAddress],
     async () => {
+      if (!userAddress) {
+        return { data: [], after: "" };
+      }
       const saveRes = await transactionsByUserAddress(userAddress, 5);
 
       const { after, data } = saveRes.data.data.transactionsByUserAddress;
