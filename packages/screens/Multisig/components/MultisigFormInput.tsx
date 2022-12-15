@@ -50,7 +50,7 @@ export const MultisigFormInput = <T extends FieldValues>({
 
   // returns
   return (
-    <TextInputCustom
+    <TextInputCustom<T>
       variant="noCropBorder"
       mainContainerStyle={
         isDisabled && !isOverrideDisabledBorder ? undefined : styles.borderStyle

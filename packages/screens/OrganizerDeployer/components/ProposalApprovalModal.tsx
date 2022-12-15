@@ -2,10 +2,9 @@ import React from "react";
 import { FlatList, useWindowDimensions } from "react-native";
 
 import GradientModalBase from "../../../components/modals/GradientModalBase";
+import { MultisigTransactionListType } from "../../../hooks/multisig";
 import { neutral17 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import multisigDataTransactions from "../multisig-proposal-transaction.json";
-import { ProposalsTransactionType } from "../types";
 import { ProposalTransactionItem } from "./ProposalTransactionItem";
 
 type ProposalApprovalModalProps = {
@@ -32,10 +31,8 @@ export const ProposalApprovalModal: React.FC<ProposalApprovalModalProps> = ({
       scrollable
     >
       <FlatList
-        data={
-          multisigDataTransactions.slice(0, 2) as ProposalsTransactionType[]
-        }
-        keyExtractor={(item) => item.id.toString()}
+        data={[] as MultisigTransactionListType[]}
+        keyExtractor={(item) => item._id.toString()}
         renderItem={({ item }) => (
           <ProposalTransactionItem
             {...item}

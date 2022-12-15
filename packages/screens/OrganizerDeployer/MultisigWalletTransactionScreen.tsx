@@ -34,7 +34,11 @@ export const MultisigWalletTransactionScreen = () => {
           return (
             <ProposalItem
               {...item}
-              onPress={() => navigation.navigate("TransactionProposal")}
+              onPress={() =>
+                navigation.navigate("MultisigTransactionProposal", {
+                  address: "",
+                })
+              }
             />
           );
 
