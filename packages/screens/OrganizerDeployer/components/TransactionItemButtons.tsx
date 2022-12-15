@@ -11,6 +11,7 @@ import { tinyAddress } from "../../../components/WalletSelector";
 import { AnimationFadeIn } from "../../../components/animations";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
+import { MainConnectWalletButton } from "../../../components/connectWallet/MainConnectWalletButton";
 import { SpacerRow } from "../../../components/spacer";
 import { useApproveTransaction } from "../../../hooks/multisig/useApproveTransaction";
 import { useBrodcastTransaction } from "../../../hooks/multisig/useBrodcastTransaction";
@@ -120,6 +121,10 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     });
 
   // returns
+  if (wallet?.address === undefined) {
+    return <MainConnectWalletButton size="M" />;
+  }
+
   if (isUserMultisig === undefined) {
     return (
       <AnimationFadeIn style={styles.container}>
