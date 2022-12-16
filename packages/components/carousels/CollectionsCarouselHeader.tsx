@@ -37,11 +37,12 @@ const defaultRequest: CollectionsRequest = {
 const CarouselCollectionItem: React.FC<{
   collection: Collection;
   networkId: string;
-}> = ({ collection, networkId }) => {
-  const navigateToCollection = useNavigateToCollection(
-    collection.id,
-    collection.secondaryDuringMint
-  );
+  linkToMint?: boolean;
+}> = ({ collection, networkId, linkToMint }) => {
+  const navigateToCollection = useNavigateToCollection(collection.id, {
+    forceSecondaryDuringMint: collection.secondaryDuringMint,
+    forceLinkToMint: linkToMint,
+  });
 
   return (
     <View
@@ -103,7 +104,8 @@ const CarouselCollectionItem: React.FC<{
 
 export const CollectionsCarouselHeader: React.FC<{
   req?: CollectionsRequest;
-}> = ({ req = defaultRequest }) => {
+  linkToMint?: boolean;
+}> = ({ req = defaultRequest, linkToMint }) => {
   const [collections, fetchMore] = useCollections(req);
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
@@ -142,6 +144,7 @@ export const CollectionsCarouselHeader: React.FC<{
           <CarouselCollectionItem
             collection={item}
             networkId={req?.networkId}
+            linkToMint={linkToMint}
           />
         )}
       />
