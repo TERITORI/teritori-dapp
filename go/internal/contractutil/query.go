@@ -66,7 +66,7 @@ func (a *argumentDecoder) DecodeString(s string) ([]byte, error) {
 }
 
 func QueryWasm(contract string, queryMsg string, chainId string, rpcEndpoint string) []byte {
-	InitConfig()
+	InitConfig("tori")
 
 	clientCtx := GetQueryClientCtx(chainId, rpcEndpoint)
 

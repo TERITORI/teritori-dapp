@@ -4,10 +4,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func InitConfig() sdk.Config {
+func InitConfig(bech32PrefixAccAddr string) sdk.Config {
 	config := sdk.GetConfig()
 
-	Bech32PrefixAccAddr := "tori"
+	Bech32PrefixAccAddr := bech32PrefixAccAddr
 
 	var (
 		Bech32PrefixAccPub   = Bech32PrefixAccAddr + "pub"

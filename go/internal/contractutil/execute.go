@@ -109,7 +109,7 @@ func ExecuteWasm(
 		keyName = KEY_NAME
 	}
 
-	InitConfig()
+	InitConfig("tori")
 
 	msg := GetExecMsg(sender, contract, execMsg, funds)
 	clientCtx := GetExecClientCtx(sender, mnemonic, chainId, keyName, rpcEndpoint)
