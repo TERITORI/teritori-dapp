@@ -7,7 +7,7 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/coingeckoprices"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pricespb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/tmws"
 	"github.com/allegro/bigcache/v3"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -38,8 +38,8 @@ type Config struct {
 	TNSDefaultImageURL   string
 	TendermintClient     *tmws.Client
 	NetworkID            string
-	CoinGeckoPrices      *coingeckoprices.CoinGeckoPrices
 	BlockTimeCache       *bigcache.BigCache
+	PricesClient         pricespb.PricesServiceClient
 }
 
 type Handler struct {
@@ -205,19 +205,27 @@ func (h *Handler) handleExecute(e *Message) error {
 		}
 	case "transfer_nft":
 		if err := h.handleExecuteTransferNFT(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle transfer_nft")
 		}
 	case "update_metadata":
 		if err := h.handleExecuteUpdateTNSMetadata(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle update_metadata")
 		}
 	case "set_admin_address":
 		if err := h.handleExecuteTNSSetAdminAddress(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle set_admin_address")
 		}
 	case "update_config":
 		if err := h.handleExecuteBunkerUpdateConfig(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle update_config")
+		}
+	case "pause":
+		if err := h.handleExecuteBunkerPause(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle pause")
+		}
+	case "unpause":
+		if err := h.handleExecuteBunkerUnpause(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle unpause")
 		}
 	}
 

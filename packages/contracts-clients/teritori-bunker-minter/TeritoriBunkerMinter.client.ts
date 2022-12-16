@@ -86,26 +86,50 @@ export interface TeritoriBunkerMinterInterface extends TeritoriBunkerMinterReadO
   contractAddress: string;
   sender: string;
   updateConfig: ({
+    mintMax,
+    mintStartTime,
     minter,
     nftAddr,
     nftBaseUri,
     nftMaxSupply,
     nftPriceAmount,
-    owner
+    nftSymbol,
+    owner,
+    priceDenom,
+    royaltyPaymentAddress,
+    royaltyPercentage,
+    secondaryDuringMint,
+    whitelistMintMax,
+    whitelistMintPeriod,
+    whitelistMintPriceAmount
   }: {
+    mintMax?: Uint128;
+    mintStartTime?: number;
     minter?: string;
     nftAddr?: Addr;
     nftBaseUri?: string;
     nftMaxSupply?: Uint128;
     nftPriceAmount?: Uint128;
+    nftSymbol?: string;
     owner?: string;
+    priceDenom?: string;
+    royaltyPaymentAddress?: string;
+    royaltyPercentage?: number;
+    secondaryDuringMint?: boolean;
+    whitelistMintMax?: Uint128;
+    whitelistMintPeriod?: number;
+    whitelistMintPriceAmount?: Uint128;
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   whitelist: ({
     addrs
   }: {
     addrs: string[];
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
-  startMint: (fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
+  startMint: ({
+    mintStartTime
+  }: {
+    mintStartTime?: number;
+  }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   requestMint: ({
     addr
   }: {
@@ -145,28 +169,58 @@ export class TeritoriBunkerMinterClient extends TeritoriBunkerMinterQueryClient 
   }
 
   updateConfig = async ({
+    mintMax,
+    mintStartTime,
     minter,
     nftAddr,
     nftBaseUri,
     nftMaxSupply,
     nftPriceAmount,
-    owner
+    nftSymbol,
+    owner,
+    priceDenom,
+    royaltyPaymentAddress,
+    royaltyPercentage,
+    secondaryDuringMint,
+    whitelistMintMax,
+    whitelistMintPeriod,
+    whitelistMintPriceAmount
   }: {
+    mintMax?: Uint128;
+    mintStartTime?: number;
     minter?: string;
     nftAddr?: Addr;
     nftBaseUri?: string;
     nftMaxSupply?: Uint128;
     nftPriceAmount?: Uint128;
+    nftSymbol?: string;
     owner?: string;
+    priceDenom?: string;
+    royaltyPaymentAddress?: string;
+    royaltyPercentage?: number;
+    secondaryDuringMint?: boolean;
+    whitelistMintMax?: Uint128;
+    whitelistMintPeriod?: number;
+    whitelistMintPriceAmount?: Uint128;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       update_config: {
+        mint_max: mintMax,
+        mint_start_time: mintStartTime,
         minter,
         nft_addr: nftAddr,
         nft_base_uri: nftBaseUri,
         nft_max_supply: nftMaxSupply,
         nft_price_amount: nftPriceAmount,
-        owner
+        nft_symbol: nftSymbol,
+        owner,
+        price_denom: priceDenom,
+        royalty_payment_address: royaltyPaymentAddress,
+        royalty_percentage: royaltyPercentage,
+        secondary_during_mint: secondaryDuringMint,
+        whitelist_mint_max: whitelistMintMax,
+        whitelist_mint_period: whitelistMintPeriod,
+        whitelist_mint_price_amount: whitelistMintPriceAmount
       }
     }, fee, memo, funds);
   };
@@ -181,9 +235,15 @@ export class TeritoriBunkerMinterClient extends TeritoriBunkerMinterQueryClient 
       }
     }, fee, memo, funds);
   };
-  startMint = async (fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
+  startMint = async ({
+    mintStartTime
+  }: {
+    mintStartTime?: number;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
-      start_mint: {}
+      start_mint: {
+        mint_start_time: mintStartTime
+      }
     }, fee, memo, funds);
   };
   requestMint = async ({

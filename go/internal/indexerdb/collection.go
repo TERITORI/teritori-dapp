@@ -5,10 +5,12 @@ type Collection struct {
 	// Teritori: tori-<bech32_mint_contract_address>
 	ID string `gorm:"primaryKey"`
 
-	NetworkId string
-	Name      string
-	ImageURI  string
-	MaxSupply int
+	NetworkId           string
+	Name                string
+	ImageURI            string
+	MaxSupply           int
+	SecondaryDuringMint bool
+	Paused              bool
 
 	// "has one" relations
 	TeritoriCollection *TeritoriCollection

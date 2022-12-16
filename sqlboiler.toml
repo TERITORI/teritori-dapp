@@ -1,0 +1,13 @@
+output = "go/pkg/prices_db"
+pkgname = "prices_db"
+wipe = true
+no-tests = true
+add-enum-types = true
+
+[psql]
+dbname = "postgres"
+host = "localhost"
+port = 5433
+user = "postgres"
+pass = "magic"
+sslmode = "disable"

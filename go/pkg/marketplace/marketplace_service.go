@@ -57,6 +57,7 @@ type DBCollectionWithExtra struct {
 	Volume              string
 	MintContractAddress string
 	CreatorAddress      string
+	SecondaryDuringMint bool
 }
 
 func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, srv marketplacepb.MarketplaceService_CollectionsServer) error {
@@ -88,7 +89,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		where := ""
 		switch req.GetMintState() {
 		case marketplacepb.MintState_MINT_STATE_RUNNING:
-			where = "where c.max_supply != -1 and (select count from count_by_collection where collection_id = c.id) != c.max_supply"
+			where = "where c.paused = false and c.max_supply != -1 and (select count from count_by_collection where collection_id = c.id) != c.max_supply"
 		case marketplacepb.MintState_MINT_STATE_ENDED:
 			where = "where c.max_supply = -1 or (select count from count_by_collection where collection_id = c.id) = c.max_supply"
 		}
@@ -136,14 +137,15 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 
 		for _, c := range collections {
 			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &marketplacepb.Collection{
-				Id:             c.ID,
-				CollectionName: c.Name,
-				Verified:       true,
-				ImageUri:       ipfsutil.IPFSURIToURL(c.ImageURI),
-				MintAddress:    c.MintContractAddress,
-				NetworkId:      req.GetNetworkId(),
-				Volume:         c.Volume,
-				CreatorId:      string(indexerdb.TeritoriUserID(c.CreatorAddress)),
+				Id:                  c.ID,
+				CollectionName:      c.Name,
+				Verified:            true,
+				ImageUri:            ipfsutil.IPFSURIToURL(c.ImageURI),
+				MintAddress:         c.MintContractAddress,
+				NetworkId:           req.GetNetworkId(),
+				Volume:              c.Volume,
+				CreatorId:           string(indexerdb.TeritoriUserID(c.CreatorAddress)),
+				SecondaryDuringMint: c.SecondaryDuringMint,
 			}}); err != nil {
 				return errors.Wrap(err, "failed to send collection")
 			}

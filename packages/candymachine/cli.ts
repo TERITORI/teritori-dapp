@@ -125,7 +125,9 @@ const main = async () => {
 
   console.log("⛏  Starting mint");
 
-  const startMintReply = await minterClient.startMint();
+  const startMintReply = await minterClient.startMint({
+    mintStartTime: Date.now(),
+  });
 
   console.log(startMintReply);
 
