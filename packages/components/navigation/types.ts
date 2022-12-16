@@ -16,6 +16,7 @@ export type SidebarRecordType = Record<
     title: string;
     route: keyof PickByValue<RootStackParamList, undefined> | "TNSHome";
     icon: React.FC<SvgProps>;
+    iconSize?: number;
     nested?: Record<string, SidebarType>;
   }
 >;

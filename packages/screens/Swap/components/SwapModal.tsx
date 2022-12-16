@@ -1,6 +1,6 @@
 import { Decimal } from "cosmwasm";
 import React, { useEffect, useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import chevronCircleDown from "../../../../assets/icons/chevron-circle-down.svg";
@@ -12,29 +12,42 @@ import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { useBalances } from "../../../hooks/useBalances";
+import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useSwap } from "../../../hooks/useSwap";
-import { CurrencyInfo, getNativeCurrency, getNetwork } from "../../../networks";
+import {
+  CurrencyInfo,
+  getNativeCurrency,
+  getNetwork,
+  NativeCurrencyInfo,
+} from "../../../networks";
 import { NetworkName } from "../../../networks/NetworkName";
 import { selectSelectedNetworkId } from "../../../store/slices/settings";
+import { Balance } from "../../../utils/coins";
 import {
   neutral77,
   neutralA3,
   primaryColor,
+  secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { SwapFormType } from "../types";
 import { CurrencySelector } from "./CurrencySelector";
 
 type SwapModalProps = {
   onClose: () => void;
   visible: boolean;
 };
+
+//TODO: Amounts not refreshed (Assets, etc..)
+//TODO: Lost 10 OSMO ===> Need to fix swap params (+ Fee, slippage.. ?)
+//TODO:  fix errors useSwap
+
+// Where to use that ?
+const SWAP_FEE_MULTIPLIER = 0.998; // Fee 0.2 %
 
 export const ModalHeader: React.FC = () => {
   return (
@@ -49,7 +62,6 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const selectedNetwork = getNetwork(selectedNetworkId);
-  // if(!selectedNetworkId || !selectedNetwork || !selectedWallet?.address) return null
 
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
 
@@ -70,17 +82,27 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       ),
     [selectedNetwork?.currencies]
   );
+
+  useEffect(() => {
+    setCurrencyIn(atomCurrency);
+    setCurrencyOut(osmoCurrency);
+  }, [atomCurrency, osmoCurrency]);
+
+  // ---- The two current currencies
   const [currencyIn, setCurrencyIn] = useState<CurrencyInfo | undefined>(
     atomCurrency
   );
   const [currencyOut, setCurrencyOut] = useState<CurrencyInfo | undefined>(
     osmoCurrency
   );
-
-  const [amountIn, setAmountIn] = useState<string>();
-  const [amountOut, setAmountOut] = useState("0");
-
-  const aa = useSwap("0.2452", "0.113", currencyIn, currencyOut);
+  const currencyInNative: NativeCurrencyInfo | undefined = useMemo(
+    () => getNativeCurrency(selectedNetworkId, currencyIn?.denom),
+    [currencyIn?.denom]
+  );
+  const currencyOutNative: NativeCurrencyInfo | undefined = useMemo(
+    () => getNativeCurrency(selectedNetworkId, currencyOut?.denom),
+    [currencyOut?.denom]
+  );
 
   // ---- Displayed and selectable currencies
   const selectableCurrenciesIn = useMemo(
@@ -99,7 +121,6 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       currencyIn?.sourceNetworkDisplayName,
     ]
   );
-
   const selectableCurrenciesOut = useMemo(
     () =>
       selectedNetwork?.currencies.filter(
@@ -117,39 +138,80 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     ]
   );
 
-  const currencyInBalance = useMemo(
+  // ---- The user's amount of the first currency
+  const currencyInBalance: Balance | undefined = useMemo(
     () => balances.find((bal) => bal.denom === currencyIn?.denom),
     [currencyIn?.denom, balances]
   );
+  const currencyInAmount: string = useMemo(() => {
+    if (!currencyInNative || !currencyInBalance) return "0";
+    return Decimal.fromAtomics(
+      currencyInBalance.amount,
+      currencyInNative.decimals
+    ).toString();
+  }, [
+    currencyIn?.denom,
+    currencyInBalance?.amount,
+    currencyInNative?.decimals,
+  ]);
 
-  const currencyOutBalance = useMemo(
-    () => balances.find((bal) => bal.denom === currencyOut?.denom),
-    [currencyOut?.denom, balances]
-  );
+  // ---- Current amounts (The user enters amountIn)
+  const [amountIn, setAmountIn] = useState(0);
 
-  const currencyInAmount = useMemo(
-    () =>
-      Decimal.fromAtomics(
-        currencyInBalance?.amount || "0",
-        getNativeCurrency(selectedNetworkId, currencyIn?.denom)?.decimals || 0
-      ).toString(),
-    [currencyIn?.denom, currencyInBalance?.amount]
-  );
+  const prices = useCoingeckoPrices([
+    { networkId: selectedNetworkId, denom: currencyIn?.denom },
+    { networkId: selectedNetworkId, denom: currencyOut?.denom },
+  ]);
+  // ---- USD price for the first currency
+  const amountInUsd: number = useMemo(() => {
+    if (!currencyInNative || !amountIn || !prices[currencyInNative.coingeckoId])
+      return 0;
+    return amountIn * prices[currencyInNative.coingeckoId].usd;
+  }, [currencyInNative?.coingeckoId, amountIn, prices]);
 
-  //TODO: onChange amountIn : Get swap result
+  // ---- Amount of the second currency depending on the first one's amount TODO: -Fee 0.2% ???
+  const amountOut: number = useMemo(() => {
+    if (!currencyOutNative || !prices[currencyOutNative.coingeckoId]) return 0;
+    return (
+      (amountInUsd * SWAP_FEE_MULTIPLIER) /
+      prices[currencyOutNative.coingeckoId].usd
+    );
+  }, [amountInUsd, currencyOutNative?.coingeckoId, prices]);
 
-  useEffect(() => {}, [amountIn]);
+  // ---- USD price for the second currency
+  const amountOutUsd: number = useMemo(() => {
+    if (
+      !currencyOutNative ||
+      !amountOut ||
+      !prices[currencyOutNative.coingeckoId]
+    )
+      return 0;
+    return amountOut * prices[currencyOutNative.coingeckoId].usd;
+  }, [currencyOutNative?.coingeckoId, amountOut, prices]);
 
+  // ---- Invert button
   const onPressInvert = () => {
     setCurrencyIn(currencyOut);
     setCurrencyOut(currencyIn);
-    // TODO: Recalculate amounts
     setAmountIn(amountOut);
-    setAmountOut(amountIn || "0");
   };
-  const onPressHalf = () => {};
-  const onPressMax = () => {};
+  const onPressHalf = () => {
+    setAmountIn(parseFloat(currencyInAmount) / 2);
+  };
+  const onPressMax = () => {
+    setAmountIn(parseFloat(currencyInAmount));
+  };
 
+  // ---- SWAP OSMOSIS
+  const { swap } = useSwap({
+    amountIn,
+    amountOut,
+    currencyIn,
+    currencyOut,
+    callback: onClose,
+  });
+
+  // ===== RETURN
   return (
     <ModalBase
       Header={ModalHeader}
@@ -190,19 +252,26 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
             />
 
             <View>
-              <TextInputCustom<SwapFormType>
-                name="amountIn"
-                textInputStyle={[styles.amount, fontSemibold20]}
-                labelStyle={{ display: "none" }}
-                label=""
-                placeHolder="0"
-                value={amountIn}
-                onChangeText={setAmountIn}
-                variant="noStyle"
+              {/*<TextInputCustom<SwapFormType>*/}
+              {/*  name="amountIn"*/}
+              {/*  textInputStyle={[styles.amount, fontSemibold20]}*/}
+              {/*  labelStyle={{ display: "none" }}*/}
+              {/*  label=""*/}
+              {/*  placeHolder="0"*/}
+              {/*  value={amountIn ? parseFloat(amountIn.toFixed(5)).toString() : ""}*/}
+              {/*  onChangeText={(text) => setAmountIn(parseFloat(text))}*/}
+              {/*  variant="noStyle"*/}
+              {/*/>*/}
+              <TextInput
+                style={[styles.inputAmount, fontSemibold20]}
+                value={
+                  amountIn ? parseFloat(amountIn.toFixed(6)).toString() : "0"
+                }
+                onChangeText={(text) => setAmountIn(parseFloat(text))}
               />
 
               <BrandText style={[styles.amountUsd, fontSemibold14]}>
-                ≈ ${currencyInBalance?.usdAmount?.toFixed(2) || "0"}
+                ≈ ${parseFloat(amountInUsd.toFixed(2).toString())}
               </BrandText>
             </View>
           </View>
@@ -227,13 +296,14 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
                 style={[
                   styles.amount,
                   fontSemibold20,
-                  amountOut === "0" && { color: neutralA3 },
+                  !amountOut && { color: neutralA3 },
                 ]}
               >
-                ≈ {amountOut}
+                ≈{" "}
+                {!amountOut ? "0" : parseFloat(amountOut.toFixed(6)).toString()}
               </BrandText>
               <BrandText style={[styles.amountUsd, fontSemibold14]}>
-                ≈ ${currencyOutBalance?.usdAmount?.toFixed(2) || "0"}
+                ≈ ${parseFloat(amountOutUsd.toFixed(2).toString())}
               </BrandText>
             </View>
           </View>
@@ -252,7 +322,18 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
 
         <SpacerColumn size={2.5} />
 
-        <PrimaryButton size="XL" text="Swap" fullWidth disabled={!amountIn} />
+        <PrimaryButton
+          size="XL"
+          loader
+          text={
+            amountIn && amountIn > parseFloat(currencyInAmount)
+              ? "Insufficient balance"
+              : "Swap"
+          }
+          fullWidth
+          disabled={!amountIn || amountIn > parseFloat(currencyInAmount)}
+          onPress={swap}
+        />
       </View>
     </ModalBase>
   );
@@ -299,6 +380,12 @@ const styles = StyleSheet.create({
   },
   amountUsd: {
     color: neutralA3,
+    textAlign: "right",
+  },
+  inputAmount: {
+    outlineStyle: "none",
+    color: secondaryColor,
+    maxWidth: 200,
     textAlign: "right",
   },
   amount: {

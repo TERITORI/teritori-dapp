@@ -1,6 +1,7 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { CosmWasmClient, SigningCosmWasmClient } from "cosmwasm";
 
+import { NetworkInfo } from "../networks";
 import { teritoriGasPrice } from "./teritori";
 
 const PUBLIC_RPC_ENDPOINT = process.env.PUBLIC_CHAIN_RPC_ENDPOINT || "";
@@ -18,8 +19,10 @@ export const getKeplr = () => {
   return keplrWindow.keplr;
 };
 
-export const getKeplrOfflineSigner = () => {
-  return getKeplr().getOfflineSignerAuto(PUBLIC_CHAIN_ID);
+export const getKeplrOfflineSigner = (network?: NetworkInfo) => {
+  return getKeplr().getOfflineSignerAuto(
+    network ? network.chainId : PUBLIC_CHAIN_ID
+  );
 };
 
 export const getKeplrAccounts = async () => {
