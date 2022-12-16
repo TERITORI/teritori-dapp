@@ -54,7 +54,7 @@ func sendRewardsList(distributorOwnerAddress string, distributorContractAddress 
 	memo := "Send from back"
 	queryMsg := `{"config": {}}`
 
-	data := contractutil.QueryWasm(sender, contract, queryMsg, chainId, rpcEndpoint)
+	data := contractutil.QueryWasm(contract, queryMsg, chainId, rpcEndpoint)
 
 	configResponse := ConfigResponse{}
 	if err := json.Unmarshal([]byte(data), &configResponse); err != nil {
