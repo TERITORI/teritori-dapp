@@ -1,11 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"time"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/TERITORI/teritori-dapp/go/internal/contractutil"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/go-co-op/gocron"
 	"github.com/peterbourgon/ff/v3"
@@ -13,6 +18,83 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
+
+type ConfigResponse struct {
+	Owner        string `json:"owner"`
+	Denom        string `json:"denom"`
+	LastReportId int32  `json:"last_report_id"`
+}
+
+type Reward struct {
+	Addr   string `json:"addr"`
+	Amount string `json:"amount"`
+}
+
+type AddDailyReport struct {
+	ReportId int32    `json:"report_id"`
+	Rewards  []Reward `json:"rewards"`
+}
+type AddDailyReportQuery struct {
+	AddDailyReport AddDailyReport `json:"add_daily_report"`
+}
+
+func sendRewardsList(distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) {
+	sender := distributorOwnerAddress
+	contract := distributorContractAddress
+	rpcEndpoint := "https://rpc.testnet.teritori.com:443"
+	denom := "utori"
+	amount := int64(1)
+	chainId := "teritori-testnet-v3"
+	keyName := "distributor-owner"
+	mnemonic := "net nut power use vital render else amazing lizard lady ball parrot"
+	fees := ""
+	gasPrices := "0.025utori"
+	gasAdjustment := 1.3
+	funds := sdk.NewCoins(sdk.NewInt64Coin(denom, amount))
+	memo := "Send from back"
+	queryMsg := `{"config": {}}`
+
+	data := contractutil.QueryWasm(sender, contract, queryMsg, chainId, rpcEndpoint)
+
+	configResponse := ConfigResponse{}
+	if err := json.Unmarshal([]byte(data), &configResponse); err != nil {
+		panic(errors.Wrap(err, "fail to parse config response"))
+	}
+	lastReportId := configResponse.LastReportId
+
+	execMsgRaw := AddDailyReportQuery{
+		AddDailyReport: AddDailyReport{
+			ReportId: lastReportId + 1,
+			Rewards: []Reward{
+				Reward{
+					Addr:   "tori19cnu30yq5s52f00xc430ktyjz35nw24jx8zplc",
+					Amount: "1",
+				},
+			},
+		},
+	}
+
+	execMsg, err := json.Marshal(execMsgRaw)
+	if err != nil {
+		panic(errors.Wrap(err, "fail to generate execMsg"))
+	}
+	execMsgStr := string(execMsg)
+
+	contractutil.ExecuteWasm(
+		sender,
+		mnemonic,
+		contract,
+		execMsgStr,
+		funds,
+		chainId,
+		rpcEndpoint,
+		keyName,
+		memo,
+		fees,
+		gasPrices,
+		gasAdjustment,
+	)
+}
 
 func updateLeaderboard(db *gorm.DB, logger *zap.Logger) {
 	currentTimestamp := time.Now().Unix()
@@ -64,10 +146,27 @@ func snapshotLeaderboard(db *gorm.DB, logger *zap.Logger) {
 	logger.Info("Snapshot leaderboard successfully")
 }
 
+func runCmd(cmd string, message string, debug bool) {
+	fmt.Println(">", message)
+	out, err := exec.Command("bash", "-c", cmd).Output()
+
+	if err != nil {
+		panic(fmt.Sprintf("failed to run cmd: %s. Error: %s", cmd, err.Error()))
+	}
+
+	if debug {
+		fmt.Println(string(out))
+	}
+	fmt.Println("OK")
+}
+
 func main() {
 	fs := flag.NewFlagSet("p2e-update-leaderboard", flag.ContinueOnError)
 	var (
-		// snapshot = fs.Bool("snapshot", false, "update the snapshot score, used for calculating changes")
+		distributorContractAddress = fs.String("teritori-distributor-contract-address", "", "distributor contract address")
+		distributorOwnerAddress    = fs.String("teritori-distributor-owner-address", "", "owner that can send rewards list to distributor contract")
+		distributorOwnerMnemonic   = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of owner")
+
 		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
 		dbPass = fs.String("postgres-password", "", "password for postgreSQL database")
@@ -109,6 +208,7 @@ func main() {
 
 	schedule.Every(1).Day().At("00:00").Do(func() {
 		snapshotLeaderboard(db, logger)
+		sendRewardsList(*distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
 	})
 
 	schedule.StartBlocking()
