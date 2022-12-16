@@ -1,3 +1,4 @@
+import { isDeliverTxFailure } from "@cosmjs/stargate";
 import {
   calculateAmountWithSlippage,
   CoinValue,
@@ -5,55 +6,38 @@ import {
   makeLcdPoolPretty,
   makePoolPairs,
   OsmosisApiClient,
-  SwapAmountInRoute,
 } from "@cosmology/core";
 import { PrettyPool, PriceHash, Trade } from "@cosmology/core/src/types";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import Long from "long";
+import { FEES, osmosis, getSigningOsmosisClient } from "osmojs";
+import { Coin } from "osmojs/types/codegen/cosmos/base/v1beta1/coin";
+import {
+  MsgSwapExactAmountIn,
+  SwapAmountInRoute,
+} from "osmojs/types/codegen/osmosis/gamm/v1beta1/tx";
 import { useSelector } from "react-redux";
 
+import { useFeedbacks } from "../context/FeedbacksProvider";
 import { CurrencyInfo, getNativeCurrency, getNetwork } from "../networks";
 import { selectSelectedNetworkId } from "../store/slices/settings";
+import { getKeplrOfflineSigner } from "../utils/keplr";
+import useSelectedWallet from "./useSelectedWallet";
 
-export const useSwap = (
-  tokenInAmount: string,
-  tokenOutAmount: string,
-  tokenIn?: CurrencyInfo,
-  tokenOut?: CurrencyInfo
-) => {
+type HookParams = {
+  amountIn: number;
+  amountOut: number;
+  currencyIn?: CurrencyInfo;
+  currencyOut?: CurrencyInfo;
+  callback?: () => void;
+};
+
+export const useSwap = (params: HookParams) => {
+  const { amountIn, amountOut, currencyIn, currencyOut, callback } = params;
+  const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const selectedNetwork = getNetwork(selectedNetworkId);
-
-  // ===== Getting correct amounts and prices array
-  const prices: PriceHash = [];
-
-  //TODO: Function for that
-  const tokenInTrueAmount = useMemo(() => {
-    let multiplier = 10;
-    for (
-      let i = 0;
-      i < (getNativeCurrency(selectedNetworkId, tokenIn?.denom)?.decimals || 0);
-      i++
-    ) {
-      multiplier = multiplier * 10;
-    }
-    return parseFloat(tokenInAmount) * multiplier;
-  }, [tokenInAmount]);
-  const tokenOutTrueAmount = useMemo(() => {
-    let multiplier = 10;
-    for (
-      let i = 0;
-      i <
-      (getNativeCurrency(selectedNetworkId, tokenOut?.denom)?.decimals || 0);
-      i++
-    ) {
-      multiplier = multiplier * 10;
-    }
-    return parseFloat(tokenOutAmount) * multiplier;
-  }, [tokenOutAmount]);
-
-  prices[tokenIn?.denom] = tokenInTrueAmount;
-  prices[tokenOut?.denom] = tokenOutTrueAmount;
+  const { setToastError, setToastSuccess } = useFeedbacks();
 
   // ===== Creating Osmosis client for API use
   const api = new OsmosisApiClient({
@@ -67,10 +51,34 @@ export const useSwap = (
     { refetchInterval: 5000 }
   );
 
-  const prettyPools = useMemo(() => {
+  const swap = async () => {
+    if (!currencyIn || !currencyOut || !selectedNetwork || !selectedWallet)
+      return;
+
+    // ===== Getting GAMM stuff
+    const { swapExactAmountIn } =
+      osmosis.gamm.v1beta1.MessageComposer.withTypeUrl;
+
+    // ===== Getting correct amounts and prices array
+    const prices: PriceHash = [];
+
+    const amountInMicro = amountToCurrencyMicro(
+      amountIn,
+      selectedNetworkId,
+      currencyIn.denom
+    );
+    const amountOutMicro = amountToCurrencyMicro(
+      amountOut,
+      selectedNetworkId,
+      currencyOut.denom
+    );
+
+    prices[currencyIn.denom] = amountInMicro;
+    prices[currencyOut.denom] = amountOutMicro;
+
     // ===== Cleaning Lcd Pools
-    const pools: PrettyPool[] = [];
-    lcdPools?.pools.forEach((pool, index) => {
+    const prettyPools: PrettyPool[] = [];
+    lcdPools?.pools.forEach((pool) => {
       // FIXME: We get LcdPool with properties with underscore WTF ==> Prevent errors in makeLcdPoolPretty
       if (pool.pool_assets) pool.poolAssets = pool.pool_assets;
       if (pool.total_weight) pool.totalWeight = pool.total_weight;
@@ -78,79 +86,102 @@ export const useSwap = (
       //TODO: Get "/osmosis.gamm.v1beta1.Pool" from libs
       if (pool["@type"] !== "/osmosis.gamm.v1beta1.Pool") return;
 
-      pools.push(makeLcdPoolPretty(prices, pool));
+      prettyPools.push(makeLcdPoolPretty(prices, pool));
     });
 
-    return pools;
-  }, [lcdPools?.pools, prices]);
-
-  console.log("======================== prettyPools", prettyPools);
-
-  // ===== Making a trade
-  const trade: Trade = useMemo(() => {
-    return {
+    // ===== Making a trade
+    const trade: Trade = {
       sell: {
-        denom: tokenIn?.denom,
-        amount: tokenInTrueAmount.toString(),
+        denom: currencyIn?.denom,
+        amount: amountInMicro,
       } as CoinValue,
       buy: {
-        denom: tokenOut?.denom,
-
-        //TODO: Which value ?
-        amount: tokenOutTrueAmount.toString(),
+        denom: currencyOut?.denom,
+        amount: amountOutMicro,
       } as CoinValue,
-
       //TODO: Which value ?
       beliefValue: "0",
     };
-  }, [tokenIn?.denom, tokenOut?.denom, tokenInTrueAmount, tokenOutTrueAmount]);
 
-  // ==== Getting trading routes
-  const routes = useMemo(() => {
-    // if(!prettyPools) return
     const pairs = makePoolPairs(prettyPools || [], 0);
 
     try {
-      return lookupRoutesForTrade({
+      // ===== Getting Osmosis client for RPC use
+      const signer = await getKeplrOfflineSigner(selectedNetwork);
+      const client = await getSigningOsmosisClient({
+        rpcEndpoint: selectedNetwork.rpcEndpoint,
+        signer,
+      });
+
+      // ==== Getting trading routes
+      const routes = lookupRoutesForTrade({
         trade,
         pairs,
       }).map((tradeRoute) => {
         const { poolId, tokenOutDenom } = tradeRoute;
         const swapAmountInRoute: SwapAmountInRoute = {
-          poolId,
+          poolId: Long.fromString(poolId),
           tokenOutDenom,
         };
-
         return swapAmountInRoute;
       });
-    } catch (e) {
-      //TODO: Handle this : No trade route
 
+      const currencyOutMinAmount = Math.round(
+        parseFloat(
+          calculateAmountWithSlippage(
+            amountOutMicro,
+            //TODO: Good value ? (0.1% ?)
+            1
+          )
+        )
+      ).toString();
+
+      // ==== Make a trade between two currencies
+      const msgValue: MsgSwapExactAmountIn = {
+        sender: selectedWallet.address,
+        routes,
+        tokenIn: { denom: currencyIn.denom, amount: amountInMicro } as Coin,
+        tokenOutMinAmount: currencyOutMinAmount,
+      };
+      const msg = swapExactAmountIn(msgValue);
+
+      //TODO: Fees ?
+      const fee = FEES.osmosis.swapExactAmountIn("low"); // low, medium, high
+
+      const txResponse = await client.signAndBroadcast(
+        selectedWallet.address,
+        [msg],
+        fee
+      );
+      if (isDeliverTxFailure(txResponse)) {
+        console.error("tx failed", txResponse);
+        setToastError({
+          title: "Transaction failed",
+          message: txResponse.rawLog || "",
+        });
+        return;
+      }
+      setToastSuccess({ title: "Swap success", message: "" });
+      callback && callback();
+    } catch (e) {
       console.error(e);
     }
-  }, [prettyPools, trade]);
+  };
+  return { swap };
+};
 
-  console.log("============= routesroutesroutesroutesroutesroutes", routes);
-
-  //TODO: No route = No enough tokenIn/Out for swap ==> Need deposit
-
-  const tokenOutMinAmount = calculateAmountWithSlippage(
-    tokenOutAmount,
-    //TODO: Good value ?
-    0.01
-  );
-
-  // ==== We need a TradeRoute to swap
-
-  //TODO: Fees ?
-
-  // ==== Make a trade between two currencies
-  // const msg = messages.swapExactAmountIn({
-  //   sender: selectedWallet.address, // osmo address
-  //   routes, // TradeRoute
-  //   tokenIn: coin(tokenInAmount, tokenIn.denom), // Coin
-  //   tokenOutMinAmount // number as a string with no decimals
-  // });
-
-  return false;
+export const amountToCurrencyMicro = (
+  amount: number,
+  networkId: string,
+  denom: string
+) => {
+  let multiplier = 10;
+  for (
+    let i = 0;
+    i < (getNativeCurrency(networkId, denom)?.decimals || 0);
+    i++
+  ) {
+    multiplier = multiplier * 10;
+  }
+  return Math.round(amount * multiplier).toString();
 };

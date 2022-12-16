@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { allNetworks, getNetwork, isTeritoriTestnet } from "../../networks";
@@ -23,30 +24,21 @@ import { SwapModal } from "./components/SwapModal";
 export const SwapScreen: ScreenFC<"Swap"> = () => {
   const selectedWallet = useSelectedWallet();
 
-  //TODO: create Osmosis Network and allow to connect to it
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const dispatch = useAppDispatch();
 
   const [swapModalVisible, setSwapModalVisible] = useState(false);
-  // TODO: display ConnectModal if not connected to Osmosis Network
   const [connectModalVisible, setConnectModalVisible] = useState(false);
 
-  const selectedNetwork = getNetwork(selectedNetworkId);
-  if (!selectedNetwork) {
-    return null;
-  }
-
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
+
+  const selectedNetwork = getNetwork(selectedNetworkId);
 
   const osmosisConnected =
     selectedNetwork?.displayName ===
     (isTeritoriTestnet()
       ? osmosisTestnetNetwork.displayName
       : osmosisNetwork.displayName);
-
-  ///// OSMOSIS ////////
-  // const RPC_ENDPOINT = "https://rpc-osmosis.keplr.app"
-  const RPC_ENDPOINT = process.env.PUBLIC_CHAIN_RPC_ENDPOINT || "";
 
   const onPressConnect = () => {
     const osmosisNetworkId =
@@ -66,36 +58,12 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
     else setConnectModalVisible(true);
   }, [osmosisConnected]);
 
-  // useEffect(() => {
-  //   const effect = async () => {
-  //     const { createRPCQueryClient } = osmosis.ClientFactory;
-  //     const client = await createRPCQueryClient({ rpcEndpoint: RPC_ENDPOINT });
-  //
-  //     console.log("clientclientclient", client);
-  //
-  //     // now you can query the cosmos modules
-  //     const balance = await client.cosmos.bank.v1beta1.allBalances({
-  //       address: selectedWallet?.address || "",
-  //     });
-  //
-  //     console.log("balancebalancebalancebalance", balance);
-  //
-  //     // // you can also query the osmosis pools
-  //     //       const response = await client.osmosis.gamm.v1beta1.pools();
-  //     //
-  //     // // currently Pools need to be decoded
-  //     //       response.pools.map(({ typeUrl, value }) => {
-  //     //         console.log(osmosis.gamm.v1beta1.Pool.decode(value));
-  //     //       })
-  //   };
-  //   effect();
-  // });
-  // //////////////////////
-
   return (
     <ScreenContainer headerChildren={<BrandText>Swap</BrandText>}>
       <View style={styles.mainContainer}>
-        {osmosisConnected ? (
+        {!selectedWallet?.address ? (
+          <MainConnectWalletButton style={{ alignSelf: "center" }} />
+        ) : osmosisConnected ? (
           <>
             <PrimaryButton
               size="XL"
@@ -125,7 +93,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
       />
       <ConnectModal
         onPress={onPressConnect}
-        visible={connectModalVisible}
+        visible={!!selectedWallet?.address && connectModalVisible}
         onClose={() => setConnectModalVisible(false)}
       />
     </ScreenContainer>
