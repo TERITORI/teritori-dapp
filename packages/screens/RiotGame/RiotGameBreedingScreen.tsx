@@ -21,7 +21,7 @@ import { prettyPrice } from "../../utils/coins";
 import { getRipperTokenId } from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
-import { spacing } from "../../utils/style/spacing";
+import { layout } from "../../utils/style/layout";
 import {
   BreedingResultModal,
   TokenInfo,
@@ -190,11 +190,15 @@ export const RiotGameBreedingScreen = () => {
       <LoaderFullScreen visible={isBreeding} />
 
       <View
-        style={[spacing.mt_5, { alignItems: "center", alignSelf: "center" }]}
+        style={{
+          marginTop: layout.padding_x4,
+          alignItems: "center",
+          alignSelf: "center",
+        }}
       >
         <BrandText style={[fontMedium48]}>Breeding</BrandText>
 
-        <Row style={[spacing.mt_5, { justifyContent: "center" }]}>
+        <Row style={{ justifyContent: "center", marginTop: layout.padding_x4 }}>
           <BreedingSlot
             ripper={selectedRippers[0]?.ripper}
             breedingsLeft={selectedRippers[0]?.breedingsLeft}
@@ -208,7 +212,7 @@ export const RiotGameBreedingScreen = () => {
           />
         </Row>
 
-        <Row style={spacing.mt_5}>
+        <Row style={{ marginTop: layout.padding_x4 }}>
           <InfoBox
             size="LG"
             title="Price"
@@ -229,7 +233,7 @@ export const RiotGameBreedingScreen = () => {
           <InfoBox size="LG" title="Bonus" content="Coming soon" width={180} />
         </Row>
 
-        <View style={spacing.mt_2}>
+        <View style={{ marginTop: layout.padding_x2 }}>
           <SVG source={chevronDownLineSVG} color={neutral33} />
         </View>
 
@@ -244,10 +248,14 @@ export const RiotGameBreedingScreen = () => {
           size="M"
           text={isBreeding ? "Breeding..." : "Breed my Rippers"}
           iconSVG={breedSVG}
-          style={spacing.mt_2}
+          style={{ marginTop: layout.padding_x2 }}
         />
 
-        <Row width="auto" alignItems="center" style={spacing.mt_2}>
+        <Row
+          width="auto"
+          alignItems="center"
+          style={{ marginTop: layout.padding_x2 }}
+        >
           <Checkbox
             status={isLegalChecked ? "checked" : "unchecked"}
             onPress={() => setIsLegalChecked(!isLegalChecked)}

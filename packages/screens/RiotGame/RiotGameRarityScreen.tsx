@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { fontMedium32 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 
 export const RiotGameRarityScreen = () => {
@@ -17,7 +18,7 @@ export const RiotGameRarityScreen = () => {
 
 const styles = StyleSheet.create({
   contentContainer: {
-    padding: 40,
+    padding: layout.padding_x4,
     alignItems: "center",
   },
 });

@@ -22,6 +22,7 @@ import {
   neutralA3,
 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { THE_RIOT_COLLECTION_ID } from "../settings";
 
 type UnstakeModalProps = {
@@ -50,7 +51,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
         <Row>
           <BrandText style={fontSemibold20}>Success Fight !</BrandText>
           <Image
-            style={{ width: 24, height: 24, marginLeft: 5 }}
+            style={{ width: 24, height: 24, marginLeft: layout.padding_x0_5 }}
             source={firePNG}
           />
         </Row>
@@ -111,6 +112,6 @@ const styles = StyleSheet.create({
     borderTopColor: mineShaftColor,
     width: "100%",
     alignItems: "center",
-    padding: 20,
+    padding: layout.padding_x2_5,
   },
 });

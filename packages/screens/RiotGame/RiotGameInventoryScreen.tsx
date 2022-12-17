@@ -15,7 +15,7 @@ import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium32 } from "../../utils/style/fonts";
-import { spacing } from "../../utils/style/spacing";
+import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
 
@@ -56,7 +56,11 @@ export const RiotGameInventoryScreen = () => {
             keyExtractor={(item, index) => "" + index}
             renderItem={({ item, index }) => {
               return (
-                <TertiaryBox style={spacing.m_1} width={150} height={150}>
+                <TertiaryBox
+                  style={{ margin: layout.padding_x1 }}
+                  width={150}
+                  height={150}
+                >
                   <Image
                     style={{ width: 60, height: 90 }}
                     source={defaultInventoryItemPNG}
@@ -87,7 +91,11 @@ export const RiotGameInventoryScreen = () => {
             keyExtractor={(ripper) => ripper.id}
             renderItem={({ item: ripper }) => {
               return (
-                <TertiaryBox style={spacing.m_1} width={150} height={150}>
+                <TertiaryBox
+                  style={{ margin: layout.padding_x1 }}
+                  width={150}
+                  height={150}
+                >
                   <RipperAvatar size={132} source={ripper.imageUri} />
                 </TertiaryBox>
               );
@@ -102,10 +110,10 @@ export const RiotGameInventoryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: "space-around",
-    marginTop: 40,
+    marginTop: layout.padding_x4,
   },
   chevronLine: {
-    marginVertical: 20,
+    marginVertical: layout.padding_x2_5,
   },
   overlay: {
     opacity: 0.6,

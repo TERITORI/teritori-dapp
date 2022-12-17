@@ -13,6 +13,7 @@ import {
   fontMedium32,
   fontMedium13,
 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 type RipperStatProps = {
   name: string;
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
     minWidth: 80,
   },
   rightCol: {
-    marginLeft: 40,
+    marginLeft: layout.padding_x4,
   },
   progressBarOuter: {
     borderRadius: 100,
@@ -87,6 +88,6 @@ const styles = StyleSheet.create({
   },
   subText: {
     color: neutralA3,
-    marginTop: 6,
+    marginTop: layout.padding_x1,
   },
 });

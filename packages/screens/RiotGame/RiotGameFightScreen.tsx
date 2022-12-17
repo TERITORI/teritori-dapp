@@ -14,7 +14,7 @@ import { getRipperTokenId, StakingState } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium48 } from "../../utils/style/fonts";
-import { spacing } from "../../utils/style/spacing";
+import { headerHeight, layout } from "../../utils/style/layout";
 import { FightBossSection } from "./component/FightBossSection";
 import { FightCountdownSection } from "./component/FightCountdownSection";
 import { FightSquadSection } from "./component/FightSquadSection";
@@ -150,7 +150,7 @@ export const RiotGameFightScreen = () => {
 
         {stakingState === StakingState.RELAX && (
           <PrimaryButtonOutline
-            style={spacing.m_2}
+            style={{ margin: layout.padding_x2 }}
             onPress={gotoMarketplace}
             color={yellowDefault}
             size="M"
@@ -175,11 +175,11 @@ const styles = StyleSheet.create({
     ...(fontMedium48 as object),
   },
   contentContainer: {
-    paddingHorizontal: 80,
+    paddingHorizontal: headerHeight,
   },
   col: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 40,
+    marginTop: layout.padding_x4,
   },
 });

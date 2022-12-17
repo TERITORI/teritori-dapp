@@ -23,6 +23,7 @@ import {
   fontSemibold20,
   fontSemibold14,
 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 type FightCountdownSectionProps = {
   isUnstaking: boolean;
@@ -121,11 +122,11 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
 
 const styles = StyleSheet.create({
   countDownSection: {
-    paddingVertical: 20,
-    paddingHorizontal: 40,
-    marginTop: 40,
-    flexDirection: "row",
+    paddingVertical: layout.padding_x2_5,
+    paddingHorizontal: layout.padding_x4,
+    marginTop: layout.padding_x4,
     justifyContent: "space-around",
+    flexDirection: "row",
   },
   actionsSection: {
     justifyContent: "flex-end",
@@ -133,11 +134,11 @@ const styles = StyleSheet.create({
     flex: 2,
   },
   actionLabel: {
-    marginLeft: 5,
+    marginLeft: layout.padding_x0_5,
     ...(fontSemibold14 as object),
   },
   divider: {
-    marginHorizontal: 40,
+    marginHorizontal: layout.padding_x4,
     height: 56,
     width: 1,
     backgroundColor: neutral33,

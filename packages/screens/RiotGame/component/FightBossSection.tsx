@@ -6,6 +6,7 @@ import { BrandText } from "../../../components/BrandText";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { gameHighlight } from "../../../utils/style/colors";
 import { fontMedium24, fontBold9 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { FightProgressBar } from "../component/FightProgressBar";
 
 type FightBossSectionProps = {
@@ -21,7 +22,7 @@ export const FightBossSection: React.FC<FightBossSectionProps> = ({
       width={380}
       height={310}
       mainContainerStyle={{
-        padding: 24,
+        padding: layout.padding_x3,
         borderWidth: 3,
       }}
     >
@@ -30,7 +31,7 @@ export const FightBossSection: React.FC<FightBossSectionProps> = ({
       <BrandText style={fontMedium24}>Philipp Rustov</BrandText>
 
       <FightProgressBar
-        containerStyle={{ marginVertical: 12 }}
+        containerStyle={{ marginVertical: layout.padding_x1_5 }}
         width={170}
         height={10}
         value={100 - remainingPercentage}

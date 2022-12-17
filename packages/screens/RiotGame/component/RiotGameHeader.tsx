@@ -29,8 +29,7 @@ import {
   yellowDefault,
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
-import { headerHeight } from "../../../utils/style/layout";
-import { spacing } from "../../../utils/style/spacing";
+import { headerHeight, layout } from "../../../utils/style/layout";
 
 type MenuItem = {
   id: string;
@@ -125,7 +124,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                 return (
                   <TouchableOpacity
                     onPress={() => onMenuItemClick(menuItem)}
-                    style={spacing.mr_4}
+                    style={{ marginRight: layout.padding_x4 }}
                     key={menuItem.id}
                   >
                     <Row style={{ alignItems: "center" }}>
@@ -134,7 +133,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                         height={16}
                         color={color}
                         source={menuItem.iconSVG}
-                        style={spacing.mr_1}
+                        style={{ marginRight: layout.padding_x1 }}
                       />
                       <BrandText style={[fontMedium16, { color }]}>
                         {menuItem.name}
@@ -174,7 +173,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   menu: {
-    paddingHorizontal: 40,
+    paddingHorizontal: layout.padding_x4,
   },
   section: {
     flexDirection: "row",

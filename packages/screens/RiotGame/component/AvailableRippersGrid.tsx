@@ -6,6 +6,7 @@ import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { getRipperRarity } from "../../../utils/game";
 import { white } from "../../../utils/style/colors";
+import { layout } from "../../../utils/style/layout";
 import { RipperAvatar } from "./RipperAvatar";
 
 interface AvailableRippersGridProps {
@@ -41,7 +42,7 @@ export const AvailableRippersGrid: React.FC<AvailableRippersGridProps> = ({
             onPress={() => selectRipper(ripper)}
           >
             <TertiaryBox
-              style={{ margin: 10 }}
+              style={{ margin: layout.padding_x1 }}
               width={THUMB_CONTAINER_WIDTH}
               height={THUMB_CONTAINER_HEIGHT}
               mainContainerStyle={[

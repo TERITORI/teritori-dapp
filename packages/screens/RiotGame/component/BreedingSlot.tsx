@@ -18,7 +18,7 @@ import {
   neutralA3,
 } from "../../../utils/style/colors";
 import { fontMedium14, fontSemibold13 } from "../../../utils/style/fonts";
-import { spacing } from "../../../utils/style/spacing";
+import { layout } from "../../../utils/style/layout";
 
 interface BreedingSlotProps {
   active?: boolean;
@@ -39,7 +39,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
         width={200}
         height={200}
         mainContainerStyle={{
-          padding: 16,
+          padding: layout.padding_x2,
           borderRadius: 8,
           borderColor: neutral33,
           borderWidth: active ? 1.2 : 1,
@@ -55,7 +55,10 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
                 color={secondaryColor}
               />
               <BrandText
-                style={[{ color: neutralA3 }, fontMedium14, spacing.ml_1]}
+                style={[
+                  { color: neutralA3, marginLeft: layout.padding_x1 },
+                  fontMedium14,
+                ]}
               >
                 Breedings left: {breedingsLeft}
               </BrandText>
@@ -86,8 +89,8 @@ const styles = StyleSheet.create({
     bottom: 20,
     color: yellowDefault,
     backgroundColor: withAlpha(orangeLight, 0.1),
-    paddingVertical: 5,
-    paddingHorizontal: 12,
+    paddingVertical: layout.padding_x0_5,
+    paddingHorizontal: layout.padding_x1_5,
     borderRadius: 100,
     ...(fontSemibold13 as object),
   },

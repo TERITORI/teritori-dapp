@@ -13,6 +13,7 @@ import { BrandText } from "../../components/BrandText";
 import { SpacerColumn } from "../../components/spacer";
 import { useAppNavigation } from "../../utils/navigation";
 import { fontMedium32 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 
 export const RiotGameMemoriesScreen = () => {
@@ -51,12 +52,7 @@ export const RiotGameMemoriesScreen = () => {
             return (
               <Image
                 key={index}
-                style={{
-                  width: 360,
-                  height: 190,
-                  marginRight: 20,
-                  marginBottom: 20,
-                }}
+                style={styles.memoryImage}
                 source={defaultSendToFightPNG}
               />
             );
@@ -69,6 +65,12 @@ export const RiotGameMemoriesScreen = () => {
 
 const styles = StyleSheet.create({
   contentContainer: {
-    padding: 40,
+    padding: layout.padding_x4,
+  },
+  memoryImage: {
+    width: 360,
+    height: 190,
+    marginRight: layout.padding_x2_5,
+    marginBottom: layout.padding_x2_5,
   },
 });

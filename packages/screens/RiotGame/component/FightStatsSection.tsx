@@ -13,7 +13,7 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { p2eBackendClient } from "../../../utils/backend";
 import { decimalFromAtomics } from "../../../utils/coins";
 import { yellowDefault } from "../../../utils/style/colors";
-import { spacing } from "../../../utils/style/spacing";
+import { layout } from "../../../utils/style/layout";
 import {
   PRIZE_POOL,
   TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS,
@@ -148,7 +148,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
                   "utori"
                 )} TORI`
           }
-          style={spacing.ml_1}
+          style={{ marginLeft: layout.padding_x1 }}
           onPress={claimRewards}
           noBrokenCorners
         />
@@ -160,7 +160,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    margin: 10,
+    margin: layout.padding_x1_5,
     alignItems: "center",
   },
 });

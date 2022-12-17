@@ -32,7 +32,7 @@ import {
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { headerHeight } from "../../../utils/style/layout";
+import { headerHeight, layout } from "../../../utils/style/layout";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStat } from "./RipperStat";
 import { SimpleButton } from "./SimpleButton";
@@ -230,8 +230,8 @@ const styles = StyleSheet.create({
   },
   rightCol: {
     flex: 1,
-    paddingLeft: 40,
-    paddingTop: 40,
+    paddingLeft: layout.padding_x4,
+    paddingTop: layout.padding_x4,
   },
   leftCol: {
     flex: 2,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   dashedBorder: {
     width: RIPPER_IMAGE_SIZE,
     height: RIPPER_IMAGE_SIZE,
-    marginTop: 20,
+    marginTop: layout.padding_x2_5,
   },
   roundedContainer: {
     width: RIPPER_IMAGE_SIZE - 4,
@@ -266,11 +266,11 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   ripperThumbName: {
-    marginVertical: 9,
+    marginVertical: layout.padding_x1,
     ...(fontSemibold11 as object),
   },
   ripperStatContainer: {
-    marginTop: 40,
+    marginTop: layout.padding_x4,
   },
   arrowRight: {
     position: "absolute",
@@ -284,13 +284,13 @@ const styles = StyleSheet.create({
   btnGroup: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 100,
-    marginLeft: 40,
+    marginTop: 2 * layout.padding_x4,
+    marginLeft: layout.padding_x4,
   },
   closeIcon: {
     position: "absolute",
-    right: 10,
-    top: 10,
+    right: layout.padding_x1_5,
+    top: layout.padding_x1_5,
     zIndex: 1,
   },
 });

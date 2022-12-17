@@ -27,7 +27,7 @@ import {
   primaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
-import { spacing } from "../../utils/style/spacing";
+import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 import { THE_RIOT_COLLECTION_ID } from "./settings";
 
@@ -47,13 +47,15 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   return (
     <Row width="auto" alignItems="center">
       <Image style={{ width: 32, height: 32 }} source={avatarPNG} />
-      <BrandText style={[styles.colData, spacing.ml_1]}>{name}</BrandText>
+      <BrandText style={[styles.colData, { marginLeft: layout.padding_x1 }]}>
+        {name}
+      </BrandText>
       <SVG
         width={16}
         height={16}
         color={primaryColor}
         source={badgeSVG}
-        style={spacing.ml_1}
+        style={{ marginLeft: layout.padding_x1 }}
       />
     </Row>
   );
@@ -61,7 +63,11 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
 
 const Rank: React.FC<RankProps> = ({ changes }) => {
   if (changes === 0) {
-    return <BrandText style={[styles.colData, spacing.ml_3]}>0</BrandText>;
+    return (
+      <BrandText style={[styles.colData, { marginLeft: layout.padding_x3 }]}>
+        0
+      </BrandText>
+    );
   }
 
   const rankColor = changes >= 0 ? additionalGreen : additionalRed;
@@ -70,7 +76,12 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
   return (
     <Row style={{ alignItems: "center" }}>
       <SVG source={changes >= 0 ? volUpSVG : volDownSVG} />
-      <BrandText style={[styles.colData, spacing.ml_1, { color: rankColor }]}>
+      <BrandText
+        style={[
+          styles.colData,
+          { color: rankColor, marginLeft: layout.padding_x1 },
+        ]}
+      >
         {rankSign} {Math.abs(changes)}
       </BrandText>
     </Row>
@@ -109,10 +120,12 @@ export const RiotGameLeaderboardScreen = () => {
         <BrandText style={fontSemibold28}>THE R!OT LEADERBOARD</BrandText>
       </ImageBackground>
 
-      <TertiaryBox fullWidth style={spacing.mt_2}>
+      <TertiaryBox fullWidth style={{ marginTop: layout.padding_x2 }}>
         <Row>
           <Col size={1}>
-            <BrandText style={[styles.colHeaderTitle, spacing.ml_2]}>
+            <BrandText
+              style={[styles.colHeaderTitle, { marginLeft: layout.padding_x2 }]}
+            >
               Rank
             </BrandText>
           </Col>
@@ -144,7 +157,9 @@ export const RiotGameLeaderboardScreen = () => {
           return (
             <Row style={styles.rowItem}>
               <Col size={1}>
-                <BrandText style={[styles.colData, spacing.ml_3]}>
+                <BrandText
+                  style={[styles.colData, { marginLeft: layout.padding_x3 }]}
+                >
                   {index + 1}
                 </BrandText>
               </Col>
@@ -184,7 +199,7 @@ export const RiotGameLeaderboardScreen = () => {
 
 const styles = StyleSheet.create({
   contentContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: layout.padding_x2_5,
   },
 
   jumbotron: {
@@ -196,10 +211,10 @@ const styles = StyleSheet.create({
   colHeaderTitle: {
     color: neutral77,
     ...(fontSemibold12 as object),
-    marginVertical: 14,
+    marginVertical: layout.padding_x2,
   },
   colData: {
-    marginVertical: 20,
+    marginVertical: layout.padding_x2_5,
     ...(fontSemibold12 as object),
   },
   rowItem: {

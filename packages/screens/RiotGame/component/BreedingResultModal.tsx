@@ -10,6 +10,7 @@ import { SpacerColumn } from "../../../components/spacer";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
 import { mineShaftColor, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { THE_RIOT_COLLECTION_ID } from "../settings";
 
 export type TokenInfo = {
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     borderTopColor: mineShaftColor,
     width: "100%",
     alignItems: "center",
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    paddingVertical: layout.padding_x2_5,
+    paddingHorizontal: layout.padding_x1_5,
   },
 });

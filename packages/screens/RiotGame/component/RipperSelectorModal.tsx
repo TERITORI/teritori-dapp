@@ -32,8 +32,7 @@ import {
   fontMedium48,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { headerHeight } from "../../../utils/style/layout";
-import { spacing } from "../../../utils/style/spacing";
+import { headerHeight, layout } from "../../../utils/style/layout";
 import { AvailableRippersGrid } from "./AvailableRippersGrid";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStat } from "./RipperStat";
@@ -107,7 +106,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           contentContainerStyle={{ alignItems: "center" }}
           showsVerticalScrollIndicator={false}
         >
-          <BrandText style={[fontMedium48, spacing.mt_2]}>
+          <BrandText style={[fontMedium48, { marginTop: layout.padding_x2 }]}>
             {selectedRipper?.name || "Please select a Ripper"}
           </BrandText>
 
@@ -151,15 +150,18 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
               <BrandText
                 style={[
                   fontMedium24,
-                  spacing.mt_2,
-                  { alignItems: "center", alignSelf: "center" },
+                  {
+                    alignItems: "center",
+                    alignSelf: "center",
+                    marginTop: layout.padding_x2,
+                  },
                 ]}
               >
                 Stats
               </BrandText>
 
               <RipperStat
-                containerStyle={spacing.mt_3}
+                containerStyle={{ marginTop: layout.padding_x3 }}
                 name="Stamina"
                 value={
                   selectedRipper &&
@@ -168,7 +170,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 size="MD"
               />
               <RipperStat
-                containerStyle={spacing.mt_3}
+                containerStyle={{ marginTop: layout.padding_x3 }}
                 name="Protection"
                 value={
                   selectedRipper &&
@@ -177,7 +179,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 size="MD"
               />
               <RipperStat
-                containerStyle={spacing.mt_3}
+                containerStyle={{ marginTop: layout.padding_x3 }}
                 name="Luck"
                 value={
                   selectedRipper && getRipperTraitValue(selectedRipper, "Luck")
@@ -186,7 +188,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
               />
 
               <RipperStat
-                containerStyle={spacing.mt_3}
+                containerStyle={{ marginTop: layout.padding_x3 }}
                 name="Breedings left"
                 showProgress={false}
                 value={breedingsLeft}
@@ -210,7 +212,7 @@ const styles = StyleSheet.create({
   dashedBorder: {
     width: RIPPER_IMAGE_SIZE,
     height: RIPPER_IMAGE_SIZE,
-    marginTop: 20,
+    marginTop: layout.padding_x2_5,
   },
   roundedContainer: {
     width: RIPPER_IMAGE_SIZE - 4,
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
     left: -60,
   },
   ripperThumbName: {
-    marginVertical: 9,
+    marginVertical: layout.padding_x1,
     ...(fontSemibold11 as object),
   },
   arrowRight: {
@@ -240,7 +242,7 @@ const styles = StyleSheet.create({
     right: -16,
   },
   btnGroup: {
-    marginTop: 20,
+    marginTop: layout.padding_x2_5,
     flexDirection: "row",
     alignSelf: "center",
   },

@@ -18,6 +18,7 @@ import {
   fontMedium32,
   fontMedium48,
 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BreedingResultModal } from "./component/BreedingResultModal";
 import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
@@ -38,13 +39,13 @@ export const RiotGameBreedingScreen = () => {
         <Col style={{ alignItems: "center" }}>
           <BrandText style={[fontMedium48]}>Breeding</BrandText>
 
-          <Row style={{ marginTop: 40 }}>
+          <Row style={{ marginTop: layout.padding_x4 }}>
             <BreedingSlot />
             <SpacerRow size={3} />
             <BreedingSlot />
           </Row>
 
-          <Row style={{ marginTop: 40 }}>
+          <Row style={{ marginTop: layout.padding_x4 }}>
             <InfoBox size="LG" title="Price" content="10 $ATOM" width={180} />
 
             <InfoBox
@@ -75,7 +76,10 @@ export const RiotGameBreedingScreen = () => {
           />
 
           <BrandText
-            style={[fontMedium14, { color: neutralA3, marginTop: 20 }]}
+            style={[
+              fontMedium14,
+              { color: neutralA3, marginTop: layout.padding_x2_5 },
+            ]}
           >
             Legal phrase powered by Popipou
           </BrandText>
@@ -89,7 +93,11 @@ export const RiotGameBreedingScreen = () => {
             keyExtractor={(ripper) => ripper.id}
             renderItem={({ item: ripper, index }) => {
               return (
-                <TertiaryBox style={{ margin: 10 }} width={172} height={148}>
+                <TertiaryBox
+                  style={{ margin: layout.padding_x1_5 }}
+                  width={172}
+                  height={148}
+                >
                   <RipperAvatar size={120} source={ripper.imageUri} />
                 </TertiaryBox>
               );
@@ -110,9 +118,9 @@ export const RiotGameBreedingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: "space-around",
-    marginTop: 40,
+    marginTop: layout.padding_x4,
   },
   chevronLine: {
-    marginVertical: 20,
+    marginVertical: layout.padding_x2_5,
   },
 });

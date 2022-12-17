@@ -15,6 +15,7 @@ import {
   withAlpha,
 } from "../../../utils/style/colors";
 import { fontSemibold9 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { RipperRarity } from "../types";
 
 type RipperAvatarProps = {
@@ -83,8 +84,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   rarityText: {
-    paddingVertical: 3,
-    paddingHorizontal: 5,
+    paddingVertical: layout.padding_x0_5,
+    paddingHorizontal: layout.padding_x0_5,
     borderRadius: 10,
     backgroundColor: withAlpha(orangeDefault, 0.2),
     ...(fontSemibold9 as object),

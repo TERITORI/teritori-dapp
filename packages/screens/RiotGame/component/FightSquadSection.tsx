@@ -7,6 +7,7 @@ import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontMedium32, fontMedium13 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { RipperAvatar } from "../component/RipperAvatar";
 
 const RIPPER_AVATAR_SIZE = 60;
@@ -24,7 +25,7 @@ export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
       height={310}
       noBrokenCorners
       mainContainerStyle={{
-        padding: 24,
+        padding: layout.padding_x3,
         borderWidth: 3,
       }}
     >
@@ -68,6 +69,6 @@ const styles = StyleSheet.create({
   ripperInfo: {
     flexDirection: "column",
     alignItems: "center",
-    marginHorizontal: 12,
+    marginHorizontal: layout.padding_x1_5,
   },
 });

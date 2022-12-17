@@ -23,7 +23,7 @@ import {
   fontSemibold28,
   fontMedium14,
 } from "../../utils/style/fonts";
-import { spacing } from "../../utils/style/spacing";
+import { layout } from "../../utils/style/layout";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalOld";
@@ -181,10 +181,10 @@ export const RiotGameEnrollScreen = () => {
 
           <TertiaryBox
             mainContainerStyle={{
-              padding: 40,
+              padding: layout.padding_x4,
               alignItems: "flex-start",
             }}
-            style={spacing.mt_2}
+            style={{ marginTop: layout.padding_x2 }}
             height={148}
           >
             <BrandText style={fontSemibold28}>
@@ -213,7 +213,7 @@ export const RiotGameEnrollScreen = () => {
       <SimpleButton
         disabled={selectedRippers.length === 0}
         onPress={joinTheFight}
-        containerStyle={spacing.mv_5}
+        containerStyle={{ marginVertical: layout.padding_x4 }}
         title="Join the Fight"
         loading={isJoiningFight}
       />
@@ -236,31 +236,31 @@ const styles = StyleSheet.create({
     ...(fontMedium48 as object),
   },
   sectionTitle: {
-    marginTop: 10,
+    marginTop: layout.padding_x1,
     ...(fontMedium32 as object),
   },
   enrollContainer: {
     justifyContent: "space-around",
-    marginTop: 10,
+    marginTop: layout.padding_x1,
   },
   col: {
     justifyContent: "center",
     alignItems: "center",
   },
   ripperSlot: {
-    marginRight: 20,
-    marginTop: 20,
+    marginRight: layout.padding_x2_5,
+    marginTop: layout.padding_x2_5,
   },
   placeholderVideo: {
-    marginTop: 20,
+    marginTop: layout.padding_x2_5,
     alignSelf: "center",
     width: 420,
     height: 240,
   },
   clearIcon: {
     position: "absolute",
-    right: 5,
-    top: 5,
+    right: layout.padding_x1,
+    top: layout.padding_x1,
     zIndex: 1,
   },
 });
