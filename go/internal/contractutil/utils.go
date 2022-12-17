@@ -1,26 +1,14 @@
 package contractutil
 
 import (
-	"context"
 	"encoding/base64"
 	"encoding/hex"
-	"encoding/json"
 	"flag"
 
-	"github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/pkg/errors"
 )
-
-func GetQueryClientCtx(chainId string, rpcEndpoint string) client.Context {
-	clientCtx := client.Context{}.
-		WithChainID(chainId).
-		WithOutputFormat("text")
-
-	clientCtx = SetClient(clientCtx, rpcEndpoint)
-
-	return clientCtx
-}
 
 func asciiDecodeString(s string) ([]byte, error) {
 	return []byte(s), nil
@@ -65,31 +53,28 @@ func (a *argumentDecoder) DecodeString(s string) ([]byte, error) {
 	}
 }
 
-func QueryWasm(contract string, queryMsg string, chainId string, rpcEndpoint string) []byte {
-	InitConfig("tori")
+func prepareFactory(clientCtx client.Context, txf tx.Factory) (tx.Factory, error) {
+	from := clientCtx.GetFromAddress()
 
-	clientCtx := GetQueryClientCtx(chainId, rpcEndpoint)
-
-	decoder := newArgDecoder(asciiDecodeString)
-	queryData, err := decoder.DecodeString(queryMsg)
-	if err != nil {
-		panic(errors.Wrap(err, "failed to decode query"))
-	}
-	if !json.Valid(queryData) {
-		panic(errors.Wrap(err, "data must be json"))
+	if err := txf.AccountRetriever().EnsureExists(clientCtx, from); err != nil {
+		return txf, err
 	}
 
-	queryClient := types.NewQueryClient(clientCtx)
-	res, err := queryClient.SmartContractState(
-		context.Background(),
-		&types.QuerySmartContractStateRequest{
-			Address:   contract,
-			QueryData: queryData,
-		},
-	)
-	if err != nil {
-		panic(errors.Wrap(err, "failed to query"))
+	initNum, initSeq := txf.AccountNumber(), txf.Sequence()
+	if initNum == 0 || initSeq == 0 {
+		num, seq, err := txf.AccountRetriever().GetAccountNumberSequence(clientCtx, from)
+		if err != nil {
+			return txf, err
+		}
+
+		if initNum == 0 {
+			txf = txf.WithAccountNumber(num)
+		}
+
+		if initSeq == 0 {
+			txf = txf.WithSequence(seq)
+		}
 	}
 
-	return res.Data
+	return txf, nil
 }
