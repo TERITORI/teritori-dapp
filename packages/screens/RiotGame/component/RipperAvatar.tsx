@@ -11,7 +11,7 @@ import {
   orangeDefault,
   pinkDefault,
   purpleDefault,
-  white,
+  secondaryColor,
   withAlpha,
 } from "../../../utils/style/colors";
 import { fontSemibold9 } from "../../../utils/style/fonts";
@@ -46,7 +46,7 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
       rarityColor = pinkDefault;
       break;
     default:
-      rarityColor = white;
+      rarityColor = secondaryColor;
   }
 
   const imageSource = typeof source === "string" ? { uri: source } : source;

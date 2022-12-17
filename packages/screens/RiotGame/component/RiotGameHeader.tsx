@@ -30,11 +30,12 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
 import { headerHeight, layout } from "../../../utils/style/layout";
+import { PickByValue } from "../../../utils/types/helper";
 
 type MenuItem = {
   id: string;
   name: string;
-  route?: keyof RootStackParamList;
+  route?: keyof PickByValue<RootStackParamList, undefined>;
   externalRoute?: string;
   iconSVG: React.FC<SvgProps>;
 };
@@ -94,7 +95,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
     if (item.externalRoute) {
       Linking.openURL(item.externalRoute);
     } else if (item.route) {
-      navigation.navigate(item.route as any);
+      navigation.navigate(item.route);
     }
   };
 

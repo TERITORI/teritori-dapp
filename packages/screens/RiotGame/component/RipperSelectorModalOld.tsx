@@ -23,7 +23,7 @@ import { SpacerRow } from "../../../components/spacer/SpacerRow";
 import { getRipperRarity, getRipperTraitValue } from "../../../utils/game";
 import {
   neutral00,
-  white,
+  secondaryColor,
   withAlpha,
   yellowDefault,
 } from "../../../utils/style/colors";
@@ -134,7 +134,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                             mainContainerStyle={[
                               styles.ripperThumb,
                               isSelected && {
-                                borderColor: white,
+                                borderColor: secondaryColor,
                                 borderWidth: 1,
                               },
                             ]}
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderStyle: "solid",
     borderColor: "transparent",
-    borderLeftColor: white,
+    borderLeftColor: secondaryColor,
     right: -16,
   },
   btnGroup: {

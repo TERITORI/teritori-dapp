@@ -33,7 +33,6 @@ export const neutral77 = "#777777";
 export const neutralA3 = "#A3A3A3";
 export const additionalRed = "#FFAEAE";
 
-export const white = "#FFFFFF";
 export const orangeLight = "#EAA54B";
 
 export const additionalGreen = "#C8FFAE";

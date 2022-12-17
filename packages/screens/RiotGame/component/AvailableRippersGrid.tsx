@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { getRipperRarity } from "../../../utils/game";
-import { white } from "../../../utils/style/colors";
+import { secondaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { RipperAvatar } from "./RipperAvatar";
 
@@ -47,7 +47,7 @@ export const AvailableRippersGrid: React.FC<AvailableRippersGridProps> = ({
               height={THUMB_CONTAINER_HEIGHT}
               mainContainerStyle={[
                 isSelected && {
-                  borderColor: white,
+                  borderColor: secondaryColor,
                   borderWidth: 1,
                 },
               ]}

@@ -2,7 +2,11 @@ import { FlatList, View, ViewStyle } from "react-native";
 
 import fightProgressPointerSVG from "../../../../assets/game/fight-progress-pointer.svg";
 import { SVG } from "../../../components/SVG";
-import { neutral33, neutral55, white } from "../../../utils/style/colors";
+import {
+  neutral33,
+  neutral55,
+  secondaryColor,
+} from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 
 const TOTAL_CELLS = 10;
@@ -44,7 +48,7 @@ export const FightProgressBar: React.FC<FightProgressBarProps> = ({
         renderItem={({ index }) => {
           let bgColor;
           if (index < currentCellIndex) {
-            bgColor = white;
+            bgColor = secondaryColor;
           } else if (index > currentCellIndex) {
             bgColor = neutral33;
           } else {
@@ -73,7 +77,7 @@ export const FightProgressBar: React.FC<FightProgressBarProps> = ({
                   style={{
                     height: cellHeight,
                     width: pointerRelativePosition,
-                    backgroundColor: white,
+                    backgroundColor: secondaryColor,
                   }}
                 />
               )}
