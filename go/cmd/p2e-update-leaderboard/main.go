@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"os/exec"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,56 +18,36 @@ import (
 	"gorm.io/gorm"
 )
 
-type ConfigResponse struct {
-	Owner        string `json:"owner"`
-	Denom        string `json:"denom"`
-	LastReportId int32  `json:"last_report_id"`
-}
+type Obj = contractutil.Obj
 
-type Reward struct {
-	Addr   string `json:"addr"`
-	Amount string `json:"amount"`
-}
-
-type AddDailyReport struct {
-	ReportId int32    `json:"report_id"`
-	Rewards  []Reward `json:"rewards"`
-}
-type AddDailyReportQuery struct {
-	AddDailyReport AddDailyReport `json:"add_daily_report"`
-}
-
-func sendRewardsList(distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) {
-	sender := distributorOwnerAddress
+func sendRewardsList(distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
 	contract := distributorContractAddress
-	rpcEndpoint := "https://rpc.testnet.teritori.com:443"
 	denom := "utori"
 	amount := int64(1)
-	chainId := "teritori-testnet-v3"
-	keyName := "distributor-owner"
-	mnemonic := "net nut power use vital render else amazing lizard lady ball parrot"
-	fees := ""
-	gasPrices := "0.025utori"
-	gasAdjustment := 1.3
 	funds := sdk.NewCoins(sdk.NewInt64Coin(denom, amount))
-	memo := "Send from back"
-	queryMsg := `{"config": {}}`
 
-	data := contractutil.QueryWasm(contract, queryMsg, chainId, rpcEndpoint)
-
-	configResponse := ConfigResponse{}
-	if err := json.Unmarshal([]byte(data), &configResponse); err != nil {
-		panic(errors.Wrap(err, "fail to parse config response"))
+	contractClient := contractutil.ContractClient{
+		Sender:              distributorOwnerAddress,
+		Mnemonic:            "net nut power use vital render else amazing lizard lady ball parrot",
+		ChainId:             "teritori-testnet-v3",
+		Bech32PrefixAccAddr: "tori",
+		RpcEndpoint:         "https://rpc.testnet.teritori.com:443",
+		GasPrices:           "0.025utori",
+		GasAdjustment:       1.3,
 	}
-	lastReportId := configResponse.LastReportId
 
-	execMsgRaw := AddDailyReportQuery{
-		AddDailyReport: AddDailyReport{
-			ReportId: lastReportId + 1,
-			Rewards: []Reward{
-				Reward{
-					Addr:   "tori19cnu30yq5s52f00xc430ktyjz35nw24jx8zplc",
-					Amount: "1",
+	configData, err := contractClient.QueryWasm(contract, `{"config": {}}`)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed tto query contract")
+	}
+
+	execMsgRaw := Obj{
+		"add_daily_report": Obj{
+			"report_id": int32(configData["last_report_id"].(float64)) + 1,
+			"rewards": []Obj{
+				Obj{
+					"addr":   "tori19cnu30yq5s52f00xc430ktyjz35nw24jx8zplc",
+					"amount": "1",
 				},
 			},
 		},
@@ -76,27 +55,14 @@ func sendRewardsList(distributorOwnerAddress string, distributorContractAddress 
 
 	execMsg, err := json.Marshal(execMsgRaw)
 	if err != nil {
-		panic(errors.Wrap(err, "fail to generate execMsg"))
+		return nil, errors.Wrap(err, "fail to generate execMsg")
 	}
 	execMsgStr := string(execMsg)
 
-	contractutil.ExecuteWasm(
-		sender,
-		mnemonic,
-		contract,
-		execMsgStr,
-		funds,
-		chainId,
-		rpcEndpoint,
-		keyName,
-		memo,
-		fees,
-		gasPrices,
-		gasAdjustment,
-	)
+	return contractClient.ExecuteWasm(contract, execMsgStr, funds, "Send rewards list")
 }
 
-func updateLeaderboard(db *gorm.DB, logger *zap.Logger) {
+func updateLeaderboard(db *gorm.DB) error {
 	currentTimestamp := time.Now().Unix()
 
 	// Update Rules:
@@ -116,9 +82,8 @@ func updateLeaderboard(db *gorm.DB, logger *zap.Logger) {
 		currentTimestamp,
 	).Error
 	if updateScoreErr != nil {
-		panic(errors.Wrap(updateScoreErr, "failed to update in progress score"))
+		return errors.Wrap(updateScoreErr, "failed to update in progress score")
 	}
-	logger.Info("Update leaderboard in_progress_score successfully")
 
 	updateRankErr := db.Exec(fmt.Sprint(`
 		UPDATE p2e_leaderboards as lb
@@ -129,35 +94,21 @@ func updateLeaderboard(db *gorm.DB, logger *zap.Logger) {
 	`),
 	).Error
 	if updateRankErr != nil {
-		panic(errors.Wrap(updateRankErr, "failed to update rank"))
+		return errors.Wrap(updateRankErr, "failed to update rank")
 	}
-	logger.Info("Update leaderboard rank successfully")
+	return nil
 }
 
-func snapshotLeaderboard(db *gorm.DB, logger *zap.Logger) {
+func snapshotLeaderboard(db *gorm.DB) error {
 	snapshotErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET snapshot_score = in_progress_score, snapshot_rank = rank
 	`).Error
 
 	if snapshotErr != nil {
-		panic(errors.Wrap(snapshotErr, "failed to snapshot"))
+		return errors.Wrap(snapshotErr, "failed to snapshot")
 	}
-	logger.Info("Snapshot leaderboard successfully")
-}
-
-func runCmd(cmd string, message string, debug bool) {
-	fmt.Println(">", message)
-	out, err := exec.Command("bash", "-c", cmd).Output()
-
-	if err != nil {
-		panic(fmt.Sprintf("failed to run cmd: %s. Error: %s", cmd, err.Error()))
-	}
-
-	if debug {
-		fmt.Println(string(out))
-	}
-	fmt.Println("OK")
+	return nil
 }
 
 func main() {
@@ -203,12 +154,27 @@ func main() {
 
 	schedule := gocron.NewScheduler(time.UTC)
 	schedule.Every(1).Hour().Do(func() {
-		updateLeaderboard(db, logger)
+		if err := updateLeaderboard(db); err != nil {
+			logger.Error("failed to update leaderboard", zap.Error(err))
+			return
+		}
+		logger.Info("update leaderboard successfully")
 	})
 
 	schedule.Every(1).Day().At("00:00").Do(func() {
-		snapshotLeaderboard(db, logger)
-		sendRewardsList(*distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
+		if err := snapshotLeaderboard(db); err != nil {
+			logger.Error("failed to snapshot leaderboard", zap.Error(err))
+			return
+		}
+		logger.Info("snapshot leaderboard successfully")
+
+		txResponse, err := sendRewardsList(*distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
+		if err != nil {
+			logger.Error("failed to send rewards list", zap.Error(err))
+			return
+		}
+
+		logger.Info("send rewards list successfully", zap.String("TxHash", txResponse.TxHash))
 	})
 
 	schedule.StartBlocking()

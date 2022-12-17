@@ -112,7 +112,9 @@ require (
 	github.com/99designs/keyring v1.1.6 // indirect
 	github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d // indirect
 	github.com/CosmWasm/wasmvm v1.0.0 // indirect
+	github.com/Workiva/go-datastructures v1.0.53 // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
+	github.com/coinbase/rosetta-sdk-go v0.7.0 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/iavl v0.17.3 // indirect
 	github.com/cosmos/ibc-go/v3 v3.0.0 // indirect
@@ -121,10 +123,15 @@ require (
 	github.com/danieljoos/wincred v1.0.2 // indirect
 	github.com/dvsekhvalnov/jose2go v0.0.0-20200901110807-248326c1351b // indirect
 	github.com/ericlagergren/decimal v0.0.0-20181231230500-73749d4874d5 // indirect
+	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/go-gorp/gorp/v3 v3.0.2 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gofrs/uuid v4.0.0+incompatible // indirect
+	github.com/gogo/gateway v1.1.0 // indirect
+	github.com/google/gofuzz v1.2.0 // indirect
+	github.com/google/orderedcode v0.0.1 // indirect
+	github.com/gorilla/handlers v1.5.1 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
@@ -140,12 +147,15 @@ require (
 	github.com/jackc/pgx/v4 v4.17.2 // indirect
 	github.com/keybase/go-keychain v0.0.0-20190712205309-48d3d31d256d // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rakyll/statik v0.1.7 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 // indirect
 	github.com/regen-network/cosmos-proto v0.3.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
+	github.com/rs/zerolog v1.26.0 // indirect
 	github.com/stretchr/testify v1.8.1 // indirect
 	github.com/tendermint/btcd v0.1.1 // indirect
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15 // indirect

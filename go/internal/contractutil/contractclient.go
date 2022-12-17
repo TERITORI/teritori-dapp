@@ -50,30 +50,32 @@ func (cc *ContractClient) InitConfig() {
 	config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
 }
 
-func (cc *ContractClient) SetKeyring() {
+func (cc *ContractClient) SetKeyring() error {
 	kb := keyring.NewInMemory(cc.ExecClientCtx.KeyringOptions...)
 	keyringAlgos, _ := kb.SupportedAlgorithms()
 	algo, algoErr := keyring.NewSigningAlgoFromString(ALGO_NAME, keyringAlgos)
 	if algoErr != nil {
-		panic(errors.Wrap(algoErr, "failed to create algo"))
+		return errors.Wrap(algoErr, "failed to create algo")
 	}
 
 	_, accErr := kb.NewAccount(KEY_NAME, cc.Mnemonic, "", HD_PATH, algo)
 	if accErr != nil {
-		panic(errors.Wrap(accErr, "failed to get account from mnemonic"))
+		return errors.Wrap(accErr, "failed to get account from mnemonic")
 	}
 
 	cc.ExecClientCtx = cc.ExecClientCtx.WithKeyring(kb)
 	cc.QueryClientCtx = cc.QueryClientCtx.WithKeyring(kb)
+	return nil
 }
 
-func (cc *ContractClient) SetClient() {
+func (cc *ContractClient) SetClient() error {
 	client, err := client.NewClientFromNode(cc.RpcEndpoint)
 	if err != nil {
-		panic(errors.Wrap(err, "failed to get client from node"))
+		return errors.Wrap(err, "failed to get client from node")
 	}
 	cc.ExecClientCtx = cc.ExecClientCtx.WithClient(client)
 	cc.QueryClientCtx = cc.QueryClientCtx.WithClient(client)
+	return nil
 }
 
 func (cc *ContractClient) InitExecTxFactory(memo string) {
@@ -89,18 +91,26 @@ func (cc *ContractClient) InitExecTxFactory(memo string) {
 		WithSignMode(signing.SignMode_SIGN_MODE_UNSPECIFIED)
 }
 
-func (cc *ContractClient) InitQueryClientCtx() {
+func (cc *ContractClient) InitQueryClientCtx() error {
 	cc.QueryClientCtx = client.Context{ChainID: cc.ChainId}
-	cc.SetKeyring()
-	cc.SetClient()
+
+	if err := cc.SetKeyring(); err != nil {
+		return errors.Wrap(err, "failed to set keyring")
+	}
+
+	if err := cc.SetClient(); err != nil {
+		return errors.Wrap(err, "failed to set client")
+	}
+
+	return nil
 }
 
-func (cc *ContractClient) InitExecClientCtx() {
+func (cc *ContractClient) InitExecClientCtx() error {
 	encodingConfig := InitEncoding()
 
 	fromAccAddress, err := sdk.AccAddressFromBech32(cc.Sender)
 	if err != nil {
-		panic(errors.Wrap(err, "failed to parse sender address"))
+		return errors.Wrap(err, "failed to parse sender address")
 	}
 
 	cc.ExecClientCtx = client.Context{}.
@@ -116,11 +126,19 @@ func (cc *ContractClient) InitExecClientCtx() {
 		WithTxConfig(encodingConfig.TxConfig).
 		WithCodec(encodingConfig.Marshaler).
 		WithInterfaceRegistry(encodingConfig.InterfaceRegistry)
-	cc.SetKeyring()
-	cc.SetClient()
+
+	if err := cc.SetKeyring(); err != nil {
+		return errors.Wrap(err, "failed to set keyring")
+	}
+
+	if err := cc.SetClient(); err != nil {
+		return errors.Wrap(err, "failed to set client")
+	}
+
+	return nil
 }
 
-func (cc *ContractClient) BuildExecMsg(contract string, execMsg string, funds sdk.Coins) types.MsgExecuteContract {
+func (cc *ContractClient) BuildExecMsg(contract string, execMsg string, funds sdk.Coins) (*types.MsgExecuteContract, error) {
 	msg := types.MsgExecuteContract{
 		Sender:   cc.Sender,
 		Contract: contract,
@@ -128,9 +146,9 @@ func (cc *ContractClient) BuildExecMsg(contract string, execMsg string, funds sd
 		Msg:      []byte(execMsg),
 	}
 	if err := msg.ValidateBasic(); err != nil {
-		panic(errors.Wrap(err, "ValidateBasic error"))
+		return nil, errors.Wrap(err, "ValidateBasic error")
 	}
-	return msg
+	return &msg, nil
 }
 
 func (cc *ContractClient) BroadcastTx(msgs ...sdk.Msg) (*sdk.TxResponse, error) {
@@ -168,11 +186,17 @@ func (cc *ContractClient) BroadcastTx(msgs ...sdk.Msg) (*sdk.TxResponse, error) 
 
 func (cc *ContractClient) ExecuteWasm(contract string, execMsg string, funds sdk.Coins, memo string) (*sdk.TxResponse, error) {
 	cc.InitConfig()
-	cc.InitExecClientCtx()
+	if err := cc.InitExecClientCtx(); err != nil {
+		return nil, errors.Wrap(err, "failed to build client context")
+	}
 	cc.InitExecTxFactory(memo)
 
-	msg := cc.BuildExecMsg(contract, execMsg, funds)
-	txResponse, err := cc.BroadcastTx(&msg)
+	msg, err := cc.BuildExecMsg(contract, execMsg, funds)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to build exec message")
+	}
+
+	txResponse, err := cc.BroadcastTx(msg)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to broadcast tx")
@@ -185,17 +209,19 @@ func (cc *ContractClient) ExecuteWasm(contract string, execMsg string, funds sdk
 	return txResponse, nil
 }
 
-func (cc *ContractClient) QueryWasm(contract string, queryMsg string) map[string]any {
+func (cc *ContractClient) QueryWasm(contract string, queryMsg string) (map[string]interface{}, error) {
 	cc.InitConfig()
 	cc.InitQueryClientCtx()
 
 	decoder := newArgDecoder(asciiDecodeString)
 	queryData, err := decoder.DecodeString(queryMsg)
+
 	if err != nil {
-		panic(errors.Wrap(err, "failed to decode query"))
+		return nil, errors.Wrap(err, "failed to decode query")
 	}
+
 	if !json.Valid(queryData) {
-		panic(errors.Wrap(err, "data must be json"))
+		return nil, errors.Wrap(err, "data must be json")
 	}
 
 	queryClient := types.NewQueryClient(cc.QueryClientCtx)
@@ -207,12 +233,12 @@ func (cc *ContractClient) QueryWasm(contract string, queryMsg string) map[string
 		},
 	)
 	if err != nil {
-		panic(errors.Wrap(err, "failed to query"))
+		return nil, errors.Wrap(err, "failed to query")
 	}
 
 	data := make(map[string]any)
 	if json.Unmarshal(res.Data, &data) != nil {
-		panic(errors.Wrap(err, "failed to parse response data"))
+		return nil, errors.Wrap(err, "failed to parse response data")
 	}
-	return data
+	return data, nil
 }
