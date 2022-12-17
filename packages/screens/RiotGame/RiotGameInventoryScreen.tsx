@@ -7,8 +7,8 @@ import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item
 import addCircleFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { BrandText } from "../../components/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { ButtonOutline } from "../../components/buttons/ButtonOutline";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
+import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import Col from "../../components/grid/Col";
 import Row from "../../components/grid/Row";
 import { useRippers } from "../../hooks/riotGame/useRippers";
@@ -39,7 +39,7 @@ export const RiotGameInventoryScreen = () => {
 
             <CustomPressable>
               {({ hovered }): React.ReactElement => (
-                <ButtonOutline
+                <PrimaryButtonOutline
                   disabled
                   color={yellowDefault}
                   size="SM"
@@ -72,7 +72,7 @@ export const RiotGameInventoryScreen = () => {
             style={{ justifyContent: "space-between", alignItems: "center" }}
           >
             <BrandText style={fontMedium32}>Available Rippers</BrandText>
-            <ButtonOutline
+            <PrimaryButtonOutline
               onPress={gotoBreeding}
               color={yellowDefault}
               size="SM"

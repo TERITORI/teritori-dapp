@@ -1,8 +1,8 @@
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { NFT } from "../../api/marketplace/v1/marketplace";
 
+import { NFT } from "../../api/marketplace/v1/marketplace";
 import {
   TeritoriSquadStakingClient,
   TeritoriSquadStakingQueryClient,

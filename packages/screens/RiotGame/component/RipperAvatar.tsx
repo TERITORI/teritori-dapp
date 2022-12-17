@@ -35,8 +35,6 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
   let rarityColor;
   switch (rarity) {
     case "Uncommon":
-      rarityColor = orangeDefault;
-      break;
     case "Rare":
       rarityColor = orangeDefault;
       break;

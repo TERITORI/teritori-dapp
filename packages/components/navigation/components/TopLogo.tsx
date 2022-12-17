@@ -6,7 +6,7 @@ import { useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { SVG } from "../../SVG";
 
-export const LogoTop = () => {
+export const TopLogo = () => {
   // variables
   const navigation = useAppNavigation();
 

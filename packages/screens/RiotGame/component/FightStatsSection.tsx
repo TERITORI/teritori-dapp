@@ -2,7 +2,7 @@ import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
-import { ButtonOutline } from "../../../components/buttons/ButtonOutline";
+import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import {
   TeritoriDistributorClient,
@@ -136,7 +136,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
       />
 
       {claimableAmount !== 0 && (
-        <ButtonOutline
+        <PrimaryButtonOutline
           disabled={claimableAmount === 0 || isClaiming}
           color={yellowDefault}
           size="M"

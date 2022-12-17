@@ -17,7 +17,7 @@ import { NetworkSelector } from "../../../components/NetworkSelector";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import Row from "../../../components/grid/Row";
-import { LogoTop } from "../../../components/navigation/components/TopLogo";
+import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
 import {
   RootStackParamList,
@@ -103,7 +103,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
         <View>
-          <LogoTop />
+          <TopLogo />
         </View>
 
         <ScrollView

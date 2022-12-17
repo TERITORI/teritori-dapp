@@ -4,6 +4,7 @@ import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
 
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import closeSVG from "../../../assets/icons/close.svg";
+import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -27,7 +28,6 @@ import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalOld";
 import { SimpleButton } from "./component/SimpleButton";
-import { NFT } from "../../api/marketplace/v1/marketplace";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 
@@ -56,15 +56,11 @@ export const RiotGameEnrollScreen = () => {
     const selectedIds = selectedRippers.map(getRipperTokenId);
     const stakedIds = currentSquad?.token_ids || [];
 
-    // excluded rippers already selected
-    let res = myAvailableRippers.filter(
-      (r) => !selectedIds.includes(getRipperTokenId(r))
-    );
-
-    // excluded rippers already staked
-    res = res.filter((r) => !stakedIds.includes(getRipperTokenId(r)));
-
-    return res;
+    // excluded rippers already selected or staked
+    return myAvailableRippers.filter((r) => {
+      const tokenId = getRipperTokenId(r);
+      return !selectedIds.includes(tokenId) && !stakedIds.includes(tokenId);
+    });
   }, [myAvailableRippers, selectedRippers, currentSquad]);
 
   const stakingDuration = useMemo<number>(() => {

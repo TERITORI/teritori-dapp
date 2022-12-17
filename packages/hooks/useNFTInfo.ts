@@ -172,7 +172,6 @@ export const getStandardNFTInfo = async (
     description = nftMetadata.description;
     attributes = nftMetadata.attributes;
   } else if (nftInfo.extension?.image) {
-    console.log("NFT extension:", { extension: nftInfo.extension });
     name = (nftInfo.extension?.name as any) || "";
     image = (nftInfo.extension?.image as any) || "";
     description = (nftInfo.extension?.description as any) || "";

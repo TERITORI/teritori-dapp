@@ -96,7 +96,6 @@ export const useBreeding = () => {
     if (breedingConfig) return;
 
     const config: ConfigResponse = await breedingQueryClient.config();
-    console.log("Breading config:", { config });
     setBreedingConfig(config);
   };
 

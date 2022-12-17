@@ -27,7 +27,7 @@ import { SpacerColumn } from "../spacer";
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
 import { SidebarProfileButton } from "./components/SidebarProfileButton";
-import { LogoTop } from "./components/TopLogo";
+import { TopLogo } from "./components/TopLogo";
 import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
@@ -80,7 +80,7 @@ export const Sidebar: React.FC = () => {
       <View style={styles.headerContainer}>
         {currentRouteName === "Home" && <SideNotch />}
 
-        <LogoTop />
+        <TopLogo />
         <Animated.View
           style={[styles.toggleButtonContainer, toggleButtonStyle]}
         >

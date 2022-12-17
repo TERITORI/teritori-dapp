@@ -46,7 +46,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
   return (
     <ModalBase
       contentStyle={{ alignItems: "center" }}
-      label={
+      labelComponent={
         <Row>
           <BrandText style={fontSemibold20}>Success Fight !</BrandText>
           <Image

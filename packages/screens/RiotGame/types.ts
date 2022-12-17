@@ -39,6 +39,7 @@ export type RipperRarity =
   | "Rare"
   | "Epic"
   | "Legendary";
+
 export type RipperTraitType =
   | "Background"
   | "Skin"

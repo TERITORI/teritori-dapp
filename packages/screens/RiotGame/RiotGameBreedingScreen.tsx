@@ -5,9 +5,10 @@ import { Checkbox } from "react-native-paper";
 
 import breedSVG from "../../../assets/game/breed.svg";
 import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
+import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { ButtonOutline } from "../../components/buttons/ButtonOutline";
+import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import Row from "../../components/grid/Row";
 import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
 import { SpacerRow } from "../../components/spacer";
@@ -29,7 +30,6 @@ import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";
 import { RipperSelectorModal } from "./component/RipperSelectorModal";
-import { NFT } from "../../api/marketplace/v1/marketplace";
 
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();
@@ -168,11 +168,7 @@ export const RiotGameBreedingScreen = () => {
     setSelectedSlot(slotId);
   };
 
-  const selectRipper = (
-    slotId: number,
-    ripper: NFT,
-    breedingsLeft: number
-  ) => {
+  const selectRipper = (slotId: number, ripper: NFT, breedingsLeft: number) => {
     setSelectedSlot(undefined);
     setSelectedRippers({
       ...selectedRippers,
@@ -237,7 +233,7 @@ export const RiotGameBreedingScreen = () => {
           <SVG source={chevronDownLineSVG} color={neutral33} />
         </View>
 
-        <ButtonOutline
+        <PrimaryButtonOutline
           disabled={
             isBreeding ||
             Object.keys(selectedRippers).length !== 2 ||

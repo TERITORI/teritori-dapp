@@ -15,7 +15,6 @@ export const TertiaryBox: React.FC<{
   mainContainerStyle?: StyleProp<ViewStyle>;
   disabledBorderColor?: string;
   noBrokenCorners?: boolean;
-  brokenCornerWith?: number;
 }> = ({
   width,
   height,
@@ -28,8 +27,8 @@ export const TertiaryBox: React.FC<{
   mainContainerStyle,
   noBrokenCorners,
   disabledBorderColor,
-  brokenCornerWith = 1,
 }) => {
+  const brokenCornerWidth = 1;
   const flatMainContainerStyle = mainContainerStyle
     ? StyleSheet.flatten(mainContainerStyle)
     : {};
@@ -99,7 +98,7 @@ export const TertiaryBox: React.FC<{
                   top: -5,
                   backgroundColor: squaresBackgroundColor,
                   borderRightColor: borderColor,
-                  borderRightWidth: brokenCornerWith,
+                  borderRightWidth: brokenCornerWidth,
                   transform: [{ rotate: "45deg" }],
                   position: "absolute",
                   zIndex: 2,
@@ -116,7 +115,7 @@ export const TertiaryBox: React.FC<{
                   transform: [{ rotate: "225deg" }],
                   backgroundColor: squaresBackgroundColor,
                   borderRightColor: borderColor,
-                  borderRightWidth: brokenCornerWith,
+                  borderRightWidth: brokenCornerWidth,
                   position: "absolute",
                   zIndex: 2,
                 }}

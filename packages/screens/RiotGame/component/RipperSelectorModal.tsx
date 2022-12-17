@@ -5,11 +5,9 @@ import {
   StyleSheet,
   View,
   ImageBackground,
-  FlatList,
   ScrollView,
   Pressable,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
@@ -17,13 +15,17 @@ import closeSVG from "../../../../assets/icons/close.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import Col from "../../../components/grid/Col";
 import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
-import { getRipperRarity, getRipperTokenId, getRipperTraitValue } from "../../../utils/game";
-import { neutral00, white, withAlpha, yellowDefault } from "../../../utils/style/colors";
+import { getRipperTokenId, getRipperTraitValue } from "../../../utils/game";
+import {
+  neutral00,
+  secondaryColor,
+  withAlpha,
+  yellowDefault,
+} from "../../../utils/style/colors";
 import {
   fontMedium24,
   fontMedium32,
@@ -32,6 +34,7 @@ import {
 } from "../../../utils/style/fonts";
 import { headerHeight } from "../../../utils/style/layout";
 import { spacing } from "../../../utils/style/spacing";
+import { AvailableRippersGrid } from "./AvailableRippersGrid";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStat } from "./RipperStat";
 import { SimpleButton } from "./SimpleButton";
@@ -43,11 +46,6 @@ type RipperSelectorModalProps = ModalProps & {
   onSelectRipper?(slotId: number, ripper: NFT, breedingsLeft: number): void;
   onClose?(): void;
 };
-
-const THUMB_CONTAINER_WIDTH = 120;
-const THUMB_CONTAINER_HEIGHT = 120;
-
-const THUMB_SIZE = 100;
 
 const RIPPER_IMAGE_SIZE = 300;
 
@@ -118,41 +116,10 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
               <View>
                 <BrandText style={[fontMedium32]}>Available Rippers</BrandText>
 
-                <FlatList
-                  data={availableRippers}
-                  numColumns={3}
-                  scrollEnabled
-                  style={{ height: 329 }}
-                  showsVerticalScrollIndicator={false}
-                  renderItem={({ item: ripper, index }) => {
-                    const isSelected = ripper.id === selectedRipper?.id;
-
-                    return (
-                      <TouchableOpacity
-                        key={ripper.id}
-                        activeOpacity={0.6}
-                        onPress={() => selectRipper(ripper)}
-                      >
-                        <TertiaryBox
-                          style={{ margin: 10 }}
-                          width={THUMB_CONTAINER_WIDTH}
-                          height={THUMB_CONTAINER_HEIGHT}
-                          mainContainerStyle={[
-                            isSelected && {
-                              borderColor: white,
-                              borderWidth: 1,
-                            },
-                          ]}
-                        >
-                          <RipperAvatar
-                            size={THUMB_SIZE}
-                            source={ripper.imageUri}
-                            rarity={getRipperRarity(ripper)}
-                          />
-                        </TertiaryBox>
-                      </TouchableOpacity>
-                    );
-                  }}
+                <AvailableRippersGrid
+                  availableRippers={availableRippers}
+                  selectRipper={selectRipper}
+                  selectedRipper={selectedRipper}
                 />
               </View>
 
@@ -269,7 +236,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderStyle: "solid",
     borderColor: "transparent",
-    borderLeftColor: white,
+    borderLeftColor: secondaryColor,
     right: -16,
   },
   btnGroup: {

@@ -24,7 +24,8 @@ import { SpacerColumn } from "../spacer";
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
 type ModalBaseProps = {
-  label?: string | React.FC | ViewComponent | JSX.Element;
+  label?: string;
+  labelComponent?: React.FC | ViewComponent | JSX.Element;
   onClose?: () => void;
   onBackPress?: () => void;
   width?: number;
@@ -42,6 +43,7 @@ type ModalBaseProps = {
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
 export const ModalBase: React.FC<ModalBaseProps> = ({
   label,
+  labelComponent,
   visible,
   width,
   onClose,
@@ -112,7 +114,7 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
               padding: modalMarginPadding,
             }}
           >
-            {(label || description) && (
+            {(label || labelComponent || description) && (
               <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
@@ -140,6 +142,8 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
                       {label}
                     </BrandText>
                   )}
+
+                  {labelComponent}
 
                   {description && (
                     <>

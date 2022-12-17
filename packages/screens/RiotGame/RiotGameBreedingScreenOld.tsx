@@ -7,7 +7,7 @@ import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { ButtonOutline } from "../../components/buttons/ButtonOutline";
+import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import Col from "../../components/grid/Col";
 import Row from "../../components/grid/Row";
 import { SpacerRow } from "../../components/spacer";
@@ -66,7 +66,7 @@ export const RiotGameBreedingScreen = () => {
             <SVG source={chevronDownLineSVG} color={neutral33} />
           </View>
 
-          <ButtonOutline
+          <PrimaryButtonOutline
             onPress={doBreed}
             color={yellowDefault}
             size="M"

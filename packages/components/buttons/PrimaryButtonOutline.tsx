@@ -23,6 +23,8 @@ export const PrimaryButtonOutline: React.FC<{
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
+  color?: string;
+  noBrokenCorners?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -34,6 +36,8 @@ export const PrimaryButtonOutline: React.FC<{
   iconSVG,
   disabled = false,
   fullWidth = false,
+  color = primaryColor,
+  noBrokenCorners = false,
 }) => {
   const boxProps = {
     style,
@@ -41,13 +45,15 @@ export const PrimaryButtonOutline: React.FC<{
     squaresBackgroundColor,
     width,
     fullWidth,
+    noBrokenCorners,
+    disabledBorderColor: color,
   };
 
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      style={{ width: fullWidth ? "100%" : width }}
+      style={{ width: fullWidth ? "100%" : width, opacity: disabled ? 0.5 : 1 }}
     >
       <TertiaryBox
         height={heightButton(size)}
@@ -56,23 +62,21 @@ export const PrimaryButtonOutline: React.FC<{
           borderRadius: borderRadiusButton(size),
           backgroundColor: "#000000",
           paddingHorizontal: 20,
-          borderColor: primaryColor,
-          opacity: disabled ? 0.5 : 1,
+          borderColor: color,
         }}
         {...boxProps}
       >
         {iconSVG ? (
           <SVG
             source={iconSVG}
+            color={color}
             width={16}
             height={16}
             style={{ marginRight: 8 }}
           />
         ) : null}
 
-        <BrandText
-          style={[fontSemibold14, { color: primaryColor, textAlign: "center" }]}
-        >
+        <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
           {text}
         </BrandText>
       </TertiaryBox>

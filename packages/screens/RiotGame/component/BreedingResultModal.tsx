@@ -35,7 +35,7 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   return (
     <ModalBase
       contentStyle={{ alignItems: "center" }}
-      label={
+      labelComponent={
         <Row>
           <BrandText style={fontSemibold20}>Success Breeding</BrandText>
           <Image
