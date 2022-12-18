@@ -13,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authTypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/pkg/errors"
+	"github.com/tendermint/tendermint/rpc/client/http"
 )
 
 const KEY_NAME = "__MemoryKeyName__"
@@ -20,8 +21,6 @@ const HD_PATH = "m/44'/118'/0'/0/0"
 const ALGO_NAME = "secp256k1"
 
 type ContractClient struct {
-	Sender              string
-	Mnemonic            string
 	ChainId             string
 	Bech32PrefixAccAddr string
 	RpcEndpoint         string
@@ -50,32 +49,28 @@ func (cc *ContractClient) InitConfig() {
 	config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
 }
 
-func (cc *ContractClient) SetKeyring() error {
+func (cc *ContractClient) GetKeyring(mnemonic string) (keyring.Keyring, error) {
 	kb := keyring.NewInMemory(cc.ExecClientCtx.KeyringOptions...)
 	keyringAlgos, _ := kb.SupportedAlgorithms()
 	algo, algoErr := keyring.NewSigningAlgoFromString(ALGO_NAME, keyringAlgos)
 	if algoErr != nil {
-		return errors.Wrap(algoErr, "failed to create algo")
+		return nil, errors.Wrap(algoErr, "failed to create algo")
 	}
 
-	_, accErr := kb.NewAccount(KEY_NAME, cc.Mnemonic, "", HD_PATH, algo)
+	_, accErr := kb.NewAccount(KEY_NAME, mnemonic, "", HD_PATH, algo)
 	if accErr != nil {
-		return errors.Wrap(accErr, "failed to get account from mnemonic")
+		return nil, errors.Wrap(accErr, "failed to get account from mnemonic")
 	}
 
-	cc.ExecClientCtx = cc.ExecClientCtx.WithKeyring(kb)
-	cc.QueryClientCtx = cc.QueryClientCtx.WithKeyring(kb)
-	return nil
+	return kb, nil
 }
 
-func (cc *ContractClient) SetClient() error {
+func (cc *ContractClient) GetClient() (*http.HTTP, error) {
 	client, err := client.NewClientFromNode(cc.RpcEndpoint)
 	if err != nil {
-		return errors.Wrap(err, "failed to get client from node")
+		return nil, errors.Wrap(err, "failed to get client from node")
 	}
-	cc.ExecClientCtx = cc.ExecClientCtx.WithClient(client)
-	cc.QueryClientCtx = cc.QueryClientCtx.WithClient(client)
-	return nil
+	return client, nil
 }
 
 func (cc *ContractClient) InitExecTxFactory(memo string) {
@@ -92,25 +87,34 @@ func (cc *ContractClient) InitExecTxFactory(memo string) {
 }
 
 func (cc *ContractClient) InitQueryClientCtx() error {
-	cc.QueryClientCtx = client.Context{ChainID: cc.ChainId}
-
-	if err := cc.SetKeyring(); err != nil {
-		return errors.Wrap(err, "failed to set keyring")
+	rpcClient, err := cc.GetClient()
+	if err != nil {
+		return errors.Wrap(err, "failed to get rpc client")
 	}
 
-	if err := cc.SetClient(); err != nil {
-		return errors.Wrap(err, "failed to set client")
-	}
+	cc.QueryClientCtx = client.Context{}.
+		WithChainID(cc.ChainId).
+		WithClient(rpcClient)
 
 	return nil
 }
 
-func (cc *ContractClient) InitExecClientCtx() error {
+func (cc *ContractClient) InitExecClientCtx(sender string, mnemonic string) error {
 	encodingConfig := InitEncoding()
 
-	fromAccAddress, err := sdk.AccAddressFromBech32(cc.Sender)
+	fromAccAddress, err := sdk.AccAddressFromBech32(sender)
 	if err != nil {
 		return errors.Wrap(err, "failed to parse sender address")
+	}
+
+	keyring, err := cc.GetKeyring(mnemonic)
+	if err != nil {
+		return errors.Wrap(err, "failed to get keyring")
+	}
+
+	rpcClient, err := cc.GetClient()
+	if err != nil {
+		return errors.Wrap(err, "failed to get rpc client")
 	}
 
 	cc.ExecClientCtx = client.Context{}.
@@ -125,22 +129,16 @@ func (cc *ContractClient) InitExecClientCtx() error {
 		WithLegacyAmino(encodingConfig.Amino).
 		WithTxConfig(encodingConfig.TxConfig).
 		WithCodec(encodingConfig.Marshaler).
-		WithInterfaceRegistry(encodingConfig.InterfaceRegistry)
-
-	if err := cc.SetKeyring(); err != nil {
-		return errors.Wrap(err, "failed to set keyring")
-	}
-
-	if err := cc.SetClient(); err != nil {
-		return errors.Wrap(err, "failed to set client")
-	}
+		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
+		WithKeyring(keyring).
+		WithClient(rpcClient)
 
 	return nil
 }
 
-func (cc *ContractClient) BuildExecMsg(contract string, execMsg string, funds sdk.Coins) (*types.MsgExecuteContract, error) {
+func (cc *ContractClient) BuildExecMsg(sender string, contract string, execMsg string, funds sdk.Coins) (*types.MsgExecuteContract, error) {
 	msg := types.MsgExecuteContract{
-		Sender:   cc.Sender,
+		Sender:   sender,
 		Contract: contract,
 		Funds:    funds,
 		Msg:      []byte(execMsg),
@@ -184,14 +182,14 @@ func (cc *ContractClient) BroadcastTx(msgs ...sdk.Msg) (*sdk.TxResponse, error) 
 	return cc.ExecClientCtx.BroadcastTx(txBytes)
 }
 
-func (cc *ContractClient) ExecuteWasm(contract string, execMsg string, funds sdk.Coins, memo string) (*sdk.TxResponse, error) {
+func (cc *ContractClient) ExecuteWasm(sender string, mnemonic string, contract string, execMsg string, funds sdk.Coins, memo string) (*sdk.TxResponse, error) {
 	cc.InitConfig()
-	if err := cc.InitExecClientCtx(); err != nil {
+	if err := cc.InitExecClientCtx(sender, mnemonic); err != nil {
 		return nil, errors.Wrap(err, "failed to build client context")
 	}
 	cc.InitExecTxFactory(memo)
 
-	msg, err := cc.BuildExecMsg(contract, execMsg, funds)
+	msg, err := cc.BuildExecMsg(sender, contract, execMsg, funds)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build exec message")
 	}

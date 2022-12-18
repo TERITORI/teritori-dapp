@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,18 +21,22 @@ import (
 
 type Obj = contractutil.Obj
 
-func sendRewardsList(distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
+func sendRewardsList(chainId string, rpcEndpoint string, distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
+	sender := distributorOwnerAddress
+	mnemonic := distributorMnemonic
 	contract := distributorContractAddress
 	denom := "utori"
 	amount := int64(1)
 	funds := sdk.NewCoins(sdk.NewInt64Coin(denom, amount))
 
+	if strings.HasPrefix(rpcEndpoint, "https") {
+		rpcEndpoint += ":443"
+	}
+
 	contractClient := contractutil.ContractClient{
-		Sender:              distributorOwnerAddress,
-		Mnemonic:            "net nut power use vital render else amazing lizard lady ball parrot",
-		ChainId:             "teritori-testnet-v3",
+		ChainId:             chainId,
+		RpcEndpoint:         rpcEndpoint,
 		Bech32PrefixAccAddr: "tori",
-		RpcEndpoint:         "https://rpc.testnet.teritori.com:443",
 		GasPrices:           "0.025utori",
 		GasAdjustment:       1.3,
 	}
@@ -49,6 +54,10 @@ func sendRewardsList(distributorOwnerAddress string, distributorContractAddress 
 					"addr":   "tori19cnu30yq5s52f00xc430ktyjz35nw24jx8zplc",
 					"amount": "1",
 				},
+				Obj{
+					"addr":   "tori1r0hlnueh68su5ftwrcvd2fh8geh4t4dk6npgcc",
+					"amount": "1",
+				},
 			},
 		},
 	}
@@ -59,7 +68,7 @@ func sendRewardsList(distributorOwnerAddress string, distributorContractAddress 
 	}
 	execMsgStr := string(execMsg)
 
-	return contractClient.ExecuteWasm(contract, execMsgStr, funds, "Send rewards list")
+	return contractClient.ExecuteWasm(sender, mnemonic, contract, execMsgStr, funds, "Send rewards list")
 }
 
 func updateLeaderboard(db *gorm.DB) error {
@@ -117,6 +126,8 @@ func main() {
 		distributorContractAddress = fs.String("teritori-distributor-contract-address", "", "distributor contract address")
 		distributorOwnerAddress    = fs.String("teritori-distributor-owner-address", "", "owner that can send rewards list to distributor contract")
 		distributorOwnerMnemonic   = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of owner")
+		chainId                    = fs.String("public-chain-id", "", "public chain id")
+		rpcEndpoint                = fs.String("public-chain-rpc-endpoint", "", "public chain rpc endpoint")
 
 		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
@@ -152,6 +163,14 @@ func main() {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
 
+	if chainId == nil {
+		panic(errors.New("chainId is mandatory"))
+	}
+
+	if rpcEndpoint == nil {
+		panic(errors.New("rpcEndpoint is mandatory"))
+	}
+
 	schedule := gocron.NewScheduler(time.UTC)
 	schedule.Every(1).Hour().Do(func() {
 		if err := updateLeaderboard(db); err != nil {
@@ -168,7 +187,7 @@ func main() {
 		}
 		logger.Info("snapshot leaderboard successfully")
 
-		txResponse, err := sendRewardsList(*distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
+		txResponse, err := sendRewardsList(*chainId, *rpcEndpoint, *distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
 		if err != nil {
 			logger.Error("failed to send rewards list", zap.Error(err))
 			return
