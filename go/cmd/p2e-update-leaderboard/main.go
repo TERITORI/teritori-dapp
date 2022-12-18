@@ -21,7 +21,7 @@ import (
 
 type Obj = contractutil.Obj
 
-func sendRewardsList(chainId string, rpcEndpoint string, distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
+func sendRewardsList(db *gorm.DB, chainId string, rpcEndpoint string, distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
 	sender := distributorOwnerAddress
 	mnemonic := distributorMnemonic
 	contract := distributorContractAddress
@@ -43,22 +43,26 @@ func sendRewardsList(chainId string, rpcEndpoint string, distributorOwnerAddress
 
 	configData, err := contractClient.QueryWasm(contract, `{"config": {}}`)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed tto query contract")
+		return nil, errors.Wrap(err, "failed to query contract")
+	}
+
+	// Get leaderboard
+	rewardsList := []Obj{}
+
+	var leaderboard []indexerdb.P2eLeaderboard
+	if err := db.Limit(500).Find(&leaderboard).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to get current leaderboard")
+	}
+
+	for _, userScore := range leaderboard {
+		addr := strings.Split(string(userScore.UserID), "-")[1]
+		rewardsList = append(rewardsList, Obj{"addr": addr, "amount": "1"})
 	}
 
 	execMsgRaw := Obj{
 		"add_daily_report": Obj{
 			"report_id": int32(configData["last_report_id"].(float64)) + 1,
-			"rewards": []Obj{
-				Obj{
-					"addr":   "tori19cnu30yq5s52f00xc430ktyjz35nw24jx8zplc",
-					"amount": "1",
-				},
-				Obj{
-					"addr":   "tori1r0hlnueh68su5ftwrcvd2fh8geh4t4dk6npgcc",
-					"amount": "1",
-				},
-			},
+			"rewards":   rewardsList,
 		},
 	}
 
@@ -78,7 +82,7 @@ func updateLeaderboard(db *gorm.DB) error {
 	// - Only counting the stakings which have been started
 	// - If staking is in progress => in progress duration = current - start_time
 	// - If staking ends => if progress duration = end_time - start_time
-	updateScoreErr := db.Exec(fmt.Sprint(`
+	updateScoreErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET 
 			in_progress_score = score + LEAST(ss.end_time - ss.start_time, ? - ss.start_time)
@@ -86,7 +90,7 @@ func updateLeaderboard(db *gorm.DB) error {
 		WHERE lb.user_id = ss.owner_id 
 			AND lb.collection_id = ss.collection_id
 			AND ss.start_time < ?
-	`),
+	`,
 		currentTimestamp,
 		currentTimestamp,
 	).Error
@@ -94,14 +98,13 @@ func updateLeaderboard(db *gorm.DB) error {
 		return errors.Wrap(updateScoreErr, "failed to update in progress score")
 	}
 
-	updateRankErr := db.Exec(fmt.Sprint(`
+	updateRankErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET rank = orderedLb.rank
 		FROM (SELECT user_id, collection_id, row_number() OVER (ORDER BY in_progress_score) AS rank FROM p2e_leaderboards) orderedLb
 		WHERE lb.user_id = orderedLb.user_id
 			AND lb.collection_id = orderedLb.collection_id
-	`),
-	).Error
+	`).Error
 	if updateRankErr != nil {
 		return errors.Wrap(updateRankErr, "failed to update rank")
 	}
@@ -187,7 +190,7 @@ func main() {
 		}
 		logger.Info("snapshot leaderboard successfully")
 
-		txResponse, err := sendRewardsList(*chainId, *rpcEndpoint, *distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
+		txResponse, err := sendRewardsList(db, *chainId, *rpcEndpoint, *distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
 		if err != nil {
 			logger.Error("failed to send rewards list", zap.Error(err))
 			return
