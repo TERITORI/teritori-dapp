@@ -101,7 +101,7 @@ export const RiotGameEnrollScreen = () => {
     try {
       await squadStake(selectedRippers, squadStakingConfig);
 
-      // HACK: wait a little bit before redirection to be sure that we have passed the fight start time
+      // Wait a little bit before redirection to be sure that we have passed the fight start time
       setTimeout(() => {
         navigation.replace("RiotGameFight");
       }, 1000);

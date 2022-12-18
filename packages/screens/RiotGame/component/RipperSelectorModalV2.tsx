@@ -20,7 +20,7 @@ import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
-import { getRipperRarity, getRipperTraitValue } from "../../../utils/game";
+import { getRipperRarity } from "../../../utils/game";
 import {
   neutral00,
   secondaryColor,
@@ -34,7 +34,7 @@ import {
 } from "../../../utils/style/fonts";
 import { headerHeight, layout } from "../../../utils/style/layout";
 import { RipperAvatar } from "./RipperAvatar";
-import { RipperStat } from "./RipperStat";
+import { RipperStatsSection } from "./RipperStatsSection";
 import { SimpleButton } from "./SimpleButton";
 
 type RipperSelectorModalProps = ModalProps & {
@@ -45,8 +45,8 @@ type RipperSelectorModalProps = ModalProps & {
   onClose?(): void;
 };
 
-const THUMB_CONTAINER_WIDTH = 132;
-const THUMB_CONTAINER_HEIGHT = 132;
+const THUMB_CONTAINER_SIZE = 132;
+const TOTAL_VISIBLE = 4;
 
 const THUMB_SIZE = 100;
 
@@ -103,23 +103,19 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           showsVerticalScrollIndicator={false}
         >
           <Row breakpoint={992}>
-            <View style={styles.leftCol}>
-              <View style={styles.leftColContent}>
+            <View
+              style={{ flex: 2, alignItems: "flex-end", position: "relative" }}
+            >
+              <View style={{ position: "relative" }}>
                 <View style={styles.selectListContainer}>
                   <Carousel
                     data={availableRippers}
-                    width={
-                      THUMB_CONTAINER_WIDTH +
-                      20 /* For displaying right arrow */
-                    }
-                    height={
-                      THUMB_CONTAINER_HEIGHT +
-                      20 /* For padding between items */
-                    }
+                    width={THUMB_CONTAINER_SIZE + 20}
+                    height={THUMB_CONTAINER_SIZE + 20}
                     loop={false}
                     vertical
                     style={{
-                      height: (THUMB_CONTAINER_HEIGHT + 20) * 4,
+                      height: (THUMB_CONTAINER_SIZE + 20) * TOTAL_VISIBLE,
                     }}
                     pagingEnabled
                     renderItem={({ item, index }) => {
@@ -139,7 +135,12 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                               },
                             ]}
                           >
-                            <BrandText style={styles.ripperThumbName}>
+                            <BrandText
+                              style={[
+                                fontSemibold11,
+                                { marginVertical: layout.padding_x1 },
+                              ]}
+                            >
                               {item.name}
                             </BrandText>
 
@@ -171,35 +172,16 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
               </View>
             </View>
 
-            <View style={styles.rightCol}>
+            <View
+              style={{
+                flex: 1,
+                paddingLeft: layout.padding_x4,
+                paddingTop: layout.padding_x4,
+              }}
+            >
               <BrandText style={fontMedium32}>Stats</BrandText>
 
-              <RipperStat
-                containerStyle={styles.ripperStatContainer}
-                name="Stamina"
-                value={
-                  selectedRipper &&
-                  getRipperTraitValue(selectedRipper, "Stamina")
-                }
-                size="LG"
-              />
-              <RipperStat
-                containerStyle={styles.ripperStatContainer}
-                name="Protection"
-                value={
-                  selectedRipper &&
-                  getRipperTraitValue(selectedRipper, "Protection")
-                }
-                size="LG"
-              />
-              <RipperStat
-                containerStyle={styles.ripperStatContainer}
-                name="Luck"
-                value={
-                  selectedRipper && getRipperTraitValue(selectedRipper, "Luck")
-                }
-                size="LG"
-              />
+              <RipperStatsSection ripper={selectedRipper} size="LG" />
 
               <View style={styles.btnGroup}>
                 <SVG color={yellowDefault} source={controllerSVG} />
@@ -228,19 +210,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     position: "relative",
   },
-  rightCol: {
-    flex: 1,
-    paddingLeft: layout.padding_x4,
-    paddingTop: layout.padding_x4,
-  },
-  leftCol: {
-    flex: 2,
-    alignItems: "flex-end",
-    position: "relative",
-  },
-  leftColContent: {
-    position: "relative",
-  },
   dashedBorder: {
     width: RIPPER_IMAGE_SIZE,
     height: RIPPER_IMAGE_SIZE,
@@ -262,15 +231,8 @@ const styles = StyleSheet.create({
   },
   ripperThumb: {
     alignItems: "center",
-    width: THUMB_CONTAINER_HEIGHT,
+    width: THUMB_CONTAINER_SIZE,
     borderWidth: 0,
-  },
-  ripperThumbName: {
-    marginVertical: layout.padding_x1,
-    ...(fontSemibold11 as object),
-  },
-  ripperStatContainer: {
-    marginTop: layout.padding_x4,
   },
   arrowRight: {
     position: "absolute",

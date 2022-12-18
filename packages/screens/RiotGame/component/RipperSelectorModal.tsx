@@ -19,7 +19,7 @@ import Col from "../../../components/grid/Col";
 import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer/SpacerRow";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
-import { getRipperTokenId, getRipperTraitValue } from "../../../utils/game";
+import { getRipperTokenId } from "../../../utils/game";
 import {
   neutral00,
   secondaryColor,
@@ -35,7 +35,7 @@ import {
 import { headerHeight, layout } from "../../../utils/style/layout";
 import { AvailableRippersGrid } from "./AvailableRippersGrid";
 import { RipperAvatar } from "./RipperAvatar";
-import { RipperStat } from "./RipperStat";
+import { RipperStatsSection } from "./RipperStatsSection";
 import { SimpleButton } from "./SimpleButton";
 
 type RipperSelectorModalProps = ModalProps & {
@@ -57,7 +57,6 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   confirmButton,
   ...props
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRipper, setSelectedRipper] = useState<NFT | undefined>();
   const [breedingsLeft, setBreedingsLeft] = useState<number>(0);
   const { getBreedingsLefts } = useBreeding();
@@ -160,38 +159,9 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 Stats
               </BrandText>
 
-              <RipperStat
-                containerStyle={{ marginTop: layout.padding_x3 }}
-                name="Stamina"
-                value={
-                  selectedRipper &&
-                  getRipperTraitValue(selectedRipper, "Stamina")
-                }
-                size="MD"
-              />
-              <RipperStat
-                containerStyle={{ marginTop: layout.padding_x3 }}
-                name="Protection"
-                value={
-                  selectedRipper &&
-                  getRipperTraitValue(selectedRipper, "Protection")
-                }
-                size="MD"
-              />
-              <RipperStat
-                containerStyle={{ marginTop: layout.padding_x3 }}
-                name="Luck"
-                value={
-                  selectedRipper && getRipperTraitValue(selectedRipper, "Luck")
-                }
-                size="MD"
-              />
-
-              <RipperStat
-                containerStyle={{ marginTop: layout.padding_x3 }}
-                name="Breedings left"
-                showProgress={false}
-                value={breedingsLeft}
+              <RipperStatsSection
+                ripper={selectedRipper}
+                breedingsLeft={breedingsLeft}
                 size="MD"
               />
             </Col>
