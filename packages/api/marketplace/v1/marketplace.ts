@@ -305,7 +305,7 @@ export interface NewsResponse {
   news: News[];
 }
 
-const createBaseAttribute = (): Attribute => {
+function createBaseAttribute(): Attribute {
   return { traitType: "", value: "" };
 }
 
