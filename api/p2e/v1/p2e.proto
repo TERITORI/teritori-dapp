@@ -7,6 +7,34 @@ service P2eService {
   rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
   rpc FightersCount(FightersCountRequest) returns (FightersCountResponse);
   rpc FighterScore(FighterScoreRequest) returns (FighterScoreResponse);
+  rpc CurrentSeason(CurrentSeasonRequest) returns (CurrentSeasonResponse);
+  rpc AllSeasons(AllSeasonsRequest) returns (AllSeasonsResponse);
+}
+
+
+message AllSeasonsRequest {
+
+}
+
+message SeasonWithoutPrize {
+  int32 id = 1;
+  string boss_name = 2;
+  int32 boss_hp = 3;
+}
+
+message AllSeasonsResponse {
+  repeated SeasonWithoutPrize seasons = 1;
+}
+
+message CurrentSeasonRequest {
+}
+
+message CurrentSeasonResponse {
+  int32 id = 1;
+  int32 total_prize = 2;
+  string boss_name = 3;
+  int32 boss_hp = 4;
+  float remaining_hp = 5;
 }
 
 message FighterScoreRequest {

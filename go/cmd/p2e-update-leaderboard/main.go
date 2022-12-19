@@ -12,6 +12,7 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/contractutil"
+	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/go-co-op/gocron"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -21,11 +22,8 @@ import (
 
 type Obj = contractutil.Obj
 
-func sendRewardsList(db *gorm.DB, chainId string, rpcEndpoint string, distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
-	year, month, _ := time.Now().UTC().Date()
-	monthStr := fmt.Sprintf(`%d-%d`, year, int(month))
-
-	monthlyRewards, err := GetRankRewardsByMonth(monthStr)
+func sendRewardsList(db *gorm.DB, riotStartedAt string, chainId string, rpcEndpoint string, distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
+	monthlyRewards, err := p2e.GetCurrentRewardsConfig(riotStartedAt)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get rewards")
 	}
@@ -149,6 +147,7 @@ func main() {
 		distributorOwnerMnemonic   = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of owner")
 		chainId                    = fs.String("public-chain-id", "", "public chain id")
 		rpcEndpoint                = fs.String("public-chain-rpc-endpoint", "", "public chain rpc endpoint")
+		riotStartedAt              = fs.String("the-riot-started-at", "", "time where the riot game starts")
 
 		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
@@ -192,6 +191,10 @@ func main() {
 		panic(errors.New("rpcEndpoint is mandatory"))
 	}
 
+	if riotStartedAt == nil {
+		panic(errors.New("riotStartedAt is mandatory"))
+	}
+
 	schedule := gocron.NewScheduler(time.UTC)
 	schedule.Every(1).Hour().Do(func() {
 		if err := updateLeaderboard(db); err != nil {
@@ -208,7 +211,7 @@ func main() {
 		}
 		logger.Info("snapshot leaderboard successfully")
 
-		txResponse, err := sendRewardsList(db, *chainId, *rpcEndpoint, *distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
+		txResponse, err := sendRewardsList(db, *riotStartedAt, *chainId, *rpcEndpoint, *distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
 		if err != nil {
 			logger.Error("failed to send rewards list", zap.Error(err))
 			return

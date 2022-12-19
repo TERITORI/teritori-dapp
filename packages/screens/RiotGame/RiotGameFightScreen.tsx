@@ -42,7 +42,6 @@ export const RiotGameFightScreen = () => {
     squadStakingClient,
     squadWithdraw,
     remainingTime,
-    remainingPercentage,
     stakingState,
     startStakingTimer,
     lastStakeTime,
@@ -132,7 +131,7 @@ export const RiotGameFightScreen = () => {
       <View style={styles.contentContainer}>
         <Row style={{ justifyContent: "space-between" }} breakpoint={992}>
           <View style={styles.col}>
-            <FightBossSection remainingPercentage={remainingPercentage} />
+            <FightBossSection />
           </View>
 
           <View style={styles.col}>

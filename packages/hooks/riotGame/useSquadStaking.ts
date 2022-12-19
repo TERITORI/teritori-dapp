@@ -33,7 +33,6 @@ export const useSquadStaking = () => {
   const [squadStakingConfig, setSquadStakingConfig] =
     useState<GetConfigResponse>();
   const [currentSquad, setCurrentSquad] = useState<GetSquadResponse>();
-  const [remainingPercentage, setRemainingPercentage] = useState<number>(0);
   const [remainingTime, setRemainingTime] = useState<number>(0);
   const [stakingState, setStakingState] = useState<StakingState>(
     StakingState.UNKNOWN
@@ -171,7 +170,6 @@ export const useSquadStaking = () => {
 
     let _remainingTime = 0;
     let _stakingState = StakingState.UNKNOWN;
-    let _remainingPercentage = 0;
 
     if (!currentSquad) {
       if (now.isAfter(completesAt)) {
@@ -183,16 +181,6 @@ export const useSquadStaking = () => {
     } else {
       const startsAt = moment(currentSquad.start_time * 1000);
       const endsAt = moment(currentSquad.end_time * 1000);
-
-      const totalStakingDuration = endsAt.diff(startsAt);
-      const stakingTimePassed = now.diff(startsAt);
-
-      const _passedPercentage = Math.min(
-        100,
-        Math.floor((stakingTimePassed * 100) / totalStakingDuration)
-      );
-
-      _remainingPercentage = 100 - _passedPercentage;
 
       if (now.isAfter(completesAt)) {
         _stakingState = StakingState.COMPLETED;
@@ -207,7 +195,6 @@ export const useSquadStaking = () => {
 
     setStakingState(_stakingState);
     setRemainingTime(_remainingTime);
-    setRemainingPercentage(_remainingPercentage);
     setIsStakingStateLoaded(true);
   };
 
@@ -250,7 +237,6 @@ export const useSquadStaking = () => {
     squadStake,
     squadWithdraw,
     estimateStakingDuration,
-    remainingPercentage,
     remainingTime,
     stakingState,
     startStakingTimer,

@@ -8,6 +8,30 @@ import { share } from "rxjs/operators";
 
 export const protobufPackage = "p2e.v1";
 
+export interface AllSeasonsRequest {
+}
+
+export interface SeasonWithoutPrize {
+  id: number;
+  bossName: string;
+  bossHp: number;
+}
+
+export interface AllSeasonsResponse {
+  seasons: SeasonWithoutPrize[];
+}
+
+export interface CurrentSeasonRequest {
+}
+
+export interface CurrentSeasonResponse {
+  id: number;
+  totalPrize: number;
+  bossName: string;
+  bossHp: number;
+  remainingHp: number;
+}
+
 export interface FighterScoreRequest {
   collectionId: string;
   userId: string;
@@ -42,6 +66,289 @@ export interface UserScore {
 export interface LeaderboardResponse {
   userScore: UserScore | undefined;
 }
+
+function createBaseAllSeasonsRequest(): AllSeasonsRequest {
+  return {};
+}
+
+export const AllSeasonsRequest = {
+  encode(_: AllSeasonsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AllSeasonsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAllSeasonsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): AllSeasonsRequest {
+    return {};
+  },
+
+  toJSON(_: AllSeasonsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(_: I): AllSeasonsRequest {
+    const message = createBaseAllSeasonsRequest();
+    return message;
+  },
+};
+
+function createBaseSeasonWithoutPrize(): SeasonWithoutPrize {
+  return { id: 0, bossName: "", bossHp: 0 };
+}
+
+export const SeasonWithoutPrize = {
+  encode(message: SeasonWithoutPrize, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).int32(message.id);
+    }
+    if (message.bossName !== "") {
+      writer.uint32(18).string(message.bossName);
+    }
+    if (message.bossHp !== 0) {
+      writer.uint32(24).int32(message.bossHp);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SeasonWithoutPrize {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSeasonWithoutPrize();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.int32();
+          break;
+        case 2:
+          message.bossName = reader.string();
+          break;
+        case 3:
+          message.bossHp = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SeasonWithoutPrize {
+    return {
+      id: isSet(object.id) ? Number(object.id) : 0,
+      bossName: isSet(object.bossName) ? String(object.bossName) : "",
+      bossHp: isSet(object.bossHp) ? Number(object.bossHp) : 0,
+    };
+  },
+
+  toJSON(message: SeasonWithoutPrize): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = Math.round(message.id));
+    message.bossName !== undefined && (obj.bossName = message.bossName);
+    message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SeasonWithoutPrize>, I>>(object: I): SeasonWithoutPrize {
+    const message = createBaseSeasonWithoutPrize();
+    message.id = object.id ?? 0;
+    message.bossName = object.bossName ?? "";
+    message.bossHp = object.bossHp ?? 0;
+    return message;
+  },
+};
+
+function createBaseAllSeasonsResponse(): AllSeasonsResponse {
+  return { seasons: [] };
+}
+
+export const AllSeasonsResponse = {
+  encode(message: AllSeasonsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.seasons) {
+      SeasonWithoutPrize.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AllSeasonsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAllSeasonsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.seasons.push(SeasonWithoutPrize.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AllSeasonsResponse {
+    return {
+      seasons: Array.isArray(object?.seasons) ? object.seasons.map((e: any) => SeasonWithoutPrize.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: AllSeasonsResponse): unknown {
+    const obj: any = {};
+    if (message.seasons) {
+      obj.seasons = message.seasons.map((e) => e ? SeasonWithoutPrize.toJSON(e) : undefined);
+    } else {
+      obj.seasons = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AllSeasonsResponse>, I>>(object: I): AllSeasonsResponse {
+    const message = createBaseAllSeasonsResponse();
+    message.seasons = object.seasons?.map((e) => SeasonWithoutPrize.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseCurrentSeasonRequest(): CurrentSeasonRequest {
+  return {};
+}
+
+export const CurrentSeasonRequest = {
+  encode(_: CurrentSeasonRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CurrentSeasonRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCurrentSeasonRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): CurrentSeasonRequest {
+    return {};
+  },
+
+  toJSON(_: CurrentSeasonRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(_: I): CurrentSeasonRequest {
+    const message = createBaseCurrentSeasonRequest();
+    return message;
+  },
+};
+
+function createBaseCurrentSeasonResponse(): CurrentSeasonResponse {
+  return { id: 0, totalPrize: 0, bossName: "", bossHp: 0, remainingHp: 0 };
+}
+
+export const CurrentSeasonResponse = {
+  encode(message: CurrentSeasonResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).int32(message.id);
+    }
+    if (message.totalPrize !== 0) {
+      writer.uint32(16).int32(message.totalPrize);
+    }
+    if (message.bossName !== "") {
+      writer.uint32(26).string(message.bossName);
+    }
+    if (message.bossHp !== 0) {
+      writer.uint32(32).int32(message.bossHp);
+    }
+    if (message.remainingHp !== 0) {
+      writer.uint32(45).float(message.remainingHp);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CurrentSeasonResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCurrentSeasonResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.int32();
+          break;
+        case 2:
+          message.totalPrize = reader.int32();
+          break;
+        case 3:
+          message.bossName = reader.string();
+          break;
+        case 4:
+          message.bossHp = reader.int32();
+          break;
+        case 5:
+          message.remainingHp = reader.float();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CurrentSeasonResponse {
+    return {
+      id: isSet(object.id) ? Number(object.id) : 0,
+      totalPrize: isSet(object.totalPrize) ? Number(object.totalPrize) : 0,
+      bossName: isSet(object.bossName) ? String(object.bossName) : "",
+      bossHp: isSet(object.bossHp) ? Number(object.bossHp) : 0,
+      remainingHp: isSet(object.remainingHp) ? Number(object.remainingHp) : 0,
+    };
+  },
+
+  toJSON(message: CurrentSeasonResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = Math.round(message.id));
+    message.totalPrize !== undefined && (obj.totalPrize = Math.round(message.totalPrize));
+    message.bossName !== undefined && (obj.bossName = message.bossName);
+    message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
+    message.remainingHp !== undefined && (obj.remainingHp = message.remainingHp);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<CurrentSeasonResponse>, I>>(object: I): CurrentSeasonResponse {
+    const message = createBaseCurrentSeasonResponse();
+    message.id = object.id ?? 0;
+    message.totalPrize = object.totalPrize ?? 0;
+    message.bossName = object.bossName ?? "";
+    message.bossHp = object.bossHp ?? 0;
+    message.remainingHp = object.remainingHp ?? 0;
+    return message;
+  },
+};
 
 function createBaseFighterScoreRequest(): FighterScoreRequest {
   return { collectionId: "", userId: "" };
@@ -451,6 +758,8 @@ export interface P2eService {
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse>;
   FightersCount(request: DeepPartial<FightersCountRequest>, metadata?: grpc.Metadata): Promise<FightersCountResponse>;
   FighterScore(request: DeepPartial<FighterScoreRequest>, metadata?: grpc.Metadata): Promise<FighterScoreResponse>;
+  CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse>;
+  AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse>;
 }
 
 export class P2eServiceClientImpl implements P2eService {
@@ -461,6 +770,8 @@ export class P2eServiceClientImpl implements P2eService {
     this.Leaderboard = this.Leaderboard.bind(this);
     this.FightersCount = this.FightersCount.bind(this);
     this.FighterScore = this.FighterScore.bind(this);
+    this.CurrentSeason = this.CurrentSeason.bind(this);
+    this.AllSeasons = this.AllSeasons.bind(this);
   }
 
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse> {
@@ -473,6 +784,14 @@ export class P2eServiceClientImpl implements P2eService {
 
   FighterScore(request: DeepPartial<FighterScoreRequest>, metadata?: grpc.Metadata): Promise<FighterScoreResponse> {
     return this.rpc.unary(P2eServiceFighterScoreDesc, FighterScoreRequest.fromPartial(request), metadata);
+  }
+
+  CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse> {
+    return this.rpc.unary(P2eServiceCurrentSeasonDesc, CurrentSeasonRequest.fromPartial(request), metadata);
+  }
+
+  AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse> {
+    return this.rpc.unary(P2eServiceAllSeasonsDesc, AllSeasonsRequest.fromPartial(request), metadata);
   }
 }
 
@@ -536,6 +855,50 @@ export const P2eServiceFighterScoreDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...FighterScoreResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const P2eServiceCurrentSeasonDesc: UnaryMethodDefinitionish = {
+  methodName: "CurrentSeason",
+  service: P2eServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return CurrentSeasonRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...CurrentSeasonResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const P2eServiceAllSeasonsDesc: UnaryMethodDefinitionish = {
+  methodName: "AllSeasons",
+  service: P2eServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return AllSeasonsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...AllSeasonsResponse.decode(data),
         toObject() {
           return this;
         },

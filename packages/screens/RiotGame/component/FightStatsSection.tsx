@@ -1,5 +1,4 @@
-import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
@@ -15,7 +14,6 @@ import { decimalFromAtomics } from "../../../utils/coins";
 import { yellowDefault } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import {
-  PRIZE_POOL,
   TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS,
   THE_RIOT_COLLECTION_ID,
 } from "../settings";
@@ -30,6 +28,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
 }) => {
   const selectedWallet = useSelectedWallet();
   const [totalFighters, setTotalFighters] = useState(0);
+  const [prizePool, setPrizePool] = useState(0);
   const [userRank, setUserRank] = useState(0);
   const [claimableAmount, setClaimableAmount] = useState(0);
   const { setToastError, setToastSuccess } = useFeedbacks();
@@ -65,10 +64,10 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     }
   };
 
-  const prizePool = useMemo(() => {
-    const month: string = moment.utc().format("YYYY-MM");
-    return PRIZE_POOL[month];
-  }, []);
+  const fetchPrizePool = async () => {
+    const { totalPrize } = await p2eBackendClient.CurrentSeason({});
+    setPrizePool(totalPrize);
+  };
 
   const fetchTotalFighters = async () => {
     const { count } = await p2eBackendClient.FightersCount({
@@ -107,13 +106,14 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
 
   useEffect(() => {
     fetchTotalFighters();
+    fetchPrizePool();
   }, []);
 
   useEffect(() => {
     if (!isContractClientReady) return;
     fetchClaimableAmount();
   }, [isContractClientReady]);
-
+  
   return (
     <View style={[containerStyle, styles.container]}>
       <InfoBox

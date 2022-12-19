@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: withAlpha(neutral00, 0.95),
-    paddingTop: headerHeight + 80,
+    paddingTop: headerHeight,
     borderWidth: 1,
     position: "relative",
   },
