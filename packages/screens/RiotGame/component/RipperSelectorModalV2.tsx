@@ -19,7 +19,7 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import Row from "../../../components/grid/Row";
-import { SpacerRow } from "../../../components/spacer/SpacerRow";
+import { SpacerRow } from "../../../components/spacer";
 import { getRipperRarity } from "../../../utils/game";
 import {
   neutral00,
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: withAlpha(neutral00, 0.9),
+    backgroundColor: withAlpha(neutral00, 0.95),
     paddingTop: headerHeight + 80,
     borderWidth: 1,
     position: "relative",

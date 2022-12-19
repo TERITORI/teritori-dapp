@@ -66,15 +66,13 @@ export const RiotGameBreedingScreen = () => {
       getRipperTokenId(r.ripper)
     );
 
-    const res = myAvailableRippers.filter(
+    return myAvailableRippers.filter(
       (r) => !selectedIds.includes(getRipperTokenId(r))
     );
-
-    return res;
   }, [myAvailableRippers, selectedRippers]);
 
   /**
-   * NOTE: The current contract does not allow to get the newly created NFT
+   * NOTE: The current contract does not allow to get the newly created NFT,
    * so we have to fetch the new NFT every 2s and show only info if we have
    */
   const fetchNewToken = async (

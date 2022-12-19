@@ -7,7 +7,7 @@ import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { gameHighlight } from "../../../utils/style/colors";
 import { fontMedium24, fontBold9 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { FightProgressBar } from "../component/FightProgressBar";
+import { FightProgressBar } from "./FightProgressBar";
 
 type FightBossSectionProps = {
   remainingPercentage: number;
