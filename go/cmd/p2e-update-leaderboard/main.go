@@ -10,8 +10,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/TERITORI/teritori-dapp/go/internal/contractutil"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/contractutil"
 	"github.com/go-co-op/gocron"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -22,12 +22,19 @@ import (
 type Obj = contractutil.Obj
 
 func sendRewardsList(db *gorm.DB, chainId string, rpcEndpoint string, distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
+	year, month, _ := time.Now().UTC().Date()
+	monthStr := fmt.Sprintf(`%d-%d`, year, int(month))
+
+	monthlyRewards, err := GetRankRewardsByMonth(monthStr)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get rewards")
+	}
+
 	sender := distributorOwnerAddress
 	mnemonic := distributorMnemonic
 	contract := distributorContractAddress
-	denom := "utori"
-	amount := int64(1)
-	funds := sdk.NewCoins(sdk.NewInt64Coin(denom, amount))
+	funds := sdk.NewCoins()
+	toriDenominator := 1_000_000
 
 	if strings.HasPrefix(rpcEndpoint, "https") {
 		rpcEndpoint += ":443"
@@ -55,9 +62,19 @@ func sendRewardsList(db *gorm.DB, chainId string, rpcEndpoint string, distributo
 		return nil, errors.Wrap(err, "failed to get current leaderboard")
 	}
 
+	rewardCoef := float64(1)
+	// Adjust rewards in testnet
+	if strings.HasPrefix(chainId, "teritori-testnet") {
+		rewardCoef = 1 / float64(toriDenominator)
+	}
+
+	// Generate rewards list
 	for _, userScore := range leaderboard {
 		addr := strings.Split(string(userScore.UserID), "-")[1]
-		rewardsList = append(rewardsList, Obj{"addr": addr, "amount": "1"})
+		rank := userScore.Rank
+
+		toriAmount := int(rewardCoef * float64(toriDenominator) * monthlyRewards[rank-1] / 30) // Get daily reward
+		rewardsList = append(rewardsList, Obj{"addr": addr, "amount": fmt.Sprintf("%d", toriAmount)})
 	}
 
 	execMsgRaw := Obj{
