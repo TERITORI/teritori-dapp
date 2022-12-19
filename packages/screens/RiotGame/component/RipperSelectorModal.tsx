@@ -22,7 +22,6 @@ import { useBreeding } from "../../../hooks/riotGame/useBreeding";
 import { getRipperTokenId } from "../../../utils/game";
 import {
   neutral00,
-  secondaryColor,
   withAlpha,
   yellowDefault,
 } from "../../../utils/style/colors";
@@ -30,7 +29,6 @@ import {
   fontMedium24,
   fontMedium32,
   fontMedium48,
-  fontSemibold11,
 } from "../../../utils/style/fonts";
 import { headerHeight, layout } from "../../../utils/style/layout";
 import { AvailableRippersGrid } from "./AvailableRippersGrid";
@@ -192,24 +190,6 @@ const styles = StyleSheet.create({
     top: 2,
     borderRadius: 999,
     overflow: "hidden",
-  },
-  selectListContainer: {
-    position: "absolute",
-    zIndex: 2,
-    left: -60,
-  },
-  ripperThumbName: {
-    marginVertical: layout.padding_x1,
-    ...(fontSemibold11 as object),
-  },
-  arrowRight: {
-    position: "absolute",
-    borderWidth: 10,
-    borderRightWidth: 0,
-    borderStyle: "solid",
-    borderColor: "transparent",
-    borderLeftColor: secondaryColor,
-    right: -16,
   },
   btnGroup: {
     marginTop: layout.padding_x2_5,

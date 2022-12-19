@@ -1,6 +1,5 @@
 import React from "react";
-import { Image, StyleSheet } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { Image, StyleSheet, FlatList } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
 import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item.png";

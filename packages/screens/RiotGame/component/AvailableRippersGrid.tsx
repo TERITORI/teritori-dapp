@@ -1,6 +1,5 @@
 import React from "react";
-import { FlatList } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity } from "react-native";
 
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";

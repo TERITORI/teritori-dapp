@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { StyleSheet, View, FlatList } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
 import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
