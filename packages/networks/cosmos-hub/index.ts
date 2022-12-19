@@ -8,8 +8,8 @@ export const cosmosNetwork: NetworkInfo = {
   icon: "icons/networks/cosmos-hub-circle.svg",
   currencies: cosmosHubCurrencies,
   addressPrefix: "cosmos",
-  restEndpoint: "https://cosmos-mainnet-rpc.allthatnode.com:1317",
-  rpcEndpoint: "https://cosmos-mainnet-rpc.allthatnode.com:26657",
+  restEndpoint: "https://api-cosmoshub-ia.cosmosia.notional.ventures",
+  rpcEndpoint: "https://rpc-cosmoshub-ia.cosmosia.notional.ventures",
   stakeCurrency: "uatom",
   gasPriceStep: {
     low: 0.01,
