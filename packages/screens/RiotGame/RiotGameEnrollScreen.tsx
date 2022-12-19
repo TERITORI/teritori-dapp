@@ -1,11 +1,11 @@
 import moment from "moment";
 import React, { useState, useMemo, useEffect } from "react";
-import { FlatList, Image, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
-import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
+import { EmbeddedWeb } from "../../components/EmbeddedWeb";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import Col from "../../components/grid/Col";
@@ -30,6 +30,10 @@ import { RipperSelectorModal } from "./component/RipperSelectorModalV2";
 import { SimpleButton } from "./component/SimpleButton";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
+const embeddedVideoUri =
+  "https://bafybeieid23jjpzug42y6u5au2noc6hpyayqd56udgvh7pfd45jeksykoe.ipfs.nftstorage.link/";
+const embeddedVideoHeight = 267;
+const embeddedVideoWidth = 468;
 
 export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
@@ -185,6 +189,7 @@ export const RiotGameEnrollScreen = () => {
               alignItems: "flex-start",
             }}
             style={{ marginTop: layout.padding_x2 }}
+            fullWidth
             height={148}
           >
             <BrandText style={fontSemibold28}>
@@ -203,10 +208,14 @@ export const RiotGameEnrollScreen = () => {
             </BrandText>
           </TertiaryBox>
 
-          <Image
-            source={defaultSendToFightPNG}
-            style={styles.placeholderVideo}
-          />
+          <View style={styles.videoContainer}>
+            <EmbeddedWeb
+              uri={embeddedVideoUri}
+              width={embeddedVideoWidth}
+              height={embeddedVideoHeight}
+              borderRadius={25}
+            />
+          </View>
         </Col>
       </Row>
 
@@ -246,16 +255,18 @@ const styles = StyleSheet.create({
   col: {
     justifyContent: "center",
     alignItems: "center",
+    maxWidth: 548,
+    width: "100%",
   },
   ripperSlot: {
     marginRight: layout.padding_x2_5,
     marginTop: layout.padding_x2_5,
   },
-  placeholderVideo: {
+  videoContainer: {
     marginTop: layout.padding_x2_5,
     alignSelf: "center",
-    width: 420,
-    height: 240,
+    width: embeddedVideoWidth,
+    height: embeddedVideoHeight,
   },
   clearIcon: {
     position: "absolute",
