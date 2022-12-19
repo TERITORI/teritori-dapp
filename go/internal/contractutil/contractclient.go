@@ -21,19 +21,21 @@ const HD_PATH = "m/44'/118'/0'/0/0"
 const ALGO_NAME = "secp256k1"
 
 type ContractClient struct {
-	ChainId             string
+	ChainId     string
+	RpcEndpoint string
+
+	// Only mandatory for exec
 	Bech32PrefixAccAddr string
-	RpcEndpoint         string
-	Fees                string
 	GasPrices           string
 	GasAdjustment       float64
-	Memo                string
-	ExecClientCtx       client.Context
-	QueryClientCtx      client.Context
-	ExecTxFactory       tx.Factory
+
+	// Internal
+	queryClientCtx client.Context
+	execClientCtx  client.Context
+	execTxFactory  tx.Factory
 }
 
-func (cc *ContractClient) InitConfig() {
+func (cc *ContractClient) initConfig() {
 	config := sdk.GetConfig()
 
 	var (
@@ -49,8 +51,70 @@ func (cc *ContractClient) InitConfig() {
 	config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
 }
 
+func (cc *ContractClient) initExecTxFactory(memo string) {
+	cc.execTxFactory = tx.Factory{}.
+		WithKeybase(cc.execClientCtx.Keyring).
+		WithTxConfig(cc.execClientCtx.TxConfig).
+		WithAccountRetriever(cc.execClientCtx.AccountRetriever).
+		WithGasAdjustment(cc.GasAdjustment).
+		WithChainID(cc.ChainId).
+		WithGasPrices(cc.GasPrices).
+		WithMemo(memo).
+		WithSignMode(signing.SignMode_SIGN_MODE_UNSPECIFIED)
+}
+
+func (cc *ContractClient) initQueryClientCtx() error {
+	rpcClient, err := cc.GetClient()
+	if err != nil {
+		return errors.Wrap(err, "failed to get rpc client")
+	}
+
+	cc.queryClientCtx = client.Context{}.
+		WithChainID(cc.ChainId).
+		WithClient(rpcClient)
+
+	return nil
+}
+
+func (cc *ContractClient) initExecClientCtx(sender string, mnemonic string) error {
+	encodingConfig := InitEncoding()
+
+	fromAccAddress, err := sdk.AccAddressFromBech32(sender)
+	if err != nil {
+		return errors.Wrap(err, "failed to parse sender address")
+	}
+
+	keyring, err := cc.GetKeyring(mnemonic)
+	if err != nil {
+		return errors.Wrap(err, "failed to get keyring")
+	}
+
+	rpcClient, err := cc.GetClient()
+	if err != nil {
+		return errors.Wrap(err, "failed to get rpc client")
+	}
+
+	cc.execClientCtx = client.Context{}.
+		WithFromAddress(fromAccAddress).
+		WithChainID(cc.ChainId).
+		WithNodeURI(cc.RpcEndpoint).
+		WithFrom(KEY_NAME).
+		WithFromName(KEY_NAME).
+		WithBroadcastMode("sync").
+		WithSkipConfirmation(true).
+		WithAccountRetriever(authTypes.AccountRetriever{}).
+		WithLegacyAmino(encodingConfig.Amino).
+		WithTxConfig(encodingConfig.TxConfig).
+		WithCodec(encodingConfig.Marshaler).
+		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
+		WithKeyring(keyring).
+		WithClient(rpcClient)
+
+	return nil
+}
+
 func (cc *ContractClient) GetKeyring(mnemonic string) (keyring.Keyring, error) {
-	kb := keyring.NewInMemory(cc.ExecClientCtx.KeyringOptions...)
+	kb := keyring.NewInMemory(cc.execClientCtx.KeyringOptions...)
 	keyringAlgos, _ := kb.SupportedAlgorithms()
 	algo, algoErr := keyring.NewSigningAlgoFromString(ALGO_NAME, keyringAlgos)
 	if algoErr != nil {
@@ -73,69 +137,6 @@ func (cc *ContractClient) GetClient() (*http.HTTP, error) {
 	return client, nil
 }
 
-func (cc *ContractClient) InitExecTxFactory(memo string) {
-	cc.ExecTxFactory = tx.Factory{}.
-		WithKeybase(cc.ExecClientCtx.Keyring).
-		WithTxConfig(cc.ExecClientCtx.TxConfig).
-		WithAccountRetriever(cc.ExecClientCtx.AccountRetriever).
-		WithGasAdjustment(cc.GasAdjustment).
-		WithChainID(cc.ChainId).
-		WithFees(cc.Fees).
-		WithGasPrices(cc.GasPrices).
-		WithMemo(memo).
-		WithSignMode(signing.SignMode_SIGN_MODE_UNSPECIFIED)
-}
-
-func (cc *ContractClient) InitQueryClientCtx() error {
-	rpcClient, err := cc.GetClient()
-	if err != nil {
-		return errors.Wrap(err, "failed to get rpc client")
-	}
-
-	cc.QueryClientCtx = client.Context{}.
-		WithChainID(cc.ChainId).
-		WithClient(rpcClient)
-
-	return nil
-}
-
-func (cc *ContractClient) InitExecClientCtx(sender string, mnemonic string) error {
-	encodingConfig := InitEncoding()
-
-	fromAccAddress, err := sdk.AccAddressFromBech32(sender)
-	if err != nil {
-		return errors.Wrap(err, "failed to parse sender address")
-	}
-
-	keyring, err := cc.GetKeyring(mnemonic)
-	if err != nil {
-		return errors.Wrap(err, "failed to get keyring")
-	}
-
-	rpcClient, err := cc.GetClient()
-	if err != nil {
-		return errors.Wrap(err, "failed to get rpc client")
-	}
-
-	cc.ExecClientCtx = client.Context{}.
-		WithFromAddress(fromAccAddress).
-		WithChainID(cc.ChainId).
-		WithNodeURI(cc.RpcEndpoint).
-		WithFrom(KEY_NAME).
-		WithFromName(KEY_NAME).
-		WithBroadcastMode("sync").
-		WithSkipConfirmation(true).
-		WithAccountRetriever(authTypes.AccountRetriever{}).
-		WithLegacyAmino(encodingConfig.Amino).
-		WithTxConfig(encodingConfig.TxConfig).
-		WithCodec(encodingConfig.Marshaler).
-		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
-		WithKeyring(keyring).
-		WithClient(rpcClient)
-
-	return nil
-}
-
 func (cc *ContractClient) BuildExecMsg(sender string, contract string, execMsg string, funds sdk.Coins) (*types.MsgExecuteContract, error) {
 	msg := types.MsgExecuteContract{
 		Sender:   sender,
@@ -150,12 +151,12 @@ func (cc *ContractClient) BuildExecMsg(sender string, contract string, execMsg s
 }
 
 func (cc *ContractClient) BroadcastTx(msgs ...sdk.Msg) (*sdk.TxResponse, error) {
-	txf, err := prepareFactory(cc.ExecClientCtx, cc.ExecTxFactory)
+	txf, err := prepareFactory(cc.execClientCtx, cc.execTxFactory)
 	if err != nil {
 		return nil, err
 	}
 
-	_, adjusted, err := tx.CalculateGas(cc.ExecClientCtx, txf, msgs...)
+	_, adjusted, err := tx.CalculateGas(cc.execClientCtx, txf, msgs...)
 	if err != nil {
 		return nil, err
 	}
@@ -167,27 +168,28 @@ func (cc *ContractClient) BroadcastTx(msgs ...sdk.Msg) (*sdk.TxResponse, error) 
 		return nil, err
 	}
 
-	unsignedTx.SetFeeGranter(cc.ExecClientCtx.GetFeeGranterAddress())
-	err = tx.Sign(txf, cc.ExecClientCtx.GetFromName(), unsignedTx, true)
+	unsignedTx.SetFeeGranter(cc.execClientCtx.GetFeeGranterAddress())
+	err = tx.Sign(txf, cc.execClientCtx.GetFromName(), unsignedTx, true)
 	if err != nil {
 		return nil, err
 	}
 
-	txBytes, err := cc.ExecClientCtx.TxConfig.TxEncoder()(unsignedTx.GetTx())
+	txBytes, err := cc.execClientCtx.TxConfig.TxEncoder()(unsignedTx.GetTx())
 	if err != nil {
 		return nil, err
 	}
 
 	// broadcast to a Tendermint node
-	return cc.ExecClientCtx.BroadcastTx(txBytes)
+	return cc.execClientCtx.BroadcastTx(txBytes)
 }
 
 func (cc *ContractClient) ExecuteWasm(sender string, mnemonic string, contract string, execMsg string, funds sdk.Coins, memo string) (*sdk.TxResponse, error) {
-	cc.InitConfig()
-	if err := cc.InitExecClientCtx(sender, mnemonic); err != nil {
+	cc.initConfig()
+
+	if err := cc.initExecClientCtx(sender, mnemonic); err != nil {
 		return nil, errors.Wrap(err, "failed to build client context")
 	}
-	cc.InitExecTxFactory(memo)
+	cc.initExecTxFactory(memo)
 
 	msg, err := cc.BuildExecMsg(sender, contract, execMsg, funds)
 	if err != nil {
@@ -208,8 +210,7 @@ func (cc *ContractClient) ExecuteWasm(sender string, mnemonic string, contract s
 }
 
 func (cc *ContractClient) QueryWasm(contract string, queryMsg string) (map[string]interface{}, error) {
-	cc.InitConfig()
-	cc.InitQueryClientCtx()
+	cc.initQueryClientCtx()
 
 	decoder := newArgDecoder(asciiDecodeString)
 	queryData, err := decoder.DecodeString(queryMsg)
@@ -222,7 +223,7 @@ func (cc *ContractClient) QueryWasm(contract string, queryMsg string) (map[strin
 		return nil, errors.Wrap(err, "data must be json")
 	}
 
-	queryClient := types.NewQueryClient(cc.QueryClientCtx)
+	queryClient := types.NewQueryClient(cc.queryClientCtx)
 	res, err := queryClient.SmartContractState(
 		context.Background(),
 		&types.QuerySmartContractStateRequest{

@@ -34,8 +34,9 @@ func sendRewardsList(db *gorm.DB, chainId string, rpcEndpoint string, distributo
 	}
 
 	contractClient := contractutil.ContractClient{
-		ChainId:             chainId,
-		RpcEndpoint:         rpcEndpoint,
+		ChainId:     chainId,
+		RpcEndpoint: rpcEndpoint,
+		// Only need for exec
 		Bech32PrefixAccAddr: "tori",
 		GasPrices:           "0.025utori",
 		GasAdjustment:       1.3,
