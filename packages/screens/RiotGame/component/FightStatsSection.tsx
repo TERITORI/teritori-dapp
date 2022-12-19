@@ -113,7 +113,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     if (!isContractClientReady) return;
     fetchClaimableAmount();
   }, [isContractClientReady]);
-  
+
   return (
     <View style={[containerStyle, styles.container]}>
       <InfoBox
