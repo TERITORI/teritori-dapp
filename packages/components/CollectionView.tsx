@@ -16,13 +16,14 @@ const contentWidth = 172;
 
 export const CollectionView: React.FC<{
   item: Collection;
-}> = ({ item }) => {
+  linkToMint?: boolean;
+}> = ({ item, linkToMint }) => {
   const creatorAddress = item.creatorId.replace("tori-", "");
   const tnsMetadata = useTNSMetadata(creatorAddress);
-  const navigateToCollection = useNavigateToCollection(
-    item.id,
-    item.secondaryDuringMint
-  );
+  const navigateToCollection = useNavigateToCollection(item.id, {
+    forceSecondaryDuringMint: item.secondaryDuringMint,
+    forceLinkToMint: linkToMint,
+  });
   return (
     <TouchableOpacity onPress={navigateToCollection} disabled={!item.id}>
       <TertiaryBox
