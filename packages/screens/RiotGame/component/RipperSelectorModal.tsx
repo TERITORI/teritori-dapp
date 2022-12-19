@@ -17,7 +17,7 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import Col from "../../../components/grid/Col";
 import Row from "../../../components/grid/Row";
-import { SpacerRow } from "../../../components/spacer/SpacerRow";
+import { SpacerRow } from "../../../components/spacer";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
 import { getRipperTokenId } from "../../../utils/game";
 import {
