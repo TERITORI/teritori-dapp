@@ -175,7 +175,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: withAlpha(neutral00, 0.9),
+    backgroundColor: withAlpha(neutral00, 0.95),
     paddingTop: headerHeight,
     borderWidth: 1,
   },
