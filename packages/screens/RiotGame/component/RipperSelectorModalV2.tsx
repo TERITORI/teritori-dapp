@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Modal,
   ModalProps,
@@ -7,6 +7,7 @@ import {
   ImageBackground,
   ScrollView,
   Pressable,
+  useWindowDimensions,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Carousel from "react-native-reanimated-carousel";
@@ -50,7 +51,7 @@ const TOTAL_VISIBLE = 4;
 
 const THUMB_SIZE = 100;
 
-const RIPPER_IMAGE_SIZE = 580;
+const RIPPER_IMAGE_SIZE = 540;
 
 export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   slotId,
@@ -62,6 +63,14 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   ...props
 }) => {
   const [selectedRipper, setSelectedRipper] = useState<NFT | undefined>();
+  const { width: currentWidth } = useWindowDimensions();
+
+  const breakPoint = 1200;
+
+  const centerFlex = useMemo(
+    () => (currentWidth > breakPoint ? 2 : 1),
+    [currentWidth]
+  );
 
   const selectRipper = async (ripper: NFT) => {
     setSelectedRipper(ripper);
@@ -102,9 +111,14 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           style={{ width: "100%" }}
           showsVerticalScrollIndicator={false}
         >
-          <Row breakpoint={992}>
+          <Row breakpoint={breakPoint}>
+            {currentWidth > breakPoint && <View style={{ flex: 1 }} />}
             <View
-              style={{ flex: 2, alignItems: "flex-end", position: "relative" }}
+              style={{
+                flex: centerFlex,
+                alignItems: "center",
+                position: "relative",
+              }}
             >
               <View style={{ position: "relative" }}>
                 <View style={styles.selectListContainer}>
@@ -175,8 +189,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
             <View
               style={{
                 flex: 1,
-                paddingLeft: layout.padding_x4,
-                paddingTop: layout.padding_x4,
+                marginLeft: layout.padding_x4,
+                marginTop: 2 * layout.padding_x4,
               }}
             >
               <BrandText style={fontMedium32}>Stats</BrandText>
