@@ -156,7 +156,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       refreshBondedTokens();
       onClose && onClose();
     } catch (error) {
-      triggerError({ error, callback: onClose });
+      triggerError({ title: "Redelegation failed!", error, callback: onClose });
     }
   };
 

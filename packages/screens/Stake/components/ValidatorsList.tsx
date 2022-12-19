@@ -4,10 +4,13 @@ import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 import validatorIconSVG from "../../../../assets/default-images/validator-icon.svg";
 import { Avatar } from "../../../components/Avatar";
 import { BrandText } from "../../../components/BrandText";
+import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import { SpacerRow } from "../../../components/spacer";
 import { TableRow, TableRowHeading } from "../../../components/table";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
+import { Reward, rewardsPrice, useRewards } from "../../../hooks/useRewards";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { removeObjectKey } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
@@ -30,7 +33,11 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
   },
   commission: {
     label: "Commission",
-    flex: 4,
+    flex: 2,
+  },
+  claimable: {
+    label: "Claimable reward",
+    flex: 3,
   },
   actions: {
     label: "",
@@ -51,6 +58,8 @@ export const ValidatorsTable: React.FC<{
 }> = ({ validators, actions, style }) => {
   // variables
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
+  const selectedWallet = useSelectedWallet();
+  const { rewards, claimReward } = useRewards(selectedWallet?.address);
 
   // returns
   return (
@@ -61,7 +70,14 @@ export const ValidatorsTable: React.FC<{
         style={style}
         keyExtractor={(item) => item.address}
         renderItem={({ item }) => (
-          <ValidatorRow validator={item} actions={actions} />
+          <ValidatorRow
+            validator={item}
+            actions={actions}
+            pendingRewards={rewards.filter(
+              (reward) => reward.validator === item.address
+            )}
+            claimReward={claimReward}
+          />
         )}
       />
     </>
@@ -70,9 +86,16 @@ export const ValidatorsTable: React.FC<{
 
 const ValidatorRow: React.FC<{
   validator: ValidatorInfo;
+  pendingRewards: Reward[];
+  claimReward: (validatorAddress: string) => Promise<void>;
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
-}> = ({ validator, actions }) => {
+}> = ({ validator, claimReward, pendingRewards, actions }) => {
   const imageURL = useKeybaseAvatarURL(validator.identity);
+
+  const selectedWallet = useSelectedWallet();
+  // Rewards price with all denoms
+  const claimablePrice = rewardsPrice(pendingRewards);
+
   return (
     <View
       style={{
@@ -123,12 +146,39 @@ const ValidatorRow: React.FC<{
           fontSemibold13,
           {
             flex: TABLE_ROWS.commission.flex,
-            paddingRight: actions ? layout.padding_x1 : 0,
+            paddingRight: layout.padding_x1,
           },
         ]}
       >
         {validator.commission}
       </BrandText>
+
+      <View
+        style={{
+          flex: TABLE_ROWS.claimable.flex,
+          paddingRight: actions ? layout.padding_x1 : 0,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        {claimablePrice && (
+          <BrandText style={[fontSemibold13]}>
+            {`$${claimablePrice.toFixed(2)}`}
+          </BrandText>
+        )}
+        {pendingRewards.length && (
+          <PrimaryButtonOutline
+            size="XS"
+            style={{ paddingLeft: layout.padding_x2 }}
+            text="Claim"
+            disabled={!selectedWallet?.address}
+            onPress={() => {
+              claimReward(validator.address);
+            }}
+          />
+        )}
+      </View>
+
       {actions && (
         <View
           style={{

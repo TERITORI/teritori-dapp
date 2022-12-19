@@ -22,6 +22,7 @@ const initialData = {
 
 export const useValidators = () => {
   const { setToastError } = useFeedbacks();
+
   const { data, isFetching } = useQuery(
     [`teritoriValidators`],
     async () => {

@@ -8,6 +8,7 @@ import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ConnectWalletModal } from "../../components/connectWallet/ConnectWalletModal";
+import { useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
@@ -109,6 +110,9 @@ export const WalletManagerWalletsScreen: ScreenFC<
   const [showConnectModal, setShowConnectModal] = useState(false);
   const selectedWallet = useSelectedWallet();
 
+  // TODO: Handle multiple wallets addresses
+  const { totalsRewards, claimReward } = useRewards(selectedWallet?.address);
+
   const wallets = selectedWallet
     ? [
         {
@@ -118,7 +122,8 @@ export const WalletManagerWalletsScreen: ScreenFC<
               id: 0,
               title: "Teritori",
               address: selectedWallet.address,
-              pendingReward: 42,
+              pendingRewards: totalsRewards,
+              claimReward,
               staked: 42,
             },
           ],
