@@ -23,7 +23,7 @@ import (
 type Obj = contractutil.Obj
 
 func sendRewardsList(db *gorm.DB, riotStartedAt string, chainId string, rpcEndpoint string, distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
-	monthlyRewards, err := p2e.GetCurrentRewardsConfig(riotStartedAt)
+	dailyRewards, err := p2e.GetCurrentDailyRewardsConfig(riotStartedAt)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get rewards")
 	}
@@ -71,7 +71,7 @@ func sendRewardsList(db *gorm.DB, riotStartedAt string, chainId string, rpcEndpo
 		addr := strings.Split(string(userScore.UserID), "-")[1]
 		rank := userScore.Rank
 
-		toriAmount := int(rewardCoef * float64(toriDenominator) * monthlyRewards[rank-1] / 30) // Get daily reward
+		toriAmount := int(rewardCoef * float64(toriDenominator) * dailyRewards[rank-1]) // Get daily reward
 		rewardsList = append(rewardsList, Obj{"addr": addr, "amount": fmt.Sprintf("%d", toriAmount)})
 	}
 

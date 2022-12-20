@@ -73,18 +73,23 @@ func findSeasonById(seasonId int32) (Season, error) {
 	return Season{}, errors.New(fmt.Sprintf("failed to find season by id :%d", seasonId))
 }
 
-func GetCurrentRewardsConfig(startedAtStr string) ([]float64, error) {
+func GetCurrentDailyRewardsConfig(startedAtStr string) ([]float64, error) {
 	currentSeason, _, err := GetCurrentSeason(startedAtStr)
 	if err != nil {
 		return nil, err
 	}
 
-	rewardsConfig, err := GetRewardsConfigBySeason(currentSeason.ID)
+	seasonRewards, err := GetRewardsConfigBySeason(currentSeason.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return rewardsConfig, nil
+	var dailyRewards []float64
+	for _, reward := range seasonRewards {
+		dailyRewards = append(dailyRewards, reward/float64(currentSeason.BossHp))
+	}
+
+	return dailyRewards, nil
 }
 
 func GetRewardsConfigBySeason(seasonId int32) ([]float64, error) {
