@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { Wallet } from "../context/WalletsProvider";
 import {
   TeritoriBreedingClient,
   TeritoriBreedingQueryClient,
@@ -67,10 +68,45 @@ const CONTRACT_CLIENT_MAP: {
   },
 };
 
-export const useContractClients = (
-  contractAddress: string,
-  contractName: ContractName
-) => {
+type ClientType<T> = T extends "teritori-nft"
+  ? TeritoriNftClient
+  : T extends "teritori-nft-staking"
+  ? TeritoriNftStakingClient
+  : T extends "teritori-nft-vault"
+  ? TeritoriNftVaultClient
+  : T extends "teritori-squad-staking"
+  ? TeritoriSquadStakingClient
+  : T extends "teritori-breeding"
+  ? TeritoriBreedingClient
+  : T extends "teritori-distributor"
+  ? TeritoriDistributorClient
+  : never;
+
+type QueryClientType<T> = T extends "teritori-nft"
+  ? TeritoriNftQueryClient
+  : T extends "teritori-nft-staking"
+  ? TeritoriNftStakingQueryClient
+  : T extends "teritori-nft-vault"
+  ? TeritoriNftVaultQueryClient
+  : T extends "teritori-squad-staking"
+  ? TeritoriSquadStakingQueryClient
+  : T extends "teritori-breeding"
+  ? TeritoriBreedingQueryClient
+  : T extends "teritori-distributor"
+  ? TeritoriDistributorQueryClient
+  : never;
+
+type ContractClients<T> = {
+  selectedWallet: Wallet | undefined;
+  isReady: boolean;
+  client: ClientType<T>;
+  queryClient: QueryClientType<T>;
+};
+
+export const useContractClients = <T extends ContractName>(
+  contractName: T,
+  contractAddress: string
+): ContractClients<T> => {
   const { clientClass, queryClientClass } = CONTRACT_CLIENT_MAP[contractName];
 
   const [isReady, setIsReady] = useState(false);

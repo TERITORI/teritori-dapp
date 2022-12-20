@@ -3,10 +3,6 @@ import { StyleSheet, View, ViewStyle } from "react-native";
 
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import {
-  TeritoriDistributorClient,
-  TeritoriDistributorQueryClient,
-} from "../../../contracts-clients/teritori-distributor/TeritoriDistributor.client";
 import { useContractClients } from "../../../hooks/useContractClients";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { p2eBackendClient } from "../../../utils/backend";
@@ -38,13 +34,9 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     queryClient: distributorQueryClient,
     client: distributorClient,
     isReady: isContractClientReady,
-  }: {
-    queryClient: TeritoriDistributorQueryClient;
-    client: TeritoriDistributorClient;
-    isReady: boolean;
   } = useContractClients(
-    TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS,
-    "teritori-distributor"
+    "teritori-distributor",
+    TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS
   );
 
   const claimRewards = async () => {

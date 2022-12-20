@@ -49,16 +49,11 @@ export const useSquadStaking = () => {
 
   const selectedWallet = useSelectedWallet();
 
-  const {
-    client: squadStakingClient,
-    queryClient: squadStakingQueryClient,
-  }: {
-    client: TeritoriSquadStakingClient;
-    queryClient: TeritoriSquadStakingQueryClient;
-  } = useContractClients(
-    THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
-    "teritori-squad-staking"
-  );
+  const { client: squadStakingClient, queryClient: squadStakingQueryClient } =
+    useContractClients(
+      "teritori-squad-staking",
+      THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS
+    );
 
   const squadStake = async (
     selectedRippers: NFT[],

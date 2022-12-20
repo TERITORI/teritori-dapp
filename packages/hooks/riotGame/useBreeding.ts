@@ -20,11 +20,9 @@ export const useBreeding = () => {
   const [breedingConfig, setBreedingConfig] = useState<ConfigResponse>();
   const [remainingTokens, setRemainingTokens] = useState<number>(0);
 
-  const {
-    queryClient: breedingQueryClient,
-  }: { queryClient: TeritoriBreedingQueryClient } = useContractClients(
-    THE_RIOT_BREEDING_CONTRACT_ADDRESS,
-    "teritori-breeding"
+  const { queryClient: breedingQueryClient } = useContractClients(
+    "teritori-breeding",
+    THE_RIOT_BREEDING_CONTRACT_ADDRESS
   );
 
   const selectedWallet = useSelectedWallet();
