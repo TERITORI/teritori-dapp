@@ -42,6 +42,7 @@ export const parseUserScoreInfo = (userScore: UserScore) => {
     Math.floor(10_000 * ((inProgressScore - snapshotScore) / snapshotScore)) /
     100;
   const rankChanges = rank - snapshotRank;
+
   return { xp, hours, rankChanges, scoreChanges };
 };
 

@@ -27,6 +27,7 @@ type UserScoreResponse struct {
 	InProgressScore int64
 	SnapshotScore   int64
 	SnapshotRank    int32
+	SeasonId        uint32
 }
 
 func NewP2eService(ctx context.Context, conf *Config) p2epb.P2EServiceServer {
@@ -105,7 +106,13 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 	var userScores []UserScoreResponse
 
 	err := s.conf.IndexerDB.Raw(`
-		SELECT ROW_NUMBER() OVER(ORDER BY in_progress_score desc) as rank, *
+		SELECT 
+			ROW_NUMBER() OVER(ORDER BY in_progress_score desc) as rank, 
+			user_id, 
+			in_progress_score, 
+			snapshot_score, 
+			snapshot_rank, 
+			season_id
 		FROM p2e_leaderboards
 		WHERE collection_id = ? AND season_id = ?
 		ORDER BY in_progress_score desc
@@ -129,6 +136,7 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 			InProgressScore: int64(userScore.InProgressScore),
 			SnapshotScore:   int64(userScore.SnapshotScore),
 			SnapshotRank:    int32(userScore.SnapshotRank),
+			SeasonId:        userScore.SeasonId,
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send user score")
 		}

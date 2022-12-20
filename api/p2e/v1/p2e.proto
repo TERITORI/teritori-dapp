@@ -67,6 +67,7 @@ message UserScore {
   string user_id = 3;
   int64 in_progress_score = 4;
   int64 snapshot_score = 5;
+  uint32 season_id = 6; 
 }
 
 message LeaderboardResponse {

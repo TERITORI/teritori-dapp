@@ -62,6 +62,7 @@ export interface UserScore {
   userId: string;
   inProgressScore: number;
   snapshotScore: number;
+  seasonId: number;
 }
 
 export interface LeaderboardResponse {
@@ -630,7 +631,7 @@ export const LeaderboardRequest = {
 };
 
 function createBaseUserScore(): UserScore {
-  return { rank: 0, snapshotRank: 0, userId: "", inProgressScore: 0, snapshotScore: 0 };
+  return { rank: 0, snapshotRank: 0, userId: "", inProgressScore: 0, snapshotScore: 0, seasonId: 0 };
 }
 
 export const UserScore = {
@@ -649,6 +650,9 @@ export const UserScore = {
     }
     if (message.snapshotScore !== 0) {
       writer.uint32(40).int64(message.snapshotScore);
+    }
+    if (message.seasonId !== 0) {
+      writer.uint32(48).uint32(message.seasonId);
     }
     return writer;
   },
@@ -675,6 +679,9 @@ export const UserScore = {
         case 5:
           message.snapshotScore = longToNumber(reader.int64() as Long);
           break;
+        case 6:
+          message.seasonId = reader.uint32();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -690,6 +697,7 @@ export const UserScore = {
       userId: isSet(object.userId) ? String(object.userId) : "",
       inProgressScore: isSet(object.inProgressScore) ? Number(object.inProgressScore) : 0,
       snapshotScore: isSet(object.snapshotScore) ? Number(object.snapshotScore) : 0,
+      seasonId: isSet(object.seasonId) ? Number(object.seasonId) : 0,
     };
   },
 
@@ -700,6 +708,7 @@ export const UserScore = {
     message.userId !== undefined && (obj.userId = message.userId);
     message.inProgressScore !== undefined && (obj.inProgressScore = Math.round(message.inProgressScore));
     message.snapshotScore !== undefined && (obj.snapshotScore = Math.round(message.snapshotScore));
+    message.seasonId !== undefined && (obj.seasonId = Math.round(message.seasonId));
     return obj;
   },
 
@@ -710,6 +719,7 @@ export const UserScore = {
     message.userId = object.userId ?? "";
     message.inProgressScore = object.inProgressScore ?? 0;
     message.snapshotScore = object.snapshotScore ?? 0;
+    message.seasonId = object.seasonId ?? 0;
     return message;
   },
 };
