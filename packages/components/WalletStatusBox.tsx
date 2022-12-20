@@ -13,10 +13,13 @@ import { layout } from "../utils/style/layout";
 import { getWalletIconFromTitle } from "../utils/walletManagerHelpers";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
+import { tinyAddress } from "./WalletSelector";
 import { SuccessBadge } from "./badges/SuccessBadge";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 
-export const WalletStatusBox: React.FC = () => {
+export const WalletStatusBox: React.FC<{ maxAddressLength?: number }> = ({
+  maxAddressLength = 10,
+}) => {
   const selectedWallet = useSelectedWallet();
 
   return (
@@ -52,8 +55,7 @@ export const WalletStatusBox: React.FC = () => {
                 {addressToNetwork(selectedWallet.address)}
               </BrandText>
               <BrandText style={[fontSemibold13]}>
-                {selectedWallet.address.substr(0, 5)}...
-                {selectedWallet.address.substr(-4)}
+                {tinyAddress(selectedWallet.address, maxAddressLength)}
               </BrandText>
             </View>
           </View>
