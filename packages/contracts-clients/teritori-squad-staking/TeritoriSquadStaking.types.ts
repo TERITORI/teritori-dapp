@@ -5,6 +5,11 @@
 */
 
 export type ExecuteMsg = {
+  set_supported_collection: {
+    contract_addr: string;
+    is_supported: boolean;
+  };
+} | {
   update_squad_size: {
     max_squad_size: number;
     min_squad_size: number;
@@ -15,18 +20,21 @@ export type ExecuteMsg = {
   };
 } | {
   stake: {
-    token_ids: string[];
+    nfts: Nft[];
   };
 } | {
   withdraw: {};
 };
+export interface Nft {
+  contract_addr: string;
+  token_id: string;
+}
 export type Addr = string;
 export interface GetConfigResponse {
   bonus_multiplier: number[];
   cooldown_days: number;
   max_squad_size: number;
   min_squad_size: number;
-  nft_contract: Addr;
   owner: Addr;
 }
 export interface GetLastStakeTimeResponse {
@@ -34,15 +42,14 @@ export interface GetLastStakeTimeResponse {
 }
 export interface GetSquadResponse {
   end_time: number;
+  nfts: Nft[];
   start_time: number;
-  token_ids: string[];
 }
 export interface InstantiateMsg {
   bonus_multiplier: number[];
   cooldown_days: number;
   max_squad_size: number;
   min_squad_size: number;
-  nft_contract: Addr;
 }
 export type QueryMsg = {
   get_config: {};

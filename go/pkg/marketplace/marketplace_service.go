@@ -243,6 +243,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	query := s.conf.IndexerDB.
 		Preload("TeritoriNFT").
 		Preload("Collection").
+		Preload("Collection.TeritoriCollection").
 		Where("burnt = ?", false).
 		Offset(int(offset)).
 		Limit(int(limit)).
@@ -301,17 +302,18 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		}
 
 		if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &marketplacepb.NFT{
-			Id:             nft.ID,
-			Name:           nft.Name,
-			CollectionName: nft.Collection.Name,
-			NetworkId:      nft.Collection.NetworkId,
-			ImageUri:       ipfsutil.IPFSURIToURL(imageURI),
-			IsListed:       nft.IsListed,
-			Price:          nft.PriceAmount.String,
-			Denom:          nft.PriceDenom,
-			TextInsert:     textInsert,
-			OwnerId:        string(nft.OwnerID),
-			Attributes:     attributes,
+			Id:                 nft.ID,
+			Name:               nft.Name,
+			CollectionName:     nft.Collection.Name,
+			NetworkId:          nft.Collection.NetworkId,
+			ImageUri:           ipfsutil.IPFSURIToURL(imageURI),
+			IsListed:           nft.IsListed,
+			Price:              nft.PriceAmount.String,
+			Denom:              nft.PriceDenom,
+			TextInsert:         textInsert,
+			OwnerId:            string(nft.OwnerID),
+			Attributes:         attributes,
+			NftContractAddress: nft.Collection.TeritoriCollection.NFTContractAddress,
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send nft")
 		}

@@ -1,14 +1,11 @@
 package indexerdb
 
-import "github.com/lib/pq"
-
 // Delete the record when user unstake
 type P2eSquadStaking struct {
-	OwnerID      UserID         `gorm:"primaryKey"`
-	CollectionID string         `gorm:"primaryKey"`
-	StartTime    uint64         `gorm:"index"`
-	EndTime      uint64         `gorm:"index"`
-	TokenIDs     pq.StringArray `gorm:"type:varchar(8)[]"`
+	OwnerID      UserID `gorm:"primaryKey"`
+	CollectionID string `gorm:"primaryKey"`
+	StartTime    uint64 `gorm:"index"`
+	EndTime      uint64 `gorm:"index"`
 }
 
 // For the global leaderboard in the future

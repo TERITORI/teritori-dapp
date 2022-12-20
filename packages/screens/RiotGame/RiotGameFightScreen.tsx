@@ -1,9 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import fightBgPNG from "../../../assets/game/fight-bg.png";
 import victoryBgPNG from "../../../assets/game/victory-bg.png";
 import addCircleSFilledVG from "../../../assets/icons/add-circle-filled.svg";
+import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import Row from "../../components/grid/Row";
@@ -36,6 +37,8 @@ export const RiotGameFightScreen = () => {
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
   const [isUnstaking, setIsUnstaking] = useState(false);
 
+  const [stakedRippers, setStakedRippers] = useState<NFT[]>([]);
+
   const {
     currentSquad,
     squadStakingConfig,
@@ -51,11 +54,19 @@ export const RiotGameFightScreen = () => {
     setCurrentSquad,
   } = useSquadStaking();
 
-  const stakedRippers = useMemo(() => {
-    return myAvailableRippers.filter((r) =>
-      currentSquad?.token_ids.includes(getRipperTokenId(r))
+  const fetchCurrentStakedRippers = async () => {
+    // Combined id = {nft-contract-address}-{token-id}
+    const stakedCombinedIds = currentSquad?.nfts.map(
+      (nft) => `${nft.contract_addr}-${nft.token_id}`
     );
-  }, [myAvailableRippers, currentSquad]);
+
+    const stakedRippers = myAvailableRippers.filter((r) => {
+      const tokenId = getRipperTokenId(r);
+      return stakedCombinedIds?.includes(`${r.nftContractAddress}-${tokenId}`);
+    });
+
+    setStakedRippers(stakedRippers);
+  };
 
   const unstake = async () => {
     if (!squadStakingClient) {
@@ -108,15 +119,15 @@ export const RiotGameFightScreen = () => {
 
   // Start the timer
   useEffect(() => {
-    if (
-      !isSquadLoaded ||
-      !squadStakingConfig?.nft_contract ||
-      !isLastStakeTimeLoaded
-    )
+    if (!isSquadLoaded || !squadStakingConfig?.owner || !isLastStakeTimeLoaded)
       return;
 
     startStakingTimer(currentSquad, lastStakeTime, squadStakingConfig);
-  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.nft_contract]);
+  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.owner]);
+
+  useEffect(() => {
+    fetchCurrentStakedRippers();
+  }, [myAvailableRippers, currentSquad]);
 
   return (
     <GameContentView

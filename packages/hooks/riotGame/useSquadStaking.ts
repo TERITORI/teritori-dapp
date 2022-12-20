@@ -27,6 +27,7 @@ import {
   GetSquadResponse,
   GetConfigResponse,
   GetLastStakeTimeResponse,
+  Nft as SquadStakeNFT,
 } from "./../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 
 export const useSquadStaking = () => {
@@ -55,25 +56,31 @@ export const useSquadStaking = () => {
       THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS
     );
 
-  const squadStake = async (
-    selectedRippers: NFT[],
-    squadStakingConfig: GetConfigResponse
-  ) => {
-    const tokenIds = selectedRippers.map(getRipperTokenId);
-
+  const squadStake = async (selectedRippers: NFT[]) => {
     const client = await getSigningCosmWasmClient();
     const sender = selectedWallet?.address || "";
 
-    const approveMsgs = tokenIds.map((tokenId) =>
-      buildApproveNFTMsg(
+    const selectedNfts: SquadStakeNFT[] = [];
+    for (const selectedRipper of selectedRippers) {
+      const tokenId = getRipperTokenId(selectedRipper);
+
+      selectedNfts.push({
+        contract_addr: selectedRipper.nftContractAddress,
+        token_id: tokenId,
+      });
+    }
+    const approveMsgs = [];
+    for (const selectedNft of selectedNfts) {
+      const msg = buildApproveNFTMsg(
         sender,
         THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
-        tokenId,
-        squadStakingConfig.nft_contract
-      )
-    );
+        selectedNft.token_id,
+        selectedNft.contract_addr
+      );
+      approveMsgs.push(msg);
+    }
 
-    const stakeMsg = buildStakingMsg(sender, tokenIds);
+    const stakeMsg = buildStakingMsg(sender, selectedNfts);
     const msgs = [...approveMsgs, stakeMsg];
 
     const tx = await client.signAndBroadcast(sender, msgs, "auto", defaultMemo);

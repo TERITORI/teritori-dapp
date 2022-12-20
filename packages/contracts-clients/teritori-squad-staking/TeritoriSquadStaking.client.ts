@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { ExecuteMsg, Addr, GetConfigResponse, GetLastStakeTimeResponse, GetSquadResponse, InstantiateMsg, QueryMsg } from "./TeritoriSquadStaking.types";
+import { ExecuteMsg, Nft, Addr, GetConfigResponse, GetLastStakeTimeResponse, GetSquadResponse, InstantiateMsg, QueryMsg } from "./TeritoriSquadStaking.types";
 export interface TeritoriSquadStakingReadOnlyInterface {
   contractAddress: string;
   getConfig: () => Promise<GetConfigResponse>;
@@ -64,6 +64,13 @@ export class TeritoriSquadStakingQueryClient implements TeritoriSquadStakingRead
 export interface TeritoriSquadStakingInterface extends TeritoriSquadStakingReadOnlyInterface {
   contractAddress: string;
   sender: string;
+  setSupportedCollection: ({
+    contractAddr,
+    isSupported
+  }: {
+    contractAddr: string;
+    isSupported: boolean;
+  }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   updateSquadSize: ({
     maxSquadSize,
     minSquadSize
@@ -77,9 +84,9 @@ export interface TeritoriSquadStakingInterface extends TeritoriSquadStakingReadO
     bonusMultiplier: number[];
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   stake: ({
-    tokenIds
+    nfts
   }: {
-    tokenIds: string[];
+    nfts: Nft[];
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   withdraw: (fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
 }
@@ -93,12 +100,27 @@ export class TeritoriSquadStakingClient extends TeritoriSquadStakingQueryClient 
     this.client = client;
     this.sender = sender;
     this.contractAddress = contractAddress;
+    this.setSupportedCollection = this.setSupportedCollection.bind(this);
     this.updateSquadSize = this.updateSquadSize.bind(this);
     this.updateBonusMultiplier = this.updateBonusMultiplier.bind(this);
     this.stake = this.stake.bind(this);
     this.withdraw = this.withdraw.bind(this);
   }
 
+  setSupportedCollection = async ({
+    contractAddr,
+    isSupported
+  }: {
+    contractAddr: string;
+    isSupported: boolean;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      set_supported_collection: {
+        contract_addr: contractAddr,
+        is_supported: isSupported
+      }
+    }, fee, memo, funds);
+  };
   updateSquadSize = async ({
     maxSquadSize,
     minSquadSize
@@ -125,13 +147,13 @@ export class TeritoriSquadStakingClient extends TeritoriSquadStakingQueryClient 
     }, fee, memo, funds);
   };
   stake = async ({
-    tokenIds
+    nfts
   }: {
-    tokenIds: string[];
+    nfts: Nft[];
   }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       stake: {
-        token_ids: tokenIds
+        nfts
       }
     }, fee, memo, funds);
   };

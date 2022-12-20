@@ -3,7 +3,6 @@ package indexerhandler
 import (
 	"encoding/json"
 	"strconv"
-	"strings"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -13,8 +12,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type Nft struct {
+	ContractAddr string `json:"contract_addr"`
+	TokenId      string `json:"token_id"`
+}
+
 type SquadStakeMsg struct {
-	TokenIds []string `json:"token_ids"`
+	Nfts []Nft `json:"nfts"`
 }
 
 type ExecuteSquadStakeMsg struct {
@@ -90,7 +94,6 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 	}
 
 	ownerId := indexerdb.TeritoriUserID(users[0])
-	tokenIds := squadStakeMsg.Stake.TokenIds
 
 	startTime, err := strconv.ParseUint(startTimes[0], 0, 64)
 	if err != nil {
@@ -110,7 +113,6 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		StartTime:    startTime,
 		EndTime:      endTime,
 		CollectionID: theRiotCollectionId,
-		TokenIDs:     tokenIds,
 	}
 
 	if err := h.db.FirstOrCreate(&squadStaking).Error; err != nil {
@@ -127,7 +129,28 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")
 	}
 
-	h.logger.Info("squad staked", zap.String("owner-id", string(ownerId)), zap.String("token-ids", strings.Join(tokenIds[:], ",")))
+	newOwnerId := indexerdb.TeritoriUserID(execMsg.Contract)
+	senderId := indexerdb.TeritoriUserID(execMsg.Sender)
+
+	for _, nft := range squadStakeMsg.Stake.Nfts {
+		result := h.db.Exec(`
+			UPDATE nfts AS n
+			SET owner_id = ?
+			FROM 
+				teritori_collections AS tc,
+				teritori_nfts AS tn 
+			WHERE 
+				n.collection_id = tc.collection_id
+				AND tn.nft_id = n.id 
+				AND tc.nft_contract_address = ?
+				AND tn.token_id = ?
+				AND n.owner_id = ?
+		`, newOwnerId, nft.ContractAddr, nft.TokenId, senderId)
+		if result.RowsAffected != 1 || result.Error != nil {
+			return errors.New("failed to update owner")
+		}
+	}
+
 	return nil
 }
 
@@ -168,6 +191,35 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 	// Update score
 	if err := h.db.Model(&userScore).UpdateColumn("score", gorm.Expr("score  + ?", stakingDuration)).Error; err != nil {
 		return errors.Wrap(err, "failed to update user score")
+	}
+
+	// Update owner
+	contractAddresses := e.Events["wasm._contract_address"]
+	tokenIds := e.Events["wasm.token_id"]
+	newOwnerId := indexerdb.TeritoriUserID(execMsg.Sender)
+
+	if len(contractAddresses) != len(tokenIds) {
+		return errors.New("failed to get transfer data from event")
+	}
+
+	for idx, tokenId := range tokenIds {
+		nftContractAddress := contractAddresses[idx]
+
+		result := h.db.Exec(`
+			UPDATE nfts AS n
+			SET owner_id = ?
+			FROM
+				teritori_collections AS tc,
+				teritori_nfts AS tn
+			WHERE
+				n.collection_id = tc.collection_id
+				AND tn.nft_id = n.id
+				AND tc.nft_contract_address = ?
+				AND tn.token_id = ?
+		`, newOwnerId, nftContractAddress, tokenId)
+		if result.RowsAffected != 1 || result.Error != nil {
+			return errors.New("failed to update owner")
+		}
 	}
 
 	return nil

@@ -14,7 +14,7 @@ import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { getRipperTokenId, StakingState } from "../../utils/game";
+import { StakingState } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutralA3 } from "../../utils/style/colors";
 import {
@@ -56,15 +56,10 @@ export const RiotGameEnrollScreen = () => {
   const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);
   const [isJoiningFight, setIsJoiningFight] = useState(false);
 
-  const availableRippers = useMemo(() => {
-    const selectedIds = selectedRippers.map(getRipperTokenId);
-    const stakedIds = currentSquad?.token_ids || [];
+  const availableForEnrollRippers = useMemo(() => {
+    const selectedIds = selectedRippers.map((r) => r.id);
 
-    // excluded rippers already selected or staked
-    return myAvailableRippers.filter((r) => {
-      const tokenId = getRipperTokenId(r);
-      return !selectedIds.includes(tokenId) && !stakedIds.includes(tokenId);
-    });
+    return myAvailableRippers.filter((r) => !selectedIds.includes(r.id));
   }, [myAvailableRippers, selectedRippers, currentSquad]);
 
   const stakingDuration = useMemo<number>(() => {
@@ -103,7 +98,7 @@ export const RiotGameEnrollScreen = () => {
     setIsJoiningFight(true);
 
     try {
-      await squadStake(selectedRippers, squadStakingConfig);
+      await squadStake(selectedRippers);
 
       // Wait a little before redirection to be sure that we have passed the fight start time
       setTimeout(() => {
@@ -132,15 +127,11 @@ export const RiotGameEnrollScreen = () => {
 
   // Update staking state
   useEffect(() => {
-    if (
-      !isSquadLoaded ||
-      !isLastStakeTimeLoaded ||
-      !squadStakingConfig?.nft_contract
-    )
+    if (!isSquadLoaded || !isLastStakeTimeLoaded || !squadStakingConfig?.owner)
       return;
 
     updateStakingState(currentSquad, lastStakeTime, squadStakingConfig);
-  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.nft_contract]);
+  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.owner]);
 
   return (
     <GameContentView>
@@ -231,7 +222,7 @@ export const RiotGameEnrollScreen = () => {
         visible={selectedSlot !== undefined}
         onClose={hideRipperSelector}
         slotId={selectedSlot}
-        availableRippers={availableRippers}
+        availableRippers={availableForEnrollRippers}
         onSelectRipper={selectRipper}
         confirmButton="Enroll this Ripper"
       />

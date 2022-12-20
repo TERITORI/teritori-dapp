@@ -30,6 +30,7 @@ import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";
 import { RipperSelectorModal } from "./component/RipperSelectorModal";
+import { THE_RIOT_COLLECTION_ADDRESS } from "./settings";
 
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();
@@ -61,13 +62,14 @@ export const RiotGameBreedingScreen = () => {
 
   const intervalRef = useRef<NodeJS.Timer>();
 
-  const availableRippers = useMemo(() => {
-    const selectedIds = Object.values(selectedRippers).map((r) =>
-      getRipperTokenId(r.ripper)
-    );
+  const availableForBreedRippers = useMemo(() => {
+    // Only original Rioter can breed
+    const selectedIds = Object.values(selectedRippers).map((r) => r.ripper.id);
 
     return myAvailableRippers.filter(
-      (r) => !selectedIds.includes(getRipperTokenId(r))
+      (r) =>
+        !selectedIds.includes(r.id) &&
+        r.id.startsWith(`tori-${THE_RIOT_COLLECTION_ADDRESS}`)
     );
   }, [myAvailableRippers, selectedRippers]);
 
@@ -269,7 +271,7 @@ export const RiotGameBreedingScreen = () => {
         visible={selectedSlot !== undefined}
         confirmButton="Add to Breeding"
         slotId={selectedSlot}
-        availableRippers={availableRippers}
+        availableRippers={availableForBreedRippers}
         onSelectRipper={selectRipper}
         onClose={() => setSelectedSlot(undefined)}
       />

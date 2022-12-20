@@ -148,6 +148,7 @@ export interface NFT {
   textInsert: string;
   collectionName: string;
   ownerId: string;
+  nftContractAddress: string;
   attributes: Attribute[];
 }
 
@@ -376,6 +377,7 @@ function createBaseNFT(): NFT {
     textInsert: "",
     collectionName: "",
     ownerId: "",
+    nftContractAddress: "",
     attributes: [],
   };
 }
@@ -415,8 +417,11 @@ export const NFT = {
     if (message.ownerId !== "") {
       writer.uint32(106).string(message.ownerId);
     }
+    if (message.nftContractAddress !== "") {
+      writer.uint32(122).string(message.nftContractAddress);
+    }
     for (const v of message.attributes) {
-      Attribute.encode(v!, writer.uint32(122).fork()).ldelim();
+      Attribute.encode(v!, writer.uint32(130).fork()).ldelim();
     }
     return writer;
   },
@@ -462,6 +467,9 @@ export const NFT = {
           message.ownerId = reader.string();
           break;
         case 15:
+          message.nftContractAddress = reader.string();
+          break;
+        case 16:
           message.attributes.push(Attribute.decode(reader, reader.uint32()));
           break;
         default:
@@ -485,6 +493,7 @@ export const NFT = {
       textInsert: isSet(object.textInsert) ? String(object.textInsert) : "",
       collectionName: isSet(object.collectionName) ? String(object.collectionName) : "",
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+      nftContractAddress: isSet(object.nftContractAddress) ? String(object.nftContractAddress) : "",
       attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
     };
   },
@@ -502,6 +511,7 @@ export const NFT = {
     message.textInsert !== undefined && (obj.textInsert = message.textInsert);
     message.collectionName !== undefined && (obj.collectionName = message.collectionName);
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    message.nftContractAddress !== undefined && (obj.nftContractAddress = message.nftContractAddress);
     if (message.attributes) {
       obj.attributes = message.attributes.map((e) => e ? Attribute.toJSON(e) : undefined);
     } else {
@@ -523,6 +533,7 @@ export const NFT = {
     message.textInsert = object.textInsert ?? "";
     message.collectionName = object.collectionName ?? "";
     message.ownerId = object.ownerId ?? "";
+    message.nftContractAddress = object.nftContractAddress ?? "";
     message.attributes = object.attributes?.map((e) => Attribute.fromPartial(e)) || [];
     return message;
   },

@@ -14,6 +14,7 @@ import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
 import { NFT } from "../api/marketplace/v1/marketplace";
+import { Nft as SquadStakeNFT } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import {
   DURATION_TO_XP_COEF,
   THE_RIOT_BREEDING_CONTRACT_ADDRESS,
@@ -163,7 +164,7 @@ export const buildBreedingMsg = (
   };
 };
 
-export const buildStakingMsg = (sender: string, tokenIds: string[]) => {
+export const buildStakingMsg = (sender: string, nfts: SquadStakeNFT[]) => {
   return {
     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
     value: {
@@ -171,7 +172,7 @@ export const buildStakingMsg = (sender: string, tokenIds: string[]) => {
       msg: toUtf8(
         JSON.stringify({
           stake: {
-            token_ids: tokenIds,
+            nfts,
           },
         })
       ),

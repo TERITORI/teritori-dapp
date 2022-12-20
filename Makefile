@@ -144,7 +144,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(DISTRIBUTOR_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(SQUAD_STAKING_PACKAGE): node_modules
 	rm -fr $(TOKEN_REPO)
 	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
-	cd $(TOKEN_REPO) && git checkout 702598705c50a6b0aefc0bc3bf0e2a3cca6bca31
+	cd $(TOKEN_REPO) && git checkout 26e37212a24d8e9e4b52af3c8f0ec3837633732c
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
@@ -158,7 +158,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(SQUAD_STAKING_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE): node_modules
 	rm -fr $(CANDYMACHINE_REPO)
 	git clone git@github.com:TERITORI/$(CANDYMACHINE_REPO).git
-	cd $(CANDYMACHINE_REPO) && git checkout 731b876202cc2c7a56057afddb42a25c25aa23e7
+	cd $(CANDYMACHINE_REPO) && git checkout 26e37212a24d8e9e4b52af3c8f0ec3837633732c
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \

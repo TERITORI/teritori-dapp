@@ -50,7 +50,8 @@ message NFT {
   string text_insert = 9;
   string collection_name = 10;
   string owner_id = 13;
-  repeated Attribute attributes = 15;
+  string nft_contract_address = 15;
+  repeated Attribute attributes = 16;
 }
 message Amount {
   string denom = 1;
