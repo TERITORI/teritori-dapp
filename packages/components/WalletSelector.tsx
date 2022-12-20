@@ -26,7 +26,7 @@ export const tinyAddress = (
   fullAddress: string = "",
   totalCount: number = 10
 ) => {
-  if (fullAddress.length <= 13) {
+  if (fullAddress.length <= 13 || fullAddress.length <= totalCount) {
     return fullAddress;
   }
   const chainIdReg = fullAddress.match(/.+?(?=\d+)/);

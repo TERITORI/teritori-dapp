@@ -81,9 +81,17 @@ export function RichText({
 
   useEffect(() => {
     if (initialValue && !readOnly) {
-      editorRef.current?.focus?.();
+      editorRef.current?.focus();
+
+      setTimeout(() => {
+        const endState = EditorState.moveSelectionToEnd(editorState);
+        setEditorState(
+          EditorState.forceSelection(endState, endState.getSelection())
+        );
+      }, 300);
     }
   }, []);
+
   return (
     <div
       style={{

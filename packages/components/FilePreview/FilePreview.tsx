@@ -11,7 +11,10 @@ import { FileViewerProps } from "./FilePreview.type";
 import { ImagePreview } from "./ImagePreview";
 import { VideoPreview } from "./VideoPreview";
 
-export const FilePreview: React.FC<FileViewerProps> = ({ fileURL }) => {
+export const FilePreview: React.FC<FileViewerProps> = ({
+  fileURL,
+  maxWidth,
+}) => {
   const extension = fileURL.substring(
     fileURL.lastIndexOf(".") + 1,
     fileURL.length
@@ -20,7 +23,7 @@ export const FilePreview: React.FC<FileViewerProps> = ({ fileURL }) => {
   const httpFileURL = ipfsURLToHTTPURL(fileURL);
 
   if (IMAGE_EXTENSIONS.includes(extension)) {
-    return <ImagePreview fileURL={httpFileURL} />;
+    return <ImagePreview fileURL={httpFileURL} maxWidth={maxWidth} />;
   } else if (AUDIO_EXTENSIONS.includes(extension)) {
     return <AudioPreview fileURL={httpFileURL} />;
   } else if (VIDEO_EXTENSIONS.includes(extension)) {

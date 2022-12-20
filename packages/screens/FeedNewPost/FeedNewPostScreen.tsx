@@ -178,7 +178,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
           marginTop: layout.contentPadding,
         }}
       >
-        <WalletStatusBox />
+        <WalletStatusBox maxAddressLength={50} />
         <FileUploader
           value={formValues.file}
           label="Cover image"

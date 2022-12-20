@@ -1,13 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { StyleProp, View, ViewStyle, TouchableOpacity } from "react-native";
-import EmojiModal from "react-native-emoji-modal";
+import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import emojiSVG from "../../../assets/icons/emoji.svg";
 import governanceCircleSVG from "../../../assets/icons/governance-circle.svg";
 import addThreadSVG from "../../../assets/icons/social-threads/add-thread.svg";
 import chatSVG from "../../../assets/icons/social-threads/chat.svg";
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import EmojiModal from "../../components/EmojiModal";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -39,10 +39,12 @@ import { FilePreview } from "../FilePreview/FilePreview";
 import { RichText } from "../RichText";
 import { SVG } from "../SVG";
 import { tinyAddress } from "../WalletSelector";
+import { AnimationFadeIn } from "../animations";
 import { DotBadge } from "../badges/DotBadge";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { CommentsContainer } from "./CommentsContainer";
+
 const socialActionsHeight = 64;
 
 const SocialStat: React.FC<{
@@ -214,7 +216,9 @@ export const SocialThreadCard: React.FC<{
   singleView?: boolean;
   isGovernance?: boolean;
   refresh?: number;
-}> = ({ post, style, singleView, isGovernance, refresh }) => {
+  fadeInDelay?: number;
+}> = ({ post, style, singleView, isGovernance, refresh, fadeInDelay }) => {
+  const [maxLayoutWidth, setMaxLayoutWidth] = useState(0);
   const imageMarginRight = layout.padding_x3_5;
   const tertiaryBoxPaddingHorizontal = layout.padding_x3;
   const { width: containerWidth } = useMaxResolution({
@@ -226,11 +230,11 @@ export const SocialThreadCard: React.FC<{
   const wallet = useSelectedWallet();
   const [subPosts, setSubPosts] = useState([]);
   const navigation = useAppNavigation();
-  const dropdownRef = useRef<View>(null);
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
+  const [isEmojiModalVisible, setIsEmojiModalVisible] = useState(false);
 
   const metadata = JSON.parse(post.metadata);
+
+  const toggleEmojiModal = () => setIsEmojiModalVisible(!isEmojiModalVisible);
 
   const queryComments = async () => {
     if (!wallet?.connected || !wallet.address) {
@@ -257,42 +261,10 @@ export const SocialThreadCard: React.FC<{
   }, [singleView, post?.identifier, refresh]);
 
   return (
-    <View style={[style]}>
+    <AnimationFadeIn style={[style]} delay={fadeInDelay}>
       <View style={{ position: "relative" }}>
-        <View
-          ref={dropdownRef}
-          style={{
-            position: "absolute",
-            bottom: 0,
-            right: 20,
-            zIndex: 99,
-          }}
-        >
-          {isDropdownOpen(dropdownRef) && (
-            <EmojiModal
-              onEmojiSelected={(emoji) => {
-                closeOpenedDropdown();
-              }}
-              containerStyle={{
-                backgroundColor: neutral67,
-                borderWidth: 1,
-                borderColor: neutral33,
-                paddingTop: layout.padding_x0_75,
-              }}
-              searchStyle={{
-                backgroundColor: neutral33,
-                //@ts-ignore
-                color: secondaryColor,
-              }}
-              headerStyle={{
-                color: secondaryColor,
-              }}
-              onPressOutside={() => closeOpenedDropdown()}
-            />
-          )}
-        </View>
-        <TouchableOpacity
-          onPress={() => onPressDropdownButton(dropdownRef)}
+        <Menu
+          opened={isEmojiModalVisible}
           style={{
             position: "absolute",
             bottom: 20,
@@ -300,16 +272,41 @@ export const SocialThreadCard: React.FC<{
             paddingVertical: 4,
             paddingHorizontal: 10,
             backgroundColor: neutral33,
-            height: 32,
-            width: 32,
             borderRadius: 20,
             alignItems: "center",
             justifyContent: "center",
             zIndex: 9,
           }}
+          onBackdropPress={toggleEmojiModal}
         >
-          <SVG source={emojiSVG} height={16} width={16} />
-        </TouchableOpacity>
+          <MenuTrigger onPress={toggleEmojiModal}>
+            <SVG source={emojiSVG} height={16} width={16} />
+          </MenuTrigger>
+          <MenuOptions>
+            <EmojiModal
+              onEmojiSelected={(emoji) => {
+                toggleEmojiModal();
+              }}
+              containerStyle={{
+                backgroundColor: neutral67,
+                borderWidth: 1,
+                borderColor: neutral33,
+                paddingTop: layout.padding_x0_75,
+                width: 308,
+                height: 300,
+              }}
+              searchStyle={{
+                backgroundColor: neutral33,
+                // @ts-ignore
+                color: secondaryColor,
+              }}
+              headerStyle={{
+                color: secondaryColor,
+              }}
+              onPressOutside={toggleEmojiModal}
+            />
+          </MenuOptions>
+        </Menu>
         <View
           style={[
             {
@@ -328,12 +325,14 @@ export const SocialThreadCard: React.FC<{
                 marginRight: imageMarginRight,
               }}
               size={getResponsiveAvatarSize(containerWidth)}
+              isLoading={postByTNSMetadata.loading}
             />
 
             <View
               style={{
                 flex: 1,
               }}
+              onLayout={(e) => setMaxLayoutWidth(e.nativeEvent.layout.width)}
             >
               <View
                 style={{
@@ -351,16 +350,20 @@ export const SocialThreadCard: React.FC<{
                     }
                     activeOpacity={0.7}
                   >
-                    <BrandText
-                      style={[
-                        fontSemibold16,
-                        {
-                          textTransform: "uppercase",
-                        },
-                      ]}
-                    >
-                      {postByTNSMetadata?.metadata?.public_name}
-                    </BrandText>
+                    {postByTNSMetadata?.metadata?.public_name && (
+                      <AnimationFadeIn>
+                        <BrandText
+                          style={[
+                            fontSemibold16,
+                            {
+                              textTransform: "uppercase",
+                            },
+                          ]}
+                        >
+                          {postByTNSMetadata?.metadata?.public_name}
+                        </BrandText>
+                      </AnimationFadeIn>
+                    )}
                   </TouchableOpacity>
                   <BrandText
                     style={[
@@ -392,7 +395,12 @@ export const SocialThreadCard: React.FC<{
                 <RichText initialValue={metadata.message} readOnly />
               </BrandText>
 
-              {!!metadata.fileURL && <FilePreview fileURL={metadata.fileURL} />}
+              {!!metadata.fileURL && (
+                <FilePreview
+                  fileURL={metadata.fileURL}
+                  maxWidth={maxLayoutWidth}
+                />
+              )}
               <View
                 style={{
                   backgroundColor: neutral22,
@@ -422,6 +430,6 @@ export const SocialThreadCard: React.FC<{
       </View>
 
       <CommentsContainer comments={subPosts} />
-    </View>
+    </AnimationFadeIn>
   );
 };

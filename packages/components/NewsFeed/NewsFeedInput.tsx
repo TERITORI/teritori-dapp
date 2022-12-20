@@ -146,9 +146,13 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
     setValue("message", text);
 
     if (text.length > 80) {
-      reset();
-      navigation.navigate("FeedNewPost", formValues);
+      redirectToNewPost();
     }
+  };
+
+  const redirectToNewPost = () => {
+    reset();
+    navigation.navigate("FeedNewPost", formValues);
   };
 
   return (
@@ -170,15 +174,15 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
       )}
       <TertiaryBox
         fullWidth
-        height={64}
         style={{
           zIndex: 9,
         }}
         mainContainerStyle={{
-          paddingVertical: layout.padding_x1_5,
+          paddingVertical: layout.padding_x4,
           paddingHorizontal: layout.padding_x2_5,
           backgroundColor: neutral22,
           flexDirection: "row",
+          alignItems: "flex-start",
         }}
       >
         <SVG height={24} width={24} source={penSVG} color={secondaryColor} />
@@ -203,6 +207,11 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
               outlineWidth: 0,
             },
           ]}
+          onKeyPress={(e) => {
+            if (e.nativeEvent.key === "Enter") {
+              redirectToNewPost();
+            }
+          }}
         />
         <BrandText
           style={[
