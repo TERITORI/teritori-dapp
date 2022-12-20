@@ -2827,6 +2827,17 @@
     ajv "^6.12.0"
     ajv-keywords "^3.4.1"
 
+"@draft-js-plugins/anchor@^4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/anchor/-/anchor-4.2.0.tgz#17c00f22d912e66fdea892f932d852a2a5563c1c"
+  integrity sha512-FZXegYNZgAMrU6tesM3SywBKLoxOj7Eae3D9KzJcHx3CF/ldWcbxU3dqV3+OYtP+FFB3wIe2YUGYp+hroaVlkw==
+  dependencies:
+    "@draft-js-plugins/utils" "^4.0.0"
+    clsx "^1.2.1"
+    prepend-http "3.0.1"
+    prop-types "^15.8.1"
+    tlds "^1.231.0"
+
 "@draft-js-plugins/buttons@^4.0.0":
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/@draft-js-plugins/buttons/-/buttons-4.3.2.tgz#053e3ca3be345034f22c4ba040f97cf1a41f3aef"
@@ -17229,6 +17240,11 @@ prelude-ls@^1.2.1:
   resolved "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
 
+prepend-http@3.0.1, prepend-http@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-3.0.1.tgz#3e724d58fd5867465b300bb9615009fa2f8ee3b6"
+  integrity sha512-BLxfZh+m6UiAiCPZFJ4+vYoL7NrRs5XgCTRrjseATAggXhdZKKxn+JUNmuVYWY23bDHgaEHodxw8mnmtVEDtHw==
+
 prepend-http@^1.0.0:
   version "1.0.4"
   resolved "https://registry.npmjs.org/prepend-http/-/prepend-http-1.0.4.tgz"
@@ -20000,6 +20016,11 @@ tinycolor2@^1.4.1:
   version "1.4.2"
   resolved "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.4.2.tgz"
   integrity sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==
+
+tlds@^1.231.0:
+  version "1.236.0"
+  resolved "https://registry.yarnpkg.com/tlds/-/tlds-1.236.0.tgz#a118eebe33261c577e3a3025144faeabb7dd813c"
+  integrity sha512-oP2PZ3KeGlgpHgsEfrtva3/K9kzsJUNliQSbCfrJ7JMCWFoCdtG+9YMq/g2AnADQ1v5tVlbtvKJZ4KLpy/P6MA==
 
 tmp-promise@^3.0.2:
   version "3.0.3"
