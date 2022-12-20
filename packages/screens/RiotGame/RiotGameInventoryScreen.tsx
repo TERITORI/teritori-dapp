@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, FlatList } from "react-native";
+import { Image, FlatList } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
 import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item.png";
@@ -29,8 +29,8 @@ export const RiotGameInventoryScreen = () => {
 
   return (
     <GameContentView>
-      <Row breakpoint={1200} style={styles.container}>
-        <Col style={styles.overlay}>
+      <Row breakpoint={1200} justifyContent="space-around">
+        <Col style={{ opacity: 0.6, marginTop: layout.padding_x4 }}>
           <Row
             style={{ justifyContent: "space-between", alignItems: "center" }}
           >
@@ -52,6 +52,7 @@ export const RiotGameInventoryScreen = () => {
           <FlatList
             data={Array(9).fill(0)}
             numColumns={3}
+            showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => "" + index}
             renderItem={({ item, index }) => {
               return (
@@ -70,7 +71,7 @@ export const RiotGameInventoryScreen = () => {
           />
         </Col>
 
-        <Col style={{ minWidth: "500px" }}>
+        <Col style={{ minWidth: "500px", marginTop: layout.padding_x4 }}>
           <Row
             style={{ justifyContent: "space-between", alignItems: "center" }}
           >
@@ -87,6 +88,8 @@ export const RiotGameInventoryScreen = () => {
           <FlatList
             data={myAvailableRippers}
             numColumns={3}
+            style={{ height: 360 }}
+            showsVerticalScrollIndicator={false}
             keyExtractor={(ripper) => ripper.id}
             renderItem={({ item: ripper }) => {
               return (
@@ -105,16 +108,3 @@ export const RiotGameInventoryScreen = () => {
     </GameContentView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "space-around",
-    marginTop: layout.padding_x4,
-  },
-  chevronLine: {
-    marginVertical: layout.padding_x2_5,
-  },
-  overlay: {
-    opacity: 0.6,
-  },
-});

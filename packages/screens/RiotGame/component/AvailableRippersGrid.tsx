@@ -9,9 +9,9 @@ import { layout } from "../../../utils/style/layout";
 import { RipperAvatar } from "./RipperAvatar";
 
 interface AvailableRippersGridProps {
-  selectedRipper: NFT | undefined;
+  selectedRipper?: NFT | undefined;
   availableRippers: NFT[];
-  selectRipper(ripper: NFT): void;
+  selectRipper?(ripper: NFT): void;
 }
 
 const THUMB_CONTAINER_WIDTH = 120;
@@ -38,7 +38,7 @@ export const AvailableRippersGrid: React.FC<AvailableRippersGridProps> = ({
           <TouchableOpacity
             key={ripper.id}
             activeOpacity={0.6}
-            onPress={() => selectRipper(ripper)}
+            onPress={() => selectRipper && selectRipper(ripper)}
           >
             <TertiaryBox
               style={{ margin: layout.padding_x1 }}

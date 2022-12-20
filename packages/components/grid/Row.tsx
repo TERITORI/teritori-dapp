@@ -9,6 +9,14 @@ type RowProps = ViewProps & {
   breakpoint?: number;
   width?: string;
   alignItems?: FlexAlignType | undefined;
+  justifyContent?:
+    | "flex-start"
+    | "flex-end"
+    | "center"
+    | "space-between"
+    | "space-around"
+    | "space-evenly"
+    | undefined;
 };
 
 type Direction =
@@ -22,6 +30,7 @@ const Row: React.FC<RowProps> = ({
   breakpoint,
   width = "100%",
   alignItems,
+  justifyContent,
   ...props
 }) => {
   const { width: currentWidth } = useWindowDimensions();
@@ -40,6 +49,7 @@ const Row: React.FC<RowProps> = ({
         },
         flexDirection === "column" && { alignItems: "center" },
         alignItems && { alignItems },
+        justifyContent && { justifyContent },
         props.style,
       ]}
     >
