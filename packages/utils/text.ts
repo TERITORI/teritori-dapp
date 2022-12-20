@@ -31,3 +31,11 @@ export const tinyAddress = (
     startingCharLength + chainIdName.length
   )}...${fullAddress.substring(fullAddress.length - endingCharLength)}`;
 };
+
+export const replaceBetweenString = (
+  origin: string,
+  startIndex: number,
+  endIndex: number,
+  insertion: string
+) =>
+  `${origin.substring(0, startIndex)}${insertion}${origin.substring(endIndex)}`;

@@ -6,6 +6,7 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   withRepeat,
+  withSpring,
   withTiming,
 } from "react-native-reanimated";
 
@@ -42,12 +43,15 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
     return isRefreshingAnim.value === true
       ? withRepeat(
           withTiming(1, {
-            duration: 1000,
+            duration: 500,
             easing: Easing.linear,
           }),
           -1
         )
-      : 0;
+      : withTiming(0, {
+          duration: 500,
+          easing: Easing.linear,
+        });
   }, [isRefreshingAnim.value]);
 
   const animStyle = useAnimatedStyle(
@@ -64,7 +68,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
     return {
       transform: [
         {
-          rotateZ: `${roateValue.value * 360}deg`,
+          rotateZ: `${roateValue.value * 180}deg`,
         },
       ],
     };

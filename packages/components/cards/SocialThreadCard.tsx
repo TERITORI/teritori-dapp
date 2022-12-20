@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { StyleProp, View, ViewStyle, TouchableOpacity } from "react-native";
-import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
+import {
+  StyleProp,
+  View,
+  ViewStyle,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 
-import emojiSVG from "../../../assets/icons/emoji.svg";
 import governanceCircleSVG from "../../../assets/icons/governance-circle.svg";
 import addThreadSVG from "../../../assets/icons/social-threads/add-thread.svg";
 import chatSVG from "../../../assets/icons/social-threads/chat.svg";
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
-import EmojiModal from "../../components/EmojiModal";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -24,9 +27,6 @@ import {
   orangeDefault,
   neutral44,
   redDefault,
-  secondaryColor,
-  neutral33,
-  neutral67,
 } from "../../utils/style/colors";
 import {
   fontSemibold13,
@@ -44,6 +44,7 @@ import { DotBadge } from "../badges/DotBadge";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { CommentsContainer } from "./CommentsContainer";
+import { FeedEmojiSelector } from "./components/FeedEmojiSelector";
 
 const socialActionsHeight = 64;
 
@@ -230,11 +231,8 @@ export const SocialThreadCard: React.FC<{
   const wallet = useSelectedWallet();
   const [subPosts, setSubPosts] = useState([]);
   const navigation = useAppNavigation();
-  const [isEmojiModalVisible, setIsEmojiModalVisible] = useState(false);
 
   const metadata = JSON.parse(post.metadata);
-
-  const toggleEmojiModal = () => setIsEmojiModalVisible(!isEmojiModalVisible);
 
   const queryComments = async () => {
     if (!wallet?.connected || !wallet.address) {
@@ -263,50 +261,7 @@ export const SocialThreadCard: React.FC<{
   return (
     <AnimationFadeIn style={[style]} delay={fadeInDelay}>
       <View style={{ position: "relative" }}>
-        <Menu
-          opened={isEmojiModalVisible}
-          style={{
-            position: "absolute",
-            bottom: 20,
-            right: 20,
-            paddingVertical: 4,
-            paddingHorizontal: 10,
-            backgroundColor: neutral33,
-            borderRadius: 20,
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9,
-          }}
-          onBackdropPress={toggleEmojiModal}
-        >
-          <MenuTrigger onPress={toggleEmojiModal}>
-            <SVG source={emojiSVG} height={16} width={16} />
-          </MenuTrigger>
-          <MenuOptions>
-            <EmojiModal
-              onEmojiSelected={(emoji) => {
-                toggleEmojiModal();
-              }}
-              containerStyle={{
-                backgroundColor: neutral67,
-                borderWidth: 1,
-                borderColor: neutral33,
-                paddingTop: layout.padding_x0_75,
-                width: 308,
-                height: 300,
-              }}
-              searchStyle={{
-                backgroundColor: neutral33,
-                // @ts-ignore
-                color: secondaryColor,
-              }}
-              headerStyle={{
-                color: secondaryColor,
-              }}
-              onPressOutside={toggleEmojiModal}
-            />
-          </MenuOptions>
-        </Menu>
+        <FeedEmojiSelector containerStyle={styles.container} />
         <View
           style={[
             {
@@ -350,20 +305,18 @@ export const SocialThreadCard: React.FC<{
                     }
                     activeOpacity={0.7}
                   >
-                    {postByTNSMetadata?.metadata?.public_name && (
-                      <AnimationFadeIn>
-                        <BrandText
-                          style={[
-                            fontSemibold16,
-                            {
-                              textTransform: "uppercase",
-                            },
-                          ]}
-                        >
-                          {postByTNSMetadata?.metadata?.public_name}
-                        </BrandText>
-                      </AnimationFadeIn>
-                    )}
+                    <AnimationFadeIn>
+                      <BrandText
+                        style={[
+                          fontSemibold16,
+                          {
+                            textTransform: "uppercase",
+                          },
+                        ]}
+                      >
+                        {postByTNSMetadata?.metadata?.public_name || "Anon"}
+                      </BrandText>
+                    </AnimationFadeIn>
                   </TouchableOpacity>
                   <BrandText
                     style={[
@@ -375,10 +328,12 @@ export const SocialThreadCard: React.FC<{
                     ]}
                   >
                     @
-                    {tinyAddress(
-                      postByTNSMetadata?.metadata?.tokenId || "",
-                      19
-                    )}
+                    {postByTNSMetadata?.metadata?.tokenId
+                      ? tinyAddress(
+                          postByTNSMetadata?.metadata?.tokenId || "",
+                          19
+                        )
+                      : "Anonymous"}
                   </BrandText>
                 </View>
 
@@ -433,3 +388,12 @@ export const SocialThreadCard: React.FC<{
     </AnimationFadeIn>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    zIndex: 9,
+  },
+});
