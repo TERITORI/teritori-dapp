@@ -3,10 +3,12 @@ package indexerhandler
 import (
 	"encoding/json"
 	"strconv"
+	"time"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/contracts/breeding_minter_types"
+	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -119,16 +121,24 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		return errors.Wrap(err, "failed to create squad staking")
 	}
 
-	// Create leaderboard record if does not exist
+	// Create leaderboard (by season) record if does not exist
+	startTimeDt := time.Unix(int64(startTime), 0)
+	season, _, err := p2e.GetSeasonByTime(h.config.TheRiotStartedAt, startTimeDt)
+	if err != nil {
+		return errors.Wrap(err, "failed to get season")
+	}
+
 	var userScore indexerdb.P2eLeaderboard
 	q2 := &indexerdb.P2eLeaderboard{
 		UserID:       ownerId,
 		CollectionID: theRiotCollectionId,
+		SeasonID:     season.ID,
 	}
 	if err := h.db.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")
 	}
 
+	// Update owner: transfer to SquadStakingContract
 	newOwnerId := indexerdb.TeritoriUserID(execMsg.Contract)
 	senderId := indexerdb.TeritoriUserID(execMsg.Sender)
 
@@ -179,12 +189,20 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 	}
 
 	// Get current leaderboard record
+	startTimeDt := time.Unix(int64(squadStaking.StartTime), 0)
+	season, _, err := p2e.GetSeasonByTime(h.config.TheRiotStartedAt, startTimeDt)
+	if err != nil {
+		return errors.Wrap(err, "failed to get season")
+	}
+
 	var userScore indexerdb.P2eLeaderboard
 	q2 := &indexerdb.P2eLeaderboard{
 		UserID:       userId,
 		CollectionID: theRiotCollectionId,
+		SeasonID:     season.ID,
 	}
-	if err := h.db.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
+	// Normally, an user score record has to exist here (created when first stake)
+	if err := h.db.Where(q2).First(&userScore).Error; err != nil {
 		return errors.Wrap(err, "failed to get current user score")
 	}
 
@@ -193,7 +211,7 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 		return errors.Wrap(err, "failed to update user score")
 	}
 
-	// Update owner
+	// Update owner: transfer back to owner
 	contractAddresses := e.Events["wasm._contract_address"]
 	tokenIds := e.Events["wasm.token_id"]
 	newOwnerId := indexerdb.TeritoriUserID(execMsg.Sender)

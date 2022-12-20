@@ -22,7 +22,7 @@ import (
 
 type Obj = contractutil.Obj
 
-func sendRewardsList(db *gorm.DB, riotStartedAt string, chainId string, rpcEndpoint string, distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
+func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId string, rpcEndpoint string, distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
 	dailyRewards, err := p2e.GetCurrentDailyRewardsConfig(riotStartedAt)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get rewards")
@@ -56,7 +56,12 @@ func sendRewardsList(db *gorm.DB, riotStartedAt string, chainId string, rpcEndpo
 	rewardsList := []Obj{}
 
 	var leaderboard []indexerdb.P2eLeaderboard
-	if err := db.Limit(500).Find(&leaderboard).Error; err != nil {
+	if err := db.
+		Where("season_id = ?", seasonId).
+		Order("snapshot_rank asc").
+		Limit(500).
+		Find(&leaderboard).
+		Error; err != nil {
 		return nil, errors.Wrap(err, "failed to get current leaderboard")
 	}
 
@@ -91,8 +96,8 @@ func sendRewardsList(db *gorm.DB, riotStartedAt string, chainId string, rpcEndpo
 	return contractClient.ExecuteWasm(sender, mnemonic, contract, execMsgStr, funds, "Send rewards list")
 }
 
-func updateLeaderboard(db *gorm.DB) error {
-	currentTimestamp := time.Now().Unix()
+func updateLeaderboard(seasonId uint32, db *gorm.DB) error {
+	currentTimestamp := time.Now().UTC().Unix()
 
 	// Update Rules:
 	// - Only counting the stakings which have been started
@@ -105,9 +110,11 @@ func updateLeaderboard(db *gorm.DB) error {
 		FROM p2e_squad_stakings as ss
 		WHERE lb.user_id = ss.owner_id 
 			AND lb.collection_id = ss.collection_id
+			AND lb.season_id = ?
 			AND ss.start_time < ?
 	`,
 		currentTimestamp,
+		seasonId,
 		currentTimestamp,
 	).Error
 	if updateScoreErr != nil {
@@ -117,21 +124,23 @@ func updateLeaderboard(db *gorm.DB) error {
 	updateRankErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET rank = orderedLb.rank
-		FROM (SELECT user_id, collection_id, row_number() OVER (ORDER BY in_progress_score) AS rank FROM p2e_leaderboards) orderedLb
+		FROM (SELECT user_id, collection_id, row_number() OVER (ORDER BY in_progress_score) AS rank FROM p2e_leaderboards WHERE season_id = ?) orderedLb
 		WHERE lb.user_id = orderedLb.user_id
 			AND lb.collection_id = orderedLb.collection_id
-	`).Error
+			AND lb.season_id = ?
+	`, seasonId, seasonId).Error
 	if updateRankErr != nil {
 		return errors.Wrap(updateRankErr, "failed to update rank")
 	}
 	return nil
 }
 
-func snapshotLeaderboard(db *gorm.DB) error {
+func snapshotLeaderboard(seasonId uint32, db *gorm.DB) error {
 	snapshotErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET snapshot_score = in_progress_score, snapshot_rank = rank
-	`).Error
+		WHERE lb.season_id = ?
+	`, seasonId).Error
 
 	if snapshotErr != nil {
 		return errors.Wrap(snapshotErr, "failed to snapshot")
@@ -147,7 +156,7 @@ func main() {
 		distributorOwnerMnemonic   = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of owner")
 		chainId                    = fs.String("public-chain-id", "", "public chain id")
 		rpcEndpoint                = fs.String("public-chain-rpc-endpoint", "", "public chain rpc endpoint")
-		riotStartedAt              = fs.String("the-riot-started-at", "", "time where the riot game starts")
+		theRiotStartedAt           = fs.String("the-riot-started-at", "", "time where the riot game starts")
 
 		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
@@ -191,33 +200,46 @@ func main() {
 		panic(errors.New("rpcEndpoint is mandatory"))
 	}
 
-	if riotStartedAt == nil {
-		panic(errors.New("riotStartedAt is mandatory"))
+	if theRiotStartedAt == nil {
+		panic(errors.New("theRiotStartedAt is mandatory"))
 	}
 
 	schedule := gocron.NewScheduler(time.UTC)
 	schedule.Every(1).Hour().Do(func() {
-		if err := updateLeaderboard(db); err != nil {
-			logger.Error("failed to update leaderboard", zap.Error(err))
+		season, _, err := p2e.GetSeasonByTime(*theRiotStartedAt, time.Now().UTC())
+		if err != nil {
+			logger.Error("failed to get current season", zap.Error(err))
 			return
 		}
-		logger.Info("update leaderboard successfully")
+
+		if err := updateLeaderboard(season.ID, db); err != nil {
+			logger.Error(fmt.Sprintf("failed to update leaderboard for season: %d", season.ID), zap.Error(err))
+			return
+		}
+		logger.Info(fmt.Sprintf("update leaderboard successfully for season: %d", season.ID))
 	})
 
-	schedule.Every(1).Day().At("00:00").Do(func() {
-		if err := snapshotLeaderboard(db); err != nil {
+	// Run a bit earlier than midnight to be sure that we snapshot on current season (if case of the season transition moment)
+	schedule.Every(1).Day().At("23:55").Do(func() {
+		season, _, err := p2e.GetSeasonByTime(*theRiotStartedAt, time.Now().UTC())
+		if err != nil {
+			logger.Error("failed to get current season", zap.Error(err))
+			return
+		}
+
+		if err := snapshotLeaderboard(season.ID, db); err != nil {
 			logger.Error("failed to snapshot leaderboard", zap.Error(err))
 			return
 		}
-		logger.Info("snapshot leaderboard successfully")
+		logger.Info(fmt.Sprintf("snapshot leaderboard successfully for season: %d", season.ID))
 
-		txResponse, err := sendRewardsList(db, *riotStartedAt, *chainId, *rpcEndpoint, *distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
+		txResponse, err := sendRewardsList(season.ID, db, *theRiotStartedAt, *chainId, *rpcEndpoint, *distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
 		if err != nil {
 			logger.Error("failed to send rewards list", zap.Error(err))
 			return
 		}
 
-		logger.Info("send rewards list successfully", zap.String("TxHash", txResponse.TxHash))
+		logger.Info(fmt.Sprintf("send daily rewards successfully for season: %d", season.ID), zap.String("TxHash", txResponse.TxHash))
 	})
 
 	schedule.StartBlocking()

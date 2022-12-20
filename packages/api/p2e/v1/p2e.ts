@@ -51,6 +51,7 @@ export interface FightersCountResponse {
 
 export interface LeaderboardRequest {
   collectionId: string;
+  seasonId: number;
   limit: number;
   offset: number;
 }
@@ -113,7 +114,7 @@ function createBaseSeasonWithoutPrize(): SeasonWithoutPrize {
 export const SeasonWithoutPrize = {
   encode(message: SeasonWithoutPrize, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== 0) {
-      writer.uint32(8).int32(message.id);
+      writer.uint32(8).uint32(message.id);
     }
     if (message.bossName !== "") {
       writer.uint32(18).string(message.bossName);
@@ -132,7 +133,7 @@ export const SeasonWithoutPrize = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.int32();
+          message.id = reader.uint32();
           break;
         case 2:
           message.bossName = reader.string();
@@ -272,7 +273,7 @@ function createBaseCurrentSeasonResponse(): CurrentSeasonResponse {
 export const CurrentSeasonResponse = {
   encode(message: CurrentSeasonResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== 0) {
-      writer.uint32(8).int32(message.id);
+      writer.uint32(8).uint32(message.id);
     }
     if (message.totalPrize !== 0) {
       writer.uint32(16).int32(message.totalPrize);
@@ -297,7 +298,7 @@ export const CurrentSeasonResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.int32();
+          message.id = reader.uint32();
           break;
         case 2:
           message.totalPrize = reader.int32();
@@ -553,7 +554,7 @@ export const FightersCountResponse = {
 };
 
 function createBaseLeaderboardRequest(): LeaderboardRequest {
-  return { collectionId: "", limit: 0, offset: 0 };
+  return { collectionId: "", seasonId: 0, limit: 0, offset: 0 };
 }
 
 export const LeaderboardRequest = {
@@ -561,11 +562,14 @@ export const LeaderboardRequest = {
     if (message.collectionId !== "") {
       writer.uint32(10).string(message.collectionId);
     }
+    if (message.seasonId !== 0) {
+      writer.uint32(16).uint32(message.seasonId);
+    }
     if (message.limit !== 0) {
-      writer.uint32(16).int32(message.limit);
+      writer.uint32(24).int32(message.limit);
     }
     if (message.offset !== 0) {
-      writer.uint32(24).int32(message.offset);
+      writer.uint32(32).int32(message.offset);
     }
     return writer;
   },
@@ -581,9 +585,12 @@ export const LeaderboardRequest = {
           message.collectionId = reader.string();
           break;
         case 2:
-          message.limit = reader.int32();
+          message.seasonId = reader.uint32();
           break;
         case 3:
+          message.limit = reader.int32();
+          break;
+        case 4:
           message.offset = reader.int32();
           break;
         default:
@@ -597,6 +604,7 @@ export const LeaderboardRequest = {
   fromJSON(object: any): LeaderboardRequest {
     return {
       collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      seasonId: isSet(object.seasonId) ? Number(object.seasonId) : 0,
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
     };
@@ -605,6 +613,7 @@ export const LeaderboardRequest = {
   toJSON(message: LeaderboardRequest): unknown {
     const obj: any = {};
     message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    message.seasonId !== undefined && (obj.seasonId = Math.round(message.seasonId));
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
@@ -613,6 +622,7 @@ export const LeaderboardRequest = {
   fromPartial<I extends Exact<DeepPartial<LeaderboardRequest>, I>>(object: I): LeaderboardRequest {
     const message = createBaseLeaderboardRequest();
     message.collectionId = object.collectionId ?? "";
+    message.seasonId = object.seasonId ?? 0;
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
     return message;

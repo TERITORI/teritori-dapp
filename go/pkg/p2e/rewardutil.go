@@ -11,7 +11,7 @@ import (
 const COEF = 1.0015
 
 type Season struct {
-	ID         int32
+	ID         uint32
 	TotalPrize int32
 	BossName   string
 	BossHp     int32
@@ -34,7 +34,8 @@ func GetAllSeasons() []Season {
 	return SEASONS
 }
 
-func GetCurrentSeason(firstSeasonStartedAt string) (Season, float64, error) {
+// returns: season, time passed in days, error
+func GetSeasonByTime(firstSeasonStartedAt string, givenTime time.Time) (Season, float64, error) {
 	layout := "2006-01-02"
 	startedAt, err := time.Parse(layout, firstSeasonStartedAt)
 
@@ -42,8 +43,7 @@ func GetCurrentSeason(firstSeasonStartedAt string) (Season, float64, error) {
 		return Season{}, 0, errors.Wrap(err, "failed to parsed riot started at time")
 	}
 
-	now := time.Now().UTC()
-	passedDuration := now.Sub(startedAt)
+	passedDuration := givenTime.Sub(startedAt)
 
 	if passedDuration.Milliseconds() <= 0 {
 		return Season{}, 0, errors.New("game has not started yet")
@@ -62,7 +62,12 @@ func GetCurrentSeason(firstSeasonStartedAt string) (Season, float64, error) {
 	return Season{}, 0, errors.New("game has ended")
 }
 
-func findSeasonById(seasonId int32) (Season, error) {
+// returns: season, time passed in days, error
+func GetCurrentSeason(firstSeasonStartedAt string) (Season, float64, error) {
+	return GetSeasonByTime(firstSeasonStartedAt, time.Now().UTC())
+}
+
+func findSeasonById(seasonId uint32) (Season, error) {
 	for _, season := range SEASONS {
 		if seasonId == season.ID {
 			return season, nil
@@ -92,7 +97,7 @@ func GetCurrentDailyRewardsConfig(startedAtStr string) ([]float64, error) {
 	return dailyRewards, nil
 }
 
-func GetRewardsConfigBySeason(seasonId int32) ([]float64, error) {
+func GetRewardsConfigBySeason(seasonId uint32) ([]float64, error) {
 	var targetSeason Season
 	var firstSeason Season
 

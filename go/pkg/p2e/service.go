@@ -85,6 +85,12 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 	if offset < 0 {
 		return errors.New("offset must be greater or equal to 0")
 	}
+
+	seasonId := req.GetSeasonId()
+	if seasonId == 0 {
+		return errors.New("seasonId invalid")
+	}
+
 	// TODO: for performance, we allow max limit = 500
 	if offset > 500 {
 		offset = 500
@@ -101,12 +107,13 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 	err := s.conf.IndexerDB.Raw(`
 		SELECT ROW_NUMBER() OVER(ORDER BY in_progress_score desc) as rank, *
 		FROM p2e_leaderboards
-		WHERE collection_id = ?
+		WHERE collection_id = ? AND season_id = ?
 		ORDER BY in_progress_score desc
 		OFFSET ?
 		LIMIT ?
 	`,
 		collectionId,
+		seasonId,
 		int(offset),
 		int(limit),
 	).Scan(&userScores).Error

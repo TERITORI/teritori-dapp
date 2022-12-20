@@ -14,6 +14,7 @@ type P2eSquadStaking struct {
 type P2eLeaderboard struct {
 	UserID          UserID `gorm:"primaryKey"`
 	CollectionID    string `gorm:"primaryKey"`
+	SeasonID        uint32 `gorm:"index"`
 	Rank            uint32 `gorm:"index"`
 	Score           uint32 `gorm:"index"` // Score already claimed
 	InProgressScore uint32 `gorm:"index"` // Score including current staking

@@ -70,12 +70,12 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
     );
   }
 
-  const rankColor = changes >= 0 ? additionalGreen : additionalRed;
-  const rankSign = changes >= 0 ? "+" : "-";
+  const rankColor = changes < 0 ? additionalGreen : additionalRed;
+  const rankSign = changes < 0 ? "+" : "-";
 
   return (
     <Row style={{ alignItems: "center" }}>
-      <SVG source={changes >= 0 ? volUpSVG : volDownSVG} />
+      <SVG source={changes < 0 ? volUpSVG : volDownSVG} />
       <BrandText
         style={[
           styles.colData,
@@ -94,9 +94,12 @@ export const RiotGameLeaderboardScreen = () => {
   const fetchLeaderboard = async () => {
     const _userScores: UserScore[] = [];
 
+    const { id } = await p2eBackendClient.CurrentSeason({});
+
     const streamData = await p2eBackendClient.Leaderboard({
       collectionId: THE_RIOT_COLLECTION_ID,
-      limit: 200,
+      seasonId: id,
+      limit: 500,
       offset: 0,
     });
 
