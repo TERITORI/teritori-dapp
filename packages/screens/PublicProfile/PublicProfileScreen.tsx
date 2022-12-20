@@ -4,46 +4,27 @@ import { View } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { NewsFeed } from "../../components/NewsFeed/NewsFeed";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { BackTo } from "../../components/navigation/BackTo";
 import { screenTitle } from "../../components/navigation/Navigator";
-import { Tabs } from "../../components/tabs/Tabs";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { screenTabItems } from "../../utils/feed";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { fontSemibold16, fontSemibold20 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
+import { FeedHeader } from "../Feed/components/FeedHeader";
 import { PublicProfileIntro } from "./PublicProfileIntro";
 
-const screenTabItems = {
-  news: {
-    name: "News Feed",
-  },
-  marketPlaceProfile: {
-    name: "Marketplace's Profile",
-    disabled: true,
-  },
-  bounties: {
-    name: "Open Bounties & Jobs",
-    disabled: true,
-  },
-  governance: {
-    name: "Governance",
-    disabled: true,
-  },
-  dao: {
-    name: "Candidate to the DAO",
-    disabled: true,
-  },
-  chat: {
-    name: "Chat",
-    disabled: true,
-  },
-};
-
-const SelectedTabContent: React.FC<{
+export interface SelectedTabContentProps {
   selectedTab: keyof typeof screenTabItems;
-}> = ({ selectedTab }) => {
+  Header: React.ComponentType;
+}
+
+const SelectedTabContent: React.FC<SelectedTabContentProps> = ({
+  selectedTab,
+  Header,
+}) => {
   switch (selectedTab) {
     case "news":
-      return <NewsFeed />;
+      return <NewsFeed selectedTab={selectedTab} Header={Header} />;
     default:
       return null;
   }
@@ -70,13 +51,9 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
 
   return (
     <ScreenContainer
-      smallMargin
-      responsive
-      headerChildren={
-        <BrandText style={fontSemibold20}>
-          {metadata?.public_name || ""}
-        </BrandText>
-      }
+      fullWidth
+      headerChildren={<BackTo label={metadata?.public_name || ""} />}
+      footerChildren={<></>}
     >
       {notFound || !id.startsWith("tori-") ? (
         <View
@@ -89,26 +66,19 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
           <BrandText>User not found</BrandText>
         </View>
       ) : (
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-            <PublicProfileIntro userId={id} metadata={metadata} />
-
-            <Tabs
-              items={screenTabItems}
-              selected={selectedTab}
-              onSelect={setSelectedTab}
-              style={{
-                marginTop: layout.padding_x4,
-                height: 64,
-                zIndex: 9,
-                elevation: 9,
-              }}
-              gradientText
-              textStyle={fontSemibold16}
-            />
-
-            <SelectedTabContent selectedTab={selectedTab} />
-          </View>
+        <View style={{ flex: 1 }}>
+          <SelectedTabContent
+            selectedTab={selectedTab}
+            Header={() => (
+              <>
+                <PublicProfileIntro userId={id} metadata={metadata} />
+                <FeedHeader
+                  selectedTab={selectedTab}
+                  onTabChange={setSelectedTab}
+                />
+              </>
+            )}
+          />
         </View>
       )}
     </ScreenContainer>

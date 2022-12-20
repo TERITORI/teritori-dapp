@@ -61,7 +61,11 @@ export const CommentsContainer: React.FC<{
           bottom: 80,
         }}
       />
-      <View>
+      <View
+        style={{
+          paddingBottom: layout.contentPadding,
+        }}
+      >
         {comments.map((comment, index) => (
           <CommentContainer
             key={index}
