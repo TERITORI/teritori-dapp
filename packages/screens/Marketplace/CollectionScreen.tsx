@@ -124,7 +124,7 @@ export const Header: React.FC<{
     }));
   }, [stats?.floorPrice]);
 
-  const prices = useCoingeckoPrices(coins);
+  const { prices } = useCoingeckoPrices(coins);
 
   const collectionScreenTabItems = {
     allNFTs: {

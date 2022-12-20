@@ -23,6 +23,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
         }}
       >
         <CollectionsCarouselHeader
+          linkToMint
           req={{
             networkId: selectedNetworkId,
             sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
@@ -36,6 +37,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
 
         <CollectionsCarouselSection
           title="Live Mintable"
+          linkToMint
           req={{
             networkId: selectedNetworkId,
             sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,

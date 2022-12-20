@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import {
   Collection,
@@ -18,10 +18,6 @@ import { CarouselSection } from "./CarouselSection";
 
 const gap = 24;
 
-const renderItem = (props: { item: Collection }) => (
-  <CollectionView item={props.item} />
-);
-
 const defaultRequest: CollectionsRequest = {
   networkId: "fake",
   sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
@@ -34,11 +30,19 @@ const defaultRequest: CollectionsRequest = {
 
 export const CollectionsCarouselSection: React.FC<{
   title: string;
+  linkToMint?: boolean;
   req?: CollectionsRequest;
-}> = ({ title, req = defaultRequest }) => {
+}> = ({ title, req = defaultRequest, linkToMint }) => {
   const [collections, fetchMore] = useCollections(req);
 
   const { width } = useMaxResolution();
+
+  const renderItem = useCallback(
+    (props: { item: Collection }) => (
+      <CollectionView item={props.item} linkToMint={linkToMint} />
+    ),
+    [linkToMint]
+  );
 
   return (
     <CarouselSection

@@ -1,15 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
+import { Decimal } from "cosmwasm";
 
 import { getNativeCurrency } from "../networks";
 import { isDefined } from "../utils/filter";
 
-export const useCoingeckoPrices = (
-  coins: { networkId: string | undefined; denom: string | undefined }[]
-) => {
+type CoingeckoPrices = { [key: string]: { usd: number } };
+export type CoingeckoCoin = {
+  networkId: string | undefined;
+  denom: string | undefined;
+};
+
+export const useCoingeckoPrices = (coins: CoingeckoCoin[]) => {
   const ids = coins
     .map((coin) => getNativeCurrency(coin.networkId, coin.denom)?.coingeckoId)
     .filter(isDefined)
     .sort((a, b) => a.localeCompare(b));
+
   const { data } = useQuery(
     ["coingeckoPrices", ids],
     async () => {
@@ -18,7 +24,7 @@ export const useCoingeckoPrices = (
           ids.join(",")
         )}&vs_currencies=usd`
       );
-      const prices: { [key: string]: { usd: number } } = await response.json();
+      const prices: CoingeckoPrices = await response.json();
       return prices;
     },
     {
@@ -28,5 +34,23 @@ export const useCoingeckoPrices = (
       initialDataUpdatedAt: 0,
     }
   );
-  return data;
+
+  const getCoingeckoPrice = (
+    networkId: string,
+    denom: string,
+    amount: string,
+    prices: CoingeckoPrices
+  ) => {
+    const currency = getNativeCurrency(networkId, denom);
+    return (
+      currency &&
+      Decimal.fromAtomics(
+        // An amount with not enough decimals will be considered as zero
+        Math.round(parseFloat(amount)).toString(),
+        currency.decimals
+      ).toFloatApproximation() * (prices[currency.coingeckoId]?.usd || 0)
+    );
+  };
+
+  return { prices: data, getCoingeckoPrice };
 };

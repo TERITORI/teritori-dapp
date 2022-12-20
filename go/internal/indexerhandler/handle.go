@@ -220,19 +220,27 @@ func (h *Handler) handleExecute(e *Message) error {
 		}
 	case "transfer_nft":
 		if err := h.handleExecuteTransferNFT(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle transfer_nft")
 		}
 	case "update_metadata":
 		if err := h.handleExecuteUpdateTNSMetadata(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle update_metadata")
 		}
 	case "set_admin_address":
 		if err := h.handleExecuteTNSSetAdminAddress(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle set_admin_address")
 		}
 	case "update_config":
 		if err := h.handleExecuteBunkerUpdateConfig(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle update_config")
+		}
+	case "pause":
+		if err := h.handleExecuteBunkerPause(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle pause")
+		}
+	case "unpause":
+		if err := h.handleExecuteBunkerUnpause(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle unpause")
 		}
 	case "stake":
 		if executeMsg.Contract == h.config.SquadStakingContractAddress {

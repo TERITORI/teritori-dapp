@@ -74,7 +74,8 @@ export const useCollectionInfo = (id: string) => {
 
       const whitelistSize = await minterClient.whitelistSize();
 
-      const mintStarted = conf.mint_start_time !== 0;
+      const mintStarted =
+        conf.mint_start_time !== 0 && secondsSinceEpoch >= conf.mint_start_time;
 
       let state: MintState;
       if (!mintStarted) {
