@@ -12,3 +12,11 @@ export const thousandSeparator = (
 
   return thosandSeperatedValue + (valueArray[1] ? `.${valueArray[1]}` : "");
 };
+
+export const replaceBetweenString = (
+  origin: string,
+  startIndex: number,
+  endIndex: number,
+  insertion: string
+) =>
+  `${origin.substring(0, startIndex)}${insertion}${origin.substring(endIndex)}`;

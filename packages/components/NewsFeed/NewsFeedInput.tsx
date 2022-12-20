@@ -23,11 +23,14 @@ import {
   fontSemibold16,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { replaceBetweenString } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+import { FeedEmojiSelector } from "../cards/components/FeedEmojiSelector";
 import { FileUploader } from "../fileUploader";
+import { SpacerRow } from "../spacer";
 import { NewPostFormValues } from "./NewsFeed.type";
 import {
   createPost,
@@ -60,6 +63,10 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
   const { setToastSuccess, setToastError } = useFeedbacks();
   const [fileUpload, setFileUpload] = useState(false);
   const navigation = useAppNavigation();
+  const [selection, setSelection] = useState<{ start: number; end: number }>({
+    start: 10,
+    end: 10,
+  });
 
   const balances = useBalances(
     process.env.TERITORI_NETWORK_ID,
@@ -155,6 +162,19 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
     navigation.navigate("FeedNewPost", formValues);
   };
 
+  const onEmojiSelected = (emoji: string | null) => {
+    if (emoji) {
+      let copiedValue = `${formValues.message}`;
+      copiedValue = replaceBetweenString(
+        copiedValue,
+        selection.start,
+        selection.end,
+        emoji
+      );
+      setValue("message", copiedValue);
+    }
+  };
+
   return (
     <View style={style}>
       {fileUpload && (
@@ -184,11 +204,15 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
           flexDirection: "row",
           alignItems: "flex-start",
         }}
+        noRightBrokenBorder
       >
         <SVG height={24} width={24} source={penSVG} color={secondaryColor} />
 
         <TextInput
           value={formValues.message}
+          onSelectionChange={(event) =>
+            setSelection(event.nativeEvent.selection)
+          }
           placeholder={`Hey yo! ${
             type === "post" ? "Post something" : "Write your comment"
           } here! _____`}
@@ -208,7 +232,7 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
             },
           ]}
           onKeyPress={(e) => {
-            if (e.nativeEvent.key === "Enter") {
+            if (e.nativeEvent.key === "Enter" && type === "post") {
               redirectToNewPost();
             }
           }}
@@ -261,6 +285,8 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
           </BrandText>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <FeedEmojiSelector onEmojiSelected={onEmojiSelected} />
+          <SpacerRow size={2.5} />
           <TouchableOpacity
             activeOpacity={0.8}
             style={{
