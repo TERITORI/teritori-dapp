@@ -1,3 +1,4 @@
+import createLinkPlugin from "@draft-js-plugins/anchor";
 import {
   ItalicButton,
   BoldButton,
@@ -9,7 +10,6 @@ import {
   UnorderedListButton,
   OrderedListButton,
   BlockquoteButton,
-  CodeBlockButton,
 } from "@draft-js-plugins/buttons";
 import Editor from "@draft-js-plugins/editor";
 import createInlineToolbarPlugin from "@draft-js-plugins/inline-toolbar";
@@ -26,6 +26,7 @@ import { neutral33 } from "../../utils/style/colors";
 import "./draft.css";
 import { RichTextProps } from "./RichText.type";
 
+const LinkPlugin = createLinkPlugin();
 const inlineToolbarPlugin = createInlineToolbarPlugin({
   theme: {
     toolbarStyles: {
@@ -48,7 +49,7 @@ const staticToolbarPlugin = createToolbarPlugin({
 });
 const { Toolbar } = staticToolbarPlugin;
 const { InlineToolbar } = inlineToolbarPlugin;
-const plugins = [inlineToolbarPlugin, staticToolbarPlugin];
+const plugins = [inlineToolbarPlugin, staticToolbarPlugin, LinkPlugin];
 
 const createStateFromHTML = (html: string) => {
   const blocksFromHTML = convertFromHTML(html);
@@ -121,6 +122,8 @@ export function RichText({
                   <ItalicButton {...externalProps} />
                   <UnderlineButton {...externalProps} />
                   <CodeButton {...externalProps} />
+                  <LinkPlugin.LinkButton {...externalProps} />
+
                   <Separator />
                   <HeadlineOneButton {...externalProps} />
                   <HeadlineTwoButton {...externalProps} />
@@ -128,7 +131,6 @@ export function RichText({
                   <UnorderedListButton {...externalProps} />
                   <OrderedListButton {...externalProps} />
                   <BlockquoteButton {...externalProps} />
-                  <CodeBlockButton {...externalProps} />
                 </>
               )}
             </Toolbar>

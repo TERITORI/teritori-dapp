@@ -44,7 +44,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     PostCategory.Normal
   );
 
-  const [isAddMore, setAddMore] = useState(false);
+  const [isAddMoreVisible, setIsAddMoreVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
@@ -136,6 +136,8 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     setLoading(false);
   };
 
+  const toggleAddMore = () => setIsAddMoreVisible(!isAddMoreVisible);
+
   return (
     <ScreenContainer
       responsive
@@ -151,7 +153,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
             paddingVertical: layout.padding_x2_5,
           }}
         >
-          <AddMoreButton onPress={() => setAddMore(true)} />
+          <AddMoreButton onPress={toggleAddMore} />
           <PrimaryButton
             disabled={loading}
             loader={loading}
@@ -209,7 +211,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
           }}
           render={({ field: { onChange, onBlur } }) => (
             <RichText
-              staticToolbar={isAddMore}
+              staticToolbar={isAddMoreVisible}
               onChange={onChange}
               onBlur={onBlur}
               initialValue={formValues.message}
