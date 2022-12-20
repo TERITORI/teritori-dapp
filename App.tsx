@@ -11,6 +11,7 @@ import { MetaMaskProvider } from "metamask-react";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform } from "react-native";
+import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
@@ -56,10 +57,12 @@ export default function App() {
                     <WalletsProvider>
                       <TransactionModalsProvider>
                         <TNSContextProvider>
-                          <SidebarContextProvider>
-                            <StatusBar style="inverted" />
-                            <Navigator />
-                          </SidebarContextProvider>
+                          <MenuProvider>
+                            <SidebarContextProvider>
+                              <StatusBar style="inverted" />
+                              <Navigator />
+                            </SidebarContextProvider>
+                          </MenuProvider>
                         </TNSContextProvider>
                       </TransactionModalsProvider>
                     </WalletsProvider>
@@ -68,7 +71,7 @@ export default function App() {
               </ReduxProvider>
             </SafeAreaProvider>
           </NavigationContainer>
-        </MetaMaskProvider>
+        <MetaMaskProvider>
       </FormProvider>
     </QueryClientProvider>
   );
