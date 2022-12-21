@@ -25,6 +25,8 @@ type ContractClient struct {
 	RpcEndpoint string
 
 	// Only mandatory for exec
+	Sender              string
+	Mnemonic            string
 	Bech32PrefixAccAddr string
 	GasPrices           string
 	GasAdjustment       float64
@@ -33,6 +35,40 @@ type ContractClient struct {
 	queryClientCtx client.Context
 	execClientCtx  client.Context
 	execTxFactory  tx.Factory
+}
+
+// This supports only query
+func NewContractQueryClient(chainId string, rpcEndpoint string) ContractClient {
+	cqc := ContractClient{
+		ChainId:     chainId,
+		RpcEndpoint: rpcEndpoint,
+	}
+	cqc.initQueryClientCtx()
+	return cqc
+}
+
+// This supports exec/query
+func NewContractClient(chainId string, rpcEndpoint string, prefix string, sender string, mnemonic string, gasPrices string, gasAdjustment float64) (ContractClient, error) {
+	cc := ContractClient{
+		ChainId:     chainId,
+		RpcEndpoint: rpcEndpoint,
+
+		// Only need for exec
+		Sender:              sender,
+		Mnemonic:            mnemonic,
+		Bech32PrefixAccAddr: prefix,
+		GasPrices:           gasPrices,
+		GasAdjustment:       gasAdjustment,
+	}
+	cc.initConfig()
+
+	if err := cc.initExecClientCtx(cc.Sender, cc.Mnemonic); err != nil {
+		return ContractClient{}, errors.Wrap(err, "failed to build client context")
+	}
+
+	cc.initExecTxFactory()
+
+	return cc, nil
 }
 
 func (cc *ContractClient) initConfig() {
@@ -51,7 +87,7 @@ func (cc *ContractClient) initConfig() {
 	config.SetBech32PrefixForConsensusNode(Bech32PrefixConsAddr, Bech32PrefixConsPub)
 }
 
-func (cc *ContractClient) initExecTxFactory(memo string) {
+func (cc *ContractClient) initExecTxFactory() {
 	cc.execTxFactory = tx.Factory{}.
 		WithKeybase(cc.execClientCtx.Keyring).
 		WithTxConfig(cc.execClientCtx.TxConfig).
@@ -59,7 +95,6 @@ func (cc *ContractClient) initExecTxFactory(memo string) {
 		WithGasAdjustment(cc.GasAdjustment).
 		WithChainID(cc.ChainId).
 		WithGasPrices(cc.GasPrices).
-		WithMemo(memo).
 		WithSignMode(signing.SignMode_SIGN_MODE_UNSPECIFIED)
 }
 
@@ -183,15 +218,10 @@ func (cc *ContractClient) BroadcastTx(msgs ...sdk.Msg) (*sdk.TxResponse, error) 
 	return cc.execClientCtx.BroadcastTx(txBytes)
 }
 
-func (cc *ContractClient) ExecuteWasm(sender string, mnemonic string, contract string, execMsg string, funds sdk.Coins, memo string) (*sdk.TxResponse, error) {
-	cc.initConfig()
+func (cc *ContractClient) ExecuteWasm(contract string, execMsg string, funds sdk.Coins, memo string) (*sdk.TxResponse, error) {
+	cc.execTxFactory = cc.execTxFactory.WithMemo(memo)
 
-	if err := cc.initExecClientCtx(sender, mnemonic); err != nil {
-		return nil, errors.Wrap(err, "failed to build client context")
-	}
-	cc.initExecTxFactory(memo)
-
-	msg, err := cc.BuildExecMsg(sender, contract, execMsg, funds)
+	msg, err := cc.BuildExecMsg(cc.Sender, contract, execMsg, funds)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build exec message")
 	}
@@ -210,8 +240,6 @@ func (cc *ContractClient) ExecuteWasm(sender string, mnemonic string, contract s
 }
 
 func (cc *ContractClient) QueryWasm(contract string, queryMsg string) (map[string]interface{}, error) {
-	cc.initQueryClientCtx()
-
 	decoder := newArgDecoder(asciiDecodeString)
 	queryData, err := decoder.DecodeString(queryMsg)
 

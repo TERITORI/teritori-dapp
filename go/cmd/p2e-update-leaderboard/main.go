@@ -22,34 +22,39 @@ import (
 
 type Obj = contractutil.Obj
 
-func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId string, rpcEndpoint string, distributorOwnerAddress string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
+func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId string, rpcEndpoint string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
 	dailyRewards, err := p2e.GetCurrentDailyRewardsConfig(riotStartedAt)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get rewards")
 	}
 
-	sender := distributorOwnerAddress
-	mnemonic := distributorMnemonic
-	contract := distributorContractAddress
-	funds := sdk.NewCoins()
-	toriDenominator := 1_000_000
-
-	if strings.HasPrefix(rpcEndpoint, "https") {
-		rpcEndpoint += ":443"
-	}
-
-	contractClient := contractutil.ContractClient{
-		ChainId:     chainId,
-		RpcEndpoint: rpcEndpoint,
-		// Only need for exec
-		Bech32PrefixAccAddr: "tori",
-		GasPrices:           "0.025utori",
-		GasAdjustment:       1.3,
-	}
-
-	configData, err := contractClient.QueryWasm(contract, `{"config": {}}`)
+	contractQueryClient := contractutil.NewContractQueryClient(chainId, rpcEndpoint)
+	configData, err := contractQueryClient.QueryWasm(distributorContractAddress, `{"config": {}}`)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query contract")
+	}
+
+	mnemonic := distributorMnemonic
+	funds := sdk.NewCoins()
+	toriDenominator := 1_000_000
+	prefix := "tori"
+	gasPrices := "0.025utori"
+	gasAdjustment := 1.3
+
+	distributorOwnerAddress := configData["owner"].(string)
+
+	contractClient, err := contractutil.NewContractClient(
+		chainId,
+		rpcEndpoint,
+		prefix,
+		distributorOwnerAddress,
+		mnemonic,
+		gasPrices,
+		gasAdjustment,
+	)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get contract client")
 	}
 
 	// Get leaderboard
@@ -93,7 +98,7 @@ func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId
 	}
 	execMsgStr := string(execMsg)
 
-	return contractClient.ExecuteWasm(sender, mnemonic, contract, execMsgStr, funds, "Send rewards list")
+	return contractClient.ExecuteWasm(distributorContractAddress, execMsgStr, funds, "Send rewards list to top players")
 }
 
 func updateLeaderboard(seasonId uint32, db *gorm.DB) error {
@@ -152,7 +157,6 @@ func main() {
 	fs := flag.NewFlagSet("p2e-update-leaderboard", flag.ContinueOnError)
 	var (
 		distributorContractAddress = fs.String("teritori-distributor-contract-address", "", "distributor contract address")
-		distributorOwnerAddress    = fs.String("teritori-distributor-owner-address", "", "owner that can send rewards list to distributor contract")
 		distributorOwnerMnemonic   = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of owner")
 		chainId                    = fs.String("public-chain-id", "", "public chain id")
 		rpcEndpoint                = fs.String("public-chain-rpc-endpoint", "", "public chain rpc endpoint")
@@ -233,7 +237,7 @@ func main() {
 		}
 		logger.Info(fmt.Sprintf("snapshot leaderboard successfully for season: %d", season.ID))
 
-		txResponse, err := sendRewardsList(season.ID, db, *theRiotStartedAt, *chainId, *rpcEndpoint, *distributorOwnerAddress, *distributorContractAddress, *distributorOwnerMnemonic)
+		txResponse, err := sendRewardsList(season.ID, db, *theRiotStartedAt, *chainId, *rpcEndpoint, *distributorContractAddress, *distributorOwnerMnemonic)
 		if err != nil {
 			logger.Error("failed to send rewards list", zap.Error(err))
 			return
