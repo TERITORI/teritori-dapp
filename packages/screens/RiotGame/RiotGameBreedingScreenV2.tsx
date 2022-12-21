@@ -90,7 +90,7 @@ export const RiotGameBreedingScreen = () => {
             data={myAvailableRippers}
             numColumns={3}
             keyExtractor={(ripper) => ripper.id}
-            renderItem={({ item: ripper, index }) => {
+            renderItem={({ item: ripper }) => {
               return (
                 <TertiaryBox
                   style={{ margin: layout.padding_x1_5 }}

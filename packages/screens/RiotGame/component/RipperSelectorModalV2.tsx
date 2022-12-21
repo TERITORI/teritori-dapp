@@ -132,7 +132,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                       height: (THUMB_CONTAINER_SIZE + 20) * TOTAL_VISIBLE,
                     }}
                     pagingEnabled
-                    renderItem={({ item, index }) => {
+                    renderItem={({ item }) => {
                       const isSelected = item.name === selectedRipper?.name;
                       return (
                         <TouchableOpacity

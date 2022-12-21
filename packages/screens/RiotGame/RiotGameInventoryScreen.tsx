@@ -54,7 +54,7 @@ export const RiotGameInventoryScreen = () => {
             numColumns={3}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => "" + index}
-            renderItem={({ item, index }) => {
+            renderItem={() => {
               return (
                 <TertiaryBox
                   style={{ margin: layout.padding_x1 }}
