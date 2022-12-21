@@ -1,12 +1,12 @@
 import { coin } from "cosmwasm";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
-import { Checkbox } from "react-native-paper";
 
 import breedSVG from "../../../assets/game/breed.svg";
 import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
+import { ExternalLink } from "../../components/ExternalLink";
 import { SVG } from "../../components/SVG";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import Row from "../../components/grid/Row";
@@ -40,7 +40,6 @@ export const RiotGameBreedingScreen = () => {
   const [isBreeding, setIsBreeding] = useState(false);
   const { setToastError } = useFeedbacks();
   const [newTokenInfo, setNewTokenInfo] = useState<TokenInfo>();
-  const [isLegalChecked, setIsLegalChecked] = useState<boolean>(false);
 
   const [selectedRippers, setSelectedRippers] = useState<{
     [slotId: string]: {
@@ -238,11 +237,7 @@ export const RiotGameBreedingScreen = () => {
         </View>
 
         <PrimaryButtonOutline
-          disabled={
-            isBreeding ||
-            Object.keys(selectedRippers).length !== 2 ||
-            !isLegalChecked
-          }
+          disabled={isBreeding || Object.keys(selectedRippers).length !== 2}
           onPress={doBreed}
           color={yellowDefault}
           size="M"
@@ -256,14 +251,16 @@ export const RiotGameBreedingScreen = () => {
           alignItems="center"
           style={{ marginTop: layout.padding_x2 }}
         >
-          <Checkbox
-            status={isLegalChecked ? "checked" : "unchecked"}
-            onPress={() => setIsLegalChecked(!isLegalChecked)}
-            uncheckedColor={neutralA3}
-          />
           <BrandText style={[fontMedium14, { color: neutralA3 }]}>
-            Legal phrase powered by Popipou
+            By clicking "Breed my Rippers" you agree to this
           </BrandText>
+          <SpacerRow size={1} />
+          <ExternalLink
+            style={fontMedium14}
+            externalUrl="https://teritori.notion.site/The-R-ot-Terms-Conditions-Breeding-1ea3729d50484a0dbe3c55f6ec5ae3e2"
+          >
+            Terms & Conditions
+          </ExternalLink>
         </Row>
       </View>
 
