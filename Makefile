@@ -3,7 +3,6 @@ BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
-STAKING_PACKAGE=teritori-nft-staking
 SQUAD_STAKING_PACKAGE=teritori-squad-staking
 BREEDING_PACKAGE=teritori-breeding
 DISTRIBUTOR_PACKAGE=teritori-distributor
@@ -170,20 +169,6 @@ $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE): node_modules
 	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(CANDYMACHINE_REPO)/schema/nft-breeding/instantiate_msg.json -o go/pkg/contracts/breeding_types/instantiate_msg.go -p breeding_types
 	go fmt ./go/pkg/contracts/breeding_minter_types		
 	rm -fr $(CANDYMACHINE_REPO)
-
-.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(STAKING_PACKAGE)
-$(CONTRACTS_CLIENTS_DIR)/$(STAKING_PACKAGE): node_modules
-	rm -fr $(TOKEN_REPO)
-	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
-	cd $(TOKEN_REPO) && git checkout 731b876202cc2c7a56057afddb42a25c25aa23e7
-	rm -fr $@
-	npx cosmwasm-ts-codegen generate \
-		--plugin client \
-		--schema $(TOKEN_REPO)/schema/nft-staking \
-		--out $@ \
-		--name $(STAKING_PACKAGE) \
-		--no-bundle
-	rm -fr $(TOKEN_REPO)
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules

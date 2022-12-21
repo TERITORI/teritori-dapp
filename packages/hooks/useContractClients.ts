@@ -10,10 +10,6 @@ import {
   TeritoriDistributorQueryClient,
 } from "../contracts-clients/teritori-distributor/TeritoriDistributor.client";
 import {
-  TeritoriNftStakingClient,
-  TeritoriNftStakingQueryClient,
-} from "../contracts-clients/teritori-nft-staking/TeritoriNftStaking.client";
-import {
   TeritoriNftVaultClient,
   TeritoriNftVaultQueryClient,
 } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
@@ -33,7 +29,6 @@ import useSelectedWallet from "./useSelectedWallet";
 
 type ContractName =
   | "teritori-nft"
-  | "teritori-nft-staking"
   | "teritori-nft-vault"
   | "teritori-breeding"
   | "teritori-distributor"
@@ -45,10 +40,6 @@ const CONTRACT_CLIENT_MAP: {
   "teritori-nft": {
     clientClass: TeritoriNftClient,
     queryClientClass: TeritoriNftQueryClient,
-  },
-  "teritori-nft-staking": {
-    clientClass: TeritoriNftStakingClient,
-    queryClientClass: TeritoriNftStakingQueryClient,
   },
   "teritori-nft-vault": {
     clientClass: TeritoriNftVaultClient,
@@ -70,8 +61,6 @@ const CONTRACT_CLIENT_MAP: {
 
 type ClientType<T> = T extends "teritori-nft"
   ? TeritoriNftClient
-  : T extends "teritori-nft-staking"
-  ? TeritoriNftStakingClient
   : T extends "teritori-nft-vault"
   ? TeritoriNftVaultClient
   : T extends "teritori-squad-staking"
@@ -84,8 +73,6 @@ type ClientType<T> = T extends "teritori-nft"
 
 type QueryClientType<T> = T extends "teritori-nft"
   ? TeritoriNftQueryClient
-  : T extends "teritori-nft-staking"
-  ? TeritoriNftStakingQueryClient
   : T extends "teritori-nft-vault"
   ? TeritoriNftVaultQueryClient
   : T extends "teritori-squad-staking"
