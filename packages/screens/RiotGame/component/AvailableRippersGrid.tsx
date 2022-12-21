@@ -31,7 +31,7 @@ export const AvailableRippersGrid: React.FC<AvailableRippersGridProps> = ({
       scrollEnabled
       style={{ height: 329 }}
       showsVerticalScrollIndicator={false}
-      renderItem={({ item: ripper, index }) => {
+      renderItem={({ item: ripper }) => {
         const isSelected = ripper.id === selectedRipper?.id;
 
         return (
