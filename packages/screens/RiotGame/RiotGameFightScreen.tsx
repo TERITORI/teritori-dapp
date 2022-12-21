@@ -4,14 +4,17 @@ import { StyleSheet, View } from "react-native";
 import fightBgPNG from "../../../assets/game/fight-bg.png";
 import victoryBgPNG from "../../../assets/game/victory-bg.png";
 import addCircleSFilledVG from "../../../assets/icons/add-circle-filled.svg";
-import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import Row from "../../components/grid/Row";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { NftInfoResponse } from "../../contracts-clients/teritori-nft/TeritoriNft.types";
+import { Nft } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { getRipperTokenId, StakingState } from "../../utils/game";
+import { StakingState } from "../../utils/game";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { getNonSigningCosmWasmClient } from "../../utils/keplr";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium48 } from "../../utils/style/fonts";
@@ -21,6 +24,7 @@ import { FightCountdownSection } from "./component/FightCountdownSection";
 import { FightSquadSection } from "./component/FightSquadSection";
 import { GameContentView } from "./component/GameContentView";
 import { UnstakeModal } from "./component/UnstakeModal";
+import { RipperLightInfo } from "./types";
 
 const PAGE_TITLE_MAP = {
   [StakingState.UNKNOWN]: "There is no ongoing fight",
@@ -37,7 +41,7 @@ export const RiotGameFightScreen = () => {
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
   const [isUnstaking, setIsUnstaking] = useState(false);
 
-  const [stakedRippers, setStakedRippers] = useState<NFT[]>([]);
+  const [stakedRippers, setStakedRippers] = useState<RipperLightInfo[]>([]);
 
   const {
     currentSquad,
@@ -54,16 +58,21 @@ export const RiotGameFightScreen = () => {
     setCurrentSquad,
   } = useSquadStaking();
 
-  const fetchCurrentStakedRippers = async () => {
-    // Combined id = {nft-contract-address}-{token-id}
-    const stakedCombinedIds = currentSquad?.nfts.map(
-      (nft) => `${nft.contract_addr}-${nft.token_id}`
+  const fetchCurrentStakedRippers = async (currentStakedNfts: Nft[]) => {
+    const client = await getNonSigningCosmWasmClient();
+
+    const nftInfos: NftInfoResponse[] = await Promise.all(
+      currentStakedNfts.map((nft) =>
+        client.queryContractSmart(nft.contract_addr, {
+          nft_info: { token_id: nft.token_id },
+        })
+      )
     );
 
-    const stakedRippers = myAvailableRippers.filter((r) => {
-      const tokenId = getRipperTokenId(r);
-      return stakedCombinedIds?.includes(`${r.nftContractAddress}-${tokenId}`);
-    });
+    const stakedRippers: RipperLightInfo[] = nftInfos.map(({ extension }) => ({
+      imageUri: ipfsURLToHTTPURL(`${extension?.image}`),
+      name: `${extension?.name}`,
+    }));
 
     setStakedRippers(stakedRippers);
   };
@@ -126,8 +135,10 @@ export const RiotGameFightScreen = () => {
   }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.owner]);
 
   useEffect(() => {
-    fetchCurrentStakedRippers();
-  }, [myAvailableRippers, currentSquad]);
+    if (!currentSquad?.nfts) return;
+
+    fetchCurrentStakedRippers(currentSquad.nfts);
+  }, [myAvailableRippers, currentSquad?.nfts.length]);
 
   return (
     <GameContentView

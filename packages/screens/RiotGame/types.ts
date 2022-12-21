@@ -78,3 +78,8 @@ export type RipperAttribute = {
   trait_type: string;
   value: string;
 };
+
+export type RipperLightInfo = {
+  name: string;
+  imageUri: string;
+};

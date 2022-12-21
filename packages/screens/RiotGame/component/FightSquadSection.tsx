@@ -1,19 +1,19 @@
 import React from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
-import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontMedium32, fontMedium13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { RipperLightInfo } from "../types";
 import { RipperAvatar } from "./RipperAvatar";
 
 const RIPPER_AVATAR_SIZE = 60;
 
 type FightSquadSectionProps = {
-  stakedRippers: NFT[];
+  stakedRippers: RipperLightInfo[];
 };
 
 export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
@@ -37,12 +37,12 @@ export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
         data={stakedRippers}
         numColumns={3}
         scrollEnabled={false}
-        keyExtractor={(ripper) => ripper.id}
         renderItem={({ item: ripper, index }) => {
           const isCenter = (index - 1) % 3 === 0;
 
           return (
             <View
+              key={index}
               style={[
                 styles.ripperInfo,
                 isCenter && { marginTop: RIPPER_AVATAR_SIZE / 3 },
