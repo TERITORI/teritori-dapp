@@ -6,8 +6,6 @@ import (
 	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
 )
 
-type Obj = map[string]interface{}
-
 type EncodingConfig struct {
 	InterfaceRegistry codecTypes.InterfaceRegistry
 	Marshaler         codec.Codec

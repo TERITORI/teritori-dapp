@@ -20,8 +20,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type Obj = contractutil.Obj
-
 func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId string, rpcEndpoint string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
 	dailyRewards, err := p2e.GetCurrentDailyRewardsConfig(riotStartedAt)
 	if err != nil {
@@ -58,7 +56,7 @@ func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId
 	}
 
 	// Get leaderboard
-	rewardsList := []Obj{}
+	rewardsList := []map[string]interface{}{}
 
 	var leaderboard []indexerdb.P2eLeaderboard
 	if err := db.
@@ -82,11 +80,11 @@ func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId
 		rank := userScore.Rank
 
 		toriAmount := int(rewardCoef * float64(toriDenominator) * dailyRewards[rank-1]) // Get daily reward
-		rewardsList = append(rewardsList, Obj{"addr": addr, "amount": fmt.Sprintf("%d", toriAmount)})
+		rewardsList = append(rewardsList, map[string]interface{}{"addr": addr, "amount": fmt.Sprintf("%d", toriAmount)})
 	}
 
-	execMsgRaw := Obj{
-		"add_daily_report": Obj{
+	execMsgRaw := map[string]interface{}{
+		"add_daily_report": map[string]interface{}{
 			"report_id": int32(configData["last_report_id"].(float64)) + 1,
 			"rewards":   rewardsList,
 		},
