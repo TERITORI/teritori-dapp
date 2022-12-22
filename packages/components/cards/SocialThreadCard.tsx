@@ -7,26 +7,18 @@ import {
   StyleSheet,
 } from "react-native";
 
-import governanceCircleSVG from "../../../assets/icons/governance-circle.svg";
-import addThreadSVG from "../../../assets/icons/social-threads/add-thread.svg";
-import chatSVG from "../../../assets/icons/social-threads/chat.svg";
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
+import { DEFAULT_NAME, DEFAULT_USERNAME } from "../../utils/social-feed";
 import {
-  additionalGreen,
-  neutral00,
-  neutral11,
   neutral15,
   neutral22,
   neutral77,
   neutralA3,
-  orangeDefault,
-  neutral44,
-  redDefault,
 } from "../../utils/style/colors";
 import {
   fontSemibold13,
@@ -35,169 +27,15 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { EmojiSelector } from "../EmojiSelector";
 import { FilePreview } from "../FilePreview/FilePreview";
 import { RichText } from "../RichText";
-import { SVG } from "../SVG";
+import { SocialActions, socialActionsHeight } from "../SocialActions";
 import { tinyAddress } from "../WalletSelector";
 import { AnimationFadeIn } from "../animations";
 import { DotBadge } from "../badges/DotBadge";
-import { SecondaryButton } from "../buttons/SecondaryButton";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { CommentsContainer } from "./CommentsContainer";
-import { FeedEmojiSelector } from "./components/FeedEmojiSelector";
-
-const socialActionsHeight = 64;
-
-const SocialStat: React.FC<{
-  label: string;
-  emoji: string;
-  style?: StyleProp<ViewStyle>;
-}> = ({ label, emoji, style }) => {
-  return (
-    <View
-      style={[
-        {
-          paddingRight: layout.padding_x1,
-          paddingTop: layout.padding_x0_5,
-          paddingHorizontal: layout.padding_x0_5,
-          height: 28,
-          backgroundColor: neutral22,
-          borderRadius: 6,
-          flexDirection: "row",
-          alignItems: "center",
-        },
-        style,
-      ]}
-    >
-      <BrandText style={[fontSemibold13, { marginRight: layout.padding_x0_5 }]}>
-        {emoji}
-      </BrandText>
-      <BrandText style={fontSemibold13}>{label}</BrandText>
-    </View>
-  );
-};
-
-const SocialActions: React.FC<{
-  isGovernance?: boolean;
-  style?: StyleProp<ViewStyle>;
-  singleView?: boolean;
-  post: PostResult;
-}> = ({ style, isGovernance, singleView, post }) => {
-  const navigation = useAppNavigation();
-  const { width: containerWidth } = useMaxResolution({
-    responsive: true,
-  });
-  const [isGovernanceAction, setGovernanceAction] = useState(false);
-
-  return (
-    <View
-      style={[
-        {
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "80%",
-          height: socialActionsHeight,
-          backgroundColor: neutral11,
-          paddingHorizontal: 14,
-          borderRadius: 100,
-          borderWidth: 1,
-          borderColor: neutral22,
-        },
-        style,
-      ]}
-    >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <SVG
-            source={chatSVG}
-            height={20}
-            width={20}
-            style={{ marginRight: layout.padding_x1_5 }}
-          />
-          <BrandText style={fontSemibold14}>{post.sub_post_length}</BrandText>
-        </View>
-        {isGovernance && (
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity
-              style={{ marginLeft: 32 }}
-              activeOpacity={0.8}
-              onPress={() => setGovernanceAction((prev) => !prev)}
-            >
-              <SVG source={governanceCircleSVG} height={36} width={36} />
-            </TouchableOpacity>
-            {isGovernanceAction && (
-              <View style={{ flexDirection: "row", marginLeft: 12 }}>
-                <SecondaryButton
-                  text="Yes!"
-                  size="SM"
-                  backgroundColor={additionalGreen}
-                  textStyle={{ color: neutral00 }}
-                />
-                <SecondaryButton
-                  text="No!"
-                  size="SM"
-                  backgroundColor={orangeDefault}
-                  style={{ marginHorizontal: 14 }}
-                  textStyle={{ color: neutral00 }}
-                />
-                <SecondaryButton
-                  text="NoWithVeto!"
-                  size="SM"
-                  backgroundColor={redDefault}
-                  textStyle={{ color: neutral00 }}
-                />
-                <SecondaryButton
-                  text="Abstain"
-                  size="SM"
-                  backgroundColor={neutral44}
-                  style={{ marginHorizontal: 14 }}
-                  textStyle={{ color: neutral00 }}
-                />
-              </View>
-            )}
-          </View>
-        )}
-      </View>
-
-      {!singleView && !isGovernanceAction && (
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            padding: layout.padding_x0_5,
-          }}
-          onPress={() =>
-            navigation.navigate("FeedPostView", { id: post.identifier })
-          }
-        >
-          <SVG
-            source={addThreadSVG}
-            height={20}
-            width={20}
-            style={{ marginRight: layout.padding_x1_5 }}
-          />
-          <BrandText style={fontSemibold14}>Open the threads</BrandText>
-        </TouchableOpacity>
-      )}
-      {(!isGovernanceAction || containerWidth > 800) && (
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <SocialStat
-            label="4,2k"
-            emoji="👍"
-            style={{ marginRight: layout.padding_x1 }}
-          />
-          <SocialStat
-            label="4,2k"
-            emoji="🔥"
-            style={{ marginRight: layout.padding_x1 }}
-          />
-          <SocialStat label="4,2k" emoji="👎" />
-        </View>
-      )}
-    </View>
-  );
-};
 
 export const getResponsiveAvatarSize = (width: number) => {
   if (width >= 992) {
@@ -261,7 +99,7 @@ export const SocialThreadCard: React.FC<{
   return (
     <AnimationFadeIn style={[style]} delay={fadeInDelay}>
       <View style={{ position: "relative" }}>
-        <FeedEmojiSelector containerStyle={styles.container} />
+        <EmojiSelector containerStyle={styles.container} />
         <View
           style={[
             {
@@ -314,7 +152,8 @@ export const SocialThreadCard: React.FC<{
                           },
                         ]}
                       >
-                        {postByTNSMetadata?.metadata?.public_name || "Anon"}
+                        {postByTNSMetadata?.metadata?.public_name ||
+                          DEFAULT_NAME}
                       </BrandText>
                     </AnimationFadeIn>
                   </TouchableOpacity>
@@ -333,7 +172,7 @@ export const SocialThreadCard: React.FC<{
                           postByTNSMetadata?.metadata?.tokenId || "",
                           19
                         )
-                      : "Anonymous"}
+                      : DEFAULT_USERNAME}
                   </BrandText>
                 </View>
 
