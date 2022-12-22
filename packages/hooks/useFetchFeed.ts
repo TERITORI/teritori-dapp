@@ -1,7 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { socialFeedClient } from "../client-creators/socialFeedClient";
-import { useFeedbacks } from "../context/FeedbacksProvider";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import useSelectedWallet from "./useSelectedWallet";
 
@@ -19,17 +18,12 @@ export const combineFetchFeedPages = (pages: FetchFeedResponse[]) =>
 export const useFetchFeed = () => {
   // variable
   const wallet = useSelectedWallet();
-  const { setToastError } = useFeedbacks();
 
   // request
   const req = useInfiniteQuery<FetchFeedResponse>(
     ["FetchFeed", wallet?.address],
     async ({ pageParam }) => {
       if (!wallet?.address) {
-        // setToastError({
-        //   title: "Wallet not connected!",
-        //   message: "Please connect your wallet first.",
-        // });
         return null;
       }
 
