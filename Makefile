@@ -143,7 +143,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(DISTRIBUTOR_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(SQUAD_STAKING_PACKAGE): node_modules
 	rm -fr $(TOKEN_REPO)
 	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
-	cd $(TOKEN_REPO) && git checkout 26e37212a24d8e9e4b52af3c8f0ec3837633732c
+	cd $(TOKEN_REPO) && git checkout a0c19833ac754c24a345383b9c932dde1ee0f3b2
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \

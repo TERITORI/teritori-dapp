@@ -165,10 +165,10 @@ export const useSquadStaking = () => {
     squadStakingConfig: GetConfigResponse
   ) => {
     const now = moment();
-    const coolDownDays = squadStakingConfig.cooldown_days;
+    const coolDownPeriod = squadStakingConfig.cooldown_period;
 
     lastStakeTime = lastStakeTime || moment(0);
-    const completesAt = moment(lastStakeTime).add(coolDownDays, "days");
+    const completesAt = moment(lastStakeTime).add(coolDownPeriod, "seconds");
 
     let _remainingTime = 0;
     let _stakingState = StakingState.UNKNOWN;

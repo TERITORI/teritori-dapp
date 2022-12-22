@@ -160,7 +160,7 @@ func main() {
 	fs := flag.NewFlagSet("p2e-update-leaderboard", flag.ContinueOnError)
 	var (
 		distributorContractAddress = fs.String("teritori-distributor-contract-address", "", "distributor contract address")
-		distributorOwnerMnemonic   = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of owner")
+		distributorOwnerMnemonic   = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of the owner of distributor contract")
 		chainId                    = fs.String("public-chain-id", "", "public chain id")
 		rpcEndpoint                = fs.String("public-chain-rpc-endpoint", "", "public chain rpc endpoint")
 		theRiotGameStartedAt       = fs.String("the-riot-game-started-at", "", "time where the riot game starts")
@@ -209,6 +209,14 @@ func main() {
 
 	if theRiotGameStartedAt == nil {
 		panic(errors.New("the-riot-game-started-at is mandatory"))
+	}
+
+	if distributorContractAddress == nil {
+		panic(errors.New("distributor-contract-address is mandatory"))
+	}
+
+	if distributorOwnerMnemonic == nil {
+		panic(errors.New("distributor-owner-mnemonic is mandatory. You have to add it in .env for local testing (Don't commit this value on repo)"))
 	}
 
 	schedule := gocron.NewScheduler(time.UTC)

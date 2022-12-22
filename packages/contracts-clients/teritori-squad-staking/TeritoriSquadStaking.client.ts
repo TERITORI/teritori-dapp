@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { ExecuteMsg, Nft, Addr, GetConfigResponse, GetLastStakeTimeResponse, GetSquadResponse, InstantiateMsg, QueryMsg } from "./TeritoriSquadStaking.types";
+import { ExecuteMsg, Addr, Nft, GetConfigResponse, GetLastStakeTimeResponse, GetSquadResponse, InstantiateMsg, QueryMsg } from "./TeritoriSquadStaking.types";
 export interface TeritoriSquadStakingReadOnlyInterface {
   contractAddress: string;
   getConfig: () => Promise<GetConfigResponse>;
@@ -64,12 +64,24 @@ export class TeritoriSquadStakingQueryClient implements TeritoriSquadStakingRead
 export interface TeritoriSquadStakingInterface extends TeritoriSquadStakingReadOnlyInterface {
   contractAddress: string;
   sender: string;
+  updateConfig: ({
+    owner
+  }: {
+    owner: Addr;
+  }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   setSupportedCollection: ({
     contractAddr,
     isSupported
   }: {
     contractAddr: string;
     isSupported: boolean;
+  }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
+  updateCooldown: ({
+    cooldownPeriod,
+    cooldownUnit
+  }: {
+    cooldownPeriod: number;
+    cooldownUnit: number;
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   updateSquadSize: ({
     maxSquadSize,
@@ -100,13 +112,26 @@ export class TeritoriSquadStakingClient extends TeritoriSquadStakingQueryClient 
     this.client = client;
     this.sender = sender;
     this.contractAddress = contractAddress;
+    this.updateConfig = this.updateConfig.bind(this);
     this.setSupportedCollection = this.setSupportedCollection.bind(this);
+    this.updateCooldown = this.updateCooldown.bind(this);
     this.updateSquadSize = this.updateSquadSize.bind(this);
     this.updateBonusMultiplier = this.updateBonusMultiplier.bind(this);
     this.stake = this.stake.bind(this);
     this.withdraw = this.withdraw.bind(this);
   }
 
+  updateConfig = async ({
+    owner
+  }: {
+    owner: Addr;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      update_config: {
+        owner
+      }
+    }, fee, memo, funds);
+  };
   setSupportedCollection = async ({
     contractAddr,
     isSupported
@@ -118,6 +143,20 @@ export class TeritoriSquadStakingClient extends TeritoriSquadStakingQueryClient 
       set_supported_collection: {
         contract_addr: contractAddr,
         is_supported: isSupported
+      }
+    }, fee, memo, funds);
+  };
+  updateCooldown = async ({
+    cooldownPeriod,
+    cooldownUnit
+  }: {
+    cooldownPeriod: number;
+    cooldownUnit: number;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      update_cooldown: {
+        cooldown_period: cooldownPeriod,
+        cooldown_unit: cooldownUnit
       }
     }, fee, memo, funds);
   };

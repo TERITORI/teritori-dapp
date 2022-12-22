@@ -5,9 +5,18 @@
 */
 
 export type ExecuteMsg = {
+  update_config: {
+    owner: Addr;
+  };
+} | {
   set_supported_collection: {
     contract_addr: string;
     is_supported: boolean;
+  };
+} | {
+  update_cooldown: {
+    cooldown_period: number;
+    cooldown_unit: number;
   };
 } | {
   update_squad_size: {
@@ -25,14 +34,15 @@ export type ExecuteMsg = {
 } | {
   withdraw: {};
 };
+export type Addr = string;
 export interface Nft {
   contract_addr: string;
   token_id: string;
 }
-export type Addr = string;
 export interface GetConfigResponse {
   bonus_multiplier: number[];
-  cooldown_days: number;
+  cooldown_period: number;
+  cooldown_unit: number;
   max_squad_size: number;
   min_squad_size: number;
   owner: Addr;
@@ -47,7 +57,8 @@ export interface GetSquadResponse {
 }
 export interface InstantiateMsg {
   bonus_multiplier: number[];
-  cooldown_days: number;
+  cooldown_period: number;
+  cooldown_unit: number;
   max_squad_size: number;
   min_squad_size: number;
 }
