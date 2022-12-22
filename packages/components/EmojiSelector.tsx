@@ -2,29 +2,26 @@ import React, { useState } from "react";
 import { StyleSheet, ViewStyle } from "react-native";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
-import emojiSVG from "../../../../assets/icons/emoji.svg";
-import {
-  neutral33,
-  neutral67,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
-import EmojiModal from "../../EmojiModal";
-import { SVG } from "../../SVG";
+import emojiSVG from "../../assets/icons/emoji.svg";
+import { neutral33, neutral67, secondaryColor } from "../utils/style/colors";
+import { layout } from "../utils/style/layout";
+import EmojiModal from "./EmojiModal";
+import { SVG } from "./SVG";
 
-type FeedEmojiSelectorProps = {
+type EmojiSelectorProps = {
   onEmojiSelected?: (emoji: string | null) => void;
   containerStyle?: ViewStyle;
+  optionsContainer?: ViewStyle;
 };
 
-export const FeedEmojiSelector: React.FC<FeedEmojiSelectorProps> = ({
+export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   onEmojiSelected,
   containerStyle,
+  optionsContainer,
 }) => {
   const [isEmojiModalVisible, setIsEmojiModalVisible] = useState(false);
 
   const toggleEmojiModal = () => setIsEmojiModalVisible(!isEmojiModalVisible);
-
   return (
     <Menu
       opened={isEmojiModalVisible}
@@ -34,7 +31,14 @@ export const FeedEmojiSelector: React.FC<FeedEmojiSelectorProps> = ({
       <MenuTrigger onPress={toggleEmojiModal} style={styles.icon}>
         <SVG source={emojiSVG} height={16} width={16} />
       </MenuTrigger>
-      <MenuOptions>
+      <MenuOptions
+        customStyles={{
+          optionsContainer: StyleSheet.flatten([
+            styles.optionsContainer,
+            optionsContainer,
+          ]),
+        }}
+      >
         <EmojiModal
           onEmojiSelected={(e) => {
             onEmojiSelected && onEmojiSelected(e);
@@ -74,5 +78,9 @@ const styles = StyleSheet.create({
     paddingTop: layout.padding_x0_75,
     width: 308,
     height: 300,
+  },
+  optionsContainer: {
+    marginTop: 44,
+    backgroundColor: "transparent",
   },
 });

@@ -13,6 +13,7 @@ const CommentContainer: React.FC<{
   return (
     <View
       style={{
+        width: "100%",
         flexDirection: "row",
         alignItems: "flex-end",
         marginBottom: isLast ? 0 : 37,
@@ -63,6 +64,7 @@ export const CommentsContainer: React.FC<{
       />
       <View
         style={{
+          flex: 1,
           paddingBottom: layout.contentPadding,
         }}
       >
