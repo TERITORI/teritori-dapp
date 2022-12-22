@@ -48,7 +48,7 @@ func GetCurrentSeason(gameStartedAt string) (Season, float64, error) {
 	return GetSeasonByTime(gameStartedAt, time.Now().UTC())
 }
 
-func findSeasonById(seasonId string) (Season, error) {
+func GetSeasonById(seasonId string) (Season, error) {
 	for _, season := range GetAllSeasons() {
 		if seasonId == season.ID {
 			return season, nil
@@ -60,7 +60,7 @@ func findSeasonById(seasonId string) (Season, error) {
 }
 
 func GetDailyRewardsConfigBySeason(seasonId string) (sdk.DecCoins, error) {
-	season, err := findSeasonById(seasonId)
+	season, err := GetSeasonById(seasonId)
 
 	if err != nil {
 		return nil, err
@@ -85,7 +85,7 @@ func GetDailyRewardsConfigBySeason(seasonId string) (sdk.DecCoins, error) {
 }
 
 func GetRewardsConfigBySeason(seasonId string) ([]float64, error) {
-	targetSeason, err := findSeasonById(seasonId)
+	targetSeason, err := GetSeasonById(seasonId)
 	if err != nil {
 		return nil, err
 	}

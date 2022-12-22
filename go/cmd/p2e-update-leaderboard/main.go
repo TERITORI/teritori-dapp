@@ -56,11 +56,16 @@ func sendRewardsList(seasonId string, db *gorm.DB, chainId string, rpcEndpoint s
 	}
 
 	// Get leaderboard
+	season, err := p2e.GetSeasonById(seasonId)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get season data")
+	}
+
 	var leaderboard []indexerdb.P2eLeaderboard
 	if err := db.
 		Where("season_id = ?", seasonId).
 		Order("snapshot_rank asc").
-		Limit(500).
+		Limit(int(season.TopN)).
 		Find(&leaderboard).
 		Error; err != nil {
 		return nil, errors.Wrap(err, "failed to get current leaderboard")
