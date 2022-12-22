@@ -25,10 +25,11 @@ import {
 import { layout } from "../../utils/style/layout";
 import { replaceBetweenString } from "../../utils/text";
 import { BrandText } from "../BrandText";
+import { EmojiSelector } from "../EmojiSelector";
+import { GIFSelector } from "../GIFSelector";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
-import { FeedEmojiSelector } from "../cards/components/FeedEmojiSelector";
 import { FileUploader } from "../fileUploader";
 import { SpacerRow } from "../spacer";
 import { NewPostFormValues } from "./NewsFeed.type";
@@ -284,9 +285,23 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
                 ).toFixed(4)} Tori`}
           </BrandText>
         </View>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <FeedEmojiSelector onEmojiSelected={onEmojiSelected} />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            flex: 1,
+            justifyContent: "flex-end",
+          }}
+        >
+          <GIFSelector onGIFSelected={console.log} />
           <SpacerRow size={2.5} />
+
+          <EmojiSelector
+            onEmojiSelected={onEmojiSelected}
+            optionsContainer={{ marginLeft: -80 }}
+          />
+          <SpacerRow size={2.5} />
+
           <TouchableOpacity
             activeOpacity={0.8}
             style={{
