@@ -122,7 +122,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		)
 		select tc.*, COALESCE((select tbc.volume from trades_by_collection tbc where tbc.id = tc.id), 0) volume 
 			from tori_collections tc
-		order by volume desc
+		order by volume desc, id asc
 		limit ?
 		offset ?
     `, where),
@@ -252,6 +252,8 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	} else {
 		query = query.Order("price_amount DESC")
 	}
+
+	query = query.Order("id ASC")
 
 	if collection_id != "" {
 		query = query.Where("collection_id = ?", collection_id)
