@@ -133,7 +133,7 @@ func updateLeaderboard(seasonId string, db *gorm.DB) error {
 	updateRankErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET rank = orderedLb.rank
-		FROM (SELECT user_id, row_number() OVER (ORDER BY in_progress_score) AS rank FROM p2e_leaderboards WHERE season_id = ?) orderedLb
+		FROM (SELECT user_id, row_number() OVER (ORDER BY in_progress_score DESC) AS rank FROM p2e_leaderboards WHERE season_id = ?) orderedLb
 		WHERE lb.user_id = orderedLb.user_id
 			AND lb.season_id = ?
 	`, seasonId, seasonId).Error
@@ -199,23 +199,23 @@ func main() {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
 
-	if chainId == nil {
+	if *chainId == "" {
 		panic(errors.New("chain-id is mandatory"))
 	}
 
-	if rpcEndpoint == nil {
+	if *rpcEndpoint == "" {
 		panic(errors.New("rpc-endpoint is mandatory"))
 	}
 
-	if theRiotGameStartedAt == nil {
+	if *theRiotGameStartedAt == "" {
 		panic(errors.New("the-riot-game-started-at is mandatory"))
 	}
 
-	if distributorContractAddress == nil {
+	if *distributorContractAddress == "" {
 		panic(errors.New("distributor-contract-address is mandatory"))
 	}
 
-	if distributorOwnerMnemonic == nil {
+	if *distributorOwnerMnemonic == "" {
 		panic(errors.New("distributor-owner-mnemonic is mandatory. You have to add it in .env for local testing (Don't commit this value on repo)"))
 	}
 
