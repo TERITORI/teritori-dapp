@@ -107,32 +107,42 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		return errors.Wrap(err, "unable to parse end_time")
 	}
 
-	// TODO: change to dynamic when support squad staking for any collection
-	theRiotCollectionId := indexerdb.TeritoriCollectionID(h.config.TheRiotCollectionAddress)
+	// TODO: hardcode for the riot game for now,
+	// In the future when we need to support multi game, we should detect the nft contracts of staked NFTs
+	// to see they belongs to which game
+	gameStartedAt := h.config.TheRiotGameStartedAt
 
-	squadStaking := indexerdb.P2eSquadStaking{
-		OwnerID:      ownerId,
-		StartTime:    startTime,
-		EndTime:      endTime,
-		CollectionID: theRiotCollectionId,
+	// There must be no squadstake in progress
+	var count int64
+	if err := h.db.Model(&indexerdb.P2eSquadStaking{}).Where("owner_id  = ?", ownerId).Count(&count).Error; err != nil {
+		return errors.Wrap(err, "failed to query current staking")
 	}
 
-	if err := h.db.FirstOrCreate(&squadStaking).Error; err != nil {
+	if count != 0 {
+		return errors.New("data corrupts: we should not have a current staking")
+	}
+
+	squadStaking := indexerdb.P2eSquadStaking{
+		OwnerID:   ownerId,
+		StartTime: startTime,
+		EndTime:   endTime,
+	}
+
+	if err := h.db.Create(&squadStaking).Error; err != nil {
 		return errors.Wrap(err, "failed to create squad staking")
 	}
 
 	// Create leaderboard (by season) record if does not exist
 	startTimeDt := time.Unix(int64(startTime), 0)
-	season, _, err := p2e.GetSeasonByTime(h.config.TheRiotStartedAt, startTimeDt)
+	season, _, err := p2e.GetSeasonByTime(gameStartedAt, startTimeDt)
 	if err != nil {
 		return errors.Wrap(err, "failed to get season")
 	}
 
 	var userScore indexerdb.P2eLeaderboard
 	q2 := &indexerdb.P2eLeaderboard{
-		UserID:       ownerId,
-		CollectionID: theRiotCollectionId,
-		SeasonID:     season.ID,
+		UserID:   ownerId,
+		SeasonID: season.ID,
 	}
 	if err := h.db.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")
@@ -167,20 +177,27 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 // Increase score on P2eLeaderboard when user unstake
 // Remote unstaked staking
 func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	// TODO: change to dynamic when support squad staking for any collection
-	theRiotCollectionId := indexerdb.TeritoriCollectionID(h.config.TheRiotCollectionAddress)
-
+	// TODO: hardcode for the riot game for now,
+	// In the future when we need to support multi game, we should detect the nft contracts of staked NFTs
+	// to see they belongs to which game
+	gameStartedAt := h.config.TheRiotGameStartedAt
 	userId := indexerdb.TeritoriUserID(execMsg.Sender)
 
 	// Get current squad staking
-	var squadStaking indexerdb.P2eSquadStaking
+	var squadStakings []indexerdb.P2eSquadStaking
 	q1 := &indexerdb.P2eSquadStaking{
-		OwnerID:      userId,
-		CollectionID: theRiotCollectionId,
+		OwnerID: userId,
 	}
-	if err := h.db.Where(q1).First(&squadStaking).Error; err != nil {
+
+	if err := h.db.Where(q1).Find(&squadStakings).Error; err != nil {
 		return errors.Wrap(err, "failed to get current squad staking")
 	}
+
+	if len(squadStakings) != 1 {
+		return errors.New("we should have only one staking at a time")
+	}
+
+	squadStaking := squadStakings[0]
 
 	// Get staking duration and delete staking object
 	stakingDuration := squadStaking.EndTime - squadStaking.StartTime
@@ -190,16 +207,15 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 
 	// Get current leaderboard record
 	startTimeDt := time.Unix(int64(squadStaking.StartTime), 0)
-	season, _, err := p2e.GetSeasonByTime(h.config.TheRiotStartedAt, startTimeDt)
+	season, _, err := p2e.GetSeasonByTime(gameStartedAt, startTimeDt)
 	if err != nil {
 		return errors.Wrap(err, "failed to get season")
 	}
 
 	var userScore indexerdb.P2eLeaderboard
 	q2 := &indexerdb.P2eLeaderboard{
-		UserID:       userId,
-		CollectionID: theRiotCollectionId,
-		SeasonID:     season.ID,
+		UserID:   userId,
+		SeasonID: season.ID,
 	}
 	// Normally, an user score record has to exist here (created when first stake)
 	if err := h.db.Where(q2).First(&userScore).Error; err != nil {
@@ -207,7 +223,10 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 	}
 
 	// Update score
-	if err := h.db.Model(&userScore).UpdateColumn("score", gorm.Expr("score  + ?", stakingDuration)).Error; err != nil {
+	if err := h.db.Model(&userScore).
+		UpdateColumn("score", gorm.Expr("score  + ?", stakingDuration)).
+		UpdateColumn("in_progress_score", gorm.Expr("score")).
+		Error; err != nil {
 		return errors.Wrap(err, "failed to update user score")
 	}
 

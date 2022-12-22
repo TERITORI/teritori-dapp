@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
+import { CurrentSeasonResponse } from "../../../api/p2e/v1/p2e";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useContractClients } from "../../../hooks/useContractClients";
@@ -9,10 +10,7 @@ import { p2eBackendClient } from "../../../utils/backend";
 import { decimalFromAtomics } from "../../../utils/coins";
 import { yellowDefault } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import {
-  TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS,
-  THE_RIOT_COLLECTION_ID,
-} from "../settings";
+import { TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS } from "../settings";
 import { InfoBox } from "./InfoBox";
 
 type FightStatsSectionProps = {
@@ -24,11 +22,11 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
 }) => {
   const selectedWallet = useSelectedWallet();
   const [totalFighters, setTotalFighters] = useState(0);
-  const [prizePool, setPrizePool] = useState(0);
   const [userRank, setUserRank] = useState(0);
   const [claimableAmount, setClaimableAmount] = useState(0);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [isClaiming, setIsClaiming] = useState(false);
+  const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
 
   const {
     queryClient: distributorQueryClient,
@@ -56,26 +54,26 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     }
   };
 
-  const fetchPrizePool = async () => {
-    const { totalPrize } = await p2eBackendClient.CurrentSeason({});
-    setPrizePool(totalPrize);
+  const fetchCurrentSeason = async () => {
+    const currentSeason = await p2eBackendClient.CurrentSeason({});
+    setCurrentSeason(currentSeason);
   };
 
-  const fetchTotalFighters = async () => {
-    const { count } = await p2eBackendClient.FightersCount({
-      collectionId: THE_RIOT_COLLECTION_ID,
+  const fetchTotalFighters = async (seasonId: string) => {
+    const { count } = await p2eBackendClient.UsersCount({
+      seasonId,
     });
 
     setTotalFighters(count);
   };
 
-  const fetchRank = async (address: string | undefined) => {
-    if (!address) return setUserRank(0);
+  const fetchRank = async (userId: string, seasonId: string) => {
+    if (!userId) return setUserRank(0);
 
     try {
-      const { userScore } = await p2eBackendClient.FighterScore({
-        collectionId: THE_RIOT_COLLECTION_ID,
-        userId: address,
+      const { userScore } = await p2eBackendClient.UserScore({
+        seasonId,
+        userId,
       });
 
       setUserRank(userScore?.rank || 0);
@@ -93,12 +91,14 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   };
 
   useEffect(() => {
-    fetchRank(selectedWallet?.address);
-  }, [selectedWallet?.address]);
+    if (!currentSeason?.id || !selectedWallet?.address) return;
+
+    fetchRank(selectedWallet?.address, currentSeason.id);
+    fetchTotalFighters(currentSeason.id);
+  }, [selectedWallet?.address, currentSeason?.id]);
 
   useEffect(() => {
-    fetchTotalFighters();
-    fetchPrizePool();
+    fetchCurrentSeason();
   }, []);
 
   useEffect(() => {
@@ -117,7 +117,9 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
       <InfoBox
         size="SM"
         title="Prize Pool"
-        content={`${prizePool} TORI`}
+        content={`${
+          currentSeason?.totalPrize
+        } ${currentSeason?.denom.toUpperCase()}`}
         width={150}
       />
       <InfoBox

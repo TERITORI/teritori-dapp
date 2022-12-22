@@ -5,19 +5,18 @@ option go_package = "./p2epb";
 
 service P2eService {
   rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
-  rpc FightersCount(FightersCountRequest) returns (FightersCountResponse);
-  rpc FighterScore(FighterScoreRequest) returns (FighterScoreResponse);
+  rpc UsersCount(UsersCountRequest) returns (UsersCountResponse);
+  rpc UserScore(UserScoreRequest) returns (UserScoreResponse);
   rpc CurrentSeason(CurrentSeasonRequest) returns (CurrentSeasonResponse);
   rpc AllSeasons(AllSeasonsRequest) returns (AllSeasonsResponse);
 }
 
 
 message AllSeasonsRequest {
-
 }
 
 message SeasonWithoutPrize {
-  uint32 id = 1;
+  string id = 1;
   string boss_name = 2;
   int32 boss_hp = 3;
 }
@@ -30,35 +29,35 @@ message CurrentSeasonRequest {
 }
 
 message CurrentSeasonResponse {
-  uint32 id = 1;
-  int32 total_prize = 2;
-  string boss_name = 3;
-  int32 boss_hp = 4;
-  float remaining_hp = 5;
+  string id = 1;
+  string denom = 2;
+  int32 total_prize = 3;
+  string boss_name = 4;
+  int32 boss_hp = 5;
+  float remaining_hp = 6;
 }
 
-message FighterScoreRequest {
-  string collection_id = 1;
+message UserScoreRequest {
+  string season_id = 1;
   string user_id = 2;
 }
 
-message FighterScoreResponse {
+message UserScoreResponse {
   UserScore user_score = 1;
 }
 
-message FightersCountRequest {
-  string collection_id = 1;
+message UsersCountRequest {
+  string season_id = 1;
 }
 
-message FightersCountResponse {
+message UsersCountResponse {
   uint32 count = 1;
 }
 
 message LeaderboardRequest {
-  string collection_id = 1;
-  uint32 season_id = 2; 
-  int32 limit = 3;
-  int32 offset = 4;
+  string season_id = 1; 
+  int32 limit = 2;
+  int32 offset = 3;
 }
 
 message UserScore {
@@ -67,7 +66,7 @@ message UserScore {
   string user_id = 3;
   int64 in_progress_score = 4;
   int64 snapshot_score = 5;
-  uint32 season_id = 6; 
+  string season_id = 6; 
 }
 
 message LeaderboardResponse {

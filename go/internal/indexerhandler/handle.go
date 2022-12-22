@@ -38,7 +38,7 @@ type Config struct {
 	SquadStakingContractAddress    string
 	TheRiotCollectionAddress       string
 	TheRiotBreedingContractAddress string
-	TheRiotStartedAt               string
+	TheRiotGameStartedAt           string
 	TNSDefaultImageURL             string
 	TendermintClient               *tmws.Client
 	NetworkID                      string

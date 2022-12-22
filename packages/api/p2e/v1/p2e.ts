@@ -12,7 +12,7 @@ export interface AllSeasonsRequest {
 }
 
 export interface SeasonWithoutPrize {
-  id: number;
+  id: string;
   bossName: string;
   bossHp: number;
 }
@@ -25,33 +25,33 @@ export interface CurrentSeasonRequest {
 }
 
 export interface CurrentSeasonResponse {
-  id: number;
+  id: string;
+  denom: string;
   totalPrize: number;
   bossName: string;
   bossHp: number;
   remainingHp: number;
 }
 
-export interface FighterScoreRequest {
-  collectionId: string;
+export interface UserScoreRequest {
+  seasonId: string;
   userId: string;
 }
 
-export interface FighterScoreResponse {
+export interface UserScoreResponse {
   userScore: UserScore | undefined;
 }
 
-export interface FightersCountRequest {
-  collectionId: string;
+export interface UsersCountRequest {
+  seasonId: string;
 }
 
-export interface FightersCountResponse {
+export interface UsersCountResponse {
   count: number;
 }
 
 export interface LeaderboardRequest {
-  collectionId: string;
-  seasonId: number;
+  seasonId: string;
   limit: number;
   offset: number;
 }
@@ -62,7 +62,7 @@ export interface UserScore {
   userId: string;
   inProgressScore: number;
   snapshotScore: number;
-  seasonId: number;
+  seasonId: string;
 }
 
 export interface LeaderboardResponse {
@@ -109,13 +109,13 @@ export const AllSeasonsRequest = {
 };
 
 function createBaseSeasonWithoutPrize(): SeasonWithoutPrize {
-  return { id: 0, bossName: "", bossHp: 0 };
+  return { id: "", bossName: "", bossHp: 0 };
 }
 
 export const SeasonWithoutPrize = {
   encode(message: SeasonWithoutPrize, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== 0) {
-      writer.uint32(8).uint32(message.id);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
     }
     if (message.bossName !== "") {
       writer.uint32(18).string(message.bossName);
@@ -134,7 +134,7 @@ export const SeasonWithoutPrize = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.uint32();
+          message.id = reader.string();
           break;
         case 2:
           message.bossName = reader.string();
@@ -152,7 +152,7 @@ export const SeasonWithoutPrize = {
 
   fromJSON(object: any): SeasonWithoutPrize {
     return {
-      id: isSet(object.id) ? Number(object.id) : 0,
+      id: isSet(object.id) ? String(object.id) : "",
       bossName: isSet(object.bossName) ? String(object.bossName) : "",
       bossHp: isSet(object.bossHp) ? Number(object.bossHp) : 0,
     };
@@ -160,7 +160,7 @@ export const SeasonWithoutPrize = {
 
   toJSON(message: SeasonWithoutPrize): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = Math.round(message.id));
+    message.id !== undefined && (obj.id = message.id);
     message.bossName !== undefined && (obj.bossName = message.bossName);
     message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
     return obj;
@@ -168,7 +168,7 @@ export const SeasonWithoutPrize = {
 
   fromPartial<I extends Exact<DeepPartial<SeasonWithoutPrize>, I>>(object: I): SeasonWithoutPrize {
     const message = createBaseSeasonWithoutPrize();
-    message.id = object.id ?? 0;
+    message.id = object.id ?? "";
     message.bossName = object.bossName ?? "";
     message.bossHp = object.bossHp ?? 0;
     return message;
@@ -268,25 +268,28 @@ export const CurrentSeasonRequest = {
 };
 
 function createBaseCurrentSeasonResponse(): CurrentSeasonResponse {
-  return { id: 0, totalPrize: 0, bossName: "", bossHp: 0, remainingHp: 0 };
+  return { id: "", denom: "", totalPrize: 0, bossName: "", bossHp: 0, remainingHp: 0 };
 }
 
 export const CurrentSeasonResponse = {
   encode(message: CurrentSeasonResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== 0) {
-      writer.uint32(8).uint32(message.id);
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
     }
     if (message.totalPrize !== 0) {
-      writer.uint32(16).int32(message.totalPrize);
+      writer.uint32(24).int32(message.totalPrize);
     }
     if (message.bossName !== "") {
-      writer.uint32(26).string(message.bossName);
+      writer.uint32(34).string(message.bossName);
     }
     if (message.bossHp !== 0) {
-      writer.uint32(32).int32(message.bossHp);
+      writer.uint32(40).int32(message.bossHp);
     }
     if (message.remainingHp !== 0) {
-      writer.uint32(45).float(message.remainingHp);
+      writer.uint32(53).float(message.remainingHp);
     }
     return writer;
   },
@@ -299,18 +302,21 @@ export const CurrentSeasonResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.uint32();
+          message.id = reader.string();
           break;
         case 2:
-          message.totalPrize = reader.int32();
+          message.denom = reader.string();
           break;
         case 3:
-          message.bossName = reader.string();
+          message.totalPrize = reader.int32();
           break;
         case 4:
-          message.bossHp = reader.int32();
+          message.bossName = reader.string();
           break;
         case 5:
+          message.bossHp = reader.int32();
+          break;
+        case 6:
           message.remainingHp = reader.float();
           break;
         default:
@@ -323,7 +329,8 @@ export const CurrentSeasonResponse = {
 
   fromJSON(object: any): CurrentSeasonResponse {
     return {
-      id: isSet(object.id) ? Number(object.id) : 0,
+      id: isSet(object.id) ? String(object.id) : "",
+      denom: isSet(object.denom) ? String(object.denom) : "",
       totalPrize: isSet(object.totalPrize) ? Number(object.totalPrize) : 0,
       bossName: isSet(object.bossName) ? String(object.bossName) : "",
       bossHp: isSet(object.bossHp) ? Number(object.bossHp) : 0,
@@ -333,7 +340,8 @@ export const CurrentSeasonResponse = {
 
   toJSON(message: CurrentSeasonResponse): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = Math.round(message.id));
+    message.id !== undefined && (obj.id = message.id);
+    message.denom !== undefined && (obj.denom = message.denom);
     message.totalPrize !== undefined && (obj.totalPrize = Math.round(message.totalPrize));
     message.bossName !== undefined && (obj.bossName = message.bossName);
     message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
@@ -343,7 +351,8 @@ export const CurrentSeasonResponse = {
 
   fromPartial<I extends Exact<DeepPartial<CurrentSeasonResponse>, I>>(object: I): CurrentSeasonResponse {
     const message = createBaseCurrentSeasonResponse();
-    message.id = object.id ?? 0;
+    message.id = object.id ?? "";
+    message.denom = object.denom ?? "";
     message.totalPrize = object.totalPrize ?? 0;
     message.bossName = object.bossName ?? "";
     message.bossHp = object.bossHp ?? 0;
@@ -352,14 +361,14 @@ export const CurrentSeasonResponse = {
   },
 };
 
-function createBaseFighterScoreRequest(): FighterScoreRequest {
-  return { collectionId: "", userId: "" };
+function createBaseUserScoreRequest(): UserScoreRequest {
+  return { seasonId: "", userId: "" };
 }
 
-export const FighterScoreRequest = {
-  encode(message: FighterScoreRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.collectionId !== "") {
-      writer.uint32(10).string(message.collectionId);
+export const UserScoreRequest = {
+  encode(message: UserScoreRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.seasonId !== "") {
+      writer.uint32(10).string(message.seasonId);
     }
     if (message.userId !== "") {
       writer.uint32(18).string(message.userId);
@@ -367,15 +376,15 @@ export const FighterScoreRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): FighterScoreRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserScoreRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseFighterScoreRequest();
+    const message = createBaseUserScoreRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.collectionId = reader.string();
+          message.seasonId = reader.string();
           break;
         case 2:
           message.userId = reader.string();
@@ -388,44 +397,44 @@ export const FighterScoreRequest = {
     return message;
   },
 
-  fromJSON(object: any): FighterScoreRequest {
+  fromJSON(object: any): UserScoreRequest {
     return {
-      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      seasonId: isSet(object.seasonId) ? String(object.seasonId) : "",
       userId: isSet(object.userId) ? String(object.userId) : "",
     };
   },
 
-  toJSON(message: FighterScoreRequest): unknown {
+  toJSON(message: UserScoreRequest): unknown {
     const obj: any = {};
-    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    message.seasonId !== undefined && (obj.seasonId = message.seasonId);
     message.userId !== undefined && (obj.userId = message.userId);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<FighterScoreRequest>, I>>(object: I): FighterScoreRequest {
-    const message = createBaseFighterScoreRequest();
-    message.collectionId = object.collectionId ?? "";
+  fromPartial<I extends Exact<DeepPartial<UserScoreRequest>, I>>(object: I): UserScoreRequest {
+    const message = createBaseUserScoreRequest();
+    message.seasonId = object.seasonId ?? "";
     message.userId = object.userId ?? "";
     return message;
   },
 };
 
-function createBaseFighterScoreResponse(): FighterScoreResponse {
+function createBaseUserScoreResponse(): UserScoreResponse {
   return { userScore: undefined };
 }
 
-export const FighterScoreResponse = {
-  encode(message: FighterScoreResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const UserScoreResponse = {
+  encode(message: UserScoreResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userScore !== undefined) {
       UserScore.encode(message.userScore, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): FighterScoreResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserScoreResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseFighterScoreResponse();
+    const message = createBaseUserScoreResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -440,19 +449,19 @@ export const FighterScoreResponse = {
     return message;
   },
 
-  fromJSON(object: any): FighterScoreResponse {
+  fromJSON(object: any): UserScoreResponse {
     return { userScore: isSet(object.userScore) ? UserScore.fromJSON(object.userScore) : undefined };
   },
 
-  toJSON(message: FighterScoreResponse): unknown {
+  toJSON(message: UserScoreResponse): unknown {
     const obj: any = {};
     message.userScore !== undefined &&
       (obj.userScore = message.userScore ? UserScore.toJSON(message.userScore) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<FighterScoreResponse>, I>>(object: I): FighterScoreResponse {
-    const message = createBaseFighterScoreResponse();
+  fromPartial<I extends Exact<DeepPartial<UserScoreResponse>, I>>(object: I): UserScoreResponse {
+    const message = createBaseUserScoreResponse();
     message.userScore = (object.userScore !== undefined && object.userScore !== null)
       ? UserScore.fromPartial(object.userScore)
       : undefined;
@@ -460,27 +469,27 @@ export const FighterScoreResponse = {
   },
 };
 
-function createBaseFightersCountRequest(): FightersCountRequest {
-  return { collectionId: "" };
+function createBaseUsersCountRequest(): UsersCountRequest {
+  return { seasonId: "" };
 }
 
-export const FightersCountRequest = {
-  encode(message: FightersCountRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.collectionId !== "") {
-      writer.uint32(10).string(message.collectionId);
+export const UsersCountRequest = {
+  encode(message: UsersCountRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.seasonId !== "") {
+      writer.uint32(10).string(message.seasonId);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): FightersCountRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UsersCountRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseFightersCountRequest();
+    const message = createBaseUsersCountRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.collectionId = reader.string();
+          message.seasonId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -490,39 +499,39 @@ export const FightersCountRequest = {
     return message;
   },
 
-  fromJSON(object: any): FightersCountRequest {
-    return { collectionId: isSet(object.collectionId) ? String(object.collectionId) : "" };
+  fromJSON(object: any): UsersCountRequest {
+    return { seasonId: isSet(object.seasonId) ? String(object.seasonId) : "" };
   },
 
-  toJSON(message: FightersCountRequest): unknown {
+  toJSON(message: UsersCountRequest): unknown {
     const obj: any = {};
-    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    message.seasonId !== undefined && (obj.seasonId = message.seasonId);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<FightersCountRequest>, I>>(object: I): FightersCountRequest {
-    const message = createBaseFightersCountRequest();
-    message.collectionId = object.collectionId ?? "";
+  fromPartial<I extends Exact<DeepPartial<UsersCountRequest>, I>>(object: I): UsersCountRequest {
+    const message = createBaseUsersCountRequest();
+    message.seasonId = object.seasonId ?? "";
     return message;
   },
 };
 
-function createBaseFightersCountResponse(): FightersCountResponse {
+function createBaseUsersCountResponse(): UsersCountResponse {
   return { count: 0 };
 }
 
-export const FightersCountResponse = {
-  encode(message: FightersCountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const UsersCountResponse = {
+  encode(message: UsersCountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.count !== 0) {
       writer.uint32(8).uint32(message.count);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): FightersCountResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UsersCountResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseFightersCountResponse();
+    const message = createBaseUsersCountResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -537,40 +546,37 @@ export const FightersCountResponse = {
     return message;
   },
 
-  fromJSON(object: any): FightersCountResponse {
+  fromJSON(object: any): UsersCountResponse {
     return { count: isSet(object.count) ? Number(object.count) : 0 };
   },
 
-  toJSON(message: FightersCountResponse): unknown {
+  toJSON(message: UsersCountResponse): unknown {
     const obj: any = {};
     message.count !== undefined && (obj.count = Math.round(message.count));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<FightersCountResponse>, I>>(object: I): FightersCountResponse {
-    const message = createBaseFightersCountResponse();
+  fromPartial<I extends Exact<DeepPartial<UsersCountResponse>, I>>(object: I): UsersCountResponse {
+    const message = createBaseUsersCountResponse();
     message.count = object.count ?? 0;
     return message;
   },
 };
 
 function createBaseLeaderboardRequest(): LeaderboardRequest {
-  return { collectionId: "", seasonId: 0, limit: 0, offset: 0 };
+  return { seasonId: "", limit: 0, offset: 0 };
 }
 
 export const LeaderboardRequest = {
   encode(message: LeaderboardRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.collectionId !== "") {
-      writer.uint32(10).string(message.collectionId);
-    }
-    if (message.seasonId !== 0) {
-      writer.uint32(16).uint32(message.seasonId);
+    if (message.seasonId !== "") {
+      writer.uint32(10).string(message.seasonId);
     }
     if (message.limit !== 0) {
-      writer.uint32(24).int32(message.limit);
+      writer.uint32(16).int32(message.limit);
     }
     if (message.offset !== 0) {
-      writer.uint32(32).int32(message.offset);
+      writer.uint32(24).int32(message.offset);
     }
     return writer;
   },
@@ -583,15 +589,12 @@ export const LeaderboardRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.collectionId = reader.string();
+          message.seasonId = reader.string();
           break;
         case 2:
-          message.seasonId = reader.uint32();
-          break;
-        case 3:
           message.limit = reader.int32();
           break;
-        case 4:
+        case 3:
           message.offset = reader.int32();
           break;
         default:
@@ -604,8 +607,7 @@ export const LeaderboardRequest = {
 
   fromJSON(object: any): LeaderboardRequest {
     return {
-      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
-      seasonId: isSet(object.seasonId) ? Number(object.seasonId) : 0,
+      seasonId: isSet(object.seasonId) ? String(object.seasonId) : "",
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
     };
@@ -613,8 +615,7 @@ export const LeaderboardRequest = {
 
   toJSON(message: LeaderboardRequest): unknown {
     const obj: any = {};
-    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
-    message.seasonId !== undefined && (obj.seasonId = Math.round(message.seasonId));
+    message.seasonId !== undefined && (obj.seasonId = message.seasonId);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
@@ -622,8 +623,7 @@ export const LeaderboardRequest = {
 
   fromPartial<I extends Exact<DeepPartial<LeaderboardRequest>, I>>(object: I): LeaderboardRequest {
     const message = createBaseLeaderboardRequest();
-    message.collectionId = object.collectionId ?? "";
-    message.seasonId = object.seasonId ?? 0;
+    message.seasonId = object.seasonId ?? "";
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
     return message;
@@ -631,7 +631,7 @@ export const LeaderboardRequest = {
 };
 
 function createBaseUserScore(): UserScore {
-  return { rank: 0, snapshotRank: 0, userId: "", inProgressScore: 0, snapshotScore: 0, seasonId: 0 };
+  return { rank: 0, snapshotRank: 0, userId: "", inProgressScore: 0, snapshotScore: 0, seasonId: "" };
 }
 
 export const UserScore = {
@@ -651,8 +651,8 @@ export const UserScore = {
     if (message.snapshotScore !== 0) {
       writer.uint32(40).int64(message.snapshotScore);
     }
-    if (message.seasonId !== 0) {
-      writer.uint32(48).uint32(message.seasonId);
+    if (message.seasonId !== "") {
+      writer.uint32(50).string(message.seasonId);
     }
     return writer;
   },
@@ -680,7 +680,7 @@ export const UserScore = {
           message.snapshotScore = longToNumber(reader.int64() as Long);
           break;
         case 6:
-          message.seasonId = reader.uint32();
+          message.seasonId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -697,7 +697,7 @@ export const UserScore = {
       userId: isSet(object.userId) ? String(object.userId) : "",
       inProgressScore: isSet(object.inProgressScore) ? Number(object.inProgressScore) : 0,
       snapshotScore: isSet(object.snapshotScore) ? Number(object.snapshotScore) : 0,
-      seasonId: isSet(object.seasonId) ? Number(object.seasonId) : 0,
+      seasonId: isSet(object.seasonId) ? String(object.seasonId) : "",
     };
   },
 
@@ -708,7 +708,7 @@ export const UserScore = {
     message.userId !== undefined && (obj.userId = message.userId);
     message.inProgressScore !== undefined && (obj.inProgressScore = Math.round(message.inProgressScore));
     message.snapshotScore !== undefined && (obj.snapshotScore = Math.round(message.snapshotScore));
-    message.seasonId !== undefined && (obj.seasonId = Math.round(message.seasonId));
+    message.seasonId !== undefined && (obj.seasonId = message.seasonId);
     return obj;
   },
 
@@ -719,7 +719,7 @@ export const UserScore = {
     message.userId = object.userId ?? "";
     message.inProgressScore = object.inProgressScore ?? 0;
     message.snapshotScore = object.snapshotScore ?? 0;
-    message.seasonId = object.seasonId ?? 0;
+    message.seasonId = object.seasonId ?? "";
     return message;
   },
 };
@@ -776,8 +776,8 @@ export const LeaderboardResponse = {
 
 export interface P2eService {
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse>;
-  FightersCount(request: DeepPartial<FightersCountRequest>, metadata?: grpc.Metadata): Promise<FightersCountResponse>;
-  FighterScore(request: DeepPartial<FighterScoreRequest>, metadata?: grpc.Metadata): Promise<FighterScoreResponse>;
+  UsersCount(request: DeepPartial<UsersCountRequest>, metadata?: grpc.Metadata): Promise<UsersCountResponse>;
+  UserScore(request: DeepPartial<UserScoreRequest>, metadata?: grpc.Metadata): Promise<UserScoreResponse>;
   CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse>;
   AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse>;
 }
@@ -788,8 +788,8 @@ export class P2eServiceClientImpl implements P2eService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Leaderboard = this.Leaderboard.bind(this);
-    this.FightersCount = this.FightersCount.bind(this);
-    this.FighterScore = this.FighterScore.bind(this);
+    this.UsersCount = this.UsersCount.bind(this);
+    this.UserScore = this.UserScore.bind(this);
     this.CurrentSeason = this.CurrentSeason.bind(this);
     this.AllSeasons = this.AllSeasons.bind(this);
   }
@@ -798,12 +798,12 @@ export class P2eServiceClientImpl implements P2eService {
     return this.rpc.invoke(P2eServiceLeaderboardDesc, LeaderboardRequest.fromPartial(request), metadata);
   }
 
-  FightersCount(request: DeepPartial<FightersCountRequest>, metadata?: grpc.Metadata): Promise<FightersCountResponse> {
-    return this.rpc.unary(P2eServiceFightersCountDesc, FightersCountRequest.fromPartial(request), metadata);
+  UsersCount(request: DeepPartial<UsersCountRequest>, metadata?: grpc.Metadata): Promise<UsersCountResponse> {
+    return this.rpc.unary(P2eServiceUsersCountDesc, UsersCountRequest.fromPartial(request), metadata);
   }
 
-  FighterScore(request: DeepPartial<FighterScoreRequest>, metadata?: grpc.Metadata): Promise<FighterScoreResponse> {
-    return this.rpc.unary(P2eServiceFighterScoreDesc, FighterScoreRequest.fromPartial(request), metadata);
+  UserScore(request: DeepPartial<UserScoreRequest>, metadata?: grpc.Metadata): Promise<UserScoreResponse> {
+    return this.rpc.unary(P2eServiceUserScoreDesc, UserScoreRequest.fromPartial(request), metadata);
   }
 
   CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse> {
@@ -839,20 +839,20 @@ export const P2eServiceLeaderboardDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-export const P2eServiceFightersCountDesc: UnaryMethodDefinitionish = {
-  methodName: "FightersCount",
+export const P2eServiceUsersCountDesc: UnaryMethodDefinitionish = {
+  methodName: "UsersCount",
   service: P2eServiceDesc,
   requestStream: false,
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return FightersCountRequest.encode(this).finish();
+      return UsersCountRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...FightersCountResponse.decode(data),
+        ...UsersCountResponse.decode(data),
         toObject() {
           return this;
         },
@@ -861,20 +861,20 @@ export const P2eServiceFightersCountDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-export const P2eServiceFighterScoreDesc: UnaryMethodDefinitionish = {
-  methodName: "FighterScore",
+export const P2eServiceUserScoreDesc: UnaryMethodDefinitionish = {
+  methodName: "UserScore",
   service: P2eServiceDesc,
   requestStream: false,
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return FighterScoreRequest.encode(this).finish();
+      return UserScoreRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...FighterScoreResponse.decode(data),
+        ...UserScoreResponse.decode(data),
         toObject() {
           return this;
         },

@@ -16,18 +16,9 @@ type P2eService struct {
 }
 
 type Config struct {
-	Logger        *zap.Logger
-	IndexerDB     *gorm.DB
-	RiotStartedAt string
-}
-
-type UserScoreResponse struct {
-	Rank            int32
-	UserId          string
-	InProgressScore int64
-	SnapshotScore   int64
-	SnapshotRank    int32
-	SeasonId        uint32
+	Logger            *zap.Logger
+	IndexerDB         *gorm.DB
+	RiotGameStartedAt string
 }
 
 func NewP2eService(ctx context.Context, conf *Config) p2epb.P2EServiceServer {
@@ -37,25 +28,24 @@ func NewP2eService(ctx context.Context, conf *Config) p2epb.P2EServiceServer {
 	}
 }
 
-func (s *P2eService) FightersCount(ctx context.Context, req *p2epb.FightersCountRequest) (*p2epb.FightersCountResponse, error) {
+func (s *P2eService) UsersCount(ctx context.Context, req *p2epb.UsersCountRequest) (*p2epb.UsersCountResponse, error) {
+	seasonId := req.GetSeasonId()
+	if seasonId == "" {
+		return nil, errors.New("missing season_id")
+	}
+
 	var count int64
-
-	collectionId := req.GetCollectionId()
-	if collectionId == "" {
-		return nil, errors.New("missing collection_id")
+	if err := s.conf.IndexerDB.Model(&indexerdb.P2eLeaderboard{SeasonID: seasonId}).Count(&count).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to count users")
 	}
 
-	if err := s.conf.IndexerDB.Model(&indexerdb.P2eLeaderboard{CollectionID: collectionId}).Count(&count).Error; err != nil {
-		return nil, errors.Wrap(err, "failed count fighters")
-	}
-
-	return &p2epb.FightersCountResponse{Count: uint32(count)}, nil
+	return &p2epb.UsersCountResponse{Count: uint32(count)}, nil
 }
 
-func (s *P2eService) FighterScore(ctx context.Context, req *p2epb.FighterScoreRequest) (*p2epb.FighterScoreResponse, error) {
-	collectionId := req.GetCollectionId()
-	if collectionId == "" {
-		return nil, errors.New("missing collection_id")
+func (s *P2eService) UserScore(ctx context.Context, req *p2epb.UserScoreRequest) (*p2epb.UserScoreResponse, error) {
+	seasonId := req.GetSeasonId()
+	if seasonId == "" {
+		return nil, errors.New("missing season_id")
 	}
 
 	userId := req.GetUserId()
@@ -65,15 +55,15 @@ func (s *P2eService) FighterScore(ctx context.Context, req *p2epb.FighterScoreRe
 
 	var userScore p2epb.UserScore
 	q := &indexerdb.P2eLeaderboard{
-		CollectionID: collectionId,
-		UserID:       indexerdb.UserID(userId),
+		SeasonID: seasonId,
+		UserID:   indexerdb.UserID(userId),
 	}
 
 	if err := s.conf.IndexerDB.Model(q).First(&userScore).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to get user score")
 	}
 
-	return &p2epb.FighterScoreResponse{UserScore: &userScore}, nil
+	return &p2epb.UserScoreResponse{UserScore: &userScore}, nil
 }
 
 func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2EService_LeaderboardServer) error {
@@ -88,38 +78,30 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 	}
 
 	seasonId := req.GetSeasonId()
-	if seasonId == 0 {
-		return errors.New("seasonId invalid")
+	if seasonId == "" {
+		return errors.New("missing season_id")
 	}
 
 	// TODO: for performance, we allow max limit = 500
 	if offset > 500 {
 		offset = 500
 	}
-
-	// TODO: We can support global leaderboard without collectionId in the future
-	collectionId := req.GetCollectionId()
-	if collectionId == "" {
-		return errors.New("collectionId must be provided")
-	}
-
-	var userScores []UserScoreResponse
+	var userScores []p2epb.UserScore
 
 	err := s.conf.IndexerDB.Raw(`
 		SELECT 
 			ROW_NUMBER() OVER(ORDER BY in_progress_score desc) as rank, 
-			user_id, 
+			user_id,
+			season_id,
 			in_progress_score, 
 			snapshot_score, 
-			snapshot_rank, 
-			season_id
+			snapshot_rank
 		FROM p2e_leaderboards
-		WHERE collection_id = ? AND season_id = ?
+		WHERE season_id = ?
 		ORDER BY in_progress_score desc
 		OFFSET ?
 		LIMIT ?
 	`,
-		collectionId,
 		seasonId,
 		int(offset),
 		int(limit),
@@ -146,7 +128,7 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 }
 
 func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeasonRequest) (*p2epb.CurrentSeasonResponse, error) {
-	currentSeason, remainingHp, err := GetCurrentSeason(s.conf.RiotStartedAt)
+	currentSeason, remainingHp, err := GetCurrentSeason(s.conf.RiotGameStartedAt)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get current season")
 	}
@@ -156,6 +138,7 @@ func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeason
 		TotalPrize:  currentSeason.TotalPrize,
 		BossName:    currentSeason.BossName,
 		BossHp:      currentSeason.BossHp,
+		Denom:       currentSeason.Denom,
 		RemainingHp: float32(remainingHp),
 	}, nil
 }

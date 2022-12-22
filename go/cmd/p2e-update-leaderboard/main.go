@@ -20,8 +20,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId string, rpcEndpoint string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
-	dailyRewards, err := p2e.GetCurrentDailyRewardsConfig(riotStartedAt)
+func sendRewardsList(seasonId string, db *gorm.DB, chainId string, rpcEndpoint string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
+	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId)
+
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get rewards")
 	}
@@ -34,7 +35,6 @@ func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId
 
 	mnemonic := distributorMnemonic
 	funds := sdk.NewCoins()
-	toriDenominator := 1_000_000
 	prefix := "tori"
 	gasPrices := "0.025utori"
 	gasAdjustment := 1.3
@@ -56,8 +56,6 @@ func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId
 	}
 
 	// Get leaderboard
-	rewardsList := []map[string]interface{}{}
-
 	var leaderboard []indexerdb.P2eLeaderboard
 	if err := db.
 		Where("season_id = ?", seasonId).
@@ -68,19 +66,28 @@ func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId
 		return nil, errors.Wrap(err, "failed to get current leaderboard")
 	}
 
-	rewardCoef := float64(1)
+	rewardCoef := sdk.NewDec(1)
 	// Adjust rewards in testnet
 	if strings.HasPrefix(chainId, "teritori-testnet") {
-		rewardCoef = 1 / float64(toriDenominator)
+		rewardCoef = rewardCoef.QuoInt(sdk.NewIntWithDecimal(1, 6))
 	}
 
 	// Generate rewards list
+	rewardsList := []map[string]interface{}{}
+
 	for _, userScore := range leaderboard {
 		addr := strings.Split(string(userScore.UserID), "-")[1]
 		rank := userScore.Rank
 
-		toriAmount := int(rewardCoef * float64(toriDenominator) * dailyRewards[rank-1]) // Get daily reward
-		rewardsList = append(rewardsList, map[string]interface{}{"addr": addr, "amount": fmt.Sprintf("%d", toriAmount)})
+		if rank < 1 {
+			return nil, errors.Wrap(err, "rank should not be < 1")
+		}
+
+		// Get daily reward by rank
+		dailyReward := dailyRewards[rank-1]
+		finalDailyAmount := dailyReward.Amount.Mul(rewardCoef)
+
+		rewardsList = append(rewardsList, map[string]interface{}{"addr": addr, "amount": finalDailyAmount.RoundInt()})
 	}
 
 	execMsgRaw := map[string]interface{}{
@@ -99,7 +106,7 @@ func sendRewardsList(seasonId uint32, db *gorm.DB, riotStartedAt string, chainId
 	return contractClient.ExecuteWasm(distributorContractAddress, execMsgStr, funds, "Send rewards list to top players")
 }
 
-func updateLeaderboard(seasonId uint32, db *gorm.DB) error {
+func updateLeaderboard(seasonId string, db *gorm.DB) error {
 	currentTimestamp := time.Now().UTC().Unix()
 
 	// Update Rules:
@@ -112,7 +119,6 @@ func updateLeaderboard(seasonId uint32, db *gorm.DB) error {
 			in_progress_score = score + LEAST(ss.end_time - ss.start_time, ? - ss.start_time)
 		FROM p2e_squad_stakings as ss
 		WHERE lb.user_id = ss.owner_id 
-			AND lb.collection_id = ss.collection_id
 			AND lb.season_id = ?
 			AND ss.start_time < ?
 	`,
@@ -127,9 +133,8 @@ func updateLeaderboard(seasonId uint32, db *gorm.DB) error {
 	updateRankErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET rank = orderedLb.rank
-		FROM (SELECT user_id, collection_id, row_number() OVER (ORDER BY in_progress_score) AS rank FROM p2e_leaderboards WHERE season_id = ?) orderedLb
+		FROM (SELECT user_id, row_number() OVER (ORDER BY in_progress_score) AS rank FROM p2e_leaderboards WHERE season_id = ?) orderedLb
 		WHERE lb.user_id = orderedLb.user_id
-			AND lb.collection_id = orderedLb.collection_id
 			AND lb.season_id = ?
 	`, seasonId, seasonId).Error
 	if updateRankErr != nil {
@@ -138,7 +143,7 @@ func updateLeaderboard(seasonId uint32, db *gorm.DB) error {
 	return nil
 }
 
-func snapshotLeaderboard(seasonId uint32, db *gorm.DB) error {
+func snapshotLeaderboard(seasonId string, db *gorm.DB) error {
 	snapshotErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET snapshot_score = in_progress_score, snapshot_rank = rank
@@ -158,7 +163,7 @@ func main() {
 		distributorOwnerMnemonic   = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of owner")
 		chainId                    = fs.String("public-chain-id", "", "public chain id")
 		rpcEndpoint                = fs.String("public-chain-rpc-endpoint", "", "public chain rpc endpoint")
-		theRiotStartedAt           = fs.String("the-riot-started-at", "", "time where the riot game starts")
+		theRiotGameStartedAt       = fs.String("the-riot-game-started-at", "", "time where the riot game starts")
 
 		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
@@ -195,35 +200,35 @@ func main() {
 	}
 
 	if chainId == nil {
-		panic(errors.New("chainId is mandatory"))
+		panic(errors.New("chain-id is mandatory"))
 	}
 
 	if rpcEndpoint == nil {
-		panic(errors.New("rpcEndpoint is mandatory"))
+		panic(errors.New("rpc-endpoint is mandatory"))
 	}
 
-	if theRiotStartedAt == nil {
-		panic(errors.New("theRiotStartedAt is mandatory"))
+	if theRiotGameStartedAt == nil {
+		panic(errors.New("the-riot-game-started-at is mandatory"))
 	}
 
 	schedule := gocron.NewScheduler(time.UTC)
 	schedule.Every(1).Hour().Do(func() {
-		season, _, err := p2e.GetSeasonByTime(*theRiotStartedAt, time.Now().UTC())
+		season, _, err := p2e.GetSeasonByTime(*theRiotGameStartedAt, time.Now().UTC())
 		if err != nil {
 			logger.Error("failed to get current season", zap.Error(err))
 			return
 		}
 
 		if err := updateLeaderboard(season.ID, db); err != nil {
-			logger.Error(fmt.Sprintf("failed to update leaderboard for season: %d", season.ID), zap.Error(err))
+			logger.Error(fmt.Sprintf("failed to update leaderboard for season: %s", season.ID), zap.Error(err))
 			return
 		}
-		logger.Info(fmt.Sprintf("update leaderboard successfully for season: %d", season.ID))
+		logger.Info(fmt.Sprintf("update leaderboard successfully for season: %s", season.ID))
 	})
 
 	// Run a bit earlier than midnight to be sure that we snapshot on current season (if case of the season transition moment)
-	schedule.Every(1).Day().At("23:55").Do(func() {
-		season, _, err := p2e.GetSeasonByTime(*theRiotStartedAt, time.Now().UTC())
+	schedule.Every(1).Day().At("23:59").Do(func() {
+		season, _, err := p2e.GetCurrentSeason(*theRiotGameStartedAt)
 		if err != nil {
 			logger.Error("failed to get current season", zap.Error(err))
 			return
@@ -233,15 +238,15 @@ func main() {
 			logger.Error("failed to snapshot leaderboard", zap.Error(err))
 			return
 		}
-		logger.Info(fmt.Sprintf("snapshot leaderboard successfully for season: %d", season.ID))
+		logger.Info(fmt.Sprintf("snapshot leaderboard successfully for season: %s", season.ID))
 
-		txResponse, err := sendRewardsList(season.ID, db, *theRiotStartedAt, *chainId, *rpcEndpoint, *distributorContractAddress, *distributorOwnerMnemonic)
+		txResponse, err := sendRewardsList(season.ID, db, *chainId, *rpcEndpoint, *distributorContractAddress, *distributorOwnerMnemonic)
 		if err != nil {
 			logger.Error("failed to send rewards list", zap.Error(err))
 			return
 		}
 
-		logger.Info(fmt.Sprintf("send daily rewards successfully for season: %d", season.ID), zap.String("TxHash", txResponse.TxHash))
+		logger.Info(fmt.Sprintf("send daily rewards successfully for season: %s", season.ID), zap.String("TxHash", txResponse.TxHash))
 	})
 
 	schedule.StartBlocking()

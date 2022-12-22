@@ -5,42 +5,23 @@ import (
 	"math"
 	"time"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/pkg/errors"
 )
 
 const COEF = 1.0015
 
-type Season struct {
-	ID         uint32
-	TotalPrize int32
-	BossName   string
-	BossHp     int32
-}
-
-// BossHp is in Days
-var SEASONS = []Season{
-	Season{ID: 1, TotalPrize: 1_800_000, BossName: "Philipp Rustov", BossHp: 30},
-	Season{ID: 2, TotalPrize: 1_710_000, BossName: "Philipp Rustov 2", BossHp: 30},
-	Season{ID: 3, TotalPrize: 1_620_000, BossName: "Philipp Rustov 3", BossHp: 30},
-	Season{ID: 4, TotalPrize: 1_170_000, BossName: "Philipp Rustov 4", BossHp: 30},
-	Season{ID: 5, TotalPrize: 720_000, BossName: "Philipp Rustov 5", BossHp: 30},
-	Season{ID: 6, TotalPrize: 630_000, BossName: "Philipp Rustov 6", BossHp: 30},
-	Season{ID: 7, TotalPrize: 540_000, BossName: "Philipp Rustov 7", BossHp: 30},
-	Season{ID: 8, TotalPrize: 450_000, BossName: "Philipp Rustov 8", BossHp: 30},
-	Season{ID: 9, TotalPrize: 360_000, BossName: "Philipp Rustov 9", BossHp: 30},
-}
-
 func GetAllSeasons() []Season {
-	return SEASONS
+	return THE_RIOT_SEASONS
 }
 
 // returns: season, time passed in days, error
-func GetSeasonByTime(firstSeasonStartedAt string, givenTime time.Time) (Season, float64, error) {
+func GetSeasonByTime(gameStartedAt string, givenTime time.Time) (Season, float64, error) {
 	layout := "2006-01-02"
-	startedAt, err := time.Parse(layout, firstSeasonStartedAt)
+	startedAt, err := time.Parse(layout, gameStartedAt)
 
 	if err != nil {
-		return Season{}, 0, errors.Wrap(err, "failed to parsed riot started at time")
+		return Season{}, 0, errors.Wrap(err, "failed to parsed game started time")
 	}
 
 	passedDuration := givenTime.Sub(startedAt)
@@ -52,7 +33,7 @@ func GetSeasonByTime(firstSeasonStartedAt string, givenTime time.Time) (Season, 
 	passedHours := passedDuration.Hours()
 	totalHoursFromStart := float64(0)
 
-	for _, season := range SEASONS {
+	for _, season := range GetAllSeasons() {
 		totalHoursFromStart += float64(season.BossHp * 24)
 		if passedHours <= totalHoursFromStart {
 			return season, (totalHoursFromStart - passedHours) / 24, nil
@@ -63,55 +44,59 @@ func GetSeasonByTime(firstSeasonStartedAt string, givenTime time.Time) (Season, 
 }
 
 // returns: season, time passed in days, error
-func GetCurrentSeason(firstSeasonStartedAt string) (Season, float64, error) {
-	return GetSeasonByTime(firstSeasonStartedAt, time.Now().UTC())
+func GetCurrentSeason(gameStartedAt string) (Season, float64, error) {
+	return GetSeasonByTime(gameStartedAt, time.Now().UTC())
 }
 
-func findSeasonById(seasonId uint32) (Season, error) {
-	for _, season := range SEASONS {
+func findSeasonById(seasonId string) (Season, error) {
+	for _, season := range GetAllSeasons() {
 		if seasonId == season.ID {
 			return season, nil
 		}
 	}
 
 	// Not found
-	return Season{}, errors.New(fmt.Sprintf("failed to find season by id :%d", seasonId))
+	return Season{}, errors.New(fmt.Sprintf("failed to find season by id :%s", seasonId))
 }
 
-func GetCurrentDailyRewardsConfig(startedAtStr string) ([]float64, error) {
-	currentSeason, _, err := GetCurrentSeason(startedAtStr)
+func GetDailyRewardsConfigBySeason(seasonId string) (sdk.DecCoins, error) {
+	season, err := findSeasonById(seasonId)
+
 	if err != nil {
 		return nil, err
 	}
 
-	seasonRewards, err := GetRewardsConfigBySeason(currentSeason.ID)
+	seasonRewards, err := GetRewardsConfigBySeason(season.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	var dailyRewards []float64
+	var dailyRewards sdk.DecCoins
 	for _, reward := range seasonRewards {
-		dailyRewards = append(dailyRewards, reward/float64(currentSeason.BossHp))
+		amount := int64(reward / float64(season.BossHp))
+
+		// Contract take utori so we need convert tori => utori
+		dailyAmountInt := sdk.NewIntWithDecimal(amount, int(season.Decimals))
+		dailyCoin := sdk.NewDecCoin(season.Denom, dailyAmountInt)
+		dailyRewards = append(dailyRewards, dailyCoin)
 	}
 
 	return dailyRewards, nil
 }
 
-func GetRewardsConfigBySeason(seasonId uint32) ([]float64, error) {
-	var targetSeason Season
-	var firstSeason Season
-
+func GetRewardsConfigBySeason(seasonId string) ([]float64, error) {
 	targetSeason, err := findSeasonById(seasonId)
 	if err != nil {
 		return nil, err
 	}
 
-	firstSeason, err2 := findSeasonById(1)
-	if err2 != nil {
-		return nil, err2
+	allSeasons := GetAllSeasons()
+	if len(allSeasons) == 0 {
+		return nil, errors.New("failed to get seasons data")
 	}
+	baseSeason := allSeasons[0]
 
-	seasonCoef := float64(targetSeason.TotalPrize) / float64(firstSeason.TotalPrize)
+	seasonCoef := float64(targetSeason.TotalPrize) / float64(baseSeason.TotalPrize)
 	baseRewardsConfig := getBaseRewardsConfig()
 
 	seasonRewards := make([]float64, len(baseRewardsConfig))
@@ -121,7 +106,7 @@ func GetRewardsConfigBySeason(seasonId uint32) ([]float64, error) {
 	return seasonRewards, nil
 }
 
-// Rewards for first season
+// Rewards for base season
 func getBaseRewardsConfig() []float64 {
 	rankRewards := []float64{
 		55_000,

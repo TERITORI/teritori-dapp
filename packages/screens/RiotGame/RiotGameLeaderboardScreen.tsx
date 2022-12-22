@@ -29,7 +29,6 @@ import {
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
-import { THE_RIOT_COLLECTION_ID } from "./settings";
 
 type RankProps = {
   changes: number;
@@ -97,7 +96,6 @@ export const RiotGameLeaderboardScreen = () => {
     const { id } = await p2eBackendClient.CurrentSeason({});
 
     const streamData = await p2eBackendClient.Leaderboard({
-      collectionId: THE_RIOT_COLLECTION_ID,
       seasonId: id,
       limit: 500,
       offset: 0,
