@@ -191,14 +191,14 @@ export const useSquadStaking = () => {
       const startsAt = moment(currentSquad.start_time * 1000);
       const endsAt = moment(currentSquad.end_time * 1000);
 
-      if (now.isAfter(completesAt)) {
+      if (now.isAfter(startsAt) && now.isBefore(endsAt)) {
+        _stakingState = StakingState.ONGOING;
+        _remainingTime = endsAt.diff(now);
+      } else if (now.isAfter(completesAt)) {
         _stakingState = StakingState.COMPLETED;
       } else if (now.isAfter(endsAt)) {
         _stakingState = StakingState.RELAX;
         _remainingTime = completesAt.diff(now);
-      } else if (now.isAfter(startsAt)) {
-        _stakingState = StakingState.ONGOING;
-        _remainingTime = endsAt.diff(now);
       }
     }
 
