@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
     borderWidth: 10,
     borderRightWidth: 0,
     borderStyle: "solid",
+    borderColor: "transparent",
     borderLeftColor: secondaryColor,
     right: -16,
   },
