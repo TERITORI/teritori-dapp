@@ -1,7 +1,7 @@
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { Coin } from "cosmwasm";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { TeritoriBreedingQueryClient } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { THE_RIOT_BREEDING_CONTRACT_ADDRESS } from "../../screens/RiotGame/settings";
@@ -12,7 +12,6 @@ import {
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { useContractClients } from "../useContractClients";
 import useSelectedWallet from "../useSelectedWallet";
 import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 
@@ -20,12 +19,15 @@ export const useBreeding = () => {
   const [breedingConfig, setBreedingConfig] = useState<ConfigResponse>();
   const [remainingTokens, setRemainingTokens] = useState<number>(0);
 
-  const { queryClient: breedingQueryClient } = useContractClients(
-    "teritori-breeding",
-    THE_RIOT_BREEDING_CONTRACT_ADDRESS
-  );
-
   const selectedWallet = useSelectedWallet();
+
+  const getBreedingQueryClient = useCallback(async () => {
+    const nonSigningClient = await getNonSigningCosmWasmClient();
+    return new TeritoriBreedingQueryClient(
+      nonSigningClient,
+      THE_RIOT_BREEDING_CONTRACT_ADDRESS
+    );
+  }, []);
 
   const breed = async (
     breedingPrice: Coin,
@@ -87,12 +89,11 @@ export const useBreeding = () => {
     return tokens;
   };
 
-  const fetchBreedingConfig = async (
-    breedingQueryClient: TeritoriBreedingQueryClient
-  ) => {
+  const fetchBreedingConfig = async () => {
     // Just load config once
     if (breedingConfig) return;
 
+    const breedingQueryClient = await getBreedingQueryClient();
     const config: ConfigResponse = await breedingQueryClient.config();
     setBreedingConfig(config);
   };
@@ -127,6 +128,7 @@ export const useBreeding = () => {
   };
 
   const getBreedingsLefts = async (tokenId: string) => {
+    const breedingQueryClient = await getBreedingQueryClient();
     const breededCount = await breedingQueryClient.breededCount({
       parentNftTokenId: tokenId,
     });
@@ -136,10 +138,8 @@ export const useBreeding = () => {
   };
 
   useEffect(() => {
-    if (!breedingQueryClient) return;
-
-    fetchBreedingConfig(breedingQueryClient);
-  }, [breedingQueryClient?.contractAddress]); // Depend on one attribute to avoid deep compare
+    fetchBreedingConfig();
+  }, []); // Depend on one attribute to avoid deep compare
 
   useEffect(() => {
     if (!breedingConfig?.child_contract_addr) return;

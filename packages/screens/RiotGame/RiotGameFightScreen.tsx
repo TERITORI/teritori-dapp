@@ -46,7 +46,7 @@ export const RiotGameFightScreen = () => {
   const {
     currentSquad,
     squadStakingConfig,
-    squadStakingClient,
+    currentUser,
     squadWithdraw,
     remainingTime,
     stakingState,
@@ -78,17 +78,12 @@ export const RiotGameFightScreen = () => {
   };
 
   const unstake = async () => {
-    if (!squadStakingClient) {
-      return setToastError({
-        title: "Error occurs",
-        message: "squadStakingClient is not ready",
-      });
-    }
+    if (!currentUser) return;
 
     try {
       setIsUnstaking(true);
 
-      await squadWithdraw(squadStakingClient);
+      await squadWithdraw(currentUser);
       setIsShowClaimModal(true);
     } catch (e: any) {
       setToastError({

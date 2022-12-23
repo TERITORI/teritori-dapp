@@ -1,6 +1,6 @@
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import moment from "moment";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import {
@@ -19,9 +19,11 @@ import {
   StakingState,
   getRipperTokenId,
 } from "../../utils/game";
-import { getSigningCosmWasmClient } from "../../utils/keplr";
+import {
+  getNonSigningCosmWasmClient,
+  getSigningCosmWasmClient,
+} from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
-import { useContractClients } from "../useContractClients";
 import useSelectedWallet from "../useSelectedWallet";
 import {
   GetSquadResponse,
@@ -50,11 +52,22 @@ export const useSquadStaking = () => {
 
   const selectedWallet = useSelectedWallet();
 
-  const { client: squadStakingClient, queryClient: squadStakingQueryClient } =
-    useContractClients(
-      "teritori-squad-staking",
+  const getSquadStakingQueryClient = useCallback(async () => {
+    const nonSigningClient = await getNonSigningCosmWasmClient();
+    return new TeritoriSquadStakingQueryClient(
+      nonSigningClient,
       THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS
     );
+  }, []);
+
+  const getSquadStakingClient = useCallback(async (sender: string) => {
+    const signingClient = await getSigningCosmWasmClient();
+    return new TeritoriSquadStakingClient(
+      signingClient,
+      sender,
+      THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS
+    );
+  }, []);
 
   const squadStake = async (selectedRippers: NFT[]) => {
     const client = await getSigningCosmWasmClient();
@@ -92,18 +105,15 @@ export const useSquadStaking = () => {
     return tx;
   };
 
-  const fetchSquadStakingConfig = async (
-    squadStakingQueryClient: TeritoriSquadStakingQueryClient
-  ) => {
+  const fetchSquadStakingConfig = async () => {
+    const squadStakingQueryClient = await getSquadStakingQueryClient();
     const config: GetConfigResponse = await squadStakingQueryClient.getConfig();
     setSquadStakingConfig(config);
   };
 
-  const fetchSquadStaking = async (
-    user: string,
-    squadStakingQueryClient: TeritoriSquadStakingQueryClient
-  ) => {
+  const fetchSquadStaking = async (user: string) => {
     try {
+      const squadStakingQueryClient = await getSquadStakingQueryClient();
       const squad: GetSquadResponse = await squadStakingQueryClient.getSquad({
         owner: user,
       });
@@ -119,9 +129,8 @@ export const useSquadStaking = () => {
     }
   };
 
-  const squadWithdraw = async (
-    squadStakingClient: TeritoriSquadStakingClient
-  ) => {
+  const squadWithdraw = async (user: string) => {
+    const squadStakingClient = await getSquadStakingClient(user);
     return await squadStakingClient.withdraw(defaultExecuteFee, defaultMemo);
   };
 
@@ -146,10 +155,8 @@ export const useSquadStaking = () => {
     return duration * 60 * 60 * 1000; // Convert to milliseconds
   };
 
-  const fetchLastStakeTime = async (
-    user: string,
-    squadStakingQueryClient: TeritoriSquadStakingQueryClient
-  ) => {
+  const fetchLastStakeTime = async (user: string) => {
+    const squadStakingQueryClient = await getSquadStakingQueryClient();
     const lastStakeTime: GetLastStakeTimeResponse =
       await squadStakingQueryClient.getLastStakeTime({
         user,
@@ -216,13 +223,12 @@ export const useSquadStaking = () => {
   };
 
   useEffect(() => {
-    const user = selectedWallet?.address || "";
-    if (!user || !squadStakingQueryClient) return;
+    if (!selectedWallet?.address) return;
 
-    fetchSquadStakingConfig(squadStakingQueryClient);
-    fetchSquadStaking(user, squadStakingQueryClient);
-    fetchLastStakeTime(user, squadStakingQueryClient);
-  }, [squadStakingQueryClient?.contractAddress, selectedWallet?.address]); // Use attributes as dependencies to avoid deep compare
+    fetchSquadStakingConfig();
+    fetchSquadStaking(selectedWallet.address);
+    fetchLastStakeTime(selectedWallet.address);
+  }, [selectedWallet?.address]); // Use attributes as dependencies to avoid deep compare
 
   useEffect(() => {
     return () => {
@@ -232,8 +238,7 @@ export const useSquadStaking = () => {
   }, []);
 
   return {
-    squadStakingClient,
-    squadStakingQueryClient,
+    currentUser: selectedWallet?.address,
     squadStakingConfig,
     currentSquad,
     squadStake,

@@ -4,10 +4,17 @@ import { StyleSheet, View, ViewStyle } from "react-native";
 import { CurrentSeasonResponse } from "../../../api/p2e/v1/p2e";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useContractClients } from "../../../hooks/useContractClients";
+import {
+  TeritoriDistributorQueryClient,
+  TeritoriDistributorClient,
+} from "../../../contracts-clients/teritori-distributor/TeritoriDistributor.client";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { p2eBackendClient } from "../../../utils/backend";
 import { decimalFromAtomics } from "../../../utils/coins";
+import {
+  getNonSigningCosmWasmClient,
+  getSigningCosmWasmClient,
+} from "../../../utils/keplr";
 import { yellowDefault } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS } from "../settings";
@@ -28,19 +35,17 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   const [isClaiming, setIsClaiming] = useState(false);
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
 
-  const {
-    queryClient: distributorQueryClient,
-    client: distributorClient,
-    isReady: isContractClientReady,
-  } = useContractClients(
-    "teritori-distributor",
-    TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS
-  );
-
-  const claimRewards = async () => {
+  const claimRewards = async (user: string) => {
     setIsClaiming(true);
 
     try {
+      const signingClient = await getSigningCosmWasmClient();
+      const distributorClient = new TeritoriDistributorClient(
+        signingClient,
+        user,
+        TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS
+      );
+
       await distributorClient.claim();
       setToastSuccess({
         title: "Success",
@@ -83,6 +88,12 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   };
 
   const fetchClaimableAmount = async () => {
+    const nonSigningClient = await getNonSigningCosmWasmClient();
+    const distributorQueryClient = new TeritoriDistributorQueryClient(
+      nonSigningClient,
+      TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS
+    );
+
     const claimableAmount = await distributorQueryClient.userClaimable({
       addr: selectedWallet?.address || "",
     });
@@ -99,12 +110,8 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
 
   useEffect(() => {
     fetchCurrentSeason();
-  }, []);
-
-  useEffect(() => {
-    if (!isContractClientReady) return;
     fetchClaimableAmount();
-  }, [isContractClientReady]);
+  }, []);
 
   return (
     <View style={[containerStyle, styles.container]}>
@@ -129,9 +136,9 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
         width={120}
       />
 
-      {claimableAmount !== 0 && (
+      {claimableAmount !== 0 && selectedWallet?.address && (
         <PrimaryButtonOutline
-          disabled={claimableAmount === 0 || isClaiming}
+          disabled={isClaiming}
           color={yellowDefault}
           size="M"
           text={
@@ -143,7 +150,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
                 )} TORI`
           }
           style={{ marginLeft: layout.padding_x1 }}
-          onPress={claimRewards}
+          onPress={() => claimRewards(selectedWallet.address)}
           noBrokenCorners
         />
       )}
