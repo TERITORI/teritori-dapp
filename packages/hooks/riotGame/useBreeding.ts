@@ -132,9 +132,7 @@ export const useBreeding = () => {
     const breededCount = await breedingQueryClient.breededCount({
       parentNftTokenId: tokenId,
     });
-    // TODO: from contract config breed_count_limit = 5 but breededCount max = 6
-    // => add 1 to adjust the display
-    return (breedingConfig?.breed_count_limit || 0) - breededCount + 1;
+    return (breedingConfig?.breed_count_limit || 0) - breededCount;
   };
 
   useEffect(() => {
