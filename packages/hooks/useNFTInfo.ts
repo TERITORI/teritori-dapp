@@ -256,10 +256,9 @@ const getRiotBreedingNFTInfo = async (
   const breededCount = await breedingClient.breededCount({
     parentNftTokenId: tokenId,
   });
-  // TODO: from contract config breed_count_limit = 5 but breededCount max = 6
-  // => add 1 to adjust the display
+
   const breedingsAvailable =
-    (breedingConfig?.breed_count_limit || 0) - breededCount + 1;
+    (breedingConfig?.breed_count_limit || 0) - breededCount;
 
   const collectionMetadata = await (
     await fetch(ipfsURLToHTTPURL(breedingConfig.child_base_uri))
