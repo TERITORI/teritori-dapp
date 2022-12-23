@@ -37,12 +37,12 @@ export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
         data={stakedRippers}
         numColumns={3}
         scrollEnabled={false}
+        keyExtractor={(item) => item.name}
         renderItem={({ item: ripper, index }) => {
           const isCenter = (index - 1) % 3 === 0;
 
           return (
             <View
-              key={index}
               style={[
                 styles.ripperInfo,
                 isCenter && { marginTop: RIPPER_AVATAR_SIZE / 3 },
