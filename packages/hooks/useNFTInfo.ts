@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
+import { ConfigResponse as BreedingConfigResponse } from "../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
@@ -9,12 +10,15 @@ import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";
+import { useBreedingConfig } from "./useBreedingConfig";
 
 export const useNFTInfo = (id: string, wallet: string | undefined) => {
   const [info, setInfo] = useState<NFTInfo>();
   const [refreshIndex, setRefreshIndex] = useState(0);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const breedingConfig = useBreedingConfig();
 
   const refresh = useCallback(() => {
     setRefreshIndex((i) => i + 1);
@@ -44,7 +48,8 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
             nfo = await getStandardNFTInfo(
               minterContractAddress,
               tokenId,
-              wallet
+              wallet,
+              breedingConfig
             );
         }
 
@@ -58,7 +63,7 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
       }
     };
     effect();
-  }, [id, wallet, refreshIndex]);
+  }, [id, wallet, refreshIndex, breedingConfig]);
 
   return { info, refresh, notFound, loading };
 };
@@ -140,7 +145,8 @@ const getTNSNFTInfo = async (
 const getStandardNFTInfo = async (
   minterContractAddress: string,
   tokenId: string,
-  wallet?: string
+  wallet: string | undefined,
+  breedingConfig: BreedingConfigResponse | undefined
 ) => {
   // We use a CosmWasm non signing Client
   const cosmwasmClient = await getNonSigningCosmWasmClient();
@@ -151,6 +157,20 @@ const getStandardNFTInfo = async (
     minterContractAddress
   );
   const minterConfig = await minterClient.config();
+
+  const breedingClient = new TeritoriBreedingQueryClient(
+    cosmwasmClient,
+    process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS || ""
+  );
+
+  const breededCount = await breedingClient.breededCount({
+    parentNftTokenId: tokenId,
+  });
+
+  const breedingsAvailable = Math.max(
+    (breedingConfig?.breed_count_limit || 0) - breededCount,
+    0
+  );
 
   const collectionMetadata = await (
     await fetch(ipfsURLToHTTPURL(minterConfig.nft_base_uri))
@@ -233,6 +253,7 @@ const getStandardNFTInfo = async (
     collectionImageURL: ipfsURLToHTTPURL(collectionMetadata.image),
     mintDenom: minterConfig.price_denom,
     royalty: royalties,
+    breedingsAvailable,
   };
 
   return nfo;
@@ -252,13 +273,6 @@ const getRiotBreedingNFTInfo = async (
     minterContractAddress
   );
   const breedingConfig = await breedingClient.config();
-
-  const breededCount = await breedingClient.breededCount({
-    parentNftTokenId: tokenId,
-  });
-
-  const breedingsAvailable =
-    (breedingConfig?.breed_count_limit || 0) - breededCount;
 
   const collectionMetadata = await (
     await fetch(ipfsURLToHTTPURL(breedingConfig.child_base_uri))
@@ -341,7 +355,6 @@ const getRiotBreedingNFTInfo = async (
     collectionImageURL: ipfsURLToHTTPURL(collectionMetadata.image),
     mintDenom: breedingConfig.breed_price_denom,
     royalty: royalties,
-    breedingsAvailable,
   };
 
   return nfo;
