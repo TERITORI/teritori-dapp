@@ -20,7 +20,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func sendRewardsList(seasonId string, db *gorm.DB, chainId string, rpcEndpoint string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
+func sendRewardsList(seasonId string, leaderboard []indexerdb.P2eLeaderboard, chainId string, rpcEndpoint string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
 	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId)
 
 	if err != nil {
@@ -53,22 +53,6 @@ func sendRewardsList(seasonId string, db *gorm.DB, chainId string, rpcEndpoint s
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get contract client")
-	}
-
-	// Get leaderboard
-	season, err := p2e.GetSeasonById(seasonId)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get season data")
-	}
-
-	var leaderboard []indexerdb.P2eLeaderboard
-	if err := db.
-		Where("season_id = ?", seasonId).
-		Order("snapshot_rank asc").
-		Limit(int(season.TopN)).
-		Find(&leaderboard).
-		Error; err != nil {
-		return nil, errors.Wrap(err, "failed to get current leaderboard")
 	}
 
 	rewardCoef := sdk.NewDec(1)
@@ -238,10 +222,15 @@ func main() {
 			return
 		}
 
-		if err := updateLeaderboard(season.ID, db); err != nil {
+		if err := db.Transaction(func(tx *gorm.DB) error {
+			if err := updateLeaderboard(season.ID, tx); err != nil {
+				return err
+			}
+			return nil
+		}); err != nil {
 			logger.Error(fmt.Sprintf("failed to update leaderboard for season: %s", season.ID), zap.Error(err))
-			return
 		}
+
 		logger.Info(fmt.Sprintf("update leaderboard successfully for season: %s", season.ID))
 	})
 
@@ -253,20 +242,35 @@ func main() {
 			return
 		}
 
-		// Update just before snapshot to have the latest info
-		if err := updateLeaderboard(season.ID, db); err != nil {
-			logger.Error(fmt.Sprintf("failed to update leaderboard for season: %s", season.ID), zap.Error(err))
-			return
-		}
-		logger.Info(fmt.Sprintf("update leaderboard before snapshot successfully for season: %s", season.ID))
+		var leaderboard []indexerdb.P2eLeaderboard
 
-		if err := snapshotLeaderboard(season.ID, db); err != nil {
+		if err := db.Transaction(func(tx *gorm.DB) error {
+			// Update just before snapshot to have the latest info
+			if err := updateLeaderboard(season.ID, tx); err != nil {
+				return errors.Wrap(err, "failed to update leaderboard")
+			}
+
+			if err := snapshotLeaderboard(season.ID, tx); err != nil {
+				return errors.Wrap(err, "failed to snapshot leaderboard")
+			}
+
+			if err := tx.
+				Where("season_id = ?", season.ID).
+				Order("snapshot_rank asc").
+				Limit(int(season.TopN)).
+				Find(&leaderboard).
+				Error; err != nil {
+				return errors.Wrap(err, "failed to get current leaderboard")
+			}
+
+			return nil
+		}); err != nil {
 			logger.Error("failed to snapshot leaderboard", zap.Error(err))
 			return
 		}
 		logger.Info(fmt.Sprintf("snapshot leaderboard successfully for season: %s", season.ID))
 
-		txResponse, err := sendRewardsList(season.ID, db, *chainId, *rpcEndpoint, *distributorContractAddress, *distributorOwnerMnemonic)
+		txResponse, err := sendRewardsList(season.ID, leaderboard, *chainId, *rpcEndpoint, *distributorContractAddress, *distributorOwnerMnemonic)
 		if err != nil {
 			logger.Error("failed to send rewards list", zap.Error(err))
 			return
