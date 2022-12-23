@@ -9,18 +9,15 @@ import { EmbeddedWeb } from "../../components/EmbeddedWeb";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
 import { StakingState } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
-import { neutralA3 } from "../../utils/style/colors";
 import {
   fontMedium48,
   fontMedium32,
   fontSemibold28,
-  fontMedium14,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { EnrollSlot } from "./component/EnrollSlot";
@@ -186,15 +183,6 @@ export const RiotGameEnrollScreen = () => {
               {moment
                 .utc(stakingDuration)
                 .format("HH [hours] mm [minutes] ss [seconds]")}
-            </BrandText>
-
-            <SpacerColumn size={1} />
-
-            <BrandText style={[fontMedium14, { color: neutralA3 }]}>
-              Stamina x 0.2 for solo fights
-            </BrandText>
-            <BrandText style={[fontMedium14, { color: neutralA3 }]}>
-              Leader's Stamina x 0.2 + Bonus for squad fights
             </BrandText>
           </TertiaryBox>
 

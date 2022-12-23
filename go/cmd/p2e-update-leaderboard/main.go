@@ -231,7 +231,7 @@ func main() {
 	}
 
 	schedule := gocron.NewScheduler(time.UTC)
-	schedule.Every(1).Hour().Do(func() {
+	schedule.Every(5).Minutes().Do(func() {
 		season, _, err := p2e.GetSeasonByTime(*theRiotGameStartedAt, time.Now().UTC())
 		if err != nil {
 			logger.Error("failed to get current season", zap.Error(err))
