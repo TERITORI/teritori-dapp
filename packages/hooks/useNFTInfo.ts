@@ -158,19 +158,23 @@ const getStandardNFTInfo = async (
   );
   const minterConfig = await minterClient.config();
 
-  const breedingClient = new TeritoriBreedingQueryClient(
-    cosmwasmClient,
-    process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS || ""
-  );
+  let breedingsAvailable;
 
-  const breededCount = await breedingClient.breededCount({
-    parentNftTokenId: tokenId,
-  });
+  if (breedingConfig?.parent_contract_addr === minterConfig.nft_addr) {
+    const breedingClient = new TeritoriBreedingQueryClient(
+      cosmwasmClient,
+      process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS || ""
+    );
 
-  const breedingsAvailable = Math.max(
-    (breedingConfig?.breed_count_limit || 0) - breededCount,
-    0
-  );
+    const breededCount = await breedingClient.breededCount({
+      parentNftTokenId: tokenId,
+    });
+
+    breedingsAvailable = Math.max(
+      (breedingConfig?.breed_count_limit || 0) - breededCount,
+      0
+    );
+  }
 
   const collectionMetadata = await (
     await fetch(ipfsURLToHTTPURL(minterConfig.nft_base_uri))
