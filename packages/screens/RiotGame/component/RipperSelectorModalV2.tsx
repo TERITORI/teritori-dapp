@@ -8,9 +8,9 @@ import {
   ScrollView,
   Pressable,
   useWindowDimensions,
+  FlatList,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import Carousel from "react-native-reanimated-carousel";
 
 import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
@@ -122,21 +122,21 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
             >
               <View style={{ position: "relative" }}>
                 <View style={styles.selectListContainer}>
-                  <Carousel
+                  <FlatList
                     data={availableRippers}
-                    width={THUMB_CONTAINER_SIZE + 20}
-                    height={THUMB_CONTAINER_SIZE + 20}
-                    loop={false}
-                    vertical
+                    numColumns={1}
                     style={{
-                      height: (THUMB_CONTAINER_SIZE + 20) * TOTAL_VISIBLE,
+                      height:
+                        (THUMB_CONTAINER_SIZE + layout.padding_x1_5) *
+                        TOTAL_VISIBLE,
                     }}
-                    pagingEnabled
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
                     renderItem={({ item }) => {
                       const isSelected = item.name === selectedRipper?.name;
                       return (
                         <TouchableOpacity
-                          activeOpacity={0.6}
+                          activeOpacity={0.7}
                           onPress={() => selectRipper(item)}
                         >
                           <TertiaryBox
@@ -247,6 +247,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: THUMB_CONTAINER_SIZE,
     borderWidth: 0,
+    margin: layout.padding_x1,
+    marginRight: layout.padding_x3,
   },
   arrowRight: {
     position: "absolute",
