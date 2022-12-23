@@ -166,7 +166,7 @@ export const RiotGameLeaderboardScreen = () => {
                 <BrandText
                   style={[styles.colData, { marginLeft: layout.padding_x3 }]}
                 >
-                  {index + 1}
+                  {userScore.rank}
                 </BrandText>
               </View>
               <View style={{ flex: 5 }}>

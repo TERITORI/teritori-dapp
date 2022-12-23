@@ -100,7 +100,7 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 	}
 	var leaderboard []indexerdb.P2eLeaderboard
 
-	err := s.conf.IndexerDB.Limit(int(limit)).Offset(int(offset)).Find(
+	err := s.conf.IndexerDB.Order("rank ASC").Limit(int(limit)).Offset(int(offset)).Find(
 		&leaderboard,
 		"season_id = ?", seasonId,
 	).Error
