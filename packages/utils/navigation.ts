@@ -41,6 +41,7 @@ export type RootStackParamList = {
   Staking: undefined;
 
   ComingSoon: undefined;
+  dAppStore: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -151,6 +152,8 @@ const navConfig: {
     Staking: "staking",
     // ==== ComingSoon
     ComingSoon: "coming-soon",
+    // ==== dAppStore
+    dAppStore: "dapp-store",
   },
 };
 

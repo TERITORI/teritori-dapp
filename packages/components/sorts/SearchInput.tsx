@@ -9,12 +9,11 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SearchInput: React.FC<{
   style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
-  const handleChangeText = () => {};
-
+  handleChangeText: (e: string) => void;
+}> = (props) => {
   return (
     <TertiaryBox
-      style={style}
+      style={props.style}
       height={48}
       mainContainerStyle={{
         padding: 12,
@@ -23,10 +22,13 @@ export const SearchInput: React.FC<{
       }}
       fullWidth
     >
-      <SVG style={{ marginRight: layout.padding_x1 }} source={searchSVG} />
+      <SVG
+        style={{ marginRight: layout.padding_x1, maxWidth: 22 }}
+        source={searchSVG}
+      />
       <TextInput
         placeholder="Search..."
-        onChangeText={handleChangeText}
+        onChangeText={props.handleChangeText}
         placeholderTextColor="#FFFFFF"
         style={textInputStyle}
       />
