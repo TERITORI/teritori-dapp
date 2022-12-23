@@ -314,6 +314,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			OwnerId:            string(nft.OwnerID),
 			Attributes:         attributes,
 			NftContractAddress: nft.Collection.TeritoriCollection.NFTContractAddress,
+			LockedOn:           nft.LockedOn,
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send nft")
 		}

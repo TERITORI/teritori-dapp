@@ -40,7 +40,9 @@ export const useRippers = () => {
   const myAvailableRippers = useMemo(() => {
     if (!selectedWallet?.address) return [];
 
-    return [...myRippers, ...myRipperChilds].filter((r) => !r.isListed);
+    return [...myRippers, ...myRipperChilds].filter(
+      (r) => !r.isListed && !r.lockedOn
+    );
   }, [myRippers, myRipperChilds, selectedWallet?.address]);
 
   return {
