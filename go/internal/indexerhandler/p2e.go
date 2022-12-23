@@ -164,8 +164,8 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 				AND tc.nft_contract_address = ?
 				AND tn.token_id = ?
 		`, lockedOn, nft.ContractAddr, nft.TokenId)
-		if result.RowsAffected != 1 || result.Error != nil {
-			return errors.New("failed to update owner")
+		if result.Error != nil {
+			return errors.New("failed to update lockedOn")
 		}
 	}
 
@@ -251,8 +251,8 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 				AND tc.nft_contract_address = ?
 				AND tn.token_id = ?
 		`, nftContractAddress, tokenId)
-		if result.RowsAffected != 1 || result.Error != nil {
-			return errors.New("failed to update owner")
+		if result.Error != nil {
+			return errors.New("failed to update lockedOn")
 		}
 	}
 
