@@ -49,6 +49,7 @@ type NFT struct {
 	IsListed    bool
 	PriceAmount sql.NullString `gorm:"type:numeric"`
 	PriceDenom  string
+	LockedOn    string
 
 	// "belongs to" relations
 	CollectionID string `gorm:"index"`

@@ -148,14 +148,14 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")
 	}
 
-	// Update owner: transfer to SquadStakingContract
-	newOwnerId := indexerdb.TeritoriUserID(execMsg.Contract)
+	// Update lockedOn: set lockedOn = contract which holds NFTs
+	lockedOn := indexerdb.TeritoriUserID(execMsg.Contract)
 	senderId := indexerdb.TeritoriUserID(execMsg.Sender)
 
 	for _, nft := range squadStakeMsg.Stake.Nfts {
 		result := h.db.Exec(`
 			UPDATE nfts AS n
-			SET owner_id = ?
+			SET locked_on = ?
 			FROM 
 				teritori_collections AS tc,
 				teritori_nfts AS tn 
@@ -165,7 +165,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 				AND tc.nft_contract_address = ?
 				AND tn.token_id = ?
 				AND n.owner_id = ?
-		`, newOwnerId, nft.ContractAddr, nft.TokenId, senderId)
+		`, lockedOn, nft.ContractAddr, nft.TokenId, senderId)
 		if result.RowsAffected != 1 || result.Error != nil {
 			return errors.New("failed to update owner")
 		}
@@ -230,10 +230,9 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 		return errors.Wrap(err, "failed to update user score")
 	}
 
-	// Update owner: transfer back to owner
+	// Update lockedOn: remove lockedOn
 	contractAddresses := e.Events["wasm._contract_address"]
 	tokenIds := e.Events["wasm.token_id"]
-	newOwnerId := indexerdb.TeritoriUserID(execMsg.Sender)
 
 	if len(contractAddresses) != len(tokenIds) {
 		return errors.New("failed to get transfer data from event")
@@ -244,7 +243,7 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 
 		result := h.db.Exec(`
 			UPDATE nfts AS n
-			SET owner_id = ?
+			SET locked_on = NULL
 			FROM
 				teritori_collections AS tc,
 				teritori_nfts AS tn
@@ -253,7 +252,7 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 				AND tn.nft_id = n.id
 				AND tc.nft_contract_address = ?
 				AND tn.token_id = ?
-		`, newOwnerId, nftContractAddress, tokenId)
+		`, nftContractAddress, tokenId)
 		if result.RowsAffected != 1 || result.Error != nil {
 			return errors.New("failed to update owner")
 		}

@@ -74,7 +74,7 @@ func sendRewardsList(seasonId string, db *gorm.DB, chainId string, rpcEndpoint s
 	rewardCoef := sdk.NewDec(1)
 	// Adjust rewards in testnet
 	if strings.HasPrefix(chainId, "teritori-testnet") {
-		rewardCoef = rewardCoef.QuoInt(sdk.NewIntWithDecimal(1, 6))
+		rewardCoef = sdk.NewDecWithPrec(1, 6)
 	}
 
 	// Generate rewards list
@@ -258,7 +258,7 @@ func main() {
 			logger.Error(fmt.Sprintf("failed to update leaderboard for season: %s", season.ID), zap.Error(err))
 			return
 		}
-		logger.Info(fmt.Sprintf("update leaderboard successfully for season: %s", season.ID))
+		logger.Info(fmt.Sprintf("update leaderboard before snapshot successfully for season: %s", season.ID))
 
 		if err := snapshotLeaderboard(season.ID, db); err != nil {
 			logger.Error("failed to snapshot leaderboard", zap.Error(err))

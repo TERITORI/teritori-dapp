@@ -2,14 +2,15 @@ package p2e
 
 import (
 	"fmt"
-	"math"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/pkg/errors"
 )
 
-const COEF = 1.0015
+var (
+	COEF = sdk.NewDec(1).Add(sdk.NewDecWithPrec(15, 4)) // 1.0015
+)
 
 func GetAllSeasons() []Season {
 	return THE_RIOT_SEASONS
@@ -73,10 +74,10 @@ func GetDailyRewardsConfigBySeason(seasonId string) (sdk.DecCoins, error) {
 
 	var dailyRewards sdk.DecCoins
 	for _, reward := range seasonRewards {
-		amount := int64(reward / float64(season.BossHp))
+		amount := reward.QuoInt64(int64(season.BossHp))
 
 		// Contract take utori so we need convert tori => utori
-		dailyAmountInt := sdk.NewIntWithDecimal(amount, int(season.Decimals))
+		dailyAmountInt := sdk.NewIntWithDecimal(amount.RoundInt64(), int(season.Decimals))
 		dailyCoin := sdk.NewDecCoin(season.Denom, dailyAmountInt)
 		dailyRewards = append(dailyRewards, dailyCoin)
 	}
@@ -84,7 +85,7 @@ func GetDailyRewardsConfigBySeason(seasonId string) (sdk.DecCoins, error) {
 	return dailyRewards, nil
 }
 
-func GetRewardsConfigBySeason(seasonId string) ([]float64, error) {
+func GetRewardsConfigBySeason(seasonId string) ([]sdk.Dec, error) {
 	targetSeason, err := GetSeasonById(seasonId)
 	if err != nil {
 		return nil, err
@@ -96,19 +97,23 @@ func GetRewardsConfigBySeason(seasonId string) ([]float64, error) {
 	}
 	baseSeason := allSeasons[0]
 
-	seasonCoef := float64(targetSeason.TotalPrize) / float64(baseSeason.TotalPrize)
+	seasonPool := sdk.NewDec(int64(targetSeason.TotalPrize))
+	basePool := sdk.NewDec(int64(baseSeason.TotalPrize))
+
+	seasonCoef := seasonPool.Quo(basePool)
 	baseRewardsConfig := getBaseRewardsConfig()
 
-	seasonRewards := make([]float64, len(baseRewardsConfig))
+	seasonRewards := make([]sdk.Dec, len(baseRewardsConfig))
 	for i, baseReward := range baseRewardsConfig {
-		seasonRewards[i] = baseReward * seasonCoef
+		seasonRewards[i] = baseReward.Mul(seasonCoef)
 	}
+
 	return seasonRewards, nil
 }
 
 // Rewards for base season
-func getBaseRewardsConfig() []float64 {
-	rankRewards := []float64{
+func getBaseRewardsConfig() []sdk.Dec {
+	rankRewardInts := []int64{
 		55_000,
 		45_000,
 		42_000,
@@ -131,13 +136,17 @@ func getBaseRewardsConfig() []float64 {
 		4_152,
 	}
 
-	top500Prize := float64(2_000)
+	top500Prize := sdk.NewDec(2_000)
 
-	var top21_500 []float64
+	var top21_500 []sdk.Dec
 	for i := 20; i < 500; i++ {
-		prizeFloat := top500Prize * math.Pow(COEF, float64(i-20))
-		prizeInt := math.Round(prizeFloat)
-		top21_500 = append([]float64{prizeInt}, top21_500...)
+		prize := top500Prize.Mul(COEF.Power(uint64(i - 20)))
+		top21_500 = append([]sdk.Dec{prize}, top21_500...)
+	}
+
+	var rankRewards []sdk.Dec
+	for _, rewardInt := range rankRewardInts {
+		rankRewards = append(rankRewards, sdk.NewDec(rewardInt))
 	}
 
 	rankRewards = append(rankRewards, top21_500...)
