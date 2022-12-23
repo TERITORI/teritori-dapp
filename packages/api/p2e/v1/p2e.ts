@@ -33,21 +33,14 @@ export interface CurrentSeasonResponse {
   remainingHp: number;
 }
 
-export interface UserScoreRequest {
+export interface UserRankRequest {
   seasonId: string;
   userId: string;
 }
 
-export interface UserScoreResponse {
+export interface UserRankResponse {
   userScore: UserScore | undefined;
-}
-
-export interface UsersCountRequest {
-  seasonId: string;
-}
-
-export interface UsersCountResponse {
-  count: number;
+  totalUsers: number;
 }
 
 export interface LeaderboardRequest {
@@ -361,12 +354,12 @@ export const CurrentSeasonResponse = {
   },
 };
 
-function createBaseUserScoreRequest(): UserScoreRequest {
+function createBaseUserRankRequest(): UserRankRequest {
   return { seasonId: "", userId: "" };
 }
 
-export const UserScoreRequest = {
-  encode(message: UserScoreRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const UserRankRequest = {
+  encode(message: UserRankRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.seasonId !== "") {
       writer.uint32(10).string(message.seasonId);
     }
@@ -376,10 +369,10 @@ export const UserScoreRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UserScoreRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserRankRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUserScoreRequest();
+    const message = createBaseUserRankRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -397,50 +390,56 @@ export const UserScoreRequest = {
     return message;
   },
 
-  fromJSON(object: any): UserScoreRequest {
+  fromJSON(object: any): UserRankRequest {
     return {
       seasonId: isSet(object.seasonId) ? String(object.seasonId) : "",
       userId: isSet(object.userId) ? String(object.userId) : "",
     };
   },
 
-  toJSON(message: UserScoreRequest): unknown {
+  toJSON(message: UserRankRequest): unknown {
     const obj: any = {};
     message.seasonId !== undefined && (obj.seasonId = message.seasonId);
     message.userId !== undefined && (obj.userId = message.userId);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UserScoreRequest>, I>>(object: I): UserScoreRequest {
-    const message = createBaseUserScoreRequest();
+  fromPartial<I extends Exact<DeepPartial<UserRankRequest>, I>>(object: I): UserRankRequest {
+    const message = createBaseUserRankRequest();
     message.seasonId = object.seasonId ?? "";
     message.userId = object.userId ?? "";
     return message;
   },
 };
 
-function createBaseUserScoreResponse(): UserScoreResponse {
-  return { userScore: undefined };
+function createBaseUserRankResponse(): UserRankResponse {
+  return { userScore: undefined, totalUsers: 0 };
 }
 
-export const UserScoreResponse = {
-  encode(message: UserScoreResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const UserRankResponse = {
+  encode(message: UserRankResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userScore !== undefined) {
       UserScore.encode(message.userScore, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.totalUsers !== 0) {
+      writer.uint32(16).int32(message.totalUsers);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UserScoreResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserRankResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUserScoreResponse();
+    const message = createBaseUserRankResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.userScore = UserScore.decode(reader, reader.uint32());
           break;
+        case 2:
+          message.totalUsers = reader.int32();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -449,116 +448,27 @@ export const UserScoreResponse = {
     return message;
   },
 
-  fromJSON(object: any): UserScoreResponse {
-    return { userScore: isSet(object.userScore) ? UserScore.fromJSON(object.userScore) : undefined };
+  fromJSON(object: any): UserRankResponse {
+    return {
+      userScore: isSet(object.userScore) ? UserScore.fromJSON(object.userScore) : undefined,
+      totalUsers: isSet(object.totalUsers) ? Number(object.totalUsers) : 0,
+    };
   },
 
-  toJSON(message: UserScoreResponse): unknown {
+  toJSON(message: UserRankResponse): unknown {
     const obj: any = {};
     message.userScore !== undefined &&
       (obj.userScore = message.userScore ? UserScore.toJSON(message.userScore) : undefined);
+    message.totalUsers !== undefined && (obj.totalUsers = Math.round(message.totalUsers));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UserScoreResponse>, I>>(object: I): UserScoreResponse {
-    const message = createBaseUserScoreResponse();
+  fromPartial<I extends Exact<DeepPartial<UserRankResponse>, I>>(object: I): UserRankResponse {
+    const message = createBaseUserRankResponse();
     message.userScore = (object.userScore !== undefined && object.userScore !== null)
       ? UserScore.fromPartial(object.userScore)
       : undefined;
-    return message;
-  },
-};
-
-function createBaseUsersCountRequest(): UsersCountRequest {
-  return { seasonId: "" };
-}
-
-export const UsersCountRequest = {
-  encode(message: UsersCountRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.seasonId !== "") {
-      writer.uint32(10).string(message.seasonId);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UsersCountRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUsersCountRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.seasonId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UsersCountRequest {
-    return { seasonId: isSet(object.seasonId) ? String(object.seasonId) : "" };
-  },
-
-  toJSON(message: UsersCountRequest): unknown {
-    const obj: any = {};
-    message.seasonId !== undefined && (obj.seasonId = message.seasonId);
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<UsersCountRequest>, I>>(object: I): UsersCountRequest {
-    const message = createBaseUsersCountRequest();
-    message.seasonId = object.seasonId ?? "";
-    return message;
-  },
-};
-
-function createBaseUsersCountResponse(): UsersCountResponse {
-  return { count: 0 };
-}
-
-export const UsersCountResponse = {
-  encode(message: UsersCountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.count !== 0) {
-      writer.uint32(8).uint32(message.count);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UsersCountResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUsersCountResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.count = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UsersCountResponse {
-    return { count: isSet(object.count) ? Number(object.count) : 0 };
-  },
-
-  toJSON(message: UsersCountResponse): unknown {
-    const obj: any = {};
-    message.count !== undefined && (obj.count = Math.round(message.count));
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<UsersCountResponse>, I>>(object: I): UsersCountResponse {
-    const message = createBaseUsersCountResponse();
-    message.count = object.count ?? 0;
+    message.totalUsers = object.totalUsers ?? 0;
     return message;
   },
 };
@@ -776,9 +686,8 @@ export const LeaderboardResponse = {
 
 export interface P2eService {
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse>;
-  UsersCount(request: DeepPartial<UsersCountRequest>, metadata?: grpc.Metadata): Promise<UsersCountResponse>;
-  UserScore(request: DeepPartial<UserScoreRequest>, metadata?: grpc.Metadata): Promise<UserScoreResponse>;
   CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse>;
+  UserRank(request: DeepPartial<UserRankRequest>, metadata?: grpc.Metadata): Promise<UserRankResponse>;
   AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse>;
 }
 
@@ -788,9 +697,8 @@ export class P2eServiceClientImpl implements P2eService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Leaderboard = this.Leaderboard.bind(this);
-    this.UsersCount = this.UsersCount.bind(this);
-    this.UserScore = this.UserScore.bind(this);
     this.CurrentSeason = this.CurrentSeason.bind(this);
+    this.UserRank = this.UserRank.bind(this);
     this.AllSeasons = this.AllSeasons.bind(this);
   }
 
@@ -798,16 +706,12 @@ export class P2eServiceClientImpl implements P2eService {
     return this.rpc.invoke(P2eServiceLeaderboardDesc, LeaderboardRequest.fromPartial(request), metadata);
   }
 
-  UsersCount(request: DeepPartial<UsersCountRequest>, metadata?: grpc.Metadata): Promise<UsersCountResponse> {
-    return this.rpc.unary(P2eServiceUsersCountDesc, UsersCountRequest.fromPartial(request), metadata);
-  }
-
-  UserScore(request: DeepPartial<UserScoreRequest>, metadata?: grpc.Metadata): Promise<UserScoreResponse> {
-    return this.rpc.unary(P2eServiceUserScoreDesc, UserScoreRequest.fromPartial(request), metadata);
-  }
-
   CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse> {
     return this.rpc.unary(P2eServiceCurrentSeasonDesc, CurrentSeasonRequest.fromPartial(request), metadata);
+  }
+
+  UserRank(request: DeepPartial<UserRankRequest>, metadata?: grpc.Metadata): Promise<UserRankResponse> {
+    return this.rpc.unary(P2eServiceUserRankDesc, UserRankRequest.fromPartial(request), metadata);
   }
 
   AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse> {
@@ -839,50 +743,6 @@ export const P2eServiceLeaderboardDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-export const P2eServiceUsersCountDesc: UnaryMethodDefinitionish = {
-  methodName: "UsersCount",
-  service: P2eServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return UsersCountRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...UsersCountResponse.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
-export const P2eServiceUserScoreDesc: UnaryMethodDefinitionish = {
-  methodName: "UserScore",
-  service: P2eServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return UserScoreRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...UserScoreResponse.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
 export const P2eServiceCurrentSeasonDesc: UnaryMethodDefinitionish = {
   methodName: "CurrentSeason",
   service: P2eServiceDesc,
@@ -897,6 +757,28 @@ export const P2eServiceCurrentSeasonDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...CurrentSeasonResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const P2eServiceUserRankDesc: UnaryMethodDefinitionish = {
+  methodName: "UserRank",
+  service: P2eServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return UserRankRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...UserRankResponse.decode(data),
         toObject() {
           return this;
         },

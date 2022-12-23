@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
-import { CurrentSeasonResponse } from "../../../api/p2e/v1/p2e";
+import {
+  CurrentSeasonResponse,
+  UserRankResponse,
+} from "../../../api/p2e/v1/p2e";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import {
@@ -28,9 +31,8 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   containerStyle,
 }) => {
   const selectedWallet = useSelectedWallet();
-  const [totalFighters, setTotalFighters] = useState(0);
-  const [userRank, setUserRank] = useState(0);
   const [claimableAmount, setClaimableAmount] = useState(0);
+  const [userRank, setUserRank] = useState<UserRankResponse>();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [isClaiming, setIsClaiming] = useState(false);
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
@@ -64,30 +66,20 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     setCurrentSeason(currentSeason);
   };
 
-  const fetchTotalFighters = async (seasonId: string) => {
-    const { count } = await p2eBackendClient.UsersCount({
-      seasonId,
-    });
-
-    setTotalFighters(count);
-  };
-
-  const fetchRank = async (userId: string, seasonId: string) => {
-    if (!userId) return setUserRank(0);
-
+  const fetchUserRank = async (userId: string, seasonId: string) => {
     try {
-      const { userScore } = await p2eBackendClient.UserScore({
+      const userRank = await p2eBackendClient.UserRank({
         seasonId,
         userId,
       });
 
-      setUserRank(userScore?.rank || 0);
+      setUserRank(userRank);
     } catch (e) {
       console.log("Unable to fetch rank:", e);
     }
   };
 
-  const fetchClaimableAmount = async () => {
+  const fetchClaimableAmount = async (user: string) => {
     const nonSigningClient = await getNonSigningCosmWasmClient();
     const distributorQueryClient = new TeritoriDistributorQueryClient(
       nonSigningClient,
@@ -95,7 +87,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     );
 
     const claimableAmount = await distributorQueryClient.userClaimable({
-      addr: selectedWallet?.address || "",
+      addr: user,
     });
 
     setClaimableAmount(+claimableAmount);
@@ -104,13 +96,17 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   useEffect(() => {
     if (!currentSeason?.id || !selectedWallet?.address) return;
 
-    fetchRank(selectedWallet?.address, currentSeason.id);
-    fetchTotalFighters(currentSeason.id);
+    fetchUserRank(selectedWallet.address, currentSeason.id);
   }, [selectedWallet?.address, currentSeason?.id]);
 
   useEffect(() => {
+    if (!selectedWallet?.address) return;
+
+    fetchClaimableAmount(selectedWallet.address);
+  }, [selectedWallet?.address]);
+
+  useEffect(() => {
     fetchCurrentSeason();
-    fetchClaimableAmount();
   }, []);
 
   return (
@@ -118,7 +114,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
       <InfoBox
         size="SM"
         title="Number of Fighters"
-        content={`${totalFighters} Rippers`}
+        content={`${userRank?.totalUsers || 0} Rippers`}
         width={120}
       />
       <InfoBox
@@ -132,7 +128,9 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
       <InfoBox
         size="SM"
         title="Rank"
-        content={`${userRank}/${totalFighters}`}
+        content={`${userRank?.userScore?.rank || 0}/${
+          userRank?.totalUsers || 0
+        }`}
         width={120}
       />
 

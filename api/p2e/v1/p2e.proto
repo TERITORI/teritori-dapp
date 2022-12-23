@@ -5,9 +5,8 @@ option go_package = "./p2epb";
 
 service P2eService {
   rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
-  rpc UsersCount(UsersCountRequest) returns (UsersCountResponse);
-  rpc UserScore(UserScoreRequest) returns (UserScoreResponse);
   rpc CurrentSeason(CurrentSeasonRequest) returns (CurrentSeasonResponse);
+  rpc UserRank(UserRankRequest) returns (UserRankResponse);
   rpc AllSeasons(AllSeasonsRequest) returns (AllSeasonsResponse);
 }
 
@@ -37,21 +36,14 @@ message CurrentSeasonResponse {
   float remaining_hp = 6;
 }
 
-message UserScoreRequest {
+message UserRankRequest {
   string season_id = 1;
   string user_id = 2;
 }
 
-message UserScoreResponse {
+message UserRankResponse {
   UserScore user_score = 1;
-}
-
-message UsersCountRequest {
-  string season_id = 1;
-}
-
-message UsersCountResponse {
-  uint32 count = 1;
+  int32 total_users =  2;
 }
 
 message LeaderboardRequest {

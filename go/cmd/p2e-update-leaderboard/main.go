@@ -138,7 +138,13 @@ func updateLeaderboard(seasonId string, db *gorm.DB) error {
 	updateRankErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET rank = orderedLb.rank
-		FROM (SELECT user_id, row_number() OVER (ORDER BY in_progress_score DESC) AS rank FROM p2e_leaderboards WHERE season_id = ?) orderedLb
+		FROM (
+			SELECT 
+				user_id, 
+				ROW_NUMBER() OVER (ORDER BY in_progress_score DESC) AS rank 
+			FROM p2e_leaderboards 
+			WHERE season_id = ?
+		) orderedLb
 		WHERE lb.user_id = orderedLb.user_id
 			AND lb.season_id = ?
 	`, seasonId, seasonId).Error

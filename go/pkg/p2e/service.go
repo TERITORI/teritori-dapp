@@ -28,21 +28,12 @@ func NewP2eService(ctx context.Context, conf *Config) p2epb.P2EServiceServer {
 	}
 }
 
-func (s *P2eService) UsersCount(ctx context.Context, req *p2epb.UsersCountRequest) (*p2epb.UsersCountResponse, error) {
-	seasonId := req.GetSeasonId()
-	if seasonId == "" {
-		return nil, errors.New("missing season_id")
-	}
-
-	var count int64
-	if err := s.conf.IndexerDB.Model(&indexerdb.P2eLeaderboard{SeasonID: seasonId}).Count(&count).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to count users")
-	}
-
-	return &p2epb.UsersCountResponse{Count: uint32(count)}, nil
+type UserRankData struct {
+	p2epb.UserScore
+	TotalUsers int32 `json:"total_users"`
 }
 
-func (s *P2eService) UserScore(ctx context.Context, req *p2epb.UserScoreRequest) (*p2epb.UserScoreResponse, error) {
+func (s *P2eService) UserRank(ctx context.Context, req *p2epb.UserRankRequest) (*p2epb.UserRankResponse, error) {
 	seasonId := req.GetSeasonId()
 	if seasonId == "" {
 		return nil, errors.New("missing season_id")
@@ -53,17 +44,38 @@ func (s *P2eService) UserScore(ctx context.Context, req *p2epb.UserScoreRequest)
 		return nil, errors.New("missing user_id")
 	}
 
-	var userScore p2epb.UserScore
-	q := &indexerdb.P2eLeaderboard{
-		SeasonID: seasonId,
-		UserID:   indexerdb.UserID(userId),
+	var userRank UserRankData
+	err := s.conf.IndexerDB.Raw(`
+		SELECT *
+		FROM p2e_leaderboards pl
+		JOIN (
+			SELECT COUNT(*) AS total_users, season_id 
+			FROM p2e_leaderboards 
+			GROUP BY season_id 
+			HAVING season_id = ?
+		) ct
+		ON pl.season_id = ct.season_id 
+		WHERE pl.user_id = ?
+	`,
+		seasonId,
+		indexerdb.TeritoriUserID(userId),
+	).Scan(&userRank).Error
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get user rank")
 	}
 
-	if err := s.conf.IndexerDB.Model(q).First(&userScore).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to get user score")
-	}
-
-	return &p2epb.UserScoreResponse{UserScore: &userScore}, nil
+	return &p2epb.UserRankResponse{
+		TotalUsers: userRank.TotalUsers,
+		UserScore: &p2epb.UserScore{
+			Rank:            userRank.Rank,
+			SnapshotRank:    userRank.SnapshotRank,
+			UserId:          userRank.UserId,
+			InProgressScore: userRank.InProgressScore,
+			SnapshotScore:   userRank.SnapshotScore,
+			SeasonId:        userRank.SeasonId,
+		},
+	}, nil
 }
 
 func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2EService_LeaderboardServer) error {
@@ -86,39 +98,25 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 	if limit > 500 {
 		limit = 500
 	}
-	var userScores []p2epb.UserScore
+	var leaderboard []indexerdb.P2eLeaderboard
 
-	err := s.conf.IndexerDB.Raw(`
-		SELECT 
-			ROW_NUMBER() OVER(ORDER BY in_progress_score desc) as rank, 
-			user_id,
-			season_id,
-			in_progress_score, 
-			snapshot_score, 
-			snapshot_rank
-		FROM p2e_leaderboards
-		WHERE season_id = ?
-		ORDER BY in_progress_score desc
-		OFFSET ?
-		LIMIT ?
-	`,
-		seasonId,
-		int(offset),
-		int(limit),
-	).Scan(&userScores).Error
+	err := s.conf.IndexerDB.Limit(int(limit)).Offset(int(offset)).Find(
+		&leaderboard,
+		"season_id = ?", seasonId,
+	).Error
 
 	if err != nil {
 		return errors.Wrap(err, "failed to fetch leaderboard")
 	}
 
-	for _, userScore := range userScores {
+	for _, userScore := range leaderboard {
 		if err := srv.Send(&p2epb.LeaderboardResponse{UserScore: &p2epb.UserScore{
 			Rank:            int32(userScore.Rank),
-			UserId:          string(userScore.UserId),
+			UserId:          string(userScore.UserID),
 			InProgressScore: int64(userScore.InProgressScore),
 			SnapshotScore:   int64(userScore.SnapshotScore),
 			SnapshotRank:    int32(userScore.SnapshotRank),
-			SeasonId:        userScore.SeasonId,
+			SeasonId:        userScore.SeasonID,
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send user score")
 		}

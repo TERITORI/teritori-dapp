@@ -23,9 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type P2EServiceClient interface {
 	Leaderboard(ctx context.Context, in *LeaderboardRequest, opts ...grpc.CallOption) (P2EService_LeaderboardClient, error)
-	UsersCount(ctx context.Context, in *UsersCountRequest, opts ...grpc.CallOption) (*UsersCountResponse, error)
-	UserScore(ctx context.Context, in *UserScoreRequest, opts ...grpc.CallOption) (*UserScoreResponse, error)
 	CurrentSeason(ctx context.Context, in *CurrentSeasonRequest, opts ...grpc.CallOption) (*CurrentSeasonResponse, error)
+	UserRank(ctx context.Context, in *UserRankRequest, opts ...grpc.CallOption) (*UserRankResponse, error)
 	AllSeasons(ctx context.Context, in *AllSeasonsRequest, opts ...grpc.CallOption) (*AllSeasonsResponse, error)
 }
 
@@ -69,27 +68,18 @@ func (x *p2EServiceLeaderboardClient) Recv() (*LeaderboardResponse, error) {
 	return m, nil
 }
 
-func (c *p2EServiceClient) UsersCount(ctx context.Context, in *UsersCountRequest, opts ...grpc.CallOption) (*UsersCountResponse, error) {
-	out := new(UsersCountResponse)
-	err := c.cc.Invoke(ctx, "/p2e.v1.P2eService/UsersCount", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *p2EServiceClient) UserScore(ctx context.Context, in *UserScoreRequest, opts ...grpc.CallOption) (*UserScoreResponse, error) {
-	out := new(UserScoreResponse)
-	err := c.cc.Invoke(ctx, "/p2e.v1.P2eService/UserScore", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *p2EServiceClient) CurrentSeason(ctx context.Context, in *CurrentSeasonRequest, opts ...grpc.CallOption) (*CurrentSeasonResponse, error) {
 	out := new(CurrentSeasonResponse)
 	err := c.cc.Invoke(ctx, "/p2e.v1.P2eService/CurrentSeason", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *p2EServiceClient) UserRank(ctx context.Context, in *UserRankRequest, opts ...grpc.CallOption) (*UserRankResponse, error) {
+	out := new(UserRankResponse)
+	err := c.cc.Invoke(ctx, "/p2e.v1.P2eService/UserRank", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -110,9 +100,8 @@ func (c *p2EServiceClient) AllSeasons(ctx context.Context, in *AllSeasonsRequest
 // for forward compatibility
 type P2EServiceServer interface {
 	Leaderboard(*LeaderboardRequest, P2EService_LeaderboardServer) error
-	UsersCount(context.Context, *UsersCountRequest) (*UsersCountResponse, error)
-	UserScore(context.Context, *UserScoreRequest) (*UserScoreResponse, error)
 	CurrentSeason(context.Context, *CurrentSeasonRequest) (*CurrentSeasonResponse, error)
+	UserRank(context.Context, *UserRankRequest) (*UserRankResponse, error)
 	AllSeasons(context.Context, *AllSeasonsRequest) (*AllSeasonsResponse, error)
 	mustEmbedUnimplementedP2EServiceServer()
 }
@@ -124,14 +113,11 @@ type UnimplementedP2EServiceServer struct {
 func (UnimplementedP2EServiceServer) Leaderboard(*LeaderboardRequest, P2EService_LeaderboardServer) error {
 	return status.Errorf(codes.Unimplemented, "method Leaderboard not implemented")
 }
-func (UnimplementedP2EServiceServer) UsersCount(context.Context, *UsersCountRequest) (*UsersCountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UsersCount not implemented")
-}
-func (UnimplementedP2EServiceServer) UserScore(context.Context, *UserScoreRequest) (*UserScoreResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserScore not implemented")
-}
 func (UnimplementedP2EServiceServer) CurrentSeason(context.Context, *CurrentSeasonRequest) (*CurrentSeasonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CurrentSeason not implemented")
+}
+func (UnimplementedP2EServiceServer) UserRank(context.Context, *UserRankRequest) (*UserRankResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRank not implemented")
 }
 func (UnimplementedP2EServiceServer) AllSeasons(context.Context, *AllSeasonsRequest) (*AllSeasonsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllSeasons not implemented")
@@ -170,42 +156,6 @@ func (x *p2EServiceLeaderboardServer) Send(m *LeaderboardResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _P2EService_UsersCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UsersCountRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(P2EServiceServer).UsersCount(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/p2e.v1.P2eService/UsersCount",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(P2EServiceServer).UsersCount(ctx, req.(*UsersCountRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _P2EService_UserScore_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserScoreRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(P2EServiceServer).UserScore(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/p2e.v1.P2eService/UserScore",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(P2EServiceServer).UserScore(ctx, req.(*UserScoreRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _P2EService_CurrentSeason_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CurrentSeasonRequest)
 	if err := dec(in); err != nil {
@@ -220,6 +170,24 @@ func _P2EService_CurrentSeason_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(P2EServiceServer).CurrentSeason(ctx, req.(*CurrentSeasonRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _P2EService_UserRank_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRankRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(P2EServiceServer).UserRank(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/p2e.v1.P2eService/UserRank",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(P2EServiceServer).UserRank(ctx, req.(*UserRankRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -250,16 +218,12 @@ var P2EService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*P2EServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UsersCount",
-			Handler:    _P2EService_UsersCount_Handler,
-		},
-		{
-			MethodName: "UserScore",
-			Handler:    _P2EService_UserScore_Handler,
-		},
-		{
 			MethodName: "CurrentSeason",
 			Handler:    _P2EService_CurrentSeason_Handler,
+		},
+		{
+			MethodName: "UserRank",
+			Handler:    _P2EService_UserRank_Handler,
 		},
 		{
 			MethodName: "AllSeasons",

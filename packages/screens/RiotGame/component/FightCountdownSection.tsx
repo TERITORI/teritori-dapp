@@ -96,22 +96,6 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
                   {isUnstaking ? "Unstaking..." : "Unstake"}
                 </BrandText>
               </TouchableOpacity>
-
-              {/* TODO: activate this block when V2
-        <View style={styles.divider} />
-
-        <SVG color={actionIconColor} source={claimSVG} />
-        <TouchableOpacity
-          disabled={stakingState !== StakingState.COMPLETED}
-          onPress={claimRewards}
-        >
-          <BrandText
-            style={[styles.actionLabel, { color: actionLabelColor }]}
-          >
-            Claim
-          </BrandText>
-        </TouchableOpacity>
-         */}
             </>
           )}
         </FlexRow>
