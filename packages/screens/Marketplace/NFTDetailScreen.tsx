@@ -44,6 +44,7 @@ export interface NFTInfo {
   collectionImageURL: string;
   mintDenom: string;
   royalty: number;
+  breedingsAvailable?: number;
 }
 
 const Content: React.FC<{
