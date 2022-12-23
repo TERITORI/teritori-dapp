@@ -22,8 +22,10 @@ import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";
 import { RipperAvatar } from "./component/RipperAvatar";
+import {ScreenFC} from "../../utils/navigation";
+import {GameScreen} from "./types";
 
-export const RiotGameBreedingScreen = () => {
+export const RiotGameBreedingScreen: ScreenFC<GameScreen.RiotGameBreeding> = () => {
   const { myAvailableRippers } = useRippers();
   const [isShowBreedingModal, setIsShowBreedingModal] = useState(false);
 

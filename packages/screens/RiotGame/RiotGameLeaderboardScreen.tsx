@@ -34,6 +34,8 @@ import {
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
+import {ScreenFC} from "../../utils/navigation";
+import {GameScreen} from "./types";
 
 type RankProps = {
   changes: number;
@@ -92,7 +94,7 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
   );
 };
 
-export const RiotGameLeaderboardScreen = () => {
+export const RiotGameLeaderboardScreen: ScreenFC<GameScreen.RiotGameLeaderboard> = () => {
   const [userScores, setUserScores] = useState<UserScore[]>([]);
 
   const fetchLeaderboard = async () => {

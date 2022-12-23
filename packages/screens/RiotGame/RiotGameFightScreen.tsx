@@ -12,10 +12,10 @@ import { NftInfoResponse } from "../../contracts-clients/teritori-nft/TeritoriNf
 import { Nft } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { StakingState } from "../../utils/game";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../../utils/keplr";
-import { useAppNavigation } from "../../utils/navigation";
+import { getRipperTokenId, StakingState } from "../../utils/game";
+import {ScreenFC, useAppNavigation} from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium48 } from "../../utils/style/fonts";
 import { headerHeight, layout } from "../../utils/style/layout";
@@ -24,7 +24,7 @@ import { FightCountdownSection } from "./component/FightCountdownSection";
 import { FightSquadSection } from "./component/FightSquadSection";
 import { GameContentView } from "./component/GameContentView";
 import { UnstakeModal } from "./component/UnstakeModal";
-import { RipperLightInfo } from "./types";
+import {GameScreen, RipperLightInfo } from "./types";
 
 const PAGE_TITLE_MAP = {
   [StakingState.UNKNOWN]: "There is no ongoing fight",
@@ -33,7 +33,7 @@ const PAGE_TITLE_MAP = {
   [StakingState.COMPLETED]: "Completed",
 };
 
-export const RiotGameFightScreen = () => {
+export const RiotGameFightScreen: ScreenFC<GameScreen.RiotGameFight> = () => {
   const navigation = useAppNavigation();
   const { setToastError } = useFeedbacks();
   const { myAvailableRippers } = useRippers();

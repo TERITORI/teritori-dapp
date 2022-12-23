@@ -31,6 +31,17 @@ type IconType = {
   };
 };
 
+export enum GameScreen  {
+  RiotGameEnroll= "RiotGameEnroll",
+  RiotGameFight= "RiotGameFight"
+, RiotGameBreeding= "RiotGameBreeding"
+, RiotGameMemories= "RiotGameMemories"
+, RiotGameMarketplace= "RiotGameMarketplace"
+, RiotGameLeaderboard= "RiotGameLeaderboard"
+, RiotGameInventory= "RiotGameInventory"
+, RiotGameRarity= "RiotGameRarity"
+}
+
 export type GameBgCardItem = BlankType | PointsType | ImageType | IconType;
 
 export type RipperRarity =

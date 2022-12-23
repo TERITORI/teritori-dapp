@@ -5,7 +5,7 @@ import { HubIntro } from "../../components/hub/HubIntro";
 import { HubLanding } from "../../components/hub/HubLanding";
 import { ScreenFC } from "../../utils/navigation";
 
-export const HomeScreen: ScreenFC<"Home"> = () => {
+export const HomeScreen: ScreenFC<"Home"> = ({route}) => {
   return (
     <ScreenContainer>
       <HubIntro />

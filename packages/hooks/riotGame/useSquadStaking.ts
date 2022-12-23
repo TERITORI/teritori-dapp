@@ -1,6 +1,6 @@
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import moment from "moment";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import {
@@ -222,6 +222,29 @@ export const useSquadStaking = () => {
     );
   };
 
+  // const [isStaking, setStak] = useState(false)
+  //
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setStak((isStaking) => !isStaking)
+  //   }, 20000)
+  // }, [])
+
+  const isStaking = useMemo(() => {
+    // console.log('isSquadLoadedisSquadLoadedisSquadLoadedisSquadLoaded', isSquadLoaded)
+    // console.log('isStakingStateLoadedisStakingStateLoadedisStakingStateLoaded', isStakingStateLoaded)
+    // console.log('currentSquadcurrentSquadcurrentSquadcurrentSquadcurrentSquad', currentSquad)
+    // console.log('[StakingState.RELAX, StakingState.ONGOING][StakingState.RELAX, StakingState.ONGOING]', [StakingState.RELAX, StakingState.ONGOING])
+    // console.log('stakingStatestakingStatestakingStatestakingState', stakingState)
+
+    return (
+      isSquadLoaded &&
+      isStakingStateLoaded &&
+      (currentSquad ||
+        [StakingState.RELAX, StakingState.ONGOING].includes(stakingState))
+    )
+  }, [isSquadLoaded, isStakingStateLoaded, currentSquad, stakingState]);
+
   useEffect(() => {
     if (!selectedWallet?.address) return;
 
@@ -253,5 +276,6 @@ export const useSquadStaking = () => {
     isLastStakeTimeLoaded,
     setCurrentSquad,
     updateStakingState,
+    isStaking
   };
 };

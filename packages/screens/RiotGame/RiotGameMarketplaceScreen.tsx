@@ -10,8 +10,10 @@ import {
 } from "../Marketplace/CollectionScreen";
 import { GameContentView } from "./component/GameContentView";
 import { THE_RIOT_COLLECTION_ID } from "./settings";
+import {ScreenFC} from "../../utils/navigation";
+import {GameScreen} from "./types";
 
-export const RiotGameMarketplaceScreen = () => {
+export const RiotGameMarketplaceScreen: ScreenFC<GameScreen.RiotGameMarketplace> = () => {
   const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
   const { info } = useCollectionInfo(THE_RIOT_COLLECTION_ID);
   const [sortDirection, setSortDirection] = useState(

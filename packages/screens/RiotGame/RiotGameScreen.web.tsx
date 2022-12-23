@@ -9,9 +9,12 @@ import { CenterSection } from "./component/CenterSection";
 import { GameBgCard } from "./component/GameBgCard";
 import { GameBgOverlay } from "./component/GameBgOverlay";
 import { RiotGameHeader } from "./component/RiotGameHeader";
+import {useGame} from "../../context/GameProvider";
 
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();
+  // const {stopAudio, setEnteredInGame} = useAudioVideoZ()
+  const {stopAudio, setEnteredInGame} = useGame()
 
   // variables
   const { width, height } = useWindowDimensions();
@@ -20,7 +23,8 @@ export const RiotGameScreen = () => {
     width: width / 10,
   };
 
-  const gotoEnroll = () => {
+  const onPressStart = () => {
+    setEnteredInGame(true)
     navigation.navigate("RiotGameEnroll");
   };
 
@@ -45,7 +49,7 @@ export const RiotGameScreen = () => {
           )}
         />
         <CenterSection
-          onPress={gotoEnroll}
+          onPress={onPressStart}
           cardWidth={cardSize.width}
           cardHeight={cardSize.height}
         />

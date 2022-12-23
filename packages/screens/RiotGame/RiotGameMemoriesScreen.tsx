@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
   FlatList,
   Image,
@@ -14,11 +14,13 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../components/spacer";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { GameContentView } from "./component/GameContentView";
+import {GameContentView} from "./component/GameContentView";
+import {ScreenFC} from "../../utils/navigation";
+import {GameScreen} from "./types";
 
 const embeddedVideoUri = "https://www.youtube.com/embed/fh-e3zArVE4";
-const embeddedVideoHeight = 283;
-const embeddedVideoWidth = 527;
+const embeddedVideoHeight = 293;  // Found the good height and width for YouTube player
+const embeddedVideoWidth = 516;
 const embeddedVideoSmHeight = 245;
 const embeddedVideoSmWidth = 430;
 
@@ -35,7 +37,8 @@ const episodes = [
   { videoUri: "" },
 ];
 
-export const RiotGameMemoriesScreen = () => {
+export const RiotGameMemoriesScreen: ScreenFC<GameScreen.RiotGameMemories> = ({route}) => {
+
   const { width } = useWindowDimensions();
 
   let numCol = 3;
@@ -57,11 +60,11 @@ export const RiotGameMemoriesScreen = () => {
           height={embeddedVideoHeight - 2}
           width={embeddedVideoWidth}
         >
-          <EmbeddedWeb
-            uri={embeddedVideoUri}
-            width={embeddedVideoWidth}
-            height={embeddedVideoHeight}
-          />
+          {/*<EmbeddedWeb*/}
+          {/*  uri={embeddedVideoUri}*/}
+          {/*  width={embeddedVideoWidth}*/}
+          {/*  height={embeddedVideoHeight}*/}
+          {/*/>*/}
         </TertiaryBox>
 
         <SpacerColumn size={8} />
@@ -82,11 +85,12 @@ export const RiotGameMemoriesScreen = () => {
               style={styles.videoSmBox}
             >
               {item.videoUri ? (
-                <EmbeddedWeb
-                  uri={item.videoUri}
-                  width={embeddedVideoSmWidth}
-                  height={embeddedVideoSmHeight}
-                />
+                <></>
+                // <EmbeddedWeb
+                //   uri={item.videoUri}
+                //   width={embeddedVideoSmWidth}
+                //   height={embeddedVideoSmHeight}
+                // />
               ) : (
                 <Image
                   style={styles.videoSmImageFallback}

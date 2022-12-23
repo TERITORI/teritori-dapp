@@ -1,29 +1,37 @@
 import moment from "moment";
-import React, { useState, useMemo, useEffect } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import React, {useEffect, useMemo, useState} from "react";
+import {FlatList, Pressable, StyleSheet, TouchableOpacity, View} from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { EmbeddedWeb } from "../../components/EmbeddedWeb";
-import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import FlexRow from "../../components/FlexRow";
+import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { StakingState } from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
+import { getRipperTokenId, StakingState } from "../../utils/game";
+import { useAppNavigation, ScreenFC} from "../../utils/navigation";
+import { neutralA3 } from "../../utils/style/colors";
 import {
   fontMedium48,
   fontMedium32,
   fontSemibold28,
+  fontMedium14,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalV2";
 import { SimpleButton } from "./component/SimpleButton";
+import {GameScreen} from "./types";
+import {ResizeMode, Video, } from "expo-av";
+import {useGame} from "../../context/GameProvider";
+import BO_DURING_FIGHT from "../../../assets/game/BO-DURING-THE-FIGHT-THE-RIOT-TORI-P2E.mp3";
+import BO_PREPARE_FIGHT from "../../../assets/game/BO-PREPARE-THE-FIGHT-1-P2E-THE-RIOT-TORI.mp3";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const embeddedVideoUri =
@@ -31,7 +39,7 @@ const embeddedVideoUri =
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
-export const RiotGameEnrollScreen = () => {
+export const RiotGameEnrollScreen: ScreenFC<GameScreen.RiotGameEnroll> = ({route}) => {
   const navigation = useAppNavigation();
   const { setToastError } = useFeedbacks();
 
@@ -40,18 +48,40 @@ export const RiotGameEnrollScreen = () => {
     currentSquad,
     squadStakingConfig,
     squadStake,
-    stakingState,
     estimateStakingDuration,
     lastStakeTime,
-    isStakingStateLoaded,
     isLastStakeTimeLoaded,
     isSquadLoaded,
     updateStakingState,
+    isStaking
   } = useSquadStaking();
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);
   const [isJoiningFight, setIsJoiningFight] = useState(false);
 
+
+  /////////////////////////////////:
+  const videoRef = React.useRef<Video>(null);
+  const [isVideoPlayed, setVideoPlayed] = useState(false)
+  const [isVideoFullScreen, setVideoFullScreen] = useState(false)
+  const {enteredInGame, stopAudio, playGameAudio, setEnteredInGame} = useGame()
+
+
+  useEffect(() => {
+    // console.log('enteredInGameenteredInGameenteredInGameenteredInGame', enteredInGame)
+    if(enteredInGame) setVideoPlayed(true)
+  }, [enteredInGame])
+
+
+  // useAudioVideo()
+  // console.log('propspropspropspropsprops', props)
+  // console.log('props.route.name)', route.name)
+  // const {playAudio} = useAudioVideo(
+  // useLayoutEffect(() => {
+  //   // playAudio()
+  // })
+  /////////////////////////////////:
+  
   const availableForEnrollRippers = useMemo(() => {
     const selectedIds = selectedRippers.map((r) => r.id);
 
@@ -109,17 +139,8 @@ export const RiotGameEnrollScreen = () => {
     }
   };
 
-  // If we are in state Relax/Ongoing or there is squad the goto fight screen
-  useEffect(() => {
-    if (
-      isSquadLoaded &&
-      isStakingStateLoaded &&
-      (currentSquad ||
-        [StakingState.RELAX, StakingState.ONGOING].includes(stakingState))
-    ) {
-      navigation.replace("RiotGameFight");
-    }
-  }, [isSquadLoaded, isStakingStateLoaded]);
+  // If we are in state Relax/Ongoing or there is squad => goto fight screen
+  if(isStaking) navigation.replace("RiotGameFight");
 
   // Update staking state
   useEffect(() => {
@@ -186,14 +207,41 @@ export const RiotGameEnrollScreen = () => {
             </BrandText>
           </TertiaryBox>
 
-          <View style={styles.videoContainer}>
-            <EmbeddedWeb
-              uri={embeddedVideoUri}
-              width={embeddedVideoWidth}
-              height={embeddedVideoHeight}
-              borderRadius={25}
+          <TouchableOpacity
+            style={styles.videoContainer}
+                            onPress={() => {
+                              setEnteredInGame(false)
+                              setVideoFullScreen(true)
+                              videoRef?.current?.presentFullscreenPlayer();
+
+
+          }}>
+            {/*<EmbeddedWeb*/}
+            {/*  autoplay*/}
+            {/*  uri={embeddedVideoUri}*/}
+            {/*  width={embeddedVideoWidth}*/}
+            {/*  height={embeddedVideoHeight}*/}
+            {/*  borderRadius={25}*/}
+            {/*/>*/}
+
+            <Video
+              ref={videoRef}
+              style={{borderRadius: 25}}
+              source={{
+                uri: embeddedVideoUri,
+              }}
+              onFullscreenUpdate={() => {if(isVideoFullScreen) {
+                setVideoFullScreen(false)
+                setEnteredInGame(true)
+              }}}
+              // useNativeControls={isVideoFullScreen}
+              shouldPlay={(enteredInGame && !isVideoFullScreen) || isVideoFullScreen}
+              isMuted={!isVideoFullScreen}
+              resizeMode={ResizeMode.CONTAIN}
+              isLooping
+              // onPlaybackStatusUpdate={status => setStatus(() => status)}
             />
-          </View>
+          </TouchableOpacity>
         </View>
       </FlexRow>
 

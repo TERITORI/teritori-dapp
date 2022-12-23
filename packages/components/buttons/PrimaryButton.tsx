@@ -33,6 +33,7 @@ export const PrimaryButton: React.FC<{
   touchableStyle?: StyleProp<ViewStyle>;
   RightComponent?: React.FC;
   color?: string;
+  noBrokenCorners?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -49,6 +50,7 @@ export const PrimaryButton: React.FC<{
   RightComponent,
   iconColor,
   color = primaryColor,
+                                    noBrokenCorners
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -73,6 +75,7 @@ export const PrimaryButton: React.FC<{
     squaresBackgroundColor,
     width,
     fullWidth,
+    noBrokenCorners,
   };
 
   return (

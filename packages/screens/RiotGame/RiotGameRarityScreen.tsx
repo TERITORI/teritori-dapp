@@ -5,8 +5,10 @@ import { BrandText } from "../../components/BrandText";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
+import {ScreenFC} from "../../utils/navigation";
+import {GameScreen} from "./types";
 
-export const RiotGameRarityScreen = () => {
+export const RiotGameRarityScreen: ScreenFC<GameScreen.RiotGameRarity> = () => {
   return (
     <GameContentView>
       <View style={styles.contentContainer}>

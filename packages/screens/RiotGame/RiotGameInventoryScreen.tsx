@@ -10,14 +10,15 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { useRippers } from "../../hooks/riotGame/useRippers";
-import { useAppNavigation } from "../../utils/navigation";
+import {ScreenFC, useAppNavigation} from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
+import {GameScreen} from "./types";
 
-export const RiotGameInventoryScreen = () => {
+export const RiotGameInventoryScreen: ScreenFC<GameScreen.RiotGameInventory> = () => {
   const navigation = useAppNavigation();
 
   const { myAvailableRippers } = useRippers();

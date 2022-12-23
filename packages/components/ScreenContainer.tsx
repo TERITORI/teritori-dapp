@@ -21,6 +21,7 @@ import { Header } from "./Header";
 import { NetworkSelector } from "./NetworkSelector";
 import { Footer } from "./footers/Footer";
 import { Sidebar } from "./navigation/Sidebar";
+import {useGame} from "../context/GameProvider";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
@@ -54,11 +55,14 @@ export const ScreenContainer: React.FC<{
   const { width: maxWidth } = useMaxResolution();
   const width = fullWidth ? "100%" : maxWidth;
 
+  // const {stopAudio, setEnteredInGame} = useAudioVideoZ()
+  const {stopAudio, setEnteredInGame} = useGame()
+
   // returns
   return (
-    <SafeAreaView style={{ width: "100%", flex: 1 }}>
-      {/*TODO: Refactor this*/}
-
+    <SafeAreaView style={{ width: "100%", flex: 1 }} onLayout={() =>
+      setEnteredInGame(false)
+    }>
       <View style={styles.container}>
         {["android", "ios"].includes(Platform.OS) ||
           (!hideSidebar ? <Sidebar /> : null)}

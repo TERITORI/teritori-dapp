@@ -6,6 +6,7 @@ export interface IFrameProps {
   width: number;
   height: number;
   borderRadius?: number;
+  autoplay?: boolean;
 }
 
 export const EmbeddedWeb: React.FC<IFrameProps> = ({
@@ -13,9 +14,11 @@ export const EmbeddedWeb: React.FC<IFrameProps> = ({
   width,
   height,
   borderRadius = 7,
+                                                       autoplay = false
 }) => {
   return (
     <WebView
+      autoPlay={autoplay}
       source={{ uri }}
       style={{
         width: "100%",
@@ -25,6 +28,7 @@ export const EmbeddedWeb: React.FC<IFrameProps> = ({
         borderRadius,
       }}
       allowsFullscreenVideo
+      soun
     />
   );
 };

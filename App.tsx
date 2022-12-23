@@ -22,6 +22,7 @@ import { TransactionModalsProvider } from "./packages/context/TransactionModalsP
 import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
+import {GameContextProvider} from "./packages/context/GameProvider";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ export default function App() {
         <NavigationContainer linking={linking}>
           <SafeAreaProvider>
             <ReduxProvider store={store}>
+              <GameContextProvider>
               <FeedbacksContextProvider>
                 <DropdownsContextProvider>
                   <WalletsProvider>
@@ -63,6 +65,7 @@ export default function App() {
                   </WalletsProvider>
                 </DropdownsContextProvider>
               </FeedbacksContextProvider>
+              </GameContextProvider>
             </ReduxProvider>
           </SafeAreaProvider>
         </NavigationContainer>

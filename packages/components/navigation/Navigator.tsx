@@ -29,6 +29,7 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+import {GameScreen} from "../../screens/RiotGame/types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
@@ -79,12 +80,12 @@ export const Navigator: React.FC = () => {
 
       {/* === Riot Game */}
       <Stack.Screen
-        name="RiotGameEnroll"
+        name={GameScreen.RiotGameEnroll}
         component={RiotGameEnrollScreen}
         options={{ header: () => null, title: screenTitle("Riot Game Enroll") }}
       />
       <Stack.Screen
-        name="RiotGameFight"
+        name={GameScreen.RiotGameFight}
         component={RiotGameFightScreen}
         options={{
           header: () => null,
@@ -92,7 +93,7 @@ export const Navigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="RiotGameBreeding"
+        name={GameScreen.RiotGameBreeding}
         component={RiotGameBreedingScreen}
         options={{
           header: () => null,
@@ -100,7 +101,7 @@ export const Navigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="RiotGameMarketplace"
+        name={GameScreen.RiotGameMarketplace}
         component={RiotGameMarketplaceScreen}
         options={{
           header: () => null,
@@ -108,7 +109,7 @@ export const Navigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="RiotGameMemories"
+        name={GameScreen.RiotGameMemories}
         component={RiotGameMemoriesScreen}
         options={{
           header: () => null,
@@ -116,7 +117,7 @@ export const Navigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="RiotGameLeaderboard"
+        name={GameScreen.RiotGameLeaderboard}
         component={RiotGameLeaderboardScreen}
         options={{
           header: () => null,
@@ -124,7 +125,7 @@ export const Navigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="RiotGameInventory"
+        name={GameScreen.RiotGameInventory}
         component={RiotGameInventoryScreen}
         options={{
           header: () => null,
@@ -132,7 +133,7 @@ export const Navigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="RiotGameRarity"
+        name={GameScreen.RiotGameRarity}
         component={RiotGameRarityScreen}
         options={{
           header: () => null,
