@@ -3,8 +3,8 @@ import { Image, StyleSheet, View } from "react-native";
 
 import firePNG from "../../../../assets/game/fire.png";
 import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
 import { CollectionSocialButtons } from "../../../components/collections/CollectionSocialButtons";
-import Row from "../../../components/grid/Row";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
@@ -37,13 +37,13 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
     <ModalBase
       contentStyle={{ alignItems: "center" }}
       labelComponent={
-        <Row>
+        <FlexRow>
           <BrandText style={fontSemibold20}>Success Breeding</BrandText>
           <Image
             style={{ width: 24, height: 24, marginLeft: 5 }}
             source={firePNG}
           />
-        </Row>
+        </FlexRow>
       }
       visible={visible}
       width={372}
@@ -56,9 +56,9 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
 
           <SpacerColumn size={2} />
 
-          <Row style={{ width: "100%", justifyContent: "space-between" }}>
+          <FlexRow justifyContent="space-between">
             <CollectionSocialButtons collectionInfo={collectionInfo} />
-          </Row>
+          </FlexRow>
         </View>
       }
     >

@@ -5,10 +5,10 @@ import firePNG from "../../../../assets/game/fire.png";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
 import teritoriLogoSVG from "../../../../assets/logos/logo.svg";
 import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { tinyAddress } from "../../../components/WalletSelector";
 import { CollectionSocialButtons } from "../../../components/collections/CollectionSocialButtons";
-import Row from "../../../components/grid/Row";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { GetSquadResponse } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
@@ -48,13 +48,13 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
     <ModalBase
       contentStyle={{ alignItems: "center" }}
       labelComponent={
-        <Row>
+        <FlexRow>
           <BrandText style={fontSemibold20}>Success Fight !</BrandText>
           <Image
             style={{ width: 24, height: 24, marginLeft: layout.padding_x0_5 }}
             source={firePNG}
           />
-        </Row>
+        </FlexRow>
       }
       visible={visible}
       width={372}
@@ -67,9 +67,9 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
 
           <SpacerColumn size={2} />
 
-          <Row style={{ width: "100%", justifyContent: "space-between" }}>
+          <FlexRow style={{ width: "100%", justifyContent: "space-between" }}>
             <CollectionSocialButtons collectionInfo={info} />
-          </Row>
+          </FlexRow>
         </View>
       }
     >
@@ -92,13 +92,13 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
 
         <SpacerColumn size={2} />
 
-        <Row style={{ justifyContent: "center" }}>
+        <FlexRow style={{ justifyContent: "center" }}>
           <SVG color={neutralA3} width={24} height={24} source={trophiesSVG} />
 
           <SpacerRow size={1} />
 
           <BrandText style={fontSemibold20}>{xp} XP</BrandText>
-        </Row>
+        </FlexRow>
 
         <SpacerColumn size={4} />
       </View>

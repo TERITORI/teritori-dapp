@@ -6,10 +6,9 @@ import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { EmbeddedWeb } from "../../components/EmbeddedWeb";
+import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import Col from "../../components/grid/Col";
-import Row from "../../components/grid/Row";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
@@ -139,8 +138,8 @@ export const RiotGameEnrollScreen = () => {
         <BrandText style={styles.pageTitle}>Send to fight</BrandText>
       </View>
 
-      <Row breakpoint={1080} style={styles.enrollContainer}>
-        <Col style={styles.col}>
+      <FlexRow breakpoint={1080} style={styles.enrollContainer}>
+        <View style={styles.col}>
           <BrandText style={styles.sectionTitle}>
             Enroll your Ripper(s)
           </BrandText>
@@ -169,9 +168,9 @@ export const RiotGameEnrollScreen = () => {
               </View>
             )}
           />
-        </Col>
+        </View>
 
-        <Col style={styles.col}>
+        <View style={styles.col}>
           <BrandText style={styles.sectionTitle}>Staking duration</BrandText>
 
           <TertiaryBox
@@ -207,8 +206,8 @@ export const RiotGameEnrollScreen = () => {
               borderRadius={25}
             />
           </View>
-        </Col>
-      </Row>
+        </View>
+      </FlexRow>
 
       <SimpleButton
         disabled={selectedRippers.length === 0}

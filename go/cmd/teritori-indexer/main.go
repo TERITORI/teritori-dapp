@@ -41,7 +41,6 @@ func main() {
 		tnsContractAddress             = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
 		vaultContractAddress           = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")
 		squadStakingContactAddress     = fs.String("the-riot-squad-staking-contract-address", "", "address of the teritori squad staking contract")
-		theRiotCollectionAddress       = fs.String("the-riot-collection-address", "", "address of the riot collection")
 		theRiotBreedingContractAddress = fs.String("the-riot-breeding-contract-address", "", "address of the breeding contract")
 		theRiotGameStartedAt           = fs.String("the-riot-game-started-at", "", "time where the riot game starts")
 		minterCodeIDs                  = fs.String("teritori-minter-code-ids", "", "code ids of teritori minter contracts")
@@ -234,7 +233,6 @@ func main() {
 					MinterCodeIDs:                  mcis,
 					VaultContractAddress:           *vaultContractAddress,
 					SquadStakingContractAddress:    *squadStakingContactAddress,
-					TheRiotCollectionAddress:       *theRiotCollectionAddress,
 					TheRiotBreedingContractAddress: *theRiotBreedingContractAddress,
 					TheRiotGameStartedAt:           *theRiotGameStartedAt,
 					TNSContractAddress:             *tnsContractAddress,

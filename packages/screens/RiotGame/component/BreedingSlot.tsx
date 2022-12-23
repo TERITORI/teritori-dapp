@@ -6,9 +6,9 @@ import addSVG from "../../../../assets/icons/add.svg";
 import gameBoxSVG from "../../../../assets/icons/game-box.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import Row from "../../../components/grid/Row";
 import {
   yellowDefault,
   neutral33,
@@ -47,7 +47,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
       >
         {ripper ? (
           <>
-            <Row style={styles.breedingsLeftTxt}>
+            <FlexRow style={styles.breedingsLeftTxt}>
               <SVG
                 source={gameBoxSVG}
                 width={16}
@@ -62,7 +62,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
               >
                 Breedings left: {breedingsLeft}
               </BrandText>
-            </Row>
+            </FlexRow>
 
             <Image
               style={styles.ripperImage}

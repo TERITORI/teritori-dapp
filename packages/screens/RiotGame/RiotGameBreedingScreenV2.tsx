@@ -4,11 +4,10 @@ import { StyleSheet, View, FlatList } from "react-native";
 import breedSVG from "../../../assets/game/breed.svg";
 import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
 import { BrandText } from "../../components/BrandText";
+import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import Col from "../../components/grid/Col";
-import Row from "../../components/grid/Row";
 import { SpacerRow } from "../../components/spacer";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
@@ -34,17 +33,17 @@ export const RiotGameBreedingScreen = () => {
 
   return (
     <GameContentView>
-      <Row breakpoint={992} style={styles.container}>
-        <Col style={{ alignItems: "center" }}>
+      <FlexRow breakpoint={992} style={styles.container}>
+        <View style={{ alignItems: "center" }}>
           <BrandText style={[fontMedium48]}>Breeding</BrandText>
 
-          <Row style={{ marginTop: layout.padding_x4 }}>
+          <FlexRow style={{ marginTop: layout.padding_x4 }}>
             <BreedingSlot />
             <SpacerRow size={3} />
             <BreedingSlot />
-          </Row>
+          </FlexRow>
 
-          <Row style={{ marginTop: layout.padding_x4 }}>
+          <FlexRow style={{ marginTop: layout.padding_x4 }}>
             <InfoBox size="LG" title="Price" content="10 $ATOM" width={180} />
 
             <InfoBox
@@ -60,7 +59,7 @@ export const RiotGameBreedingScreen = () => {
               content="Coming soon"
               width={180}
             />
-          </Row>
+          </FlexRow>
 
           <View style={styles.chevronLine}>
             <SVG source={chevronDownLineSVG} color={neutral33} />
@@ -82,8 +81,8 @@ export const RiotGameBreedingScreen = () => {
           >
             Legal phrase powered by Popipou
           </BrandText>
-        </Col>
-        <Col>
+        </View>
+        <View>
           <BrandText style={[fontMedium32]}>Available Rippers</BrandText>
 
           <FlatList
@@ -102,8 +101,8 @@ export const RiotGameBreedingScreen = () => {
               );
             }}
           />
-        </Col>
-      </Row>
+        </View>
+      </FlexRow>
 
       <BreedingResultModal
         tokenInfo={undefined}

@@ -247,6 +247,13 @@ func main() {
 			return
 		}
 
+		// Update just before snapshot to have the latest info
+		if err := updateLeaderboard(season.ID, db); err != nil {
+			logger.Error(fmt.Sprintf("failed to update leaderboard for season: %s", season.ID), zap.Error(err))
+			return
+		}
+		logger.Info(fmt.Sprintf("update leaderboard successfully for season: %s", season.ID))
+
 		if err := snapshotLeaderboard(season.ID, db); err != nil {
 			logger.Error("failed to snapshot leaderboard", zap.Error(err))
 			return

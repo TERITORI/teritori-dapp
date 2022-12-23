@@ -6,9 +6,9 @@ import clockSVG from "../../../../assets/game/clock.svg";
 import countDownPNG from "../../../../assets/game/countdown.png";
 import unstakeSVG from "../../../../assets/icons/unstake.svg";
 import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer";
 import { GetSquadResponse } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { StakingState } from "../../../utils/game";
@@ -53,12 +53,12 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
       mainContainerStyle={styles.countDownSection}
       noBrokenCorners
     >
-      <Row style={{ flex: 1 }} breakpoint={992}>
+      <FlexRow style={{ flex: 1 }} breakpoint={992}>
         <View style={{ flex: 2 }}>
           <BrandText style={fontSemibold20}>
             {isOnGoing ? "Remaining Fight Time" : "Relax Period"}
           </BrandText>
-          <Row>
+          <FlexRow>
             <BrandText
               style={[fontMedium48, { color: countdownColor, minWidth: 260 }]}
             >
@@ -68,14 +68,14 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
             </BrandText>
             <SpacerRow size={2} />
             <SVG color={countdownColor} source={clockSVG} />
-          </Row>
+          </FlexRow>
         </View>
 
         <View style={{ flex: 1, alignItems: "center" }}>
           <Image style={{ width: 152, height: 88 }} source={countDownPNG} />
         </View>
 
-        <Row style={styles.actionsSection}>
+        <FlexRow style={styles.actionsSection}>
           {currentSquad && (
             <>
               <View style={styles.divider} />
@@ -114,8 +114,8 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
          */}
             </>
           )}
-        </Row>
-      </Row>
+        </FlexRow>
+      </FlexRow>
     </TertiaryBox>
   );
 };

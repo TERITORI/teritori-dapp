@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, ImageBackground, FlatList, Image } from "react-native";
+import {
+  StyleSheet,
+  ImageBackground,
+  FlatList,
+  Image,
+  View,
+} from "react-native";
 
 import avatarPNG from "../../../assets/game/avatar.png";
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
@@ -10,11 +16,10 @@ import volUpSVG from "../../../assets/icons/vol-up.svg";
 import logoSVG from "../../../assets/logos/logo-white.svg";
 import { LeaderboardResponse, UserScore } from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
+import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { tinyAddress } from "../../components/WalletSelector";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import Col from "../../components/grid/Col";
-import Row from "../../components/grid/Row";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { p2eBackendClient } from "../../utils/backend";
@@ -44,7 +49,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   const name = tinyAddress(tnsMetadata?.metadata?.tokenId || address || "");
 
   return (
-    <Row width="auto" alignItems="center">
+    <FlexRow width="auto" alignItems="center">
       <Image style={{ width: 32, height: 32 }} source={avatarPNG} />
       <BrandText style={[styles.colData, { marginLeft: layout.padding_x1 }]}>
         {name}
@@ -56,7 +61,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
         source={badgeSVG}
         style={{ marginLeft: layout.padding_x1 }}
       />
-    </Row>
+    </FlexRow>
   );
 };
 
@@ -73,7 +78,7 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
   const rankSign = changes < 0 ? "+" : "-";
 
   return (
-    <Row style={{ alignItems: "center" }}>
+    <FlexRow style={{ alignItems: "center" }}>
       <SVG source={changes < 0 ? volUpSVG : volDownSVG} />
       <BrandText
         style={[
@@ -83,7 +88,7 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
       >
         {rankSign} {Math.abs(changes)}
       </BrandText>
-    </Row>
+    </FlexRow>
   );
 };
 
@@ -122,31 +127,31 @@ export const RiotGameLeaderboardScreen = () => {
       </ImageBackground>
 
       <TertiaryBox fullWidth style={{ marginTop: layout.padding_x2 }}>
-        <Row>
-          <Col size={1}>
+        <FlexRow>
+          <View style={{ flex: 1 }}>
             <BrandText
               style={[styles.colHeaderTitle, { marginLeft: layout.padding_x2 }]}
             >
               Rank
             </BrandText>
-          </Col>
-          <Col size={5}>
+          </View>
+          <View style={{ flex: 5 }}>
             <BrandText style={styles.colHeaderTitle}>Player</BrandText>
-          </Col>
-          <Col size={2}>
+          </View>
+          <View style={{ flex: 2 }}>
             <BrandText style={styles.colHeaderTitle}>
               Current Fight XP
             </BrandText>
-          </Col>
-          <Col size={2}>
+          </View>
+          <View style={{ flex: 2 }}>
             <BrandText style={styles.colHeaderTitle}>
               Time spent in Fight
             </BrandText>
-          </Col>
-          <Col size={2}>
+          </View>
+          <View style={{ flex: 1 }}>
             <BrandText style={styles.colHeaderTitle}>24 hours Change</BrandText>
-          </Col>
-        </Row>
+          </View>
+        </FlexRow>
       </TertiaryBox>
 
       <FlatList
@@ -156,41 +161,39 @@ export const RiotGameLeaderboardScreen = () => {
           const { xp, hours, rankChanges } = parseUserScoreInfo(userScore);
 
           return (
-            <Row style={styles.rowItem}>
-              <Col size={1}>
+            <FlexRow style={styles.rowItem}>
+              <View style={{ flex: 1 }}>
                 <BrandText
                   style={[styles.colData, { marginLeft: layout.padding_x3 }]}
                 >
                   {index + 1}
                 </BrandText>
-              </Col>
-              <Col size={5}>
+              </View>
+              <View style={{ flex: 5 }}>
                 <PlayerName userId={userScore.userId} />
-              </Col>
-              <Col
-                size={2}
-                style={{ flexDirection: "row", alignItems: "center" }}
+              </View>
+              <View
+                style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
               >
                 <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
 
                 <SpacerRow size={1} />
 
                 <BrandText style={styles.colData}>{xp}</BrandText>
-              </Col>
-              <Col
-                size={2}
-                style={{ flexDirection: "row", alignItems: "center" }}
+              </View>
+              <View
+                style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
               >
                 <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
 
                 <SpacerRow size={1} />
 
                 <BrandText style={styles.colData}>{hours} hours</BrandText>
-              </Col>
-              <Col size={2}>
+              </View>
+              <View style={{ flex: 1 }}>
                 <Rank changes={rankChanges} />
-              </Col>
-            </Row>
+              </View>
+            </FlexRow>
           );
         }}
       />

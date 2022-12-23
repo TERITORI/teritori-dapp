@@ -5,8 +5,8 @@ import fightBgPNG from "../../../assets/game/fight-bg.png";
 import victoryBgPNG from "../../../assets/game/victory-bg.png";
 import addCircleSFilledVG from "../../../assets/icons/add-circle-filled.svg";
 import { BrandText } from "../../components/BrandText";
+import FlexRow from "../../components/FlexRow";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import Row from "../../components/grid/Row";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { NftInfoResponse } from "../../contracts-clients/teritori-nft/TeritoriNft.types";
 import { Nft } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
@@ -151,7 +151,7 @@ export const RiotGameFightScreen = () => {
       </BrandText>
 
       <View style={styles.contentContainer}>
-        <Row style={{ justifyContent: "space-between" }} breakpoint={992}>
+        <FlexRow justifyContent="space-between" breakpoint={992}>
           <View style={styles.col}>
             <FightBossSection />
           </View>
@@ -159,7 +159,7 @@ export const RiotGameFightScreen = () => {
           <View style={styles.col}>
             <FightSquadSection stakedRippers={stakedRippers} />
           </View>
-        </Row>
+        </FlexRow>
 
         <FightCountdownSection
           isUnstaking={isUnstaking}

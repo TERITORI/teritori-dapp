@@ -1,15 +1,14 @@
 import React from "react";
-import { Image, FlatList } from "react-native";
+import { Image, FlatList, View } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
 import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item.png";
 import addCircleFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { BrandText } from "../../components/BrandText";
+import FlexRow from "../../components/FlexRow";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import Col from "../../components/grid/Col";
-import Row from "../../components/grid/Row";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
@@ -29,11 +28,9 @@ export const RiotGameInventoryScreen = () => {
 
   return (
     <GameContentView>
-      <Row breakpoint={1200} justifyContent="space-around">
-        <Col style={{ opacity: 0.6, marginTop: layout.padding_x4 }}>
-          <Row
-            style={{ justifyContent: "space-between", alignItems: "center" }}
-          >
+      <FlexRow breakpoint={1200} justifyContent="space-around">
+        <View style={{ opacity: 0.6, marginTop: layout.padding_x4 }}>
+          <FlexRow justifyContent="space-between" alignItems="center">
             <BrandText style={fontMedium32}>Available Items</BrandText>
 
             <CustomPressable>
@@ -47,7 +44,7 @@ export const RiotGameInventoryScreen = () => {
                 />
               )}
             </CustomPressable>
-          </Row>
+          </FlexRow>
 
           <FlatList
             data={Array(9).fill(0)}
@@ -69,10 +66,10 @@ export const RiotGameInventoryScreen = () => {
               );
             }}
           />
-        </Col>
+        </View>
 
-        <Col style={{ minWidth: "500px", marginTop: layout.padding_x4 }}>
-          <Row
+        <View style={{ minWidth: "500px", marginTop: layout.padding_x4 }}>
+          <FlexRow
             style={{ justifyContent: "space-between", alignItems: "center" }}
           >
             <BrandText style={fontMedium32}>Available Rippers</BrandText>
@@ -83,7 +80,7 @@ export const RiotGameInventoryScreen = () => {
               text="Breed"
               iconSVG={breedSVG}
             />
-          </Row>
+          </FlexRow>
 
           <FlatList
             data={myAvailableRippers}
@@ -103,8 +100,8 @@ export const RiotGameInventoryScreen = () => {
               );
             }}
           />
-        </Col>
-      </Row>
+        </View>
+      </FlexRow>
     </GameContentView>
   );
 };

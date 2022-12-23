@@ -14,9 +14,8 @@ import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
 import closeSVG from "../../../../assets/icons/close.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import Col from "../../../components/grid/Col";
-import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
 import { getRipperTokenId } from "../../../utils/game";
@@ -107,8 +106,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
             {selectedRipper?.name || "Please select a Ripper"}
           </BrandText>
 
-          <Row breakpoint={992} style={{ justifyContent: "space-around" }}>
-            <Col style={{ justifyContent: "space-around" }}>
+          <FlexRow breakpoint={992} justifyContent="space-around">
+            <View style={{ justifyContent: "space-around" }}>
               <View>
                 <BrandText style={[fontMedium32]}>Available Rippers</BrandText>
 
@@ -129,9 +128,9 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   title={confirmButton}
                 />
               </View>
-            </Col>
+            </View>
 
-            <Col>
+            <View>
               <ImageBackground
                 style={styles.dashedBorder}
                 source={dashedBorderPNG}
@@ -162,8 +161,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 breedingsLeft={breedingsLeft}
                 size="MD"
               />
-            </Col>
-          </Row>
+            </View>
+          </FlexRow>
         </ScrollView>
       </View>
     </Modal>

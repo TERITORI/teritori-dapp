@@ -83,8 +83,8 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 	}
 
 	// TODO: for performance, we allow max limit = 500
-	if offset > 500 {
-		offset = 500
+	if limit > 500 {
+		limit = 500
 	}
 	var userScores []p2epb.UserScore
 

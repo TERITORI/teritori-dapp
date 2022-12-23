@@ -7,9 +7,9 @@ import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
+import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import Row from "../../components/grid/Row";
 import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -197,7 +197,9 @@ export const RiotGameBreedingScreen = () => {
       >
         <BrandText style={[fontMedium48]}>Breeding</BrandText>
 
-        <Row style={{ justifyContent: "center", marginTop: layout.padding_x4 }}>
+        <FlexRow
+          style={{ justifyContent: "center", marginTop: layout.padding_x4 }}
+        >
           <BreedingSlot
             ripper={selectedRippers[0]?.ripper}
             breedingsLeft={selectedRippers[0]?.breedingsLeft}
@@ -209,9 +211,9 @@ export const RiotGameBreedingScreen = () => {
             breedingsLeft={selectedRippers[1]?.breedingsLeft}
             onPress={() => openSelectorModal(1)}
           />
-        </Row>
+        </FlexRow>
 
-        <Row style={{ marginTop: layout.padding_x4 }}>
+        <FlexRow style={{ marginTop: layout.padding_x4 }}>
           <InfoBox
             size="LG"
             title="Price"
@@ -230,7 +232,7 @@ export const RiotGameBreedingScreen = () => {
           />
 
           <InfoBox size="LG" title="Bonus" content="Coming soon" width={180} />
-        </Row>
+        </FlexRow>
 
         <View style={{ marginTop: layout.padding_x2 }}>
           <SVG source={chevronDownLineSVG} color={neutral33} />
@@ -246,7 +248,7 @@ export const RiotGameBreedingScreen = () => {
           style={{ marginTop: layout.padding_x2 }}
         />
 
-        <Row
+        <FlexRow
           width="auto"
           alignItems="center"
           style={{ marginTop: layout.padding_x2 }}
@@ -261,7 +263,7 @@ export const RiotGameBreedingScreen = () => {
           >
             Terms & Conditions
           </ExternalLink>
-        </Row>
+        </FlexRow>
       </View>
 
       <RipperSelectorModal

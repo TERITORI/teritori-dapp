@@ -17,9 +17,9 @@ import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
 import closeSVG from "../../../../assets/icons/close.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import Row from "../../../components/grid/Row";
 import { SpacerRow } from "../../../components/spacer";
 import { getRipperRarity } from "../../../utils/game";
 import {
@@ -111,7 +111,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           style={{ width: "100%" }}
           showsVerticalScrollIndicator={false}
         >
-          <Row breakpoint={breakPoint}>
+          <FlexRow breakpoint={breakPoint}>
             {currentWidth > breakPoint && <View style={{ flex: 1 }} />}
             <View
               style={{
@@ -208,7 +208,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 />
               </View>
             </View>
-          </Row>
+          </FlexRow>
         </ScrollView>
       </View>
     </Modal>

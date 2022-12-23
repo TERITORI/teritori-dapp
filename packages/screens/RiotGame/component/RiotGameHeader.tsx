@@ -13,10 +13,10 @@ import inventorySVG from "../../../../assets/icons/inventory.svg";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
 import { BrandText } from "../../../components/BrandText";
 import { ConnectWalletButton } from "../../../components/ConnectWalletButton";
+import FlexRow from "../../../components/FlexRow";
 import { NetworkSelector } from "../../../components/NetworkSelector";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
-import Row from "../../../components/grid/Row";
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
 import {
@@ -112,7 +112,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
           style={styles.menu}
         >
           {!hideMenu && (
-            <Row>
+            <FlexRow>
               {MENU_ITEMS.map((menuItem) => {
                 // Enroll and Fight are under the same menu item
                 let _routeName = routeName;
@@ -128,7 +128,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                     style={{ marginRight: layout.padding_x4 }}
                     key={menuItem.id}
                   >
-                    <Row style={{ alignItems: "center" }}>
+                    <FlexRow style={{ alignItems: "center" }}>
                       <SVG
                         width={16}
                         height={16}
@@ -139,11 +139,11 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                       <BrandText style={[fontMedium16, { color }]}>
                         {menuItem.name}
                       </BrandText>
-                    </Row>
+                    </FlexRow>
                   </TouchableOpacity>
                 );
               })}
-            </Row>
+            </FlexRow>
           )}
         </ScrollView>
 
