@@ -150,7 +150,6 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 
 	// Update lockedOn: set lockedOn = contract which holds NFTs
 	lockedOn := indexerdb.TeritoriUserID(execMsg.Contract)
-	senderId := indexerdb.TeritoriUserID(execMsg.Sender)
 
 	for _, nft := range squadStakeMsg.Stake.Nfts {
 		result := h.db.Exec(`
@@ -164,8 +163,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 				AND tn.nft_id = n.id 
 				AND tc.nft_contract_address = ?
 				AND tn.token_id = ?
-				AND n.owner_id = ?
-		`, lockedOn, nft.ContractAddr, nft.TokenId, senderId)
+		`, lockedOn, nft.ContractAddr, nft.TokenId)
 		if result.RowsAffected != 1 || result.Error != nil {
 			return errors.New("failed to update owner")
 		}

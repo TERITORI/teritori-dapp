@@ -41,7 +41,7 @@ export const useRippers = () => {
     if (!selectedWallet?.address) return [];
 
     return [...myRippers, ...myRipperChilds].filter(
-      (r) => !r.isListed && !r.lockedOn
+      (r) => !r.isListed || !r.lockedOn
     );
   }, [myRippers, myRipperChilds, selectedWallet?.address]);
 
