@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import { prettyPrice } from "../utils/coins";
@@ -48,7 +49,37 @@ export const useCollectionInfo = (id: string) => {
           ),
         };
       }
+
       const cosmwasm = await getNonSigningCosmWasmClient();
+
+      if (mintAddress === process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS) {
+        const breedingClient = new TeritoriBreedingQueryClient(
+          cosmwasm,
+          mintAddress
+        );
+        const conf = await breedingClient.config();
+
+        const nftClient = new TeritoriNftQueryClient(
+          cosmwasm,
+          conf.child_contract_addr
+        );
+        const nftInfo = await nftClient.contractInfo();
+
+        const metadataURL = ipfsURLToHTTPURL(conf.child_base_uri);
+        const metadataReply = await fetch(metadataURL);
+        const metadata = await metadataReply.json();
+
+        const info: CollectionInfo = {
+          name: nftInfo.name,
+          image: ipfsURLToHTTPURL(metadata.image || ""),
+          description: metadata.description,
+          discord: metadata.discord,
+          twitter: metadata.twitter,
+          website: metadata.website,
+          bannerImage: ipfsURLToHTTPURL(metadata.banner),
+        };
+        return info;
+      }
 
       const minterClient = new TeritoriBunkerMinterQueryClient(
         cosmwasm,
