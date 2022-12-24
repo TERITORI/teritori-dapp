@@ -40,9 +40,7 @@ const episodes = [
   { videoUri: "" },
 ];
 
-export const RiotGameMemoriesScreen: ScreenFC<GameScreen.RiotGameMemories> = ({
-  route,
-}) => {
+export const RiotGameMemoriesScreen: ScreenFC<GameScreen.RiotGameMemories> = () => {
   const { width } = useWindowDimensions();
   const { stopAudio, setEnteredInGame, setMemoriesVideos } = useGame();
   const videosRefs = useRef<Video[]>([]);
