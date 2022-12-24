@@ -17,7 +17,6 @@ import {
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
-import { backendClient } from "../../utils/backend";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { Link } from "../Link";
@@ -27,6 +26,8 @@ import { LabelCard } from "../cards/LabelCard";
 import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
+import {getNetwork, isNetworkTestnet, isTestMode} from "../../networks";
+import {useBackendClient} from "../../hooks/useBackendClient";
 
 const gridHalfGutter = 12;
 
@@ -37,8 +38,7 @@ export const HubLanding: React.FC = () => {
     image: defaultNewsBanner,
     maxSize: { width: maxWidth },
   });
-  const selectedNetworkId = useSelector(selectSelectedNetworkId);
-  const banners = useBanners(selectedNetworkId === "teritori-testnet");
+  const banners = useBanners();
   const banner = banners?.length ? banners[0] : undefined;
 
   return (
@@ -155,11 +155,14 @@ Launch"
 };
 
 //TODO: networkId instead of testnet. ==> Wait for backend modif
-const useBanners = (testnet: boolean) => {
+const useBanners = () => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const {backendClient} = useBackendClient()
+
   const { data } = useQuery(
-    ["banners", testnet],
+    ["banners", isNetworkTestnet(selectedNetworkId)],
     async () => {
-      const { banners } = await backendClient.Banners({ testnet });
+      const { banners } = await backendClient.Banners({ testnet: isNetworkTestnet(selectedNetworkId) });
       return banners;
     },
     { staleTime: Infinity }

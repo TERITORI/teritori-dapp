@@ -5,7 +5,7 @@ import { GasPrice } from "cosmwasm";
 
 import { getKeplr } from "../utils/keplr";
 import { cosmosNetwork } from "./cosmos-hub";
-import { cosmosThetaNetwork } from "./cosmos-hub-theta";
+import { cosmosTestnetNetwork } from "./cosmos-hub-testnet";
 import { ethereumNetwork } from "./ethereum";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
@@ -20,7 +20,7 @@ export const allNetworks: NetworkInfo[] = [
   teritoriNetwork,
   teritoriTestnetNetwork,
   cosmosNetwork,
-  cosmosThetaNetwork,
+  cosmosTestnetNetwork,
   osmosisNetwork,
   osmosisTestnetNetwork,
   // TODO: Complete the data for these
@@ -31,22 +31,13 @@ export const allNetworks: NetworkInfo[] = [
 
 export const displayedNetworks = () => {
   // ----  Force displaying Testnet networks if dev environment
-  if (isTeritoriTestnet()) {
+  if (isTestMode()) {
     allNetworks.forEach((networkInfo, index) => {
-      if (networkInfo.displayName === teritoriNetwork.displayName) {
-        allNetworks[index].hidden = true;
-      }
       if (networkInfo.displayName === teritoriTestnetNetwork.displayName) {
         allNetworks[index].hidden = false;
       }
-      if (networkInfo.displayName === cosmosNetwork.displayName) {
-        allNetworks[index].hidden = true;
-      }
-      if (networkInfo.displayName === cosmosThetaNetwork.displayName) {
+      if (networkInfo.displayName === cosmosTestnetNetwork.displayName) {
         allNetworks[index].hidden = false;
-      }
-      if (networkInfo.displayName === osmosisNetwork.displayName) {
-        allNetworks[index].hidden = true;
       }
       if (networkInfo.displayName === osmosisTestnetNetwork.displayName) {
         allNetworks[index].hidden = false;
@@ -58,12 +49,18 @@ export const displayedNetworks = () => {
   ) as NetworkInfo[];
 };
 
-export const isTeritoriTestnet = () => {
+// Returns if we are in development (Depending on .env)
+export const isTestMode = () => {
   const teritoriNetworkId = process.env.TERITORI_NETWORK_ID || "";
   //TODO: Unlock that after tests ===> Don't have integred Testnets with Osmosis for now!
 
-  // return teritoriNetworkId.includes("testnet");
-  return false;
+  return teritoriNetworkId.includes("testnet");
+  // return false;
+};
+
+// Returns if the network is Testnet (By id)
+export const isNetworkTestnet = (networkId: string) => {
+  return networkId.includes("testnet");
 };
 
 export const getCurrency = (

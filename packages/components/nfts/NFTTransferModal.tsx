@@ -96,7 +96,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
       }
 
       // create client
-      const signingComswasmClient = await getSigningCosmWasmClient();
+      const signingComswasmClient = await getSigningCosmWasmClient(network);
       const nftClient = new TeritoriNftClient(
         signingComswasmClient,
         sender,

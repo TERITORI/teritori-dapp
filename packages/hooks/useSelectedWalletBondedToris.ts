@@ -3,11 +3,13 @@ import { Decimal } from "cosmwasm";
 
 import { toriCurrency, teritoriRestProvider } from "../utils/teritori";
 import useSelectedWallet from "./useSelectedWallet";
+import {NetworkInfo} from "../networks";
 
-export const useSelectedWalletBondedToris = (validatorAddress?: string) => {
+export const useSelectedWalletBondedToris = (validatorAddress?: string, network?: NetworkInfo) => {
   const wallet = useSelectedWallet();
+
   const { data, refetch } = useQuery(
-    [`bondedToris/${wallet?.address}/${validatorAddress}`],
+    [`bondedToris/${wallet?.address}/${validatorAddress}`, network?.id],
     async () => {
       if (!wallet?.address || !validatorAddress) {
         return Decimal.fromAtomics("0", toriCurrency.coinDecimals);
@@ -17,7 +19,7 @@ export const useSelectedWalletBondedToris = (validatorAddress?: string) => {
         let nextKey = "";
         while (true) {
           const httpResponse = await fetch(
-            `${teritoriRestProvider}/cosmos/staking/v1beta1/delegations/${
+            `${network?.restEndpoint || teritoriRestProvider}/cosmos/staking/v1beta1/delegations/${
               wallet.address
             }?pagination.key=${encodeURIComponent(nextKey)}`
           );

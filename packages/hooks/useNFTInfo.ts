@@ -11,12 +11,17 @@ import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";
 import { useBreedingConfig } from "./useBreedingConfig";
+import {getNetwork, NetworkInfo} from "../networks";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../store/slices/settings";
 
 export const useNFTInfo = (id: string, wallet: string | undefined) => {
   const [info, setInfo] = useState<NFTInfo>();
   const [refreshIndex, setRefreshIndex] = useState(0);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
 
   const breedingConfig = useBreedingConfig();
 
@@ -35,13 +40,14 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
         let nfo: NFTInfo;
         switch (minterContractAddress) {
           case process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS:
-            nfo = await getTNSNFTInfo(minterContractAddress, tokenId, wallet);
+            nfo = await getTNSNFTInfo(minterContractAddress, tokenId, wallet, selectedNetwork);
             break;
           case process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS:
             nfo = await getRiotBreedingNFTInfo(
               minterContractAddress,
               tokenId,
-              wallet
+              wallet,
+              selectedNetwork
             );
             break;
           default:
@@ -49,6 +55,7 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
               minterContractAddress,
               tokenId,
               wallet,
+              selectedNetwork,
               breedingConfig
             );
         }
@@ -71,10 +78,11 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
 const getTNSNFTInfo = async (
   contractAddress: string,
   tokenId: string,
-  wallet?: string
+  wallet?: string,
+  network?: NetworkInfo,
 ) => {
   // We use a CosmWasm non signing Client
-  const cosmwasmClient = await getNonSigningCosmWasmClient();
+  const cosmwasmClient = await getNonSigningCosmWasmClient(network);
 
   const tnsClient = new TeritoriNameServiceQueryClient(
     cosmwasmClient,
@@ -145,11 +153,12 @@ const getTNSNFTInfo = async (
 const getStandardNFTInfo = async (
   minterContractAddress: string,
   tokenId: string,
-  wallet: string | undefined,
-  breedingConfig: BreedingConfigResponse | undefined
+  wallet?: string,
+  network?: NetworkInfo,
+  breedingConfig?: BreedingConfigResponse
 ) => {
   // We use a CosmWasm non signing Client
-  const cosmwasmClient = await getNonSigningCosmWasmClient();
+  const cosmwasmClient = await getNonSigningCosmWasmClient(network);
 
   // ======== Getting minter client
   const minterClient = new TeritoriBunkerMinterQueryClient(

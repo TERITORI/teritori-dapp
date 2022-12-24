@@ -49,9 +49,11 @@ import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { toriCurrency } from "../../utils/teritori";
 import { nftDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
+import {getNetwork} from "../../networks";
 
 export const RiotersFooterScreen: React.FC = () => {
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const [tabName, setTabName] = useState<string>("New");
   const [searchNewNftCollection, setSearchNewNftCollection] =
     useState<string>("");
@@ -117,7 +119,7 @@ export const RiotersFooterScreen: React.FC = () => {
 
   useEffect(() => {
     const effect = async () => {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
       const rioterFooterClient = new RioterFooterNftQueryClient(
         cosmwasmClient,
         process.env.RIOTERS_FOOTER_CONTRACT_ADDRESS || ""
@@ -135,7 +137,7 @@ export const RiotersFooterScreen: React.FC = () => {
       }
       try {
         const nftCount = await client.queryNftCount();
-        const cosmwasmClient = await getSigningCosmWasmClient();
+        const cosmwasmClient = await getSigningCosmWasmClient(selectedNetwork);
         const allNfts: FooterNftData[] = [];
         for (let i = 0; i < nftCount; i += 11) {
           const nfts = await client.queryNfts({
@@ -209,7 +211,7 @@ export const RiotersFooterScreen: React.FC = () => {
     setTransactionPaymentModalVisible(false);
     const finalPrice = await getPrice();
     if (!nftDropedAdjustment || finalPrice === undefined || !wallet) return;
-    const cosmwasmClientSignIn = await getSigningCosmWasmClient();
+    const cosmwasmClientSignIn = await getSigningCosmWasmClient(selectedNetwork);
 
     const rioterFooterClient = new RioterFooterNftClient(
       cosmwasmClientSignIn,
@@ -225,7 +227,7 @@ export const RiotersFooterScreen: React.FC = () => {
         console.log("nftMinterContractAddress or nftTokenId is undefined");
         return;
       }
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
       const minterClient = new TeritoriBunkerMinterQueryClient(
         cosmwasmClient,
         nftMinterContractAddress.toString()

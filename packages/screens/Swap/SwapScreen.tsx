@@ -8,7 +8,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { allNetworks, getNetwork, isTeritoriTestnet } from "../../networks";
+import { allNetworks, getNetwork, isTestMode } from "../../networks";
 import { osmosisNetwork } from "../../networks/osmosis";
 import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
 import {
@@ -25,6 +25,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   const selectedWallet = useSelectedWallet();
 
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const dispatch = useAppDispatch();
 
   const [swapModalVisible, setSwapModalVisible] = useState(false);
@@ -32,24 +33,25 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
 
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
 
-  const selectedNetwork = getNetwork(selectedNetworkId);
-
   const osmosisConnected =
-    selectedNetwork?.displayName ===
-    (isTeritoriTestnet()
-      ? osmosisTestnetNetwork.displayName
-      : osmosisNetwork.displayName);
+    selectedNetwork?.displayName === osmosisTestnetNetwork.displayName || selectedNetwork?.displayName === osmosisNetwork.displayName
 
   const onPressConnect = () => {
     const osmosisNetworkId =
       allNetworks.find(
         (networkInfo) =>
-          networkInfo.displayName ===
-          (isTeritoriTestnet()
-            ? osmosisTestnetNetwork.displayName
-            : osmosisNetwork.displayName)
+          networkInfo.displayName === osmosisNetwork.displayName
       )?.id || "";
     dispatch(setSelectedNetworkId(osmosisNetworkId));
+    setConnectModalVisible(false);
+  };
+  const onPressConnectTestnet = () => {
+    const osmosisTestnetNetworkId =
+      allNetworks.find(
+        (networkInfo) =>
+          networkInfo.displayName === osmosisTestnetNetwork.displayName
+      )?.id || "";
+    dispatch(setSelectedNetworkId(osmosisTestnetNetworkId));
     setConnectModalVisible(false);
   };
 
@@ -92,7 +94,8 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
         onClose={() => setSwapModalVisible(false)}
       />
       <ConnectModal
-        onPress={onPressConnect}
+        onPressConnect={onPressConnect}
+        onPressConnectTestnet={onPressConnectTestnet}
         visible={!!selectedWallet?.address && connectModalVisible}
         onClose={() => setConnectModalVisible(false)}
       />

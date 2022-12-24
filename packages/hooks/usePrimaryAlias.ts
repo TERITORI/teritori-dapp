@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { getSigningCosmWasmClient } from "../utils/keplr";
 import { useIsKeplrConnected } from "./useIsKeplrConnected";
 import useSelectedWallet from "./useSelectedWallet";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../store/slices/settings";
+import {getNetwork} from "../networks";
 
 export function usePrimaryAlias() {
   const contract = process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
@@ -13,6 +16,8 @@ export function usePrimaryAlias() {
 
   const isKeplrConnected = useIsKeplrConnected();
   const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
 
   useEffect(() => {
     if (!isKeplrConnected || !selectedWallet) {
@@ -22,7 +27,7 @@ export function usePrimaryAlias() {
     const getAlias = async () => {
       setLoading(true);
       try {
-        const signingClient = await getSigningCosmWasmClient();
+        const signingClient = await getSigningCosmWasmClient(selectedNetwork);
 
         const aliasResponse = await signingClient.queryContractSmart(contract, {
           primary_alias: {

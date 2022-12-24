@@ -8,6 +8,7 @@ import { selectSelectedNetworkId } from "../store/slices/settings";
 import { prettyPrice } from "../utils/coins";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
+import {getNetwork} from "../networks";
 
 export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
 
@@ -40,8 +41,10 @@ export interface CollectionInfo {
 
 export const useCollectionInfo = (id: string) => {
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
+
   const { data, error, refetch } = useQuery(
-    ["collectionInfo", id],
+    ["collectionInfo", id, selectedNetworkId],
     async (): Promise<CollectionInfo> => {
       const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
       if (mintAddress === process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS) {
@@ -52,8 +55,7 @@ export const useCollectionInfo = (id: string) => {
           ),
         };
       }
-
-      const cosmwasm = await getNonSigningCosmWasmClient();
+      const cosmwasm = await getNonSigningCosmWasmClient(selectedNetwork);
 
       if (mintAddress === process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS) {
         const breedingClient = new TeritoriBreedingQueryClient(

@@ -32,12 +32,13 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
-  getTeritoriSigningStargateClient,
+  getSigningStargateClient,
   toriCurrency,
   toriDisplayDenom,
 } from "../../../utils/teritori";
 import { StakeFormValuesType, ValidatorInfo } from "../types";
 import { WarningBox } from "./WarningBox";
+import {getNetwork} from "../../../networks";
 
 interface UndelegateModalProps {
   onClose?: () => void;
@@ -52,8 +53,11 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
 }) => {
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
+
   const { bondedTokens, refreshBondedTokens } = useSelectedWalletBondedToris(
-    data?.address
+    data?.address,
+    selectedNetwork
   );
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
@@ -90,8 +94,8 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         });
         return;
       }
-      const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
+      const signer = await getKeplrOfflineSigner(selectedNetwork);
+      const client = await getSigningStargateClient(signer, selectedNetwork);
       const txResponse = await client.undelegateTokens(
         wallet.address,
         data.address,

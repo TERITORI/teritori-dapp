@@ -1,8 +1,9 @@
-import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { CosmWasmClient, SigningCosmWasmClient } from "cosmwasm";
+import {Window as KeplrWindow} from "@keplr-wallet/types";
+import {CosmWasmClient, SigningCosmWasmClient} from "cosmwasm";
 
-import { NetworkInfo } from "../networks";
-import { teritoriGasPrice } from "./teritori";
+import {allNetworks, isTestMode, NetworkInfo} from "../networks";
+import {teritoriGasPrice} from "./teritori";
+import {NetworkName} from "../networks/NetworkName";
 
 const PUBLIC_RPC_ENDPOINT = process.env.PUBLIC_CHAIN_RPC_ENDPOINT || "";
 const PUBLIC_CHAIN_ID = process.env.PUBLIC_CHAIN_ID || "";
@@ -25,14 +26,14 @@ export const getKeplrOfflineSigner = (network?: NetworkInfo) => {
   );
 };
 
-export const getKeplrAccounts = async () => {
-  const offlineSigner = await getKeplrOfflineSigner();
+export const getKeplrAccounts = async (network?: NetworkInfo) => {
+  const offlineSigner = await getKeplrOfflineSigner(network);
 
   return offlineSigner.getAccounts();
 };
 
-export const getFirstKeplrAccount = async () => {
-  const keplrAccounts = await getKeplrAccounts();
+export const getFirstKeplrAccount = async (network?: NetworkInfo) => {
+  const keplrAccounts = await getKeplrAccounts(network);
 
   if (!keplrAccounts.length) {
     throw new Error("no keplr accounts");
@@ -41,15 +42,15 @@ export const getFirstKeplrAccount = async () => {
   return keplrAccounts[0];
 };
 
-export const getSigningCosmWasmClient = async () => {
-  const offlineSigner = await getKeplrOfflineSigner();
+export const getSigningCosmWasmClient = async (network?: NetworkInfo) => {
+  const offlineSigner = await getKeplrOfflineSigner(network);
 
   return SigningCosmWasmClient.connectWithSigner(
-    PUBLIC_RPC_ENDPOINT,
+    network?.rpcEndpoint || PUBLIC_RPC_ENDPOINT,
     offlineSigner,
     { gasPrice: teritoriGasPrice }
   );
 };
 
-export const getNonSigningCosmWasmClient = () =>
-  CosmWasmClient.connect(PUBLIC_RPC_ENDPOINT);
+export const getNonSigningCosmWasmClient = (network?: NetworkInfo) =>
+  CosmWasmClient.connect(network?.rpcEndpoint || PUBLIC_RPC_ENDPOINT);

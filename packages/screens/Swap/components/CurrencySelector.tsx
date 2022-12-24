@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, {RefObject, useRef} from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -20,19 +20,17 @@ import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 export const CurrencySelector: React.FC<{
-  currencies: CurrencyInfo[];
+  isDropdownOpen: (dropdownRef: RefObject<any>) => boolean ;
   selectedCurrency?: CurrencyInfo;
-  onChangeCurrency: (currency: CurrencyInfo) => void;
-}> = ({ currencies, selectedCurrency, onChangeCurrency }) => {
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
+  onPressDropdownButton: (dropdownRef: RefObject<any>) => void;
+}> = ({ selectedCurrency, isDropdownOpen, onPressDropdownButton }) => {
   const dropdownRef = useRef<View>(null);
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
 
-  const onPressCurrencyItem = (currencyInfo: CurrencyInfo) => {
-    onChangeCurrency(currencyInfo);
-    closeOpenedDropdown();
-  };
+  // const onPressCurrencyItem = (currencyInfo: CurrencyInfo) => {
+  //   onChangeCurrency(currencyInfo);
+  //   closeOpenedDropdown();
+  // };
 
   return (
     <View ref={dropdownRef}>
@@ -65,32 +63,6 @@ export const CurrencySelector: React.FC<{
             {selectedCurrency?.sourceNetworkDisplayName}
           </BrandText>
         </View>
-
-        {isDropdownOpen(dropdownRef) && (
-          <TertiaryBox
-            width={172}
-            style={styles.menuBox}
-            mainContainerStyle={styles.menuBoxMainContainer}
-            noBrokenCorners
-          >
-            {currencies.map((currencyInfo) => (
-              <TouchableOpacity
-                onPress={() => onPressCurrencyItem(currencyInfo)}
-                key={currencyInfo.denom}
-                style={styles.menuItem}
-              >
-                <CurrencyIcon
-                  size={48}
-                  denom={currencyInfo.denom}
-                  networkId={selectedNetworkId}
-                />
-                <BrandText style={styles.menuItemLabel}>
-                  {currencyInfo?.displayName}
-                </BrandText>
-              </TouchableOpacity>
-            ))}
-          </TertiaryBox>
-        )}
       </TouchableOpacity>
     </View>
   );
@@ -122,7 +94,6 @@ const styles = StyleSheet.create({
   menuBoxMainContainer: {
     paddingHorizontal: layout.padding_x2,
     paddingTop: layout.padding_x2,
-    backgroundColor: neutral17,
     alignItems: "flex-start",
   },
   menuItem: {

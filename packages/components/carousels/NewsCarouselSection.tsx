@@ -9,18 +9,18 @@ import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { News } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
-import { backendClient } from "../../utils/backend";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { NewsBox } from "../hub/NewsBox";
+import {getNetwork, isNetworkTestnet, isTestMode} from "../../networks";
+import {useBackendClient} from "../../hooks/useBackendClient";
 
 export const NewsCarouselSection: React.FC = () => {
   const { width } = useMaxResolution();
   const carouselRef = useRef<ICarouselInstance | null>(null);
-  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const renderItem = (props: { item: News }) => <NewsBox news={props.item} />;
-  const news = useNews(selectedNetworkId === "teritori-testnet");
+  const news = useNews();
 
   const topRightChild = (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -65,11 +65,14 @@ export const NewsCarouselSection: React.FC = () => {
 };
 
 //TODO: networkId instead of testnet. ==> Wait for backend modif
-const useNews = (testnet: boolean) => {
+const useNews = () => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const {backendClient} = useBackendClient()
+
   const { data } = useQuery(
-    ["news", testnet],
+    ["news", isNetworkTestnet(selectedNetworkId)],
     async () => {
-      const { news } = await backendClient.News({ testnet });
+      const { news } = await backendClient.News({ testnet: isNetworkTestnet(selectedNetworkId) });
       return news;
     },
     {

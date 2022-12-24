@@ -13,16 +13,20 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ModalHeader } from "./SwapModal";
+import {isTestMode} from "../../../networks";
+import {SpacerColumn} from "../../../components/spacer";
 
 type ConnectModalProps = {
   onClose: () => void;
-  onPress: () => void;
+  onPressConnect: () => void;
+  onPressConnectTestnet: () => void;
   visible: boolean;
 };
 
 export const ConnectModal: React.FC<ConnectModalProps> = ({
   visible,
-  onPress,
+                                                            onPressConnect,
+                                                            onPressConnectTestnet,
   onClose,
 }) => {
   return (
@@ -50,8 +54,21 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
           backgroundColor={secondaryColor}
           color={neutral00}
           fullWidth
-          onPress={onPress}
+          onPress={onPressConnect}
         />
+        {isTestMode() && (
+          <>
+            <SpacerColumn size={2}/>
+            <SecondaryButton
+              size="XL"
+              text="Connect to OSMOSIS Testnet"
+              backgroundColor={secondaryColor}
+              color={neutral00}
+              fullWidth
+              onPress={onPressConnectTestnet}
+            />
+          </>
+        )}
       </View>
     </ModalBase>
   );

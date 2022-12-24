@@ -29,6 +29,7 @@ type ModalBaseProps = {
   onClose?: () => void;
   onBackPress?: () => void;
   width?: number;
+  height?: number;
   visible?: boolean;
   Header?: ComponentType;
   childrenBottom?: JSX.Element | JSX.Element[];
@@ -46,6 +47,7 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
   labelComponent,
   visible,
   width,
+                                height,
   onClose,
   childrenBottom,
   children,
@@ -95,6 +97,7 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
         {/*------ Modal main container */}
         <TertiaryBox
           width={width}
+          height={height}
           style={{ margin: "auto" }}
           mainContainerStyle={[
             {

@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { Activity, ActivityRequest } from "../api/marketplace/v1/marketplace";
-import { backendClient } from "../utils/backend";
+import {useBackendClient} from "./useBackendClient";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../store/slices/settings";
 
 const initialData = {
   activities: [],
@@ -9,8 +11,10 @@ const initialData = {
 };
 
 export const useActivity = (req: ActivityRequest) => {
+  const {backendClient, isForceBackendMainnet} = useBackendClient()
+
   const { data, refetch } = useQuery(
-    ["activities", req.collectionId, req.nftId, req.limit, req.offset],
+    ["activities", req.collectionId, req.nftId, req.limit, req.offset, isForceBackendMainnet()],
     async () => {
       try {
         let totalCount = 0;

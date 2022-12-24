@@ -11,24 +11,9 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
   {
     kind: "ibc",
     denom:
-      "ibc/C9300DDD93DF3A3A668CAB02398A0AA081EF89EC005B2DB68832E363BAAABF85",
-    displayName: "ATOM",
-    sourceNetwork: "cosmos-hub-theta",
-    sourceNetworkDisplayName: NetworkName.CosmosHubTheta,
-    sourceDenom: "uatom",
-    sourceChannelPort: "transfer",
-    sourceChannelId: "channel-685",
-    destinationChannelPort: "transfer",
-    destinationChannelId: "channel-30",
-    icon: "icons/networks/cosmos-hub-circle.svg",
-    deprecated: true,
-  },
-  {
-    kind: "ibc",
-    denom:
       "ibc/8D9734B53D56DC57A92E4CC788547699853F411190F6DAA70FA12B9BD062F7AE",
     displayName: "ATOM",
-    sourceNetwork: "cosmos-hub-theta",
+    sourceNetwork: "cosmos-hub-testnet",
     sourceNetworkDisplayName: NetworkName.CosmosHubTheta,
     sourceDenom: "uatom",
     sourceChannelPort: "transfer",
@@ -37,6 +22,33 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
     destinationChannelId: "channel-33",
     icon: "icons/networks/cosmos-hub-circle.svg",
   },
-
-  //TODO: ibc for osmosis-testnet
+  {
+    kind: "ibc",
+    denom:
+      "",
+    displayName: "OSMO",
+    sourceNetwork: "osmosis-testnet",
+    sourceNetworkDisplayName: NetworkName.OsmosisTestnet,
+    sourceDenom: "uosmo",
+    sourceChannelPort: "transfer",
+    sourceChannelId: "channel-34",
+    destinationChannelPort: "transfer",
+    destinationChannelId: "channel-1810",
+    icon: "icons/networks/osmosis-circle.svg",
+  },
+  // Only Juno mainnet (juno-1)
+  {
+    kind: "ibc",
+    denom:
+      "",
+    displayName: "JUNO",
+    sourceNetwork: "juno",
+    sourceNetworkDisplayName: NetworkName.Juno,
+    sourceDenom: "ujuno",
+    sourceChannelPort: "transfer",
+    sourceChannelId: "channel-164",
+    destinationChannelPort: "transfer",
+    destinationChannelId: "channel-11",
+    icon: "icons/networks/juno-circle.svg",
+  },
 ];

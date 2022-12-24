@@ -17,13 +17,14 @@ import {
   getNonSigningCosmWasmClient,
 } from "../../../utils/keplr";
 import {
-  getTeritoriSigningStargateClient,
+  getSigningStargateClient,
   toriCurrency,
 } from "../../../utils/teritori";
 import { SendFundFormType } from "../../../utils/types/tns";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
+import {getNetwork} from "../../../networks";
 
 export const SendFundModal: React.FC<{
   onClose: () => void;
@@ -35,6 +36,7 @@ export const SendFundModal: React.FC<{
     useForm<SendFundFormType>();
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const toriBalance = balances.find(
@@ -74,7 +76,7 @@ export const SendFundModal: React.FC<{
       const tokenId = name + process.env.TLD || "";
 
       // get tns client
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
       const tnsClient = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
         contractAddress
@@ -84,8 +86,8 @@ export const SendFundModal: React.FC<{
       const { owner: recipientAddress } = await tnsClient.ownerOf({ tokenId });
 
       // get stargate client
-      const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
+      const signer = await getKeplrOfflineSigner(selectedNetwork);
+      const client = await getSigningStargateClient(signer, selectedNetwork);
 
       // send tokens
       const response = await client.sendTokens(

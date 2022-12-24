@@ -16,6 +16,15 @@ import { CoingeckoCoin, useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useErrorHandler } from "./useErrorHandler";
 import { useSelectedNetworkId } from "./useSelectedNetwork";
 
+
+import { useQuery } from "@tanstack/react-query";
+import { Decimal } from "cosmwasm";
+import { useMemo } from "react";
+
+import { getNativeCurrency, getNetwork } from "../networks";
+import { CosmosRewardsTotalResponse } from "../utils/teritori";
+import { useCoingeckoPrices } from "./useCoingeckoPrices";
+
 export type Reward = {
   validator: string;
   denom: string;
@@ -113,15 +122,15 @@ export const useRewards = (walletAddress?: string) => {
   };
 
   // ---- Getting rewards from cosmos distribution
-  const { data: networkRewards } = useQuery(
+  const { data: networkRewards = [] } = useQuery(
     ["rewards", networkId, walletAddress],
     async () => {
       if (!walletAddress || !networkId) {
         return initialData;
       }
-      return getNetworkRewards(networkId, walletAddress);
+      return getNetworkRewards(networkId, walletAddress) || [];
     },
-    { initialData, refetchInterval: 5000 }
+    { initialData: [], refetchInterval: 5000 }
   );
 
   // ---- Get all denoms used for these rewards

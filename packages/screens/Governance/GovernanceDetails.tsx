@@ -16,8 +16,11 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
 import { neutral44 } from "../../utils/style/colors";
-import { getTeritoriSigningStargateClient } from "../../utils/teritori";
+import { getSigningStargateClient } from "../../utils/teritori";
 import { ProposalStatus } from "./types";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../../store/slices/settings";
+import {getNetwork} from "../../networks";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View
@@ -66,6 +69,8 @@ export const GovernanceDetails: React.FC<{
   const [checked, setChecked] = useState("nothingChecked");
   const [displayPopup] = useState(visible);
   const { setToastError } = useFeedbacks();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
 
   function activeVotePopup() {
     onClose();
@@ -105,8 +110,8 @@ export const GovernanceDetails: React.FC<{
     }
 
     try {
-      const keplrSigner = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(keplrSigner);
+      const keplrSigner = await getKeplrOfflineSigner(selectedNetwork);
+      const client = await getSigningStargateClient(keplrSigner, selectedNetwork);
 
       const vote: MsgVoteEncodeObject = {
         typeUrl: "/cosmos.gov.v1beta1.MsgVote",
