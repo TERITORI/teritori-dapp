@@ -129,7 +129,7 @@ export const Assets: React.FC<{
         )}
       </View>
 
-      {currencies.map((currency, index) => {
+      {currencies.filter(currency => currency.denom).map((currency, index) => {
         const balance = balances.find((bal) => bal.denom === currency.denom);
         return (
           <View
@@ -210,14 +210,14 @@ export const Assets: React.FC<{
       })}
       <DepositWithdrawModal
         variation="deposit"
-        networkId={networkId}
+        selectedNetworkId={networkId}
         targetCurrency={targetCurrency}
         onClose={() => setDepositVisible(false)}
         isVisible={isDepositVisible}
       />
       <DepositWithdrawModal
         variation="withdraw"
-        networkId={networkId}
+        selectedNetworkId={networkId}
         targetCurrency={targetCurrency}
         onClose={() => setWithdrawVisible(false)}
         isVisible={isWithdrawVisible}

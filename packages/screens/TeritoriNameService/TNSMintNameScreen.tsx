@@ -35,6 +35,7 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
+import {getNetwork} from "../../networks";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,
@@ -102,6 +103,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const navigation = useAppNavigation();
   const price = useTNSMintPrice(name + process.env.TLD);
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const balance = balances.find((bal) => bal.denom === price?.denom);
 
@@ -109,7 +111,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
 
   const initData = async () => {
     try {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
 
       const client = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
@@ -156,7 +158,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
         },
       };
 
-      const signingClient = await getSigningCosmWasmClient();
+      const signingClient = await getSigningCosmWasmClient(selectedNetwork);
 
       const mintedToken = await signingClient.execute(
         walletAddress!,
@@ -250,10 +252,13 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
 };
 
 const useTNSMintPrice = (tokenId: string) => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
+
   const { data } = useQuery(
-    ["tnsMintPrice", tokenId],
+    ["tnsMintPrice", tokenId, selectedNetworkId],
     async () => {
-      const client = await getNonSigningCosmWasmClient();
+      const client = await getNonSigningCosmWasmClient(selectedNetwork);
       const tnsClient = new TeritoriNameServiceQueryClient(
         client,
         process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || ""

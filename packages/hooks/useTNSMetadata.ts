@@ -2,12 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../store/slices/settings";
+import {getNetwork} from "../networks";
 
 // FIXME: use react-query to prevent recalling the api all the time
 
 export const useTNSMetadata = (address?: string) => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
+
   const { data, isLoading, isError } = useQuery(
-    ["tns-metadata", address],
+    ["tns-metadata", address, selectedNetworkId],
     async () => {
       if (!address) {
         return null;
@@ -16,7 +22,7 @@ export const useTNSMetadata = (address?: string) => {
       const contractAddress =
         process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "";
       // We just want to read, so we use a non-signing client
-      const cosmWasmClient = await getNonSigningCosmWasmClient();
+      const cosmWasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
 
       const tnsClient = new TeritoriNameServiceQueryClient(
         cosmWasmClient,

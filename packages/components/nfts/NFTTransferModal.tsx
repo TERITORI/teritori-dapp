@@ -107,7 +107,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
       ) {
         nftContractAddress = contractAddress;
       } else {
-        const comswasmClient = await getNonSigningCosmWasmClient();
+        const comswasmClient = await getNonSigningCosmWasmClient(network);
         const bunkerClient = new TeritoriBunkerMinterQueryClient(
           comswasmClient,
           contractAddress
@@ -117,7 +117,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
       }
 
       // create client
-      const signingComswasmClient = await getSigningCosmWasmClient();
+      const signingComswasmClient = await getSigningCosmWasmClient(network);
       const nftClient = new TeritoriNftClient(
         signingComswasmClient,
         sender,

@@ -2,8 +2,8 @@ import { NetworkName } from "../NetworkName";
 import { NetworkInfo } from "../types";
 import { cosmosHubThetaCurrencies } from "./currencies";
 
-export const cosmosThetaNetwork: NetworkInfo = {
-  id: "cosmos-hub-theta",
+export const cosmosTestnetNetwork: NetworkInfo = {
+  id: "cosmos-hub-testnet",
   chainId: "theta-testnet-001",
   displayName: NetworkName.CosmosHubTheta,
   icon: "icons/networks/cosmos-hub.svg",

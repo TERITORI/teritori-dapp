@@ -46,7 +46,7 @@ export const useSwap = (params: HookParams) => {
 
   // ==== Getting pools
   const { data: lcdPools } = useQuery(
-    ["pools"],
+    ["pools", selectedNetworkId],
     async () => await api.getPools(),
     { refetchInterval: 5000 }
   );

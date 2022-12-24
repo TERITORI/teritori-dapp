@@ -2,52 +2,49 @@ import { NetworkName } from "../NetworkName";
 import { allNativeCurrencies } from "../allNativeCurrencies";
 import { CurrencyInfo } from "../types";
 
-export const osmosisTestnetCurrencies: CurrencyInfo[] = [
+export const cosmosHubThetaCurrencies: CurrencyInfo[] = [
   allNativeCurrencies.find(
     (nativeCurrencyInfo) =>
-      nativeCurrencyInfo.sourceNetworkDisplayName === NetworkName.OsmosisTestnet
+      nativeCurrencyInfo.sourceNetworkDisplayName === NetworkName.CosmosHubTheta
   ) as CurrencyInfo,
   {
     kind: "ibc",
-    denom:
-      "",
-    displayName: "ATOM",
-    sourceNetwork: "cosmos-hub-testnet",
-    sourceNetworkDisplayName: NetworkName.CosmosHubTheta,
-    sourceDenom: "uatom",
+    denom: "",
+    displayName: "OSMO",
+    sourceNetwork: "osmosis-testnet",
+    sourceNetworkDisplayName: NetworkName.OsmosisTestnet,
+    sourceDenom: "uosmo",
     sourceChannelPort: "transfer",
-    sourceChannelId: "channel-1234",
+    sourceChannelId: "channel-1235",
     destinationChannelPort: "transfer",
-    destinationChannelId: "channel-673",
-    icon: "icons/networks/cosmos-hub-circle.svg",
+    destinationChannelId: "channel-1683",
+    icon: "icons/networks/osmosis-circle.svg",
   },
   {
     kind: "ibc",
-    denom:
-      "",
+    denom: "",
     displayName: "TORI",
     sourceNetwork: "teritori-testnet",
     sourceNetworkDisplayName: NetworkName.TeritoriTestnet,
     sourceDenom: "utori",
     sourceChannelPort: "transfer",
-    sourceChannelId: "channel-1810",
+    sourceChannelId: "channel-685",
     destinationChannelPort: "transfer",
-    destinationChannelId: "channel-34",
+    destinationChannelId: "channel-30",
     icon: "icons/networks/teritori-circle.svg",
   },
-  // TODO: Have to create juno-testnet network (uni-5) ?
+  // Only Juno mainnet (juno-1)
   {
     kind: "ibc",
-    denom:
-      "",
+    denom: "",
     displayName: "JUNO",
-    sourceNetwork: "juno-testnet",
-    sourceNetworkDisplayName: NetworkName.JunoTestnet,
+    sourceNetwork: "juno",
+    sourceNetworkDisplayName: NetworkName.Juno,
     sourceDenom: "ujuno",
     sourceChannelPort: "transfer",
-    sourceChannelId: "channel-1836",
+    sourceChannelId: "channel-207",
     destinationChannelPort: "transfer",
-    destinationChannelId: "channel-414",
+    destinationChannelId: "channel-1",
     icon: "icons/networks/juno-circle.svg",
   },
 ];

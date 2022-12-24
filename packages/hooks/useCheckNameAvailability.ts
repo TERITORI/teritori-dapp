@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { isTokenOwnedByUser } from "../utils/tns";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../store/slices/settings";
+import {getNetwork} from "../networks";
 
 // TNS : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
 export const useCheckNameAvailability = (name: string, tokens: string[]) => {
@@ -11,6 +14,8 @@ export const useCheckNameAvailability = (name: string, tokens: string[]) => {
   const [nameError, setNameError] = useState(false);
   const [loading, setLoading] = useState(false);
   const { setToastError } = useFeedbacks();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
 
   useEffect(() => {}, [nameAvailable]);
 
@@ -21,7 +26,7 @@ export const useCheckNameAvailability = (name: string, tokens: string[]) => {
       const contract = process.env
         .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
       // We just want to read, so we use a non-signing client
-      const cosmWasmClient = await getNonSigningCosmWasmClient();
+      const cosmWasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
       try {
         // If this query fails it means that the token does not exist.
         const token = await cosmWasmClient.queryContractSmart(contract, {

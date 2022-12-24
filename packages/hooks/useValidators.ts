@@ -5,6 +5,9 @@ import { partition } from "lodash";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { ValidatorInfo } from "../screens/Stake/types";
 import { teritoriRestProvider, toriCurrency } from "../utils/teritori";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../store/slices/settings";
+import {getNetwork, NetworkInfo} from "../networks";
 
 interface StakingParams {
   unbonding_time: string;
@@ -21,13 +24,18 @@ const initialData = {
 };
 
 export const useValidators = () => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const { setToastError } = useFeedbacks();
+
+  const restProvider = selectedNetwork?.restEndpoint || teritoriRestProvider || ""
+
   const { data, isFetching } = useQuery(
-    [`teritoriValidators`],
+    [`teritoriValidators`, selectedNetworkId],
     async () => {
       try {
         const httpResponse = await fetch(
-          `${teritoriRestProvider}/cosmos/staking/v1beta1/params`
+          `${restProvider}/cosmos/staking/v1beta1/params`
         );
         const response = await httpResponse.json();
         const params: StakingParams = response.params;
@@ -35,7 +43,7 @@ export const useValidators = () => {
         const validators: ValidatorInfo[] = [];
         while (key !== null) {
           const response = await fetch(
-            teritoriRestProvider +
+            restProvider +
               "/cosmos/staking/v1beta1/validators?pagination.limit=1000&pagination.key=" +
               encodeURIComponent(key)
           );
@@ -70,7 +78,8 @@ export const useValidators = () => {
         }
 
         const tendermintActiveValidators = await getTendermintActiveValidators(
-          params.max_validators
+          params.max_validators,
+          restProvider
         );
 
         // TODO: optimize with map lookup instead of find
@@ -118,10 +127,10 @@ const prettyPercent = (val: number) => {
   return (val * 100).toFixed(2) + "%"; // FIXME: cut useless zeros
 };
 
-const getTendermintActiveValidators = async (limit: number): Promise<any[]> => {
+const getTendermintActiveValidators = async (limit: number, restProvider: string): Promise<any[]> => {
   const activeValidators = await (
     await fetch(
-      `${teritoriRestProvider}/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.limit=${limit}&pagination.offset=0`
+      `${restProvider}/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.limit=${limit}&pagination.offset=0`
     )
   ).json();
   return activeValidators.validators;

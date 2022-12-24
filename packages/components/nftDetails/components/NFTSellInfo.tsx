@@ -2,13 +2,15 @@ import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriNftVaultQueryClient } from "../../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { getNativeCurrency } from "../../../networks";
+import {getNativeCurrency, getNetwork} from "../../../networks";
 import { NFTInfo } from "../../../screens/Marketplace/NFTDetailScreen";
 import { prettyPrice } from "../../../utils/coins";
 import { getNonSigningCosmWasmClient } from "../../../utils/keplr";
 import { trimFixed } from "../../../utils/numbers";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../../../store/slices/settings";
 
 export const NFTSellInfo: React.FC<{
   nftInfo?: NFTInfo;
@@ -60,10 +62,13 @@ export const NFTSellInfo: React.FC<{
 };
 
 const useVaultConfig = () => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
+
   const { data } = useQuery(
-    ["vaultConfig"],
+    ["vaultConfig", selectedNetworkId],
     async () => {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
       const vaultClient = new TeritoriNftVaultQueryClient(
         cosmwasmClient,
         process.env.TERITORI_VAULT_CONTRACT_ADDRESS || ""

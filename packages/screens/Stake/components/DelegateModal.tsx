@@ -29,12 +29,13 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
-  getTeritoriSigningStargateClient,
+  getSigningStargateClient,
   toriCurrency,
   toriDisplayDenom,
 } from "../../../utils/teritori";
 import { StakeFormValuesType, ValidatorInfo } from "../types";
 import { WarningBox } from "./WarningBox";
+import {getNetwork} from "../../../networks";
 
 interface DelegateModalProps {
   onClose?: () => void;
@@ -50,6 +51,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   // variables
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
   const balances = useBalances(selectedNetworkId, wallet?.address);
@@ -89,8 +91,8 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         });
         return;
       }
-      const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
+      const signer = await getKeplrOfflineSigner(selectedNetwork);
+      const client = await getSigningStargateClient(signer, selectedNetwork);
       const txResponse = await client.delegateTokens(
         wallet.address,
         data.address,

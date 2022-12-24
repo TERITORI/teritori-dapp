@@ -2,9 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../store/slices/settings";
+import {getNetwork} from "../networks";
 
 export const useMintEnded = (id: string) => {
-  const { data } = useQuery(["mintEnded", id], async () => {
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
+  const { data } = useQuery(["mintEnded", id, selectedNetworkId], async () => {
     if (!id) {
       return false;
     }
@@ -15,7 +20,7 @@ export const useMintEnded = (id: string) => {
       return false;
     }
 
-    const cosmwasm = await getNonSigningCosmWasmClient();
+    const cosmwasm = await getNonSigningCosmWasmClient(selectedNetwork);
 
     const minterClient = new TeritoriBunkerMinterQueryClient(
       cosmwasm,

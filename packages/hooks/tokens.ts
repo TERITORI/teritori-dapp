@@ -5,6 +5,9 @@ import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNam
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { isPath, isToken } from "../utils/tns";
 import useSelectedWallet from "./useSelectedWallet";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../store/slices/settings";
+import {getNetwork} from "../networks";
 
 // start_after starts after the token_id
 // so simply take the last token_id from the last page
@@ -12,6 +15,8 @@ import useSelectedWallet from "./useSelectedWallet";
 // note that 30 is the limit for that
 export function useTokenList() {
   const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
 
   const contract = process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const perPage = 10;
@@ -45,7 +50,7 @@ export function useTokenList() {
           },
         };
 
-        const cosmwasmClient = await getNonSigningCosmWasmClient();
+        const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
 
         const tokenList = await cosmwasmClient.queryContractSmart(
           contract,
@@ -91,6 +96,9 @@ export function useToken(tokenId: string, tld: string) {
   const [loadingToken, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
+
   const { setToastError } = useFeedbacks();
 
   useEffect(() => {
@@ -98,7 +106,7 @@ export function useToken(tokenId: string, tld: string) {
       setLoading(true);
 
       try {
-        const cosmwasmClient = await getNonSigningCosmWasmClient();
+        const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
 
         try {
           const tokenInfo = await cosmwasmClient.queryContractSmart(contract, {

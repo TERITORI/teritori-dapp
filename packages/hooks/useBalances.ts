@@ -11,14 +11,14 @@ export const useBalances = (
   networkId: string | undefined,
   address: string | undefined
 ) => {
-  const { data: networkBalances } = useQuery(
+  const { data: networkBalances = [] } = useQuery(
     ["balances", networkId, address],
     async () => {
       if (!address || !networkId) {
         return [];
       }
 
-      return getNetworkBalances(networkId, address);
+      return await getNetworkBalances(networkId, address) || []
     },
     { initialData: [], refetchInterval: 5000 }
   );

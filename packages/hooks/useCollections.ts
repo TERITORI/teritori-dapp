@@ -4,13 +4,17 @@ import {
   Collection,
   CollectionsRequest,
 } from "../api/marketplace/v1/marketplace";
-import { backendClient } from "../utils/backend";
+import {useBackendClient} from "./useBackendClient";
+import {isTestMode} from "../networks";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../store/slices/settings";
 
 export const useCollections = (
   req: CollectionsRequest
 ): [Collection[], (index: number) => Promise<void>] => {
   const [collections, setCollections] = useState<Collection[]>([]);
   const fetchRef = useRef(false);
+  const {backendClient, isForceBackendMainnet} = useBackendClient()
 
   const fetchMore = useCallback(
     async (index: number) => {
@@ -37,7 +41,7 @@ export const useCollections = (
       }
       fetchRef.current = false;
     },
-    [req, collections]
+    [req, collections, isForceBackendMainnet()]
   );
 
   useEffect(() => {

@@ -22,6 +22,7 @@ export const ModalBase: React.FC<{
   onClose?: () => void;
   onBackPress?: () => void;
   width?: number;
+  height?: number;
   visible?: boolean;
   Header?: ComponentType;
   childrenBottom?: JSX.Element | JSX.Element[];
@@ -35,6 +36,7 @@ export const ModalBase: React.FC<{
   label,
   visible,
   width,
+                                height,
   onClose,
   childrenBottom,
   children,
@@ -84,6 +86,7 @@ export const ModalBase: React.FC<{
         {/*------ Modal main container */}
         <TertiaryBox
           width={width}
+          height={height}
           style={{ margin: "auto" }}
           mainContainerStyle={[
             {

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
-import { getNativeCurrency } from "../networks";
+import {getNativeCurrency, getNetwork} from "../networks";
 import { selectSelectedNetworkId } from "../store/slices/settings";
 import { getSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";
@@ -14,6 +14,7 @@ export const useSellNFT = () => {
   const { setToastError } = useFeedbacks();
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   return useCallback(
     async (
       nftContractAddress: string,
@@ -37,7 +38,7 @@ export const useSellNFT = () => {
           });
           return;
         }
-        const cosmwasmClient = await getSigningCosmWasmClient();
+        const cosmwasmClient = await getSigningCosmWasmClient(selectedNetwork);
         const nftClient = new TeritoriNftClient(
           cosmwasmClient,
           wallet.address,

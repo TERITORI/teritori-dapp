@@ -12,7 +12,7 @@ export const osmosisCurrencies: CurrencyInfo[] = [
     denom:
       "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
     displayName: "ATOM",
-    sourceNetwork: "cosmoshub",
+    sourceNetwork: "cosmos-hub",
     sourceNetworkDisplayName: NetworkName.CosmosHub,
     sourceDenom: "uatom",
     sourceChannelPort: "transfer",
@@ -30,9 +30,9 @@ export const osmosisCurrencies: CurrencyInfo[] = [
     sourceNetworkDisplayName: NetworkName.Teritori,
     sourceDenom: "utori",
     sourceChannelPort: "transfer",
-    sourceChannelId: "channel-0",
+    sourceChannelId: "channel-362",
     destinationChannelPort: "transfer",
-    destinationChannelId: "channel-431",
+    destinationChannelId: "channel-0",
     icon: "icons/networks/teritori-circle.svg",
   },
   {
@@ -44,9 +44,9 @@ export const osmosisCurrencies: CurrencyInfo[] = [
     sourceNetworkDisplayName: NetworkName.Juno,
     sourceDenom: "ujuno",
     sourceChannelPort: "transfer",
-    sourceChannelId: "channel-0",
+    sourceChannelId: "channel-42",
     destinationChannelPort: "transfer",
-    destinationChannelId: "channel-42",
+    destinationChannelId: "channel-0",
     icon: "icons/networks/juno-circle.svg",
   },
 ];

@@ -23,6 +23,9 @@ import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../../store/slices/settings";
+import {getNetwork} from "../../networks";
 
 interface TNSUpdateNameScreenProps extends TNSModalCommonProps {}
 
@@ -32,6 +35,8 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
 }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const { name, setName } = useTNS();
   const { setToastSuccess, setToastError } = useFeedbacks();
   const { tokens } = useTokenList();
@@ -42,7 +47,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
 
   const initData = async () => {
     try {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
 
       const client = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
@@ -98,9 +103,9 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
     };
 
     try {
-      const walletAddress = (await getFirstKeplrAccount()).address;
+      const walletAddress = (await getFirstKeplrAccount(selectedNetwork)).address;
 
-      const signingClient = await getSigningCosmWasmClient();
+      const signingClient = await getSigningCosmWasmClient(selectedNetwork);
 
       const updatedToken = await signingClient.execute(
         walletAddress!,

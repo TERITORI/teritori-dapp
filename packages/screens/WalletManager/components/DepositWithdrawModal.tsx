@@ -36,7 +36,7 @@ type DepositModalProps = {
   variation: "deposit" | "withdraw";
   isVisible: boolean;
   targetCurrency?: string;
-  networkId: string;
+  selectedNetworkId: string;
   onClose: () => void;
 };
 
@@ -45,13 +45,13 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   isVisible,
   onClose,
   targetCurrency: targetCurrencyDenom,
-  networkId,
+                                                                    selectedNetworkId,
 }) => {
   const { setToastError } = useFeedbacks();
 
   const selectedWallet = useSelectedWallet(); // FIXME: this could not match networkId
 
-  const ibcTargetCurrency = getIBCCurrency(networkId, targetCurrencyDenom);
+  const ibcTargetCurrency = getIBCCurrency(selectedNetworkId, targetCurrencyDenom);
 
   const nativeTargetCurrency = getNativeCurrency(
     ibcTargetCurrency?.sourceNetwork,
@@ -59,19 +59,19 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   );
 
   const sourceNetworkId =
-    variation === "withdraw" ? networkId : ibcTargetCurrency?.sourceNetwork;
+    variation === "withdraw" ? selectedNetworkId : ibcTargetCurrency?.sourceNetwork;
   const sourceNetwork = getNetwork(sourceNetworkId);
   const destinationNetworkId =
-    variation === "withdraw" ? ibcTargetCurrency?.sourceNetwork : networkId;
+    variation === "withdraw" ? ibcTargetCurrency?.sourceNetwork : selectedNetworkId;
   const destinationNetwork = getNetwork(destinationNetworkId);
 
   const fromAccount =
     variation === "withdraw"
       ? selectedWallet?.address
-      : convertCosmosAddress(selectedWallet?.address, sourceNetworkId);
+      : addressFromNetwork(selectedWallet?.address, sourceNetworkId);
   const toAccount =
     variation === "withdraw"
-      ? convertCosmosAddress(selectedWallet?.address, destinationNetworkId)
+      ? addressFromNetwork(selectedWallet?.address, destinationNetworkId)
       : selectedWallet?.address;
 
   const balances = useBalances(sourceNetworkId, fromAccount);
@@ -83,15 +83,15 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   const ModalHeader = useCallback(
     () => (
       <View style={styles.rowCenter}>
-        <NetworkIcon networkId={networkId} size={32} circle />
+        <NetworkIcon networkId={selectedNetworkId} size={32} circle />
         <SpacerRow size={3} />
         <BrandText>
           {variation === "deposit" ? "Deposit on" : "Withdraw from"}{" "}
-          {getNetwork(networkId)?.displayName || "Unknown"}
+          {getNetwork(selectedNetworkId)?.displayName || "Unknown"}
         </BrandText>
       </View>
     ),
-    [variation, networkId]
+    [variation, selectedNetworkId]
   );
 
   const maxAtomics =
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   ]),
 });
 
-const convertCosmosAddress = (
+const addressFromNetwork = (
   sourceAddress: string | undefined,
   targetNetworkId: string | undefined
 ) => {
@@ -351,7 +351,7 @@ const convertCosmosAddress = (
     const decoded = bech32.decode(sourceAddress);
     return bech32.encode(targetNetwork.addressPrefix, decoded.words);
   } catch (err) {
-    console.warn("failed to convert cosmos address", sourceAddress, err);
+    console.warn("failed to convert bech32 address", sourceAddress, err);
     return undefined;
   }
 };

@@ -37,12 +37,13 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
-  getTeritoriSigningStargateClient,
+  getSigningStargateClient,
   toriCurrency,
   toriDisplayDenom,
 } from "../../../utils/teritori";
 import { StakeFormValuesType, ValidatorInfo } from "../types";
 import { ValidatorsTable } from "./ValidatorsList";
+import {getNetwork} from "../../../networks";
 
 interface RedelegateModalProps {
   onClose?: () => void;
@@ -58,8 +59,11 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   // variables
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
+
   const { bondedTokens, refreshBondedTokens } = useSelectedWalletBondedToris(
-    data?.address
+    data?.address,
+    selectedNetwork
   );
   const [modifiedValidators, setModifiedValidators] = useState<ValidatorInfo[]>(
     []
@@ -120,8 +124,8 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         });
         return;
       }
-      const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
+      const signer = await getKeplrOfflineSigner(selectedNetwork);
+      const client = await getSigningStargateClient(signer, selectedNetwork);
       const msg: MsgBeginRedelegate = {
         delegatorAddress: wallet.address,
         validatorSrcAddress: data.address,

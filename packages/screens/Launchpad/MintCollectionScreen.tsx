@@ -28,7 +28,7 @@ import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bun
 import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCurrency } from "../../networks";
+import {getCurrency, getNetwork} from "../../networks";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
@@ -75,6 +75,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
   const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
@@ -113,7 +114,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         console.error("invalid mint args");
         return;
       }
-      const cosmwasmClient = await getSigningCosmWasmClient();
+      const cosmwasmClient = await getSigningCosmWasmClient(selectedNetwork);
       const minterClient = new TeritoriBunkerMinterClient(
         cosmwasmClient,
         sender,
@@ -374,7 +375,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         </View>
         <DepositWithdrawModal
           variation="deposit"
-          networkId={selectedNetworkId}
+          selectedNetworkId={selectedNetworkId}
           targetCurrency={info.priceDenom}
           onClose={() => setDepositVisible(false)}
           isVisible={isDepositVisible}

@@ -23,6 +23,9 @@ import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../../store/slices/settings";
+import {getNetwork} from "../../networks";
 
 export interface NFTInfo {
   name: string;
@@ -53,6 +56,8 @@ const Content: React.FC<{
     useState<keyof typeof screenTabItems>("main");
   const { setToastError } = useFeedbacks();
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.address);
   const { width } = useMaxResolution({ noMargin: true });
 
@@ -90,7 +95,7 @@ const Content: React.FC<{
     }
     setToastError(initialToastError);
     try {
-      const signingCosmwasmClient = await getSigningCosmWasmClient();
+      const signingCosmwasmClient = await getSigningCosmWasmClient(selectedNetwork);
       const signingVaultClient = new TeritoriNftVaultClient(
         signingCosmwasmClient,
         wallet.address,

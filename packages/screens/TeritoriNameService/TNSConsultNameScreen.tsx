@@ -19,6 +19,9 @@ import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../../store/slices/settings";
+import {getNetwork} from "../../networks";
 
 const NotOwnerActions: React.FC = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
@@ -49,6 +52,8 @@ const OwnerActions = ({
 }) => {
   const { name, setName } = useTNS();
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
   return (
     <View
@@ -87,7 +92,7 @@ const OwnerActions = ({
         onPress={async () => {
           try {
             const client = new TeritoriNameServiceClient(
-              await getSigningCosmWasmClient(),
+              await getSigningCosmWasmClient(selectedNetwork),
               wallet?.address || "",
               process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || ""
             );

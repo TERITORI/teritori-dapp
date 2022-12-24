@@ -3,7 +3,7 @@ import { NetworkInfo } from "../types";
 import { cosmosHubCurrencies } from "./currencies";
 
 export const cosmosNetwork: NetworkInfo = {
-  id: "cosmoshub",
+  id: "cosmos-hub",
   chainId: "cosmoshub-4",
   displayName: NetworkName.CosmosHub,
   icon: "icons/networks/cosmos-hub.svg",

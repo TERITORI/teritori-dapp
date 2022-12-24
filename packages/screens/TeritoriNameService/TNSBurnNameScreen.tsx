@@ -21,6 +21,9 @@ import { defaultMemo } from "../../utils/memo";
 import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../../store/slices/settings";
+import {getNetwork} from "../../networks";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
 
@@ -33,6 +36,8 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
   const { tokens } = useTokenList();
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const contractAddress = process.env
     .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const normalizedTokenId = (name + process.env.TLD).toLowerCase();
@@ -62,9 +67,9 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       },
     };
     try {
-      const signingClient = await getSigningCosmWasmClient();
+      const signingClient = await getSigningCosmWasmClient(selectedNetwork);
 
-      const walletAddress = (await getFirstKeplrAccount()).address;
+      const walletAddress = (await getFirstKeplrAccount(selectedNetwork)).address;
 
       const updatedToken = await signingClient.execute(
         walletAddress!,

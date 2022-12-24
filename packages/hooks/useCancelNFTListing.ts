@@ -5,12 +5,17 @@ import { TeritoriNftVaultClient } from "../contracts-clients/teritori-nft-vault/
 import { getSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";
 import useSelectedWallet from "./useSelectedWallet";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../store/slices/settings";
+import {getNetwork} from "../networks";
 
 export const useCancelNFTListing = (
   nftContractAddress: string,
   tokenId: string
 ) => {
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const { setToastError } = useFeedbacks();
   return useCallback(async () => {
     if (!wallet?.address || !wallet.connected) {
@@ -21,7 +26,7 @@ export const useCancelNFTListing = (
       return;
     }
     try {
-      const cosmwasmClient = await getSigningCosmWasmClient();
+      const cosmwasmClient = await getSigningCosmWasmClient(selectedNetwork);
       const vaultClient = new TeritoriNftVaultClient(
         cosmwasmClient,
         wallet.address,

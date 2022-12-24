@@ -23,6 +23,9 @@ import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser, tokenWithoutTld } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
+import {useSelector} from "react-redux";
+import {selectSelectedNetworkId} from "../../store/slices/settings";
+import {getNetwork} from "../../networks";
 
 const normalize = (inputString: string) => {
   const invalidChrsRemoved = inputString.replace(/[^a-z0-9\-_]/g, "");
@@ -38,6 +41,8 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
 }) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(selectedNetworkId);
   const { name, setName } = useTNS();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { tokens } = useTokenList();
@@ -51,7 +56,7 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
 
   const initData = async () => {
     try {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
 
       const client = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
@@ -110,7 +115,7 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
     const normalizedPathId = normalize(pathId.toLowerCase());
 
     try {
-      const walletAddress = (await getFirstKeplrAccount()).address;
+      const walletAddress = (await getFirstKeplrAccount(selectedNetwork)).address;
 
       const msg = {
         update_metadata: {
@@ -134,7 +139,7 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
         },
       };
 
-      const signingClient = await getSigningCosmWasmClient();
+      const signingClient = await getSigningCosmWasmClient(selectedNetwork);
 
       const mintedToken = await signingClient.execute(
         walletAddress!,

@@ -10,15 +10,16 @@ import {
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
-import { backendClient } from "../../utils/backend";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { ScreenFC } from "../../utils/navigation";
+import {useBackendClient} from "../../hooks/useBackendClient";
 
 const useCollectionActivity = (
   req: ActivityRequest
 ): [Activity[], () => Promise<void>] => {
   const [activity, setActivity] = useState<Activity[]>([]);
+  const {backendClient, isForceBackendMainnet} = useBackendClient()
 
   const fetchMore = useCallback(async () => {
     try {
@@ -38,7 +39,7 @@ const useCollectionActivity = (
     } catch (err) {
       console.warn("failed to fetch collection activity:", err);
     }
-  }, [req, activity]);
+  }, [req, activity, isForceBackendMainnet()]);
 
   useEffect(() => {
     setActivity([]);

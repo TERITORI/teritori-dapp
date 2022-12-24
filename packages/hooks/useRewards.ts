@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { Decimal } from "cosmwasm";
-import { useMemo } from "react";
+import {useQuery} from "@tanstack/react-query";
+import {Decimal} from "cosmwasm";
+import {useMemo} from "react";
 
-import { getNativeCurrency, getNetwork } from "../networks";
-import { CosmosRewardsTotalResponse } from "../utils/teritori";
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
+import {getNativeCurrency, getNetwork} from "../networks";
+import {CosmosRewardsTotalResponse} from "../utils/teritori";
+import {useCoingeckoPrices} from "./useCoingeckoPrices";
 
 // Getting the total amount of all the rewards, by user's address, and by network
 export const useRewardsTotal = (
@@ -12,14 +12,13 @@ export const useRewardsTotal = (
   address: string | undefined
 ) => {
   // Getting rewards total from cosmos distribution
-  const { data: networkRewardsTotal } = useQuery(
+  const { data: networkRewardsTotal = [] } = useQuery(
     ["rewards", networkId, address],
     async () => {
       if (!address || !networkId) {
         return [];
       }
-
-      return getNetworkRewardsTotal(networkId, address);
+      return await getNetworkRewardsTotal(networkId, address) || []
     },
     { initialData: [], refetchInterval: 5000 }
   );
