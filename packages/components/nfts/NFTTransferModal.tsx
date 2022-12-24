@@ -98,28 +98,12 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
         onClose();
       }
 
-      // get nft contract address
-      let nftContractAddress;
-      if (
-        contractAddress === process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS
-      ) {
-        nftContractAddress = contractAddress;
-      } else {
-        const comswasmClient = await getNonSigningCosmWasmClient();
-        const bunkerClient = new TeritoriBunkerMinterQueryClient(
-          comswasmClient,
-          contractAddress
-        );
-        const config = await bunkerClient.config();
-        nftContractAddress = config.nft_addr;
-      }
-
       // create client
       const signingComswasmClient = await getSigningCosmWasmClient();
       const nftClient = new TeritoriNftClient(
         signingComswasmClient,
         sender,
-        nftContractAddress
+        nft.nftContractAddress
       );
 
       // transfer
