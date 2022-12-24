@@ -1,11 +1,11 @@
+import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import { EmbeddedWeb } from "../../components/EmbeddedWeb";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -15,8 +15,8 @@ import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
 import { StakingState } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import {
-  fontMedium48,
   fontMedium32,
+  fontMedium48,
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -35,6 +35,8 @@ export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
   const { setToastError } = useFeedbacks();
 
+  const videoRef = React.useRef<Video>(null);
+
   const { myAvailableRippers } = useRippers();
   const {
     currentSquad,
@@ -48,6 +50,17 @@ export const RiotGameEnrollScreen = () => {
     isSquadLoaded,
     updateStakingState,
   } = useSquadStaking();
+
+  // Stop video when changing screen trough react-navigation
+  useEffect(() => {
+    return navigation.addListener("blur", () => {
+      console.log("Blur");
+      if (videoRef.current) {
+        videoRef.current.stopAsync();
+      }
+    });
+  }, [navigation]);
+
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);
   const [isJoiningFight, setIsJoiningFight] = useState(false);
@@ -187,11 +200,14 @@ export const RiotGameEnrollScreen = () => {
           </TertiaryBox>
 
           <View style={styles.videoContainer}>
-            <EmbeddedWeb
-              uri={embeddedVideoUri}
-              width={embeddedVideoWidth}
-              height={embeddedVideoHeight}
-              borderRadius={25}
+            <Video
+              ref={videoRef}
+              style={{ borderRadius: 25 }}
+              source={{
+                uri: embeddedVideoUri,
+              }}
+              useNativeControls
+              resizeMode={ResizeMode.CONTAIN}
             />
           </View>
         </View>
