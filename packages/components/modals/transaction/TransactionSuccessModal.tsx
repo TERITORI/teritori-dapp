@@ -76,7 +76,7 @@ export const TransactionSuccessModal: React.FC<{
           </BrandText>
           {/*// TODO: Real time status ? (Processing, processed, ...) */}
           <BrandText style={[fontSemibold16, { color: successColor }]}>
-            Sucess
+            Success
           </BrandText>
         </View>
         <View>
