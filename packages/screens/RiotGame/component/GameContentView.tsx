@@ -8,14 +8,11 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 
 import { LoaderFullScreen } from "../../../components/loaders/LoaderFullScreen";
-import {neutral00} from "../../../utils/style/colors";
+import { useGame } from "../../../context/GameProvider";
+import { neutral00 } from "../../../utils/style/colors";
 import { FightStatsSection } from "./FightStatsSection";
+import { ResumeGame } from "./ResumeGame";
 import { RiotGameHeader } from "./RiotGameHeader";
-
-
-import {useSquadStaking} from "../../../hooks/riotGame/useSquadStaking";
-import {ResumeGame} from "./ResumeGame";
-import {useGame} from "../../../context/GameProvider";
 
 type GameContentViewProps = {
   containerStyle?: ViewStyle;
@@ -33,13 +30,7 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
   loading = false,
   ...props
 }) => {
-  /////////////////////////////////:
-  const {isStaking
-} = useSquadStaking();
-  // const {playAudio, stopAudio, enteredInGame, setEnteredInGame} = useAudioVideoZ()
-  const {playAudio, stopAudio, enteredInGame, setEnteredInGame} = useGame()
-  /////////////////////////////////:
-
+  const { enteredInGame, setEnteredInGame } = useGame();
 
   const content = (
     <ScrollView>
@@ -56,7 +47,7 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
   return (
     <>
       {!enteredInGame && (
-        <ResumeGame onPressResume={() => setEnteredInGame(true)}/>
+        <ResumeGame onPressResume={() => setEnteredInGame(true)} />
       )}
       <View style={[{ flex: 1, backgroundColor: neutral00 }, containerStyle]}>
         <RiotGameHeader />
@@ -75,6 +66,5 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
         )}
       </View>
     </>
-
   );
 };

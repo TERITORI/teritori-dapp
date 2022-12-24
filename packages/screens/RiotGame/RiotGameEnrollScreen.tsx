@@ -1,37 +1,36 @@
+import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
-import React, {useEffect, useMemo, useState} from "react";
-import {FlatList, Pressable, StyleSheet, TouchableOpacity, View} from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import { EmbeddedWeb } from "../../components/EmbeddedWeb";
+import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import FlexRow from "../../components/FlexRow";
-import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useGame } from "../../context/GameProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { getRipperTokenId, StakingState } from "../../utils/game";
-import { useAppNavigation, ScreenFC} from "../../utils/navigation";
-import { neutralA3 } from "../../utils/style/colors";
+import { useAppNavigation, ScreenFC } from "../../utils/navigation";
 import {
   fontMedium48,
   fontMedium32,
   fontSemibold28,
-  fontMedium14,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalV2";
 import { SimpleButton } from "./component/SimpleButton";
-import {GameScreen} from "./types";
-import {ResizeMode, Video, } from "expo-av";
-import {useGame} from "../../context/GameProvider";
-import BO_DURING_FIGHT from "../../../assets/game/BO-DURING-THE-FIGHT-THE-RIOT-TORI-P2E.mp3";
-import BO_PREPARE_FIGHT from "../../../assets/game/BO-PREPARE-THE-FIGHT-1-P2E-THE-RIOT-TORI.mp3";
+import { GameScreen } from "./types";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const embeddedVideoUri =
@@ -39,7 +38,7 @@ const embeddedVideoUri =
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
-export const RiotGameEnrollScreen: ScreenFC<GameScreen.RiotGameEnroll> = ({route}) => {
+export const RiotGameEnrollScreen: ScreenFC<GameScreen.RiotGameEnroll> = () => {
   const navigation = useAppNavigation();
   const { setToastError } = useFeedbacks();
 
@@ -53,35 +52,45 @@ export const RiotGameEnrollScreen: ScreenFC<GameScreen.RiotGameEnroll> = ({route
     isLastStakeTimeLoaded,
     isSquadLoaded,
     updateStakingState,
-    isStaking
+    isStaking,
   } = useSquadStaking();
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);
   const [isJoiningFight, setIsJoiningFight] = useState(false);
 
-
-  /////////////////////////////////:
   const videoRef = React.useRef<Video>(null);
-  const [isVideoPlayed, setVideoPlayed] = useState(false)
-  const [isVideoFullScreen, setVideoFullScreen] = useState(false)
-  const {enteredInGame, stopAudio, playGameAudio, setEnteredInGame} = useGame()
-
+  const [isVideoFullScreen, setVideoFullScreen] = useState(false);
+  const { enteredInGame, stopAudio, playGameAudio, stopMemoriesVideos } =
+    useGame();
 
   useEffect(() => {
-    // console.log('enteredInGameenteredInGameenteredInGameenteredInGame', enteredInGame)
-    if(enteredInGame) setVideoPlayed(true)
-  }, [enteredInGame])
+    const effect = async () => {
+      if (enteredInGame) {
+        await videoRef?.current?.replayAsync();
+        await videoRef?.current?.setIsMutedAsync(true);
+      }
 
+      if (!enteredInGame && isVideoFullScreen) {
+        await videoRef?.current?.replayAsync();
+        await videoRef?.current?.setIsMutedAsync(false);
+      }
+    };
+    effect();
+  }, [enteredInGame]);
 
-  // useAudioVideo()
-  // console.log('propspropspropspropsprops', props)
-  // console.log('props.route.name)', route.name)
-  // const {playAudio} = useAudioVideo(
-  // useLayoutEffect(() => {
-  //   // playAudio()
-  // })
-  /////////////////////////////////:
-  
+  useEffect(() => {
+    const effect = async () => {
+      if (isVideoFullScreen) {
+        stopAudio();
+        await videoRef?.current?.setIsMutedAsync(false);
+      } else {
+        if (enteredInGame) playGameAudio();
+        await videoRef?.current?.setIsMutedAsync(true);
+      }
+    };
+    effect();
+  }, [isVideoFullScreen]);
+
   const availableForEnrollRippers = useMemo(() => {
     const selectedIds = selectedRippers.map((r) => r.id);
 
@@ -140,7 +149,7 @@ export const RiotGameEnrollScreen: ScreenFC<GameScreen.RiotGameEnroll> = ({route
   };
 
   // If we are in state Relax/Ongoing or there is squad => goto fight screen
-  if(isStaking) navigation.replace("RiotGameFight");
+  if (isStaking) navigation.replace("RiotGameFight");
 
   // Update staking state
   useEffect(() => {
@@ -152,7 +161,14 @@ export const RiotGameEnrollScreen: ScreenFC<GameScreen.RiotGameEnroll> = ({route
 
   return (
     <GameContentView>
-      <View>
+      <View
+        onLayout={async () => {
+          playGameAudio();
+          stopMemoriesVideos();
+          if (!enteredInGame) return;
+          await videoRef?.current?.replayAsync();
+        }}
+      >
         <BrandText style={styles.pageTitle}>Send to fight</BrandText>
       </View>
 
@@ -209,37 +225,23 @@ export const RiotGameEnrollScreen: ScreenFC<GameScreen.RiotGameEnroll> = ({route
 
           <TouchableOpacity
             style={styles.videoContainer}
-                            onPress={() => {
-                              setEnteredInGame(false)
-                              setVideoFullScreen(true)
-                              videoRef?.current?.presentFullscreenPlayer();
-
-
-          }}>
-            {/*<EmbeddedWeb*/}
-            {/*  autoplay*/}
-            {/*  uri={embeddedVideoUri}*/}
-            {/*  width={embeddedVideoWidth}*/}
-            {/*  height={embeddedVideoHeight}*/}
-            {/*  borderRadius={25}*/}
-            {/*/>*/}
-
+            onPress={async () => {
+              await videoRef?.current?.presentFullscreenPlayer();
+            }}
+          >
             <Video
               ref={videoRef}
-              style={{borderRadius: 25}}
+              style={{ borderRadius: 25 }}
               source={{
                 uri: embeddedVideoUri,
               }}
-              onFullscreenUpdate={() => {if(isVideoFullScreen) {
-                setVideoFullScreen(false)
-                setEnteredInGame(true)
-              }}}
-              // useNativeControls={isVideoFullScreen}
-              shouldPlay={(enteredInGame && !isVideoFullScreen) || isVideoFullScreen}
-              isMuted={!isVideoFullScreen}
+              onFullscreenUpdate={async () => {
+                await videoRef?.current?.replayAsync();
+                setVideoFullScreen((isIt) => !isIt);
+              }}
+              isMuted
               resizeMode={ResizeMode.CONTAIN}
               isLooping
-              // onPlaybackStatusUpdate={status => setStatus(() => status)}
             />
           </TouchableOpacity>
         </View>

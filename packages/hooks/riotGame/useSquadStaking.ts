@@ -242,7 +242,7 @@ export const useSquadStaking = () => {
       isStakingStateLoaded &&
       (currentSquad ||
         [StakingState.RELAX, StakingState.ONGOING].includes(stakingState))
-    )
+    );
   }, [isSquadLoaded, isStakingStateLoaded, currentSquad, stakingState]);
 
   useEffect(() => {
@@ -276,6 +276,6 @@ export const useSquadStaking = () => {
     isLastStakeTimeLoaded,
     setCurrentSquad,
     updateStakingState,
-    isStaking
+    isStaking,
   };
 };

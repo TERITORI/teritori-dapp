@@ -21,9 +21,11 @@ import { SVG } from "../../components/SVG";
 import { tinyAddress } from "../../components/WalletSelector";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useGame } from "../../context/GameProvider";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { p2eBackendClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
+import { ScreenFC } from "../../utils/navigation";
 import {
   additionalGreen,
   additionalRed,
@@ -34,8 +36,7 @@ import {
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
-import {ScreenFC} from "../../utils/navigation";
-import {GameScreen} from "./types";
+import { GameScreen } from "./types";
 
 type RankProps = {
   changes: number;
@@ -94,8 +95,11 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
   );
 };
 
-export const RiotGameLeaderboardScreen: ScreenFC<GameScreen.RiotGameLeaderboard> = () => {
+export const RiotGameLeaderboardScreen: ScreenFC<
+  GameScreen.RiotGameLeaderboard
+> = () => {
   const [userScores, setUserScores] = useState<UserScore[]>([]);
+  const { playGameAudio, stopMemoriesVideos } = useGame();
 
   const fetchLeaderboard = async () => {
     const _userScores: UserScore[] = [];
@@ -130,7 +134,13 @@ export const RiotGameLeaderboardScreen: ScreenFC<GameScreen.RiotGameLeaderboard>
 
       <TertiaryBox fullWidth style={{ marginTop: layout.padding_x2 }}>
         <FlexRow>
-          <View style={{ flex: 1 }}>
+          <View
+            style={{ flex: 1 }}
+            onLayout={() => {
+              stopMemoriesVideos();
+              playGameAudio();
+            }}
+          >
             <BrandText
               style={[styles.colHeaderTitle, { marginLeft: layout.padding_x2 }]}
             >

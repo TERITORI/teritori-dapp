@@ -9,19 +9,23 @@ import FlexRow from "../../components/FlexRow";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
+import { useGame } from "../../context/GameProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
-import {ScreenFC, useAppNavigation} from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
-import {GameScreen} from "./types";
+import { GameScreen } from "./types";
 
-export const RiotGameInventoryScreen: ScreenFC<GameScreen.RiotGameInventory> = () => {
+export const RiotGameInventoryScreen: ScreenFC<
+  GameScreen.RiotGameInventory
+> = () => {
   const navigation = useAppNavigation();
 
   const { myAvailableRippers } = useRippers();
+  const { playGameAudio, stopMemoriesVideos } = useGame();
 
   const gotoBreeding = () => {
     navigation.navigate("RiotGameBreeding");
@@ -30,7 +34,13 @@ export const RiotGameInventoryScreen: ScreenFC<GameScreen.RiotGameInventory> = (
   return (
     <GameContentView>
       <FlexRow breakpoint={1200} justifyContent="space-around">
-        <View style={{ opacity: 0.6, marginTop: layout.padding_x4 }}>
+        <View
+          style={{ opacity: 0.6, marginTop: layout.padding_x4 }}
+          onLayout={() => {
+            stopMemoriesVideos();
+            playGameAudio();
+          }}
+        >
           <FlexRow justifyContent="space-between" alignItems="center">
             <BrandText style={fontMedium32}>Available Items</BrandText>
 

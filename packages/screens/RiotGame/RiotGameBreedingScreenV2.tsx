@@ -9,7 +9,9 @@ import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { SpacerRow } from "../../components/spacer";
+import { useGame } from "../../context/GameProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
+import { ScreenFC } from "../../utils/navigation";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import {
   fontMedium14,
@@ -22,11 +24,13 @@ import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";
 import { RipperAvatar } from "./component/RipperAvatar";
-import {ScreenFC} from "../../utils/navigation";
-import {GameScreen} from "./types";
+import { GameScreen } from "./types";
 
-export const RiotGameBreedingScreen: ScreenFC<GameScreen.RiotGameBreeding> = () => {
+export const RiotGameBreedingScreen: ScreenFC<
+  GameScreen.RiotGameBreeding
+> = () => {
   const { myAvailableRippers } = useRippers();
+  const { playGameAudio, stopMemoriesVideos } = useGame();
   const [isShowBreedingModal, setIsShowBreedingModal] = useState(false);
 
   const doBreed = () => {
@@ -35,7 +39,14 @@ export const RiotGameBreedingScreen: ScreenFC<GameScreen.RiotGameBreeding> = () 
 
   return (
     <GameContentView>
-      <FlexRow breakpoint={992} style={styles.container}>
+      <FlexRow
+        breakpoint={992}
+        style={styles.container}
+        onLayout={() => {
+          stopMemoriesVideos();
+          playGameAudio();
+        }}
+      >
         <View style={{ alignItems: "center" }}>
           <BrandText style={[fontMedium48]}>Breeding</BrandText>
 

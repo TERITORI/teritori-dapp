@@ -1,12 +1,15 @@
 import React from "react";
-import {StyleSheet, View} from "react-native";
-import {neutral00, neutral22, neutral77, secondaryColor, yellowDefault} from "../../../utils/style/colors";
-import {PrimaryButton} from "../../../components/buttons/PrimaryButton";
+import { StyleSheet, View } from "react-native";
 
-export const ResumeGame: React.FC<{ onPressResume: () => void; }> = ({onPressResume}) => {
+import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { neutral00, yellowDefault } from "../../../utils/style/colors";
+
+export const ResumeGame: React.FC<{ onPressResume: () => void }> = ({
+  onPressResume,
+}) => {
   return (
     <>
-      <View style={styles.background}/>
+      <View style={styles.background} />
       <View style={styles.buttonWrapper}>
         <PrimaryButton
           size="XL"
@@ -17,8 +20,8 @@ export const ResumeGame: React.FC<{ onPressResume: () => void; }> = ({onPressRes
         />
       </View>
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   background: {
@@ -26,8 +29,8 @@ const styles = StyleSheet.create({
     width: "100vw",
     height: "100vh",
     backgroundColor: neutral00,
-    opacity: .6,
-    zIndex: 50
+    opacity: 0.6,
+    zIndex: 50,
   },
   buttonWrapper: {
     position: "absolute",
@@ -35,6 +38,6 @@ const styles = StyleSheet.create({
     height: "100vh",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 51
+    zIndex: 51,
   },
 });

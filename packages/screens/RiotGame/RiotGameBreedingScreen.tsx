@@ -13,12 +13,14 @@ import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutl
 import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useGame } from "../../context/GameProvider";
 import { ConfigResponse } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { useBreeding } from "../../hooks/riotGame/useBreeding";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { prettyPrice } from "../../utils/coins";
 import { getRipperTokenId } from "../../utils/game";
+import { ScreenFC } from "../../utils/navigation";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -31,10 +33,11 @@ import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";
 import { RipperSelectorModal } from "./component/RipperSelectorModal";
 import { THE_RIOT_COLLECTION_ADDRESS } from "./settings";
-import {ScreenFC} from "../../utils/navigation";
-import {GameScreen} from "./types";
+import { GameScreen } from "./types";
 
-export const RiotGameBreedingScreen: ScreenFC<GameScreen.RiotGameBreeding> = () => {
+export const RiotGameBreedingScreen: ScreenFC<
+  GameScreen.RiotGameBreeding
+> = () => {
   const { myAvailableRippers } = useRippers();
   const [isShowBreedingResultModal, setIsShowBreedingResultModal] =
     useState(false);
@@ -60,6 +63,8 @@ export const RiotGameBreedingScreen: ScreenFC<GameScreen.RiotGameBreeding> = () 
     getTokenInfo,
     fetchRemainingTokens,
   } = useBreeding();
+
+  const { playGameAudio, stopMemoriesVideos } = useGame();
 
   const intervalRef = useRef<NodeJS.Timer>();
 
@@ -195,6 +200,10 @@ export const RiotGameBreedingScreen: ScreenFC<GameScreen.RiotGameBreeding> = () 
           marginTop: layout.padding_x4,
           alignItems: "center",
           alignSelf: "center",
+        }}
+        onLayout={() => {
+          stopMemoriesVideos();
+          playGameAudio();
         }}
       >
         <BrandText style={[fontMedium48]}>Breeding</BrandText>

@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
+import { useGame } from "../../context/GameProvider";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { ScreenFC } from "../../utils/navigation";
 import {
   TabsListType,
   Header as CollectionHeader,
@@ -10,15 +12,17 @@ import {
 } from "../Marketplace/CollectionScreen";
 import { GameContentView } from "./component/GameContentView";
 import { THE_RIOT_COLLECTION_ID } from "./settings";
-import {ScreenFC} from "../../utils/navigation";
-import {GameScreen} from "./types";
+import { GameScreen } from "./types";
 
-export const RiotGameMarketplaceScreen: ScreenFC<GameScreen.RiotGameMarketplace> = () => {
+export const RiotGameMarketplaceScreen: ScreenFC<
+  GameScreen.RiotGameMarketplace
+> = () => {
   const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
   const { info } = useCollectionInfo(THE_RIOT_COLLECTION_ID);
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );
+  const { playGameAudio, stopMemoriesVideos } = useGame();
 
   // returns
   return (
@@ -26,6 +30,10 @@ export const RiotGameMarketplaceScreen: ScreenFC<GameScreen.RiotGameMarketplace>
       <ScrollView
         style={{ width: "100%" }}
         contentContainerStyle={{ alignItems: "center" }}
+        onLayout={() => {
+          stopMemoriesVideos();
+          playGameAudio();
+        }}
       >
         <CollectionHeader
           collectionId={THE_RIOT_COLLECTION_ID}

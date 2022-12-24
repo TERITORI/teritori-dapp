@@ -1,6 +1,7 @@
 import React from "react";
 import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
 
+import { useGame } from "../../context/GameProvider";
 import { gameBgData } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral00 } from "../../utils/style/colors";
@@ -9,12 +10,10 @@ import { CenterSection } from "./component/CenterSection";
 import { GameBgCard } from "./component/GameBgCard";
 import { GameBgOverlay } from "./component/GameBgOverlay";
 import { RiotGameHeader } from "./component/RiotGameHeader";
-import {useGame} from "../../context/GameProvider";
 
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();
-  // const {stopAudio, setEnteredInGame} = useAudioVideoZ()
-  const {stopAudio, setEnteredInGame} = useGame()
+  const { setEnteredInGame } = useGame();
 
   // variables
   const { width, height } = useWindowDimensions();
@@ -24,7 +23,7 @@ export const RiotGameScreen = () => {
   };
 
   const onPressStart = () => {
-    setEnteredInGame(true)
+    setEnteredInGame(true);
     navigation.navigate("RiotGameEnroll");
   };
 

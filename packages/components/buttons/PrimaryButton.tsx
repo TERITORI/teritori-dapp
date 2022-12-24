@@ -50,7 +50,7 @@ export const PrimaryButton: React.FC<{
   RightComponent,
   iconColor,
   color = primaryColor,
-                                    noBrokenCorners
+  noBrokenCorners,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 

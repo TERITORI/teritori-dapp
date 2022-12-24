@@ -8,14 +8,15 @@ import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useGame } from "../../context/GameProvider";
 import { NftInfoResponse } from "../../contracts-clients/teritori-nft/TeritoriNft.types";
 import { Nft } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
+import { StakingState } from "../../utils/game";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../../utils/keplr";
-import { getRipperTokenId, StakingState } from "../../utils/game";
-import {ScreenFC, useAppNavigation} from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium48 } from "../../utils/style/fonts";
 import { headerHeight, layout } from "../../utils/style/layout";
@@ -24,7 +25,7 @@ import { FightCountdownSection } from "./component/FightCountdownSection";
 import { FightSquadSection } from "./component/FightSquadSection";
 import { GameContentView } from "./component/GameContentView";
 import { UnstakeModal } from "./component/UnstakeModal";
-import {GameScreen, RipperLightInfo } from "./types";
+import { GameScreen, RipperLightInfo } from "./types";
 
 const PAGE_TITLE_MAP = {
   [StakingState.UNKNOWN]: "There is no ongoing fight",
@@ -57,6 +58,8 @@ export const RiotGameFightScreen: ScreenFC<GameScreen.RiotGameFight> = () => {
     isSquadLoaded,
     setCurrentSquad,
   } = useSquadStaking();
+
+  const { playGameAudio, stopMemoriesVideos } = useGame();
 
   const fetchCurrentStakedRippers = async (currentStakedNfts: Nft[]) => {
     const client = await getNonSigningCosmWasmClient();
@@ -145,7 +148,13 @@ export const RiotGameFightScreen: ScreenFC<GameScreen.RiotGameFight> = () => {
         {PAGE_TITLE_MAP[stakingState]}
       </BrandText>
 
-      <View style={styles.contentContainer}>
+      <View
+        style={styles.contentContainer}
+        onLayout={() => {
+          stopMemoriesVideos();
+          playGameAudio();
+        }}
+      >
         <FlexRow justifyContent="space-between" breakpoint={992}>
           <View style={styles.col}>
             <FightBossSection />

@@ -14,7 +14,7 @@ export const EmbeddedWeb: React.FC<IFrameProps> = ({
   width,
   height,
   borderRadius = 7,
-                                                       autoplay = false
+  autoplay = false,
 }) => {
   return (
     <WebView

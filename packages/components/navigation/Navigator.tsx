@@ -22,6 +22,7 @@ import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarket
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
 import { RiotGameRarityScreen } from "../../screens/RiotGame/RiotGameRarityScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
+import { GameScreen } from "../../screens/RiotGame/types";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
@@ -29,7 +30,6 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
-import {GameScreen} from "../../screens/RiotGame/types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
