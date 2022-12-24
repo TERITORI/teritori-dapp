@@ -109,7 +109,7 @@ export const RiotGameLeaderboardScreen = () => {
     await streamData.forEach((item: LeaderboardResponse) => {
       item.userScore && _userScores.push(item.userScore);
     });
-    setUserScores(_userScores);
+    setUserScores(_userScores.filter((val) => val.rank !== 0));
   };
 
   useEffect(() => {
