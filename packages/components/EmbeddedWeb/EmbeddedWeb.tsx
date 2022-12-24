@@ -5,9 +5,15 @@ export interface IFrameProps {
   uri: string;
   width: number;
   height: number;
+  borderRadius?: number;
 }
 
-export const EmbeddedWeb: React.FC<IFrameProps> = ({ uri, width, height }) => {
+export const EmbeddedWeb: React.FC<IFrameProps> = ({
+  uri,
+  width,
+  height,
+  borderRadius = 7,
+}) => {
   return (
     <WebView
       source={{ uri }}
@@ -16,7 +22,7 @@ export const EmbeddedWeb: React.FC<IFrameProps> = ({ uri, width, height }) => {
         maxWidth: width,
         height,
         border: 0,
-        borderRadius: 8,
+        borderRadius,
       }}
       allowsFullscreenVideo
     />

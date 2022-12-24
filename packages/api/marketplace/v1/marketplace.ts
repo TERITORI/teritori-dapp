@@ -131,6 +131,11 @@ export function mintStateToJSON(object: MintState): string {
   }
 }
 
+export interface Attribute {
+  traitType: string;
+  value: string;
+}
+
 export interface NFT {
   id: string;
   networkId: string;
@@ -143,6 +148,9 @@ export interface NFT {
   textInsert: string;
   collectionName: string;
   ownerId: string;
+  nftContractAddress: string;
+  lockedOn: string;
+  attributes: Attribute[];
 }
 
 export interface Amount {
@@ -299,6 +307,64 @@ export interface NewsResponse {
   news: News[];
 }
 
+function createBaseAttribute(): Attribute {
+  return { traitType: "", value: "" };
+}
+
+export const Attribute = {
+  encode(message: Attribute, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.traitType !== "") {
+      writer.uint32(10).string(message.traitType);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Attribute {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttribute();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.traitType = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Attribute {
+    return {
+      traitType: isSet(object.traitType) ? String(object.traitType) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+    };
+  },
+
+  toJSON(message: Attribute): unknown {
+    const obj: any = {};
+    message.traitType !== undefined && (obj.traitType = message.traitType);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Attribute>, I>>(object: I): Attribute {
+    const message = createBaseAttribute();
+    message.traitType = object.traitType ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
 function createBaseNFT(): NFT {
   return {
     id: "",
@@ -312,6 +378,9 @@ function createBaseNFT(): NFT {
     textInsert: "",
     collectionName: "",
     ownerId: "",
+    nftContractAddress: "",
+    lockedOn: "",
+    attributes: [],
   };
 }
 
@@ -349,6 +418,15 @@ export const NFT = {
     }
     if (message.ownerId !== "") {
       writer.uint32(106).string(message.ownerId);
+    }
+    if (message.nftContractAddress !== "") {
+      writer.uint32(122).string(message.nftContractAddress);
+    }
+    if (message.lockedOn !== "") {
+      writer.uint32(130).string(message.lockedOn);
+    }
+    for (const v of message.attributes) {
+      Attribute.encode(v!, writer.uint32(138).fork()).ldelim();
     }
     return writer;
   },
@@ -393,6 +471,15 @@ export const NFT = {
         case 13:
           message.ownerId = reader.string();
           break;
+        case 15:
+          message.nftContractAddress = reader.string();
+          break;
+        case 16:
+          message.lockedOn = reader.string();
+          break;
+        case 17:
+          message.attributes.push(Attribute.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -414,6 +501,9 @@ export const NFT = {
       textInsert: isSet(object.textInsert) ? String(object.textInsert) : "",
       collectionName: isSet(object.collectionName) ? String(object.collectionName) : "",
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+      nftContractAddress: isSet(object.nftContractAddress) ? String(object.nftContractAddress) : "",
+      lockedOn: isSet(object.lockedOn) ? String(object.lockedOn) : "",
+      attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
     };
   },
 
@@ -430,6 +520,13 @@ export const NFT = {
     message.textInsert !== undefined && (obj.textInsert = message.textInsert);
     message.collectionName !== undefined && (obj.collectionName = message.collectionName);
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    message.nftContractAddress !== undefined && (obj.nftContractAddress = message.nftContractAddress);
+    message.lockedOn !== undefined && (obj.lockedOn = message.lockedOn);
+    if (message.attributes) {
+      obj.attributes = message.attributes.map((e) => e ? Attribute.toJSON(e) : undefined);
+    } else {
+      obj.attributes = [];
+    }
     return obj;
   },
 
@@ -446,6 +543,9 @@ export const NFT = {
     message.textInsert = object.textInsert ?? "";
     message.collectionName = object.collectionName ?? "";
     message.ownerId = object.ownerId ?? "";
+    message.nftContractAddress = object.nftContractAddress ?? "";
+    message.lockedOn = object.lockedOn ?? "";
+    message.attributes = object.attributes?.map((e) => Attribute.fromPartial(e)) || [];
     return message;
   },
 };

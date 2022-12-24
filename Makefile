@@ -3,6 +3,9 @@ BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
+SQUAD_STAKING_PACKAGE=teritori-squad-staking
+BREEDING_PACKAGE=teritori-breeding
+DISTRIBUTOR_PACKAGE=teritori-distributor
 
 NAME_SERVICE_REPO=teritori-name-service
 NAME_SERVICE_PACKAGE=teritori-name-service
@@ -20,6 +23,7 @@ INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-indexer:$(shell git rev-parse -
 BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 PRICES_SERVICE_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-service:$(shell git rev-parse --short HEAD)
 PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell git rev-parse --short HEAD)
+P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse --short HEAD)
 
 node_modules: package.json yarn.lock
 	yarn
@@ -121,6 +125,51 @@ $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules
 		--no-bundle
 	rm -fr $(TOKEN_REPO)
 
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(DISTRIBUTOR_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(DISTRIBUTOR_PACKAGE): node_modules
+	rm -fr $(TOKEN_REPO)
+	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
+	cd $(TOKEN_REPO) && git checkout 61028f26c8ca2662bab39eff23f28c322d1aa60e
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(TOKEN_REPO)/schema/distributor \
+		--out $@ \
+		--name $(DISTRIBUTOR_PACKAGE) \
+		--no-bundle
+	rm -fr $(TOKEN_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(SQUAD_STAKING_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(SQUAD_STAKING_PACKAGE): node_modules
+	rm -fr $(TOKEN_REPO)
+	git clone git@github.com:TERITORI/$(TOKEN_REPO).git
+	cd $(TOKEN_REPO) && git checkout a0c19833ac754c24a345383b9c932dde1ee0f3b2
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(TOKEN_REPO)/schema/squad-staking \
+		--out $@ \
+		--name $(SQUAD_STAKING_PACKAGE) \
+		--no-bundle
+	rm -fr $(TOKEN_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE): node_modules
+	rm -fr $(CANDYMACHINE_REPO)
+	git clone git@github.com:TERITORI/$(CANDYMACHINE_REPO).git
+	cd $(CANDYMACHINE_REPO) && git checkout 26e37212a24d8e9e4b52af3c8f0ec3837633732c
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(CANDYMACHINE_REPO)/schema/nft-breeding \
+		--out $@ \
+		--name $(BREEDING_PACKAGE) \
+		--no-bundle
+	mkdir -p go/pkg/contracts/breeding_types
+	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(CANDYMACHINE_REPO)/schema/nft-breeding/instantiate_msg.json -o go/pkg/contracts/breeding_types/instantiate_msg.go -p breeding_types
+	go fmt ./go/pkg/contracts/breeding_minter_types		
+	rm -fr $(CANDYMACHINE_REPO)
+
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	rm -fr $(VAULT_REPO)
@@ -161,3 +210,7 @@ generate.sqlboiler-prices:
 	go install github.com/volatiletech/sqlboiler/v4@latest
 	go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
 	sqlboiler psql
+
+publish.p2e-update-leaderboard:
+	docker build -f go/cmd/p2e-update-leaderboard/Dockerfile . --platform amd64 -t $(P2E_DOCKER_IMAGE)
+	docker push $(P2E_DOCKER_IMAGE)

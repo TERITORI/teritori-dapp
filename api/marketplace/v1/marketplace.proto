@@ -33,6 +33,11 @@ enum MintState {
   MINT_STATE_ENDED = 2;
 }
 
+message Attribute {
+  string trait_type = 1;
+  string value = 2;
+}
+
 message NFT {
   string id = 1;
   string network_id = 14;
@@ -45,6 +50,9 @@ message NFT {
   string text_insert = 9;
   string collection_name = 10;
   string owner_id = 13;
+  string nft_contract_address = 15;
+  string locked_on = 16;
+  repeated Attribute attributes = 17;
 }
 message Amount {
   string denom = 1;

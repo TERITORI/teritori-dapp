@@ -123,6 +123,22 @@ export const NFTMainInfo: React.FC<{
                 {nftInfo?.ownerAddress}
               </BrandText>
             </View>
+            {nftInfo?.breedingsAvailable !== undefined && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 6,
+                }}
+              >
+                <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                  Breedings available
+                </BrandText>
+                <BrandText style={fontMedium14} numberOfLines={1}>
+                  {nftInfo?.breedingsAvailable}
+                </BrandText>
+              </View>
+            )}
           </View>
         );
       default:

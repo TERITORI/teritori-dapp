@@ -68,8 +68,9 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 }
 
 type BunkerMetadata struct {
-	Name     string `json:"name"`
-	ImageURL string `json:"image"`
+	Name       string               `json:"name"`
+	ImageURL   string               `json:"image"`
+	Attributes indexerdb.ArrayJSONB `json:"attributes"`
 }
 
 func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Collection, tokenId string, execMsg *wasmtypes.MsgExecuteContract) error {
@@ -97,10 +98,12 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 		Name:         metadata.Name,
 		ImageURI:     metadata.ImageURL,
 		CollectionID: collection.ID,
+		Attributes:   metadata.Attributes,
 		TeritoriNFT: &indexerdb.TeritoriNFT{
 			TokenID: tokenId,
 		},
 	}
+
 	if err := h.db.Create(&nft).Error; err != nil {
 		spew.Dump(nft)
 		return errors.Wrap(err, "failed to create nft in db")

@@ -7,7 +7,6 @@ export type RootStackParamList = {
   MyCollection: undefined;
   Activity: undefined;
   Guardians: undefined;
-  GuardiansGame: undefined;
   WalletManager: undefined;
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
@@ -24,6 +23,16 @@ export type RootStackParamList = {
   Collection: { id: string };
   CollectionActivity: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
+
+  RiotGame: undefined;
+  RiotGameEnroll: undefined;
+  RiotGameFight: undefined;
+  RiotGameBreeding: undefined;
+  RiotGameMemories: undefined;
+  RiotGameMarketplace: undefined;
+  RiotGameLeaderboard: undefined;
+  RiotGameInventory: undefined;
+  RiotGameRarity: undefined;
 
   Staking: undefined;
 
@@ -50,10 +59,20 @@ const navConfig: {
     WalletManager: "wallet-manager",
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
-    GuardiansGame: "guardians-game",
     Governance: "governance",
     UserPublicProfile: "user/:id",
     RiotersFooter: "rioters-footer",
+    // === RiotGame
+    RiotGame: "riot-game",
+    RiotGameEnroll: "riot-game/enroll",
+    RiotGameFight: "riot-game/fight",
+    RiotGameBreeding: "riot-game/breeding",
+    RiotGameMemories: "riot-game/memories",
+    RiotGameMarketplace: "riot-game/marketplace",
+    RiotGameLeaderboard: "riot-game/leaderboard",
+    RiotGameInventory: "riot-game/inventory",
+    RiotGameRarity: "riot-game/rarity",
+
     // ==== Launchpad
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",

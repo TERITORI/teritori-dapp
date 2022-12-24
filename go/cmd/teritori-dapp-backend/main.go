@@ -12,6 +12,8 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
+	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -31,6 +33,7 @@ func main() {
 		tlsKeyFilePath     = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
 		tnsContractAddress = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
 		tnsDefaultImageURL = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
+		riotGameStartedAt  = fs.String("the-riot-game-started-at", "", "date when the riot game starts")
 		dbHost             = fs.String("db-dapp-host", "", "host postgreSQL database")
 		dbPort             = fs.String("db-dapp-port", "", "port for postgreSQL database")
 		dbPass             = fs.String("postgres-password", "", "password for postgreSQL database")
@@ -72,7 +75,11 @@ func main() {
 		whitelist[i] = strings.TrimFunc(elem, unicode.IsSpace)
 	}
 
-	svc := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
+	if riotGameStartedAt == nil {
+		panic(errors.New("missing riot-game-started-at configuration"))
+	}
+
+	marketplaceSvc := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
 		Logger:             logger,
 		IndexerDB:          indexerDB,
 		GraphqlEndpoint:    graphqlEndpoint,
@@ -80,9 +87,15 @@ func main() {
 		TNSDefaultImageURL: *tnsDefaultImageURL,
 		Whitelist:          whitelist,
 	})
+	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
+		Logger:            logger,
+		IndexerDB:         indexerDB,
+		RiotGameStartedAt: *riotGameStartedAt,
+	})
 
 	server := grpc.NewServer()
-	marketplacepb.RegisterMarketplaceServiceServer(server, svc)
+	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
+	p2epb.RegisterP2EServiceServer(server, p2eSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),

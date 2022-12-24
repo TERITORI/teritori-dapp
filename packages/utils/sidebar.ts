@@ -95,7 +95,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   },
   riotersGame: {
     title: "Join The R!ot",
-    route: "ComingSoon",
+    route: "RiotGame",
     icon: riotersGameSVG,
   },
   riotersFooter: {

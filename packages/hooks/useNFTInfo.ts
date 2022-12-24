@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
+import { ConfigResponse as BreedingConfigResponse } from "../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
@@ -8,12 +10,15 @@ import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";
+import { useBreedingConfig } from "./useBreedingConfig";
 
 export const useNFTInfo = (id: string, wallet: string | undefined) => {
   const [info, setInfo] = useState<NFTInfo>();
   const [refreshIndex, setRefreshIndex] = useState(0);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const breedingConfig = useBreedingConfig();
 
   const refresh = useCallback(() => {
     setRefreshIndex((i) => i + 1);
@@ -27,18 +32,25 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
         const minterContractAddress = idParts[1];
         const tokenId = idParts.slice(2).join("-");
 
-        let nfo;
-        if (
-          minterContractAddress ===
-          process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS
-        ) {
-          nfo = await getTNSNFTInfo(minterContractAddress, tokenId, wallet);
-        } else {
-          nfo = await getStandardNFTInfo(
-            minterContractAddress,
-            tokenId,
-            wallet
-          );
+        let nfo: NFTInfo;
+        switch (minterContractAddress) {
+          case process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS:
+            nfo = await getTNSNFTInfo(minterContractAddress, tokenId, wallet);
+            break;
+          case process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS:
+            nfo = await getRiotBreedingNFTInfo(
+              minterContractAddress,
+              tokenId,
+              wallet
+            );
+            break;
+          default:
+            nfo = await getStandardNFTInfo(
+              minterContractAddress,
+              tokenId,
+              wallet,
+              breedingConfig
+            );
         }
 
         setInfo(nfo);
@@ -51,7 +63,7 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
       }
     };
     effect();
-  }, [id, wallet, refreshIndex]);
+  }, [id, wallet, refreshIndex, breedingConfig]);
 
   return { info, refresh, notFound, loading };
 };
@@ -133,7 +145,8 @@ const getTNSNFTInfo = async (
 const getStandardNFTInfo = async (
   minterContractAddress: string,
   tokenId: string,
-  wallet?: string
+  wallet: string | undefined,
+  breedingConfig: BreedingConfigResponse | undefined
 ) => {
   // We use a CosmWasm non signing Client
   const cosmwasmClient = await getNonSigningCosmWasmClient();
@@ -144,6 +157,24 @@ const getStandardNFTInfo = async (
     minterContractAddress
   );
   const minterConfig = await minterClient.config();
+
+  let breedingsAvailable;
+
+  if (breedingConfig?.parent_contract_addr === minterConfig.nft_addr) {
+    const breedingClient = new TeritoriBreedingQueryClient(
+      cosmwasmClient,
+      process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS || ""
+    );
+
+    const breededCount = await breedingClient.breededCount({
+      parentNftTokenId: tokenId,
+    });
+
+    breedingsAvailable = Math.max(
+      (breedingConfig?.breed_count_limit || 0) - breededCount,
+      0
+    );
+  }
 
   const collectionMetadata = await (
     await fetch(ipfsURLToHTTPURL(minterConfig.nft_base_uri))
@@ -172,7 +203,6 @@ const getStandardNFTInfo = async (
     description = nftMetadata.description;
     attributes = nftMetadata.attributes;
   } else if (nftInfo.extension?.image) {
-    console.log("extension", nftInfo.extension);
     name = (nftInfo.extension?.name as any) || "";
     image = (nftInfo.extension?.image as any) || "";
     description = (nftInfo.extension?.description as any) || "";
@@ -226,6 +256,108 @@ const getStandardNFTInfo = async (
     collectionName: contractInfo.name,
     collectionImageURL: ipfsURLToHTTPURL(collectionMetadata.image),
     mintDenom: minterConfig.price_denom,
+    royalty: royalties,
+    breedingsAvailable,
+  };
+
+  return nfo;
+};
+
+const getRiotBreedingNFTInfo = async (
+  minterContractAddress: string,
+  tokenId: string,
+  wallet: string | undefined
+) => {
+  // We use a CosmWasm non signing Client
+  const cosmwasmClient = await getNonSigningCosmWasmClient();
+
+  // ======== Getting breeding client
+  const breedingClient = new TeritoriBreedingQueryClient(
+    cosmwasmClient,
+    minterContractAddress
+  );
+  const breedingConfig = await breedingClient.config();
+
+  const collectionMetadata = await (
+    await fetch(ipfsURLToHTTPURL(breedingConfig.child_base_uri))
+  ).json();
+
+  // ======== Getting NFT client
+  const nftClient = new TeritoriNftQueryClient(
+    cosmwasmClient,
+    breedingConfig.child_contract_addr
+  );
+  // ======== Getting contract info (For collection name)
+  const contractInfo = await nftClient.contractInfo();
+  // ======== Getting NFT info
+  const nftInfo = await nftClient.nftInfo({ tokenId });
+  let name = "";
+  let description = "";
+  let image = "";
+  let attributes = [];
+  let royalties = 0;
+  if (nftInfo.token_uri) {
+    const nftMetadata = await (
+      await fetch(ipfsURLToHTTPURL(nftInfo.token_uri))
+    ).json();
+    name = nftMetadata.name;
+    image = nftMetadata.image;
+    description = nftMetadata.description;
+    attributes = nftMetadata.attributes;
+  } else if (nftInfo.extension?.image) {
+    name = (nftInfo.extension?.name as any) || "";
+    image = (nftInfo.extension?.image as any) || "";
+    description = (nftInfo.extension?.description as any) || "";
+    attributes = (nftInfo.extension?.attributes as any) || [];
+    royalties = ((nftInfo.extension?.royalty_percentage as number) || 0) / 100;
+  }
+  // ======== Getting NFT owner
+  const { owner } = await nftClient.ownerOf({ tokenId });
+  // ======== Getting NFT metadata
+
+  // ======== Getting vault stuff (For selling)
+  const vaultClient = new TeritoriNftVaultQueryClient(
+    cosmwasmClient,
+    vaultContractAddress
+  );
+  let vaultOwnerAddress;
+  let vaultInfo;
+  let isListed = false;
+
+  try {
+    vaultInfo = await vaultClient.nftInfo({
+      nftContractAddr: breedingConfig.child_contract_addr,
+      nftTokenId: tokenId,
+    });
+    vaultOwnerAddress = vaultInfo.owner;
+    isListed = true;
+  } catch {
+    // ======== The NFT is not on sale
+  }
+  const isOwner =
+    !!wallet &&
+    ((!!owner && owner === wallet) ||
+      (!!vaultOwnerAddress && vaultOwnerAddress === wallet));
+
+  // NFT base info
+  const nfo: NFTInfo = {
+    name,
+    description,
+    attributes,
+    nftAddress: breedingConfig.child_contract_addr,
+    mintAddress: minterContractAddress,
+    imageURL: ipfsURLToHTTPURL(image),
+    tokenId,
+    ownerAddress: vaultOwnerAddress || owner,
+    isSeller: isListed && isOwner,
+    isListed,
+    isOwner,
+    canSell: isOwner && !isListed,
+    price: vaultInfo?.amount || "",
+    priceDenom: vaultInfo?.denom || "",
+    collectionName: contractInfo.name,
+    collectionImageURL: ipfsURLToHTTPURL(collectionMetadata.image),
+    mintDenom: breedingConfig.breed_price_denom,
     royalty: royalties,
   };
 

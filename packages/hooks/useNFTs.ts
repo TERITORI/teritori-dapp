@@ -22,7 +22,6 @@ export const useNFTs = (req: NFTsRequest) => {
         ...req,
         offset: baseOffset.current + pageParam,
       };
-      console.log("fetching", pageReq);
       const stream = backendClient.NFTs(pageReq);
       await stream.forEach((response) => {
         if (!response.nft) {

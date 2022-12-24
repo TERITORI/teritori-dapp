@@ -5,14 +5,10 @@ import { Image, StyleSheet, View } from "react-native";
 
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { TeritoriBunkerMinterQueryClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNetwork } from "../../networks";
-import {
-  getNonSigningCosmWasmClient,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -66,9 +62,6 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
       // get token id
       const tokenId = nft.id.split("-").slice(2).join("-");
 
-      // get contract address
-      const contractAddress = nft.id.split("-")[1];
-
       // check for network
       if (!network) {
         setToastError({ title: "Internal error", message: "No network" });
@@ -98,28 +91,12 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
         onClose();
       }
 
-      // get nft contract address
-      let nftContractAddress;
-      if (
-        contractAddress === process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS
-      ) {
-        nftContractAddress = contractAddress;
-      } else {
-        const comswasmClient = await getNonSigningCosmWasmClient();
-        const bunkerClient = new TeritoriBunkerMinterQueryClient(
-          comswasmClient,
-          contractAddress
-        );
-        const config = await bunkerClient.config();
-        nftContractAddress = config.nft_addr;
-      }
-
       // create client
       const signingComswasmClient = await getSigningCosmWasmClient();
       const nftClient = new TeritoriNftClient(
         signingComswasmClient,
         sender,
-        nftContractAddress
+        nft.nftContractAddress
       );
 
       // transfer
