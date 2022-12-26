@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
@@ -36,6 +37,7 @@ export const RiotGameEnrollScreen = () => {
   const { setToastError } = useFeedbacks();
 
   const videoRef = React.useRef<Video>(null);
+  const isScreenFocused = useIsFocused();
 
   const { myAvailableRippers } = useRippers();
   const {
@@ -53,13 +55,16 @@ export const RiotGameEnrollScreen = () => {
 
   // Stop video when changing screen trough react-navigation
   useEffect(() => {
-    return navigation.addListener("blur", () => {
-      console.log("Blur");
-      if (videoRef.current) {
-        videoRef.current.stopAsync();
-      }
-    });
-  }, [navigation]);
+    if (!isScreenFocused && videoRef.current) {
+      videoRef.current.pauseAsync();
+    }
+    // return navigation.addListener("blur", () => {
+    //   console.log("Blur");
+    //   if (videoRef.current) {
+    //     videoRef.current.stopAsync();
+    //   }
+    // });
+  }, [isScreenFocused]);
 
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);

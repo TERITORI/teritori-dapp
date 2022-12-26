@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -40,22 +41,23 @@ const episodes = [
 
 export const RiotGameMemoriesScreen = () => {
   const { width } = useWindowDimensions();
-  const navigation = useAppNavigation();
   const episodesVideosRefs = useRef<Video[]>([]);
   const [displayYT, setDisplayYT] = useState(false);
+  const isScreenFocused = useIsFocused();
 
   // Stop videos when changing screen trough react-navigation
   useEffect(() => {
-    return navigation.addListener("blur", () => {
+    if (!isScreenFocused) {
+      setDisplayYT(false);
+
       episodesVideosRefs.current.map(async (video) => {
         if (video) {
           const status = await video.getStatusAsync();
-          if (status.isLoaded && status.isPlaying) video.stopAsync();
+          if (status.isLoaded && status.isPlaying) video.pauseAsync();
         }
       });
-      setDisplayYT(false);
-    });
-  }, [navigation]);
+    }
+  }, [isScreenFocused]);
 
   let numCol = 3;
   if (width < 1200) {
