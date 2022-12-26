@@ -15,6 +15,7 @@ import {
   withAlpha,
 } from "../../utils/style/colors";
 import { fontMedium14, fontSemibold12 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 
 export interface dAppType {
   title: string;
@@ -44,13 +45,13 @@ function MyCheckbox({
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 16,
-    marginVertical: 32,
+    marginHorizontal: layout.padding_x2,
+    marginVertical: layout.padding_x4,
   },
   checkbox: {
-    margin: 8,
-    width: 20,
-    height: 20,
+    margin: layout.padding_x1,
+    width: layout.padding_x2_5,
+    height: layout.padding_x2_5,
     borderRadius: 4,
     borderWidth: 1,
   },
@@ -70,7 +71,7 @@ export function DAppBox(props: { option: dAppType }) {
       }}
       mainContainerStyle={{
         alignItems: "flex-start",
-        padding: 8,
+        padding: layout.padding_x1,
         borderRadius: 22,
         borderColor: mineShaftColor,
         backgroundColor: isChecked ? withAlpha(neutral17, 0.64) : undefined,
@@ -94,12 +95,21 @@ export function DAppBox(props: { option: dAppType }) {
         >
           <SVG source={burnSVG} />
         </SecondaryBox>
-        <View style={{ flexDirection: "column", marginLeft: 16, width: "50%" }}>
+        <View
+          style={{
+            flexDirection: "column",
+            marginLeft: layout.padding_x2,
+            width: "50%",
+          }}
+        >
           <BrandText style={[fontMedium14]} numberOfLines={1}>
             {props.option.title}
           </BrandText>
           <BrandText
-            style={[fontSemibold12, { color: neutral67, marginTop: 4 }]}
+            style={[
+              fontSemibold12,
+              { color: neutral67, marginTop: layout.padding_x0_5 },
+            ]}
             numberOfLines={1}
           >
             {props.option.description}

@@ -6,6 +6,7 @@ import { FullHeightSeparator } from "../../components/FullHeightSeparator";
 import { FullWidthSeparator } from "../../components/FullWidthSeparator";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { ScreenFC } from "../../utils/navigation";
+import { layout } from "../../utils/style/layout";
 import { DAppBox, dAppType } from "./DAppBox";
 import { Header } from "./Header";
 import { SelectedDraggable } from "./SelectedDraggable";
@@ -102,9 +103,9 @@ export const DAppStore: ScreenFC<"dAppStore"> = () => {
         <View
           style={{
             flex: 1,
-            marginLeft: "2em",
-            marginRight: "1em",
-            paddingTop: 32,
+            marginLeft: layout.padding_x4,
+            marginRight: layout.padding_x2,
+            paddingTop: layout.padding_x4,
             maxWidth: 300,
           }}
         >
@@ -113,8 +114,8 @@ export const DAppStore: ScreenFC<"dAppStore"> = () => {
             style={{
               flex: 1,
               height: 250,
-              marginRight: "1em",
-              paddingTop: 32,
+              marginRight: layout.padding_x4,
+              paddingTop: layout.padding_x4,
             }}
           >
             {availableApps.length > 0 ? (
@@ -122,14 +123,14 @@ export const DAppStore: ScreenFC<"dAppStore"> = () => {
                 return (
                   <View
                     style={{
-                      marginBottom: 16,
+                      marginBottom: layout.padding_x2,
                     }}
                     key={index}
                   >
                     <View
                       style={{
                         flex: 1,
-                        marginBottom: 16,
+                        marginBottom: layout.padding_x2,
                         flexDirection: "column",
                         height: "100%",
                       }}
@@ -137,7 +138,9 @@ export const DAppStore: ScreenFC<"dAppStore"> = () => {
                       {element.options
                         .filter((option: dAppType) => option.isChecked)
                         .map((option: dAppType, index: React.Key) => {
-                          return <SelectedDraggable option={option} key={index} />;
+                          return (
+                            <SelectedDraggable option={option} key={index} />
+                          );
                         })}
                     </View>
                   </View>
@@ -156,24 +159,26 @@ export const DAppStore: ScreenFC<"dAppStore"> = () => {
             flex: 1,
             marginLeft: "3em",
             height: 250,
-            paddingTop: 32,
+            paddingTop: layout.padding_x4,
           }}
         >
           {availableApps.map((element, index) => {
             return (
               <View
                 style={{
-                  marginBottom: 16,
+                  marginBottom: layout.padding_x2,
                 }}
                 key={index}
               >
-                <BrandText style={{ height: 48 }}>
+                <BrandText
+                  style={{ height: layout.padding_x4 + layout.padding_x2 }}
+                >
                   {element.groupName}
                 </BrandText>
                 <View
                   style={{
                     flex: 1,
-                    marginBottom: 16,
+                    marginBottom: layout.padding_x2,
                     flexDirection: "row",
                     flexWrap: "wrap",
                   }}
