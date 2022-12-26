@@ -87,7 +87,7 @@ const availableApps: dAppGroup[] = [
   },
 ];
 
-export const DAppStore: ScreenFC<"dAppStore"> = () => {
+export const DAppStore: ScreenFC<"DAppStore"> = () => {
   const [searchInput, setSearchInput] = useState("");
 
   return (
