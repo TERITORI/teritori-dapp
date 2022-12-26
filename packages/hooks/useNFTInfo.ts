@@ -357,7 +357,7 @@ const getRiotBreedingNFTInfo = async (
     priceDenom: vaultInfo?.denom || "",
     collectionName: contractInfo.name,
     collectionImageURL: ipfsURLToHTTPURL(collectionMetadata.image),
-    mintDenom: breedingConfig.breed_price_denom,
+    mintDenom: "utori",
     royalty: royalties,
   };
 
