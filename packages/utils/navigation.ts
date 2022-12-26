@@ -21,6 +21,7 @@ export type RootStackParamList = {
 
   Marketplace: undefined;
   Collection: { id: string };
+  CollectionTools: { id: string };
   CollectionActivity: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
 
@@ -84,6 +85,7 @@ const navConfig: {
     // ==== Marketplace
     Marketplace: "marketplace",
     Collection: "collection/:id",
+    CollectionTools: "collection/:id/tools",
     CollectionActivity: "collection/:id/activity",
     NFTDetail: "nft/:id",
     // ==== Staking

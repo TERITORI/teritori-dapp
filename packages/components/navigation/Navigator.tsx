@@ -10,6 +10,7 @@ import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScreen";
 import { CollectionActivityScreen } from "../../screens/Marketplace/CollectionActivityScreen";
 import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
+import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
@@ -214,6 +215,11 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="ComingSoon"
         component={ComingSoonScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="CollectionTools"
+        component={CollectionToolsScreen}
         options={{ header: () => null }}
       />
     </Stack.Navigator>
