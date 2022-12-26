@@ -28,7 +28,7 @@ import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
-import {dAppStore} from "../../screens/dAppStore/HomeScreen";
+import { DAppStore } from "../../screens/dAppStore/HomeScreen";
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -216,7 +216,7 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="dAppStore"
-        component={dAppStore}
+        component={DAppStore}
         options={{ header: () => null, title: screenTitle("dApp Store") }}
       />
     </Stack.Navigator>

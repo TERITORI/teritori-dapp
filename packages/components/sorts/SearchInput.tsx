@@ -9,7 +9,7 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SearchInput: React.FC<{
   style?: StyleProp<ViewStyle>;
-  handleChangeText: (e: string) => void;
+  handleChangeText?: (e: string) => void;
 }> = (props) => {
   return (
     <TertiaryBox

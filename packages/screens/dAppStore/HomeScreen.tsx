@@ -6,8 +6,9 @@ import { FullHeightSeparator } from "../../components/FullHeightSeparator";
 import { FullWidthSeparator } from "../../components/FullWidthSeparator";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { ScreenFC } from "../../utils/navigation";
-import {DAppBox, dAppType} from "./DAppBox";
+import { DAppBox, dAppType } from "./DAppBox";
 import { Header } from "./Header";
+import { SelectedDraggable } from "./SelectedDraggable";
 
 interface dAppGroup {
   groupName: string;
@@ -24,11 +25,13 @@ const availableApps: dAppGroup[] = [
         title: "dApp 1",
         description: "Short desc",
         icon: "",
+        isChecked: true,
       },
       {
         title: "dApp 3",
-        description: "Short desc",
+        description: "Longer Longer Longer Longer Longer Longer Longer Longer",
         icon: "",
+        isChecked: false,
       },
     ],
   },
@@ -40,21 +43,26 @@ const availableApps: dAppGroup[] = [
         title: "dApp 1",
         description: "Short desc",
         icon: "",
+        isChecked: false,
+      },
+      {
+        title: "dApp 1",
+        description:
+          "Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer",
+        icon: "",
+        isChecked: false,
       },
       {
         title: "dApp 1",
         description: "Short desc",
         icon: "",
-      },
-      {
-        title: "dApp 1",
-        description: "Short desc",
-        icon: "",
+        isChecked: false,
       },
       {
         title: "dApp 3",
         description: "Short desc",
         icon: "",
+        isChecked: false,
       },
     ],
   },
@@ -66,17 +74,19 @@ const availableApps: dAppGroup[] = [
         title: "dApp 1",
         description: "Short desc",
         icon: "",
+        isChecked: false,
       },
       {
         title: "dApp 3",
         description: "Short desc",
         icon: "",
+        isChecked: false,
       },
     ],
   },
 ];
 
-export const dAppStore: ScreenFC<"dAppStore"> = () => {
+export const DAppStore: ScreenFC<"dAppStore"> = () => {
   const [searchInput, setSearchInput] = useState("");
 
   return (
@@ -92,13 +102,51 @@ export const dAppStore: ScreenFC<"dAppStore"> = () => {
         <View
           style={{
             flex: 1,
-            marginLeft: "3em",
+            marginLeft: "2em",
+            marginRight: "1em",
             paddingTop: 32,
             maxWidth: 300,
           }}
         >
           <BrandText style={{ height: 32 }}>dApps in sidebar</BrandText>
-          <div>No apps</div>
+          <View
+            style={{
+              flex: 1,
+              height: 250,
+              marginRight: "1em",
+              paddingTop: 32,
+            }}
+          >
+            {availableApps.length > 0 ? (
+              availableApps.map((element, index) => {
+                return (
+                  <View
+                    style={{
+                      marginBottom: 16,
+                    }}
+                    key={index}
+                  >
+                    <View
+                      style={{
+                        flex: 1,
+                        marginBottom: 16,
+                        flexDirection: "column",
+                        height: "100%",
+                      }}
+                    >
+                      {element.options
+                        .filter((option: dAppType) => option.isChecked)
+                        .map((option: dAppType, index: React.Key) => {
+                          return <SelectedDraggable option={option} key={index} />;
+                        })}
+                    </View>
+                  </View>
+                );
+              })
+            ) : (
+              <div>No apps</div>
+            )}
+          </View>
         </View>
 
         <FullHeightSeparator />
