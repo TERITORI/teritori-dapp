@@ -1,5 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
 import { bech32 } from "bech32";
+
 import { WalletProvider } from "./walletProvider";
 
 export enum Network {
