@@ -1,11 +1,14 @@
+import { TrashIcon } from "@heroicons/react/20/solid";
 import { Bars3Icon } from "@heroicons/react/24/outline";
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
-import burnSVG from "../../../assets/icons/burn.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { SecondaryBox } from "../../components/boxes/SecondaryBox";
+import burnSVG from "../../../../assets/icons/burn.svg";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
+import { removePinnedApp } from "../../../store/slices/dapps-store";
+import { useAppDispatch } from "../../../store/store";
 import {
   mineShaftColor,
   neutral17,
@@ -13,13 +16,31 @@ import {
   neutral44,
   neutral67,
   withAlpha,
-} from "../../utils/style/colors";
-import { fontBold12 } from "../../utils/style/fonts";
-import { dAppType } from "./DAppBox";
+} from "../../../utils/style/colors";
+import { fontBold12 } from "../../../utils/style/fonts";
+import { dAppType } from "../types";
 
 export function SelectedDraggable(props: { option: dAppType }) {
+  const [showTrashIcon, setShowTrashIcon] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const deleteFromList = () => {
+    const action = {
+      appId: props.option.id,
+    };
+    dispatch(removePinnedApp(action));
+  };
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        width: "100%",
+      }}
+      onMouseEnter={() => setShowTrashIcon(true)}
+      onMouseLeave={() => setShowTrashIcon(false)}
+    >
       <SecondaryBox
         noBrokenCorners
         style={{ marginLeft: 6 }}
@@ -30,7 +51,18 @@ export function SelectedDraggable(props: { option: dAppType }) {
         height={50}
       >
         <BrandText style={[fontBold12, { color: neutral67 }]} numberOfLines={1}>
-          1
+          {showTrashIcon ? (
+            <TrashIcon
+              style={{
+                width: 24,
+                height: 24,
+                stroke: "red",
+              }}
+              onClick={deleteFromList}
+            />
+          ) : (
+            "1"
+          )}
         </BrandText>
       </SecondaryBox>
 
@@ -79,6 +111,6 @@ export function SelectedDraggable(props: { option: dAppType }) {
           />
         </View>
       </SecondaryBox>
-    </View>
+    </div>
   );
 }

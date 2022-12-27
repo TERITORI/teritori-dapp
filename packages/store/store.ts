@@ -3,6 +3,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { persistStore, persistReducer } from "redux-persist";
 
+import { dAppsReducer } from "./slices/dapps-store";
 import { settingsReducer } from "./slices/settings";
 import { walletsReducer } from "./slices/wallets";
 
@@ -15,6 +16,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   wallets: walletsReducer,
   settings: settingsReducer,
+  dAppsStore: dAppsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

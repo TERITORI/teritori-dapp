@@ -1,11 +1,13 @@
 import Checkbox from "expo-checkbox";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import burnSVG from "../../../assets/icons/burn.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { SecondaryBox } from "../../components/boxes/SecondaryBox";
+import burnSVG from "../../../../assets/icons/burn.svg";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
+import { setCheckedApp } from "../../../store/slices/dapps-store";
+import { useAppDispatch } from "../../../store/store";
 import {
   gradientColorBlue,
   mineShaftColor,
@@ -13,16 +15,10 @@ import {
   neutral44,
   neutral67,
   withAlpha,
-} from "../../utils/style/colors";
-import { fontMedium14, fontSemibold12 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-
-export interface dAppType {
-  title: string;
-  description: string;
-  icon: string;
-  isChecked: boolean;
-}
+} from "../../../utils/style/colors";
+import { fontMedium14, fontSemibold12 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { dAppType } from "../types";
 
 function MyCheckbox({
   isChecked,
@@ -57,8 +53,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export function DAppBox(props: { option: dAppType }) {
+export function DAppBox(props: { option: dAppType; groupKey: string }) {
+  const dispatch = useAppDispatch();
   const [isChecked, setChecked] = useState(props.option.isChecked);
+
+  useEffect(() => {
+    const action = {
+      groupKey: props.groupKey,
+      appId: props.option.id,
+      isChecked,
+    };
+    dispatch(setCheckedApp(action));
+  }, [isChecked]);
 
   return (
     <SecondaryBox
