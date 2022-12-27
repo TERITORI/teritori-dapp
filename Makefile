@@ -55,6 +55,10 @@ lint: node_modules
 go/pkg/holagql/holaplex-schema.graphql:
 	rover graph introspect https://graph.65.108.73.219.nip.io/v1 > $@
 
+.PHONY: go/pkg/thegraph/thegraph-schema.graphql
+go/pkg/thegraph/thegraph-schema.graphql:
+	rover graph introspect https://api.studio.thegraph.com/query/38317/teritori-indexer/rc-003 > $@
+
 .PHONY: docker.backend
 docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
