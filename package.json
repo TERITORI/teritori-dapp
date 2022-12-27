@@ -71,8 +71,7 @@
     "react-native-webview": "11.18.1",
     "react-redux": "^8.0.2",
     "redux-persist": "^6.0.0",
-    "victory-native": "^36.6.8",
-    "wagmi": "^0.9.5"
+    "victory-native": "^36.6.8"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

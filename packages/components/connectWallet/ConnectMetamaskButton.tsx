@@ -1,6 +1,6 @@
+import { useMetaMask } from "metamask-react";
 import React from "react";
 import { Linking } from "react-native";
-import { useAccount, useConnect } from "wagmi";
 
 import metamaskSVG from "../../../assets/icons/metamask.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -14,8 +14,9 @@ export const ConnectMetamaskButton: React.FC<{
 }> = ({ onDone }) => {
   const { setToastError } = useFeedbacks();
   const dispatch = useAppDispatch();
-  const { connectAsync, connectors } = useConnect();
-  const { connector: activeConnector, isConnected } = useAccount();
+  const { status, connect } = useMetaMask();
+
+  const isConnected = status === "connected";
 
   const handlePress = async () => {
     try {
@@ -38,15 +39,9 @@ export const ConnectMetamaskButton: React.FC<{
         return;
       }
 
-      const metamaskConnector = connectors.find((c) => c.id === "metaMask");
-      if (!metamaskConnector) {
-        console.error(`no metamask connector found`);
-        return;
-      }
-
-      if (activeConnector?.id !== "metaMask" || !isConnected) {
-        const result = await connectAsync({ connector: metamaskConnector });
-        console.log("Connected account:", result.account);
+      if (!isConnected) {
+        const address = await connect();
+        console.log("Connected address:", address);
       }
 
       dispatch(setIsMetamaskConnected(true));

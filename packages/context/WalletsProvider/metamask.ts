@@ -1,10 +1,10 @@
+import { useMetaMask } from "metamask-react";
 import { useMemo } from "react";
-import { useAccount } from "wagmi";
+
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetworkInfo";
 import { setSelectedWalletId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { Network } from "../../utils/network";
-
 import { WalletProvider } from "../../utils/walletProvider";
 import { Wallet } from "./wallet";
 
@@ -13,9 +13,11 @@ export type UseMetamaskResult =
   | [false, boolean, undefined];
 
 export const useMetamask: () => UseMetamaskResult = () => {
-  const { address, isConnected } = useAccount();
+  const { status, account: address } = useMetaMask();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
+
+  const isConnected = status === "connected";
 
   const wallet: Wallet | undefined = useMemo(() => {
     if (!address || !isConnected) return;
@@ -33,7 +35,7 @@ export const useMetamask: () => UseMetamaskResult = () => {
   }, [address, isConnected]);
 
   const hasMetamask = useMemo(() => {
-    return typeof window.ethereum !== "undefined";
+    return typeof (window as any).ethereum !== "undefined";
   }, []);
 
   return hasMetamask

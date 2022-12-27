@@ -7,20 +7,12 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
+import { MetaMaskProvider } from "metamask-react";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
-import {
-  configureChains,
-  createClient,
-  goerli,
-  mainnet,
-  WagmiConfig,
-} from "wagmi";
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { publicProvider } from "wagmi/providers/public";
 
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
@@ -33,18 +25,6 @@ import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
 const queryClient = new QueryClient();
-
-const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, goerli],
-  [publicProvider()]
-);
-
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors: [new MetaMaskConnector({ chains })],
-  provider,
-  webSocketProvider,
-});
 
 // it's here just to fix a TS2589 error
 type DefaultForm = {
@@ -67,7 +47,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <FormProvider<DefaultForm> {...methods}>
-        <WagmiConfig client={wagmiClient}>
+        <MetaMaskProvider>
           <NavigationContainer linking={linking}>
             <SafeAreaProvider>
               <ReduxProvider store={store}>
@@ -88,7 +68,7 @@ export default function App() {
               </ReduxProvider>
             </SafeAreaProvider>
           </NavigationContainer>
-        </WagmiConfig>
+        </MetaMaskProvider>
       </FormProvider>
     </QueryClientProvider>
   );
