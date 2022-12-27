@@ -1,0 +1,89 @@
+query GetCollectionNFTs($contract: String!, $Limit: Int!, $Offset: Int!) {
+  nfts(where: { contract: $contract }, first: $Limit, skip: $Offset) {
+    id
+    tokenID
+    owner
+    creatorName
+    creatorAddress
+    tokenURI
+    inSale
+    price
+    denom
+    createdAt
+    removedAt
+    contract {
+      name
+    }
+  }
+}
+
+query GetCollectionActivities($contract: String!, $Limit: Int!, $Offset: Int!) {
+  actions(where: { nft: $contract }, first: $Limit, skip: $Offset) {
+    id
+    nft {
+      id
+      tokenURI
+      contract {
+        id
+        name
+      }
+    }
+    buy {
+      price
+      denom
+      seller
+    }
+    list {
+      price
+      denom
+    }
+    action
+    actor
+    createdAt
+  }
+}
+
+query GetNFTPriceHistory($nft: String!, $Limit: Int!, $Offset: Int!) {
+  buys(where: { nft: $nft }, first: $Limit, skip: $Offset) {
+    price
+    denom
+    createdAt
+  }
+}
+
+query GetCollections($from: BigInt!) {
+  nftContracts {
+    id
+    supported
+    name
+  }
+  buys(where: { createdAt_gt: $from }) {
+    id
+    nft {
+      id
+      contract {
+        id
+      }
+    }
+    denom
+    price
+  }
+}
+
+query GetCollectionStats($contract: String!) {
+  nfts(where: { contract: $contract }) {
+    id
+    owner
+    creatorName
+    creatorAddress
+    tokenURI
+    inSale
+    price
+    denom
+    createdAt
+  }
+  buys(where: { nft: $contract }) {
+    price
+    denom
+  }
+}

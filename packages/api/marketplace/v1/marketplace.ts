@@ -220,6 +220,7 @@ export interface CollectionsRequest {
 export interface CollectionStatsRequest {
   collectionId: string;
   ownerId: string;
+  networkId: string;
 }
 
 export interface CollectionStatsResponse {
@@ -237,6 +238,7 @@ export interface NFTsRequest {
   ownerId: string;
   sort: Sort;
   sortDirection: SortDirection;
+  networkId: string;
 }
 
 export interface NFTsResponse {
@@ -258,6 +260,7 @@ export interface ActivityRequest {
   nftId: string;
   limit: number;
   offset: number;
+  networkId: string;
 }
 
 export interface ActivityResponse {
@@ -1247,7 +1250,7 @@ export const CollectionsRequest = {
 };
 
 function createBaseCollectionStatsRequest(): CollectionStatsRequest {
-  return { collectionId: "", ownerId: "" };
+  return { collectionId: "", ownerId: "", networkId: "" };
 }
 
 export const CollectionStatsRequest = {
@@ -1257,6 +1260,9 @@ export const CollectionStatsRequest = {
     }
     if (message.ownerId !== "") {
       writer.uint32(18).string(message.ownerId);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(26).string(message.networkId);
     }
     return writer;
   },
@@ -1274,6 +1280,9 @@ export const CollectionStatsRequest = {
         case 2:
           message.ownerId = reader.string();
           break;
+        case 3:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1286,6 +1295,7 @@ export const CollectionStatsRequest = {
     return {
       collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -1293,6 +1303,7 @@ export const CollectionStatsRequest = {
     const obj: any = {};
     message.collectionId !== undefined && (obj.collectionId = message.collectionId);
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -1300,6 +1311,7 @@ export const CollectionStatsRequest = {
     const message = createBaseCollectionStatsRequest();
     message.collectionId = object.collectionId ?? "";
     message.ownerId = object.ownerId ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -1404,7 +1416,7 @@ export const CollectionsResponse = {
 };
 
 function createBaseNFTsRequest(): NFTsRequest {
-  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0 };
+  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0, networkId: "" };
 }
 
 export const NFTsRequest = {
@@ -1426,6 +1438,9 @@ export const NFTsRequest = {
     }
     if (message.sortDirection !== 0) {
       writer.uint32(48).int32(message.sortDirection);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(58).string(message.networkId);
     }
     return writer;
   },
@@ -1455,6 +1470,9 @@ export const NFTsRequest = {
         case 6:
           message.sortDirection = reader.int32() as any;
           break;
+        case 7:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1471,6 +1489,7 @@ export const NFTsRequest = {
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -1482,6 +1501,7 @@ export const NFTsRequest = {
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     message.sort !== undefined && (obj.sort = sortToJSON(message.sort));
     message.sortDirection !== undefined && (obj.sortDirection = sortDirectionToJSON(message.sortDirection));
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -1493,6 +1513,7 @@ export const NFTsRequest = {
     message.ownerId = object.ownerId ?? "";
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -1659,7 +1680,7 @@ export const QuestsResponse = {
 };
 
 function createBaseActivityRequest(): ActivityRequest {
-  return { collectionId: "", nftId: "", limit: 0, offset: 0 };
+  return { collectionId: "", nftId: "", limit: 0, offset: 0, networkId: "" };
 }
 
 export const ActivityRequest = {
@@ -1675,6 +1696,9 @@ export const ActivityRequest = {
     }
     if (message.offset !== 0) {
       writer.uint32(32).int32(message.offset);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(42).string(message.networkId);
     }
     return writer;
   },
@@ -1698,6 +1722,9 @@ export const ActivityRequest = {
         case 4:
           message.offset = reader.int32();
           break;
+        case 5:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1712,6 +1739,7 @@ export const ActivityRequest = {
       nftId: isSet(object.nftId) ? String(object.nftId) : "",
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -1721,6 +1749,7 @@ export const ActivityRequest = {
     message.nftId !== undefined && (obj.nftId = message.nftId);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -1730,6 +1759,7 @@ export const ActivityRequest = {
     message.nftId = object.nftId ?? "";
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
