@@ -6,6 +6,7 @@ import { GasPrice } from "cosmwasm";
 import { getKeplr } from "../utils/keplr";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
+import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import { NativeCurrencyInfo, NetworkInfo } from "./types";
@@ -16,6 +17,7 @@ export const allNetworks = [
   cosmosNetwork,
   teritoriTestnetNetwork,
   cosmosThetaNetwork,
+  ethereumGoerliNetwork,
 ];
 
 export const getCurrency = (

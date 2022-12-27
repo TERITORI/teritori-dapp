@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import {
   selectIsKeplrConnected,
   setIsKeplrConnected,
+  setSelectedWalletId,
 } from "../../store/slices/settings";
 // import { addWallet } from "../../store/slices/wallets";
 import { useAppDispatch } from "../../store/store";
@@ -120,7 +121,7 @@ export const useKeplr: () => UseKeplrResult = () => {
       };
       return [wallet];
     }
-    return addresses.map((address, index) => {
+    const wallets = addresses.map((address, index) => {
       const wallet: Wallet = {
         address,
         provider: WalletProvider.Keplr,
@@ -130,6 +131,13 @@ export const useKeplr: () => UseKeplrResult = () => {
       console.log("keplr", index, wallet);
       return wallet;
     });
+
+    const selectedWallet = wallets.find((w) => w.connected);
+    if (selectedWallet) {
+      dispatch(setSelectedWalletId(selectedWallet.id));
+    }
+
+    return wallets;
   }, [addresses]);
 
   return hasKeplr ? [true, ready, wallets] : [false, ready, undefined];

@@ -62,7 +62,7 @@ const WalletView: React.FC<{
       >
         {tinyAddress(
           tnsMetadata?.metadata?.tokenId || wallet?.address || "",
-          19
+          16
         )}
       </BrandText>
     </View>
@@ -88,6 +88,12 @@ export const WalletSelector: React.FC<{
   const otherWallets = wallets.filter(
     (wallet) => wallet.id !== selectedWallet.id && wallet.address
   );
+
+  const onSelectWallet = (walletId: string) => {
+    closeOpenedDropdown();
+    dispatch(setSelectedWalletId(walletId));
+  };
+
   return (
     <View style={style} ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
@@ -125,8 +131,7 @@ export const WalletSelector: React.FC<{
           {otherWallets.map((wallet) => (
             <TouchableOpacity
               onPress={() => {
-                closeOpenedDropdown();
-                dispatch(setSelectedWalletId(wallet.id));
+                onSelectWallet(wallet.id);
               }}
               key={wallet.id}
               style={{ width: "100%" }}
