@@ -58,4 +58,14 @@ var AllNetworks = []*Network{
 			},
 		},
 	},
+	{
+		ID: "ethereum-goerli",
+		Currencies: []Currency{
+			&NativeCurrency{
+				Denom:       "eth",
+				CoinGeckoID: "ethereum",
+				Decimals:    18,
+			},
+		},
+	},
 }
