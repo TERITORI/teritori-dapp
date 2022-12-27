@@ -30,7 +30,7 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
   loading = false,
   ...props
 }) => {
-  const { enteredInGame, setEnteredInGame } = useGame();
+  const { enteredInGame, setEnteredInGame, playGameAudio } = useGame();
 
   const content = (
     <ScrollView>
@@ -46,8 +46,14 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
 
   return (
     <>
+      {/*Ensure the user interacts with the document by forcing him to click on "Resume game", then we can play game audio*/}
       {!enteredInGame && (
-        <ResumeGame onPressResume={() => setEnteredInGame(true)} />
+        <ResumeGame
+          onPressResume={() => {
+            setEnteredInGame(true);
+            playGameAudio();
+          }}
+        />
       )}
       <View style={[{ flex: 1, backgroundColor: neutral00 }, containerStyle]}>
         <RiotGameHeader />

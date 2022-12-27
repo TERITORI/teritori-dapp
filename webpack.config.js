@@ -43,7 +43,6 @@ module.exports = async function (env, argv) {
     test: /\.mjs$/,
     use: [],
   });
-  config.resolve.alias["victory-native"] = "victory";
 
   return config;
 };

@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { coin } from "cosmwasm";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
@@ -64,7 +65,15 @@ export const RiotGameBreedingScreen: ScreenFC<
     fetchRemainingTokens,
   } = useBreeding();
 
-  const { playGameAudio, stopMemoriesVideos } = useGame();
+  const { playGameAudio, muteAudio, enteredInGame } = useGame();
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
 
   const intervalRef = useRef<NodeJS.Timer>();
 
@@ -200,10 +209,6 @@ export const RiotGameBreedingScreen: ScreenFC<
           marginTop: layout.padding_x4,
           alignItems: "center",
           alignSelf: "center",
-        }}
-        onLayout={() => {
-          stopMemoriesVideos();
-          playGameAudio();
         }}
       >
         <BrandText style={[fontMedium48]}>Breeding</BrandText>

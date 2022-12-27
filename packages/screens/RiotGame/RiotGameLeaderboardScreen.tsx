@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -99,7 +100,16 @@ export const RiotGameLeaderboardScreen: ScreenFC<
   GameScreen.RiotGameLeaderboard
 > = () => {
   const [userScores, setUserScores] = useState<UserScore[]>([]);
-  const { playGameAudio, stopMemoriesVideos } = useGame();
+
+  const { playGameAudio, muteAudio, enteredInGame } = useGame();
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
 
   const fetchLeaderboard = async () => {
     const _userScores: UserScore[] = [];
@@ -134,13 +144,7 @@ export const RiotGameLeaderboardScreen: ScreenFC<
 
       <TertiaryBox fullWidth style={{ marginTop: layout.padding_x2 }}>
         <FlexRow>
-          <View
-            style={{ flex: 1 }}
-            onLayout={() => {
-              stopMemoriesVideos();
-              playGameAudio();
-            }}
-          >
+          <View style={{ flex: 1 }}>
             <BrandText
               style={[styles.colHeaderTitle, { marginLeft: layout.padding_x2 }]}
             >

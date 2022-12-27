@@ -15,6 +15,7 @@ import { layout } from "../../utils/style/layout";
 
 export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
+
   return (
     <ScreenContainer>
       <View

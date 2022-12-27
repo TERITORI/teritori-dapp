@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
@@ -22,7 +23,16 @@ export const RiotGameMarketplaceScreen: ScreenFC<
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );
-  const { playGameAudio, stopMemoriesVideos } = useGame();
+
+  const { playGameAudio, muteAudio, enteredInGame } = useGame();
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
 
   // returns
   return (
@@ -30,10 +40,6 @@ export const RiotGameMarketplaceScreen: ScreenFC<
       <ScrollView
         style={{ width: "100%" }}
         contentContainerStyle={{ alignItems: "center" }}
-        onLayout={() => {
-          stopMemoriesVideos();
-          playGameAudio();
-        }}
       >
         <CollectionHeader
           collectionId={THE_RIOT_COLLECTION_ID}

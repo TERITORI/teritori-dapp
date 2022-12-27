@@ -1,4 +1,5 @@
-import React from "react";
+import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect } from "react";
 import { Image, FlatList, View } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
@@ -24,8 +25,17 @@ export const RiotGameInventoryScreen: ScreenFC<
 > = () => {
   const navigation = useAppNavigation();
 
+  const { playGameAudio, muteAudio, enteredInGame } = useGame();
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
+
   const { myAvailableRippers } = useRippers();
-  const { playGameAudio, stopMemoriesVideos } = useGame();
 
   const gotoBreeding = () => {
     navigation.navigate("RiotGameBreeding");
@@ -34,13 +44,7 @@ export const RiotGameInventoryScreen: ScreenFC<
   return (
     <GameContentView>
       <FlexRow breakpoint={1200} justifyContent="space-around">
-        <View
-          style={{ opacity: 0.6, marginTop: layout.padding_x4 }}
-          onLayout={() => {
-            stopMemoriesVideos();
-            playGameAudio();
-          }}
-        >
+        <View style={{ opacity: 0.6, marginTop: layout.padding_x4 }}>
           <FlexRow justifyContent="space-between" alignItems="center">
             <BrandText style={fontMedium32}>Available Items</BrandText>
 

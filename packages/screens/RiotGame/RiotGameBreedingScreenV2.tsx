@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
@@ -30,8 +31,17 @@ export const RiotGameBreedingScreen: ScreenFC<
   GameScreen.RiotGameBreeding
 > = () => {
   const { myAvailableRippers } = useRippers();
-  const { playGameAudio, stopMemoriesVideos } = useGame();
   const [isShowBreedingModal, setIsShowBreedingModal] = useState(false);
+
+  const { playGameAudio, muteAudio, enteredInGame } = useGame();
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
 
   const doBreed = () => {
     setIsShowBreedingModal(true);
@@ -39,14 +49,7 @@ export const RiotGameBreedingScreen: ScreenFC<
 
   return (
     <GameContentView>
-      <FlexRow
-        breakpoint={992}
-        style={styles.container}
-        onLayout={() => {
-          stopMemoriesVideos();
-          playGameAudio();
-        }}
-      >
+      <FlexRow breakpoint={992} style={styles.container}>
         <View style={{ alignItems: "center" }}>
           <BrandText style={[fontMedium48]}>Breeding</BrandText>
 

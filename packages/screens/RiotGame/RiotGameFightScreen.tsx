@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -38,11 +39,19 @@ export const RiotGameFightScreen: ScreenFC<GameScreen.RiotGameFight> = () => {
   const navigation = useAppNavigation();
   const { setToastError } = useFeedbacks();
   const { myAvailableRippers } = useRippers();
-
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
   const [isUnstaking, setIsUnstaking] = useState(false);
-
   const [stakedRippers, setStakedRippers] = useState<RipperLightInfo[]>([]);
+
+  const { playGameAudio, muteAudio, enteredInGame } = useGame();
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
 
   const {
     currentSquad,
@@ -58,8 +67,6 @@ export const RiotGameFightScreen: ScreenFC<GameScreen.RiotGameFight> = () => {
     isSquadLoaded,
     setCurrentSquad,
   } = useSquadStaking();
-
-  const { playGameAudio, stopMemoriesVideos } = useGame();
 
   const fetchCurrentStakedRippers = async (currentStakedNfts: Nft[]) => {
     const client = await getNonSigningCosmWasmClient();
@@ -148,13 +155,7 @@ export const RiotGameFightScreen: ScreenFC<GameScreen.RiotGameFight> = () => {
         {PAGE_TITLE_MAP[stakingState]}
       </BrandText>
 
-      <View
-        style={styles.contentContainer}
-        onLayout={() => {
-          stopMemoriesVideos();
-          playGameAudio();
-        }}
-      >
+      <View style={styles.contentContainer}>
         <FlexRow justifyContent="space-between" breakpoint={992}>
           <View style={styles.col}>
             <FightBossSection />

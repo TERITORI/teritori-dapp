@@ -1,4 +1,5 @@
-import React from "react";
+import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect } from "react";
 import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
 
 import { useGame } from "../../context/GameProvider";
@@ -13,7 +14,16 @@ import { RiotGameHeader } from "./component/RiotGameHeader";
 
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();
-  const { setEnteredInGame } = useGame();
+
+  const { setEnteredInGame, stopAudio } = useGame();
+  // When this screen is focused, stop game audio
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      setEnteredInGame(false);
+      stopAudio();
+    }
+  }, [isFocused]);
 
   // variables
   const { width, height } = useWindowDimensions();

@@ -1,5 +1,6 @@
+import { useIsFocused } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   FlatList,
   Image,
@@ -40,12 +41,42 @@ const episodes = [
   { videoUri: "" },
 ];
 
-export const RiotGameMemoriesScreen: ScreenFC<GameScreen.RiotGameMemories> = () => {
+export const RiotGameMemoriesScreen: ScreenFC<
+  GameScreen.RiotGameMemories
+> = () => {
   const { width } = useWindowDimensions();
-  const { stopAudio, setEnteredInGame, setMemoriesVideos } = useGame();
-  const videosRefs = useRef<Video[]>([]);
+  const { muteAudio, setEnteredInGame, currentAudio } = useGame();
+  const episodesVideosRefs = useRef<Video[]>([]);
+  const isFocused = useIsFocused();
 
-  setMemoriesVideos(videosRefs.current);
+  // The game audio changes on inStaking update. So, we need to force mute game audio when it happens
+  useEffect(() => {
+    if (isFocused) {
+      muteAudio(true);
+    }
+  }, [currentAudio]);
+
+  useEffect(() => {
+    // Force enteredInGame, we don't need it because the game audio will be muted
+    setEnteredInGame(true);
+    // Mute current audio on this screen because pause/resume not works correctly with YouTube video (embeddedVideoUri in EmbeddedWeb)
+    // Avoiding some audio glitches
+    if (isFocused) {
+      muteAudio(true);
+    } else {
+      // When leaving this screen from this screen, unmute the game audio
+      // (Good to know : isFocused will never be false when the navigation doesn't start from this screen)
+      muteAudio(false);
+      // Stop all playing episodes videos
+      episodesVideosRefs.current.forEach(async (video) => {
+        if (!video) return;
+        const status = await video.getStatusAsync();
+        if (status.isLoaded && status.isPlaying) {
+          await video.stopAsync();
+        }
+      });
+    }
+  }, [isFocused]);
 
   let numCol = 3;
   if (width < 1200) {
@@ -57,13 +88,7 @@ export const RiotGameMemoriesScreen: ScreenFC<GameScreen.RiotGameMemories> = () 
 
   return (
     <GameContentView>
-      <View
-        style={styles.contentContainer}
-        onLayout={() => {
-          setEnteredInGame(true);
-          stopAudio();
-        }}
-      >
+      <View style={styles.contentContainer}>
         {/* Current season */}
         <BrandText style={[fontMedium32, styles.title]}>
           The R!ot Season I
@@ -98,7 +123,7 @@ export const RiotGameMemoriesScreen: ScreenFC<GameScreen.RiotGameMemories> = () 
             >
               {item.videoUri ? (
                 <Video
-                  ref={(item: Video) => videosRefs.current.push(item)}
+                  ref={(item: Video) => episodesVideosRefs.current.push(item)}
                   style={{
                     borderRadius: 7,
                     width: embeddedVideoSmWidth - 2,

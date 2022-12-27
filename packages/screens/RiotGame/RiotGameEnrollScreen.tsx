@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
@@ -60,31 +61,36 @@ export const RiotGameEnrollScreen: ScreenFC<GameScreen.RiotGameEnroll> = () => {
 
   const videoRef = React.useRef<Video>(null);
   const [isVideoFullScreen, setVideoFullScreen] = useState(false);
-  const { enteredInGame, stopAudio, playGameAudio, stopMemoriesVideos } =
-    useGame();
+  const { muteAudio, playGameAudio, enteredInGame } = useGame();
 
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
+
+  // Stop/Replay the video of this screen. This video has a special behavior :
+  // Muted and played by default, controls appears when fullscreen, unmuted when fullscreen
   useEffect(() => {
     const effect = async () => {
-      if (enteredInGame) {
-        await videoRef?.current?.replayAsync();
-        await videoRef?.current?.setIsMutedAsync(true);
-      }
-
-      if (!enteredInGame && isVideoFullScreen) {
-        await videoRef?.current?.replayAsync();
-        await videoRef?.current?.setIsMutedAsync(false);
-      }
+      if (!enteredInGame) {
+        await videoRef?.current?.stopAsync();
+      } else await videoRef?.current?.replayAsync();
     };
     effect();
   }, [enteredInGame]);
 
+  // Handle when the video fullscreen mode is updated : Mute game audio, unmute video audio
   useEffect(() => {
     const effect = async () => {
       if (isVideoFullScreen) {
-        stopAudio();
+        muteAudio(true);
         await videoRef?.current?.setIsMutedAsync(false);
-      } else {
-        if (enteredInGame) playGameAudio();
+      } else if (enteredInGame) {
+        muteAudio(false);
         await videoRef?.current?.setIsMutedAsync(true);
       }
     };
@@ -161,14 +167,7 @@ export const RiotGameEnrollScreen: ScreenFC<GameScreen.RiotGameEnroll> = () => {
 
   return (
     <GameContentView>
-      <View
-        onLayout={async () => {
-          playGameAudio();
-          stopMemoriesVideos();
-          if (!enteredInGame) return;
-          await videoRef?.current?.replayAsync();
-        }}
-      >
+      <View>
         <BrandText style={styles.pageTitle}>Send to fight</BrandText>
       </View>
 
@@ -236,7 +235,6 @@ export const RiotGameEnrollScreen: ScreenFC<GameScreen.RiotGameEnroll> = () => {
                 uri: embeddedVideoUri,
               }}
               onFullscreenUpdate={async () => {
-                await videoRef?.current?.replayAsync();
                 setVideoFullScreen((isIt) => !isIt);
               }}
               isMuted
