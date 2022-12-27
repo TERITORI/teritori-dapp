@@ -5,10 +5,12 @@ import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
 import { useWallets, Wallet } from "../context/WalletsProvider";
+import { useSelectedNetworkInfo } from "../hooks/useSelectedNetworkInfo";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../hooks/useTNSMetadata";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
+import { walletProviderToNetwork } from "../utils/network";
 import { neutral17, neutral44, secondaryColor } from "../utils/style/colors";
 import { walletSelectorWidth } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
@@ -74,6 +76,7 @@ export const WalletSelector: React.FC<{
 }> = ({ style }) => {
   const { wallets } = useWallets();
   const selectedWallet = useSelectedWallet();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
 
@@ -86,7 +89,10 @@ export const WalletSelector: React.FC<{
   }
 
   const otherWallets = wallets.filter(
-    (wallet) => wallet.id !== selectedWallet.id && wallet.address
+    (wallet) =>
+      wallet.id !== selectedWallet.id &&
+      wallet.address &&
+      walletProviderToNetwork(wallet.provider) === selectedNetworkInfo?.network
   );
 
   const onSelectWallet = (walletId: string) => {

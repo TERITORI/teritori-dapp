@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { getNetwork } from "../networks";
 import { getKeplrOfflineSigner } from "../utils/keplr";
+import { Network } from "../utils/network";
 import {
   CosmosRewardsResponse,
   getTeritoriSigningStargateClient,
@@ -202,6 +203,12 @@ const getNetworkRewards = async (
   if (!network) {
     return initialData;
   }
+
+  // TODO: Do not support ETH for now
+  if (network.network === Network.Ethereum) {
+    return { total: [], rewards: [] };
+  }
+
   const response = await fetch(
     `${network.restEndpoint}/cosmos/distribution/v1beta1/delegators/${address}/rewards`
   );

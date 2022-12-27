@@ -19,6 +19,8 @@ export const useCoingeckoPrices = (coins: CoingeckoCoin[]) => {
   const { data } = useQuery(
     ["coingeckoPrices", ids],
     async () => {
+      if (ids.length === 0) return {};
+
       const response = await fetch(
         `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(
           ids.join(",")

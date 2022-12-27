@@ -7,6 +7,7 @@ import { BrandText } from "../../components/BrandText";
 import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetwork } from "../../networks";
 import { Balance, prettyPrice } from "../../utils/coins";
 import { neutral22, neutral33 } from "../../utils/style/colors";
@@ -22,6 +23,7 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
   const [isWithdrawVisible, setWithdrawVisible] = useState(false);
   const [targetCurrency, setTargetCurrency] = useState<string>();
   const [expanded, setExpanded] = useState(false);
+  const selectedNetworkId = useSelectedNetworkId();
 
   const network = getNetwork(networkId);
   if (!network) {
@@ -159,7 +161,7 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
                 >
                   <BrandText>
                     {prettyPrice(
-                      process.env.TERITORI_NETWORK_ID || "",
+                      selectedNetworkId,
                       balance?.amount || "0",
                       currency.denom
                     )}

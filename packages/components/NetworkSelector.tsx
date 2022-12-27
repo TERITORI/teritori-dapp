@@ -1,12 +1,16 @@
-import React, { useMemo, useRef } from "react";
+import React, { useRef } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
+import { useFeedbacks } from "../context/FeedbacksProvider";
 import { useWallets } from "../context/WalletsProvider";
-import useSelectedWallet from "../hooks/useSelectedWallet";
-import { setSelectedWalletId } from "../store/slices/settings";
+import { useSelectedNetworkInfo } from "../hooks/useSelectedNetworkInfo";
+import {
+  setSelectedWalletId,
+  setSelectedNetworkId,
+} from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 import { Network } from "../utils/network";
 import { neutral17, secondaryColor } from "../utils/style/colors";
@@ -27,44 +31,53 @@ export const NetworkSelector: React.FC<{
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const dropdownRef = useRef<View>(null);
-  const selectedWallet = useSelectedWallet();
   const dispatch = useAppDispatch();
   const { wallets } = useWallets();
-
-  const network = useMemo(() => {
-    let network: Network;
-
-    switch (selectedWallet?.provider) {
-      case WalletProvider.Metamask:
-        network = Network.Ethereum;
-        break;
-      case WalletProvider.Keplr:
-      default:
-        network = Network.Teritori;
-    }
-
-    return network;
-  }, [selectedWallet?.provider]);
+  const { setToastError } = useFeedbacks();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
 
   const onPressNetwork = (network: Network) => {
-    let walletProvider: WalletProvider;
+    let walletProvider: WalletProvider | null = null;
+    let networkId: string = "";
 
     switch (network) {
       case Network.Ethereum:
         walletProvider = WalletProvider.Metamask;
+        networkId = process.env.ETHEREUM_NETWORK_ID || "";
         break;
       case Network.Teritori:
-      default:
         walletProvider = WalletProvider.Keplr;
+        networkId = process.env.TERITORI_NETWORK_ID || "";
+        break;
     }
 
-    const selectedWallet = wallets.find(
-      (w) => w.connected && w.provider === walletProvider
-    );
-
-    if (selectedWallet) {
-      dispatch(setSelectedWalletId(selectedWallet.id));
+    if (!walletProvider) {
+      return setToastError({
+        title: "Error",
+        message: `unsupported network ${network}`,
+      });
     }
+
+    if (!networkId) {
+      return setToastError({
+        title: "Error",
+        message: `missing network id for ${network}`,
+      });
+    }
+
+    // Auto select the first connected wallet when switching network
+    if (walletProvider && networkId) {
+      dispatch(setSelectedNetworkId(networkId));
+
+      const selectedWallet = wallets.find(
+        (w) => w.connected && w.provider === walletProvider
+      );
+
+      if (selectedWallet) {
+        dispatch(setSelectedWalletId(selectedWallet.id));
+      }
+    }
+
     closeOpenedDropdown();
   };
 
@@ -80,7 +93,7 @@ export const NetworkSelector: React.FC<{
           }}
           height={40}
         >
-          <NetworkIcon network={network} size={16} />
+          <NetworkIcon network={selectedNetworkInfo?.network} size={16} />
           <SpacerRow size={1} />
           <SVG
             source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}

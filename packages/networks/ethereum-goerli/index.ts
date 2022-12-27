@@ -1,8 +1,10 @@
+import { Network } from "../../utils/network";
 import { NetworkInfo } from "../types";
 import { ethereumGoerliCurrencies } from "./currencies";
 
 export const ethereumGoerliNetwork: NetworkInfo = {
   id: "ethereum-goerli",
+  network: Network.Ethereum,
   chainId: "5",
   displayName: "Ethereum Goerli",
   icon: "icons/networks/ethereum-circle.svg",

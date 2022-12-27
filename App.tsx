@@ -38,6 +38,7 @@ const { chains, provider, webSocketProvider } = configureChains(
   [mainnet, goerli],
   [publicProvider()]
 );
+
 const wagmiClient = createClient({
   autoConnect: true,
   connectors: [new MetaMaskConnector({ chains })],

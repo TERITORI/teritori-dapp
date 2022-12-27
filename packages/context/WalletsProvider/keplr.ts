@@ -7,10 +7,11 @@ import {
   setIsKeplrConnected,
   setSelectedWalletId,
 } from "../../store/slices/settings";
-// import { addWallet } from "../../store/slices/wallets";
 import { useAppDispatch } from "../../store/store";
+import { Network } from "../../utils/network";
 import { teritoriChainId } from "../../utils/teritori";
 import { WalletProvider } from "../../utils/walletProvider";
+import { useSelectedNetworkInfo } from "./../../hooks/useSelectedNetworkInfo";
 import { Wallet } from "./wallet";
 
 export type UseKeplrResult =
@@ -20,6 +21,7 @@ export type UseKeplrResult =
 export const useKeplr: () => UseKeplrResult = () => {
   const isKeplrConnected = useSelector(selectIsKeplrConnected);
   const [hasKeplr, setHasKeplr] = useState(false);
+  const selectedNetworkInfo = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
 
   const [addresses, setAddresses] = useState<string[]>([]);
@@ -133,7 +135,7 @@ export const useKeplr: () => UseKeplrResult = () => {
     });
 
     const selectedWallet = wallets.find((w) => w.connected);
-    if (selectedWallet) {
+    if (selectedWallet && selectedNetworkInfo?.network === Network.Teritori) {
       dispatch(setSelectedWalletId(selectedWallet.id));
     }
 

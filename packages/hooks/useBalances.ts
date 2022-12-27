@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { Decimal } from "cosmwasm";
+import { ethers } from "ethers";
 import { useMemo } from "react";
 
 import { getNativeCurrency, getNetwork } from "../networks";
 import { Balance } from "../utils/coins";
+import { Network } from "../utils/network";
 import { CosmosBalancesResponse } from "../utils/teritori";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
@@ -60,6 +62,25 @@ const getNetworkBalances = async (
   if (!network) {
     return [];
   }
+
+  // Support for ethereum balances
+  if (network.network === Network.Ethereum) {
+    const provider = ethers.getDefaultProvider(+network.chainId, {
+      alchemy: process.env.ALCHEMY_API_KEY,
+    });
+    // Prevent etherjs from polling network to get event, we do not need in this case
+    provider.pollingInterval = 60_000;
+
+    const balance = await provider.getBalance(address);
+
+    const balanceItem = {
+      amount: balance.toString(),
+      denom: network.currencies[0].denom,
+    };
+    return [balanceItem];
+  }
+
+  // Suppot for cosmos balances
   const response = await fetch(
     `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
   );

@@ -21,6 +21,7 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   const areThereWallets = useAreThereWallets();
   const { height } = useMaxResolution();
   const balances = useBalances(selectedNetwork, selectedWallet?.address);
+
   return (
     <WalletManagerScreenContainer>
       {areThereWallets ? (

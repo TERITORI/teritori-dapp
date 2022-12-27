@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 interface Settings {
+  selectedNetworkId: string;
   selectedWalletId: string;
   isKeplrConnected: boolean;
   isMetamaskConnected: boolean;
@@ -11,10 +12,14 @@ interface Settings {
 
 const initialState: Settings = {
   selectedWalletId: "",
+  selectedNetworkId: "",
   isKeplrConnected: false,
   isMetamaskConnected: false,
   alreadyVisited: false,
 };
+
+export const selectSelectedNetworkId = (state: RootState) =>
+  state.settings.selectedNetworkId;
 
 export const selectSelectedWalletId = (state: RootState) =>
   state.settings.selectedWalletId;
@@ -29,6 +34,9 @@ const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
+    setSelectedNetworkId: (state, action: PayloadAction<string>) => {
+      state.selectedNetworkId = action.payload;
+    },
     setSelectedWalletId: (state, action: PayloadAction<string>) => {
       state.selectedWalletId = action.payload;
     },
@@ -42,6 +50,7 @@ const settingsSlice = createSlice({
 });
 
 export const {
+  setSelectedNetworkId,
   setSelectedWalletId,
   setIsKeplrConnected,
   setIsMetamaskConnected,
