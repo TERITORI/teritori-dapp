@@ -1,4 +1,5 @@
-import React from "react";
+import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect } from "react";
 import { Image, FlatList, View } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
@@ -9,6 +10,7 @@ import FlexRow from "../../components/FlexRow";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
+import { useGame } from "../../context/GameProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
@@ -19,6 +21,16 @@ import { RipperAvatar } from "./component/RipperAvatar";
 
 export const RiotGameInventoryScreen = () => {
   const navigation = useAppNavigation();
+
+  const { playGameAudio, muteAudio, enteredInGame } = useGame();
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
 
   const { myAvailableRippers } = useRippers();
 

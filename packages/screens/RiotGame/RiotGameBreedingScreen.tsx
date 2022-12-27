@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { coin } from "cosmwasm";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
@@ -13,6 +14,7 @@ import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutl
 import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useGame } from "../../context/GameProvider";
 import { ConfigResponse } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { useBreeding } from "../../hooks/riotGame/useBreeding";
 import { useRippers } from "../../hooks/riotGame/useRippers";
@@ -58,6 +60,16 @@ export const RiotGameBreedingScreen = () => {
     getTokenInfo,
     fetchRemainingTokens,
   } = useBreeding();
+
+  const { playGameAudio, muteAudio, enteredInGame } = useGame();
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
 
   const intervalRef = useRef<NodeJS.Timer>();
 

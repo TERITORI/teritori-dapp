@@ -1,15 +1,23 @@
+import { useIsFocused } from "@react-navigation/native";
+import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
 import React, { useState, useMemo, useEffect } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import { EmbeddedWeb } from "../../components/EmbeddedWeb";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useGame } from "../../context/GameProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
 import { StakingState } from "../../utils/game";
@@ -51,6 +59,43 @@ export const RiotGameEnrollScreen = () => {
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);
   const [isJoiningFight, setIsJoiningFight] = useState(false);
+
+  const videoRef = React.useRef<Video>(null);
+  const [isVideoFullScreen, setVideoFullScreen] = useState(false);
+  const { muteAudio, playGameAudio, enteredInGame } = useGame();
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
+
+  // Stop/Replay the video of this screen. This video has a special behavior :
+  // Muted and played by default, controls appears when fullscreen, unmuted when fullscreen
+  useEffect(() => {
+    const effect = async () => {
+      if (!enteredInGame) {
+        await videoRef?.current?.stopAsync();
+      } else await videoRef?.current?.replayAsync();
+    };
+    effect();
+  }, [enteredInGame]);
+
+  // Handle when the video fullscreen mode is updated : Mute game audio, unmute video audio
+  useEffect(() => {
+    const effect = async () => {
+      if (isVideoFullScreen) {
+        muteAudio(true);
+        await videoRef?.current?.setIsMutedAsync(false);
+      } else if (enteredInGame) {
+        muteAudio(false);
+        await videoRef?.current?.setIsMutedAsync(true);
+      }
+    };
+    effect();
+  }, [isVideoFullScreen]);
 
   const availableForEnrollRippers = useMemo(() => {
     const selectedIds = selectedRippers.map((r) => r.id);
@@ -186,14 +231,26 @@ export const RiotGameEnrollScreen = () => {
             </BrandText>
           </TertiaryBox>
 
-          <View style={styles.videoContainer}>
-            <EmbeddedWeb
-              uri={embeddedVideoUri}
-              width={embeddedVideoWidth}
-              height={embeddedVideoHeight}
-              borderRadius={25}
+          <TouchableOpacity
+            style={styles.videoContainer}
+            onPress={async () => {
+              await videoRef?.current?.presentFullscreenPlayer();
+            }}
+          >
+            <Video
+              ref={videoRef}
+              style={{ borderRadius: 25 }}
+              source={{
+                uri: embeddedVideoUri,
+              }}
+              onFullscreenUpdate={async () => {
+                setVideoFullScreen((isIt) => !isIt);
+              }}
+              isMuted
+              resizeMode={ResizeMode.CONTAIN}
+              isLooping
             />
-          </View>
+          </TouchableOpacity>
         </View>
       </FlexRow>
 

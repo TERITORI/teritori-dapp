@@ -1,4 +1,6 @@
-import React from "react";
+import { useIsFocused } from "@react-navigation/native";
+import { ResizeMode, Video } from "expo-av";
+import React, { useEffect, useRef } from "react";
 import {
   FlatList,
   Image,
@@ -12,6 +14,7 @@ import { BrandText } from "../../components/BrandText";
 import { EmbeddedWeb } from "../../components/EmbeddedWeb";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../components/spacer";
+import { useGame } from "../../context/GameProvider";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
@@ -37,6 +40,39 @@ const episodes = [
 
 export const RiotGameMemoriesScreen = () => {
   const { width } = useWindowDimensions();
+
+  const { muteAudio, setEnteredInGame, currentAudio } = useGame();
+  const episodesVideosRefs = useRef<Video[]>([]);
+  const isFocused = useIsFocused();
+
+  // The game audio changes on inStaking update. So, we need to force mute game audio when it happens
+  useEffect(() => {
+    if (isFocused) {
+      muteAudio(true);
+    }
+  }, [currentAudio]);
+
+  useEffect(() => {
+    // Force enteredInGame, we don't need it because the game audio will be muted
+    setEnteredInGame(true);
+    // Mute current audio on this screen because pause/resume not works correctly with YouTube video (embeddedVideoUri in EmbeddedWeb)
+    // Avoiding some audio glitches
+    if (isFocused) {
+      muteAudio(true);
+    } else {
+      // When leaving this screen from this screen, unmute the game audio
+      // (Good to know : isFocused will never be false when the navigation doesn't start from this screen)
+      muteAudio(false);
+      // Stop all playing episodes videos
+      episodesVideosRefs.current.forEach(async (video) => {
+        if (!video) return;
+        const status = await video.getStatusAsync();
+        if (status.isLoaded && status.isPlaying) {
+          await video.stopAsync();
+        }
+      });
+    }
+  }, [isFocused]);
 
   let numCol = 3;
   if (width < 1200) {
@@ -77,15 +113,23 @@ export const RiotGameMemoriesScreen = () => {
           renderItem={({ item, index }) => (
             <TertiaryBox
               key={index}
-              height={embeddedVideoSmHeight - 2}
+              height={embeddedVideoSmHeight}
               width={embeddedVideoSmWidth}
               style={styles.videoSmBox}
             >
               {item.videoUri ? (
-                <EmbeddedWeb
-                  uri={item.videoUri}
-                  width={embeddedVideoSmWidth}
-                  height={embeddedVideoSmHeight}
+                <Video
+                  ref={(item: Video) => episodesVideosRefs.current.push(item)}
+                  style={{
+                    borderRadius: 7,
+                    width: embeddedVideoSmWidth - 2,
+                    height: embeddedVideoSmHeight - 2,
+                  }}
+                  source={{
+                    uri: item.videoUri,
+                  }}
+                  useNativeControls
+                  resizeMode={ResizeMode.CONTAIN}
                 />
               ) : (
                 <Image

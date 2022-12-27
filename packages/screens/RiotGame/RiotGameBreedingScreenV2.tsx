@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
@@ -9,6 +10,7 @@ import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { SpacerRow } from "../../components/spacer";
+import { useGame } from "../../context/GameProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import {
@@ -26,6 +28,16 @@ import { RipperAvatar } from "./component/RipperAvatar";
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();
   const [isShowBreedingModal, setIsShowBreedingModal] = useState(false);
+
+  const { playGameAudio, muteAudio, enteredInGame } = useGame();
+  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
 
   const doBreed = () => {
     setIsShowBreedingModal(true);

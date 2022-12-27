@@ -8,8 +8,10 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 
 import { LoaderFullScreen } from "../../../components/loaders/LoaderFullScreen";
+import { useGame } from "../../../context/GameProvider";
 import { neutral00 } from "../../../utils/style/colors";
 import { FightStatsSection } from "./FightStatsSection";
+import { ResumeGame } from "./ResumeGame";
 import { RiotGameHeader } from "./RiotGameHeader";
 
 type GameContentViewProps = {
@@ -28,6 +30,8 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
   loading = false,
   ...props
 }) => {
+  const { enteredInGame, setEnteredInGame, playGameAudio } = useGame();
+
   const content = (
     <ScrollView>
       {!hideStats && <FightStatsSection />}
@@ -41,21 +45,32 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
   );
 
   return (
-    <View style={[{ flex: 1, backgroundColor: neutral00 }, containerStyle]}>
-      <RiotGameHeader />
-      <LoaderFullScreen visible={loading} />
-
-      {bgImage ? (
-        <ImageBackground
-          style={{ flex: 1 }}
-          source={bgImage}
-          resizeMode="cover"
-        >
-          {content}
-        </ImageBackground>
-      ) : (
-        content
+    <>
+      {/*Ensure the user interacts with the document by forcing him to click on "Resume game", then we can play game audio*/}
+      {!enteredInGame && (
+        <ResumeGame
+          onPressResume={() => {
+            setEnteredInGame(true);
+            playGameAudio();
+          }}
+        />
       )}
-    </View>
+      <View style={[{ flex: 1, backgroundColor: neutral00 }, containerStyle]}>
+        <RiotGameHeader />
+        <LoaderFullScreen visible={loading} />
+
+        {bgImage ? (
+          <ImageBackground
+            style={{ flex: 1 }}
+            source={bgImage}
+            resizeMode="cover"
+          >
+            {content}
+          </ImageBackground>
+        ) : (
+          content
+        )}
+      </View>
+    </>
   );
 };

@@ -16,6 +16,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
+import { GameContextProvider } from "./packages/context/GameProvider";
 import { SidebarContextProvider } from "./packages/context/SidebarProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
@@ -49,20 +50,22 @@ export default function App() {
         <NavigationContainer linking={linking}>
           <SafeAreaProvider>
             <ReduxProvider store={store}>
-              <FeedbacksContextProvider>
-                <DropdownsContextProvider>
-                  <WalletsProvider>
-                    <TransactionModalsProvider>
-                      <TNSContextProvider>
-                        <SidebarContextProvider>
-                          <StatusBar style="inverted" />
-                          <Navigator />
-                        </SidebarContextProvider>
-                      </TNSContextProvider>
-                    </TransactionModalsProvider>
-                  </WalletsProvider>
-                </DropdownsContextProvider>
-              </FeedbacksContextProvider>
+              <GameContextProvider>
+                <FeedbacksContextProvider>
+                  <DropdownsContextProvider>
+                    <WalletsProvider>
+                      <TransactionModalsProvider>
+                        <TNSContextProvider>
+                          <SidebarContextProvider>
+                            <StatusBar style="inverted" />
+                            <Navigator />
+                          </SidebarContextProvider>
+                        </TNSContextProvider>
+                      </TransactionModalsProvider>
+                    </WalletsProvider>
+                  </DropdownsContextProvider>
+                </FeedbacksContextProvider>
+              </GameContextProvider>
             </ReduxProvider>
           </SafeAreaProvider>
         </NavigationContainer>
