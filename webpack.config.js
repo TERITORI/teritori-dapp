@@ -15,14 +15,6 @@ module.exports = async function (env, argv) {
     },
   });
 
-  // wagmi specific code
-  config.module.rules.push({
-    test: /wagmi\/.*\.js/,
-    use: {
-      loader: "babel-loader",
-    },
-  });
-
   config.module.rules.forEach((rule) => {
     if (rule.oneOf) {
       rule.oneOf.unshift({
