@@ -79,11 +79,17 @@ const getNetworkBalances = async (
     };
     return [balanceItem];
   }
-
-  // Suppot for cosmos balances
-  const response = await fetch(
-    `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
-  );
-  const responseJSON: CosmosBalancesResponse = await response.json();
-  return responseJSON.balances;
+  // Support for cosmos balances
+  else if (network.network === Network.Teritori) {
+    const response = await fetch(
+      `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
+    );
+    const responseJSON: CosmosBalancesResponse = await response.json();
+    return responseJSON.balances;
+  }
+  // Unsupported network
+  else {
+    console.error(`unsupported network ${network.network}`);
+    return [];
+  }
 };

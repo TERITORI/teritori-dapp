@@ -66,17 +66,13 @@ export const NetworkSelector: React.FC<{
     }
 
     // Auto select the first connected wallet when switching network
-    if (walletProvider && networkId) {
-      dispatch(setSelectedNetworkId(networkId));
+    dispatch(setSelectedNetworkId(networkId));
 
-      const selectedWallet = wallets.find(
-        (w) => w.connected && w.provider === walletProvider
-      );
+    const selectedWallet = wallets.find(
+      (w) => w.connected && w.provider === walletProvider
+    );
 
-      if (selectedWallet) {
-        dispatch(setSelectedWalletId(selectedWallet.id));
-      }
-    }
+    dispatch(setSelectedWalletId(selectedWallet?.id || ""));
 
     closeOpenedDropdown();
   };
