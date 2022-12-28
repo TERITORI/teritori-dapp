@@ -48,13 +48,7 @@ export const RightRail = (props: { searchInput: string }) => {
                     .includes(props.searchInput.toLowerCase())
                 )
                 .map((option: dAppType, index: React.Key) => {
-                  return (
-                    <DAppBox
-                      key={index}
-                      option={option}
-                      groupKey={element.id}
-                    />
-                  );
+                  return <DAppBox key={index} option={option} />;
                 })}
             </View>
           </View>

@@ -7,9 +7,10 @@ import burnSVG from "../../../../assets/icons/burn.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
-import { removePinnedApp } from "../../../store/slices/dapps-store";
+import { setCheckedApp } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import {
+  errorColor,
   mineShaftColor,
   neutral17,
   neutral33,
@@ -28,8 +29,10 @@ export function SelectedDraggable(props: { option: dAppType }) {
   const deleteFromList = () => {
     const action = {
       appId: props.option.id,
+      groupKey: props.option.groupKey,
+      isChecked: false,
     };
-    dispatch(removePinnedApp(action));
+    dispatch(setCheckedApp(action));
   };
   return (
     <div
@@ -47,7 +50,9 @@ export function SelectedDraggable(props: { option: dAppType }) {
         noBrokenCorners
         style={{ marginLeft: 6 }}
         mainContainerStyle={{
-          backgroundColor: withAlpha(neutral33, 0.64),
+          backgroundColor: !showTrashIcon
+            ? withAlpha(neutral33, 0.64)
+            : withAlpha(errorColor, 0.14),
         }}
         width={32}
         height={50}
@@ -56,9 +61,9 @@ export function SelectedDraggable(props: { option: dAppType }) {
           {showTrashIcon ? (
             <TrashIcon
               style={{
-                width: 24,
-                height: 24,
-                stroke: "red",
+                width: 14,
+                height: 14,
+                stroke: "#cc3a43",
               }}
               onClick={deleteFromList}
             />

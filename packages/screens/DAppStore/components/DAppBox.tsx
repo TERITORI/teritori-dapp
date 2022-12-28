@@ -1,12 +1,16 @@
 import Checkbox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import burnSVG from "../../../../assets/icons/burn.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
-import { setCheckedApp } from "../../../store/slices/dapps-store";
+import {
+  selectAvailableApps,
+  setCheckedApp,
+} from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import {
   gradientColorBlue,
@@ -53,18 +57,25 @@ const styles = StyleSheet.create({
   },
 });
 
-export function DAppBox(props: { option: dAppType; groupKey: string }) {
+export function DAppBox(props: { option: dAppType }) {
+  const availableApps = useSelector(selectAvailableApps);
   const dispatch = useAppDispatch();
   const [isChecked, setChecked] = useState(props.option.isChecked);
 
   useEffect(() => {
     const action = {
-      groupKey: props.groupKey,
+      groupKey: props.option.groupKey,
       appId: props.option.id,
       isChecked,
     };
     dispatch(setCheckedApp(action));
   }, [isChecked]);
+
+  useEffect(() => {
+    setChecked(
+      availableApps[props.option.groupKey]["options"][props.option.id].isChecked
+    );
+  }, [availableApps]);
 
   return (
     <SecondaryBox

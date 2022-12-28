@@ -14,6 +14,7 @@ export function getAvailableApps(): dAppGroup {
           icon: "",
           isChecked: true,
           order: 2,
+          groupKey: "teritori-core-apps",
         },
         "dApp 3": {
           id: "dApp 3",
@@ -23,6 +24,7 @@ export function getAvailableApps(): dAppGroup {
           icon: "",
           isChecked: true,
           order: 1,
+          groupKey: "teritori-core-apps",
         },
       },
     },
@@ -38,6 +40,7 @@ export function getAvailableApps(): dAppGroup {
           icon: "",
           isChecked: false,
           order: -1,
+          groupKey: "top-apps",
         },
         dApp12: {
           id: "dApp12",
@@ -47,6 +50,7 @@ export function getAvailableApps(): dAppGroup {
           icon: "",
           isChecked: false,
           order: -1,
+          groupKey: "top-apps",
         },
         dApp123: {
           id: "dApp123",
@@ -55,6 +59,7 @@ export function getAvailableApps(): dAppGroup {
           icon: "",
           isChecked: false,
           order: -1,
+          groupKey: "top-apps",
         },
         "dApp 3": {
           id: "dApp 3",
@@ -63,6 +68,7 @@ export function getAvailableApps(): dAppGroup {
           icon: "",
           isChecked: false,
           order: -1,
+          groupKey: "top-apps",
         },
       },
     },
@@ -78,6 +84,7 @@ export function getAvailableApps(): dAppGroup {
           icon: "",
           isChecked: false,
           order: -1,
+          groupKey: "external-id",
         },
         dApp3: {
           id: "dApp3",
@@ -86,6 +93,7 @@ export function getAvailableApps(): dAppGroup {
           icon: "",
           isChecked: false,
           order: -1,
+          groupKey: "external-id",
         },
       },
     },
