@@ -8,28 +8,39 @@ interface pinnedAppsCollection {
 }
 
 interface DappsStorage {
-  pinnedApps: pinnedAppsCollection;
+  selectedApps: pinnedAppsCollection;
   availableApps: dAppGroup;
 }
 
 const initialState: DappsStorage = {
-  pinnedApps: {},
+  selectedApps: {},
   availableApps: {},
 };
 
-export const selectPinnedApps = (state: RootState) =>
-  state.dAppsStore.pinnedApps;
-
 export const selectAvailableApps = (state: RootState) =>
   state.dAppsStore.availableApps;
+
+export const getSelectedApps = (state: RootState) =>
+  Object.values(state.dAppsStore.availableApps).flatMap((element) =>
+    Object.values(element.options).filter(
+      (option: dAppType) => option.isChecked
+    )
+  );
+
+const persist = (state: dAppGroup) => {
+  const pureMagic = JSON.stringify(state, function replacer(key, value) {
+    if (Array.isArray(value) && value.length === 0) {
+      return { ...value }; // Converts empty array with string properties into a POJO
+    }
+    return value;
+  });
+  window.localStorage.setItem("teritori-dappstore", pureMagic);
+};
 
 const dAppsStore = createSlice({
   name: "dapps-storage",
   initialState,
   reducers: {
-    setPinnedApp: (state, action: PayloadAction<pinnedAppsCollection>) => {
-      state.pinnedApps = action.payload;
-    },
     setAvailableApps: (state, action: PayloadAction<dAppGroup>) => {
       state.availableApps = action.payload;
     },
@@ -44,23 +55,24 @@ const dAppsStore = createSlice({
       state.availableApps[action.payload.groupKey]["options"][
         action.payload.appId
       ].isChecked = action.payload.isChecked;
+      persist(state.availableApps);
     },
-    removePinnedApp: (
+    setOrder: (
       state,
       action: PayloadAction<{
+        groupKey: string;
         appId: string;
+        order: number;
       }>
     ) => {
-      delete state.pinnedApps[action.payload.appId];
+      state.availableApps[action.payload.groupKey]["options"][
+        action.payload.appId
+      ].order = action.payload.order;
+      persist(state.availableApps);
     },
   },
 });
 
-export const {
-  setPinnedApp,
-  setAvailableApps,
-  setCheckedApp,
-  removePinnedApp,
-} = dAppsStore.actions;
+export const { setAvailableApps, setCheckedApp, setOrder } = dAppsStore.actions;
 
 export const dAppsReducer = dAppsStore.reducer;
