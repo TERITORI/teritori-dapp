@@ -1,7 +1,7 @@
 import { useMetaMask } from "metamask-react";
 import { useMemo } from "react";
 
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetworkInfo";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { setSelectedWalletId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { Network } from "../../utils/network";

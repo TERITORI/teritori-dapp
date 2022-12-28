@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
@@ -24,12 +25,14 @@ import {
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCurrency } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
+import { getMetaMaskEthereumSigner } from "../../utils/metamask";
 import { ScreenFC } from "../../utils/navigation";
 import {
   neutral33,
@@ -101,7 +104,30 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     return msg;
   };
 
-  const mint = useCallback(async () => {
+  const mint = async () => {
+    const signer = await getMetaMaskEthereumSigner();
+    if (!signer) {
+      return setToastError({ title: "Error", message: "no account connected" });
+    }
+
+    const evmTeritoriMinter = TeritoriMinter__factory.connect(
+      process.env.ETHEREUM_BUNKER_MINTER_CONTRACT_ADDRESS || "",
+      signer
+    );
+
+    const address = await signer.getAddress();
+    const estimatedGas = await evmTeritoriMinter.estimateGas.requestMint(
+      address
+    );
+    const config = await evmTeritoriMinter.requestMint(address, {
+      gasLimit: estimatedGas,
+      value: ethers.utils.formatEther(1),
+    });
+    console.log(config);
+    // mintBackup()
+  };
+
+  const mintBackup = useCallback(async () => {
     try {
       const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
 

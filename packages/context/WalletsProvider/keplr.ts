@@ -11,7 +11,7 @@ import { useAppDispatch } from "../../store/store";
 import { Network } from "../../utils/network";
 import { teritoriChainId } from "../../utils/teritori";
 import { WalletProvider } from "../../utils/walletProvider";
-import { useSelectedNetworkInfo } from "./../../hooks/useSelectedNetworkInfo";
+import { useSelectedNetworkInfo } from "./../../hooks/useSelectedNetwork";
 import { Wallet } from "./wallet";
 
 export type UseKeplrResult =

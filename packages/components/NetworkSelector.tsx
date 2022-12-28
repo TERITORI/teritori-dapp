@@ -6,7 +6,7 @@ import chevronUpSVG from "../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { useWallets } from "../context/WalletsProvider";
-import { useSelectedNetworkInfo } from "../hooks/useSelectedNetworkInfo";
+import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import {
   setSelectedWalletId,
   setSelectedNetworkId,

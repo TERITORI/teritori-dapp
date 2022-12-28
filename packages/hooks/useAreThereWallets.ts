@@ -1,7 +1,7 @@
 import { useWallets } from "../context/WalletsProvider";
 import { walletProviderToNetwork } from "../utils/network";
 import { WalletProvider } from "../utils/walletProvider";
-import { useSelectedNetworkInfo } from "./useSelectedNetworkInfo";
+import { useSelectedNetworkInfo } from "./useSelectedNetwork";
 
 export const useAreThereWallets = () => {
   const { wallets } = useWallets();

@@ -5,12 +5,12 @@ import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
 import { useWallets, Wallet } from "../context/WalletsProvider";
-import { useSelectedNetworkInfo } from "../hooks/useSelectedNetworkInfo";
+import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../hooks/useTNSMetadata";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
-import { walletProviderToNetwork } from "../utils/network";
+import { Network, walletProviderToNetwork } from "../utils/network";
 import { neutral17, neutral44, secondaryColor } from "../utils/style/colors";
 import { walletSelectorWidth } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
@@ -45,7 +45,15 @@ const WalletView: React.FC<{
   wallet?: Wallet;
   style?: StyleProp<ViewStyle>;
 }> = ({ wallet, style }) => {
-  const tnsMetadata = useTNSMetadata(wallet?.address);
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+
+  // TODO: only support TNS for teritori for now
+  const tnsMetadata = useTNSMetadata(
+    selectedNetworkInfo?.network === Network.Teritori
+      ? wallet?.address
+      : undefined
+  );
+
   const fontSize = 14;
   return (
     <View style={[{ flexDirection: "row", alignItems: "center" }, style]}>
