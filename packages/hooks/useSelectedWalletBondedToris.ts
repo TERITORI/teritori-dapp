@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { Decimal } from "cosmwasm";
 
+import { NetworkInfo } from "../networks";
 import { toriCurrency, teritoriRestProvider } from "../utils/teritori";
 import useSelectedWallet from "./useSelectedWallet";
-import {NetworkInfo} from "../networks";
 
-export const useSelectedWalletBondedToris = (validatorAddress?: string, network?: NetworkInfo) => {
+export const useSelectedWalletBondedToris = (
+  validatorAddress?: string,
+  network?: NetworkInfo
+) => {
   const wallet = useSelectedWallet();
 
   const { data, refetch } = useQuery(
@@ -19,7 +22,9 @@ export const useSelectedWalletBondedToris = (validatorAddress?: string, network?
         let nextKey = "";
         while (true) {
           const httpResponse = await fetch(
-            `${network?.restEndpoint || teritoriRestProvider}/cosmos/staking/v1beta1/delegations/${
+            `${
+              network?.restEndpoint || teritoriRestProvider
+            }/cosmos/staking/v1beta1/delegations/${
               wallet.address
             }?pagination.key=${encodeURIComponent(nextKey)}`
           );

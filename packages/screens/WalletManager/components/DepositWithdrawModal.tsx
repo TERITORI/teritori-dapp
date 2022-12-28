@@ -45,13 +45,16 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   isVisible,
   onClose,
   targetCurrency: targetCurrencyDenom,
-                                                                    selectedNetworkId,
+  selectedNetworkId,
 }) => {
   const { setToastError } = useFeedbacks();
 
   const selectedWallet = useSelectedWallet(); // FIXME: this could not match networkId
 
-  const ibcTargetCurrency = getIBCCurrency(selectedNetworkId, targetCurrencyDenom);
+  const ibcTargetCurrency = getIBCCurrency(
+    selectedNetworkId,
+    targetCurrencyDenom
+  );
 
   const nativeTargetCurrency = getNativeCurrency(
     ibcTargetCurrency?.sourceNetwork,
@@ -59,10 +62,14 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   );
 
   const sourceNetworkId =
-    variation === "withdraw" ? selectedNetworkId : ibcTargetCurrency?.sourceNetwork;
+    variation === "withdraw"
+      ? selectedNetworkId
+      : ibcTargetCurrency?.sourceNetwork;
   const sourceNetwork = getNetwork(sourceNetworkId);
   const destinationNetworkId =
-    variation === "withdraw" ? ibcTargetCurrency?.sourceNetwork : selectedNetworkId;
+    variation === "withdraw"
+      ? ibcTargetCurrency?.sourceNetwork
+      : selectedNetworkId;
   const destinationNetwork = getNetwork(destinationNetworkId);
 
   const fromAccount =

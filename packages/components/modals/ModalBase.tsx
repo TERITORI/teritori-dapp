@@ -47,7 +47,7 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
   labelComponent,
   visible,
   width,
-                                height,
+  height,
   onClose,
   childrenBottom,
   children,

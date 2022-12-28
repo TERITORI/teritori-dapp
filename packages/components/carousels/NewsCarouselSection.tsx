@@ -7,14 +7,14 @@ import { useSelector } from "react-redux";
 import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { News } from "../../api/marketplace/v1/marketplace";
+import { useBackendClient } from "../../hooks/useBackendClient";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { isNetworkTestnet } from "../../networks";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { NewsBox } from "../hub/NewsBox";
-import {getNetwork, isNetworkTestnet, isTestMode} from "../../networks";
-import {useBackendClient} from "../../hooks/useBackendClient";
 
 export const NewsCarouselSection: React.FC = () => {
   const { width } = useMaxResolution();
@@ -67,12 +67,14 @@ export const NewsCarouselSection: React.FC = () => {
 //TODO: networkId instead of testnet. ==> Wait for backend modif
 const useNews = () => {
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
-  const {backendClient} = useBackendClient()
+  const { backendClient } = useBackendClient();
 
   const { data } = useQuery(
     ["news", isNetworkTestnet(selectedNetworkId)],
     async () => {
-      const { news } = await backendClient.News({ testnet: isNetworkTestnet(selectedNetworkId) });
+      const { news } = await backendClient.News({
+        testnet: isNetworkTestnet(selectedNetworkId),
+      });
       return news;
     },
     {

@@ -24,8 +24,7 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
   },
   {
     kind: "ibc",
-    denom:
-      "",
+    denom: "",
     displayName: "OSMO",
     sourceNetwork: "osmosis-testnet",
     sourceNetworkDisplayName: NetworkName.OsmosisTestnet,
@@ -39,8 +38,7 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
   // Only Juno mainnet (juno-1)
   {
     kind: "ibc",
-    denom:
-      "",
+    denom: "",
     displayName: "JUNO",
     sourceNetwork: "juno",
     sourceNetworkDisplayName: NetworkName.Juno,

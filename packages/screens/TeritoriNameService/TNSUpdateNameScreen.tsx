@@ -1,6 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
@@ -12,6 +13,8 @@ import { Metadata } from "../../contracts-clients/teritori-name-service/Teritori
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { getNetwork } from "../../networks";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { defaultMintFee } from "../../utils/fee";
 import {
   getFirstKeplrAccount,
@@ -23,9 +26,6 @@ import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../../store/slices/settings";
-import {getNetwork} from "../../networks";
 
 interface TNSUpdateNameScreenProps extends TNSModalCommonProps {}
 
@@ -103,7 +103,8 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
     };
 
     try {
-      const walletAddress = (await getFirstKeplrAccount(selectedNetwork)).address;
+      const walletAddress = (await getFirstKeplrAccount(selectedNetwork))
+        .address;
 
       const signingClient = await getSigningCosmWasmClient(selectedNetwork);
 

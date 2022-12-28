@@ -20,6 +20,7 @@ import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getNetwork } from "../../networks";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import { defaultMintFee } from "../../utils/fee";
@@ -35,7 +36,6 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
-import {getNetwork} from "../../networks";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,

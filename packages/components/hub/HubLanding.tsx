@@ -14,8 +14,10 @@ import {
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
+import { useBackendClient } from "../../hooks/useBackendClient";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { isNetworkTestnet } from "../../networks";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
@@ -26,8 +28,6 @@ import { LabelCard } from "../cards/LabelCard";
 import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
-import {getNetwork, isNetworkTestnet, isTestMode} from "../../networks";
-import {useBackendClient} from "../../hooks/useBackendClient";
 
 const gridHalfGutter = 12;
 
@@ -157,12 +157,14 @@ Launch"
 //TODO: networkId instead of testnet. ==> Wait for backend modif
 const useBanners = () => {
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
-  const {backendClient} = useBackendClient()
+  const { backendClient } = useBackendClient();
 
   const { data } = useQuery(
     ["banners", isNetworkTestnet(selectedNetworkId)],
     async () => {
-      const { banners } = await backendClient.Banners({ testnet: isNetworkTestnet(selectedNetworkId) });
+      const { banners } = await backendClient.Banners({
+        testnet: isNetworkTestnet(selectedNetworkId),
+      });
       return banners;
     },
     { staleTime: Infinity }

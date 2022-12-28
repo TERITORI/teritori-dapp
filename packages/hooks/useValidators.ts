@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { Decimal } from "cosmwasm";
 import { partition } from "lodash";
+import { useSelector } from "react-redux";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
+import { getNetwork } from "../networks";
 import { ValidatorInfo } from "../screens/Stake/types";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { teritoriRestProvider, toriCurrency } from "../utils/teritori";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../store/slices/settings";
-import {getNetwork, NetworkInfo} from "../networks";
 
 interface StakingParams {
   unbonding_time: string;
@@ -28,7 +28,8 @@ export const useValidators = () => {
   const selectedNetwork = getNetwork(selectedNetworkId);
   const { setToastError } = useFeedbacks();
 
-  const restProvider = selectedNetwork?.restEndpoint || teritoriRestProvider || ""
+  const restProvider =
+    selectedNetwork?.restEndpoint || teritoriRestProvider || "";
 
   const { data, isFetching } = useQuery(
     [`teritoriValidators`, selectedNetworkId],
@@ -127,7 +128,10 @@ const prettyPercent = (val: number) => {
   return (val * 100).toFixed(2) + "%"; // FIXME: cut useless zeros
 };
 
-const getTendermintActiveValidators = async (limit: number, restProvider: string): Promise<any[]> => {
+const getTendermintActiveValidators = async (
+  limit: number,
+  restProvider: string
+): Promise<any[]> => {
   const activeValidators = await (
     await fetch(
       `${restProvider}/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.limit=${limit}&pagination.offset=0`

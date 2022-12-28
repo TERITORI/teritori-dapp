@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { getNetwork } from "../networks";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../store/slices/settings";
-import {getNetwork} from "../networks";
 
 // FIXME: use react-query to prevent recalling the api all the time
 

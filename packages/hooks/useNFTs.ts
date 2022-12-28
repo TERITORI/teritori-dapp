@@ -2,13 +2,11 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo, useRef } from "react";
 
 import { NFTsRequest, NFT } from "../api/marketplace/v1/marketplace";
-import {useBackendClient} from "./useBackendClient";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../store/slices/settings";
+import { useBackendClient } from "./useBackendClient";
 
 export const useNFTs = (req: NFTsRequest) => {
   const baseOffset = useRef(req.offset);
-  const {backendClient, isForceBackendMainnet} = useBackendClient()
+  const { backendClient, isForceBackendMainnet } = useBackendClient();
 
   const { data, fetchNextPage } = useInfiniteQuery(
     [
@@ -18,7 +16,7 @@ export const useNFTs = (req: NFTsRequest) => {
       req.sort,
       req.sortDirection,
       baseOffset.current,
-      isForceBackendMainnet()
+      isForceBackendMainnet(),
     ],
     async ({ pageParam = 0 }) => {
       const nfts: NFT[] = [];

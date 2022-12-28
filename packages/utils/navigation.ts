@@ -34,7 +34,6 @@ export type RootStackParamList = {
   RiotGameRarity: undefined;
 
   Staking: undefined;
-  Swap: undefined;
   ComingSoon: undefined;
 };
 
@@ -87,7 +86,6 @@ const navConfig: {
     NFTDetail: "nft/:id",
     // ==== Staking
     Staking: "staking",
-    Swap: "swap",
     // ==== ComingSoon
     ComingSoon: "coming-soon",
   },

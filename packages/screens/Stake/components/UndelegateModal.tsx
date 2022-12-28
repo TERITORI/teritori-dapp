@@ -16,6 +16,7 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBondedToris";
+import { getNetwork } from "../../../networks";
 import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
 import { getKeplrOfflineSigner } from "../../../utils/keplr";
@@ -38,7 +39,6 @@ import {
 } from "../../../utils/teritori";
 import { StakeFormValuesType, ValidatorInfo } from "../types";
 import { WarningBox } from "./WarningBox";
-import {getNetwork} from "../../../networks";
 
 interface UndelegateModalProps {
   onClose?: () => void;

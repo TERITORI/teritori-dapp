@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
-import {getNativeCurrency, getNetwork} from "../networks";
+import { getNativeCurrency, getNetwork } from "../networks";
 import { selectSelectedNetworkId } from "../store/slices/settings";
 import { getSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";

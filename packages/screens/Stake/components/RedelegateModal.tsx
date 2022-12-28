@@ -20,6 +20,7 @@ import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBondedToris";
 import { useValidators } from "../../../hooks/useValidators";
+import { getNetwork } from "../../../networks";
 import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
 import { getKeplrOfflineSigner } from "../../../utils/keplr";
@@ -43,7 +44,6 @@ import {
 } from "../../../utils/teritori";
 import { StakeFormValuesType, ValidatorInfo } from "../types";
 import { ValidatorsTable } from "./ValidatorsList";
-import {getNetwork} from "../../../networks";
 
 interface RedelegateModalProps {
   onClose?: () => void;

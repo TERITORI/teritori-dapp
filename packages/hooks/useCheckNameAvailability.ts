@@ -1,12 +1,12 @@
 // Query the name service
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
+import { getNetwork } from "../networks";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { isTokenOwnedByUser } from "../utils/tns";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../store/slices/settings";
-import {getNetwork} from "../networks";
 
 // TNS : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
 export const useCheckNameAvailability = (name: string, tokens: string[]) => {

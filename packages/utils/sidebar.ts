@@ -8,7 +8,6 @@ import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
 import marketplaceSVG from "../../assets/icons/marketplace.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
-import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
 import pathwarSVG from "../../assets/icons/pathwar.svg";
 import riotersGameSVG from "../../assets/icons/rioters-game.svg";
 import stakingSVG from "../../assets/icons/staking.svg";
@@ -88,12 +87,6 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     title: "Governance",
     route: "Governance",
     icon: governanceSVG,
-  },
-  swap: {
-    title: "Swap Osmosis",
-    route: "Swap",
-    icon: osmosisCircleSVG,
-    iconSize: 38,
   },
   pathwar: {
     title: "Pathwar",

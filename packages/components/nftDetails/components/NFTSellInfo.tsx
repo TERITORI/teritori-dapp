@@ -1,16 +1,16 @@
 import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
 import { TeritoriNftVaultQueryClient } from "../../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import {getNativeCurrency, getNetwork} from "../../../networks";
+import { getNativeCurrency, getNetwork } from "../../../networks";
 import { NFTInfo } from "../../../screens/Marketplace/NFTDetailScreen";
+import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
 import { getNonSigningCosmWasmClient } from "../../../utils/keplr";
 import { trimFixed } from "../../../utils/numbers";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../../../store/slices/settings";
 
 export const NFTSellInfo: React.FC<{
   nftInfo?: NFTInfo;

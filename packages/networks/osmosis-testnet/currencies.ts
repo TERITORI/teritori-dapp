@@ -9,8 +9,7 @@ export const osmosisTestnetCurrencies: CurrencyInfo[] = [
   ) as CurrencyInfo,
   {
     kind: "ibc",
-    denom:
-      "",
+    denom: "",
     displayName: "ATOM",
     sourceNetwork: "cosmos-hub-testnet",
     sourceNetworkDisplayName: NetworkName.CosmosHubTheta,
@@ -23,8 +22,7 @@ export const osmosisTestnetCurrencies: CurrencyInfo[] = [
   },
   {
     kind: "ibc",
-    denom:
-      "",
+    denom: "",
     displayName: "TORI",
     sourceNetwork: "teritori-testnet",
     sourceNetworkDisplayName: NetworkName.TeritoriTestnet,
@@ -38,8 +36,7 @@ export const osmosisTestnetCurrencies: CurrencyInfo[] = [
   // TODO: Have to create juno-testnet network (uni-5) ?
   {
     kind: "ibc",
-    denom:
-      "",
+    denom: "",
     displayName: "JUNO",
     sourceNetwork: "juno-testnet",
     sourceNetworkDisplayName: NetworkName.JunoTestnet,

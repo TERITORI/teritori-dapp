@@ -10,6 +10,7 @@ import { useTNS } from "../../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getNetwork } from "../../../networks";
 import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
 import {
@@ -24,7 +25,6 @@ import { SendFundFormType } from "../../../utils/types/tns";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
-import {getNetwork} from "../../../networks";
 
 export const SendFundModal: React.FC<{
   onClose: () => void;

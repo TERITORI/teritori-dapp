@@ -1,9 +1,8 @@
-import {Window as KeplrWindow} from "@keplr-wallet/types";
-import {CosmWasmClient, SigningCosmWasmClient} from "cosmwasm";
+import { Window as KeplrWindow } from "@keplr-wallet/types";
+import { CosmWasmClient, SigningCosmWasmClient } from "cosmwasm";
 
-import {allNetworks, isTestMode, NetworkInfo} from "../networks";
-import {teritoriGasPrice} from "./teritori";
-import {NetworkName} from "../networks/NetworkName";
+import { NetworkInfo } from "../networks";
+import { teritoriGasPrice } from "./teritori";
 
 const PUBLIC_RPC_ENDPOINT = process.env.PUBLIC_CHAIN_RPC_ENDPOINT || "";
 const PUBLIC_CHAIN_ID = process.env.PUBLIC_CHAIN_ID || "";

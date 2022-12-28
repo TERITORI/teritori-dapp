@@ -12,6 +12,7 @@ import {
 } from "victory-native";
 
 import priceHistorySVG from "../../../../assets/icons/price-history.svg";
+import { useBackendClient } from "../../../hooks/useBackendClient";
 import {
   neutral33,
   neutral77,
@@ -21,10 +22,6 @@ import { fontMedium10, fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { CollapsableSection } from "../../collapsable/CollapsableSection";
-import {useBackendClient} from "../../../hooks/useBackendClient";
-import {isTestMode} from "../../../networks";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../../../store/slices/settings";
 
 const axisStyle = {
   grid: { strokeDasharray: "none", stroke: "none", padding: 20 },
@@ -88,7 +85,7 @@ export const CollapsablePiceHistory: React.FC<{ nftId: string }> = ({
 };
 
 const useNFTPriceHistory = (nftId: string) => {
-  const {backendClient, isForceBackendMainnet} = useBackendClient()
+  const { backendClient, isForceBackendMainnet } = useBackendClient();
 
   const { data } = useQuery(
     ["nftPriceHistory", nftId, isForceBackendMainnet()],
