@@ -18,9 +18,9 @@ export function getAvailableApps(): dAppGroup {
               order: 2,
               groupKey: "teritori-core-apps",
             },
-            "dApp 3": {
-              id: "dApp 3",
-              title: "dApp 3",
+            "dApp 2": {
+              id: "dApp 2",
+              title: "dApp 2",
               description:
                 "Longer Longer Longer Longer Longer Longer Longer Longer",
               icon: "",
@@ -35,18 +35,18 @@ export function getAvailableApps(): dAppGroup {
           groupName: "Top Apps",
           icon: "",
           options: {
-            dApp1: {
-              id: "dApp1",
-              title: "dApp 1",
+            "dApp 3": {
+              id: "dApp 3",
+              title: "dApp 3",
               description: "Short desc",
               icon: "",
               isChecked: false,
               order: -1,
               groupKey: "top-apps",
             },
-            dApp12: {
-              id: "dApp12",
-              title: "dApp 1",
+            "dApp 4": {
+              id: "dApp 4",
+              title: "dApp 4",
               description:
                 "Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer",
               icon: "",
@@ -54,18 +54,18 @@ export function getAvailableApps(): dAppGroup {
               order: -1,
               groupKey: "top-apps",
             },
-            dApp123: {
-              id: "dApp123",
-              title: "dApp 1",
+            "dApp 5": {
+              id: "dApp 5",
+              title: "dApp 5",
               description: "Short desc",
               icon: "",
               isChecked: false,
               order: -1,
               groupKey: "top-apps",
             },
-            "dApp 3": {
-              id: "dApp 3",
-              title: "dApp 3",
+            "dApp 6": {
+              id: "dApp 6",
+              title: "dApp 6",
               description: "Short desc",
               icon: "",
               isChecked: false,
@@ -81,7 +81,7 @@ export function getAvailableApps(): dAppGroup {
           options: {
             dApp1: {
               id: "dApp1",
-              title: "dApp 1",
+              title: "External dApp 1",
               description: "Short desc",
               icon: "",
               isChecked: false,
@@ -90,7 +90,7 @@ export function getAvailableApps(): dAppGroup {
             },
             dApp3: {
               id: "dApp3",
-              title: "dApp 3",
+              title: "External dApp 3",
               description: "Short desc",
               icon: "",
               isChecked: false,

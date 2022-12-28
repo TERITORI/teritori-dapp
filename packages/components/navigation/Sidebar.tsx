@@ -1,18 +1,21 @@
 import { useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Pressable, FlatList } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
   WithSpringConfig,
 } from "react-native-reanimated";
+import { useSelector } from "react-redux";
 
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
+import feedSVG from "../../../assets/icons/feed.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { getSelectedApps } from "../../store/slices/dapps-store";
 import { useAppNavigation } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
@@ -77,6 +80,22 @@ export const Sidebar: React.FC = () => {
     navigation.navigate(name);
   };
 
+  const selectedApps = useSelector(getSelectedApps);
+
+  const [dynamicSidebar, setDynamicSidebar] = useState(SIDEBAR_LIST);
+
+  useEffect(() => {
+    // TODO sorting
+    selectedApps.map((element) => {
+      SIDEBAR_LIST[element.id] = {
+        title: element.title,
+        route: "ComingSoon",
+        icon: feedSVG,
+      };
+    });
+    setDynamicSidebar(SIDEBAR_LIST);
+  }, [selectedApps]);
+
   // returns
   return (
     <Animated.View style={[styles.container, layoutStyle]}>
@@ -96,7 +115,7 @@ export const Sidebar: React.FC = () => {
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={Object.values(SIDEBAR_LIST)}
+        data={Object.values(dynamicSidebar)}
         keyExtractor={(item) => item.title}
         renderItem={({ item }) => {
           let { route } = item;
