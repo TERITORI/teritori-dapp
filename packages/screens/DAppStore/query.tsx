@@ -1,7 +1,7 @@
 import { dAppGroup } from "./types";
 
 export function getAvailableApps(): dAppGroup {
-  const availableApps: dAppGroup = {
+  return {
     "teritori-core-apps": {
       id: "teritori-core-apps",
       groupName: "Teritori Core dApps",
@@ -13,6 +13,7 @@ export function getAvailableApps(): dAppGroup {
           description: "Short desc",
           icon: "",
           isChecked: true,
+          order: 2,
         },
         "dApp 3": {
           id: "dApp 3",
@@ -20,7 +21,8 @@ export function getAvailableApps(): dAppGroup {
           description:
             "Longer Longer Longer Longer Longer Longer Longer Longer",
           icon: "",
-          isChecked: false,
+          isChecked: true,
+          order: 1,
         },
       },
     },
@@ -35,6 +37,7 @@ export function getAvailableApps(): dAppGroup {
           description: "Short desc",
           icon: "",
           isChecked: false,
+          order: -1,
         },
         dApp12: {
           id: "dApp12",
@@ -43,6 +46,7 @@ export function getAvailableApps(): dAppGroup {
             "Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer",
           icon: "",
           isChecked: false,
+          order: -1,
         },
         dApp123: {
           id: "dApp123",
@@ -50,6 +54,7 @@ export function getAvailableApps(): dAppGroup {
           description: "Short desc",
           icon: "",
           isChecked: false,
+          order: -1,
         },
         "dApp 3": {
           id: "dApp 3",
@@ -57,6 +62,7 @@ export function getAvailableApps(): dAppGroup {
           description: "Short desc",
           icon: "",
           isChecked: false,
+          order: -1,
         },
       },
     },
@@ -71,6 +77,7 @@ export function getAvailableApps(): dAppGroup {
           description: "Short desc",
           icon: "",
           isChecked: false,
+          order: -1,
         },
         dApp3: {
           id: "dApp3",
@@ -78,9 +85,9 @@ export function getAvailableApps(): dAppGroup {
           description: "Short desc",
           icon: "",
           isChecked: false,
+          order: -1,
         },
       },
     },
   };
-  return availableApps;
 }

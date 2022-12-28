@@ -18,6 +18,7 @@ import {
   withAlpha,
 } from "../../../utils/style/colors";
 import { fontBold12 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
 
 export function SelectedDraggable(props: { option: dAppType }) {
@@ -37,6 +38,7 @@ export function SelectedDraggable(props: { option: dAppType }) {
         flexDirection: "row",
         alignItems: "center",
         width: "100%",
+        marginBottom: layout.padding_x1,
       }}
       onMouseEnter={() => setShowTrashIcon(true)}
       onMouseLeave={() => setShowTrashIcon(false)}
@@ -61,7 +63,7 @@ export function SelectedDraggable(props: { option: dAppType }) {
               onClick={deleteFromList}
             />
           ) : (
-            "1"
+            props.option.order
           )}
         </BrandText>
       </SecondaryBox>
