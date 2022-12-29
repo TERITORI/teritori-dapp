@@ -44,7 +44,7 @@ export const RiotGameMemoriesScreen = () => {
   const [displayYT, setDisplayYT] = useState(false);
   const isScreenFocused = useIsFocused();
 
-  // Stop videos when changing screen trough react-navigation
+  // Stop videos when changing screen through react-navigation
   useEffect(() => {
     if (!isScreenFocused) {
       setDisplayYT(false);

@@ -53,17 +53,11 @@ export const RiotGameEnrollScreen = () => {
     updateStakingState,
   } = useSquadStaking();
 
-  // Stop video when changing screen trough react-navigation
+  // Stop video when changing screen through react-navigation
   useEffect(() => {
     if (!isScreenFocused && videoRef.current) {
       videoRef.current.pauseAsync();
     }
-    // return navigation.addListener("blur", () => {
-    //   console.log("Blur");
-    //   if (videoRef.current) {
-    //     videoRef.current.stopAsync();
-    //   }
-    // });
   }, [isScreenFocused]);
 
   const [selectedSlot, setSelectedSlot] = useState<number>();
