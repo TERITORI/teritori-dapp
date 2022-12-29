@@ -13,9 +13,12 @@ export const useCollections = (
   const fetchRef = useRef(false);
 
   const fetchMore = useCallback(
-    async (index: number) => {
+    async (index: number, init: boolean = false) => {
+      const currentCollection = init ? [] : collections;
+      init && setCollections([]);
+
       try {
-        if (!(index + req.limit >= collections.length)) {
+        if (!(index + req.limit >= currentCollection.length)) {
           return;
         }
         if (fetchRef.current) {
@@ -24,14 +27,15 @@ export const useCollections = (
         fetchRef.current = true;
         const stream = backendClient.Collections({
           ...req,
-          offset: req.offset + collections.length,
+          offset: req.offset + currentCollection.length,
         });
+
+        const fetchedCollections: Collection[] = [];
         await stream.forEach(({ collection }) => {
-          if (!collection) {
-            return;
-          }
-          setCollections((collections) => [...collections, collection]);
+          collection && fetchedCollections.push(collection);
         });
+
+        setCollections([...currentCollection, ...fetchedCollections]);
       } catch (err) {
         console.warn("failed to fetch collections:", err);
       }
@@ -41,7 +45,8 @@ export const useCollections = (
   );
 
   useEffect(() => {
-    fetchMore(0);
+    // Reset the collections then changing network
+    fetchMore(0, true);
   }, [req.networkId]);
 
   return [collections, fetchMore];

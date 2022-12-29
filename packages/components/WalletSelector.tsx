@@ -10,7 +10,7 @@ import useSelectedWallet from "../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../hooks/useTNSMetadata";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
-import { Network, walletProviderToNetwork } from "../utils/network";
+import { walletProviderToNetwork } from "../utils/network";
 import { neutral17, neutral44, secondaryColor } from "../utils/style/colors";
 import { walletSelectorWidth } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
@@ -45,14 +45,7 @@ const WalletView: React.FC<{
   wallet?: Wallet;
   style?: StyleProp<ViewStyle>;
 }> = ({ wallet, style }) => {
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-
-  // TODO: only support TNS for teritori for now
-  const tnsMetadata = useTNSMetadata(
-    selectedNetworkInfo?.network === Network.Teritori
-      ? wallet?.address
-      : undefined
-  );
+  const tnsMetadata = useTNSMetadata(wallet?.address);
 
   const fontSize = 14;
   return (

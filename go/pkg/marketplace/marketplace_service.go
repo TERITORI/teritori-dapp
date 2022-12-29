@@ -176,6 +176,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				return errors.Wrap(err, "failed to send collection")
 			}
 		}
+		return nil
 	}
 
 	return fmt.Errorf("unknown collection network %s", req.GetNetworkId())

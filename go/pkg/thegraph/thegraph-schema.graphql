@@ -49,6 +49,7 @@ type NftContract {
   name: String!
   symbol: String
   supported: Boolean
+  minter: String!
   nfts(skip: Int = 0, first: Int = 100, orderBy: Nft_orderBy, orderDirection: OrderDirection, where: Nft_filter): [Nft!]!
 }
 type Query {
