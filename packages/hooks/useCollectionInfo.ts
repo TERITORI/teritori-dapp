@@ -166,7 +166,14 @@ const getEvmTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   const minterConfig = await minterClient.callStatic.config();
   const nftAddress = await minterClient.callStatic.nft();
 
+  const isPaused = await minterClient.callStatic.paused();
   const nftClient = TeritoriNft__factory.connect(nftAddress, provider);
+
+  const contractURI = await nftClient.callStatic.contractURI();
+  const metadataURL = ipfsURLToHTTPURL(contractURI);
+  const metadataReply = await fetch(metadataURL);
+  const metadata = await metadataReply.json();
+
   const secondsSinceEpoch = Date.now() / 1000;
 
   const name = await nftClient.callStatic.name();
@@ -242,30 +249,30 @@ const getEvmTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
 
   const info: CollectionInfo = {
     name,
-    image: "missing image from metadata", // ask
-    description: "missing description from metadata", // ask
+    image: ipfsURLToHTTPURL(metadata.image || ""),
+    description: metadata.description,
     prettyUnitPrice: prettyPrice(
       process.env.ETHEREUM_NETWORK_ID || "",
       unitPrice,
-      priceDenom // ask
+      priceDenom
     ),
     unitPrice,
     priceDenom,
     maxSupply,
     mintStarted,
     mintedAmount,
-    discord: "missing from metadata", // ask
-    twitter: "missing from metadata", // ask
-    website: "missing from metadata", // ask
+    discord: metadata.discord,
+    twitter: metadata.twitter,
+    website: metadata.website,
     maxPerAddress,
     whitelistMaxPerAddress,
     whitelistSize,
     hasPresale: hasWhitelistPeriod,
     publicSaleEnded,
-    isMintable: !publicSaleEnded, // missing is_mintable from config
+    isMintable: !publicSaleEnded && !isPaused,
     isInPresalePeriod: state === "whitelist",
     publicSaleStartTime: whitelistEndedAt,
-    bannerImage: "missing from meta", // ask
+    bannerImage: ipfsURLToHTTPURL(metadata.banner),
     state,
   };
   return info;
