@@ -22,7 +22,7 @@ func NewEthereumProvider(graphqlEndpoint string) *Provider {
 	}
 }
 
-type volume struct {
+type Volume struct {
 	denom  string
 	volume int64
 }
@@ -36,7 +36,7 @@ func (p *Provider) GetCollections(networkId string) ([]marketplacepb.Collection,
 		return nil, err
 	}
 	//volumeByCollectionByDenom
-	volumeByCollection := make(map[string]volume)
+	volumeByCollection := make(map[string]Volume)
 	//Fill collection volume
 	for _, trade := range collections.Buys {
 		volume, ok := volumeByCollection[trade.Nft.Contract.Id]
