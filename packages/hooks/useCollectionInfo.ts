@@ -182,7 +182,7 @@ const getEvmTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   const maxSupply = minterConfig.maxSupply.toString();
   const mintStartedAt = minterConfig.mintStartTime.toNumber();
   const mintStarted = secondsSinceEpoch >= mintStartedAt;
-  const maxPerAddress = minterConfig.publicMintMax.toString();
+  const maxPerAddress = minterConfig.publicMintMax.toString() || undefined;
 
   // Fetch all whitelist phrases
   const whitelistPhases = [];
