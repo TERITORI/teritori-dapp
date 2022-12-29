@@ -279,14 +279,17 @@ const getEvmTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
 };
 
 // NOTE: consider using the indexer for this
-export const useCollectionInfo = (id: string, network: Network | undefined) => {
+export const useCollectionInfo = (
+  id: string,
+  network: Network | undefined = undefined
+) => {
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
     async (): Promise<CollectionInfo> => {
       let info: CollectionInfo = {};
 
       if (network === Network.Teritori) {
-        const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
+        const mintAddress = id.replace("tori-", "");
 
         switch (mintAddress) {
           case process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS:
@@ -299,8 +302,7 @@ export const useCollectionInfo = (id: string, network: Network | undefined) => {
             info = await getTeritoriBunkerCollectionInfo(mintAddress);
         }
       } else if (network === Network.Ethereum) {
-        // TODO: use mintAddress for nft collection to keep consistency with teritori collection
-        const nftAddress = id;
+        const mintAddress = id.replace("eth-", "");
 
         // Get mintAddress
         const provider = await getEthereumProvider();
@@ -308,9 +310,6 @@ export const useCollectionInfo = (id: string, network: Network | undefined) => {
           console.error("no eth provider found");
           return {};
         }
-
-        const nftClient = TeritoriNft__factory.connect(nftAddress, provider);
-        const mintAddress = await nftClient.callStatic.minter();
 
         info = await getEvmTeritoriBunkerCollectionInfo(mintAddress);
       }

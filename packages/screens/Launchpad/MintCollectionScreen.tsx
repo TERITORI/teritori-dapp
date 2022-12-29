@@ -26,7 +26,6 @@ import {
 } from "../../context/FeedbacksProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
@@ -117,18 +116,14 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       throw Error("no account connected");
     }
 
-    // TODO: Should send mintAddress in id instead of nftAddress
-    const nftAddress = id;
-    const nftClient = TeritoriNft__factory.connect(nftAddress, signer);
-    const minterAddress = await nftClient.callStatic.minter();
-
+    const minterAddress = id.replace("eth-", "");
     const minterClient = TeritoriMinter__factory.connect(minterAddress, signer);
     const minterConfig = await minterClient.callStatic.config();
 
     const address = await signer.getAddress();
     // const estimatedGas = await minterClient.estimateGas.requestMint(address);
     const tx = await minterClient.requestMint(address, {
-      gasLimit: ethers.utils.parseEther("0.000000000001"), // TODO: make this auto on mainnet
+      gasLimit: ethers.utils.parseEther("0.000000000001"), // TODO: make this auto on mainnet\
       value: minterConfig.publicMintPrice,
     });
     await tx.wait();
