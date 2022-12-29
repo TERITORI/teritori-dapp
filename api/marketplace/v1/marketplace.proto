@@ -123,6 +123,7 @@ message CollectionsRequest {
 message CollectionStatsRequest {
   string collection_id = 1;
   string owner_id = 2;
+  string network_id = 3;
 }
 
 message CollectionStatsResponse {
@@ -142,6 +143,8 @@ message NFTsRequest {
 
   Sort sort = 5;
   SortDirection sort_direction = 6;
+
+  string network_id = 7;
 }
 
 message NFTsResponse {
@@ -164,6 +167,7 @@ message ActivityRequest {
   string nft_id = 2;
   int32 limit = 3;
   int32 offset = 4;
+  string network_id = 5;
 }
 
 

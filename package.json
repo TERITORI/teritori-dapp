@@ -19,6 +19,7 @@
     "@cosmjs/stargate": "^0.28.13",
     "@expo-google-fonts/exo": "^0.2.2",
     "@improbable-eng/grpc-web": "^0.15.0",
+    "@improbable-eng/grpc-web-node-http-transport": "^0.15.0",
     "@inline-svg-unique-id/react": "^1.2.3",
     "@keplr-wallet/types": "^0.10.13",
     "@metamask/detect-provider": "^2.0.0",

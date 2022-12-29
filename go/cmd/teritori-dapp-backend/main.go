@@ -39,6 +39,7 @@ func main() {
 		dbPass             = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbName             = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser             = fs.String("postgres-user", "", "username for postgreSQL")
+		theGraphEndpoint   = fs.String("the-graph-endpoint", "", "the graph url")
 		whitelistString    = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
@@ -86,6 +87,7 @@ func main() {
 		TNSContractAddress: *tnsContractAddress,
 		TNSDefaultImageURL: *tnsDefaultImageURL,
 		Whitelist:          whitelist,
+		TheGraphEndpoint:   *theGraphEndpoint,
 	})
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
 		Logger:            logger,

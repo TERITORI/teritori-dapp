@@ -9,6 +9,7 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/TERITORI/teritori-dapp/go/internal/airtable_fetcher"
+	"github.com/TERITORI/teritori-dapp/go/internal/ethereum"
 	"github.com/TERITORI/teritori-dapp/go/internal/faking"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
@@ -25,7 +26,8 @@ import (
 type MarkteplaceService struct {
 	marketplacepb.UnimplementedMarketplaceServiceServer
 
-	homeProvider *airtable_fetcher.Cache
+	homeProvider     *airtable_fetcher.Cache
+	ethereumProvider *ethereum.Provider
 	// collectionsByVolumeProvider         collections.CollectionsProvider
 	// collectionsByMarketCapProvider      collections.CollectionsProvider
 	conf *Config
@@ -35,6 +37,7 @@ type Config struct {
 	Logger             *zap.Logger
 	IndexerDB          *gorm.DB
 	GraphqlEndpoint    string
+	TheGraphEndpoint   string
 	TNSContractAddress string
 	TNSDefaultImageURL string
 	Whitelist          []string
@@ -43,8 +46,9 @@ type Config struct {
 func NewMarketplaceService(ctx context.Context, conf *Config) marketplacepb.MarketplaceServiceServer {
 	// FIXME: validate config
 	return &MarkteplaceService{
-		conf:         conf,
-		homeProvider: airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(), conf.Logger.Named("airtable_fetcher")),
+		conf:             conf,
+		homeProvider:     airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(), conf.Logger.Named("airtable_fetcher")),
+		ethereumProvider: ethereum.NewEthereumProvider(conf.TheGraphEndpoint),
 		// collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 		// collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 	}
@@ -162,6 +166,16 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		}
 		return nil
 
+	case "ethereum":
+		collections, err := s.ethereumProvider.GetCollections()
+		if err != nil {
+			return errors.Wrap(err, "failed to query database")
+		}
+		for i := range collections {
+			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &collections[i]}); err != nil {
+				return errors.Wrap(err, "failed to send collection")
+			}
+		}
 	}
 
 	return fmt.Errorf("unknown collection network %s", req.GetNetworkId())
@@ -194,7 +208,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	if sortDirection == marketplacepb.SortDirection_SORT_DIRECTION_UNSPECIFIED {
 		sortDirection = marketplacepb.SortDirection_SORT_DIRECTION_ASCENDING
 	}
-
+	networkID := req.GetNetworkId()
 	collection_id := req.GetCollectionId()
 
 	// FIXME: return fake data if any filter is fake
@@ -206,7 +220,17 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		}
 		return nil
 	}
-
+	if networkID == "ethereum" {
+		nfts, err := s.ethereumProvider.GetNFTs(collection_id, int(limit), int(offset))
+		if err != nil {
+			return errors.Wrap(err, "failed to fetch collection nfts")
+		}
+		for index := range nfts {
+			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &nfts[index]}); err != nil {
+				return errors.Wrap(err, "failed to send nft")
+			}
+		}
+	}
 	// FIXME: support other filters on solana
 	if strings.HasPrefix(collection_id, "sol") {
 		gqlClient := graphql.NewClient(s.conf.GraphqlEndpoint, nil)
@@ -379,7 +403,19 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			return nil
 		}
 	}
-
+	networkID := req.GetNetworkId()
+	if networkID == "ethereum" {
+		activities, err := s.ethereumProvider.GetCollectionActivities(collectionID, int(limit), int(offset))
+		if err != nil {
+			return errors.Wrap(err, "failed to fetch collection activity")
+		}
+		for _, activity := range activities {
+			if err := srv.Send(&marketplacepb.ActivityResponse{Activity: activity}); err != nil {
+				return errors.Wrap(err, "failed to send activity")
+			}
+		}
+		return nil
+	}
 	nftID := req.GetNftId()
 
 	var totalCount int64
@@ -563,8 +599,19 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 	if err != nil {
 		return nil, errors.Wrap(err, "failed get DB instance")
 	}
-	var stats CollectionStats
-	err = queries.Raw(`with 
+	networkID := req.GetNetworkId()
+	switch networkID {
+	case "ethereum":
+		stats, err := s.ethereumProvider.GetCollectionStats(collectionID, ownerID)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed fetch ethereum collection stats")
+		}
+		return &marketplacepb.CollectionStatsResponse{
+			Stats: stats,
+		}, nil
+	default:
+		var stats CollectionStats
+		err = queries.Raw(`with 
 	nfts_in_collection as (
 		SELECT  *  FROM nfts n where n.collection_id = $1
 	),
@@ -587,21 +634,23 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		count(1) total_supply,
 		(select count(1) from nfts_in_collection where owner_id = $2) owned
 	from nfts_in_collection`, collectionID, ownerID).Bind(ctx, db, &stats)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to make query")
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to make query")
+		}
+		var coins []coin
+		err = stats.LowerPrice.Unmarshal(&coins)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal floor_price struct")
+		}
+		stats.FloorPrice = make([]*marketplacepb.Amount, len(coins))
+		for index, coin := range coins {
+			stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: coin.Amount}
+		}
+		return &marketplacepb.CollectionStatsResponse{
+			Stats: &stats.CollectionStats,
+		}, nil
 	}
-	var coins []coin
-	err = stats.LowerPrice.Unmarshal(&coins)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal floor_price struct")
-	}
-	stats.FloorPrice = make([]*marketplacepb.Amount, len(coins))
-	for index, coin := range coins {
-		stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: coin.Amount}
-	}
-	return &marketplacepb.CollectionStatsResponse{
-		Stats: &stats.CollectionStats,
-	}, nil
+
 }
 
 func (s *MarkteplaceService) Banners(ctx context.Context, req *marketplacepb.BannersRequest) (*marketplacepb.BannersResponse, error) {
