@@ -5,6 +5,7 @@ import {
   FlatList,
   Image,
   View,
+  TouchableOpacity,
 } from "react-native";
 
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
@@ -24,6 +25,7 @@ import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { p2eBackendClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { useAppNavigation } from "../../utils/navigation";
 import {
   additionalGreen,
   additionalRed,
@@ -43,6 +45,7 @@ type PlayerNameProps = {
 };
 
 const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
+  const navigation = useAppNavigation();
   const address = userId.split("-")[1];
   const tnsMetadata = useTNSMetadata(address);
 
@@ -50,6 +53,14 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
 
   return (
     <FlexRow width="auto" alignItems="center">
+      <TouchableOpacity
+        style={{ flexDirection: "row", alignItems: "center" }}
+        onPress={() => {
+          navigation.navigate("UserPublicProfile", {
+            id: `tori-${address}`,
+          });
+        }}
+      >
       <Image
         source={{
           uri: ipfsURLToHTTPURL(
@@ -76,6 +87,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
         source={badgeSVG}
         style={{ marginLeft: layout.padding_x1 }}
       />
+      </TouchableOpacity>
     </FlexRow>
   );
 };
