@@ -100,37 +100,37 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		}
 
 		err := s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		with count_by_collection as (
-			select count(1), collection_id from nfts group by nfts.collection_id
-		),
-		tori_collections as (
-			SELECT c.*, tc.mint_contract_address, tc.creator_address FROM collections AS c
-			INNER join teritori_collections tc on tc.collection_id = c.id
-			%s
-			AND tc.mint_contract_address IN ?
-		),
-			nft_by_collection as (
-			SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
-		INNER JOIN nfts AS n on tc.id = n.collection_id
-		),
-		activities_on_period as (
-			select * from activities a2 where a2."time" > ?
-		),
-		trades_on_period as(
-			select * from trades t2 inner join activities_on_period aop
-			on aop.id = t2.activity_id
-		),
-		trades_by_collection as (
-			select sum(t.usd_price) volume, nbc.id FROM trades_on_period AS t
-			INNER join nft_by_collection nbc on nbc.nft_id = t.nft_id
-			GROUP BY nbc.id
-		)
-		select tc.*, COALESCE((select tbc.volume from trades_by_collection tbc where tbc.id = tc.id), 0) volume 
-			from tori_collections tc
-		order by volume desc, id asc
-		limit ?
-		offset ?
-    `, where),
+			WITH count_by_collection AS (
+				SELECT count(1), collection_id FROM nfts GROUP BY nfts.collection_id
+			),
+			tori_collections AS (
+				SELECT c.*, tc.mint_contract_address, tc.creator_address FROM collections AS c
+				INNER JOIN teritori_collections tc ON tc.collection_id = c.id
+				%s
+				AND tc.mint_contract_address IN ?
+			),
+			nft_by_collection AS (
+				SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
+				INNER JOIN nfts AS n ON tc.id = n.collection_id
+			),
+			activities_on_period AS (
+				SELECT * FROM activities a2 WHERE a2."time" > ?
+			),
+			trades_on_period AS (
+				SELECT * FROM trades t2 INNER JOIN activities_on_period aop
+				ON aop.id = t2.activity_id
+			),
+			trades_by_collection AS (
+				SELECT SUM(t.usd_price) volume, nbc.id FROM trades_on_period AS t
+				INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
+				GROUP BY nbc.id
+			)
+			SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume 
+				FROM tori_collections tc
+			ORDER BY volume DESC, id ASC
+			LIMIT ?
+			OFFSET ?
+		`, where),
 			s.conf.Whitelist,
 			time.Now().AddDate(0, 0, -30),
 			limit,
@@ -166,8 +166,8 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		}
 		return nil
 
-	case "ethereum":
-		collections, err := s.ethereumProvider.GetCollections()
+	case "ethereum", "ethereum-goerli":
+		collections, err := s.ethereumProvider.GetCollections(req.GetNetworkId())
 		if err != nil {
 			return errors.Wrap(err, "failed to query database")
 		}

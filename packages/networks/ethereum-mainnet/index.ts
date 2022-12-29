@@ -1,14 +1,14 @@
 import { Network } from "../../utils/network";
 import { NetworkInfo } from "../types";
-import { ethereumMainnetCurrencies } from "./currencies";
+import { ethereumCurrencies } from "./currencies";
 
 export const ethereumGoerliNetwork: NetworkInfo = {
-  id: "ethereum-mainnet",
+  id: "ethereum",
   network: Network.Ethereum,
   chainId: "1",
-  displayName: "Ethereum Mainnet",
+  displayName: "Ethereum",
   icon: "icons/networks/ethereum-circle.svg",
-  currencies: ethereumMainnetCurrencies,
+  currencies: ethereumCurrencies,
   addressPrefix: "eth",
   restEndpoint: "https://ethereum.publicnode.com",
   rpcEndpoint: "https://ethereum.publicnode.com",

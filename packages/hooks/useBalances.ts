@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 import { getNativeCurrency, getNetwork } from "../networks";
 import { Balance } from "../utils/coins";
-import { getMetaMaskEthereumSigner } from "../utils/metamask";
+import { getMetaMaskEthereumSigner } from "../utils/ethereum";
 import { Network } from "../utils/network";
 import { CosmosBalancesResponse } from "../utils/teritori";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
@@ -72,7 +72,7 @@ const getNetworkBalances = async (
 
     const balanceItem = {
       amount: balance.toString(),
-      denom: network.currencies[0].denom,
+      denom: "wei",
     };
     return [balanceItem];
   }
