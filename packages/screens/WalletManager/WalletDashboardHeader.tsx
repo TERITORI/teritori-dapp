@@ -8,6 +8,8 @@ import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useIsMobile } from "../../hooks/useMobile";
 import { rewardsPrice, useRewards } from "../../hooks/useRewards";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -31,15 +33,17 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
   data,
   actionButton,
 }) => {
+  const isMobile = useIsMobile();
+  const { width } = useMaxResolution();
   return (
     <TertiaryBox
       height={116}
-      width={200}
+      width={isMobile ? (width - 16) / 2 : 200}
       mainContainerStyle={{
         backgroundColor: neutral17,
       }}
       style={{
-        marginLeft: 16,
+        marginLeft: isMobile ? 0 : 16,
       }}
     >
       <View
@@ -60,26 +64,49 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
         >
           {title}
         </BrandText>
-        <BrandText
-          style={{
-            fontSize: 16,
-          }}
-        >
-          {data}
-        </BrandText>
-        {!!actionButton && (
-          <PrimaryButton
-            disabled={actionButton.disabled}
-            size="XS"
-            text={actionButton.label}
-            onPress={actionButton.onPress}
-            squaresBackgroundColor={neutral17}
-            touchableStyle={{
-              position: "absolute",
-              bottom: 12,
-              right: 14,
-            }}
-          />
+        {isMobile ? (
+          <>
+            {!!actionButton && (
+              <PrimaryButton
+                disabled={actionButton.disabled}
+                size="XS"
+                text={actionButton.label}
+                onPress={actionButton.onPress}
+                squaresBackgroundColor={neutral17}
+              />
+            )}
+            <BrandText
+              style={{
+                fontSize: 16,
+              }}
+            >
+              {data}
+            </BrandText>
+          </>
+        ) : (
+          <>
+            <BrandText
+              style={{
+                fontSize: 16,
+              }}
+            >
+              {data}
+            </BrandText>
+            {!!actionButton && (
+              <PrimaryButton
+                disabled={actionButton.disabled}
+                size="XS"
+                text={actionButton.label}
+                onPress={actionButton.onPress}
+                squaresBackgroundColor={neutral17}
+                touchableStyle={{
+                  position: "absolute",
+                  bottom: 12,
+                  right: 14,
+                }}
+              />
+            )}
+          </>
         )}
       </View>
     </TertiaryBox>
@@ -92,6 +119,7 @@ export const WalletDashboardHeader: React.FC = () => {
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
   const balances = useBalances(selectedNetwork, selectedWallet?.address);
   const navigation = useAppNavigation();
+  const isMobile = useIsMobile();
   const totalUSDBalance = balances.reduce(
     (total, bal) => total + (bal.usdAmount || 0),
     0
@@ -159,6 +187,7 @@ export const WalletDashboardHeader: React.FC = () => {
           alignItems: "center",
           justifyContent: "space-between",
           marginTop: layout.padding_x3,
+          width: isMobile ? "100%" : "",
         }}
       >
         <WalletDashboardHeaderCard

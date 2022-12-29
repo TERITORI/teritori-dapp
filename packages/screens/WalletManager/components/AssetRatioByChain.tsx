@@ -9,6 +9,7 @@ import teritoriSVG from "../../../../assets/icons/networks/teritori-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { ProgressLine } from "../../../components/ProgressLine";
 import { SVG } from "../../../components/SVG";
+import { useIsMobile } from "../../../hooks/useMobile";
 import { OVERVIEW_FLEX_BREAK_WIDTH } from "../constants";
 
 interface AssetRatioData {
@@ -37,6 +38,7 @@ const DATA: AssetRatioData[] = [
 
 const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
   const { width } = useWindowDimensions();
+  const isMobile = useIsMobile();
 
   return (
     <View
@@ -59,7 +61,11 @@ const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
       </BrandText>
       <ProgressLine
         percent={percent}
-        width={width < OVERVIEW_FLEX_BREAK_WIDTH ? width - 540 : 200}
+        width={
+          width < OVERVIEW_FLEX_BREAK_WIDTH
+            ? width - (isMobile ? 200 : 540)
+            : 200
+        }
       />
       <BrandText
         style={{

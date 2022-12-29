@@ -1,6 +1,6 @@
 export const helpAreaWidth = 188;
 export const screenContainerContentMarginHorizontal = 140; // Corresponding to the space H between the Sidebar and the page content
-export const mobileScreenContainerContentMarginHorizontal = 20;
+export const mobileScreenContainerContentMarginHorizontal = 16;
 export const headerHeight = 80;
 export const legalFooterHeight = 58;
 export const screenContentMaxWidth = 1092;
