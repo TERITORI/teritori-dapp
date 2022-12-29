@@ -1,9 +1,12 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
-import { NewsFeedInput } from "../../components/NewsFeed/NewsFeedInput";
+import {
+  NewsFeedInput,
+  NewsFeedInputHandle,
+} from "../../components/NewsFeed/NewsFeedInput";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SocialThreadCard } from "../../components/cards/SocialThreadCard";
 import { BackTo } from "../../components/navigation/BackTo";
@@ -13,6 +16,9 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+import { ReplyToType } from "./types";
+
+export type OnPressReplyType = (username: string, parentId: string) => void;
 
 export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   route: {
@@ -24,6 +30,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const { triggerError } = useErrorHandler();
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<PostResult>();
+  const feedInputRef = useRef<NewsFeedInputHandle>(null);
+  const [replyTo, setReplyTo] = useState<ReplyToType>();
 
   const fetchPost = async () => {
     if (!wallet?.connected || !wallet.address) {
@@ -43,8 +51,15 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     }
   };
 
+  const onPressReply: OnPressReplyType = (username, parentId) => {
+    feedInputRef.current?.resetForm();
+    setReplyTo({ username, parentId });
+    feedInputRef.current?.setValue(`@${username} `);
+    feedInputRef.current?.focusInput();
+  };
+
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       fetchPost();
     }, [wallet?.connected])
   );
@@ -63,9 +78,11 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           }}
         >
           <NewsFeedInput
+            ref={feedInputRef}
             type="comment"
             parentId={id}
             onSubmitSuccess={() => setRefresh((prev) => prev + 1)}
+            replyTo={replyTo}
           />
         </View>
       }
@@ -78,7 +95,12 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       >
         {isLoading && <ActivityIndicator size="small" color={secondaryColor} />}
         {!!post && (
-          <SocialThreadCard post={post} singleView refresh={refresh} />
+          <SocialThreadCard
+            post={post}
+            singleView
+            refresh={refresh}
+            onPressReply={onPressReply}
+          />
         )}
       </View>
     </ScreenContainer>

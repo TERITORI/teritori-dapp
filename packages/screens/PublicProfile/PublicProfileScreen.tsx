@@ -38,8 +38,9 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
   const navigation = useAppNavigation();
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("news");
-
-  const { metadata, notFound } = useTNSMetadata(id.replace("tori-", ""));
+  const { metadata, notFound } = useTNSMetadata(
+    id.includes(".tori") ? id : id.replace("tori-", "")
+  );
 
   useEffect(() => {
     if (metadata?.public_name) {
@@ -55,7 +56,7 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
       headerChildren={<BackTo label={metadata?.public_name || ""} />}
       footerChildren={<></>}
     >
-      {notFound || !id.startsWith("tori-") ? (
+      {notFound || (!id.startsWith("tori-") && !id.includes(".tori")) ? (
         <View
           style={{
             alignItems: "center",
@@ -71,7 +72,10 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
             selectedTab={selectedTab}
             Header={() => (
               <>
-                <PublicProfileIntro userId={id} metadata={metadata} />
+                <PublicProfileIntro
+                  userId={id.includes(".tori") ? `@${id}` : id}
+                  metadata={metadata}
+                />
                 <FeedHeader
                   selectedTab={selectedTab}
                   onTabChange={setSelectedTab}
