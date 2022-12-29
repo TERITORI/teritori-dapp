@@ -2,7 +2,7 @@ import { CurrencyInfo } from "../types";
 
 export const ethereumGoerliCurrencies: CurrencyInfo[] = [
   {
-    denom: "eth",
+    denom: "wei",
     displayName: "GoerliETH",
     decimals: 18,
     coingeckoId: "ethereum",

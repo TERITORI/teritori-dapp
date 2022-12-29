@@ -27,7 +27,7 @@ type volume struct {
 	volume int64
 }
 
-func (p *Provider) GetCollections() ([]marketplacepb.Collection, error) {
+func (p *Provider) GetCollections(networkId string) ([]marketplacepb.Collection, error) {
 	ctx := context.Background()
 	//30 days window
 	unixTime := time.Now().AddDate(0, 0, -30).Unix()
@@ -49,13 +49,17 @@ func (p *Provider) GetCollections() ([]marketplacepb.Collection, error) {
 	// Fix: currently it does not support multiple denoms
 	res := make([]marketplacepb.Collection, 0, len(collections.NftContracts))
 	for _, contract := range collections.NftContracts {
+
+		fmt.Printf("%v", contract)
+
 		res = append(res, marketplacepb.Collection{
-			NetworkId:      "ethereum",
-			Id:             contract.Id,
-			CollectionName: contract.Name,
-			MintAddress:    contract.Id,
-			Volume:         fmt.Sprint(volumeByCollection[contract.Id].volume),
-			VolumeDenom:    volumeByCollection[contract.Id].denom,
+			NetworkId:           networkId,
+			Id:                  contract.Id,
+			CollectionName:      contract.Name,
+			MintAddress:         contract.Id,
+			Volume:              fmt.Sprint(volumeByCollection[contract.Id].volume),
+			VolumeDenom:         volumeByCollection[contract.Id].denom,
+			SecondaryDuringMint: true, // TODO: force to test
 		})
 	}
 	return res, nil

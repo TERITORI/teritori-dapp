@@ -1,8 +1,8 @@
 import { CurrencyInfo } from "../types";
 
-export const ethereumMainnetCurrencies: CurrencyInfo[] = [
+export const ethereumCurrencies: CurrencyInfo[] = [
   {
-    denom: "eth",
+    denom: "wei",
     displayName: "ETH",
     decimals: 18,
     coingeckoId: "ethereum",

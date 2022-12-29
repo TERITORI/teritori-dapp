@@ -42,7 +42,7 @@ export const useCollections = (
 
   useEffect(() => {
     fetchMore(0);
-  }, []);
+  }, [req.networkId]);
 
   return [collections, fetchMore];
 };

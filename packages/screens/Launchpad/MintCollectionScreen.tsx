@@ -32,8 +32,8 @@ import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCurrency } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
-import { getMetaMaskEthereumSigner } from "../../utils/metamask";
 import { ScreenFC } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import {
@@ -80,7 +80,10 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
-  const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
+  const { info, notFound, refetchCollectionInfo } = useCollectionInfo(
+    id,
+    selectedNetworkInfo?.network
+  );
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
   const networkId = selectedNetworkInfo?.id;

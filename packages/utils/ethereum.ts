@@ -8,6 +8,11 @@ export const getMetaMaskEthereumProvider = async () => {
   return new ethers.providers.Web3Provider(provider);
 };
 
+// TODO: use chain provider in case we have not metamask installed
+export const getEthereumProvider = async () => {
+  return getMetaMaskEthereumProvider();
+};
+
 export const getMetaMaskEthereumSigner = async () => {
   const provider = await getMetaMaskEthereumProvider();
   if (!provider) return null;
