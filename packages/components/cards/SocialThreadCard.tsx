@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleProp,
   View,
@@ -12,6 +12,7 @@ import { PostResult } from "../../contracts-clients/teritori-social-feed/Teritor
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../utils/navigation";
 import { DEFAULT_NAME, DEFAULT_USERNAME } from "../../utils/social-feed";
 import {
@@ -31,6 +32,7 @@ import { EmojiSelector } from "../EmojiSelector";
 import { FilePreview } from "../FilePreview/FilePreview";
 import { RichText } from "../RichText";
 import { SocialActions, socialActionsHeight } from "../SocialActions";
+import { SocialReactionActions } from "../SocialReactionActions";
 import { tinyAddress } from "../WalletSelector";
 import { AnimationFadeIn } from "../animations";
 import { DotBadge } from "../badges/DotBadge";
@@ -56,7 +58,16 @@ export const SocialThreadCard: React.FC<{
   isGovernance?: boolean;
   refresh?: number;
   fadeInDelay?: number;
-}> = ({ post, style, singleView, isGovernance, refresh, fadeInDelay }) => {
+  onPressReply?: OnPressReplyType;
+}> = ({
+  post,
+  style,
+  singleView,
+  isGovernance,
+  refresh,
+  fadeInDelay,
+  onPressReply,
+}) => {
   const [maxLayoutWidth, setMaxLayoutWidth] = useState(0);
   const imageMarginRight = layout.padding_x3_5;
   const tertiaryBoxPaddingHorizontal = layout.padding_x3;
@@ -90,7 +101,7 @@ export const SocialThreadCard: React.FC<{
     setSubPosts(subPosts);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (singleView) {
       queryComments();
     }
@@ -99,14 +110,13 @@ export const SocialThreadCard: React.FC<{
   return (
     <AnimationFadeIn style={[style]} delay={fadeInDelay}>
       <View style={{ position: "relative" }}>
-        <EmojiSelector containerStyle={styles.container} />
         <View
           style={[
             {
               backgroundColor: neutral15,
               paddingTop: layout.padding_x3,
               paddingHorizontal: tertiaryBoxPaddingHorizontal,
-              paddingBottom: 52,
+              paddingBottom: singleView ? layout.padding_x3 : 52,
               borderRadius: 12,
             },
           ]}
@@ -117,7 +127,7 @@ export const SocialThreadCard: React.FC<{
               style={{
                 marginRight: imageMarginRight,
               }}
-              size={getResponsiveAvatarSize(containerWidth)}
+              size={singleView ? 68 : getResponsiveAvatarSize(containerWidth)}
               isLoading={postByTNSMetadata.loading}
             />
 
@@ -195,35 +205,36 @@ export const SocialThreadCard: React.FC<{
                   maxWidth={maxLayoutWidth}
                 />
               )}
-              <View
-                style={{
-                  backgroundColor: neutral22,
-                  width: "100%",
-                  height: 1,
-                  marginVertical: layout.padding_x2_5 / 2,
-                }}
-              />
 
-              <BrandText style={[fontSemibold13, { color: neutral77 }]}>
-                {post.post_by}
-              </BrandText>
+              <View style={styles.actionContainer}>
+                <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+                  {post.post_by}
+                </BrandText>
+                {singleView && (
+                  <SocialReactionActions commentCount={post.sub_post_length} />
+                )}
+              </View>
             </View>
           </View>
         </View>
 
-        <SocialActions
-          isGovernance={isGovernance}
-          singleView={singleView}
-          post={post}
-          style={{
-            position: "absolute",
-            bottom: -socialActionsHeight / 2,
-            alignSelf: "center",
-          }}
-        />
+        {!singleView && (
+          <SocialActions
+            isGovernance={isGovernance}
+            singleView={singleView}
+            post={post}
+            style={{
+              position: "absolute",
+              bottom: -socialActionsHeight / 2,
+              alignSelf: "center",
+            }}
+          />
+        )}
+
+        {!singleView && <EmojiSelector containerStyle={styles.container} />}
       </View>
 
-      <CommentsContainer comments={subPosts} />
+      <CommentsContainer comments={subPosts} onPressReply={onPressReply} />
     </AnimationFadeIn>
   );
 };
@@ -234,5 +245,13 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
     zIndex: 9,
+  },
+
+  actionContainer: {
+    borderTopWidth: 1,
+    paddingTop: layout.padding_x1_5,
+    borderColor: neutral22,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
