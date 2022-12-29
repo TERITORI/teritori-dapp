@@ -1,81 +1,55 @@
 import React from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { neutral22 } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
 import { SocialCommentCard } from "./SocialCommentCard";
 
-const CommentContainer: React.FC<{
-  comment: PostResult;
-  isLast?: boolean;
-}> = ({ comment, isLast }) => {
-  return (
-    <View
-      style={{
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "flex-end",
-        marginBottom: isLast ? 0 : 37,
-      }}
-    >
-      <View
-        style={{
-          width: 60,
-          height: 50,
-          marginBottom: 50,
-          borderLeftWidth: 2,
-          borderBottomWidth: 2,
-          borderBottomLeftRadius: 30,
-          borderColor: neutral22,
-        }}
-      />
-      <SocialCommentCard comment={comment} />
-    </View>
-  );
-};
-
-export const CommentsContainer: React.FC<{
+interface CommentsContainerProps {
   comments: PostResult[];
   style?: StyleProp<ViewStyle>;
-}> = ({ comments }) => {
+  onPressReply?: OnPressReplyType;
+  overrideParentId?: string;
+}
+
+export const CommentsContainer: React.FC<CommentsContainerProps> = ({
+  comments,
+  onPressReply,
+  overrideParentId,
+}) => {
   if (!comments?.length) {
     return null;
   }
+
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        paddingTop: 68,
-        paddingLeft: layout.padding_x2_5,
-        width: "100%",
-        position: "relative",
-      }}
-    >
-      <View
-        style={{
-          width: 1,
-          backgroundColor: neutral22,
-          position: "absolute",
-          left: 20,
-          top: 0,
-          bottom: 80,
-        }}
-      />
-      <View
-        style={{
-          flex: 1,
-          paddingBottom: layout.contentPadding,
-        }}
-      >
+    <View style={styles.container}>
+      <View style={styles.conversationLine} />
+
+      <View style={{ flex: 1 }}>
         {comments.map((comment, index) => (
-          <CommentContainer
+          <SocialCommentCard
             key={index}
             comment={comment}
-            isLast={comments.length === index + 1}
+            isLast={comments?.length === index + 1}
+            onPressReply={onPressReply}
+            overrideParentId={overrideParentId}
           />
         ))}
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginLeft: 60,
+    flexDirection: "row",
+  },
+  conversationLine: {
+    height: "100%",
+    width: 1,
+    backgroundColor: neutral22,
+  },
+});
