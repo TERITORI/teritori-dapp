@@ -1,3 +1,4 @@
+import { useSelectedNetworkInfo } from "./useSelectedNetwork";
 import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
