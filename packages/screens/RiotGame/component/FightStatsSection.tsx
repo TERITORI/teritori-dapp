@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
+import { useSelector } from "react-redux";
 
 import {
   CurrentSeasonResponse,
@@ -12,6 +13,7 @@ import {
   TeritoriDistributorClient,
 } from "../../../contracts-clients/teritori-distributor/TeritoriDistributor.client";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { p2eBackendClient } from "../../../utils/backend";
 import { decimalFromAtomics } from "../../../utils/coins";
 import {
@@ -31,6 +33,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   containerStyle,
 }) => {
   const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const [claimableAmount, setClaimableAmount] = useState(0);
   const [userRank, setUserRank] = useState<UserRankResponse>();
   const { setToastError, setToastSuccess } = useFeedbacks();
@@ -143,6 +146,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
             isClaiming
               ? "Claiming..."
               : `Claim available rewards: ${decimalFromAtomics(
+                  selectedNetworkId,
                   "" + claimableAmount,
                   "utori"
                 )} TORI`
