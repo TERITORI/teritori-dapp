@@ -52,9 +52,6 @@ func (p *Provider) GetCollections(ctx context.Context, networkId string) ([]mark
 	// Fix: currently it does not support multiple denoms
 	res := make([]marketplacepb.Collection, 0, len(collections.NftContracts))
 	for _, contract := range collections.NftContracts {
-
-		fmt.Printf("%v", contract)
-
 		res = append(res, marketplacepb.Collection{
 			NetworkId:      networkId,
 			Id:             indexerdb.EthereumCollectionID(contract.Minter),
