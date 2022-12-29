@@ -14,9 +14,6 @@ import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";
 import { useBreedingConfig } from "./useBreedingConfig";
-import {getNetwork, NetworkInfo} from "../networks";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../store/slices/settings";
 
 export const useNFTInfo = (id: string, wallet: string | undefined) => {
   const [info, setInfo] = useState<NFTInfo>();
@@ -43,7 +40,12 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
         let nfo: NFTInfo;
         switch (minterContractAddress) {
           case process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS:
-            nfo = await getTNSNFTInfo(minterContractAddress, tokenId, wallet, selectedNetwork);
+            nfo = await getTNSNFTInfo(
+              minterContractAddress,
+              tokenId,
+              wallet,
+              selectedNetwork
+            );
             break;
           case process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS:
             nfo = await getRiotBreedingNFTInfo(
@@ -278,10 +280,11 @@ const getStandardNFTInfo = async (
 const getRiotBreedingNFTInfo = async (
   minterContractAddress: string,
   tokenId: string,
-  wallet: string | undefined
+  wallet: string | undefined,
+  network?: NetworkInfo
 ) => {
   // We use a CosmWasm non signing Client
-  const cosmwasmClient = await getNonSigningCosmWasmClient();
+  const cosmwasmClient = await getNonSigningCosmWasmClient(network);
 
   // ======== Getting breeding client
   const breedingClient = new TeritoriBreedingQueryClient(

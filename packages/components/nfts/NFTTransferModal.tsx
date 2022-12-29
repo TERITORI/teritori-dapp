@@ -10,9 +10,7 @@ import { TeritoriNftClient } from "../../contracts-clients/teritori-nft/Teritori
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNetwork } from "../../networks";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
-import {
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";

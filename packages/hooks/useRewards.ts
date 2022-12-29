@@ -4,26 +4,18 @@ import {
 } from "@cosmjs/stargate";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { getNetwork } from "../networks";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { getKeplrOfflineSigner } from "../utils/keplr";
 import {
   CosmosRewardsResponse,
-  getTeritoriSigningStargateClient,
+  getSigningStargateClient,
 } from "../utils/teritori";
 import { CoingeckoCoin, useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useErrorHandler } from "./useErrorHandler";
-import { useSelectedNetworkId } from "./useSelectedNetwork";
-
-
-import { useQuery } from "@tanstack/react-query";
-import { Decimal } from "cosmwasm";
-import { useMemo } from "react";
-
-import { getNativeCurrency, getNetwork } from "../networks";
-import { CosmosRewardsTotalResponse } from "../utils/teritori";
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
 export type Reward = {
   validator: string;
@@ -43,8 +35,8 @@ const initialData = { rewards: [], total: [] };
 
 // Getting the rewards, by user's wallet address, and by network.
 export const useRewards = (walletAddress?: string) => {
-  const selectedNetwork = useSelectedNetworkId();
-  const networkId = selectedNetwork || process.env.TERITORI_NETWORK_ID || "";
+  const networkId = useSelector(selectSelectedNetworkId);
+  const selectedNetwork = getNetwork(networkId);
   const { setToastSuccess, setToastError } = useFeedbacks();
   const { triggerError } = useErrorHandler();
 
@@ -52,7 +44,7 @@ export const useRewards = (walletAddress?: string) => {
     try {
       if (!walletAddress) return;
       const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
+      const client = await getSigningStargateClient(signer, selectedNetwork);
 
       const msgs: MsgWithdrawDelegatorRewardEncodeObject[] = [];
       networkRewards.rewards.forEach((rew) => {
@@ -93,7 +85,7 @@ export const useRewards = (walletAddress?: string) => {
     try {
       if (!walletAddress) return;
       const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
+      const client = await getSigningStargateClient(signer, selectedNetwork);
       const msg: MsgWithdrawDelegatorRewardEncodeObject = {
         typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
         value: {
@@ -122,7 +114,7 @@ export const useRewards = (walletAddress?: string) => {
   };
 
   // ---- Getting rewards from cosmos distribution
-  const { data: networkRewards = [] } = useQuery(
+  const { data: networkRewards } = useQuery(
     ["rewards", networkId, walletAddress],
     async () => {
       if (!walletAddress || !networkId) {
@@ -130,7 +122,7 @@ export const useRewards = (walletAddress?: string) => {
       }
       return getNetworkRewards(networkId, walletAddress) || [];
     },
-    { initialData: [], refetchInterval: 5000 }
+    { initialData, refetchInterval: 5000 }
   );
 
   // ---- Get all denoms used for these rewards
