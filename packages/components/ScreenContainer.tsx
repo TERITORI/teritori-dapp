@@ -11,9 +11,11 @@ import {
 } from "react-native";
 
 import { useMaxResolution } from "../hooks/useMaxResolution";
+import { useIsMobile } from "../hooks/useMobile";
 import {
   headerHeight,
   headerMarginHorizontal,
+  mobileScreenContainerContentMarginHorizontal,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
 import { ConnectWalletButton } from "./ConnectWalletButton";
@@ -46,10 +48,13 @@ export const ScreenContainer: React.FC<{
 }) => {
   // variables
   const { height } = useWindowDimensions();
+  const isMobile = useIsMobile();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
   const marginStyle = hasMargin && {
-    marginHorizontal: screenContainerContentMarginHorizontal,
+    marginHorizontal: isMobile
+      ? mobileScreenContainerContentMarginHorizontal
+      : screenContainerContentMarginHorizontal,
   };
   const { width: maxWidth } = useMaxResolution();
   const width = fullWidth ? "100%" : maxWidth;

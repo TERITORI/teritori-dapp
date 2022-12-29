@@ -1,6 +1,12 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import { View, StyleSheet, Pressable, FlatList } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  FlatList,
+  useWindowDimensions,
+} from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -10,11 +16,12 @@ import Animated, {
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
+import { useIsMobile } from "../../hooks/useMobile";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
-import { neutral17, neutral33 } from "../../utils/style/colors";
+import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import {
   smallSidebarWidth,
   fullSidebarWidth,
@@ -37,6 +44,8 @@ const SpringConfig: WithSpringConfig = {
 };
 
 export const Sidebar: React.FC = () => {
+  const { width } = useWindowDimensions();
+  const isMobile = useIsMobile();
   const selectedWallet = useSelectedWallet();
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
 
@@ -47,11 +56,21 @@ export const Sidebar: React.FC = () => {
 
   // animations
   const layoutStyle = useAnimatedStyle(
-    () => ({
-      width: isSidebarExpanded
-        ? withSpring(fullSidebarWidth, SpringConfig)
-        : withSpring(smallSidebarWidth, SpringConfig),
-    }),
+    () =>
+      isMobile
+        ? {
+            left: isSidebarExpanded
+              ? withSpring(0, SpringConfig)
+              : withSpring(-width, SpringConfig),
+            right: isSidebarExpanded
+              ? withSpring(0, SpringConfig)
+              : withSpring(-width, SpringConfig),
+          }
+        : {
+            width: isSidebarExpanded
+              ? withSpring(fullSidebarWidth, SpringConfig)
+              : withSpring(smallSidebarWidth, SpringConfig),
+          },
     [isSidebarExpanded]
   );
 
@@ -76,7 +95,12 @@ export const Sidebar: React.FC = () => {
 
   // returns
   return (
-    <Animated.View style={[styles.container, layoutStyle]}>
+    <Animated.View
+      style={[
+        isMobile ? styles.mobileContainer : styles.container,
+        layoutStyle,
+      ]}
+    >
       <View style={styles.headerContainer}>
         {currentRouteName === "Home" && <SideNotch />}
 
@@ -136,6 +160,16 @@ export const Sidebar: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  mobileContainer: {
+    position: "absolute",
+    left: "calc(-100vw)",
+    right: "calc(-100vw)",
+    top: 0,
+    bottom: 0,
+    width: "100%",
+    backgroundColor: neutral00,
+    zIndex: 100,
+  },
   container: {
     borderRightWidth: 1,
     borderColor: neutral33,
