@@ -157,7 +157,7 @@ export const RiotGameLeaderboardScreen = () => {
       <FlatList
         data={userScores}
         keyExtractor={(item, index) => " " + index}
-        renderItem={({ item: userScore, index }) => {
+        renderItem={({ item: userScore}) => {
           const { xp, hours, rankChanges } = parseUserScoreInfo(userScore);
 
           return (

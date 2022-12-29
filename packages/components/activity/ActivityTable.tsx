@@ -208,7 +208,7 @@ const prettyActivityName = (kind: string) => {
     case "send-nft":
       return "Transfer to contract";
     case "transfer-nft":
-      return "Transfer";
+      return "Stake/Unstake";
     case "burn":
       return "Burn";
     default:
