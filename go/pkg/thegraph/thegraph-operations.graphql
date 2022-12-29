@@ -56,6 +56,7 @@ query GetCollections($from: BigInt!) {
     id
     supported
     name
+    minter
   }
   buys(where: { createdAt_gt: $from }) {
     id

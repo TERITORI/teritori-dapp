@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/thegraph"
 )
@@ -51,9 +52,9 @@ func (p *Provider) GetCollections(networkId string) ([]marketplacepb.Collection,
 	for _, contract := range collections.NftContracts {
 		res = append(res, marketplacepb.Collection{
 			NetworkId:      networkId,
-			Id:             contract.Id,
+			Id:             indexerdb.EthereumCollectionID(contract.Minter),
 			CollectionName: contract.Name,
-			MintAddress:    contract.Id,
+			MintAddress:    contract.Minter,
 			Volume:         fmt.Sprint(volumeByCollection[contract.Id].volume),
 			VolumeDenom:    volumeByCollection[contract.Id].denom,
 		})

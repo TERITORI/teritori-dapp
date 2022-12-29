@@ -18,6 +18,11 @@ export const useMintEnded = (id: string) => {
       }
 
       if (selectedNetworkInfo?.network === Network.Teritori) {
+        // NOTE: When changing network, we flush the collections and reload the new ones
+        // but due to async nature, network changed before collections flushed so we can
+        // have case that network is updated but collection not yet so we have to check here
+        if (!id.startsWith("tori-")) return false;
+
         const mintAddress = id.replace("tori-", "");
 
         if (
@@ -38,6 +43,11 @@ export const useMintEnded = (id: string) => {
 
         return mintedAmount === conf.nft_max_supply;
       } else if (selectedNetworkInfo?.network === Network.Ethereum) {
+        // NOTE: When changing network, we flush the collections and reload the new ones
+        // but due to async nature, network changed before collections flushed so we can
+        // have case that network is updated but collection not yet so we have to check here
+        if (!id.startsWith("eth-")) return false;
+
         const mintAddress = id.replace("eth-", "");
 
         const provider = await getEthereumProvider();

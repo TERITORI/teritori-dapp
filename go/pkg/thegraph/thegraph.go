@@ -291,6 +291,7 @@ type GetCollectionsNftContractsNftContract struct {
 	Id        string `json:"id"`
 	Supported bool   `json:"supported"`
 	Name      string `json:"name"`
+	Minter    string `json:"minter"`
 }
 
 // GetId returns GetCollectionsNftContractsNftContract.Id, and is useful for accessing the field via an interface.
@@ -301,6 +302,9 @@ func (v *GetCollectionsNftContractsNftContract) GetSupported() bool { return v.S
 
 // GetName returns GetCollectionsNftContractsNftContract.Name, and is useful for accessing the field via an interface.
 func (v *GetCollectionsNftContractsNftContract) GetName() string { return v.Name }
+
+// GetMinter returns GetCollectionsNftContractsNftContract.Minter, and is useful for accessing the field via an interface.
+func (v *GetCollectionsNftContractsNftContract) GetMinter() string { return v.Minter }
 
 // GetCollectionsResponse is returned by GetCollections on success.
 type GetCollectionsResponse struct {
@@ -566,6 +570,7 @@ query GetCollections ($from: BigInt!) {
 		id
 		supported
 		name
+		minter
 	}
 	buys(where: {createdAt_gt:$from}) {
 		id

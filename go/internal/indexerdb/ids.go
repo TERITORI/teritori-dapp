@@ -8,6 +8,10 @@ func TeritoriCollectionID(mintContractAddress string) string {
 	return fmt.Sprintf("%s-%s", "tori", mintContractAddress)
 }
 
+func EthereumCollectionID(mintContractAddress string) string {
+	return fmt.Sprintf("%s-%s", "eth", mintContractAddress)
+}
+
 func TeritoriNFTID(mintContractAddress string, tokenId string) string {
 	return fmt.Sprintf("%s-%s-%s", "tori", mintContractAddress, tokenId)
 }
