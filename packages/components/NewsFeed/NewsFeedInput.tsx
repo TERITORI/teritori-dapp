@@ -1,6 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { TextInput, View, ViewStyle, TouchableOpacity } from "react-native";
+import {
+  TextInput,
+  View,
+  ViewStyle,
+  TouchableOpacity,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 
 import cameraSVG from "../../../assets/icons/camera.svg";
 import penSVG from "../../../assets/icons/pen.svg";
@@ -8,6 +15,7 @@ import priceSVG from "../../../assets/icons/price.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { ReplyToType } from "../../screens/FeedPostView/types";
 import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -48,15 +56,21 @@ interface NewsFeedInputProps {
   parentId?: string;
   style?: ViewStyle;
   onSubmitSuccess?: () => void;
+  replyTo?: ReplyToType;
 }
 
-export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
-  type,
-  parentId,
-  style,
-  onSubmitSuccess,
-}) => {
+export interface NewsFeedInputHandle {
+  resetForm: () => void;
+  setValue: (text: string) => void;
+  focusInput: () => void;
+}
+
+export const NewsFeedInput = React.forwardRef<
+  NewsFeedInputHandle,
+  NewsFeedInputProps
+>(({ type, parentId, style, onSubmitSuccess, replyTo }, forwardRef) => {
   const wallet = useSelectedWallet();
+  const inputRef = useRef<TextInput>(null);
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [postFee, setPostFee] = useState(0);
@@ -111,13 +125,17 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
     if (postFee > Number(toriBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
     }
+    const hasUsername =
+      replyTo?.parentId &&
+      replyTo?.username &&
+      formValues.message.includes(`@${replyTo.username}`);
 
     await createPost({
       wallet,
       freePostCount,
       fee: postFee,
       formValues,
-      parentId,
+      parentId: hasUsername ? replyTo.parentId : parentId,
     });
   };
 
@@ -126,6 +144,12 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
     updateAvailableFreePost();
     updatePostFee();
   };
+
+  useImperativeHandle(forwardRef, () => ({
+    resetForm,
+    setValue: handleTextChange,
+    focusInput,
+  }));
 
   const onSubmit = async () => {
     setLoading(true);
@@ -176,6 +200,8 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
     }
   };
 
+  const focusInput = () => inputRef.current?.focus();
+
   return (
     <View style={style}>
       {fileUpload && (
@@ -199,58 +225,57 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
           zIndex: 9,
         }}
         mainContainerStyle={{
-          paddingVertical: layout.padding_x4,
-          paddingHorizontal: layout.padding_x2_5,
           backgroundColor: neutral22,
-          flexDirection: "row",
-          alignItems: "flex-start",
         }}
         noRightBrokenBorder
       >
-        <SVG height={24} width={24} source={penSVG} color={secondaryColor} />
+        <Pressable onPress={focusInput} style={styles.insideContainer}>
+          <SVG height={24} width={24} source={penSVG} color={secondaryColor} />
 
-        <TextInput
-          value={formValues.message}
-          onSelectionChange={(event) =>
-            setSelection(event.nativeEvent.selection)
-          }
-          placeholder={`Hey yo! ${
-            type === "post" ? "Post something" : "Write your comment"
-          } here! _____`}
-          placeholderTextColor={neutral77}
-          onChangeText={handleTextChange}
-          multiline
-          style={[
-            fontSemibold16,
-            {
-              width: "100%",
-              color: secondaryColor,
-              marginLeft: layout.padding_x1_5,
-
-              //@ts-ignore
-              outlineStyle: "none",
-              outlineWidth: 0,
-            },
-          ]}
-          onKeyPress={(e) => {
-            if (e.nativeEvent.key === "Enter" && type === "post") {
-              redirectToNewPost();
+          <TextInput
+            ref={inputRef}
+            value={formValues.message}
+            onSelectionChange={(event) =>
+              setSelection(event.nativeEvent.selection)
             }
-          }}
-        />
-        <BrandText
-          style={[
-            fontSemibold12,
-            {
-              color: neutral77,
-              position: "absolute",
-              bottom: 12,
-              right: 20,
-            },
-          ]}
-        >
-          {formValues?.message?.length}/{WORD_MAX_LIMIT}
-        </BrandText>
+            placeholder={`Hey yo! ${
+              type === "post" ? "Post something" : "Write your comment"
+            } here! _____`}
+            placeholderTextColor={neutral77}
+            onChangeText={handleTextChange}
+            multiline
+            style={[
+              fontSemibold16,
+              {
+                width: "100%",
+                color: secondaryColor,
+                marginLeft: layout.padding_x1_5,
+
+                //@ts-ignore
+                outlineStyle: "none",
+                outlineWidth: 0,
+              },
+            ]}
+            onKeyPress={(e) => {
+              if (e.nativeEvent.key === "Enter" && type === "post") {
+                redirectToNewPost();
+              }
+            }}
+          />
+          <BrandText
+            style={[
+              fontSemibold12,
+              {
+                color: neutral77,
+                position: "absolute",
+                bottom: 12,
+                right: 20,
+              },
+            ]}
+          >
+            {formValues?.message?.length}/{WORD_MAX_LIMIT}
+          </BrandText>
+        </Pressable>
       </TertiaryBox>
       <View
         style={{
@@ -331,4 +356,14 @@ export const NewsFeedInput: React.FC<NewsFeedInputProps> = ({
       </View>
     </View>
   );
-};
+});
+
+const styles = StyleSheet.create({
+  insideContainer: {
+    width: "100%",
+    paddingVertical: layout.padding_x4,
+    paddingHorizontal: layout.padding_x2_5,
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+});

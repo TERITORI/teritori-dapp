@@ -110,7 +110,7 @@ export const NewsFeed: React.FC<SelectedTabContentProps> = ({ Header }) => {
         </Animated.View>
       </View>
     ),
-    [isLoadingValue]
+    [isLoadingValue, Header]
   );
 
   return (
