@@ -49,7 +49,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   const address = userId.split("-")[1];
   const tnsMetadata = useTNSMetadata(address);
 
-  const name = tinyAddress(tnsMetadata?.metadata?.tokenId || address || "");
+  const name = tnsMetadata?.metadata?.tokenId || address || "";
 
   return (
     <FlexRow width="auto" alignItems="center">
@@ -61,33 +61,36 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
           });
         }}
       >
-        <Image
-          source={{
-            uri: ipfsURLToHTTPURL(
-              tnsMetadata?.metadata?.image ||
-                process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
-                ""
-            ),
-          }}
-          style={{
-            borderRadius: 999,
-            width: 32,
-            height: 32,
-            aspectRatio: 1,
-          }}
-        />
+      <Image
+        source={{
+          uri: ipfsURLToHTTPURL(
+            tnsMetadata?.metadata?.image ||
+              process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
+              ""
+          ),
+        }}
+        style={{
+          borderRadius: 999,
+          width: 32,
+          height: 32,
+          aspectRatio: 1,
+        }}
+      />
 
-        <BrandText style={[styles.colData, { marginLeft: layout.padding_x1 }]}>
-          {name}
-        </BrandText>
-        <SVG
-          width={16}
-          height={16}
-          color={primaryColor}
-          source={badgeSVG}
-          style={{ marginLeft: layout.padding_x1 }}
-        />
-      </TouchableOpacity>
+      <BrandText
+        style={[styles.colData, { marginLeft: layout.padding_x1 }]}
+        numberOfLines={1}
+      >
+        {name}
+      </BrandText>
+      <SVG
+        width={16}
+        height={16}
+        color={primaryColor}
+        source={badgeSVG}
+        style={{ marginLeft: layout.padding_x1 }}
+      />
+    </TouchableOpacity>
     </FlexRow>
   );
 };
