@@ -128,7 +128,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     const address = await signer.getAddress();
     // const estimatedGas = await minterClient.estimateGas.requestMint(address);
     const tx = await minterClient.requestMint(address, {
-      gasLimit: ethers.utils.parseEther("0.000000000001"),
+      gasLimit: ethers.utils.parseEther("0.000000000001"), // TODO: make this auto on mainnet
       value: minterConfig.publicMintPrice,
     });
     await tx.wait();
