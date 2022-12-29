@@ -169,7 +169,7 @@ const getEvmTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   const nftClient = TeritoriNft__factory.connect(nftAddress, provider);
   const secondsSinceEpoch = Date.now() / 1000;
 
-  const name = await nftClient.name();
+  const name = await nftClient.callStatic.name();
   const unitPrice = minterConfig.publicMintPrice.toString();
   const priceDenom = "wei";
   const maxSupply = minterConfig.maxSupply.toString();

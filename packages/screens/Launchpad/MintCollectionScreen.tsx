@@ -26,6 +26,7 @@ import {
 } from "../../context/FeedbacksProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
@@ -86,7 +87,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   );
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
-  const networkId = selectedNetworkInfo?.id;
+  const networkId = selectedNetworkInfo?.id || "";
   const balances = useBalances(networkId, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
 
@@ -116,20 +117,21 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       throw Error("no account connected");
     }
 
-    const evmTeritoriMinter = TeritoriMinter__factory.connect(
-      process.env.ETHEREUM_BUNKER_MINTER_CONTRACT_ADDRESS || "",
-      signer
-    );
+    // TODO: Should send mintAddress in id instead of nftAddress
+    const nftAddress = id;
+    const nftClient = TeritoriNft__factory.connect(nftAddress, signer);
+    const minterAddress = await nftClient.callStatic.minter();
+
+    const minterClient = TeritoriMinter__factory.connect(minterAddress, signer);
+    const minterConfig = await minterClient.callStatic.config();
 
     const address = await signer.getAddress();
-    const estimatedGas = await evmTeritoriMinter.estimateGas.requestMint(
-      address
-    );
-    const config = await evmTeritoriMinter.requestMint(address, {
-      gasLimit: estimatedGas,
-      value: ethers.utils.formatEther(1),
+    // const estimatedGas = await minterClient.estimateGas.requestMint(address);
+    const tx = await minterClient.requestMint(address, {
+      gasLimit: ethers.utils.parseEther("0.000000000001"),
+      value: minterConfig.publicMintPrice,
     });
-    console.log(config);
+    await tx.wait();
   };
 
   const mint = useCallback(async () => {
