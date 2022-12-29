@@ -1,9 +1,8 @@
-import { useIsFocused } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
-import { useGame } from "../../context/GameProvider";
+import { useOnGameFocus } from "../../context/GameProvider";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import {
   TabsListType,
@@ -19,16 +18,7 @@ export const RiotGameMarketplaceScreen = () => {
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );
-
-  const { playGameAudio, muteAudio, enteredInGame } = useGame();
-  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    if (isFocused && enteredInGame) {
-      muteAudio(false);
-      playGameAudio();
-    }
-  }, [isFocused]);
+  useOnGameFocus();
 
   // returns
   return (

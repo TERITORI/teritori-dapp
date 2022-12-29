@@ -1,23 +1,14 @@
-import { useIsFocused } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
-import { useGame } from "../../context/GameProvider";
+import { useOnGameFocus } from "../../context/GameProvider";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 
 export const RiotGameRarityScreen = () => {
-  const { playGameAudio, muteAudio, enteredInGame } = useGame();
-  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    if (isFocused && enteredInGame) {
-      muteAudio(false);
-      playGameAudio();
-    }
-  }, [isFocused]);
+  useOnGameFocus();
 
   return (
     <GameContentView>

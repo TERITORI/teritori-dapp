@@ -1,4 +1,3 @@
-import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -9,7 +8,7 @@ import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useGame } from "../../context/GameProvider";
+import { useOnGameFocus } from "../../context/GameProvider";
 import { NftInfoResponse } from "../../contracts-clients/teritori-nft/TeritoriNft.types";
 import { Nft } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { useRippers } from "../../hooks/riotGame/useRippers";
@@ -39,21 +38,10 @@ export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();
   const { setToastError } = useFeedbacks();
   const { myAvailableRippers } = useRippers();
-
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
   const [isUnstaking, setIsUnstaking] = useState(false);
-
   const [stakedRippers, setStakedRippers] = useState<RipperLightInfo[]>([]);
-
-  const { playGameAudio, muteAudio, enteredInGame } = useGame();
-  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    if (isFocused && enteredInGame) {
-      muteAudio(false);
-      playGameAudio();
-    }
-  }, [isFocused]);
+  useOnGameFocus();
 
   const {
     currentSquad,

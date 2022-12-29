@@ -1,4 +1,3 @@
-import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -22,7 +21,7 @@ import { SVG } from "../../components/SVG";
 import { tinyAddress } from "../../components/WalletSelector";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useGame } from "../../context/GameProvider";
+import { useOnGameFocus } from "../../context/GameProvider";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { p2eBackendClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
@@ -96,16 +95,7 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
 
 export const RiotGameLeaderboardScreen = () => {
   const [userScores, setUserScores] = useState<UserScore[]>([]);
-
-  const { playGameAudio, muteAudio, enteredInGame } = useGame();
-  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    if (isFocused && enteredInGame) {
-      muteAudio(false);
-      playGameAudio();
-    }
-  }, [isFocused]);
+  useOnGameFocus();
 
   const fetchLeaderboard = async () => {
     const _userScores: UserScore[] = [];

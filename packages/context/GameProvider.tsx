@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { Audio, AVPlaybackSource } from "expo-av";
 import React, {
   createContext,
@@ -10,12 +11,15 @@ import React, {
 import { useSquadStaking } from "../hooks/riotGame/useSquadStaking";
 import { StakingState } from "../utils/game";
 
+const BO_DURING_FIGHT = require("../../assets/game/BO-DURING-THE-FIGHT-THE-RIOT-TORI-P2E.mp3");
+const BO_PREPARE_FIGHT = require("../../assets/game/BO-PREPARE-THE-FIGHT-1-P2E-THE-RIOT-TORI.mp3");
+
 interface DefaultValue {
   playGameAudio: () => void;
   stopAudio: () => void;
   muteAudio: (isMuted: boolean) => void;
   enteredInGame?: boolean;
-  setEnteredInGame: (isIt: boolean) => void;
+  setEnteredInGame: (enteredInGame: boolean) => void;
   currentAudio?: Audio.Sound;
 }
 const defaultValue: DefaultValue = {
@@ -30,7 +34,7 @@ const defaultValue: DefaultValue = {
 const GameContext = createContext(defaultValue);
 
 export const GameContextProvider: React.FC = ({ children }) => {
-  const [currentAudio, setCurrenAudio] = useState<Audio.Sound>();
+  const [currentAudio, setCurrentAudio] = useState<Audio.Sound>();
   // This flag is used principally to handling audio stuff
   const [enteredInGame, setEnteredInGame] = useState(false);
   const { isSquadLoaded, isStakingStateLoaded, currentSquad, stakingState } =
@@ -44,9 +48,6 @@ export const GameContextProvider: React.FC = ({ children }) => {
         [StakingState.RELAX, StakingState.ONGOING].includes(stakingState))
     );
   }, [isSquadLoaded, isStakingStateLoaded]);
-
-  const BO_DURING_FIGHT = require("../../assets/game/BO-DURING-THE-FIGHT-THE-RIOT-TORI-P2E.mp3");
-  const BO_PREPARE_FIGHT = require("../../assets/game/BO-PREPARE-THE-FIGHT-1-P2E-THE-RIOT-TORI.mp3");
 
   // Relaunch game audio on isStaking update
   useEffect(() => {
@@ -71,7 +72,7 @@ export const GameContextProvider: React.FC = ({ children }) => {
       // If an audio is currently playing, leave
       if (audioStatus?.isLoaded && audioStatus.isPlaying) return;
       const { sound } = await Audio.Sound.createAsync(source);
-      setCurrenAudio(sound);
+      setCurrentAudio(sound);
       await sound.setIsLoopingAsync(loop);
       await sound.playAsync();
     } catch (e) {
@@ -90,7 +91,7 @@ export const GameContextProvider: React.FC = ({ children }) => {
       if (!audioStatus.isLoaded) return;
       await currentAudio.stopAsync();
       await currentAudio.unloadAsync();
-      setCurrenAudio(undefined);
+      setCurrentAudio(undefined);
     } catch (e) {
       console.error("Stopping audio failed:", e);
     }
@@ -127,3 +128,27 @@ export const GameContextProvider: React.FC = ({ children }) => {
 };
 
 export const useGame = () => useContext(GameContext);
+
+export const useOnGameFocus = () => {
+  const { playGameAudio, muteAudio, enteredInGame } = useGame();
+  // When the screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused && enteredInGame) {
+      muteAudio(false);
+      playGameAudio();
+    }
+  }, [isFocused]);
+};
+
+export const useOnGameBlur = () => {
+  const { setEnteredInGame, stopAudio } = useGame();
+  // When the screen is focused, stop game audio
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      setEnteredInGame(false);
+      stopAudio();
+    }
+  }, [isFocused]);
+};

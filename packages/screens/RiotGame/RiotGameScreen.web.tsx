@@ -1,8 +1,7 @@
-import { useIsFocused } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React from "react";
 import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
 
-import { useGame } from "../../context/GameProvider";
+import { useGame, useOnGameBlur } from "../../context/GameProvider";
 import { gameBgData } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral00 } from "../../utils/style/colors";
@@ -15,15 +14,8 @@ import { RiotGameHeader } from "./component/RiotGameHeader";
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();
 
-  const { setEnteredInGame, stopAudio } = useGame();
-  // When this screen is focused, stop game audio
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    if (isFocused) {
-      setEnteredInGame(false);
-      stopAudio();
-    }
-  }, [isFocused]);
+  const { setEnteredInGame } = useGame();
+  useOnGameBlur();
 
   // variables
   const { width, height } = useWindowDimensions();

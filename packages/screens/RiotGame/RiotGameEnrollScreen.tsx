@@ -1,4 +1,3 @@
-import { useIsFocused } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
 import React, { useState, useMemo, useEffect } from "react";
@@ -17,7 +16,7 @@ import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useGame } from "../../context/GameProvider";
+import { useGame, useOnGameFocus } from "../../context/GameProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
 import { StakingState } from "../../utils/game";
@@ -62,15 +61,8 @@ export const RiotGameEnrollScreen = () => {
 
   const videoRef = React.useRef<Video>(null);
   const [isVideoFullScreen, setVideoFullScreen] = useState(false);
-  const { muteAudio, playGameAudio, enteredInGame } = useGame();
-  // When this screen is focused, unmute the game audio and play game audio (A kind of forcing audio to be heard)
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    if (isFocused && enteredInGame) {
-      muteAudio(false);
-      playGameAudio();
-    }
-  }, [isFocused]);
+  const { muteAudio, enteredInGame } = useGame();
+  useOnGameFocus();
 
   // Stop/Replay the video of this screen. This video has a special behavior :
   // Muted and played by default, controls appears when fullscreen, unmuted when fullscreen

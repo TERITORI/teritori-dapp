@@ -1,5 +1,4 @@
-import { useIsFocused } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -11,7 +10,7 @@ import {
   StyleProp,
 } from "react-native";
 
-import { useGame } from "../context/GameProvider";
+import { useOnGameBlur } from "../context/GameProvider";
 import { useMaxResolution } from "../hooks/useMaxResolution";
 import {
   headerHeight,
@@ -56,15 +55,7 @@ export const ScreenContainer: React.FC<{
   const { width: maxWidth } = useMaxResolution();
   const width = fullWidth ? "100%" : maxWidth;
 
-  const { setEnteredInGame, stopAudio } = useGame();
-  // When this screen is focused, stop game audio
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    if (isFocused) {
-      setEnteredInGame(false);
-      stopAudio();
-    }
-  }, [isFocused]);
+  useOnGameBlur();
 
   // returns
   return (
