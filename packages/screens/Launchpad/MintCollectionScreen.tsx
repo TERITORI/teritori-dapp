@@ -80,7 +80,10 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
-  const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
+  const { info, notFound, refetchCollectionInfo } = useCollectionInfo(
+    id,
+    selectedNetworkInfo?.network
+  );
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
   const networkId = selectedNetworkInfo?.id || "";
