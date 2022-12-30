@@ -94,9 +94,13 @@ func (v *GetCollectionActivitiesActionsActionNft) GetContract() GetCollectionAct
 
 // GetCollectionActivitiesActionsActionNftContract includes the requested fields of the GraphQL type NftContract.
 type GetCollectionActivitiesActionsActionNftContract struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
+	Minter string `json:"minter"`
+	Id     string `json:"id"`
+	Name   string `json:"name"`
 }
+
+// GetMinter returns GetCollectionActivitiesActionsActionNftContract.Minter, and is useful for accessing the field via an interface.
+func (v *GetCollectionActivitiesActionsActionNftContract) GetMinter() string { return v.Minter }
 
 // GetId returns GetCollectionActivitiesActionsActionNftContract.Id, and is useful for accessing the field via an interface.
 func (v *GetCollectionActivitiesActionsActionNftContract) GetId() string { return v.Id }
@@ -390,13 +394,13 @@ func (v *GetNFTPriceHistoryResponse) GetBuys() []GetNFTPriceHistoryBuysBuy { ret
 
 // __GetCollectionActivitiesInput is used internally by genqlient
 type __GetCollectionActivitiesInput struct {
-	Contract string `json:"contract"`
-	Limit    int    `json:"Limit"`
-	Offset   int    `json:"Offset"`
+	Minter string `json:"minter"`
+	Limit  int    `json:"Limit"`
+	Offset int    `json:"Offset"`
 }
 
-// GetContract returns __GetCollectionActivitiesInput.Contract, and is useful for accessing the field via an interface.
-func (v *__GetCollectionActivitiesInput) GetContract() string { return v.Contract }
+// GetMinter returns __GetCollectionActivitiesInput.Minter, and is useful for accessing the field via an interface.
+func (v *__GetCollectionActivitiesInput) GetMinter() string { return v.Minter }
 
 // GetLimit returns __GetCollectionActivitiesInput.Limit, and is useful for accessing the field via an interface.
 func (v *__GetCollectionActivitiesInput) GetLimit() int { return v.Limit }
@@ -455,20 +459,21 @@ func (v *__GetNFTPriceHistoryInput) GetOffset() int { return v.Offset }
 func GetCollectionActivities(
 	ctx context.Context,
 	client graphql.Client,
-	contract string,
+	minter string,
 	Limit int,
 	Offset int,
 ) (*GetCollectionActivitiesResponse, error) {
 	req := &graphql.Request{
 		OpName: "GetCollectionActivities",
 		Query: `
-query GetCollectionActivities ($contract: String!, $Limit: Int!, $Offset: Int!) {
-	actions(where: {nft:$contract}, first: $Limit, skip: $Offset) {
+query GetCollectionActivities ($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
+	actions(where: {minter:$minter}, first: $Limit, skip: $Offset) {
 		id
 		nft {
 			id
 			tokenURI
 			contract {
+				minter
 				id
 				name
 			}
@@ -489,9 +494,9 @@ query GetCollectionActivities ($contract: String!, $Limit: Int!, $Offset: Int!) 
 }
 `,
 		Variables: &__GetCollectionActivitiesInput{
-			Contract: contract,
-			Limit:    Limit,
-			Offset:   Offset,
+			Minter: minter,
+			Limit:  Limit,
+			Offset: Offset,
 		},
 	}
 	var err error
