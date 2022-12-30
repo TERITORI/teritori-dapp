@@ -13,3 +13,8 @@ export const useSelectedNetworkInfo = () => {
   const selectedNetworkId = useSelectedNetworkId();
   return getNetwork(selectedNetworkId);
 };
+
+export const useSelectedNetwork = () => {
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  return selectedNetworkInfo?.network;
+};

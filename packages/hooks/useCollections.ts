@@ -5,6 +5,7 @@ import {
   CollectionsRequest,
 } from "../api/marketplace/v1/marketplace";
 import { backendClient } from "../utils/backend";
+import { addCollectionMetadatas } from "./../utils/ethereum";
 
 export const useCollections = (
   req: CollectionsRequest
@@ -35,7 +36,12 @@ export const useCollections = (
           collection && fetchedCollections.push(collection);
         });
 
-        setCollections([...currentCollection, ...fetchedCollections]);
+        let updatedCollections = [...currentCollection, ...fetchedCollections];
+
+        // TODO: Hack for adding metadata for ethereum collections, should use an indexed data
+        updatedCollections = await addCollectionMetadatas(updatedCollections);
+
+        setCollections(updatedCollections);
       } catch (err) {
         console.warn("failed to fetch collections:", err);
       }
