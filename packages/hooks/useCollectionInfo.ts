@@ -11,6 +11,7 @@ import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { Network } from "./../utils/network";
+import { useSelectedNetwork } from "./useSelectedNetwork";
 
 export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
 
@@ -279,16 +280,15 @@ const getEvmTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
 };
 
 // NOTE: consider using the indexer for this
-export const useCollectionInfo = (
-  id: string,
-  network: Network | undefined = undefined
-) => {
+export const useCollectionInfo = (id: string) => {
+  const selectedNetwork = useSelectedNetwork();
+
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
     async (): Promise<CollectionInfo> => {
       let info: CollectionInfo = {};
 
-      if (network === Network.Teritori) {
+      if (selectedNetwork === Network.Teritori) {
         const mintAddress = id.replace("tori-", "");
 
         switch (mintAddress) {
@@ -301,7 +301,7 @@ export const useCollectionInfo = (
           default:
             info = await getTeritoriBunkerCollectionInfo(mintAddress);
         }
-      } else if (network === Network.Ethereum) {
+      } else if (selectedNetwork === Network.Ethereum) {
         const mintAddress = id.replace("eth-", "");
 
         // Get mintAddress

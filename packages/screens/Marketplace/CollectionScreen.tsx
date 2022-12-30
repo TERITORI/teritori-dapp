@@ -59,7 +59,7 @@ export const Content: React.FC<{
   const numColumns = Math.floor(width / nftWidth);
 
   const nftsRequest: NFTsRequest = {
-    networkId: selectedNetworkId || "",
+    networkId: selectedNetworkId,
     collectionId: id,
     ownerId:
       selectedTab === "owned" && wallet?.address

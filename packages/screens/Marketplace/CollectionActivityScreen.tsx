@@ -8,6 +8,7 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { backendClient } from "../../utils/backend";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
@@ -88,7 +89,10 @@ export const CollectionActivityScreen: ScreenFC<"CollectionActivity"> = ({
     params: { id },
   },
 }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+
   const [activity, fetchMore] = useCollectionActivity({
+    networkId: selectedNetworkId,
     nftId: "",
     collectionId: id,
     limit: 20,

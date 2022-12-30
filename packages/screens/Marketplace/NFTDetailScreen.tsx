@@ -150,7 +150,7 @@ const Content: React.FC<{
     return reply;
   }, [cancelListing, refresh]);
 
-  if (!id.startsWith("tori-")) {
+  if (!id.startsWith("tori-") && !id.startsWith("eth-")) {
     return (
       <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
         <BrandText>Network not supported</BrandText>

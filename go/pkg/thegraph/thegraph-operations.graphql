@@ -73,19 +73,24 @@ query GetCollections($from: BigInt!) {
   }
 }
 
-query GetCollectionStats($contract: String!) {
-  nfts(where: { contract: $contract }) {
-    id
-    owner
-    creatorName
-    creatorAddress
-    tokenURI
-    inSale
-    price
-    denom
-    createdAt
+query GetCollectionStats($minter: Bytes!) {
+ nftContracts(where: {minter: $minter}) {
+		id
+		name
+    symbol
+    nfts {
+      id
+      owner
+      creatorName
+      creatorAddress
+      tokenURI
+      inSale
+      price
+      denom
+      createdAt
+    }
   }
-  buys(where: { nft: $contract }) {
+  buys(where: { minter: $minter }) {
     price
     denom
   }

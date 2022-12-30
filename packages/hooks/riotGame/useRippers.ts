@@ -11,12 +11,15 @@ import {
 } from "../../screens/RiotGame/settings";
 import { useNFTs } from "../useNFTs";
 import useSelectedWallet from "../useSelectedWallet";
+import { useSelectedNetworkId } from "./../useSelectedNetwork";
 
 export const useRippers = () => {
   const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
 
   const nftReq = {
     ownerId: selectedWallet?.address ? `tori-${selectedWallet.address}` : "",
+    networkId: selectedNetworkId,
     limit: 1000,
     offset: 0,
     sort: Sort.SORTING_UNSPECIFIED,

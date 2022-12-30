@@ -210,8 +210,30 @@ func (v *GetCollectionStatsBuysBuy) GetPrice() string { return v.Price }
 // GetDenom returns GetCollectionStatsBuysBuy.Denom, and is useful for accessing the field via an interface.
 func (v *GetCollectionStatsBuysBuy) GetDenom() string { return v.Denom }
 
-// GetCollectionStatsNftsNft includes the requested fields of the GraphQL type Nft.
-type GetCollectionStatsNftsNft struct {
+// GetCollectionStatsNftContractsNftContract includes the requested fields of the GraphQL type NftContract.
+type GetCollectionStatsNftContractsNftContract struct {
+	Id     string                                             `json:"id"`
+	Name   string                                             `json:"name"`
+	Symbol string                                             `json:"symbol"`
+	Nfts   []GetCollectionStatsNftContractsNftContractNftsNft `json:"nfts"`
+}
+
+// GetId returns GetCollectionStatsNftContractsNftContract.Id, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContract) GetId() string { return v.Id }
+
+// GetName returns GetCollectionStatsNftContractsNftContract.Name, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContract) GetName() string { return v.Name }
+
+// GetSymbol returns GetCollectionStatsNftContractsNftContract.Symbol, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContract) GetSymbol() string { return v.Symbol }
+
+// GetNfts returns GetCollectionStatsNftContractsNftContract.Nfts, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContract) GetNfts() []GetCollectionStatsNftContractsNftContractNftsNft {
+	return v.Nfts
+}
+
+// GetCollectionStatsNftContractsNftContractNftsNft includes the requested fields of the GraphQL type Nft.
+type GetCollectionStatsNftContractsNftContractNftsNft struct {
 	Id             string `json:"id"`
 	Owner          string `json:"owner"`
 	CreatorName    string `json:"creatorName"`
@@ -223,41 +245,47 @@ type GetCollectionStatsNftsNft struct {
 	CreatedAt      string `json:"createdAt"`
 }
 
-// GetId returns GetCollectionStatsNftsNft.Id, and is useful for accessing the field via an interface.
-func (v *GetCollectionStatsNftsNft) GetId() string { return v.Id }
+// GetId returns GetCollectionStatsNftContractsNftContractNftsNft.Id, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContractNftsNft) GetId() string { return v.Id }
 
-// GetOwner returns GetCollectionStatsNftsNft.Owner, and is useful for accessing the field via an interface.
-func (v *GetCollectionStatsNftsNft) GetOwner() string { return v.Owner }
+// GetOwner returns GetCollectionStatsNftContractsNftContractNftsNft.Owner, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContractNftsNft) GetOwner() string { return v.Owner }
 
-// GetCreatorName returns GetCollectionStatsNftsNft.CreatorName, and is useful for accessing the field via an interface.
-func (v *GetCollectionStatsNftsNft) GetCreatorName() string { return v.CreatorName }
+// GetCreatorName returns GetCollectionStatsNftContractsNftContractNftsNft.CreatorName, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContractNftsNft) GetCreatorName() string {
+	return v.CreatorName
+}
 
-// GetCreatorAddress returns GetCollectionStatsNftsNft.CreatorAddress, and is useful for accessing the field via an interface.
-func (v *GetCollectionStatsNftsNft) GetCreatorAddress() string { return v.CreatorAddress }
+// GetCreatorAddress returns GetCollectionStatsNftContractsNftContractNftsNft.CreatorAddress, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContractNftsNft) GetCreatorAddress() string {
+	return v.CreatorAddress
+}
 
-// GetTokenURI returns GetCollectionStatsNftsNft.TokenURI, and is useful for accessing the field via an interface.
-func (v *GetCollectionStatsNftsNft) GetTokenURI() string { return v.TokenURI }
+// GetTokenURI returns GetCollectionStatsNftContractsNftContractNftsNft.TokenURI, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContractNftsNft) GetTokenURI() string { return v.TokenURI }
 
-// GetInSale returns GetCollectionStatsNftsNft.InSale, and is useful for accessing the field via an interface.
-func (v *GetCollectionStatsNftsNft) GetInSale() bool { return v.InSale }
+// GetInSale returns GetCollectionStatsNftContractsNftContractNftsNft.InSale, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContractNftsNft) GetInSale() bool { return v.InSale }
 
-// GetPrice returns GetCollectionStatsNftsNft.Price, and is useful for accessing the field via an interface.
-func (v *GetCollectionStatsNftsNft) GetPrice() string { return v.Price }
+// GetPrice returns GetCollectionStatsNftContractsNftContractNftsNft.Price, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContractNftsNft) GetPrice() string { return v.Price }
 
-// GetDenom returns GetCollectionStatsNftsNft.Denom, and is useful for accessing the field via an interface.
-func (v *GetCollectionStatsNftsNft) GetDenom() string { return v.Denom }
+// GetDenom returns GetCollectionStatsNftContractsNftContractNftsNft.Denom, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContractNftsNft) GetDenom() string { return v.Denom }
 
-// GetCreatedAt returns GetCollectionStatsNftsNft.CreatedAt, and is useful for accessing the field via an interface.
-func (v *GetCollectionStatsNftsNft) GetCreatedAt() string { return v.CreatedAt }
+// GetCreatedAt returns GetCollectionStatsNftContractsNftContractNftsNft.CreatedAt, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsNftContractsNftContractNftsNft) GetCreatedAt() string { return v.CreatedAt }
 
 // GetCollectionStatsResponse is returned by GetCollectionStats on success.
 type GetCollectionStatsResponse struct {
-	Nfts []GetCollectionStatsNftsNft `json:"nfts"`
-	Buys []GetCollectionStatsBuysBuy `json:"buys"`
+	NftContracts []GetCollectionStatsNftContractsNftContract `json:"nftContracts"`
+	Buys         []GetCollectionStatsBuysBuy                 `json:"buys"`
 }
 
-// GetNfts returns GetCollectionStatsResponse.Nfts, and is useful for accessing the field via an interface.
-func (v *GetCollectionStatsResponse) GetNfts() []GetCollectionStatsNftsNft { return v.Nfts }
+// GetNftContracts returns GetCollectionStatsResponse.NftContracts, and is useful for accessing the field via an interface.
+func (v *GetCollectionStatsResponse) GetNftContracts() []GetCollectionStatsNftContractsNftContract {
+	return v.NftContracts
+}
 
 // GetBuys returns GetCollectionStatsResponse.Buys, and is useful for accessing the field via an interface.
 func (v *GetCollectionStatsResponse) GetBuys() []GetCollectionStatsBuysBuy { return v.Buys }
@@ -394,11 +422,11 @@ func (v *__GetCollectionNFTsInput) GetOffset() int { return v.Offset }
 
 // __GetCollectionStatsInput is used internally by genqlient
 type __GetCollectionStatsInput struct {
-	Contract string `json:"contract"`
+	Minter string `json:"minter"`
 }
 
-// GetContract returns __GetCollectionStatsInput.Contract, and is useful for accessing the field via an interface.
-func (v *__GetCollectionStatsInput) GetContract() string { return v.Contract }
+// GetMinter returns __GetCollectionStatsInput.Minter, and is useful for accessing the field via an interface.
+func (v *__GetCollectionStatsInput) GetMinter() string { return v.Minter }
 
 // __GetCollectionsInput is used internally by genqlient
 type __GetCollectionsInput struct {
@@ -534,31 +562,36 @@ query GetCollectionNFTs ($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
 func GetCollectionStats(
 	ctx context.Context,
 	client graphql.Client,
-	contract string,
+	minter string,
 ) (*GetCollectionStatsResponse, error) {
 	req := &graphql.Request{
 		OpName: "GetCollectionStats",
 		Query: `
-query GetCollectionStats ($contract: String!) {
-	nfts(where: {contract:$contract}) {
+query GetCollectionStats ($minter: Bytes!) {
+	nftContracts(where: {minter:$minter}) {
 		id
-		owner
-		creatorName
-		creatorAddress
-		tokenURI
-		inSale
-		price
-		denom
-		createdAt
+		name
+		symbol
+		nfts {
+			id
+			owner
+			creatorName
+			creatorAddress
+			tokenURI
+			inSale
+			price
+			denom
+			createdAt
+		}
 	}
-	buys(where: {nft:$contract}) {
+	buys(where: {minter:$minter}) {
 		price
 		denom
 	}
 }
 `,
 		Variables: &__GetCollectionStatsInput{
-			Contract: contract,
+			Minter: minter,
 		},
 	}
 	var err error

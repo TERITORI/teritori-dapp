@@ -58,7 +58,10 @@ const OwnedNFTsSection: React.FC<{
   ownerId: string;
   collection: Collection;
 }> = ({ ownerId, collection }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+
   const { nfts } = useNFTs({
+    networkId: selectedNetworkId,
     offset: 0,
     limit: 100, // FIXME: pagination
     ownerId,
