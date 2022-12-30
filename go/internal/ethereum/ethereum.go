@@ -153,7 +153,8 @@ func (p *Provider) GetNFTs(networkID string, collectionID string, limit, offset 
 
 func (p *Provider) GetCollectionActivities(collectionID string, limit, offset int) ([]*marketplacepb.Activity, error) {
 	ctx := context.Background()
-	activities, err := thegraph.GetCollectionActivities(ctx, p.client, collectionID, limit, offset)
+	minter := strings.Replace(collectionID, "eth-", "", 1)
+	activities, err := thegraph.GetCollectionActivities(ctx, p.client, minter, limit, offset)
 	if err != nil {
 		return nil, err
 	}
