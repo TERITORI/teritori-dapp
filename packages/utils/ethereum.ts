@@ -26,25 +26,6 @@ export const getMetaMaskEthereumSigner = async (address?: string) => {
   return provider.getSigner(address) as Signer;
 };
 
-export const getCollectionMetadata = async (collectionId: string) => {
-  const minter = collectionId.replace("eth-", "");
-  const provider = await getEthereumProvider();
-  if (!provider) return;
-
-  try {
-    const minterClient = await TeritoriMinter__factory.connect(
-      minter,
-      provider
-    );
-    const nftAddress = await minterClient.callStatic.nft();
-    const nftClient = await TeritoriNft__factory.connect(nftAddress, provider);
-    const contractURI = await nftClient.callStatic.contractURI();
-    return await fetch(contractURI).then((res) => res.json());
-  } catch (e) {
-    console.warn(e);
-  }
-};
-
 export const addCollectionMetadatas = async (collections: Collection[]) => {
   const collectionWithMetadatas: Collection[] = [];
   for (const collection of collections) {
@@ -93,4 +74,23 @@ export const addNftMetadatas = async (nfts: NFT[]) => {
   }
 
   return nftWithMetadatas;
+};
+
+export const getCollectionMetadata = async (collectionId: string) => {
+  const minter = collectionId.replace("eth-", "");
+  const provider = await getEthereumProvider();
+  if (!provider) return;
+
+  try {
+    const minterClient = await TeritoriMinter__factory.connect(
+      minter,
+      provider
+    );
+    const nftAddress = await minterClient.callStatic.nft();
+    const nftClient = await TeritoriNft__factory.connect(nftAddress, provider);
+    const contractURI = await nftClient.callStatic.contractURI();
+    return await fetch(contractURI).then((res) => res.json());
+  } catch (e) {
+    console.warn(e);
+  }
 };
