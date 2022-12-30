@@ -6,7 +6,7 @@ import { selectSelectedNetworkId } from "../store/slices/settings";
 export const useSelectedNetworkId = () => {
   const networkId =
     useSelector(selectSelectedNetworkId) || process.env.TERITORI_NETWORK_ID;
-  return networkId;
+  return networkId || "";
 };
 
 export const useSelectedNetworkInfo = () => {

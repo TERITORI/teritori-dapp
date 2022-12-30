@@ -5,6 +5,7 @@ import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
 import { useActivity } from "../../hooks/useActivity";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
 import {
@@ -55,7 +56,9 @@ export const ActivityTable: React.FC<{
 }> = ({ nftId, collectionId }) => {
   const itemsPerPage = 5;
   const [pageIndex, setPageIndex] = useState(0);
+  const selectedNetworkId = useSelectedNetworkId();
   const { total, activities } = useActivity({
+    networkId: selectedNetworkId,
     collectionId: collectionId || "",
     nftId: nftId || "",
     offset: pageIndex * itemsPerPage,

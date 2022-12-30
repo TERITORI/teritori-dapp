@@ -3,9 +3,13 @@ import { useMemo, useRef } from "react";
 
 import { NFTsRequest, NFT } from "../api/marketplace/v1/marketplace";
 import { backendClient } from "../utils/backend";
+import { addNftMetadatas } from "../utils/ethereum";
+import { Network } from "../utils/network";
+import { useSelectedNetwork } from "./useSelectedNetwork";
 
 export const useNFTs = (req: NFTsRequest) => {
   const baseOffset = useRef(req.offset);
+  const selectedNetwork = useSelectedNetwork();
 
   const { data, fetchNextPage } = useInfiniteQuery(
     [
@@ -17,7 +21,7 @@ export const useNFTs = (req: NFTsRequest) => {
       baseOffset.current,
     ],
     async ({ pageParam = 0 }) => {
-      const nfts: NFT[] = [];
+      let nfts: NFT[] = [];
       const pageReq = {
         ...req,
         offset: baseOffset.current + pageParam,
@@ -29,6 +33,11 @@ export const useNFTs = (req: NFTsRequest) => {
         }
         nfts.push(response.nft);
       });
+
+      if (selectedNetwork === Network.Ethereum) {
+        nfts = await addNftMetadatas(nfts);
+      }
+
       return { nextCursor: pageParam + req.limit, nfts };
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }

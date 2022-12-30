@@ -12,6 +12,7 @@ type Action {
   buy: Buy
   list: List
   action: String
+  minter: Bytes
   createdAt: BigInt!
 }
 type Buy {
@@ -20,6 +21,7 @@ type Buy {
   price: BigInt
   denom: Bytes
   seller: Bytes!
+  minter: Bytes
   createdAt: BigInt!
 }
 type List {
@@ -210,6 +212,7 @@ enum Action_orderBy {
   buy
   list
   action
+  minter
   createdAt
 }
 enum Buy_orderBy {
@@ -218,6 +221,7 @@ enum Buy_orderBy {
   price
   denom
   seller
+  minter
   createdAt
 }
 enum List_orderBy {
@@ -360,6 +364,12 @@ input Action_filter {
   action_ends_with_nocase: String
   action_not_ends_with: String
   action_not_ends_with_nocase: String
+  minter: Bytes
+  minter_not: Bytes
+  minter_in: [Bytes!]
+  minter_not_in: [Bytes!]
+  minter_contains: Bytes
+  minter_not_contains: Bytes
   createdAt: BigInt
   createdAt_not: BigInt
   createdAt_gt: BigInt
@@ -429,6 +439,12 @@ input Buy_filter {
   seller_not_in: [Bytes!]
   seller_contains: Bytes
   seller_not_contains: Bytes
+  minter: Bytes
+  minter_not: Bytes
+  minter_in: [Bytes!]
+  minter_not_in: [Bytes!]
+  minter_contains: Bytes
+  minter_not_contains: Bytes
   createdAt: BigInt
   createdAt_not: BigInt
   createdAt_gt: BigInt

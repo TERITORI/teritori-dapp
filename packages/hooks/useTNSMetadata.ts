@@ -1,9 +1,9 @@
-import { useSelectedNetworkInfo } from "./useSelectedNetwork";
 import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { Network } from "../utils/network";
+import { useSelectedNetworkInfo } from "./useSelectedNetwork";
 
 // FIXME: use react-query to prevent recalling the api all the time
 

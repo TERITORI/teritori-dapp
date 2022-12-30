@@ -1,7 +1,7 @@
 import detectEthereumProvider from "@metamask/detect-provider";
 import { ethers, Signer } from "ethers";
 
-import { Collection } from "../api/marketplace/v1/marketplace";
+import { Attribute, Collection, NFT } from "../api/marketplace/v1/marketplace";
 import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 
@@ -72,4 +72,41 @@ export const addCollectionMetadatas = async (collections: Collection[]) => {
   }
 
   return collectionWithMetadatas;
+};
+
+export const addNftMetadatas = async (nfts: NFT[]) => {
+  const nftWithMetadatas: NFT[] = [];
+  const provider = await getEthereumProvider();
+  if (!provider) return nfts;
+
+  for (const nft of nfts) {
+    if (!nft.id.startsWith("eth-")) continue;
+
+    try {
+      const nftClient = await TeritoriNft__factory.connect(
+        nft.nftContractAddress,
+        provider
+      );
+
+      const nftTokenId = nft.id.split("-")[2];
+      const info = await nftClient.callStatic.nftInfo(nftTokenId);
+
+      if (info) {
+        const attributes: Attribute[] = [];
+        for (const attr of info.attributes) {
+          attributes.push({ traitType: attr.trait_type, value: attr.value });
+        }
+
+        nft.attributes = attributes;
+        nft.name = info.name;
+        nft.imageUri = info.image;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    nftWithMetadatas.push(nft);
+  }
+
+  return nftWithMetadatas;
 };

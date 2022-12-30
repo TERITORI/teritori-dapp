@@ -65,10 +65,19 @@ func (p *Provider) GetCollections(networkId string) ([]marketplacepb.Collection,
 
 func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marketplacepb.CollectionStats, error) {
 	ctx := context.Background()
-	collectionsStats, err := thegraph.GetCollectionStats(ctx, p.client, collectionID)
+
+	minter := strings.Replace(collectionID, "eth-", "", 1)
+	collectionsStats, err := thegraph.GetCollectionStats(ctx, p.client, minter)
 	if err != nil {
 		return nil, err
 	}
+
+	if len(collectionsStats.NftContracts) == 0 {
+		return &marketplacepb.CollectionStats{}, nil
+	}
+	nftContract := collectionsStats.NftContracts[0]
+	nfts := nftContract.Nfts
+
 	volumeByDenom := make(map[string]int64)
 	floorByDenom := make(map[string]int64)
 	//Fill collection volume
@@ -80,7 +89,7 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 	//TODO: deal with several denoms right now just sending last denom volume
 	ownersSeen := make(map[string]int32)
 	var listed int32
-	for _, nft := range collectionsStats.Nfts {
+	for _, nft := range nfts {
 		//Count number of owners and number of nfts Owned
 		ownersSeen[nft.Owner]++
 		if nft.InSale {
@@ -99,7 +108,7 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 		Owners:      int32(len(ownersSeen)),
 		Owned:       ownersSeen[owner],
 		Listed:      listed,
-		TotalSupply: int64(len(collectionsStats.Nfts)),
+		TotalSupply: int64(len(nfts)),
 		TotalVolume: fmt.Sprint(volumeByDenom[lastDenom]),
 	}
 	res.FloorPrice = make([]*marketplacepb.Amount, 0, len(floorByDenom))
@@ -109,7 +118,7 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 	return res, nil
 }
 
-func (p *Provider) GetNFTs(collectionID string, limit, offset int) ([]marketplacepb.NFT, error) {
+func (p *Provider) GetNFTs(networkID string, collectionID string, limit, offset int) ([]marketplacepb.NFT, error) {
 	ctx := context.Background()
 
 	minter := strings.Replace(collectionID, "eth-", "", 1)
@@ -127,17 +136,16 @@ func (p *Provider) GetNFTs(collectionID string, limit, offset int) ([]marketplac
 	res := make([]marketplacepb.NFT, len(nfts))
 	for index, nft := range nfts {
 		res[index] = marketplacepb.NFT{
-			Id:        nft.Id,
-			NetworkId: "ethereum",
-			ImageUri:  nft.TokenURI,
-			//Name: nft.,
-			MintAddress:        collectionID,
+			Id:                 fmt.Sprintf("eth-%s-%s", minter, nft.TokenID),
+			NetworkId:          networkID,
+			ImageUri:           nft.TokenURI,
+			MintAddress:        minter,
 			Price:              nft.Price,
 			Denom:              nft.Denom,
 			IsListed:           nft.InSale,
 			CollectionName:     nftContract.Name,
 			OwnerId:            nft.Owner,
-			NftContractAddress: collectionID,
+			NftContractAddress: nftContract.Id,
 		}
 	}
 	return res, nil

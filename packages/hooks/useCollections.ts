@@ -5,12 +5,15 @@ import {
   CollectionsRequest,
 } from "../api/marketplace/v1/marketplace";
 import { backendClient } from "../utils/backend";
+import { Network } from "../utils/network";
 import { addCollectionMetadatas } from "./../utils/ethereum";
+import { useSelectedNetwork } from "./useSelectedNetwork";
 
 export const useCollections = (
   req: CollectionsRequest
 ): [Collection[], (index: number) => Promise<void>] => {
   const [collections, setCollections] = useState<Collection[]>([]);
+  const selectedNetwork = useSelectedNetwork();
   const fetchRef = useRef(false);
 
   const fetchMore = useCallback(
@@ -38,8 +41,10 @@ export const useCollections = (
 
         let updatedCollections = [...currentCollection, ...fetchedCollections];
 
-        // TODO: Hack for adding metadata for ethereum collections, should use an indexed data
-        updatedCollections = await addCollectionMetadatas(updatedCollections);
+        if (selectedNetwork === Network.Ethereum) {
+          // TODO: Hack for adding metadata for ethereum collections, should use an indexed data
+          updatedCollections = await addCollectionMetadatas(updatedCollections);
+        }
 
         setCollections(updatedCollections);
       } catch (err) {

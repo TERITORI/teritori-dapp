@@ -6,17 +6,24 @@ import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-b
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
+import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
+import { Network } from "../utils/network";
 import { vaultContractAddress } from "../utils/teritori";
+import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { NFTAttribute } from "./../utils/types/nft";
 import { useBreedingConfig } from "./useBreedingConfig";
+import { useSelectedNetwork } from "./useSelectedNetwork";
 
 export const useNFTInfo = (id: string, wallet: string | undefined) => {
   const [info, setInfo] = useState<NFTInfo>();
   const [refreshIndex, setRefreshIndex] = useState(0);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
+  const selectedNetwork = useSelectedNetwork();
 
   const breedingConfig = useBreedingConfig();
 
@@ -45,12 +52,20 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
             );
             break;
           default:
-            nfo = await getStandardNFTInfo(
-              minterContractAddress,
-              tokenId,
-              wallet,
-              breedingConfig
-            );
+            if (selectedNetwork === Network.Ethereum) {
+              nfo = await getEvmStandardNFTInfo(
+                minterContractAddress,
+                tokenId,
+                wallet
+              );
+            } else {
+              nfo = await getStandardNFTInfo(
+                minterContractAddress,
+                tokenId,
+                wallet,
+                breedingConfig
+              );
+            }
         }
 
         setInfo(nfo);
@@ -137,6 +152,65 @@ const getTNSNFTInfo = async (
     ),
     mintDenom: contractInfo.native_denom,
     royalty: 0,
+  };
+
+  return nfo;
+};
+
+export const getEvmStandardNFTInfo = async (
+  minterContractAddress: string,
+  tokenId: string,
+  wallet: string | undefined
+) => {
+  const provider = await getEthereumProvider();
+  if (!provider) {
+    throw Error("unable to get ethereum provider");
+  }
+  const minterClient = await TeritoriMinter__factory.connect(
+    minterContractAddress,
+    provider
+  );
+
+  const nftAddress = await minterClient.callStatic.nft();
+  const nftClient = await TeritoriNft__factory.connect(nftAddress, provider);
+  const collectionName = await nftClient.callStatic.name();
+  const contractURI = await nftClient.callStatic.contractURI();
+  const collectionMetadata = await fetch(contractURI).then((data) =>
+    data.json()
+  );
+  const metadata = await nftClient.nftInfo(tokenId);
+
+  const attributes: NFTAttribute[] = [];
+  for (const attr of metadata.attributes) {
+    attributes.push({ trait_type: attr.trait_type, value: attr.value });
+  }
+
+  const ownerAddress = await nftClient.callStatic.ownerOf(tokenId);
+  const isOwner = wallet === ownerAddress;
+  const isListed = false; // TODO: Get isListed ?????
+  const vaultInfo: any = {}; // TODO: Get vault info
+  const royalties = 0; // TODO: Get royalty info
+
+  const nfo: NFTInfo = {
+    name: metadata.name,
+    description: metadata.description,
+    attributes,
+    nftAddress,
+    mintAddress: minterContractAddress,
+    imageURL: metadata.image,
+    tokenId,
+    ownerAddress,
+    isSeller: isListed && isOwner,
+    isListed,
+    isOwner,
+    canSell: isOwner && !isListed,
+    price: vaultInfo?.amount || "",
+    priceDenom: vaultInfo?.denom || "",
+    collectionName,
+    collectionImageURL: collectionMetadata.image,
+    mintDenom: "wei",
+    royalty: royalties,
+    breedingsAvailable: 0,
   };
 
   return nfo;

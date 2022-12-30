@@ -7,6 +7,7 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { NFTView } from "../../components/nfts/NFTView";
 import { useNFTs } from "../../hooks/useNFTs";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
@@ -15,7 +16,10 @@ export const MyNFTs: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const ownerId = `tori-${selectedWallet?.address}`; // FIXME: make this network-independent
+  const selectedNetworkId = useSelectedNetworkId();
+
   const { nfts, fetchMore } = useNFTs({
+    networkId: selectedNetworkId,
     offset: 0,
     limit: 4,
     ownerId,
