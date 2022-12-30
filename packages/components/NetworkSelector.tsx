@@ -12,6 +12,7 @@ import {
   setSelectedNetworkId,
 } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
+import { useAppNavigation } from "../utils/navigation";
 import { Network } from "../utils/network";
 import { neutral17, secondaryColor } from "../utils/style/colors";
 import { fontSemibold12 } from "../utils/style/fonts";
@@ -35,6 +36,7 @@ export const NetworkSelector: React.FC<{
   const { wallets } = useWallets();
   const { setToastError } = useFeedbacks();
   const selectedNetworkInfo = useSelectedNetworkInfo();
+  const navigation = useAppNavigation();
 
   const onPressNetwork = (network: Network) => {
     let walletProvider: WalletProvider | null = null;
@@ -73,6 +75,9 @@ export const NetworkSelector: React.FC<{
     );
 
     dispatch(setSelectedWalletId(selectedWallet?.id || ""));
+
+    // Goto marketplace page to avoid corrupt situation when switching network
+    navigation.replace("Marketplace");
 
     closeOpenedDropdown();
   };
