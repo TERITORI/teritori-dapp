@@ -1,20 +1,22 @@
-query GetCollectionNFTs($contract: String!, $Limit: Int!, $Offset: Int!) {
-  nfts(where: { contract: $contract }, first: $Limit, skip: $Offset) {
-    id
-    tokenID
-    owner
-    creatorName
-    creatorAddress
-    tokenURI
-    inSale
-    price
-    denom
-    createdAt
-    removedAt
-    contract {
-      name
-    }
-  }
+query GetCollectionNFTs($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
+  nftContracts(where: {minter: $minter} first: $Limit, skip: $Offset) {
+		id
+		name
+    symbol
+		nfts(first: $Limit, skip: $Offset) {
+      id
+      tokenID
+      owner
+      creatorName
+      creatorAddress
+      tokenURI
+      inSale
+      price
+      denom
+      createdAt
+      removedAt
+		}
+	}
 }
 
 query GetCollectionActivities($contract: String!, $Limit: Int!, $Offset: Int!) {

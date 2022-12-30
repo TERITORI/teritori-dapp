@@ -59,7 +59,7 @@ go/pkg/holagql/holaplex-schema.graphql:
 
 .PHONY: go/pkg/thegraph/thegraph-schema.graphql
 go/pkg/thegraph/thegraph-schema.graphql:
-	rover graph introspect https://api.studio.thegraph.com/query/38317/teritori-indexer/rc-003 > $@
+	rover graph introspect https://api.studio.thegraph.com/query/38317/teritori-indexer/rc-007 > $@
 
 .PHONY: docker.backend
 docker.backend:

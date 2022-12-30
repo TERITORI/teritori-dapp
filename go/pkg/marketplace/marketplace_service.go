@@ -221,7 +221,8 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		}
 		return nil
 	}
-	if networkID == "ethereum" {
+
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
 		nfts, err := s.ethereumProvider.GetNFTs(collection_id, int(limit), int(offset))
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection nfts")
@@ -231,6 +232,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 				return errors.Wrap(err, "failed to send nft")
 			}
 		}
+		return nil
 	}
 	// FIXME: support other filters on solana
 	if strings.HasPrefix(collection_id, "sol") {
@@ -405,7 +407,7 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 		}
 	}
 	networkID := req.GetNetworkId()
-	if networkID == "ethereum" {
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
 		activities, err := s.ethereumProvider.GetCollectionActivities(collectionID, int(limit), int(offset))
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection activity")

@@ -33,6 +33,7 @@ import {
 import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNativeCurrency } from "../../networks";
 import { alignDown } from "../../utils/align";
@@ -52,11 +53,13 @@ export const Content: React.FC<{
   sortDirection: SortDirection;
 }> = React.memo(({ id, selectedTab, sortDirection }) => {
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
 
   const { width } = useMaxResolution();
   const numColumns = Math.floor(width / nftWidth);
 
   const nftsRequest: NFTsRequest = {
+    networkId: selectedNetworkId || "",
     collectionId: id,
     ownerId:
       selectedTab === "owned" && wallet?.address

@@ -10,7 +10,7 @@ import Animated, {
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
@@ -41,7 +41,7 @@ const SpringConfig: WithSpringConfig = {
 export const Sidebar: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
-  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetwork = useSelectedNetwork();
 
   // variables
   const navigation = useAppNavigation();
@@ -100,11 +100,7 @@ export const Sidebar: React.FC = () => {
         keyExtractor={(item) => item.title}
         renderItem={({ item }) => {
           let { route } = item;
-          if (
-            item.disabledOn?.includes(
-              selectedNetworkInfo?.network || Network.Unknown
-            )
-          ) {
+          if (item.disabledOn?.includes(selectedNetwork || Network.Unknown)) {
             route = "ComingSoon";
           }
 

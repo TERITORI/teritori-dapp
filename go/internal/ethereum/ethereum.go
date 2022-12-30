@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -110,12 +111,21 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 
 func (p *Provider) GetNFTs(collectionID string, limit, offset int) ([]marketplacepb.NFT, error) {
 	ctx := context.Background()
-	nfts, err := thegraph.GetCollectionNFTs(ctx, p.client, collectionID, limit, offset)
+
+	minter := strings.Replace(collectionID, "eth-", "", 1)
+	collection, err := thegraph.GetCollectionNFTs(ctx, p.client, minter, limit, offset)
 	if err != nil {
 		return nil, err
 	}
-	res := make([]marketplacepb.NFT, len(nfts.Nfts))
-	for index, nft := range nfts.Nfts {
+
+	if len(collection.NftContracts) == 0 {
+		return []marketplacepb.NFT{}, nil
+	}
+	nftContract := collection.NftContracts[0]
+	nfts := nftContract.Nfts
+
+	res := make([]marketplacepb.NFT, len(nfts))
+	for index, nft := range nfts {
 		res[index] = marketplacepb.NFT{
 			Id:        nft.Id,
 			NetworkId: "ethereum",
@@ -125,7 +135,7 @@ func (p *Provider) GetNFTs(collectionID string, limit, offset int) ([]marketplac
 			Price:              nft.Price,
 			Denom:              nft.Denom,
 			IsListed:           nft.InSale,
-			CollectionName:     nft.Contract.Name,
+			CollectionName:     nftContract.Name,
 			OwnerId:            nft.Owner,
 			NftContractAddress: collectionID,
 		}
