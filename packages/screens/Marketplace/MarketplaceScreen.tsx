@@ -26,7 +26,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
       >
         <CollectionsCarouselHeader
           req={{
-            networkId: selectedNetworkId || "",
+            networkId: selectedNetworkId,
             sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
             upcoming: false,
             sort: Sort.SORTING_VOLUME,
@@ -39,7 +39,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
         <CollectionsCarouselSection
           title={`${getNetwork(selectedNetworkId)?.displayName} Collections`}
           req={{
-            networkId: selectedNetworkId || "",
+            networkId: selectedNetworkId,
             sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
             upcoming: false,
             sort: Sort.SORTING_VOLUME,
