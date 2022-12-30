@@ -4,11 +4,12 @@ import { getNetwork } from "../networks";
 import { selectSelectedNetworkId } from "../store/slices/settings";
 
 export const useSelectedNetworkId = () => {
-  const networkId = useSelector(selectSelectedNetworkId);
+  const networkId =
+    useSelector(selectSelectedNetworkId) || process.env.TERITORI_NETWORK_ID;
   return networkId;
 };
 
 export const useSelectedNetworkInfo = () => {
-  const selectedNetworkId = useSelector(selectSelectedNetworkId);
+  const selectedNetworkId = useSelectedNetworkId();
   return getNetwork(selectedNetworkId);
 };

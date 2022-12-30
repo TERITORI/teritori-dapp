@@ -11,6 +11,7 @@ import { ConnectWalletModal } from "../../components/connectWallet/ConnectWallet
 import { useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
+import { walletProviderToNetwork } from "../../utils/network";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 import { WalletItem, WalletItemProps } from "./WalletItem";
@@ -113,14 +114,18 @@ export const WalletManagerWalletsScreen: ScreenFC<
   // TODO: Handle multiple wallets addresses
   const { totalsRewards, claimReward } = useRewards(selectedWallet?.address);
 
+  const title = selectedWallet
+    ? walletProviderToNetwork(selectedWallet.provider) || ""
+    : "";
+
   const wallets = selectedWallet
     ? [
         {
-          title: "Teritori",
+          title,
           data: [
             {
               id: 0,
-              title: "Teritori",
+              title,
               address: selectedWallet.address,
               pendingRewards: totalsRewards,
               claimReward,

@@ -10,9 +10,11 @@ import Animated, {
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
+import { Network } from "../../utils/network";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import {
@@ -39,6 +41,7 @@ const SpringConfig: WithSpringConfig = {
 export const Sidebar: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+  const selectedNetworkInfo = useSelectedNetworkInfo();
 
   // variables
   const navigation = useAppNavigation();
@@ -95,9 +98,25 @@ export const Sidebar: React.FC = () => {
         showsVerticalScrollIndicator={false}
         data={Object.values(SIDEBAR_LIST)}
         keyExtractor={(item) => item.title}
-        renderItem={({ item }) => (
-          <SidebarButton key={item.title} onPress={onRouteChange} {...item} />
-        )}
+        renderItem={({ item }) => {
+          let { route } = item;
+          if (
+            item.disabledOn?.includes(
+              selectedNetworkInfo?.network || Network.Unknown
+            )
+          ) {
+            route = "ComingSoon";
+          }
+
+          return (
+            <SidebarButton
+              key={item.title}
+              onPress={onRouteChange}
+              {...item}
+              route={route}
+            />
+          );
+        }}
         ListHeaderComponent={<SpacerColumn size={1} />}
         ListFooterComponent={
           <>
