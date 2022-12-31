@@ -5,6 +5,8 @@ import { Attribute, Collection, NFT } from "../api/marketplace/v1/marketplace";
 import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 
+export const WEI_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
+
 export const getMetaMaskEthereumProvider = async () => {
   const provider = await detectEthereumProvider();
   if (!provider) return null;
@@ -68,6 +70,10 @@ export const addNftMetadatas = async (nfts: NFT[]) => {
       }
     } catch (e) {
       console.error(e);
+    }
+
+    if (+nft.denom === 0) {
+      nft.denom = "wei";
     }
 
     nftWithMetadatas.push(nft);
