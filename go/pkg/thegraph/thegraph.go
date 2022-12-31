@@ -376,6 +376,112 @@ func (v *GetCollectionsResponse) GetNftContracts() []GetCollectionsNftContractsN
 // GetBuys returns GetCollectionsResponse.Buys, and is useful for accessing the field via an interface.
 func (v *GetCollectionsResponse) GetBuys() []GetCollectionsBuysBuy { return v.Buys }
 
+// GetNFTActivitiesActionsAction includes the requested fields of the GraphQL type Action.
+type GetNFTActivitiesActionsAction struct {
+	Id        string                            `json:"id"`
+	Nft       GetNFTActivitiesActionsActionNft  `json:"nft"`
+	Buy       GetNFTActivitiesActionsActionBuy  `json:"buy"`
+	List      GetNFTActivitiesActionsActionList `json:"list"`
+	Action    string                            `json:"action"`
+	Actor     string                            `json:"actor"`
+	TxID      string                            `json:"txID"`
+	CreatedAt string                            `json:"createdAt"`
+}
+
+// GetId returns GetNFTActivitiesActionsAction.Id, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsAction) GetId() string { return v.Id }
+
+// GetNft returns GetNFTActivitiesActionsAction.Nft, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsAction) GetNft() GetNFTActivitiesActionsActionNft { return v.Nft }
+
+// GetBuy returns GetNFTActivitiesActionsAction.Buy, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsAction) GetBuy() GetNFTActivitiesActionsActionBuy { return v.Buy }
+
+// GetList returns GetNFTActivitiesActionsAction.List, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsAction) GetList() GetNFTActivitiesActionsActionList { return v.List }
+
+// GetAction returns GetNFTActivitiesActionsAction.Action, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsAction) GetAction() string { return v.Action }
+
+// GetActor returns GetNFTActivitiesActionsAction.Actor, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsAction) GetActor() string { return v.Actor }
+
+// GetTxID returns GetNFTActivitiesActionsAction.TxID, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsAction) GetTxID() string { return v.TxID }
+
+// GetCreatedAt returns GetNFTActivitiesActionsAction.CreatedAt, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsAction) GetCreatedAt() string { return v.CreatedAt }
+
+// GetNFTActivitiesActionsActionBuy includes the requested fields of the GraphQL type Buy.
+type GetNFTActivitiesActionsActionBuy struct {
+	Price  string `json:"price"`
+	Denom  string `json:"denom"`
+	Seller string `json:"seller"`
+}
+
+// GetPrice returns GetNFTActivitiesActionsActionBuy.Price, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionBuy) GetPrice() string { return v.Price }
+
+// GetDenom returns GetNFTActivitiesActionsActionBuy.Denom, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionBuy) GetDenom() string { return v.Denom }
+
+// GetSeller returns GetNFTActivitiesActionsActionBuy.Seller, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionBuy) GetSeller() string { return v.Seller }
+
+// GetNFTActivitiesActionsActionList includes the requested fields of the GraphQL type List.
+type GetNFTActivitiesActionsActionList struct {
+	Price string `json:"price"`
+	Denom string `json:"denom"`
+}
+
+// GetPrice returns GetNFTActivitiesActionsActionList.Price, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionList) GetPrice() string { return v.Price }
+
+// GetDenom returns GetNFTActivitiesActionsActionList.Denom, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionList) GetDenom() string { return v.Denom }
+
+// GetNFTActivitiesActionsActionNft includes the requested fields of the GraphQL type Nft.
+type GetNFTActivitiesActionsActionNft struct {
+	Id       string                                   `json:"id"`
+	TokenURI string                                   `json:"tokenURI"`
+	Contract GetNFTActivitiesActionsActionNftContract `json:"contract"`
+}
+
+// GetId returns GetNFTActivitiesActionsActionNft.Id, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionNft) GetId() string { return v.Id }
+
+// GetTokenURI returns GetNFTActivitiesActionsActionNft.TokenURI, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionNft) GetTokenURI() string { return v.TokenURI }
+
+// GetContract returns GetNFTActivitiesActionsActionNft.Contract, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionNft) GetContract() GetNFTActivitiesActionsActionNftContract {
+	return v.Contract
+}
+
+// GetNFTActivitiesActionsActionNftContract includes the requested fields of the GraphQL type NftContract.
+type GetNFTActivitiesActionsActionNftContract struct {
+	Minter string `json:"minter"`
+	Id     string `json:"id"`
+	Name   string `json:"name"`
+}
+
+// GetMinter returns GetNFTActivitiesActionsActionNftContract.Minter, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionNftContract) GetMinter() string { return v.Minter }
+
+// GetId returns GetNFTActivitiesActionsActionNftContract.Id, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionNftContract) GetId() string { return v.Id }
+
+// GetName returns GetNFTActivitiesActionsActionNftContract.Name, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsActionNftContract) GetName() string { return v.Name }
+
+// GetNFTActivitiesResponse is returned by GetNFTActivities on success.
+type GetNFTActivitiesResponse struct {
+	Actions []GetNFTActivitiesActionsAction `json:"actions"`
+}
+
+// GetActions returns GetNFTActivitiesResponse.Actions, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesResponse) GetActions() []GetNFTActivitiesActionsAction { return v.Actions }
+
 // GetNFTPriceHistoryBuysBuy includes the requested fields of the GraphQL type Buy.
 type GetNFTPriceHistoryBuysBuy struct {
 	Price     string `json:"price"`
@@ -447,6 +553,22 @@ type __GetCollectionsInput struct {
 
 // GetFrom returns __GetCollectionsInput.From, and is useful for accessing the field via an interface.
 func (v *__GetCollectionsInput) GetFrom() string { return v.From }
+
+// __GetNFTActivitiesInput is used internally by genqlient
+type __GetNFTActivitiesInput struct {
+	NftID  string `json:"nftID"`
+	Limit  int    `json:"Limit"`
+	Offset int    `json:"Offset"`
+}
+
+// GetNftID returns __GetNFTActivitiesInput.NftID, and is useful for accessing the field via an interface.
+func (v *__GetNFTActivitiesInput) GetNftID() string { return v.NftID }
+
+// GetLimit returns __GetNFTActivitiesInput.Limit, and is useful for accessing the field via an interface.
+func (v *__GetNFTActivitiesInput) GetLimit() int { return v.Limit }
+
+// GetOffset returns __GetNFTActivitiesInput.Offset, and is useful for accessing the field via an interface.
+func (v *__GetNFTActivitiesInput) GetOffset() int { return v.Offset }
 
 // __GetNFTPriceHistoryInput is used internally by genqlient
 type __GetNFTPriceHistoryInput struct {
@@ -658,6 +780,64 @@ query GetCollections ($from: BigInt!) {
 	var err error
 
 	var data GetCollectionsResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+func GetNFTActivities(
+	ctx context.Context,
+	client graphql.Client,
+	nftID string,
+	Limit int,
+	Offset int,
+) (*GetNFTActivitiesResponse, error) {
+	req := &graphql.Request{
+		OpName: "GetNFTActivities",
+		Query: `
+query GetNFTActivities ($nftID: String!, $Limit: Int!, $Offset: Int!) {
+	actions(where: {nft:$nftID}, first: $Limit, skip: $Offset) {
+		id
+		nft {
+			id
+			tokenURI
+			contract {
+				minter
+				id
+				name
+			}
+		}
+		buy {
+			price
+			denom
+			seller
+		}
+		list {
+			price
+			denom
+		}
+		action
+		actor
+		txID
+		createdAt
+	}
+}
+`,
+		Variables: &__GetNFTActivitiesInput{
+			NftID:  nftID,
+			Limit:  Limit,
+			Offset: Offset,
+		},
+	}
+	var err error
+
+	var data GetNFTActivitiesResponse
 	resp := &graphql.Response{Data: &data}
 
 	err = client.MakeRequest(

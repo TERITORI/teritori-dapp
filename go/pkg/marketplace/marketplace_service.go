@@ -407,8 +407,9 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 		}
 	}
 	networkID := req.GetNetworkId()
+	nftID := req.GetNftId()
 	if networkID == "ethereum" || networkID == "ethereum-goerli" {
-		activities, err := s.ethereumProvider.GetCollectionActivities(collectionID, int(limit), int(offset))
+		activities, err := s.ethereumProvider.GetCollectionActivities(collectionID, nftID, int(limit), int(offset))
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection activity")
 		}
@@ -422,7 +423,6 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 		}
 		return nil
 	}
-	nftID := req.GetNftId()
 
 	var totalCount int64
 	if err := s.conf.IndexerDB.
