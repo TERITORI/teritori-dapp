@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   ViewStyle,
   Image,
@@ -17,11 +17,13 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
+import { Network } from "../../utils/network";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -47,13 +49,26 @@ export const NFTView: React.FC<{
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const tnsMetadata = useTNSMetadata(nft.ownerId.replace("tori-", ""));
+  const selectedNetwork = useSelectedNetwork();
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
   const dropdownRef = useRef<TouchableOpacity>(null);
 
-  const isOwner = nft.ownerId === `tori-${selectedWallet?.address}`;
+  const isOwner = useMemo(() => {
+    switch (selectedNetwork) {
+      case Network.Teritori:
+        return nft.ownerId === `tori-${selectedWallet?.address}`;
+      case Network.Ethereum:
+        return (
+          nft.ownerId.toLowerCase() === selectedWallet?.address.toLowerCase()
+        );
+      default:
+        return false;
+    }
+  }, [selectedNetwork, nft.ownerId]);
+
   const isOwnerAndNotListed = isOwner && !nft.isListed;
 
   // put margins on touchable opacity

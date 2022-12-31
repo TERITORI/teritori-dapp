@@ -7,6 +7,7 @@ query GetCollectionNFTs($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
       id
       tokenID
       owner
+      seller
       creatorName
       creatorAddress
       tokenURI
