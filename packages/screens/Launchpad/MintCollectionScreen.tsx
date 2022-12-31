@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
@@ -24,6 +23,7 @@ import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
+import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
@@ -107,8 +107,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     return msg;
   };
 
-  const ethereumMint = async () => {
-    const signer = await getMetaMaskEthereumSigner();
+  const ethereumMint = async (wallet: Wallet) => {
+    const signer = await getMetaMaskEthereumSigner(wallet.address);
     if (!signer) {
       throw Error("no account connected");
     }
@@ -118,9 +118,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     const minterConfig = await minterClient.callStatic.config();
 
     const address = await signer.getAddress();
-    // const estimatedGas = await minterClient.estimateGas.requestMint(address);
+
+    const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
     const tx = await minterClient.requestMint(address, {
-      gasLimit: ethers.utils.parseEther("0.000000000001"), // TODO: make this auto on mainnet\
+      maxFeePerGas: maxFeePerGas?.toNumber(),
+      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
       value: minterConfig.publicMintPrice,
     });
     await tx.wait();
@@ -147,7 +149,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     try {
       setToastError(initialToastError);
 
-      await mintFunc();
+      await mintFunc(wallet);
 
       setMinted(true);
       await sleep(5000);
@@ -169,7 +171,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     info?.priceDenom,
   ]);
 
-  const teritoriMint = async () => {
+  const teritoriMint = async (wallet: Wallet) => {
     const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
 
     const sender = wallet?.address;

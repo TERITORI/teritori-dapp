@@ -77,7 +77,7 @@ export const NetworkSelector: React.FC<{
     dispatch(setSelectedWalletId(selectedWallet?.id || ""));
 
     // Goto marketplace page to avoid corrupt situation when switching network
-    navigation.replace("Marketplace");
+    navigation.replace("Home");
 
     closeOpenedDropdown();
   };

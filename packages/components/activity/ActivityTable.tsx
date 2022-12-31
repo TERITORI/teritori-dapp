@@ -5,7 +5,10 @@ import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
 import { useActivity } from "../../hooks/useActivity";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "../../hooks/useSelectedNetwork";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
 import {
@@ -102,6 +105,8 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
   const sellerAddress = activity.sellerId && activity.sellerId.split("-")[1];
   const buyerTNSMetadata = useTNSMetadata(buyerAddress);
   const sellerTNSMetadata = useTNSMetadata(sellerAddress);
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+
   return (
     <View
       style={{
@@ -122,7 +127,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         }}
       >
         <ExternalLink
-          externalUrl={txExplorerLink(txHash)}
+          externalUrl={txExplorerLink(selectedNetworkInfo?.network, txHash)}
           style={[fontMedium14, { width: "100%" }]}
           ellipsizeMode="middle"
           numberOfLines={1}
@@ -160,7 +165,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         ]}
       >
         {prettyPrice(
-          process.env.TERITORI_NETWORK_ID || "",
+          selectedNetworkInfo?.id || "",
           activity.amount,
           activity.denom
         )}

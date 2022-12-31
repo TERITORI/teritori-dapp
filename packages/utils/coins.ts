@@ -1,6 +1,8 @@
 import { Decimal } from "cosmwasm";
 
-import { getNativeCurrency } from "../networks";
+import { getNativeCurrency, getNetwork } from "../networks";
+import { WEI_TOKEN_ADDRESS } from "./ethereum";
+import { Network } from "./network";
 import { trimFixed } from "./numbers";
 
 export interface Balance {
@@ -9,8 +11,12 @@ export interface Balance {
   denom: string;
 }
 
-export const decimalFromAtomics = (value: string, denom: string) => {
-  const currency = getNativeCurrency(process.env.TERITORI_NETWORK_ID, denom);
+export const decimalFromAtomics = (
+  networkId: string,
+  value: string,
+  denom: string
+) => {
+  const currency = getNativeCurrency(networkId, denom);
   if (currency) {
     return Decimal.fromAtomics(value, currency.decimals);
   }
@@ -25,6 +31,11 @@ export const prettyPrice = (
   value: string,
   denom: string
 ) => {
+  const network = getNetwork(networkId);
+  if (network?.network === Network.Ethereum && denom === WEI_TOKEN_ADDRESS) {
+    denom = "wei";
+  }
+
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
     const decval = Decimal.fromAtomics(value, currency.decimals);

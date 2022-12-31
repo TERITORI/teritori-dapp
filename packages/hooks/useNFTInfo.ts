@@ -7,6 +7,7 @@ import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-na
 import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
 import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
@@ -53,7 +54,7 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
             break;
           default:
             if (selectedNetwork === Network.Ethereum) {
-              nfo = await getEvmStandardNFTInfo(
+              nfo = await getEthereumStandardNFTInfo(
                 minterContractAddress,
                 tokenId,
                 wallet
@@ -157,7 +158,7 @@ const getTNSNFTInfo = async (
   return nfo;
 };
 
-export const getEvmStandardNFTInfo = async (
+const getEthereumStandardNFTInfo = async (
   minterContractAddress: string,
   tokenId: string,
   wallet: string | undefined
@@ -185,11 +186,32 @@ export const getEvmStandardNFTInfo = async (
     attributes.push({ trait_type: attr.trait_type, value: attr.value });
   }
 
-  const ownerAddress = await nftClient.callStatic.ownerOf(tokenId);
-  const isOwner = wallet === ownerAddress;
-  const isListed = false; // TODO: Get isListed ?????
-  const vaultInfo: any = {}; // TODO: Get vault info
-  const royalties = 0; // TODO: Get royalty info
+  const vaultClient = await NFTVault__factory.connect(
+    process.env.ETHEREUM_VAULT_ADDRESS || "",
+    provider
+  );
+
+  const feeNumerator = await vaultClient.callStatic.feeNumerator();
+  const feeDenominator = await vaultClient.callStatic.feeDenominator();
+  const royalties = feeNumerator.toNumber() / feeDenominator.toNumber();
+
+  const saledNft = await vaultClient.callStatic.nftSales(nftAddress, tokenId);
+  let isListed = false;
+  let vaultInfo: any = {}; // TODO: Get vault info
+
+  let ownerAddress = await nftClient.callStatic.ownerOf(tokenId);
+
+  if (+saledNft.owner !== 0) {
+    isListed = true;
+    vaultInfo = {
+      amount: saledNft.saleOption.amount.toNumber(),
+      denom:
+        +saledNft.saleOption.token === 0 ? "wei" : saledNft.saleOption.token,
+    };
+    ownerAddress = saledNft.owner.toLowerCase();
+  }
+
+  const isOwner = wallet?.toLowerCase() === ownerAddress.toLowerCase();
 
   const nfo: NFTInfo = {
     name: metadata.name,
