@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import {
   VictoryLine,
   VictoryChart,
@@ -85,10 +86,11 @@ export const CollapsablePiceHistory: React.FC<{ nftId: string }> = ({
 };
 
 const useNFTPriceHistory = (nftId: string) => {
+  const networkID =useSelectedNetworkId();
   const { data } = useQuery(
     ["nftPriceHistory", nftId],
     async () => {
-      const { data } = await backendClient.NFTPriceHistory({ id: nftId });
+      const { data } = await backendClient.NFTPriceHistory({ id: nftId, networkId: networkID});
       if (data.length === 0) {
         return data;
       }

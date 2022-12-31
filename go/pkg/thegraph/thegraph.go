@@ -572,19 +572,11 @@ func (v *__GetNFTActivitiesInput) GetOffset() int { return v.Offset }
 
 // __GetNFTPriceHistoryInput is used internally by genqlient
 type __GetNFTPriceHistoryInput struct {
-	Nft    string `json:"nft"`
-	Limit  int    `json:"Limit"`
-	Offset int    `json:"Offset"`
+	Nft string `json:"nft"`
 }
 
 // GetNft returns __GetNFTPriceHistoryInput.Nft, and is useful for accessing the field via an interface.
 func (v *__GetNFTPriceHistoryInput) GetNft() string { return v.Nft }
-
-// GetLimit returns __GetNFTPriceHistoryInput.Limit, and is useful for accessing the field via an interface.
-func (v *__GetNFTPriceHistoryInput) GetLimit() int { return v.Limit }
-
-// GetOffset returns __GetNFTPriceHistoryInput.Offset, and is useful for accessing the field via an interface.
-func (v *__GetNFTPriceHistoryInput) GetOffset() int { return v.Offset }
 
 func GetCollectionActivities(
 	ctx context.Context,
@@ -853,14 +845,12 @@ func GetNFTPriceHistory(
 	ctx context.Context,
 	client graphql.Client,
 	nft string,
-	Limit int,
-	Offset int,
 ) (*GetNFTPriceHistoryResponse, error) {
 	req := &graphql.Request{
 		OpName: "GetNFTPriceHistory",
 		Query: `
-query GetNFTPriceHistory ($nft: String!, $Limit: Int!, $Offset: Int!) {
-	buys(where: {nft:$nft}, first: $Limit, skip: $Offset) {
+query GetNFTPriceHistory ($nft: String!) {
+	buys(where: {nft:$nft}) {
 		price
 		denom
 		createdAt
@@ -868,9 +858,7 @@ query GetNFTPriceHistory ($nft: String!, $Limit: Int!, $Offset: Int!) {
 }
 `,
 		Variables: &__GetNFTPriceHistoryInput{
-			Nft:    nft,
-			Limit:  Limit,
-			Offset: Offset,
+			Nft: nft,
 		},
 	}
 	var err error
