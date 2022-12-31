@@ -604,6 +604,7 @@ type coin struct {
 }
 
 func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketplacepb.CollectionStatsRequest) (*marketplacepb.CollectionStatsResponse, error) {
+	fmt.Println("On get collection stats")
 	collectionID := req.GetCollectionId()
 	if collectionID == "" {
 		return nil, errors.New("empty collectionID")
