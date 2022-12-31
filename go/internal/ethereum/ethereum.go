@@ -163,9 +163,41 @@ func (p *Provider) GetNFTs(networkID string, collectionID string, limit, offset 
 	return res, nil
 }
 
-func (p *Provider) GetCollectionActivities(collectionID string, limit, offset int) ([]*marketplacepb.Activity, error) {
+func (p *Provider) GetCollectionActivities(collectionID string, nftID string, limit, offset int) ([]*marketplacepb.Activity, error) {
 	ctx := context.Background()
 	minter := strings.Replace(collectionID, "eth-", "", 1)
+	if nftID != "" {
+		activities, err := thegraph.GetNFTActivities(ctx, p.client, nftID, limit, offset)
+		if err != nil {
+			return nil, err
+		}
+		res := make([]*marketplacepb.Activity, len(activities.Actions))
+		for index, activity := range activities.Actions {
+			activityItem := marketplacepb.Activity{
+				Id:              activity.Id,
+				TransactionKind: activity.Action,
+				TargetImageUri:  activity.Nft.TokenURI,
+				ContractName:    activity.Nft.Contract.Name,
+				TransactionId:   activity.TxID,
+				Time:            time.Unix(stringToInt64(activity.CreatedAt), 0).Format(time.RFC3339),
+			}
+			switch activity.Action {
+			case "trade":
+				activityItem.Amount = activity.Buy.Price
+				activityItem.Denom = activity.Buy.Denom
+				activityItem.BuyerId = activity.Actor
+				activityItem.SellerId = activity.Buy.Seller
+			case "list":
+				activityItem.Amount = activity.List.Price
+				activityItem.Denom = activity.List.Denom
+				activityItem.SellerId = activity.Actor
+			case "cancel_list":
+				activityItem.SellerId = activity.Actor
+			}
+			res[index] = &activityItem
+		}
+		return res, nil
+	}
 	activities, err := thegraph.GetCollectionActivities(ctx, p.client, minter, limit, offset)
 	if err != nil {
 		return nil, err

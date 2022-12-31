@@ -48,6 +48,34 @@ query GetCollectionActivities($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
   }
 }
 
+query GetNFTActivities($nftID: String!, $Limit: Int!, $Offset: Int!) {
+  actions(where: { nft: $nftID }, first: $Limit, skip: $Offset) {
+    id
+    nft {
+      id
+      tokenURI
+      contract {
+        minter
+        id
+        name
+      }
+    }
+    buy {
+      price
+      denom
+      seller
+    }
+    list {
+      price
+      denom
+    }
+    action
+    actor
+    txID
+    createdAt
+  }
+}
+
 query GetNFTPriceHistory($nft: String!, $Limit: Int!, $Offset: Int!) {
   buys(where: { nft: $nft }, first: $Limit, skip: $Offset) {
     price
