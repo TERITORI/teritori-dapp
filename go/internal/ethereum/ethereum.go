@@ -134,7 +134,18 @@ func (p *Provider) GetNFTs(networkID string, collectionID string, limit, offset 
 	nfts := nftContract.Nfts
 
 	res := make([]marketplacepb.NFT, len(nfts))
+
 	for index, nft := range nfts {
+		var (
+			lockedOn = ""
+			ownerId  = nft.Owner
+		)
+
+		if nft.Seller != "" {
+			lockedOn = nft.Owner
+			ownerId = nft.Seller
+		}
+
 		res[index] = marketplacepb.NFT{
 			Id:                 fmt.Sprintf("eth-%s-%s", minter, nft.TokenID),
 			NetworkId:          networkID,
@@ -144,7 +155,8 @@ func (p *Provider) GetNFTs(networkID string, collectionID string, limit, offset 
 			Denom:              nft.Denom,
 			IsListed:           nft.InSale,
 			CollectionName:     nftContract.Name,
-			OwnerId:            nft.Owner,
+			OwnerId:            ownerId,
+			LockedOn:           lockedOn,
 			NftContractAddress: nftContract.Id,
 		}
 	}

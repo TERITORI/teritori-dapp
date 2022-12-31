@@ -1,5 +1,5 @@
 import { ScrollView, Target } from "@nandorojo/anchor";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -64,16 +64,16 @@ const Content: React.FC<{
   const selectedNetwork = useSelectedNetwork();
 
   const collectionAddress = id.split("-")[1];
-  let collectionId;
 
-  switch (selectedNetwork) {
-    case Network.Ethereum:
-      collectionId = `eth-${collectionAddress}`;
-      break;
-    case Network.Teritori:
-    default:
-      collectionId = `tori-${collectionAddress}`;
-  }
+  const collectionId = useMemo(() => {
+    switch (selectedNetwork) {
+      case Network.Ethereum:
+        return `eth-${collectionAddress}`;
+      case Network.Teritori:
+      default:
+        return `tori-${collectionAddress}`;
+    }
+  }, [collectionAddress, selectedNetwork]);
 
   const mintEnded = useMintEnded(selectedNetwork, collectionId);
   const showMarketplace =

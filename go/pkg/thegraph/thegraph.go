@@ -145,6 +145,7 @@ type GetCollectionNFTsNftContractsNftContractNftsNft struct {
 	Id             string `json:"id"`
 	TokenID        string `json:"tokenID"`
 	Owner          string `json:"owner"`
+	Seller         string `json:"seller"`
 	CreatorName    string `json:"creatorName"`
 	CreatorAddress string `json:"creatorAddress"`
 	TokenURI       string `json:"tokenURI"`
@@ -163,6 +164,9 @@ func (v *GetCollectionNFTsNftContractsNftContractNftsNft) GetTokenID() string { 
 
 // GetOwner returns GetCollectionNFTsNftContractsNftContractNftsNft.Owner, and is useful for accessing the field via an interface.
 func (v *GetCollectionNFTsNftContractsNftContractNftsNft) GetOwner() string { return v.Owner }
+
+// GetSeller returns GetCollectionNFTsNftContractsNftContractNftsNft.Seller, and is useful for accessing the field via an interface.
+func (v *GetCollectionNFTsNftContractsNftContractNftsNft) GetSeller() string { return v.Seller }
 
 // GetCreatorName returns GetCollectionNFTsNftContractsNftContractNftsNft.CreatorName, and is useful for accessing the field via an interface.
 func (v *GetCollectionNFTsNftContractsNftContractNftsNft) GetCreatorName() string {
@@ -532,6 +536,7 @@ query GetCollectionNFTs ($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
 			id
 			tokenID
 			owner
+			seller
 			creatorName
 			creatorAddress
 			tokenURI
