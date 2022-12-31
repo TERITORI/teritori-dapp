@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 
 import {
   Collection,
@@ -7,7 +7,8 @@ import {
 import { backendClient } from "../utils/backend";
 
 export const useCollections = (
-  req: CollectionsRequest
+  req: CollectionsRequest,
+  filter?: (c: Collection) => boolean
 ): [Collection[], (index: number) => Promise<void>] => {
   const [collections, setCollections] = useState<Collection[]>([]);
   const fetchRef = useRef(false);
@@ -40,9 +41,16 @@ export const useCollections = (
     [req, collections]
   );
 
+  const filteredCollections = useMemo(() => {
+    if (!filter) {
+      return collections;
+    }
+    return collections.filter(filter);
+  }, [collections, filter]);
+
   useEffect(() => {
     fetchMore(0);
   }, []);
 
-  return [collections, fetchMore];
+  return [filteredCollections, fetchMore];
 };

@@ -32,8 +32,9 @@ export const CollectionsCarouselSection: React.FC<{
   title: string;
   linkToMint?: boolean;
   req?: CollectionsRequest;
-}> = ({ title, req = defaultRequest, linkToMint }) => {
-  const [collections, fetchMore] = useCollections(req);
+  filter?: (c: Collection) => boolean;
+}> = ({ title, req = defaultRequest, linkToMint, filter }) => {
+  const [collections, fetchMore] = useCollections(req, filter);
 
   const { width } = useMaxResolution();
 
