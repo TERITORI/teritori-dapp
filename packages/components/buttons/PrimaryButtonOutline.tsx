@@ -1,5 +1,10 @@
 import React from "react";
-import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import {
+  ActivityIndicator,
+  StyleProp,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import {
@@ -25,6 +30,7 @@ export const PrimaryButtonOutline: React.FC<{
   fullWidth?: boolean;
   color?: string;
   noBrokenCorners?: boolean;
+  isLoading?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -38,6 +44,7 @@ export const PrimaryButtonOutline: React.FC<{
   fullWidth = false,
   color = primaryColor,
   noBrokenCorners = false,
+  isLoading,
 }) => {
   const boxProps = {
     style,
@@ -66,6 +73,10 @@ export const PrimaryButtonOutline: React.FC<{
         }}
         {...boxProps}
       >
+        {isLoading ? (
+          <ActivityIndicator color={primaryColor} />
+        ) : (
+          <>
         {iconSVG ? (
           <SVG
             source={iconSVG}
@@ -79,6 +90,8 @@ export const PrimaryButtonOutline: React.FC<{
         <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
           {text}
         </BrandText>
+          </>
+        )}
       </TertiaryBox>
     </TouchableOpacity>
   );

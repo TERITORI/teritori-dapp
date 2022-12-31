@@ -1,22 +1,18 @@
 import React from "react";
-import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { neutral22 } from "../../utils/style/colors";
-import { SocialCommentCard } from "./SocialCommentCard";
+import { SocialCommentCard, SocialCommentCardProps } from "./SocialCommentCard";
 
-interface CommentsContainerProps {
+interface CommentsContainerProps
+  extends Omit<SocialCommentCardProps, "comment" | "isLast"> {
   comments: PostResult[];
-  style?: StyleProp<ViewStyle>;
-  onPressReply?: OnPressReplyType;
-  overrideParentId?: string;
 }
 
 export const CommentsContainer: React.FC<CommentsContainerProps> = ({
   comments,
-  onPressReply,
-  overrideParentId,
+  ...restProps
 }) => {
   if (!comments?.length) {
     return null;
@@ -32,8 +28,8 @@ export const CommentsContainer: React.FC<CommentsContainerProps> = ({
             key={index}
             comment={comment}
             isLast={comments?.length === index + 1}
-            onPressReply={onPressReply}
-            overrideParentId={overrideParentId}
+            isFirst={index === 0}
+            {...restProps}
           />
         ))}
       </View>

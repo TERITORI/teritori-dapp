@@ -1,6 +1,12 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useRef, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { ActivityIndicator, View, ScrollView, StyleSheet } from "react-native";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import {
@@ -8,10 +14,15 @@ import {
   NewsFeedInputHandle,
 } from "../../components/NewsFeed/NewsFeedInput";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { CommentsContainer } from "../../components/cards/CommentsContainer";
 import { SocialThreadCard } from "../../components/cards/SocialThreadCard";
 import { BackTo } from "../../components/navigation/BackTo";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useErrorHandler } from "../../hooks/useErrorHandler";
+import {
+  combineFetchCommentPages,
+  useFetchComments,
+} from "../../hooks/useFetchComments";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
 import { secondaryColor } from "../../utils/style/colors";
@@ -32,6 +43,16 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const [post, setPost] = useState<PostResult>();
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
+  const { data, refetch, hasNextPage, fetchNextPage, isFetching } =
+    useFetchComments({
+      parentId: post?.identifier,
+      totalCount: post?.sub_post_length,
+    });
+
+  const comments = useMemo(
+    () => (data ? combineFetchCommentPages(data.pages) : []),
+    [data]
+  );
 
   const fetchPost = async () => {
     if (!wallet?.connected || !wallet.address) {
@@ -64,36 +85,34 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     }, [wallet?.connected])
   );
 
+  useEffect(() => {
+    refetch();
+  }, [post?.identifier, refresh]);
+
   return (
     <ScreenContainer
       responsive
       headerChildren={<BackTo label="Feed" />}
       footerChildren
       fullWidth
-      fixedFooterChildren={
-        <View
-          style={{
-            marginBottom: layout.padding_x2,
-            marginHorizontal: layout.contentPadding,
-          }}
-        >
-          <NewsFeedInput
-            ref={feedInputRef}
-            type="comment"
-            parentId={id}
-            onSubmitSuccess={() => setRefresh((prev) => prev + 1)}
-            replyTo={replyTo}
-          />
-        </View>
-      }
+      noScroll
     >
-      <View
-        style={{
-          paddingTop: layout.contentPadding,
-          paddingHorizontal: layout.contentPadding,
+      <ScrollView
+        contentContainerStyle={styles.contentContainer}
+        onScroll={(e) => {
+          let offsetPadding = 40;
+          offsetPadding += e.nativeEvent.layoutMeasurement.height;
+
+          if (
+            e.nativeEvent.contentOffset.y >=
+              e.nativeEvent.contentSize.height - offsetPadding &&
+            hasNextPage
+          ) {
+            fetchNextPage();
+          }
         }}
+        scrollEventThrottle={1}
       >
-        {isLoading && <ActivityIndicator size="small" color={secondaryColor} />}
         {!!post && (
           <SocialThreadCard
             post={post}
@@ -102,7 +121,46 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             onPressReply={onPressReply}
           />
         )}
+
+        <CommentsContainer
+          comments={comments}
+          onPressReply={onPressReply}
+          refresh={refresh}
+        />
+        {isLoading ||
+          (isFetching && (
+            <ActivityIndicator
+              size="small"
+              color={secondaryColor}
+              style={styles.indicator}
+            />
+          ))}
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <NewsFeedInput
+          ref={feedInputRef}
+          type="comment"
+          parentId={id}
+          onSubmitSuccess={() => setRefresh((prev) => prev + 1)}
+          replyTo={replyTo}
+        />
       </View>
     </ScreenContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    paddingTop: layout.contentPadding,
+    paddingHorizontal: layout.contentPadding,
+  },
+  footer: {
+    marginBottom: layout.padding_x2,
+    marginHorizontal: layout.contentPadding,
+  },
+  indicator: {
+    marginBottom: 56,
+    marginLeft: 56,
+  },
+});
