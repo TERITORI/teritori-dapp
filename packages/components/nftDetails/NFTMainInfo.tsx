@@ -1,4 +1,3 @@
-import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Target } from "@nandorojo/anchor";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
@@ -6,6 +5,7 @@ import { StyleSheet, View } from "react-native";
 
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
@@ -47,16 +47,19 @@ const mainInfoTabItems = {
 export const NFTMainInfo: React.FC<{
   nftId: string;
   nftInfo?: NFTInfo;
-  buy: () => Promise<ExecuteResult | undefined>;
+  buy: () => Promise<string | undefined>;
   showMarketplace: boolean;
   sell: (
     price: string,
     denom: string | undefined
-  ) => Promise<ExecuteResult | undefined>;
-  cancelListing: () => Promise<ExecuteResult | undefined>;
+  ) => Promise<string | undefined>;
+  cancelListing: () => Promise<string | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const { openTransactionModals } = useTransactionModals();
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
+  // TODO: should get networkId from nft when having that info
+
+  const nftNetworkId = useSelectedNetworkId();
 
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("about");
@@ -191,7 +194,7 @@ export const NFTMainInfo: React.FC<{
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressSell={sell}
                   nftInfo={nftInfo}
-                  networkId={process.env.TERITORI_NETWORK_ID || ""}
+                  networkId={nftNetworkId}
                 />
               )}
               {nftInfo?.isListed && !nftInfo?.isOwner && (

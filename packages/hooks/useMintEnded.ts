@@ -5,69 +5,51 @@ import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunke
 import { getEthereumProvider } from "../utils/ethereum";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { Network } from "../utils/network";
-import { useSelectedNetworkInfo } from "./useSelectedNetwork";
 
-export const useMintEnded = (id: string) => {
-  const selectedNetworkInfo = useSelectedNetworkInfo();
+export const useMintEnded = (network: Network | undefined, id: string) => {
+  const { data } = useQuery(["mintEnded", id, network], async () => {
+    if (!id || !network) {
+      return false;
+    }
 
-  const { data } = useQuery(
-    ["mintEnded", id, selectedNetworkInfo?.network],
-    async () => {
-      if (!id || !selectedNetworkInfo?.network) {
+    if (network === Network.Teritori) {
+      const mintAddress = id.replace("tori-", "");
+
+      if (mintAddress === process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS) {
         return false;
       }
 
-      if (selectedNetworkInfo?.network === Network.Teritori) {
-        // NOTE: When changing network, we flush the collections and reload the new ones
-        // but due to async nature, network changed before collections flushed so we can
-        // have case that network is updated but collection not yet so we have to check here
-        if (!id.startsWith("tori-")) return false;
+      const cosmwasm = await getNonSigningCosmWasmClient();
 
-        const mintAddress = id.replace("tori-", "");
+      const minterClient = new TeritoriBunkerMinterQueryClient(
+        cosmwasm,
+        mintAddress
+      );
+      const conf = await minterClient.config();
 
-        if (
-          mintAddress === process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS
-        ) {
-          return false;
-        }
+      const mintedAmount = await minterClient.currentSupply();
 
-        const cosmwasm = await getNonSigningCosmWasmClient();
+      return mintedAmount === conf.nft_max_supply;
+    } else if (network === Network.Ethereum) {
+      const mintAddress = id.replace("eth-", "");
 
-        const minterClient = new TeritoriBunkerMinterQueryClient(
-          cosmwasm,
-          mintAddress
-        );
-        const conf = await minterClient.config();
-
-        const mintedAmount = await minterClient.currentSupply();
-
-        return mintedAmount === conf.nft_max_supply;
-      } else if (selectedNetworkInfo?.network === Network.Ethereum) {
-        // NOTE: When changing network, we flush the collections and reload the new ones
-        // but due to async nature, network changed before collections flushed so we can
-        // have case that network is updated but collection not yet so we have to check here
-        if (!id.startsWith("eth-")) return false;
-
-        const mintAddress = id.replace("eth-", "");
-
-        const provider = await getEthereumProvider();
-        if (!provider) {
-          console.error("no eth provider found");
-          return false;
-        }
-
-        const minterClient = TeritoriMinter__factory.connect(
-          mintAddress,
-          provider
-        );
-        const minterConfig = await minterClient.callStatic.config();
-        const mintedAmount = (await minterClient.currentSupply()).toNumber();
-        return mintedAmount === minterConfig.maxSupply.toNumber();
+      const provider = await getEthereumProvider();
+      if (!provider) {
+        console.error("no eth provider found");
+        return false;
       }
 
-      console.error(`unsupported network ${selectedNetworkInfo?.network}`);
-      return false;
+      const minterClient = TeritoriMinter__factory.connect(
+        mintAddress,
+        provider
+      );
+      const minterConfig = await minterClient.callStatic.config();
+      const mintedAmount = (await minterClient.currentSupply()).toNumber();
+      return mintedAmount === minterConfig.maxSupply.toNumber();
     }
-  );
+
+    console.error(`unsupported network ${network}`);
+    return false;
+  });
   return data;
 };

@@ -8,6 +8,7 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTNS } from "../../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useBalances } from "../../../hooks/useBalances";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { prettyPrice } from "../../../utils/coins";
 import {
@@ -32,11 +33,9 @@ export const SendFundModal: React.FC<{
   const { control, handleSubmit: formHandleSubmit } =
     useForm<SendFundFormType>();
   const selectedWallet = useSelectedWallet();
+  const selectedNetWorkId = useSelectedNetworkId();
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const balances = useBalances(
-    process.env.TERITORI_NETWORK_ID,
-    selectedWallet?.address
-  );
+  const balances = useBalances(selectedNetWorkId, selectedWallet?.address);
   const toriBalance = balances.find(
     (bal) => bal.denom === toriCurrency.coinMinimalDenom
   );

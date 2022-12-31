@@ -275,7 +275,7 @@ export const NFTView: React.FC<{
                   <>
                     <CurrencyIcon
                       size={24}
-                      networkId={process.env.TERITORI_NETWORK_ID || ""}
+                      networkId={nft.networkId}
                       denom={nft.denom}
                     />
                     {/* FIXME: should come from price denom */}
@@ -305,11 +305,7 @@ export const NFTView: React.FC<{
                 <View style={{ flex: 1 }}>
                   <SecondaryButton
                     size="XS"
-                    text={prettyPrice(
-                      process.env.TERITORI_NETWORK_ID || "",
-                      nft.price,
-                      nft.denom
-                    )}
+                    text={prettyPrice(nft.networkId, nft.price, nft.denom)}
                     onPress={onPressPriceButton}
                     fullWidth
                     numberOfLines={1}
