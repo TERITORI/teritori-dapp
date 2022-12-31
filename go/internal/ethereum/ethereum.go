@@ -174,7 +174,7 @@ func (p *Provider) GetCollectionActivities(collectionID string, nftID string, li
 		res := make([]*marketplacepb.Activity, len(activities.Actions))
 		for index, activity := range activities.Actions {
 			activityItem := marketplacepb.Activity{
-				Id:              activity.Id,
+				Id:              getUserId(activity.TxID),
 				TransactionKind: activity.Action,
 				TargetImageUri:  activity.Nft.TokenURI,
 				ContractName:    activity.Nft.Contract.Name,
@@ -185,14 +185,14 @@ func (p *Provider) GetCollectionActivities(collectionID string, nftID string, li
 			case "trade":
 				activityItem.Amount = activity.Buy.Price
 				activityItem.Denom = activity.Buy.Denom
-				activityItem.BuyerId = activity.Actor
-				activityItem.SellerId = activity.Buy.Seller
+				activityItem.BuyerId = getUserId(activity.Actor)
+				activityItem.SellerId = getUserId(activity.Buy.Seller)
 			case "list":
 				activityItem.Amount = activity.List.Price
 				activityItem.Denom = activity.List.Denom
-				activityItem.SellerId = activity.Actor
+				activityItem.SellerId = getUserId(activity.Actor)
 			case "cancel_list":
-				activityItem.SellerId = activity.Actor
+				activityItem.SellerId = getUserId(activity.Actor)
 			}
 			res[index] = &activityItem
 		}
@@ -205,7 +205,7 @@ func (p *Provider) GetCollectionActivities(collectionID string, nftID string, li
 	res := make([]*marketplacepb.Activity, len(activities.Actions))
 	for index, activity := range activities.Actions {
 		activityItem := marketplacepb.Activity{
-			Id:              activity.Id,
+			Id:              getUserId(activity.TxID),
 			TransactionKind: activity.Action,
 			TargetImageUri:  activity.Nft.TokenURI,
 			ContractName:    activity.Nft.Contract.Name,
@@ -216,14 +216,14 @@ func (p *Provider) GetCollectionActivities(collectionID string, nftID string, li
 		case "trade":
 			activityItem.Amount = activity.Buy.Price
 			activityItem.Denom = activity.Buy.Denom
-			activityItem.BuyerId = activity.Actor
-			activityItem.SellerId = activity.Buy.Seller
+			activityItem.BuyerId = getUserId(activity.Actor)
+			activityItem.SellerId = getUserId(activity.Buy.Seller)
 		case "list":
 			activityItem.Amount = activity.List.Price
 			activityItem.Denom = activity.List.Denom
-			activityItem.SellerId = activity.Actor
+			activityItem.SellerId = getUserId(activity.Actor)
 		case "cancel_list":
-			activityItem.SellerId = activity.Actor
+			activityItem.SellerId = getUserId(activity.Actor)
 		}
 		res[index] = &activityItem
 	}
@@ -252,4 +252,8 @@ func (p *Provider) GetNFTPriceHistory(nftID string) ([]*marketplacepb.PriceDatum
 	}
 	return res, nil
 
+}
+
+func getUserId(add string) string {
+	return fmt.Sprintf("eth-%s", add)
 }
