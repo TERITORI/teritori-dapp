@@ -10,6 +10,7 @@ type Action {
   id: ID!
   nft: Nft!
   buy: Buy
+  txID: String!
   list: List
   action: String
   minter: Bytes
@@ -210,6 +211,7 @@ enum Action_orderBy {
   id
   nft
   buy
+  txID
   list
   action
   minter
@@ -323,6 +325,26 @@ input Action_filter {
   buy_not_ends_with: String
   buy_not_ends_with_nocase: String
   buy_: Buy_filter
+  txID: String
+  txID_not: String
+  txID_gt: String
+  txID_lt: String
+  txID_gte: String
+  txID_lte: String
+  txID_in: [String!]
+  txID_not_in: [String!]
+  txID_contains: String
+  txID_contains_nocase: String
+  txID_not_contains: String
+  txID_not_contains_nocase: String
+  txID_starts_with: String
+  txID_starts_with_nocase: String
+  txID_not_starts_with: String
+  txID_not_starts_with_nocase: String
+  txID_ends_with: String
+  txID_ends_with_nocase: String
+  txID_not_ends_with: String
+  txID_not_ends_with_nocase: String
   list: String
   list_not: String
   list_gt: String

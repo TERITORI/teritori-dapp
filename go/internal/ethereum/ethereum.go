@@ -177,10 +177,11 @@ func (p *Provider) GetCollectionActivities(collectionID string, limit, offset in
 			TransactionKind: activity.Action,
 			TargetImageUri:  activity.Nft.TokenURI,
 			ContractName:    activity.Nft.Contract.Name,
-			Time:            activity.CreatedAt,
+			TransactionId:   activity.TxID,
+			Time:            time.Unix(stringToInt64(activity.CreatedAt), 0).Format(time.RFC3339),
 		}
 		switch activity.Action {
-		case "buy":
+		case "trade":
 			activityItem.Amount = activity.Buy.Price
 			activityItem.Denom = activity.Buy.Denom
 			activityItem.BuyerId = activity.Actor
