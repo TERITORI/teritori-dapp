@@ -235,3 +235,21 @@ func stringToInt64(number string) int64 {
 	res, _ := strconv.ParseInt(number, 10, 64)
 	return res
 }
+
+func (p *Provider) GetNFTPriceHistory(nftID string) ([]*marketplacepb.PriceDatum, error) {
+	ctx := context.Background()
+	buys, err := thegraph.GetNFTPriceHistory(ctx, p.client, nftID)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]*marketplacepb.PriceDatum, len(buys.Buys))
+	for index, trade := range buys.Buys {
+
+		res[index] = &marketplacepb.PriceDatum{
+			Time:  time.Unix(stringToInt64(trade.CreatedAt), 0).Format(time.RFC3339),
+			Price: float64(stringToInt64(trade.Price)),
+		}
+	}
+	return res, nil
+
+}

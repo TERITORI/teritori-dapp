@@ -270,6 +270,7 @@ export interface ActivityResponse {
 
 export interface NFTPriceHistoryRequest {
   id: string;
+  networkId: string;
 }
 
 export interface NFTPriceHistoryResponse {
@@ -1825,13 +1826,16 @@ export const ActivityResponse = {
 };
 
 function createBaseNFTPriceHistoryRequest(): NFTPriceHistoryRequest {
-  return { id: "" };
+  return { id: "", networkId: "" };
 }
 
 export const NFTPriceHistoryRequest = {
   encode(message: NFTPriceHistoryRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(18).string(message.networkId);
     }
     return writer;
   },
@@ -1846,6 +1850,9 @@ export const NFTPriceHistoryRequest = {
         case 1:
           message.id = reader.string();
           break;
+        case 2:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1855,18 +1862,23 @@ export const NFTPriceHistoryRequest = {
   },
 
   fromJSON(object: any): NFTPriceHistoryRequest {
-    return { id: isSet(object.id) ? String(object.id) : "" };
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
+    };
   },
 
   toJSON(message: NFTPriceHistoryRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<NFTPriceHistoryRequest>, I>>(object: I): NFTPriceHistoryRequest {
     const message = createBaseNFTPriceHistoryRequest();
     message.id = object.id ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };

@@ -536,8 +536,16 @@ func (s *MarkteplaceService) NFTPriceHistory(ctx context.Context, req *marketpla
 	if id == "" {
 		return nil, errors.New("empty id")
 	}
-
+	networkID := req.GetNetworkId()
 	var data []*marketplacepb.PriceDatum
+	var err error
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
+		data, err = s.ethereumProvider.GetNFTPriceHistory(id)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed get price history")
+		}
+		return &marketplacepb.NFTPriceHistoryResponse{Data: data}, nil
+	}
 
 	// TODO: data decimation in case we have a lot of samples for the period
 
