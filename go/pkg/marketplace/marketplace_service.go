@@ -412,6 +412,9 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection activity")
 		}
+		if err := srv.Send(&marketplacepb.ActivityResponse{}); err != nil {
+			return errors.Wrap(err, "failed to send total count")
+		}
 		for _, activity := range activities {
 			if err := srv.Send(&marketplacepb.ActivityResponse{Activity: activity}); err != nil {
 				return errors.Wrap(err, "failed to send activity")
@@ -593,6 +596,7 @@ type coin struct {
 }
 
 func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketplacepb.CollectionStatsRequest) (*marketplacepb.CollectionStatsResponse, error) {
+	fmt.Println("On get collection stats")
 	collectionID := req.GetCollectionId()
 	if collectionID == "" {
 		return nil, errors.New("empty collectionID")
@@ -603,8 +607,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		return nil, errors.Wrap(err, "failed get DB instance")
 	}
 	networkID := req.GetNetworkId()
-	switch networkID {
-	case "ethereum", "ethereum-goerli":
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
 		stats, err := s.ethereumProvider.GetCollectionStats(collectionID, ownerID)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed fetch ethereum collection stats")
@@ -612,9 +615,10 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		return &marketplacepb.CollectionStatsResponse{
 			Stats: stats,
 		}, nil
-	default:
-		var stats CollectionStats
-		err = queries.Raw(`with 
+	}
+
+	var stats CollectionStats
+	err = queries.Raw(`with 
 	nfts_in_collection as (
 		SELECT  *  FROM nfts n where n.collection_id = $1
 	),
@@ -637,23 +641,21 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		count(1) total_supply,
 		(select count(1) from nfts_in_collection where owner_id = $2) owned
 	from nfts_in_collection`, collectionID, ownerID).Bind(ctx, db, &stats)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to make query")
-		}
-		var coins []coin
-		err = stats.LowerPrice.Unmarshal(&coins)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to unmarshal floor_price struct")
-		}
-		stats.FloorPrice = make([]*marketplacepb.Amount, len(coins))
-		for index, coin := range coins {
-			stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: coin.Amount}
-		}
-		return &marketplacepb.CollectionStatsResponse{
-			Stats: &stats.CollectionStats,
-		}, nil
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to make query")
 	}
-
+	var coins []coin
+	err = stats.LowerPrice.Unmarshal(&coins)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal floor_price struct")
+	}
+	stats.FloorPrice = make([]*marketplacepb.Amount, len(coins))
+	for index, coin := range coins {
+		stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: coin.Amount}
+	}
+	return &marketplacepb.CollectionStatsResponse{
+		Stats: &stats.CollectionStats,
+	}, nil
 }
 
 func (s *MarkteplaceService) Banners(ctx context.Context, req *marketplacepb.BannersRequest) (*marketplacepb.BannersResponse, error) {

@@ -16,6 +16,7 @@ type GetCollectionActivitiesActionsAction struct {
 	List      GetCollectionActivitiesActionsActionList `json:"list"`
 	Action    string                                   `json:"action"`
 	Actor     string                                   `json:"actor"`
+	TxID      string                                   `json:"txID"`
 	CreatedAt string                                   `json:"createdAt"`
 }
 
@@ -42,6 +43,9 @@ func (v *GetCollectionActivitiesActionsAction) GetAction() string { return v.Act
 
 // GetActor returns GetCollectionActivitiesActionsAction.Actor, and is useful for accessing the field via an interface.
 func (v *GetCollectionActivitiesActionsAction) GetActor() string { return v.Actor }
+
+// GetTxID returns GetCollectionActivitiesActionsAction.TxID, and is useful for accessing the field via an interface.
+func (v *GetCollectionActivitiesActionsAction) GetTxID() string { return v.TxID }
 
 // GetCreatedAt returns GetCollectionActivitiesActionsAction.CreatedAt, and is useful for accessing the field via an interface.
 func (v *GetCollectionActivitiesActionsAction) GetCreatedAt() string { return v.CreatedAt }
@@ -493,6 +497,7 @@ query GetCollectionActivities ($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
 		}
 		action
 		actor
+		txID
 		createdAt
 	}
 }

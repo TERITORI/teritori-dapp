@@ -43,6 +43,7 @@ query GetCollectionActivities($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
     }
     action
     actor
+    txID
     createdAt
   }
 }
