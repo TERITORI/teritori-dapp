@@ -68,14 +68,4 @@ var AllNetworks = []*Network{
 			},
 		},
 	},
-	{
-		ID: "ethereum",
-		Currencies: []Currency{
-			&NativeCurrency{
-				Denom:       "wei",
-				CoinGeckoID: "ethereum",
-				Decimals:    18,
-			},
-		},
-	},
 }
