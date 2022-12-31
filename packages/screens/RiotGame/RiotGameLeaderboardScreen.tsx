@@ -7,7 +7,6 @@ import {
   View,
 } from "react-native";
 
-import avatarPNG from "../../../assets/game/avatar.png";
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
 import badgeSVG from "../../../assets/icons/badge.svg";
 import cryptoLogoSVG from "../../../assets/icons/crypto-logo.svg";
@@ -24,6 +23,7 @@ import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { p2eBackendClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   additionalGreen,
   additionalRed,
@@ -50,7 +50,22 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
 
   return (
     <FlexRow width="auto" alignItems="center">
-      <Image style={{ width: 32, height: 32 }} source={avatarPNG} />
+      <Image
+        source={{
+          uri: ipfsURLToHTTPURL(
+            tnsMetadata?.metadata?.image ||
+              process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
+              ""
+          ),
+        }}
+        style={{
+          borderRadius: 999,
+          width: 32,
+          height: 32,
+          aspectRatio: 1,
+        }}
+      />
+
       <BrandText style={[styles.colData, { marginLeft: layout.padding_x1 }]}>
         {name}
       </BrandText>
@@ -157,7 +172,7 @@ export const RiotGameLeaderboardScreen = () => {
       <FlatList
         data={userScores}
         keyExtractor={(item, index) => " " + index}
-        renderItem={({ item: userScore, index }) => {
+        renderItem={({ item: userScore }) => {
           const { xp, hours, rankChanges } = parseUserScoreInfo(userScore);
 
           return (
