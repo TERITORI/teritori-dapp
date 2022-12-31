@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Pressable,
   StyleProp,
@@ -7,9 +7,11 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
+import {
+  combineFetchCommentPages,
+  useFetchComments,
+} from "../../hooks/useFetchComments";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../utils/navigation";
@@ -33,6 +35,8 @@ import { BrandText } from "../BrandText";
 import { FilePreview } from "../FilePreview/FilePreview";
 import { SocialReactionActions } from "../SocialReactionActions";
 import { tinyAddress } from "../WalletSelector";
+import { AnimationFadeIn } from "../animations";
+import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../spacer";
 import { CommentsContainer } from "./CommentsContainer";
@@ -43,7 +47,11 @@ export interface SocialCommentCardProps {
   isLast?: boolean;
   onPressReply?: OnPressReplyType;
   overrideParentId?: string;
+  refresh?: number;
+  isFirst?: boolean;
 }
+
+const MARGIN_HEIGHT = 56;
 
 export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   style,
@@ -51,11 +59,23 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   isLast,
   onPressReply,
   overrideParentId,
+  refresh,
+  isFirst,
 }) => {
   const imageMarginRight = layout.padding_x3_5;
-  const wallet = useSelectedWallet();
-  const [subComments, setSubComments] = useState<PostResult[]>();
   const navigation = useAppNavigation();
+  const [replyShown, setReplyShown] = useState(false);
+  const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
+    useFetchComments({
+      parentId: comment.identifier,
+      totalCount: comment.sub_post_length,
+      enabled: replyShown,
+    });
+  const comments = useMemo(
+    () => (data ? combineFetchCommentPages(data.pages) : []),
+    [data]
+  );
+  const moreCommentsCount = comment.sub_post_length - comments.length;
 
   const metadata = JSON.parse(comment.metadata);
   const postByTNSMetadata = useTNSMetadata(comment?.post_by);
@@ -63,31 +83,25 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     ? tinyAddress(postByTNSMetadata?.metadata?.tokenId || "", 19)
     : DEFAULT_USERNAME;
 
-  const queryComments = async () => {
-    if (!wallet?.connected || !wallet.address) {
-      return;
+  const onShowReply = () => {
+    if (replyShown) {
+      if (hasNextPage) {
+        fetchNextPage();
+      }
+    } else {
+      setReplyShown(true);
     }
-    const client = await socialFeedClient({
-      walletAddress: wallet?.address,
-    });
-
-    const subCom = await client.querySubPosts({
-      count: 5,
-      from: 0,
-      identifier: comment.identifier,
-      sort: "asc",
-    });
-
-    setSubComments(subCom);
   };
 
   useEffect(() => {
-    queryComments();
-  }, [comment?.identifier]);
+    if (replyShown) {
+      refetch();
+    }
+  }, [comment?.identifier, refresh]);
 
   return (
-    <>
-      <View style={styles.container}>
+    <AnimationFadeIn>
+      <View style={[styles.container, isFirst && { marginTop: MARGIN_HEIGHT }]}>
         {isLast && <View style={styles.extraLineHider} />}
         <View style={styles.curvedLine} />
 
@@ -159,16 +173,31 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           </View>
         </View>
       </View>
-      {subComments && (
+
+      {comments && (
         <View style={styles.subCommentContainer}>
           <CommentsContainer
-            comments={subComments}
+            comments={comments}
             onPressReply={onPressReply}
             overrideParentId={comment.identifier}
           />
         </View>
       )}
-    </>
+
+      {isLast && overrideParentId ? null : (
+        <AnimationFadeIn style={styles.footer}>
+          {moreCommentsCount > 0 && (
+            <PrimaryButtonOutline
+              size="SM"
+              text={`View Replies (${moreCommentsCount})`}
+              onPress={onShowReply}
+              isLoading={isFetching}
+              width={200}
+            />
+          )}
+        </AnimationFadeIn>
+      )}
+    </AnimationFadeIn>
   );
 };
 
@@ -177,10 +206,9 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "flex-start",
-    zIndex: 1000,
+    zIndex: 1,
     position: "relative",
     marginLeft: -1,
-    marginTop: 56,
   },
   curvedLine: {
     width: 60,
@@ -206,6 +234,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: MARGIN_HEIGHT,
+  },
   detailsContainer: {},
   actionContainer: {
     borderTopWidth: 1,
@@ -217,7 +251,6 @@ const styles = StyleSheet.create({
   },
   stat: { backgroundColor: neutral22 },
   extraLineHider: {
-    flex: 1,
     marginTop: 73,
     width: 1,
     height: "100%",
