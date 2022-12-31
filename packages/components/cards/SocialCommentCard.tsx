@@ -101,8 +101,9 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
   return (
     <AnimationFadeIn>
+      {isLast && <View style={styles.extraLineHider} />}
+
       <View style={[styles.container, isFirst && { marginTop: MARGIN_HEIGHT }]}>
-        {isLast && <View style={styles.extraLineHider} />}
         <View style={styles.curvedLine} />
 
         <View style={[styles.commentContainer, style]}>
@@ -257,7 +258,7 @@ const styles = StyleSheet.create({
     backgroundColor: neutral00,
     zIndex: 1000,
     position: "absolute",
-    left: 0,
+    left: -1,
   },
   subCommentContainer: {
     marginLeft: 60,
