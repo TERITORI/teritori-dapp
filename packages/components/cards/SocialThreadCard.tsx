@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleProp,
   View,
@@ -7,10 +7,8 @@ import {
   StyleSheet,
 } from "react-native";
 
-import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../utils/navigation";
@@ -37,7 +35,6 @@ import { tinyAddress } from "../WalletSelector";
 import { AnimationFadeIn } from "../animations";
 import { DotBadge } from "../badges/DotBadge";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
-import { CommentsContainer } from "./CommentsContainer";
 
 export const getResponsiveAvatarSize = (width: number) => {
   if (width >= 992) {
@@ -59,15 +56,7 @@ export const SocialThreadCard: React.FC<{
   refresh?: number;
   fadeInDelay?: number;
   onPressReply?: OnPressReplyType;
-}> = ({
-  post,
-  style,
-  singleView,
-  isGovernance,
-  refresh,
-  fadeInDelay,
-  onPressReply,
-}) => {
+}> = ({ post, style, singleView, isGovernance, fadeInDelay }) => {
   const [maxLayoutWidth, setMaxLayoutWidth] = useState(0);
   const imageMarginRight = layout.padding_x3_5;
   const tertiaryBoxPaddingHorizontal = layout.padding_x3;
@@ -77,35 +66,9 @@ export const SocialThreadCard: React.FC<{
 
   const postByTNSMetadata = useTNSMetadata(post.post_by);
 
-  const wallet = useSelectedWallet();
-  const [subPosts, setSubPosts] = useState([]);
   const navigation = useAppNavigation();
 
   const metadata = JSON.parse(post.metadata);
-
-  const queryComments = async () => {
-    if (!wallet?.connected || !wallet.address) {
-      return;
-    }
-    const client = await socialFeedClient({
-      walletAddress: wallet?.address,
-    });
-
-    const subPosts = await client.querySubPosts({
-      count: 5,
-      from: 0,
-      identifier: post.identifier,
-      sort: "asc",
-    });
-
-    setSubPosts(subPosts);
-  };
-
-  useEffect(() => {
-    if (singleView) {
-      queryComments();
-    }
-  }, [singleView, post?.identifier, refresh]);
 
   return (
     <AnimationFadeIn style={[style]} delay={fadeInDelay}>
@@ -233,8 +196,6 @@ export const SocialThreadCard: React.FC<{
 
         {!singleView && <EmojiSelector containerStyle={styles.container} />}
       </View>
-
-      <CommentsContainer comments={subPosts} onPressReply={onPressReply} />
     </AnimationFadeIn>
   );
 };
