@@ -112,7 +112,7 @@ export const Header: React.FC<{
     maxSize: { width: maxWidth },
   });
   const { setToastSuccess } = useFeedbacks();
-  const networkId = process.env.TERITORI_NETWORK_ID || ""; // FIXME: derive from collection network
+  const networkId = useSelectedNetworkId();
 
   const coins = useMemo(() => {
     if (!stats?.floorPrice) {
@@ -162,7 +162,7 @@ export const Header: React.FC<{
         return (
           usdValue *
           Decimal.fromAtomics(
-            fp.quantity.toFixed(0),
+            fp.quantity,
             currency.decimals
           ).toFloatApproximation()
         );

@@ -155,7 +155,7 @@ export interface NFT {
 
 export interface Amount {
   denom: string;
-  quantity: number;
+  quantity: string;
 }
 
 export interface Collection {
@@ -555,7 +555,7 @@ export const NFT = {
 };
 
 function createBaseAmount(): Amount {
-  return { denom: "", quantity: 0 };
+  return { denom: "", quantity: "" };
 }
 
 export const Amount = {
@@ -563,8 +563,8 @@ export const Amount = {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
-    if (message.quantity !== 0) {
-      writer.uint32(16).int64(message.quantity);
+    if (message.quantity !== "") {
+      writer.uint32(18).string(message.quantity);
     }
     return writer;
   },
@@ -580,7 +580,7 @@ export const Amount = {
           message.denom = reader.string();
           break;
         case 2:
-          message.quantity = longToNumber(reader.int64() as Long);
+          message.quantity = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -593,21 +593,21 @@ export const Amount = {
   fromJSON(object: any): Amount {
     return {
       denom: isSet(object.denom) ? String(object.denom) : "",
-      quantity: isSet(object.quantity) ? Number(object.quantity) : 0,
+      quantity: isSet(object.quantity) ? String(object.quantity) : "",
     };
   },
 
   toJSON(message: Amount): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.quantity !== undefined && (obj.quantity = Math.round(message.quantity));
+    message.quantity !== undefined && (obj.quantity = message.quantity);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Amount>, I>>(object: I): Amount {
     const message = createBaseAmount();
     message.denom = object.denom ?? "";
-    message.quantity = object.quantity ?? 0;
+    message.quantity = object.quantity ?? "";
     return message;
   },
 };
