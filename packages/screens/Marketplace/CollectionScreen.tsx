@@ -105,10 +105,7 @@ export const Header: React.FC<{
 }) => {
   const wallet = useSelectedWallet();
   // variables
-  const stats = useCollectionStats(
-    collectionId,
-    wallet ? `tori-${wallet.address}` : undefined
-  );
+  const stats = useCollectionStats(collectionId, wallet?.address);
   const { width: maxWidth } = useMaxResolution();
   const { width, height } = useImageResizer({
     image: collectionInfo.bannerImage || bannerCollection,

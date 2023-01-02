@@ -80,12 +80,14 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 
 	volumeByDenom := make(map[string]int64)
 	floorByDenom := make(map[string]int64)
+
 	//Fill collection volume
 	var lastDenom string
 	for _, trade := range collectionsStats.Buys {
 		volumeByDenom[trade.Denom] = volumeByDenom[trade.Denom] + stringToInt64(trade.Price)
 		lastDenom = trade.Denom
 	}
+
 	//TODO: deal with several denoms right now just sending last denom volume
 	ownersSeen := make(map[string]int32)
 	var listed int32
