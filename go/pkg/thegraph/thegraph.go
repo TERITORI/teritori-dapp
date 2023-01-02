@@ -8,6 +8,13 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
+type BlockChangedFilter struct {
+	Number_gte int `json:"number_gte"`
+}
+
+// GetNumber_gte returns BlockChangedFilter.Number_gte, and is useful for accessing the field via an interface.
+func (v *BlockChangedFilter) GetNumber_gte() int { return v.Number_gte }
+
 // GetCollectionActivitiesActionsAction includes the requested fields of the GraphQL type Action.
 type GetCollectionActivitiesActionsAction struct {
 	Id        string                                   `json:"id"`
@@ -506,6 +513,894 @@ type GetNFTPriceHistoryResponse struct {
 // GetBuys returns GetNFTPriceHistoryResponse.Buys, and is useful for accessing the field via an interface.
 func (v *GetNFTPriceHistoryResponse) GetBuys() []GetNFTPriceHistoryBuysBuy { return v.Buys }
 
+type NftContract_filter struct {
+	Id                                 string     `json:"id,omitempty"`
+	Id_not                             string     `json:"id_not,omitempty"`
+	Id_gt                              string     `json:"id_gt,omitempty"`
+	Id_lt                              string     `json:"id_lt,omitempty"`
+	Id_gte                             string     `json:"id_gte,omitempty"`
+	Id_lte                             string     `json:"id_lte,omitempty"`
+	Id_in                              []string   `json:"id_in,omitempty"`
+	Id_not_in                          []string   `json:"id_not_in,omitempty"`
+	Name                               string     `json:"name,omitempty"`
+	Name_not                           string     `json:"name_not,omitempty"`
+	Name_gt                            string     `json:"name_gt,omitempty"`
+	Name_lt                            string     `json:"name_lt,omitempty"`
+	Name_gte                           string     `json:"name_gte,omitempty"`
+	Name_lte                           string     `json:"name_lte,omitempty"`
+	Name_in                            []string   `json:"name_in,omitempty"`
+	Name_not_in                        []string   `json:"name_not_in,omitempty"`
+	Name_contains                      string     `json:"name_contains,omitempty"`
+	Name_contains_nocase               string     `json:"name_contains_nocase,omitempty"`
+	Name_not_contains                  string     `json:"name_not_contains,omitempty"`
+	Name_not_contains_nocase           string     `json:"name_not_contains_nocase,omitempty"`
+	Name_starts_with                   string     `json:"name_starts_with,omitempty"`
+	Name_starts_with_nocase            string     `json:"name_starts_with_nocase,omitempty"`
+	Name_not_starts_with               string     `json:"name_not_starts_with,omitempty"`
+	Name_not_starts_with_nocase        string     `json:"name_not_starts_with_nocase,omitempty"`
+	Name_ends_with                     string     `json:"name_ends_with,omitempty"`
+	Name_ends_with_nocase              string     `json:"name_ends_with_nocase,omitempty"`
+	Name_not_ends_with                 string     `json:"name_not_ends_with,omitempty"`
+	Name_not_ends_with_nocase          string     `json:"name_not_ends_with_nocase,omitempty"`
+	Symbol                             string     `json:"symbol,omitempty"`
+	Symbol_not                         string     `json:"symbol_not,omitempty"`
+	Symbol_gt                          string     `json:"symbol_gt,omitempty"`
+	Symbol_lt                          string     `json:"symbol_lt,omitempty"`
+	Symbol_gte                         string     `json:"symbol_gte,omitempty"`
+	Symbol_lte                         string     `json:"symbol_lte,omitempty"`
+	Symbol_in                          []string   `json:"symbol_in,omitempty"`
+	Symbol_not_in                      []string   `json:"symbol_not_in,omitempty"`
+	Symbol_contains                    string     `json:"symbol_contains,omitempty"`
+	Symbol_contains_nocase             string     `json:"symbol_contains_nocase,omitempty"`
+	Symbol_not_contains                string     `json:"symbol_not_contains,omitempty"`
+	Symbol_not_contains_nocase         string     `json:"symbol_not_contains_nocase,omitempty"`
+	Symbol_starts_with                 string     `json:"symbol_starts_with,omitempty"`
+	Symbol_starts_with_nocase          string     `json:"symbol_starts_with_nocase,omitempty"`
+	Symbol_not_starts_with             string     `json:"symbol_not_starts_with,omitempty"`
+	Symbol_not_starts_with_nocase      string     `json:"symbol_not_starts_with_nocase,omitempty"`
+	Symbol_ends_with                   string     `json:"symbol_ends_with,omitempty"`
+	Symbol_ends_with_nocase            string     `json:"symbol_ends_with_nocase,omitempty"`
+	Symbol_not_ends_with               string     `json:"symbol_not_ends_with,omitempty"`
+	Symbol_not_ends_with_nocase        string     `json:"symbol_not_ends_with_nocase,omitempty"`
+	Supported                          bool       `json:"supported,omitempty"`
+	Supported_not                      bool       `json:"supported_not,omitempty"`
+	Supported_in                       []bool     `json:"supported_in,omitempty"`
+	Supported_not_in                   []bool     `json:"supported_not_in,omitempty"`
+	Minter                             string     `json:"minter,omitempty"`
+	Minter_not                         string     `json:"minter_not,omitempty"`
+	Minter_in                          []string   `json:"minter_in,omitempty"`
+	Minter_not_in                      []string   `json:"minter_not_in,omitempty"`
+	Minter_contains                    string     `json:"minter_contains,omitempty"`
+	Minter_not_contains                string     `json:"minter_not_contains,omitempty"`
+	ContractURI                        string     `json:"contractURI,omitempty"`
+	ContractURI_not                    string     `json:"contractURI_not,omitempty"`
+	ContractURI_gt                     string     `json:"contractURI_gt,omitempty"`
+	ContractURI_lt                     string     `json:"contractURI_lt,omitempty"`
+	ContractURI_gte                    string     `json:"contractURI_gte,omitempty"`
+	ContractURI_lte                    string     `json:"contractURI_lte,omitempty"`
+	ContractURI_in                     []string   `json:"contractURI_in,omitempty"`
+	ContractURI_not_in                 []string   `json:"contractURI_not_in,omitempty"`
+	ContractURI_contains               string     `json:"contractURI_contains,omitempty"`
+	ContractURI_contains_nocase        string     `json:"contractURI_contains_nocase,omitempty"`
+	ContractURI_not_contains           string     `json:"contractURI_not_contains,omitempty"`
+	ContractURI_not_contains_nocase    string     `json:"contractURI_not_contains_nocase,omitempty"`
+	ContractURI_starts_with            string     `json:"contractURI_starts_with,omitempty"`
+	ContractURI_starts_with_nocase     string     `json:"contractURI_starts_with_nocase,omitempty"`
+	ContractURI_not_starts_with        string     `json:"contractURI_not_starts_with,omitempty"`
+	ContractURI_not_starts_with_nocase string     `json:"contractURI_not_starts_with_nocase,omitempty"`
+	ContractURI_ends_with              string     `json:"contractURI_ends_with,omitempty"`
+	ContractURI_ends_with_nocase       string     `json:"contractURI_ends_with_nocase,omitempty"`
+	ContractURI_not_ends_with          string     `json:"contractURI_not_ends_with,omitempty"`
+	ContractURI_not_ends_with_nocase   string     `json:"contractURI_not_ends_with_nocase,omitempty"`
+	// Filter for the block changed event.
+	Change_block BlockChangedFilter `json:"_change_block"`
+}
+
+// GetId returns NftContract_filter.Id, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetId() string { return v.Id }
+
+// GetId_not returns NftContract_filter.Id_not, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetId_not() string { return v.Id_not }
+
+// GetId_gt returns NftContract_filter.Id_gt, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetId_gt() string { return v.Id_gt }
+
+// GetId_lt returns NftContract_filter.Id_lt, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetId_lt() string { return v.Id_lt }
+
+// GetId_gte returns NftContract_filter.Id_gte, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetId_gte() string { return v.Id_gte }
+
+// GetId_lte returns NftContract_filter.Id_lte, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetId_lte() string { return v.Id_lte }
+
+// GetId_in returns NftContract_filter.Id_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetId_in() []string { return v.Id_in }
+
+// GetId_not_in returns NftContract_filter.Id_not_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetId_not_in() []string { return v.Id_not_in }
+
+// GetName returns NftContract_filter.Name, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName() string { return v.Name }
+
+// GetName_not returns NftContract_filter.Name_not, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_not() string { return v.Name_not }
+
+// GetName_gt returns NftContract_filter.Name_gt, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_gt() string { return v.Name_gt }
+
+// GetName_lt returns NftContract_filter.Name_lt, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_lt() string { return v.Name_lt }
+
+// GetName_gte returns NftContract_filter.Name_gte, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_gte() string { return v.Name_gte }
+
+// GetName_lte returns NftContract_filter.Name_lte, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_lte() string { return v.Name_lte }
+
+// GetName_in returns NftContract_filter.Name_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_in() []string { return v.Name_in }
+
+// GetName_not_in returns NftContract_filter.Name_not_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_not_in() []string { return v.Name_not_in }
+
+// GetName_contains returns NftContract_filter.Name_contains, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_contains() string { return v.Name_contains }
+
+// GetName_contains_nocase returns NftContract_filter.Name_contains_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_contains_nocase() string { return v.Name_contains_nocase }
+
+// GetName_not_contains returns NftContract_filter.Name_not_contains, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_not_contains() string { return v.Name_not_contains }
+
+// GetName_not_contains_nocase returns NftContract_filter.Name_not_contains_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_not_contains_nocase() string { return v.Name_not_contains_nocase }
+
+// GetName_starts_with returns NftContract_filter.Name_starts_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_starts_with() string { return v.Name_starts_with }
+
+// GetName_starts_with_nocase returns NftContract_filter.Name_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_starts_with_nocase() string { return v.Name_starts_with_nocase }
+
+// GetName_not_starts_with returns NftContract_filter.Name_not_starts_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_not_starts_with() string { return v.Name_not_starts_with }
+
+// GetName_not_starts_with_nocase returns NftContract_filter.Name_not_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_not_starts_with_nocase() string {
+	return v.Name_not_starts_with_nocase
+}
+
+// GetName_ends_with returns NftContract_filter.Name_ends_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_ends_with() string { return v.Name_ends_with }
+
+// GetName_ends_with_nocase returns NftContract_filter.Name_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_ends_with_nocase() string { return v.Name_ends_with_nocase }
+
+// GetName_not_ends_with returns NftContract_filter.Name_not_ends_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_not_ends_with() string { return v.Name_not_ends_with }
+
+// GetName_not_ends_with_nocase returns NftContract_filter.Name_not_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetName_not_ends_with_nocase() string {
+	return v.Name_not_ends_with_nocase
+}
+
+// GetSymbol returns NftContract_filter.Symbol, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol() string { return v.Symbol }
+
+// GetSymbol_not returns NftContract_filter.Symbol_not, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_not() string { return v.Symbol_not }
+
+// GetSymbol_gt returns NftContract_filter.Symbol_gt, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_gt() string { return v.Symbol_gt }
+
+// GetSymbol_lt returns NftContract_filter.Symbol_lt, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_lt() string { return v.Symbol_lt }
+
+// GetSymbol_gte returns NftContract_filter.Symbol_gte, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_gte() string { return v.Symbol_gte }
+
+// GetSymbol_lte returns NftContract_filter.Symbol_lte, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_lte() string { return v.Symbol_lte }
+
+// GetSymbol_in returns NftContract_filter.Symbol_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_in() []string { return v.Symbol_in }
+
+// GetSymbol_not_in returns NftContract_filter.Symbol_not_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_not_in() []string { return v.Symbol_not_in }
+
+// GetSymbol_contains returns NftContract_filter.Symbol_contains, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_contains() string { return v.Symbol_contains }
+
+// GetSymbol_contains_nocase returns NftContract_filter.Symbol_contains_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_contains_nocase() string { return v.Symbol_contains_nocase }
+
+// GetSymbol_not_contains returns NftContract_filter.Symbol_not_contains, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_not_contains() string { return v.Symbol_not_contains }
+
+// GetSymbol_not_contains_nocase returns NftContract_filter.Symbol_not_contains_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_not_contains_nocase() string {
+	return v.Symbol_not_contains_nocase
+}
+
+// GetSymbol_starts_with returns NftContract_filter.Symbol_starts_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_starts_with() string { return v.Symbol_starts_with }
+
+// GetSymbol_starts_with_nocase returns NftContract_filter.Symbol_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_starts_with_nocase() string {
+	return v.Symbol_starts_with_nocase
+}
+
+// GetSymbol_not_starts_with returns NftContract_filter.Symbol_not_starts_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_not_starts_with() string { return v.Symbol_not_starts_with }
+
+// GetSymbol_not_starts_with_nocase returns NftContract_filter.Symbol_not_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_not_starts_with_nocase() string {
+	return v.Symbol_not_starts_with_nocase
+}
+
+// GetSymbol_ends_with returns NftContract_filter.Symbol_ends_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_ends_with() string { return v.Symbol_ends_with }
+
+// GetSymbol_ends_with_nocase returns NftContract_filter.Symbol_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_ends_with_nocase() string { return v.Symbol_ends_with_nocase }
+
+// GetSymbol_not_ends_with returns NftContract_filter.Symbol_not_ends_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_not_ends_with() string { return v.Symbol_not_ends_with }
+
+// GetSymbol_not_ends_with_nocase returns NftContract_filter.Symbol_not_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSymbol_not_ends_with_nocase() string {
+	return v.Symbol_not_ends_with_nocase
+}
+
+// GetSupported returns NftContract_filter.Supported, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSupported() bool { return v.Supported }
+
+// GetSupported_not returns NftContract_filter.Supported_not, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSupported_not() bool { return v.Supported_not }
+
+// GetSupported_in returns NftContract_filter.Supported_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSupported_in() []bool { return v.Supported_in }
+
+// GetSupported_not_in returns NftContract_filter.Supported_not_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetSupported_not_in() []bool { return v.Supported_not_in }
+
+// GetMinter returns NftContract_filter.Minter, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetMinter() string { return v.Minter }
+
+// GetMinter_not returns NftContract_filter.Minter_not, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetMinter_not() string { return v.Minter_not }
+
+// GetMinter_in returns NftContract_filter.Minter_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetMinter_in() []string { return v.Minter_in }
+
+// GetMinter_not_in returns NftContract_filter.Minter_not_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetMinter_not_in() []string { return v.Minter_not_in }
+
+// GetMinter_contains returns NftContract_filter.Minter_contains, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetMinter_contains() string { return v.Minter_contains }
+
+// GetMinter_not_contains returns NftContract_filter.Minter_not_contains, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetMinter_not_contains() string { return v.Minter_not_contains }
+
+// GetContractURI returns NftContract_filter.ContractURI, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI() string { return v.ContractURI }
+
+// GetContractURI_not returns NftContract_filter.ContractURI_not, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_not() string { return v.ContractURI_not }
+
+// GetContractURI_gt returns NftContract_filter.ContractURI_gt, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_gt() string { return v.ContractURI_gt }
+
+// GetContractURI_lt returns NftContract_filter.ContractURI_lt, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_lt() string { return v.ContractURI_lt }
+
+// GetContractURI_gte returns NftContract_filter.ContractURI_gte, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_gte() string { return v.ContractURI_gte }
+
+// GetContractURI_lte returns NftContract_filter.ContractURI_lte, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_lte() string { return v.ContractURI_lte }
+
+// GetContractURI_in returns NftContract_filter.ContractURI_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_in() []string { return v.ContractURI_in }
+
+// GetContractURI_not_in returns NftContract_filter.ContractURI_not_in, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_not_in() []string { return v.ContractURI_not_in }
+
+// GetContractURI_contains returns NftContract_filter.ContractURI_contains, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_contains() string { return v.ContractURI_contains }
+
+// GetContractURI_contains_nocase returns NftContract_filter.ContractURI_contains_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_contains_nocase() string {
+	return v.ContractURI_contains_nocase
+}
+
+// GetContractURI_not_contains returns NftContract_filter.ContractURI_not_contains, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_not_contains() string { return v.ContractURI_not_contains }
+
+// GetContractURI_not_contains_nocase returns NftContract_filter.ContractURI_not_contains_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_not_contains_nocase() string {
+	return v.ContractURI_not_contains_nocase
+}
+
+// GetContractURI_starts_with returns NftContract_filter.ContractURI_starts_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_starts_with() string { return v.ContractURI_starts_with }
+
+// GetContractURI_starts_with_nocase returns NftContract_filter.ContractURI_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_starts_with_nocase() string {
+	return v.ContractURI_starts_with_nocase
+}
+
+// GetContractURI_not_starts_with returns NftContract_filter.ContractURI_not_starts_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_not_starts_with() string {
+	return v.ContractURI_not_starts_with
+}
+
+// GetContractURI_not_starts_with_nocase returns NftContract_filter.ContractURI_not_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_not_starts_with_nocase() string {
+	return v.ContractURI_not_starts_with_nocase
+}
+
+// GetContractURI_ends_with returns NftContract_filter.ContractURI_ends_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_ends_with() string { return v.ContractURI_ends_with }
+
+// GetContractURI_ends_with_nocase returns NftContract_filter.ContractURI_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_ends_with_nocase() string {
+	return v.ContractURI_ends_with_nocase
+}
+
+// GetContractURI_not_ends_with returns NftContract_filter.ContractURI_not_ends_with, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_not_ends_with() string {
+	return v.ContractURI_not_ends_with
+}
+
+// GetContractURI_not_ends_with_nocase returns NftContract_filter.ContractURI_not_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetContractURI_not_ends_with_nocase() string {
+	return v.ContractURI_not_ends_with_nocase
+}
+
+// GetChange_block returns NftContract_filter.Change_block, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetChange_block() BlockChangedFilter { return v.Change_block }
+
+type Nft_filter struct {
+	Id                                 string             `json:"id,omitempty"`
+	Id_not                             string             `json:"id_not,omitempty"`
+	Id_gt                              string             `json:"id_gt,omitempty"`
+	Id_lt                              string             `json:"id_lt,omitempty"`
+	Id_gte                             string             `json:"id_gte,omitempty"`
+	Id_lte                             string             `json:"id_lte,omitempty"`
+	Id_in                              []string           `json:"id_in,omitempty"`
+	Id_not_in                          []string           `json:"id_not_in,omitempty"`
+	Contract                           string             `json:"contract,omitempty"`
+	Contract_not                       string             `json:"contract_not,omitempty"`
+	Contract_gt                        string             `json:"contract_gt,omitempty"`
+	Contract_lt                        string             `json:"contract_lt,omitempty"`
+	Contract_gte                       string             `json:"contract_gte,omitempty"`
+	Contract_lte                       string             `json:"contract_lte,omitempty"`
+	Contract_in                        []string           `json:"contract_in,omitempty"`
+	Contract_not_in                    []string           `json:"contract_not_in,omitempty"`
+	Contract_contains                  string             `json:"contract_contains,omitempty"`
+	Contract_contains_nocase           string             `json:"contract_contains_nocase,omitempty"`
+	Contract_not_contains              string             `json:"contract_not_contains,omitempty"`
+	Contract_not_contains_nocase       string             `json:"contract_not_contains_nocase,omitempty"`
+	Contract_starts_with               string             `json:"contract_starts_with,omitempty"`
+	Contract_starts_with_nocase        string             `json:"contract_starts_with_nocase,omitempty"`
+	Contract_not_starts_with           string             `json:"contract_not_starts_with,omitempty"`
+	Contract_not_starts_with_nocase    string             `json:"contract_not_starts_with_nocase,omitempty"`
+	Contract_ends_with                 string             `json:"contract_ends_with,omitempty"`
+	Contract_ends_with_nocase          string             `json:"contract_ends_with_nocase,omitempty"`
+	Contract_not_ends_with             string             `json:"contract_not_ends_with,omitempty"`
+	Contract_not_ends_with_nocase      string             `json:"contract_not_ends_with_nocase,omitempty"`
+	Contract_                          NftContract_filter `json:"contract_,omitempty"`
+	TokenID                            string             `json:"tokenID,omitempty"`
+	TokenID_not                        string             `json:"tokenID_not,omitempty"`
+	TokenID_gt                         string             `json:"tokenID_gt,omitempty"`
+	TokenID_lt                         string             `json:"tokenID_lt,omitempty"`
+	TokenID_gte                        string             `json:"tokenID_gte,omitempty"`
+	TokenID_lte                        string             `json:"tokenID_lte,omitempty"`
+	TokenID_in                         []string           `json:"tokenID_in,omitempty"`
+	TokenID_not_in                     []string           `json:"tokenID_not_in,omitempty"`
+	Owner                              string             `json:"owner,omitempty"`
+	Owner_not                          string             `json:"owner_not,omitempty"`
+	Owner_in                           []string           `json:"owner_in,omitempty"`
+	Owner_not_in                       []string           `json:"owner_not_in,omitempty"`
+	Owner_contains                     string             `json:"owner_contains,omitempty"`
+	Owner_not_contains                 string             `json:"owner_not_contains,omitempty"`
+	CreatorName                        string             `json:"creatorName,omitempty"`
+	CreatorName_not                    string             `json:"creatorName_not,omitempty"`
+	CreatorName_gt                     string             `json:"creatorName_gt,omitempty"`
+	CreatorName_lt                     string             `json:"creatorName_lt,omitempty"`
+	CreatorName_gte                    string             `json:"creatorName_gte,omitempty"`
+	CreatorName_lte                    string             `json:"creatorName_lte,omitempty"`
+	CreatorName_in                     []string           `json:"creatorName_in,omitempty"`
+	CreatorName_not_in                 []string           `json:"creatorName_not_in,omitempty"`
+	CreatorName_contains               string             `json:"creatorName_contains,omitempty"`
+	CreatorName_contains_nocase        string             `json:"creatorName_contains_nocase,omitempty"`
+	CreatorName_not_contains           string             `json:"creatorName_not_contains,omitempty"`
+	CreatorName_not_contains_nocase    string             `json:"creatorName_not_contains_nocase,omitempty"`
+	CreatorName_starts_with            string             `json:"creatorName_starts_with,omitempty"`
+	CreatorName_starts_with_nocase     string             `json:"creatorName_starts_with_nocase,omitempty"`
+	CreatorName_not_starts_with        string             `json:"creatorName_not_starts_with,omitempty"`
+	CreatorName_not_starts_with_nocase string             `json:"creatorName_not_starts_with_nocase,omitempty"`
+	CreatorName_ends_with              string             `json:"creatorName_ends_with,omitempty"`
+	CreatorName_ends_with_nocase       string             `json:"creatorName_ends_with_nocase,omitempty"`
+	CreatorName_not_ends_with          string             `json:"creatorName_not_ends_with,omitempty"`
+	CreatorName_not_ends_with_nocase   string             `json:"creatorName_not_ends_with_nocase,omitempty"`
+	CreatorAddress                     string             `json:"creatorAddress,omitempty"`
+	CreatorAddress_not                 string             `json:"creatorAddress_not,omitempty"`
+	CreatorAddress_in                  []string           `json:"creatorAddress_in,omitempty"`
+	CreatorAddress_not_in              []string           `json:"creatorAddress_not_in,omitempty"`
+	CreatorAddress_contains            string             `json:"creatorAddress_contains,omitempty"`
+	CreatorAddress_not_contains        string             `json:"creatorAddress_not_contains,omitempty"`
+	Seller                             string             `json:"seller,omitempty"`
+	Seller_not                         string             `json:"seller_not,omitempty"`
+	Seller_in                          []string           `json:"seller_in,omitempty"`
+	Seller_not_in                      []string           `json:"seller_not_in,omitempty"`
+	Seller_contains                    string             `json:"seller_contains,omitempty"`
+	Seller_not_contains                string             `json:"seller_not_contains,omitempty"`
+	TokenURI                           string             `json:"tokenURI,omitempty"`
+	TokenURI_not                       string             `json:"tokenURI_not,omitempty"`
+	TokenURI_gt                        string             `json:"tokenURI_gt,omitempty"`
+	TokenURI_lt                        string             `json:"tokenURI_lt,omitempty"`
+	TokenURI_gte                       string             `json:"tokenURI_gte,omitempty"`
+	TokenURI_lte                       string             `json:"tokenURI_lte,omitempty"`
+	TokenURI_in                        []string           `json:"tokenURI_in,omitempty"`
+	TokenURI_not_in                    []string           `json:"tokenURI_not_in,omitempty"`
+	TokenURI_contains                  string             `json:"tokenURI_contains,omitempty"`
+	TokenURI_contains_nocase           string             `json:"tokenURI_contains_nocase,omitempty"`
+	TokenURI_not_contains              string             `json:"tokenURI_not_contains,omitempty"`
+	TokenURI_not_contains_nocase       string             `json:"tokenURI_not_contains_nocase,omitempty"`
+	TokenURI_starts_with               string             `json:"tokenURI_starts_with,omitempty"`
+	TokenURI_starts_with_nocase        string             `json:"tokenURI_starts_with_nocase,omitempty"`
+	TokenURI_not_starts_with           string             `json:"tokenURI_not_starts_with,omitempty"`
+	TokenURI_not_starts_with_nocase    string             `json:"tokenURI_not_starts_with_nocase,omitempty"`
+	TokenURI_ends_with                 string             `json:"tokenURI_ends_with,omitempty"`
+	TokenURI_ends_with_nocase          string             `json:"tokenURI_ends_with_nocase,omitempty"`
+	TokenURI_not_ends_with             string             `json:"tokenURI_not_ends_with,omitempty"`
+	TokenURI_not_ends_with_nocase      string             `json:"tokenURI_not_ends_with_nocase,omitempty"`
+	InSale                             bool               `json:"inSale,omitempty"`
+	InSale_not                         bool               `json:"inSale_not,omitempty"`
+	InSale_in                          []bool             `json:"inSale_in,omitempty"`
+	InSale_not_in                      []bool             `json:"inSale_not_in,omitempty"`
+	Price                              string             `json:"price,omitempty"`
+	Price_not                          string             `json:"price_not,omitempty"`
+	Price_gt                           string             `json:"price_gt,omitempty"`
+	Price_lt                           string             `json:"price_lt,omitempty"`
+	Price_gte                          string             `json:"price_gte,omitempty"`
+	Price_lte                          string             `json:"price_lte,omitempty"`
+	Price_in                           []string           `json:"price_in,omitempty"`
+	Price_not_in                       []string           `json:"price_not_in,omitempty"`
+	Denom                              string             `json:"denom,omitempty"`
+	Denom_not                          string             `json:"denom_not,omitempty"`
+	Denom_in                           []string           `json:"denom_in,omitempty"`
+	Denom_not_in                       []string           `json:"denom_not_in,omitempty"`
+	Denom_contains                     string             `json:"denom_contains,omitempty"`
+	Denom_not_contains                 string             `json:"denom_not_contains,omitempty"`
+	CreatedAt                          string             `json:"createdAt,omitempty"`
+	CreatedAt_not                      string             `json:"createdAt_not,omitempty"`
+	CreatedAt_gt                       string             `json:"createdAt_gt,omitempty"`
+	CreatedAt_lt                       string             `json:"createdAt_lt,omitempty"`
+	CreatedAt_gte                      string             `json:"createdAt_gte,omitempty"`
+	CreatedAt_lte                      string             `json:"createdAt_lte,omitempty"`
+	CreatedAt_in                       []string           `json:"createdAt_in,omitempty"`
+	CreatedAt_not_in                   []string           `json:"createdAt_not_in,omitempty"`
+	RemovedAt                          string             `json:"removedAt,omitempty"`
+	RemovedAt_not                      string             `json:"removedAt_not,omitempty"`
+	RemovedAt_gt                       string             `json:"removedAt_gt,omitempty"`
+	RemovedAt_lt                       string             `json:"removedAt_lt,omitempty"`
+	RemovedAt_gte                      string             `json:"removedAt_gte,omitempty"`
+	RemovedAt_lte                      string             `json:"removedAt_lte,omitempty"`
+	RemovedAt_in                       []string           `json:"removedAt_in,omitempty"`
+	RemovedAt_not_in                   []string           `json:"removedAt_not_in,omitempty"`
+	// Filter for the block changed event.
+	Change_block BlockChangedFilter `json:"_change_block"`
+}
+
+// GetId returns Nft_filter.Id, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetId() string { return v.Id }
+
+// GetId_not returns Nft_filter.Id_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetId_not() string { return v.Id_not }
+
+// GetId_gt returns Nft_filter.Id_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetId_gt() string { return v.Id_gt }
+
+// GetId_lt returns Nft_filter.Id_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetId_lt() string { return v.Id_lt }
+
+// GetId_gte returns Nft_filter.Id_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetId_gte() string { return v.Id_gte }
+
+// GetId_lte returns Nft_filter.Id_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetId_lte() string { return v.Id_lte }
+
+// GetId_in returns Nft_filter.Id_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetId_in() []string { return v.Id_in }
+
+// GetId_not_in returns Nft_filter.Id_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetId_not_in() []string { return v.Id_not_in }
+
+// GetContract returns Nft_filter.Contract, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract() string { return v.Contract }
+
+// GetContract_not returns Nft_filter.Contract_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_not() string { return v.Contract_not }
+
+// GetContract_gt returns Nft_filter.Contract_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_gt() string { return v.Contract_gt }
+
+// GetContract_lt returns Nft_filter.Contract_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_lt() string { return v.Contract_lt }
+
+// GetContract_gte returns Nft_filter.Contract_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_gte() string { return v.Contract_gte }
+
+// GetContract_lte returns Nft_filter.Contract_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_lte() string { return v.Contract_lte }
+
+// GetContract_in returns Nft_filter.Contract_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_in() []string { return v.Contract_in }
+
+// GetContract_not_in returns Nft_filter.Contract_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_not_in() []string { return v.Contract_not_in }
+
+// GetContract_contains returns Nft_filter.Contract_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_contains() string { return v.Contract_contains }
+
+// GetContract_contains_nocase returns Nft_filter.Contract_contains_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_contains_nocase() string { return v.Contract_contains_nocase }
+
+// GetContract_not_contains returns Nft_filter.Contract_not_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_not_contains() string { return v.Contract_not_contains }
+
+// GetContract_not_contains_nocase returns Nft_filter.Contract_not_contains_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_not_contains_nocase() string { return v.Contract_not_contains_nocase }
+
+// GetContract_starts_with returns Nft_filter.Contract_starts_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_starts_with() string { return v.Contract_starts_with }
+
+// GetContract_starts_with_nocase returns Nft_filter.Contract_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_starts_with_nocase() string { return v.Contract_starts_with_nocase }
+
+// GetContract_not_starts_with returns Nft_filter.Contract_not_starts_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_not_starts_with() string { return v.Contract_not_starts_with }
+
+// GetContract_not_starts_with_nocase returns Nft_filter.Contract_not_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_not_starts_with_nocase() string {
+	return v.Contract_not_starts_with_nocase
+}
+
+// GetContract_ends_with returns Nft_filter.Contract_ends_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_ends_with() string { return v.Contract_ends_with }
+
+// GetContract_ends_with_nocase returns Nft_filter.Contract_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_ends_with_nocase() string { return v.Contract_ends_with_nocase }
+
+// GetContract_not_ends_with returns Nft_filter.Contract_not_ends_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_not_ends_with() string { return v.Contract_not_ends_with }
+
+// GetContract_not_ends_with_nocase returns Nft_filter.Contract_not_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_not_ends_with_nocase() string {
+	return v.Contract_not_ends_with_nocase
+}
+
+// GetContract_ returns Nft_filter.Contract_, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetContract_() NftContract_filter { return v.Contract_ }
+
+// GetTokenID returns Nft_filter.TokenID, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenID() string { return v.TokenID }
+
+// GetTokenID_not returns Nft_filter.TokenID_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenID_not() string { return v.TokenID_not }
+
+// GetTokenID_gt returns Nft_filter.TokenID_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenID_gt() string { return v.TokenID_gt }
+
+// GetTokenID_lt returns Nft_filter.TokenID_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenID_lt() string { return v.TokenID_lt }
+
+// GetTokenID_gte returns Nft_filter.TokenID_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenID_gte() string { return v.TokenID_gte }
+
+// GetTokenID_lte returns Nft_filter.TokenID_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenID_lte() string { return v.TokenID_lte }
+
+// GetTokenID_in returns Nft_filter.TokenID_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenID_in() []string { return v.TokenID_in }
+
+// GetTokenID_not_in returns Nft_filter.TokenID_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenID_not_in() []string { return v.TokenID_not_in }
+
+// GetOwner returns Nft_filter.Owner, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOwner() string { return v.Owner }
+
+// GetOwner_not returns Nft_filter.Owner_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOwner_not() string { return v.Owner_not }
+
+// GetOwner_in returns Nft_filter.Owner_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOwner_in() []string { return v.Owner_in }
+
+// GetOwner_not_in returns Nft_filter.Owner_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOwner_not_in() []string { return v.Owner_not_in }
+
+// GetOwner_contains returns Nft_filter.Owner_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOwner_contains() string { return v.Owner_contains }
+
+// GetOwner_not_contains returns Nft_filter.Owner_not_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOwner_not_contains() string { return v.Owner_not_contains }
+
+// GetCreatorName returns Nft_filter.CreatorName, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName() string { return v.CreatorName }
+
+// GetCreatorName_not returns Nft_filter.CreatorName_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_not() string { return v.CreatorName_not }
+
+// GetCreatorName_gt returns Nft_filter.CreatorName_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_gt() string { return v.CreatorName_gt }
+
+// GetCreatorName_lt returns Nft_filter.CreatorName_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_lt() string { return v.CreatorName_lt }
+
+// GetCreatorName_gte returns Nft_filter.CreatorName_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_gte() string { return v.CreatorName_gte }
+
+// GetCreatorName_lte returns Nft_filter.CreatorName_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_lte() string { return v.CreatorName_lte }
+
+// GetCreatorName_in returns Nft_filter.CreatorName_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_in() []string { return v.CreatorName_in }
+
+// GetCreatorName_not_in returns Nft_filter.CreatorName_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_not_in() []string { return v.CreatorName_not_in }
+
+// GetCreatorName_contains returns Nft_filter.CreatorName_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_contains() string { return v.CreatorName_contains }
+
+// GetCreatorName_contains_nocase returns Nft_filter.CreatorName_contains_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_contains_nocase() string { return v.CreatorName_contains_nocase }
+
+// GetCreatorName_not_contains returns Nft_filter.CreatorName_not_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_not_contains() string { return v.CreatorName_not_contains }
+
+// GetCreatorName_not_contains_nocase returns Nft_filter.CreatorName_not_contains_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_not_contains_nocase() string {
+	return v.CreatorName_not_contains_nocase
+}
+
+// GetCreatorName_starts_with returns Nft_filter.CreatorName_starts_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_starts_with() string { return v.CreatorName_starts_with }
+
+// GetCreatorName_starts_with_nocase returns Nft_filter.CreatorName_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_starts_with_nocase() string {
+	return v.CreatorName_starts_with_nocase
+}
+
+// GetCreatorName_not_starts_with returns Nft_filter.CreatorName_not_starts_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_not_starts_with() string { return v.CreatorName_not_starts_with }
+
+// GetCreatorName_not_starts_with_nocase returns Nft_filter.CreatorName_not_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_not_starts_with_nocase() string {
+	return v.CreatorName_not_starts_with_nocase
+}
+
+// GetCreatorName_ends_with returns Nft_filter.CreatorName_ends_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_ends_with() string { return v.CreatorName_ends_with }
+
+// GetCreatorName_ends_with_nocase returns Nft_filter.CreatorName_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_ends_with_nocase() string { return v.CreatorName_ends_with_nocase }
+
+// GetCreatorName_not_ends_with returns Nft_filter.CreatorName_not_ends_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_not_ends_with() string { return v.CreatorName_not_ends_with }
+
+// GetCreatorName_not_ends_with_nocase returns Nft_filter.CreatorName_not_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorName_not_ends_with_nocase() string {
+	return v.CreatorName_not_ends_with_nocase
+}
+
+// GetCreatorAddress returns Nft_filter.CreatorAddress, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorAddress() string { return v.CreatorAddress }
+
+// GetCreatorAddress_not returns Nft_filter.CreatorAddress_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorAddress_not() string { return v.CreatorAddress_not }
+
+// GetCreatorAddress_in returns Nft_filter.CreatorAddress_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorAddress_in() []string { return v.CreatorAddress_in }
+
+// GetCreatorAddress_not_in returns Nft_filter.CreatorAddress_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorAddress_not_in() []string { return v.CreatorAddress_not_in }
+
+// GetCreatorAddress_contains returns Nft_filter.CreatorAddress_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorAddress_contains() string { return v.CreatorAddress_contains }
+
+// GetCreatorAddress_not_contains returns Nft_filter.CreatorAddress_not_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorAddress_not_contains() string { return v.CreatorAddress_not_contains }
+
+// GetSeller returns Nft_filter.Seller, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetSeller() string { return v.Seller }
+
+// GetSeller_not returns Nft_filter.Seller_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetSeller_not() string { return v.Seller_not }
+
+// GetSeller_in returns Nft_filter.Seller_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetSeller_in() []string { return v.Seller_in }
+
+// GetSeller_not_in returns Nft_filter.Seller_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetSeller_not_in() []string { return v.Seller_not_in }
+
+// GetSeller_contains returns Nft_filter.Seller_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetSeller_contains() string { return v.Seller_contains }
+
+// GetSeller_not_contains returns Nft_filter.Seller_not_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetSeller_not_contains() string { return v.Seller_not_contains }
+
+// GetTokenURI returns Nft_filter.TokenURI, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI() string { return v.TokenURI }
+
+// GetTokenURI_not returns Nft_filter.TokenURI_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_not() string { return v.TokenURI_not }
+
+// GetTokenURI_gt returns Nft_filter.TokenURI_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_gt() string { return v.TokenURI_gt }
+
+// GetTokenURI_lt returns Nft_filter.TokenURI_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_lt() string { return v.TokenURI_lt }
+
+// GetTokenURI_gte returns Nft_filter.TokenURI_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_gte() string { return v.TokenURI_gte }
+
+// GetTokenURI_lte returns Nft_filter.TokenURI_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_lte() string { return v.TokenURI_lte }
+
+// GetTokenURI_in returns Nft_filter.TokenURI_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_in() []string { return v.TokenURI_in }
+
+// GetTokenURI_not_in returns Nft_filter.TokenURI_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_not_in() []string { return v.TokenURI_not_in }
+
+// GetTokenURI_contains returns Nft_filter.TokenURI_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_contains() string { return v.TokenURI_contains }
+
+// GetTokenURI_contains_nocase returns Nft_filter.TokenURI_contains_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_contains_nocase() string { return v.TokenURI_contains_nocase }
+
+// GetTokenURI_not_contains returns Nft_filter.TokenURI_not_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_not_contains() string { return v.TokenURI_not_contains }
+
+// GetTokenURI_not_contains_nocase returns Nft_filter.TokenURI_not_contains_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_not_contains_nocase() string { return v.TokenURI_not_contains_nocase }
+
+// GetTokenURI_starts_with returns Nft_filter.TokenURI_starts_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_starts_with() string { return v.TokenURI_starts_with }
+
+// GetTokenURI_starts_with_nocase returns Nft_filter.TokenURI_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_starts_with_nocase() string { return v.TokenURI_starts_with_nocase }
+
+// GetTokenURI_not_starts_with returns Nft_filter.TokenURI_not_starts_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_not_starts_with() string { return v.TokenURI_not_starts_with }
+
+// GetTokenURI_not_starts_with_nocase returns Nft_filter.TokenURI_not_starts_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_not_starts_with_nocase() string {
+	return v.TokenURI_not_starts_with_nocase
+}
+
+// GetTokenURI_ends_with returns Nft_filter.TokenURI_ends_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_ends_with() string { return v.TokenURI_ends_with }
+
+// GetTokenURI_ends_with_nocase returns Nft_filter.TokenURI_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_ends_with_nocase() string { return v.TokenURI_ends_with_nocase }
+
+// GetTokenURI_not_ends_with returns Nft_filter.TokenURI_not_ends_with, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_not_ends_with() string { return v.TokenURI_not_ends_with }
+
+// GetTokenURI_not_ends_with_nocase returns Nft_filter.TokenURI_not_ends_with_nocase, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetTokenURI_not_ends_with_nocase() string {
+	return v.TokenURI_not_ends_with_nocase
+}
+
+// GetInSale returns Nft_filter.InSale, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetInSale() bool { return v.InSale }
+
+// GetInSale_not returns Nft_filter.InSale_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetInSale_not() bool { return v.InSale_not }
+
+// GetInSale_in returns Nft_filter.InSale_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetInSale_in() []bool { return v.InSale_in }
+
+// GetInSale_not_in returns Nft_filter.InSale_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetInSale_not_in() []bool { return v.InSale_not_in }
+
+// GetPrice returns Nft_filter.Price, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetPrice() string { return v.Price }
+
+// GetPrice_not returns Nft_filter.Price_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetPrice_not() string { return v.Price_not }
+
+// GetPrice_gt returns Nft_filter.Price_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetPrice_gt() string { return v.Price_gt }
+
+// GetPrice_lt returns Nft_filter.Price_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetPrice_lt() string { return v.Price_lt }
+
+// GetPrice_gte returns Nft_filter.Price_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetPrice_gte() string { return v.Price_gte }
+
+// GetPrice_lte returns Nft_filter.Price_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetPrice_lte() string { return v.Price_lte }
+
+// GetPrice_in returns Nft_filter.Price_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetPrice_in() []string { return v.Price_in }
+
+// GetPrice_not_in returns Nft_filter.Price_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetPrice_not_in() []string { return v.Price_not_in }
+
+// GetDenom returns Nft_filter.Denom, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetDenom() string { return v.Denom }
+
+// GetDenom_not returns Nft_filter.Denom_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetDenom_not() string { return v.Denom_not }
+
+// GetDenom_in returns Nft_filter.Denom_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetDenom_in() []string { return v.Denom_in }
+
+// GetDenom_not_in returns Nft_filter.Denom_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetDenom_not_in() []string { return v.Denom_not_in }
+
+// GetDenom_contains returns Nft_filter.Denom_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetDenom_contains() string { return v.Denom_contains }
+
+// GetDenom_not_contains returns Nft_filter.Denom_not_contains, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetDenom_not_contains() string { return v.Denom_not_contains }
+
+// GetCreatedAt returns Nft_filter.CreatedAt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatedAt() string { return v.CreatedAt }
+
+// GetCreatedAt_not returns Nft_filter.CreatedAt_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatedAt_not() string { return v.CreatedAt_not }
+
+// GetCreatedAt_gt returns Nft_filter.CreatedAt_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatedAt_gt() string { return v.CreatedAt_gt }
+
+// GetCreatedAt_lt returns Nft_filter.CreatedAt_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatedAt_lt() string { return v.CreatedAt_lt }
+
+// GetCreatedAt_gte returns Nft_filter.CreatedAt_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatedAt_gte() string { return v.CreatedAt_gte }
+
+// GetCreatedAt_lte returns Nft_filter.CreatedAt_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatedAt_lte() string { return v.CreatedAt_lte }
+
+// GetCreatedAt_in returns Nft_filter.CreatedAt_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatedAt_in() []string { return v.CreatedAt_in }
+
+// GetCreatedAt_not_in returns Nft_filter.CreatedAt_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatedAt_not_in() []string { return v.CreatedAt_not_in }
+
+// GetRemovedAt returns Nft_filter.RemovedAt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetRemovedAt() string { return v.RemovedAt }
+
+// GetRemovedAt_not returns Nft_filter.RemovedAt_not, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetRemovedAt_not() string { return v.RemovedAt_not }
+
+// GetRemovedAt_gt returns Nft_filter.RemovedAt_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetRemovedAt_gt() string { return v.RemovedAt_gt }
+
+// GetRemovedAt_lt returns Nft_filter.RemovedAt_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetRemovedAt_lt() string { return v.RemovedAt_lt }
+
+// GetRemovedAt_gte returns Nft_filter.RemovedAt_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetRemovedAt_gte() string { return v.RemovedAt_gte }
+
+// GetRemovedAt_lte returns Nft_filter.RemovedAt_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetRemovedAt_lte() string { return v.RemovedAt_lte }
+
+// GetRemovedAt_in returns Nft_filter.RemovedAt_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetRemovedAt_in() []string { return v.RemovedAt_in }
+
+// GetRemovedAt_not_in returns Nft_filter.RemovedAt_not_in, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetRemovedAt_not_in() []string { return v.RemovedAt_not_in }
+
+// GetChange_block returns Nft_filter.Change_block, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetChange_block() BlockChangedFilter { return v.Change_block }
+
 // __GetCollectionActivitiesInput is used internally by genqlient
 type __GetCollectionActivitiesInput struct {
 	Minter string `json:"minter"`
@@ -524,13 +1419,19 @@ func (v *__GetCollectionActivitiesInput) GetOffset() int { return v.Offset }
 
 // __GetCollectionNFTsInput is used internally by genqlient
 type __GetCollectionNFTsInput struct {
-	Minter string `json:"minter"`
-	Limit  int    `json:"Limit"`
-	Offset int    `json:"Offset"`
+	NftContractFilter NftContract_filter `json:"nftContractFilter,omitempty"`
+	NftFilter         Nft_filter         `json:"nftFilter,omitempty"`
+	Limit             int                `json:"Limit"`
+	Offset            int                `json:"Offset"`
 }
 
-// GetMinter returns __GetCollectionNFTsInput.Minter, and is useful for accessing the field via an interface.
-func (v *__GetCollectionNFTsInput) GetMinter() string { return v.Minter }
+// GetNftContractFilter returns __GetCollectionNFTsInput.NftContractFilter, and is useful for accessing the field via an interface.
+func (v *__GetCollectionNFTsInput) GetNftContractFilter() NftContract_filter {
+	return v.NftContractFilter
+}
+
+// GetNftFilter returns __GetCollectionNFTsInput.NftFilter, and is useful for accessing the field via an interface.
+func (v *__GetCollectionNFTsInput) GetNftFilter() Nft_filter { return v.NftFilter }
 
 // GetLimit returns __GetCollectionNFTsInput.Limit, and is useful for accessing the field via an interface.
 func (v *__GetCollectionNFTsInput) GetLimit() int { return v.Limit }
@@ -639,19 +1540,20 @@ query GetCollectionActivities ($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
 func GetCollectionNFTs(
 	ctx context.Context,
 	client graphql.Client,
-	minter string,
+	nftContractFilter NftContract_filter,
+	nftFilter Nft_filter,
 	Limit int,
 	Offset int,
 ) (*GetCollectionNFTsResponse, error) {
 	req := &graphql.Request{
 		OpName: "GetCollectionNFTs",
 		Query: `
-query GetCollectionNFTs ($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
-	nftContracts(where: {minter:$minter}, first: $Limit, skip: $Offset) {
+query GetCollectionNFTs ($nftContractFilter: NftContract_filter, $nftFilter: Nft_filter, $Limit: Int!, $Offset: Int!) {
+	nftContracts(where: $nftContractFilter, first: $Limit, skip: $Offset) {
 		id
 		name
 		symbol
-		nfts(first: $Limit, skip: $Offset) {
+		nfts(where: $nftFilter, first: $Limit, skip: $Offset) {
 			id
 			tokenID
 			owner
@@ -669,9 +1571,10 @@ query GetCollectionNFTs ($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
 }
 `,
 		Variables: &__GetCollectionNFTsInput{
-			Minter: minter,
-			Limit:  Limit,
-			Offset: Offset,
+			NftContractFilter: nftContractFilter,
+			NftFilter:         nftFilter,
+			Limit:             Limit,
+			Offset:            Offset,
 		},
 	}
 	var err error

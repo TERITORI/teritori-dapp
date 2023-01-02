@@ -211,6 +211,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	}
 	networkID := req.GetNetworkId()
 	collection_id := req.GetCollectionId()
+	ownerId := req.GetOwnerId()
 
 	// FIXME: return fake data if any filter is fake
 	if strings.HasPrefix(collection_id, "fake") {
@@ -223,12 +224,12 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	}
 
 	if networkID == "ethereum" || networkID == "ethereum-goerli" {
-		nfts, err := s.ethereumProvider.GetNFTs(networkID, collection_id, int(limit), int(offset))
+		nfts, err := s.ethereumProvider.GetNFTs(networkID, collection_id, ownerId, int(limit), int(offset))
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection nfts")
 		}
-		for index := range nfts {
-			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &nfts[index]}); err != nil {
+		for _, nft := range nfts {
+			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: nft}); err != nil {
 				return errors.Wrap(err, "failed to send nft")
 			}
 		}
@@ -288,7 +289,6 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		query = query.Where("collection_id = ?", collection_id)
 	}
 
-	ownerId := req.GetOwnerId()
 	if ownerId != "" {
 		query = query.Where("owner_id = ?", ownerId)
 	}

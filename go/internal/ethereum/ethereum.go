@@ -120,48 +120,63 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 	return res, nil
 }
 
-func (p *Provider) GetNFTs(networkID string, collectionID string, limit, offset int) ([]marketplacepb.NFT, error) {
+func (p *Provider) GetNFTs(networkID string, collectionID string, ownerId string, limit, offset int) ([]*marketplacepb.NFT, error) {
+	// TODO: find how to send the whole `where` filter to query with genqlcient instead of separating into 2 queries
 	ctx := context.Background()
 
 	minter := strings.Replace(collectionID, "eth-", "", 1)
-	collection, err := thegraph.GetCollectionNFTs(ctx, p.client, minter, limit, offset)
+	owner := strings.Replace(ownerId, "eth-", "", 1)
+
+	nftContractFilter := thegraph.NftContract_filter{}
+	nftFilter := thegraph.Nft_filter{}
+
+	if minter != "" {
+		nftContractFilter.Minter = minter
+	}
+
+	if owner != "" {
+		nftFilter.Owner = owner
+	}
+
+	collection, err := thegraph.GetCollectionNFTs(ctx, p.client, nftContractFilter, nftFilter, limit, offset)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(collection.NftContracts) == 0 {
-		return []marketplacepb.NFT{}, nil
-	}
-	nftContract := collection.NftContracts[0]
-	nfts := nftContract.Nfts
+	var res []*marketplacepb.NFT
 
-	res := make([]marketplacepb.NFT, len(nfts))
+	for _, nftContract := range collection.NftContracts {
+		nfts := nftContract.Nfts
 
-	for index, nft := range nfts {
-		var (
-			lockedOn = ""
-			ownerId  = nft.Owner
-		)
+		for _, nft := range nfts {
+			var (
+				lockedOn = ""
+				ownerId  = nft.Owner
+			)
 
-		if nft.Seller != "" {
-			lockedOn = nft.Owner
-			ownerId = nft.Seller
+			if nft.Seller != "" {
+				lockedOn = nft.Owner
+				ownerId = nft.Seller
+			}
+
+			nft := marketplacepb.NFT{
+				Id:                 fmt.Sprintf("eth-%s-%s", minter, nft.TokenID),
+				NetworkId:          networkID,
+				ImageUri:           nft.TokenURI,
+				MintAddress:        minter,
+				Price:              nft.Price,
+				Denom:              nft.Denom,
+				IsListed:           nft.InSale,
+				CollectionName:     nftContract.Name,
+				OwnerId:            ownerId,
+				LockedOn:           lockedOn,
+				NftContractAddress: nftContract.Id,
+			}
+
+			res = append(res, &nft)
 		}
-
-		res[index] = marketplacepb.NFT{
-			Id:                 fmt.Sprintf("eth-%s-%s", minter, nft.TokenID),
-			NetworkId:          networkID,
-			ImageUri:           nft.TokenURI,
-			MintAddress:        minter,
-			Price:              nft.Price,
-			Denom:              nft.Denom,
-			IsListed:           nft.InSale,
-			CollectionName:     nftContract.Name,
-			OwnerId:            ownerId,
-			LockedOn:           lockedOn,
-			NftContractAddress: nftContract.Id,
-		}
 	}
+
 	return res, nil
 }
 
