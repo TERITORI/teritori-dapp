@@ -156,7 +156,7 @@ const getTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   return info;
 };
 
-const getEvmTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
+const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   const provider = await getEthereumProvider();
   if (!provider) {
     console.error("no eth provider found");
@@ -311,7 +311,7 @@ export const useCollectionInfo = (id: string) => {
           return {};
         }
 
-        info = await getEvmTeritoriBunkerCollectionInfo(mintAddress);
+        info = await getEthereumTeritoriBunkerCollectionInfo(mintAddress);
       }
       return info;
     },
