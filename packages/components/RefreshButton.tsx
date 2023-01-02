@@ -6,7 +6,6 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   withRepeat,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 
