@@ -133,6 +133,7 @@ func (v *GetCollectionActivitiesResponse) GetActions() []GetCollectionActivities
 type GetCollectionNFTsNftContractsNftContract struct {
 	Id     string                                            `json:"id"`
 	Name   string                                            `json:"name"`
+	Minter string                                            `json:"minter"`
 	Symbol string                                            `json:"symbol"`
 	Nfts   []GetCollectionNFTsNftContractsNftContractNftsNft `json:"nfts"`
 }
@@ -142,6 +143,9 @@ func (v *GetCollectionNFTsNftContractsNftContract) GetId() string { return v.Id 
 
 // GetName returns GetCollectionNFTsNftContractsNftContract.Name, and is useful for accessing the field via an interface.
 func (v *GetCollectionNFTsNftContractsNftContract) GetName() string { return v.Name }
+
+// GetMinter returns GetCollectionNFTsNftContractsNftContract.Minter, and is useful for accessing the field via an interface.
+func (v *GetCollectionNFTsNftContractsNftContract) GetMinter() string { return v.Minter }
 
 // GetSymbol returns GetCollectionNFTsNftContractsNftContract.Symbol, and is useful for accessing the field via an interface.
 func (v *GetCollectionNFTsNftContractsNftContract) GetSymbol() string { return v.Symbol }
@@ -992,7 +996,7 @@ type Nft_filter struct {
 	RemovedAt_in                       []string           `json:"removedAt_in,omitempty"`
 	RemovedAt_not_in                   []string           `json:"removedAt_not_in,omitempty"`
 	// Filter for the block changed event.
-	Change_block BlockChangedFilter `json:"_change_block"`
+	Change_block BlockChangedFilter `json:"_change_block,omitempty"`
 }
 
 // GetId returns Nft_filter.Id, and is useful for accessing the field via an interface.
@@ -1419,8 +1423,8 @@ func (v *__GetCollectionActivitiesInput) GetOffset() int { return v.Offset }
 
 // __GetCollectionNFTsInput is used internally by genqlient
 type __GetCollectionNFTsInput struct {
-	NftContractFilter NftContract_filter `json:"nftContractFilter,omitempty"`
-	NftFilter         Nft_filter         `json:"nftFilter,omitempty"`
+	NftContractFilter NftContract_filter `json:"nftContractFilter"`
+	NftFilter         Nft_filter         `json:"nftFilter"`
 	Limit             int                `json:"Limit"`
 	Offset            int                `json:"Offset"`
 }
@@ -1552,6 +1556,7 @@ query GetCollectionNFTs ($nftContractFilter: NftContract_filter, $nftFilter: Nft
 	nftContracts(where: $nftContractFilter, first: $Limit, skip: $Offset) {
 		id
 		name
+		minter
 		symbol
 		nfts(where: $nftFilter, first: $Limit, skip: $Offset) {
 			id

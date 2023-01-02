@@ -7,6 +7,7 @@ query GetCollectionNFTs(
   nftContracts(where: $nftContractFilter, first: $Limit, skip: $Offset) {
 		id
 		name
+    minter
     symbol
 		nfts(where: $nftFilter, first: $Limit, skip: $Offset) {
       id
