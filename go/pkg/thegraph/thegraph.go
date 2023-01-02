@@ -517,7 +517,6 @@ type GetNFTPriceHistoryResponse struct {
 // GetBuys returns GetNFTPriceHistoryResponse.Buys, and is useful for accessing the field via an interface.
 func (v *GetNFTPriceHistoryResponse) GetBuys() []GetNFTPriceHistoryBuysBuy { return v.Buys }
 
-<<<<<<< HEAD
 type NftContract_filter struct {
 	Id                                 string     `json:"id,omitempty"`
 	Id_not                             string     `json:"id_not,omitempty"`
@@ -1413,15 +1412,6 @@ type __GetCollectionActivitiesInput struct {
 	Offset int    `json:"Offset"`
 }
 
-=======
-// __GetCollectionActivitiesInput is used internally by genqlient
-type __GetCollectionActivitiesInput struct {
-	Minter string `json:"minter"`
-	Limit  int    `json:"Limit"`
-	Offset int    `json:"Offset"`
-}
-
->>>>>>> 44a56b3 (Fix: activity graphql Query)
 // GetMinter returns __GetCollectionActivitiesInput.Minter, and is useful for accessing the field via an interface.
 func (v *__GetCollectionActivitiesInput) GetMinter() string { return v.Minter }
 
