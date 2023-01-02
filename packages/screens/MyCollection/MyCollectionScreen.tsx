@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
@@ -9,6 +9,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
+import { Network } from "../../utils/network";
 import { layout } from "../../utils/style/layout";
 
 /*
