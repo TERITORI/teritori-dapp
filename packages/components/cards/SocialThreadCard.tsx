@@ -86,6 +86,11 @@ export const SocialThreadCard: React.FC<{
         >
           <View style={{ flexDirection: "row", flex: 1 }}>
             <AvatarWithFrame
+              onPress={() =>
+                navigation.navigate("UserPublicProfile", {
+                  id: `tori-${post.post_by}`,
+                })
+              }
               image={postByTNSMetadata?.metadata?.image}
               style={{
                 marginRight: imageMarginRight,
@@ -130,23 +135,31 @@ export const SocialThreadCard: React.FC<{
                       </BrandText>
                     </AnimationFadeIn>
                   </TouchableOpacity>
-                  <BrandText
-                    style={[
-                      fontSemibold14,
-                      {
-                        marginLeft: layout.padding_x1_5,
-                        color: neutral77,
-                      },
-                    ]}
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("PublicProfile", {
+                        id: `tori-${post.post_by}`,
+                      })
+                    }
                   >
-                    @
-                    {postByTNSMetadata?.metadata?.tokenId
-                      ? tinyAddress(
-                          postByTNSMetadata?.metadata?.tokenId || "",
-                          19
-                        )
-                      : DEFAULT_USERNAME}
-                  </BrandText>
+                    <BrandText
+                      style={[
+                        fontSemibold14,
+                        {
+                          marginLeft: layout.padding_x1_5,
+                          color: neutral77,
+                        },
+                      ]}
+                    >
+                      @
+                      {postByTNSMetadata?.metadata?.tokenId
+                        ? tinyAddress(
+                            postByTNSMetadata?.metadata?.tokenId || "",
+                            19
+                          )
+                        : DEFAULT_USERNAME}
+                    </BrandText>
+                  </TouchableOpacity>
                 </View>
 
                 <DotBadge label="Gnolang" />

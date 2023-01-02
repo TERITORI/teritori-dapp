@@ -6,13 +6,20 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ActivityIndicator, View, ScrollView, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import Animated, {
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import {
   NewsFeedInput,
   NewsFeedInputHandle,
 } from "../../components/NewsFeed/NewsFeedInput";
+import { RefreshButton } from "../../components/RefreshButton";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CommentsContainer } from "../../components/cards/CommentsContainer";
 import { SocialThreadCard } from "../../components/cards/SocialThreadCard";
@@ -25,7 +32,6 @@ import {
 } from "../../hooks/useFetchComments";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
-import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { ReplyToType } from "./types";
 
@@ -39,15 +45,20 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const wallet = useSelectedWallet();
   const [refresh, setRefresh] = useState(0);
   const { triggerError } = useErrorHandler();
-  const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<PostResult>();
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
+  const isLoadingValue = useSharedValue(false);
+  const translationY = useSharedValue(0);
+  const isGoingUp = useSharedValue(false);
+  const btnOffsetValue = useSharedValue(0);
+  const isFirstLoad = useSharedValue(true);
   const { data, refetch, hasNextPage, fetchNextPage, isFetching } =
     useFetchComments({
       parentId: post?.identifier,
       totalCount: post?.sub_post_length,
     });
+  const isNextPageAvailable = useSharedValue(hasNextPage);
 
   const comments = useMemo(
     () => (data ? combineFetchCommentPages(data.pages) : []),
@@ -59,7 +70,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       return;
     }
     try {
-      setIsLoading(true);
+      isLoadingValue.value = true;
       const client = await socialFeedClient({
         walletAddress: wallet.address,
       });
@@ -68,7 +79,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     } catch (error) {
       triggerError({ error });
     } finally {
-      setIsLoading(false);
+      isLoadingValue.value = false;
     }
   };
 
@@ -87,7 +98,93 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 
   useEffect(() => {
     refetch();
+    if (post) {
+      setTimeout(() => {
+        isFirstLoad.value = false;
+      }, 2000);
+    }
   }, [post?.identifier, refresh]);
+
+  useEffect(() => {
+    // HECK: updated state was not showing up in scrollhander
+    isNextPageAvailable.value = hasNextPage;
+  }, [hasNextPage]);
+
+  useEffect(() => {
+    if (isFetching) {
+      isGoingUp.value = false;
+      isLoadingValue.value = true;
+    } else {
+      isLoadingValue.value = false;
+    }
+  }, [isFetching]);
+
+  const scrollHandler = useAnimatedScrollHandler(
+    {
+      onScroll: (event) => {
+        let offsetPadding = 40;
+        offsetPadding += event.layoutMeasurement.height;
+        if (
+          event.contentOffset.y >= event.contentSize.height - offsetPadding &&
+          isNextPageAvailable.value
+        ) {
+          fetchNextPage();
+        }
+
+        if (translationY.value > event.contentOffset.y) {
+          isGoingUp.value = true;
+        } else if (translationY.value < event.contentOffset.y) {
+          isGoingUp.value = false;
+        }
+        translationY.value = event.contentOffset.y;
+      },
+    },
+    [post?.identifier]
+  );
+
+  const animationStyle = useAnimatedStyle(() => {
+    let animeValue = isFirstLoad.value ? 0 : btnOffsetValue.value;
+
+    if (isLoadingValue.value) {
+      if (translationY.value >= btnOffsetValue.value && !isGoingUp.value) {
+        animeValue = withSpring(translationY.value - btnOffsetValue.value);
+      } else if (isGoingUp.value && translationY.value > btnOffsetValue.value) {
+        animeValue = translationY.value - btnOffsetValue.value;
+      }
+    } else if (translationY.value < btnOffsetValue.value) {
+      animeValue = isFirstLoad.value
+        ? withSpring(btnOffsetValue.value)
+        : btnOffsetValue.value;
+    }
+
+    return {
+      position: "absolute",
+      zIndex: 10000,
+      transform: [
+        {
+          translateY: animeValue,
+        },
+      ],
+      left: 0,
+      right: 0,
+    };
+  }, [post?.identifier]);
+
+  const ListHeaderComponent = useCallback(
+    () => (
+      <Animated.View
+        style={[{ paddingVertical: layout.padding_x1 }, animationStyle]}
+      >
+        <RefreshButton
+          isRefreshing={isLoadingValue}
+          onPress={refetch}
+          title="Refresh feed"
+          widthToAnimate={140}
+        />
+      </Animated.View>
+    ),
+    [isLoadingValue]
+  );
 
   return (
     <ScreenContainer
@@ -97,45 +194,36 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       fullWidth
       noScroll
     >
-      <ScrollView
+      <Animated.ScrollView
         contentContainerStyle={styles.contentContainer}
-        onScroll={(e) => {
-          let offsetPadding = 40;
-          offsetPadding += e.nativeEvent.layoutMeasurement.height;
-
-          if (
-            e.nativeEvent.contentOffset.y >=
-              e.nativeEvent.contentSize.height - offsetPadding &&
-            hasNextPage
-          ) {
-            fetchNextPage();
-          }
-        }}
+        onScroll={scrollHandler}
         scrollEventThrottle={1}
       >
         {!!post && (
-          <SocialThreadCard
-            post={post}
-            singleView
-            refresh={refresh}
-            onPressReply={onPressReply}
-          />
-        )}
-
-        <CommentsContainer
-          comments={comments}
-          onPressReply={onPressReply}
-          refresh={refresh}
-        />
-        {isLoading ||
-          (isFetching && (
-            <ActivityIndicator
-              size="small"
-              color={secondaryColor}
-              style={styles.indicator}
+          <View
+            onLayout={({
+              nativeEvent: {
+                layout: { height: h },
+              },
+            }) => (btnOffsetValue.value = h)}
+          >
+            <SocialThreadCard
+              post={post}
+              singleView
+              refresh={refresh}
+              onPressReply={onPressReply}
             />
-          ))}
-      </ScrollView>
+          </View>
+        )}
+        <ListHeaderComponent />
+        <View style={{ flex: 1, position: "relative" }}>
+          <CommentsContainer
+            comments={comments}
+            onPressReply={onPressReply}
+            refresh={refresh}
+          />
+        </View>
+      </Animated.ScrollView>
 
       <View style={styles.footer}>
         <NewsFeedInput
