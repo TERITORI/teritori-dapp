@@ -101,10 +101,9 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
   return (
     <AnimationFadeIn>
-      {isLast && <View style={styles.extraLineHider} />}
-
       <View style={[styles.container, isFirst && { marginTop: MARGIN_HEIGHT }]}>
         <View style={styles.curvedLine} />
+        {isLast && <View style={styles.extraLineHider} />}
 
         <View style={[styles.commentContainer, style]}>
           <AvatarWithFrame
@@ -113,23 +112,44 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               marginRight: imageMarginRight,
             }}
             size={68}
+            onPress={() =>
+              navigation.navigate("UserPublicProfile", {
+                id: `tori-${comment.post_by}`,
+              })
+            }
           />
           <View style={styles.content}>
             <View style={styles.detailsContainer}>
               <View style={styles.rowCenter}>
-                <BrandText style={fontSemibold16}>
-                  {postByTNSMetadata?.metadata?.public_name || DEFAULT_NAME}
-                </BrandText>
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("PublicProfile", {
+                      id: `tori-${comment.post_by}`,
+                    })
+                  }
+                >
+                  <BrandText style={fontSemibold16}>
+                    {postByTNSMetadata?.metadata?.public_name || DEFAULT_NAME}
+                  </BrandText>
+                </Pressable>
                 <SpacerRow size={1.5} />
-                <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-                  @
-                  {postByTNSMetadata?.metadata?.tokenId
-                    ? tinyAddress(
-                        postByTNSMetadata?.metadata?.tokenId || "",
-                        19
-                      )
-                    : DEFAULT_USERNAME}
-                </BrandText>
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("PublicProfile", {
+                      id: `tori-${comment.post_by}`,
+                    })
+                  }
+                >
+                  <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+                    @
+                    {postByTNSMetadata?.metadata?.tokenId
+                      ? tinyAddress(
+                          postByTNSMetadata?.metadata?.tokenId || "",
+                          19
+                        )
+                      : DEFAULT_USERNAME}
+                  </BrandText>
+                </Pressable>
               </View>
 
               <SpacerColumn size={1} />
@@ -176,13 +196,16 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       </View>
 
       {comments && (
-        <View style={styles.subCommentContainer}>
-          <CommentsContainer
-            comments={comments}
-            onPressReply={onPressReply}
-            overrideParentId={comment.identifier}
-          />
-        </View>
+        <>
+          <View style={styles.subCommentContainer}>
+            {isLast && <View style={[styles.extraLineHider, { left: -61 }]} />}
+            <CommentsContainer
+              comments={comments}
+              onPressReply={onPressReply}
+              overrideParentId={comment.identifier}
+            />
+          </View>
+        </>
       )}
 
       {isLast && overrideParentId ? null : (
@@ -258,7 +281,7 @@ const styles = StyleSheet.create({
     backgroundColor: neutral00,
     zIndex: 1000,
     position: "absolute",
-    left: -1,
+    left: 0,
   },
   subCommentContainer: {
     marginLeft: 60,

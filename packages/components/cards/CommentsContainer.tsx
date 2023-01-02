@@ -25,7 +25,7 @@ export const CommentsContainer: React.FC<CommentsContainerProps> = ({
       <View style={{ flex: 1 }}>
         {comments.map((comment, index) => (
           <SocialCommentCard
-            key={index}
+            key={comment.identifier}
             comment={comment}
             isLast={comments?.length === index + 1}
             isFirst={index === 0}

@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Image,
   ImageStyle,
+  Pressable,
   StyleProp,
   View,
   ViewStyle,
@@ -18,6 +19,7 @@ interface AvatarWithFrameProps {
   style?: StyleProp<ViewStyle>;
   size?: number;
   isLoading?: boolean;
+  onPress?(): void;
 }
 
 export const AvatarWithFrame: React.FC<AvatarWithFrameProps> = ({
@@ -25,6 +27,7 @@ export const AvatarWithFrame: React.FC<AvatarWithFrameProps> = ({
   style,
   size = 92,
   isLoading,
+  onPress,
 }) => {
   const sizeStyle: ImageStyle = {
     top: size * 0.24,
@@ -38,7 +41,7 @@ export const AvatarWithFrame: React.FC<AvatarWithFrameProps> = ({
   };
 
   return (
-    <View style={style}>
+    <Pressable style={style} onPress={onPress}>
       {isLoading ? (
         <View style={sizeStyle}>
           <ActivityIndicator />
@@ -62,6 +65,6 @@ export const AvatarWithFrame: React.FC<AvatarWithFrameProps> = ({
         width={size * 1.51}
         height={size * 1.51}
       />
-    </View>
+    </Pressable>
   );
 };
