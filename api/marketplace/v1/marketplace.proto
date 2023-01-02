@@ -178,6 +178,7 @@ message ActivityResponse {
 
 message NFTPriceHistoryRequest {
   string id = 1;
+  string network_id = 2;
 }
 
 message NFTPriceHistoryResponse {

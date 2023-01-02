@@ -86,13 +86,13 @@ export const CollapsablePiceHistory: React.FC<{ nftId: string }> = ({
 };
 
 const useNFTPriceHistory = (nftId: string) => {
-  const networkID = useSelectedNetworkId();
+  const networkId = useSelectedNetworkId();
   const { data } = useQuery(
     ["nftPriceHistory", nftId],
     async () => {
       const { data } = await backendClient.NFTPriceHistory({
         id: nftId,
-        networkId: networkID,
+        networkId,
       });
       if (data.length === 0) {
         return data;
