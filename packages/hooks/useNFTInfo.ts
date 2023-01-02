@@ -204,7 +204,7 @@ const getEthereumStandardNFTInfo = async (
   if (+saledNft.owner !== 0) {
     isListed = true;
     vaultInfo = {
-      amount: saledNft.saleOption.amount.toNumber(),
+      amount: saledNft.saleOption.amount.toBigInt(),
       denom:
         +saledNft.saleOption.token === 0 ? "wei" : saledNft.saleOption.token,
     };

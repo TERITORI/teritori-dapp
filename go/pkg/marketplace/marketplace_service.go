@@ -659,7 +659,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 	}
 	stats.FloorPrice = make([]*marketplacepb.Amount, len(coins))
 	for index, coin := range coins {
-		stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: coin.Amount}
+		stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: fmt.Sprint(coin.Amount)}
 	}
 	return &marketplacepb.CollectionStatsResponse{
 		Stats: &stats.CollectionStats,
