@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
@@ -6,8 +6,10 @@ import { BrandText } from "../../components/BrandText";
 import { OwnedNFTs } from "../../components/OwnedNFTs";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
+import { Network } from "../../utils/network";
 import { layout } from "../../utils/style/layout";
 
 /*
@@ -15,9 +17,18 @@ import { layout } from "../../utils/style/layout";
 */
 
 export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
-  // variables
   const selectedWallet = useSelectedWallet();
-  const ownerId = `tori-${selectedWallet?.address}`; // FIXME: make this network-independent
+  const selectedNetwork = useSelectedNetwork();
+
+  const ownerId = useMemo(() => {
+    switch (selectedNetwork) {
+      case Network.Ethereum:
+        return `eth-${selectedWallet?.address}`;
+      case Network.Teritori:
+      default:
+        return `tori-${selectedWallet?.address}`;
+    }
+  }, [selectedNetwork, selectedWallet?.address]);
 
   // returns
   const EmptyListComponent = useCallback(
