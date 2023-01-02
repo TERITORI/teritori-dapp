@@ -1,9 +1,14 @@
-query GetCollectionNFTs($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
-  nftContracts(where: {minter: $minter} first: $Limit, skip: $Offset) {
+query GetCollectionNFTs(
+  $nftContractFilter: NftContract_filter, 
+  $nftFilter: Nft_filter, 
+  $Limit: Int!, 
+  $Offset: Int!
+) {
+  nftContracts(where: $nftContractFilter, first: $Limit, skip: $Offset) {
 		id
 		name
     symbol
-		nfts(first: $Limit, skip: $Offset) {
+		nfts(where: $nftFilter, first: $Limit, skip: $Offset) {
       id
       tokenID
       owner
