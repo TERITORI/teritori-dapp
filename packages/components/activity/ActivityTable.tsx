@@ -1,6 +1,6 @@
 import { Link } from "@react-navigation/native";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
@@ -11,6 +11,7 @@ import {
 } from "../../hooks/useSelectedNetwork";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
+import { Network } from "../../utils/network";
 import {
   mineShaftColor,
   primaryColor,
@@ -106,6 +107,17 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
   const buyerTNSMetadata = useTNSMetadata(buyerAddress);
   const sellerTNSMetadata = useTNSMetadata(sellerAddress);
   const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetwork = selectedNetworkInfo?.network;
+
+  const userIdPrefix = useMemo(() => {
+    switch (selectedNetwork) {
+      case Network.Ethereum:
+        return "eth-";
+      case Network.Teritori:
+      default:
+        return "tori-";
+    }
+  }, [selectedNetwork]);
 
   return (
     <View
@@ -127,7 +139,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         }}
       >
         <ExternalLink
-          externalUrl={txExplorerLink(selectedNetworkInfo?.network, txHash)}
+          externalUrl={txExplorerLink(selectedNetwork, txHash)}
           style={[fontMedium14, { width: "100%" }]}
           ellipsizeMode="middle"
           numberOfLines={1}
@@ -174,7 +186,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.padding_x1 }}
       >
         <Link
-          to={`/user/tori-${buyerAddress}`}
+          to={`/user/${userIdPrefix}${buyerAddress}`}
           style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
@@ -189,7 +201,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         }}
       >
         <Link
-          to={`/user/tori-${sellerAddress}`}
+          to={`/user/${userIdPrefix}${sellerAddress}`}
           style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
