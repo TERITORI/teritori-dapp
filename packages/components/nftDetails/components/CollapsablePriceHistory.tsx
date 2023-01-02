@@ -4,7 +4,6 @@ import { BigNumber, ethers } from "ethers";
 import moment from "moment";
 import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import {
   VictoryLine,
   VictoryChart,
