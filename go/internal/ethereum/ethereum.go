@@ -161,10 +161,10 @@ func (p *Provider) GetNFTs(networkID string, collectionID string, ownerId string
 			}
 
 			nft := marketplacepb.NFT{
-				Id:                 fmt.Sprintf("eth-%s-%s", minter, nft.TokenID),
+				Id:                 fmt.Sprintf("eth-%s-%s", nftContract.Minter, nft.TokenID),
 				NetworkId:          networkID,
 				ImageUri:           nft.TokenURI,
-				MintAddress:        minter,
+				MintAddress:        nftContract.Minter,
 				Price:              nft.Price,
 				Denom:              nft.Denom,
 				IsListed:           nft.InSale,
