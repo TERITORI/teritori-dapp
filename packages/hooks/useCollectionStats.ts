@@ -43,7 +43,7 @@ export const useCollectionStats = (collectionId: string, address?: string) => {
           BigNumber.from(stats.totalVolume)
         );
 
-        stats.totalVolume = `${+ether * prices["ethereum"]["usd"]}`;
+        stats.totalVolume = `${+ether * prices["ethereum"]?.["usd"]}`;
       }
 
       return stats;
