@@ -57,6 +57,7 @@ func (p *Provider) GetCollections(networkId string) ([]marketplacepb.Collection,
 			CollectionName: contract.Name,
 			MintAddress:    contract.Minter,
 			Volume:         fmt.Sprint(volumeByCollection[contract.Id].volume),
+			CreatorId:      fmt.Sprintf("eth-%s", contract.Minter),
 			VolumeDenom:    volumeByCollection[contract.Id].denom,
 		})
 	}
