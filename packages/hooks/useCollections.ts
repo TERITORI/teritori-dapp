@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useRef, useMemo, useCallback } from "react";
 
 import {
   Collection,
@@ -12,53 +13,52 @@ import { useSelectedNetwork } from "./useSelectedNetwork";
 export const useCollections = (
   req: CollectionsRequest
 ): [Collection[], (index: number) => Promise<void>] => {
-  const [collections, setCollections] = useState<Collection[]>([]);
+  const baseOffset = useRef(req.offset);
   const selectedNetwork = useSelectedNetwork();
-  const fetchRef = useRef(false);
 
-  const fetchMore = useCallback(
-    async (index: number, init: boolean = false) => {
-      const currentCollection = init ? [] : collections;
-      init && setCollections([]);
+  const { data, fetchNextPage } = useInfiniteQuery(
+    [
+      "collections",
+      req.networkId,
+      req.mintState,
+      req.sort,
+      req.sortDirection,
+      req.upcoming,
+    ],
+    async ({ pageParam = 0 }) => {
+      let collections: Collection[] = [];
+      const pageReq = {
+        ...req,
+        offset: baseOffset.current + pageParam,
+      };
 
-      try {
-        if (!(index + req.limit >= currentCollection.length)) {
-          return;
-        }
-        if (fetchRef.current) {
-          return;
-        }
-        fetchRef.current = true;
-        const stream = backendClient.Collections({
-          ...req,
-          offset: req.offset + currentCollection.length,
-        });
+      const stream = backendClient.Collections(pageReq);
 
-        const fetchedCollections: Collection[] = [];
-        await stream.forEach(({ collection }) => {
-          collection && fetchedCollections.push(collection);
-        });
+      await stream.forEach(({ collection }) => {
+        collection && collections.push(collection);
+      });
 
-        let updatedCollections = [...currentCollection, ...fetchedCollections];
-
-        if (selectedNetwork === Network.Ethereum) {
-          // TODO: Hack for adding metadata for ethereum collections, should use an indexed data
-          updatedCollections = await addCollectionMetadatas(updatedCollections);
-        }
-
-        setCollections(updatedCollections);
-      } catch (err) {
-        console.warn("failed to fetch collections:", err);
+      if (selectedNetwork === Network.Ethereum) {
+        // TODO: Hack for adding metadata for ethereum collections, should use an indexed data
+        collections = await addCollectionMetadatas(collections);
       }
-      fetchRef.current = false;
+
+      return { nextCursor: pageParam + req.limit, collections };
     },
-    [req, collections]
+    { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
-  useEffect(() => {
-    // Reset the collections then changing network
-    fetchMore(0, true);
-  }, [req.networkId]);
+  const collections = useMemo(() => {
+    const pages = data?.pages || [];
+    return pages.reduce(
+      (acc: Collection[], page) => [...acc, ...page.collections],
+      []
+    );
+  }, [data?.pages]);
+
+  const fetchMore = useCallback(async (index: number) => {
+    await fetchNextPage({ pageParam: index });
+  }, []);
 
   return [collections, fetchMore];
 };

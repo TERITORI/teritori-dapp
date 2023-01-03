@@ -18,9 +18,6 @@ VAULT_PACKAGE=teritori-nft-vault
 
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
-EVM_CONTRACTS_CLIENTS_DIR=packages/evm-contracts-clients
-EVM_NFT_VAULT_REPO=evm-nft-vault
-
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
 INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-indexer:$(shell git rev-parse --short HEAD)
 BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
