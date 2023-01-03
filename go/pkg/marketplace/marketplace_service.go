@@ -167,7 +167,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		return nil
 
 	case "ethereum", "ethereum-goerli":
-		collections, err := s.ethereumProvider.GetCollections(req.GetNetworkId())
+		collections, err := s.ethereumProvider.GetCollections(srv.Context(), req.GetNetworkId())
 		if err != nil {
 			return errors.Wrap(err, "failed to query database")
 		}
@@ -224,7 +224,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	}
 
 	if networkID == "ethereum" || networkID == "ethereum-goerli" {
-		nfts, err := s.ethereumProvider.GetNFTs(networkID, collection_id, ownerId, int(limit), int(offset))
+		nfts, err := s.ethereumProvider.GetNFTs(srv.Context(), networkID, collection_id, ownerId, int(limit), int(offset))
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection nfts")
 		}
@@ -409,7 +409,7 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 	networkID := req.GetNetworkId()
 	nftID := req.GetNftId()
 	if networkID == "ethereum" || networkID == "ethereum-goerli" {
-		activities, err := s.ethereumProvider.GetActivities(collectionID, nftID, int(limit), int(offset))
+		activities, err := s.ethereumProvider.GetActivities(srv.Context(), collectionID, nftID, int(limit), int(offset))
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection activity")
 		}
@@ -540,7 +540,7 @@ func (s *MarkteplaceService) NFTPriceHistory(ctx context.Context, req *marketpla
 	var data []*marketplacepb.PriceDatum
 	var err error
 	if networkID == "ethereum" || networkID == "ethereum-goerli" {
-		data, err = s.ethereumProvider.GetNFTPriceHistory(id)
+		data, err = s.ethereumProvider.GetNFTPriceHistory(ctx, id)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed get price history")
 		}
@@ -612,7 +612,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 
 	networkID := req.GetNetworkId()
 	if networkID == "ethereum" || networkID == "ethereum-goerli" {
-		stats, err := s.ethereumProvider.GetCollectionStats(collectionID, ownerID)
+		stats, err := s.ethereumProvider.GetCollectionStats(ctx, collectionID, ownerID)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed fetch ethereum collection stats")
 		}

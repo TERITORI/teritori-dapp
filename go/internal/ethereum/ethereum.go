@@ -31,8 +31,7 @@ type Volume struct {
 	volume int64
 }
 
-func (p *Provider) GetCollections(networkId string) ([]marketplacepb.Collection, error) {
-	ctx := context.Background()
+func (p *Provider) GetCollections(ctx context.Context, networkId string) ([]marketplacepb.Collection, error) {
 	//30 days window
 	unixTime := time.Now().AddDate(0, 0, -30).Unix()
 	collections, err := thegraph.GetCollections(ctx, p.client, fmt.Sprint(unixTime))
@@ -66,8 +65,7 @@ func (p *Provider) GetCollections(networkId string) ([]marketplacepb.Collection,
 	return res, nil
 }
 
-func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marketplacepb.CollectionStats, error) {
-	ctx := context.Background()
+func (p *Provider) GetCollectionStats(ctx context.Context, collectionID string, owner string) (*marketplacepb.CollectionStats, error) {
 
 	minter := strings.Replace(collectionID, "eth-", "", 1)
 	collectionsStats, err := thegraph.GetCollectionStats(ctx, p.client, minter)
@@ -137,9 +135,8 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 	return res, nil
 }
 
-func (p *Provider) GetNFTs(networkID string, collectionID string, ownerId string, limit, offset int) ([]*marketplacepb.NFT, error) {
+func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID string, ownerId string, limit, offset int) ([]*marketplacepb.NFT, error) {
 	// TODO: find how to send the whole `where` filter to query with genqlcient instead of separating into 2 queries
-	ctx := context.Background()
 
 	minter := strings.Replace(collectionID, "eth-", "", 1)
 	owner := strings.Replace(ownerId, "eth-", "", 1)
@@ -197,8 +194,7 @@ func (p *Provider) GetNFTs(networkID string, collectionID string, ownerId string
 	return res, nil
 }
 
-func (p *Provider) GetActivities(collectionID string, nftID string, limit, offset int) ([]*marketplacepb.Activity, error) {
-	ctx := context.Background()
+func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID string, limit, offset int) ([]*marketplacepb.Activity, error) {
 	minter := strings.Replace(collectionID, "eth-", "", 1)
 	if nftID != "" {
 		activities, err := thegraph.GetNFTActivities(ctx, p.client, nftID, limit, offset)
@@ -278,8 +274,7 @@ func stringToBigInt(val string) *big.Int {
 	return wei
 }
 
-func (p *Provider) GetNFTPriceHistory(nftID string) ([]*marketplacepb.PriceDatum, error) {
-	ctx := context.Background()
+func (p *Provider) GetNFTPriceHistory(ctx context.Context, nftID string) ([]*marketplacepb.PriceDatum, error) {
 	buys, err := thegraph.GetNFTPriceHistory(ctx, p.client, nftID)
 	if err != nil {
 		return nil, err
