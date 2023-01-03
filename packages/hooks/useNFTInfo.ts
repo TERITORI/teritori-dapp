@@ -10,7 +10,7 @@ import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunke
 import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import { WEI_TOKEN_ADDRESS } from "../networks";
 import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
-import { getEthereumProvider, WEI_TOKEN_ADDRESS } from "../utils/ethereum";
+import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { Network } from "../utils/network";

@@ -1,6 +1,6 @@
 import { Link } from "@react-navigation/native";
 import moment from "moment";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
@@ -11,7 +11,6 @@ import {
 } from "../../hooks/useSelectedNetwork";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
-import { Network } from "../../utils/network";
 import {
   mineShaftColor,
   primaryColor,
