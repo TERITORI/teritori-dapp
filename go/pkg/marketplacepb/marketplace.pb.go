@@ -424,11 +424,11 @@ func (x *Amount) GetDenom() string {
 	return ""
 }
 
-func (x *Amount) GetQuantity() string {
+func (x *Amount) GetQuantity() int64 {
 	if x != nil {
 		return x.Quantity
 	}
-	return ""
+	return 0
 }
 
 type Collection struct {
