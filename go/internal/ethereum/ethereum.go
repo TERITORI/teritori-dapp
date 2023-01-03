@@ -181,7 +181,7 @@ func (p *Provider) GetNFTs(networkID string, collectionID string, ownerId string
 	return res, nil
 }
 
-func (p *Provider) GetCollectionActivities(collectionID string, nftID string, limit, offset int) ([]*marketplacepb.Activity, error) {
+func (p *Provider) GetActivities(collectionID string, nftID string, limit, offset int) ([]*marketplacepb.Activity, error) {
 	ctx := context.Background()
 	minter := strings.Replace(collectionID, "eth-", "", 1)
 	if nftID != "" {
@@ -192,7 +192,7 @@ func (p *Provider) GetCollectionActivities(collectionID string, nftID string, li
 		res := make([]*marketplacepb.Activity, len(activities.Actions))
 		for index, activity := range activities.Actions {
 			activityItem := marketplacepb.Activity{
-				Id:              getUserId(activity.TxID),
+				Id:              indexerdb.EthereumActivityID(activity.TxID, index),
 				TransactionKind: activity.Action,
 				TargetImageUri:  activity.Nft.TokenURI,
 				ContractName:    activity.Nft.Contract.Name,
@@ -203,14 +203,14 @@ func (p *Provider) GetCollectionActivities(collectionID string, nftID string, li
 			case "trade":
 				activityItem.Amount = activity.Buy.Price
 				activityItem.Denom = activity.Buy.Denom
-				activityItem.BuyerId = getUserId(activity.Actor)
-				activityItem.SellerId = getUserId(activity.Buy.Seller)
+				activityItem.BuyerId = UserIDString(activity.Actor)
+				activityItem.SellerId = UserIDString(activity.Buy.Seller)
 			case "list":
 				activityItem.Amount = activity.List.Price
 				activityItem.Denom = activity.List.Denom
-				activityItem.SellerId = getUserId(activity.Actor)
+				activityItem.SellerId = UserIDString(activity.Actor)
 			case "cancel_list":
-				activityItem.SellerId = getUserId(activity.Actor)
+				activityItem.SellerId = UserIDString(activity.Actor)
 			}
 			res[index] = &activityItem
 		}
@@ -223,7 +223,7 @@ func (p *Provider) GetCollectionActivities(collectionID string, nftID string, li
 	res := make([]*marketplacepb.Activity, len(activities.Actions))
 	for index, activity := range activities.Actions {
 		activityItem := marketplacepb.Activity{
-			Id:              getUserId(activity.TxID),
+			Id:              indexerdb.EthereumActivityID(activity.TxID, index),
 			TransactionKind: activity.Action,
 			TargetImageUri:  activity.Nft.TokenURI,
 			ContractName:    activity.Nft.Contract.Name,
@@ -234,14 +234,14 @@ func (p *Provider) GetCollectionActivities(collectionID string, nftID string, li
 		case "trade":
 			activityItem.Amount = activity.Buy.Price
 			activityItem.Denom = activity.Buy.Denom
-			activityItem.BuyerId = getUserId(activity.Actor)
-			activityItem.SellerId = getUserId(activity.Buy.Seller)
+			activityItem.BuyerId = UserIDString(activity.Actor)
+			activityItem.SellerId = UserIDString(activity.Buy.Seller)
 		case "list":
 			activityItem.Amount = activity.List.Price
 			activityItem.Denom = activity.List.Denom
-			activityItem.SellerId = getUserId(activity.Actor)
+			activityItem.SellerId = UserIDString(activity.Actor)
 		case "cancel_list":
-			activityItem.SellerId = getUserId(activity.Actor)
+			activityItem.SellerId = UserIDString(activity.Actor)
 		}
 		res[index] = &activityItem
 	}
@@ -272,6 +272,6 @@ func (p *Provider) GetNFTPriceHistory(nftID string) ([]*marketplacepb.PriceDatum
 
 }
 
-func getUserId(add string) string {
-	return fmt.Sprintf("eth-%s", add)
+func UserIDString(addr string) string {
+	return string(indexerdb.EthereumUserID(addr))
 }

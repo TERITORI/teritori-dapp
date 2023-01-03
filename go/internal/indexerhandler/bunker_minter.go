@@ -117,7 +117,7 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 
 	// create mint activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		ID:   indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindMint,
 		Time: blockTime,
 		Mint: &indexerdb.Mint{

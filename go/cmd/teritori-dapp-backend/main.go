@@ -39,7 +39,7 @@ func main() {
 		dbPass             = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbName             = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser             = fs.String("postgres-user", "", "username for postgreSQL")
-		theGraphEndpoint   = fs.String("ethereum-graph-endpoint", "", "the graph url")
+		theGraphEndpoint   = fs.String("ethereum-graph-endpoint", "", "the graph url for ethereum marketplace")
 		whitelistString    = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
