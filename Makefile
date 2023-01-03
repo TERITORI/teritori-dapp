@@ -46,6 +46,7 @@ generate.graphql:
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/holagql/genqlient.yaml
 
 generate.graphql-thegraph:
+	rover graph introspect https://api.studio.thegraph.com/query/38317/teritori-indexer/rc-021 > go/pkg/thegraph/thegraph-schema.graphql
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/thegraph/genqlient.yaml
 
 .PHONY: lint
@@ -56,10 +57,6 @@ lint: node_modules
 .PHONY: go/pkg/holagql/holaplex-schema.graphql
 go/pkg/holagql/holaplex-schema.graphql:
 	rover graph introspect https://graph.65.108.73.219.nip.io/v1 > $@
-
-.PHONY: go/pkg/thegraph/thegraph-schema.graphql
-go/pkg/thegraph/thegraph-schema.graphql:
-	rover graph introspect https://api.studio.thegraph.com/query/38317/teritori-indexer/rc-021 > $@
 
 .PHONY: docker.backend
 docker.backend:
