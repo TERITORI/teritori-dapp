@@ -70,10 +70,6 @@ export const addNftMetadatas = async (nfts: NFT[]) => {
       console.error(e);
     }
 
-    if (+nft.denom === 0) {
-      nft.denom = "wei";
-    }
-
     nftWithMetadatas.push(nft);
   }
 
