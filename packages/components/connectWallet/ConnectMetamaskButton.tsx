@@ -47,7 +47,7 @@ export const ConnectMetamaskButton: React.FC<{
       dispatch(setIsMetamaskConnected(true));
       onDone && onDone();
     } catch (err) {
-      onDone && onDone();
+      onDone && onDone(err);
       console.error(err);
       if (err instanceof Error) {
         setToastError({
