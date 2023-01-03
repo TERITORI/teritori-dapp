@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
@@ -6,31 +6,21 @@ import { BrandText } from "../../components/BrandText";
 import { OwnedNFTs } from "../../components/OwnedNFTs";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
-import { Network } from "../../utils/network";
 import { layout } from "../../utils/style/layout";
 
 /*
-  NOTE: this whole thing need to be rewritten using indexers and better data organisation
+  NOTE: this whole thing need to be rewritten using indexers and better data organization
 */
 
 export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetwork = useSelectedNetwork();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
 
-  const ownerId = useMemo(() => {
-    switch (selectedNetwork) {
-      case Network.Ethereum:
-        return `eth-${selectedWallet?.address}`;
-      case Network.Teritori:
-      default:
-        return `tori-${selectedWallet?.address}`;
-    }
-  }, [selectedNetwork, selectedWallet?.address]);
+  const ownerId = `${selectedNetworkInfo?.addressPrefix}-${selectedWallet?.address}`;
 
-  // returns
   const EmptyListComponent = useCallback(
     () => (
       <View style={styles.emptyContainer}>

@@ -604,16 +604,12 @@ type coin struct {
 }
 
 func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketplacepb.CollectionStatsRequest) (*marketplacepb.CollectionStatsResponse, error) {
-	fmt.Println("On get collection stats")
 	collectionID := req.GetCollectionId()
 	if collectionID == "" {
 		return nil, errors.New("empty collectionID")
 	}
 	ownerID := req.GetOwnerId()
-	db, err := s.conf.IndexerDB.DB()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed get DB instance")
-	}
+
 	networkID := req.GetNetworkId()
 	if networkID == "ethereum" || networkID == "ethereum-goerli" {
 		stats, err := s.ethereumProvider.GetCollectionStats(collectionID, ownerID)
@@ -623,6 +619,11 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		return &marketplacepb.CollectionStatsResponse{
 			Stats: stats,
 		}, nil
+	}
+
+	db, err := s.conf.IndexerDB.DB()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed get DB instance")
 	}
 
 	var stats CollectionStats
