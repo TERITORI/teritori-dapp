@@ -14,9 +14,9 @@ type ClientConfig struct {
 	NewsViewID       string
 }
 
-func NewClient() *Client {
+func NewClient(apiKey string) *Client {
 	return &Client{config: ClientConfig{
-		APIKey:           "keyNTJ1BbH31oTuwQ",
+		APIKey:           apiKey,
 		BaseID:           "appetXQzVoElrsJs5",
 		LaunchpadTableID: "tbla2ZD8MtljtvHKt",
 		BannersTableID:   "tblUXvHaNCABlq8zg",
