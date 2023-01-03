@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
-import { useMemo } from "react";
 
 import { backendClient } from "../utils/backend";
 import { Network } from "./../utils/network";
@@ -16,17 +15,7 @@ export const useCollectionStats = (collectionId: string, address?: string) => {
 
   const { prices } = useCoingeckoPrices(coins);
 
-  const ownerId = useMemo(() => {
-    if (!address) return;
-    switch (network) {
-      case Network.Teritori:
-        return `tori-${address}`;
-      case Network.Ethereum:
-        return `eth-${address}`;
-      default:
-        return undefined;
-    }
-  }, [networkId, address]);
+  const ownerId = `${selectedNetworkInfo?.addressPrefix}-${address}`;
 
   const { data } = useQuery(
     ["collectionStats", collectionId, ownerId],

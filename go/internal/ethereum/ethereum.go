@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"math/big"
+
 	"github.com/Khan/genqlient/graphql"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
@@ -79,13 +81,19 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 	nftContract := collectionsStats.NftContracts[0]
 	nfts := nftContract.Nfts
 
-	volumeByDenom := make(map[string]int64)
-	floorByDenom := make(map[string]int64)
+	volumeByDenom := make(map[string](*big.Int))
+	floorByDenom := make(map[string](*big.Int))
 
-	//Fill collection volume
+	// Fill collection volume
 	var lastDenom string
 	for _, trade := range collectionsStats.Buys {
-		volumeByDenom[trade.Denom] = volumeByDenom[trade.Denom] + stringToInt64(trade.Price)
+		_, ok := volumeByDenom[trade.Denom]
+		if !ok {
+			volumeByDenom[trade.Denom] = big.NewInt(0)
+		}
+
+		tradePrice := stringToBigInt(trade.Price)
+		volumeByDenom[trade.Denom] = volumeByDenom[trade.Denom].Add(volumeByDenom[trade.Denom], tradePrice)
 		lastDenom = trade.Denom
 	}
 
@@ -97,13 +105,21 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 		ownersSeen[nft.Owner]++
 		if nft.InSale {
 			listed++
+
+			priceBigInt := stringToBigInt(nft.Price)
+
 			currentPrice, ok := floorByDenom[nft.Denom]
 			if !ok {
-				floorByDenom[nft.Denom] = stringToInt64(nft.Price)
+				floorByDenom[nft.Denom] = priceBigInt
 				continue
 			}
-			if currentPrice > stringToInt64(nft.Price) {
-				floorByDenom[nft.Denom] = stringToInt64(nft.Price)
+
+			if priceBigInt.Uint64() == 0 {
+				continue
+			}
+
+			if currentPrice.Cmp(priceBigInt) > 1 {
+				floorByDenom[nft.Denom] = priceBigInt
 			}
 		}
 	}
@@ -116,7 +132,7 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 	}
 	res.FloorPrice = make([]*marketplacepb.Amount, 0, len(floorByDenom))
 	for denom, price := range floorByDenom {
-		res.FloorPrice = append(res.FloorPrice, &marketplacepb.Amount{Denom: denom, Quantity: price})
+		res.FloorPrice = append(res.FloorPrice, &marketplacepb.Amount{Denom: denom, Quantity: fmt.Sprint(price)})
 	}
 	return res, nil
 }
@@ -252,6 +268,14 @@ func (p *Provider) GetActivities(collectionID string, nftID string, limit, offse
 func stringToInt64(number string) int64 {
 	res, _ := strconv.ParseInt(number, 10, 64)
 	return res
+}
+
+func stringToBigInt(val string) *big.Int {
+	wei, ok := new(big.Int).SetString(val, 10)
+	if !ok {
+		return big.NewInt(0)
+	}
+	return wei
 }
 
 func (p *Provider) GetNFTPriceHistory(nftID string) ([]*marketplacepb.PriceDatum, error) {
