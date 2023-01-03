@@ -159,10 +159,11 @@ export const Header: React.FC<{
         if (!usdValue) {
           return Infinity;
         }
+
         return (
           usdValue *
           Decimal.fromAtomics(
-            fp.quantity.toFixed(0),
+            fp.quantity,
             currency.decimals
           ).toFloatApproximation()
         );

@@ -1,5 +1,5 @@
 import { ScrollView, Target } from "@nandorojo/anchor";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -18,7 +18,7 @@ import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
-import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
 import { secondaryDuringMintList } from "../../utils/collections";
@@ -61,20 +61,12 @@ const Content: React.FC<{
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.address);
   const { width } = useMaxResolution({ noMargin: true });
-  const selectedNetwork = useSelectedNetwork();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetwork = selectedNetworkInfo?.network;
 
   const collectionAddress = id.split("-")[1];
 
-  const collectionId = useMemo(() => {
-    switch (selectedNetwork) {
-      case Network.Ethereum:
-        return `eth-${collectionAddress}`;
-      case Network.Teritori:
-      default:
-        return `tori-${collectionAddress}`;
-    }
-  }, [collectionAddress, selectedNetwork]);
-
+  const collectionId = `${selectedNetworkInfo?.addressPrefix}-${collectionAddress}`;
   const mintEnded = useMintEnded(selectedNetwork, collectionId);
   const showMarketplace =
     secondaryDuringMintList.includes(collectionId) ||
