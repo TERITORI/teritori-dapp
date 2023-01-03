@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
@@ -15,19 +16,24 @@ import useSelectedWallet from "../useSelectedWallet";
 export const useGameRewards = () => {
   const selectedWallet = useSelectedWallet();
   const { setToastSuccess, setToastError } = useFeedbacks();
-  const [claimableAmount, setClaimableAmount] = useState(0);
   const [isClaiming, setIsClaiming] = useState(false);
 
-  useEffect(() => {
-    if (!selectedWallet?.address) return;
-    const effect = async () => {
-      const claimableAmount = await fetchClaimableAmount(
-        selectedWallet.address
+  const { data: claimableAmount } = useQuery(
+    ["claimableAmount", selectedWallet?.address],
+    async () => {
+      if (!selectedWallet?.address) return 0;
+
+      const nonSigningClient = await getNonSigningCosmWasmClient();
+      const distributorQueryClient = new TeritoriDistributorQueryClient(
+        nonSigningClient,
+        TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS
       );
-      setClaimableAmount(+claimableAmount);
-    };
-    effect();
-  }, [selectedWallet?.address]);
+      return await distributorQueryClient.userClaimable({
+        addr: selectedWallet.address,
+      });
+    },
+    { refetchInterval: 5000 }
+  );
 
   const claimRewards = async (user: string) => {
     setIsClaiming(true);
@@ -44,23 +50,11 @@ export const useGameRewards = () => {
         title: "Success",
         message: "Your rewards have been sent to your wallet",
       });
-      setClaimableAmount(0);
     } catch (e: any) {
       setToastError({ title: "Error", message: e.message });
     } finally {
       setIsClaiming(false);
     }
-  };
-
-  const fetchClaimableAmount = async (user: string) => {
-    const nonSigningClient = await getNonSigningCosmWasmClient();
-    const distributorQueryClient = new TeritoriDistributorQueryClient(
-      nonSigningClient,
-      TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS
-    );
-    return await distributorQueryClient.userClaimable({
-      addr: user,
-    });
   };
 
   return { isClaiming, claimableAmount, claimRewards };

@@ -1,53 +1,36 @@
-import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
-import { CurrentSeasonResponse, UserRankResponse } from "../../api/p2e/v1/p2e";
 import { p2eBackendClient } from "../../utils/backend";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useSeasonRank = () => {
   const selectedWallet = useSelectedWallet();
-  const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
-  const [userRank, setUserRank] = useState<UserRankResponse>();
 
-  useEffect(() => {
-    if (!currentSeason?.id || !selectedWallet?.address) return;
-    const effect = async () => {
-      const userRank = await fetchUserRank(
-        selectedWallet.address,
-        currentSeason.id
-      );
-      setUserRank(userRank);
-    };
-    effect();
-  }, [selectedWallet?.address, currentSeason?.id]);
+  const { data: currentSeason } = useQuery(
+    ["currentSeason"],
+    async () => {
+      return await p2eBackendClient.CurrentSeason({});
+    },
+    { refetchInterval: 5000 }
+  );
 
-  useEffect(() => {
-    const effect = async () => {
-      const currentSeason = await fetchCurrentSeason();
-      setCurrentSeason(currentSeason);
-    };
-    effect();
-  }, []);
+  const { data: userRank } = useQuery(
+    ["userRank", selectedWallet?.address, currentSeason?.id],
+    async () => {
+      if (!selectedWallet?.address || !currentSeason?.id) return null;
+      return await p2eBackendClient.UserRank({
+        seasonId: currentSeason.id,
+        userId: selectedWallet.address,
+      });
+    },
+    { refetchInterval: 5000 }
+  );
 
   const prettyUserRank = useMemo(
     () => `${userRank?.userScore?.rank || 0}/${userRank?.totalUsers || 0}`,
     [userRank]
   );
-
-  const fetchCurrentSeason = async () => {
-    return await p2eBackendClient.CurrentSeason({});
-  };
-
-  const fetchUserRank = async (userId: string, seasonId: string) => {
-    try {
-      return await p2eBackendClient.UserRank({
-        seasonId,
-        userId,
-      });
-    } catch (e) {
-      console.log("Unable to fetch rank:", e);
-    }
-  };
 
   return { userRank, prettyUserRank, currentSeason };
 };
