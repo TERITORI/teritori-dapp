@@ -24,10 +24,10 @@ func EthereumUserID(address string) UserID {
 	return UserID(fmt.Sprintf("%s-%s", "eth", address))
 }
 
-func TeritoriActiviyID(txHash string, messageIndex int) string {
+func TeritoriActivityID(txHash string, messageIndex int) string {
 	return fmt.Sprintf("%s-%s-%d", "tori", txHash, messageIndex)
 }
 
-func EthereumActiviyID(txHash string, messageIndex int) string {
+func EthereumActivityID(txHash string, messageIndex int) string {
 	return fmt.Sprintf("%s-%s-%d", "eth", txHash, messageIndex)
 }

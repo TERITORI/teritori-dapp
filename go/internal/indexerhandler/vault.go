@@ -87,7 +87,7 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 
 	// create activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:    indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		ID:    indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
 		NFTID: nftId,
 		Kind:  indexerdb.ActivityKindUpdateNFTPrice,
 		Time:  blockTime,
@@ -165,7 +165,7 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 		return errors.Wrap(err, "nft not found in db")
 	}
-	activityID := indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex)
+	activityID := indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    activityID,
 		NFTID: nftID,
@@ -280,7 +280,7 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 		return errors.Wrap(err, "nft not found in db")
 	}
-	activityID := indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex)
+	activityID := indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    activityID,
 		NFTID: nftID,
@@ -380,7 +380,7 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 		return errors.Wrap(err, "nft not found in db")
 	}
-	activityID := indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex)
+	activityID := indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    activityID,
 		NFTID: nftID,
