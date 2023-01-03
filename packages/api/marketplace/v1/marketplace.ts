@@ -564,7 +564,7 @@ export const Amount = {
       writer.uint32(10).string(message.denom);
     }
     if (message.quantity !== "") {
-      writer.uint32(18).string(message.quantity);
+      writer.uint32(26).string(message.quantity);
     }
     return writer;
   },
@@ -579,7 +579,7 @@ export const Amount = {
         case 1:
           message.denom = reader.string();
           break;
-        case 2:
+        case 3:
           message.quantity = reader.string();
           break;
         default:
