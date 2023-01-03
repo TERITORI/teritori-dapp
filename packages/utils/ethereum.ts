@@ -45,29 +45,13 @@ export const getCollectionMetadata = async (collectionId: string) => {
   }
 };
 
-// NOTE: cache json request to not request again the same data, cannot use react-query hook here
-type MetadataCache = {
-  [id: string]: {
-    image: string;
-  };
-};
-const metadataCaches: MetadataCache = {};
-
 export const addCollectionMetadatas = async (collections: Collection[]) => {
   const collectionWithMetadatas: Collection[] = [];
   for (const collection of collections) {
     if (!collection.id.startsWith("eth-")) continue;
 
-    let metadata;
-    if (!(collection.id in metadataCaches)) {
-      metadata = await getCollectionMetadata(collection.id);
-      metadataCaches[collection.id] = metadata;
-    }
-
-    if (metadataCaches[collection.id]) {
-      collection.imageUri = metadataCaches[collection.id].image;
-    }
-
+    const metadata = await getCollectionMetadata(collection.id);
+    collection.imageUri = metadata.image;
     collectionWithMetadatas.push(collection);
   }
 
