@@ -163,7 +163,7 @@ export const Header: React.FC<{
         return (
           usdValue *
           Decimal.fromAtomics(
-            fp.quantity.toFixed(0),
+            fp.quantity,
             currency.decimals
           ).toFloatApproximation()
         );

@@ -1,5 +1,5 @@
 import { ScrollView, Target } from "@nandorojo/anchor";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
