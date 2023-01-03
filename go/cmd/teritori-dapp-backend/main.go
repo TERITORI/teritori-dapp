@@ -40,6 +40,7 @@ func main() {
 		dbName             = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser             = fs.String("postgres-user", "", "username for postgreSQL")
 		whitelistString    = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
+		airtableAPIKey     = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -86,6 +87,7 @@ func main() {
 		TNSContractAddress: *tnsContractAddress,
 		TNSDefaultImageURL: *tnsDefaultImageURL,
 		Whitelist:          whitelist,
+		AirtableAPIKey:     *airtableAPIKey,
 	})
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
 		Logger:            logger,

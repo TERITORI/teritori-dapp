@@ -1,8 +1,12 @@
 package main
 
 import (
+	"flag"
+	"os"
+
 	"github.com/TERITORI/teritori-dapp/go/internal/airtable_fetcher"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -13,7 +17,26 @@ func main() {
 		panic(errors.Wrap(err, "failed to init logger"))
 	}
 
-	client := airtable_fetcher.NewClient()
+	// handle args
+	fs := flag.NewFlagSet("dump-airtable", flag.ContinueOnError)
+	var (
+		airtableAPIKey = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
+	)
+	if err := ff.Parse(fs, os.Args[1:],
+		ff.WithEnvVars(),
+		ff.WithIgnoreUndefined(true),
+		ff.WithConfigFile(".env"),
+		ff.WithConfigFileParser(ff.EnvParser),
+		ff.WithAllowMissingConfigFile(true),
+	); err != nil {
+		panic(errors.Wrap(err, "failed to parse flags"))
+	}
+
+	if *airtableAPIKey == "" {
+		panic(errors.New("missing airtable-api-key"))
+	}
+
+	client := airtable_fetcher.NewClient(*airtableAPIKey)
 
 	upcoming, err := client.FetchUpcomingLaunches(logger)
 	if err != nil {
