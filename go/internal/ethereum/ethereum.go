@@ -116,7 +116,7 @@ func (p *Provider) GetCollectionStats(collectionID string, owner string) (*marke
 	}
 	res.FloorPrice = make([]*marketplacepb.Amount, 0, len(floorByDenom))
 	for denom, price := range floorByDenom {
-		res.FloorPrice = append(res.FloorPrice, &marketplacepb.Amount{Denom: denom, Quantity: fmt.Sprint(price)})
+		res.FloorPrice = append(res.FloorPrice, &marketplacepb.Amount{Denom: denom, Quantity: price})
 	}
 	return res, nil
 }
