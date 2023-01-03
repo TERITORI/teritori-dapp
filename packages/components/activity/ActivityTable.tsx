@@ -1,6 +1,6 @@
 import { Link } from "@react-navigation/native";
 import moment from "moment";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
@@ -11,7 +11,6 @@ import {
 } from "../../hooks/useSelectedNetwork";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
-import { Network } from "../../utils/network";
 import {
   mineShaftColor,
   primaryColor,
@@ -109,15 +108,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetwork = selectedNetworkInfo?.network;
 
-  const userIdPrefix = useMemo(() => {
-    switch (selectedNetwork) {
-      case Network.Ethereum:
-        return "eth-";
-      case Network.Teritori:
-      default:
-        return "tori-";
-    }
-  }, [selectedNetwork]);
+  const addressPrefix = selectedNetworkInfo?.addressPrefix;
 
   return (
     <View
@@ -186,7 +177,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.padding_x1 }}
       >
         <Link
-          to={`/user/${userIdPrefix}${buyerAddress}`}
+          to={`/user/${addressPrefix}-${buyerAddress}`}
           style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
@@ -201,7 +192,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         }}
       >
         <Link
-          to={`/user/${userIdPrefix}${sellerAddress}`}
+          to={`/user/${addressPrefix}-${sellerAddress}`}
           style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"

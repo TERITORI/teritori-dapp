@@ -2,7 +2,7 @@ import { Network } from "../../utils/network";
 import { NetworkInfo } from "../types";
 import { ethereumCurrencies } from "./currencies";
 
-export const ethereumGoerliNetwork: NetworkInfo = {
+export const ethereumNetwork: NetworkInfo = {
   id: "ethereum",
   network: Network.Ethereum,
   chainId: "1",

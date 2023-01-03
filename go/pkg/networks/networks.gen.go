@@ -62,7 +62,17 @@ var AllNetworks = []*Network{
 		ID: "ethereum-goerli",
 		Currencies: []Currency{
 			&NativeCurrency{
-				Denom:       "wei",
+				Denom:       "0x0000000000000000000000000000000000000000",
+				CoinGeckoID: "ethereum",
+				Decimals:    18,
+			},
+		},
+	},
+	{
+		ID: "ethereum",
+		Currencies: []Currency{
+			&NativeCurrency{
+				Denom:       "0x0000000000000000000000000000000000000000",
 				CoinGeckoID: "ethereum",
 				Decimals:    18,
 			},

@@ -6,11 +6,15 @@ import { GasPrice } from "cosmwasm";
 import { getKeplr } from "../utils/keplr";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
+import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import { NativeCurrencyInfo, NetworkInfo } from "./types";
+
 export * from "./types";
+
+export const WEI_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 export const allNetworks = [
   teritoriNetwork,
@@ -18,6 +22,7 @@ export const allNetworks = [
   teritoriTestnetNetwork,
   cosmosThetaNetwork,
   ethereumGoerliNetwork,
+  ethereumNetwork,
 ];
 
 export const getCurrency = (
