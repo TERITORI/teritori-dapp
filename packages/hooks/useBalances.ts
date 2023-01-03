@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
-import { getNativeCurrency, getNetwork } from "../networks";
+import { getNativeCurrency, getNetwork, WEI_TOKEN_ADDRESS } from "../networks";
 import { Balance } from "../utils/coins";
 import { getMetaMaskEthereumSigner } from "../utils/ethereum";
 import { Network } from "../utils/network";
@@ -72,10 +72,11 @@ const getNetworkBalances = async (
 
     const balanceItem = {
       amount: balance.toString(),
-      denom: "wei",
+      denom: WEI_TOKEN_ADDRESS,
     };
     return [balanceItem];
   }
+
   // Support for cosmos balances
   else if (network.network === Network.Teritori) {
     const response = await fetch(

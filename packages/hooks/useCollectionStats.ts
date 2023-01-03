@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
 
+import { WEI_TOKEN_ADDRESS } from "../networks";
 import { backendClient } from "../utils/backend";
 import { Network } from "./../utils/network";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
@@ -11,7 +12,9 @@ export const useCollectionStats = (collectionId: string, address?: string) => {
   const networkId = selectedNetworkInfo?.id;
   const network = selectedNetworkInfo?.network;
   const coins =
-    network === Network.Ethereum ? [{ networkId, denom: "wei" }] : [];
+    network === Network.Ethereum
+      ? [{ networkId, denom: WEI_TOKEN_ADDRESS }]
+      : [];
 
   const { prices } = useCoingeckoPrices(coins);
 

@@ -6,15 +6,12 @@ import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { getNativeCurrency } from "../networks";
+import { getNativeCurrency, WEI_TOKEN_ADDRESS } from "../networks";
 import { getSigningCosmWasmClient } from "../utils/keplr";
 import { Network } from "../utils/network";
 import { vaultContractAddress } from "../utils/teritori";
 import { Wallet } from "./../context/WalletsProvider/wallet";
-import {
-  getMetaMaskEthereumSigner,
-  WEI_TOKEN_ADDRESS,
-} from "./../utils/ethereum";
+import { getMetaMaskEthereumSigner } from "./../utils/ethereum";
 import useSelectedWallet from "./useSelectedWallet";
 
 const teritoriSellNFT = async (

@@ -8,8 +8,9 @@ import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-v
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+import { WEI_TOKEN_ADDRESS } from "../networks";
 import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
-import { getEthereumProvider, WEI_TOKEN_ADDRESS } from "../utils/ethereum";
+import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { Network } from "../utils/network";
@@ -205,10 +206,7 @@ const getEthereumStandardNFTInfo = async (
     isListed = true;
     vaultInfo = {
       amount: saledNft.saleOption.amount.toBigInt(),
-      denom:
-        saledNft.saleOption.token === WEI_TOKEN_ADDRESS
-          ? "wei"
-          : saledNft.saleOption.token,
+      denom: saledNft.saleOption.token,
     };
     ownerAddress = saledNft.owner.toLowerCase();
   }
@@ -232,7 +230,7 @@ const getEthereumStandardNFTInfo = async (
     priceDenom: vaultInfo?.denom || "",
     collectionName,
     collectionImageURL: collectionMetadata.image,
-    mintDenom: "wei",
+    mintDenom: WEI_TOKEN_ADDRESS,
     royalty: royalties,
     breedingsAvailable: 0,
   };

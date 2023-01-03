@@ -4,6 +4,7 @@ import { BigNumber } from "ethers";
 import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { WEI_TOKEN_ADDRESS } from "../networks";
 import { prettyPrice } from "../utils/coins";
 import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
@@ -179,7 +180,7 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
 
   const name = await nftClient.callStatic.name();
   const unitPrice = minterConfig.publicMintPrice.toString();
-  const priceDenom = "wei";
+  const priceDenom = WEI_TOKEN_ADDRESS;
   const maxSupply = minterConfig.maxSupply.toString();
   const mintStartedAt = minterConfig.mintStartTime.toNumber();
   const mintStarted = secondsSinceEpoch >= mintStartedAt;
