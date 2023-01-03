@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -52,27 +52,19 @@ export const TransactionPaymentModal: React.FC<{
   // so we can assume that NFT is listed on the same network as it's nft
   const nftNetworkId = selectedNetworkId;
 
-  const [isWalletConnected, WalletConnectComponent] = useMemo(() => {
-    switch (selectedNetworkInfo?.network) {
-      case Network.Teritori:
-        return [
-          isKeplrConnected && selectedWallet?.address,
-          ConnectKeplrButton,
-        ];
-      case Network.Ethereum:
-        return [
-          isMetamaskConnected && selectedWallet?.address,
-          ConnectMetamaskButton,
-        ];
-      default:
-        return [false, null];
-    }
-  }, [
-    selectedNetworkId,
-    isKeplrConnected,
-    isMetamaskConnected,
-    selectedWallet?.address,
-  ]);
+  let isWalletConnected = false;
+  let WalletConnectComponent = null;
+
+  switch (selectedNetworkInfo?.network) {
+    case Network.Teritori:
+      isWalletConnected = isKeplrConnected && !!selectedWallet?.address;
+      WalletConnectComponent = ConnectKeplrButton;
+      break;
+    case Network.Ethereum:
+      isWalletConnected = isMetamaskConnected && !!selectedWallet?.address;
+      WalletConnectComponent = ConnectMetamaskButton;
+      break;
+  }
 
   return (
     <ModalBase
