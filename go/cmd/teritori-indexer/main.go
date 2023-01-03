@@ -175,6 +175,8 @@ func main() {
 		panic(fmt.Errorf("failed to find suitable replay info for height %d", chunkedHeight))
 	}
 
+	stop := false
+
 	// replay
 	for _, replayInfo := range runReplayInfos {
 		logger.Info("using replay info", zap.String("ws", replayInfo.WebsocketEndpoint), zap.Int64("start", replayInfo.StartHeight), zap.Int64("end", replayInfo.FinalHeight))
@@ -243,6 +245,7 @@ func main() {
 					return errors.Wrap(err, "failed to create handler")
 				}
 
+			outer:
 				for {
 					req := fmt.Sprintf("message.module = 'wasm' AND tx.height >= %d", batchStart)
 					if strategy == "chunk" {
@@ -275,6 +278,11 @@ func main() {
 						}
 
 						if err := handler.HandleTendermintResultTx(tx); err != nil {
+							if err == indexerhandler.ErrStopDate {
+								stop = true
+								break outer
+							}
+
 							return errors.Wrap(err, fmt.Sprintf(`failed to handle tx "%s"`, tx.Hash))
 						}
 
@@ -307,6 +315,11 @@ func main() {
 				return nil
 			}); err != nil {
 				panic(errors.Wrap(err, "failed to commit chunk"))
+			}
+
+			if stop {
+				fmt.Println("early stop")
+				os.Exit(0)
 			}
 
 			if strategy == "tail" {

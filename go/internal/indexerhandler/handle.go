@@ -86,6 +86,16 @@ func (h *Handler) HandleTendermintResultTx(tx *tenderminttypes.ResultTx) error {
 	return h.HandleTx(tx.Height, tx.Hash.String(), cosmosTx, logs)
 }
 
+var ErrStopDate = errors.New("stop date")
+
+var finalDate = func() time.Time {
+	t, err := time.Parse("02 01 2006 15 MST", "21 12 2022 22 UTC")
+	if err != nil {
+		panic(err)
+	}
+	return t
+}()
+
 func (h *Handler) HandleTx(height int64, hash string, tx cosmostx.Tx, logs []TendermintTxLog) error {
 	if len(logs) != len(tx.Body.Messages) {
 		return errors.New("messages and results count mismatch")
@@ -112,6 +122,15 @@ func (h *Handler) HandleTx(height int64, hash string, tx cosmostx.Tx, logs []Ten
 				}
 				return *blockTime, nil
 			},
+		}
+
+		blockTime, err := handlerMsg.GetBlockTime()
+		if err != nil {
+			return errors.Wrap(err, "failed to get block time")
+		}
+		if !finalDate.After(blockTime) {
+			fmt.Println("stopping at", blockTime)
+			return ErrStopDate
 		}
 
 		switch codecMsg.TypeUrl {
