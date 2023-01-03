@@ -221,20 +221,3 @@ generate.sqlboiler-prices:
 publish.p2e-update-leaderboard:
 	docker build -f go/cmd/p2e-update-leaderboard/Dockerfile . --platform amd64 -t $(P2E_DOCKER_IMAGE)
 	docker push $(P2E_DOCKER_IMAGE)
-
-.PHONY: $(EVM_CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
-$(EVM_CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
-	rm -fr $(EVM_NFT_VAULT_REPO)
-	git clone git@github.com:TERITORI/$(EVM_NFT_VAULT_REPO).git
-	cd $(EVM_NFT_VAULT_REPO) && git checkout 8e4a4452ba6aed94e8020b0be95faab9e9ec75eb
-	rm -fr $@
-	mkdir -p $@
-
-	cp $(EVM_NFT_VAULT_REPO)/types/TeritoriMinter.d.ts $@
-	cp $(EVM_NFT_VAULT_REPO)/types/factories/TeritoriMinter__factory.ts $@
-
-	@echo "************************************************************************"
-	@echo "*** NOTICE ***: Don't forget to adjust import paths from generated files"
-	@echo "************************************************************************"
-
-	rm -fr $(EVM_NFT_VAULT_REPO)
