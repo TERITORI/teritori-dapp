@@ -12,7 +12,7 @@ export const useSeasonRank = () => {
     async () => {
       return await p2eBackendClient.CurrentSeason({});
     },
-    { refetchInterval: 5000 }
+    { refetchInterval: 300000 }
   );
 
   const { data: userRank } = useQuery(
@@ -24,7 +24,7 @@ export const useSeasonRank = () => {
         userId: selectedWallet.address,
       });
     },
-    { refetchInterval: 5000 }
+    { refetchInterval: 300000 }
   );
 
   const prettyUserRank = useMemo(

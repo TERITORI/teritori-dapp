@@ -32,7 +32,7 @@ export const useGameRewards = () => {
         addr: selectedWallet.address,
       });
     },
-    { refetchInterval: 5000 }
+    { staleTime: Infinity }
   );
 
   const claimRewards = async (user: string) => {
