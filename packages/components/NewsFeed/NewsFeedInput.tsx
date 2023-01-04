@@ -8,14 +8,18 @@ import {
   Pressable,
   StyleSheet,
 } from "react-native";
+import { v4 as uuidv4 } from "uuid";
 
 import cameraSVG from "../../../assets/icons/camera.svg";
 import penSVG from "../../../assets/icons/pen.svg";
 import priceSVG from "../../../assets/icons/price.svg";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { nftStorageFile } from "../../candymachine/nft-storage-upload";
+import { socialFeedClient } from "../../client-creators/socialFeedClient";
+import { useCreatePost } from "../../hooks/feed/useCreatePost";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ReplyToType } from "../../screens/FeedPostView/types";
+import { defaultSocialFeedFee } from "../../utils/fee";
 import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -42,7 +46,6 @@ import { FileUploader } from "../fileUploader";
 import { SpacerRow } from "../spacer";
 import { NewPostFormValues } from "./NewsFeed.type";
 import {
-  createPost,
   getAvailableFreePost,
   getPostCategory,
   getPostFee,
@@ -56,6 +59,7 @@ interface NewsFeedInputProps {
   parentId?: string;
   style?: ViewStyle;
   onSubmitSuccess?: () => void;
+  onSubmitInProgress?: () => void;
   replyTo?: ReplyToType;
 }
 
@@ -68,295 +72,318 @@ export interface NewsFeedInputHandle {
 export const NewsFeedInput = React.forwardRef<
   NewsFeedInputHandle,
   NewsFeedInputProps
->(({ type, parentId, style, onSubmitSuccess, replyTo }, forwardRef) => {
-  const wallet = useSelectedWallet();
-  const inputRef = useRef<TextInput>(null);
-  const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  const [postFee, setPostFee] = useState(0);
-  const [freePostCount, setFreePostCount] = useState(0);
-  const { setToastSuccess, setToastError } = useFeedbacks();
-  const [fileUpload, setFileUpload] = useState(false);
-  const navigation = useAppNavigation();
-  const [selection, setSelection] = useState<{ start: number; end: number }>({
-    start: 10,
-    end: 10,
-  });
-
-  const balances = useBalances(
-    process.env.TERITORI_NETWORK_ID,
-    wallet?.address
-  );
-
-  const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>({
-    defaultValues: {
-      title: "",
-      message: "",
-    },
-  });
-  const formValues = watch();
-
-  const updateAvailableFreePost = async () => {
-    const freePost = await getAvailableFreePost({ wallet });
-    setFreePostCount(freePost || 0);
-  };
-
-  const updatePostFee = async () => {
-    const fee = await getPostFee({
-      wallet,
-      postCategory: getPostCategory(formValues),
+>(
+  (
+    { type, parentId, style, onSubmitSuccess, replyTo, onSubmitInProgress },
+    forwardRef
+  ) => {
+    const wallet = useSelectedWallet();
+    const inputRef = useRef<TextInput>(null);
+    const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
+    const [postFee, setPostFee] = useState(0);
+    const [freePostCount, setFreePostCount] = useState(0);
+    const [fileUpload, setFileUpload] = useState(false);
+    const navigation = useAppNavigation();
+    const [selection, setSelection] = useState<{ start: number; end: number }>({
+      start: 10,
+      end: 10,
     });
-    setPostFee(fee || 0);
-  };
+    const { mutate, isLoading } = useCreatePost({
+      onMutate: () => {
+        onSubmitInProgress && onSubmitInProgress();
+      },
+      onSuccess: () => {
+        resetForm();
+        onSubmitSuccess && onSubmitSuccess();
+      },
+    });
 
-  useEffect(() => {
-    if (wallet?.connected && wallet?.address) {
+    const balances = useBalances(
+      process.env.TERITORI_NETWORK_ID,
+      wallet?.address
+    );
+
+    const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
+      {
+        defaultValues: {
+          title: "",
+          message: "",
+        },
+      }
+    );
+    const formValues = watch();
+
+    const updateAvailableFreePost = async () => {
+      const freePost = await getAvailableFreePost({ wallet });
+      setFreePostCount(freePost || 0);
+    };
+
+    const updatePostFee = async () => {
+      const fee = await getPostFee({
+        wallet,
+        postCategory: getPostCategory(formValues),
+      });
+      setPostFee(fee || 0);
+    };
+
+    useEffect(() => {
+      if (wallet?.connected && wallet?.address) {
+        updateAvailableFreePost();
+        updatePostFee();
+      }
+    }, [wallet?.address]);
+
+    useEffect(() => {
+      updatePostFee();
+    }, [formValues]);
+
+    const onSubmit = async () => {
+      const toriBalance = balances.find((bal) => bal.denom === "utori");
+      if (postFee > Number(toriBalance?.amount) && !freePostCount) {
+        return setNotEnoughFundModal(true);
+      }
+      const hasUsername =
+        replyTo?.parentId &&
+        formValues.message.includes(`@${replyTo.username}`);
+
+      let fileURL = "";
+      if (formValues.file) {
+        const fileData = await nftStorageFile(formValues.file);
+        fileURL = fileData.data.image.href;
+      }
+      const postCategory = getPostCategory(formValues);
+
+      const client = await socialFeedClient({
+        walletAddress: wallet?.address || "",
+      });
+
+      mutate({
+        client,
+        msg: {
+          category: postCategory,
+          identifier: uuidv4(),
+          metadata: JSON.stringify({
+            title: formValues.title || "",
+            message: formValues.message || "",
+            fileURL,
+          }),
+          parentPostIdentifier: hasUsername ? replyTo.parentId : parentId,
+        },
+        args: {
+          fee: defaultSocialFeedFee,
+          memo: "",
+          funds: [],
+        },
+      });
+    };
+
+    const resetForm = () => {
+      reset();
       updateAvailableFreePost();
       updatePostFee();
-    }
-  }, [wallet?.address]);
+    };
 
-  useEffect(() => {
-    updatePostFee();
-  }, [formValues]);
+    useImperativeHandle(forwardRef, () => ({
+      resetForm,
+      setValue: handleTextChange,
+      focusInput,
+    }));
 
-  const initSubmit = async () => {
-    const toriBalance = balances.find((bal) => bal.denom === "utori");
-    if (postFee > Number(toriBalance?.amount) && !freePostCount) {
-      return setNotEnoughFundModal(true);
-    }
-    const hasUsername =
-      replyTo?.parentId &&
-      replyTo?.username &&
-      formValues.message.includes(`@${replyTo.username}`);
+    const handleUpload = (file: File) => {
+      setFileUpload(false);
+      setValue("file", file);
+    };
 
-    await createPost({
-      wallet,
-      freePostCount,
-      fee: postFee,
-      formValues,
-      parentId: hasUsername ? replyTo.parentId : parentId,
-    });
-  };
+    const handleTextChange = (text: string) => {
+      setValue("message", text);
 
-  const resetForm = () => {
-    reset();
-    updateAvailableFreePost();
-    updatePostFee();
-  };
+      if (text.length > 80) {
+        redirectToNewPost();
+      }
+    };
 
-  useImperativeHandle(forwardRef, () => ({
-    resetForm,
-    setValue: handleTextChange,
-    focusInput,
-  }));
+    const redirectToNewPost = () => {
+      reset();
+      navigation.navigate("FeedNewPost", formValues);
+    };
 
-  const onSubmit = async () => {
-    setLoading(true);
+    const onEmojiSelected = (emoji: string | null) => {
+      if (emoji) {
+        let copiedValue = `${formValues.message}`;
+        copiedValue = replaceBetweenString(
+          copiedValue,
+          selection.start,
+          selection.end,
+          emoji
+        );
+        setValue("message", copiedValue);
+      }
+    };
 
-    try {
-      await initSubmit();
-      setToastSuccess({ title: "Post submitted successfully.", message: "" });
-      onSubmitSuccess?.();
-      resetForm();
-    } catch (err) {
-      setToastError({
-        title: "Something went wrong.",
-        message: "Couldn't submit your request, please try again later. ",
-      });
-      console.log("post submit error", err);
-    }
-    setLoading(false);
-  };
+    const focusInput = () => inputRef.current?.focus();
 
-  const handleUpload = (file: File) => {
-    setFileUpload(false);
-    setValue("file", file);
-  };
+    return (
+      <View style={style}>
+        {fileUpload && (
+          <FileUploader
+            triggerFileUpload
+            onUpload={(files) => handleUpload(files?.[0])}
+            mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
+            onTrigger={() => setFileUpload(false)}
+          />
+        )}
 
-  const handleTextChange = (text: string) => {
-    setValue("message", text);
+        {isNotEnoughFundModal && (
+          <NotEnoughFundModal
+            visible
+            onClose={() => setNotEnoughFundModal(false)}
+          />
+        )}
+        <TertiaryBox
+          fullWidth
+          style={{
+            zIndex: 9,
+          }}
+          mainContainerStyle={{
+            backgroundColor: neutral22,
+          }}
+          noRightBrokenBorder
+        >
+          <Pressable onPress={focusInput} style={styles.insideContainer}>
+            <SVG
+              height={24}
+              width={24}
+              source={penSVG}
+              color={secondaryColor}
+            />
 
-    if (text.length > 80) {
-      redirectToNewPost();
-    }
-  };
-
-  const redirectToNewPost = () => {
-    reset();
-    navigation.navigate("FeedNewPost", formValues);
-  };
-
-  const onEmojiSelected = (emoji: string | null) => {
-    if (emoji) {
-      let copiedValue = `${formValues.message}`;
-      copiedValue = replaceBetweenString(
-        copiedValue,
-        selection.start,
-        selection.end,
-        emoji
-      );
-      setValue("message", copiedValue);
-    }
-  };
-
-  const focusInput = () => inputRef.current?.focus();
-
-  return (
-    <View style={style}>
-      {fileUpload && (
-        <FileUploader
-          triggerFileUpload
-          onUpload={(files) => handleUpload(files?.[0])}
-          mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
-          onTrigger={() => setFileUpload(false)}
-        />
-      )}
-
-      {isNotEnoughFundModal && (
-        <NotEnoughFundModal
-          visible
-          onClose={() => setNotEnoughFundModal(false)}
-        />
-      )}
-      <TertiaryBox
-        fullWidth
-        style={{
-          zIndex: 9,
-        }}
-        mainContainerStyle={{
-          backgroundColor: neutral22,
-        }}
-        noRightBrokenBorder
-      >
-        <Pressable onPress={focusInput} style={styles.insideContainer}>
-          <SVG height={24} width={24} source={penSVG} color={secondaryColor} />
-
-          <TextInput
-            ref={inputRef}
-            value={formValues.message}
-            onSelectionChange={(event) =>
-              setSelection(event.nativeEvent.selection)
-            }
-            placeholder={`Hey yo! ${
-              type === "post" ? "Post something" : "Write your comment"
-            } here! _____`}
-            placeholderTextColor={neutral77}
-            onChangeText={handleTextChange}
-            multiline
-            style={[
-              fontSemibold16,
-              {
-                width: "100%",
-                color: secondaryColor,
-                marginLeft: layout.padding_x1_5,
-
-                //@ts-ignore
-                outlineStyle: "none",
-                outlineWidth: 0,
-              },
-            ]}
-            onKeyPress={(e) => {
-              if (e.nativeEvent.key === "Enter" && type === "post") {
-                redirectToNewPost();
+            <TextInput
+              ref={inputRef}
+              value={formValues.message}
+              onSelectionChange={(event) =>
+                setSelection(event.nativeEvent.selection)
               }
-            }}
-          />
-          <BrandText
-            style={[
-              fontSemibold12,
-              {
-                color: neutral77,
-                position: "absolute",
-                bottom: 12,
-                right: 20,
-              },
-            ]}
-          >
-            {formValues?.message?.length}/{WORD_MAX_LIMIT}
-          </BrandText>
-        </Pressable>
-      </TertiaryBox>
-      <View
-        style={{
-          backgroundColor: neutral17,
-          paddingTop: layout.padding_x4,
-          paddingBottom: layout.padding_x1_5,
-          marginTop: -layout.padding_x2_5,
-          paddingHorizontal: layout.padding_x2_5,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          borderRadius: 8,
-        }}
-      >
+              placeholder={`Hey yo! ${
+                type === "post" ? "Post something" : "Write your comment"
+              } here! _____`}
+              placeholderTextColor={neutral77}
+              onChangeText={handleTextChange}
+              multiline
+              style={[
+                fontSemibold16,
+                {
+                  width: "100%",
+                  color: secondaryColor,
+                  marginLeft: layout.padding_x1_5,
+
+                  //@ts-ignore
+                  outlineStyle: "none",
+                  outlineWidth: 0,
+                },
+              ]}
+              onKeyPress={(e) => {
+                if (e.nativeEvent.key === "Enter" && type === "post") {
+                  redirectToNewPost();
+                }
+              }}
+            />
+            <BrandText
+              style={[
+                fontSemibold12,
+                {
+                  color: neutral77,
+                  position: "absolute",
+                  bottom: 12,
+                  right: 20,
+                },
+              ]}
+            >
+              {formValues?.message?.length}/{WORD_MAX_LIMIT}
+            </BrandText>
+          </Pressable>
+        </TertiaryBox>
         <View
           style={{
+            backgroundColor: neutral17,
+            paddingTop: layout.padding_x4,
+            paddingBottom: layout.padding_x1_5,
+            marginTop: -layout.padding_x2_5,
+            paddingHorizontal: layout.padding_x2_5,
             flexDirection: "row",
             alignItems: "center",
+            justifyContent: "space-between",
+            borderRadius: 8,
           }}
         >
-          <SVG source={priceSVG} height={24} width={24} color={neutral77} />
-          <BrandText
-            style={[
-              fontSemibold13,
-              { color: neutral77, marginLeft: layout.padding_x1 },
-            ]}
-          >
-            {freePostCount
-              ? `You have ${freePostCount} free ${type} left`
-              : `The cost for this ${type} is ${(
-                  (postFee || 0) / 1000000
-                ).toFixed(4)} Tori`}
-          </BrandText>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            flex: 1,
-            justifyContent: "flex-end",
-          }}
-        >
-          <GIFSelector onGIFSelected={console.log} />
-          <SpacerRow size={2.5} />
-
-          <EmojiSelector
-            onEmojiSelected={onEmojiSelected}
-            optionsContainer={{ marginLeft: -80 }}
-          />
-          <SpacerRow size={2.5} />
-
-          <TouchableOpacity
-            activeOpacity={0.8}
+          <View
             style={{
-              height: 32,
-              width: 32,
-              borderRadius: 24,
-              backgroundColor: neutral33,
+              flexDirection: "row",
               alignItems: "center",
-              justifyContent: "center",
-              marginRight: layout.padding_x2_5,
-            }}
-            onPress={() => {
-              setFileUpload(true);
             }}
           >
-            <SVG source={cameraSVG} width={16} height={16} />
-          </TouchableOpacity>
-          <PrimaryButton
-            disabled={!formValues?.message}
-            loader={isLoading}
-            size="M"
-            text={type === "comment" ? "Comment" : "Publish"}
-            squaresBackgroundColor={neutral17}
-            onPress={handleSubmit(onSubmit)}
-          />
+            <SVG source={priceSVG} height={24} width={24} color={neutral77} />
+            <BrandText
+              style={[
+                fontSemibold13,
+                { color: neutral77, marginLeft: layout.padding_x1 },
+              ]}
+            >
+              {freePostCount
+                ? `You have ${freePostCount} free ${type} left`
+                : `The cost for this ${type} is ${(
+                    (postFee || 0) / 1000000
+                  ).toFixed(4)} Tori`}
+            </BrandText>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              flex: 1,
+              justifyContent: "flex-end",
+            }}
+          >
+            <GIFSelector onGIFSelected={console.log} />
+            <SpacerRow size={2.5} />
+
+            <EmojiSelector
+              onEmojiSelected={onEmojiSelected}
+              optionsContainer={{ marginLeft: -80 }}
+            />
+            <SpacerRow size={2.5} />
+
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={{
+                height: 32,
+                width: 32,
+                borderRadius: 24,
+                backgroundColor: neutral33,
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: layout.padding_x2_5,
+              }}
+              onPress={() => {
+                setFileUpload(true);
+              }}
+            >
+              <SVG source={cameraSVG} width={16} height={16} />
+            </TouchableOpacity>
+            <PrimaryButton
+              disabled={!formValues?.message}
+              isLoading={isLoading}
+              size="M"
+              width={110}
+              text={type === "comment" ? "Comment" : "Publish"}
+              squaresBackgroundColor={neutral17}
+              onPress={handleSubmit(onSubmit)}
+            />
+          </View>
         </View>
       </View>
-    </View>
-  );
-});
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   insideContainer: {
