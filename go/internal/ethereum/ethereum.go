@@ -168,7 +168,7 @@ func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID s
 				ownerId  = nft.Owner
 			)
 
-			if nft.Seller != "" {
+			if nft.InSale {
 				lockedOn = nft.Owner
 				ownerId = nft.Seller
 			}
