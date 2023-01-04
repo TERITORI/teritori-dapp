@@ -8,11 +8,10 @@ import React, {
   useState,
 } from "react";
 
+import BO_DURING_FIGHT from "../../assets/game/BO-DURING-THE-FIGHT-THE-RIOT-TORI-P2E.mp3";
+import BO_PREPARE_FIGHT from "../../assets/game/BO-PREPARE-THE-FIGHT-1-P2E-THE-RIOT-TORI.mp3";
 import { useSquadStaking } from "../hooks/riotGame/useSquadStaking";
 import { StakingState } from "../utils/game";
-
-const BO_DURING_FIGHT = require("../../assets/game/BO-DURING-THE-FIGHT-THE-RIOT-TORI-P2E.mp3");
-const BO_PREPARE_FIGHT = require("../../assets/game/BO-PREPARE-THE-FIGHT-1-P2E-THE-RIOT-TORI.mp3");
 
 interface DefaultValue {
   playGameAudio: () => void;
