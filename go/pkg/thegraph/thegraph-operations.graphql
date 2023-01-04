@@ -49,6 +49,7 @@ query GetCollectionActivities($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
     }
     action
     actor
+    receiver
     txID
     createdAt
   }
@@ -75,6 +76,7 @@ query GetNFTActivities($nftID: String!, $Limit: Int!, $Offset: Int!) {
       price
       denom
     }
+    receiver
     action
     actor
     txID

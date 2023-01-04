@@ -23,6 +23,7 @@ type GetCollectionActivitiesActionsAction struct {
 	List      GetCollectionActivitiesActionsActionList `json:"list"`
 	Action    string                                   `json:"action"`
 	Actor     string                                   `json:"actor"`
+	Receiver  string                                   `json:"receiver"`
 	TxID      string                                   `json:"txID"`
 	CreatedAt string                                   `json:"createdAt"`
 }
@@ -50,6 +51,9 @@ func (v *GetCollectionActivitiesActionsAction) GetAction() string { return v.Act
 
 // GetActor returns GetCollectionActivitiesActionsAction.Actor, and is useful for accessing the field via an interface.
 func (v *GetCollectionActivitiesActionsAction) GetActor() string { return v.Actor }
+
+// GetReceiver returns GetCollectionActivitiesActionsAction.Receiver, and is useful for accessing the field via an interface.
+func (v *GetCollectionActivitiesActionsAction) GetReceiver() string { return v.Receiver }
 
 // GetTxID returns GetCollectionActivitiesActionsAction.TxID, and is useful for accessing the field via an interface.
 func (v *GetCollectionActivitiesActionsAction) GetTxID() string { return v.TxID }
@@ -393,6 +397,7 @@ type GetNFTActivitiesActionsAction struct {
 	Nft       GetNFTActivitiesActionsActionNft  `json:"nft"`
 	Buy       GetNFTActivitiesActionsActionBuy  `json:"buy"`
 	List      GetNFTActivitiesActionsActionList `json:"list"`
+	Receiver  string                            `json:"receiver"`
 	Action    string                            `json:"action"`
 	Actor     string                            `json:"actor"`
 	TxID      string                            `json:"txID"`
@@ -410,6 +415,9 @@ func (v *GetNFTActivitiesActionsAction) GetBuy() GetNFTActivitiesActionsActionBu
 
 // GetList returns GetNFTActivitiesActionsAction.List, and is useful for accessing the field via an interface.
 func (v *GetNFTActivitiesActionsAction) GetList() GetNFTActivitiesActionsActionList { return v.List }
+
+// GetReceiver returns GetNFTActivitiesActionsAction.Receiver, and is useful for accessing the field via an interface.
+func (v *GetNFTActivitiesActionsAction) GetReceiver() string { return v.Receiver }
 
 // GetAction returns GetNFTActivitiesActionsAction.Action, and is useful for accessing the field via an interface.
 func (v *GetNFTActivitiesActionsAction) GetAction() string { return v.Action }
@@ -1516,6 +1524,7 @@ query GetCollectionActivities ($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
 		}
 		action
 		actor
+		receiver
 		txID
 		createdAt
 	}
@@ -1722,6 +1731,7 @@ query GetNFTActivities ($nftID: String!, $Limit: Int!, $Offset: Int!) {
 			price
 			denom
 		}
+		receiver
 		action
 		actor
 		txID

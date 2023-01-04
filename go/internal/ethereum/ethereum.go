@@ -254,6 +254,9 @@ func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID
 			activityItem.SellerId = UserIDString(activity.Actor)
 		case "cancel_list":
 			activityItem.SellerId = UserIDString(activity.Actor)
+		case "transfer-nft":
+			activityItem.SellerId = UserIDString(activity.Actor)
+			activityItem.BuyerId = UserIDString(activity.Receiver)
 		}
 		res[index] = &activityItem
 	}
