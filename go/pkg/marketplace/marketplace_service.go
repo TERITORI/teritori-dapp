@@ -41,13 +41,19 @@ type Config struct {
 	TNSContractAddress string
 	TNSDefaultImageURL string
 	Whitelist          []string
+	AirtableAPIKey     string
 }
 
 func NewMarketplaceService(ctx context.Context, conf *Config) marketplacepb.MarketplaceServiceServer {
+	var homeProvider *airtable_fetcher.Cache
+	if conf.AirtableAPIKey != "" {
+		homeProvider = airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(conf.AirtableAPIKey), conf.Logger.Named("airtable_fetcher"))
+	}
+
 	// FIXME: validate config
 	return &MarkteplaceService{
 		conf:             conf,
-		homeProvider:     airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(), conf.Logger.Named("airtable_fetcher")),
+		homeProvider:     homeProvider,
 		ethereumProvider: ethereum.NewEthereumProvider(conf.TheGraphEndpoint),
 		// collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 		// collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
@@ -77,6 +83,9 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 	}
 
 	if req.GetUpcoming() {
+		if s.homeProvider == nil {
+			return nil
+		}
 		launches := subSlice(s.homeProvider.GetUpcomingLaunches(), int(offset), int(offset+limit))
 		for _, launch := range launches {
 			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: launch}); err != nil {
@@ -668,6 +677,9 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 }
 
 func (s *MarkteplaceService) Banners(ctx context.Context, req *marketplacepb.BannersRequest) (*marketplacepb.BannersResponse, error) {
+	if s.homeProvider == nil {
+		return &marketplacepb.BannersResponse{}, nil
+	}
 	if req.GetTestnet() {
 		return &marketplacepb.BannersResponse{Banners: s.homeProvider.GetTestnetBanners()}, nil
 	}
@@ -675,6 +687,9 @@ func (s *MarkteplaceService) Banners(ctx context.Context, req *marketplacepb.Ban
 }
 
 func (s *MarkteplaceService) News(ctx context.Context, req *marketplacepb.NewsRequest) (*marketplacepb.NewsResponse, error) {
+	if s.homeProvider == nil {
+		return &marketplacepb.NewsResponse{}, nil
+	}
 	if req.GetTestnet() {
 		return &marketplacepb.NewsResponse{News: s.homeProvider.GetTestnetNews()}, nil
 	}

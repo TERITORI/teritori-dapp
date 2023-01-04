@@ -10,6 +10,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionsCarouselHeader } from "../../components/carousels/CollectionsCarouselHeader";
 import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { launchpadCollectionsFilter } from "../../utils/collections";
 import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 
@@ -33,11 +34,13 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
             offset: 0,
             mintState: MintState.MINT_STATE_RUNNING,
           }}
+          filter={launchpadCollectionsFilter}
         />
 
         <CollectionsCarouselSection
           title="Live Mintable"
           linkToMint
+          filter={launchpadCollectionsFilter}
           req={{
             networkId: selectedNetworkId,
             sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,

@@ -11,7 +11,8 @@ import { addCollectionMetadatas } from "./../utils/ethereum";
 import { useSelectedNetwork } from "./useSelectedNetwork";
 
 export const useCollections = (
-  req: CollectionsRequest
+  req: CollectionsRequest,
+  filter?: (c: Collection) => boolean
 ): [Collection[], (index: number) => Promise<void>] => {
   const baseOffset = useRef(req.offset);
   const selectedNetwork = useSelectedNetwork();
