@@ -5,7 +5,10 @@ import { Linking } from "react-native";
 import keplrSVG from "../../../assets/icons/keplr.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { getNetwork, keplrChainInfoFromNetworkInfo } from "../../networks";
-import { setIsKeplrConnected } from "../../store/slices/settings";
+import {
+  setIsKeplrConnected,
+  setSelectedNetworkId,
+} from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 
@@ -37,6 +40,8 @@ export const ConnectKeplrButton: React.FC<{
         keplrChainInfoFromNetworkInfo(network)
       );
       await keplr.enable(network.chainId);
+
+      dispatch(setSelectedNetworkId(teritoriNetworkId));
       dispatch(setIsKeplrConnected(true));
       if (typeof onDone === "function") {
         onDone();

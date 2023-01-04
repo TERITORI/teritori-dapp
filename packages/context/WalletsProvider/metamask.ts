@@ -32,7 +32,7 @@ export const useMetamask: () => UseMetamaskResult = () => {
       provider: WalletProvider.Metamask,
       connected: isConnected,
     };
-  }, [address, isConnected]);
+  }, [address, isConnected, selectedNetworkInfo?.network]);
 
   const hasMetamask = useMemo(() => {
     return typeof (window as any).ethereum !== "undefined";

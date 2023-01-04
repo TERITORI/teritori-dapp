@@ -5,7 +5,10 @@ import { Linking } from "react-native";
 import metamaskSVG from "../../../assets/icons/metamask.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { getNetwork } from "../../networks";
-import { setIsMetamaskConnected } from "../../store/slices/settings";
+import {
+  setIsMetamaskConnected,
+  setSelectedNetworkId,
+} from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 
@@ -44,6 +47,7 @@ export const ConnectMetamaskButton: React.FC<{
         console.log("Connected address:", address);
       }
 
+      dispatch(setSelectedNetworkId(ethereumNetworkId));
       dispatch(setIsMetamaskConnected(true));
       onDone && onDone();
     } catch (err) {
