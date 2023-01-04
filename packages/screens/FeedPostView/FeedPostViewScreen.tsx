@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { View, StyleSheet } from "react-native";
 import Animated, {
+  useAnimatedRef,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
@@ -35,7 +36,7 @@ import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 import { ReplyToType } from "./types";
 
-export type OnPressReplyType = (username: string, parentId: string) => void;
+export type OnPressReplyType = (replyTo: ReplyToType) => void;
 
 export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   route: {
@@ -44,10 +45,13 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 }) => {
   const wallet = useSelectedWallet();
   const [refresh, setRefresh] = useState(0);
+  const [parentOffsetValue, setParentOffsetValue] = useState(0);
   const { triggerError } = useErrorHandler();
   const [post, setPost] = useState<PostResult>();
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
+  const aref = useAnimatedRef<Animated.ScrollView>();
+
   const isLoadingValue = useSharedValue(false);
   const translationY = useSharedValue(0);
   const isGoingUp = useSharedValue(false);
@@ -83,10 +87,10 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     }
   };
 
-  const onPressReply: OnPressReplyType = (username, parentId) => {
+  const onPressReply: OnPressReplyType = (data) => {
     feedInputRef.current?.resetForm();
-    setReplyTo({ username, parentId });
-    feedInputRef.current?.setValue(`@${username} `);
+    setReplyTo(data);
+    feedInputRef.current?.setValue(`@${data.username} `);
     feedInputRef.current?.focusInput();
   };
 
@@ -101,7 +105,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     if (post) {
       setTimeout(() => {
         isFirstLoad.value = false;
-      }, 2000);
+      }, 1300);
     }
   }, [post?.identifier, refresh]);
 
@@ -170,6 +174,11 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     };
   }, [post?.identifier]);
 
+  const handleSubmitInProgress = () => {
+    if (replyTo?.parentId) aref.current?.scrollTo(replyTo.yOffsetValue);
+    else aref.current?.scrollTo(0);
+  };
+
   const ListHeaderComponent = useCallback(
     () => (
       <Animated.View
@@ -177,7 +186,10 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       >
         <RefreshButton
           isRefreshing={isLoadingValue}
-          onPress={refetch}
+          onPress={() => {
+            refetch();
+            setRefresh((prev) => ++prev);
+          }}
           title="Refresh feed"
           widthToAnimate={140}
         />
@@ -195,6 +207,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       noScroll
     >
       <Animated.ScrollView
+        ref={aref}
         contentContainerStyle={styles.contentContainer}
         onScroll={scrollHandler}
         scrollEventThrottle={1}
@@ -216,11 +229,13 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           </View>
         )}
         <ListHeaderComponent />
-        <View style={{ flex: 1, position: "relative" }}>
+        <View onLayout={(e) => setParentOffsetValue(e.nativeEvent.layout.y)}>
           <CommentsContainer
             comments={comments}
             onPressReply={onPressReply}
             refresh={refresh}
+            onScrollTo={(y) => aref.current?.scrollTo(y)}
+            parentOffsetValue={parentOffsetValue}
           />
         </View>
       </Animated.ScrollView>
@@ -230,8 +245,9 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           ref={feedInputRef}
           type="comment"
           parentId={id}
-          onSubmitSuccess={() => setRefresh((prev) => prev + 1)}
           replyTo={replyTo}
+          onSubmitInProgress={handleSubmitInProgress}
+          onSubmitSuccess={() => setReplyTo(undefined)}
         />
       </View>
     </ScreenContainer>

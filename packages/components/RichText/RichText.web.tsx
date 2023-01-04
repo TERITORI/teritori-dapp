@@ -1,3 +1,6 @@
+import "@draft-js-plugins/inline-toolbar/lib/plugin.css";
+import "@draft-js-plugins/static-toolbar/lib/plugin.css";
+import "./draft.css";
 import createLinkPlugin from "@draft-js-plugins/anchor";
 import {
   ItalicButton,
@@ -17,14 +20,60 @@ import createToolbarPlugin, {
   Separator,
 } from "@draft-js-plugins/static-toolbar";
 import { convertToHTML } from "draft-convert";
-import { ContentState, convertFromHTML, EditorState } from "draft-js";
+import {
+  ContentBlock,
+  ContentState,
+  convertFromHTML,
+  EditorState,
+} from "draft-js";
 import React, { useEffect, useRef } from "react";
+import { Pressable } from "react-native";
 
-import "@draft-js-plugins/inline-toolbar/lib/plugin.css";
-import "@draft-js-plugins/static-toolbar/lib/plugin.css";
-import { neutral33 } from "../../utils/style/colors";
-import "./draft.css";
+import { useAppNavigation } from "../../utils/navigation";
+import { HANDLE_REGEX } from "../../utils/regex";
+import { DEFAULT_USERNAME } from "../../utils/social-feed";
+import { neutral33, primaryColor } from "../../utils/style/colors";
 import { RichTextProps } from "./RichText.type";
+
+const handleStrategy = (
+  contentBlock: ContentBlock,
+  callback: (start: number, end: number) => void
+) => {
+  findWithRegex(HANDLE_REGEX, contentBlock, callback);
+};
+
+const findWithRegex = (
+  regex: RegExp,
+  contentBlock: ContentBlock,
+  callback: (start: number, end: number) => void
+) => {
+  const text = contentBlock.getText();
+
+  [...text.matchAll(new RegExp(regex, "gi"))]
+    .map((a) =>
+      !a[0].toLowerCase().includes(DEFAULT_USERNAME.toLowerCase()) && a.index
+        ? [a.index, a.index + a[0].length]
+        : null
+    )
+    .forEach((v) => v && callback(v[0], v[1]));
+};
+
+const HandleSpan = (props: { children: { props: { text: string } }[] }) => {
+  // const navigation = useAppNavigation();
+  const navigation = useAppNavigation();
+
+  return (
+    <Pressable
+      onPress={() =>
+        navigation.navigate("PublicProfile", {
+          id: props.children[0].props.text.replace("@", ""),
+        })
+      }
+    >
+      <span style={{ color: primaryColor }}>{props.children}</span>
+    </Pressable>
+  );
+};
 
 const LinkPlugin = createLinkPlugin();
 const inlineToolbarPlugin = createInlineToolbarPlugin({
@@ -59,6 +108,13 @@ const createStateFromHTML = (html: string) => {
   );
   return EditorState.createWithContent(content);
 };
+
+const compositeDecorator = [
+  {
+    strategy: handleStrategy,
+    component: HandleSpan,
+  },
+];
 
 export function RichText({
   onChange = () => {},
@@ -111,6 +167,7 @@ export function RichText({
         readOnly={readOnly}
         onBlur={onBlur}
         ref={editorRef}
+        decorators={compositeDecorator}
       />
       {!readOnly && (
         <>
