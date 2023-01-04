@@ -3,6 +3,7 @@ package ethereum
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -13,16 +14,29 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/thegraph"
+	"github.com/dgraph-io/ristretto"
 )
 
 type Provider struct {
 	client graphql.Client
+	cache  *ristretto.Cache
 }
+
+var refreshTime = time.Minute
 
 func NewEthereumProvider(graphqlEndpoint string) *Provider {
 	client := graphql.NewClient(graphqlEndpoint, nil)
+	cache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e7,
+		MaxCost:     1 << 30,
+		BufferItems: 64,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 	return &Provider{
 		client: client,
+		cache:  cache,
 	}
 }
 
@@ -32,6 +46,11 @@ type Volume struct {
 }
 
 func (p *Provider) GetCollections(ctx context.Context, networkId string) ([]marketplacepb.Collection, error) {
+	cacheKey := fmt.Sprintf("col_%s", networkId)
+	data, ok := p.cache.Get(cacheKey)
+	if ok {
+		return data.([]marketplacepb.Collection), nil
+	}
 	//30 days window
 	unixTime := time.Now().AddDate(0, 0, -30).Unix()
 	collections, err := thegraph.GetCollections(ctx, p.client, fmt.Sprint(unixTime))
@@ -62,13 +81,22 @@ func (p *Provider) GetCollections(ctx context.Context, networkId string) ([]mark
 			VolumeDenom:    volumeByCollection[contract.Id].denom,
 		})
 	}
+	p.cache.SetWithTTL(cacheKey, res, 0, refreshTime)
 	return res, nil
 }
 
 func (p *Provider) GetCollectionStats(ctx context.Context, collectionID string, owner string) (*marketplacepb.CollectionStats, error) {
-
 	minter := strings.Replace(collectionID, "eth-", "", 1)
-	collectionsStats, err := thegraph.GetCollectionStats(ctx, p.client, minter)
+	cacheKey := fmt.Sprintf("col_stats_%s", collectionID)
+	data, ok := p.cache.Get(cacheKey)
+	var err error
+	var collectionsStats *thegraph.GetCollectionStatsResponse
+	if ok {
+		collectionsStats = data.(*thegraph.GetCollectionStatsResponse)
+	} else {
+		collectionsStats, err = thegraph.GetCollectionStats(ctx, p.client, minter)
+		p.cache.SetWithTTL(cacheKey, collectionsStats, 0, refreshTime)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -194,46 +222,40 @@ func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID s
 	return res, nil
 }
 
-func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID string, limit, offset int) ([]*marketplacepb.Activity, error) {
+func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID string, limit, offset int) ([]*marketplacepb.Activity, int, error) {
 	minter := strings.Replace(collectionID, "eth-", "", 1)
-	if nftID != "" {
-		activities, err := thegraph.GetNFTActivities(ctx, p.client, nftID, limit, offset)
-		if err != nil {
-			return nil, err
-		}
-		res := make([]*marketplacepb.Activity, len(activities.Actions))
-		for index, activity := range activities.Actions {
-			activityItem := marketplacepb.Activity{
-				Id:              indexerdb.EthereumActivityID(activity.TxID, index),
-				TransactionKind: activity.Action,
-				TargetImageUri:  activity.Nft.TokenURI,
-				ContractName:    activity.Nft.Contract.Name,
-				TransactionId:   activity.TxID,
-				Time:            time.Unix(stringToInt64(activity.CreatedAt), 0).Format(time.RFC3339),
+	var activities []thegraph.Activities
+	cacheKey := fmt.Sprintf("Act_%s_%s", collectionID, nftID)
+	data, ok := p.cache.Get(cacheKey)
+	if ok {
+		activities = data.([]thegraph.Activities)
+	} else {
+		if nftID != "" {
+			res, err := thegraph.GetNFTActivities(ctx, p.client, nftID)
+			if err != nil {
+				return nil, 0, err
 			}
-			switch activity.Action {
-			case "trade":
-				activityItem.Amount = activity.Buy.Price
-				activityItem.Denom = activity.Buy.Denom
-				activityItem.BuyerId = UserIDString(activity.Actor)
-				activityItem.SellerId = UserIDString(activity.Buy.Seller)
-			case "list":
-				activityItem.Amount = activity.List.Price
-				activityItem.Denom = activity.List.Denom
-				activityItem.SellerId = UserIDString(activity.Actor)
-			case "cancel_list":
-				activityItem.SellerId = UserIDString(activity.Actor)
+			activities = res.Actions
+		} else {
+			res, err := thegraph.GetCollectionActivities(ctx, p.client, minter)
+			if err != nil {
+				return nil, 0, err
 			}
-			res[index] = &activityItem
+			activities = res.Actions
 		}
-		return res, nil
+		p.cache.SetWithTTL(cacheKey, activities, 0, refreshTime)
 	}
-	activities, err := thegraph.GetCollectionActivities(ctx, p.client, minter, limit, offset)
-	if err != nil {
-		return nil, err
+	total := len(activities)
+	if offset > total {
+		return []*marketplacepb.Activity{}, total, nil
 	}
-	res := make([]*marketplacepb.Activity, len(activities.Actions))
-	for index, activity := range activities.Actions {
+	end := offset + limit
+	if end > total {
+		end = total
+	}
+	res := make([]*marketplacepb.Activity, len(activities))
+	activities = activities[offset:end]
+	for index, activity := range activities {
 		activityItem := marketplacepb.Activity{
 			Id:              indexerdb.EthereumActivityID(activity.TxID, index),
 			TransactionKind: activity.Action,
@@ -260,7 +282,7 @@ func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID
 		}
 		res[index] = &activityItem
 	}
-	return res, nil
+	return res, total, nil
 }
 
 // stringToInt64 assumes a number, return 0 if string cannot be parsed

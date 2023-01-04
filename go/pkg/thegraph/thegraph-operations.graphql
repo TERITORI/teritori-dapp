@@ -26,8 +26,9 @@ query GetCollectionNFTs(
 	}
 }
 
-query GetCollectionActivities($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
-  actions(where: { minter: $minter }, first: $Limit, skip: $Offset, orderBy: createdAt, orderDirection: desc) {
+query GetCollectionActivities($minter: Bytes!) {
+  # @genqlient(typename: "Activities")
+  actions(where: { minter: $minter }, orderBy: createdAt, orderDirection: desc) {
     id
     nft {
       id
@@ -55,8 +56,9 @@ query GetCollectionActivities($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
   }
 }
 
-query GetNFTActivities($nftID: String!, $Limit: Int!, $Offset: Int!) {
-  actions(where: { nft: $nftID }, first: $Limit, skip: $Offset, orderBy: createdAt, orderDirection: desc) {
+query GetNFTActivities($nftID: String!) {
+  # @genqlient(typename: "Activities")
+  actions(where: { nft: $nftID }, orderBy: createdAt, orderDirection: desc) {
     id
     nft {
       id
@@ -76,9 +78,9 @@ query GetNFTActivities($nftID: String!, $Limit: Int!, $Offset: Int!) {
       price
       denom
     }
-    receiver
     action
     actor
+    receiver
     txID
     createdAt
   }

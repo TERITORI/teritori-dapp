@@ -418,11 +418,11 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 	networkID := req.GetNetworkId()
 	nftID := req.GetNftId()
 	if networkID == "ethereum" || networkID == "ethereum-goerli" {
-		activities, err := s.ethereumProvider.GetActivities(srv.Context(), collectionID, nftID, int(limit), int(offset))
+		activities, total, err := s.ethereumProvider.GetActivities(srv.Context(), collectionID, nftID, int(limit), int(offset))
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection activity")
 		}
-		if err := srv.Send(&marketplacepb.ActivityResponse{}); err != nil {
+		if err := srv.Send(&marketplacepb.ActivityResponse{Total: int64(total)}); err != nil {
 			return errors.Wrap(err, "failed to send total count")
 		}
 		for _, activity := range activities {
