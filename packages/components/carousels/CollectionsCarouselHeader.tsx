@@ -107,7 +107,7 @@ export const CollectionsCarouselHeader: React.FC<{
   linkToMint?: boolean;
   filter?: (c: Collection) => boolean;
 }> = ({ req = defaultRequest, linkToMint, filter }) => {
-  const [collections, fetchMore] = useCollections(req, filter);
+  const [collections] = useCollections(req, filter);
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
 
@@ -136,7 +136,6 @@ export const CollectionsCarouselHeader: React.FC<{
         data={collections}
         ref={carouselRef}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
-        onScrollEnd={fetchMore}
         height={370}
         pagingEnabled
         autoPlay

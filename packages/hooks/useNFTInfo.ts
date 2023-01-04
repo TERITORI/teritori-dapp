@@ -80,7 +80,7 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
       }
     };
     effect();
-  }, [id, wallet, refreshIndex, breedingConfig]);
+  }, [id, wallet, refreshIndex, breedingConfig?.owner]);
 
   return { info, refresh, notFound, loading };
 };

@@ -284,6 +284,9 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
 export const useCollectionInfo = (id: string) => {
   const selectedNetwork = useSelectedNetwork();
 
+  // Request to ETH blockchain is not free so for ETH we do not re-fetch much
+  const refetchInterval = selectedNetwork === Network.Ethereum ? 60_000 : 5000;
+
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
     async (): Promise<CollectionInfo> => {
@@ -304,19 +307,11 @@ export const useCollectionInfo = (id: string) => {
         }
       } else if (selectedNetwork === Network.Ethereum) {
         const mintAddress = id.replace("eth-", "");
-
-        // Get mintAddress
-        const provider = await getEthereumProvider();
-        if (!provider) {
-          console.error("no eth provider found");
-          return {};
-        }
-
         info = await getEthereumTeritoriBunkerCollectionInfo(mintAddress);
       }
       return info;
     },
-    { refetchInterval: 5000 }
+    { refetchInterval }
   );
 
   return { info: data, notFound: !!error, refetchCollectionInfo: refetch };

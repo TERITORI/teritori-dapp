@@ -27,7 +27,7 @@ query GetCollectionNFTs(
 }
 
 query GetCollectionActivities($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
-  actions(where: { minter: $minter }, first: $Limit, skip: $Offset) {
+  actions(where: { minter: $minter }, first: $Limit, skip: $Offset, orderBy: createdAt, orderDirection: desc) {
     id
     nft {
       id
@@ -55,7 +55,7 @@ query GetCollectionActivities($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
 }
 
 query GetNFTActivities($nftID: String!, $Limit: Int!, $Offset: Int!) {
-  actions(where: { nft: $nftID }, first: $Limit, skip: $Offset) {
+  actions(where: { nft: $nftID }, first: $Limit, skip: $Offset, orderBy: createdAt, orderDirection: desc) {
     id
     nft {
       id

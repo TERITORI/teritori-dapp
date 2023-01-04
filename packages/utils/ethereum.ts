@@ -14,7 +14,10 @@ export const getMetaMaskEthereumProvider = async () => {
 
 // TODO: use chain provider in case we have not metamask installed
 export const getEthereumProvider = async () => {
-  return getMetaMaskEthereumProvider();
+  return new ethers.providers.AlchemyProvider(
+    +(process.env.ETHEREUM_CHAIN_ID || ""),
+    process.env.ETHEREUM_ALCHEMY_API_KEY
+  );
 };
 
 export const getMetaMaskEthereumSigner = async (address?: string) => {

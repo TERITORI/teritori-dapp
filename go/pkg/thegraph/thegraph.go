@@ -996,7 +996,7 @@ type Nft_filter struct {
 	RemovedAt_in                       []string           `json:"removedAt_in,omitempty"`
 	RemovedAt_not_in                   []string           `json:"removedAt_not_in,omitempty"`
 	// Filter for the block changed event.
-	Change_block BlockChangedFilter `json:"_change_block,omitempty"`
+	Change_block BlockChangedFilter `json:"_change_block"`
 }
 
 // GetId returns Nft_filter.Id, and is useful for accessing the field via an interface.
@@ -1494,7 +1494,7 @@ func GetCollectionActivities(
 		OpName: "GetCollectionActivities",
 		Query: `
 query GetCollectionActivities ($minter: Bytes!, $Limit: Int!, $Offset: Int!) {
-	actions(where: {minter:$minter}, first: $Limit, skip: $Offset) {
+	actions(where: {minter:$minter}, first: $Limit, skip: $Offset, orderBy: createdAt, orderDirection: desc) {
 		id
 		nft {
 			id
@@ -1702,7 +1702,7 @@ func GetNFTActivities(
 		OpName: "GetNFTActivities",
 		Query: `
 query GetNFTActivities ($nftID: String!, $Limit: Int!, $Offset: Int!) {
-	actions(where: {nft:$nftID}, first: $Limit, skip: $Offset) {
+	actions(where: {nft:$nftID}, first: $Limit, skip: $Offset, orderBy: createdAt, orderDirection: desc) {
 		id
 		nft {
 			id
