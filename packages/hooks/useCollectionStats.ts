@@ -38,7 +38,9 @@ export const useCollectionStats = (collectionId: string, address?: string) => {
   const adjustedData = useMemo(() => {
     if (!data || addressPrefix !== "eth") return data;
 
-    const ether = ethers.utils.formatEther(BigNumber.from(data.totalVolume));
+    const ether = ethers.utils.formatEther(
+      BigNumber.from(data.totalVolume || 0)
+    );
     return {
       ...data,
       totalVolume: `${+ether * usdPrice}`,
