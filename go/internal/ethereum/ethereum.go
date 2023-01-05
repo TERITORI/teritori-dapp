@@ -171,15 +171,20 @@ func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID s
 	owner := strings.Replace(ownerId, "eth-", "", 1)
 
 	nftContractFilter := thegraph.NftContract_filter{}
-	nftFilter := thegraph.Nft_filter{}
+	// FIXME: re-work on indexer to keep ownerInfo/lockedOn info, for now we have to make 2 queries
+	// This is really ugly now we should fix that soon
+	nftFilter1 := thegraph.Nft_filter{}
+	nftFilter2 := thegraph.Nft_filter{}
 
 	if minter != "" {
 		nftContractFilter.Minter = minter
 	}
 
 	if owner != "" {
-		nftFilter.Owner = owner
+		nftFilter1.Owner = owner
+		nftFilter2.Seller = owner
 	}
+
 	sortDirection := thegraph.OrderDirectionAsc
 	if orderDirection == marketplacepb.SortDirection_SORT_DIRECTION_DESCENDING {
 		sortDirection = thegraph.OrderDirectionDesc
@@ -190,11 +195,49 @@ func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID s
 	if ok {
 		res = data.([]*marketplacepb.NFT)
 	} else {
-		collection, err := thegraph.GetCollectionNFTs(ctx, p.client, nftContractFilter, nftFilter, thegraph.Nft_orderByPrice, sortDirection)
+		collection1, err := thegraph.GetCollectionNFTs(ctx, p.client, nftContractFilter, nftFilter1, thegraph.Nft_orderByPrice, sortDirection)
 		if err != nil {
 			return nil, err
 		}
-		for _, nftContract := range collection.NftContracts {
+
+		collection2, err := thegraph.GetCollectionNFTs(ctx, p.client, nftContractFilter, nftFilter2, thegraph.Nft_orderByPrice, sortDirection)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, nftContract := range collection1.NftContracts {
+			nfts := nftContract.Nfts
+
+			for _, nft := range nfts {
+				var (
+					lockedOn = ""
+					ownerId  = nft.Owner
+				)
+
+				if nft.InSale {
+					lockedOn = nft.Owner
+					ownerId = nft.Seller
+				}
+
+				nft := marketplacepb.NFT{
+					Id:                 fmt.Sprintf("eth-%s-%s", nftContract.Minter, nft.TokenID),
+					NetworkId:          networkID,
+					ImageUri:           nft.TokenURI,
+					MintAddress:        nftContract.Minter,
+					Price:              nft.Price,
+					Denom:              nft.Denom,
+					IsListed:           nft.InSale,
+					CollectionName:     nftContract.Name,
+					OwnerId:            ownerId,
+					LockedOn:           lockedOn,
+					NftContractAddress: nftContract.Id,
+				}
+
+				res = append(res, &nft)
+			}
+		}
+
+		for _, nftContract := range collection2.NftContracts {
 			nfts := nftContract.Nfts
 
 			for _, nft := range nfts {
