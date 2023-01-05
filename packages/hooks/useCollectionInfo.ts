@@ -322,7 +322,7 @@ export const useCollectionInfo = (id: string) => {
       }
       return info;
     },
-    { refetchInterval }
+    { refetchInterval, staleTime: refetchInterval }
   );
 
   return { info: data, notFound: !!error, refetchCollectionInfo: refetch };
