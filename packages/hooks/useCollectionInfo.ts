@@ -189,7 +189,6 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
   const maxSupply = minterConfig.maxSupply.toString();
   const mintStartedAt = minterConfig.mintStartTime.toNumber();
   const mintStarted = secondsSinceEpoch >= mintStartedAt;
-  const maxPerAddress = minterConfig.publicMintMax.toString() || undefined;
 
   // Fetch all whitelist phrases
   const whitelistPhases = [];
@@ -253,6 +252,11 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
   } else {
     state = "ended";
   }
+
+  const maxPerAddress =
+    state === "whitelist"
+      ? String(whitelistPhases[userState.currentPhase.toNumber()]?.mintMax || 0)
+      : minterConfig.publicMintMax.toString() || undefined;
 
   const info: CollectionInfo = {
     name,
