@@ -175,8 +175,9 @@ const getEthereumStandardNFTInfo = async (
   const collectionMetadata = await fetch(contractURI).then((data) =>
     data.json()
   );
-  const metadata = await nftClient.nftInfo(tokenId);
-
+  const tokenURI = await nftClient.tokenURI(tokenId);
+  const metadataURL = ipfsURLToHTTPURL(tokenURI);
+  const metadata = await fetch(metadataURL).then((data) => data.json());
   const attributes: NFTAttribute[] = [];
   for (const attr of metadata.attributes) {
     attributes.push({ trait_type: attr.trait_type, value: attr.value });

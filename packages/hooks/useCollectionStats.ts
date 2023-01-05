@@ -38,8 +38,9 @@ export const useCollectionStats = (collectionId: string, address?: string) => {
   const adjustedData = useMemo(() => {
     if (!data || addressPrefix !== "eth") return data;
 
+    // FIXME: fix from backend to not send nil
     const ether = ethers.utils.formatEther(
-      BigNumber.from(data.totalVolume || 0)
+      BigNumber.from(data.totalVolume !== "<nil>" ? data.totalVolume || 0 : 0)
     );
     return {
       ...data,
