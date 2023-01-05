@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
+import { useMemo } from "react";
 
 import { WEI_TOKEN_ADDRESS } from "../networks";
 import { backendClient } from "../utils/backend";
@@ -29,17 +30,18 @@ export const useCollectionStats = (collectionId: string, address?: string) => {
         networkId,
       });
 
-      // TODO: If ethereum then consider that denom is wei for now, handle dynamic denom later
-      if (stats && network === Network.Ethereum) {
-        const ether = ethers.utils.formatEther(
-          BigNumber.from(stats.totalVolume)
-        );
-
-        stats.totalVolume = `${+ether * prices["ethereum"]?.["usd"]}`;
-      }
-
       return stats;
     }
   );
-  return data;
+
+  const usdPrice = prices["ethereum"]?.["usd"] || 0;
+  const adjustedData = useMemo(() => {
+    if (!data || network !== Network.Ethereum) return data;
+
+    const ether = ethers.utils.formatEther(BigNumber.from(data.totalVolume));
+    data.totalVolume = `${+ether * prices["ethereum"]?.["usd"]}`;
+    return data;
+  }, [usdPrice, network, data]);
+
+  return adjustedData;
 };
