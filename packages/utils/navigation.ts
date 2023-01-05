@@ -73,7 +73,7 @@ export const useAppNavigation = () => {
       "LaunchpadApply",
 
       // Mint NFT collection
-      "MintCollection:",
+      "MintCollection",
 
       // ==== Marketplace
       "Marketplace",
