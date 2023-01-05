@@ -145,7 +145,7 @@ func (p *Provider) GetCollectionStats(ctx context.Context, collectionID string, 
 				continue
 			}
 
-			if currentPrice.Cmp(priceBigInt) > 1 {
+			if currentPrice.Cmp(priceBigInt) == 1 {
 				floorByDenom[nft.Denom] = priceBigInt
 			}
 		}
