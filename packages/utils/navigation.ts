@@ -52,12 +52,12 @@ export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
 }>;
 
 export const useAppNavigation = () => {
-  const route = useRoute();
+  const route = useRoute<RouteProp<RootStackParamList>>();
   const selectedNetwork = useSelectedNetwork();
   const { setToastError } = useFeedbacks();
 
   // Supported Screen on ETH
-  const ethSupportedScreens = useMemo<string[]>(
+  const ethSupportedScreens = useMemo<(keyof RootStackParamList)[]>(
     () => [
       "Home",
       "MyCollection",
