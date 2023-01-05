@@ -11,6 +11,7 @@ import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import useSelectedWallet from "./useSelectedWallet";
 
 export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
 
@@ -155,7 +156,10 @@ const getTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   return info;
 };
 
-const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
+const getEthereumTeritoriBunkerCollectionInfo = async (
+  mintAddress: string,
+  user: string
+) => {
   const provider = await getEthereumProvider();
   if (!provider) {
     console.error("no eth provider found");
@@ -177,7 +181,10 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   const secondsSinceEpoch = Date.now() / 1000;
 
   const name = await nftClient.callStatic.name();
-  const unitPrice = minterConfig.publicMintPrice.toString();
+
+  const userState = await minterClient.callStatic.userState(user);
+
+  const unitPrice = userState.mintPrice.toString();
   const priceDenom = WEI_TOKEN_ADDRESS;
   const maxSupply = minterConfig.maxSupply.toString();
   const mintStartedAt = minterConfig.mintStartTime.toNumber();
@@ -282,6 +289,7 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
 export const useCollectionInfo = (id: string) => {
   // Request to ETH blockchain is not free so for ETH we do not re-fetch much
   const refetchInterval = id.startsWith("eth-") ? 60_000 : 5000;
+  const selectedWallet = useSelectedWallet();
 
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
@@ -303,7 +311,10 @@ export const useCollectionInfo = (id: string) => {
         }
       } else if (id.startsWith("eth-")) {
         const mintAddress = id.replace("eth-", "");
-        info = await getEthereumTeritoriBunkerCollectionInfo(mintAddress);
+        info = await getEthereumTeritoriBunkerCollectionInfo(
+          mintAddress,
+          selectedWallet?.address || ""
+        );
       }
       return info;
     },
