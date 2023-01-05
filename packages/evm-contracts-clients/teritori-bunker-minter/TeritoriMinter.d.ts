@@ -33,7 +33,7 @@ interface TeritoriMinterInterface extends ethers.utils.Interface {
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "requestMint(address)": FunctionFragment;
+    "requestMint(address,uint256)": FunctionFragment;
     "setConfig((uint256,address,uint256,uint256,uint256,uint256))": FunctionFragment;
     "setMinter(address)": FunctionFragment;
     "setMinterFee(uint256)": FunctionFragment;
@@ -97,7 +97,10 @@ interface TeritoriMinterInterface extends ethers.utils.Interface {
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "requestMint", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "requestMint",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "setConfig",
     values: [
@@ -368,6 +371,7 @@ export class TeritoriMinter extends BaseContract {
 
     requestMint(
       user: string,
+      count: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -533,6 +537,7 @@ export class TeritoriMinter extends BaseContract {
 
   requestMint(
     user: string,
+    count: BigNumberish,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -689,7 +694,11 @@ export class TeritoriMinter extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    requestMint(user: string, overrides?: CallOverrides): Promise<void>;
+    requestMint(
+      user: string,
+      count: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setConfig(
       newConfig: {
@@ -886,6 +895,7 @@ export class TeritoriMinter extends BaseContract {
 
     requestMint(
       user: string,
+      count: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1026,6 +1036,7 @@ export class TeritoriMinter extends BaseContract {
 
     requestMint(
       user: string,
+      count: BigNumberish,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
