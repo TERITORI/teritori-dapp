@@ -1301,6 +1301,32 @@ func (v *Nft_filter) GetRemovedAt_not_in() []string { return v.RemovedAt_not_in 
 // GetChange_block returns Nft_filter.Change_block, and is useful for accessing the field via an interface.
 func (v *Nft_filter) GetChange_block() BlockChangedFilter { return v.Change_block }
 
+type Nft_orderBy string
+
+const (
+	Nft_orderById             Nft_orderBy = "id"
+	Nft_orderByContract       Nft_orderBy = "contract"
+	Nft_orderByTokenid        Nft_orderBy = "tokenID"
+	Nft_orderByOwner          Nft_orderBy = "owner"
+	Nft_orderByCreatorname    Nft_orderBy = "creatorName"
+	Nft_orderByCreatoraddress Nft_orderBy = "creatorAddress"
+	Nft_orderBySeller         Nft_orderBy = "seller"
+	Nft_orderByTokenuri       Nft_orderBy = "tokenURI"
+	Nft_orderByInsale         Nft_orderBy = "inSale"
+	Nft_orderByPrice          Nft_orderBy = "price"
+	Nft_orderByDenom          Nft_orderBy = "denom"
+	Nft_orderByCreatedat      Nft_orderBy = "createdAt"
+	Nft_orderByRemovedat      Nft_orderBy = "removedAt"
+)
+
+// Defines the order direction, either ascending or descending
+type OrderDirection string
+
+const (
+	OrderDirectionAsc  OrderDirection = "asc"
+	OrderDirectionDesc OrderDirection = "desc"
+)
+
 // __GetCollectionActivitiesInput is used internally by genqlient
 type __GetCollectionActivitiesInput struct {
 	Minter string `json:"minter"`
@@ -1313,8 +1339,8 @@ func (v *__GetCollectionActivitiesInput) GetMinter() string { return v.Minter }
 type __GetCollectionNFTsInput struct {
 	NftContractFilter NftContract_filter `json:"nftContractFilter"`
 	NftFilter         Nft_filter         `json:"nftFilter"`
-	Limit             int                `json:"Limit"`
-	Offset            int                `json:"Offset"`
+	OrderBy           Nft_orderBy        `json:"orderBy"`
+	OrderDirection    OrderDirection     `json:"orderDirection"`
 }
 
 // GetNftContractFilter returns __GetCollectionNFTsInput.NftContractFilter, and is useful for accessing the field via an interface.
@@ -1325,11 +1351,11 @@ func (v *__GetCollectionNFTsInput) GetNftContractFilter() NftContract_filter {
 // GetNftFilter returns __GetCollectionNFTsInput.NftFilter, and is useful for accessing the field via an interface.
 func (v *__GetCollectionNFTsInput) GetNftFilter() Nft_filter { return v.NftFilter }
 
-// GetLimit returns __GetCollectionNFTsInput.Limit, and is useful for accessing the field via an interface.
-func (v *__GetCollectionNFTsInput) GetLimit() int { return v.Limit }
+// GetOrderBy returns __GetCollectionNFTsInput.OrderBy, and is useful for accessing the field via an interface.
+func (v *__GetCollectionNFTsInput) GetOrderBy() Nft_orderBy { return v.OrderBy }
 
-// GetOffset returns __GetCollectionNFTsInput.Offset, and is useful for accessing the field via an interface.
-func (v *__GetCollectionNFTsInput) GetOffset() int { return v.Offset }
+// GetOrderDirection returns __GetCollectionNFTsInput.OrderDirection, and is useful for accessing the field via an interface.
+func (v *__GetCollectionNFTsInput) GetOrderDirection() OrderDirection { return v.OrderDirection }
 
 // __GetCollectionStatsInput is used internally by genqlient
 type __GetCollectionStatsInput struct {
@@ -1423,19 +1449,19 @@ func GetCollectionNFTs(
 	client graphql.Client,
 	nftContractFilter NftContract_filter,
 	nftFilter Nft_filter,
-	Limit int,
-	Offset int,
+	orderBy Nft_orderBy,
+	orderDirection OrderDirection,
 ) (*GetCollectionNFTsResponse, error) {
 	req := &graphql.Request{
 		OpName: "GetCollectionNFTs",
 		Query: `
-query GetCollectionNFTs ($nftContractFilter: NftContract_filter, $nftFilter: Nft_filter, $Limit: Int!, $Offset: Int!) {
-	nftContracts(where: $nftContractFilter, first: $Limit, skip: $Offset) {
+query GetCollectionNFTs ($nftContractFilter: NftContract_filter, $nftFilter: Nft_filter, $orderBy: Nft_orderBy, $orderDirection: OrderDirection) {
+	nftContracts(where: $nftContractFilter) {
 		id
 		name
 		minter
 		symbol
-		nfts(where: $nftFilter, first: $Limit, skip: $Offset) {
+		nfts(where: $nftFilter, orderBy: $orderBy, orderDirection: $orderDirection) {
 			id
 			tokenID
 			owner
@@ -1455,8 +1481,8 @@ query GetCollectionNFTs ($nftContractFilter: NftContract_filter, $nftFilter: Nft
 		Variables: &__GetCollectionNFTsInput{
 			NftContractFilter: nftContractFilter,
 			NftFilter:         nftFilter,
-			Limit:             Limit,
-			Offset:            Offset,
+			OrderBy:           orderBy,
+			OrderDirection:    orderDirection,
 		},
 	}
 	var err error
