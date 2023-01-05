@@ -203,7 +203,7 @@ export interface Quest {
 }
 
 export interface PriceDatum {
-  price: number;
+  price: string;
   time: string;
 }
 
@@ -1090,13 +1090,13 @@ export const Quest = {
 };
 
 function createBasePriceDatum(): PriceDatum {
-  return { price: 0, time: "" };
+  return { price: "", time: "" };
 }
 
 export const PriceDatum = {
   encode(message: PriceDatum, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.price !== 0) {
-      writer.uint32(9).double(message.price);
+    if (message.price !== "") {
+      writer.uint32(26).string(message.price);
     }
     if (message.time !== "") {
       writer.uint32(18).string(message.time);
@@ -1111,8 +1111,8 @@ export const PriceDatum = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.price = reader.double();
+        case 3:
+          message.price = reader.string();
           break;
         case 2:
           message.time = reader.string();
@@ -1127,7 +1127,7 @@ export const PriceDatum = {
 
   fromJSON(object: any): PriceDatum {
     return {
-      price: isSet(object.price) ? Number(object.price) : 0,
+      price: isSet(object.price) ? String(object.price) : "",
       time: isSet(object.time) ? String(object.time) : "",
     };
   },
@@ -1141,7 +1141,7 @@ export const PriceDatum = {
 
   fromPartial<I extends Exact<DeepPartial<PriceDatum>, I>>(object: I): PriceDatum {
     const message = createBasePriceDatum();
-    message.price = object.price ?? 0;
+    message.price = object.price ?? "";
     message.time = object.time ?? "";
     return message;
   },

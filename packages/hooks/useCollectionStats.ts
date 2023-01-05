@@ -41,7 +41,7 @@ export const useCollectionStats = (collectionId: string, address?: string) => {
     const ether = ethers.utils.formatEther(BigNumber.from(data.totalVolume));
     return {
       ...data,
-      totalVolume: `${+ether * prices["ethereum"]?.["usd"]}`,
+      totalVolume: `${+ether * usdPrice}`,
     };
   }, [usdPrice, network, data]);
 

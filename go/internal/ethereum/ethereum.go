@@ -309,7 +309,7 @@ func (p *Provider) GetNFTPriceHistory(ctx context.Context, nftID string) ([]*mar
 
 		res[index] = &marketplacepb.PriceDatum{
 			Time:  time.Unix(stringToInt64(trade.CreatedAt), 0).Format(time.RFC3339),
-			Price: float64(stringToInt64(trade.Price)),
+			Price: trade.Price,
 		}
 	}
 	return res, nil
