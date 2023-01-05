@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -237,6 +238,9 @@ func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID s
 		end = total
 	}
 	nfts := res[offset:end]
+	sort.Slice(nfts, func(i, j int) bool {
+		return nfts[i].Price != ""
+	})
 	return nfts, nil
 }
 
