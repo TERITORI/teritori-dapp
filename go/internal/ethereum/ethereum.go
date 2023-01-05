@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -281,10 +280,7 @@ func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID s
 		end = total
 	}
 	nfts := res[offset:end]
-	sort.Slice(nfts, func(i, j int) bool {
-		return nfts[i].Price != ""
-	})
-	return nfts, nil
+	return sortArray(nfts), nil
 }
 
 func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID string, limit, offset int) ([]*marketplacepb.Activity, int, error) {
@@ -383,4 +379,25 @@ func (p *Provider) GetNFTPriceHistory(ctx context.Context, nftID string) ([]*mar
 
 func UserIDString(addr string) string {
 	return string(indexerdb.EthereumUserID(addr))
+}
+
+// In order to always push the non-listed nfts at the end
+func sortArray(arr []*marketplacepb.NFT) []*marketplacepb.NFT {
+	// Find the index of the first element with an empty field
+	var emptyFieldIndex int
+	for i, item := range arr {
+		if item.Price != "" {
+			emptyFieldIndex = i
+			break
+		}
+	}
+
+	// Create a slice containing the elements from the input slice up to the first element with an empty field
+	sortedElements := arr[emptyFieldIndex:]
+
+	// Create a slice containing the remaining elements from the input slice
+	emptyFieldElements := arr[:emptyFieldIndex]
+
+	// Concatenate the two slices, with the slice of empty field elements coming after the sorted elements
+	return append(sortedElements, emptyFieldElements...)
 }
