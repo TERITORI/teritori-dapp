@@ -296,13 +296,17 @@ export const useCollectionInfo = (id: string) => {
   const selectedWallet = useSelectedWallet();
 
   const { data, error, refetch } = useQuery(
-    ["collectionInfo", id],
+    ["collectionInfo", id, selectedWallet?.address],
     async (): Promise<CollectionInfo> => {
+      if (!selectedWallet?.address) {
+        return { mintedAmount: "0", maxSupply: "1" };
+      }
+
       let info: CollectionInfo = {};
 
-      if (id.startsWith("tori-")) {
-        const mintAddress = id.replace("tori-", "");
+      const [addressPrefix, mintAddress] = id.split("-");
 
+      if (addressPrefix === "tori") {
         switch (mintAddress) {
           case process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS:
             info = await getTnsCollectionInfo();
@@ -313,8 +317,7 @@ export const useCollectionInfo = (id: string) => {
           default:
             info = await getTeritoriBunkerCollectionInfo(mintAddress);
         }
-      } else if (id.startsWith("eth-")) {
-        const mintAddress = id.replace("eth-", "");
+      } else if (addressPrefix === "eth") {
         info = await getEthereumTeritoriBunkerCollectionInfo(
           mintAddress,
           selectedWallet?.address || ""
