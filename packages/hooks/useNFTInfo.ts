@@ -13,19 +13,16 @@ import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
 import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
-import { Network } from "../utils/network";
 import { vaultContractAddress } from "../utils/teritori";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { NFTAttribute } from "./../utils/types/nft";
 import { useBreedingConfig } from "./useBreedingConfig";
-import { useSelectedNetwork } from "./useSelectedNetwork";
 
 export const useNFTInfo = (id: string, wallet: string | undefined) => {
   const [info, setInfo] = useState<NFTInfo>();
   const [refreshIndex, setRefreshIndex] = useState(0);
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
-  const selectedNetwork = useSelectedNetwork();
 
   const breedingConfig = useBreedingConfig();
 
@@ -37,9 +34,7 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
     const effect = async () => {
       setLoading(true);
       try {
-        const idParts = id.split("-");
-        const minterContractAddress = idParts[1];
-        const tokenId = idParts.slice(2).join("-");
+        const [addressPrefix, minterContractAddress, tokenId] = id.split("-");
 
         let nfo: NFTInfo;
         switch (minterContractAddress) {
@@ -54,7 +49,7 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
             );
             break;
           default:
-            if (selectedNetwork === Network.Ethereum) {
+            if (addressPrefix === "eth") {
               nfo = await getEthereumStandardNFTInfo(
                 minterContractAddress,
                 tokenId,
