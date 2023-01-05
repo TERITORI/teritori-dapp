@@ -149,6 +149,9 @@ func (p *Provider) GetCollectionStats(ctx context.Context, collectionID string, 
 			}
 		}
 	}
+	if _, ok := volumeByDenom[lastDenom]; !ok {
+		volumeByDenom[lastDenom] = new(big.Int)
+	}
 	res := &marketplacepb.CollectionStats{
 		Owners:      int32(len(ownersSeen)),
 		Owned:       ownersSeen[owner],
