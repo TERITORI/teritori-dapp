@@ -237,6 +237,7 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   let maxPerAddress = minterConfig.publicMintMax.toString() || undefined;
   let whitelistSize = 0;
   let unitPrice = minterConfig.publicMintPrice.toString();
+  let whitelistMaxPerAddress = undefined;
 
   if (state === "whitelist" && currentPhase !== undefined) {
     const phaseData = whitelistPhases[currentPhase];
@@ -246,11 +247,8 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
       await minterClient.callStatic.whitelistSize(BigNumber.from(currentPhase))
     ).toNumber();
     unitPrice = phaseData.mintPrice;
+    whitelistMaxPerAddress = maxPerAddress;
   }
-
-  const whitelistMaxPerAddress = currentPhase
-    ? String(whitelistPhases[currentPhase].mintMax)
-    : undefined;
 
   const info: CollectionInfo = {
     name,
