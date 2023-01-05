@@ -43,43 +43,50 @@ export const addCollectionMetadatas = async (collections: Collection[]) => {
   return collectionWithMetadatas;
 };
 
+const addNftMetadata = async (
+  provider: ethers.providers.AlchemyProvider,
+  nft: NFT
+) => {
+  try {
+    const nftClient = await TeritoriNft__factory.connect(
+      nft.nftContractAddress,
+      provider
+    );
+
+    const nftTokenId = nft.id.split("-")[2];
+    const tokenURI = await nftClient.callStatic.tokenURI(nftTokenId);
+    const metadataURL = ipfsURLToHTTPURL(tokenURI);
+    const info = await fetch(metadataURL).then((data) => data.json());
+
+    if (info) {
+      const attributes: Attribute[] = [];
+      for (const attr of info.attributes) {
+        attributes.push({ traitType: attr.trait_type, value: attr.value });
+      }
+
+      nft.attributes = attributes;
+      nft.name = info.name;
+      nft.imageUri = info.image;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+  return nft;
+};
+
 export const addNftMetadatas = async (nfts: NFT[]) => {
-  const nftWithMetadatas: NFT[] = [];
   const provider = await getEthereumProvider();
   if (!provider) return nfts;
 
+  const queries = [];
   for (const nft of nfts) {
     if (!nft.id.startsWith("eth-")) continue;
 
-    try {
-      const nftClient = await TeritoriNft__factory.connect(
-        nft.nftContractAddress,
-        provider
-      );
-
-      const nftTokenId = nft.id.split("-")[2];
-      const tokenURI = await nftClient.callStatic.tokenURI(nftTokenId);
-      const metadataURL = ipfsURLToHTTPURL(tokenURI);
-      const info = await fetch(metadataURL).then((data) => data.json());
-
-      if (info) {
-        const attributes: Attribute[] = [];
-        for (const attr of info.attributes) {
-          attributes.push({ traitType: attr.trait_type, value: attr.value });
-        }
-
-        nft.attributes = attributes;
-        nft.name = info.name;
-        nft.imageUri = info.image;
-      }
-    } catch (e) {
-      console.error(e);
-    }
-
-    nftWithMetadatas.push(nft);
+    const updatedNftQuery = addNftMetadata(provider, nft);
+    queries.push(updatedNftQuery);
   }
 
-  return nftWithMetadatas;
+  return await Promise.all(queries);
 };
 
 export const getCollectionMetadata = async (collectionId: string) => {
