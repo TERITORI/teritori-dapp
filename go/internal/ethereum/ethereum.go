@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -163,7 +164,7 @@ func (p *Provider) GetCollectionStats(ctx context.Context, collectionID string, 
 	return res, nil
 }
 
-func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID string, ownerId string, limit, offset int) ([]*marketplacepb.NFT, error) {
+func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID string, ownerId string, limit, offset int, orderDirection marketplacepb.SortDirection) ([]*marketplacepb.NFT, error) {
 	// TODO: find how to send the whole `where` filter to query with genqlcient instead of separating into 2 queries
 
 	minter := strings.Replace(collectionID, "eth-", "", 1)
@@ -179,47 +180,68 @@ func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID s
 	if owner != "" {
 		nftFilter.Owner = owner
 	}
-
-	collection, err := thegraph.GetCollectionNFTs(ctx, p.client, nftContractFilter, nftFilter, limit, offset)
-	if err != nil {
-		return nil, err
+	sortDirection := thegraph.OrderDirectionAsc
+	if orderDirection == marketplacepb.SortDirection_SORT_DIRECTION_DESCENDING {
+		sortDirection = thegraph.OrderDirectionDesc
 	}
-
+	cacheKey := fmt.Sprintf("nft_%s_%s_%s", minter, owner, sortDirection)
 	var res []*marketplacepb.NFT
-
-	for _, nftContract := range collection.NftContracts {
-		nfts := nftContract.Nfts
-
-		for _, nft := range nfts {
-			var (
-				lockedOn = ""
-				ownerId  = nft.Owner
-			)
-
-			if nft.InSale {
-				lockedOn = nft.Owner
-				ownerId = nft.Seller
-			}
-
-			nft := marketplacepb.NFT{
-				Id:                 fmt.Sprintf("eth-%s-%s", nftContract.Minter, nft.TokenID),
-				NetworkId:          networkID,
-				ImageUri:           nft.TokenURI,
-				MintAddress:        nftContract.Minter,
-				Price:              nft.Price,
-				Denom:              nft.Denom,
-				IsListed:           nft.InSale,
-				CollectionName:     nftContract.Name,
-				OwnerId:            ownerId,
-				LockedOn:           lockedOn,
-				NftContractAddress: nftContract.Id,
-			}
-
-			res = append(res, &nft)
+	data, ok := p.cache.Get(cacheKey)
+	if ok {
+		res = data.([]*marketplacepb.NFT)
+	} else {
+		collection, err := thegraph.GetCollectionNFTs(ctx, p.client, nftContractFilter, nftFilter, thegraph.Nft_orderByPrice, sortDirection)
+		if err != nil {
+			return nil, err
 		}
+		for _, nftContract := range collection.NftContracts {
+			nfts := nftContract.Nfts
+
+			for _, nft := range nfts {
+				var (
+					lockedOn = ""
+					ownerId  = nft.Owner
+				)
+
+				if nft.InSale {
+					lockedOn = nft.Owner
+					ownerId = nft.Seller
+				}
+
+				nft := marketplacepb.NFT{
+					Id:                 fmt.Sprintf("eth-%s-%s", nftContract.Minter, nft.TokenID),
+					NetworkId:          networkID,
+					ImageUri:           nft.TokenURI,
+					MintAddress:        nftContract.Minter,
+					Price:              nft.Price,
+					Denom:              nft.Denom,
+					IsListed:           nft.InSale,
+					CollectionName:     nftContract.Name,
+					OwnerId:            ownerId,
+					LockedOn:           lockedOn,
+					NftContractAddress: nftContract.Id,
+				}
+
+				res = append(res, &nft)
+			}
+		}
+
+		p.cache.SetWithTTL(cacheKey, res, 0, refreshTime)
 	}
 
-	return res, nil
+	total := len(res)
+	if offset > total {
+		return []*marketplacepb.NFT{}, nil
+	}
+	end := offset + limit
+	if end > total {
+		end = total
+	}
+	nfts := res[offset:end]
+	sort.Slice(nfts, func(i, j int) bool {
+		return nfts[i].Price != ""
+	})
+	return nfts, nil
 }
 
 func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID string, limit, offset int) ([]*marketplacepb.Activity, int, error) {

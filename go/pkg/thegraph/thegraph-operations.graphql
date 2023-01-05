@@ -1,15 +1,15 @@
 query GetCollectionNFTs(
   $nftContractFilter: NftContract_filter, 
   $nftFilter: Nft_filter, 
-  $Limit: Int!, 
-  $Offset: Int!
+  $orderBy: Nft_orderBy, 
+  $orderDirection: OrderDirection
 ) {
-  nftContracts(where: $nftContractFilter, first: $Limit, skip: $Offset) {
+  nftContracts(where: $nftContractFilter) {
 		id
 		name
     minter
     symbol
-		nfts(where: $nftFilter, first: $Limit, skip: $Offset) {
+		nfts(where: $nftFilter, orderBy: $orderBy, orderDirection: $orderDirection) {
       id
       tokenID
       owner

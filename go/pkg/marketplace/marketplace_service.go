@@ -233,7 +233,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	}
 
 	if networkID == "ethereum" || networkID == "ethereum-goerli" {
-		nfts, err := s.ethereumProvider.GetNFTs(srv.Context(), networkID, collection_id, ownerId, int(limit), int(offset))
+		nfts, err := s.ethereumProvider.GetNFTs(srv.Context(), networkID, collection_id, ownerId, int(limit), int(offset), sortDirection)
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection nfts")
 		}
