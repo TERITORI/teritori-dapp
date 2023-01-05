@@ -11,7 +11,6 @@ import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import useSelectedWallet from "./useSelectedWallet";
 
 export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
 
@@ -156,10 +155,7 @@ const getTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   return info;
 };
 
-const getEthereumTeritoriBunkerCollectionInfo = async (
-  mintAddress: string,
-  user: string
-) => {
+const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   const provider = await getEthereumProvider();
   if (!provider) {
     console.error("no eth provider found");
@@ -182,9 +178,6 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
 
   const name = await nftClient.callStatic.name();
 
-  const userState = await minterClient.callStatic.userState(user);
-
-  const unitPrice = userState.mintPrice.toString();
   const priceDenom = WEI_TOKEN_ADDRESS;
   const maxSupply = minterConfig.maxSupply.toString();
   const mintStartedAt = minterConfig.mintStartTime.toNumber();
@@ -226,18 +219,6 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
     }
   }
 
-  const whitelistSize = currentPhase
-    ? (
-        await minterClient.callStatic.whitelistSize(
-          BigNumber.from(currentPhase)
-        )
-      ).toNumber()
-    : 0;
-
-  const whitelistMaxPerAddress = currentPhase
-    ? String(whitelistPhases[currentPhase].mintMax)
-    : undefined;
-
   const mintedAmount = (await minterClient.currentSupply()).toString();
   const publicSaleEnded = mintedAmount === maxSupply;
   const hasWhitelistPeriod = whitelistPhases.length > 0;
@@ -253,10 +234,23 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
     state = "ended";
   }
 
-  const maxPerAddress =
-    state === "whitelist"
-      ? String(whitelistPhases[userState.currentPhase.toNumber()]?.mintMax || 0)
-      : minterConfig.publicMintMax.toString() || undefined;
+  let maxPerAddress = minterConfig.publicMintMax.toString() || undefined;
+  let whitelistSize = 0;
+  let unitPrice = minterConfig.publicMintPrice.toString();
+
+  if (state === "whitelist" && currentPhase !== undefined) {
+    const phaseData = whitelistPhases[currentPhase];
+
+    maxPerAddress = phaseData.mintMax.toString();
+    whitelistSize = (
+      await minterClient.callStatic.whitelistSize(BigNumber.from(currentPhase))
+    ).toNumber();
+    unitPrice = phaseData.mintPrice;
+  }
+
+  const whitelistMaxPerAddress = currentPhase
+    ? String(whitelistPhases[currentPhase].mintMax)
+    : undefined;
 
   const info: CollectionInfo = {
     name,
@@ -293,16 +287,15 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
 export const useCollectionInfo = (id: string) => {
   // Request to ETH blockchain is not free so for ETH we do not re-fetch much
   const refetchInterval = id.startsWith("eth-") ? 60_000 : 5000;
-  const selectedWallet = useSelectedWallet();
 
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
     async (): Promise<CollectionInfo> => {
       let info: CollectionInfo = {};
 
-      if (id.startsWith("tori-")) {
-        const mintAddress = id.replace("tori-", "");
+      const [addressPrefix, mintAddress] = id.split("-");
 
+      if (addressPrefix === "tori") {
         switch (mintAddress) {
           case process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS:
             info = await getTnsCollectionInfo();
@@ -313,12 +306,8 @@ export const useCollectionInfo = (id: string) => {
           default:
             info = await getTeritoriBunkerCollectionInfo(mintAddress);
         }
-      } else if (id.startsWith("eth-")) {
-        const mintAddress = id.replace("eth-", "");
-        info = await getEthereumTeritoriBunkerCollectionInfo(
-          mintAddress,
-          selectedWallet?.address || ""
-        );
+      } else if (addressPrefix === "eth") {
+        info = await getEthereumTeritoriBunkerCollectionInfo(mintAddress);
       }
       return info;
     },
