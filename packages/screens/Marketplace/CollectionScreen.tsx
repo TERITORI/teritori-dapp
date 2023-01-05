@@ -33,6 +33,7 @@ import {
 import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNativeCurrency } from "../../networks";
 import { alignDown } from "../../utils/align";
@@ -52,11 +53,13 @@ export const Content: React.FC<{
   sortDirection: SortDirection;
 }> = React.memo(({ id, selectedTab, sortDirection }) => {
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
 
   const { width } = useMaxResolution();
   const numColumns = Math.floor(width / nftWidth);
 
   const nftsRequest: NFTsRequest = {
+    networkId: selectedNetworkId,
     collectionId: id,
     ownerId:
       selectedTab === "owned" && wallet?.address
@@ -102,17 +105,14 @@ export const Header: React.FC<{
 }) => {
   const wallet = useSelectedWallet();
   // variables
-  const stats = useCollectionStats(
-    collectionId,
-    wallet ? `tori-${wallet.address}` : undefined
-  );
+  const stats = useCollectionStats(collectionId, wallet?.address);
   const { width: maxWidth } = useMaxResolution();
   const { width, height } = useImageResizer({
     image: collectionInfo.bannerImage || bannerCollection,
     maxSize: { width: maxWidth },
   });
   const { setToastSuccess } = useFeedbacks();
-  const networkId = process.env.TERITORI_NETWORK_ID || ""; // FIXME: derive from collection network
+  const networkId = useSelectedNetworkId();
 
   const coins = useMemo(() => {
     if (!stats?.floorPrice) {
@@ -159,10 +159,11 @@ export const Header: React.FC<{
         if (!usdValue) {
           return Infinity;
         }
+
         return (
           usdValue *
           Decimal.fromAtomics(
-            fp.quantity.toFixed(0),
+            fp.quantity,
             currency.decimals
           ).toFloatApproximation()
         );

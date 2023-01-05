@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
@@ -107,11 +107,11 @@ export const CollectionsCarouselHeader: React.FC<{
   linkToMint?: boolean;
   filter?: (c: Collection) => boolean;
 }> = ({ req = defaultRequest, linkToMint, filter }) => {
-  const [collections, fetchMore] = useCollections(req, filter);
+  const [collections] = useCollections(req, filter);
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
 
-  const topRightChild = useCallback(
+  const topRightChild = useMemo(
     () => (
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity
@@ -136,7 +136,6 @@ export const CollectionsCarouselHeader: React.FC<{
         data={collections}
         ref={carouselRef}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
-        onScrollEnd={fetchMore}
         height={370}
         pagingEnabled
         autoPlay

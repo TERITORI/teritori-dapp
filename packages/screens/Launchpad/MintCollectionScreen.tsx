@@ -23,12 +23,16 @@ import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
+import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCurrency } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import {
@@ -70,14 +74,16 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     params: { id },
   },
 }) => {
-  const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
+  // TODO: Find away to detect precise network info base on params
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const [addressPrefix, mintAddress] = id.split("-");
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
   const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
-  const networkId = process.env.TERITORI_NETWORK_ID;
+  const networkId = selectedNetworkInfo?.id || "";
   const balances = useBalances(networkId, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
 
@@ -101,40 +107,88 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     return msg;
   };
 
+  const ethereumMint = async (wallet: Wallet) => {
+    const signer = await getMetaMaskEthereumSigner(wallet.address);
+    if (!signer) {
+      throw Error("no account connected");
+    }
+
+    const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
+    const minterConfig = await minterClient.callStatic.config();
+
+    const address = await signer.getAddress();
+
+    const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+    const tx = await minterClient.requestMint(address, {
+      maxFeePerGas: maxFeePerGas?.toNumber(),
+      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+      value: minterConfig.publicMintPrice,
+    });
+    await tx.wait();
+  };
+
   const mint = useCallback(async () => {
+    let mintFunc: CallableFunction | null = null;
+    switch (addressPrefix) {
+      case "tori":
+        mintFunc = teritoriMint;
+        break;
+      case "eth":
+        mintFunc = ethereumMint;
+        break;
+    }
+
+    if (!mintFunc) {
+      return setToastError({
+        title: "Error",
+        message: `unsupported network ${selectedNetworkInfo?.network}`,
+      });
+    }
+
     try {
-      const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
-
       setToastError(initialToastError);
-      const sender = wallet?.address;
-      if (!sender || !info?.unitPrice || !info.priceDenom) {
-        console.error("invalid mint args");
-        return;
-      }
-      const cosmwasmClient = await getSigningCosmWasmClient();
-      const minterClient = new TeritoriBunkerMinterClient(
-        cosmwasmClient,
-        sender,
-        mintAddress
-      );
 
-      let funds;
-      if (info.unitPrice !== "0") {
-        funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
-      }
+      await mintFunc(wallet);
 
-      await minterClient.requestMint({ addr: sender }, "auto", "", funds);
       setMinted(true);
       await sleep(5000);
       setMinted(false);
-    } catch (err) {
-      console.error(err);
-      setToastError({
-        title: "Mint failed",
-        message: prettyError(err),
-      });
+    } catch (e) {
+      if (e instanceof Error) {
+        return setToastError({
+          title: "Mint failed",
+          message: prettyError(e),
+        });
+      }
+      console.error(e);
     }
-  }, [wallet?.address, mintAddress, info?.unitPrice, info?.priceDenom]);
+  }, [
+    wallet?.address,
+    selectedNetworkInfo?.network,
+    id,
+    info?.unitPrice,
+    info?.priceDenom,
+  ]);
+
+  const teritoriMint = async (wallet: Wallet) => {
+    const sender = wallet?.address;
+    if (!sender || !info?.unitPrice || !info.priceDenom) {
+      throw Error("invalid mint args");
+    }
+    const cosmwasmClient = await getSigningCosmWasmClient();
+    const minterClient = new TeritoriBunkerMinterClient(
+      cosmwasmClient,
+      sender,
+      mintAddress
+    );
+
+    let funds;
+    if (info.unitPrice !== "0") {
+      funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
+    }
+
+    await minterClient.requestMint({ addr: sender }, "auto", "", funds);
+  };
 
   if (!info) {
     return <ScreenContainer noMargin />;
@@ -239,7 +293,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 {prettyPrice(
                   networkId || "",
                   balance?.amount || "0",
-                  info.priceDenom || ""
+                  balance?.denom || ""
                 )}
               </BrandText>
 
@@ -372,7 +426,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         </View>
         <DepositWithdrawModal
           variation="deposit"
-          networkId={process.env.TERITORI_NETWORK_ID || ""}
+          networkId={networkId}
           targetCurrency={info.priceDenom}
           onClose={() => setDepositVisible(false)}
           isVisible={isDepositVisible}

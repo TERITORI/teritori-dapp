@@ -56,7 +56,7 @@ message NFT {
 }
 message Amount {
   string denom = 1;
-  int64  quantity = 2;
+  string quantity = 3;
 }
 
 message Collection {
@@ -104,7 +104,7 @@ message Quest {
 }
 
 message PriceDatum {
-  double price = 1;
+  string price = 3;
   string time = 2;
 }
 
@@ -123,6 +123,7 @@ message CollectionsRequest {
 message CollectionStatsRequest {
   string collection_id = 1;
   string owner_id = 2;
+  string network_id = 3;
 }
 
 message CollectionStatsResponse {
@@ -142,6 +143,8 @@ message NFTsRequest {
 
   Sort sort = 5;
   SortDirection sort_direction = 6;
+
+  string network_id = 7;
 }
 
 message NFTsResponse {
@@ -164,6 +167,7 @@ message ActivityRequest {
   string nft_id = 2;
   int32 limit = 3;
   int32 offset = 4;
+  string network_id = 5;
 }
 
 
@@ -174,6 +178,7 @@ message ActivityResponse {
 
 message NFTPriceHistoryRequest {
   string id = 1;
+  string network_id = 2;
 }
 
 message NFTPriceHistoryResponse {

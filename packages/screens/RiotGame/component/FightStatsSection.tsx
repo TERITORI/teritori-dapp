@@ -143,6 +143,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
             isClaiming
               ? "Claiming..."
               : `Claim available rewards: ${decimalFromAtomics(
+                  process.env.TERITORI_NETWORK_ID || "",
                   "" + claimableAmount,
                   "utori"
                 )} TORI`

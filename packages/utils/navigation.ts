@@ -1,6 +1,10 @@
-import { RouteProp, useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useEffect, useMemo } from "react";
+
+import { useFeedbacks } from "./../context/FeedbacksProvider";
+import { useSelectedNetwork } from "./../hooks/useSelectedNetwork";
+import { Network } from "./network";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -47,7 +51,62 @@ export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
   route: RouteProp<RootStackParamList, T>;
 }>;
 
-export const useAppNavigation = () => useNavigation<AppNavigationProp>();
+export const useAppNavigation = () => {
+  const route = useRoute<RouteProp<RootStackParamList>>();
+  const selectedNetwork = useSelectedNetwork();
+  const { setToastError } = useFeedbacks();
+
+  // Supported Screen on ETH
+  const ethSupportedScreens = useMemo<(keyof RootStackParamList)[]>(
+    () => [
+      "Home",
+      "MyCollection",
+      "Activity",
+      "Guardians",
+      "WalletManager",
+      "WalletManagerWallets",
+      "WalletManagerChains",
+      "UserPublicProfile",
+
+      // ==== Launchpad
+      "Launchpad",
+      "LaunchpadApply",
+
+      // Mint NFT collection
+      "MintCollection",
+
+      // ==== Marketplace
+      "Marketplace",
+      "Collection",
+      "CollectionTools",
+      "CollectionActivity",
+      "NFTDetail",
+
+      // ==== ComingSoon
+      "ComingSoon",
+    ],
+    []
+  );
+
+  useEffect(() => {
+    if (
+      selectedNetwork === Network.Ethereum &&
+      !ethSupportedScreens.includes(route.name)
+    ) {
+      return setToastError({
+        title: "Warning",
+        message: "This feature is not supported yet on Ethereum network",
+      });
+    }
+
+    // NOTE: when changing network, sometime network has been changed before route.name
+    // user has not been redirected to allowed route yet so we could be in a state where wrong toast is displayed
+    // so we need to clear toast once the we are in the right screen
+    setToastError({ title: "", message: "", duration: 0 });
+  }, [route.name, selectedNetwork]);
+
+  return useNavigation<AppNavigationProp>();
+};
 
 const navConfig: {
   screens: { [Name in keyof RootStackParamList]: string };

@@ -1,12 +1,15 @@
 import { PublicKey } from "@solana/web3.js";
 import { bech32 } from "bech32";
 
+import { WalletProvider } from "./walletProvider";
+
 export enum Network {
   Unknown = "Unknown",
   Teritori = "Teritori",
   Solana = "Solana",
   Ethereum = "Ethereum",
   Atom = "Atom",
+  CosmosHub = "CosmosHub",
   Juno = "Juno",
   Osmosis = "Osmosis",
 }
@@ -25,4 +28,19 @@ export const addressToNetwork = (address: string) => {
     return Network.Solana;
   } catch {}
   return Network.Unknown;
+};
+
+export const walletProviderToNetwork = (walletProvider: WalletProvider) => {
+  let network: Network | null = null;
+
+  switch (walletProvider) {
+    case WalletProvider.Metamask:
+      network = Network.Ethereum;
+      break;
+    case WalletProvider.Keplr:
+      network = Network.Teritori;
+      break;
+  }
+
+  return network;
 };

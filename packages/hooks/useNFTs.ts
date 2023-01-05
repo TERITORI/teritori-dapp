@@ -2,7 +2,10 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo, useRef } from "react";
 
 import { NFTsRequest, NFT } from "../api/marketplace/v1/marketplace";
+import { getNetwork } from "../networks";
 import { backendClient } from "../utils/backend";
+import { addNftMetadatas } from "../utils/ethereum";
+import { Network } from "../utils/network";
 
 export const useNFTs = (req: NFTsRequest) => {
   const baseOffset = useRef(req.offset);
@@ -15,9 +18,10 @@ export const useNFTs = (req: NFTsRequest) => {
       req.sort,
       req.sortDirection,
       baseOffset.current,
+      req.networkId,
     ],
     async ({ pageParam = 0 }) => {
-      const nfts: NFT[] = [];
+      let nfts: NFT[] = [];
       const pageReq = {
         ...req,
         offset: baseOffset.current + pageParam,
@@ -29,6 +33,12 @@ export const useNFTs = (req: NFTsRequest) => {
         }
         nfts.push(response.nft);
       });
+
+      const networkInfo = getNetwork(req.networkId);
+      if (networkInfo?.network === Network.Ethereum) {
+        nfts = await addNftMetadatas(nfts);
+      }
+
       return { nextCursor: pageParam + req.limit, nfts };
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }

@@ -18,7 +18,7 @@ export const CollectionView: React.FC<{
   item: Collection;
   linkToMint?: boolean;
 }> = ({ item, linkToMint }) => {
-  const creatorAddress = item.creatorId.replace("tori-", "");
+  const creatorAddress = item.creatorId.split("-")[1];
   const tnsMetadata = useTNSMetadata(creatorAddress);
   const navigateToCollection = useNavigateToCollection(item.id, {
     forceSecondaryDuringMint: item.secondaryDuringMint,

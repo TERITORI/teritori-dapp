@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { prettyPrice } from "../../utils/coins";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -17,6 +18,8 @@ export const NFTPriceBuyCard: React.FC<{
   onPressBuy: () => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ price = "", priceDenom = "", onPressBuy, style }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+
   return (
     <TertiaryBox
       fullWidth
@@ -37,14 +40,10 @@ export const NFTPriceBuyCard: React.FC<{
             gradientType="purple"
             style={[fontSemibold28, { marginRight: 12 }]}
           >
-            {prettyPrice(
-              process.env.TERITORI_NETWORK_ID || "",
-              price,
-              priceDenom
-            )}
+            {prettyPrice(selectedNetworkId, price, priceDenom)}
           </GradientText>
           <CurrencyIcon
-            networkId={process.env.TERITORI_NETWORK_ID || ""}
+            networkId={selectedNetworkId}
             denom={priceDenom}
             size={24}
           />

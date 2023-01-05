@@ -16,6 +16,7 @@ import { layout } from "../../utils/style/layout";
 
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
+
   return (
     <ScreenContainer>
       <View

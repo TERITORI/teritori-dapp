@@ -6,9 +6,13 @@ import { Image, StyleSheet, View } from "react-native";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriNft__factory } from "../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getNetwork } from "../../networks";
+import { NetworkInfo } from "../../networks";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
+import { Network } from "../../utils/network";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -26,86 +30,122 @@ interface NFTTransferModalProps {
   onSubmit: (form: NFTTransferForm) => void;
 }
 
-const network = getNetwork(process.env.TERITORI_NETWORK_ID);
-
 export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
   isVisible,
   onClose,
   nft,
   onSubmit,
 }) => {
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetwork = selectedNetworkInfo?.network;
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const { handleSubmit: formHandleSubmit, control } =
     useForm<NFTTransferForm>();
 
+  const teritoriSendNFT = async (
+    nftContractAddress: string,
+    tokenId: string,
+    sender: string,
+    receiver: string,
+    networkInfo: NetworkInfo
+  ) => {
+    // validate address
+    const address = bech32.decode(receiver);
+
+    if (address.prefix !== networkInfo.addressPrefix) {
+      throw Error("Bad address prefix");
+    }
+
+    // create client
+    const signingComswasmClient = await getSigningCosmWasmClient();
+    const nftClient = new TeritoriNftClient(
+      signingComswasmClient,
+      sender,
+      nftContractAddress
+    );
+
+    // transfer
+    await nftClient.transferNft({
+      recipient: receiver,
+      tokenId,
+    });
+  };
+
+  const ethereumSendNFT = async (
+    nftContractAddress: string,
+    tokenId: string,
+    sender: string,
+    receiver: string,
+    networkInfo: NetworkInfo
+  ) => {
+    const signer = await getMetaMaskEthereumSigner(sender);
+    if (!signer) {
+      throw Error("Unable to get signer");
+    }
+
+    const nftClient = await TeritoriNft__factory.connect(
+      nftContractAddress,
+      signer
+    );
+
+    const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+    const tx = await nftClient.transferFrom(sender, receiver, tokenId, {
+      maxFeePerGas: maxFeePerGas?.toNumber(),
+      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+    });
+
+    await tx.wait();
+  };
+
   const handleSubmit: SubmitHandler<NFTTransferForm> = async (formValues) => {
     try {
-      // check that it's a teritori nft
-      if (!nft?.id.startsWith("tori-")) {
-        setToastError({
-          title: "Internal error",
-          message: "Network not supported",
-        });
-        onClose();
-        return;
+      if (!nft) {
+        throw Error(`No NFT selected`);
+      }
+
+      const nftPrefix = nft.id.split("-")[0] || "";
+
+      if (!["tori", "eth"].includes(nftPrefix)) {
+        throw Error(`Network not supported`);
       }
 
       // check for sender
       const sender = selectedWallet?.address;
       if (!sender) {
-        setToastError({ title: "Internal error", message: "No sender" });
-        onClose();
-        return;
+        throw Error(`No sender`);
+      }
+
+      // check for network
+      if (!selectedNetwork) {
+        throw Error(`No network`);
       }
 
       // get token id
       const tokenId = nft.id.split("-").slice(2).join("-");
 
-      // check for network
-      if (!network) {
-        setToastError({ title: "Internal error", message: "No network" });
-        onClose();
-        return;
+      let sendNFTFunc: CallableFunction | null = null;
+      switch (selectedNetwork) {
+        case Network.Teritori:
+          sendNFTFunc = teritoriSendNFT;
+          break;
+        case Network.Ethereum:
+          sendNFTFunc = ethereumSendNFT;
+          break;
       }
 
-      // validate address
-      let address;
-      try {
-        address = bech32.decode(formValues.receiverAddress);
-      } catch (err) {
-        if (err instanceof Error) {
-          setToastError({
-            title: "Invalid address",
-            message: err.message,
-          });
-        }
-        onClose();
-        return;
-      }
-      if (address.prefix !== network.addressPrefix) {
-        setToastError({
-          title: "Invalid address",
-          message: "Bad prefix",
-        });
-        onClose();
+      if (!sendNFTFunc) {
+        throw Error(`Unsupported network ${selectedNetwork}`);
       }
 
-      // create client
-      const signingComswasmClient = await getSigningCosmWasmClient();
-      const nftClient = new TeritoriNftClient(
-        signingComswasmClient,
+      await sendNFTFunc(
+        nft.nftContractAddress,
+        tokenId,
         sender,
-        nft.nftContractAddress
+        formValues.receiverAddress,
+        selectedNetworkInfo
       );
 
-      // transfer
-      await nftClient.transferNft({
-        recipient: formValues.receiverAddress,
-        tokenId,
-      });
-
-      // signal success
       setToastSuccess({
         title: "NFT transfered",
         message: "",

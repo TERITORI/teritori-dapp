@@ -6,10 +6,16 @@ import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-b
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+import { WEI_TOKEN_ADDRESS } from "../networks";
 import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
+import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";
+import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { NFTAttribute } from "./../utils/types/nft";
 import { useBreedingConfig } from "./useBreedingConfig";
 
 export const useNFTInfo = (id: string, wallet: string | undefined) => {
@@ -28,9 +34,7 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
     const effect = async () => {
       setLoading(true);
       try {
-        const idParts = id.split("-");
-        const minterContractAddress = idParts[1];
-        const tokenId = idParts.slice(2).join("-");
+        const [addressPrefix, minterContractAddress, tokenId] = id.split("-");
 
         let nfo: NFTInfo;
         switch (minterContractAddress) {
@@ -45,12 +49,20 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
             );
             break;
           default:
-            nfo = await getStandardNFTInfo(
-              minterContractAddress,
-              tokenId,
-              wallet,
-              breedingConfig
-            );
+            if (addressPrefix === "eth") {
+              nfo = await getEthereumStandardNFTInfo(
+                minterContractAddress,
+                tokenId,
+                wallet
+              );
+            } else {
+              nfo = await getStandardNFTInfo(
+                minterContractAddress,
+                tokenId,
+                wallet,
+                breedingConfig
+              );
+            }
         }
 
         setInfo(nfo);
@@ -63,7 +75,7 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
       }
     };
     effect();
-  }, [id, wallet, refreshIndex, breedingConfig]);
+  }, [id, wallet, refreshIndex, breedingConfig?.owner]);
 
   return { info, refresh, notFound, loading };
 };
@@ -137,6 +149,85 @@ const getTNSNFTInfo = async (
     ),
     mintDenom: contractInfo.native_denom,
     royalty: 0,
+  };
+
+  return nfo;
+};
+
+const getEthereumStandardNFTInfo = async (
+  minterContractAddress: string,
+  tokenId: string,
+  wallet: string | undefined
+) => {
+  const provider = await getEthereumProvider();
+  if (!provider) {
+    throw Error("unable to get ethereum provider");
+  }
+  const minterClient = await TeritoriMinter__factory.connect(
+    minterContractAddress,
+    provider
+  );
+
+  const nftAddress = await minterClient.callStatic.nft();
+  const nftClient = await TeritoriNft__factory.connect(nftAddress, provider);
+  const collectionName = await nftClient.callStatic.name();
+  const contractURI = await nftClient.callStatic.contractURI();
+  const collectionMetadata = await fetch(contractURI).then((data) =>
+    data.json()
+  );
+  const metadata = await nftClient.nftInfo(tokenId);
+
+  const attributes: NFTAttribute[] = [];
+  for (const attr of metadata.attributes) {
+    attributes.push({ trait_type: attr.trait_type, value: attr.value });
+  }
+
+  const vaultClient = await NFTVault__factory.connect(
+    process.env.ETHEREUM_VAULT_ADDRESS || "",
+    provider
+  );
+
+  const feeNumerator = await vaultClient.callStatic.feeNumerator();
+  const feeDenominator = await vaultClient.callStatic.feeDenominator();
+  const royalties = feeNumerator.toNumber() / feeDenominator.toNumber();
+
+  const saledNft = await vaultClient.callStatic.nftSales(nftAddress, tokenId);
+  let isListed = false;
+  let vaultInfo: any = {}; // TODO: Get vault info
+
+  let ownerAddress = await nftClient.callStatic.ownerOf(tokenId);
+
+  if (+saledNft.owner !== 0) {
+    isListed = true;
+    vaultInfo = {
+      amount: saledNft.saleOption.amount.toBigInt(),
+      denom: saledNft.saleOption.token,
+    };
+    ownerAddress = saledNft.owner.toLowerCase();
+  }
+
+  const isOwner = wallet?.toLowerCase() === ownerAddress.toLowerCase();
+
+  const nfo: NFTInfo = {
+    name: metadata.name,
+    description: metadata.description,
+    attributes,
+    nftAddress,
+    mintAddress: minterContractAddress,
+    imageURL: metadata.image,
+    tokenId,
+    ownerAddress,
+    isSeller: isListed && isOwner,
+    isListed,
+    isOwner,
+    canSell: isOwner && !isListed,
+    price: vaultInfo?.amount || "",
+    priceDenom: vaultInfo?.denom || "",
+    collectionName,
+    collectionImageURL: collectionMetadata.image,
+    mintDenom: WEI_TOKEN_ADDRESS,
+    royalty: royalties,
+    breedingsAvailable: 0,
   };
 
   return nfo;

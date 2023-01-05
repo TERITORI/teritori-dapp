@@ -155,7 +155,7 @@ export interface NFT {
 
 export interface Amount {
   denom: string;
-  quantity: number;
+  quantity: string;
 }
 
 export interface Collection {
@@ -203,7 +203,7 @@ export interface Quest {
 }
 
 export interface PriceDatum {
-  price: number;
+  price: string;
   time: string;
 }
 
@@ -220,6 +220,7 @@ export interface CollectionsRequest {
 export interface CollectionStatsRequest {
   collectionId: string;
   ownerId: string;
+  networkId: string;
 }
 
 export interface CollectionStatsResponse {
@@ -237,6 +238,7 @@ export interface NFTsRequest {
   ownerId: string;
   sort: Sort;
   sortDirection: SortDirection;
+  networkId: string;
 }
 
 export interface NFTsResponse {
@@ -258,6 +260,7 @@ export interface ActivityRequest {
   nftId: string;
   limit: number;
   offset: number;
+  networkId: string;
 }
 
 export interface ActivityResponse {
@@ -267,6 +270,7 @@ export interface ActivityResponse {
 
 export interface NFTPriceHistoryRequest {
   id: string;
+  networkId: string;
 }
 
 export interface NFTPriceHistoryResponse {
@@ -551,7 +555,7 @@ export const NFT = {
 };
 
 function createBaseAmount(): Amount {
-  return { denom: "", quantity: 0 };
+  return { denom: "", quantity: "" };
 }
 
 export const Amount = {
@@ -559,8 +563,8 @@ export const Amount = {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
-    if (message.quantity !== 0) {
-      writer.uint32(16).int64(message.quantity);
+    if (message.quantity !== "") {
+      writer.uint32(26).string(message.quantity);
     }
     return writer;
   },
@@ -575,8 +579,8 @@ export const Amount = {
         case 1:
           message.denom = reader.string();
           break;
-        case 2:
-          message.quantity = longToNumber(reader.int64() as Long);
+        case 3:
+          message.quantity = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -589,21 +593,21 @@ export const Amount = {
   fromJSON(object: any): Amount {
     return {
       denom: isSet(object.denom) ? String(object.denom) : "",
-      quantity: isSet(object.quantity) ? Number(object.quantity) : 0,
+      quantity: isSet(object.quantity) ? String(object.quantity) : "",
     };
   },
 
   toJSON(message: Amount): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.quantity !== undefined && (obj.quantity = Math.round(message.quantity));
+    message.quantity !== undefined && (obj.quantity = message.quantity);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Amount>, I>>(object: I): Amount {
     const message = createBaseAmount();
     message.denom = object.denom ?? "";
-    message.quantity = object.quantity ?? 0;
+    message.quantity = object.quantity ?? "";
     return message;
   },
 };
@@ -1086,13 +1090,13 @@ export const Quest = {
 };
 
 function createBasePriceDatum(): PriceDatum {
-  return { price: 0, time: "" };
+  return { price: "", time: "" };
 }
 
 export const PriceDatum = {
   encode(message: PriceDatum, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.price !== 0) {
-      writer.uint32(9).double(message.price);
+    if (message.price !== "") {
+      writer.uint32(26).string(message.price);
     }
     if (message.time !== "") {
       writer.uint32(18).string(message.time);
@@ -1107,8 +1111,8 @@ export const PriceDatum = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.price = reader.double();
+        case 3:
+          message.price = reader.string();
           break;
         case 2:
           message.time = reader.string();
@@ -1123,7 +1127,7 @@ export const PriceDatum = {
 
   fromJSON(object: any): PriceDatum {
     return {
-      price: isSet(object.price) ? Number(object.price) : 0,
+      price: isSet(object.price) ? String(object.price) : "",
       time: isSet(object.time) ? String(object.time) : "",
     };
   },
@@ -1137,7 +1141,7 @@ export const PriceDatum = {
 
   fromPartial<I extends Exact<DeepPartial<PriceDatum>, I>>(object: I): PriceDatum {
     const message = createBasePriceDatum();
-    message.price = object.price ?? 0;
+    message.price = object.price ?? "";
     message.time = object.time ?? "";
     return message;
   },
@@ -1247,7 +1251,7 @@ export const CollectionsRequest = {
 };
 
 function createBaseCollectionStatsRequest(): CollectionStatsRequest {
-  return { collectionId: "", ownerId: "" };
+  return { collectionId: "", ownerId: "", networkId: "" };
 }
 
 export const CollectionStatsRequest = {
@@ -1257,6 +1261,9 @@ export const CollectionStatsRequest = {
     }
     if (message.ownerId !== "") {
       writer.uint32(18).string(message.ownerId);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(26).string(message.networkId);
     }
     return writer;
   },
@@ -1274,6 +1281,9 @@ export const CollectionStatsRequest = {
         case 2:
           message.ownerId = reader.string();
           break;
+        case 3:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1286,6 +1296,7 @@ export const CollectionStatsRequest = {
     return {
       collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -1293,6 +1304,7 @@ export const CollectionStatsRequest = {
     const obj: any = {};
     message.collectionId !== undefined && (obj.collectionId = message.collectionId);
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -1300,6 +1312,7 @@ export const CollectionStatsRequest = {
     const message = createBaseCollectionStatsRequest();
     message.collectionId = object.collectionId ?? "";
     message.ownerId = object.ownerId ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -1404,7 +1417,7 @@ export const CollectionsResponse = {
 };
 
 function createBaseNFTsRequest(): NFTsRequest {
-  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0 };
+  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0, networkId: "" };
 }
 
 export const NFTsRequest = {
@@ -1426,6 +1439,9 @@ export const NFTsRequest = {
     }
     if (message.sortDirection !== 0) {
       writer.uint32(48).int32(message.sortDirection);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(58).string(message.networkId);
     }
     return writer;
   },
@@ -1455,6 +1471,9 @@ export const NFTsRequest = {
         case 6:
           message.sortDirection = reader.int32() as any;
           break;
+        case 7:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1471,6 +1490,7 @@ export const NFTsRequest = {
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -1482,6 +1502,7 @@ export const NFTsRequest = {
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     message.sort !== undefined && (obj.sort = sortToJSON(message.sort));
     message.sortDirection !== undefined && (obj.sortDirection = sortDirectionToJSON(message.sortDirection));
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -1493,6 +1514,7 @@ export const NFTsRequest = {
     message.ownerId = object.ownerId ?? "";
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -1659,7 +1681,7 @@ export const QuestsResponse = {
 };
 
 function createBaseActivityRequest(): ActivityRequest {
-  return { collectionId: "", nftId: "", limit: 0, offset: 0 };
+  return { collectionId: "", nftId: "", limit: 0, offset: 0, networkId: "" };
 }
 
 export const ActivityRequest = {
@@ -1675,6 +1697,9 @@ export const ActivityRequest = {
     }
     if (message.offset !== 0) {
       writer.uint32(32).int32(message.offset);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(42).string(message.networkId);
     }
     return writer;
   },
@@ -1698,6 +1723,9 @@ export const ActivityRequest = {
         case 4:
           message.offset = reader.int32();
           break;
+        case 5:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1712,6 +1740,7 @@ export const ActivityRequest = {
       nftId: isSet(object.nftId) ? String(object.nftId) : "",
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -1721,6 +1750,7 @@ export const ActivityRequest = {
     message.nftId !== undefined && (obj.nftId = message.nftId);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -1730,6 +1760,7 @@ export const ActivityRequest = {
     message.nftId = object.nftId ?? "";
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -1795,13 +1826,16 @@ export const ActivityResponse = {
 };
 
 function createBaseNFTPriceHistoryRequest(): NFTPriceHistoryRequest {
-  return { id: "" };
+  return { id: "", networkId: "" };
 }
 
 export const NFTPriceHistoryRequest = {
   encode(message: NFTPriceHistoryRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(18).string(message.networkId);
     }
     return writer;
   },
@@ -1816,6 +1850,9 @@ export const NFTPriceHistoryRequest = {
         case 1:
           message.id = reader.string();
           break;
+        case 2:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1825,18 +1862,23 @@ export const NFTPriceHistoryRequest = {
   },
 
   fromJSON(object: any): NFTPriceHistoryRequest {
-    return { id: isSet(object.id) ? String(object.id) : "" };
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
+    };
   },
 
   toJSON(message: NFTPriceHistoryRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<NFTPriceHistoryRequest>, I>>(object: I): NFTPriceHistoryRequest {
     const message = createBaseNFTPriceHistoryRequest();
     message.id = object.id ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };

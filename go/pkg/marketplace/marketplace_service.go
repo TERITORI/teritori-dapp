@@ -9,6 +9,7 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/TERITORI/teritori-dapp/go/internal/airtable_fetcher"
+	"github.com/TERITORI/teritori-dapp/go/internal/ethereum"
 	"github.com/TERITORI/teritori-dapp/go/internal/faking"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
@@ -25,7 +26,8 @@ import (
 type MarkteplaceService struct {
 	marketplacepb.UnimplementedMarketplaceServiceServer
 
-	homeProvider *airtable_fetcher.Cache
+	homeProvider     *airtable_fetcher.Cache
+	ethereumProvider *ethereum.Provider
 	// collectionsByVolumeProvider         collections.CollectionsProvider
 	// collectionsByMarketCapProvider      collections.CollectionsProvider
 	conf *Config
@@ -35,6 +37,7 @@ type Config struct {
 	Logger             *zap.Logger
 	IndexerDB          *gorm.DB
 	GraphqlEndpoint    string
+	TheGraphEndpoint   string
 	TNSContractAddress string
 	TNSDefaultImageURL string
 	Whitelist          []string
@@ -49,8 +52,9 @@ func NewMarketplaceService(ctx context.Context, conf *Config) marketplacepb.Mark
 
 	// FIXME: validate config
 	return &MarkteplaceService{
-		conf:         conf,
-		homeProvider: homeProvider,
+		conf:             conf,
+		homeProvider:     homeProvider,
+		ethereumProvider: ethereum.NewEthereumProvider(conf.TheGraphEndpoint),
 		// collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 		// collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 	}
@@ -105,37 +109,37 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		}
 
 		err := s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		with count_by_collection as (
-			select count(1), collection_id from nfts group by nfts.collection_id
-		),
-		tori_collections as (
-			SELECT c.*, tc.mint_contract_address, tc.creator_address FROM collections AS c
-			INNER join teritori_collections tc on tc.collection_id = c.id
-			%s
-			AND tc.mint_contract_address IN ?
-		),
-			nft_by_collection as (
-			SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
-		INNER JOIN nfts AS n on tc.id = n.collection_id
-		),
-		activities_on_period as (
-			select * from activities a2 where a2."time" > ?
-		),
-		trades_on_period as(
-			select * from trades t2 inner join activities_on_period aop
-			on aop.id = t2.activity_id
-		),
-		trades_by_collection as (
-			select sum(t.usd_price) volume, nbc.id FROM trades_on_period AS t
-			INNER join nft_by_collection nbc on nbc.nft_id = t.nft_id
-			GROUP BY nbc.id
-		)
-		select tc.*, COALESCE((select tbc.volume from trades_by_collection tbc where tbc.id = tc.id), 0) volume 
-			from tori_collections tc
-		order by volume desc, id asc
-		limit ?
-		offset ?
-    `, where),
+			WITH count_by_collection AS (
+				SELECT count(1), collection_id FROM nfts GROUP BY nfts.collection_id
+			),
+			tori_collections AS (
+				SELECT c.*, tc.mint_contract_address, tc.creator_address FROM collections AS c
+				INNER JOIN teritori_collections tc ON tc.collection_id = c.id
+				%s
+				AND tc.mint_contract_address IN ?
+			),
+			nft_by_collection AS (
+				SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
+				INNER JOIN nfts AS n ON tc.id = n.collection_id
+			),
+			activities_on_period AS (
+				SELECT * FROM activities a2 WHERE a2."time" > ?
+			),
+			trades_on_period AS (
+				SELECT * FROM trades t2 INNER JOIN activities_on_period aop
+				ON aop.id = t2.activity_id
+			),
+			trades_by_collection AS (
+				SELECT SUM(t.usd_price) volume, nbc.id FROM trades_on_period AS t
+				INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
+				GROUP BY nbc.id
+			)
+			SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume 
+				FROM tori_collections tc
+			ORDER BY volume DESC, id ASC
+			LIMIT ?
+			OFFSET ?
+		`, where),
 			s.conf.Whitelist,
 			time.Now().AddDate(0, 0, -30),
 			limit,
@@ -171,6 +175,17 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		}
 		return nil
 
+	case "ethereum", "ethereum-goerli":
+		collections, err := s.ethereumProvider.GetCollections(srv.Context(), req.GetNetworkId())
+		if err != nil {
+			return errors.Wrap(err, "failed to query database")
+		}
+		for i := range collections {
+			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &collections[i]}); err != nil {
+				return errors.Wrap(err, "failed to send collection")
+			}
+		}
+		return nil
 	}
 
 	return fmt.Errorf("unknown collection network %s", req.GetNetworkId())
@@ -203,8 +218,9 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	if sortDirection == marketplacepb.SortDirection_SORT_DIRECTION_UNSPECIFIED {
 		sortDirection = marketplacepb.SortDirection_SORT_DIRECTION_ASCENDING
 	}
-
+	networkID := req.GetNetworkId()
 	collection_id := req.GetCollectionId()
+	ownerId := req.GetOwnerId()
 
 	// FIXME: return fake data if any filter is fake
 	if strings.HasPrefix(collection_id, "fake") {
@@ -216,6 +232,18 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		return nil
 	}
 
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
+		nfts, err := s.ethereumProvider.GetNFTs(srv.Context(), networkID, collection_id, ownerId, int(limit), int(offset), sortDirection)
+		if err != nil {
+			return errors.Wrap(err, "failed to fetch collection nfts")
+		}
+		for _, nft := range nfts {
+			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: nft}); err != nil {
+				return errors.Wrap(err, "failed to send nft")
+			}
+		}
+		return nil
+	}
 	// FIXME: support other filters on solana
 	if strings.HasPrefix(collection_id, "sol") {
 		gqlClient := graphql.NewClient(s.conf.GraphqlEndpoint, nil)
@@ -270,7 +298,6 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		query = query.Where("collection_id = ?", collection_id)
 	}
 
-	ownerId := req.GetOwnerId()
 	if ownerId != "" {
 		query = query.Where("owner_id = ?", ownerId)
 	}
@@ -388,8 +415,23 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			return nil
 		}
 	}
-
+	networkID := req.GetNetworkId()
 	nftID := req.GetNftId()
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
+		activities, total, err := s.ethereumProvider.GetActivities(srv.Context(), collectionID, nftID, int(limit), int(offset))
+		if err != nil {
+			return errors.Wrap(err, "failed to fetch collection activity")
+		}
+		if err := srv.Send(&marketplacepb.ActivityResponse{Total: int64(total)}); err != nil {
+			return errors.Wrap(err, "failed to send total count")
+		}
+		for _, activity := range activities {
+			if err := srv.Send(&marketplacepb.ActivityResponse{Activity: activity}); err != nil {
+				return errors.Wrap(err, "failed to send activity")
+			}
+		}
+		return nil
+	}
 
 	var totalCount int64
 	if err := s.conf.IndexerDB.
@@ -503,8 +545,16 @@ func (s *MarkteplaceService) NFTPriceHistory(ctx context.Context, req *marketpla
 	if id == "" {
 		return nil, errors.New("empty id")
 	}
-
+	networkID := req.GetNetworkId()
 	var data []*marketplacepb.PriceDatum
+	var err error
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
+		data, err = s.ethereumProvider.GetNFTPriceHistory(ctx, id)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed get price history")
+		}
+		return &marketplacepb.NFTPriceHistoryResponse{Data: data}, nil
+	}
 
 	// TODO: data decimation in case we have a lot of samples for the period
 
@@ -568,10 +618,23 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		return nil, errors.New("empty collectionID")
 	}
 	ownerID := req.GetOwnerId()
+
+	networkID := req.GetNetworkId()
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
+		stats, err := s.ethereumProvider.GetCollectionStats(ctx, collectionID, ownerID)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed fetch ethereum collection stats")
+		}
+		return &marketplacepb.CollectionStatsResponse{
+			Stats: stats,
+		}, nil
+	}
+
 	db, err := s.conf.IndexerDB.DB()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed get DB instance")
 	}
+
 	var stats CollectionStats
 	err = queries.Raw(`with 
 	nfts_in_collection as (
@@ -606,7 +669,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 	}
 	stats.FloorPrice = make([]*marketplacepb.Amount, len(coins))
 	for index, coin := range coins {
-		stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: coin.Amount}
+		stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: fmt.Sprint(coin.Amount)}
 	}
 	return &marketplacepb.CollectionStatsResponse{
 		Stats: &stats.CollectionStats,

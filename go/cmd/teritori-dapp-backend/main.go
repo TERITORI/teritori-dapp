@@ -39,6 +39,7 @@ func main() {
 		dbPass             = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbName             = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser             = fs.String("postgres-user", "", "username for postgreSQL")
+		theGraphEndpoint   = fs.String("ethereum-graph-endpoint", "", "the graph url for ethereum marketplace")
 		whitelistString    = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
 		airtableAPIKey     = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
 	)
@@ -87,6 +88,7 @@ func main() {
 		TNSContractAddress: *tnsContractAddress,
 		TNSDefaultImageURL: *tnsDefaultImageURL,
 		Whitelist:          whitelist,
+		TheGraphEndpoint:   *theGraphEndpoint,
 		AirtableAPIKey:     *airtableAPIKey,
 	})
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{

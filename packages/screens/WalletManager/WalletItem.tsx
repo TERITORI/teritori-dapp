@@ -15,6 +15,7 @@ import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { rewardsPrice, TotalRewards } from "../../hooks/useRewards";
+import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { accountExplorerLink } from "../../utils/teritori";
@@ -41,6 +42,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
   const navigation = useAppNavigation();
+  const selectedNetwork = useSelectedNetwork();
 
   // Total rewards price with all denoms
   const claimablePrice = rewardsPrice(item.pendingRewards);
@@ -202,7 +204,10 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               : []),
             {
               label: "View on Explorer",
-              onPress: () => Linking.openURL(accountExplorerLink(item.address)),
+              onPress: () =>
+                Linking.openURL(
+                  accountExplorerLink(selectedNetwork, item.address)
+                ),
             },
             {
               label: "Rename address",

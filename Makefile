@@ -42,6 +42,10 @@ generate.protobuf: node_modules
 generate.graphql:
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/holagql/genqlient.yaml
 
+generate.graphql-thegraph:
+	rover graph introspect https://api.studio.thegraph.com/query/40379/teritori-mainnet/v1 > go/pkg/thegraph/thegraph-schema.graphql
+	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/thegraph/genqlient.yaml
+
 .PHONY: lint
 lint: node_modules
 	buf lint api
