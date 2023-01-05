@@ -57,9 +57,16 @@ export const useCollections = (
     );
   }, [data?.pages]);
 
+  const filteredCollections = useMemo(() => {
+    if (!filter) {
+      return collections;
+    }
+    return collections.filter(filter);
+  }, [collections, filter]);
+
   const fetchMore = useCallback(async (index: number) => {
     await fetchNextPage({ pageParam: index });
   }, []);
 
-  return [collections, fetchMore];
+  return [filteredCollections, fetchMore];
 };
