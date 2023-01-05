@@ -67,7 +67,7 @@ const Content: React.FC<{
   const collectionAddress = id.split("-")[1];
 
   const collectionId = `${selectedNetworkInfo?.addressPrefix}-${collectionAddress}`;
-  const mintEnded = useMintEnded(selectedNetwork, collectionId);
+  const mintEnded = useMintEnded(collectionId);
   const showMarketplace =
     secondaryDuringMintList.includes(collectionId) ||
     (mintEnded !== undefined && mintEnded);

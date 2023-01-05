@@ -4,17 +4,16 @@ import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-b
 import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { getEthereumProvider } from "../utils/ethereum";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
-import { Network } from "../utils/network";
 
-export const useMintEnded = (network: Network | undefined, id: string) => {
-  const { data } = useQuery(["mintEnded", id, network], async () => {
-    if (!id || !network) {
+export const useMintEnded = (id: string) => {
+  const { data } = useQuery(["mintEnded", id], async () => {
+    if (!id) {
       return false;
     }
 
-    if (network === Network.Teritori) {
-      const mintAddress = id.replace("tori-", "");
+    const [addressPrefix, mintAddress] = id.split("-");
 
+    if (addressPrefix === "tori") {
       if (mintAddress === process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS) {
         return false;
       }
@@ -30,9 +29,7 @@ export const useMintEnded = (network: Network | undefined, id: string) => {
       const mintedAmount = await minterClient.currentSupply();
 
       return mintedAmount === conf.nft_max_supply;
-    } else if (network === Network.Ethereum) {
-      const mintAddress = id.replace("eth-", "");
-
+    } else if (addressPrefix === "eth") {
       const provider = await getEthereumProvider();
       if (!provider) {
         console.error("no eth provider found");
@@ -48,7 +45,7 @@ export const useMintEnded = (network: Network | undefined, id: string) => {
       return mintedAmount === minterConfig.maxSupply.toNumber();
     }
 
-    console.error(`unsupported network ${network}`);
+    console.error(`unknown collectionId ${id}`);
     return false;
   });
   return data;
