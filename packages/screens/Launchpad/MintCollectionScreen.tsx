@@ -125,7 +125,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     }
 
     const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
-    const minterConfig = await minterClient.callStatic.config();
+    const userState = await minterClient.callStatic.userState(wallet.address);
+
+    if (!userState.userCanMint) {
+      throw Error("You cannot mint now");
+    }
 
     const address = await signer.getAddress();
 
@@ -133,7 +137,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     const tx = await minterClient.requestMint(address, 1, {
       maxFeePerGas: maxFeePerGas?.toNumber(),
       maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
-      value: minterConfig.publicMintPrice,
+      value: userState.mintPrice,
     });
     await tx.wait();
   };
