@@ -127,9 +127,10 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
     const userState = await minterClient.callStatic.userState(wallet.address);
 
-    if (!userState.userCanMint) {
-      throw Error("You cannot mint now");
-    }
+    // TODO: check this properly later
+    // if (!userState.userCanMint) {
+    //   throw Error("You cannot mint now");
+    // }
 
     const address = await signer.getAddress();
 

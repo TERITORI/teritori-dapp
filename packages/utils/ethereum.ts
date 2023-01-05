@@ -4,6 +4,7 @@ import { ethers, Signer } from "ethers";
 import { Attribute, Collection, NFT } from "../api/marketplace/v1/marketplace";
 import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { ipfsURLToHTTPURL } from "./ipfs";
 
 export const getMetaMaskEthereumProvider = async () => {
   const provider = await detectEthereumProvider();
@@ -57,7 +58,9 @@ export const addNftMetadatas = async (nfts: NFT[]) => {
       );
 
       const nftTokenId = nft.id.split("-")[2];
-      const info = await nftClient.callStatic.nftInfo(nftTokenId);
+      const tokenURI = await nftClient.callStatic.tokenURI(nftTokenId);
+      const metadataURL = ipfsURLToHTTPURL(tokenURI);
+      const info = await fetch(metadataURL).then((data) => data.json());
 
       if (info) {
         const attributes: Attribute[] = [];
