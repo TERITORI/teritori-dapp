@@ -11,8 +11,6 @@ import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { Network } from "./../utils/network";
-import { useSelectedNetwork } from "./useSelectedNetwork";
 
 export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
 
@@ -282,17 +280,15 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
 
 // NOTE: consider using the indexer for this
 export const useCollectionInfo = (id: string) => {
-  const selectedNetwork = useSelectedNetwork();
-
   // Request to ETH blockchain is not free so for ETH we do not re-fetch much
-  const refetchInterval = selectedNetwork === Network.Ethereum ? 60_000 : 5000;
+  const refetchInterval = id.startsWith("eth-") ? 60_000 : 5000;
 
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
     async (): Promise<CollectionInfo> => {
       let info: CollectionInfo = {};
 
-      if (selectedNetwork === Network.Teritori) {
+      if (id.startsWith("tori-")) {
         const mintAddress = id.replace("tori-", "");
 
         switch (mintAddress) {
@@ -305,7 +301,7 @@ export const useCollectionInfo = (id: string) => {
           default:
             info = await getTeritoriBunkerCollectionInfo(mintAddress);
         }
-      } else if (selectedNetwork === Network.Ethereum) {
+      } else if (id.startsWith("eth-")) {
         const mintAddress = id.replace("eth-", "");
         info = await getEthereumTeritoriBunkerCollectionInfo(mintAddress);
       }

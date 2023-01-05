@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -28,9 +28,11 @@ import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bun
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCurrency } from "../../networks";
+import { setSelectedNetworkId } from "../../store/slices/settings";
+import { useAppDispatch } from "../../store/store";
 import { prettyPrice } from "../../utils/coins";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
@@ -74,8 +76,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     params: { id },
   },
 }) => {
-  // TODO: Find away to detect precise network info base on params
-  const selectedNetworkInfo = useSelectedNetworkInfo();
   const [addressPrefix, mintAddress] = id.split("-");
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
@@ -83,9 +83,20 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
-  const networkId = selectedNetworkInfo?.id || "";
+  const networkId = useSelectedNetworkId();
   const balances = useBalances(networkId, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (id.startsWith("eth-")) {
+      dispatch(setSelectedNetworkId(process.env.ETHEREUM_NETWORK_ID || ""));
+      return;
+    }
+    if (id.startsWith("tori-")) {
+      dispatch(setSelectedNetworkId(process.env.TERITORI_NETWORK_ID || ""));
+    }
+  }, [id, dispatch]);
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
   const mintButtonDisabled = minted || !wallet?.connected;
@@ -141,7 +152,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     if (!mintFunc) {
       return setToastError({
         title: "Error",
-        message: `unsupported network ${selectedNetworkInfo?.network}`,
+        message: `unsupported network ${networkId}`,
       });
     }
 
@@ -162,13 +173,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       }
       console.error(e);
     }
-  }, [
-    wallet?.address,
-    selectedNetworkInfo?.network,
-    id,
-    info?.unitPrice,
-    info?.priceDenom,
-  ]);
+  }, [wallet?.address, id, info?.unitPrice, info?.priceDenom]);
 
   const teritoriMint = async (wallet: Wallet) => {
     const sender = wallet?.address;
