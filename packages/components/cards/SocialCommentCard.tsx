@@ -41,6 +41,7 @@ import { PostResultExtra } from "../NewsFeed/NewsFeed.type";
 import { SocialReactionActions } from "../SocialReactionActions";
 import { tinyAddress } from "../WalletSelector";
 import { AnimationFadeIn } from "../animations";
+import { AnimationFadeInOut } from "../animations/AnimationFadeInOut";
 import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../spacer";
@@ -131,7 +132,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     });
 
   return (
-    <AnimationFadeIn
+    <AnimationFadeInOut
+      visible
       onLayout={(e) =>
         setReplyListYOffset((prev) => {
           prev[0] = e.nativeEvent.layout.y;
@@ -144,11 +146,12 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
         {isLast && <View style={styles.extraLineHider} />}
 
         <View style={[styles.commentContainer, style]}>
-          {comment.isInLocal && (
-            <AnimationFadeIn style={styles.loadingOverlay}>
-              <ActivityIndicator color={primaryColor} />
-            </AnimationFadeIn>
-          )}
+          <AnimationFadeInOut
+            visible={!!comment.isInLocal}
+            style={styles.loadingOverlay}
+          >
+            <ActivityIndicator color={primaryColor} />
+          </AnimationFadeInOut>
 
           <View style={styles.commentContainerInside}>
             <AvatarWithFrame
@@ -280,7 +283,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           )}
         </AnimationFadeIn>
       )}
-    </AnimationFadeIn>
+    </AnimationFadeInOut>
   );
 };
 

@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   Pressable,
   StyleSheet,
+  useWindowDimensions,
 } from "react-native";
+import Animated, { useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
 import cameraSVG from "../../../assets/icons/camera.svg";
@@ -77,6 +79,8 @@ export const NewsFeedInput = React.forwardRef<
     { type, parentId, style, onSubmitSuccess, replyTo, onSubmitInProgress },
     forwardRef
   ) => {
+    const inputHeight = useSharedValue(20);
+    const { height } = useWindowDimensions();
     const wallet = useSelectedWallet();
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
@@ -256,37 +260,44 @@ export const NewsFeedInput = React.forwardRef<
               source={penSVG}
               color={secondaryColor}
             />
-
-            <TextInput
-              ref={inputRef}
-              value={formValues.message}
-              onSelectionChange={(event) =>
-                setSelection(event.nativeEvent.selection)
-              }
-              placeholder={`Hey yo! ${
-                type === "post" ? "Post something" : "Write your comment"
-              } here! _____`}
-              placeholderTextColor={neutral77}
-              onChangeText={handleTextChange}
-              multiline
-              style={[
-                fontSemibold16,
-                {
-                  width: "100%",
-                  color: secondaryColor,
-                  marginLeft: layout.padding_x1_5,
-
-                  //@ts-ignore
-                  outlineStyle: "none",
-                  outlineWidth: 0,
-                },
-              ]}
-              onKeyPress={(e) => {
-                if (e.nativeEvent.key === "Enter" && type === "post") {
-                  redirectToNewPost();
+            <Animated.View style={{ height: inputHeight.value, flex: 1 }}>
+              <TextInput
+                ref={inputRef}
+                value={formValues.message}
+                onSelectionChange={(event) =>
+                  setSelection(event.nativeEvent.selection)
                 }
-              }}
-            />
+                placeholder={`Hey yo! ${
+                  type === "post" ? "Post something" : "Write your comment"
+                } here! _____`}
+                placeholderTextColor={neutral77}
+                onChangeText={handleTextChange}
+                multiline
+                onContentSizeChange={(e) => {
+                  if (e.nativeEvent.contentSize.height < height * 0.2) {
+                    inputHeight.value = e.nativeEvent.contentSize.height;
+                  }
+                }}
+                style={[
+                  fontSemibold16,
+                  {
+                    width: "100%",
+                    color: secondaryColor,
+                    marginLeft: layout.padding_x1_5,
+                    height: "100%",
+
+                    //@ts-ignore
+                    outlineStyle: "none",
+                    outlineWidth: 0,
+                  },
+                ]}
+                onKeyPress={(e) => {
+                  if (e.nativeEvent.key === "Enter" && type === "post") {
+                    redirectToNewPost();
+                  }
+                }}
+              />
+            </Animated.View>
             <BrandText
               style={[
                 fontSemibold12,
