@@ -35,7 +35,6 @@ import { prettyPrice } from "../../utils/coins";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
-import { Network } from "../../utils/network";
 import {
   neutral33,
   neutral67,
@@ -75,8 +74,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     params: { id },
   },
 }) => {
+  // TODO: Find away to detect precise network info base on params
   const selectedNetworkInfo = useSelectedNetworkInfo();
-  const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
+  const [addressPrefix, mintAddress] = id.split("-");
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
@@ -113,8 +113,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       throw Error("no account connected");
     }
 
-    const minterAddress = id.replace("eth-", "");
-    const minterClient = TeritoriMinter__factory.connect(minterAddress, signer);
+    const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
     const minterConfig = await minterClient.callStatic.config();
 
     const address = await signer.getAddress();
@@ -130,11 +129,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 
   const mint = useCallback(async () => {
     let mintFunc: CallableFunction | null = null;
-    switch (selectedNetworkInfo?.network) {
-      case Network.Teritori:
+    switch (addressPrefix) {
+      case "tori":
         mintFunc = teritoriMint;
         break;
-      case Network.Ethereum:
+      case "eth":
         mintFunc = ethereumMint;
         break;
     }
@@ -166,14 +165,12 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   }, [
     wallet?.address,
     selectedNetworkInfo?.network,
-    mintAddress,
+    id,
     info?.unitPrice,
     info?.priceDenom,
   ]);
 
   const teritoriMint = async (wallet: Wallet) => {
-    const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
-
     const sender = wallet?.address;
     if (!sender || !info?.unitPrice || !info.priceDenom) {
       throw Error("invalid mint args");
