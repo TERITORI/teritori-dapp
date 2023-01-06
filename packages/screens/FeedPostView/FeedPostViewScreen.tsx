@@ -151,7 +151,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 
     if (isLoadingValue.value) {
       if (translationY.value >= btnOffsetValue.value && !isGoingUp.value) {
-        animeValue = withSpring(translationY.value - btnOffsetValue.value);
+        animeValue = withSpring(translationY.value);
       } else if (isGoingUp.value && translationY.value > btnOffsetValue.value) {
         animeValue = translationY.value - btnOffsetValue.value;
       }
@@ -159,6 +159,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       animeValue = isFirstLoad.value
         ? withSpring(btnOffsetValue.value)
         : btnOffsetValue.value;
+    } else {
+      animeValue = translationY.value - 100;
     }
 
     return {
@@ -172,7 +174,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       left: 0,
       right: 0,
     };
-  }, [post?.identifier]);
+  }, [post?.identifier, translationY.value]);
 
   const handleSubmitInProgress = () => {
     if (replyTo?.parentId) aref.current?.scrollTo(replyTo.yOffsetValue);

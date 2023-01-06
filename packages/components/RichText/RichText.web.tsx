@@ -27,19 +27,27 @@ import {
   EditorState,
 } from "draft-js";
 import React, { useEffect, useRef } from "react";
-import { Pressable } from "react-native";
 
+import { useOpenGraph } from "../../hooks/feed/useOpenGraph";
 import { useAppNavigation } from "../../utils/navigation";
-import { HANDLE_REGEX } from "../../utils/regex";
+import { HANDLE_REGEX, URL_REGEX } from "../../utils/regex";
 import { DEFAULT_USERNAME } from "../../utils/social-feed";
 import { neutral33, primaryColor } from "../../utils/style/colors";
+import { RichOpenGraphCard } from "./RichOpenGraphCard";
 import { RichTextProps } from "./RichText.type";
 
-const handleStrategy = (
+const mentionStrategy = (
   contentBlock: ContentBlock,
   callback: (start: number, end: number) => void
 ) => {
   findWithRegex(HANDLE_REGEX, contentBlock, callback);
+};
+
+const urlStrategy = (
+  contentBlock: ContentBlock,
+  callback: (start: number, end: number) => void
+) => {
+  findWithRegex(URL_REGEX, contentBlock, callback);
 };
 
 const findWithRegex = (
@@ -48,31 +56,37 @@ const findWithRegex = (
   callback: (start: number, end: number) => void
 ) => {
   const text = contentBlock.getText();
+  console.log("test", [...text.matchAll(new RegExp(regex, "gi"))]);
 
   [...text.matchAll(new RegExp(regex, "gi"))]
     .map((a) =>
-      !a[0].toLowerCase().includes(DEFAULT_USERNAME.toLowerCase()) && a.index
+      !a[0].toLowerCase().includes(DEFAULT_USERNAME.toLowerCase()) &&
+      a.index !== undefined
         ? [a.index, a.index + a[0].length]
         : null
     )
     .forEach((v) => v && callback(v[0], v[1]));
 };
 
-const HandleSpan = (props: { children: { props: { text: string } }[] }) => {
-  // const navigation = useAppNavigation();
+const MentionRender = (props: { children: { props: { text: string } }[] }) => {
   const navigation = useAppNavigation();
 
   return (
-    <Pressable
-      onPress={() =>
+    <span
+      style={{ color: primaryColor }}
+      onClick={() =>
         navigation.navigate("PublicProfile", {
           id: props.children[0].props.text.replace("@", ""),
         })
       }
     >
-      <span style={{ color: primaryColor }}>{props.children}</span>
-    </Pressable>
+      {props.children}
+    </span>
   );
+};
+
+const UrlRender = (props: { children: { props: { text: string } }[] }) => {
+  return <span style={{ color: primaryColor }}>{props.children}</span>;
 };
 
 const LinkPlugin = createLinkPlugin();
@@ -98,7 +112,25 @@ const staticToolbarPlugin = createToolbarPlugin({
 });
 const { Toolbar } = staticToolbarPlugin;
 const { InlineToolbar } = inlineToolbarPlugin;
-const plugins = [inlineToolbarPlugin, staticToolbarPlugin, LinkPlugin];
+
+const compositeDecorator = {
+  decorators: [
+    {
+      strategy: mentionStrategy,
+      component: MentionRender,
+    },
+    {
+      strategy: urlStrategy,
+      component: UrlRender,
+    },
+  ],
+};
+const plugins = [
+  inlineToolbarPlugin,
+  staticToolbarPlugin,
+  LinkPlugin,
+  compositeDecorator,
+];
 
 const createStateFromHTML = (html: string) => {
   const blocksFromHTML = convertFromHTML(html);
@@ -108,13 +140,6 @@ const createStateFromHTML = (html: string) => {
   );
   return EditorState.createWithContent(content);
 };
-
-const compositeDecorator = [
-  {
-    strategy: handleStrategy,
-    component: HandleSpan,
-  },
-];
 
 export function RichText({
   onChange = () => {},
@@ -127,27 +152,51 @@ export function RichText({
   const [editorState, setEditorState] = React.useState(
     initialValue ? createStateFromHTML(initialValue) : EditorState.createEmpty()
   );
+  const oldUrlMatch = useRef<string>();
+  const { mutate, data } = useOpenGraph();
+
+  useEffect(() => {
+    const contentState = editorState.getCurrentContent();
+
+    const html = convertToHTML(contentState);
+
+    const currentUrlMatches = [...html.matchAll(new RegExp(URL_REGEX, "gi"))];
+
+    if (currentUrlMatches?.length) {
+      const lastUrl = currentUrlMatches.pop();
+      const url = lastUrl && lastUrl[0].split("<")[0];
+
+      if (url && url !== oldUrlMatch.current) {
+        oldUrlMatch.current = url;
+
+        mutate({
+          url,
+        });
+      }
+    }
+  }, [editorState]);
+
+  useEffect(() => {
+    if (initialValue && !readOnly) {
+      setTimeout(() => {
+        editorRef.current?.focus();
+      }, 100);
+
+      setTimeout(() => {
+        const endState = EditorState.moveSelectionToEnd(editorState);
+        setEditorState(endState);
+      }, 1000);
+    }
+  }, []);
 
   const handleChange = (state: EditorState) => {
     setEditorState(state);
     const contentState = state.getCurrentContent();
 
     const html = convertToHTML(contentState);
+
     onChange(html === "<p></p>" ? "" : html);
   };
-
-  useEffect(() => {
-    if (initialValue && !readOnly) {
-      editorRef.current?.focus();
-
-      setTimeout(() => {
-        const endState = EditorState.moveSelectionToEnd(editorState);
-        setEditorState(
-          EditorState.forceSelection(endState, endState.getSelection())
-        );
-      }, 300);
-    }
-  }, []);
 
   return (
     <div
@@ -167,8 +216,9 @@ export function RichText({
         readOnly={readOnly}
         onBlur={onBlur}
         ref={editorRef}
-        decorators={compositeDecorator}
+        decorators={compositeDecorator.decorators}
       />
+      {data && <RichOpenGraphCard {...data} />}
       {!readOnly && (
         <>
           {staticToolbar ? (
