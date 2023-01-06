@@ -12,7 +12,6 @@ import { combineFetchFeedPages, useFetchFeed } from "../../hooks/useFetchFeed";
 import { SelectedTabContentProps } from "../../screens/Feed/FeedScreen";
 import { layout } from "../../utils/style/layout";
 import { RefreshButton } from "../RefreshButton";
-import { TertiaryButton } from "../buttons/TertiaryButton";
 import { SocialThreadCard } from "../cards/SocialThreadCard";
 import { Footer } from "../footers/Footer";
 import { NewsFeedInput } from "./NewsFeedInput";
@@ -74,24 +73,15 @@ export const NewsFeed: React.FC<SelectedTabContentProps> = ({ Header }) => {
     }
   }, [isFetching, isLoading]);
 
-  // returns
+  // functions
+  const onEndReached = () => {
+    if (!isLoading && hasNextPage) {
+      fetchNextPage();
+    }
+  };
 
-  const ListFooterComponent = useCallback(
-    () => (
-      <View>
-        {!isLoading && hasNextPage ? (
-          <TertiaryButton
-            onPress={fetchNextPage}
-            text="Load More"
-            size="SM"
-            style={{ alignSelf: "center", marginBottom: layout.padding_x1 }}
-          />
-        ) : null}
-        <Footer />
-      </View>
-    ),
-    [isLoading, posts.length]
-  );
+  // returns
+  const ListFooterComponent = useCallback(() => <Footer />, []);
 
   const ListHeaderComponent = useCallback(
     () => (
@@ -127,6 +117,8 @@ export const NewsFeed: React.FC<SelectedTabContentProps> = ({ Header }) => {
         onScroll={scrollHandler}
         ListFooterComponent={ListFooterComponent}
         contentContainerStyle={styles.content}
+        onEndReachedThreshold={1}
+        onEndReached={onEndReached}
       />
     </>
   );
