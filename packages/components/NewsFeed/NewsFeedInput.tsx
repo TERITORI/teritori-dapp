@@ -201,7 +201,7 @@ export const NewsFeedInput = React.forwardRef<
     const handleTextChange = (text: string) => {
       setValue("message", text);
 
-      if (text.length > 80) {
+      if (text.length > 80 && type === "post") {
         redirectToNewPost();
       }
     };
@@ -291,11 +291,6 @@ export const NewsFeedInput = React.forwardRef<
                     outlineWidth: 0,
                   },
                 ]}
-                onKeyPress={(e) => {
-                  if (e.nativeEvent.key === "Enter" && type === "post") {
-                    redirectToNewPost();
-                  }
-                }}
               />
             </Animated.View>
             <BrandText
