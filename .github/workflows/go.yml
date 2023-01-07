@@ -19,5 +19,8 @@ jobs:
       - name: Tidy go.mod
         run: go mod tidy
 
+      - name: Build
+        run: go build ./go/...
+
       - name: Check diff
         run: git diff --exit-code

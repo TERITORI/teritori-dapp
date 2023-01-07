@@ -3,9 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useBalances } from "../../hooks/useBalances";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
@@ -17,17 +15,15 @@ import { Wallets } from "./Wallets";
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
   const areThereWallets = useAreThereWallets();
   const { height } = useMaxResolution();
-  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
 
   return (
     <WalletManagerScreenContainer>
       {areThereWallets ? (
         <View style={styles.container}>
           <WalletDashboardHeader />
-          <Assets networkId={selectedNetworkId} balances={balances} />
+          <Assets userId={selectedWallet?.userId} />
           <Wallets />
           <MyNFTs />
         </View>

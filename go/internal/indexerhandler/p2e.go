@@ -53,7 +53,7 @@ func (h *Handler) handleInstantiateBreeding(e *Message, contractAddress string, 
 	maxSupply := minterInstantiateMsg.ChildNftMaxSupply
 
 	// create collection
-	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
+	collectionId := h.config.Network.CollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
 		NetworkId:           "teritori", // FIXME: get from networks config
@@ -69,7 +69,7 @@ func (h *Handler) handleInstantiateBreeding(e *Message, contractAddress string, 
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
 	}
-	h.logger.Info("created collection", zap.String("id", collectionId))
+	h.logger.Info("created collection", zap.String("id", string(collectionId)))
 
 	return nil
 }
@@ -101,11 +101,22 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		return errors.New("no token_id")
 	}
 
-	ownerId := indexerdb.TeritoriUserID(users[0])
+	ownerId := h.config.Network.UserID(users[0])
 
 	startTime, err := strconv.ParseUint(startTimes[0], 0, 64)
 	if err != nil {
 		return errors.Wrap(err, "unable to parse start_time")
+	}
+
+	startTimeDt := time.Unix(int64(startTime), 0)
+	season, _, err := p2e.GetSeasonByTime(startTimeDt)
+	if err != nil {
+		return errors.Wrap(err, "failed to get season")
+	}
+
+	if execMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 && season.ID != "Season 1" {
+		h.logger.Info("ignored p2e stake event for V1 contract out of Season 1")
+		return nil
 	}
 
 	endTime, err := strconv.ParseUint(endTimes[0], 0, 64)
@@ -122,12 +133,6 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 
 	if count != 0 {
 		return errors.New("data corrupts: we should not have a current staking")
-	}
-
-	startTimeDt := time.Unix(int64(startTime), 0)
-	season, _, err := p2e.GetSeasonByTime(startTimeDt)
-	if err != nil {
-		return errors.Wrap(err, "failed to get season")
 	}
 
 	squadStaking := indexerdb.P2eSquadStaking{
@@ -152,8 +157,14 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")
 	}
 
+	contractVersion := "V2"
+	if execMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 {
+		contractVersion = "V1"
+	}
+	h.logger.Info("created leaderboard entry", zap.String("contract-version", contractVersion), zap.String("user-id", string(ownerId)), zap.String("season-id", season.ID))
+
 	// Update lockedOn: set lockedOn = contract which holds NFTs
-	lockedOn := indexerdb.TeritoriUserID(execMsg.Contract)
+	lockedOn := h.config.Network.UserID(execMsg.Contract)
 
 	for _, nft := range squadStakeMsg.Stake.Nfts {
 		result := h.db.Exec(`
@@ -185,7 +196,7 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 		return errors.New("no token_id")
 	}
 
-	userId := indexerdb.TeritoriUserID(execMsg.Sender)
+	userId := h.config.Network.UserID(execMsg.Sender)
 
 	// Get current squad stakings
 	var squadStakings []indexerdb.P2eSquadStaking
@@ -228,7 +239,7 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 		seasonId := season.ID
 
 		// Unstake NFTs from previous contracts
-		if execMsg.Contract == h.config.SquadStakingContractAddressV1 {
+		if execMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 {
 			seasonId = "Season 1"
 		}
 

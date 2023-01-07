@@ -1,22 +1,23 @@
-import { Network } from "../../utils/network";
-import { NetworkInfo } from "../types";
+import { NetworkInfo, NetworkKind } from "../types";
 import { ethereumCurrencies } from "./currencies";
 
 export const ethereumNetwork: NetworkInfo = {
   id: "ethereum",
-  network: Network.Ethereum,
-  chainId: "1",
+  kind: NetworkKind.Ethereum,
   displayName: "Ethereum",
-  icon: "icons/networks/ethereum-circle.svg",
+  icon: "icons/networks/ethereum.svg",
   currencies: ethereumCurrencies,
-  addressPrefix: "eth",
-  restEndpoint: "https://ethereum.publicnode.com",
-  rpcEndpoint: "https://ethereum.publicnode.com",
-  stakeCurrency: "ether",
-  gasPriceStep: {
-    low: 0.0,
-    average: 0.025,
-    high: 0.04,
-  },
-  features: [],
+  idPrefix: "eth",
+  endpoint: "https://ethereum.publicnode.com",
+  txExplorer: "https://etherscan.io/tx/$hash",
+  accountExplorer: "https://etherscan.io/address/$address",
+  contractExplorer: "https://etherscan.io/address/$address",
+  testnet: false,
+  backendEndpoint: "https://dapp-backend.mainnet.teritori.com",
+  chainId: 1,
+  alchemyApiKey: "xZ3FVF0o6q_4beg_afmCEzf4GSJErhId",
+  theGraphEndpoint:
+    "https://api.studio.thegraph.com/query/40379/teritori-mainnet/v1",
+  vaultContractAddress: "0x6251B3384c8eD53e2Cc38d34c1f26ffE8d461B94",
+  riotContractAddress: "0x8f8304ea566affeb96ad0ffb593bbebd8876d124",
 };
