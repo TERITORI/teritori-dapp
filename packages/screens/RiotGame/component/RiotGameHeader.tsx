@@ -19,6 +19,8 @@ import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
+import { useForceNetworkKind } from "../../../hooks/useForceNetworkKind";
+import { NetworkKind } from "../../../networks";
 import {
   RootStackParamList,
   useAppNavigation,
@@ -92,6 +94,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
 }) => {
   const navigation = useAppNavigation();
   const { name: routeName } = useRoute();
+  useForceNetworkKind(NetworkKind.Cosmos);
 
   const onMenuItemClick = (item: MenuItem) => {
     if (item.externalRoute) {
@@ -153,7 +156,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
           <SpacerRow size={1.5} />
           <Separator horizontal color={neutral33} />
           <SpacerRow size={1.5} />
-          <NetworkSelector />
+          <NetworkSelector forceNetworkKind={NetworkKind.Cosmos} />
           <SpacerRow size={1.5} />
           <ConnectWalletButton />
         </View>

@@ -18,15 +18,18 @@ import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
-import { secondaryDuringMintList } from "../../utils/collections";
+import {
+  NetworkKind,
+  getCollectionId,
+  getKeplrSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+  mustGetEthereumNetwork,
+  parseNftId,
+} from "../../networks";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
-import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
-import { Network } from "../../utils/network";
-import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
 
 export interface NFTInfo {
@@ -50,6 +53,8 @@ export interface NFTInfo {
   mintDenom: string;
   royalty: number;
   breedingsAvailable?: number;
+  networkId: string;
+  collectionId: string;
 }
 
 const Content: React.FC<{
@@ -59,17 +64,15 @@ const Content: React.FC<{
     useState<keyof typeof screenTabItems>("main");
   const { setToastError } = useFeedbacks();
   const wallet = useSelectedWallet();
-  const { info, refresh, notFound } = useNFTInfo(id, wallet?.address);
+  const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
   const { width } = useMaxResolution({ noMargin: true });
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetwork = selectedNetworkInfo?.network;
 
-  const collectionAddress = id.split("-")[1];
+  const [network, collectionAddress] = parseNftId(id);
 
-  const collectionId = `${selectedNetworkInfo?.addressPrefix}-${collectionAddress}`;
+  const collectionId = getCollectionId(network?.id, collectionAddress);
   const mintEnded = useMintEnded(collectionId);
   const showMarketplace =
-    secondaryDuringMintList.includes(collectionId) ||
+    (network?.secondaryDuringMintList || []).includes(collectionAddress) ||
     (mintEnded !== undefined && mintEnded);
 
   const screenTabItems = {
@@ -99,11 +102,11 @@ const Content: React.FC<{
     }
 
     let buyFunc: CallableFunction | null = null;
-    switch (selectedNetwork) {
-      case Network.Teritori:
+    switch (network?.kind) {
+      case NetworkKind.Cosmos:
         buyFunc = teritoriBuy;
         break;
-      case Network.Ethereum:
+      case NetworkKind.Ethereum:
         buyFunc = ethereumBuy;
         break;
     }
@@ -111,7 +114,7 @@ const Content: React.FC<{
     if (!buyFunc) {
       setToastError({
         title: "Error",
-        message: `Unsupported network ${selectedNetwork}`,
+        message: `Unsupported network kind ${network?.kind}`,
       });
       return;
     }
@@ -133,9 +136,9 @@ const Content: React.FC<{
         });
       }
     }
-  }, [wallet, info, selectedNetwork, setToastError, refresh]);
+  }, [info, network?.kind, refresh, setToastError, wallet]);
 
-  const sell = useSellNFT(selectedNetwork);
+  const sell = useSellNFT(network?.kind);
 
   const handleSell = useCallback(
     async (price: string, denom: string | undefined) => {
@@ -151,7 +154,7 @@ const Content: React.FC<{
   );
 
   const cancelListing = useCancelNFTListing(
-    selectedNetwork,
+    network?.id,
     info?.nftAddress || "",
     info?.tokenId || ""
   );
@@ -163,7 +166,11 @@ const Content: React.FC<{
     return txHash;
   }, [cancelListing, refresh]);
 
-  if (!id.startsWith("tori-") && !id.startsWith("eth-")) {
+  if (
+    ![NetworkKind.Cosmos, NetworkKind.Ethereum].includes(
+      network?.kind || NetworkKind.Unknown
+    )
+  ) {
     return (
       <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
         <BrandText>Network not supported</BrandText>
@@ -209,7 +216,7 @@ const Content: React.FC<{
 
           <NFTMainInfo
             nftId={id}
-            nftInfo={info}
+            nftInfo={info || undefined}
             buy={handleBuy}
             sell={handleSell}
             cancelListing={handleCancelListing}
@@ -230,19 +237,31 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   // needed for emoji
   id = decodeURIComponent(id);
 
+  const [network] = parseNftId(id);
+
   return (
-    <ScreenContainer fullWidth footerChildren={<></>} noScroll noMargin>
+    <ScreenContainer
+      forceNetworkId={network?.id}
+      fullWidth
+      footerChildren={<></>}
+      noScroll
+      noMargin
+    >
       <Content key={id} id={id} />
     </ScreenContainer>
   );
 };
 
 const teritoriBuy = async (wallet: Wallet, info: NFTInfo) => {
-  const signingCosmwasmClient = await getSigningCosmWasmClient();
+  const network = mustGetCosmosNetwork(info.networkId);
+  if (!network.vaultContractAddress) {
+    throw new Error("network not supported");
+  }
+  const signingCosmwasmClient = await getKeplrSigningCosmWasmClient(network.id);
   const signingVaultClient = new TeritoriNftVaultClient(
     signingCosmwasmClient,
     wallet.address,
-    vaultContractAddress
+    network.vaultContractAddress
   );
   const tx = await signingVaultClient.buy(
     { nftContractAddr: info.nftAddress, nftTokenId: info.tokenId },
@@ -259,13 +278,14 @@ const teritoriBuy = async (wallet: Wallet, info: NFTInfo) => {
 };
 
 const ethereumBuy = async (wallet: Wallet, nftInfo: NFTInfo) => {
-  const signer = await getMetaMaskEthereumSigner(wallet.address);
+  const network = mustGetEthereumNetwork(nftInfo.networkId);
+  const signer = await getMetaMaskEthereumSigner(network, wallet.address);
   if (!signer) {
     throw Error("Unable to get signer");
   }
 
-  const vaultClient = await NFTVault__factory.connect(
-    process.env.ETHEREUM_VAULT_ADDRESS || "",
+  const vaultClient = NFTVault__factory.connect(
+    network.vaultContractAddress,
     signer
   );
 

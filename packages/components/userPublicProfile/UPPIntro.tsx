@@ -7,7 +7,8 @@ import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
-import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral77, withAlpha } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
@@ -23,12 +24,13 @@ import { UserImage } from "../images/UserImage";
 
 export const UPPIntro: React.FC<{
   userId: string;
-  metadata?: (Metadata & { tokenId: string }) | null;
   isUserOwner?: boolean;
-}> = ({ userId, metadata, isUserOwner }) => {
+}> = ({ userId, isUserOwner }) => {
+  const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
+  const [network, userAddress] = parseUserId(userId);
 
   return (
     <>
@@ -108,7 +110,8 @@ export const UPPIntro: React.FC<{
           />
         )}
         <UserImage
-          image={metadata?.image}
+          networkId={network?.id}
+          imageURI={metadata?.image}
           style={{
             position: "absolute",
             top: 217,
@@ -174,8 +177,8 @@ export const UPPIntro: React.FC<{
           </View>
 
           <CopyToClipboardSecondary
-            displayedText={tinyAddress(userId.replace("tori-", ""), 19)}
-            text={userId.replace("tori-", "")}
+            displayedText={tinyAddress(userAddress, 19)}
+            text={userAddress}
             iconSVG={teritoriSVG}
           />
         </TertiaryBox>
