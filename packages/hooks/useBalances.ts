@@ -78,7 +78,10 @@ const getNetworkBalances = async (
   }
 
   // Support for cosmos balances
-  else if (network.network === Network.Teritori) {
+  else if (
+    network.network === Network.Teritori ||
+    network.network === Network.CosmosHub
+  ) {
     const response = await fetch(
       `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
     );
