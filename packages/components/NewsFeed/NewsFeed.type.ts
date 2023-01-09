@@ -1,4 +1,5 @@
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { OpenGraphType } from "../../hooks/feed/types";
 
 export enum PostCategory {
   Reaction,
@@ -29,4 +30,5 @@ export interface SocialFeedMetadata {
   hashtags: string[];
   createdAt: string;
   updatedAt: string;
+  openGraph?: OpenGraphType;
 }
