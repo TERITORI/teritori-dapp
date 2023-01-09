@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Linking, Pressable, StyleSheet, View } from "react-native";
 
 import { OpenGraphType } from "../../hooks/feed/types";
 import {
@@ -17,25 +17,32 @@ export const RichOpenGraphCard: React.FC<OpenGraphType> = ({
   title,
   description,
   image,
+  url,
 }) => {
   if (!title) {
     return null;
   }
+
   return (
-    <View style={styles.container}>
+    <Pressable onPress={() => Linking.openURL(url)} style={styles.container}>
       <Image source={{ uri: image.url }} style={styles.image} />
       <View style={styles.content}>
         <BrandText style={[fontSemibold13, { color: neutral77 }]}>
           {domain}
         </BrandText>
         <SpacerColumn size={0.5} />
-        <BrandText style={[fontSemibold14]}>{title}</BrandText>
+        <BrandText style={[fontSemibold14]} numberOfLines={1}>
+          {title}
+        </BrandText>
         <SpacerColumn size={0.5} />
-        <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+        <BrandText
+          style={[fontSemibold14, { color: neutral77 }]}
+          numberOfLines={2}
+        >
           {description}
         </BrandText>
       </View>
-    </View>
+    </Pressable>
   );
 };
 
@@ -50,6 +57,6 @@ const styles = StyleSheet.create({
     marginTop: layout.padding_x2,
     maxWidth: 850,
   },
-  image: { height: 100, width: 100 },
+  image: { height: 106, width: 106 },
   content: { padding: layout.padding_x2, flex: 1, flexWrap: "wrap" },
 });
