@@ -31,7 +31,16 @@ export const SocialActions: React.FC<{
   style?: ViewStyle;
   singleView?: boolean;
   post: PostResult;
-}> = ({ style, isGovernance, singleView, post }) => {
+  onPressTip?: () => void;
+  onPressReaction: (icon: string) => void;
+}> = ({
+  style,
+  isGovernance,
+  singleView,
+  post,
+  onPressTip,
+  onPressReaction,
+}) => {
   // variables
   const navigation = useAppNavigation();
   const { width: containerWidth } = useMaxResolution({
@@ -137,7 +146,11 @@ export const SocialActions: React.FC<{
         </TouchableOpacity>
       )}
       {(!isGovernanceAction || containerWidth > 800) && (
-        <SocialReactionActions />
+        <SocialReactionActions
+          onPressTip={onPressTip}
+          reactions={post.reactions}
+          onPressReaction={onPressReaction}
+        />
       )}
     </View>
   );

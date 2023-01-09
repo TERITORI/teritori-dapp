@@ -7,6 +7,8 @@ import { FeedNewPostScreen } from "../../screens/FeedNewPost/FeedNewPostScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
+import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
+import { HashFeedScreen } from "../../screens/HashFeed/HashFeedScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScreen";
 import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
@@ -234,6 +236,11 @@ export const Navigator: React.FC = () => {
         name="Feed"
         component={FeedScreen}
         options={{ header: () => null, title: screenTitle("Feed") }}
+      />
+      <Stack.Screen
+        name="HashFeed"
+        component={HashFeedScreen}
+        options={{ header: () => null, title: screenTitle("") }}
       />
     </Stack.Navigator>
   );

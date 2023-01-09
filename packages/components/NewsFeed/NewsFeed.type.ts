@@ -13,9 +13,20 @@ export enum PostCategory {
 export interface NewPostFormValues {
   title?: string;
   message: string;
-  file?: File;
+  files?: File[];
+  gifs?: string[];
+  hashtags: string[];
 }
 
 export interface PostResultExtra extends PostResult {
   isInLocal?: boolean;
+}
+
+export interface SocialFeedMetadata {
+  title: string;
+  message: string;
+  fileURLs: string[];
+  hashtags: string[];
+  createdAt: string;
+  updatedAt: string;
 }

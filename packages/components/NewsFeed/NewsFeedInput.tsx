@@ -40,13 +40,14 @@ import { layout } from "../../utils/style/layout";
 import { replaceBetweenString } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { EmojiSelector } from "../EmojiSelector";
+import { FilePreviewContainer } from "../FilePreview/UploadedFilePreview/FilePreviewContainer";
 import { GIFSelector } from "../GIFSelector";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { FileUploader } from "../fileUploader";
 import { SpacerRow } from "../spacer";
-import { NewPostFormValues } from "./NewsFeed.type";
+import { NewPostFormValues, SocialFeedMetadata } from "./NewsFeed.type";
 import {
   getAvailableFreePost,
   getPostCategory,
@@ -86,7 +87,6 @@ export const NewsFeedInput = React.forwardRef<
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
     const [postFee, setPostFee] = useState(0);
     const [freePostCount, setFreePostCount] = useState(0);
-    const [fileUpload, setFileUpload] = useState(false);
     const navigation = useAppNavigation();
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
@@ -112,6 +112,8 @@ export const NewsFeedInput = React.forwardRef<
         defaultValues: {
           title: "",
           message: "",
+          files: [],
+          gifs: [],
         },
       }
     );
@@ -150,28 +152,37 @@ export const NewsFeedInput = React.forwardRef<
         replyTo?.parentId &&
         formValues.message.includes(`@${replyTo.username}`);
 
-      let fileURL = "";
-      if (formValues.file) {
-        const fileData = await nftStorageFile(formValues.file);
-        fileURL = fileData.data.image.href;
+      const fileURLs: string[] = formValues.gifs || [];
+
+      if (formValues.files?.[0]) {
+        Array.from(formValues.files).forEach(async (file) => {
+          const fileData = await nftStorageFile(file);
+          fileURLs.push(fileData.data.image.href);
+        });
       }
+
       const postCategory = getPostCategory(formValues);
 
       const client = await socialFeedClient({
         walletAddress: wallet?.address || "",
       });
 
+      const metadata: SocialFeedMetadata = {
+        title: formValues.title || "",
+        message: formValues.message || "",
+        fileURLs,
+        hashtags: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
       mutate({
         client,
         msg: {
           category: postCategory,
           identifier: uuidv4(),
-          metadata: JSON.stringify({
-            title: formValues.title || "",
-            message: formValues.message || "",
-            fileURL,
-          }),
-          parentPostIdentifier: hasUsername ? replyTo.parentId : parentId,
+          metadata: JSON.stringify(metadata),
+          parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
         },
         args: {
           fee: defaultSocialFeedFee,
@@ -193,9 +204,8 @@ export const NewsFeedInput = React.forwardRef<
       focusInput,
     }));
 
-    const handleUpload = (file: File) => {
-      setFileUpload(false);
-      setValue("file", file);
+    const handleUpload = (files: File[]) => {
+      setValue("files", [...(formValues?.files || []), ...files]);
     };
 
     const handleTextChange = (text: string) => {
@@ -228,15 +238,6 @@ export const NewsFeedInput = React.forwardRef<
 
     return (
       <View style={style}>
-        {fileUpload && (
-          <FileUploader
-            triggerFileUpload
-            onUpload={(files) => handleUpload(files?.[0])}
-            mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
-            onTrigger={() => setFileUpload(false)}
-          />
-        )}
-
         {isNotEnoughFundModal && (
           <NotEnoughFundModal
             visible
@@ -349,7 +350,34 @@ export const NewsFeedInput = React.forwardRef<
               justifyContent: "flex-end",
             }}
           >
-            <GIFSelector onGIFSelected={console.log} />
+            <FilePreviewContainer
+              style={{
+                marginRight: layout.padding_x1_5,
+              }}
+              files={formValues.files}
+              gifs={formValues.gifs}
+              onDelete={(fileIndex) => {
+                setValue(
+                  "files",
+                  Array.from(formValues?.files || [])?.filter(
+                    (_, index) => index !== fileIndex
+                  )
+                );
+              }}
+              onDeleteGIF={(fileIndex) => {
+                setValue(
+                  "gifs",
+                  (formValues?.gifs || [])?.filter(
+                    (_, index) => index !== fileIndex
+                  )
+                );
+              }}
+            />
+            <GIFSelector
+              onGIFSelected={(url) =>
+                url && setValue("gifs", [...(formValues.gifs || []), url])
+              }
+            />
             <SpacerRow size={2.5} />
 
             <EmojiSelector
@@ -358,23 +386,29 @@ export const NewsFeedInput = React.forwardRef<
             />
             <SpacerRow size={2.5} />
 
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={{
-                height: 32,
-                width: 32,
-                borderRadius: 24,
-                backgroundColor: neutral33,
-                alignItems: "center",
-                justifyContent: "center",
-                marginRight: layout.padding_x2_5,
-              }}
-              onPress={() => {
-                setFileUpload(true);
-              }}
+            <FileUploader
+              onUpload={(files) => handleUpload(files)}
+              mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
+              multiple
             >
-              <SVG source={cameraSVG} width={16} height={16} />
-            </TouchableOpacity>
+              {({ onPress }) => (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={{
+                    height: 32,
+                    width: 32,
+                    borderRadius: 24,
+                    backgroundColor: neutral33,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: layout.padding_x2_5,
+                  }}
+                  onPress={onPress}
+                >
+                  <SVG source={cameraSVG} width={16} height={16} />
+                </TouchableOpacity>
+              )}
+            </FileUploader>
             <PrimaryButton
               disabled={!formValues?.message}
               isLoading={isLoading}
