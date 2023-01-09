@@ -1,4 +1,4 @@
-import { Pressable, ViewStyle } from "react-native";
+import { ViewStyle, TouchableOpacity } from "react-native";
 
 import { neutral22 } from "../utils/style/colors";
 import { fontSemibold13 } from "../utils/style/fonts";
@@ -9,9 +9,12 @@ export const SocialStat: React.FC<{
   label: string;
   emoji: string;
   style?: ViewStyle;
-}> = ({ label, emoji, style }) => {
+  onPress: () => void;
+}> = ({ label, emoji, style, onPress }) => {
   return (
-    <Pressable
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.5}
       style={[
         {
           paddingRight: layout.padding_x1,
@@ -30,6 +33,6 @@ export const SocialStat: React.FC<{
         {emoji}
       </BrandText>
       <BrandText style={fontSemibold13}>{label}</BrandText>
-    </Pressable>
+    </TouchableOpacity>
   );
 };

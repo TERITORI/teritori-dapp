@@ -7,7 +7,7 @@ import { ScreenFC } from "../../utils/navigation";
 import { FeedHeader } from "./components/FeedHeader";
 
 export interface SelectedTabContentProps {
-  selectedTab: keyof typeof screenTabItems;
+  selectedTab?: keyof typeof screenTabItems;
   Header: React.ComponentType;
 }
 
@@ -17,7 +17,7 @@ const SelectedTabContent: React.FC<SelectedTabContentProps> = ({
 }) => {
   switch (selectedTab) {
     case "news":
-      return <NewsFeed selectedTab={selectedTab} Header={Header} />;
+      return <NewsFeed Header={Header} hasInput />;
     default:
       return null;
   }

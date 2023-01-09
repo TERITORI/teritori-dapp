@@ -6,7 +6,11 @@ import { OpenGraphType } from "../../hooks/feed/types";
 import { IMAGE_MIME_TYPES, AUDIO_MIME_TYPES } from "../../utils/mime";
 import { Wallet } from "./../../context/WalletsProvider/wallet";
 import { defaultSocialFeedFee } from "./../../utils/fee";
-import { PostCategory, NewPostFormValues } from "./NewsFeed.type";
+import {
+  PostCategory,
+  NewPostFormValues,
+  SocialFeedMetadata,
+} from "./NewsFeed.type";
 interface GetAvailableFreePostParams {
   wallet?: Wallet;
 }
@@ -62,13 +66,13 @@ export const getPostFee = async ({
 
 export const getPostCategory = ({
   title,
-  file,
+  files,
 }: NewPostFormValues): PostCategory => {
   let category = PostCategory.Normal;
-  if (file) {
-    if (IMAGE_MIME_TYPES.includes(file.type)) {
+  if (files) {
+    if (IMAGE_MIME_TYPES.includes(files?.[0]?.type)) {
       category = PostCategory.Picture;
-    } else if (AUDIO_MIME_TYPES.includes(file.type)) {
+    } else if (AUDIO_MIME_TYPES.includes(files?.[0]?.type)) {
       category = PostCategory.Audio;
     } else {
       category = PostCategory.Video;
@@ -107,22 +111,29 @@ export const createPost = async ({
     walletAddress: wallet.address,
   });
 
-  let fileURL = "";
-  if (formValues.file) {
-    const fileData = await nftStorageFile(formValues.file);
-    fileURL = fileData.data.image.href;
+  const fileURLs: string[] = [];
+
+  if (formValues.files?.[0]) {
+    Array.from(formValues.files).forEach(async (file) => {
+      const fileData = await nftStorageFile(file);
+      fileURLs.push(fileData.data.image.href);
+    });
   }
+
+  const metadata: SocialFeedMetadata = {
+    title: formValues.title || "",
+    message: formValues.message || "",
+    fileURLs,
+    hashtags: formValues.hashtags || [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
 
   await client.createPost(
     {
       category: postCategory,
       identifier: uuidv4(),
-      metadata: JSON.stringify({
-        title: formValues.title || "",
-        message: formValues.message || "",
-        fileURL,
-        openGraph,
-      }),
+      metadata: JSON.stringify(metadata),
       parentPostIdentifier: parentId,
     },
     defaultSocialFeedFee,
