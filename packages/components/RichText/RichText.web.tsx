@@ -27,8 +27,8 @@ import {
   EditorState,
 } from "draft-js";
 import React, { useEffect, useRef } from "react";
+import { Linking } from "react-native";
 
-import { useOpenGraph } from "../../hooks/feed/useOpenGraph";
 import { useAppNavigation } from "../../utils/navigation";
 import { HANDLE_REGEX, URL_REGEX } from "../../utils/regex";
 import { DEFAULT_USERNAME } from "../../utils/social-feed";
@@ -56,7 +56,6 @@ const findWithRegex = (
   callback: (start: number, end: number) => void
 ) => {
   const text = contentBlock.getText();
-  console.log("test", [...text.matchAll(new RegExp(regex, "gi"))]);
 
   [...text.matchAll(new RegExp(regex, "gi"))]
     .map((a) =>
@@ -86,7 +85,16 @@ const MentionRender = (props: { children: { props: { text: string } }[] }) => {
 };
 
 const UrlRender = (props: { children: { props: { text: string } }[] }) => {
-  return <span style={{ color: primaryColor }}>{props.children}</span>;
+  return (
+    <span
+      style={{ color: primaryColor, cursor: "pointer" }}
+      onClick={() =>
+        Linking.openURL(props.children[0].props.text.replace("@", ""))
+      }
+    >
+      {props.children}
+    </span>
+  );
 };
 
 const LinkPlugin = createLinkPlugin();
@@ -147,34 +155,12 @@ export function RichText({
   initialValue,
   readOnly,
   staticToolbar,
+  openGraph,
 }: RichTextProps) {
   const editorRef = useRef<Editor>(null);
   const [editorState, setEditorState] = React.useState(
     initialValue ? createStateFromHTML(initialValue) : EditorState.createEmpty()
   );
-  const oldUrlMatch = useRef<string>();
-  const { mutate, data } = useOpenGraph();
-
-  useEffect(() => {
-    const contentState = editorState.getCurrentContent();
-
-    const html = convertToHTML(contentState);
-
-    const currentUrlMatches = [...html.matchAll(new RegExp(URL_REGEX, "gi"))];
-
-    if (currentUrlMatches?.length) {
-      const lastUrl = currentUrlMatches.pop();
-      const url = lastUrl && lastUrl[0].split("<")[0];
-
-      if (url && url !== oldUrlMatch.current) {
-        oldUrlMatch.current = url;
-
-        mutate({
-          url,
-        });
-      }
-    }
-  }, [editorState]);
 
   useEffect(() => {
     if (initialValue && !readOnly) {
@@ -218,7 +204,7 @@ export function RichText({
         ref={editorRef}
         decorators={compositeDecorator.decorators}
       />
-      {data && <RichOpenGraphCard {...data} />}
+      {openGraph && <RichOpenGraphCard {...openGraph} />}
       {!readOnly && (
         <>
           {staticToolbar ? (
