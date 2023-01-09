@@ -33,6 +33,7 @@ export const SocialActions: React.FC<{
   post: PostResult;
   onPressTip?: () => void;
   onPressReaction: (icon: string) => void;
+  isReactionLoading?: boolean;
 }> = ({
   style,
   isGovernance,
@@ -40,6 +41,7 @@ export const SocialActions: React.FC<{
   post,
   onPressTip,
   onPressReaction,
+  isReactionLoading,
 }) => {
   // variables
   const navigation = useAppNavigation();
@@ -150,6 +152,7 @@ export const SocialActions: React.FC<{
           onPressTip={onPressTip}
           reactions={post.reactions}
           onPressReaction={onPressReaction}
+          isReactionLoading={isReactionLoading}
         />
       )}
     </View>
