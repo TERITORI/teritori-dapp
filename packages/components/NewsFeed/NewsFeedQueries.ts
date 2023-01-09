@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { nftStorageFile } from "../../candymachine/nft-storage-upload";
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
+import { OpenGraphType } from "../../hooks/feed/types";
 import { IMAGE_MIME_TYPES, AUDIO_MIME_TYPES } from "../../utils/mime";
 import { Wallet } from "./../../context/WalletsProvider/wallet";
 import { defaultSocialFeedFee } from "./../../utils/fee";
@@ -86,6 +87,7 @@ interface CreatePostParams {
   freePostCount: number;
   fee: number;
   parentId?: string;
+  openGraph?: OpenGraphType;
 }
 
 export const createPost = async ({
@@ -94,6 +96,7 @@ export const createPost = async ({
   freePostCount,
   fee,
   parentId,
+  openGraph,
 }: CreatePostParams) => {
   if (!wallet?.connected || !wallet.address) {
     return;
@@ -118,6 +121,7 @@ export const createPost = async ({
         title: formValues.title || "",
         message: formValues.message || "",
         fileURL,
+        openGraph,
       }),
       parentPostIdentifier: parentId,
     },
