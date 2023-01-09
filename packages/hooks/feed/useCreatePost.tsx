@@ -55,6 +55,7 @@ export const useCreatePost = ({
         title: "Post submitted successfully.",
         message: "",
       });
+
       onSuccess && onSuccess();
     },
     onError: (err, formData, context: any) => {

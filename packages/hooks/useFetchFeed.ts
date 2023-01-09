@@ -4,7 +4,7 @@ import { socialFeedClient } from "../client-creators/socialFeedClient";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import useSelectedWallet from "./useSelectedWallet";
 
-type FetchFeedResponse = {
+export type FetchFeedResponse = {
   list: PostResult[];
   totalCount: number;
 } | null;

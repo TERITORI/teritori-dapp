@@ -11,6 +11,7 @@ import {
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { SendFundModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
 import { useTNS } from "../../context/TNSProvider";
+import { useTeritoriSocialFeedReactPostMutation } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -64,6 +65,7 @@ export const SocialThreadCard: React.FC<{
   fadeInDelay?: number;
   onPressReply?: OnPressReplyType;
 }> = ({ post, style, singleView, isGovernance, fadeInDelay }) => {
+  const [localPost, setLocalPost] = useState(post);
   const [maxLayoutWidth, setMaxLayoutWidth] = useState(0);
   const { setName } = useTNS();
   const imageMarginRight = layout.padding_x3_5;
@@ -71,14 +73,36 @@ export const SocialThreadCard: React.FC<{
   const { width: containerWidth } = useMaxResolution({
     responsive: true,
   });
+  const { mutate, isLoading: isReactLoading } =
+    useTeritoriSocialFeedReactPostMutation({
+      onSuccess(_data, variables) {
+        const hasIcon = post.reactions.find(
+          (r) => r.icon === variables.msg.icon
+        );
+        let reactions = localPost.reactions;
+        if (hasIcon) {
+          reactions = reactions.map((rect) => {
+            if (rect.icon === variables.msg.icon) {
+              return { icon: variables.msg.icon, count: ++rect.count };
+            }
+            return rect;
+          });
+        } else {
+          reactions = [...reactions, { icon: variables.msg.icon, count: 1 }];
+        }
+
+        setLocalPost({ ...localPost, reactions });
+      },
+    });
+
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const wallet = useSelectedWallet();
 
-  const postByTNSMetadata = useTNSMetadata(post.post_by);
+  const postByTNSMetadata = useTNSMetadata(localPost.post_by);
 
   const navigation = useAppNavigation();
 
-  const metadata = JSON.parse(post.metadata);
+  const metadata = JSON.parse(localPost.metadata);
 
   const handlePressTip = () => {
     setName(tokenWithoutTld(postByTNSMetadata?.metadata?.tokenId || ""));
@@ -93,10 +117,13 @@ export const SocialThreadCard: React.FC<{
       walletAddress: wallet.address,
     });
 
-    await client.reactPost({
-      icon: e,
-      identifier: post.identifier,
-      up: true,
+    mutate({
+      client,
+      msg: {
+        icon: e,
+        identifier: localPost.identifier,
+        up: true,
+      },
     });
   };
 
@@ -118,7 +145,7 @@ export const SocialThreadCard: React.FC<{
             <AvatarWithFrame
               onPress={() =>
                 navigation.navigate("UserPublicProfile", {
-                  id: `tori-${post.post_by}`,
+                  id: `tori-${localPost.post_by}`,
                 })
               }
               image={postByTNSMetadata?.metadata?.image}
@@ -146,7 +173,7 @@ export const SocialThreadCard: React.FC<{
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate("PublicProfile", {
-                        id: `tori-${post.post_by}`,
+                        id: `tori-${localPost.post_by}`,
                       })
                     }
                     activeOpacity={0.7}
@@ -168,7 +195,7 @@ export const SocialThreadCard: React.FC<{
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate("PublicProfile", {
-                        id: `tori-${post.post_by}`,
+                        id: `tori-${localPost.post_by}`,
                       })
                     }
                   >
@@ -228,13 +255,13 @@ export const SocialThreadCard: React.FC<{
 
               <View style={styles.actionContainer}>
                 <BrandText style={[fontSemibold13, { color: neutral77 }]}>
-                  {post.post_by}
+                  {localPost.post_by}
                 </BrandText>
                 {singleView && (
                   <SocialReactionActions
-                    commentCount={post.sub_post_length}
+                    commentCount={localPost.sub_post_length}
                     onPressTip={handlePressTip}
-                    reactions={post.reactions}
+                    reactions={localPost.reactions}
                     onPressReaction={handleReaction}
                   />
                 )}
@@ -249,12 +276,13 @@ export const SocialThreadCard: React.FC<{
             onPressReaction={handleReaction}
             isGovernance={isGovernance}
             singleView={singleView}
-            post={post}
+            post={localPost}
             style={{
               position: "absolute",
               bottom: -socialActionsHeight / 2,
               alignSelf: "center",
             }}
+            isReactionLoading={isReactLoading}
           />
         )}
 
@@ -262,6 +290,7 @@ export const SocialThreadCard: React.FC<{
           <EmojiSelector
             containerStyle={styles.container}
             onEmojiSelected={handleReaction}
+            isLoading={isReactLoading}
           />
         )}
         <SendFundModal
