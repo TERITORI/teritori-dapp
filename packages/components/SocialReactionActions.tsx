@@ -1,5 +1,15 @@
-import React from "react";
-import { Pressable, StyleSheet, View, ViewStyle } from "react-native";
+import React, { useRef } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
 import replySVG from "../../assets/icons/reply.svg";
 import messageSVG from "../../assets/icons/social-threads/message.svg";
@@ -11,6 +21,8 @@ import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { SocialStat } from "./SocialStat";
+import { AnimationFadeIn } from "./animations";
+import { AnimationFadeInOut } from "./animations/AnimationFadeInOut";
 import { SpacerRow } from "./spacer";
 
 const SectionDivider = () => (
@@ -27,6 +39,7 @@ interface SocialReactionActionsProps {
   onPressReply?: () => void;
   onPressTip?: () => void;
   onPressReaction: (icon: string) => void;
+  isReactionLoading?: boolean;
 }
 
 export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
@@ -37,7 +50,24 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
   onPressReply,
   onPressTip,
   onPressReaction,
+  isReactionLoading,
 }) => {
+  // variables
+  const reactionWidthRef = useRef<number>();
+
+  // animation
+  const reactionAnimation = useAnimatedStyle(
+    () => ({
+      width: isReactionLoading
+        ? withTiming(30)
+        : reactionWidthRef?.current
+        ? withTiming(reactionWidthRef?.current)
+        : undefined,
+    }),
+    [isReactionLoading]
+  );
+
+  // returns
   return (
     <View style={styles.rowCenter}>
       {commentCount !== undefined && (
@@ -79,18 +109,34 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
         <SpacerRow size={1.5} />
         <BrandText style={fontSemibold14}>Tip</BrandText>
       </Pressable>
-      <SectionDivider />
-      {reactions.map((reaction, index) => (
-        <React.Fragment key={index}>
-          <SocialStat
-            label={String(reaction.count)}
-            emoji={reaction.icon}
-            style={statStyle}
-            onPress={() => onPressReaction(reaction.icon)}
-          />
-          <SpacerRow size={1} />
-        </React.Fragment>
-      ))}
+      {reactions.length && <SectionDivider />}
+
+      <Animated.View style={[styles.rowCenter, reactionAnimation]}>
+        {isReactionLoading && (
+          <AnimationFadeIn>
+            <ActivityIndicator color={secondaryColor} />
+          </AnimationFadeIn>
+        )}
+        <AnimationFadeInOut
+          visible={!isReactionLoading}
+          style={styles.rowCenter}
+          onLayout={(e) => {
+            reactionWidthRef.current = e.nativeEvent.layout.width;
+          }}
+        >
+          {reactions.map((reaction, index) => (
+            <View key={index}>
+              <SocialStat
+                label={String(reaction.count)}
+                emoji={reaction.icon}
+                style={statStyle}
+                onPress={() => onPressReaction(reaction.icon)}
+              />
+              <SpacerRow size={1} />
+            </View>
+          ))}
+        </AnimationFadeInOut>
+      </Animated.View>
     </View>
   );
 };

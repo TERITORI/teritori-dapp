@@ -79,7 +79,7 @@ const MentionRender = (props: { children: { props: { text: string } }[] }) => {
 
   return (
     <span
-      style={{ color: primaryColor }}
+      style={{ color: primaryColor, cursor: "pointer" }}
       onClick={() =>
         navigation.navigate("PublicProfile", {
           id: props.children[0].props.text.replace("@", ""),
@@ -109,7 +109,7 @@ const HashRender = (props: { children: { props: { text: string } }[] }) => {
 
   return (
     <span
-      style={{ color: primaryColor }}
+      style={{ color: primaryColor, cursor: "pointer" }}
       onClick={() =>
         navigation.navigate("HashFeed", {
           id: props.children[0].props.text.replace("#", ""),

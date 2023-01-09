@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, ViewStyle } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import emojiSVG from "../../assets/icons/emoji.svg";
@@ -12,16 +13,20 @@ type EmojiSelectorProps = {
   onEmojiSelected?: (emoji: string) => void;
   containerStyle?: ViewStyle;
   optionsContainer?: ViewStyle;
+  isLoading?: boolean;
 };
 
 export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   onEmojiSelected,
   containerStyle,
   optionsContainer,
+  isLoading,
 }) => {
   const [isEmojiModalVisible, setIsEmojiModalVisible] = useState(false);
 
-  const toggleEmojiModal = () => setIsEmojiModalVisible(!isEmojiModalVisible);
+  const toggleEmojiModal = () =>
+    !isLoading && setIsEmojiModalVisible(!isEmojiModalVisible);
+
   return (
     <Menu
       opened={isEmojiModalVisible}
@@ -29,8 +34,13 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
       onBackdropPress={toggleEmojiModal}
     >
       <MenuTrigger onPress={toggleEmojiModal} style={styles.icon}>
-        <SVG source={emojiSVG} height={16} width={16} />
+        {isLoading ? (
+          <ActivityIndicator animating color={secondaryColor} />
+        ) : (
+          <SVG source={emojiSVG} height={16} width={16} />
+        )}
       </MenuTrigger>
+
       <MenuOptions
         customStyles={{
           optionsContainer: StyleSheet.flatten([
