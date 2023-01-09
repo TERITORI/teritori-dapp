@@ -172,7 +172,11 @@ export const SocialThreadCard: React.FC<{
               )}
 
               <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-                <RichText initialValue={metadata.message} readOnly />
+                <RichText
+                  initialValue={metadata.message}
+                  openGraph={metadata.openGraph}
+                  readOnly
+                />
               </BrandText>
 
               {!!metadata.fileURL && (

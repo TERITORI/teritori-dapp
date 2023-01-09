@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 
@@ -26,10 +26,12 @@ import {
   TextInputCustom,
 } from "../../components/inputs/TextInputCustom";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useOpenGraph } from "../../hooks/feed/useOpenGraph";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { URL_REGEX } from "../../utils/regex";
 import { neutral00 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -38,14 +40,16 @@ import { AddMoreButton } from "./AddMoreButton";
 export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
   route: { params },
 }) => {
+  // variables
   const [postFee, setPostFee] = useState(0);
   const [freePostCount, setFreePostCount] = useState(0);
   const [postCategory, setPostCategory] = useState<PostCategory>(
     PostCategory.Normal
   );
-
+  const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [isAddMoreVisible, setIsAddMoreVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const oldUrlMatch = useRef<string>();
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -54,7 +58,6 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     process.env.TERITORI_NETWORK_ID,
     wallet?.address
   );
-
   const {
     control,
     setValue,
@@ -70,10 +73,24 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     },
     mode: "onBlur",
   });
+  const { mutate, data } = useOpenGraph();
   const formValues = watch();
 
-  const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
+  // hooks
+  useFocusEffect(
+    React.useCallback(() => {
+      if (wallet?.connected && wallet?.address) {
+        updateAvailableFreePost();
+        updatePostFee();
+      }
+    }, [wallet?.address])
+  );
 
+  useEffect(() => {
+    updatePostCategory();
+  }, [formValues]);
+
+  // functions
   const updateAvailableFreePost = async () => {
     const freePost = await getAvailableFreePost({ wallet });
     setFreePostCount(freePost || 0);
@@ -88,19 +105,6 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     setPostCategory(getPostCategory(formValues));
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      if (wallet?.connected && wallet?.address) {
-        updateAvailableFreePost();
-        updatePostFee();
-      }
-    }, [wallet?.address])
-  );
-
-  useEffect(() => {
-    updatePostCategory();
-  }, [formValues]);
-
   const initSubmit = async () => {
     const toriBalance = balances.find((bal) => bal.denom === "utori");
     if (postFee > Number(toriBalance?.amount) && !freePostCount) {
@@ -112,6 +116,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
       freePostCount,
       fee: postFee,
       formValues,
+      openGraph: data,
     });
   };
 
@@ -137,6 +142,23 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
   };
 
   const toggleAddMore = () => setIsAddMoreVisible(!isAddMoreVisible);
+
+  const handleOnChange = (html: string) => {
+    const currentUrlMatches = [...html.matchAll(new RegExp(URL_REGEX, "gi"))];
+
+    if (currentUrlMatches?.length) {
+      const lastUrl = currentUrlMatches.pop();
+      const url = lastUrl && lastUrl[0].split("<")[0];
+
+      if (url && url !== oldUrlMatch.current) {
+        oldUrlMatch.current = url;
+
+        mutate({
+          url,
+        });
+      }
+    }
+  };
 
   return (
     <ScreenContainer
@@ -212,9 +234,13 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
           render={({ field: { onChange, onBlur } }) => (
             <RichText
               staticToolbar={isAddMoreVisible}
-              onChange={onChange}
+              onChange={(html) => {
+                onChange(html);
+                handleOnChange(html);
+              }}
               onBlur={onBlur}
               initialValue={formValues.message}
+              openGraph={data}
             />
           )}
         />
