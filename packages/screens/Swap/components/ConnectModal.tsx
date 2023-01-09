@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import osmosisIllustration from "../../../../assets/osmosis-illustration.svg";
@@ -5,6 +6,8 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import ModalBase from "../../../components/modals/ModalBase";
+import { SpacerColumn } from "../../../components/spacer";
+import { isTestMode } from "../../../networks";
 import {
   neutral00,
   neutral77,
@@ -13,8 +16,6 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ModalHeader } from "./SwapModal";
-import {isTestMode} from "../../../networks";
-import {SpacerColumn} from "../../../components/spacer";
 
 type ConnectModalProps = {
   onClose: () => void;
@@ -25,24 +26,24 @@ type ConnectModalProps = {
 
 export const ConnectModal: React.FC<ConnectModalProps> = ({
   visible,
-                                                            onPressConnect,
-                                                            onPressConnectTestnet,
+  onPressConnect,
+  onPressConnectTestnet,
   onClose,
 }) => {
   return (
     <ModalBase
       visible={visible}
       onClose={onClose}
-      Header={ModalHeader}
+      Header={() => <ModalHeader />}
       width={456}
     >
       <View style={styles.modalChildren}>
         <SVG source={osmosisIllustration} height={200} width={160} />
 
-        <BrandText style={[fontSemibold14, styles.text]}>
+        <BrandText style={styles.text}>
           This SWAP Feature is developed by OSMOSIS core team. By using this
           Decentralized Protocol, you accept all risks & rules associated to the
-          <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
+          <BrandText style={styles.textWhite}>
             {" "}
             OSMOSIS Protocol Disclaimer.
           </BrandText>
@@ -58,7 +59,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
         />
         {isTestMode() && (
           <>
-            <SpacerColumn size={2}/>
+            <SpacerColumn size={2} />
             <SecondaryButton
               size="XL"
               text="Connect to OSMOSIS Testnet"
@@ -91,5 +92,10 @@ const styles = StyleSheet.create({
     maxWidth: 371,
     marginBottom: layout.padding_x2_5,
     marginTop: layout.padding_x4,
+    ...StyleSheet.flatten(fontSemibold14),
+  },
+  textWhite: {
+    color: secondaryColor,
+    ...StyleSheet.flatten(fontSemibold14),
   },
 });

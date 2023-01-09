@@ -1,5 +1,6 @@
 import React from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import burnSVG from "../../../assets/icons/burn.svg";
 import { BrandText } from "../../components/BrandText";
@@ -12,6 +13,8 @@ import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { getNetwork } from "../../networks";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { defaultExecuteFee } from "../../utils/fee";
 import {
   getFirstKeplrAccount,
@@ -21,9 +24,6 @@ import { defaultMemo } from "../../utils/memo";
 import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../../store/slices/settings";
-import {getNetwork} from "../../networks";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
 
@@ -69,7 +69,8 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
     try {
       const signingClient = await getSigningCosmWasmClient(selectedNetwork);
 
-      const walletAddress = (await getFirstKeplrAccount(selectedNetwork)).address;
+      const walletAddress = (await getFirstKeplrAccount(selectedNetwork))
+        .address;
 
       const updatedToken = await signingClient.execute(
         walletAddress!,

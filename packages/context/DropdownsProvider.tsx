@@ -6,10 +6,12 @@ import {
   StyleSheet,
 } from "react-native";
 
+export type DropdownRef = RefObject<any> | null;
+
 interface DefaultValue {
-  onPressDropdownButton: (dropdownRef: RefObject<any>) => void;
+  onPressDropdownButton: (dropdownRef: DropdownRef) => void;
   closeOpenedDropdown: () => void;
-  isDropdownOpen: (dropdownRef: RefObject<any>) => boolean;
+  isDropdownOpen: (dropdownRef: DropdownRef) => boolean;
 }
 
 const defaultValue: DefaultValue = {
@@ -21,13 +23,13 @@ const defaultValue: DefaultValue = {
 export const DropdownsContext = createContext(defaultValue);
 
 export const DropdownsContextProvider: React.FC = ({ children }) => {
-  const [openedDropdownRef, setOpenedDropdownRef] = useState<RefObject<any>>();
+  const [openedDropdownRef, setOpenedDropdownRef] = useState<DropdownRef>();
 
   const closeOpenedDropdown = () => {
     setOpenedDropdownRef(undefined);
   };
 
-  const onPressDropdownButton = (dropdownRef: RefObject<any>) => {
+  const onPressDropdownButton = (dropdownRef: DropdownRef) => {
     if (dropdownRef === openedDropdownRef) {
       closeOpenedDropdown();
     } else {
@@ -35,7 +37,7 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
     }
   };
 
-  const isDropdownOpen = (dropdownRef: RefObject<any>) => {
+  const isDropdownOpen = (dropdownRef: DropdownRef) => {
     return dropdownRef === openedDropdownRef;
   };
 

@@ -154,6 +154,7 @@ export const TextInputCustom = <T extends FieldValues>({
   const Input: React.FC = () => {
     return (
       <TextInput
+        // keyboardType = 'numeric'
         ref={inputRef}
         editable={!disabled}
         placeholder={placeHolder}

@@ -1,6 +1,7 @@
 import { ScrollView, Target } from "@nandorojo/anchor";
 import React, { useCallback, useState } from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -18,14 +19,13 @@ import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
+import { getNetwork } from "../../networks";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { secondaryDuringMintList } from "../../utils/collections";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../../store/slices/settings";
-import {getNetwork} from "../../networks";
 
 export interface NFTInfo {
   name: string;
@@ -95,7 +95,9 @@ const Content: React.FC<{
     }
     setToastError(initialToastError);
     try {
-      const signingCosmwasmClient = await getSigningCosmWasmClient(selectedNetwork);
+      const signingCosmwasmClient = await getSigningCosmWasmClient(
+        selectedNetwork
+      );
       const signingVaultClient = new TeritoriNftVaultClient(
         signingCosmwasmClient,
         wallet.address,

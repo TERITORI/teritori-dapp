@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -8,7 +8,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { allNetworks, getNetwork, isTestMode } from "../../networks";
+import { allNetworks, getNetwork } from "../../networks";
 import { osmosisNetwork } from "../../networks/osmosis";
 import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
 import {
@@ -23,24 +23,24 @@ import { SwapModal } from "./components/SwapModal";
 
 export const SwapScreen: ScreenFC<"Swap"> = () => {
   const selectedWallet = useSelectedWallet();
-
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const selectedNetwork = getNetwork(selectedNetworkId);
+  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const dispatch = useAppDispatch();
-
   const [swapModalVisible, setSwapModalVisible] = useState(false);
   const [connectModalVisible, setConnectModalVisible] = useState(false);
 
-  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
-
-  const osmosisConnected =
-    selectedNetwork?.displayName === osmosisTestnetNetwork.displayName || selectedNetwork?.displayName === osmosisNetwork.displayName
+  const osmosisConnected = useMemo(
+    () =>
+      selectedNetwork?.displayName === osmosisTestnetNetwork.displayName ||
+      selectedNetwork?.displayName === osmosisNetwork.displayName,
+    [selectedNetwork?.displayName]
+  );
 
   const onPressConnect = () => {
     const osmosisNetworkId =
       allNetworks.find(
-        (networkInfo) =>
-          networkInfo.displayName === osmosisNetwork.displayName
+        (networkInfo) => networkInfo.displayName === osmosisNetwork.displayName
       )?.id || "";
     dispatch(setSelectedNetworkId(osmosisNetworkId));
     setConnectModalVisible(false);

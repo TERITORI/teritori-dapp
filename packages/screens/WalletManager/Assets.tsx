@@ -129,85 +129,87 @@ export const Assets: React.FC<{
         )}
       </View>
 
-      {currencies.filter(currency => currency.denom).map((currency, index) => {
-        const balance = balances.find((bal) => bal.denom === currency.denom);
-        return (
-          <View
-            key={currency.denom}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              borderBottomWidth: index !== currencies.length - 1 ? 1 : 0,
-              borderColor: neutral33,
-              paddingVertical: 16,
-            }}
-          >
+      {currencies
+        .filter((currency) => currency.denom)
+        .map((currency, index) => {
+          const balance = balances.find((bal) => bal.denom === currency.denom);
+          return (
             <View
+              key={currency.denom}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
+                justifyContent: "space-between",
+                borderBottomWidth: index !== currencies.length - 1 ? 1 : 0,
+                borderColor: neutral33,
+                paddingVertical: 16,
               }}
             >
-              <CurrencyIcon
-                size={64}
-                networkId={networkId}
-                denom={currency.denom}
-              />
-              <View style={{ marginLeft: 16 }}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <BrandText>
-                    {prettyPrice(
-                      networkId,
-                      balance?.amount || "0",
-                      currency.denom
-                    )}
-                  </BrandText>
-                </View>
-                {!!balance?.usdAmount && (
-                  <BrandText
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <CurrencyIcon
+                  size={64}
+                  networkId={networkId}
+                  denom={currency.denom}
+                />
+                <View style={{ marginLeft: 16 }}>
+                  <View
                     style={{
-                      marginTop: 8,
-                      fontSize: 14,
+                      flexDirection: "row",
+                      alignItems: "center",
                     }}
                   >
-                    ≈ ${balance.usdAmount.toFixed(2)}
-                  </BrandText>
+                    <BrandText>
+                      {prettyPrice(
+                        networkId,
+                        balance?.amount || "0",
+                        currency.denom
+                      )}
+                    </BrandText>
+                  </View>
+                  {!!balance?.usdAmount && (
+                    <BrandText
+                      style={{
+                        marginTop: 8,
+                        fontSize: 14,
+                      }}
+                    >
+                      ≈ ${balance.usdAmount.toFixed(2)}
+                    </BrandText>
+                  )}
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                {currency.kind === "ibc" && (
+                  <>
+                    {currency.deprecated || (
+                      <SecondaryButton
+                        style={{ marginRight: 16 }}
+                        text="Deposit"
+                        size="M"
+                        onPress={() => deposit(currency.denom)}
+                      />
+                    )}
+                    <SecondaryButton
+                      text="Withdraw"
+                      size="M"
+                      onPress={() => withdraw(currency.denom)}
+                    />
+                  </>
                 )}
               </View>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              {currency.kind === "ibc" && (
-                <>
-                  {currency.deprecated || (
-                    <SecondaryButton
-                      style={{ marginRight: 16 }}
-                      text="Deposit"
-                      size="M"
-                      onPress={() => deposit(currency.denom)}
-                    />
-                  )}
-                  <SecondaryButton
-                    text="Withdraw"
-                    size="M"
-                    onPress={() => withdraw(currency.denom)}
-                  />
-                </>
-              )}
-            </View>
-          </View>
-        );
-      })}
+          );
+        })}
       <DepositWithdrawModal
         variation="deposit"
         selectedNetworkId={networkId}

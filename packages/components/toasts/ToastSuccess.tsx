@@ -1,36 +1,46 @@
 import React from "react";
-import { Dimensions, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  StyleProp,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { neutral11, neutral77, successColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
 export const ToastSuccess: React.FC<{
   title: string;
-  message?: string;
   onPress: () => void;
-}> = ({ title, message, onPress }) => {
+  message?: string;
+  style?: StyleProp<ViewStyle>;
+}> = ({ title, onPress, message, style }) => {
   const width = 300;
   const marginHorizontal = 24;
 
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: neutral11,
-        borderColor: successColor,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderStyle: "solid",
-        width,
-        maxWidth: width,
-        height: "auto",
-        position: "absolute",
-        top: 24,
-        left: Dimensions.get("window").width / 2 - width / 2,
-        zIndex: 999,
-      }}
+      style={[
+        {
+          flexDirection: "row",
+          alignItems: "center",
+          backgroundColor: neutral11,
+          borderColor: successColor,
+          borderRadius: 8,
+          borderWidth: 1,
+          borderStyle: "solid",
+          width,
+          maxWidth: width,
+          height: "auto",
+          position: "absolute",
+          top: 24,
+          left: Dimensions.get("window").width / 2 - width / 2,
+          zIndex: 999,
+        },
+        style,
+      ]}
     >
       <View
         style={{

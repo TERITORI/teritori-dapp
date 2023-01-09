@@ -59,7 +59,7 @@ export const isTestMode = () => {
 };
 
 // Returns if the network is Testnet (By id)
-export const isNetworkTestnet = (networkId: string) => {
+export const isNetworkTestnet = (networkId: string = "") => {
   return networkId.includes("testnet");
 };
 

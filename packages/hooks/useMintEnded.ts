@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { getNetwork } from "../networks";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../store/slices/settings";
-import {getNetwork} from "../networks";
 
 export const useMintEnded = (id: string) => {
   const selectedNetworkId = useSelector(selectSelectedNetworkId);

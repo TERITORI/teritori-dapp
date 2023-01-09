@@ -1,12 +1,11 @@
 import React, { ComponentType } from "react";
-import { Modal, Pressable, View, ViewStyle, ScrollView } from "react-native";
+import { Modal, View, ViewStyle, ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/close.svg";
 import { neutral77, neutral22 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -32,11 +31,12 @@ export const ModalBase: React.FC<{
   scrollable?: boolean;
   contentStyle?: ViewStyle;
   containerStyle?: ViewStyle;
+  closeButtonStyle?: ViewStyle;
 }> = ({
   label,
   visible,
   width,
-                                height,
+  height,
   onClose,
   childrenBottom,
   children,
@@ -46,6 +46,7 @@ export const ModalBase: React.FC<{
   scrollable,
   contentStyle,
   containerStyle,
+  closeButtonStyle,
   onBackPress,
   noBrokenCorners,
 }) => {
@@ -159,17 +160,16 @@ export const ModalBase: React.FC<{
 
             {Header && <Header />}
 
-            <Pressable
-              style={{ marginTop: layout.padding_x0_25 }}
+            <TouchableOpacity
+              containerStyle={[
+                { marginLeft: modalMarginPadding },
+                closeButtonStyle,
+              ]}
+              style={{ justifyContent: "center" }}
               onPress={onClose}
             >
-              <SVG
-                width={20}
-                height={20}
-                source={closeSVG}
-                style={{ marginLeft: modalMarginPadding }}
-              />
-            </Pressable>
+              <SVG width={20} height={20} source={closeSVG} />
+            </TouchableOpacity>
           </View>
           {children && (
             <View

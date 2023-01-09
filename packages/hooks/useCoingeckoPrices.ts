@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getNativeCurrency } from "../networks";
 import { isDefined } from "../utils/filter";
 
+export type CoingeckoPrices = { [key: string]: { usd: number } };
+
 export const useCoingeckoPrices = (
   coins: { networkId: string | undefined; denom: string | undefined }[]
 ) => {
@@ -18,7 +20,7 @@ export const useCoingeckoPrices = (
           ids.join(",")
         )}&vs_currencies=usd`
       );
-      const prices: { [key: string]: { usd: number } } = await response.json();
+      const prices: CoingeckoPrices = await response.json();
       return prices;
     },
     {

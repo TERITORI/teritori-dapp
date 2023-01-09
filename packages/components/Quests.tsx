@@ -1,21 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { View } from "react-native";
 
-import {NFT, Quest} from "../api/marketplace/v1/marketplace";
+import { Quest } from "../api/marketplace/v1/marketplace";
+import { useBackendClient } from "../hooks/useBackendClient";
 import { QuestCard } from "./cards/QuestCard";
-import {useBackendClient} from "../hooks/useBackendClient";
-import {useInfiniteQuery, useQuery} from "@tanstack/react-query";
 export const Quests: React.FC<{
   userId?: string;
 }> = ({ userId }) => {
-  // const [quests, setQuests] = useState<Quest[]>([]);
-  const {backendClient, isForceBackendMainnet} = useBackendClient()
+  const { backendClient, isForceBackendMainnet } = useBackendClient();
 
-  const { data: quests = []} = useQuery(
-    [
-      "quests",
-      userId, isForceBackendMainnet()
-    ],
+  const { data: quests = [] } = useQuery(
+    ["quests", userId, isForceBackendMainnet()],
     async () => {
       try {
         const quests: Quest[] = [];
@@ -30,10 +26,10 @@ export const Quests: React.FC<{
             return;
           }
           // nfts.push(response.nft);
-          quests.push(quest)
+          quests.push(quest);
           // setQuests((qs) => [...qs, quest]);
         });
-        return quests
+        return quests;
       } catch (err) {
         console.error(err);
       }

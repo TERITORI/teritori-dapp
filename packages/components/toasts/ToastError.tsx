@@ -1,5 +1,11 @@
 import React from "react";
-import { TouchableOpacity, View, Dimensions } from "react-native";
+import {
+  TouchableOpacity,
+  View,
+  Dimensions,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 
 import warningSVG from "../../../assets/icons/warning.svg";
 import { errorColor, neutral11, neutral77 } from "../../utils/style/colors";
@@ -9,30 +15,34 @@ import { SpacerRow } from "../spacer";
 
 export const ToastError: React.FC<{
   title: string;
-  message?: string;
   onPress: () => void;
-}> = ({ title, message, onPress }) => {
+  message?: string;
+  style?: StyleProp<ViewStyle>;
+}> = ({ title, onPress, message, style }) => {
   const width = 432;
 
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: neutral11,
-        borderColor: errorColor,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderStyle: "solid",
-        maxWidth: width,
-        width,
-        height: "auto",
-        position: "absolute",
-        top: 24,
-        left: Dimensions.get("window").width / 2 - width / 2,
-        zIndex: 999,
-      }}
+      style={[
+        {
+          flexDirection: "row",
+          alignItems: "center",
+          backgroundColor: neutral11,
+          borderColor: errorColor,
+          borderRadius: 8,
+          borderWidth: 1,
+          borderStyle: "solid",
+          maxWidth: width,
+          width,
+          height: "auto",
+          position: "absolute",
+          top: 24,
+          left: Dimensions.get("window").width / 2 - width / 2,
+          zIndex: 999,
+        },
+        style,
+      ]}
     >
       <SpacerRow size={3} />
       <SVG width={24} height={24} source={warningSVG} />

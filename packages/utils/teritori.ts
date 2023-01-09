@@ -4,7 +4,7 @@ import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { Currency } from "@keplr-wallet/types";
 
 import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import {NetworkInfo} from "../networks";
+import { NetworkInfo } from "../networks";
 
 export const UTORI_PER_TORI = process.env.PUBLIC_BASE_MINT_FEE;
 export const teritoriRestProvider = process.env.PUBLIC_CHAIN_REST_ENDPOINT;
@@ -26,9 +26,14 @@ export interface CosmosBalancesResponse {
   balances: { denom: string; amount: string }[];
 }
 
-export const getCosmosBalances = async (address: string, network?: NetworkInfo) => {
+export const getCosmosBalances = async (
+  address: string,
+  network?: NetworkInfo
+) => {
   const response = await fetch(
-    `${network?.restEndpoint || teritoriRestProvider}/cosmos/bank/v1beta1/balances/${address}`
+    `${
+      network?.restEndpoint || teritoriRestProvider
+    }/cosmos/bank/v1beta1/balances/${address}`
   );
   const responseJSON: CosmosBalancesResponse = await response.json();
   return responseJSON;
@@ -36,7 +41,10 @@ export const getCosmosBalances = async (address: string, network?: NetworkInfo) 
 
 export const teritoriNFTVaultCodeID = 10;
 
-export const getUtoriBalance = async (address: string, network?: NetworkInfo) => {
+export const getUtoriBalance = async (
+  address: string,
+  network?: NetworkInfo
+) => {
   const cosmosBalances = await getCosmosBalances(address, network);
   return cosmosBalances.balances
     .filter((balance) => balance.denom === toriDenom)
@@ -66,10 +74,17 @@ export const teritoriGasPrice = new GasPrice(
   toriCurrency.coinMinimalDenom
 );
 
-export const getSigningStargateClient = (signer: OfflineSigner, network?: NetworkInfo) =>
-  SigningStargateClient.connectWithSigner(network?.rpcEndpoint || teritoriRPCProvider || "", signer, {
-    gasPrice: teritoriGasPrice,
-  });
+export const getSigningStargateClient = (
+  signer: OfflineSigner,
+  network?: NetworkInfo
+) =>
+  SigningStargateClient.connectWithSigner(
+    network?.rpcEndpoint || teritoriRPCProvider || "",
+    signer,
+    {
+      gasPrice: teritoriGasPrice,
+    }
+  );
 
 interface PrettyTokenData {
   displayLabel: string;

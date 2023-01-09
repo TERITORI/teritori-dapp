@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { getNetwork } from "../networks";
 import { selectSelectedNetworkId } from "../store/slices/settings";
 import { prettyPrice } from "../utils/coins";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
-import {getNetwork} from "../networks";
 
 export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
 

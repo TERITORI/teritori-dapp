@@ -4,6 +4,7 @@ import moment from "moment";
 import React, { useState, useCallback } from "react";
 import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
 import { RadioButton } from "react-native-paper";
+import { useSelector } from "react-redux";
 import { VictoryPie } from "victory";
 
 import { BrandText } from "../../components/BrandText/BrandText";
@@ -14,13 +15,12 @@ import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getNetwork } from "../../networks";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
 import { neutral44 } from "../../utils/style/colors";
 import { getSigningStargateClient } from "../../utils/teritori";
 import { ProposalStatus } from "./types";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../../store/slices/settings";
-import {getNetwork} from "../../networks";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View
@@ -111,7 +111,10 @@ export const GovernanceDetails: React.FC<{
 
     try {
       const keplrSigner = await getKeplrOfflineSigner(selectedNetwork);
-      const client = await getSigningStargateClient(keplrSigner, selectedNetwork);
+      const client = await getSigningStargateClient(
+        keplrSigner,
+        selectedNetwork
+      );
 
       const vote: MsgVoteEncodeObject = {
         typeUrl: "/cosmos.gov.v1beta1.MsgVote",

@@ -39,6 +39,7 @@ import { TeritoriBunkerMinterQueryClient } from "../../contracts-clients/teritor
 import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import { useCollections } from "../../hooks/useCollections";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getNetwork } from "../../networks";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
@@ -49,7 +50,6 @@ import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { toriCurrency } from "../../utils/teritori";
 import { nftDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
-import {getNetwork} from "../../networks";
 
 export const RiotersFooterScreen: React.FC = () => {
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
@@ -211,7 +211,9 @@ export const RiotersFooterScreen: React.FC = () => {
     setTransactionPaymentModalVisible(false);
     const finalPrice = await getPrice();
     if (!nftDropedAdjustment || finalPrice === undefined || !wallet) return;
-    const cosmwasmClientSignIn = await getSigningCosmWasmClient(selectedNetwork);
+    const cosmwasmClientSignIn = await getSigningCosmWasmClient(
+      selectedNetwork
+    );
 
     const rioterFooterClient = new RioterFooterNftClient(
       cosmwasmClientSignIn,

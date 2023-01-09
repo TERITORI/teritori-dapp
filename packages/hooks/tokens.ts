@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { getNetwork } from "../networks";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { isPath, isToken } from "../utils/tns";
 import useSelectedWallet from "./useSelectedWallet";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../store/slices/settings";
-import {getNetwork} from "../networks";
 
 // start_after starts after the token_id
 // so simply take the last token_id from the last page
@@ -50,7 +50,9 @@ export function useTokenList() {
           },
         };
 
-        const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
+        const cosmwasmClient = await getNonSigningCosmWasmClient(
+          selectedNetwork
+        );
 
         const tokenList = await cosmwasmClient.queryContractSmart(
           contract,
@@ -106,7 +108,9 @@ export function useToken(tokenId: string, tld: string) {
       setLoading(true);
 
       try {
-        const cosmwasmClient = await getNonSigningCosmWasmClient(selectedNetwork);
+        const cosmwasmClient = await getNonSigningCosmWasmClient(
+          selectedNetwork
+        );
 
         try {
           const tokenInfo = await cosmwasmClient.queryContractSmart(contract, {

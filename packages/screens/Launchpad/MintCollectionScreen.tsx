@@ -28,7 +28,7 @@ import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bun
 import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {getCurrency, getNetwork} from "../../networks";
+import { getCurrency, getNetwork } from "../../networks";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import { getSigningCosmWasmClient } from "../../utils/keplr";

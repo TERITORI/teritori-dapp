@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { getNetwork, NetworkInfo } from "../networks";
 import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";
-import {getNetwork, NetworkInfo} from "../networks";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../store/slices/settings";
 
 export const useNFTInfo = (id: string, wallet: string | undefined) => {
   const [info, setInfo] = useState<NFTInfo>();
@@ -37,7 +37,12 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
           minterContractAddress ===
           process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS
         ) {
-          nfo = await getTNSNFTInfo(minterContractAddress, tokenId, wallet, selectedNetwork);
+          nfo = await getTNSNFTInfo(
+            minterContractAddress,
+            tokenId,
+            wallet,
+            selectedNetwork
+          );
         } else {
           nfo = await getStandardNFTInfo(
             minterContractAddress,
@@ -66,7 +71,7 @@ const getTNSNFTInfo = async (
   contractAddress: string,
   tokenId: string,
   wallet?: string,
-  network?: NetworkInfo,
+  network?: NetworkInfo
 ) => {
   // We use a CosmWasm non signing Client
   const cosmwasmClient = await getNonSigningCosmWasmClient(network);
@@ -141,7 +146,7 @@ const getStandardNFTInfo = async (
   minterContractAddress: string,
   tokenId: string,
   wallet?: string,
-  network?: NetworkInfo,
+  network?: NetworkInfo
 ) => {
   // We use a CosmWasm non signing Client
   const cosmwasmClient = await getNonSigningCosmWasmClient(network);

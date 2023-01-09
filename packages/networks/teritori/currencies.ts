@@ -23,7 +23,7 @@ export const teritoriCurrencies: CurrencyInfo[] = [
   },
   {
     kind: "ibc",
-    denom:"",
+    denom: "",
     displayName: "OSMO",
     sourceNetwork: "osmosis",
     sourceNetworkDisplayName: NetworkName.Osmosis,

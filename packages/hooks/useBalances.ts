@@ -18,7 +18,7 @@ export const useBalances = (
         return [];
       }
 
-      return await getNetworkBalances(networkId, address) || []
+      return (await getNetworkBalances(networkId, address)) || [];
     },
     { initialData: [], refetchInterval: 5000 }
   );

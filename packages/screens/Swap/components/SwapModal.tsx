@@ -1,11 +1,18 @@
 import { Decimal } from "cosmwasm";
-import React, {useEffect, useMemo, useRef, useState} from "react";
-import {StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import chevronCircleDown from "../../../../assets/icons/chevron-circle-down.svg";
 import chevronCircleUp from "../../../../assets/icons/chevron-circle-up.svg";
 import osmosisLogo from "../../../../assets/icons/networks/osmosis.svg";
+import settingsSVG from "../../../../assets/icons/settings.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
@@ -14,10 +21,13 @@ import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
+import { ToastError } from "../../../components/toasts/ToastError";
+import { ToastSuccess } from "../../../components/toasts/ToastSuccess";
+import { DropdownRef, useDropdowns } from "../../../context/DropdownsProvider";
+import { SwapResult, useSwap } from "../../../hooks/swap/useSwap";
 import { useBalances } from "../../../hooks/useBalances";
 import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useSwap } from "../../../hooks/useSwap";
 import {
   CurrencyInfo,
   getNativeCurrency,
@@ -33,13 +43,13 @@ import {
   primaryColor,
   secondaryColor,
 } from "../../../utils/style/colors";
-import {fontSemibold13, fontSemibold14, fontSemibold20} from "../../../utils/style/fonts";
+import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { CurrencySelector } from "./CurrencySelector";
-import {CurrencyIcon} from "../../../components/images/CurrencyIcon";
-import {useDropdowns} from "../../../context/DropdownsProvider";
-import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
-import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
+import { CurrencyAmount } from "./CurrencyAmount";
+import { SelectableCurrency } from "./SelectableCurrency";
+import { SelectedCurrency } from "./SelectedCurrency";
+import { SwapDetails } from "./SwapDetails";
+import { SwapModalSettings } from "./SwapModalSettings";
 
 type SwapModalProps = {
   onClose: () => void;
@@ -47,27 +57,40 @@ type SwapModalProps = {
 };
 
 //TODO: Amounts not refreshed (Assets, etc..)
-//TODO: Lost 10 OSMO ===> Need to fix swap params (+ Fee, slippage.. ?)
 //TODO:  fix errors useSwap
 
-// Where to use that ?
-const SWAP_FEE_MULTIPLIER = 0.998; // Fee 0.2 %
-
-export const ModalHeader: React.FC = () => {
+export const ModalHeader: React.FC<{
+  setSettingsOpened?: Dispatch<SetStateAction<boolean>>;
+}> = ({ setSettingsOpened }) => {
   return (
-    <View style={styles.modalHeaderContainer}>
-      <SVG source={osmosisLogo} height={32} width={32} />
-      <BrandText style={styles.modalHeaderTitle}>Swap on OSMOSIS</BrandText>
-    </View>
+    <>
+      <View style={styles.modalHeaderContainer}>
+        <View style={styles.modalHeaderLogoTitle}>
+          <SVG source={osmosisLogo} height={32} width={32} />
+          <BrandText style={styles.modalHeaderTitle}>Swap on OSMOSIS</BrandText>
+        </View>
+        {setSettingsOpened && (
+          <TouchableOpacity
+            onPress={() => setSettingsOpened((isOpened) => !isOpened)}
+          >
+            <SVG source={settingsSVG} height={20} width={20} />
+          </TouchableOpacity>
+        )}
+      </View>
+    </>
   );
 };
+
+/////////////////// MODAL
 
 export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const selectedNetwork = getNetwork(selectedNetworkId);
-
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
+  const [swapResult, setSwapResult] = useState<SwapResult>();
+  const [toastErrorVisible, setToastErrorVisible] = useState(false);
+  const [toastSuccessVisible, setToastSuccessVisible] = useState(false);
 
   // ---- Default currencies
   const atomCurrency = useMemo(
@@ -173,32 +196,16 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     return amountIn * prices[currencyInNative.coingeckoId].usd;
   }, [currencyInNative?.coingeckoId, amountIn, prices]);
 
-  // ---- Amount of the second currency depending on the first one's amount TODO: -Fee 0.2% ???
-  const amountOut: number = useMemo(() => {
-    if (!currencyOutNative || !prices[currencyOutNative.coingeckoId]) return 0;
-    return (
-      (amountInUsd * SWAP_FEE_MULTIPLIER) /
-      prices[currencyOutNative.coingeckoId].usd
-    );
-  }, [amountInUsd, currencyOutNative?.coingeckoId, prices]);
-
-  // ---- USD price for the second currency
-  const amountOutUsd: number = useMemo(() => {
-    if (
-      !currencyOutNative ||
-      !amountOut ||
-      !prices[currencyOutNative.coingeckoId]
-    )
-      return 0;
-    return amountOut * prices[currencyOutNative.coingeckoId].usd;
-  }, [currencyOutNative?.coingeckoId, amountOut, prices]);
+  // ---- Settings
+  const [settingsOpened, setSettingsOpened] = useState(false);
+  const [slippage, setSlippage] = useState(1);
 
   // ---- Dropdowns
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } = useDropdowns();
-  const dropdownInRef = useRef<View>(null);
-  const dropdownOtuRef = useRef<View>(null);
+  const { isDropdownOpen, closeOpenedDropdown } = useDropdowns();
+  const [dropdownOutRef, setDropdownOutRef] = useState<DropdownRef>(null);
+  const [dropdownInRef, setDropdownInRef] = useState<DropdownRef>(null);
 
-  // ---- Invert button
+  // ---- Buttons
   const onPressInvert = () => {
     setCurrencyIn(currencyOut);
     setCurrencyOut(currencyIn);
@@ -210,37 +217,81 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   const onPressMax = () => {
     setAmountIn(parseFloat(currencyInAmount));
   };
+  const onPressSwap = async () => {
+    setSettingsOpened(false);
+    setToastSuccessVisible(false);
+    setToastErrorVisible(false);
+    const swapResult = await swap(amountIn, amountOut);
+
+    if (!swapResult) return;
+    if (swapResult.isError) setToastErrorVisible(true);
+    else {
+      setToastSuccessVisible(true);
+      setSwapResult(swapResult);
+      setAmountIn(0);
+    }
+  };
 
   // ---- SWAP OSMOSIS
-  const { swap } = useSwap({
-    amountIn,
-    amountOut,
-    currencyIn,
-    currencyOut,
-    callback: onClose,
-  });
+  const { swap, spotPrice, fee } = useSwap(slippage, currencyIn, currencyOut);
+
+  const amountOut: number = useMemo(() => {
+    if (!amountIn || !spotPrice) return 0;
+    return parseFloat(spotPrice) * amountIn;
+  }, [spotPrice, amountIn]);
+
+  const amountOutWithFee: number = useMemo(
+    () => amountOut - amountOut * fee,
+    [amountOut, fee]
+  );
+
+  const feeAmountOutUsd: number = useMemo(() => {
+    if (
+      !currencyOutNative ||
+      !amountOut ||
+      !prices[currencyOutNative.coingeckoId]
+    )
+      return 0;
+    return amountOut * fee * prices[currencyOutNative.coingeckoId].usd;
+  }, [currencyOutNative?.coingeckoId, amountOut, prices, fee]);
+
+  // ---- USD price for the second currency (With fee)
+  const amountOutUsdWithFee: number = useMemo(() => {
+    if (
+      !currencyOutNative ||
+      !amountOutWithFee ||
+      !prices[currencyOutNative.coingeckoId]
+    )
+      return 0;
+    return amountOutWithFee * prices[currencyOutNative.coingeckoId].usd;
+  }, [currencyOutNative?.coingeckoId, amountOutWithFee, prices]);
 
   // ===== RETURN
   return (
     <ModalBase
-      Header={ModalHeader}
+      childrenBottom={
+        <SwapModalSettings
+          settingsOpened={settingsOpened}
+          setSlippageValue={setSlippage}
+        />
+      }
+      Header={() => <ModalHeader setSettingsOpened={setSettingsOpened} />}
       width={456}
-      height={456}
       visible={visible}
       onClose={onClose}
-      contentStyle={{justifyContent: "flex-start"}}
+      contentStyle={{ justifyContent: "flex-start" }}
+      closeButtonStyle={{ alignSelf: "center" }}
     >
       <View style={styles.modalChildrenContainer}>
-
         <View style={styles.currencies}>
           {/*======= First currency */}
           <TertiaryBox
             fullWidth
             mainContainerStyle={styles.currencyBoxMainContainer}
-            style={styles.currencyBox}
           >
+            {/*----- Selected currencyIn available amount */}
             <View style={styles.counts}>
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+              <BrandText style={styles.availableAmount}>
                 Available{" "}
                 <BrandText style={{ color: primaryColor }}>
                   {currencyInAmount}
@@ -257,201 +308,121 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
               </View>
             </View>
 
+            {/*----- Selected currencyIn*/}
             <View style={styles.currency}>
+              <SelectedCurrency
+                currency={currencyIn}
+                selectedNetworkId={selectedNetworkId}
+                setRef={setDropdownInRef}
+              />
 
-              {/*TODO: Make a component for that*/}
-              <View ref={dropdownInRef}>
-                <TouchableOpacity
-                  onPress={() => onPressDropdownButton(dropdownInRef)}
-                  style={styles.currencySelector}
-                >
-                  <CurrencyIcon
-                    size={48}
-                    icon={currencyIn?.icon}
-                    denom={currencyIn?.denom || ""}
-                    networkId={selectedNetworkId}
-                  />
-
-                  <View style={styles.labelChevronNetwork}>
-                    <View style={styles.labelChevron}>
-                      <BrandText style={styles.label}>
-                        {currencyIn?.displayName}
-                      </BrandText>
-                      <SVG
-                        source={
-                          isDropdownOpen(dropdownInRef) ? chevronUpSVG : chevronDownSVG
-                        }
-                        width={16}
-                        height={16}
-                        color={secondaryColor}
-                      />
-                    </View>
-                    <BrandText style={[fontSemibold13, styles.network]}>
-                      {currencyIn?.sourceNetworkDisplayName}
-                    </BrandText>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              {/*END TODO*/}
-
+              {/*----- Desired amount for swap */}
               <View>
                 <TextInput
-                  style={[styles.inputAmount, fontSemibold20]}
+                  style={styles.inputAmount}
                   value={
-                    amountIn ? parseFloat(amountIn.toFixed(6)).toString() : "0"
+                    amountIn ? parseFloat(amountIn.toFixed(6)).toString() : ""
                   }
+                  placeholder="0"
+                  placeholderTextColor={neutralA3}
                   onChangeText={(text) => setAmountIn(parseFloat(text))}
                 />
-
-                <BrandText style={[styles.amountUsd, fontSemibold14]}>
+                <BrandText style={styles.amountUsd}>
                   ≈ ${parseFloat(amountInUsd.toFixed(2).toString())}
                 </BrandText>
               </View>
             </View>
 
+            {/*======= Selectable currencies in */}
             {isDropdownOpen(dropdownInRef) && (
-              // TODO: Make a component for that
-              // <TertiaryBox
-              //   width={456}
-              //   style={styles.menuBox}
-              //   mainContainerStyle={styles.menuBoxMainContainer}
-              //   noBrokenCorners
-              // >
-                <>
-                {selectableCurrenciesIn?.map((currencyInfo) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setCurrencyOut(currencyInfo);
+              <>
+                {selectableCurrenciesIn?.map((currencyInfo, index) => (
+                  <SelectableCurrency
+                    key={index}
+                    currency={currencyInfo}
+                    networkId={selectedNetworkId}
+                    onPressItem={() => {
+                      setCurrencyIn(currencyInfo);
                       closeOpenedDropdown();
                     }}
-                    key={currencyInfo.denom}
-                    style={styles.menuItem}
-                  >
-                    <CurrencyIcon
-                      size={48}
-                      denom={currencyInfo.denom}
-                      networkId={selectedNetworkId}
-                    />
-                    <BrandText style={styles.menuItemLabel}>
-                      {currencyInfo?.displayName}
-                    </BrandText>
-                  </TouchableOpacity>
+                  />
                 ))}
-                </>
-              // </TertiaryBox>
-              // END TODO
+              </>
             )}
           </TertiaryBox>
 
-          <SpacerColumn size={1.5} />
-
           {/*======= Second currency */}
+          <SpacerColumn size={1.5} />
           <TertiaryBox
             fullWidth
             mainContainerStyle={styles.currencyBoxMainContainer}
-            style={[styles.currencyBox, {bottom: -12}]}
           >
-            <View style={styles.currency}>
-
-              {/*TODO: Make a component for that*/}
-              <View ref={dropdownOtuRef}>
-                <TouchableOpacity
-                  onPress={() => onPressDropdownButton(dropdownOtuRef)}
-                  style={styles.currencySelector}
-                >
-                  <CurrencyIcon
-                    size={48}
-                    icon={currencyOut?.icon}
-                    denom={currencyOut?.denom || ""}
-                    networkId={selectedNetworkId}
+            <>
+              {/*----- Invert button */}
+              <CustomPressable
+                onPress={onPressInvert}
+                style={styles.invertButton}
+              >
+                {({ hovered }) => (
+                  <SVG
+                    source={hovered ? chevronCircleDown : chevronCircleUp}
+                    height={32}
+                    width={32}
                   />
-                  <View style={styles.labelChevronNetwork}>
-                    <View style={styles.labelChevron}>
-                      <BrandText style={styles.label}>
-                        {currencyOut?.displayName}
-                      </BrandText>
-                      <SVG
-                        source={
-                          isDropdownOpen(dropdownOtuRef) ? chevronUpSVG : chevronDownSVG
-                        }
-                        width={16}
-                        height={16}
-                        color={secondaryColor}
-                      />
-                    </View>
-                    <BrandText style={[fontSemibold13, styles.network]}>
-                      {currencyOut?.sourceNetworkDisplayName}
-                    </BrandText>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              {/*END TODO*/}
+                )}
+              </CustomPressable>
 
-              <View>
-                <BrandText
-                  style={[
-                    styles.amount,
-                    fontSemibold20,
-                    !amountOut && { color: neutralA3 },
-                  ]}
-                >
-                  ≈{" "}
-                  {!amountOut ? "0" : parseFloat(amountOut.toFixed(6)).toString()}
-                </BrandText>
-                <BrandText style={[styles.amountUsd, fontSemibold14]}>
-                  ≈ ${parseFloat(amountOutUsd.toFixed(2).toString())}
-                </BrandText>
-              </View>
-            </View>
+              {/*----- Selected currencyOut */}
+              <View style={styles.currency}>
+                <SelectedCurrency
+                  currency={currencyOut}
+                  selectedNetworkId={selectedNetworkId}
+                  setRef={setDropdownOutRef}
+                />
 
-            {isDropdownOpen(dropdownOtuRef) && (
-              // TODO: Make a component for that
-              // <TertiaryBox
-              //   width={456}
-              //   style={styles.menuBox}
-              //   mainContainerStyle={styles.menuBoxMainContainer}
-              //   noBrokenCorners
-              // >
-              <>
-                {selectableCurrenciesOut?.map((currencyInfo) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setCurrencyOut(currencyInfo);
-                      closeOpenedDropdown();
-                    }}
-                    key={currencyInfo.denom}
-                    style={styles.menuItem}
-                  >
-                    <CurrencyIcon
-                      size={48}
-                      denom={currencyInfo.denom}
+                {/*----- Amount earned after swap */}
+                <CurrencyAmount
+                  amount={amountOutWithFee}
+                  amountUsd={amountOutUsdWithFee}
+                  isApproximate
+                />
+              </View>
+
+              {/*======= Selectable currencies out */}
+              {isDropdownOpen(dropdownOutRef) && (
+                <>
+                  {selectableCurrenciesOut?.map((currencyInfo, index) => (
+                    <SelectableCurrency
+                      key={index}
+                      currency={currencyInfo}
                       networkId={selectedNetworkId}
+                      onPressItem={() => {
+                        setCurrencyOut(currencyInfo);
+                        closeOpenedDropdown();
+                      }}
                     />
-                    <BrandText style={styles.menuItemLabel}>
-                      {currencyInfo?.displayName}
-                    </BrandText>
-                  </TouchableOpacity>
-                ))}
-              </>
-              // </TertiaryBox>
-              //  END TODO
-            )}
+                  ))}
+                </>
+              )}
+            </>
           </TertiaryBox>
         </View>
 
-        {/*======= Invert button */}
-        <CustomPressable onPress={onPressInvert} style={styles.invertButton}>
-          {({ hovered }) => (
-            <SVG
-              source={hovered ? chevronCircleDown : chevronCircleUp}
-              height={32}
-              width={32}
-            />
-          )}
-        </CustomPressable>
+        {/*======= Currencies In/Out equivalence */}
+        <SpacerColumn size={1.5} />
+        <SwapDetails
+          fee={fee}
+          spotPrice={spotPrice || ""}
+          amountIn={amountIn}
+          tokenNameIn={currencyInNative?.displayName || ""}
+          tokenNameOut={currencyOutNative?.displayName || ""}
+          feeAmountOutUsd={feeAmountOutUsd}
+          expectedAmountOut={amountOutWithFee}
+          slippage={slippage}
+        />
 
+        {/*======= Swap button */}
         <SpacerColumn size={2.5} />
-
         <PrimaryButton
           size="XL"
           loader
@@ -462,16 +433,38 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
           }
           fullWidth
           disabled={!amountIn || amountIn > parseFloat(currencyInAmount)}
-          onPress={swap}
+          onPress={onPressSwap}
         />
       </View>
+
+      {/*======= We use Toastes here to get above the Modal*/}
+      {toastErrorVisible && (
+        <ToastError
+          title={swapResult?.title || ""}
+          onPress={() => setToastErrorVisible(false)}
+          message={swapResult?.message || ""}
+          style={{ bottom: 506, left: 10 }}
+        />
+      )}
+      {toastSuccessVisible && (
+        <ToastSuccess
+          title={swapResult?.title || ""}
+          onPress={() => setToastSuccessVisible(false)}
+          style={{ bottom: 506, left: 75 }}
+        />
+      )}
     </ModalBase>
   );
 };
 
 const styles = StyleSheet.create({
-
   modalHeaderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flex: 1,
+  },
+  modalHeaderLogoTitle: {
     flexDirection: "row",
     alignItems: "center",
   },
@@ -483,12 +476,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: layout.padding_x2_5,
   },
-  text: {
-    color: neutral77,
-    maxWidth: 371,
-    marginBottom: layout.padding_x2_5,
-    marginTop: layout.padding_x4,
+  currencyBoxMainContainer: {
+    padding: layout.padding_x2,
   },
+
   counts: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -497,8 +488,7 @@ const styles = StyleSheet.create({
     marginBottom: layout.padding_x2,
   },
   currencies: {
-    height: 216,
-    width: "100%"
+    width: "100%",
   },
 
   currency: {
@@ -510,52 +500,25 @@ const styles = StyleSheet.create({
   invertButton: {
     position: "absolute",
     zIndex: 20,
-    top: 124,
+    top: -24,
   },
-  amountUsd: {
-    color: neutralA3,
-    textAlign: "right",
+  availableAmount: {
+    color: neutral77,
+    ...StyleSheet.flatten(fontSemibold14),
   },
   inputAmount: {
     outlineStyle: "none",
     color: secondaryColor,
     maxWidth: 200,
     textAlign: "right",
+    ...StyleSheet.flatten(fontSemibold20),
   },
   amount: {
     textAlign: "right",
   },
-
-  currencyBox: {
-    zIndex: 15,
-    position: "absolute"
-  },
-  currencyBoxMainContainer: {
-    padding: layout.padding_x2,
-  },
-  currencySelector: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  labelChevronNetwork: {
-    marginLeft: layout.padding_x1_5,
-  },
-  labelChevron: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  label: {
-    marginRight: layout.padding_x1,
-  },
-  network: {
+  amountUsd: {
     color: neutralA3,
-  },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: layout.padding_x2,
-  },
-  menuItemLabel: {
-    marginLeft: layout.padding_x1_5,
+    textAlign: "right",
+    ...StyleSheet.flatten(fontSemibold14),
   },
 });

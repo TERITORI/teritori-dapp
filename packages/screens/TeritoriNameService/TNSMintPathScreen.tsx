@@ -1,6 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
@@ -11,6 +12,8 @@ import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { getNetwork } from "../../networks";
+import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { defaultMintFee } from "../../utils/fee";
 import {
   getFirstKeplrAccount,
@@ -23,9 +26,6 @@ import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser, tokenWithoutTld } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../../store/slices/settings";
-import {getNetwork} from "../../networks";
 
 const normalize = (inputString: string) => {
   const invalidChrsRemoved = inputString.replace(/[^a-z0-9\-_]/g, "");
@@ -115,7 +115,8 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
     const normalizedPathId = normalize(pathId.toLowerCase());
 
     try {
-      const walletAddress = (await getFirstKeplrAccount(selectedNetwork)).address;
+      const walletAddress = (await getFirstKeplrAccount(selectedNetwork))
+        .address;
 
       const msg = {
         update_metadata: {

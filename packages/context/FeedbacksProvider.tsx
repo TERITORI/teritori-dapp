@@ -4,7 +4,7 @@ import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
 import { ToastError } from "../components/toasts/ToastError";
 import { ToastSuccess } from "../components/toasts/ToastSuccess";
 
-interface ToastMessage {
+export interface ToastMessage {
   title: string;
   message: string;
   duration?: number;

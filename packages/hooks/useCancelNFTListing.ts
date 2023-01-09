@@ -1,13 +1,13 @@
 import { useCallback } from "react";
+import { useSelector } from "react-redux";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftVaultClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { getNetwork } from "../networks";
+import { selectSelectedNetworkId } from "../store/slices/settings";
 import { getSigningCosmWasmClient } from "../utils/keplr";
 import { vaultContractAddress } from "../utils/teritori";
 import useSelectedWallet from "./useSelectedWallet";
-import {useSelector} from "react-redux";
-import {selectSelectedNetworkId} from "../store/slices/settings";
-import {getNetwork} from "../networks";
 
 export const useCancelNFTListing = (
   nftContractAddress: string,
