@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useState } from "react";
 import {
   StyleProp,
@@ -7,8 +8,12 @@ import {
   StyleSheet,
 } from "react-native";
 
+import { socialFeedClient } from "../../client-creators/socialFeedClient";
+import { SendFundModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
+import { useTNS } from "../../context/TNSProvider";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../utils/navigation";
@@ -20,11 +25,13 @@ import {
   neutralA3,
 } from "../../utils/style/colors";
 import {
+  fontSemibold12,
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { tokenWithoutTld } from "../../utils/tns";
 import { BrandText } from "../BrandText";
 import { EmojiSelector } from "../EmojiSelector";
 import { FilePreview } from "../FilePreview/FilePreview";
@@ -58,17 +65,40 @@ export const SocialThreadCard: React.FC<{
   onPressReply?: OnPressReplyType;
 }> = ({ post, style, singleView, isGovernance, fadeInDelay }) => {
   const [maxLayoutWidth, setMaxLayoutWidth] = useState(0);
+  const { setName } = useTNS();
   const imageMarginRight = layout.padding_x3_5;
   const tertiaryBoxPaddingHorizontal = layout.padding_x3;
   const { width: containerWidth } = useMaxResolution({
     responsive: true,
   });
+  const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
+  const wallet = useSelectedWallet();
 
   const postByTNSMetadata = useTNSMetadata(post.post_by);
 
   const navigation = useAppNavigation();
 
   const metadata = JSON.parse(post.metadata);
+
+  const handlePressTip = () => {
+    setName(tokenWithoutTld(postByTNSMetadata?.metadata?.tokenId || ""));
+    setSendFundsModalVisible(true);
+  };
+
+  const handleReaction = async (e: string) => {
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+    const client = await socialFeedClient({
+      walletAddress: wallet.address,
+    });
+
+    await client.reactPost({
+      icon: e,
+      identifier: post.identifier,
+      up: true,
+    });
+  };
 
   return (
     <AnimationFadeIn style={[style]} delay={fadeInDelay}>
@@ -160,6 +190,16 @@ export const SocialThreadCard: React.FC<{
                         : DEFAULT_USERNAME}
                     </BrandText>
                   </TouchableOpacity>
+                  <BrandText
+                    style={[
+                      fontSemibold12,
+                      {
+                        marginLeft: layout.padding_x2,
+                      },
+                    ]}
+                  >
+                    {moment(metadata.createdAt).local().fromNow()}
+                  </BrandText>
                 </View>
 
                 <DotBadge label="Gnolang" />
@@ -191,7 +231,12 @@ export const SocialThreadCard: React.FC<{
                   {post.post_by}
                 </BrandText>
                 {singleView && (
-                  <SocialReactionActions commentCount={post.sub_post_length} />
+                  <SocialReactionActions
+                    commentCount={post.sub_post_length}
+                    onPressTip={handlePressTip}
+                    reactions={post.reactions}
+                    onPressReaction={handleReaction}
+                  />
                 )}
               </View>
             </View>
@@ -200,6 +245,8 @@ export const SocialThreadCard: React.FC<{
 
         {!singleView && (
           <SocialActions
+            onPressTip={handlePressTip}
+            onPressReaction={handleReaction}
             isGovernance={isGovernance}
             singleView={singleView}
             post={post}
@@ -211,7 +258,19 @@ export const SocialThreadCard: React.FC<{
           />
         )}
 
-        {!singleView && <EmojiSelector containerStyle={styles.container} />}
+        {!singleView && (
+          <EmojiSelector
+            containerStyle={styles.container}
+            onEmojiSelected={handleReaction}
+          />
+        )}
+        <SendFundModal
+          onClose={() => {
+            setName("");
+            setSendFundsModalVisible(false);
+          }}
+          visible={sendFundsModalVisible}
+        />
       </View>
     </AnimationFadeIn>
   );

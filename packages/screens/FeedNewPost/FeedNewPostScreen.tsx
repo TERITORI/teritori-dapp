@@ -5,6 +5,7 @@ import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ErrorText } from "../../components/ErrorText";
+import { FilePreviewContainer } from "../../components/FilePreview/UploadedFilePreview/FilePreviewContainer";
 import {
   NewPostFormValues,
   PostCategory,
@@ -69,7 +70,8 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     defaultValues: {
       title: params?.title || "",
       message: params?.message || "",
-      file: params?.file,
+      files: params?.files || [],
+      hashtags: params?.hashtags || [],
     },
     mode: "onBlur",
   });
@@ -204,13 +206,36 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
       >
         <WalletStatusBox maxAddressLength={50} />
         <FileUploader
-          value={formValues.file}
+          multiple
           label="Cover image"
           style={{
             marginTop: layout.padding_x3,
           }}
-          onUpload={(files) => setValue("file", files?.[0])}
+          onUpload={(files) => setValue("files", files)}
           mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
+        />
+        <FilePreviewContainer
+          style={{
+            marginVertical: layout.padding_x1,
+          }}
+          files={formValues.files}
+          gifs={[]}
+          onDelete={(fileIndex) => {
+            setValue(
+              "files",
+              Array.from(formValues?.files || [])?.filter(
+                (_, index) => index !== fileIndex
+              )
+            );
+          }}
+          onDeleteGIF={(fileIndex) => {
+            setValue(
+              "gifs",
+              (formValues?.gifs || [])?.filter(
+                (_, index) => index !== fileIndex
+              )
+            );
+          }}
         />
         <TextInputCustom<NewPostFormValues>
           label="Give it a title to make long post"

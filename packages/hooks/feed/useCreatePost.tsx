@@ -28,6 +28,8 @@ export const useCreatePost = ({
         post_by: wallet?.address || "",
         sub_post_length: 0,
         isInLocal: true,
+        reactions: [],
+        user_reactions: [],
       };
 
       const prevData = addUpdateNewComment(
