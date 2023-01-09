@@ -9,7 +9,6 @@ import Animated, {
 
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { combineFetchFeedPages, useFetchFeed } from "../../hooks/useFetchFeed";
-import { SelectedTabContentProps } from "../../screens/Feed/FeedScreen";
 import { layout } from "../../utils/style/layout";
 import { RefreshButton } from "../RefreshButton";
 import { SocialThreadCard } from "../cards/SocialThreadCard";
@@ -18,7 +17,16 @@ import { NewsFeedInput } from "./NewsFeedInput";
 
 const SCROLL_OFFSET_VALUE = 240;
 
-export const NewsFeed: React.FC<SelectedTabContentProps> = ({ Header }) => {
+interface NewsFeedProps {
+  Header: React.ComponentType;
+  hasInput?: boolean;
+  hash?: string;
+}
+
+export const NewsFeed: React.FC<NewsFeedProps> = ({
+  Header,
+  hasInput = false,
+}) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed();
   const isLoadingValue = useSharedValue(false);
@@ -87,7 +95,7 @@ export const NewsFeed: React.FC<SelectedTabContentProps> = ({ Header }) => {
     () => (
       <View>
         <Header />
-        <NewsFeedInput type="post" onSubmitSuccess={refetch} />
+        {hasInput && <NewsFeedInput type="post" onSubmitSuccess={refetch} />}
         <Animated.View
           style={[{ paddingVertical: layout.padding_x1 }, animationStyle]}
         >

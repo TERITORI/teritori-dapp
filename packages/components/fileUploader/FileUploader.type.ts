@@ -1,12 +1,11 @@
+import React from "react";
 import { ViewStyle } from "react-native";
 
 export interface FileUploaderProps {
-  value?: File;
   label?: string;
   style?: ViewStyle;
-  onUpload: (files: File[] | FileList) => void;
+  onUpload: (files: File[]) => void;
   multiple?: boolean;
   mimeTypes?: string[];
-  triggerFileUpload?: boolean;
-  onTrigger?: () => void;
+  children?: ({ onPress }: { onPress: () => void }) => React.ReactNode;
 }

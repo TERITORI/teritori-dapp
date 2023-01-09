@@ -9,11 +9,13 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import {
   combineFetchCommentPages,
   useFetchComments,
 } from "../../hooks/useFetchComments";
 import { usePrevious } from "../../hooks/usePrevious";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../utils/navigation";
@@ -77,6 +79,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const [replyShown, setReplyShown] = useState(false);
   const [replyListYOffset, setReplyListYOffset] = useState<number[]>([]);
   const [replyListLayout, setReplyListLayout] = useState<LayoutRectangle>();
+  const wallet = useSelectedWallet();
   const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
     useFetchComments({
       parentId: comment.identifier,
@@ -123,13 +126,27 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   };
 
   const handleReply = () =>
-    onPressReply &&
-    onPressReply({
+    onPressReply?.({
       username,
       parentId: overrideParentId || comment.identifier,
       yOffsetValue:
         parentOffsetValue + (replyListLayout ? replyListLayout.y : 0),
     });
+
+  const handleReaction = async (e: string) => {
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+    const client = await socialFeedClient({
+      walletAddress: wallet.address,
+    });
+
+    await client.reactPost({
+      icon: e,
+      identifier: comment.identifier,
+      up: true,
+    });
+  };
 
   return (
     <AnimationFadeInOut
@@ -232,9 +249,11 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   {comment.post_by}
                 </BrandText>
                 <SocialReactionActions
+                  reactions={comment.reactions}
                   statStyle={styles.stat}
                   isComment
                   onPressReply={handleReply}
+                  onPressReaction={handleReaction}
                 />
               </View>
             </View>

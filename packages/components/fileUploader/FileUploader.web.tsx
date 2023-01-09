@@ -1,19 +1,17 @@
-import React, { SyntheticEvent, useEffect, useState } from "react";
+import React, { SyntheticEvent } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import bucketSVG from "../../../assets/icons/bucket.svg";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import { BrandText } from "../../components/BrandText";
 import { GradientText } from "../../components/gradientText";
 import { Label } from "../../components/inputs/TextInputCustom";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { neutral17, neutral77, redDefault } from "../../utils/style/colors";
+import { neutral17, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 import { FileUploaderProps } from "./FileUploader.type";
-
-const FILE_HEIGHT = 256;
 
 export const FileUploader: React.FC<FileUploaderProps> = ({
   label,
@@ -21,20 +19,20 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   onUpload,
   multiple,
   mimeTypes,
-  triggerFileUpload,
-  onTrigger,
-  value,
+
+  children,
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
 
-  const [files, setFiles] = useState<File[] | FileList>(value ? [value] : []);
-
   const handleFiles = (files: File[]) => {
     const _files = multiple ? files : [files[0]];
-    const supportedFiles = [...files].filter((file) =>
-      mimeTypes?.includes(file.type)
-    );
+    const supportedFiles = [...files]
+      .filter((file) => mimeTypes?.includes(file.type))
+      .map((file) => {
+        file.path = file.path || URL.createObjectURL(file);
+        return file;
+      });
 
     if (supportedFiles.length === 0) {
       setToastError({
@@ -50,12 +48,10 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     }
 
     onUpload(supportedFiles);
-    setFiles(supportedFiles);
   };
 
   const handleChange = (event: SyntheticEvent) => {
     const targetEvent = event.target as HTMLInputElement;
-    console.log("handlechange", targetEvent.files);
     if (targetEvent.files && targetEvent.files[0]) {
       handleFiles(targetEvent?.files as unknown as File[]);
     }
@@ -63,7 +59,6 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
   const handleClick = () => {
     hiddenFileInput?.current?.click?.();
-    onTrigger?.();
   };
 
   const dropHandler = (ev: any) => {
@@ -83,69 +78,41 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     ev.preventDefault();
   };
 
-  useEffect(() => {
-    if (triggerFileUpload) {
-      handleClick();
-    }
-  }, [triggerFileUpload]);
+  const InputComponent = (
+    <input
+      type="file"
+      ref={hiddenFileInput}
+      style={{ display: "none", position: "absolute" }}
+      onChange={handleChange}
+      multiple={multiple}
+      accept={mimeTypes?.join(",")}
+    />
+  );
+
+  if (children) {
+    return (
+      <>
+        {children({ onPress: handleClick })}
+        {InputComponent}
+      </>
+    );
+  }
 
   return (
-    <View
-      style={[
-        style,
-        {
-          display: triggerFileUpload ? "none" : "flex",
-        },
-      ]}
-    >
-      {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
-      <PrimaryBox
-        fullWidth
-        style={{
-          height: files?.length ? FILE_HEIGHT : 80,
-          borderRadius: 10,
-        }}
-      >
-        {files?.[0] ? (
-          <div
-            style={{
-              height: "100%",
-              width: "100%",
-            }}
-          >
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={{
-                height: 32,
-                width: 32,
-                borderRadius: 24,
-                position: "absolute",
-                top: 12,
-                right: 12,
-                backgroundColor: redDefault,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onPress={() => setFiles([])}
-            >
-              <SVG source={bucketSVG} height={16} width={16} />
-            </TouchableOpacity>
-            <img
-              src={URL.createObjectURL(files?.[0])}
-              style={{
-                overflow: "hidden",
-                height: FILE_HEIGHT,
-                width: "100%",
-                backgroundSize: "cover",
-              }}
-            />
-          </div>
-        ) : (
+    <>
+      <View style={[style]}>
+        {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
+        <PrimaryBox
+          fullWidth
+          style={{
+            height: 80,
+            borderRadius: 10,
+          }}
+        >
           <TouchableOpacity
             onPress={handleClick}
             style={{
-              paddingVertical: 20,
-              paddingHorizontal: 20,
+              padding: layout.padding_x2_5,
               width: "100%",
               height: "100%",
             }}
@@ -168,7 +135,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                   backgroundColor: neutral17,
                   alignItems: "center",
                   justifyContent: "center",
-                  marginRight: 20,
+                  marginRight: layout.padding_x2_5,
                 }}
               >
                 <SVG source={uploadSVG} height={20} />
@@ -181,18 +148,11 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                   Or drag & drop here
                 </BrandText>
               </View>
-              <input
-                type="file"
-                ref={hiddenFileInput}
-                style={{ display: "none", position: "absolute" }}
-                onChange={handleChange}
-                multiple={multiple}
-                accept={mimeTypes?.join(",")}
-              />
             </div>
           </TouchableOpacity>
-        )}
-      </PrimaryBox>
-    </View>
+        </PrimaryBox>
+      </View>
+      {InputComponent}
+    </>
   );
 };

@@ -8,14 +8,10 @@ import {
   TextInput,
   View,
 } from "react-native";
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from "react-native-popup-menu";
+import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import gifSVG from "../../assets/icons/gif.svg";
+import { TenorItemType } from "../hooks/tenor/types";
 import {
   combineTenorFetchPages,
   useTenorFetchFeatured,
@@ -27,7 +23,6 @@ import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { SpacerColumn } from "./spacer";
-import { TenorItemType } from "../hooks/tenor/types";
 
 type GIFSelectorProps = {
   onGIFSelected?: (GIFurl: string | null) => void;

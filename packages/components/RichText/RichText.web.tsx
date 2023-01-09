@@ -30,7 +30,7 @@ import React, { useEffect, useRef } from "react";
 import { Linking } from "react-native";
 
 import { useAppNavigation } from "../../utils/navigation";
-import { HANDLE_REGEX, URL_REGEX } from "../../utils/regex";
+import { HANDLE_REGEX, HASH_REGEX, URL_REGEX } from "../../utils/regex";
 import { DEFAULT_USERNAME } from "../../utils/social-feed";
 import { neutral33, primaryColor } from "../../utils/style/colors";
 import { RichOpenGraphCard } from "./RichOpenGraphCard";
@@ -48,6 +48,13 @@ const urlStrategy = (
   callback: (start: number, end: number) => void
 ) => {
   findWithRegex(URL_REGEX, contentBlock, callback);
+};
+
+const hashStrategy = (
+  contentBlock: ContentBlock,
+  callback: (start: number, end: number) => void
+) => {
+  findWithRegex(HASH_REGEX, contentBlock, callback);
 };
 
 const findWithRegex = (
@@ -97,6 +104,23 @@ const UrlRender = (props: { children: { props: { text: string } }[] }) => {
   );
 };
 
+const HashRender = (props: { children: { props: { text: string } }[] }) => {
+  const navigation = useAppNavigation();
+
+  return (
+    <span
+      style={{ color: primaryColor }}
+      onClick={() =>
+        navigation.navigate("HashFeed", {
+          id: props.children[0].props.text.replace("#", ""),
+        })
+      }
+    >
+      {props.children}
+    </span>
+  );
+};
+
 const LinkPlugin = createLinkPlugin();
 const inlineToolbarPlugin = createInlineToolbarPlugin({
   theme: {
@@ -130,6 +154,10 @@ const compositeDecorator = {
     {
       strategy: urlStrategy,
       component: UrlRender,
+    },
+    {
+      strategy: hashStrategy,
+      component: HashRender,
     },
   ],
 };
@@ -179,9 +207,11 @@ export function RichText({
     setEditorState(state);
     const contentState = state.getCurrentContent();
 
+    const hashtags = contentState.getPlainText().match(/#\S+/g);
+
     const html = convertToHTML(contentState);
 
-    onChange(html === "<p></p>" ? "" : html);
+    onChange(html === "<p></p>" ? "" : html, hashtags || []);
   };
 
   return (
