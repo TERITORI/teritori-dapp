@@ -236,7 +236,9 @@ export const SocialThreadCard: React.FC<{
                   </BrandText>
                 </View>
 
-                <DotBadge label="Gnolang" />
+                {metadata.message.toLowerCase().includes("#gnolang") && (
+                  <DotBadge label="Gnolang" />
+                )}
               </View>
 
               {!!metadata?.title && (
