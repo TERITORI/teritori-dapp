@@ -26,7 +26,7 @@ export interface PostResultExtra extends PostResult {
 export interface SocialFeedMetadata {
   title: string;
   message: string;
-  fileURLs: string[];
+  fileURLs?: string[];
   hashtags: string[];
   createdAt: string;
   updatedAt: string;
