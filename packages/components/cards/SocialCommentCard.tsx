@@ -121,7 +121,11 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     if (replyShown) {
       refetch();
     }
-  }, [localComment?.identifier, refresh]);
+  }, [comment?.identifier, refresh]);
+
+  useEffect(() => {
+    setLocalComment({ ...localComment, isInLocal: comment.isInLocal });
+  }, [comment.isInLocal]);
 
   useEffect(() => {
     if (oldIsFetching === true && isFetching === false) {
