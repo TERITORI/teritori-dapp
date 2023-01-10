@@ -8,7 +8,7 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
 import {
-  selectAvailableApps,
+  selectCheckedApps,
   setCheckedApp,
 } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
@@ -58,24 +58,22 @@ const styles = StyleSheet.create({
 });
 
 export function DAppBox(props: { option: dAppType }) {
-  const availableApps = useSelector(selectAvailableApps);
+  const selectedApps = useSelector(selectCheckedApps);
   const dispatch = useAppDispatch();
-  const [isChecked, setChecked] = useState(props.option.isChecked);
+  const draggableId = `${props.option.groupKey}*SEPARATOR*${props.option.id}`;
+  const [isChecked, setChecked] = useState(selectedApps.includes(draggableId));
 
   useEffect(() => {
     const action = {
-      groupKey: props.option.groupKey,
-      appId: props.option.id,
+      draggableId,
       isChecked,
     };
     dispatch(setCheckedApp(action));
   }, [isChecked]);
 
   useEffect(() => {
-    setChecked(
-      availableApps[props.option.groupKey]["options"][props.option.id].isChecked
-    );
-  }, [availableApps]);
+    setChecked(selectedApps.includes(draggableId));
+  }, [selectedApps]);
 
   return (
     <SecondaryBox

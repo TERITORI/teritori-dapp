@@ -15,7 +15,11 @@ import { useSidebar } from "../../context/SidebarProvider";
 import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
-import { getSelectedApps } from "../../store/slices/dapps-store";
+import { getValuesFromId } from "../../screens/DAppStore/query";
+import {
+  selectAvailableApps,
+  selectCheckedApps,
+} from "../../store/slices/dapps-store";
 import { useAppNavigation } from "../../utils/navigation";
 import { Network } from "../../utils/network";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
@@ -80,15 +84,18 @@ export const Sidebar: React.FC = () => {
     navigation.navigate(name);
   };
 
-  const selectedApps = useSelector(getSelectedApps);
+  const selectedApps = useSelector(selectCheckedApps);
+  const availableApps = useSelector(selectAvailableApps);
 
   const [dynamicSidebar, setDynamicSidebar] = useState(SIDEBAR_LIST);
 
   useEffect(() => {
-    // TODO sorting
+    console.log(selectedApps);
     selectedApps.map((element) => {
-      SIDEBAR_LIST[element.id] = {
-        title: element.title,
+      const { appId, groupKey } = getValuesFromId(element);
+      const option = availableApps[groupKey].options[appId];
+      SIDEBAR_LIST[element] = {
+        title: option.title,
         route: "ComingSoon",
         icon: feedSVG,
       };

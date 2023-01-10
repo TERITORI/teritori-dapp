@@ -4,7 +4,6 @@ export interface dAppType {
   description: string;
   icon: string;
   isChecked: boolean;
-  order: number;
   groupKey: string;
 }
 

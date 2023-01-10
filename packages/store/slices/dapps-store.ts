@@ -1,11 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { dAppGroup, dAppType } from "../../screens/DAppStore/types";
+import { getSelectedApps } from "../../screens/DAppStore/query";
+import { dAppGroup } from "../../screens/DAppStore/types";
 import { RootState } from "../store";
 
-interface pinnedAppsCollection {
-  [key: string]: dAppType;
-}
+type pinnedAppsCollection = string[];
 
 interface DappsStorage {
   selectedApps: pinnedAppsCollection;
@@ -13,21 +12,19 @@ interface DappsStorage {
 }
 
 const initialState: DappsStorage = {
-  selectedApps: {},
+  selectedApps: getSelectedApps(),
   availableApps: {},
 };
 
 export const selectAvailableApps = (state: RootState) =>
   state.dAppsStore.availableApps;
 
-export const getSelectedApps = (state: RootState) =>
-  Object.values(state.dAppsStore.availableApps).flatMap((element) =>
-    Object.values(element.options).filter(
-      (option: dAppType) => option.isChecked
-    )
-  );
+export const selectCheckedApps = (state: RootState) => [
+  ...new Set(state.dAppsStore.selectedApps),
+];
 
-const persist = (state: dAppGroup) => {
+const persist = (state: pinnedAppsCollection) => {
+  state = [...new Set(state)];
   const pureMagic = JSON.stringify(state, function replacer(key, value) {
     if (Array.isArray(value) && value.length === 0) {
       return { ...value }; // Converts empty array with string properties into a POJO
@@ -44,31 +41,48 @@ const dAppsStore = createSlice({
     setAvailableApps: (state, action: PayloadAction<dAppGroup>) => {
       state.availableApps = action.payload;
     },
+    setSelectedApps: (state, action: PayloadAction<pinnedAppsCollection>) => {
+      state.selectedApps = action.payload;
+    },
     setCheckedApp: (
       state,
       action: PayloadAction<{
-        groupKey: string;
-        appId: string;
+        draggableId: string;
         isChecked: boolean;
       }>
     ) => {
-      state.availableApps[action.payload.groupKey]["options"][
-        action.payload.appId
-      ].isChecked = action.payload.isChecked;
-      persist(state.availableApps);
+      const newValues = Array.from(state.selectedApps);
+      if (action.payload.isChecked) {
+        newValues.push(action.payload.draggableId);
+      } else {
+        const index = state.selectedApps.findIndex(
+          (element) => element === action.payload.draggableId
+        );
+        if (index !== -1) {
+          newValues.splice(index, 1);
+        }
+      }
+      state.selectedApps = newValues;
+      persist(state.selectedApps);
     },
     setOrder: (
       state,
       action: PayloadAction<{
-        groupKey: string;
-        appId: string;
-        order: number;
+        destination: number;
+        source: number;
+        draggableId: string;
       }>
     ) => {
-      state.availableApps[action.payload.groupKey]["options"][
-        action.payload.appId
-      ].order = action.payload.order;
-      persist(state.availableApps);
+      const newColumnOrder = Array.from(state.selectedApps);
+      newColumnOrder.splice(action.payload.source, 1);
+      newColumnOrder.splice(
+        action.payload.destination,
+        0,
+        action.payload.draggableId
+      );
+
+      state.selectedApps = newColumnOrder;
+      persist(state.selectedApps);
     },
   },
 });

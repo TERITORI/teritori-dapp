@@ -26,11 +26,11 @@ import { dAppType } from "../types";
 export function SelectedDraggable(props: { option: dAppType; index: number }) {
   const [showTrashIcon, setShowTrashIcon] = useState(false);
   const dispatch = useAppDispatch();
+  const draggableId = `${props.option.groupKey}*SEPARATOR*${props.option.id}`;
 
   const deleteFromList = () => {
     const action = {
-      appId: props.option.id,
-      groupKey: props.option.groupKey,
+      draggableId,
       isChecked: false,
     };
     dispatch(setCheckedApp(action));
@@ -38,7 +38,7 @@ export function SelectedDraggable(props: { option: dAppType; index: number }) {
   return (
     <Draggable
       key={props.option.id}
-      draggableId={`${props.option.groupKey}*SEPARATOR*${props.option.id}`}
+      draggableId={draggableId}
       index={props.index}
     >
       {(provided) => {
@@ -80,10 +80,8 @@ export function SelectedDraggable(props: { option: dAppType; index: number }) {
                     }}
                     onClick={deleteFromList}
                   />
-                ) : props.option.order === -1 ? (
-                  "⭐️"
                 ) : (
-                  props.option.order
+                  props.index + 1
                 )}
               </BrandText>
             </SecondaryBox>
