@@ -2,7 +2,6 @@ import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { Decimal } from "cosmwasm";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { View } from "react-native";
 
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTNS } from "../../../context/TNSProvider";
@@ -178,6 +177,7 @@ export const TNSSendFundsModal: React.FC<{
           style={{
             marginVertical: 20,
           }}
+          fullWidth
           loader
           onPress={formHandleSubmit(handleSubmit)}
         />
