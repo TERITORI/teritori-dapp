@@ -24,6 +24,7 @@ import { ReplyToType } from "../../screens/FeedPostView/types";
 import { defaultSocialFeedFee } from "../../utils/fee";
 import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
 import { useAppNavigation } from "../../utils/navigation";
+import { SOCIAL_FEED_MAX_CHAR_LIMIT } from "../../utils/social-feed";
 import {
   neutral17,
   neutral22,
@@ -54,8 +55,6 @@ import {
   getPostFee,
 } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
-
-const WORD_MAX_LIMIT = 1000;
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -305,7 +304,7 @@ export const NewsFeedInput = React.forwardRef<
                 },
               ]}
             >
-              {formValues?.message?.length}/{WORD_MAX_LIMIT}
+              {formValues?.message?.length}/{SOCIAL_FEED_MAX_CHAR_LIMIT}
             </BrandText>
           </Pressable>
         </TertiaryBox>

@@ -31,7 +31,10 @@ import { Linking } from "react-native";
 
 import { useAppNavigation } from "../../utils/navigation";
 import { HANDLE_REGEX, HASH_REGEX, URL_REGEX } from "../../utils/regex";
-import { DEFAULT_USERNAME } from "../../utils/social-feed";
+import {
+  DEFAULT_USERNAME,
+  SOCIAL_FEED_MAX_CHAR_LIMIT,
+} from "../../utils/social-feed";
 import { neutral33, primaryColor } from "../../utils/style/colors";
 import { RichOpenGraphCard } from "./RichOpenGraphCard";
 import { RichTextProps } from "./RichText.type";
@@ -184,6 +187,7 @@ export function RichText({
   readOnly,
   staticToolbar,
   openGraph,
+  allowTruncation,
 }: RichTextProps) {
   const editorRef = useRef<Editor>(null);
   const [editorState, setEditorState] = React.useState(
@@ -200,8 +204,50 @@ export function RichText({
         const endState = EditorState.moveSelectionToEnd(editorState);
         setEditorState(endState);
       }, 1000);
+    } else if (allowTruncation) {
+      truncate();
     }
   }, []);
+
+  const truncate = () => {
+    const contentState = editorState.getCurrentContent();
+    const blocks = contentState.getBlocksAsArray();
+
+    let index = 0;
+    let currentLength = 0;
+    let isTruncated = false;
+    const truncatedBlocks = [];
+
+    while (!isTruncated && blocks[index]) {
+      const block = blocks[index];
+      const length = block.getLength();
+      if (currentLength + length > SOCIAL_FEED_MAX_CHAR_LIMIT) {
+        isTruncated = true;
+        const truncatedText = block
+          .getText()
+          .slice(0, SOCIAL_FEED_MAX_CHAR_LIMIT - currentLength);
+
+        const blocksFromHTML = convertFromHTML(
+          `${truncatedText} <br/>...see more`
+        );
+        const state = ContentState.createFromBlockArray(
+          blocksFromHTML.contentBlocks,
+          blocksFromHTML.entityMap
+        );
+
+        truncatedBlocks.push(state.getFirstBlock());
+      } else {
+        truncatedBlocks.push(block);
+      }
+      currentLength += length + 1;
+      index++;
+    }
+
+    if (isTruncated) {
+      const state = ContentState.createFromBlockArray(truncatedBlocks);
+      setEditorState(EditorState.createWithContent(state));
+    }
+  };
 
   const handleChange = (state: EditorState) => {
     setEditorState(state);

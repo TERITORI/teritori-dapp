@@ -6,6 +6,7 @@ import {
   ViewStyle,
   TouchableOpacity,
   StyleSheet,
+  Pressable,
 } from "react-native";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
@@ -70,7 +71,15 @@ export const SocialThreadCard: React.FC<{
   refresh?: number;
   fadeInDelay?: number;
   onPressReply?: OnPressReplyType;
-}> = ({ post, style, singleView, isGovernance, fadeInDelay }) => {
+  allowTruncation?: boolean;
+}> = ({
+  post,
+  style,
+  singleView,
+  isGovernance,
+  fadeInDelay,
+  allowTruncation,
+}) => {
   const [localPost, setLocalPost] = useState(post);
   const [maxLayoutWidth, setMaxLayoutWidth] = useState(0);
   const { setName } = useTNS();
@@ -119,11 +128,15 @@ export const SocialThreadCard: React.FC<{
       },
     });
   };
-  console.log(post);
 
   return (
     <AnimationFadeIn style={[style]} delay={fadeInDelay}>
-      <View style={{ position: "relative" }}>
+      <Pressable
+        style={{ position: "relative" }}
+        onPress={() =>
+          navigation.navigate("FeedPostView", { id: post.identifier })
+        }
+      >
         <View
           style={[
             {
@@ -237,6 +250,7 @@ export const SocialThreadCard: React.FC<{
                   initialValue={metadata.message}
                   openGraph={metadata.openGraph}
                   readOnly
+                  allowTruncation={allowTruncation}
                 />
               </BrandText>
 
@@ -301,7 +315,7 @@ export const SocialThreadCard: React.FC<{
           }}
           visible={sendFundsModalVisible}
         />
-      </View>
+      </Pressable>
     </AnimationFadeIn>
   );
 };
