@@ -7,4 +7,5 @@ export interface RichTextProps {
   readOnly?: boolean;
   staticToolbar?: boolean;
   openGraph?: OpenGraphType;
+  allowTruncation?: boolean;
 }

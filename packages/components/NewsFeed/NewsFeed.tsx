@@ -117,7 +117,11 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         scrollEventThrottle={0.1}
         data={posts as PostResult[]}
         renderItem={({ item: post, index }) => (
-          <SocialThreadCard post={post} style={{ marginBottom: 74 }} />
+          <SocialThreadCard
+            post={post}
+            style={{ marginBottom: 74 }}
+            allowTruncation
+          />
         )}
         ListHeaderComponentStyle={{ zIndex: 1 }}
         ListHeaderComponent={ListHeaderComponent}
