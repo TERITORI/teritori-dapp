@@ -22,6 +22,7 @@ import {
   DEFAULT_NAME,
   DEFAULT_USERNAME,
   getUpdatedReactions,
+  SOCIAL_FEED_MAX_IMAGE_WIDTH,
 } from "../../utils/social-feed";
 import {
   neutral15,
@@ -40,6 +41,7 @@ import { tokenWithoutTld } from "../../utils/tns";
 import { BrandText } from "../BrandText";
 import { EmojiSelector } from "../EmojiSelector";
 import { FilePreview } from "../FilePreview/FilePreview";
+import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { RichText } from "../RichText";
 import { SocialActions, socialActionsHeight } from "../SocialActions";
 import { SocialReactionActions } from "../SocialReactionActions";
@@ -93,7 +95,7 @@ export const SocialThreadCard: React.FC<{
 
   const navigation = useAppNavigation();
 
-  const metadata = JSON.parse(localPost.metadata);
+  const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
 
   const handlePressTip = () => {
     setName(tokenWithoutTld(postByTNSMetadata?.metadata?.tokenId || ""));
@@ -117,6 +119,7 @@ export const SocialThreadCard: React.FC<{
       },
     });
   };
+  console.log(post);
 
   return (
     <AnimationFadeIn style={[style]} delay={fadeInDelay}>
@@ -237,12 +240,17 @@ export const SocialThreadCard: React.FC<{
                 />
               </BrandText>
 
-              {!!metadata.fileURL && (
-                <FilePreview
-                  fileURL={metadata.fileURL}
-                  maxWidth={maxLayoutWidth}
-                />
-              )}
+              {metadata.fileURLs?.length &&
+                metadata.fileURLs.map((file) => (
+                  <FilePreview
+                    fileURL={file}
+                    maxWidth={
+                      maxLayoutWidth > SOCIAL_FEED_MAX_IMAGE_WIDTH
+                        ? SOCIAL_FEED_MAX_IMAGE_WIDTH
+                        : maxLayoutWidth
+                    }
+                  />
+                ))}
 
               <View style={styles.actionContainer}>
                 <BrandText style={[fontSemibold13, { color: neutral77 }]}>
