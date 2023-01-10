@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -10,6 +11,7 @@ import {
 } from "react-native";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
+import { useTeritoriSocialFeedReactPostMutation } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import {
   combineFetchCommentPages,
   useFetchComments,
@@ -19,7 +21,11 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../utils/navigation";
-import { DEFAULT_NAME, DEFAULT_USERNAME } from "../../utils/social-feed";
+import {
+  DEFAULT_NAME,
+  DEFAULT_USERNAME,
+  getUpdatedReactions,
+} from "../../utils/social-feed";
 import {
   neutral00,
   neutral22,
@@ -32,6 +38,7 @@ import {
 } from "../../utils/style/colors";
 import {
   fontMedium13,
+  fontSemibold12,
   fontSemibold13,
   fontSemibold16,
 } from "../../utils/style/fonts";
@@ -75,6 +82,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   parentOffsetValue = 0,
 }) => {
   const imageMarginRight = layout.padding_x3_5;
+  const [localComment, setLocalComment] = useState({ ...comment });
   const navigation = useAppNavigation();
   const [replyShown, setReplyShown] = useState(false);
   const [replyListYOffset, setReplyListYOffset] = useState<number[]>([]);
@@ -82,20 +90,29 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const wallet = useSelectedWallet();
   const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
     useFetchComments({
-      parentId: comment.identifier,
-      totalCount: comment.sub_post_length,
+      parentId: localComment.identifier,
+      totalCount: localComment.sub_post_length,
       enabled: replyShown,
     });
   const oldIsFetching = usePrevious(isFetching);
+
+  const { mutate: reactToComment, isLoading: isReactLoading } =
+    useTeritoriSocialFeedReactPostMutation({
+      onSuccess(_data, variables) {
+        const reactions = getUpdatedReactions(localComment, variables.msg.icon);
+
+        setLocalComment({ ...localComment, reactions });
+      },
+    });
 
   const comments = useMemo(
     () => (data ? combineFetchCommentPages(data.pages) : []),
     [data]
   );
-  const moreCommentsCount = comment.sub_post_length - comments.length;
+  const moreCommentsCount = localComment.sub_post_length - comments.length;
 
-  const metadata = JSON.parse(comment.metadata);
-  const postByTNSMetadata = useTNSMetadata(comment?.post_by);
+  const metadata = JSON.parse(localComment.metadata);
+  const postByTNSMetadata = useTNSMetadata(localComment?.post_by);
   const username = postByTNSMetadata?.metadata?.tokenId
     ? tinyAddress(postByTNSMetadata?.metadata?.tokenId || "", 19)
     : DEFAULT_USERNAME;
@@ -104,7 +121,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     if (replyShown) {
       refetch();
     }
-  }, [comment?.identifier, refresh]);
+  }, [localComment?.identifier, refresh]);
 
   useEffect(() => {
     if (oldIsFetching === true && isFetching === false) {
@@ -128,7 +145,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const handleReply = () =>
     onPressReply?.({
       username,
-      parentId: overrideParentId || comment.identifier,
+      parentId: overrideParentId || localComment.identifier,
       yOffsetValue:
         parentOffsetValue + (replyListLayout ? replyListLayout.y : 0),
     });
@@ -141,16 +158,18 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       walletAddress: wallet.address,
     });
 
-    await client.reactPost({
-      icon: e,
-      identifier: comment.identifier,
-      up: true,
+    reactToComment({
+      client,
+      msg: {
+        icon: e,
+        identifier: localComment.identifier,
+        up: true,
+      },
     });
   };
 
   return (
-    <AnimationFadeInOut
-      visible
+    <AnimationFadeIn
       onLayout={(e) =>
         setReplyListYOffset((prev) => {
           prev[0] = e.nativeEvent.layout.y;
@@ -164,7 +183,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
         <View style={[styles.commentContainer, style]}>
           <AnimationFadeInOut
-            visible={!!comment.isInLocal}
+            visible={!!localComment.isInLocal}
             style={styles.loadingOverlay}
           >
             <ActivityIndicator color={primaryColor} />
@@ -179,7 +198,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               size={68}
               onPress={() =>
                 navigation.navigate("UserPublicProfile", {
-                  id: `tori-${comment.post_by}`,
+                  id: `tori-${localComment.post_by}`,
                 })
               }
             />
@@ -189,7 +208,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   <Pressable
                     onPress={() =>
                       navigation.navigate("PublicProfile", {
-                        id: `tori-${comment.post_by}`,
+                        id: `tori-${localComment.post_by}`,
                       })
                     }
                   >
@@ -201,7 +220,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   <Pressable
                     onPress={() =>
                       navigation.navigate("PublicProfile", {
-                        id: `tori-${comment.post_by}`,
+                        id: `tori-${localComment.post_by}`,
                       })
                     }
                   >
@@ -215,6 +234,17 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                         : DEFAULT_USERNAME}
                     </BrandText>
                   </Pressable>
+
+                  <BrandText
+                    style={[
+                      fontSemibold12,
+                      {
+                        marginLeft: layout.padding_x1_5,
+                      },
+                    ]}
+                  >
+                    {moment(metadata.createdAt).local().fromNow()}
+                  </BrandText>
                 </View>
 
                 <SpacerColumn size={1} />
@@ -246,14 +276,16 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
               <View style={styles.actionContainer}>
                 <BrandText style={[fontMedium13, { color: neutral77 }]}>
-                  {comment.post_by}
+                  {localComment.post_by}
                 </BrandText>
                 <SocialReactionActions
-                  reactions={comment.reactions}
+                  reactions={localComment.reactions}
                   statStyle={styles.stat}
                   isComment
                   onPressReply={handleReply}
+                  showEmojiSelector
                   onPressReaction={handleReaction}
+                  isReactionLoading={isReactLoading}
                 />
               </View>
             </View>
@@ -276,7 +308,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           <CommentsContainer
             comments={comments}
             onPressReply={onPressReply}
-            overrideParentId={comment.identifier}
+            overrideParentId={localComment.identifier}
           />
         </View>
       )}
@@ -302,7 +334,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           )}
         </AnimationFadeIn>
       )}
-    </AnimationFadeInOut>
+    </AnimationFadeIn>
   );
 };
 

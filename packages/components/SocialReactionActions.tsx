@@ -19,6 +19,7 @@ import { neutral33, secondaryColor } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
+import { EmojiSelector } from "./EmojiSelector";
 import { SVG } from "./SVG";
 import { SocialStat } from "./SocialStat";
 import { AnimationFadeIn } from "./animations";
@@ -40,6 +41,7 @@ interface SocialReactionActionsProps {
   onPressTip?: () => void;
   onPressReaction: (icon: string) => void;
   isReactionLoading?: boolean;
+  showEmojiSelector?: boolean;
 }
 
 export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
@@ -51,6 +53,7 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
   onPressTip,
   onPressReaction,
   isReactionLoading,
+  showEmojiSelector,
 }) => {
   // variables
   const reactionWidthRef = useRef<number>();
@@ -137,6 +140,16 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
           ))}
         </AnimationFadeInOut>
       </Animated.View>
+
+      {showEmojiSelector && (
+        <>
+          <SectionDivider />
+          <EmojiSelector
+            onEmojiSelected={onPressReaction}
+            isLoading={isReactionLoading}
+          />
+        </>
+      )}
     </View>
   );
 };
