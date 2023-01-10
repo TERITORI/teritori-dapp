@@ -18,7 +18,11 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../utils/navigation";
-import { DEFAULT_NAME, DEFAULT_USERNAME } from "../../utils/social-feed";
+import {
+  DEFAULT_NAME,
+  DEFAULT_USERNAME,
+  getUpdatedReactions,
+} from "../../utils/social-feed";
 import {
   neutral15,
   neutral22,
@@ -76,20 +80,7 @@ export const SocialThreadCard: React.FC<{
   const { mutate, isLoading: isReactLoading } =
     useTeritoriSocialFeedReactPostMutation({
       onSuccess(_data, variables) {
-        const hasIcon = post.reactions.find(
-          (r) => r.icon === variables.msg.icon
-        );
-        let reactions = localPost.reactions;
-        if (hasIcon) {
-          reactions = reactions.map((rect) => {
-            if (rect.icon === variables.msg.icon) {
-              return { icon: variables.msg.icon, count: ++rect.count };
-            }
-            return rect;
-          });
-        } else {
-          reactions = [...reactions, { icon: variables.msg.icon, count: 1 }];
-        }
+        const reactions = getUpdatedReactions(post, variables.msg.icon);
 
         setLocalPost({ ...localPost, reactions });
       },
@@ -221,7 +212,7 @@ export const SocialThreadCard: React.FC<{
                     style={[
                       fontSemibold12,
                       {
-                        marginLeft: layout.padding_x2,
+                        marginLeft: layout.padding_x1_5,
                       },
                     ]}
                   >
@@ -263,6 +254,8 @@ export const SocialThreadCard: React.FC<{
                     onPressTip={handlePressTip}
                     reactions={localPost.reactions}
                     onPressReaction={handleReaction}
+                    showEmojiSelector
+                    isReactionLoading={isReactLoading}
                   />
                 )}
               </View>
