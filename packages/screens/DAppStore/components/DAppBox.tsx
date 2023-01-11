@@ -1,6 +1,6 @@
 import Checkbox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableHighlight, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import burnSVG from "../../../../assets/icons/burn.svg";
@@ -24,19 +24,12 @@ import { fontMedium14, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
 
-function MyCheckbox({
-  isChecked,
-  setChecked,
-}: {
-  isChecked: boolean;
-  setChecked: (e: boolean) => void;
-}) {
+function MyCheckbox({ isChecked }: { isChecked: boolean }) {
   return (
     <View style={styles.container}>
       <Checkbox
         style={[styles.checkbox]}
         value={isChecked}
-        onValueChange={setChecked}
         color={isChecked ? gradientColorBlue : neutral44}
       />
     </View>
@@ -63,75 +56,77 @@ export function DAppBox(props: { option: dAppType }) {
   const draggableId = `${props.option.groupKey}*SEPARATOR*${props.option.id}`;
   const [isChecked, setChecked] = useState(selectedApps.includes(draggableId));
 
-  useEffect(() => {
+  const handleClick = () => {
     const action = {
       draggableId,
-      isChecked,
+      isChecked: !isChecked,
     };
     dispatch(setCheckedApp(action));
-  }, [isChecked]);
+  };
 
   useEffect(() => {
     setChecked(selectedApps.includes(draggableId));
   }, [selectedApps]);
 
   return (
-    <SecondaryBox
-      height={85}
-      width={320}
-      noBrokenCorners
-      style={{
-        marginRight: 12,
-        marginBottom: 12,
-      }}
-      mainContainerStyle={{
-        alignItems: "flex-start",
-        padding: layout.padding_x1,
-        borderRadius: 22,
-        borderColor: mineShaftColor,
-        backgroundColor: isChecked ? withAlpha(neutral17, 0.64) : undefined,
-        borderWidth: 1,
-      }}
-    >
-      <View
-        style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
+    <TouchableHighlight onPress={handleClick}>
+      <SecondaryBox
+        height={85}
+        width={320}
+        noBrokenCorners
+        style={{
+          marginRight: 12,
+          marginBottom: 12,
+        }}
+        mainContainerStyle={{
+          alignItems: "flex-start",
+          padding: layout.padding_x1,
+          borderRadius: 22,
+          borderColor: mineShaftColor,
+          backgroundColor: isChecked ? withAlpha(neutral17, 0.64) : undefined,
+          borderWidth: 1,
+        }}
       >
-        <SecondaryBox
-          noBrokenCorners
-          style={{ marginLeft: 6 }}
-          mainContainerStyle={{
-            backgroundColor: withAlpha(neutral17, 0.64),
-            borderRadius: 6,
-            padding: 6,
-          }}
-          width={64}
-          height={64}
-          cornerWidth={5.5}
-        >
-          <SVG source={burnSVG} />
-        </SecondaryBox>
         <View
-          style={{
-            flexDirection: "column",
-            marginLeft: layout.padding_x2,
-            width: "50%",
-          }}
+          style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
         >
-          <BrandText style={[fontMedium14]} numberOfLines={1}>
-            {props.option.title}
-          </BrandText>
-          <BrandText
-            style={[
-              fontSemibold12,
-              { color: neutral67, marginTop: layout.padding_x0_5 },
-            ]}
-            numberOfLines={1}
+          <SecondaryBox
+            noBrokenCorners
+            style={{ marginLeft: 6 }}
+            mainContainerStyle={{
+              backgroundColor: withAlpha(neutral17, 0.64),
+              borderRadius: 6,
+              padding: 6,
+            }}
+            width={64}
+            height={64}
+            cornerWidth={5.5}
           >
-            {props.option.description}
-          </BrandText>
+            <SVG source={burnSVG} />
+          </SecondaryBox>
+          <View
+            style={{
+              flexDirection: "column",
+              marginLeft: layout.padding_x2,
+              width: "50%",
+            }}
+          >
+            <BrandText style={[fontMedium14]} numberOfLines={1}>
+              {props.option.title}
+            </BrandText>
+            <BrandText
+              style={[
+                fontSemibold12,
+                { color: neutral67, marginTop: layout.padding_x0_5 },
+              ]}
+              numberOfLines={1}
+            >
+              {props.option.description}
+            </BrandText>
+          </View>
+          <MyCheckbox isChecked={isChecked} />
         </View>
-        <MyCheckbox isChecked={isChecked} setChecked={setChecked} />
-      </View>
-    </SecondaryBox>
+      </SecondaryBox>
+    </TouchableHighlight>
   );
 }

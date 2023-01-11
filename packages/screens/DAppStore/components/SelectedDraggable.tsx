@@ -2,7 +2,7 @@ import { TrashIcon } from "@heroicons/react/20/solid";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import burnSVG from "../../../../assets/icons/burn.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -56,36 +56,36 @@ export function SelectedDraggable(props: { option: dAppType; index: number }) {
             onMouseEnter={() => setShowTrashIcon(true)}
             onMouseLeave={() => setShowTrashIcon(false)}
           >
-            <SecondaryBox
-              noBrokenCorners
-              style={{ marginLeft: 6 }}
-              mainContainerStyle={{
-                backgroundColor: !showTrashIcon
-                  ? withAlpha(neutral33, 0.64)
-                  : withAlpha(errorColor, 0.14),
-              }}
-              width={32}
-              height={50}
-            >
-              <BrandText
-                style={[fontBold12, { color: neutral67 }]}
-                numberOfLines={1}
+            <TouchableOpacity onPress={deleteFromList}>
+              <SecondaryBox
+                noBrokenCorners
+                style={{ marginLeft: 6 }}
+                mainContainerStyle={{
+                  backgroundColor: !showTrashIcon
+                    ? withAlpha(neutral33, 0.64)
+                    : withAlpha(errorColor, 0.14),
+                }}
+                width={32}
+                height={50}
               >
-                {showTrashIcon ? (
-                  <TrashIcon
-                    style={{
-                      width: 14,
-                      height: 14,
-                      stroke: "#cc3a43",
-                    }}
-                    onClick={deleteFromList}
-                  />
-                ) : (
-                  props.index + 1
-                )}
-              </BrandText>
-            </SecondaryBox>
-
+                <BrandText
+                  style={[fontBold12, { color: neutral67 }]}
+                  numberOfLines={1}
+                >
+                  {showTrashIcon ? (
+                    <TrashIcon
+                      style={{
+                        width: 14,
+                        height: 14,
+                        stroke: "#cc3a43",
+                      }}
+                    />
+                  ) : (
+                    props.index + 1
+                  )}
+                </BrandText>
+              </SecondaryBox>
+            </TouchableOpacity>
             <SecondaryBox
               height={50}
               width={256}
