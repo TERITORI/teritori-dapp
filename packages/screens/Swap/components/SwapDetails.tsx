@@ -48,10 +48,7 @@ export const SwapDetails: React.FC<{
     >
       <TertiaryBox
         fullWidth
-        mainContainerStyle={{
-          minHeight: 48,
-          padding: layout.padding_x2,
-        }}
+        mainContainerStyle={{ padding: layout.padding_x2 }}
       >
         <View style={styles.row}>
           <BrandText

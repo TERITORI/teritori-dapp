@@ -30,9 +30,9 @@ export const osmosisCurrencies: CurrencyInfo[] = [
     sourceNetworkDisplayName: NetworkName.Teritori,
     sourceDenom: "utori",
     sourceChannelPort: "transfer",
-    sourceChannelId: "channel-362",
+    sourceChannelId: "channel-0",
     destinationChannelPort: "transfer",
-    destinationChannelId: "channel-0",
+    destinationChannelId: "channel-362",
     icon: "icons/networks/teritori-circle.svg",
   },
   {
@@ -44,9 +44,9 @@ export const osmosisCurrencies: CurrencyInfo[] = [
     sourceNetworkDisplayName: NetworkName.Juno,
     sourceDenom: "ujuno",
     sourceChannelPort: "transfer",
-    sourceChannelId: "channel-42",
+    sourceChannelId: "channel-0",
     destinationChannelPort: "transfer",
-    destinationChannelId: "channel-0",
+    destinationChannelId: "channel-42",
     icon: "icons/networks/juno-circle.svg",
   },
 ];

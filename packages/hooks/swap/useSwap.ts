@@ -60,8 +60,8 @@ export const useSwap = (
     }
   }, [lcdPools]);
 
-  // ===== Cleaning Lcd Pools
-  const cleanedPools = useMemo(() => {
+  // ===== Pools format used to find FEE
+  const cleanedLcdPools = useMemo(() => {
     const pools: LcdPool[] = [];
     lcdPools?.pools.forEach((pool) => {
       // FIXME: We get LcdPool with properties with underscore WTF donnow sorry ==> Prevent errors in makeLcdPoolPretty
@@ -78,28 +78,56 @@ export const useSwap = (
     return pools;
   }, [lcdPools?.pools]);
 
-  // ===== Finding the pool to use (Depending on the two currencies)
+  // ===== Pools format used for MsgSwapExactAmountIn, and used to find the highest liquidity (See usedPool)
+  const prettyPools = useMemo(() => {
+    const pools: PrettyPool[] = [];
+    cleanedLcdPools.forEach((pool) => {
+      const prices: PriceHash = [];
+      pool.poolAssets.forEach((asset) => {
+        prices[asset.token.denom] = parseFloat(asset.token.amount);
+      });
+      pools.push(makeLcdPoolPretty(prices, pool));
+    });
+    return pools;
+  }, [cleanedLcdPools]);
+
+  // TODO: Certainly too simple, no intermediate, polish that!
+  // TODO: ==========> Handle multihop : No pool for ATOM/TORI, so we want : ATOM/OSMO -> OSMO/TORI
+  // ===== Finding the pool to use (The one that includes the two currencies and has the higher liquidity)
   const usedPool: LcdPool = useMemo(() => {
-    if (!currencyIn?.denom || !currencyOut?.denom || !cleanedPools)
-      return cleanedPools[0];
-    let stop = false;
-    let result: LcdPool = cleanedPools[0];
-    cleanedPools.forEach((pool) => {
+    if (!currencyIn?.denom || !currencyOut?.denom || !cleanedLcdPools)
+      return cleanedLcdPools[0];
+
+    let highestLiquidity = "0";
+    let result: LcdPool = cleanedLcdPools[0];
+
+    cleanedLcdPools.forEach((lcdPool) => {
       let baseAssetDenom;
       let quoteAssetDenom;
-      if (pool.poolAssets && pool.poolAssets.length === 2) {
-        pool.poolAssets.forEach((asset: PoolAsset) => {
+
+      if (lcdPool.poolAssets && lcdPool.poolAssets.length === 2) {
+        lcdPool.poolAssets.forEach((asset: PoolAsset) => {
           if (asset.token.denom === currencyIn.denom) baseAssetDenom = asset;
           if (asset.token.denom === currencyOut.denom) quoteAssetDenom = asset;
         });
-        if (baseAssetDenom && quoteAssetDenom && !stop) {
-          stop = true;
-          result = pool;
+
+        // We want the pool with the highest liquidity
+        const liquidity =
+          prettyPools.find((prettyPool) => prettyPool.id === lcdPool.id)
+            ?.liquidity || "";
+
+        if (
+          baseAssetDenom &&
+          quoteAssetDenom &&
+          parseFloat(liquidity) > parseFloat(highestLiquidity)
+        ) {
+          highestLiquidity = liquidity;
+          result = lcdPool;
         }
       }
     });
     return result;
-  }, [currencyIn?.denom, currencyOut?.denom, cleanedPools]);
+  }, [currencyIn?.denom, currencyOut?.denom, cleanedLcdPools]);
 
   // ===== Getting the fee of the used pool
   const fee = useMemo(() => {
@@ -117,43 +145,13 @@ export const useSwap = (
       usedPool?.id,
     ],
     async () => {
-      console.log("usedPoolusedPoolusedPoolusedPoolusedPool", usedPool);
+      console.log("((((((((((((( usedPool", usedPool);
 
       if (!currencyIn || !currencyOut || !selectedNetwork || !usedPool?.id)
         return "0";
 
-      // let poolId = ""
-      // let stop = false
-      // lcdPools?.pools.forEach(pool => {
-      //   let baseAssetDenom
-      //   let quoteAssetDenom
-      //
-      //   pool.poolAssets.forEach(asset => {
-      //     if(asset.token.denom === currencyIn.denom) {
-      //       baseAssetDenom = asset
-      //     }
-      //     if(asset.token.denom === currencyOut.denom) {
-      //       quoteAssetDenom = asset
-      //     }
-      //   })
-      //   if(baseAssetDenom && quoteAssetDenom && !stop) {
-      //     console.log('========= pool', pool)
-      //
-      //     poolId = pool.id
-      //     stop = true
-      //   }
-      //
-      //   console.log('poolIdpoolIdpoolId', poolId)
-      // })
-
-      //TODO: First pool ??
-      // const poolId = lcdPools?.pools[0].id || ""
-      //TODO: Or last pool ??
-      // const poolIdd = lcdPools?.pools[lcdPools?.pools.length - 1].id || ""
-      //TODO: Which one ????
-
       const { createRPCQueryClient } = osmosis.ClientFactory;
-      console.log("222222222222222222222222");
+      // console.log("222222222222222222222222");
 
       const clientRPC = await createRPCQueryClient({
         rpcEndpoint: selectedNetwork.rpcEndpoint,
@@ -165,12 +163,12 @@ export const useSwap = (
         baseAssetDenom: currencyOut.denom,
         quoteAssetDenom: currencyIn.denom,
       };
-      console.log("3333333333333333333333", requestSpotPrice);
+      // console.log("3333333333333333333333", requestSpotPrice);
 
       const responseSpotPrice = await clientRPC.osmosis.gamm.v1beta1.spotPrice(
         requestSpotPrice
       );
-      console.log("444444444444444444444444", requestSpotPrice);
+      // console.log("444444444444444444444444", requestSpotPrice);
 
       return responseSpotPrice.spotPrice;
     }
@@ -189,20 +187,9 @@ export const useSwap = (
       selectedNetworkId,
       currencyOut.denom
     );
-    // ===== Getting correct amounts and prices array
-    const prices: PriceHash = [];
-    prices[currencyIn.denom] = amountInMicro;
-    prices[currencyOut.denom] = amountOutMicro;
-    // ===== Getting PrettyPool[] (makePoolsPretty gives an error, so we use forEach and makeLcdPoolPretty)
-    const prettyPools: PrettyPool[] = [];
-    cleanedPools.forEach((pool) => {
-      prettyPools.push(makeLcdPoolPretty(prices, pool));
-    });
 
-    // ===== Getting GAMM stuff
     const { swapExactAmountIn } =
       osmosis.gamm.v1beta1.MessageComposer.withTypeUrl;
-
     // ===== Making a trade
     const trade: Trade = {
       sell: {
@@ -270,9 +257,11 @@ export const useSwap = (
         console.error("tx failed", txResponse);
         let message = txResponse.rawLog || "";
         console.log("txResponse.codetxResponse.code", txResponse.code);
+
         if (txResponse.code === 7)
           message =
             "The prices have changed, you need to set a higher slippage tolerance";
+
         return {
           isError: true,
           title: "Transaction failed",
@@ -280,11 +269,16 @@ export const useSwap = (
         } as SwapResult;
       }
       return {
-        title: "Swap success!",
+        title: "Swap succeed",
         message: "",
       } as SwapResult;
     } catch (e) {
       console.error(e);
+      return {
+        isError: true,
+        title: "Transaction failed",
+        message: e,
+      } as SwapResult;
     }
   };
   return { swap, spotPrice, fee };

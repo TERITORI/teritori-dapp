@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { neutral11, neutral77, successColor } from "../../utils/style/colors";
+import { toastSuccessWidth } from "../../utils/style/toasts";
 import { BrandText } from "../BrandText";
 
 export const ToastSuccess: React.FC<{
@@ -16,7 +17,6 @@ export const ToastSuccess: React.FC<{
   message?: string;
   style?: StyleProp<ViewStyle>;
 }> = ({ title, onPress, message, style }) => {
-  const width = 300;
   const marginHorizontal = 24;
 
   return (
@@ -31,12 +31,12 @@ export const ToastSuccess: React.FC<{
           borderRadius: 8,
           borderWidth: 1,
           borderStyle: "solid",
-          width,
-          maxWidth: width,
+          width: toastSuccessWidth,
+          maxWidth: toastSuccessWidth,
           height: "auto",
           position: "absolute",
           top: 24,
-          left: Dimensions.get("window").width / 2 - width / 2,
+          left: Dimensions.get("window").width / 2 - toastSuccessWidth / 2,
           zIndex: 999,
         },
         style,
@@ -44,7 +44,7 @@ export const ToastSuccess: React.FC<{
     >
       <View
         style={{
-          width: width - marginHorizontal * 2,
+          width: toastSuccessWidth - marginHorizontal * 2,
           marginVertical: 12,
           marginHorizontal,
         }}

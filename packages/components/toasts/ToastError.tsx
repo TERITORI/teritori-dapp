@@ -9,6 +9,7 @@ import {
 
 import warningSVG from "../../../assets/icons/warning.svg";
 import { errorColor, neutral11, neutral77 } from "../../utils/style/colors";
+import { toastErrorWidth } from "../../utils/style/toasts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { SpacerRow } from "../spacer";
@@ -19,8 +20,6 @@ export const ToastError: React.FC<{
   message?: string;
   style?: StyleProp<ViewStyle>;
 }> = ({ title, onPress, message, style }) => {
-  const width = 432;
-
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -33,12 +32,12 @@ export const ToastError: React.FC<{
           borderRadius: 8,
           borderWidth: 1,
           borderStyle: "solid",
-          maxWidth: width,
-          width,
+          maxWidth: toastErrorWidth,
+          width: toastErrorWidth,
           height: "auto",
           position: "absolute",
           top: 24,
-          left: Dimensions.get("window").width / 2 - width / 2,
+          left: Dimensions.get("window").width / 2 - toastErrorWidth / 2,
           zIndex: 999,
         },
         style,

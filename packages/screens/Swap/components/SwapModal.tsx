@@ -45,6 +45,10 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import {
+  toastErrorWidth,
+  toastSuccessWidth,
+} from "../../../utils/style/toasts";
 import { CurrencyAmount } from "./CurrencyAmount";
 import { SelectableCurrency } from "./SelectableCurrency";
 import { SelectedCurrency } from "./SelectedCurrency";
@@ -91,6 +95,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   const [swapResult, setSwapResult] = useState<SwapResult>();
   const [toastErrorVisible, setToastErrorVisible] = useState(false);
   const [toastSuccessVisible, setToastSuccessVisible] = useState(false);
+  const modalWidth = 456;
 
   // ---- Default currencies
   const atomCurrency = useMemo(
@@ -101,26 +106,26 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       ),
     [selectedNetwork?.currencies]
   );
-  const osmoCurrency = useMemo(
+  const toriCurrency = useMemo(
     () =>
       selectedNetwork?.currencies.find(
         (currencyInfo) =>
-          currencyInfo.sourceNetworkDisplayName === NetworkName.Osmosis
+          currencyInfo.sourceNetworkDisplayName === NetworkName.Teritori
       ),
     [selectedNetwork?.currencies]
   );
 
   useEffect(() => {
     setCurrencyIn(atomCurrency);
-    setCurrencyOut(osmoCurrency);
-  }, [atomCurrency, osmoCurrency]);
+    setCurrencyOut(toriCurrency);
+  }, [atomCurrency, toriCurrency]);
 
   // ---- The two current currencies
   const [currencyIn, setCurrencyIn] = useState<CurrencyInfo | undefined>(
     atomCurrency
   );
   const [currencyOut, setCurrencyOut] = useState<CurrencyInfo | undefined>(
-    osmoCurrency
+    toriCurrency
   );
   const currencyInNative: NativeCurrencyInfo | undefined = useMemo(
     () => getNativeCurrency(selectedNetworkId, currencyIn?.denom),
@@ -209,7 +214,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   const onPressInvert = () => {
     setCurrencyIn(currencyOut);
     setCurrencyOut(currencyIn);
-    setAmountIn(amountOut);
+    setAmountIn(amountOutWithFee);
   };
   const onPressHalf = () => {
     setAmountIn(parseFloat(currencyInAmount) / 2);
@@ -222,12 +227,12 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     setToastSuccessVisible(false);
     setToastErrorVisible(false);
     const swapResult = await swap(amountIn, amountOut);
+    setSwapResult(swapResult);
 
     if (!swapResult) return;
     if (swapResult.isError) setToastErrorVisible(true);
     else {
       setToastSuccessVisible(true);
-      setSwapResult(swapResult);
       setAmountIn(0);
     }
   };
@@ -276,7 +281,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
         />
       }
       Header={() => <ModalHeader setSettingsOpened={setSettingsOpened} />}
-      width={456}
+      width={modalWidth}
       visible={visible}
       onClose={onClose}
       contentStyle={{ justifyContent: "flex-start" }}
@@ -440,17 +445,17 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       {/*======= We use Toastes here to get above the Modal*/}
       {toastErrorVisible && (
         <ToastError
-          title={swapResult?.title || ""}
+          title={swapResult?.title || "Error"}
           onPress={() => setToastErrorVisible(false)}
-          message={swapResult?.message || ""}
-          style={{ bottom: 506, left: 10 }}
+          message={swapResult?.message || "Error"}
+          style={{ left: modalWidth / 2 - toastErrorWidth / 2, top: -220 }}
         />
       )}
       {toastSuccessVisible && (
         <ToastSuccess
-          title={swapResult?.title || ""}
+          title={swapResult?.title || "Success"}
           onPress={() => setToastSuccessVisible(false)}
-          style={{ bottom: 506, left: 75 }}
+          style={{ left: modalWidth / 2 - toastSuccessWidth / 2, top: -220 }}
         />
       )}
     </ModalBase>
