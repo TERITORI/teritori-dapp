@@ -1,3 +1,8 @@
+import checklogo from "../../../assets/icons/checklogo.svg";
+import placeHolder from "../../../assets/icons/info.svg";
+import atomSVG from "../../../assets/icons/networks/cosmos-hub.svg";
+import osmosisSVG from "../../../assets/icons/networks/osmosis.svg";
+import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import { dAppGroup } from "./types";
 
 export function getAvailableApps(): dAppGroup {
@@ -5,14 +10,14 @@ export function getAvailableApps(): dAppGroup {
     "teritori-core-apps": {
       id: "teritori-core-apps",
       groupName: "Teritori Core dApps",
-      icon: "",
+      icon: teritoriSVG,
       options: {
         "dApp 1": {
           id: "dApp 1",
           title: "dApp 1",
           description: "Short desc",
-          icon: "",
-          isChecked: true,
+          icon: atomSVG,
+          defaultIsChecked: false,
           groupKey: "teritori-core-apps",
         },
         "dApp 2": {
@@ -20,8 +25,8 @@ export function getAvailableApps(): dAppGroup {
           title: "dApp 2",
           description:
             "Longer Longer Longer Longer Longer Longer Longer Longer",
-          icon: "",
-          isChecked: true,
+          icon: atomSVG,
+          defaultIsChecked: false,
           groupKey: "teritori-core-apps",
         },
       },
@@ -29,14 +34,14 @@ export function getAvailableApps(): dAppGroup {
     "top-apps": {
       id: "top-apps",
       groupName: "Top Apps",
-      icon: "",
+      icon: checklogo,
       options: {
-        "dApp 3": {
-          id: "dApp 3",
-          title: "dApp 3",
+        Osmosis: {
+          id: "Osmosis",
+          title: "Osmosis Dex",
           description: "Short desc",
-          icon: "",
-          isChecked: false,
+          icon: osmosisSVG,
+          defaultIsChecked: false,
           groupKey: "top-apps",
         },
         "dApp 4": {
@@ -44,24 +49,24 @@ export function getAvailableApps(): dAppGroup {
           title: "dApp 4",
           description:
             "Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer",
-          icon: "",
-          isChecked: false,
+          icon: atomSVG,
+          defaultIsChecked: false,
           groupKey: "top-apps",
         },
         "dApp 5": {
           id: "dApp 5",
           title: "dApp 5",
           description: "Short desc",
-          icon: "",
-          isChecked: false,
+          icon: atomSVG,
+          defaultIsChecked: false,
           groupKey: "top-apps",
         },
         "dApp 6": {
           id: "dApp 6",
           title: "dApp 6",
           description: "Short desc",
-          icon: "",
-          isChecked: false,
+          icon: atomSVG,
+          defaultIsChecked: false,
           groupKey: "top-apps",
         },
       },
@@ -69,22 +74,22 @@ export function getAvailableApps(): dAppGroup {
     "external-id": {
       id: "external-id",
       groupName: "External & Permissionless dApps",
-      icon: "",
+      icon: placeHolder,
       options: {
         dApp1: {
           id: "dApp1",
           title: "External dApp 1",
           description: "Short desc",
-          icon: "",
-          isChecked: false,
+          icon: atomSVG,
+          defaultIsChecked: false,
           groupKey: "external-id",
         },
         dApp3: {
           id: "dApp3",
           title: "External dApp 3",
           description: "Short desc",
-          icon: "",
-          isChecked: false,
+          icon: atomSVG,
+          defaultIsChecked: false,
           groupKey: "external-id",
         },
       },

@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
 import { selectAvailableApps } from "../../../store/slices/dapps-store";
 import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
@@ -29,8 +30,19 @@ export const RightRail = (props: { searchInput: string }) => {
             key={index}
           >
             <BrandText
-              style={{ height: layout.padding_x4 + layout.padding_x2 }}
+              style={{
+                height: layout.padding_x4 + layout.padding_x2,
+                display: "flex",
+              }}
             >
+              <SVG
+                source={element.icon}
+                style={{
+                  width: 32,
+                  height: 32,
+                  marginRight: layout.padding_x1,
+                }}
+              />
               {element.groupName}
             </BrandText>
             <View

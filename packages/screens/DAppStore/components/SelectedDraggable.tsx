@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { TouchableOpacity, View } from "react-native";
 
-import burnSVG from "../../../../assets/icons/burn.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
@@ -117,7 +116,7 @@ export function SelectedDraggable(props: { option: dAppType; index: number }) {
                   width={48}
                   height={48}
                 >
-                  <SVG source={burnSVG} />
+                  <SVG source={props.option.icon} />
                 </SecondaryBox>
                 <View
                   style={{

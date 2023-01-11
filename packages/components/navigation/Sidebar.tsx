@@ -97,7 +97,7 @@ export const Sidebar: React.FC = () => {
       dynamicAppsSelection[element] = {
         title: option.title,
         route: "ComingSoon",
-        icon: feedSVG,
+        icon: option.icon,
       };
     });
     return dynamicAppsSelection;

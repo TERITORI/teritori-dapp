@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableHighlight, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import burnSVG from "../../../../assets/icons/burn.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
@@ -102,7 +101,7 @@ export function DAppBox(props: { option: dAppType }) {
             height={64}
             cornerWidth={5.5}
           >
-            <SVG source={burnSVG} />
+            {props.option.icon ? <SVG source={props.option.icon} /> : ""}
           </SecondaryBox>
           <View
             style={{
