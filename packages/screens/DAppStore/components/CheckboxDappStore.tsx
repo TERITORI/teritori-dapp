@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 import { gradientColorBlue, neutral44 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 
-export function MyCheckbox({ isChecked }: { isChecked: boolean }) {
+export function CheckboxDappStore({ isChecked }: { isChecked: boolean }) {
   return (
     <View style={styles.container}>
       <Checkbox

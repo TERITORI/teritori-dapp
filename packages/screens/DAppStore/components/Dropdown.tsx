@@ -11,7 +11,7 @@ import { Network } from "../../../utils/network";
 import { neutral17, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { MyCheckbox } from "./MyCheckbox";
+import { CheckboxDappStore } from "./CheckboxDappStore";
 
 export const DropdownDappsStoreFilter: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -75,7 +75,7 @@ export const DropdownDappsStoreFilter: React.FC<{
                   }
                 >
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <MyCheckbox isChecked={isChecked} />
+                    <CheckboxDappStore isChecked={isChecked} />
                     <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
                       {network}
                     </BrandText>

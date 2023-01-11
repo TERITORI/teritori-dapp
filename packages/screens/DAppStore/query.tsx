@@ -1,4 +1,4 @@
-import checklogo from "../../../assets/icons/checklogo.svg";
+import checklogo from "../../../assets/icons/certified.svg";
 import placeHolder from "../../../assets/icons/info.svg";
 import logoSimple from "../../../assets/icons/logo-simple.svg";
 import atomSVG from "../../../assets/icons/networks/cosmos-hub.svg";
@@ -6,7 +6,7 @@ import osmosisSVG from "../../../assets/icons/networks/osmosis.svg";
 import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import axelarLogo from "../../../assets/logos/Axelar-logo.svg";
 import astroportLogo from "../../../assets/logos/astroport.svg";
-import conHallLogo from "../../../assets/logos/coinhall.svg";
+import coinHallLogo from "../../../assets/logos/coinhall.svg";
 import falconWalletLogo from "../../../assets/logos/falconWallet.svg";
 import pulsarLogo from "../../../assets/logos/pulsar-logo.svg";
 import { dAppGroup } from "./types";
@@ -82,10 +82,10 @@ export function getAvailableApps(): dAppGroup {
           groupKey: "top-apps",
         },
         coinhall: {
-          id: "conhall",
+          id: "coinhall",
           title: "Coinhall",
           description: "Real-time price charts",
-          icon: conHallLogo,
+          icon: coinHallLogo,
           defaultIsChecked: false,
           groupKey: "top-apps",
         },

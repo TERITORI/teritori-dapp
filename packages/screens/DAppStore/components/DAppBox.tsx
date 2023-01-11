@@ -19,7 +19,7 @@ import {
 import { fontMedium14, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
-import { MyCheckbox } from "./MyCheckbox";
+import { CheckboxDappStore } from "./CheckboxDappStore";
 
 export function DAppBox(props: { option: dAppType }) {
   const selectedApps = useSelector(selectCheckedApps);
@@ -95,7 +95,7 @@ export function DAppBox(props: { option: dAppType }) {
               {props.option.description}
             </BrandText>
           </View>
-          <MyCheckbox isChecked={isChecked} />
+          <CheckboxDappStore isChecked={isChecked} />
         </View>
       </SecondaryBox>
     </TouchableHighlight>
