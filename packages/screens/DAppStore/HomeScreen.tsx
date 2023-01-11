@@ -27,7 +27,7 @@ export const DAppStore: ScreenFC<"DAppStore"> = () => {
 
       <FullWidthSeparator />
 
-      <View style={{ flexDirection: "row", height: "100vh" }}>
+      <View style={{ flexDirection: "row", height: "inherit" }}>
         <LeftRail />
 
         <FullHeightSeparator />

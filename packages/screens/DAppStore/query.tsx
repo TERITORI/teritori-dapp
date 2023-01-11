@@ -1,8 +1,14 @@
 import checklogo from "../../../assets/icons/checklogo.svg";
 import placeHolder from "../../../assets/icons/info.svg";
+import logoSimple from "../../../assets/icons/logo-simple.svg";
 import atomSVG from "../../../assets/icons/networks/cosmos-hub.svg";
 import osmosisSVG from "../../../assets/icons/networks/osmosis.svg";
 import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
+import axelarLogo from "../../../assets/logos/Axelar-logo.svg";
+import astroportLogo from "../../../assets/logos/astroport.svg";
+import conHallLogo from "../../../assets/logos/coinhall.svg";
+import falconWalletLogo from "../../../assets/logos/falconWallet.svg";
+import pulsarLogo from "../../../assets/logos/pulsar-logo.svg";
 import { dAppGroup } from "./types";
 
 export function getAvailableApps(): dAppGroup {
@@ -12,20 +18,27 @@ export function getAvailableApps(): dAppGroup {
       groupName: "Teritori Core dApps",
       icon: teritoriSVG,
       options: {
-        "dApp 1": {
-          id: "dApp 1",
-          title: "dApp 1",
-          description: "Short desc",
-          icon: atomSVG,
+        Marketplace: {
+          id: "Marketplace",
+          title: "Marketplace",
+          description: "NFT Marketplace",
+          icon: logoSimple,
           defaultIsChecked: false,
           groupKey: "teritori-core-apps",
         },
-        "dApp 2": {
-          id: "dApp 2",
-          title: "dApp 2",
-          description:
-            "Longer Longer Longer Longer Longer Longer Longer Longer",
-          icon: atomSVG,
+        Launchpad: {
+          id: "Launchpad",
+          title: "Launchpad",
+          description: "Multi Network NFT Launcher",
+          icon: logoSimple,
+          defaultIsChecked: false,
+          groupKey: "teritori-core-apps",
+        },
+        OrgDeployer: {
+          id: "OrgDeployer",
+          title: "Org Deployer",
+          description: "Coming soon!",
+          icon: logoSimple,
           defaultIsChecked: false,
           groupKey: "teritori-core-apps",
         },
@@ -39,33 +52,48 @@ export function getAvailableApps(): dAppGroup {
         Osmosis: {
           id: "Osmosis",
           title: "Osmosis Dex",
-          description: "Short desc",
+          description: "Advanced automated market maker (AMM)",
           icon: osmosisSVG,
           defaultIsChecked: false,
           groupKey: "top-apps",
         },
-        "dApp 4": {
-          id: "dApp 4",
-          title: "dApp 4",
-          description:
-            "Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer Longer",
-          icon: atomSVG,
+        astroport: {
+          id: "astroport",
+          title: "Astroport",
+          description: "Powerful DEX",
+          icon: astroportLogo,
           defaultIsChecked: false,
           groupKey: "top-apps",
         },
-        "dApp 5": {
-          id: "dApp 5",
-          title: "dApp 5",
-          description: "Short desc",
-          icon: atomSVG,
+        pulsar: {
+          id: "pulsar",
+          title: "Pulsar",
+          description: "All-in-one dashboard",
+          icon: pulsarLogo,
           defaultIsChecked: false,
           groupKey: "top-apps",
         },
-        "dApp 6": {
-          id: "dApp 6",
-          title: "dApp 6",
-          description: "Short desc",
-          icon: atomSVG,
+        axelar: {
+          id: "axelar",
+          title: "Axelar Network",
+          description: "Secure building",
+          icon: axelarLogo,
+          defaultIsChecked: false,
+          groupKey: "top-apps",
+        },
+        coinhall: {
+          id: "conhall",
+          title: "Coinhall",
+          description: "Real-time price charts",
+          icon: conHallLogo,
+          defaultIsChecked: false,
+          groupKey: "top-apps",
+        },
+        falcon: {
+          id: "falcon",
+          title: "Falcon Wallet",
+          description: "Secure interchain wallet",
+          icon: falconWalletLogo,
           defaultIsChecked: false,
           groupKey: "top-apps",
         },
@@ -76,21 +104,100 @@ export function getAvailableApps(): dAppGroup {
       groupName: "External & Permissionless dApps",
       icon: placeHolder,
       options: {
-        dApp1: {
-          id: "dApp1",
-          title: "External dApp 1",
-          description: "Short desc",
-          icon: atomSVG,
+        Osmosis: {
+          id: "Osmosis",
+          title: "Osmosis Dex",
+          description: "Advanced automated market maker (AMM)",
+          icon: osmosisSVG,
           defaultIsChecked: false,
-          groupKey: "external-id",
+          groupKey: "top-apps", // to reduce duplicates
         },
-        dApp3: {
-          id: "dApp3",
-          title: "External dApp 3",
-          description: "Short desc",
-          icon: atomSVG,
+        astroport: {
+          id: "astroport",
+          title: "Astroport",
+          description: "Powerful DEX",
+          icon: astroportLogo,
           defaultIsChecked: false,
-          groupKey: "external-id",
+          groupKey: "top-apps", // to reduce duplicates
+        },
+        pulsar: {
+          id: "pulsar",
+          title: "Pulsar",
+          description: "All-in-one dashboard",
+          icon: pulsarLogo,
+          defaultIsChecked: false,
+          groupKey: "top-apps", // to reduce duplicates
+        },
+      },
+    },
+    "coming-soon": {
+      id: "coming-soon",
+      groupName: "Coming soon dApps",
+      icon: placeHolder,
+      options: {
+        toripunks: {
+          id: "toripunks",
+          title: "Toripunks dApp",
+          description: "Coming soon",
+          icon: logoSimple,
+          defaultIsChecked: false,
+          groupKey: "coming-soon",
+        },
+        daodao: {
+          id: "daodao",
+          title: "DAODAO.zone",
+          description: "DAOs for everyone",
+          icon: logoSimple,
+          defaultIsChecked: false,
+          groupKey: "coming-soon",
+        },
+        subdao: {
+          id: "subdao",
+          title: "Subdao Network",
+          description: "Multi-functional DAO platform",
+          icon: logoSimple,
+          defaultIsChecked: false,
+          groupKey: "coming-soon",
+        },
+        artemis: {
+          id: "artemis",
+          title: "Artemis Vision",
+          description: "NFT Revolution",
+          icon: logoSimple,
+          defaultIsChecked: false,
+          groupKey: "coming-soon",
+        },
+        uniswap: {
+          id: "uniswap",
+          title: "Uniswap DEX",
+          description: "Trade crypto & NFTs",
+          icon: logoSimple,
+          defaultIsChecked: false,
+          groupKey: "coming-soon",
+        },
+        raydium: {
+          id: "raydium",
+          title: "Raydium DEX",
+          description: "Trade crypto",
+          icon: logoSimple,
+          defaultIsChecked: false,
+          groupKey: "coming-soon",
+        },
+        SFoxyRaffle: {
+          id: "SFoxyRaffle",
+          title: "$FOXY Raffle",
+          description: "Famous FOX NFT Raffles",
+          icon: logoSimple,
+          defaultIsChecked: false,
+          groupKey: "coming-soon",
+        },
+        theGraph: {
+          id: "theGraph",
+          title: "The Graph",
+          description: "WEB3 Protocol",
+          icon: logoSimple,
+          defaultIsChecked: false,
+          groupKey: "coming-soon",
         },
       },
     },

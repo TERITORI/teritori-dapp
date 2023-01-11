@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import feedSVG from "../../../assets/icons/feed.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";

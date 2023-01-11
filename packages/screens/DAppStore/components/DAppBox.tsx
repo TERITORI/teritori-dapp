@@ -1,6 +1,5 @@
-import Checkbox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableHighlight, View } from "react-native";
+import { TouchableHighlight, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
@@ -12,42 +11,15 @@ import {
 } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import {
-  gradientColorBlue,
   mineShaftColor,
   neutral17,
-  neutral44,
   neutral67,
   withAlpha,
 } from "../../../utils/style/colors";
 import { fontMedium14, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
-
-function MyCheckbox({ isChecked }: { isChecked: boolean }) {
-  return (
-    <View style={styles.container}>
-      <Checkbox
-        style={[styles.checkbox]}
-        value={isChecked}
-        color={isChecked ? gradientColorBlue : neutral44}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: layout.padding_x2,
-    marginVertical: layout.padding_x4,
-  },
-  checkbox: {
-    margin: layout.padding_x1,
-    width: layout.padding_x2_5,
-    height: layout.padding_x2_5,
-    borderRadius: 4,
-    borderWidth: 1,
-  },
-});
+import { MyCheckbox } from "./MyCheckbox";
 
 export function DAppBox(props: { option: dAppType }) {
   const selectedApps = useSelector(selectCheckedApps);
