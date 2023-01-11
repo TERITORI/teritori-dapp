@@ -1,5 +1,5 @@
 import { useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { View, StyleSheet, Pressable, FlatList } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -87,20 +87,20 @@ export const Sidebar: React.FC = () => {
   const selectedApps = useSelector(selectCheckedApps);
   const availableApps = useSelector(selectAvailableApps);
 
-  const [dynamicSidebar, setDynamicSidebar] = useState(SIDEBAR_LIST);
+  const dynamicSidebar = useMemo(() => {
+    const dynamicAppsSelection = Object.values(SIDEBAR_LIST);
 
-  useEffect(() => {
-    console.log(selectedApps);
     selectedApps.map((element) => {
       const { appId, groupKey } = getValuesFromId(element);
       const option = availableApps[groupKey].options[appId];
-      SIDEBAR_LIST[element] = {
+      // @ts-ignore
+      dynamicAppsSelection[element] = {
         title: option.title,
         route: "ComingSoon",
         icon: feedSVG,
       };
     });
-    setDynamicSidebar(SIDEBAR_LIST);
+    return dynamicAppsSelection;
   }, [selectedApps]);
 
   // returns
