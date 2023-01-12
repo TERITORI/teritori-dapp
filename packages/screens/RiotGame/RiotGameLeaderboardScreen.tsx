@@ -5,6 +5,7 @@ import {
   FlatList,
   Image,
   View,
+  TouchableOpacity,
 } from "react-native";
 
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
@@ -24,6 +25,7 @@ import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { p2eBackendClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { useAppNavigation } from "../../utils/navigation";
 import {
   additionalGreen,
   additionalRed,
@@ -43,6 +45,7 @@ type PlayerNameProps = {
 };
 
 const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
+  const navigation = useAppNavigation();
   const address = userId.split("-")[1];
   const tnsMetadata = useTNSMetadata(address);
 
@@ -50,32 +53,41 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
 
   return (
     <FlexRow width="auto" alignItems="center">
-      <Image
-        source={{
-          uri: ipfsURLToHTTPURL(
-            tnsMetadata?.metadata?.image ||
-              process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
-              ""
-          ),
+      <TouchableOpacity
+        style={{ flexDirection: "row", alignItems: "center" }}
+        onPress={() => {
+          navigation.navigate("UserPublicProfile", {
+            id: userId,
+          });
         }}
-        style={{
-          borderRadius: 999,
-          width: 32,
-          height: 32,
-          aspectRatio: 1,
-        }}
-      />
+      >
+        <Image
+          source={{
+            uri: ipfsURLToHTTPURL(
+              tnsMetadata?.metadata?.image ||
+                process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
+                ""
+            ),
+          }}
+          style={{
+            borderRadius: 999,
+            width: 32,
+            height: 32,
+            aspectRatio: 1,
+          }}
+        />
 
-      <BrandText style={[styles.colData, { marginLeft: layout.padding_x1 }]}>
-        {name}
-      </BrandText>
-      <SVG
-        width={16}
-        height={16}
-        color={primaryColor}
-        source={badgeSVG}
-        style={{ marginLeft: layout.padding_x1 }}
-      />
+        <BrandText style={[styles.colData, { marginLeft: layout.padding_x1 }]}>
+          {name}
+        </BrandText>
+        <SVG
+          width={16}
+          height={16}
+          color={primaryColor}
+          source={badgeSVG}
+          style={{ marginLeft: layout.padding_x1 }}
+        />
+      </TouchableOpacity>
     </FlexRow>
   );
 };
