@@ -1,9 +1,11 @@
-import checklogo from "../../../assets/icons/certified.svg";
+import checklogo from "../../../assets/icons/greenCheck.svg";
 import placeHolder from "../../../assets/icons/info.svg";
 import logoSimple from "../../../assets/icons/logo-simple.svg";
 import atomSVG from "../../../assets/icons/networks/cosmos-hub.svg";
 import osmosisSVG from "../../../assets/icons/networks/osmosis.svg";
 import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
+import otherAppsIcon from "../../../assets/icons/random-goods-icon.svg";
+import warningTriangle from "../../../assets/icons/warning-triangle-orange.svg";
 import axelarLogo from "../../../assets/logos/Axelar-logo.svg";
 import astroportLogo from "../../../assets/logos/astroport.svg";
 import coinHallLogo from "../../../assets/logos/coinhall.svg";
@@ -18,8 +20,8 @@ export function getAvailableApps(): dAppGroup {
       groupName: "Teritori Core dApps",
       icon: teritoriSVG,
       options: {
-        Marketplace: {
-          id: "Marketplace",
+        "tori-marketplace": {
+          id: "tori-marketplace",
           title: "Marketplace",
           description: "NFT Marketplace",
           icon: logoSimple,
@@ -102,7 +104,7 @@ export function getAvailableApps(): dAppGroup {
     "external-id": {
       id: "external-id",
       groupName: "External & Permissionless dApps",
-      icon: placeHolder,
+      icon: warningTriangle,
       options: {
         Osmosis: {
           id: "Osmosis",
@@ -133,7 +135,7 @@ export function getAvailableApps(): dAppGroup {
     "coming-soon": {
       id: "coming-soon",
       groupName: "Coming soon dApps",
-      icon: placeHolder,
+      icon: otherAppsIcon,
       options: {
         toripunks: {
           id: "toripunks",

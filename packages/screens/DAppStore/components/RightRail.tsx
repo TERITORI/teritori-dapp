@@ -17,7 +17,7 @@ export const RightRail = (props: { searchInput: string }) => {
       style={{
         flex: 1,
         marginLeft: "3em",
-        height: 250,
+        minHeight: 250,
         paddingTop: layout.padding_x4,
       }}
     >
@@ -31,8 +31,9 @@ export const RightRail = (props: { searchInput: string }) => {
           >
             <BrandText
               style={{
-                height: layout.padding_x4 + layout.padding_x2,
+                height: layout.padding_x4 + layout.padding_x4,
                 display: "flex",
+                alignItems: "center",
               }}
             >
               <SVG

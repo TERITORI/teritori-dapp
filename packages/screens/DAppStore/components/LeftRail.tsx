@@ -64,7 +64,7 @@ export const LeftRail = () => {
               <View
                 style={{
                   flex: 1,
-                  height: 250,
+                  minHeight: 250,
                   marginRight: layout.padding_x4,
                   paddingTop: layout.padding_x4,
                 }}
