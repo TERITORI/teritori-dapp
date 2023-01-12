@@ -57,7 +57,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
         style={{ flexDirection: "row", alignItems: "center" }}
         onPress={() => {
           navigation.navigate("UserPublicProfile", {
-            id: `tori-${address}`,
+            id: userId,
           });
         }}
       >
