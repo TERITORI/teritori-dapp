@@ -82,7 +82,7 @@ export const SwapDetails: React.FC<{
 
             <View style={styles.row}>
               <BrandText style={styles.rowLabel}>
-                Swap Fee ({fee * 100}%)
+                Swap Fee ({(fee * 100).toFixed(2)}%)
               </BrandText>
               <BrandText style={styles.rowValue}>
                 ≈{" "}
