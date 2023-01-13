@@ -1,16 +1,23 @@
 import checklogo from "../../../assets/icons/greenCheck.svg";
-import placeHolder from "../../../assets/icons/info.svg";
 import logoSimple from "../../../assets/icons/logo-simple.svg";
-import atomSVG from "../../../assets/icons/networks/cosmos-hub.svg";
 import osmosisSVG from "../../../assets/icons/networks/osmosis.svg";
 import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import otherAppsIcon from "../../../assets/icons/random-goods-icon.svg";
 import warningTriangle from "../../../assets/icons/warning-triangle-orange.svg";
 import axelarLogo from "../../../assets/logos/Axelar-logo.svg";
+import artemisVision from "../../../assets/logos/artemisVision.png";
 import astroportLogo from "../../../assets/logos/astroport.svg";
 import coinHallLogo from "../../../assets/logos/coinhall.svg";
+import daodao from "../../../assets/logos/daodao.png";
 import falconWalletLogo from "../../../assets/logos/falconWallet.svg";
 import pulsarLogo from "../../../assets/logos/pulsar-logo.svg";
+import radyium from "../../../assets/logos/raydium.png";
+import foxyRaffle from "../../../assets/logos/sfoxy.png";
+import skip from "../../../assets/logos/skip.png";
+import subdao from "../../../assets/logos/subdao.png";
+import theGraph from "../../../assets/logos/theGraph.png";
+import toripunks from "../../../assets/logos/toniPunks.png";
+import uniswap from "../../../assets/logos/uniswap.png";
 import { dAppGroup } from "./types";
 
 export function getAvailableApps(): dAppGroup {
@@ -141,7 +148,7 @@ export function getAvailableApps(): dAppGroup {
           id: "toripunks",
           title: "Toripunks dApp",
           description: "Coming soon",
-          icon: logoSimple,
+          icon: toripunks,
           defaultIsChecked: false,
           groupKey: "coming-soon",
         },
@@ -149,7 +156,7 @@ export function getAvailableApps(): dAppGroup {
           id: "daodao",
           title: "DAODAO.zone",
           description: "DAOs for everyone",
-          icon: logoSimple,
+          icon: daodao,
           defaultIsChecked: false,
           groupKey: "coming-soon",
         },
@@ -157,7 +164,7 @@ export function getAvailableApps(): dAppGroup {
           id: "subdao",
           title: "Subdao Network",
           description: "Multi-functional DAO platform",
-          icon: logoSimple,
+          icon: subdao,
           defaultIsChecked: false,
           groupKey: "coming-soon",
         },
@@ -165,7 +172,7 @@ export function getAvailableApps(): dAppGroup {
           id: "artemis",
           title: "Artemis Vision",
           description: "NFT Revolution",
-          icon: logoSimple,
+          icon: artemisVision,
           defaultIsChecked: false,
           groupKey: "coming-soon",
         },
@@ -173,7 +180,7 @@ export function getAvailableApps(): dAppGroup {
           id: "uniswap",
           title: "Uniswap DEX",
           description: "Trade crypto & NFTs",
-          icon: logoSimple,
+          icon: uniswap,
           defaultIsChecked: false,
           groupKey: "coming-soon",
         },
@@ -181,7 +188,7 @@ export function getAvailableApps(): dAppGroup {
           id: "raydium",
           title: "Raydium DEX",
           description: "Trade crypto",
-          icon: logoSimple,
+          icon: radyium,
           defaultIsChecked: false,
           groupKey: "coming-soon",
         },
@@ -189,7 +196,15 @@ export function getAvailableApps(): dAppGroup {
           id: "SFoxyRaffle",
           title: "$FOXY Raffle",
           description: "Famous FOX NFT Raffles",
-          icon: logoSimple,
+          icon: foxyRaffle,
+          defaultIsChecked: false,
+          groupKey: "coming-soon",
+        },
+        skip: {
+          id: "skip",
+          title: "SKIP",
+          description: "Building ecosystem",
+          icon: skip,
           defaultIsChecked: false,
           groupKey: "coming-soon",
         },
@@ -197,7 +212,7 @@ export function getAvailableApps(): dAppGroup {
           id: "theGraph",
           title: "The Graph",
           description: "WEB3 Protocol",
-          icon: logoSimple,
+          icon: theGraph,
           defaultIsChecked: false,
           groupKey: "coming-soon",
         },

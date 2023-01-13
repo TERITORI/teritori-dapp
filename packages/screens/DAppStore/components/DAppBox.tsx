@@ -3,7 +3,7 @@ import { TouchableHighlight, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
+import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
 import {
   selectCheckedApps,
@@ -73,7 +73,7 @@ export function DAppBox(props: { option: dAppType }) {
             height={64}
             cornerWidth={5.5}
           >
-            {props.option.icon ? <SVG source={props.option.icon} /> : ""}
+            <SVGorImageIcon icon={props.option.icon} iconSize={48} />
           </SecondaryBox>
           <View
             style={{

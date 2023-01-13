@@ -62,6 +62,7 @@ export const LeftRail = () => {
             <BrandText style={{ height: 32 }}>dApps in sidebar</BrandText>
             {selectedApps.length > 0 ? (
               <View
+                nativeID="left-rail-drag-container"
                 style={{
                   flex: 1,
                   minHeight: 250,

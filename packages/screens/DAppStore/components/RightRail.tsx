@@ -38,6 +38,7 @@ export const RightRail = (props: { searchInput: string }) => {
             >
               <SVG
                 source={element.icon}
+                key={element.id}
                 style={{
                   width: 32,
                   height: 32,

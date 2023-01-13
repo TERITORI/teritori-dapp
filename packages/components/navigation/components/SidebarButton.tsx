@@ -1,5 +1,5 @@
 import { useIsFocused, useRoute } from "@react-navigation/native";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   // Extrapolate,
@@ -23,6 +23,7 @@ import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
+import { SVGorImageIcon } from "../../SVG/SVGorImageIcon";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
 import { SidebarType } from "../types";
@@ -143,7 +144,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
                 isComingSoon && { opacity: 0.5 },
               ]}
             >
-              <SVG width={iconSize} height={iconSize} source={icon} />
+              <SVGorImageIcon icon={icon} iconSize={iconSize} />
             </View>
             <SpacerRow size={2} />
             <Animated.View style={[styles.rowCenter, opacityStyle]}>

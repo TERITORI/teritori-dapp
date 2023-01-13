@@ -4,7 +4,7 @@ export interface dAppType {
   id: string;
   title: string;
   description: string;
-  icon: React.FC<SvgProps>;
+  icon: React.FC<SvgProps> | string;
   defaultIsChecked: boolean;
   groupKey: string;
 }

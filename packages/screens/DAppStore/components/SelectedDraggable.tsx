@@ -5,7 +5,7 @@ import { Draggable } from "react-beautiful-dnd";
 import { TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
+import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
 import { setCheckedApp } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
@@ -26,7 +26,6 @@ export function SelectedDraggable(props: { option: dAppType; index: number }) {
   const [showTrashIcon, setShowTrashIcon] = useState(false);
   const dispatch = useAppDispatch();
   const draggableId = `${props.option.groupKey}*SEPARATOR*${props.option.id}`;
-
   const deleteFromList = () => {
     const action = {
       draggableId,
@@ -40,7 +39,18 @@ export function SelectedDraggable(props: { option: dAppType; index: number }) {
       draggableId={draggableId}
       index={props.index}
     >
-      {(provided) => {
+      {(provided, snapshot) => {
+        if (snapshot.isDragging) {
+          // const offset = document.getElementById(
+          //   "left-rail-drag-container"
+          // )?.offsetTop;
+          // @ts-ignore
+          provided.draggableProps.style.left = 48;
+          // @ts-ignore
+          provided.draggableProps.style.top =
+            // @ts-ignore
+            provided.draggableProps.style.top + 100;
+        }
         return (
           <div
             ref={provided.innerRef}
@@ -116,7 +126,7 @@ export function SelectedDraggable(props: { option: dAppType; index: number }) {
                   width={48}
                   height={48}
                 >
-                  <SVG source={props.option.icon} />
+                  <SVGorImageIcon icon={props.option.icon} iconSize={48} />
                 </SecondaryBox>
                 <View
                   style={{
