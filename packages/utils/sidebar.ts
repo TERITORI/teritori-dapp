@@ -111,6 +111,6 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   DAppsStore: {
     title: "dApps Store",
     route: "DAppStore",
-    icon: rioterFooterSVG,
+    icon: marketplaceSVG,
   },
 };
