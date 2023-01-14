@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -200,6 +200,17 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     await minterClient.requestMint({ addr: sender }, "auto", "", funds);
   };
 
+  const mintTermsConditionsURL = useMemo(() => {
+    switch (mintAddress) {
+      case process.env.THE_RIOT_COLLECTION_ADDRESS:
+        return "https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b";
+      case process.env.ETHEREUM_THE_RIOT_COLLECTION_ADDRESS:
+        return "https://teritori.notion.site/The-Riot-Terms-Conditions-ETH-92328fb2d4494b6fb073b38929b28883";
+      default:
+        return null;
+    }
+  }, [mintAddress]);
+
   if (!info) {
     return <ScreenContainer noMargin />;
   }
@@ -352,7 +363,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 </View>
               )}
 
-              {mintAddress === process.env.THE_RIOT_COLLECTION_ADDRESS && (
+              {mintTermsConditionsURL && (
                 <View style={{ flexDirection: "row", marginBottom: 24 }}>
                   <BrandText
                     style={[
@@ -367,7 +378,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   </BrandText>
                   <ExternalLink
                     gradientType="gray"
-                    externalUrl="https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b"
+                    externalUrl={mintTermsConditionsURL}
                     style={[
                       fontSemibold14,
                       {
