@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TouchableHighlight, View } from "react-native";
+import { StyleSheet, TouchableHighlight, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
@@ -20,6 +20,20 @@ import { fontMedium14, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
 import { CheckboxDappStore } from "./CheckboxDappStore";
+
+const checkBoxStyles = StyleSheet.create({
+  container: {
+    marginHorizontal: layout.padding_x2,
+    marginVertical: layout.padding_x4,
+  },
+  checkbox: {
+    margin: layout.padding_x1,
+    width: layout.padding_x2_5,
+    height: layout.padding_x2_5,
+    borderRadius: 4,
+    borderWidth: 1,
+  },
+});
 
 export function DAppBox(props: { option: dAppType }) {
   const selectedApps = useSelector(selectCheckedApps);
@@ -95,7 +109,7 @@ export function DAppBox(props: { option: dAppType }) {
               {props.option.description}
             </BrandText>
           </View>
-          <CheckboxDappStore isChecked={isChecked} />
+          <CheckboxDappStore isChecked={isChecked} styles={checkBoxStyles} />
         </View>
       </SecondaryBox>
     </TouchableHighlight>

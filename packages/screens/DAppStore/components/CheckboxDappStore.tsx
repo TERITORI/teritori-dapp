@@ -1,11 +1,16 @@
 import Checkbox from "expo-checkbox";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { gradientColorBlue, neutral44 } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
 
-export function CheckboxDappStore({ isChecked }: { isChecked: boolean }) {
+export function CheckboxDappStore({
+  isChecked,
+  styles,
+}: {
+  isChecked: boolean;
+  styles: any;
+}) {
   return (
     <View style={styles.container}>
       <Checkbox
@@ -16,17 +21,3 @@ export function CheckboxDappStore({ isChecked }: { isChecked: boolean }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: layout.padding_x2,
-    marginVertical: layout.padding_x4,
-  },
-  checkbox: {
-    margin: layout.padding_x1,
-    width: layout.padding_x2_5,
-    height: layout.padding_x2_5,
-    borderRadius: 4,
-    borderWidth: 1,
-  },
-});

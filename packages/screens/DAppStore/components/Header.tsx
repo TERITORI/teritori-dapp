@@ -15,17 +15,23 @@ export function Header(props: { setSearchInput: (arg0: string) => void }) {
       style={{
         flex: 1,
         marginTop: 52,
-        marginBottom: 32,
         alignSelf: "center",
         alignItems: "center",
         height: 250,
+        width: "100%",
       }}
     >
       <BrandText style={fontSemibold28}>dApp Store</BrandText>
 
       <SearchInput
-        style={{ width: 480, marginTop: 32 }}
+        style={{ width: 480, marginTop: 32, marginBottom: 32 }}
         handleChangeText={handleChangeText}
+      />
+
+      <DropdownDappsStoreFilter
+        style={{
+          justifyContent: "flex-end",
+        }}
       />
     </View>
   );
