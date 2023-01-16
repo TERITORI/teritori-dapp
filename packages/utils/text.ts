@@ -12,3 +12,8 @@ export const thousandSeparator = (
 
   return thosandSeperatedValue + (valueArray[1] ? `.${valueArray[1]}` : "");
 };
+
+export const isFloatText = (value: string) => {
+  const regOnlyFloats = new RegExp(/^([0-9]*[.])?[0-9]+$|^([0-9]*[.])$/);
+  return regOnlyFloats.test(value) && value !== ".";
+};

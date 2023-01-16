@@ -49,6 +49,7 @@ import {
   toastErrorWidth,
   toastSuccessWidth,
 } from "../../../utils/style/toasts";
+import { isFloatText } from "../../../utils/text";
 import { CurrencyAmount } from "./CurrencyAmount";
 import { SelectableCurrency } from "./SelectableCurrency";
 import { SelectedCurrency } from "./SelectedCurrency";
@@ -86,7 +87,6 @@ export const ModalHeader: React.FC<{
 };
 
 /////////////////// MODAL
-
 export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
@@ -188,7 +188,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   ]);
 
   // ---- Current amounts (The user enters amountIn)
-  const [amountIn, setAmountIn] = useState(0);
+  const [amountIn, setAmountIn] = useState("");
 
   const prices = useCoingeckoPrices([
     { networkId: selectedNetworkId, denom: currencyIn?.denom },
@@ -196,9 +196,14 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   ]);
   // ---- USD price for the first currency
   const amountInUsd: number = useMemo(() => {
-    if (!currencyInNative || !amountIn || !prices[currencyInNative.coingeckoId])
+    if (
+      !currencyInNative ||
+      !amountIn ||
+      parseFloat(amountIn) === 0 ||
+      !prices[currencyInNative.coingeckoId]
+    )
       return 0;
-    return amountIn * prices[currencyInNative.coingeckoId].usd;
+    return parseFloat(amountIn) * prices[currencyInNative.coingeckoId].usd;
   }, [currencyInNative?.coingeckoId, amountIn, prices]);
 
   // ---- Settings
@@ -210,39 +215,53 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   const [dropdownOutRef, setDropdownOutRef] = useState<DropdownRef>(null);
   const [dropdownInRef, setDropdownInRef] = useState<DropdownRef>(null);
 
+  const onChangeAmountIn = (text: string) => {
+    if (!text) {
+      setAmountIn("");
+      return;
+    }
+    if (isFloatText(text)) setAmountIn(text);
+  };
+
   // ---- Buttons
   const onPressInvert = () => {
     setCurrencyIn(currencyOut);
     setCurrencyOut(currencyIn);
-    setAmountIn(amountOutWithFee);
+    setAmountIn(amountOutWithFee ? amountOutWithFee.toFixed(6) : "0");
   };
   const onPressHalf = () => {
-    setAmountIn(parseFloat(currencyInAmount) / 2);
+    setAmountIn((parseFloat(currencyInAmount) / 2).toString());
   };
   const onPressMax = () => {
-    setAmountIn(parseFloat(currencyInAmount));
+    setAmountIn(parseFloat(currencyInAmount).toString());
   };
   const onPressSwap = async () => {
     setSettingsOpened(false);
     setToastSuccessVisible(false);
     setToastErrorVisible(false);
-    const swapResult = await swap(amountIn, amountOut);
+    const swapResult = await swap(parseFloat(amountIn), amountOut);
     setSwapResult(swapResult);
 
     if (!swapResult) return;
     if (swapResult.isError) setToastErrorVisible(true);
     else {
       setToastSuccessVisible(true);
-      setAmountIn(0);
+      setAmountIn("");
     }
+  };
+  const onCloseModal = () => {
+    setSettingsOpened(false);
+    setSlippage(1);
+    setAmountIn("");
+    onClose();
   };
 
   // ---- SWAP OSMOSIS
   const { swap, spotPrice, fee } = useSwap(slippage, currencyIn, currencyOut);
 
   const amountOut: number = useMemo(() => {
-    if (!amountIn || !spotPrice) return 0;
-    return parseFloat(spotPrice) * amountIn;
+    if (!amountIn || parseFloat(amountIn) === 0 || !spotPrice) return 0;
+    return parseFloat(spotPrice) * parseFloat(amountIn);
   }, [spotPrice, amountIn]);
 
   const amountOutWithFee: number = useMemo(
@@ -283,7 +302,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       Header={() => <ModalHeader setSettingsOpened={setSettingsOpened} />}
       width={modalWidth}
       visible={visible}
-      onClose={onClose}
+      onClose={onCloseModal}
       contentStyle={{ justifyContent: "flex-start" }}
       closeButtonStyle={{ alignSelf: "center" }}
     >
@@ -325,12 +344,10 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
               <View>
                 <TextInput
                   style={styles.inputAmount}
-                  value={
-                    amountIn ? parseFloat(amountIn.toFixed(6)).toString() : ""
-                  }
+                  value={amountIn}
                   placeholder="0"
                   placeholderTextColor={neutralA3}
-                  onChangeText={(text) => setAmountIn(parseFloat(text))}
+                  onChangeText={onChangeAmountIn}
                 />
                 <BrandText style={styles.amountUsd}>
                   ≈ ${parseFloat(amountInUsd.toFixed(2).toString())}
@@ -432,12 +449,16 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
           size="XL"
           loader
           text={
-            amountIn && amountIn > parseFloat(currencyInAmount)
+            amountIn && parseFloat(amountIn) > parseFloat(currencyInAmount)
               ? "Insufficient balance"
               : "Swap"
           }
           fullWidth
-          disabled={!amountIn || amountIn > parseFloat(currencyInAmount)}
+          disabled={
+            !amountIn ||
+            parseFloat(amountIn) === 0 ||
+            parseFloat(amountIn) > parseFloat(currencyInAmount)
+          }
           onPress={onPressSwap}
         />
       </View>
@@ -512,6 +533,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.flatten(fontSemibold14),
   },
   inputAmount: {
+    height: "100%",
     outlineStyle: "none",
     color: secondaryColor,
     maxWidth: 200,

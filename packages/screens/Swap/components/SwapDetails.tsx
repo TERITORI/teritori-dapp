@@ -24,7 +24,7 @@ export const SwapDetails: React.FC<{
   spotPrice: string;
   tokenNameIn: string;
   tokenNameOut: string;
-  amountIn?: number;
+  amountIn?: string;
 }> = ({
   slippage,
   fee,

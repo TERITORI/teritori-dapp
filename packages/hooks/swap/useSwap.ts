@@ -8,6 +8,7 @@ import {
   makePoolPairs,
   OsmosisApiClient,
 } from "@cosmology/core";
+import { assets as osmosisAssets } from "@cosmology/core/src/assets";
 import { PoolAsset, PriceHash, Trade } from "@cosmology/core/src/types";
 import { useQuery } from "@tanstack/react-query";
 import Long from "long";
@@ -21,14 +22,11 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import {
-  CurrencyInfo,
-  getNativeCurrency,
-  getNetwork,
-} from "../../networks";
+import { CurrencyInfo, getNativeCurrency, getNetwork } from "../../networks";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
 import useSelectedWallet from "../useSelectedWallet";
+// TODO: Same error as in osmosis-frontend for this import, fix it ?
 
 export type SwapResult = {
   title: string;
@@ -81,6 +79,21 @@ export const useSwap = (
         pool.poolParams.swapFee = pool.pool_params.swap_fee;
       //TODO: Get "/osmosis.gamm.v1beta1.Pool" from libs
       if (pool["@type"] !== "/osmosis.gamm.v1beta1.Pool") return;
+      //TODO: Only pools with 2 assets ?
+      if (!pool.poolAssets || pool.poolAssets.length !== 2) return;
+
+      // TODO: Don't want pools with unknown asset ?
+      let firstAssetsExists = false;
+      let lastAssetsExists = false;
+      osmosisAssets.forEach((asset) => {
+        if (asset.base === pool.poolAssets[0].token.denom) {
+          firstAssetsExists = true;
+        }
+        if (asset.base === pool.poolAssets[1].token.denom) {
+          lastAssetsExists = true;
+        }
+      });
+      if (!firstAssetsExists || !lastAssetsExists) return;
 
       pools.push(pool);
     });
@@ -99,33 +112,30 @@ export const useSwap = (
     // ===== Finding the best pool that includes out two currencies.
     // And many pools to be the IN or the OUT of the multihop
     cleanedLcdPools.forEach((lcdPool) => {
-      //TODO: Only pools with 2 assets ?
-      if (lcdPool.poolAssets && lcdPool.poolAssets.length === 2) {
-        lcdPool.poolAssets.forEach((asset: PoolAsset) => {
-          // We find pools that includes the two currencies to be used for multihop
-          if (asset.token.denom === currencyIn.denom) {
-            poolsIn.push(lcdPool);
-          }
-          if (asset.token.denom === currencyOut.denom) {
-            poolsOut.push(lcdPool);
-          }
-        });
-        const prettyPool = lcdPoolPretty(lcdPool);
-
-        // We stock the pool that includes the two currencies and has the higher liquidity
-        if (
-          ((lcdPool.poolAssets[0].token.denom === currencyIn.denom &&
-            lcdPool.poolAssets[1].token.denom === currencyOut.denom) ||
-            (lcdPool.poolAssets[1].token.denom === currencyIn.denom &&
-              lcdPool.poolAssets[0].token.denom === currencyOut.denom)) &&
-          (!bestDirectPool ||
-            parseFloat(prettyPool.liquidity || "0") >
-              parseFloat(lcdPoolPretty(bestDirectPool).liquidity || "0"))
-        ) {
-          bestDirectPool = lcdPool;
+      lcdPool.poolAssets.forEach((asset: PoolAsset) => {
+        // We find pools that includes the two currencies to be used for multihop
+        if (asset.token.denom === currencyIn.denom) {
+          poolsIn.push(lcdPool);
         }
-        // else => No pool that includes the two currencies found => Multihop will be used
+        if (asset.token.denom === currencyOut.denom) {
+          poolsOut.push(lcdPool);
+        }
+      });
+      const prettyPool = lcdPoolPretty(lcdPool);
+
+      // We stock the pool that includes the two currencies and has the higher liquidity
+      if (
+        ((lcdPool.poolAssets[0].token.denom === currencyIn.denom &&
+          lcdPool.poolAssets[1].token.denom === currencyOut.denom) ||
+          (lcdPool.poolAssets[1].token.denom === currencyIn.denom &&
+            lcdPool.poolAssets[0].token.denom === currencyOut.denom)) &&
+        (!bestDirectPool ||
+          parseFloat(prettyPool.liquidity || "0") >
+            parseFloat(lcdPoolPretty(bestDirectPool).liquidity || "0"))
+      ) {
+        bestDirectPool = lcdPool;
       }
+      // else => No pool that includes the two currencies found => Multihop will be used
     });
     if (bestDirectPool) {
       setDirectPool(bestDirectPool);
@@ -179,10 +189,6 @@ export const useSwap = (
     });
 
     if (!cheapestFeePoolIn || !cheapestFeePoolOut) return;
-    console.log("==================== BEST MULTI POOLS", [
-      cheapestFeePoolIn,
-      cheapestFeePoolOut,
-    ]);
     setMultihopPools([cheapestFeePoolIn, cheapestFeePoolOut]);
   }, [currencyIn?.denom, currencyOut?.denom, cleanedLcdPools]);
 
@@ -278,9 +284,6 @@ export const useSwap = (
   const swap = async (amountIn: number, amountOut: number) => {
     if (!currencyIn || !currencyOut || !selectedWallet || !selectedNetwork)
       return;
-
-    console.log("1111111111111111111111111111");
-
     const amountInMicro = amountToCurrencyMicro(
       amountIn,
       selectedNetworkId,
@@ -311,13 +314,7 @@ export const useSwap = (
 
     const prettyPools = cleanedLcdPools.map((pool) => lcdPoolPretty(pool));
 
-    console.log("22222222222222222222222222", prettyPools);
-
-    // TODO: Cannot read properties of undefined (reading 'display') getOsmoAssetByDenom returns undefined WTFFF ?
     const pairs = makePoolPairs(prettyPools, 0);
-
-    console.log("33333333333333333333333333333", pairs);
-
     try {
       // ===== Getting Osmosis client for RPC use
       const signer = await getKeplrOfflineSigner(selectedNetwork);
@@ -325,8 +322,6 @@ export const useSwap = (
         rpcEndpoint: selectedNetwork.rpcEndpoint || "",
         signer,
       });
-
-      console.log("444444444444444444444444444444444");
 
       // ==== Getting trading routes
       const routes = lookupRoutesForTrade({
@@ -340,8 +335,6 @@ export const useSwap = (
         };
         return swapAmountInRoute;
       });
-
-      console.log("5555555555555555555555555555", routes);
 
       // ==== Handling splippage
       const amountOutMicroWithSlippage = Math.round(
@@ -357,15 +350,9 @@ export const useSwap = (
       };
       const msg = swapExactAmountIn(msgValue);
 
-      console.log("666666666666666666666666666", msg);
-
-      // console.log('feefeefeefee', fee)
-      console.log("msgmsgmsgmsgmsgmsgmsg", msg);
-      console.log("fee * 1000000fee * 1000000", fee * 1000000);
-
       // We use the fee found in the usedPool
       const stdFee: StdFee = {
-        amount: coins(fee * 1000000, currencyIn.denom),
+        amount: coins(Math.round(fee) * 1000000, currencyIn.denom),
         gas: "250000",
       };
 
@@ -377,11 +364,10 @@ export const useSwap = (
       if (isDeliverTxFailure(txResponse)) {
         console.error("tx failed", txResponse);
         let message = txResponse.rawLog || "";
-        console.log("txResponse.codetxResponse.code", txResponse.code);
-
         if (txResponse.code === 7)
           message =
-            "The prices have changed, you need to set a higher slippage tolerance";
+            txResponse.rawLog +
+            "\n=> You need to set a higher slippage tolerance";
 
         return {
           isError: true,
@@ -420,15 +406,6 @@ export const amountToCurrencyMicro = (
   }
   return Math.round(amount * multiplier).toString();
 };
-
-// const addedPercents = (percents: number[]) => {
-//   if (!percents.length) return 0;
-//   let addedP = 0;
-//   for (let i = 0; i < percents.length; i++) {
-//     addedP = addedP + percents[i] / 100;
-//   }
-//   return (addedP * 100) / percents.length;
-// };
 
 // ===== Pools format used for MsgSwapExactAmountIn, and used to find the highest liquidity
 const lcdPoolPretty = (lcdPool: LcdPool) => {

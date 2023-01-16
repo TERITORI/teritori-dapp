@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { Pressable, View } from "react-native";
 
 import infoSVG from "../../../../assets/icons/info.svg";
@@ -8,18 +14,45 @@ import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import {
-  neutral00,
   neutral77,
+  neutralA3,
   primaryColor,
   primaryTextColor,
   secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { isFloatText } from "../../../utils/text";
 
 type SlippageItem = {
   value: number;
   isSelected?: boolean;
+};
+
+const SelectableItem: React.FC<{
+  item?: SlippageItem;
+  onPress: () => void;
+  isSelected?: boolean;
+}> = ({onPress, isSelected, children }) => {
+  return (
+    <Pressable
+      style={[
+        {
+          padding: layout.padding_x1,
+          flexDirection: "row",
+          borderRadius: 7,
+          height: 32,
+          width: 64,
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        isSelected && { backgroundColor: primaryColor },
+      ]}
+      onPress={onPress}
+    >
+      {children}
+    </Pressable>
+  );
 };
 
 export const SwapModalSettings: React.FC<{
@@ -34,17 +67,14 @@ export const SwapModalSettings: React.FC<{
     { value: 5 },
   ]);
   const [manualSlippageSelected, setManualSlippageSelected] = useState(false);
+  const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
 
   const onChangeManualSlippage = (value: string) => {
-    const withoutPercent = value.split("%")[0];
-    if (!withoutPercent) {
+    if (!value) {
       setManualSlippage("");
       return;
     }
-    const regOnlyFloats = new RegExp(/[+-]?([0-9]*[.])?[0-9]+/);
-    const matches = regOnlyFloats.exec(withoutPercent) || "";
-    if (!matches) return;
-    setManualSlippage(matches[0] + "%");
+    if (isFloatText(value)) setManualSlippage(value);
   };
 
   const selectManualSlippage = () => {
@@ -55,10 +85,11 @@ export const SwapModalSettings: React.FC<{
     });
     setManualSlippageSelected(true);
     setSlippageItems(newItems);
-    setSlippageValue(parseFloat(manualSlippage.split("%")[0]));
+    setSlippageValue(parseFloat(manualSlippage));
   };
 
   const onPressSlippageItem = (item: SlippageItem) => {
+    inputRef?.current.blur();
     const newItems: SlippageItem[] = [];
     slippageItems.forEach((sItem) => {
       sItem.isSelected = false;
@@ -73,6 +104,7 @@ export const SwapModalSettings: React.FC<{
   };
 
   const onFocusManualSlippage = () => {
+    inputRef?.current.focus();
     if (!manualSlippage || manualSlippageSelected) return;
     selectManualSlippage();
   };
@@ -99,7 +131,7 @@ export const SwapModalSettings: React.FC<{
           alignItems: "flex-start",
         }}
         style={{ position: "absolute", right: 20, top: 55 }}
-        width={274}
+        width={306}
         noBrokenCorners
       >
         <BrandText style={fontSemibold16}>Transaction Settings</BrandText>
@@ -137,19 +169,11 @@ export const SwapModalSettings: React.FC<{
           noBrokenCorners
         >
           {slippageItems.map((item, index) => (
-            <Pressable
+            <SelectableItem
               key={index}
-              style={[
-                {
-                  borderRadius: 7,
-                  height: 32,
-                  width: 56,
-                  justifyContent: "center",
-                  alignItems: "center",
-                },
-                item.isSelected && { backgroundColor: primaryColor },
-              ]}
+              item={item}
               onPress={() => onPressSlippageItem(item)}
+              isSelected={item.isSelected}
             >
               <BrandText
                 style={[
@@ -159,29 +183,49 @@ export const SwapModalSettings: React.FC<{
               >
                 {item.value}%
               </BrandText>
-            </Pressable>
+            </SelectableItem>
           ))}
 
-          <TextInputCustom
-            onFocus={() => onFocusManualSlippage()}
-            label=""
-            name=""
-            variant="noStyle"
-            textInputStyle={{
-              borderRadius: 7,
-              height: 32,
-              width: 56,
-              textAlign: "center",
-              backgroundColor: manualSlippageSelected
-                ? primaryColor
-                : neutral00,
-              color: manualSlippageSelected ? primaryTextColor : secondaryColor,
-            }}
-            onChangeText={(value) => onChangeManualSlippage(value)}
-            value={manualSlippage}
-            maxLength={6}
-            placeholder="2.5%"
-          />
+          <SelectableItem
+            onPress={onFocusManualSlippage}
+            isSelected={manualSlippageSelected}
+          >
+            <TextInputCustom
+              setRef={setInputRef}
+              label=""
+              name=""
+              variant="noStyle"
+              textInputStyle={[
+                {
+                  textAlign: "center",
+                  height: "100%",
+                  width: manualSlippage ? manualSlippage.length * 9 : 20,
+                  color: manualSlippageSelected
+                    ? primaryTextColor
+                    : secondaryColor,
+                },
+                fontSemibold14,
+              ]}
+              onChangeText={(value) => onChangeManualSlippage(value)}
+              value={manualSlippage}
+              maxLength={5}
+              placeholder="2.5"
+            />
+            <BrandText
+              style={[
+                fontSemibold14,
+                {
+                  color: manualSlippageSelected
+                    ? primaryTextColor
+                    : manualSlippage
+                    ? secondaryColor
+                    : neutralA3,
+                },
+              ]}
+            >
+              %
+            </BrandText>
+          </SelectableItem>
         </TertiaryBox>
 
         {/*====== Info box */}
