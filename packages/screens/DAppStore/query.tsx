@@ -5,7 +5,7 @@ import marketplace from "../../../assets/icons/marketplace.svg";
 import osmosisSVG from "../../../assets/icons/networks/osmosis.svg";
 import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import otherAppsIcon from "../../../assets/icons/random-goods-icon.svg";
-import warningTriangle from "../../../assets/icons/warning-triangle-orange.svg";
+// import warningTriangle from "../../../assets/icons/warning-triangle-orange.svg";
 import axelarLogo from "../../../assets/logos/Axelar-logo.svg";
 import artemisVision from "../../../assets/logos/artemisVision.png";
 import astroportLogo from "../../../assets/logos/astroport.svg";
