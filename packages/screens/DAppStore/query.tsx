@@ -1,5 +1,7 @@
 import checklogo from "../../../assets/icons/greenCheck.svg";
+import launchpad from "../../../assets/icons/launchpad.svg";
 import logoSimple from "../../../assets/icons/logo-simple.svg";
+import marketplace from "../../../assets/icons/marketplace.svg";
 import osmosisSVG from "../../../assets/icons/networks/osmosis.svg";
 import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import otherAppsIcon from "../../../assets/icons/random-goods-icon.svg";
@@ -31,7 +33,7 @@ export function getAvailableApps(): dAppGroup {
           id: "tori-marketplace",
           title: "Marketplace",
           description: "NFT Marketplace",
-          icon: logoSimple,
+          icon: marketplace,
           route: "Marketplace",
           defaultIsChecked: false,
           groupKey: "teritori-core-apps",
@@ -40,7 +42,7 @@ export function getAvailableApps(): dAppGroup {
           id: "Launchpad",
           title: "Launchpad",
           description: "Multi Network NFT Launcher",
-          icon: logoSimple,
+          icon: launchpad,
           route: "Launchpad",
           defaultIsChecked: false,
           groupKey: "teritori-core-apps",
