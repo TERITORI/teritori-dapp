@@ -72,6 +72,29 @@ export function getAvailableApps(): dAppGroup {
           defaultIsChecked: false,
           groupKey: "top-apps",
         },
+      },
+    },
+    // "external-id": {
+    //   id: "external-id",
+    //   groupName: "External & Permissionless dApps",
+    //   icon: warningTriangle,
+    //   options: {
+    //     Osmosis: {
+    //       id: "Osmosis",
+    //       title: "Osmosis Dex",
+    //       description: "Advanced automated market maker (AMM)",
+    //       icon: osmosisSVG,
+    //       route: "ComingSoon",
+    //       defaultIsChecked: false,
+    //       groupKey: "top-apps", // to reduce duplicates
+    //     },
+    //   },
+    // },
+    "coming-soon": {
+      id: "coming-soon",
+      groupName: "Coming soon dApps",
+      icon: otherAppsIcon,
+      options: {
         astroport: {
           id: "astroport",
           title: "Astroport",
@@ -79,7 +102,7 @@ export function getAvailableApps(): dAppGroup {
           icon: astroportLogo,
           route: "ComingSoon",
           defaultIsChecked: false,
-          groupKey: "top-apps",
+          groupKey: "coming-soon",
         },
         pulsar: {
           id: "pulsar",
@@ -88,7 +111,7 @@ export function getAvailableApps(): dAppGroup {
           icon: pulsarLogo,
           route: "ComingSoon",
           defaultIsChecked: false,
-          groupKey: "top-apps",
+          groupKey: "coming-soon",
         },
         axelar: {
           id: "axelar",
@@ -97,7 +120,7 @@ export function getAvailableApps(): dAppGroup {
           icon: axelarLogo,
           route: "ComingSoon",
           defaultIsChecked: false,
-          groupKey: "top-apps",
+          groupKey: "coming-soon",
         },
         coinhall: {
           id: "coinhall",
@@ -106,7 +129,7 @@ export function getAvailableApps(): dAppGroup {
           icon: coinHallLogo,
           route: "ComingSoon",
           defaultIsChecked: false,
-          groupKey: "top-apps",
+          groupKey: "coming-soon",
         },
         falcon: {
           id: "falcon",
@@ -115,49 +138,8 @@ export function getAvailableApps(): dAppGroup {
           icon: falconWalletLogo,
           route: "ComingSoon",
           defaultIsChecked: false,
-          groupKey: "top-apps",
+          groupKey: "coming-soon",
         },
-      },
-    },
-    "external-id": {
-      id: "external-id",
-      groupName: "External & Permissionless dApps",
-      icon: warningTriangle,
-      options: {
-        Osmosis: {
-          id: "Osmosis",
-          title: "Osmosis Dex",
-          description: "Advanced automated market maker (AMM)",
-          icon: osmosisSVG,
-          route: "ComingSoon",
-          defaultIsChecked: false,
-          groupKey: "top-apps", // to reduce duplicates
-        },
-        astroport: {
-          id: "astroport",
-          title: "Astroport",
-          description: "Powerful DEX",
-          icon: astroportLogo,
-          route: "ComingSoon",
-          defaultIsChecked: false,
-          groupKey: "top-apps", // to reduce duplicates
-        },
-        pulsar: {
-          id: "pulsar",
-          title: "Pulsar",
-          description: "All-in-one dashboard",
-          icon: pulsarLogo,
-          route: "ComingSoon",
-          defaultIsChecked: false,
-          groupKey: "top-apps", // to reduce duplicates
-        },
-      },
-    },
-    "coming-soon": {
-      id: "coming-soon",
-      groupName: "Coming soon dApps",
-      icon: otherAppsIcon,
-      options: {
         toripunks: {
           id: "toripunks",
           title: "Toripunks dApp",
