@@ -20,31 +20,37 @@ import { Network } from "./network";
 export const SIDEBAR_LIST: SidebarRecordType = {
   feed: {
     title: "Feed",
+    id: "Feed",
     route: "ComingSoon",
     icon: feedSVG,
   },
   messages: {
     title: "Messages",
+    id: "Messages",
     route: "ComingSoon",
     icon: messagesSVG,
   },
   marketplace: {
     title: "Marketplace",
+    id: "Marketplace",
     route: "Marketplace",
     icon: marketplaceSVG,
   },
   launchpad: {
     title: "Launchpad",
+    id: "Launchpad",
     route: "Launchpad",
     icon: launchpadSVG,
     nested: {
       launchpad: {
         title: "Launchpad",
+        id: "nested-Launchpad",
         icon: launchpadLaunchpadSVG,
         route: "Launchpad",
       },
       apply: {
         title: "Apply",
+        id: "Apply",
         icon: launchpadApplySVG,
         route: "LaunchpadApply",
       },
@@ -52,22 +58,26 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   },
   namespace: {
     title: "Name Service",
+    id: "Name Service",
     route: "TNSHome",
     icon: tnsServiceSVG,
     disabledOn: [Network.Ethereum],
   },
   wallet: {
     title: "My Wallet",
+    id: "My Wallet",
     route: "WalletManager",
     icon: walletSVG,
     nested: {
       dashboard: {
         title: "My Dashboard",
+        id: "My Dashboard",
         icon: gridSVG,
         route: "WalletManager",
       },
       wallets: {
         title: "Wallets",
+        id: "Wallets",
         icon: walletRegSVG,
         route: "WalletManagerWallets",
       },
@@ -82,34 +92,40 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   },
   staking: {
     title: "Staking",
+    id: "Staking",
     route: "Staking",
     icon: stakingSVG,
     disabledOn: [Network.Ethereum],
   },
   governance: {
     title: "Governance",
+    id: "Governance",
     route: "Governance",
     icon: governanceSVG,
     disabledOn: [Network.Ethereum],
   },
   pathwar: {
     title: "Pathwar",
+    id: "Pathwar",
     route: "ComingSoon",
     icon: pathwarSVG,
   },
   riotersGame: {
     title: "Join The R!ot",
+    id: "Join The R!ot",
     route: "RiotGame",
     icon: riotersGameSVG,
     disabledOn: [Network.Ethereum],
   },
   riotersFooter: {
     title: "Rioters Footer",
+    id: "Rioters Footer",
     route: "ComingSoon",
     icon: rioterFooterSVG,
   },
   DAppsStore: {
     title: "dApps Store",
+    id: "dApps Store",
     route: "DAppStore",
     icon: marketplaceSVG,
   },

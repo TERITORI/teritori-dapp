@@ -91,9 +91,13 @@ export const Sidebar: React.FC = () => {
 
     selectedApps.map((element) => {
       const { appId, groupKey } = getValuesFromId(element);
+      if (!availableApps[groupKey]) {
+        return;
+      }
       const option = availableApps[groupKey].options[appId];
       // @ts-ignore
       dynamicAppsSelection[element] = {
+        id: option.id,
         title: option.title,
         route: option.route,
         icon: option.icon,
@@ -122,7 +126,7 @@ export const Sidebar: React.FC = () => {
       <FlatList
         showsVerticalScrollIndicator={false}
         data={Object.values(dynamicSidebar)}
-        keyExtractor={(item) => item.title}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           let { route } = item;
           if (item.disabledOn?.includes(selectedNetwork || Network.Unknown)) {
@@ -131,7 +135,7 @@ export const Sidebar: React.FC = () => {
 
           return (
             <SidebarButton
-              key={item.title}
+              key={item.id}
               onPress={onRouteChange}
               {...item}
               route={route}
@@ -145,6 +149,8 @@ export const Sidebar: React.FC = () => {
               icon={addSVG}
               iconSize={36}
               route="ComingSoon"
+              key="ComingSoon2"
+              id="ComingSoon2"
               title=""
               onPress={() => navigation.navigate("ComingSoon")}
             />

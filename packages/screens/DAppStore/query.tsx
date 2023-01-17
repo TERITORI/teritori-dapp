@@ -38,8 +38,8 @@ export function getAvailableApps(): dAppGroup {
           defaultIsChecked: false,
           groupKey: "teritori-core-apps",
         },
-        Launchpad: {
-          id: "Launchpad",
+        "tori-Launchpad": {
+          id: "tori-Launchpad",
           title: "Launchpad",
           description: "Multi Network NFT Launcher",
           icon: launchpad,
