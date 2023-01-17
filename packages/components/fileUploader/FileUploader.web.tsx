@@ -1,17 +1,18 @@
-import React, { SyntheticEvent } from "react";
+import React, { SyntheticEvent, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import bucketSVG from "../../../assets/icons/bucket.svg";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import { BrandText } from "../../components/BrandText";
 import { GradientText } from "../../components/gradientText";
 import { Label } from "../../components/inputs/TextInputCustom";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { neutral17, neutral77 } from "../../utils/style/colors";
+import { neutral17, neutral77, redDefault } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 import { FileUploaderProps } from "./FileUploader.type";
+const FILE_HEIGHT = 256;
 
 export const FileUploader: React.FC<FileUploaderProps> = ({
   label,
@@ -19,20 +20,17 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   onUpload,
   multiple,
   mimeTypes,
-
   children,
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState("");
 
   const handleFiles = (files: File[]) => {
     const _files = multiple ? files : [files[0]];
-    const supportedFiles = [...files]
-      .filter((file) => mimeTypes?.includes(file.type))
-      .map((file) => {
-        file.path = file.path || URL.createObjectURL(file);
-        return file;
-      });
+    const supportedFiles = [...files].filter((file) =>
+      mimeTypes?.includes(file.type)
+    );
 
     if (supportedFiles.length === 0) {
       setToastError({
@@ -45,6 +43,9 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         title: "Unsupported file type.",
         message: "Sorry we couldn't upload some files at the moment.",
       });
+    }
+    if (!multiple) {
+      setFile(URL.createObjectURL(_files[0]));
     }
 
     onUpload(supportedFiles);
@@ -105,51 +106,99 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         <PrimaryBox
           fullWidth
           style={{
-            height: 80,
+            height: file ? FILE_HEIGHT : 80,
             borderRadius: 10,
           }}
         >
-          <TouchableOpacity
-            onPress={handleClick}
-            style={{
-              padding: layout.padding_x2_5,
-              width: "100%",
-              height: "100%",
-            }}
-          >
+          {file ? (
             <div
-              onDrop={dropHandler}
-              onDragOver={dragOverHandler}
               style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "flex-start",
+                height: "100%",
+                width: "100%",
               }}
             >
-              <View
+              <TouchableOpacity
+                activeOpacity={0.8}
                 style={{
-                  height: 40,
-                  width: 40,
+                  height: 32,
+                  width: 32,
                   borderRadius: 24,
-                  backgroundColor: neutral17,
+                  position: "absolute",
+                  top: 12,
+                  right: 12,
+                  backgroundColor: redDefault,
                   alignItems: "center",
                   justifyContent: "center",
-                  marginRight: layout.padding_x2_5,
+                }}
+                onPress={() => {
+                  setFile("");
+                  onUpload([]);
                 }}
               >
-                <SVG source={uploadSVG} height={20} />
-              </View>
-              <View>
-                <GradientText gradientType="blueExtended">
-                  Browse file
-                </GradientText>
-                <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                  Or drag & drop here
-                </BrandText>
-              </View>
+                <SVG source={bucketSVG} height={16} width={16} />
+              </TouchableOpacity>
+              <img
+                src={file}
+                style={{
+                  overflow: "hidden",
+                  height: FILE_HEIGHT,
+                  width: "100%",
+                  backgroundSize: "cover",
+                }}
+              />
             </div>
-          </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={handleClick}
+              style={{
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <div
+                onDrop={dropHandler}
+                onDragOver={dragOverHandler}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <View
+                  style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 24,
+                    backgroundColor: neutral17,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 20,
+                  }}
+                >
+                  <SVG source={uploadSVG} height={20} />
+                </View>
+                <View>
+                  <GradientText gradientType="blueExtended">
+                    Browse file
+                  </GradientText>
+                  <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                    Or drag & drop here
+                  </BrandText>
+                </View>
+                <input
+                  type="file"
+                  ref={hiddenFileInput}
+                  style={{ display: "none", position: "absolute" }}
+                  onChange={handleChange}
+                  multiple={multiple}
+                  accept={mimeTypes?.join(",")}
+                />
+              </div>
+            </TouchableOpacity>
+          )}
         </PrimaryBox>
       </View>
       {InputComponent}
