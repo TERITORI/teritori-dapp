@@ -28,7 +28,7 @@ export const AddMoreButton: React.FC<AddMoreButtonProps> = ({ onPress }) => {
           }}
           onPress={onPress}
         >
-          <BrandText style={[fontSemibold13]}>Add more</BrandText>
+          <BrandText style={[fontSemibold13]}>More tools</BrandText>
           <View
             style={{
               backgroundColor: neutral22,

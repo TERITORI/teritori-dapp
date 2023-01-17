@@ -34,6 +34,7 @@ const SectionDivider = () => (
 
 interface SocialReactionActionsProps {
   reactions: PostResult["reactions"];
+  isTippable: boolean;
   statStyle?: ViewStyle;
   isComment?: boolean;
   commentCount?: number;
@@ -48,6 +49,7 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
   reactions,
   statStyle,
   isComment,
+  isTippable,
   commentCount,
   onPressReply,
   onPressTip,
@@ -107,11 +109,16 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
         </>
       )}
 
-      <Pressable style={[styles.rowCenter, { zIndex: 9 }]} onPress={onPressTip}>
-        <SVG source={tipSVG} width={20} height={20} />
-        <SpacerRow size={1.5} />
-        <BrandText style={fontSemibold14}>Tip</BrandText>
-      </Pressable>
+      {isTippable && (
+        <Pressable
+          style={[styles.rowCenter, { zIndex: 9 }]}
+          onPress={onPressTip}
+        >
+          <SVG source={tipSVG} width={20} height={20} />
+          <SpacerRow size={1.5} />
+          <BrandText style={fontSemibold14}>Tip</BrandText>
+        </Pressable>
+      )}
       {reactions.length && <SectionDivider />}
 
       <Animated.View style={[styles.rowCenter, reactionAnimation]}>

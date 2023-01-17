@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, ViewStyle } from "react-native";
 
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
@@ -20,8 +20,9 @@ export const ItemPreview = ({
   file: File;
   onDelete: () => void;
 }) => {
+  const [url] = useState(file.path || URL.createObjectURL(file));
   if (IMAGE_MIME_TYPES.includes(file.type)) {
-    return <ImagePreview url={file.path} key={file.name} onDelete={onDelete} />;
+    return <ImagePreview url={url} key={file.name} onDelete={onDelete} />;
   } else {
     return <FilePreview file={file} key={file.name} onDelete={onDelete} />;
   }
