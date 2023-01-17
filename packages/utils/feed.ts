@@ -1,25 +1,17 @@
 export const screenTabItems = {
   news: {
-    name: "News Feed",
+    name: "Jungle News Feed",
   },
   marketPlaceProfile: {
-    name: "Marketplace's Profile",
-    disabled: true,
+    name: "Sound Feed",
   },
   bounties: {
-    name: "Open Bounties & Jobs",
-    disabled: true,
+    name: "Video & Pic Feed",
   },
   governance: {
-    name: "Governance",
-    disabled: true,
+    name: "Articles Feed",
   },
   dao: {
-    name: "Candidate to the DAO",
-    disabled: true,
-  },
-  chat: {
-    name: "Chat",
-    disabled: true,
+    name: "Governance Feed ",
   },
 };

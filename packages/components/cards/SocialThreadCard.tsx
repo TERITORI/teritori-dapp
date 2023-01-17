@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   StyleProp,
   View,
@@ -25,6 +25,7 @@ import {
   getUpdatedReactions,
   SOCIAL_FEED_MAX_IMAGE_WIDTH,
 } from "../../utils/social-feed";
+import { getCommunityHashtag } from "../../utils/socialFeedCommunityHashtags";
 import {
   neutral15,
   neutral22,
@@ -106,6 +107,11 @@ export const SocialThreadCard: React.FC<{
 
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
 
+  const hashtag = useMemo(() => {
+    return getCommunityHashtag(metadata?.hashtags || []);
+  }, [metadata]);
+
+  const currentUserMetadata = useTNSMetadata(wallet?.address);
   const handlePressTip = () => {
     setName(tokenWithoutTld(postByTNSMetadata?.metadata?.tokenId || ""));
     setSendFundsModalVisible(true);
@@ -236,8 +242,8 @@ export const SocialThreadCard: React.FC<{
                   </BrandText>
                 </View>
 
-                {metadata.message.toLowerCase().includes("#gnolang") && (
-                  <DotBadge label="Gnolang" />
+                {!!hashtag && (
+                  <DotBadge label={hashtag.hashtag} dotColor={hashtag.color} />
                 )}
               </View>
 
@@ -280,6 +286,10 @@ export const SocialThreadCard: React.FC<{
                     onPressReaction={handleReaction}
                     showEmojiSelector
                     isReactionLoading={isReactLoading}
+                    isTippable={
+                      postByTNSMetadata.metadata?.tokenId !==
+                      currentUserMetadata?.metadata?.tokenId
+                    }
                   />
                 )}
               </View>
@@ -292,6 +302,10 @@ export const SocialThreadCard: React.FC<{
             onPressTip={handlePressTip}
             onPressReaction={handleReaction}
             isGovernance={isGovernance}
+            isTippable={
+              postByTNSMetadata.metadata?.tokenId !==
+              currentUserMetadata?.metadata?.tokenId
+            }
             singleView={singleView}
             post={localPost}
             style={{

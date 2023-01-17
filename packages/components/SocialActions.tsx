@@ -28,6 +28,7 @@ export const socialActionsHeight = 64;
 
 export const SocialActions: React.FC<{
   isGovernance?: boolean;
+  isTippable: boolean;
   style?: ViewStyle;
   singleView?: boolean;
   post: PostResult;
@@ -37,6 +38,7 @@ export const SocialActions: React.FC<{
 }> = ({
   style,
   isGovernance,
+  isTippable,
   singleView,
   post,
   onPressTip,
@@ -149,6 +151,7 @@ export const SocialActions: React.FC<{
       )}
       {(!isGovernanceAction || containerWidth > 800) && (
         <SocialReactionActions
+          isTippable={isTippable}
           onPressTip={onPressTip}
           reactions={post.reactions}
           onPressReaction={onPressReaction}
