@@ -5,7 +5,6 @@ import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ErrorText } from "../../components/ErrorText";
-import { FilePreviewContainer } from "../../components/FilePreview/UploadedFilePreview/FilePreviewContainer";
 import {
   NewPostFormValues,
   PostCategory,
@@ -214,29 +213,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
           onUpload={(files) => setValue("files", files)}
           mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
         />
-        <FilePreviewContainer
-          style={{
-            marginVertical: layout.padding_x1,
-          }}
-          files={formValues.files}
-          gifs={[]}
-          onDelete={(fileIndex) => {
-            setValue(
-              "files",
-              Array.from(formValues?.files || [])?.filter(
-                (_, index) => index !== fileIndex
-              )
-            );
-          }}
-          onDeleteGIF={(fileIndex) => {
-            setValue(
-              "gifs",
-              (formValues?.gifs || [])?.filter(
-                (_, index) => index !== fileIndex
-              )
-            );
-          }}
-        />
+
         <TextInputCustom<NewPostFormValues>
           label="Give it a title to make long post"
           placeHolder="Type title here"

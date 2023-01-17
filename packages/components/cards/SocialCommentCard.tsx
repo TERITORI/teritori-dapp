@@ -113,6 +113,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
   const metadata = JSON.parse(localComment.metadata);
   const postByTNSMetadata = useTNSMetadata(localComment?.post_by);
+  const currentUserMetadata = useTNSMetadata(wallet?.address);
   const username = postByTNSMetadata?.metadata?.tokenId
     ? tinyAddress(postByTNSMetadata?.metadata?.tokenId || "", 19)
     : DEFAULT_USERNAME;
@@ -283,6 +284,10 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   {localComment.post_by}
                 </BrandText>
                 <SocialReactionActions
+                  isTippable={
+                    postByTNSMetadata.metadata?.tokenId !==
+                    currentUserMetadata?.metadata?.tokenId
+                  }
                   reactions={localComment.reactions}
                   statStyle={styles.stat}
                   isComment

@@ -61,7 +61,7 @@ const styles = react_native_1.StyleSheet.create({
     { minHeight: TOTAL_HEIGHT, maxHeight: TOTAL_HEIGHT },
     react_native_1.Platform.select({
       web: {
-        overflowY: "scroll",
+        overflowY: "hidden",
       },
     })
   ),

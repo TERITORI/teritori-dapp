@@ -98,9 +98,17 @@ const UrlRender = (props: { children: { props: { text: string } }[] }) => {
   return (
     <span
       style={{ color: primaryColor, cursor: "pointer" }}
-      onClick={() =>
-        Linking.openURL(props.children[0].props.text.replace("@", ""))
-      }
+      onClick={() => {
+        let linkText = props.children[0].props.text;
+        if (linkText[0] === "@") {
+          linkText = linkText.substring(1);
+        }
+        if (linkText.startsWith("www")) {
+          linkText = `https://${linkText}`;
+        }
+
+        Linking.openURL(linkText);
+      }}
     >
       {props.children}
     </span>
@@ -292,7 +300,6 @@ export function RichText({
                   <UnderlineButton {...externalProps} />
                   <CodeButton {...externalProps} />
                   <LinkPlugin.LinkButton {...externalProps} />
-
                   <Separator />
                   <HeadlineOneButton {...externalProps} />
                   <HeadlineTwoButton {...externalProps} />

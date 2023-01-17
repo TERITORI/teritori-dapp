@@ -153,11 +153,11 @@ export const NewsFeedInput = React.forwardRef<
 
       const fileURLs: string[] = formValues.gifs || [];
 
-      if (formValues.files?.[0]) {
-        Array.from(formValues.files).forEach(async (file) => {
+      if (formValues.files?.length) {
+        for (const file of formValues.files) {
           const fileData = await nftStorageFile(file);
           fileURLs.push(fileData.data.image.href);
-        });
+        }
       }
 
       const postCategory = getPostCategory(formValues);
@@ -204,13 +204,13 @@ export const NewsFeedInput = React.forwardRef<
     }));
 
     const handleUpload = (files: File[]) => {
-      setValue("files", [...(formValues?.files || []), ...files]);
+      setValue("files", [...files]);
     };
 
     const handleTextChange = (text: string) => {
       setValue("message", text);
 
-      if (text.length > 80 && type === "post") {
+      if (text.length > 2500 && type === "post") {
         redirectToNewPost();
       }
     };
@@ -388,7 +388,6 @@ export const NewsFeedInput = React.forwardRef<
             <FileUploader
               onUpload={(files) => handleUpload(files)}
               mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
-              multiple
             >
               {({ onPress }) => (
                 <TouchableOpacity
