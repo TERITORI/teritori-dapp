@@ -227,7 +227,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   const onPressInvert = () => {
     setCurrencyIn(currencyOut);
     setCurrencyOut(currencyIn);
-    setAmountIn(amountOutWithFee ? amountOutWithFee.toFixed(6) : "0");
+    setAmountIn(amountOutWithFee ? amountOutWithFee.toFixed(6) : "");
   };
   const onPressHalf = () => {
     setAmountIn((parseFloat(currencyInAmount) / 2).toString());
@@ -257,7 +257,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   };
 
   // ---- SWAP OSMOSIS
-  const { swap, spotPrice, fee } = useSwap(slippage, currencyIn, currencyOut);
+  const { swap, spotPrice, fee } = useSwap(currencyIn, currencyOut);
 
   const amountOut: number = useMemo(() => {
     if (!amountIn || parseFloat(amountIn) === 0 || !spotPrice) return 0;

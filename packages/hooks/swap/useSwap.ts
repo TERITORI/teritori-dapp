@@ -1,6 +1,5 @@
 import { coins, isDeliverTxFailure, StdFee } from "@cosmjs/stargate";
 import {
-  calculateAmountWithSlippage,
   CoinValue,
   LcdPool,
   lookupRoutesForTrade,
@@ -26,7 +25,7 @@ import { CurrencyInfo, getNativeCurrency, getNetwork } from "../../networks";
 import { selectSelectedNetworkId } from "../../store/slices/settings";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
 import useSelectedWallet from "../useSelectedWallet";
-// TODO: Same error as in osmosis-frontend for this import, fix it ?
+// TODO: Same error as in @cosmology/core/src/utils/osmo/utils (for example) for this import, fix it ?
 
 export type SwapResult = {
   title: string;
@@ -35,13 +34,13 @@ export type SwapResult = {
 };
 
 export const useSwap = (
-  slippage: number,
   currencyIn?: CurrencyInfo,
   currencyOut?: CurrencyInfo
 ) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const selectedNetwork = getNetwork(selectedNetworkId);
+  const [isMultihop, setIsMultihop] = useState(false);
   const [directPool, setDirectPool] = useState<LcdPool>();
   // Only 2 pools handled for now
   const [multihopPools, setMultihopPools] = useState<LcdPool[]>([]);
@@ -60,12 +59,6 @@ export const useSwap = (
       // TODO: ? SERVICE UNAVAILABLE
     }
   }, [lcdPools]);
-
-  // ===== Cleaning
-  useEffect(() => {
-    setMultihopPools([]);
-    setDirectPool(undefined);
-  }, [currencyIn?.denom, currencyOut?.denom]);
 
   // ===== Pools format used to find FEE
   const cleanedLcdPools = useMemo(() => {
@@ -100,6 +93,7 @@ export const useSwap = (
     return pools;
   }, [lcdPools?.pools]);
 
+  // ===== Searching for pools to use (routes)
   useEffect(() => {
     if (!currencyIn?.denom || !currencyOut?.denom || !cleanedLcdPools) return;
 
@@ -124,6 +118,7 @@ export const useSwap = (
       const prettyPool = lcdPoolPretty(lcdPool);
 
       // We stock the pool that includes the two currencies and has the higher liquidity
+      //TODO: Better tests for that
       if (
         ((lcdPool.poolAssets[0].token.denom === currencyIn.denom &&
           lcdPool.poolAssets[1].token.denom === currencyOut.denom) ||
@@ -139,14 +134,37 @@ export const useSwap = (
     });
     if (bestDirectPool) {
       setDirectPool(bestDirectPool);
-      setMultihopPools([]); // Lock the usage of multihopPools by emptying it
-      return;
     }
 
     // ===== Finding the cheapest pools to make a multihop swap
     // ===> Only if no directPool found, for now! TODO: Allow to use multihop if it directPool found but it's less profitable
     poolsIn.forEach((lcdPoolIn) => {
+      // We want enough OSMO in the pools
+      if (
+        parseFloat(
+          lcdPoolIn.poolAssets.find((asset) => asset.token.denom === "uosmo")
+            ?.token.amount || "1"
+        ) /
+          1000000 <
+        1
+      )
+        return;
+      // We want enough liquidity is the pools
+      if (parseFloat(lcdPoolPretty(lcdPoolIn).liquidity) < 10000000000) return;
+
       poolsOut.forEach((lcdPoolOut) => {
+        if (
+          parseFloat(
+            lcdPoolOut.poolAssets.find((asset) => asset.token.denom === "uosmo")
+              ?.token.amount || "1"
+          ) /
+            1000000 <
+          1
+        )
+          return;
+        if (parseFloat(lcdPoolPretty(lcdPoolOut).liquidity) < 10000000000)
+          return;
+
         // TODO: Ugly! Fix that (+fee+liquidity tests are weirds)
         if (
           ((lcdPoolIn.poolAssets[0].token.denom !== currencyIn.denom &&
@@ -176,11 +194,7 @@ export const useSwap = (
           parseFloat(lcdPoolIn.poolParams.swapFee) <
             parseFloat(cheapestFeePoolIn?.poolParams.swapFee || "9999999999") &&
           parseFloat(lcdPoolOut.poolParams.swapFee) <
-            parseFloat(
-              cheapestFeePoolOut?.poolParams.swapFee || "9999999999"
-            ) &&
-          parseFloat(lcdPoolPretty(lcdPoolIn).liquidity) > 10000000000 &&
-          parseFloat(lcdPoolPretty(lcdPoolOut).liquidity) > 10000000000
+            parseFloat(cheapestFeePoolOut?.poolParams.swapFee || "9999999999")
         ) {
           cheapestFeePoolIn = lcdPoolIn;
           cheapestFeePoolOut = lcdPoolOut;
@@ -188,28 +202,44 @@ export const useSwap = (
       });
     });
 
-    if (!cheapestFeePoolIn || !cheapestFeePoolOut) return;
-    setMultihopPools([cheapestFeePoolIn, cheapestFeePoolOut]);
+    if (cheapestFeePoolIn && cheapestFeePoolOut) {
+      setMultihopPools([cheapestFeePoolIn, cheapestFeePoolOut]);
+    }
   }, [currencyIn?.denom, currencyOut?.denom, cleanedLcdPools]);
 
-  // ===== Getting the cheapest fee between directPool and multihopPools
+  // ===== Getting the cheapest way between directPool and multihopPools
+  useEffect(() => {
+    if (!multihopPools.length && !directPool) return;
+    // Choose the cheapest way if multihop and direct route available
+    if (multihopPools.length && directPool) {
+      const multiHopFee =
+        parseFloat(multihopPools[0].poolParams.swapFee) +
+        parseFloat(multihopPools[1].poolParams.swapFee);
+      const directPoolFee = parseFloat(directPool.poolParams.swapFee);
+      if (multiHopFee > directPoolFee) {
+        setIsMultihop(false);
+      } else {
+        setIsMultihop(true);
+      }
+    }
+    if (multihopPools.length && !directPool) {
+      setIsMultihop(true);
+    }
+    if (!multihopPools.length && directPool) {
+      setIsMultihop(false);
+    }
+  }, [multihopPools, directPool]);
+
+  // ===== Getting fee
   const fee = useMemo(() => {
     if (!multihopPools.length && !directPool) return 0;
-    if (!directPool?.poolParams.swapFee) {
-      setDirectPool(undefined); // Lock the usage of diectPool by emptying it
+    if (isMultihop)
       return (
         parseFloat(multihopPools[0].poolParams.swapFee) +
         parseFloat(multihopPools[1].poolParams.swapFee)
       );
-    } else {
-      setMultihopPools([]); // Lock the usage of multihopPools by emptying it
-      return parseFloat(directPool.poolParams.swapFee);
-    }
-  }, [
-    multihopPools[0]?.poolParams.swapFee,
-    multihopPools[1]?.poolParams.swapFee,
-    directPool?.poolParams.swapFee,
-  ]);
+    else return parseFloat(directPool?.poolParams.swapFee || "0");
+  }, [multihopPools, directPool, isMultihop]);
 
   // ===== Getting the equivalent in tokenOut of 1 tokenIn
   const { data: spotPrice } = useQuery(
@@ -217,19 +247,27 @@ export const useSwap = (
       "spotPrice",
       currencyOut?.denom,
       currencyIn?.denom,
+      isMultihop,
       multihopPools[0]?.id,
       multihopPools[1]?.id,
       directPool?.id,
     ],
     async () => {
-      if (!currencyIn || !currencyOut || !selectedNetwork) return "0";
+      if (
+        !currencyIn ||
+        !currencyOut ||
+        !selectedNetwork ||
+        ((!multihopPools[0] || !multihopPools[1]) && !directPool)
+      )
+        return "0";
       const { createRPCQueryClient } = osmosis.ClientFactory;
       const clientRPC = await createRPCQueryClient({
         rpcEndpoint: selectedNetwork.rpcEndpoint,
       });
 
       // ===== Spot price of the multihopPools
-      if (multihopPools.length) {
+      if (isMultihop) {
+        // We need 2 spot prices corresponding te the 2 pools used for multihop
         let firstRequestSpotPrice: QuerySpotPriceRequest | undefined;
         let lastRequestSpotPrice: QuerySpotPriceRequest | undefined;
         multihopPools.forEach((lcdPool) => {
@@ -237,7 +275,9 @@ export const useSwap = (
             if (asset.token.denom === currencyIn.denom) {
               firstRequestSpotPrice = {
                 poolId: Long.fromString(lcdPool.id),
+                // quote asset is the currencyIn
                 quoteAssetDenom: currencyIn.denom,
+                // base asset is the no currencyIn (Certainly OSMO)
                 baseAssetDenom:
                   lcdPool.poolAssets.find(
                     (asset) => asset.token.denom !== currencyIn.denom
@@ -247,10 +287,12 @@ export const useSwap = (
             if (asset.token.denom === currencyOut.denom) {
               lastRequestSpotPrice = {
                 poolId: Long.fromString(lcdPool.id),
+                // quote asset is the no currencyIn (Certainly OSMO)
                 quoteAssetDenom:
                   lcdPool.poolAssets.find(
                     (asset) => asset.token.denom !== currencyOut.denom
                   )?.token.denom || "",
+                // base asset is the currencyIn
                 baseAssetDenom: currencyOut.denom,
               };
             }
@@ -267,7 +309,7 @@ export const useSwap = (
         ).toString();
       }
       // ===== Spot price of the directPool
-      if (directPool) {
+      else if (directPool) {
         const requestSpotPrice = {
           poolId: Long.fromString(directPool.id),
           baseAssetDenom: currencyOut.denom,
@@ -336,17 +378,12 @@ export const useSwap = (
         return swapAmountInRoute;
       });
 
-      // ==== Handling splippage
-      const amountOutMicroWithSlippage = Math.round(
-        parseFloat(calculateAmountWithSlippage(amountOutMicro, slippage))
-      ).toString();
-
       // ==== Make a trade between two currencies
       const msgValue: MsgSwapExactAmountIn = {
         sender: selectedWallet.address || "",
         routes,
         tokenIn: { denom: currencyIn.denom, amount: amountInMicro } as Coin,
-        tokenOutMinAmount: amountOutMicroWithSlippage,
+        tokenOutMinAmount: "1",
       };
       const msg = swapExactAmountIn(msgValue);
 
@@ -363,12 +400,7 @@ export const useSwap = (
       );
       if (isDeliverTxFailure(txResponse)) {
         console.error("tx failed", txResponse);
-        let message = txResponse.rawLog || "";
-        if (txResponse.code === 7)
-          message =
-            txResponse.rawLog +
-            "\n=> You need to set a higher slippage tolerance";
-
+        const message = txResponse.rawLog || "";
         return {
           isError: true,
           title: "Transaction failed",

@@ -11,8 +11,8 @@ export const junoNetwork: NetworkInfo = {
   iconCircle: "icons/networks/juno-circle.svg",
   currencies: junoCurrencies,
   addressPrefix: "x",
-  restEndpoint: "x",
-  rpcEndpoint: "x",
+  restEndpoint: "https://lcd-juno.keplr.app",
+  rpcEndpoint: "https://rpc-juno.keplr.app",
   stakeCurrency: "x",
   gasPriceStep: {
     low: 0.01,

@@ -1,6 +1,10 @@
 import {
   currencyATOMcolor,
+  currencyETHcolor,
+  currencyEVMOScolor,
+  currencyJUNOcolor,
   currencyOSMOcolor,
+  currencySOLcolor,
   currencyTORIcolor,
 } from "../../utils/style/colors";
 import { NetworkName } from "../NetworkName";
@@ -35,7 +39,7 @@ export const allNativeCurrencies: NativeCurrencyInfo[] = [
     coingeckoId: "ethereum",
     icon: "icons/networks/ethereum-circle.svg",
     kind: "native",
-    color: "#FFFFFF",
+    color: currencyETHcolor,
   },
   {
     denom: "ujuno",
@@ -45,7 +49,17 @@ export const allNativeCurrencies: NativeCurrencyInfo[] = [
     coingeckoId: "juno-network",
     icon: "icons/networks/juno-circle.svg",
     kind: "native",
-    color: "#FFFFFF",
+    color: currencyJUNOcolor,
+  },
+  {
+    denom: "aevmos",
+    displayName: "EVMOS",
+    sourceNetworkDisplayName: NetworkName.Evmos,
+    decimals: 18,
+    coingeckoId: "evmos",
+    icon: "icons/networks/evmos-circle.svg",
+    kind: "native",
+    color: currencyEVMOScolor,
   },
   {
     denom: "uosmo",
@@ -75,7 +89,7 @@ export const allNativeCurrencies: NativeCurrencyInfo[] = [
     coingeckoId: "solana",
     icon: "icons/networks/solana-circle.svg",
     kind: "native",
-    color: "#FFFFFF",
+    color: currencySOLcolor,
   },
   {
     denom: "utori",

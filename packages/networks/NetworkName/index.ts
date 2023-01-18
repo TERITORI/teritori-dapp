@@ -7,6 +7,7 @@ export enum NetworkName {
   OsmosisTestnet = "Osmosis Testnet",
   Juno = "Juno",
   JunoTestnet = "Juno Testnet",
+  Evmos = "Evmos",
   Ethereum = "Ethereum",
   Solana = "Solana",
 }

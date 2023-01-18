@@ -135,7 +135,7 @@ export const Assets: React.FC<{
           const balance = balances.find((bal) => bal.denom === currency.denom);
           return (
             <View
-              key={currency.denom}
+              key={index}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -151,10 +151,14 @@ export const Assets: React.FC<{
                   alignItems: "center",
                 }}
               >
+                {/*TODO: Refactor that : We want SVG with icon-circle (from currencies). And SWG with icon (From network).*/}
+                {/*==> By extension, FIXME: Allow to add currencies to a network WITHOUT adding this network*/}
+                {/*=> CurrencyIcon is useless*/}
                 <CurrencyIcon
                   size={64}
                   networkId={networkId}
                   denom={currency.denom}
+                  icon={currency.icon}
                 />
                 <View style={{ marginLeft: 16 }}>
                   <View

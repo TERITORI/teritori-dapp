@@ -33,7 +33,7 @@ const SelectableItem: React.FC<{
   item?: SlippageItem;
   onPress: () => void;
   isSelected?: boolean;
-}> = ({onPress, isSelected, children }) => {
+}> = ({ onPress, isSelected, children }) => {
   return (
     <Pressable
       style={[

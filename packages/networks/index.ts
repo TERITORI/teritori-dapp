@@ -7,6 +7,7 @@ import { getKeplr } from "../utils/keplr";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosTestnetNetwork } from "./cosmos-hub-testnet";
 import { ethereumNetwork } from "./ethereum";
+import { evmosNetwork } from "./evmos";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
@@ -25,6 +26,7 @@ export const allNetworks: NetworkInfo[] = [
   osmosisTestnetNetwork,
   // TODO: Complete the data for these
   junoNetwork,
+  evmosNetwork,
   ethereumNetwork,
   solanaNetwork,
 ];
@@ -70,6 +72,7 @@ export const getCurrency = (
   if (!networkId || !denom) {
     return undefined;
   }
+
   return getNetwork(networkId)?.currencies.find((c) => c.denom === denom);
 };
 
@@ -89,11 +92,13 @@ export const getNativeCurrency = (
   denom: string | undefined
 ) => {
   const currency = getCurrency(networkId, denom);
+
   if (currency?.kind === "ibc") {
     const ibcNativeCurrency = getCurrency(
       currency.sourceNetwork,
       currency.sourceDenom
     );
+
     if (ibcNativeCurrency?.kind !== "native") {
       return undefined;
     }
