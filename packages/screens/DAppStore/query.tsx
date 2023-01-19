@@ -28,6 +28,7 @@ export function getAvailableApps(): dAppGroup {
       id: "teritori-core-apps",
       groupName: "Teritori Core dApps",
       icon: teritoriSVG,
+      active: true,
       options: {
         "tori-marketplace": {
           id: "tori-marketplace",
@@ -62,6 +63,7 @@ export function getAvailableApps(): dAppGroup {
       id: "top-apps",
       groupName: "Top Apps",
       icon: checklogo,
+      active: true,
       options: {
         Osmosis: {
           id: "Osmosis",
@@ -78,6 +80,7 @@ export function getAvailableApps(): dAppGroup {
     //   id: "external-id",
     //   groupName: "External & Permissionless dApps",
     //   icon: warningTriangle,
+    //   active: true,
     //   options: {
     //     Osmosis: {
     //       id: "Osmosis",
@@ -94,6 +97,7 @@ export function getAvailableApps(): dAppGroup {
       id: "coming-soon",
       groupName: "Coming soon dApps",
       icon: otherAppsIcon,
+      active: true,
       options: {
         astroport: {
           id: "astroport",

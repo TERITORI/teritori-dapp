@@ -15,6 +15,7 @@ export interface dAppGroup {
     id: string;
     groupName: string;
     icon: React.FC<SvgProps>;
+    active: boolean;
     options: {
       [key: string]: dAppType;
     };

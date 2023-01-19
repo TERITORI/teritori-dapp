@@ -1,11 +1,5 @@
-import React, { useRef, useState } from "react";
-import {
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
@@ -14,7 +8,11 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { useDropdowns } from "../../../context/DropdownsProvider";
-import { selectAvailableApps } from "../../../store/slices/dapps-store";
+import {
+  selectAvailableApps,
+  setAvailableApps,
+} from "../../../store/slices/dapps-store";
+import { useAppDispatch } from "../../../store/store";
 import { neutral17, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -31,12 +29,40 @@ const checkBoxStyles = StyleSheet.create({
   },
 });
 
-export const DropdownDappsStoreFilter: React.FC<{
-  style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
+function SelectableOption(props: { name: string; id: string }) {
+  const availableApps = useSelector(selectAvailableApps);
+  const dispatch = useAppDispatch();
+  const group = { ...availableApps[props.id] };
+  const [isChecked, setChecked] = useState(group.active);
+
+  const handleClick = () => {
+    group.active = !isChecked;
+    const newState = {
+      ...availableApps,
+    };
+    newState[props.id] = group;
+    dispatch(setAvailableApps(newState));
+  };
+
+  useEffect(() => {
+    setChecked(group.active);
+  }, [availableApps]);
+
+  return (
+    <Pressable onPress={handleClick}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <CheckboxDappStore isChecked={isChecked} styles={checkBoxStyles} />
+        <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
+          {props.name}
+        </BrandText>
+      </View>
+    </Pressable>
+  );
+}
+
+export const DropdownDappsStoreFilter: React.FC = () => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
-  const [isChecked] = useState(true);
   const availableApps = useSelector(selectAvailableApps);
   const options = Object.values(availableApps).map((option) => {
     return {
@@ -76,7 +102,7 @@ export const DropdownDappsStoreFilter: React.FC<{
       {isDropdownOpen(dropdownRef) && (
         <TertiaryBox
           width={210}
-          style={{ position: "absolute", top: 29, right: 0 }}
+          style={{ position: "relative", top: 29, right: 0 }}
           mainContainerStyle={{
             paddingHorizontal: layout.padding_x3,
             paddingTop: layout.padding_x1,
@@ -85,17 +111,13 @@ export const DropdownDappsStoreFilter: React.FC<{
             alignItems: "flex-start",
           }}
         >
-          {options.map((option, index) => {
+          {options.map((option) => {
             return (
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <CheckboxDappStore
-                  isChecked={isChecked}
-                  styles={checkBoxStyles}
-                />
-                <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
-                  {option.name}
-                </BrandText>
-              </View>
+              <SelectableOption
+                key={option.id}
+                name={option.name}
+                id={option.id}
+              />
             );
           })}
         </TertiaryBox>

@@ -87,6 +87,7 @@ const dAppsStore = createSlice({
   },
 });
 
-export const { setAvailableApps, setCheckedApp, setOrder } = dAppsStore.actions;
+export const { setAvailableApps, setCheckedApp, setOrder, setSelectedApps } =
+  dAppsStore.actions;
 
 export const dAppsReducer = dAppsStore.reducer;

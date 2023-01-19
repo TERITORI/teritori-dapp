@@ -22,7 +22,7 @@ export const RightRail = (props: { searchInput: string }) => {
       }}
     >
       {Object.values(availableApps).map((element, index) => {
-        return (
+        return element.active ? (
           <View
             style={{
               marginBottom: layout.padding_x2,
@@ -66,6 +66,8 @@ export const RightRail = (props: { searchInput: string }) => {
                 })}
             </View>
           </View>
+        ) : (
+          <></>
         );
       })}
     </View>
