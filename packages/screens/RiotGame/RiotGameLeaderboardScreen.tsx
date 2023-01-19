@@ -18,7 +18,6 @@ import { LeaderboardResponse, UserScore } from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
-import { tinyAddress } from "../../components/WalletSelector";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
@@ -61,36 +60,36 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
           });
         }}
       >
-      <Image
-        source={{
-          uri: ipfsURLToHTTPURL(
-            tnsMetadata?.metadata?.image ||
-              process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
-              ""
-          ),
-        }}
-        style={{
-          borderRadius: 999,
-          width: 32,
-          height: 32,
-          aspectRatio: 1,
-        }}
-      />
+        <Image
+          source={{
+            uri: ipfsURLToHTTPURL(
+              tnsMetadata?.metadata?.image ||
+                process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
+                ""
+            ),
+          }}
+          style={{
+            borderRadius: 999,
+            width: 32,
+            height: 32,
+            aspectRatio: 1,
+          }}
+        />
 
-      <BrandText
-        style={[styles.colData, { marginLeft: layout.padding_x1 }]}
-        numberOfLines={1}
-      >
-        {name}
-      </BrandText>
-      <SVG
-        width={16}
-        height={16}
-        color={primaryColor}
-        source={badgeSVG}
-        style={{ marginLeft: layout.padding_x1 }}
-      />
-    </TouchableOpacity>
+        <BrandText
+          style={[styles.colData, { marginLeft: layout.padding_x1 }]}
+          numberOfLines={1}
+        >
+          {name}
+        </BrandText>
+        <SVG
+          width={16}
+          height={16}
+          color={primaryColor}
+          source={badgeSVG}
+          style={{ marginLeft: layout.padding_x1 }}
+        />
+      </TouchableOpacity>
     </FlexRow>
   );
 };
