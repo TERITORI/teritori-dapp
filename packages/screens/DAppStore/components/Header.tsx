@@ -15,6 +15,7 @@ export function Header(props: { setSearchInput: (arg0: string) => void }) {
       style={{
         flex: 1,
         marginTop: 52,
+        zIndex: 2,
         alignSelf: "center",
         alignItems: "center",
         height: 250,
@@ -28,11 +29,7 @@ export function Header(props: { setSearchInput: (arg0: string) => void }) {
         handleChangeText={handleChangeText}
       />
 
-      <DropdownDappsStoreFilter
-        style={{
-          justifyContent: "flex-end",
-        }}
-      />
+      <DropdownDappsStoreFilter />
     </View>
   );
 }

@@ -102,7 +102,7 @@ export const DropdownDappsStoreFilter: React.FC = () => {
       {isDropdownOpen(dropdownRef) && (
         <TertiaryBox
           width={210}
-          style={{ position: "relative", top: 29, right: 0 }}
+          style={{ position: "absolute", top: 29, right: 0 }}
           mainContainerStyle={{
             paddingHorizontal: layout.padding_x3,
             paddingTop: layout.padding_x1,
