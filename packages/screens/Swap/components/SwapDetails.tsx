@@ -55,7 +55,9 @@ export const SwapDetails: React.FC<{
             style={[fontSemibold14, !amountIn && { color: neutralA3 }]}
           >
             1 {tokenNameIn + " "}≈{" "}
-            {spotPrice ? parseFloat(spotPrice).toFixed(6) : "0"}
+            {spotPrice === "0" || !spotPrice
+              ? "0"
+              : parseFloat(spotPrice).toFixed(6)}
             {" " + tokenNameOut}
           </BrandText>
 

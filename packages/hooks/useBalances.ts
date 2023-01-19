@@ -57,7 +57,7 @@ const getNetworkBalances = async (
   address: string
 ): Promise<{ amount: string; denom: string }[]> => {
   const network = getNetwork(networkId);
-  if (!network) {
+  if (!network || !address.includes(network.addressPrefix)) {
     return [];
   }
   const response = await fetch(

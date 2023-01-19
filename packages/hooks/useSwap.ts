@@ -21,11 +21,10 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { CurrencyInfo, getNativeCurrency, getNetwork } from "../../networks";
-import { selectSelectedNetworkId } from "../../store/slices/settings";
-import { getKeplrOfflineSigner } from "../../utils/keplr";
-import useSelectedWallet from "../useSelectedWallet";
-// TODO: Same error as in @cosmology/core/src/utils/osmo/utils (for example) for this import, fix it ?
+import { CurrencyInfo, getNativeCurrency, getNetwork } from "../networks";
+import { selectSelectedNetworkId } from "../store/slices/settings";
+import { getKeplrOfflineSigner } from "../utils/keplr";
+import useSelectedWallet from "./useSelectedWallet";
 
 export type SwapResult = {
   title: string;
@@ -44,6 +43,7 @@ export const useSwap = (
   const [directPool, setDirectPool] = useState<LcdPool>();
   // Only 2 pools handled for now
   const [multihopPools, setMultihopPools] = useState<LcdPool[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // ===== Creating Osmosis client for API use
   const api = new OsmosisApiClient({
@@ -51,7 +51,10 @@ export const useSwap = (
   });
 
   const { data: lcdPools } = useQuery(["lcdPools"], async () => {
-    return await api.getPools();
+    setLoading(true);
+    const pools = await api.getPools();
+    setLoading(false);
+    return pools;
   });
 
   useEffect(() => {
@@ -251,6 +254,7 @@ export const useSwap = (
       multihopPools[0]?.id,
       multihopPools[1]?.id,
       directPool?.id,
+      selectedNetwork?.id,
     ],
     async () => {
       if (
@@ -260,6 +264,9 @@ export const useSwap = (
         ((!multihopPools[0] || !multihopPools[1]) && !directPool)
       )
         return "0";
+
+      setLoading(true);
+
       const { createRPCQueryClient } = osmosis.ClientFactory;
       const clientRPC = await createRPCQueryClient({
         rpcEndpoint: selectedNetwork.rpcEndpoint,
@@ -303,6 +310,9 @@ export const useSwap = (
           await clientRPC.osmosis.gamm.v1beta1.spotPrice(firstRequestSpotPrice);
         const lastResponseSpotPrice =
           await clientRPC.osmosis.gamm.v1beta1.spotPrice(lastRequestSpotPrice);
+
+        setLoading(false);
+
         return (
           parseFloat(firstResponseSpotPrice.spotPrice) *
           parseFloat(lastResponseSpotPrice.spotPrice)
@@ -317,8 +327,13 @@ export const useSwap = (
         };
         const responseSpotPrice =
           await clientRPC.osmosis.gamm.v1beta1.spotPrice(requestSpotPrice);
+
+        setLoading(false);
+
         return responseSpotPrice.spotPrice;
       }
+
+      setLoading(false);
       return "0";
     }
   );
@@ -420,7 +435,7 @@ export const useSwap = (
       } as SwapResult;
     }
   };
-  return { swap, spotPrice, fee };
+  return { swap, spotPrice, fee, loading };
 };
 
 export const amountToCurrencyMicro = (

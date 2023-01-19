@@ -64,7 +64,7 @@ const getNetworkRewardsTotal = async (
   }[]
 > => {
   const network = getNetwork(networkId);
-  if (!network) {
+  if (!network || !address.includes(network.addressPrefix)) {
     return [];
   }
   const response = await fetch(

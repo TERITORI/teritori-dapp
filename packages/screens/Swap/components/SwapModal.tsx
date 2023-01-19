@@ -6,7 +6,13 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
 
 import chevronCircleDown from "../../../../assets/icons/chevron-circle-down.svg";
@@ -24,10 +30,10 @@ import { SpacerColumn } from "../../../components/spacer";
 import { ToastError } from "../../../components/toasts/ToastError";
 import { ToastSuccess } from "../../../components/toasts/ToastSuccess";
 import { DropdownRef, useDropdowns } from "../../../context/DropdownsProvider";
-import { SwapResult, useSwap } from "../../../hooks/swap/useSwap";
 import { useBalances } from "../../../hooks/useBalances";
 import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { SwapResult, useSwap } from "../../../hooks/useSwap";
 import {
   CurrencyInfo,
   getNativeCurrency,
@@ -38,6 +44,7 @@ import { NetworkName } from "../../../networks/NetworkName";
 import { selectSelectedNetworkId } from "../../../store/slices/settings";
 import { Balance } from "../../../utils/coins";
 import {
+  neutral00,
   neutral77,
   neutralA3,
   primaryColor,
@@ -257,7 +264,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   };
 
   // ---- SWAP OSMOSIS
-  const { swap, spotPrice, fee } = useSwap(currencyIn, currencyOut);
+  const { swap, spotPrice, fee, loading } = useSwap(currencyIn, currencyOut);
 
   const amountOut: number = useMemo(() => {
     if (!amountIn || parseFloat(amountIn) === 0 || !spotPrice) return 0;
@@ -463,6 +470,14 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
         />
       </View>
 
+      {/*======= Loader TODO: Ugly, polish that*/}
+      {loading && (
+        <View style={styles.loaderContainer}>
+          <View style={styles.loaderBackground} />
+          <ActivityIndicator size="large" style={styles.loader} />
+        </View>
+      )}
+
       {/*======= We use Toastes here to get above the Modal*/}
       {toastErrorVisible && (
         <ToastError
@@ -484,6 +499,28 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
 };
 
 const styles = StyleSheet.create({
+  loaderContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loaderBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    backgroundColor: neutral00,
+    opacity: 0.6,
+    width: "100%",
+    height: "100%",
+  },
+  loader: {
+    position: "absolute",
+  },
+
   modalHeaderContainer: {
     flexDirection: "row",
     alignItems: "center",

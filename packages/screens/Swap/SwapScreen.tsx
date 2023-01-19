@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -29,6 +30,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   const dispatch = useAppDispatch();
   const [swapModalVisible, setSwapModalVisible] = useState(false);
   const [connectModalVisible, setConnectModalVisible] = useState(false);
+  const isScreenFocused = useIsFocused();
 
   const osmosisConnected = useMemo(
     () =>
@@ -56,16 +58,16 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   };
 
   useEffect(() => {
-    if (osmosisConnected) setConnectModalVisible(false);
+    if (osmosisConnected || !isScreenFocused) setConnectModalVisible(false);
     else setConnectModalVisible(true);
-  }, [osmosisConnected]);
+  }, [osmosisConnected, isScreenFocused]);
 
   return (
     <ScreenContainer headerChildren={<BrandText>Swap</BrandText>}>
       <View style={styles.mainContainer}>
         {!selectedWallet?.address ? (
           <MainConnectWalletButton style={{ alignSelf: "center" }} />
-        ) : osmosisConnected ? (
+        ) : osmosisConnected && isScreenFocused ? (
           <>
             <PrimaryButton
               size="XL"
@@ -89,10 +91,12 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
         )}
       </View>
 
-      <SwapModal
-        visible={swapModalVisible}
-        onClose={() => setSwapModalVisible(false)}
-      />
+      {osmosisConnected && isScreenFocused && (
+        <SwapModal
+          visible={swapModalVisible}
+          onClose={() => setSwapModalVisible(false)}
+        />
+      )}
       <ConnectModal
         onPressConnect={onPressConnect}
         onPressConnectTestnet={onPressConnectTestnet}
