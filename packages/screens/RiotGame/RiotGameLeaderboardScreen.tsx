@@ -18,7 +18,6 @@ import { LeaderboardResponse, UserScore } from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
-import { tinyAddress } from "../../components/WalletSelector";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
@@ -49,7 +48,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   const address = userId.split("-")[1];
   const tnsMetadata = useTNSMetadata(address);
 
-  const name = tinyAddress(tnsMetadata?.metadata?.tokenId || address || "");
+  const name = tnsMetadata?.metadata?.tokenId || address || "";
 
   return (
     <FlexRow width="auto" alignItems="center">
@@ -77,7 +76,10 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
           }}
         />
 
-        <BrandText style={[styles.colData, { marginLeft: layout.padding_x1 }]}>
+        <BrandText
+          style={[styles.colData, { marginLeft: layout.padding_x1 }]}
+          numberOfLines={1}
+        >
           {name}
         </BrandText>
         <SVG
