@@ -55,6 +55,7 @@ import {
   getPostFee,
 } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
+import { useIsMobileView } from "../../hooks/useIsMobileView";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -315,7 +316,7 @@ export const NewsFeedInput = React.forwardRef<
             paddingBottom: layout.padding_x1_5,
             marginTop: -layout.padding_x2_5,
             paddingHorizontal: layout.padding_x2_5,
-            flexDirection: "row",
+            flexDirection: useIsMobileView() ? "column" : "row",
             alignItems: "center",
             justifyContent: "space-between",
             borderRadius: 8,
@@ -343,7 +344,7 @@ export const NewsFeedInput = React.forwardRef<
           </View>
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: useIsMobileView() ? "column" : "row",
               alignItems: "center",
               flex: 1,
               justifyContent: "flex-end",
@@ -399,7 +400,7 @@ export const NewsFeedInput = React.forwardRef<
                     backgroundColor: neutral33,
                     alignItems: "center",
                     justifyContent: "center",
-                    marginRight: layout.padding_x2_5,
+                    marginRight: useIsMobileView() ? 0 : layout.padding_x2_5,
                   }}
                   onPress={onPress}
                 >

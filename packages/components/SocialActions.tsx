@@ -47,9 +47,7 @@ export const SocialActions: React.FC<{
 }) => {
   // variables
   const navigation = useAppNavigation();
-  const { width: containerWidth } = useMaxResolution({
-    responsive: true,
-  });
+  const { width: containerWidth } = useMaxResolution();
   const [isGovernanceAction, setGovernanceAction] = useState(false);
 
   // returns
