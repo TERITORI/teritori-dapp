@@ -13,7 +13,7 @@ import {
 
 export const useMaxResolution = ({
   noMargin = false,
-  responsive = false,
+  responsive = true,
 } = {}) => {
   const { width: windowWidth, height } = useWindowDimensions();
   const { isSidebarExpanded } = useSidebar();

@@ -9,6 +9,7 @@ export const avatarWidth = 40;
 export const topMenuWidth = 332;
 export const smallSidebarWidth = 76;
 export const fullSidebarWidth = 210;
+export const mobileWidth = 768;
 
 const BASE_SIZE = 8;
 
@@ -20,7 +21,7 @@ export const getResponsiveScreenContainerMarginHorizontal = (width: number) => {
   } else if (width >= 576) {
     return 60;
   } else {
-    return 40;
+    return 15;
   }
 };
 
