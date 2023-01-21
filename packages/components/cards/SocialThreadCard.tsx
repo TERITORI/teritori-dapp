@@ -86,9 +86,7 @@ export const SocialThreadCard: React.FC<{
   const { setName } = useTNS();
   const imageMarginRight = layout.padding_x3_5;
   const tertiaryBoxPaddingHorizontal = layout.padding_x3;
-  const { width: containerWidth } = useMaxResolution({
-    responsive: true,
-  });
+  const { width: containerWidth } = useMaxResolution();
   const { mutate, isLoading: isReactLoading } =
     useTeritoriSocialFeedReactPostMutation({
       onSuccess(_data, variables) {

@@ -25,6 +25,7 @@ import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { GradientText } from "../gradientText";
 import { SpacerRow } from "../spacer";
+import { useIsMobileView } from "../../hooks/useIsMobileView";
 
 interface TabDefinition {
   name: string;
@@ -58,12 +59,13 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
     <View
       style={[
         {
-          flexDirection: "row",
+          flexDirection: useIsMobileView() ? "column" : "row",
           borderBottomColor: neutral33,
           alignItems: "center",
           borderBottomWidth: 1,
         },
-        style,
+        useIsMobileView() ? null : style,
+        // style,
       ]}
     >
       {itemsArray.map(([key, item], index) => {
@@ -78,7 +80,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
             }
             disabled={item.disabled}
             style={{
-              height: "100%",
+              height: 64,
               justifyContent: "center",
               marginRight:
                 index !== itemsArray.length - 1 ? layout.padding_x3 : 0,
