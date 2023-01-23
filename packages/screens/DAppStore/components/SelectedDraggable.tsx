@@ -48,14 +48,14 @@ export function SelectedDraggable(props: {
         marginBottom: layout.padding_x1,
       }}
     >
-      <TouchableOpacity onPress={deleteFromList}>
-        <Hoverable
-          onMouseEnter={() => {
-            setShowTrashIcon(true);
-            props.dragHandler(false);
-          }}
-          onMouseLeave={() => props.dragHandler(true)}
-        >
+      <Hoverable
+        onMouseEnter={() => {
+          setShowTrashIcon(true);
+          props.dragHandler(false);
+        }}
+        onMouseLeave={() => props.dragHandler(true)}
+      >
+        <TouchableOpacity onPress={deleteFromList}>
           <SecondaryBox
             noBrokenCorners
             style={{
@@ -85,8 +85,8 @@ export function SelectedDraggable(props: {
               )}
             </BrandText>
           </SecondaryBox>
-        </Hoverable>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </Hoverable>
       <SecondaryBox
         height={50}
         width={256}
