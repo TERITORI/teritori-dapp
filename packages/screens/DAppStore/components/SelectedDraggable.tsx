@@ -123,10 +123,10 @@ export function SelectedDraggable({
               backgroundColor: withAlpha(neutral17, 0.64),
               padding: 2,
             }}
-            width={48}
-            height={48}
+            width={32}
+            height={32}
           >
-            <SVGorImageIcon icon={icon} iconSize={48} />
+            <SVGorImageIcon icon={icon} iconSize={32} />
           </SecondaryBox>
           <View
             style={{
