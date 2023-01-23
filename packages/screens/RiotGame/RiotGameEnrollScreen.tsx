@@ -25,6 +25,7 @@ import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalV2";
 import { SimpleButton } from "./component/SimpleButton";
+import { P2E_PAUSED } from "./settings";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const embeddedVideoUri =
@@ -96,6 +97,15 @@ export const RiotGameEnrollScreen = () => {
   };
 
   const joinTheFight = async () => {
+    // NOTE: temporary code for phase transition
+    if (P2E_PAUSED) {
+      return setToastError({
+        title: "Warning",
+        message: `Season 1 is closed. Philipp Rustov is defeated. 
+        Now wait for the next instructions`,
+      });
+    }
+
     if (!squadStakingConfig) {
       return setToastError({
         title: "Error",

@@ -35,6 +35,7 @@ import {
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
+import { P2E_PAUSED } from "./settings";
 
 type RankProps = {
   changes: number;
@@ -142,7 +143,7 @@ export const RiotGameLeaderboardScreen = () => {
   };
 
   useEffect(() => {
-    fetchLeaderboard();
+    !P2E_PAUSED && fetchLeaderboard();
   }, []);
 
   return (

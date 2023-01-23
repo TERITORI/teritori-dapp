@@ -10,6 +10,7 @@ import { p2eBackendClient } from "../../../utils/backend";
 import { gameHighlight } from "../../../utils/style/colors";
 import { fontMedium24, fontBold9 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { P2E_PAUSED } from "../settings";
 import { FightProgressBar } from "./FightProgressBar";
 
 export const FightBossSection: React.FC = () => {
@@ -52,7 +53,9 @@ export const FightBossSection: React.FC = () => {
     >
       <Image style={styles.enemyThumb} source={defaultEnemyPNG} />
 
-      <BrandText style={fontMedium24}>{currentSeason?.bossName}</BrandText>
+      <BrandText style={fontMedium24}>
+        {P2E_PAUSED ? "Philipp Rustov is defeated." : currentSeason?.bossName}
+      </BrandText>
 
       <FightProgressBar
         containerStyle={{ marginVertical: layout.padding_x1_5 }}
