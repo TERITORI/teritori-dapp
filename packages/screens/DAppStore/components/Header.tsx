@@ -6,9 +6,13 @@ import { SearchInput } from "../../../components/sorts/SearchInput";
 import { fontSemibold28 } from "../../../utils/style/fonts";
 import { DropdownDappsStoreFilter } from "./Dropdown";
 
-export function Header(props: { setSearchInput: (arg0: string) => void }) {
+export function Header({
+  setSearchInput,
+}: {
+  setSearchInput: (arg0: string) => void;
+}) {
   const handleChangeText = (e: string) => {
-    props.setSearchInput(e);
+    setSearchInput(e);
   };
   return (
     <View

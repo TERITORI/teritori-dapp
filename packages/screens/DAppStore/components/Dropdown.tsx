@@ -29,10 +29,10 @@ const checkBoxStyles = StyleSheet.create({
   },
 });
 
-function SelectableOption(props: { name: string; id: string }) {
+function SelectableOption({ id, name }: { name: string; id: string }) {
   const availableApps = useSelector(selectAvailableApps);
   const dispatch = useAppDispatch();
-  const group = { ...availableApps[props.id] };
+  const group = { ...availableApps[id] };
   const [isChecked, setChecked] = useState(group.active);
 
   const handleClick = () => {
@@ -40,7 +40,7 @@ function SelectableOption(props: { name: string; id: string }) {
     const newState = {
       ...availableApps,
     };
-    newState[props.id] = group;
+    newState[id] = group;
     dispatch(setAvailableApps(newState));
   };
 
@@ -53,7 +53,7 @@ function SelectableOption(props: { name: string; id: string }) {
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <CheckboxDappStore isChecked={isChecked} styles={checkBoxStyles} />
         <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
-          {props.name}
+          {name}
         </BrandText>
       </View>
     </Pressable>

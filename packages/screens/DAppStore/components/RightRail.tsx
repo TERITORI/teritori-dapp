@@ -9,7 +9,7 @@ import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
 import { DAppBox } from "./DAppBox";
 
-export const RightRail = (props: { searchInput: string }) => {
+export const RightRail = ({ searchInput }: { searchInput: string }) => {
   const availableApps = useSelector(selectAvailableApps);
 
   return (
@@ -58,9 +58,7 @@ export const RightRail = (props: { searchInput: string }) => {
             >
               {Object.values(element.options)
                 .filter((option: dAppType) =>
-                  option.title
-                    .toLowerCase()
-                    .includes(props.searchInput.toLowerCase())
+                  option.title.toLowerCase().includes(searchInput.toLowerCase())
                 )
                 .map((option: dAppType, index: React.Key) => {
                   return <DAppBox key={index} option={option} />;

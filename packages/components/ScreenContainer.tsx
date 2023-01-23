@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   childrenContainer: {
-    height: "300vh",
     alignSelf: "center",
   },
 });

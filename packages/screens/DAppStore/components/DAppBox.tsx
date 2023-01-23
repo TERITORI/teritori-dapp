@@ -35,10 +35,14 @@ const checkBoxStyles = StyleSheet.create({
   },
 });
 
-export function DAppBox(props: { option: dAppType }) {
+export function DAppBox({
+  option: { description, groupKey, icon, id, title },
+}: {
+  option: dAppType;
+}) {
   const selectedApps = useSelector(selectCheckedApps);
   const dispatch = useAppDispatch();
-  const draggableId = `${props.option.groupKey}*SEPARATOR*${props.option.id}`;
+  const draggableId = `${groupKey}*SEPARATOR*${id}`;
   const [isChecked, setChecked] = useState(selectedApps.includes(draggableId));
 
   const handleClick = () => {
@@ -87,7 +91,7 @@ export function DAppBox(props: { option: dAppType }) {
             height={64}
             cornerWidth={5.5}
           >
-            <SVGorImageIcon icon={props.option.icon} iconSize={48} />
+            <SVGorImageIcon icon={icon} iconSize={48} />
           </SecondaryBox>
           <View
             style={{
@@ -97,7 +101,7 @@ export function DAppBox(props: { option: dAppType }) {
             }}
           >
             <BrandText style={[fontMedium14]} numberOfLines={1}>
-              {props.option.title}
+              {title}
             </BrandText>
             <BrandText
               style={[
@@ -106,7 +110,7 @@ export function DAppBox(props: { option: dAppType }) {
               ]}
               numberOfLines={1}
             >
-              {props.option.description}
+              {description}
             </BrandText>
           </View>
           <CheckboxDappStore isChecked={isChecked} styles={checkBoxStyles} />

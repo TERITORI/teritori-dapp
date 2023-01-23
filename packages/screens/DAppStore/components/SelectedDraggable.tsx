@@ -21,21 +21,25 @@ import { fontBold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
 
-export function SelectedDraggable(props: {
+export function SelectedDraggable({
+  dragHandler,
+  index,
+  option: { groupKey, icon, id, title },
+}: {
   option: dAppType;
   index: number;
   dragHandler: (value: boolean) => void;
 }) {
   const [showTrashIcon, setShowTrashIcon] = useState(false);
   const dispatch = useAppDispatch();
-  const draggableId = `${props.option.groupKey}*SEPARATOR*${props.option.id}`;
+  const draggableId = `${groupKey}*SEPARATOR*${id}`;
   const deleteFromList = () => {
     const action = {
       draggableId,
       isChecked: false,
     };
     dispatch(setCheckedApp(action));
-    props.dragHandler(true);
+    dragHandler(true);
   };
 
   return (
@@ -52,10 +56,10 @@ export function SelectedDraggable(props: {
       <Hoverable
         onMouseEnter={() => {
           setShowTrashIcon(true);
-          props.dragHandler(false);
+          dragHandler(false);
         }}
         onMouseLeave={() => {
-          props.dragHandler(true);
+          dragHandler(true);
         }}
       >
         <TouchableOpacity onPress={deleteFromList}>
@@ -81,11 +85,7 @@ export function SelectedDraggable(props: {
               style={[fontBold12, { color: neutral67 }]}
               numberOfLines={1}
             >
-              {showTrashIcon ? (
-                <TrashIcon size={14} fill="red" />
-              ) : (
-                props.index + 1
-              )}
+              {showTrashIcon ? <TrashIcon size={14} fill="red" /> : index + 1}
             </BrandText>
           </SecondaryBox>
         </TouchableOpacity>
@@ -126,7 +126,7 @@ export function SelectedDraggable(props: {
             width={48}
             height={48}
           >
-            <SVGorImageIcon icon={props.option.icon} iconSize={48} />
+            <SVGorImageIcon icon={icon} iconSize={48} />
           </SecondaryBox>
           <View
             style={{
@@ -136,7 +136,7 @@ export function SelectedDraggable(props: {
             }}
           >
             <BrandText style={[fontBold12]} numberOfLines={1}>
-              {props.option.title}
+              {title}
             </BrandText>
           </View>
           <Bars3Icon size={24} fill={neutral44} />

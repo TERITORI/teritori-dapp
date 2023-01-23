@@ -4,18 +4,21 @@ import { SvgProps } from "react-native-svg";
 
 import { SVG } from "./svg";
 
-export function SVGorImageIcon(props: {
+export function SVGorImageIcon({
+  icon,
+  iconSize,
+}: {
   icon: React.FC<SvgProps> | string;
   iconSize: number;
 }) {
   return (
     <>
-      {typeof props.icon === "function" ? (
-        <SVG source={props.icon} />
+      {typeof icon === "function" ? (
+        <SVG source={icon} />
       ) : (
         <Image
-          source={{ uri: props.icon }}
-          style={{ width: props.iconSize, height: props.iconSize }}
+          source={{ uri: icon }}
+          style={{ width: iconSize, height: iconSize }}
         />
       )}
     </>
