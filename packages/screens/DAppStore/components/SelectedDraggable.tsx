@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Platform, TouchableOpacity, View } from "react-native";
 import { TrashIcon, Bars3Icon } from "react-native-heroicons/solid";
 import { Hoverable } from "react-native-hoverable";
 
@@ -21,7 +21,11 @@ import { fontBold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
 
-export function SelectedDraggable(props: { option: dAppType; index: number }) {
+export function SelectedDraggable(props: {
+  option: dAppType;
+  index: number;
+  dragHandler: (value: boolean) => void;
+}) {
   const [showTrashIcon, setShowTrashIcon] = useState(false);
   const dispatch = useAppDispatch();
   const draggableId = `${props.option.groupKey}*SEPARATOR*${props.option.id}`;
@@ -45,28 +49,43 @@ export function SelectedDraggable(props: { option: dAppType; index: number }) {
       }}
     >
       <TouchableOpacity onPress={deleteFromList}>
-        <SecondaryBox
-          noBrokenCorners
-          style={{ marginLeft: 6 }}
-          mainContainerStyle={{
-            backgroundColor: !showTrashIcon
-              ? withAlpha(neutral33, 0.64)
-              : withAlpha(errorColor, 0.14),
+        <Hoverable
+          onMouseEnter={() => {
+            setShowTrashIcon(true);
+            props.dragHandler(false);
           }}
-          width={32}
-          height={50}
+          onMouseLeave={() => props.dragHandler(true)}
         >
-          <BrandText
-            style={[fontBold12, { color: neutral67 }]}
-            numberOfLines={1}
+          <SecondaryBox
+            noBrokenCorners
+            style={{
+              marginLeft: 6,
+              ...Platform.select({
+                web: {
+                  cursor: "pointer",
+                },
+              }),
+            }}
+            mainContainerStyle={{
+              backgroundColor: !showTrashIcon
+                ? withAlpha(neutral33, 0.64)
+                : withAlpha(errorColor, 0.14),
+            }}
+            width={32}
+            height={50}
           >
-            {showTrashIcon ? (
-              <TrashIcon size={14} fill="red" />
-            ) : (
-              props.index + 1
-            )}
-          </BrandText>
-        </SecondaryBox>
+            <BrandText
+              style={[fontBold12, { color: neutral67 }]}
+              numberOfLines={1}
+            >
+              {showTrashIcon ? (
+                <TrashIcon size={14} fill="red" />
+              ) : (
+                props.index + 1
+              )}
+            </BrandText>
+          </SecondaryBox>
+        </Hoverable>
       </TouchableOpacity>
       <SecondaryBox
         height={50}
@@ -87,6 +106,11 @@ export function SelectedDraggable(props: { option: dAppType; index: number }) {
             flexDirection: "row",
             alignItems: "center",
             width: "100%",
+            ...Platform.select({
+              web: {
+                cursor: "grab",
+              },
+            }),
           }}
         >
           <SecondaryBox

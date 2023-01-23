@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { DraxList, DraxProvider } from "react-native-drax";
 import { useSelector } from "react-redux";
@@ -19,6 +19,7 @@ export const LeftRail = () => {
   const dispatch = useAppDispatch();
   const selectedApps = useSelector(selectCheckedApps);
   const availableApps = useSelector(selectAvailableApps);
+  const [isDraggable, setIsDraggable] = useState(true);
 
   return (
     <View
@@ -47,10 +48,12 @@ export const LeftRail = () => {
                 newData.splice(toIndex, 0, newData.splice(fromIndex, 1)[0]);
                 dispatch(setSelectedApps(newData));
               }}
+              itemsDraggable={isDraggable}
               renderItemContent={({ item, index }) => {
                 const { appId, groupKey } = getValuesFromId(item);
                 return (
                   <SelectedDraggable
+                    dragHandler={setIsDraggable}
                     option={availableApps[groupKey].options[appId]}
                     index={index}
                     key={index}
