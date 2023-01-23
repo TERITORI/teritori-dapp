@@ -18,6 +18,7 @@ export const RightRail = (props: { searchInput: string }) => {
         flex: 1,
         marginLeft: "3em",
         minHeight: 250,
+        maxWidth: 1024,
         paddingTop: layout.padding_x4,
       }}
     >

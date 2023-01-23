@@ -65,29 +65,10 @@ const dAppsStore = createSlice({
       state.selectedApps = newValues;
       persist(state.selectedApps);
     },
-    setOrder: (
-      state,
-      action: PayloadAction<{
-        destination: number;
-        source: number;
-        draggableId: string;
-      }>
-    ) => {
-      const newColumnOrder = Array.from(state.selectedApps);
-      newColumnOrder.splice(action.payload.source, 1);
-      newColumnOrder.splice(
-        action.payload.destination,
-        0,
-        action.payload.draggableId
-      );
-
-      state.selectedApps = newColumnOrder;
-      persist(state.selectedApps);
-    },
   },
 });
 
-export const { setAvailableApps, setCheckedApp, setOrder, setSelectedApps } =
+export const { setAvailableApps, setCheckedApp, setSelectedApps } =
   dAppsStore.actions;
 
 export const dAppsReducer = dAppsStore.reducer;
