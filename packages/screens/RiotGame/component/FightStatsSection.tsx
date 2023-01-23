@@ -20,7 +20,7 @@ import {
 } from "../../../utils/keplr";
 import { yellowDefault } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS } from "../settings";
+import { P2E_PAUSED, TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS } from "../settings";
 import { InfoBox } from "./InfoBox";
 
 type FightStatsSectionProps = {
@@ -120,7 +120,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
       <InfoBox
         size="SM"
         title="Prize Pool"
-        content={`${currentSeason?.totalPrize || 0} ${
+        content={`${P2E_PAUSED ? 0 : currentSeason?.totalPrize || 0} ${
           currentSeason?.denom.toUpperCase() || ""
         }`}
         width={150}
