@@ -35,6 +35,7 @@ export function SelectedDraggable(props: {
       isChecked: false,
     };
     dispatch(setCheckedApp(action));
+    props.dragHandler(true);
   };
 
   return (
@@ -53,7 +54,9 @@ export function SelectedDraggable(props: {
           setShowTrashIcon(true);
           props.dragHandler(false);
         }}
-        onMouseLeave={() => props.dragHandler(true)}
+        onMouseLeave={() => {
+          props.dragHandler(true);
+        }}
       >
         <TouchableOpacity onPress={deleteFromList}>
           <SecondaryBox
