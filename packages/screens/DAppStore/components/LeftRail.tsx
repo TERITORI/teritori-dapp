@@ -60,6 +60,7 @@ export const LeftRail = () => {
                   />
                 );
               }}
+              keyExtractor={(item) => item}
             />
           </View>
         </DraxProvider>
