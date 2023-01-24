@@ -9,8 +9,22 @@ export const avatarWidth = 40;
 export const walletSelectorWidth = 220;
 export const smallSidebarWidth = 76;
 export const fullSidebarWidth = 210;
+export const mobileWidth = 768;
+export const smallMobileWidth = 512;
 
 const BASE_SIZE = 8;
+
+export const getResponsiveScreenContainerMarginHorizontal = (width: number) => {
+  if (width >= 992) {
+    return 140;
+  } else if (width >= 768) {
+    return 80;
+  } else if (width >= 576) {
+    return 60;
+  } else {
+    return 15;
+  }
+};
 
 export const layout = {
   padding_x1: BASE_SIZE,

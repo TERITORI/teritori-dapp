@@ -1,5 +1,6 @@
 import React from "react";
 import { View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import burnSVG from "../../../assets/icons/burn.svg";
 import { BrandText } from "../../components/BrandText";
@@ -21,6 +22,7 @@ import { defaultMemo } from "../../utils/memo";
 import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { smallMobileWidth } from "../../utils/style/layout";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
 
@@ -93,11 +95,13 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
     }
   };
 
+  const { width } = useWindowDimensions();
+
   return (
     <ModalBase
       hideMainSeparator
       onClose={() => onClose()}
-      width={457}
+      width={width < smallMobileWidth ? 0.95 * width : 457}
       contentStyle={{
         backgroundColor: neutral17,
         borderRadius: 8,

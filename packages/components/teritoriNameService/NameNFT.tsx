@@ -27,9 +27,9 @@ export const NameNFT: React.FC<{
             : defaultNameNFT
         }
         style={{
-          width: width - imageMargin * 2,
-          height: width - imageMargin * 2,
-          minHeight: width - imageMargin * 2,
+          width: width - imageMargin * 3,
+          height: width - imageMargin * 3,
+          minHeight: width - imageMargin * 3,
           margin: imageMargin,
         }}
       />

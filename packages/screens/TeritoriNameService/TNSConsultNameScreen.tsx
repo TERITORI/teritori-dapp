@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { CopyToClipboard } from "../../components/CopyToClipboard";
@@ -19,6 +20,7 @@ import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { smallMobileWidth } from "../../utils/style/layout";
 
 const NotOwnerActions: React.FC = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
@@ -119,6 +121,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
 
   const { token, notFound } = useToken(name, process.env.TLD || "");
   const { tokens } = useTokenList();
+  const { width } = useWindowDimensions();
 
   return (
     <ModalBase
@@ -126,7 +129,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
       onBackPress={() => onClose(navigateBackTo)}
       hideMainSeparator
       label={name}
-      width={457}
+      width={width < smallMobileWidth ? 0.95 * width : 480}
       contentStyle={{
         backgroundColor: neutral17,
         borderWidth: 1,
@@ -140,7 +143,8 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
           paddingBottom: 20,
         }}
       >
-        {notFound ? (
+        {/* {notFound ? ( */}
+        {!notFound ? (
           <BrandText>Not found</BrandText>
         ) : (
           <>
@@ -151,6 +155,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
               <NotOwnerActions />
             ) : null}
             {!!token && !!name && (
+              // {1 && (
               <View
                 style={{
                   alignItems: "center",
@@ -164,8 +169,10 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
                 ) : (
                   <>
                     {!!token.contract_address && (
+                      // {1 && (
                       <CopyToClipboard
-                        text={token.contract_address}
+                        // text={token.contract_address}
+                        text={"Contract Address"}
                         squaresBackgroundColor={neutral17}
                       />
                     )}

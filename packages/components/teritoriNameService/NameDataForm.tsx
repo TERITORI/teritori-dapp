@@ -211,7 +211,7 @@ export const NameDataForm: React.FC<{
       <PrimaryButton
         size="XL"
         text={btnLabel}
-        disabled={disabled}
+        // disabled={disabled}
         onPress={handlePressBtn}
         style={{ marginTop: 8, alignSelf: "center" }}
         squaresBackgroundColor={neutral17}

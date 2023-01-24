@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
@@ -13,6 +14,7 @@ import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { smallMobileWidth } from "../../utils/style/layout";
 
 interface TNSExploreScreenProps extends TNSModalCommonProps {}
 
@@ -28,13 +30,16 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
     tokens
   );
 
+  const { width } = useWindowDimensions();
+
   return (
     <ModalBase
       label="Find a name"
       hideMainSeparator
       onClose={() => onClose()}
       modalStatus={name && nameAvailable ? "success" : "danger"}
-      width={457}
+      // modalStatus={"danger"}
+      width={width < smallMobileWidth ? 0.95 * width : 457}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName

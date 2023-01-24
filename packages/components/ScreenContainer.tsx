@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -12,6 +12,7 @@ import {
 
 import { useMaxResolution } from "../hooks/useMaxResolution";
 import {
+  getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
@@ -32,6 +33,10 @@ export const ScreenContainer: React.FC<{
   noScroll?: boolean;
   fullWidth?: boolean;
   smallMargin?: boolean;
+  fixedFooterChildren?: React.ReactNode;
+  responsive?: boolean;
+  onBackPress?: () => void;
+  maxWidth?: number;
 }> = ({
   children,
   headerChildren,
@@ -43,15 +48,28 @@ export const ScreenContainer: React.FC<{
   fullWidth,
   smallMargin,
   customSidebar,
+  fixedFooterChildren,
+  responsive,
+  onBackPress,
+  maxWidth,
 }) => {
   // variables
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
+  const { width: screenWidth } = useMaxResolution({ responsive, noMargin });
+
+  const calculatedWidth = useMemo(
+    () => (maxWidth ? Math.min(maxWidth, screenWidth) : screenWidth),
+    [screenWidth, maxWidth]
+  );
+
   const marginStyle = hasMargin && {
-    marginHorizontal: screenContainerContentMarginHorizontal,
+    marginHorizontal: responsive
+      ? getResponsiveScreenContainerMarginHorizontal(calculatedWidth)
+      : screenContainerContentMarginHorizontal,
   };
-  const { width: maxWidth } = useMaxResolution();
+
   const width = fullWidth ? "100%" : maxWidth;
 
   // returns

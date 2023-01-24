@@ -2,6 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
@@ -33,17 +34,18 @@ import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
+import { smallMobileWidth } from "../../utils/style/layout";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,
 }) => {
-  const width = 417;
+  const { width } = useWindowDimensions();
   const height = 80;
 
   return (
     <View>
       <SVG
-        width={width}
+        width={width < smallMobileWidth ? 328 : 417}
         height={height}
         source={longCardSVG}
         style={{ position: "absolute" }}
@@ -54,9 +56,9 @@ const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
           flexDirection: "row",
           alignItems: "center",
           height,
-          width,
+          width: width < smallMobileWidth ? 328 : 417,
           minHeight: height,
-          minWidth: width,
+          minWidth: width < smallMobileWidth ? 328 : 417,
         }}
       >
         <SVG
@@ -64,7 +66,7 @@ const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
           height={32}
           source={coinSVG}
           style={{
-            marginLeft: 24,
+            marginLeft: width < smallMobileWidth ? 12 : 24,
             marginRight: 12,
           }}
         />
@@ -196,11 +198,13 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     setSuccessModal(false);
   };
 
+  const { width } = useWindowDimensions();
+
   return (
     <ModalBase
       onClose={() => onClose()}
       onBackPress={() => onClose(navigateBackTo)}
-      width={480}
+      width={width < smallMobileWidth ? 0.95 * width : 480}
       scrollable
       label={name}
       hideMainSeparator

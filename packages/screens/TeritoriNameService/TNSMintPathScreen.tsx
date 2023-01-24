@@ -1,6 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
@@ -23,6 +24,7 @@ import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser, tokenWithoutTld } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { smallMobileWidth } from "../../utils/style/layout";
 
 const normalize = (inputString: string) => {
   const invalidChrsRemoved = inputString.replace(/[^a-z0-9\-_]/g, "");
@@ -167,11 +169,13 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
     }
   };
 
+  const { width } = useWindowDimensions();
+
   return (
     <ModalBase
       onClose={() => onClose()}
       onBackPress={() => onClose(navigateBackTo)}
-      width={480}
+      width={width < smallMobileWidth ? 0.95 * width : 457}
       scrollable
       label={name}
       hideMainSeparator

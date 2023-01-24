@@ -1,5 +1,6 @@
 import React from "react";
 import { Linking, View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import { BrandText } from "../../components/BrandText";
@@ -9,6 +10,7 @@ import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useTNS } from "../../context/TNSProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
+import { smallMobileWidth } from "../../utils/style/layout";
 
 const Footer: React.FC<{ tokenId: string }> = ({ tokenId }) => {
   const selectedWallet = useSelectedWallet();
@@ -78,12 +80,13 @@ export const TNSRegisterSuccess: React.FC<TNSRegisterSuccessProps> = ({
   visible,
 }) => {
   const { name } = useTNS();
+  const { width } = useWindowDimensions();
 
   return (
     <ModalBase
       visible={visible}
       onClose={() => onClose()}
-      width={457}
+      width={width < smallMobileWidth ? 0.95 * width : 457}
       label="Success"
       childrenBottom={<Footer tokenId={name + process.env.TLD} />}
     >

@@ -1,6 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
@@ -23,6 +24,7 @@ import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { smallMobileWidth } from "../../utils/style/layout";
 
 interface TNSUpdateNameScreenProps extends TNSModalCommonProps {}
 
@@ -39,6 +41,8 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const userHasCoWallet = useAreThereWallets();
   const contractAddress =
     process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "";
+
+  const { width } = useWindowDimensions();
 
   const initData = async () => {
     try {
@@ -138,7 +142,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
       hideMainSeparator
       onClose={() => onClose()}
       scrollable
-      width={457}
+      width={width < smallMobileWidth ? 0.95 * width : 457}
       contentStyle={{
         backgroundColor: neutral17,
       }}

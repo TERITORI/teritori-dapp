@@ -11,6 +11,8 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSCloseHandler } from "./TNSHomeScreen";
+import { useWindowDimensions } from "react-native";
+import { smallMobileWidth } from "../../utils/style/layout";
 
 interface TNSRegisterScreenProps {
   onClose: TNSCloseHandler;
@@ -27,12 +29,13 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
     name,
     tokens
   );
+  const { width } = useWindowDimensions();
 
   return (
     <ModalBase
       onClose={() => onClose()}
       label="Find a name"
-      width={457}
+      width={width < smallMobileWidth ? 0.95 * width : 457}
       modalStatus={name && nameAvailable ? "success" : "danger"}
       hideMainSeparator
       scrollable
@@ -65,6 +68,9 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
             onPress={() => {
               setName(name);
               onClose("TNSMintName");
+              // onClose("TNSBurnName");
+              // onClose("TNSUpdateName");
+              // onClose("TNSConsultName");
             }}
           />
         ) : null}
