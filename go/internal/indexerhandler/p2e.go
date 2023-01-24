@@ -216,16 +216,17 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 		SeasonID: season.ID,
 	}
 	// Normally, an user score record has to exist here (created when first stake)
+	// HOTFIX: skip score update if there is a problem
 	if err := h.db.Where(q2).First(&userScore).Error; err != nil {
-		return errors.Wrap(err, "failed to get current user score")
-	}
-
-	// Update score
-	if err := h.db.Model(&userScore).
-		UpdateColumn("score", gorm.Expr("score  + ?", stakingDuration)).
-		UpdateColumn("in_progress_score", gorm.Expr("score")).
-		Error; err != nil {
-		return errors.Wrap(err, "failed to update user score")
+		h.logger.Error("failed to get current user score", zap.Error(err))
+	} else {
+		// Update score
+		if err := h.db.Model(&userScore).
+			UpdateColumn("score", gorm.Expr("score  + ?", stakingDuration)).
+			UpdateColumn("in_progress_score", gorm.Expr("score")).
+			Error; err != nil {
+			return errors.Wrap(err, "failed to update user score")
+		}
 	}
 
 	// Update lockedOn: remove lockedOn
