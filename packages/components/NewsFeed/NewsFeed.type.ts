@@ -1,5 +1,6 @@
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { OpenGraphType } from "../../hooks/feed/types";
+import { LocalFileData, RemoteFileData } from "../../utils/types/feed";
 
 export enum PostCategory {
   Reaction,
@@ -13,10 +14,11 @@ export enum PostCategory {
 
 export interface NewPostFormValues {
   title?: string;
-  message: string;
-  files?: File[];
-  gifs?: string[];
   hashtags: string[];
+  message: string;
+  files?: LocalFileData[];
+  gifs?: string[];
+  nftStorageApiToken?: string;
 }
 
 export interface PostResultExtra extends PostResult {
@@ -26,7 +28,7 @@ export interface PostResultExtra extends PostResult {
 export interface SocialFeedMetadata {
   title: string;
   message: string;
-  fileURLs?: string[];
+  files?: RemoteFileData[];
   hashtags: string[];
   createdAt: string;
   updatedAt: string;

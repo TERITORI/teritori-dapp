@@ -1,81 +1,50 @@
 import { Audio, AVPlaybackStatus } from "expo-av";
-import React, { useEffect, useState } from "react";
-import { View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React, { useMemo, useState } from "react";
+import { View, Image, TouchableOpacity } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { getAudioDuration } from "../../utils/audio";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral00, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { AudioWaveform } from "./AudioWavefrom";
-import { FileViewerProps } from "./FilePreview.type";
+import { AudioWaveform } from "./AudioWaveform";
 
-const getDuration = (millis: number | undefined) => {
-  if (!millis) {
-    return "00:00";
+const THUMBNAIL_WIDTH = 180;
+
+const getWidth = (width: number, hasThumbnail: boolean) => {
+  if (width > 900) {
+    return 900 - 380 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+  } else {
+    return width - 380 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
   }
-
-  const totalSec = millis / 1000;
-
-  let hours: string | number = Math.floor(totalSec / 3600);
-  let minutes: string | number = Math.floor((totalSec - hours * 3600) / 60);
-  let seconds: string | number = Math.floor(
-    totalSec - hours * 3600 - minutes * 60
-  );
-
-  if (hours < 10) {
-    hours = "0" + hours;
-  }
-  if (minutes < 10) {
-    minutes = "0" + minutes;
-  }
-  if (seconds < 10) {
-    seconds = "0" + seconds;
-  }
-
-  const minuteDuration = minutes + ":" + seconds;
-
-  return Number(hours) ? hours + ":" + minuteDuration : minuteDuration;
 };
 
-const sleep = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
-
-export const AudioPreview: React.FC<FileViewerProps> = ({ fileURL }) => {
+export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
   const [sound, setSound] = useState<Audio.Sound>();
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
-  const [isLoaded, setLoaded] = useState(false);
-
-  const loadFix = async (sound: Audio.Sound) => {
-    try {
-      await sound?.playAsync();
-      await sleep(2000);
-      await sound?.pauseAsync();
-      await sound?.setPositionAsync(0);
-      setLoaded(true);
-      await sound?.setVolumeAsync(1);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const duration = useMemo(
+    () => getAudioDuration(file.audioMetadata?.duration),
+    [file]
+  );
 
   const loadSound = async () => {
     const { sound } = await Audio.Sound.createAsync(
-      { uri: fileURL },
-      { progressUpdateIntervalMillis: 400, volume: 0 },
+      { uri: ipfsURLToHTTPURL(file.url) },
+      { progressUpdateIntervalMillis: 400 },
       (status) => setPlaybackStatus(status)
     );
     setSound(sound);
-    await loadFix(sound);
   };
 
   const handlePlayPause = async () => {
-    if (playbackStatus?.isLoaded && playbackStatus.isPlaying) {
+    if (playbackStatus?.isLoaded && playbackStatus?.isPlaying) {
       await sound?.pauseAsync();
     } else {
       await sound?.playAsync();
@@ -90,16 +59,23 @@ export const AudioPreview: React.FC<FileViewerProps> = ({ fileURL }) => {
       : undefined;
   }, [sound]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     loadSound();
   }, []);
+
+  const positionPercent =
+    ((playbackStatus?.isLoaded && playbackStatus?.positionMillis) || 0) /
+    ((playbackStatus?.isLoaded && playbackStatus?.durationMillis) || 1);
+
+  const { width } = useMaxResolution();
+
+  const hasThumbnail = typeof file?.thumbnailFileData?.url === "string";
   return (
     <View
       style={{
-        padding: layout.padding_x1,
+        paddingVertical: layout.padding_x3,
         flexDirection: "row",
         alignItems: "center",
-        width: 300,
       }}
     >
       <TouchableOpacity
@@ -117,8 +93,7 @@ export const AudioPreview: React.FC<FileViewerProps> = ({ fileURL }) => {
           justifyContent: "center",
         }}
       >
-        {!isLoaded ||
-        (playbackStatus?.isLoaded && playbackStatus?.isBuffering) ? (
+        {playbackStatus?.isLoaded && playbackStatus?.isBuffering ? (
           <ActivityIndicator size={14} color={secondaryColor} />
         ) : (
           <SVG
@@ -138,37 +113,77 @@ export const AudioPreview: React.FC<FileViewerProps> = ({ fileURL }) => {
         )}
       </TouchableOpacity>
 
-      {playbackStatus?.isLoaded && isLoaded && (
+      <View
+        style={{
+          marginLeft: layout.padding_x1_5,
+          flex: 1,
+        }}
+      >
         <View
           style={{
-            marginLeft: layout.padding_x1_5,
-            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 8,
-            }}
-          >
-            <BrandText style={[fontSemibold14]}>
-              {getDuration(playbackStatus.positionMillis)}
-            </BrandText>
-            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              {getDuration(playbackStatus.durationMillis)}
-            </BrandText>
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 8,
+                marginLeft: layout.padding_x1_5,
+              }}
+            >
+              <BrandText style={[fontSemibold14]}>
+                {getAudioDuration(
+                  (playbackStatus?.isLoaded &&
+                    playbackStatus?.positionMillis) ||
+                    0
+                )}
+              </BrandText>
+              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                {duration}
+              </BrandText>
+            </View>
+            <View
+              style={{
+                overflow: "hidden",
+                width: getWidth(width, hasThumbnail),
+              }}
+            >
+              <AudioWaveform
+                waveFormContainerWidth={getWidth(width, hasThumbnail)}
+                waveform={file.audioMetadata?.waveform || []}
+                positionPercent={positionPercent}
+                duration={
+                  playbackStatus?.isLoaded
+                    ? playbackStatus?.durationMillis || 0
+                    : 1
+                }
+                currentDuration={
+                  playbackStatus?.isLoaded ? playbackStatus?.positionMillis : 0
+                }
+              />
+            </View>
           </View>
-          <AudioWaveform
-            fileURL={fileURL}
-            positionPercent={
-              playbackStatus.positionMillis /
-              (playbackStatus.durationMillis || 1)
-            }
-          />
+
+          {hasThumbnail && (
+            <Image
+              source={{
+                uri: ipfsURLToHTTPURL(file?.thumbnailFileData?.url || ""),
+              }}
+              resizeMode="contain"
+              style={{
+                height: THUMBNAIL_WIDTH,
+                width: THUMBNAIL_WIDTH,
+                marginLeft: layout.padding_x1,
+              }}
+            />
+          )}
         </View>
-      )}
+      </View>
     </View>
   );
 };

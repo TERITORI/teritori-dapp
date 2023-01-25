@@ -10,6 +10,7 @@ import {
   TextStyle,
 } from "react-native";
 
+import { useIsMobileView } from "../../hooks/useIsMobileView";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -25,7 +26,6 @@ import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { GradientText } from "../gradientText";
 import { SpacerRow } from "../spacer";
-import { useIsMobileView } from "../../hooks/useIsMobileView";
 
 interface TabDefinition {
   name: string;

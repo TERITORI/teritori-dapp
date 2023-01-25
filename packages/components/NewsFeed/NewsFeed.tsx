@@ -10,9 +10,9 @@ import Animated, {
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { combineFetchFeedPages, useFetchFeed } from "../../hooks/useFetchFeed";
 import { layout } from "../../utils/style/layout";
+import { NEWS_FEED_MAX_WIDTH } from "../../utils/types/feed";
 import { RefreshButton } from "../RefreshButton";
 import { SocialThreadCard } from "../cards/SocialThreadCard";
-import { Footer } from "../footers/Footer";
 import { NewsFeedInput } from "./NewsFeedInput";
 
 const SCROLL_OFFSET_VALUE = 240;
@@ -88,14 +88,17 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     }
   };
 
-  // returns
-  const ListFooterComponent = useCallback(() => <Footer />, []);
-
   const ListHeaderComponent = useCallback(
     () => (
       <View>
         <Header />
-        {hasInput && <NewsFeedInput type="post" onSubmitSuccess={refetch} />}
+        {hasInput && (
+          <NewsFeedInput
+            type="post"
+            onSubmitSuccess={refetch}
+            style={{ maxWidth: NEWS_FEED_MAX_WIDTH }}
+          />
+        )}
         <Animated.View
           style={[{ paddingVertical: layout.padding_x1 }, animationStyle]}
         >
@@ -112,32 +115,32 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   );
 
   return (
-    <>
-      <Animated.FlatList
-        scrollEventThrottle={0.1}
-        data={posts as PostResult[]}
-        renderItem={({ item: post, index }) => (
-          <SocialThreadCard
-            post={post}
-            style={{ marginBottom: 74 }}
-            allowTruncation
-          />
-        )}
-        ListHeaderComponentStyle={{ zIndex: 1 }}
-        ListHeaderComponent={ListHeaderComponent}
-        keyExtractor={(item: PostResult) => item.identifier}
-        onScroll={scrollHandler}
-        ListFooterComponent={ListFooterComponent}
-        contentContainerStyle={styles.content}
-        onEndReachedThreshold={1}
-        onEndReached={onEndReached}
-      />
-    </>
+    <Animated.FlatList
+      scrollEventThrottle={0.1}
+      data={posts as PostResult[]}
+      renderItem={({ item: post, index }) => (
+        <SocialThreadCard
+          post={post}
+          style={{ marginBottom: 74 }}
+          allowTruncation
+        />
+      )}
+      ListHeaderComponentStyle={{ zIndex: 1 }}
+      ListHeaderComponent={ListHeaderComponent}
+      keyExtractor={(item: PostResult) => item.identifier}
+      onScroll={scrollHandler}
+      contentContainerStyle={styles.content}
+      onEndReachedThreshold={1}
+      onEndReached={onEndReached}
+    />
   );
 };
 
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: layout.contentPadding,
+    alignSelf: "center",
+    maxWidth: NEWS_FEED_MAX_WIDTH,
+    width: "100%",
   },
 });

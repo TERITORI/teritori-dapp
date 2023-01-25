@@ -28,7 +28,7 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
     useState<keyof typeof screenTabItems>("news");
 
   return (
-    <ScreenContainer responsive footerChildren={<></>} fullWidth noScroll>
+    <ScreenContainer responsive fullWidth noScroll footerChildren={<></>}>
       <SelectedTabContent
         selectedTab={selectedTab}
         Header={() => (

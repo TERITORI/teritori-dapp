@@ -63,6 +63,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
   error?: string;
+  fullWidth?: boolean;
 }
 
 export const Label: React.FC<{
@@ -114,6 +115,7 @@ export const TextInputCustom = <T extends FieldValues>({
   containerStyle,
   boxMainContainerStyle,
   error,
+  fullWidth,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
