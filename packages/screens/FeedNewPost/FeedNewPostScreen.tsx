@@ -5,6 +5,7 @@ import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ErrorText } from "../../components/ErrorText";
+import { NFTKeyModal } from "../../components/NewsFeed/NFTKeyModal";
 import {
   NewPostFormValues,
   PostCategory,
@@ -36,7 +37,6 @@ import { neutral00 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { AddMoreButton } from "./AddMoreButton";
-import { NFTKeyModal } from "../../components/NewsFeed/NFTKeyModal";
 
 export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
   route: { params },
