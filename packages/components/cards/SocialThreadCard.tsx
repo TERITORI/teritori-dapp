@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   StyleProp,
   View,
@@ -123,6 +123,10 @@ export const SocialThreadCard: React.FC<{
       },
     });
   };
+
+  useEffect(() => {
+    setLocalPost(post);
+  }, [post]);
 
   return (
     <AnimationFadeIn style={[style]} delay={fadeInDelay}>
