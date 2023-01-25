@@ -94,11 +94,9 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     feedInputRef.current?.focusInput();
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchPost();
-    }, [wallet?.connected])
-  );
+  useEffect(() => {
+    fetchPost();
+  }, [id, wallet?.connected]);
 
   useEffect(() => {
     refetch();
