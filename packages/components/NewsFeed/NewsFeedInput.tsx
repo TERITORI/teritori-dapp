@@ -1,4 +1,3 @@
-import { omit } from "lodash";
 import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -16,7 +15,6 @@ import { v4 as uuidv4 } from "uuid";
 import cameraSVG from "../../../assets/icons/camera.svg";
 import penSVG from "../../../assets/icons/pen.svg";
 import priceSVG from "../../../assets/icons/price.svg";
-import { nftStorageFile } from "../../candymachine/nft-storage-upload";
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { useCreatePost } from "../../hooks/feed/useCreatePost";
 import { useBalances } from "../../hooks/useBalances";
@@ -58,9 +56,11 @@ import { SpacerRow } from "../spacer";
 import { NFTKeyModal } from "./NFTKeyModal";
 import { NewPostFormValues, SocialFeedMetadata } from "./NewsFeed.type";
 import {
+  generatePostMetadata,
   getAvailableFreePost,
   getPostCategory,
   getPostFee,
+  uploadPostFilesToNFTStorage,
 } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
 
@@ -175,35 +175,13 @@ export const NewsFeedInput = React.forwardRef<
           replyTo?.parentId &&
           formValues.message.includes(`@${replyTo.username}`);
 
-        const files: RemoteFileData[] = [];
+        let files: RemoteFileData[] = [];
 
         if (formValues.files?.length && nftStorageApiToken) {
-          for (const file of formValues.files) {
-            const fileData = await nftStorageFile({
-              file: file.file,
-              nftStorageApiToken,
-            });
-
-            if (file.thumbnailFileData) {
-              const thumbnailData = await nftStorageFile({
-                file: file.thumbnailFileData.file,
-                nftStorageApiToken,
-              });
-              files.push({
-                ...omit(file, "file"),
-                url: fileData.data.image.href,
-                thumbnailFileData: {
-                  ...omit(file.thumbnailFileData, "file"),
-                  url: thumbnailData.data.image.href,
-                },
-              });
-            } else {
-              files.push({
-                ...omit(file, "file"),
-                url: fileData.data.image.href,
-              });
-            }
-          }
+          files = await uploadPostFilesToNFTStorage({
+            files: formValues.files,
+            nftStorageApiToken,
+          });
         }
 
         const postCategory = getPostCategory(formValues);
@@ -212,14 +190,12 @@ export const NewsFeedInput = React.forwardRef<
           walletAddress: wallet?.address || "",
         });
 
-        const metadata: SocialFeedMetadata = {
+        const metadata: SocialFeedMetadata = generatePostMetadata({
           title: formValues.title || "",
           message: formValues.message || "",
           files,
           hashtags: [],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
+        });
 
         await mutate({
           client,

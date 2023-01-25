@@ -23,7 +23,7 @@ import { DeleteButton } from "./DeleteButton";
 interface AudioPreviewProps {
   file: LocalFileData;
   onDelete: () => void;
-  onUploadThumbnail: (file: File) => void;
+  onUploadThumbnail: (file: LocalFileData) => void;
 }
 
 export const AudioPreview: React.FC<AudioPreviewProps> = ({
@@ -175,6 +175,7 @@ export const AudioPreview: React.FC<AudioPreviewProps> = ({
             }}
           >
             <AudioWaveform
+              waveFormContainerWidth={840}
               waveform={file.audioMetadata?.waveform}
               positionPercent={positionPercent}
               duration={
