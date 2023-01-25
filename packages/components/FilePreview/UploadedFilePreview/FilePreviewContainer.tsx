@@ -53,7 +53,7 @@ export const FilePreviewContainer: React.FC<FilePreviewContainerProps> = ({
         />
       )}
       {files?.[0]?.fileType === "video" && (
-        <VideoPreview file={files[0]} onDelete={onDelete} />
+        <VideoPreview file={files[0]} onDelete={onDelete} isEditable />
       )}
     </View>
   );

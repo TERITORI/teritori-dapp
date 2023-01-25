@@ -36,6 +36,7 @@ import { neutral00 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { AddMoreButton } from "./AddMoreButton";
+import { NFTKeyModal } from "../../components/NewsFeed/NFTKeyModal";
 
 export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
   route: { params },
@@ -50,6 +51,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
   const [isAddMoreVisible, setIsAddMoreVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const oldUrlMatch = useRef<string>();
+  const [isNFTKeyModal, setIsNFTKeyModal] = useState(false);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -106,7 +108,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     setPostCategory(getPostCategory(formValues));
   };
 
-  const initSubmit = async () => {
+  const initSubmit = async (nftStorageApiToken: string) => {
     const toriBalance = balances.find((bal) => bal.denom === "utori");
     if (postFee > Number(toriBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
@@ -118,6 +120,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
       fee: postFee,
       formValues,
       openGraph: data,
+      nftStorageApiToken,
     });
   };
 
@@ -125,9 +128,13 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Feed");
 
   const onSubmit = async () => {
+    if (formValues.files && !formValues.nftStorageApiToken) {
+      return setIsNFTKeyModal(true);
+    }
+
     setLoading(true);
     try {
-      await initSubmit();
+      await initSubmit(formValues.nftStorageApiToken || "");
       setToastSuccess({ title: "Post submitted successfully.", message: "" });
       navigateBack();
       reset();
@@ -193,6 +200,17 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
       }
       footerChildren
     >
+      {isNFTKeyModal && (
+        <NFTKeyModal
+          onClose={(key?: string) => {
+            if (key) {
+              setValue("nftStorageApiToken", key);
+              initSubmit(key);
+            }
+            setIsNFTKeyModal(false);
+          }}
+        />
+      )}
       <NotEnoughFundModal
         onClose={() => setNotEnoughFundModal(false)}
         visible={isNotEnoughFundModal}
