@@ -2,6 +2,7 @@ import { Video, ResizeMode } from "expo-av";
 import React from "react";
 import { View } from "react-native";
 
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 import { DeleteButton } from "./DeleteButton";
 
@@ -29,7 +30,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({
           height: 400,
         }}
         source={{
-          uri: file.url,
+          uri: ipfsURLToHTTPURL(file.url),
         }}
         useNativeControls
         resizeMode={ResizeMode.CONTAIN}

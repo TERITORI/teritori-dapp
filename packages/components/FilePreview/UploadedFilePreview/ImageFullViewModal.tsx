@@ -41,6 +41,8 @@ const IconBox = ({ source, style, onPress }: IconBoxProps) => {
         backgroundColor: neutral22,
         borderWidth: 1,
         borderColor: neutral33,
+        zIndex: 9999,
+        elevation: 99,
       }}
     >
       <SVG source={source} height={30} width={30} />

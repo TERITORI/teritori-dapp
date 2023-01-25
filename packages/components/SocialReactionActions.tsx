@@ -119,7 +119,7 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
           <BrandText style={fontSemibold14}>Tip</BrandText>
         </Pressable>
       )}
-      {reactions.length && <SectionDivider />}
+      {!!reactions.length && <SectionDivider />}
 
       <Animated.View style={[styles.rowCenter, reactionAnimation]}>
         {isReactionLoading && (
@@ -150,7 +150,6 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
 
       {showEmojiSelector && (
         <>
-          <SectionDivider />
           <EmojiSelector
             onEmojiSelected={onPressReaction}
             isLoading={isReactionLoading}
