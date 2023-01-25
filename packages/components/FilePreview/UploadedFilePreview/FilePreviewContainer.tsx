@@ -1,38 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, ViewStyle } from "react-native";
 
-import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import { FilePreview } from "./FilePreview";
+import { layout } from "../../../utils/style/layout";
+import { LocalFileData } from "../../../utils/types/feed";
+import { AudioPreview } from "./AudioPreview";
 import { ImagePreview } from "./ImagePreview";
+import { VideoPreview } from "./VideoPreview";
 
 interface FilePreviewContainerProps {
   style?: ViewStyle;
-  files?: File[];
+  files?: LocalFileData[];
   gifs?: string[];
-  onDelete: (index: number) => void;
+  onDelete: (index?: number | string) => void;
   onDeleteGIF: (index: number) => void;
+  onUploadThumbnail: (file: LocalFileData) => void;
 }
-
-export const ItemPreview = ({
-  file,
-  onDelete,
-}: {
-  file: File;
-  onDelete: () => void;
-}) => {
-  const [url] = useState(file.path || URL.createObjectURL(file));
-  if (IMAGE_MIME_TYPES.includes(file.type)) {
-    return <ImagePreview url={url} key={file.name} onDelete={onDelete} />;
-  } else {
-    return <FilePreview file={file} key={file.name} onDelete={onDelete} />;
-  }
-};
 
 export const FilePreviewContainer: React.FC<FilePreviewContainerProps> = ({
   files,
   gifs,
   onDelete,
   onDeleteGIF,
+  onUploadThumbnail,
   style,
 }) => {
   if (!files?.length && !gifs?.length) {
@@ -43,21 +32,29 @@ export const FilePreviewContainer: React.FC<FilePreviewContainerProps> = ({
     <View
       style={[
         {
-          flexDirection: "row",
+          width: "100%",
+          marginBottom: layout.padding_x2,
+          paddingHorizontal: layout.padding_x2,
         },
-        style,
       ]}
     >
-      {(files || []).map((file, index) => (
-        <ItemPreview file={file} key={index} onDelete={() => onDelete(index)} />
-      ))}
-      {(gifs || []).map((gif, index) => (
-        <ImagePreview
-          url={gif}
-          key={index}
-          onDelete={() => onDeleteGIF(index)}
+      {files?.[0]?.fileType === "audio" && (
+        <AudioPreview
+          file={files[0]}
+          onDelete={() => onDelete()}
+          onUploadThumbnail={onUploadThumbnail}
         />
-      ))}
+      )}
+      {files?.[0]?.fileType === "image" && (
+        <ImagePreview
+          files={files}
+          onDelete={(url) => onDelete(url)}
+          isEditable
+        />
+      )}
+      {files?.[0]?.fileType === "video" && (
+        <VideoPreview file={files[0]} onDelete={onDelete} />
+      )}
     </View>
   );
 };
