@@ -1,3 +1,4 @@
+import { omit } from "lodash";
 import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -19,10 +20,15 @@ import { nftStorageFile } from "../../candymachine/nft-storage-upload";
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { useCreatePost } from "../../hooks/feed/useCreatePost";
 import { useBalances } from "../../hooks/useBalances";
+import { useIsMobileView } from "../../hooks/useIsMobileView";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ReplyToType } from "../../screens/FeedPostView/types";
 import { defaultSocialFeedFee } from "../../utils/fee";
-import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
+import {
+  AUDIO_MIME_TYPES,
+  IMAGE_MIME_TYPES,
+  VIDEO_MIME_TYPES,
+} from "../../utils/mime";
 import { useAppNavigation } from "../../utils/navigation";
 import { SOCIAL_FEED_MAX_CHAR_LIMIT } from "../../utils/social-feed";
 import {
@@ -39,6 +45,7 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { replaceBetweenString } from "../../utils/text";
+import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { EmojiSelector } from "../EmojiSelector";
 import { FilePreviewContainer } from "../FilePreview/UploadedFilePreview/FilePreviewContainer";
@@ -48,6 +55,7 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { FileUploader } from "../fileUploader";
 import { SpacerRow } from "../spacer";
+import { NFTKeyModal } from "./NFTKeyModal";
 import { NewPostFormValues, SocialFeedMetadata } from "./NewsFeed.type";
 import {
   getAvailableFreePost,
@@ -55,7 +63,6 @@ import {
   getPostFee,
 } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
-import { useIsMobileView } from "../../hooks/useIsMobileView";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -85,14 +92,17 @@ export const NewsFeedInput = React.forwardRef<
     const wallet = useSelectedWallet();
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
+    const isMobile = useIsMobileView();
+    const [isNFTKeyModal, setIsNFTKeyModal] = useState(false);
     const [postFee, setPostFee] = useState(0);
     const [freePostCount, setFreePostCount] = useState(0);
     const navigation = useAppNavigation();
+    const [isLoading, setLoading] = useState(false);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
       end: 10,
     });
-    const { mutate, isLoading } = useCreatePost({
+    const { mutate, isLoading: isMutateLoading } = useCreatePost({
       onMutate: () => {
         onSubmitInProgress && onSubmitInProgress();
       },
@@ -110,6 +120,7 @@ export const NewsFeedInput = React.forwardRef<
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
         defaultValues: {
+          nftStorageApiToken: "",
           title: "",
           message: "",
           files: [],
@@ -144,52 +155,91 @@ export const NewsFeedInput = React.forwardRef<
     }, [formValues]);
 
     const onSubmit = async () => {
+      if (formValues.files && !formValues.nftStorageApiToken) {
+        return setIsNFTKeyModal(true);
+      }
+      processSubmit();
+    };
+
+    const processSubmit = async (
+      nftStorageApiToken = formValues.nftStorageApiToken
+    ) => {
       const toriBalance = balances.find((bal) => bal.denom === "utori");
       if (postFee > Number(toriBalance?.amount) && !freePostCount) {
         return setNotEnoughFundModal(true);
       }
-      const hasUsername =
-        replyTo?.parentId &&
-        formValues.message.includes(`@${replyTo.username}`);
 
-      const fileURLs: string[] = formValues.gifs || [];
+      setLoading(true);
+      try {
+        const hasUsername =
+          replyTo?.parentId &&
+          formValues.message.includes(`@${replyTo.username}`);
 
-      if (formValues.files?.length) {
-        for (const file of formValues.files) {
-          const fileData = await nftStorageFile(file);
-          fileURLs.push(fileData.data.image.href);
+        const files: RemoteFileData[] = [];
+
+        if (formValues.files?.length && nftStorageApiToken) {
+          for (const file of formValues.files) {
+            const fileData = await nftStorageFile({
+              file: file.file,
+              nftStorageApiToken,
+            });
+
+            if (file.thumbnailFileData) {
+              const thumbnailData = await nftStorageFile({
+                file: file.thumbnailFileData.file,
+                nftStorageApiToken,
+              });
+              files.push({
+                ...omit(file, "file"),
+                url: fileData.data.image.href,
+                thumbnailFileData: {
+                  ...omit(file.thumbnailFileData, "file"),
+                  url: thumbnailData.data.image.href,
+                },
+              });
+            } else {
+              files.push({
+                ...omit(file, "file"),
+                url: fileData.data.image.href,
+              });
+            }
+          }
         }
+
+        const postCategory = getPostCategory(formValues);
+
+        const client = await socialFeedClient({
+          walletAddress: wallet?.address || "",
+        });
+
+        const metadata: SocialFeedMetadata = {
+          title: formValues.title || "",
+          message: formValues.message || "",
+          files,
+          hashtags: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+
+        await mutate({
+          client,
+          msg: {
+            category: postCategory,
+            identifier: uuidv4(),
+            metadata: JSON.stringify(metadata),
+            parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
+          },
+          args: {
+            fee: defaultSocialFeedFee,
+            memo: "",
+            funds: [],
+          },
+        });
+      } catch (err) {
+        console.log("post submit err", err);
       }
 
-      const postCategory = getPostCategory(formValues);
-
-      const client = await socialFeedClient({
-        walletAddress: wallet?.address || "",
-      });
-
-      const metadata: SocialFeedMetadata = {
-        title: formValues.title || "",
-        message: formValues.message || "",
-        fileURLs,
-        hashtags: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      mutate({
-        client,
-        msg: {
-          category: postCategory,
-          identifier: uuidv4(),
-          metadata: JSON.stringify(metadata),
-          parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
-        },
-        args: {
-          fee: defaultSocialFeedFee,
-          memo: "",
-          funds: [],
-        },
-      });
+      setLoading(false);
     };
 
     const resetForm = () => {
@@ -203,10 +253,6 @@ export const NewsFeedInput = React.forwardRef<
       setValue: handleTextChange,
       focusInput,
     }));
-
-    const handleUpload = (files: File[]) => {
-      setValue("files", [...files]);
-    };
 
     const handleTextChange = (text: string) => {
       setValue("message", text);
@@ -244,6 +290,17 @@ export const NewsFeedInput = React.forwardRef<
             onClose={() => setNotEnoughFundModal(false)}
           />
         )}
+        {isNFTKeyModal && (
+          <NFTKeyModal
+            onClose={(key?: string) => {
+              if (key) {
+                setValue("nftStorageApiToken", key);
+                processSubmit(key);
+              }
+              setIsNFTKeyModal(false);
+            }}
+          />
+        )}
         <TertiaryBox
           fullWidth
           style={{
@@ -261,7 +318,7 @@ export const NewsFeedInput = React.forwardRef<
               source={penSVG}
               color={secondaryColor}
             />
-            <Animated.View style={{ height: inputHeight.value, flex: 1 }}>
+            <Animated.View style={{ flex: 1, height: "auto" }}>
               <TextInput
                 ref={inputRef}
                 value={formValues.message}
@@ -282,10 +339,10 @@ export const NewsFeedInput = React.forwardRef<
                 style={[
                   fontSemibold16,
                   {
+                    height: inputHeight.value || 40,
                     width: "100%",
                     color: secondaryColor,
                     marginLeft: layout.padding_x1_5,
-                    height: "100%",
 
                     //@ts-ignore
                     outlineStyle: "none",
@@ -308,6 +365,43 @@ export const NewsFeedInput = React.forwardRef<
               {formValues?.message?.length}/{SOCIAL_FEED_MAX_CHAR_LIMIT}
             </BrandText>
           </Pressable>
+          <FilePreviewContainer
+            files={formValues.files}
+            gifs={formValues.gifs}
+            onDelete={(fileIndex) => {
+              if (typeof fileIndex === "number") {
+                setValue(
+                  "files",
+                  formValues.files?.filter((_, index) => index !== fileIndex)
+                );
+              } else if (typeof fileIndex === "string") {
+                setValue(
+                  "files",
+                  formValues.files?.filter((file) => file.url !== fileIndex)
+                );
+              } else {
+                setValue("files", []);
+              }
+            }}
+            onDeleteGIF={(fileIndex) => {
+              setValue(
+                "gifs",
+                (formValues?.gifs || [])?.filter(
+                  (_, index) => index !== fileIndex
+                )
+              );
+            }}
+            onUploadThumbnail={(file) => {
+              if (formValues?.files?.[0]) {
+                setValue("files", [
+                  {
+                    ...formValues?.files?.[0],
+                    thumbnailFileData: file,
+                  },
+                ]);
+              }
+            }}
+          />
         </TertiaryBox>
         <View
           style={{
@@ -316,7 +410,7 @@ export const NewsFeedInput = React.forwardRef<
             paddingBottom: layout.padding_x1_5,
             marginTop: -layout.padding_x2_5,
             paddingHorizontal: layout.padding_x2_5,
-            flexDirection: useIsMobileView() ? "column" : "row",
+            flexDirection: isMobile ? "column" : "row",
             alignItems: "center",
             justifyContent: "space-between",
             borderRadius: 8,
@@ -344,35 +438,12 @@ export const NewsFeedInput = React.forwardRef<
           </View>
           <View
             style={{
-              flexDirection: useIsMobileView() ? "column" : "row",
+              flexDirection: isMobile ? "column" : "row",
               alignItems: "center",
               flex: 1,
               justifyContent: "flex-end",
             }}
           >
-            <FilePreviewContainer
-              style={{
-                marginRight: layout.padding_x1_5,
-              }}
-              files={formValues.files}
-              gifs={formValues.gifs}
-              onDelete={(fileIndex) => {
-                setValue(
-                  "files",
-                  Array.from(formValues?.files || [])?.filter(
-                    (_, index) => index !== fileIndex
-                  )
-                );
-              }}
-              onDeleteGIF={(fileIndex) => {
-                setValue(
-                  "gifs",
-                  (formValues?.gifs || [])?.filter(
-                    (_, index) => index !== fileIndex
-                  )
-                );
-              }}
-            />
             <GIFSelector
               onGIFSelected={(url) =>
                 url && setValue("gifs", [...(formValues.gifs || []), url])
@@ -387,8 +458,8 @@ export const NewsFeedInput = React.forwardRef<
             <SpacerRow size={2.5} />
 
             <FileUploader
-              onUpload={(files) => handleUpload(files)}
-              mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
+              onUpload={(files) => setValue("files", [files?.[0]])}
+              mimeTypes={AUDIO_MIME_TYPES}
             >
               {({ onPress }) => (
                 <TouchableOpacity
@@ -400,7 +471,54 @@ export const NewsFeedInput = React.forwardRef<
                     backgroundColor: neutral33,
                     alignItems: "center",
                     justifyContent: "center",
-                    marginRight: useIsMobileView() ? 0 : layout.padding_x2_5,
+                    marginRight: layout.padding_x2_5,
+                  }}
+                  onPress={onPress}
+                >
+                  <BrandText>A</BrandText>
+                </TouchableOpacity>
+              )}
+            </FileUploader>
+            <FileUploader
+              onUpload={(files) => setValue("files", [files?.[0]])}
+              mimeTypes={VIDEO_MIME_TYPES}
+            >
+              {({ onPress }) => (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={{
+                    height: 32,
+                    width: 32,
+                    borderRadius: 24,
+                    backgroundColor: neutral33,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: layout.padding_x2_5,
+                  }}
+                  onPress={onPress}
+                >
+                  <BrandText>V</BrandText>
+                </TouchableOpacity>
+              )}
+            </FileUploader>
+            <FileUploader
+              multiple
+              onUpload={(files) =>
+                setValue("files", [...(formValues.files || []), ...files])
+              }
+              mimeTypes={IMAGE_MIME_TYPES}
+            >
+              {({ onPress }) => (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={{
+                    height: 32,
+                    width: 32,
+                    borderRadius: 24,
+                    backgroundColor: neutral33,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: isMobile ? 0 : layout.padding_x2_5,
                   }}
                   onPress={onPress}
                 >
@@ -410,7 +528,7 @@ export const NewsFeedInput = React.forwardRef<
             </FileUploader>
             <PrimaryButton
               disabled={!formValues?.message}
-              isLoading={isLoading}
+              isLoading={isLoading || isMutateLoading}
               size="M"
               width={110}
               text={type === "comment" ? "Comment" : "Publish"}

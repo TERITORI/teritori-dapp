@@ -1,53 +1,75 @@
 import React from "react";
-import { Image, View, TouchableOpacity } from "react-native";
+import { Image, View } from "react-native";
 
-import closeSVG from "../../../../assets/icons/close.svg";
-import { redDefault } from "../../../utils/style/colors";
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { layout } from "../../../utils/style/layout";
-import { SVG } from "../../SVG";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
+import { DeleteButton } from "./DeleteButton";
 
 interface ImagePreviewProps {
-  url: string;
-  onDelete: () => void;
+  files: LocalFileData[] | RemoteFileData[];
+  onDelete: (url: string) => void;
+  isEditable?: boolean;
 }
 
+const getDimension = (index: number, fileLength: number) => {
+  if (index === 0) {
+    return {
+      height: fileLength > 3 ? 200 : 400,
+      width: fileLength === 1 ? "100%" : "50%",
+    };
+  } else {
+    return {
+      height: fileLength === 2 ? 400 : 200,
+      width: "50%",
+      ...(fileLength === 3 && index === 2
+        ? { position: "absolute", right: 0, bottom: 0 }
+        : {}),
+    };
+  }
+};
+
 export const ImagePreview: React.FC<ImagePreviewProps> = ({
-  url,
+  files,
   onDelete,
+  isEditable = false,
 }) => {
   return (
     <View
       style={{
-        marginRight: layout.padding_x0_5,
+        flexDirection: "row",
+        flexWrap: "wrap",
+        height: 400,
       }}
     >
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={onDelete}
-        style={{
-          backgroundColor: redDefault,
-          alignItems: "center",
-          justifyContent: "center",
-          position: "absolute",
-          top: -4,
-          right: -4,
-          zIndex: 9,
-          height: 12,
-          width: 12,
-          borderRadius: 5,
-        }}
-      >
-        <SVG source={closeSVG} height={10} width={10} />
-      </TouchableOpacity>
-      <Image
-        source={{ uri: url }}
-        style={{
-          height: 40,
-          width: 40,
-
-          borderRadius: 4,
-        }}
-      />
+      {files.map((file, index) => (
+        <View
+          key={file.fileName}
+          style={{
+            padding: layout.padding_x1,
+            ...getDimension(index, files.length),
+          }}
+        >
+          {isEditable && (
+            <DeleteButton
+              onPress={() => onDelete(file.url)}
+              style={{
+                top: 0,
+                right: 0,
+              }}
+            />
+          )}
+          <Image
+            source={{ uri: ipfsURLToHTTPURL(file.url) }}
+            resizeMode="cover"
+            style={{
+              height: "100%",
+              width: "100%",
+              borderRadius: 4,
+            }}
+          />
+        </View>
+      ))}
     </View>
   );
 };

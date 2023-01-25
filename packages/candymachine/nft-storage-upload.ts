@@ -105,13 +105,21 @@ export async function nftStorageUpload(apiToken: string) {
   };
 }
 
-export const nftStorageFile = async (
-  file: File,
-  name: string = "",
-  description: string = ""
-) => {
+interface NftStorageFileProps {
+  file: File;
+  name?: string;
+  description?: string;
+  nftStorageApiToken: string;
+}
+
+export const nftStorageFile = async ({
+  file,
+  name = "",
+  description = "",
+  nftStorageApiToken,
+}: NftStorageFileProps) => {
   try {
-    const storageClient = new NFTStorage({ token: config.nftStorageApiToken });
+    const storageClient = new NFTStorage({ token: nftStorageApiToken });
     const metadata = await storageClient.store({
       image: file,
       name,

@@ -59,10 +59,6 @@ export const useTNSMetadata = (address?: string) => {
         const nftInfo = await tnsClient.nftInfo({
           tokenId: aliasResponse.username,
         });
-        console.log(address, {
-          tokenId: aliasResponse.username,
-          ...nftInfo.extension,
-        });
 
         addMetaData(address, {
           tokenId: aliasResponse.username,

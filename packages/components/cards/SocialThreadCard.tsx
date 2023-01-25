@@ -1,4 +1,3 @@
-import moment from "moment";
 import React, { useMemo, useState } from "react";
 import {
   StyleProp,
@@ -23,17 +22,10 @@ import {
   DEFAULT_NAME,
   DEFAULT_USERNAME,
   getUpdatedReactions,
-  SOCIAL_FEED_MAX_IMAGE_WIDTH,
 } from "../../utils/social-feed";
 import { getCommunityHashtag } from "../../utils/socialFeedCommunityHashtags";
+import { neutral15, neutral22, neutral77 } from "../../utils/style/colors";
 import {
-  neutral15,
-  neutral22,
-  neutral77,
-  neutralA3,
-} from "../../utils/style/colors";
-import {
-  fontSemibold12,
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
@@ -41,12 +33,12 @@ import {
 import { layout } from "../../utils/style/layout";
 import { tokenWithoutTld } from "../../utils/tns";
 import { BrandText } from "../BrandText";
+import { DateTime } from "../DateTime";
 import { EmojiSelector } from "../EmojiSelector";
-import { FilePreview } from "../FilePreview/FilePreview";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
-import { RichText } from "../RichText";
 import { SocialActions, socialActionsHeight } from "../SocialActions";
 import { SocialReactionActions } from "../SocialReactionActions";
+import { SocialThreadContent } from "../SocialThread/SocialThreadContent";
 import { tinyAddress } from "../WalletSelector";
 import { AnimationFadeIn } from "../animations";
 import { DotBadge } from "../badges/DotBadge";
@@ -82,7 +74,6 @@ export const SocialThreadCard: React.FC<{
   allowTruncation,
 }) => {
   const [localPost, setLocalPost] = useState(post);
-  const [maxLayoutWidth, setMaxLayoutWidth] = useState(0);
   const { setName } = useTNS();
   const imageMarginRight = layout.padding_x3_5;
   const tertiaryBoxPaddingHorizontal = layout.padding_x3;
@@ -171,7 +162,6 @@ export const SocialThreadCard: React.FC<{
               style={{
                 flex: 1,
               }}
-              onLayout={(e) => setMaxLayoutWidth(e.nativeEvent.layout.width)}
             >
               <View
                 style={{
@@ -228,50 +218,17 @@ export const SocialThreadCard: React.FC<{
                         : DEFAULT_USERNAME}
                     </BrandText>
                   </TouchableOpacity>
-                  <BrandText
-                    style={[
-                      fontSemibold12,
-                      {
-                        marginLeft: layout.padding_x1_5,
-                      },
-                    ]}
-                  >
-                    {moment(metadata.createdAt).local().fromNow()}
-                  </BrandText>
+                  <DateTime date={metadata.createdAt} />
                 </View>
 
                 {!!hashtag && (
                   <DotBadge label={hashtag.hashtag} dotColor={hashtag.color} />
                 )}
               </View>
-
-              {!!metadata?.title && (
-                <BrandText style={{ marginTop: layout.padding_x1 }}>
-                  {metadata.title}
-                </BrandText>
-              )}
-
-              <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-                <RichText
-                  initialValue={metadata.message}
-                  openGraph={metadata.openGraph}
-                  readOnly
-                  allowTruncation={allowTruncation}
-                />
-              </BrandText>
-
-              {metadata.fileURLs?.length &&
-                metadata.fileURLs.map((file) => (
-                  <FilePreview
-                    fileURL={file}
-                    maxWidth={
-                      maxLayoutWidth > SOCIAL_FEED_MAX_IMAGE_WIDTH
-                        ? SOCIAL_FEED_MAX_IMAGE_WIDTH
-                        : maxLayoutWidth
-                    }
-                  />
-                ))}
-
+              <SocialThreadContent
+                metadata={metadata}
+                type={localPost.category}
+              />
               <View style={styles.actionContainer}>
                 <BrandText style={[fontSemibold13, { color: neutral77 }]}>
                   {localPost.post_by}

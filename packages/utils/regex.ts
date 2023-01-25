@@ -4,3 +4,4 @@ export const URL_REGEX =
 export const EXTRACT_DOMAIN_REGEX =
   /^(?:https?:\/\/)?(?:[^@/\n]+@)?(?:www\.)?([^:/?\n]+)/;
 export const HASH_REGEX = /#\S+/;
+export const HTML_TAG_REGEXP = /(<([^>]+)>)/gi;

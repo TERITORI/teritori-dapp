@@ -12,6 +12,7 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { SVG } from "../SVG";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 import { FileUploaderProps } from "./FileUploader.type";
+import { formatFile } from "./formatFile";
 const FILE_HEIGHT = 256;
 
 export const FileUploader: React.FC<FileUploaderProps> = ({
@@ -26,7 +27,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
   const [file, setFile] = useState("");
 
-  const handleFiles = (files: File[]) => {
+  const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
     const supportedFiles = [...files].filter((file) =>
       mimeTypes?.includes(file.type)
@@ -48,7 +49,11 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       setFile(URL.createObjectURL(_files[0]));
     }
 
-    onUpload(supportedFiles);
+    const formattedFiles = await Promise.all(
+      supportedFiles.map(async (file) => await formatFile(file))
+    );
+
+    onUpload(formattedFiles);
   };
 
   const handleChange = (event: SyntheticEvent) => {
