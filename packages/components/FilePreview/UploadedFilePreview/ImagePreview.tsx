@@ -1,10 +1,11 @@
-import React from "react";
-import { Image, View } from "react-native";
+import React, { useState } from "react";
+import { Image, TouchableOpacity, View } from "react-native";
 
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 import { DeleteButton } from "./DeleteButton";
+import { ImageFullViewModal } from "./ImageFullViewModal";
 
 interface ImagePreviewProps {
   files: LocalFileData[] | RemoteFileData[];
@@ -34,6 +35,8 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
   onDelete,
   isEditable = false,
 }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isFullView, setFullView] = useState(false);
   return (
     <View
       style={{
@@ -42,8 +45,19 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
         height: 400,
       }}
     >
+      <ImageFullViewModal
+        files={files.map((file) => file.url)}
+        activeIndex={activeIndex}
+        isVisible={isFullView}
+        onClose={() => setFullView(false)}
+      />
+
       {files.map((file, index) => (
-        <View
+        <TouchableOpacity
+          onPress={() => {
+            setActiveIndex(index);
+            setFullView(true);
+          }}
           key={file.fileName}
           style={{
             padding: layout.padding_x1,
@@ -68,7 +82,7 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
               borderRadius: 4,
             }}
           />
-        </View>
+        </TouchableOpacity>
       ))}
     </View>
   );
