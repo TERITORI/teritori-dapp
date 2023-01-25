@@ -12,7 +12,7 @@ import { modalMarginPadding } from "../../../utils/style/modals";
 import { BrandText } from "../../BrandText";
 import { CopyToClipboardIcon } from "../../CopyToClipboardIcon";
 import { ExternalLink } from "../../ExternalLink";
-import { tinyAddress } from "../../WalletSelector";
+import { tinyAddress } from "../../TopMenu/WalletView";
 import { SpacerRow } from "../../spacer";
 import ModalBase from "../ModalBase";
 

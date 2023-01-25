@@ -26,6 +26,7 @@ export const SecondaryButton: React.FC<{
   onPress?: (() => Promise<void>) | (() => void);
   squaresBackgroundColor?: string;
   backgroundColor?: string;
+  paddingHorizontal?: number;
   color?: string;
   style?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
@@ -42,6 +43,7 @@ export const SecondaryButton: React.FC<{
   onPress,
   squaresBackgroundColor,
   backgroundColor = neutral30,
+                                      paddingHorizontal= 20,
   color = primaryColor,
   style,
   iconSVG,
@@ -87,7 +89,7 @@ export const SecondaryButton: React.FC<{
           flexDirection: "row",
           borderRadius: borderRadiusButton(size),
           backgroundColor,
-          paddingHorizontal: 20,
+          paddingHorizontal,
           opacity: disabled ? 0.5 : 1,
           width: "100%",
         }}

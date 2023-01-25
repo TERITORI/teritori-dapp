@@ -4,7 +4,7 @@ import { Image, StyleProp, View, ViewStyle } from "react-native";
 import { fontSemibold12 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
-import { tinyAddress } from "./WalletSelector";
+import { tinyAddress } from "./TopMenu/WalletView";
 
 export const UserImageAddressInline: React.FC<{
   imageSource: string;

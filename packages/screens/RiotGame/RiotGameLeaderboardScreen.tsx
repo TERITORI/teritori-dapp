@@ -21,7 +21,7 @@ import {
   UserScore,
 } from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
-import FlexRow from "../../components/FlexRow";
+import FlexRow from "../../components/containers/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";

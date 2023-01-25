@@ -13,7 +13,7 @@ import inventorySVG from "../../../../assets/icons/inventory.svg";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
 import { BrandText } from "../../../components/BrandText";
 import { ConnectWalletButton } from "../../../components/ConnectWalletButton";
-import FlexRow from "../../../components/FlexRow";
+import FlexRow from "../../../components/containers/FlexRow";
 import { NetworkSelector } from "../../../components/NetworkSelector";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";

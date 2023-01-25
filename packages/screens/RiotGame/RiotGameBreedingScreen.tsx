@@ -7,7 +7,7 @@ import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
-import FlexRow from "../../components/FlexRow";
+import FlexRow from "../../components/containers/FlexRow";
 import { SVG } from "../../components/SVG";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";

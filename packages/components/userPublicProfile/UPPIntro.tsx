@@ -15,7 +15,7 @@ import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { useCopyToClipboard } from "../CopyToClipboard";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
-import { tinyAddress } from "../WalletSelector";
+import { tinyAddress } from "../TopMenu/WalletView";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";

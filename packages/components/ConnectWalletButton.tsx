@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { Pressable, View } from "react-native";
-
 import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
 import { useAreThereWallets } from "../hooks/useAreThereWallets";
 import { fontSemibold14 } from "../utils/style/fonts";
 import {
   headerMarginHorizontal,
-  walletSelectorWidth,
 } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
-import { WalletSelector } from "./WalletSelector";
+import { TopMenu } from "./TopMenu/TopMenu";
 import { ConnectWalletModal } from "./connectWallet/ConnectWalletModal";
 
 const HEIGHT = 40;
+const WIDTH = 220;
 
 export const ConnectWalletButton = () => {
   // variables
@@ -29,11 +28,11 @@ export const ConnectWalletButton = () => {
     <>
       <View style={{ marginRight: headerMarginHorizontal }}>
         {areThereWallets ? (
-          <WalletSelector />
+          <TopMenu />
         ) : (
           <Pressable onPress={toggleConnectWallet}>
             <SVG
-              width={walletSelectorWidth}
+              width={WIDTH}
               height={HEIGHT}
               source={secondaryCardSmSVG}
               style={{ position: "absolute" }}
@@ -46,8 +45,8 @@ export const ConnectWalletButton = () => {
                 justifyContent: "center",
                 height: HEIGHT,
                 minHeight: HEIGHT,
-                width: walletSelectorWidth,
-                minWidth: walletSelectorWidth,
+                width: WIDTH,
+                minWidth: WIDTH,
               }}
             >
               <BrandText style={fontSemibold14}>Connect wallet</BrandText>

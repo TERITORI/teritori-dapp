@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { View, Image, Linking } from "react-native";
 
@@ -16,8 +15,6 @@ import {
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getNetwork } from "../../networks";
-import { mustGetMarketplaceClient } from "../../utils/backend";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { Link } from "../Link";
@@ -27,6 +24,7 @@ import { LabelCard } from "../cards/LabelCard";
 import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
+import {useBanners} from "../../hooks/useBanners";
 
 const gridHalfGutter = 12;
 
@@ -152,20 +150,4 @@ Launch"
       </View>
     </View>
   );
-};
-
-const useBanners = (networkId: string) => {
-  const { data } = useQuery(
-    ["banners", networkId],
-    async () => {
-      const backendClient = mustGetMarketplaceClient(networkId);
-      const network = getNetwork(networkId);
-      const { banners } = await backendClient.Banners({
-        testnet: network?.testnet,
-      });
-      return banners;
-    },
-    { staleTime: Infinity }
-  );
-  return data;
 };

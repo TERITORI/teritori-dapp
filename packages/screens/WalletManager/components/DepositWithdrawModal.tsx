@@ -10,7 +10,7 @@ import arrowDivideSVG from "../../../../assets/icons/arrow-divide.svg";
 import { BrandText } from "../../../components/BrandText";
 import { NetworkIcon } from "../../../components/NetworkIcon";
 import { SVG } from "../../../components/SVG";
-import { tinyAddress } from "../../../components/WalletSelector";
+import { tinyAddress } from "../../../components/TopMenu/WalletView";
 import { MaxButton } from "../../../components/buttons/MaxButton";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";

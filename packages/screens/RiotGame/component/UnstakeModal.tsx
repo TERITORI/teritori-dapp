@@ -8,7 +8,7 @@ import teritoriLogoSVG from "../../../../assets/logos/logo.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { tinyAddress } from "../../../components/WalletSelector";
+import { tinyAddress } from "../../../components/TopMenu/WalletView";
 import { SocialButton } from "../../../components/buttons/SocialButton";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
