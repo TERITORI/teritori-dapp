@@ -1,9 +1,10 @@
+import { omit } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { nftStorageFile } from "../../candymachine/nft-storage-upload";
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { OpenGraphType } from "../../hooks/feed/types";
-import { IMAGE_MIME_TYPES, AUDIO_MIME_TYPES } from "../../utils/mime";
+import { LocalFileData, RemoteFileData } from "../../utils/types/feed";
 import { Wallet } from "./../../context/WalletsProvider/wallet";
 import { defaultSocialFeedFee } from "./../../utils/fee";
 import {
@@ -69,10 +70,10 @@ export const getPostCategory = ({
   files,
 }: NewPostFormValues): PostCategory => {
   let category = PostCategory.Normal;
-  if (files) {
-    if (IMAGE_MIME_TYPES.includes(files?.[0]?.type)) {
+  if (files?.length) {
+    if (files[0].fileType === "image") {
       category = PostCategory.Picture;
-    } else if (AUDIO_MIME_TYPES.includes(files?.[0]?.type)) {
+    } else if (files[0].fileType === "audio") {
       category = PostCategory.Audio;
     } else {
       category = PostCategory.Video;
@@ -92,6 +93,7 @@ interface CreatePostParams {
   fee: number;
   parentId?: string;
   openGraph?: OpenGraphType;
+  nftStorageApiToken?: string;
 }
 
 export const createPost = async ({
@@ -101,6 +103,7 @@ export const createPost = async ({
   fee,
   parentId,
   openGraph,
+  nftStorageApiToken,
 }: CreatePostParams) => {
   if (!wallet?.connected || !wallet.address) {
     return;
@@ -111,23 +114,21 @@ export const createPost = async ({
     walletAddress: wallet.address,
   });
 
-  const fileURLs: string[] = [];
+  let files: RemoteFileData[] = [];
 
-  if (formValues.files?.[0]) {
-    Array.from(formValues.files).forEach(async (file) => {
-      const fileData = await nftStorageFile(file);
-      fileURLs.push(fileData.data.image.href);
+  if (formValues.files?.[0] && nftStorageApiToken) {
+    files = await uploadPostFilesToNFTStorage({
+      files: formValues.files,
+      nftStorageApiToken,
     });
   }
 
-  const metadata: SocialFeedMetadata = {
+  const metadata = generatePostMetadata({
     title: formValues.title || "",
     message: formValues.message || "",
-    fileURLs,
+    files,
     hashtags: formValues.hashtags || [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
+  });
 
   await client.createPost(
     {
@@ -147,4 +148,66 @@ export const createPost = async ({
           },
         ]
   );
+};
+
+interface UploadPostFilesToNFTStorageParams {
+  files: LocalFileData[];
+  nftStorageApiToken: string;
+}
+
+export const uploadPostFilesToNFTStorage = async ({
+  files,
+  nftStorageApiToken,
+}: UploadPostFilesToNFTStorageParams): Promise<RemoteFileData[]> => {
+  const formattedFiles: RemoteFileData[] = [];
+  for (const file of files) {
+    const fileData = await nftStorageFile({
+      file: file.file,
+      nftStorageApiToken,
+    });
+
+    if (file.thumbnailFileData) {
+      const thumbnailData = await nftStorageFile({
+        file: file.thumbnailFileData.file,
+        nftStorageApiToken,
+      });
+      formattedFiles.push({
+        ...omit(file, "file"),
+        url: fileData.data.image.href,
+        thumbnailFileData: {
+          ...omit(file.thumbnailFileData, "file"),
+          url: thumbnailData.data.image.href,
+        },
+      });
+    } else {
+      formattedFiles.push({
+        ...omit(file, "file"),
+        url: fileData.data.image.href,
+      });
+    }
+  }
+  return formattedFiles;
+};
+
+interface GeneratePostMetadataParams {
+  title: string;
+  message: string;
+  files: RemoteFileData[];
+  hashtags: string[];
+}
+
+export const generatePostMetadata = ({
+  title,
+  message,
+  files,
+  hashtags,
+}: GeneratePostMetadataParams): SocialFeedMetadata => {
+  return {
+    title: title || "",
+    message: message || "",
+    files,
+    hashtags: hashtags || [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
 };
