@@ -6,7 +6,6 @@ export interface dAppType {
   description: string;
   icon: React.FC<SvgProps> | string;
   route: string;
-  defaultIsChecked: boolean;
   groupKey: string;
 }
 
@@ -14,7 +13,7 @@ export interface dAppGroup {
   [key: string]: {
     id: string;
     groupName: string;
-    icon: React.FC<SvgProps>;
+    icon: React.FC<SvgProps> | string;
     active: boolean;
     options: {
       [key: string]: dAppType;
