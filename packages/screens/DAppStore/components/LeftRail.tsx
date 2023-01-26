@@ -33,7 +33,7 @@ export const LeftRail = () => {
       }}
     >
       <BrandText style={{ height: 32 }}>dApps in sidebar</BrandText>
-      {selectedApps.length > 0 ? (
+      {selectedApps.length > 0 && Object.keys(availableApps).length > 0 ? (
         <DraxProvider>
           <View
             style={{
@@ -51,13 +51,15 @@ export const LeftRail = () => {
               itemsDraggable={isDraggable}
               renderItemContent={({ item, index }) => {
                 const { appId, groupKey } = getValuesFromId(item);
-                return (
+                return availableApps ? (
                   <SelectedDraggable
                     dragHandler={setIsDraggable}
                     option={availableApps[groupKey].options[appId]}
                     index={index}
                     key={index}
                   />
+                ) : (
+                  <BrandText>No apps</BrandText>
                 );
               }}
               keyExtractor={(item) => item}
