@@ -20,7 +20,74 @@ import subdao from "../../../assets/logos/subdao.png";
 import theGraph from "../../../assets/logos/theGraph.png";
 import toripunks from "../../../assets/logos/toniPunks.png";
 import uniswap from "../../../assets/logos/uniswap.png";
-import { dAppGroup } from "./types";
+import { dAppGroup, dAppType } from "./types";
+
+export async function getFromAirTable(): Promise<dAppGroup> {
+  interface IdAppsLUT {
+    [key: string]: {
+      [key: string]: dAppType;
+    };
+  }
+
+  const dApps: IdAppsLUT = {};
+  const formatted: dAppGroup = {};
+
+  const Airtable = require("airtable");
+  const base = new Airtable({
+    apiKey: process.env.AIRTABLE_API_KEY,
+  }).base(process.env.AIRTABLE_DAPP_BASE);
+
+  // @ts-ignore
+  const getIcon = <TFields extends any>(record: Record<TFields>) =>
+    record.get("icon")[0] ? record.get("icon")[0].url : "";
+
+  const dAppsRecords = await base("dApps")
+    .select({
+      view: "Grid view",
+    })
+    .all();
+  // @ts-ignore
+  dAppsRecords.forEach((record) => {
+    dApps[record.id] = {
+      [record.get("id")]: {
+        id: record.get("id"),
+        title: record.get("title"),
+        description: record.get("description"),
+        icon: getIcon(record),
+        route: record.get("route"),
+        groupKey: "",
+      },
+    };
+  });
+
+  const dAppsGroups = await base("dAppsGroup")
+    .select({
+      view: "Grid view",
+    })
+    .all();
+
+  // @ts-ignore
+  dAppsGroups.forEach((record) => {
+    const options = {};
+
+    record.get("options").forEach(function (option: string) {
+      dApps[option][Object.keys(dApps[option])[0]].groupKey = record.get("id");
+
+      // @ts-ignore
+      options[Object.keys(dApps[option])[0]] =
+        dApps[option][Object.keys(dApps[option])[0]];
+    });
+    formatted[record.get("id")] = {
+      id: record.get("id"),
+      groupName: record.get("title"),
+      icon: getIcon(record),
+      active: true,
+      options,
+    };
+  });
+
+  return formatted;
+}
 
 export function getAvailableApps(): dAppGroup {
   return {
@@ -36,7 +103,6 @@ export function getAvailableApps(): dAppGroup {
           description: "NFT Marketplace",
           icon: marketplace,
           route: "Marketplace",
-          defaultIsChecked: false,
           groupKey: "teritori-core-apps",
         },
         "tori-Launchpad": {
@@ -45,7 +111,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Multi Network NFT Launcher",
           icon: launchpad,
           route: "Launchpad",
-          defaultIsChecked: false,
           groupKey: "teritori-core-apps",
         },
         OrgDeployer: {
@@ -54,7 +119,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Coming soon!",
           icon: logoSimple,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "teritori-core-apps",
         },
       },
@@ -71,7 +135,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Advanced automated market maker (AMM)",
           icon: osmosisSVG,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "top-apps",
         },
       },
@@ -88,7 +151,6 @@ export function getAvailableApps(): dAppGroup {
     //       description: "Advanced automated market maker (AMM)",
     //       icon: osmosisSVG,
     //       route: "ComingSoon",
-    //       defaultIsChecked: false,
     //       groupKey: "top-apps", // to reduce duplicates
     //     },
     //   },
@@ -105,7 +167,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Powerful DEX",
           icon: astroportLogo,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         pulsar: {
@@ -114,7 +175,6 @@ export function getAvailableApps(): dAppGroup {
           description: "All-in-one dashboard",
           icon: pulsarLogo,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         axelar: {
@@ -123,7 +183,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Secure building",
           icon: axelarLogo,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         coinhall: {
@@ -132,7 +191,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Real-time price charts",
           icon: coinHallLogo,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         falcon: {
@@ -141,7 +199,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Secure interchain wallet",
           icon: falconWalletLogo,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         toripunks: {
@@ -150,7 +207,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Coming soon",
           icon: toripunks,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         daodao: {
@@ -159,7 +215,6 @@ export function getAvailableApps(): dAppGroup {
           description: "DAOs for everyone",
           icon: daodao,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         subdao: {
@@ -168,7 +223,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Multi-functional DAO platform",
           icon: subdao,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         artemis: {
@@ -177,7 +231,6 @@ export function getAvailableApps(): dAppGroup {
           description: "NFT Revolution",
           icon: artemisVision,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         uniswap: {
@@ -186,7 +239,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Trade crypto & NFTs",
           icon: uniswap,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         raydium: {
@@ -195,7 +247,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Trade crypto",
           icon: radyium,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         SFoxyRaffle: {
@@ -204,7 +255,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Famous FOX NFT Raffles",
           icon: foxyRaffle,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         skip: {
@@ -213,7 +263,6 @@ export function getAvailableApps(): dAppGroup {
           description: "Building ecosystem",
           icon: skip,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
         theGraph: {
@@ -222,7 +271,6 @@ export function getAvailableApps(): dAppGroup {
           description: "WEB3 Protocol",
           icon: theGraph,
           route: "ComingSoon",
-          defaultIsChecked: false,
           groupKey: "coming-soon",
         },
       },

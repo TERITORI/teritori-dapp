@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
+import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { selectAvailableApps } from "../../../store/slices/dapps-store";
 import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
@@ -37,12 +37,11 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                 alignItems: "center",
               }}
             >
-              <SVG
-                source={element.icon}
+              <SVGorImageIcon
+                icon={element.icon}
                 key={element.id}
+                iconSize={32}
                 style={{
-                  width: 32,
-                  height: 32,
                   marginRight: layout.padding_x1,
                 }}
               />

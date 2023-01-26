@@ -11,12 +11,19 @@ import { ScreenFC } from "../../utils/navigation";
 import { Header } from "./components/Header";
 import { LeftRail } from "./components/LeftRail";
 import { RightRail } from "./components/RightRail";
-import { getAvailableApps } from "./query";
+import { getFromAirTable } from "./query";
 
 export const DAppStore: ScreenFC<"DAppStore"> = () => {
   const dispatch = useAppDispatch();
   const [searchInput, setSearchInput] = useState("");
-  dispatch(setAvailableApps(getAvailableApps()));
+
+  const wrap = async () => {
+    const data = await getFromAirTable();
+    if (data) {
+      dispatch(setAvailableApps(data));
+    }
+  };
+  wrap();
 
   return (
     <ScreenContainer
