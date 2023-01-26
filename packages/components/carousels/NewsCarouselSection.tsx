@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useRef } from "react";
 import { View, TouchableOpacity } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
+import { Dimensions } from "react-native";
 
 import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
@@ -12,6 +13,8 @@ import { FullWidthSeparator } from "../FullWidthSeparator";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { NewsBox } from "../hub/NewsBox";
+import { smallMobileWidth } from "../../utils/style/layout";
+import { homeHighLightedWidth } from "../../utils/style/layout";
 
 export const NewsCarouselSection: React.FC = () => {
   const { width } = useMaxResolution();
@@ -38,6 +41,8 @@ export const NewsCarouselSection: React.FC = () => {
     carouselRef.current?.next();
   }, [width]);
 
+  const windowWidth = Dimensions.get("window").width;
+
   // returns
   return (
     <Section title="Highlighted News" topRightChild={topRightChild}>
@@ -45,11 +50,17 @@ export const NewsCarouselSection: React.FC = () => {
       {/*TODO: Async fetchMore for these data ?*/}
 
       <Carousel
-        width={width}
+        // width={width}
+        width={windowWidth < smallMobileWidth ? 280 : width}
         data={news || []}
         ref={carouselRef}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
-        height={382}
+        // height={382}
+        height={
+          windowWidth < homeHighLightedWidth
+            ? 750 - (windowWidth - 360) * 0.1
+            : 382
+        }
         pagingEnabled
         loop
         autoPlay

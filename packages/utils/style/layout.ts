@@ -11,6 +11,8 @@ export const smallSidebarWidth = 76;
 export const fullSidebarWidth = 210;
 export const mobileWidth = 768;
 export const smallMobileWidth = 512;
+export const homeCardGroupWidth = 1002;
+export const homeHighLightedWidth = 1000;
 
 const BASE_SIZE = 8;
 

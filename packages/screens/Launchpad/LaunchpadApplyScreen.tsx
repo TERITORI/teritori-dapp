@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -32,7 +33,24 @@ const BUTTONS: LaunchpadButtonProps[] = [
   },
 ];
 
+const MD_BREAKPOINT = 1100;
+
 export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
+  const { width } = useWindowDimensions();
+
+  const styles = StyleSheet.create({
+    descriptionText: StyleSheet.flatten([
+      fontSemibold14,
+      {
+        color: neutral77,
+      },
+    ]),
+    buttonsContainer: {
+      flexDirection: width >= MD_BREAKPOINT ? "row" : "column",
+      justifyContent: "space-between",
+    },
+  });
+
   return (
     <ScreenContainer>
       <LaunchpadBanner />
@@ -62,16 +80,3 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
     </ScreenContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  descriptionText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-    },
-  ]),
-  buttonsContainer: {
-    flexDirection: "row",
-    flex: 1,
-  },
-});

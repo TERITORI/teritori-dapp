@@ -42,7 +42,9 @@ export const Section: React.FC<{
                 fontSize,
                 letterSpacing: -(fontSize * 0.04),
                 flex: 1,
+                width: width
               }}
+              numberOfLines={2}
             >
               {title}
             </BrandText>

@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useWindowDimensions } from "react-native";
 
 import penSVG from "../../../assets/icons/manage.svg";
 import { BrandText } from "../../components/BrandText";
@@ -15,6 +16,8 @@ import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+import { mobileWidth, smallMobileWidth } from "../../utils/style/layout";
+import { getShortAddress } from "../../utils/strings";
 
 interface WalletDashboardHeaderProps {
   title: string;
@@ -31,20 +34,22 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
   data,
   actionButton,
 }) => {
+  const { width } = useWindowDimensions();
+
   return (
     <TertiaryBox
-      height={116}
-      width={200}
+      height={width < smallMobileWidth ? 150 : 116}
+      width={width < smallMobileWidth ? 120 : 200}
       mainContainerStyle={{
         backgroundColor: neutral17,
       }}
       style={{
-        marginLeft: 16,
+        marginLeft: width < smallMobileWidth ? 0 : 16,
       }}
     >
       <View
         style={{
-          paddingVertical: 14,
+          paddingVertical: width < smallMobileWidth ? 5 : 14,
           paddingHorizontal: 12,
           flexDirection: "column",
           justifyContent: "space-between",
@@ -60,6 +65,19 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
         >
           {title}
         </BrandText>
+        {width < smallMobileWidth && !!actionButton && (
+          <PrimaryButton
+            disabled={actionButton.disabled}
+            size="XS"
+            text={actionButton.label}
+            onPress={actionButton.onPress}
+            squaresBackgroundColor={neutral17}
+            touchableStyle={{
+              marginTop: 10,
+              marginBottom: 10,
+            }}
+          />
+        )}
         <BrandText
           style={{
             fontSize: 16,
@@ -67,7 +85,7 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
         >
           {data}
         </BrandText>
-        {!!actionButton && (
+        {width > smallMobileWidth && !!actionButton && (
           <PrimaryButton
             disabled={actionButton.disabled}
             size="XS"
@@ -101,6 +119,8 @@ export const WalletDashboardHeader: React.FC = () => {
   );
   // Total rewards price with all denoms
   const claimablePrice = rewardsPrice(totalsRewards);
+
+  const { width } = useWindowDimensions();
 
   return (
     <View
@@ -149,7 +169,10 @@ export const WalletDashboardHeader: React.FC = () => {
               fontSize: 20,
             }}
           >
-            {tnsMetadata.metadata?.tokenId || selectedWallet?.address || ""}
+            {getShortAddress(
+              tnsMetadata.metadata?.tokenId || selectedWallet?.address || "",
+              width
+            )}
           </BrandText>
         </View>
       </View>
@@ -157,7 +180,8 @@ export const WalletDashboardHeader: React.FC = () => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "space-evenly",
+          width: width < smallMobileWidth ? "100%" : "",
           marginTop: layout.padding_x3,
         }}
       >

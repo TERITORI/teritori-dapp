@@ -1,5 +1,6 @@
 import React from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import ChevronRightSvg from "../../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -28,6 +29,61 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
   buttonTitle,
   url,
 }) => {
+  const MD_BREAKPOINT = 1100;
+  const { width } = useWindowDimensions();
+
+  const styles = StyleSheet.create({
+    fill: {
+      // flex: 1
+      width: width < MD_BREAKPOINT ? "100%" : "30%",
+      marginTop: width < MD_BREAKPOINT ? 24 : 0,
+    },
+    container: {
+      // width: "100%",
+      width: "100%",
+      minHeight: 156,
+      // flexDirection: "row",
+      padding: layout.padding_x2,
+      // alignItems: "flex-start",
+      backgroundColor: neutral17,
+    },
+    detailContainer: {
+      // flex: 1,
+      // alignItems: "flex-start",
+      // flexWrap: "wrap",
+      width: "100%",
+    },
+    buttonIconTextContainer: {
+      // flex: 1,
+      alignSelf: "flex-end",
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      alignItems: "center",
+    },
+    buttonTitleText: StyleSheet.flatten([
+      fontSemibold14,
+      {
+        color: primaryColor,
+      },
+    ]),
+    descriptionText: StyleSheet.flatten([
+      fontSemibold12,
+      {
+        color: neutral77,
+        width: 200,
+        flexWrap: "wrap",
+      },
+    ]),
+    iconContainer: {
+      width: layout.iconButton,
+      height: layout.iconButton,
+      borderRadius: layout.iconButton / 2,
+      backgroundColor: neutral22,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+  });
+
   // returns
   return (
     <Pressable
@@ -35,7 +91,8 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
       style={styles.fill}
     >
       <TertiaryBox
-        style={styles.fill}
+        // style={styles.fill}
+        style={{ width: "100%" }}
         fullWidth
         mainContainerStyle={styles.container}
       >
@@ -56,50 +113,50 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  fill: {
-    flex: 1,
-  },
-  container: {
-    width: "100%",
-    minHeight: 156,
-    flexDirection: "row",
-    padding: layout.padding_x2,
-    alignItems: "flex-start",
-    backgroundColor: neutral17,
-  },
-  detailContainer: {
-    flex: 1,
-    alignItems: "flex-start",
-    flexWrap: "wrap",
-  },
-  buttonIconTextContainer: {
-    flex: 1,
-    alignSelf: "flex-end",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  buttonTitleText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: primaryColor,
-    },
-  ]),
-  descriptionText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      color: neutral77,
-      width: 200,
-      flexWrap: "wrap",
-    },
-  ]),
-  iconContainer: {
-    width: layout.iconButton,
-    height: layout.iconButton,
-    borderRadius: layout.iconButton / 2,
-    backgroundColor: neutral22,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+// const styles = StyleSheet.create({
+//   fill: {
+//     // flex: 1,
+//   },
+//   container: {
+//     width: "100%",
+//     minHeight: 156,
+//     // flexDirection: "row",
+//     padding: layout.padding_x2,
+//     // alignItems: "flex-start",
+//     backgroundColor: neutral17,
+//   },
+//   detailContainer: {
+//     // flex: 1,
+//     // alignItems: "flex-start",
+//     // flexWrap: "wrap",
+//   },
+//   buttonIconTextContainer: {
+//     flex: 1,
+//     alignSelf: "flex-end",
+//     flexDirection: "row",
+//     justifyContent: "flex-end",
+//     alignItems: "center",
+//   },
+//   buttonTitleText: StyleSheet.flatten([
+//     fontSemibold14,
+//     {
+//       color: primaryColor,
+//     },
+//   ]),
+//   descriptionText: StyleSheet.flatten([
+//     fontSemibold12,
+//     {
+//       color: neutral77,
+//       width: 200,
+//       flexWrap: "wrap",
+//     },
+//   ]),
+//   iconContainer: {
+//     width: layout.iconButton,
+//     height: layout.iconButton,
+//     borderRadius: layout.iconButton / 2,
+//     backgroundColor: neutral22,
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+// });

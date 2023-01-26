@@ -14,8 +14,9 @@ import { BrandText } from "../BrandText";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { GradientText } from "../gradientText";
+import GuardianPng from "../../../assets/default-images/default-guardian-nft.png";
 
-const breakPoint = 768;
+const breakPoint = 1000;
 
 export const NewsBox: React.FC<{
   news: News;
@@ -40,7 +41,7 @@ export const NewsBox: React.FC<{
     <View
       style={{
         width: "100%",
-        borderBottomWidth: 1,
+        // borderBottomWidth: 1,
         borderBottomColor: neutral33,
         paddingHorizontal: 10,
         paddingVertical: 20,
@@ -53,6 +54,7 @@ export const NewsBox: React.FC<{
             ? {
                 flexDirection: "row",
                 justifyContent: "space-between",
+                alignItems: "center",
               }
             : { flexDirection: "column-reverse" },
         ]}
@@ -112,10 +114,13 @@ export const NewsBox: React.FC<{
           }
         >
           <Image
-            source={{ uri: ipfsURLToHTTPURL(news.image) }}
+            // source={{ uri: ipfsURLToHTTPURL(news.image) }}
+            source={GuardianPng}
             style={{
-              height: 342,
-              width: 342,
+              // height: 342,
+              // width: 342,
+              height: 300,
+              width: 300,
               aspectRatio: 1,
               borderRadius: 10,
             }}

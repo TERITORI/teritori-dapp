@@ -75,7 +75,6 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-
                 height: 24,
               }}
             >

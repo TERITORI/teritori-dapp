@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from "react";
 import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
+import { useWindowDimensions } from "react-native";
 
 import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
@@ -16,13 +17,14 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
 import { getNetwork } from "../../networks";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, smallMobileWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { GradientText } from "../gradientText";
+import { Dimensions } from "react-native";
 
 const defaultRequest: CollectionsRequest = {
   networkId: "fake",
@@ -34,6 +36,8 @@ const defaultRequest: CollectionsRequest = {
   mintState: MintState.MINT_STATE_UNSPECIFIED,
 };
 
+const breakPoint = 1000;
+
 const CarouselCollectionItem: React.FC<{
   collection: Collection;
   networkId: string;
@@ -44,10 +48,13 @@ const CarouselCollectionItem: React.FC<{
     forceLinkToMint: linkToMint,
   });
 
+  const windowWidth = Dimensions.get("window").width;
+  const { width } = useMaxResolution();
+
   return (
     <View
       style={{
-        flexDirection: "row",
+        flexDirection: windowWidth < breakPoint ? "column-reverse" : "row",
         alignItems: "center",
         flexWrap: "wrap",
         justifyContent: "space-evenly",
@@ -89,8 +96,8 @@ const CarouselCollectionItem: React.FC<{
           <Image
             source={{ uri: collection.imageUri }}
             style={{
-              height: 368,
-              width: 368,
+              height: width < smallMobileWidth ? 0.8 * width : 368,
+              width: width < smallMobileWidth ? 0.8 * width : 368,
               borderRadius: 8,
             }}
           />
@@ -110,6 +117,11 @@ export const CollectionsCarouselHeader: React.FC<{
   const [collections] = useCollections(req, filter);
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
+
+  const windowWidth = Dimensions.get("window").width;
+
+  const collection_height =
+    windowWidth < smallMobileWidth ? windowWidth * 0.75 + 130 : 550;
 
   const topRightChild = useMemo(
     () => (
@@ -132,11 +144,12 @@ export const CollectionsCarouselHeader: React.FC<{
   return (
     <Section title="" topRightChild={topRightChild}>
       <Carousel
+        // width={windowWidth < breakPoint ? windowWidth - minus : width}
         width={width}
         data={collections}
         ref={carouselRef}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
-        height={370}
+        height={windowWidth < breakPoint ? collection_height : 370}
         pagingEnabled
         autoPlay
         autoPlayInterval={3000}
