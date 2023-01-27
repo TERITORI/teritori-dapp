@@ -14,13 +14,10 @@ interface Props {
 }
 
 export const SocialThreadContent: React.FC<Props> = ({ metadata, type }) => {
-  if (type === PostCategory.Article) {
+  if (type === PostCategory.Article || metadata?.message.length > 1000) {
     return (
       <View>
-        {type === PostCategory.Article ||
-          (metadata?.message.length > 2500 && (
-            <ArticlePreview metadata={metadata} />
-          ))}
+        <ArticlePreview metadata={metadata} />
       </View>
     );
   } else {
