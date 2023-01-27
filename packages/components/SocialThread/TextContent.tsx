@@ -7,6 +7,7 @@ import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
+import { TextRenderer } from "../TextRenderer/TextRenderer";
 
 interface Props {
   metadata: SocialFeedMetadata;
@@ -26,7 +27,7 @@ export const TextContent: React.FC<Props> = ({ metadata }) => {
           { color: neutralA3, marginBottom: layout.padding_x2 },
         ]}
       >
-        {metadata.message.replace(HTML_TAG_REGEXP, "")}
+        <TextRenderer text={metadata.message.replace(HTML_TAG_REGEXP, "")} />
       </BrandText>
     </View>
   );
