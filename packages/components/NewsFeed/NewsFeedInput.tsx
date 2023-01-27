@@ -12,9 +12,11 @@ import {
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
+import audioSVG from "../../../assets/icons/audio.svg";
 import cameraSVG from "../../../assets/icons/camera.svg";
 import penSVG from "../../../assets/icons/pen.svg";
 import priceSVG from "../../../assets/icons/price.svg";
+import videoSVG from "../../../assets/icons/video.svg";
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { useCreatePost } from "../../hooks/feed/useCreatePost";
 import { useBalances } from "../../hooks/useBalances";
@@ -451,7 +453,7 @@ export const NewsFeedInput = React.forwardRef<
                   }}
                   onPress={onPress}
                 >
-                  <BrandText>A</BrandText>
+                  <SVG source={audioSVG} width={20} height={20} />
                 </TouchableOpacity>
               )}
             </FileUploader>
@@ -473,7 +475,7 @@ export const NewsFeedInput = React.forwardRef<
                   }}
                   onPress={onPress}
                 >
-                  <BrandText>V</BrandText>
+                  <SVG source={videoSVG} width={20} height={20} />
                 </TouchableOpacity>
               )}
             </FileUploader>
