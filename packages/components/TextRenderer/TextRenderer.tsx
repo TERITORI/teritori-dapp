@@ -54,10 +54,10 @@ export const TextRenderer = ({ text }: { text: string }) => {
 
     const splittedText = refText.split(REFERENCE_REG_EXP);
     return splittedText.map((item, index) => (
-      <>
+      <React.Fragment key={index}>
         {item}
         {getComponent(matchTextReference[index] || {})}
-      </>
+      </React.Fragment>
     ));
   }, [text]);
 
