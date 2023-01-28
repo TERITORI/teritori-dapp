@@ -4,6 +4,7 @@ import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { CosmWasmClient, GasPrice, SigningCosmWasmClient } from "cosmwasm";
 
 import { getKeplr } from "../utils/keplr";
+import { Network } from "../utils/network";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
@@ -45,6 +46,21 @@ export const getCurrency = (
     return undefined;
   }
   return getNetwork(networkId)?.currencies.find((c) => c.denom === denom);
+};
+
+export const getToriNativeCurrency = (networkId: string) => {
+  const network = getNetwork(networkId);
+  if (network?.network === Network.Teritori)
+    return network?.currencies.find(
+      (currencyInfo) => currencyInfo.kind === "native"
+    ) as NativeCurrencyInfo;
+  else {
+    const toriIbcCurrency = network?.currencies.find(
+      (currencyInfo) =>
+        currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "utori"
+    );
+    return getNativeCurrency(networkId, toriIbcCurrency?.denom);
+  }
 };
 
 export const getIBCCurrency = (

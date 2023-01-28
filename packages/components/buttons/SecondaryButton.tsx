@@ -43,7 +43,7 @@ export const SecondaryButton: React.FC<{
   onPress,
   squaresBackgroundColor,
   backgroundColor = neutral30,
-                                      paddingHorizontal= 20,
+  paddingHorizontal = 20,
   color = primaryColor,
   style,
   iconSVG,

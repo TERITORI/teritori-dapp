@@ -1,11 +1,12 @@
-import {Image,} from "react-native";
 import React from "react";
-import {TopMenuSection} from "./TopMenuSection";
+import { Image } from "react-native";
+
+import { useBanners } from "../../hooks/useBanners";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { Link } from "../Link";
+import { PrimaryBox } from "../boxes/PrimaryBox";
 import FlexCol from "../containers/FlexCol";
-import {Link} from "../Link";
-import {ipfsURLToHTTPURL} from "../../utils/ipfs";
-import {useBanners} from "../../hooks/useBanners";
-import {PrimaryBox} from "../boxes/PrimaryBox";
+import { TopMenuSection } from "./TopMenuSection";
 
 export const HighlightedNews: React.FC = () => {
   const banners = useBanners(
@@ -32,5 +33,5 @@ export const HighlightedNews: React.FC = () => {
         </Link>
       </FlexCol>
     </TopMenuSection>
-  )
-}
+  );
+};

@@ -27,8 +27,8 @@ import {
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+import { neutral77, primaryColor } from "../../../utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { capitalize } from "../../../utils/text";
 import { TransactionForm } from "../types";
@@ -177,7 +177,14 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
             currency={keplrCurrencyFromNativeCurrencyInfo(nativeTargetCurrency)}
             rules={{ required: true, max }}
             placeHolder="0"
-            subtitle={`Available balance: ${max}`}
+            subtitle={
+              <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+                Available:{" "}
+                <BrandText style={[fontSemibold13, { color: primaryColor }]}>
+                  {max}
+                </BrandText>
+              </BrandText>
+            }
           >
             <MaxButton onPress={() => setValue("amount", max)} />
           </TextInputCustom>

@@ -1,29 +1,37 @@
 import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import React, {useCallback, useState} from "react";
+import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import {StyleSheet, TouchableOpacity} from "react-native";
-import {useFeedbacks} from "../../context/FeedbacksProvider";
+import { StyleSheet, TouchableOpacity } from "react-native";
+
+import contactsSVG from "../../../assets/icons/contacts.svg";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   getKeplrSigningStargateClient,
-  keplrCurrencyFromNativeCurrencyInfo, NativeCurrencyInfo
+  keplrCurrencyFromNativeCurrencyInfo,
+  NativeCurrencyInfo,
 } from "../../networks";
-import {useBalances} from "../../hooks/useBalances";
-import {SpacerColumn, SpacerRow} from "../spacer";
-import {BrandText} from "../BrandText";
-import {NetworkIcon} from "../NetworkIcon";
-import {TransactionForm} from "../../screens/WalletManager/types";
-import ModalBase from "./ModalBase";
-import FlexRow from "../containers/FlexRow";
-import {TextInputCustom} from "../inputs/TextInputCustom";
-import {neutral22, neutral33} from "../../utils/style/colors";
-import {SVG} from "../SVG";
-import contactsSVG from "../../../assets/icons/contacts.svg"
-import {layout} from "../../utils/style/layout";
-import {MaxButton} from "../buttons/MaxButton";
-import {PrimaryButton} from "../buttons/PrimaryButton";
+import { TransactionForm } from "../../screens/WalletManager/types";
+import {
+  neutral22,
+  neutral33,
+  neutral77,
+  primaryColor,
+} from "../../utils/style/colors";
+import { fontSemibold13 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { NetworkIcon } from "../NetworkIcon";
+import { SVG } from "../SVG";
+import { MaxButton } from "../buttons/MaxButton";
+import { PrimaryButton } from "../buttons/PrimaryButton";
 import FlexCol from "../containers/FlexCol";
+import FlexRow from "../containers/FlexRow";
+import { TextInputCustom } from "../inputs/TextInputCustom";
+import { SpacerColumn, SpacerRow } from "../spacer";
+import ModalBase from "./ModalBase";
 
 type SendModalProps = {
   isVisible: boolean;
@@ -33,23 +41,23 @@ type SendModalProps = {
 };
 
 //TODO: Make a reusable component for that, or use an existing one (Which one ? Which other usage for ContactButton ?)
-const ContactButton: React.FC<{onPress: () => void;}> = ({onPress}) => {
+const ContactButton: React.FC<{ onPress: () => void }> = ({ onPress }) => {
+  //TODO: Remove disabled when contacts are handled
   return (
-    <TouchableOpacity style={styles.contactsButton} onPress={onPress}>
-      <SVG source={contactsSVG} width={16} height={16}/>
+    <TouchableOpacity style={styles.contactsButton} onPress={onPress} disabled>
+      <SVG source={contactsSVG} width={16} height={16} />
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 export const SendModal: React.FC<SendModalProps> = ({
-                                                                    isVisible,
-                                                                    onClose,
-                                                                    nativeCurrency,
-                                                                    networkId,
-                                                                  }) => {
-  const { setToastError } = useFeedbacks();
-  const selectedWallet = useSelectedWallet(); // FIXME: this could not match networkId
-  const [isContactsVisible, setContactsVisible] = useState(false)
+  isVisible,
+  onClose,
+  nativeCurrency,
+  networkId,
+}) => {
+  const { setToastError, setToastSuccess } = useFeedbacks();
+  const selectedWallet = useSelectedWallet();
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
 
   const balances = useBalances(networkId, selectedWallet?.address);
@@ -65,56 +73,59 @@ export const SendModal: React.FC<SendModalProps> = ({
     [networkId]
   );
 
-  const maxAtomics = balances.find((bal) => bal.denom === nativeCurrency?.denom)?.amount || "0";
+  const maxAtomics =
+    balances.find((bal) => bal.denom === nativeCurrency?.denom)?.amount || "0";
   const max = Decimal.fromAtomics(
     maxAtomics,
     nativeCurrency?.decimals || 0
   ).toString();
 
-  const onPressSend = () => {
-    handleSubmit(async (formValues) => {
-      try {
-        const client = await getKeplrSigningStargateClient(networkId);
-        const sender = selectedWallet?.address;
-        if (!sender) {
-          throw new Error("no sender");
-        }
-        //TODO: handle contacts
-        const receiver = "tori1ch8e2j5vdhtg4af7pr02g6ux6vnftr5nj5n7ad";
-        if (!receiver) {
-          throw new Error("no receiver");
-        }
-        if (!nativeCurrency) {
-          throw new Error("no native target currency");
-        }
-
-        const amount = Decimal.fromUserInput(
-          formValues.amount,
-          nativeCurrency.decimals
-        ).atomics;
-        const tx = await client.sendTokens(
-          sender,
-          receiver,
-          [{ amount, denom: nativeCurrency.denom }],
-          "auto"
-        );
-        if (isDeliverTxFailure(tx)) {
-          console.error("Send Tokens tx failed", tx);
-          setToastError({ title: "Transaction failed", message: "" });
-        }
-        // FIXME: find out if it's possible to check for ibc ack
-      } catch (err) {
-        console.error("Send Tokens failed", err);
-        if (err instanceof Error) {
-          setToastError({
-            title: "Failed to Send Tokens",
-            message: err.message,
-          });
-        }
+  const onPressSend = async (formData: TransactionForm) => {
+    try {
+      const client = await getKeplrSigningStargateClient(networkId);
+      const sender = selectedWallet?.address;
+      if (!sender) {
+        throw new Error("no sender");
       }
-      onClose();
-    })
-  }
+      //TODO: handle contacts
+      const receiver = formData.toAddress;
+      if (!receiver) {
+        throw new Error("no receiver");
+      }
+      if (!nativeCurrency) {
+        throw new Error("no native target currency");
+      }
+
+      const amount = Decimal.fromUserInput(
+        formData.amount,
+        nativeCurrency.decimals
+      ).atomics;
+      const tx = await client.sendTokens(
+        sender,
+        receiver,
+        [{ amount, denom: nativeCurrency.denom }],
+        "auto"
+      );
+      if (isDeliverTxFailure(tx)) {
+        console.error("Send Tokens tx failed", tx);
+        setToastError({ title: "Transaction failed", message: "" });
+      }
+      setToastSuccess({
+        title: `TORI succeeded sent to ${receiver}`,
+        message: "",
+      });
+      // FIXME: find out if it's possible to check for ibc ack
+    } catch (err) {
+      console.error("Send Tokens failed", err);
+      if (err instanceof Error) {
+        setToastError({
+          title: "Failed to Send Tokens",
+          message: err.message,
+        });
+      }
+    }
+    onClose();
+  };
 
   return (
     <ModalBase
@@ -133,12 +144,18 @@ export const SendModal: React.FC<SendModalProps> = ({
             name="toAddress"
             rules={{ required: true }}
             placeHolder="Enter a TERITORI address"
+            defaultValue=""
           />
         </FlexCol>
-        <ContactButton onPress={() => setContactsVisible(isIt => !isIt)}/>
+        <ContactButton
+          onPress={
+            () => {}
+            // setContactsVisible(isIt => !isIt)
+          }
+        />
       </FlexRow>
 
-      <SpacerColumn size={2.5}/>
+      <SpacerColumn size={2.5} />
 
       <TextInputCustom<TransactionForm>
         height={48}
@@ -149,22 +166,30 @@ export const SendModal: React.FC<SendModalProps> = ({
         currency={keplrCurrencyFromNativeCurrencyInfo(nativeCurrency)}
         rules={{ required: true, max }}
         placeHolder="0"
-        subtitle={`Available: ${max}`}
+        defaultValue=""
+        subtitle={
+          <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+            Available:{" "}
+            <BrandText style={[fontSemibold13, { color: primaryColor }]}>
+              {max}
+            </BrandText>
+          </BrandText>
+        }
       >
         <MaxButton onPress={() => setValue("amount", max)} />
       </TextInputCustom>
 
-      <SpacerColumn size={2.5}/>
+      <SpacerColumn size={2.5} />
 
       <PrimaryButton
         size="XL"
-        text={"Send"}
+        text="Send"
         fullWidth
         disabled={max === "0"}
         loader
-        onPress={onPressSend}
+        onPress={handleSubmit(onPressSend)}
       />
-      <SpacerColumn size={2.5}/>
+      <SpacerColumn size={2.5} />
     </ModalBase>
   );
 };
@@ -179,12 +204,8 @@ const styles = StyleSheet.create({
     backgroundColor: neutral22,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: layout.padding_x1_5
+    marginLeft: layout.padding_x1_5,
+    //TODO: Remove that when contacts are handled
+    opacity: 0.5,
   },
-  receiverInput: {
-
-  },
-  amountInput: {
-
-  }
 });

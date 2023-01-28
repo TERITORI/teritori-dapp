@@ -22,7 +22,7 @@ export const PrimaryBox: React.FC<{
   style,
   mainContainerStyle,
   children,
-                                 noBrokenCorners
+  noBrokenCorners,
 }) => {
   const flatMainContainerStyle = mainContainerStyle
     ? StyleSheet.flatten(mainContainerStyle)
@@ -159,7 +159,6 @@ export const PrimaryBox: React.FC<{
                 />
               </>
             )}
-
           </LinearGradient>
         </View>
       </View>

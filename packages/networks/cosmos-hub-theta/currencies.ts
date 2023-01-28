@@ -1,5 +1,5 @@
+import { purpleDark } from "../../utils/style/colors";
 import { CurrencyInfo } from "../types";
-import {purpleDark} from "../../utils/style/colors";
 
 export const cosmosHubThetaCurrencies: CurrencyInfo[] = [
   {

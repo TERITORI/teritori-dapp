@@ -1,9 +1,10 @@
 import React from "react";
-import {Wallet} from "../../context/WalletsProvider";
-import {StyleProp, View, ViewStyle} from "react-native";
-import {useTNSMetadata} from "../../hooks/useTNSMetadata";
-import {WalletProviderIcon} from "../WalletProviderIcon";
-import {BrandText} from "../BrandText";
+import { StyleProp, View, ViewStyle } from "react-native";
+
+import { Wallet } from "../../context/WalletsProvider";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { BrandText } from "../BrandText";
+import { WalletProviderIcon } from "../WalletProviderIcon";
 
 export const tinyAddress = (
   fullAddress: string = "",

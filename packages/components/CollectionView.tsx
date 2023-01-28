@@ -1,18 +1,18 @@
-import React, {useMemo} from "react";
-import {Image, StyleSheet, View} from "react-native";
+import React, { useMemo } from "react";
+import { Image, StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { Collection } from "../api/marketplace/v1/marketplace";
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
-import {fontBold11, fontMedium10, fontSemibold14} from "../utils/style/fonts";
+import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
+import { layout } from "../utils/style/layout";
 import { parseUserId } from "../networks";
 import { BrandText } from "./BrandText";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { GradientText } from "./gradientText";
-import {layout} from "../utils/style/layout";
 
-type CollectionViewSize = "XL"|"XS";
+type CollectionViewSize = "XL" | "XS";
 export const collectionViewSMWidth = 124;
 export const collectionViewSMHeight = 164;
 export const collectionViewXLWidth = 196;
@@ -29,7 +29,7 @@ export const CollectionView: React.FC<{
     forceSecondaryDuringMint: item.secondaryDuringMint,
     forceLinkToMint: linkToMint,
   });
-  const sizedStyles = useMemo(() => StyleSheet.flatten(styles[size]), [size])
+  const sizedStyles = useMemo(() => StyleSheet.flatten(styles[size]), [size]);
 
   return (
     <TouchableOpacity onPress={navigateToCollection} disabled={!item.id}>
@@ -52,8 +52,9 @@ export const CollectionView: React.FC<{
           style={{
             marginHorizontal: sizedStyles.textsContainer.marginHorizontal,
             marginTop: sizedStyles.textsContainer.marginTop,
-            width: sizedStyles.image.width
-        }} >
+            width: sizedStyles.image.width,
+          }}
+        >
           <BrandText
             style={sizedStyles.collectionName}
             ellipsizeMode="tail"
@@ -96,7 +97,7 @@ const styles = {
     image: {
       width: 172,
       height: 172,
-      borderRadius: 12
+      borderRadius: 12,
     },
     textsContainer: {
       marginHorizontal: layout.padding_x1_5,
@@ -107,7 +108,7 @@ const styles = {
     },
     creatorName: {
       ...(fontSemibold14 as object),
-    }
+    },
   },
 
   XS: {
@@ -122,17 +123,17 @@ const styles = {
     image: {
       width: 108,
       height: 108,
-      borderRadius: 4
+      borderRadius: 4,
     },
     textsContainer: {
       marginHorizontal: layout.padding_x1,
-      marginTop: layout.padding_x1
+      marginTop: layout.padding_x1,
     },
     collectionName: {
       ...(fontBold11 as object),
     },
     creatorName: {
       ...(fontMedium10 as object),
-    }
-  }
-}
+    },
+  },
+};

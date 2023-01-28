@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Pressable, View } from "react-native";
+
 import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
 import { useAreThereWallets } from "../hooks/useAreThereWallets";
 import { fontSemibold14 } from "../utils/style/fonts";
-import {
-  headerMarginHorizontal,
-} from "../utils/style/layout";
+import { headerMarginHorizontal } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { TopMenu } from "./TopMenu/TopMenu";

@@ -1,11 +1,7 @@
-import {
-  FlexAlignType,
-  View,
-  ViewProps,
-} from "react-native";
+import { FlexAlignType, View, ViewProps } from "react-native";
 
 type FlexColProps = ViewProps & {
-  width?: string|number;
+  width?: string | number;
   alignItems?: FlexAlignType | undefined;
   justifyContent?:
     | "flex-start"
@@ -18,12 +14,11 @@ type FlexColProps = ViewProps & {
 };
 
 const FlexCol: React.FC<FlexColProps> = ({
-                                           width = "100%",
-                                           alignItems = "center",
-                                           justifyContent,
-                                           ...props
-                                         }) => {
-
+  width = "100%",
+  alignItems = "center",
+  justifyContent,
+  ...props
+}) => {
   return (
     <View
       style={[
@@ -31,8 +26,8 @@ const FlexCol: React.FC<FlexColProps> = ({
           width,
           flexDirection: "column",
         },
-        alignItems && {alignItems},
-        justifyContent && {justifyContent},
+        alignItems && { alignItems },
+        justifyContent && { justifyContent },
         props.style,
       ]}
     >

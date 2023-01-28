@@ -1,20 +1,24 @@
-import {useAppNavigation} from "../utils/navigation";
-import {useTNSMetadata} from "../hooks/useTNSMetadata";
-import FlexRow from "./containers/FlexRow";
-import { StyleProp, TextStyle, TouchableOpacity} from "react-native";
-import {ipfsURLToHTTPURL} from "../utils/ipfs";
-import {BrandText} from "./BrandText";
-import {layout} from "../utils/style/layout";
 import React from "react";
-import {fontSemibold14} from "../utils/style/fonts";
-import {RoundedGradientImage} from "./images/RoundedGradientImage";
+import { StyleProp, TextStyle, TouchableOpacity } from "react-native";
+
+import { useTNSMetadata } from "../hooks/useTNSMetadata";
+import { ipfsURLToHTTPURL } from "../utils/ipfs";
+import { useAppNavigation } from "../utils/navigation";
+import { fontSemibold14 } from "../utils/style/fonts";
+import { layout } from "../utils/style/layout";
+import { BrandText } from "./BrandText";
+import FlexRow from "./containers/FlexRow";
+import { RoundedGradientImage } from "./images/RoundedGradientImage";
 
 type PlayerNameProps = {
   userId: string;
-  style?: StyleProp<TextStyle>
+  style?: StyleProp<TextStyle>;
 };
 
-export const UserNameInline: React.FC<PlayerNameProps> = ({ userId, style }) => {
+export const UserNameInline: React.FC<PlayerNameProps> = ({
+  userId,
+  style,
+}) => {
   const navigation = useAppNavigation();
   const address = userId.split("-")[1];
   const tnsMetadata = useTNSMetadata(address);
@@ -24,7 +28,7 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({ userId, style }) => 
   return (
     <FlexRow alignItems="center" style={style}>
       <TouchableOpacity
-        style={{ flexDirection: "row", alignItems: "center" }}
+        style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
         onPress={() => {
           navigation.navigate("UserPublicProfile", {
             id: userId,
@@ -33,14 +37,17 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({ userId, style }) => 
       >
         <RoundedGradientImage
           size="XXS"
-          imageSource={{ uri: ipfsURLToHTTPURL(
+          imageSource={{
+            uri: ipfsURLToHTTPURL(
               tnsMetadata?.metadata?.image ||
-              process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
-              ""
-            ), }}
+                process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
+                ""
+            ),
+          }}
         />
         <BrandText
           style={[{ marginLeft: layout.padding_x1_5 }, fontSemibold14]}
+          ellipsizeMode="middle"
           numberOfLines={1}
         >
           {name}

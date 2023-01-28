@@ -12,6 +12,7 @@ import {
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
+import { useBanners } from "../../hooks/useBanners";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -24,7 +25,6 @@ import { LabelCard } from "../cards/LabelCard";
 import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
-import {useBanners} from "../../hooks/useBanners";
 
 const gridHalfGutter = 12;
 

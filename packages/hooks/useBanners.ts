@@ -1,5 +1,6 @@
-import {useQuery} from "@tanstack/react-query";
-import {backendClient} from "../utils/backend";
+import { useQuery } from "@tanstack/react-query";
+
+import { backendClient } from "../utils/backend";
 
 export const useBanners = (testnet: boolean) => {
   const { data } = useQuery(
