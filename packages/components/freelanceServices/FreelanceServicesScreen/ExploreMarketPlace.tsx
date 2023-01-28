@@ -20,46 +20,55 @@ const data = [
     name: "Graphics & Design",
     icon: Feather,
     iconChangePage: GoToPageIcon,
+    navigation: "GraphicsAndDesign",
   },
   {
     name: "Digital Marketing",
     icon: Computer,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
   {
     name: "Wiriting & Translation",
     icon: Pen,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
   {
     name: "Video & Animation",
     icon: BallBounce,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
   {
     name: "Music & Audio",
     icon: Music,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
   {
     name: "Dev & Tech",
     icon: Code,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
   {
     name: "Business",
     icon: Suitecase,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
   {
     name: "Lifestyle",
     icon: LifeStyle,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
   {
     name: "Data",
     icon: Data,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
 ];
 
@@ -97,6 +106,7 @@ export const ExplorerMarketPlace: React.FC = () => {
               marginTop: layout.padding_x2,
             }}
             key={index}
+            navigation={item.navigation}
           />
         ))}
       </View>

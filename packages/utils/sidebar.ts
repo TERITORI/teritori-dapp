@@ -30,6 +30,28 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "Marketplace",
     icon: marketplaceSVG,
   },
+  freelance: {
+    title: "Freelance",
+    route: "FreelanceServices",
+    icon: marketplaceSVG,
+    nested: {
+      freelance: {
+        title: "Freelance",
+        route: "FreelanceServices",
+        icon: marketplaceSVG,
+      },
+      seller: {
+        title: "Seller",
+        route: "SellerDetails",
+        icon: marketplaceSVG,
+      },
+      order: {
+        title: "Order",
+        route: "OrderDetails",
+        icon: marketplaceSVG,
+      }
+    }
+  },
   launchpad: {
     title: "Launchpad",
     route: "Launchpad",

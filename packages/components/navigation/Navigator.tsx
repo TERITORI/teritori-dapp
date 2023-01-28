@@ -7,6 +7,7 @@ import { GraphicsAndDesignScreen } from "../../screens/FreelanceServices/Graphic
 import { LogoDesignDetailsScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignDetailsScreen";
 import { LogoDesignScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignScreen";
 import { SellerDetailsScreen } from "../../screens/FreelanceServices/SellersDetails/SellerDetailsScreen";
+import { OrderDetails } from "../../screens/FreelanceServices/Details/OrderDetails";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
@@ -171,6 +172,11 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="SellerDetails"
         component={SellerDetailsScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="OrderDetails"
+        component={OrderDetails}
         options={{ header: () => null }}
       />
     </Stack.Navigator>
