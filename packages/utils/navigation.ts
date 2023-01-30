@@ -22,12 +22,11 @@ export type RootStackParamList = {
   LogoDesign: undefined;
   LogoDesignDetails: { title: string };
   SellerDetails: undefined;
-
+  OrderDetails: { modal: string; name?: string } | undefined;
   Launchpad: undefined;
   LaunchpadApply: undefined;
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
-
   Marketplace: undefined;
   Collection: { id: string };
   CollectionTools: { id: string };
@@ -122,6 +121,7 @@ const navConfig: {
     MyCollection: "my-collection",
     GraphicsAndDesign: "graphics-and-design",
     SellerDetails: "seller-details",
+    OrderDetails: "order-details/:modal?",
     LogoDesign: "logo-design",
     LogoDesignDetails: "logo-design-details",
     Activity: "activity",

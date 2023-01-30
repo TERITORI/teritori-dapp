@@ -19,26 +19,31 @@ const data = [
     name: "Logo Design",
     icon: dimaond,
     iconChangePage: GoToPageIcon,
+    navigation: "LogoDesign",
   },
   {
     name: "Architecture & \nInterior Design",
     icon: house,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
   {
     name: "Image Editing",
     icon: imageEditing,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
   {
     name: "NFT Art",
     icon: halfStar,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
   {
     name: "Merch Design",
     icon: glasses,
     iconChangePage: GoToPageIcon,
+    navigation: "",
   },
 ];
 
@@ -89,6 +94,7 @@ export const PopularDesignExplorer: React.FC = () => {
             height={156}
             // boxStyle={{ margin: layout.padding_x1 }}
             key={index}
+            navigation={item.navigation}
           />
         ))}
       </View>
