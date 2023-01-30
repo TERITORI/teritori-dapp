@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import orgGnoPunksPNG from "../../../assets/default-images/orgGnopunks.png";
 import orgJungleDefendersPNG from "../../../assets/default-images/orgJungleDefenders.png";
@@ -94,13 +94,16 @@ export const MyTeritories: React.FC = () => {
             <SmallCarousel
               style={{
                 width: topMenuWidth - 2,
-                paddingLeft: layout.padding_x1,
               }}
               width={orgCardWidth + layout.padding_x1_5}
               data={fakeOrgs}
               height={48}
               loop={false}
-              renderItem={({ item }) => <OrgCard organization={item} />}
+              renderItem={({ item }) => (
+                <View style={{ alignItems: "flex-end" }}>
+                  <OrgCard organization={item} />
+                </View>
+              )}
             />
             {hovered && <OrgsComingSoon />}
           </>

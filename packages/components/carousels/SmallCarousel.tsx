@@ -19,8 +19,8 @@ import { InnerSideBlackShadow } from "../shadows/InnerSideBlackShadow";
 const chevronSize = 16;
 
 type ButtonProps = {
-  onPress: () => void;
   shadowHeight: number;
+  onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -70,27 +70,52 @@ export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
   props
 ) => {
   const { children, width, height, style, data, ...carouselProps } = props;
+  // loop is true by default in Carousel, so we need to override SmallCarousel props.loop like this
+  const isLoop = props.loop === undefined || props.loop
+
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const viewWidth = StyleSheet.flatten(style)?.width;
   const step = Math.floor(
     (typeof viewWidth === "number" ? viewWidth : 0) / (width || 0)
   );
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isScrolling, setScrolling] = useState(false);
 
-  const onScrollEnd = (index: number) => {
-    setCurrentIndex(index);
+  const onScrollEnd = () => {
+    // Prevent spamming buttons
+    setScrolling(false);
   };
+
   const onPressPrev = () => {
-    carouselRef.current?.prev({ count: step });
+    // No matter the carousel or items width, if it's the last press on Prev, we set "Reached the carousel's start"
+    if (!isLoop && currentIndex - step <= 0) {
+      carouselRef.current?.scrollTo({ index: 0, animated: true });
+      setCurrentIndex(0);
+      setScrolling(false);
+    } else {
+      carouselRef.current?.prev({ count: step });
+      setCurrentIndex(currentIndex - step);
+    }
   };
   const onPressNext = () => {
-    carouselRef.current?.next({ count: step });
+    // No matter the carousel or items width, if it's the last press on Next, we set "Reached the carousel's end"
+    if (!isLoop && currentIndex + step >= data.length) {
+      carouselRef.current?.scrollTo({ index: data.length - 1, animated: true });
+      setCurrentIndex(data.length - 1);
+      setScrolling(false);
+    } else {
+      carouselRef.current?.next({ count: step });
+      setCurrentIndex(currentIndex + step);
+    }
   };
 
   return (
     <FlexRow>
-      {!props.loop && currentIndex > 0 && (
-        <PrevButton shadowHeight={height} onPress={onPressPrev} />
+      {(isLoop || (!isLoop && currentIndex > 0)) && (
+        <PrevButton
+          shadowHeight={height}
+          onPress={!isScrolling ? onPressPrev : undefined}
+        />
       )}
       <Carousel
         data={data}
@@ -98,12 +123,16 @@ export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
         style={style}
         width={width || 0}
         height={height || 0}
+        onScrollBegin={() => setScrolling(true)}
         onScrollEnd={onScrollEnd}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
         {...carouselProps}
       />
-      {!props.loop && currentIndex < data.length - 1 && (
-        <NextButton shadowHeight={height} onPress={onPressNext} />
+      {(isLoop || (!isLoop && currentIndex < data.length - 1)) && (
+        <NextButton
+          shadowHeight={height}
+          onPress={!isScrolling ? onPressNext : undefined}
+        />
       )}
     </FlexRow>
   );

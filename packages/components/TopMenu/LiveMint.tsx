@@ -1,4 +1,5 @@
 import React from "react";
+import { View } from "react-native";
 
 import {
   MintState,
@@ -31,17 +32,18 @@ export const LiveMint: React.FC = () => {
     },
     launchpadCollectionsFilter
   );
-
   return (
     <TopMenuSection title="Live Mint" isCarousel>
       <SmallCarousel
-        style={{ width: topMenuWidth - 2, paddingLeft: layout.padding_x1 }}
+        style={{ width: topMenuWidth - 2 }}
         width={collectionViewSMWidth + layout.padding_x1_5}
         data={collections}
         height={collectionViewSMHeight}
         loop={false}
         renderItem={({ item }) => (
-          <CollectionView item={item} linkToMint size="XS" />
+          <View style={{ alignItems: "flex-end" }}>
+            <CollectionView item={item} linkToMint size="XS" />
+          </View>
         )}
       />
     </TopMenuSection>
