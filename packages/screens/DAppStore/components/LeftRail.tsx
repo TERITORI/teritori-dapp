@@ -12,7 +12,7 @@ import {
 import { useAppDispatch } from "../../../store/store";
 import { neutral67 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { getValuesFromId } from "../query";
+import { getValuesFromId } from "../query/query";
 import { SelectedDraggable } from "./SelectedDraggable";
 
 export const LeftRail = () => {

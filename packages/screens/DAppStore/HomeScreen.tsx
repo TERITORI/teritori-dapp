@@ -11,7 +11,7 @@ import { ScreenFC } from "../../utils/navigation";
 import { Header } from "./components/Header";
 import { LeftRail } from "./components/LeftRail";
 import { RightRail } from "./components/RightRail";
-import { getFromAirTable } from "./query";
+import { getFromAirTable } from "./query/getFromAirTable";
 
 export const DAppStore: ScreenFC<"DAppStore"> = () => {
   const dispatch = useAppDispatch();

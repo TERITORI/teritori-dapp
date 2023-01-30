@@ -1,93 +1,26 @@
-import checklogo from "../../../assets/icons/greenCheck.svg";
-import launchpad from "../../../assets/icons/launchpad.svg";
-import logoSimple from "../../../assets/icons/logo-simple.svg";
-import marketplace from "../../../assets/icons/marketplace.svg";
-import osmosisSVG from "../../../assets/icons/networks/osmosis.svg";
-import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
-import otherAppsIcon from "../../../assets/icons/random-goods-icon.svg";
+import checklogo from "../../../../assets/icons/greenCheck.svg";
+import launchpad from "../../../../assets/icons/launchpad.svg";
+import logoSimple from "../../../../assets/icons/logo-simple.svg";
+import marketplace from "../../../../assets/icons/marketplace.svg";
+import osmosisSVG from "../../../../assets/icons/networks/osmosis.svg";
+import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
+import otherAppsIcon from "../../../../assets/icons/random-goods-icon.svg";
+import axelarLogo from "../../../../assets/logos/Axelar-logo.svg";
+import artemisVision from "../../../../assets/logos/artemisVision.png";
+import astroportLogo from "../../../../assets/logos/astroport.svg";
+import coinHallLogo from "../../../../assets/logos/coinhall.svg";
+import daodao from "../../../../assets/logos/daodao.png";
+import falconWalletLogo from "../../../../assets/logos/falconWallet.svg";
+import pulsarLogo from "../../../../assets/logos/pulsar-logo.svg";
+import radyium from "../../../../assets/logos/raydium.png";
+import foxyRaffle from "../../../../assets/logos/sfoxy.png";
+import skip from "../../../../assets/logos/skip.png";
+import subdao from "../../../../assets/logos/subdao.png";
+import theGraph from "../../../../assets/logos/theGraph.png";
+import toripunks from "../../../../assets/logos/toniPunks.png";
+import uniswap from "../../../../assets/logos/uniswap.png";
+import { dAppGroup } from "../types";
 // import warningTriangle from "../../../assets/icons/warning-triangle-orange.svg";
-import axelarLogo from "../../../assets/logos/Axelar-logo.svg";
-import artemisVision from "../../../assets/logos/artemisVision.png";
-import astroportLogo from "../../../assets/logos/astroport.svg";
-import coinHallLogo from "../../../assets/logos/coinhall.svg";
-import daodao from "../../../assets/logos/daodao.png";
-import falconWalletLogo from "../../../assets/logos/falconWallet.svg";
-import pulsarLogo from "../../../assets/logos/pulsar-logo.svg";
-import radyium from "../../../assets/logos/raydium.png";
-import foxyRaffle from "../../../assets/logos/sfoxy.png";
-import skip from "../../../assets/logos/skip.png";
-import subdao from "../../../assets/logos/subdao.png";
-import theGraph from "../../../assets/logos/theGraph.png";
-import toripunks from "../../../assets/logos/toniPunks.png";
-import uniswap from "../../../assets/logos/uniswap.png";
-import { dAppGroup, dAppType } from "./types";
-
-export async function getFromAirTable(): Promise<dAppGroup> {
-  interface IdAppsLUT {
-    [key: string]: {
-      [key: string]: dAppType;
-    };
-  }
-
-  const dApps: IdAppsLUT = {};
-  const formatted: dAppGroup = {};
-
-  const Airtable = require("airtable");
-  const base = new Airtable({
-    apiKey: process.env.AIRTABLE_API_KEY,
-  }).base(process.env.AIRTABLE_DAPP_BASE);
-
-  // @ts-ignore
-  const getIcon = <TFields extends any>(record: Record<TFields>) =>
-    record.get("icon")[0] ? record.get("icon")[0].url : "";
-
-  const dAppsRecords = await base("dApps")
-    .select({
-      view: "Grid view",
-    })
-    .all();
-  // @ts-ignore
-  dAppsRecords.forEach((record) => {
-    dApps[record.id] = {
-      [record.get("id")]: {
-        id: record.get("id"),
-        title: record.get("title"),
-        description: record.get("description"),
-        icon: getIcon(record),
-        route: record.get("route"),
-        groupKey: "",
-      },
-    };
-  });
-
-  const dAppsGroups = await base("dAppsGroup")
-    .select({
-      view: "Grid view",
-    })
-    .all();
-
-  // @ts-ignore
-  dAppsGroups.forEach((record) => {
-    const options = {};
-
-    record.get("options").forEach(function (option: string) {
-      dApps[option][Object.keys(dApps[option])[0]].groupKey = record.get("id");
-
-      // @ts-ignore
-      options[Object.keys(dApps[option])[0]] =
-        dApps[option][Object.keys(dApps[option])[0]];
-    });
-    formatted[record.get("id")] = {
-      id: record.get("id"),
-      groupName: record.get("title"),
-      icon: getIcon(record),
-      active: true,
-      options,
-    };
-  });
-
-  return formatted;
-}
 
 export function getAvailableApps(): dAppGroup {
   return {
@@ -276,21 +209,4 @@ export function getAvailableApps(): dAppGroup {
       },
     },
   };
-}
-
-export function getSelectedApps(): string[] {
-  return window.localStorage.getItem("teritori-dappstore")
-    ? Array.from(
-        JSON.parse(window.localStorage.getItem("teritori-dappstore") as string)
-      )
-    : [];
-}
-
-export function getValuesFromId(option: string) {
-  const separator = "*SEPARATOR*";
-  const separatorLen = separator.length;
-  const offset = option.indexOf(separator);
-  const appId = option.substring(offset + separatorLen);
-  const groupKey = option.substring(0, offset);
-  return { appId, groupKey };
 }

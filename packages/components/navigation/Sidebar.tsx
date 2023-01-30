@@ -14,7 +14,7 @@ import { useSidebar } from "../../context/SidebarProvider";
 import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
-import { getValuesFromId } from "../../screens/DAppStore/query";
+import { getValuesFromId } from "../../screens/DAppStore/query/query";
 import {
   selectAvailableApps,
   selectCheckedApps,

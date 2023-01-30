@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { getSelectedApps } from "../../screens/DAppStore/query";
+import { getSelectedApps } from "../../screens/DAppStore/query/query";
 import { dAppGroup } from "../../screens/DAppStore/types";
 import { RootState } from "../store";
 
