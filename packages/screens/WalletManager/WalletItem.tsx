@@ -20,6 +20,8 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { accountExplorerLink } from "../../utils/teritori";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
+import { getShortAddress_Small } from "../../utils/strings";
+import { smallMobileWidth } from "../../utils/style/layout";
 
 export interface WalletItemProps {
   index: number;
@@ -46,6 +48,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
 
   // Total rewards price with all denoms
   const claimablePrice = rewardsPrice(item.pendingRewards);
+  const walletListBreakpoint = 1100;
 
   return (
     <View
@@ -67,8 +70,8 @@ export const WalletItem: React.FC<WalletItemProps> = ({
       >
         <SVG
           source={getWalletIconFromTitle(item.title)}
-          height={64}
-          width={64}
+          height={width < smallMobileWidth ? 48 : 64}
+          width={width < smallMobileWidth ? 48 : 64}
           style={{
             marginRight: 16,
           }}
@@ -88,7 +91,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
                   fontSize: 12,
                 }}
               >
-                {item.address}
+                {getShortAddress_Small(item.address, width)}
               </BrandText>
               <TouchableOpacity
                 onPress={() => {
@@ -120,28 +123,34 @@ export const WalletItem: React.FC<WalletItemProps> = ({
       >
         <View
           style={{
-            paddingRight: 32,
-            borderRightWidth: 1,
-            borderColor: neutral33,
+            display: width < walletListBreakpoint ? "none" : "flex",
+            flexDirection: "row",
           }}
         >
-          <BrandText
+          <View
             style={{
-              fontSize: 12,
-              color: neutral77,
-              marginBottom: 2,
+              paddingRight: 32,
+              borderRightWidth: 1,
+              borderColor: neutral33,
             }}
           >
-            Staked
-          </BrandText>
-          <BrandText
-            style={{
-              fontSize: 14,
-            }}
-          >
-            {/*String(item.staked).split(".")[0]*/}
-            Coming Soon
-            {/*<BrandText
+            <BrandText
+              style={{
+                fontSize: 12,
+                color: neutral77,
+                marginBottom: 2,
+              }}
+            >
+              Staked
+            </BrandText>
+            <BrandText
+              style={{
+                fontSize: 14,
+              }}
+            >
+              {/*String(item.staked).split(".")[0]*/}
+              Coming Soon
+              {/*<BrandText
               style={{
                 color: neutralA3,
                 fontSize: 14,
@@ -149,29 +158,30 @@ export const WalletItem: React.FC<WalletItemProps> = ({
             >
               .{String(item.staked).split(".")[1]}
             </BrandText>*/}
-          </BrandText>
-        </View>
-        <View
-          style={{
-            paddingHorizontal: 32,
-          }}
-        >
-          <BrandText
+            </BrandText>
+          </View>
+          <View
             style={{
-              fontSize: 12,
-              color: neutral77,
-              marginBottom: 2,
+              paddingHorizontal: 32,
             }}
           >
-            Pending rewards
-          </BrandText>
-          <BrandText
-            style={{
-              fontSize: 14,
-            }}
-          >
-            {`$${claimablePrice.toFixed(2)}`}
-          </BrandText>
+            <BrandText
+              style={{
+                fontSize: 12,
+                color: neutral77,
+                marginBottom: 2,
+              }}
+            >
+              Pending rewards
+            </BrandText>
+            <BrandText
+              style={{
+                fontSize: 14,
+              }}
+            >
+              {`$${claimablePrice.toFixed(2)}`}
+            </BrandText>
+          </View>
         </View>
 
         {width > 1150 && (

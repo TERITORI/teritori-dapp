@@ -5,6 +5,7 @@ import { bech32 } from "bech32";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import arrowDivideSVG from "../../../../assets/icons/arrow-divide.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -28,9 +29,13 @@ import {
 } from "../../../networks";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { layout, smallMobileWidth } from "../../../utils/style/layout";
 import { capitalize } from "../../../utils/text";
 import { TransactionForm } from "../types";
+import {
+  getShortAddress_Chain,
+  getShortAddress_Small,
+} from "../../../utils/strings";
 
 type DepositModalProps = {
   variation: "deposit" | "withdraw";
@@ -79,13 +84,60 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   // variables
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
 
+  const { width } = useWindowDimensions();
+
+  const styles = StyleSheet.create({
+    selfCenter: {
+      alignSelf: "center",
+    },
+    w100: { width: "100%" },
+    rowCenter: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    leftChevron: {
+      position: "absolute",
+      left: -(layout.padding_x3 * 2),
+    },
+    rightChevron: {
+      position: "absolute",
+      right: -(layout.padding_x3 * 2),
+    },
+    jcCenter: {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    rowAllCenter: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      flex: 1,
+    },
+    arrow: {
+      alignSelf: "flex-start",
+      marginTop: 64 / 2,
+    },
+    container: {
+      paddingBottom: layout.padding_x3,
+    },
+    estimatedText: StyleSheet.flatten([
+      fontSemibold14,
+      {
+        color: neutral77,
+      },
+    ]),
+  });
+
   // returns
   const ModalHeader = useCallback(
     () => (
       <View style={styles.rowCenter}>
         <NetworkIcon networkId={networkId} size={32} />
         <SpacerRow size={3} />
-        <BrandText>
+        <BrandText
+          numberOfLines={width < 432 ? 2 : 1}
+          style={{ width: width < 432 ? 150 : 265 }}
+        >
           {variation === "deposit" ? "Deposit on" : "Withdraw from"}{" "}
           {getNetwork(networkId)?.displayName || "Unknown"}
         </BrandText>
@@ -109,7 +161,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
       visible={isVisible}
       onClose={onClose}
       Header={ModalHeader}
-      width={460}
+      width={width < smallMobileWidth ? 0.9 * width : 460}
     >
       <View style={styles.container}>
         <BrandText style={[fontSemibold14, styles.selfCenter]}>
@@ -122,7 +174,13 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               <NetworkIcon size={64} networkId={sourceNetworkId || "unknown"} />
             </View>
             <SpacerColumn size={1.5} />
-            <BrandText style={fontSemibold14}>
+            <BrandText
+              style={[
+                fontSemibold14,
+                { textAlign: "center", width: width < 462 ? 0.3 * width : 200 },
+              ]}
+              numberOfLines={width < 462 ? 2 : 1}
+            >
               From {sourceNetwork?.displayName || "Unknown"}
             </BrandText>
             <SpacerColumn size={1} />
@@ -131,7 +189,11 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               variant="labelOutside"
               name="fromAddress"
               label=""
-              defaultValue={tinyAddress(fromAccount, 19)}
+              defaultValue={
+                width < 520
+                  ? getShortAddress_Chain(fromAccount)
+                  : tinyAddress(fromAccount, 19)
+              }
               rules={{ required: true }}
               disabled
             />
@@ -151,7 +213,13 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               />
             </View>
             <SpacerColumn size={1.5} />
-            <BrandText style={fontSemibold14}>
+            <BrandText
+              style={[
+                fontSemibold14,
+                { textAlign: "center", width: width < 462 ? 0.2 * width : 200 },
+              ]}
+              numberOfLines={width < 462 ? 2 : 1}
+            >
               To {destinationNetwork?.displayName || "Unknown"}
             </BrandText>
             <SpacerColumn size={1} />
@@ -159,7 +227,11 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               control={control}
               variant="labelOutside"
               name="toAddress"
-              defaultValue={tinyAddress(toAccount, 19)}
+              defaultValue={
+                width < 520
+                  ? getShortAddress_Chain(toAccount)
+                  : tinyAddress(toAccount, 19)
+              }
               label=""
               rules={{ required: true }}
               disabled
@@ -288,48 +360,6 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
     </ModalBase>
   );
 };
-
-const styles = StyleSheet.create({
-  selfCenter: {
-    alignSelf: "center",
-  },
-  w100: { width: "100%" },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  leftChevron: {
-    position: "absolute",
-    left: -(layout.padding_x3 * 2),
-  },
-  rightChevron: {
-    position: "absolute",
-    right: -(layout.padding_x3 * 2),
-  },
-  jcCenter: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  rowAllCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-  },
-  arrow: {
-    alignSelf: "flex-start",
-    marginTop: 64 / 2,
-  },
-  container: {
-    paddingBottom: layout.padding_x3,
-  },
-  estimatedText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-    },
-  ]),
-});
 
 const convertCosmosAddress = (
   sourceAddress: string | undefined,

@@ -17,7 +17,7 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { mobileWidth, smallMobileWidth } from "../../utils/style/layout";
-import { getShortAddress } from "../../utils/strings";
+import { getShortAddress_Big } from "../../utils/strings";
 
 interface WalletDashboardHeaderProps {
   title: string;
@@ -169,7 +169,7 @@ export const WalletDashboardHeader: React.FC = () => {
               fontSize: 20,
             }}
           >
-            {getShortAddress(
+            {getShortAddress_Big(
               tnsMetadata.metadata?.tokenId || selectedWallet?.address || "",
               width
             )}

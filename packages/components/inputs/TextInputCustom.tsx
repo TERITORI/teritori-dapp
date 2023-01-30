@@ -188,6 +188,7 @@ export const TextInputCustom = <T extends FieldValues>({
               value={field.value}
               style={styles.textInput}
               {...restProps}
+              numberOfLines={2}
             />
           </View>
 

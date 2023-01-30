@@ -1,12 +1,13 @@
 // libraries
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import adenaSVG from "../../../assets/icons/adena.svg";
 import walletConnectSVG from "../../../assets/icons/wallet-connect.svg";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, smallMobileWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { DisclaimerPopup } from "../PopupDisclaimer/DisclaimerPopup";
 import { SeparatorGradient } from "../SeparatorGradient";
@@ -32,6 +33,8 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
   // functions
   const toggleDisclaimer = () => setIsDisclaimerVisible(!isDisclaimerVisible);
 
+  const { width } = useWindowDimensions();
+
   // returns
   return (
     <ModalBase
@@ -40,7 +43,7 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       onClose={onClose}
       visible={visible}
       hideMainSeparator
-      width={457}
+      width={width < smallMobileWidth ? width * 0.9 : 457}
       noBrokenCorners
     >
       <ConnectMetamaskButton onDone={onClose} />

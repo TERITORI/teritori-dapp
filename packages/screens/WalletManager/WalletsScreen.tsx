@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
@@ -16,6 +17,7 @@ import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 import { WalletItem, WalletItemProps } from "./WalletItem";
 import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
+import { smallMobileWidth } from "../../utils/style/layout";
 
 interface WalletProps {
   index: number;
@@ -105,6 +107,7 @@ const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
     </TertiaryBox>
   );
 };
+
 export const WalletManagerWalletsScreen: ScreenFC<
   "WalletManagerWallets" | "WalletManagerChains"
 > = () => {
@@ -136,6 +139,8 @@ export const WalletManagerWalletsScreen: ScreenFC<
       ]
     : [];
 
+  const { width } = useWindowDimensions();
+
   return (
     <WalletManagerScreenContainer>
       <View
@@ -149,9 +154,10 @@ export const WalletManagerWalletsScreen: ScreenFC<
             alignItems: "center",
             justifyContent: "space-between",
             marginBottom: 24,
+            flexWrap: width < 850 ? "wrap" : "nowrap",
           }}
         >
-          <View>
+          <View style={{ width: width < 850 ? "100%" : "" }}>
             <BrandText style={{ marginRight: 20, fontSize: 20 }}>
               All Wallets
             </BrandText>
@@ -160,6 +166,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
                 fontSize: 14,
                 color: neutralA3,
               }}
+              numberOfLines={width < smallMobileWidth ? 2 : 1}
             >
               Add one or more wallets to showcase all related things in one
               place.
@@ -168,6 +175,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
           <PrimaryButton
             size="SM"
             text="Add wallet"
+            style={{ marginTop: width < 850 ? 10 : 0 }}
             onPress={() => setShowConnectModal(true)}
           />
         </View>

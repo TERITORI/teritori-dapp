@@ -1,13 +1,16 @@
 import React from "react";
 import { View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 
 interface WalletHeaderProps {}
 
 export const WalletHeader: React.FC<WalletHeaderProps> = () => {
+  const { width } = useWindowDimensions();
+
   return (
-    <View>
+    <View style={{ display: width < 900 ? "none" : "flex" }}>
       <BrandText
         style={{
           fontSize: 20,

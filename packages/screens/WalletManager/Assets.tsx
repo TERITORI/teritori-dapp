@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
@@ -12,6 +13,8 @@ import { getNetwork } from "../../networks";
 import { Balance, prettyPrice } from "../../utils/coins";
 import { neutral22, neutral33 } from "../../utils/style/colors";
 import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
+import { smallMobileWidth } from "../../utils/style/layout";
+import { fontSemibold16, fontSemibold20 } from "../../utils/style/fonts";
 
 const collapsedCount = 5;
 
@@ -61,6 +64,8 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
   if (!expanded) {
     currencies = currencies.slice(0, collapsedCount);
   }
+
+  const { width } = useWindowDimensions();
 
   return (
     <View
@@ -136,6 +141,7 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
+              flexWrap: width < smallMobileWidth ? "wrap" : "nowrap",
               borderBottomWidth: index !== currencies.length - 1 ? 1 : 0,
               borderColor: neutral33,
               paddingVertical: 16,
@@ -145,6 +151,8 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
               style={{
                 flexDirection: "row",
                 alignItems: "center",
+                width: width < smallMobileWidth ? "100%" : "",
+                justifyContent: "center",
               }}
             >
               <CurrencyIcon
@@ -183,6 +191,9 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
               style={{
                 flexDirection: "row",
                 alignItems: "center",
+                justifyContent: "center",
+                width: width < smallMobileWidth ? "100%" : "",
+                marginTop: width < smallMobileWidth ? 10 : 0,
               }}
             >
               {currency.kind === "ibc" && (
