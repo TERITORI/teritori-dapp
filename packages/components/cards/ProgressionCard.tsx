@@ -5,6 +5,7 @@ import { neutral44, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { GradientText } from "../gradientText";
 
 export const ProgressionCard: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -38,10 +39,9 @@ export const ProgressionCard: React.FC<{
             marginBottom: 10,
           }}
         >
-          {/*TODO: Gradient text blue*/}
-          <BrandText style={[fontSemibold28, { color: primaryColor }]}>
+          <GradientText gradientType="blue" style={fontSemibold28}>
             {percent}%
-          </BrandText>
+          </GradientText>
 
           <BrandText
             style={[fontSemibold12, { color: neutral77, marginRight: 6 }]}

@@ -4,6 +4,7 @@ import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
 import { Currency } from "@keplr-wallet/types";
 
 import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { Network } from "./network";
 
 export const UTORI_PER_TORI = process.env.PUBLIC_BASE_MINT_FEE;
 export const teritoriRestProvider = process.env.PUBLIC_CHAIN_REST_ENDPOINT;
@@ -14,10 +15,17 @@ export const vaultContractAddress =
   process.env.TERITORI_VAULT_CONTRACT_ADDRESS || "";
 const toriDenom = process.env.PUBLIC_STAKING_DENOM;
 
-export interface CosmosRewardsTotalResponse {
+export interface CosmosRewardsResponse {
   total: {
     denom: string;
     amount: string;
+  }[];
+  rewards: {
+    validator_address: string;
+    reward: {
+      denom: string;
+      amount: string;
+    }[];
   }[];
 }
 
@@ -166,16 +174,36 @@ export const domainsList = [
   },
 ];
 
-export const txExplorerLink = (txHash: string) => {
-  return (process.env.TERITORI_TRANSACTION_EXPLORER_URL || "").replace(
-    "$hash",
-    txHash
-  );
+export const txExplorerLink = (
+  network: Network | undefined,
+  txHash: string
+) => {
+  let explorerUrl = "/";
+  switch (network) {
+    case Network.Teritori:
+      explorerUrl = process.env.TERITORI_TRANSACTION_EXPLORER_URL || "";
+      break;
+    case Network.Ethereum:
+      explorerUrl = process.env.ETHEREUM_TRANSACTION_EXPLORER_URL || "";
+      break;
+  }
+
+  return explorerUrl.replace("$hash", txHash);
 };
 
-export const accountExplorerLink = (address: string) => {
-  return (process.env.TERITORI_ACCOUNT_EXPLORER_URL || "").replace(
-    "$address",
-    address
-  );
+export const accountExplorerLink = (
+  network: Network | undefined,
+  address: string
+) => {
+  let explorerUrl = "/";
+  switch (network) {
+    case Network.Teritori:
+      explorerUrl = process.env.TERITORI_ACCOUNT_EXPLORER_URL || "";
+      break;
+    case Network.Ethereum:
+      explorerUrl = process.env.ETHEREUM_ACCOUNT_EXPLORER_URL || "";
+      break;
+  }
+
+  return explorerUrl.replace("$address", address);
 };

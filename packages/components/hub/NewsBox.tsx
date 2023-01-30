@@ -1,14 +1,11 @@
-import React from "react";
-import {
-  Image,
-  ImageSourcePropType,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { useLinkTo } from "@react-navigation/native";
+import React, { useCallback } from "react";
+import { Image, Linking, useWindowDimensions, View } from "react-native";
 
-import { neutral33, neutral77, primaryColor } from "../../utils/style/colors";
+import { News } from "../../api/marketplace/v1/marketplace";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { neutral33, neutral77 } from "../../utils/style/colors";
 import {
-  fontMedium14,
   fontSemibold14,
   fontSemibold20,
   fontSemibold28,
@@ -16,18 +13,7 @@ import {
 import { BrandText } from "../BrandText";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
-
-export type News = {
-  title: string;
-  subtitle: string;
-  text: string;
-  image: ImageSourcePropType;
-  button1Label?: string;
-  button1Action?: () => void;
-  button2Label?: string;
-  button2Action?: () => void;
-  author?: string;
-};
+import { GradientText } from "../gradientText";
 
 const breakPoint = 768;
 
@@ -35,6 +21,20 @@ export const NewsBox: React.FC<{
   news: News;
 }> = ({ news }) => {
   const { width } = useWindowDimensions();
+  const linkTo = useLinkTo();
+  const navigateTo = useCallback(
+    (to: string | undefined) => {
+      if (!to) {
+        return;
+      }
+      if (to.startsWith("/")) {
+        linkTo(to);
+        return;
+      }
+      Linking.openURL(to);
+    },
+    [linkTo]
+  );
 
   return (
     <View
@@ -64,9 +64,9 @@ export const NewsBox: React.FC<{
           ]}
         >
           <View>
-            <BrandText style={[fontSemibold28, { color: primaryColor }]}>
+            <GradientText gradientType="blueExtended" style={fontSemibold28}>
               {news.title}
-            </BrandText>
+            </GradientText>
             <BrandText style={fontSemibold20}>{news.subtitle}</BrandText>
           </View>
 
@@ -83,22 +83,22 @@ export const NewsBox: React.FC<{
               marginBottom: 12,
             }}
           >
-            {news.button1Label ? (
+            {news.actions.length > 0 ? (
               <SecondaryButton
                 backgroundColor="#FFFFFF"
                 color="#000000"
                 size="SM"
-                text={news.button1Label}
-                onPress={news.button1Action ? news.button1Action : () => {}}
+                text={news.actions[0].label}
+                onPress={() => navigateTo(news.actions[0].url)}
               />
             ) : null}
-            {news.button2Label ? (
+            {news.actions.length > 1 ? (
               <SecondaryButtonOutline
                 style={{ marginLeft: 16 }}
                 backgroundColor="#000000"
                 size="SM"
-                text={news.button2Label}
-                onPress={news.button2Action ? news.button2Action : () => {}}
+                text={news.actions[1].label}
+                onPress={() => navigateTo(news.actions[1].url)}
               />
             ) : null}
           </View>
@@ -112,8 +112,7 @@ export const NewsBox: React.FC<{
           }
         >
           <Image
-            // source={guardianPNG}
-            source={news.image}
+            source={{ uri: ipfsURLToHTTPURL(news.image) }}
             style={{
               height: 342,
               width: 342,
@@ -121,16 +120,6 @@ export const NewsBox: React.FC<{
               borderRadius: 10,
             }}
           />
-          {news.author && (
-            <BrandText
-              style={[
-                fontMedium14,
-                { position: "absolute", bottom: 22, right: 20 },
-              ]}
-            >
-              {news.author}
-            </BrandText>
-          )}
         </View>
       </View>
     </View>

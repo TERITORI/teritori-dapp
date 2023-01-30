@@ -1,5 +1,6 @@
 // libraries
 import { useQuery } from "@tanstack/react-query";
+import { BigNumber, ethers } from "ethers";
 import moment from "moment";
 import React, { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
@@ -12,7 +13,12 @@ import {
 } from "victory-native";
 
 import priceHistorySVG from "../../../../assets/icons/price-history.svg";
+import {
+  useSelectedNetwork,
+  useSelectedNetworkId,
+} from "../../../hooks/useSelectedNetwork";
 import { backendClient } from "../../../utils/backend";
+import { Network } from "../../../utils/network";
 import {
   neutral33,
   neutral77,
@@ -37,13 +43,23 @@ export const CollapsablePiceHistory: React.FC<{ nftId: string }> = ({
   nftId,
 }) => {
   const data = useNFTPriceHistory(nftId);
+  const selectedNetwork = useSelectedNetwork();
+
+  const currency = useMemo(
+    () => (selectedNetwork === Network.Ethereum ? "ETH" : "USD"),
+    [selectedNetwork]
+  );
+
   const convertedData = useMemo(
     () =>
       data.map((d) => ({
-        y: d.price,
+        y:
+          selectedNetwork === Network.Ethereum
+            ? +ethers.utils.formatEther(BigNumber.from(d.price))
+            : d.price,
         x: new Date(d.time),
       })),
-    [data]
+    [data, selectedNetwork]
   );
 
   return (
@@ -54,7 +70,9 @@ export const CollapsablePiceHistory: React.FC<{ nftId: string }> = ({
     >
       <View style={styles.container}>
         <View style={styles.priceLabelTextContainer}>
-          <BrandText style={styles.priceLabelText}>Price (USD)</BrandText>
+          <BrandText style={styles.priceLabelText}>
+            Price ({currency})
+          </BrandText>
         </View>
         <VictoryChart
           minDomain={{ y: 0 }}
@@ -85,10 +103,15 @@ export const CollapsablePiceHistory: React.FC<{ nftId: string }> = ({
 };
 
 const useNFTPriceHistory = (nftId: string) => {
+  const networkId = useSelectedNetworkId();
+
   const { data } = useQuery(
-    ["nftPriceHistory", nftId],
+    ["nftPriceHistory", nftId, networkId],
     async () => {
-      const { data } = await backendClient.NFTPriceHistory({ id: nftId });
+      const { data } = await backendClient.NFTPriceHistory({
+        id: nftId,
+        networkId,
+      });
       if (data.length === 0) {
         return data;
       }

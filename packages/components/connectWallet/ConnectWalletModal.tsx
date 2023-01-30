@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import adenaSVG from "../../../assets/icons/adena.svg";
-import metamaskSVG from "../../../assets/icons/metamask.svg";
 import walletConnectSVG from "../../../assets/icons/wallet-connect.svg";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -15,6 +14,7 @@ import { TertiaryButton } from "../buttons/TertiaryButton";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
 import { ConnectKeplrButton } from "./ConnectKeplrButton";
+import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 
 type ConnectWalletProps = {
@@ -43,7 +43,7 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       width={457}
       noBrokenCorners
     >
-      <ConnectWalletButton text="Metamask" isComingSoon icon={metamaskSVG} />
+      <ConnectMetamaskButton onDone={onClose} />
       <SpacerColumn size={1.5} />
       <ConnectKeplrButton onDone={onClose} />
       <SpacerColumn size={1.5} />

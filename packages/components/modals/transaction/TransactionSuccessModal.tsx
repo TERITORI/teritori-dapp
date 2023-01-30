@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Image, ImageSourcePropType, View } from "react-native";
 
+import { useSelectedNetwork } from "../../../hooks/useSelectedNetwork";
 import {
   neutral44,
   neutral77,
@@ -32,6 +33,7 @@ export const TransactionSuccessModal: React.FC<{
   visible = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const selectedNetwork = useSelectedNetwork();
 
   const width = 372;
 
@@ -76,7 +78,7 @@ export const TransactionSuccessModal: React.FC<{
           </BrandText>
           {/*// TODO: Real time status ? (Processing, processed, ...) */}
           <BrandText style={[fontSemibold16, { color: successColor }]}>
-            Sucess
+            Success
           </BrandText>
         </View>
         <View>
@@ -88,7 +90,7 @@ export const TransactionSuccessModal: React.FC<{
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <ExternalLink
               style={fontSemibold16}
-              externalUrl={txExplorerLink(transactionHash)}
+              externalUrl={txExplorerLink(selectedNetwork, transactionHash)}
             >
               {tinyAddress(transactionHash, 21)}
             </ExternalLink>

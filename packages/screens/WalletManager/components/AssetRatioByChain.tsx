@@ -1,5 +1,5 @@
 // import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useMemo } from "react";
 import { useWindowDimensions, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
@@ -9,6 +9,8 @@ import teritoriSVG from "../../../../assets/icons/networks/teritori-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { ProgressLine } from "../../../components/ProgressLine";
 import { SVG } from "../../../components/SVG";
+import { useSelectedNetwork } from "../../../hooks/useSelectedNetwork";
+import { Network } from "../../../utils/network";
 import { OVERVIEW_FLEX_BREAK_WIDTH } from "../constants";
 
 interface AssetRatioData {
@@ -16,24 +18,6 @@ interface AssetRatioData {
   title: string;
   percent: number;
 }
-
-const DATA: AssetRatioData[] = [
-  {
-    icon: teritoriSVG,
-    title: "Teritori",
-    percent: 100,
-  },
-  {
-    icon: cosmosHubSVG,
-    title: "Cosmos Hub",
-    percent: 0,
-  },
-  {
-    icon: ethereumSVG,
-    title: "Ethereum",
-    percent: 0,
-  },
-];
 
 const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
   const { width } = useWindowDimensions();
@@ -80,6 +64,40 @@ interface AssetRatioByChainProps {
 export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
   style,
 }) => {
+  const selectedNetWork = useSelectedNetwork();
+
+  // TODO: handle multi asset from multi wallets/multi networks
+  const assetRatioData = useMemo(() => {
+    let toriPercent = 0;
+    let ethPercent = 0;
+    switch (selectedNetWork) {
+      case Network.Ethereum:
+        ethPercent = 100;
+        break;
+      case Network.Teritori:
+        toriPercent = 100;
+        break;
+    }
+
+    return [
+      {
+        icon: teritoriSVG,
+        title: "Teritori",
+        percent: toriPercent,
+      },
+      {
+        icon: cosmosHubSVG,
+        title: "Cosmos Hub",
+        percent: 0,
+      },
+      {
+        icon: ethereumSVG,
+        title: "Ethereum",
+        percent: ethPercent,
+      },
+    ];
+  }, [selectedNetWork]);
+
   return (
     <View style={[style]}>
       <BrandText
@@ -96,7 +114,7 @@ export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
           borderColor: neutral33,
         }}*/
       >
-        {DATA.map((item) => (
+        {assetRatioData.map((item) => (
           <ListItem key={item.title} {...item} />
         ))}
       </View>

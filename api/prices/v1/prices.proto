@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package prices.v1;
+option go_package = "./pricespb";
+
+service PricesService {
+  rpc Prices(PricesRequest) returns (PricesResponse);
+}
+
+message PricesRequest {
+  string id = 1;
+  string time = 2;
+  repeated string vs_ids = 3;
+}
+
+message Price {
+  string id = 1;
+  double value = 2;
+}
+
+message PricesResponse {
+  repeated Price prices = 1;
+}

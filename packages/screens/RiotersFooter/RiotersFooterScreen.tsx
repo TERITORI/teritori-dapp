@@ -11,8 +11,10 @@ import { DraxProvider, DraxView } from "react-native-drax";
 import teritorriSvg from "../../../assets/icons/networks/teritori.svg";
 import {
   Collection,
-  CollectionsRequest_Kind,
+  MintState,
   NFT,
+  Sort,
+  SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
@@ -35,6 +37,7 @@ import { Uint128 } from "../../contracts-clients/rioter-footer-nft/RioterFooterN
 import { TeritoriBunkerMinterQueryClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import { useCollections } from "../../hooks/useCollections";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
@@ -47,6 +50,7 @@ import { toriCurrency } from "../../utils/teritori";
 import { nftDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
 
 export const RiotersFooterScreen: React.FC = () => {
+  const selectedNetworkId = useSelectedNetworkId();
   const [tabName, setTabName] = useState<string>("New");
   const [searchNewNftCollection, setSearchNewNftCollection] =
     useState<string>("");
@@ -171,9 +175,13 @@ export const RiotersFooterScreen: React.FC = () => {
   }, [client]);
 
   const [collections, fetchMoreCollections] = useCollections({
-    kind: CollectionsRequest_Kind.KIND_TERITORI_FEATURES,
+    networkId: selectedNetworkId,
+    sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+    upcoming: false,
+    sort: Sort.SORTING_VOLUME,
     limit: 24,
     offset: 0,
+    mintState: MintState.MINT_STATE_UNSPECIFIED,
   });
 
   useEffect(() => {

@@ -89,7 +89,7 @@ func (h *Handler) handleExecuteSendNFTFallback(e *Message, execMsg *wasmtypes.Ms
 
 	// create send activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		ID:   indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindSendNFT,
 		Time: blockTime,
 		SendNFT: &indexerdb.SendNFT{
@@ -149,7 +149,7 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 
 	// create activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		ID:   indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindBurn,
 		Time: blockTime,
 		Burn: &indexerdb.Burn{
@@ -218,7 +218,7 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 
 	// create transfer activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		ID:   indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindTransferNFT,
 		Time: blockTime,
 		TransferNFT: &indexerdb.TransferNFT{

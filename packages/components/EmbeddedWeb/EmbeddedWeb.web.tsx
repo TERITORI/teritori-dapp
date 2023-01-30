@@ -2,7 +2,12 @@ import React from "react";
 
 import { IFrameProps } from "./EmbeddedWeb";
 
-export const EmbeddedWeb: React.FC<IFrameProps> = ({ uri, width, height }) => {
+export const EmbeddedWeb: React.FC<IFrameProps> = ({
+  uri,
+  width,
+  height,
+  borderRadius = 7,
+}) => {
   return (
     <iframe
       src={uri}
@@ -11,7 +16,7 @@ export const EmbeddedWeb: React.FC<IFrameProps> = ({ uri, width, height }) => {
         maxWidth: width,
         height,
         border: 0,
-        borderRadius: 8,
+        borderRadius,
       }}
       allowFullScreen
     />

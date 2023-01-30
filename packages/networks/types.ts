@@ -1,5 +1,7 @@
+import { Network } from "./../utils/network";
 export interface NetworkInfo {
   id: string;
+  network: Network;
   chainId: string;
   displayName: string;
   currencies: CurrencyInfo[];

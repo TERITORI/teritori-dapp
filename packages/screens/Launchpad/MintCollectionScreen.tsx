@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -18,16 +18,23 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ProgressionCard } from "../../components/cards/ProgressionCard";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
+import { GradientText } from "../../components/gradientText";
 import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
+import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCurrency } from "../../networks";
+import { setSelectedNetworkId } from "../../store/slices/settings";
+import { useAppDispatch } from "../../store/store";
 import { prettyPrice } from "../../utils/coins";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import {
@@ -69,16 +76,27 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     params: { id },
   },
 }) => {
-  const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
+  const [addressPrefix, mintAddress] = id.split("-");
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
   const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
-  const networkId = process.env.TERITORI_NETWORK_ID;
+  const networkId = useSelectedNetworkId();
   const balances = useBalances(networkId, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (id.startsWith("eth-")) {
+      dispatch(setSelectedNetworkId(process.env.ETHEREUM_NETWORK_ID || ""));
+      return;
+    }
+    if (id.startsWith("tori-")) {
+      dispatch(setSelectedNetworkId(process.env.TERITORI_NETWORK_ID || ""));
+    }
+  }, [id, dispatch]);
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
   const mintButtonDisabled = minted || !wallet?.connected;
@@ -100,36 +118,98 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     return msg;
   };
 
-  const mint = useCallback(async () => {
-    try {
-      const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
+  const ethereumMint = async (wallet: Wallet) => {
+    const signer = await getMetaMaskEthereumSigner(wallet.address);
+    if (!signer) {
+      throw Error("no account connected");
+    }
 
+    const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
+    const userState = await minterClient.callStatic.userState(wallet.address);
+
+    // TODO: check this properly later
+    // if (!userState.userCanMint) {
+    //   throw Error("You cannot mint now");
+    // }
+
+    const address = await signer.getAddress();
+
+    const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+    const tx = await minterClient.requestMint(address, 1, {
+      maxFeePerGas: maxFeePerGas?.toNumber(),
+      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+      value: userState.mintPrice,
+    });
+    await tx.wait();
+  };
+
+  const mint = useCallback(async () => {
+    let mintFunc: CallableFunction | null = null;
+    switch (addressPrefix) {
+      case "tori":
+        mintFunc = teritoriMint;
+        break;
+      case "eth":
+        mintFunc = ethereumMint;
+        break;
+    }
+
+    if (!mintFunc) {
+      return setToastError({
+        title: "Error",
+        message: `unsupported network ${networkId}`,
+      });
+    }
+
+    try {
       setToastError(initialToastError);
-      const sender = wallet?.address;
-      if (!sender || !info?.unitPrice || !info.priceDenom) {
-        console.error("invalid mint args");
-        return;
-      }
-      const cosmwasmClient = await getSigningCosmWasmClient();
-      const minterClient = new TeritoriBunkerMinterClient(
-        cosmwasmClient,
-        sender,
-        mintAddress
-      );
-      await minterClient.requestMint({ addr: sender }, "auto", "", [
-        { amount: info.unitPrice, denom: info.priceDenom },
-      ]);
+
+      await mintFunc(wallet);
+
       setMinted(true);
       await sleep(5000);
       setMinted(false);
-    } catch (err) {
-      console.error(err);
-      setToastError({
-        title: "Mint failed",
-        message: prettyError(err),
-      });
+    } catch (e) {
+      if (e instanceof Error) {
+        return setToastError({
+          title: "Mint failed",
+          message: prettyError(e),
+        });
+      }
+      console.error(e);
     }
-  }, [wallet?.address, mintAddress, info?.unitPrice, info?.priceDenom]);
+  }, [wallet?.address, id, info?.unitPrice, info?.priceDenom]);
+
+  const teritoriMint = async (wallet: Wallet) => {
+    const sender = wallet?.address;
+    if (!sender || !info?.unitPrice || !info.priceDenom) {
+      throw Error("invalid mint args");
+    }
+    const cosmwasmClient = await getSigningCosmWasmClient();
+    const minterClient = new TeritoriBunkerMinterClient(
+      cosmwasmClient,
+      sender,
+      mintAddress
+    );
+
+    let funds;
+    if (info.unitPrice !== "0") {
+      funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
+    }
+
+    await minterClient.requestMint({ addr: sender }, "auto", "", funds);
+  };
+
+  const mintTermsConditionsURL = useMemo(() => {
+    switch (mintAddress) {
+      case process.env.THE_RIOT_COLLECTION_ADDRESS:
+        return "https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b";
+      case process.env.ETHEREUM_THE_RIOT_COLLECTION_ADDRESS:
+        return "https://teritori.notion.site/The-Riot-Terms-Conditions-ETH-92328fb2d4494b6fb073b38929b28883";
+      default:
+        return null;
+    }
+  }, [mintAddress]);
 
   if (!info) {
     return <ScreenContainer noMargin />;
@@ -205,12 +285,12 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 </View>
               </View>
 
-              {/*TODO: Gradient white text (see figma)*/}
-              <BrandText
+              <GradientText
+                gradientType="grayLight"
                 style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
               >
                 {info.description}
-              </BrandText>
+              </GradientText>
 
               <ProgressionCard
                 label="Tokens Minted"
@@ -234,7 +314,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 {prettyPrice(
                   networkId || "",
                   balance?.amount || "0",
-                  info.priceDenom || ""
+                  balance?.denom || ""
                 )}
               </BrandText>
 
@@ -283,7 +363,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 </View>
               )}
 
-              {mintAddress === process.env.THE_RIOT_COLLECTION_ADDRESS && (
+              {mintTermsConditionsURL && (
                 <View style={{ flexDirection: "row", marginBottom: 24 }}>
                   <BrandText
                     style={[
@@ -297,7 +377,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     {'By clicking "Mint now", you agree to the '}
                   </BrandText>
                   <ExternalLink
-                    externalUrl="https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b"
+                    gradientType="gray"
+                    externalUrl={mintTermsConditionsURL}
                     style={[
                       fontSemibold14,
                       {
@@ -366,7 +447,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         </View>
         <DepositWithdrawModal
           variation="deposit"
-          networkId={process.env.TERITORI_NETWORK_ID || ""}
+          networkId={networkId}
           targetCurrency={info.priceDenom}
           onClose={() => setDepositVisible(false)}
           isVisible={isDepositVisible}

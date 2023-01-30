@@ -8,54 +8,11 @@ import { share } from "rxjs/operators";
 
 export const protobufPackage = "marketplace.v1";
 
-export enum Network {
-  NETWORK_UNSPECIFIED = 0,
-  NETWORK_FAKE = 1,
-  NETWORK_TERITORI = 2,
-  NETWORK_SOLANA = 3,
-  UNRECOGNIZED = -1,
-}
-
-export function networkFromJSON(object: any): Network {
-  switch (object) {
-    case 0:
-    case "NETWORK_UNSPECIFIED":
-      return Network.NETWORK_UNSPECIFIED;
-    case 1:
-    case "NETWORK_FAKE":
-      return Network.NETWORK_FAKE;
-    case 2:
-    case "NETWORK_TERITORI":
-      return Network.NETWORK_TERITORI;
-    case 3:
-    case "NETWORK_SOLANA":
-      return Network.NETWORK_SOLANA;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return Network.UNRECOGNIZED;
-  }
-}
-
-export function networkToJSON(object: Network): string {
-  switch (object) {
-    case Network.NETWORK_UNSPECIFIED:
-      return "NETWORK_UNSPECIFIED";
-    case Network.NETWORK_FAKE:
-      return "NETWORK_FAKE";
-    case Network.NETWORK_TERITORI:
-      return "NETWORK_TERITORI";
-    case Network.NETWORK_SOLANA:
-      return "NETWORK_SOLANA";
-    case Network.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
-}
-
 export enum Sort {
   SORTING_UNSPECIFIED = 0,
   SORTING_PRICE = 1,
+  SORTING_VOLUME = 2,
+  SORTING_MARKET_CAP = 3,
   UNRECOGNIZED = -1,
 }
 
@@ -67,6 +24,12 @@ export function sortFromJSON(object: any): Sort {
     case 1:
     case "SORTING_PRICE":
       return Sort.SORTING_PRICE;
+    case 2:
+    case "SORTING_VOLUME":
+      return Sort.SORTING_VOLUME;
+    case 3:
+    case "SORTING_MARKET_CAP":
+      return Sort.SORTING_MARKET_CAP;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -80,6 +43,10 @@ export function sortToJSON(object: Sort): string {
       return "SORTING_UNSPECIFIED";
     case Sort.SORTING_PRICE:
       return "SORTING_PRICE";
+    case Sort.SORTING_VOLUME:
+      return "SORTING_VOLUME";
+    case Sort.SORTING_MARKET_CAP:
+      return "SORTING_MARKET_CAP";
     case Sort.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -125,9 +92,53 @@ export function sortDirectionToJSON(object: SortDirection): string {
   }
 }
 
+export enum MintState {
+  MINT_STATE_UNSPECIFIED = 0,
+  MINT_STATE_RUNNING = 1,
+  MINT_STATE_ENDED = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function mintStateFromJSON(object: any): MintState {
+  switch (object) {
+    case 0:
+    case "MINT_STATE_UNSPECIFIED":
+      return MintState.MINT_STATE_UNSPECIFIED;
+    case 1:
+    case "MINT_STATE_RUNNING":
+      return MintState.MINT_STATE_RUNNING;
+    case 2:
+    case "MINT_STATE_ENDED":
+      return MintState.MINT_STATE_ENDED;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return MintState.UNRECOGNIZED;
+  }
+}
+
+export function mintStateToJSON(object: MintState): string {
+  switch (object) {
+    case MintState.MINT_STATE_UNSPECIFIED:
+      return "MINT_STATE_UNSPECIFIED";
+    case MintState.MINT_STATE_RUNNING:
+      return "MINT_STATE_RUNNING";
+    case MintState.MINT_STATE_ENDED:
+      return "MINT_STATE_ENDED";
+    case MintState.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export interface Attribute {
+  traitType: string;
+  value: string;
+}
+
 export interface NFT {
   id: string;
-  network: Network;
+  networkId: string;
   imageUri: string;
   name: string;
   mintAddress: string;
@@ -137,11 +148,14 @@ export interface NFT {
   textInsert: string;
   collectionName: string;
   ownerId: string;
+  nftContractAddress: string;
+  lockedOn: string;
+  attributes: Attribute[];
 }
 
 export interface Amount {
   denom: string;
-  quantity: number;
+  quantity: string;
 }
 
 export interface Collection {
@@ -151,10 +165,11 @@ export interface Collection {
   creatorName: string;
   verified: boolean;
   mintAddress: string;
-  network: Network;
+  networkId: string;
   volume: string;
   volumeDenom: string;
   creatorId: string;
+  secondaryDuringMint: boolean;
 }
 
 export interface CollectionStats {
@@ -188,76 +203,24 @@ export interface Quest {
 }
 
 export interface PriceDatum {
-  price: number;
+  price: string;
   time: string;
 }
 
 export interface CollectionsRequest {
-  kind: CollectionsRequest_Kind;
   limit: number;
   offset: number;
-}
-
-export enum CollectionsRequest_Kind {
-  KIND_UNSPECIFIED = 0,
-  KIND_BY_VOLUME = 1,
-  KIND_BY_MARKETCAP = 2,
-  KIND_FAKE = 3,
-  KIND_UPCOMING = 4,
-  KIND_TERITORI_FEATURES = 5,
-  UNRECOGNIZED = -1,
-}
-
-export function collectionsRequest_KindFromJSON(object: any): CollectionsRequest_Kind {
-  switch (object) {
-    case 0:
-    case "KIND_UNSPECIFIED":
-      return CollectionsRequest_Kind.KIND_UNSPECIFIED;
-    case 1:
-    case "KIND_BY_VOLUME":
-      return CollectionsRequest_Kind.KIND_BY_VOLUME;
-    case 2:
-    case "KIND_BY_MARKETCAP":
-      return CollectionsRequest_Kind.KIND_BY_MARKETCAP;
-    case 3:
-    case "KIND_FAKE":
-      return CollectionsRequest_Kind.KIND_FAKE;
-    case 4:
-    case "KIND_UPCOMING":
-      return CollectionsRequest_Kind.KIND_UPCOMING;
-    case 5:
-    case "KIND_TERITORI_FEATURES":
-      return CollectionsRequest_Kind.KIND_TERITORI_FEATURES;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return CollectionsRequest_Kind.UNRECOGNIZED;
-  }
-}
-
-export function collectionsRequest_KindToJSON(object: CollectionsRequest_Kind): string {
-  switch (object) {
-    case CollectionsRequest_Kind.KIND_UNSPECIFIED:
-      return "KIND_UNSPECIFIED";
-    case CollectionsRequest_Kind.KIND_BY_VOLUME:
-      return "KIND_BY_VOLUME";
-    case CollectionsRequest_Kind.KIND_BY_MARKETCAP:
-      return "KIND_BY_MARKETCAP";
-    case CollectionsRequest_Kind.KIND_FAKE:
-      return "KIND_FAKE";
-    case CollectionsRequest_Kind.KIND_UPCOMING:
-      return "KIND_UPCOMING";
-    case CollectionsRequest_Kind.KIND_TERITORI_FEATURES:
-      return "KIND_TERITORI_FEATURES";
-    case CollectionsRequest_Kind.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
+  sort: Sort;
+  sortDirection: SortDirection;
+  upcoming: boolean;
+  networkId: string;
+  mintState: MintState;
 }
 
 export interface CollectionStatsRequest {
   collectionId: string;
   ownerId: string;
+  networkId: string;
 }
 
 export interface CollectionStatsResponse {
@@ -275,6 +238,7 @@ export interface NFTsRequest {
   ownerId: string;
   sort: Sort;
   sortDirection: SortDirection;
+  networkId: string;
 }
 
 export interface NFTsResponse {
@@ -296,6 +260,7 @@ export interface ActivityRequest {
   nftId: string;
   limit: number;
   offset: number;
+  networkId: string;
 }
 
 export interface ActivityResponse {
@@ -305,16 +270,109 @@ export interface ActivityResponse {
 
 export interface NFTPriceHistoryRequest {
   id: string;
+  networkId: string;
 }
 
 export interface NFTPriceHistoryResponse {
   data: PriceDatum[];
 }
 
+export interface Action {
+  label: string;
+  url: string;
+}
+
+export interface News {
+  title: string;
+  subtitle: string;
+  text: string;
+  image: string;
+  actions: Action[];
+}
+
+export interface Banner {
+  image: string;
+  url: string;
+}
+
+export interface BannersRequest {
+  testnet: boolean;
+}
+
+export interface BannersResponse {
+  banners: Banner[];
+}
+
+export interface NewsRequest {
+  testnet: boolean;
+}
+
+export interface NewsResponse {
+  news: News[];
+}
+
+function createBaseAttribute(): Attribute {
+  return { traitType: "", value: "" };
+}
+
+export const Attribute = {
+  encode(message: Attribute, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.traitType !== "") {
+      writer.uint32(10).string(message.traitType);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Attribute {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttribute();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.traitType = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Attribute {
+    return {
+      traitType: isSet(object.traitType) ? String(object.traitType) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+    };
+  },
+
+  toJSON(message: Attribute): unknown {
+    const obj: any = {};
+    message.traitType !== undefined && (obj.traitType = message.traitType);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Attribute>, I>>(object: I): Attribute {
+    const message = createBaseAttribute();
+    message.traitType = object.traitType ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
 function createBaseNFT(): NFT {
   return {
     id: "",
-    network: 0,
+    networkId: "",
     imageUri: "",
     name: "",
     mintAddress: "",
@@ -324,6 +382,9 @@ function createBaseNFT(): NFT {
     textInsert: "",
     collectionName: "",
     ownerId: "",
+    nftContractAddress: "",
+    lockedOn: "",
+    attributes: [],
   };
 }
 
@@ -332,8 +393,8 @@ export const NFT = {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
-    if (message.network !== 0) {
-      writer.uint32(16).int32(message.network);
+    if (message.networkId !== "") {
+      writer.uint32(114).string(message.networkId);
     }
     if (message.imageUri !== "") {
       writer.uint32(26).string(message.imageUri);
@@ -362,6 +423,15 @@ export const NFT = {
     if (message.ownerId !== "") {
       writer.uint32(106).string(message.ownerId);
     }
+    if (message.nftContractAddress !== "") {
+      writer.uint32(122).string(message.nftContractAddress);
+    }
+    if (message.lockedOn !== "") {
+      writer.uint32(130).string(message.lockedOn);
+    }
+    for (const v of message.attributes) {
+      Attribute.encode(v!, writer.uint32(138).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -375,8 +445,8 @@ export const NFT = {
         case 1:
           message.id = reader.string();
           break;
-        case 2:
-          message.network = reader.int32() as any;
+        case 14:
+          message.networkId = reader.string();
           break;
         case 3:
           message.imageUri = reader.string();
@@ -405,6 +475,15 @@ export const NFT = {
         case 13:
           message.ownerId = reader.string();
           break;
+        case 15:
+          message.nftContractAddress = reader.string();
+          break;
+        case 16:
+          message.lockedOn = reader.string();
+          break;
+        case 17:
+          message.attributes.push(Attribute.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -416,7 +495,7 @@ export const NFT = {
   fromJSON(object: any): NFT {
     return {
       id: isSet(object.id) ? String(object.id) : "",
-      network: isSet(object.network) ? networkFromJSON(object.network) : 0,
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
       imageUri: isSet(object.imageUri) ? String(object.imageUri) : "",
       name: isSet(object.name) ? String(object.name) : "",
       mintAddress: isSet(object.mintAddress) ? String(object.mintAddress) : "",
@@ -426,13 +505,16 @@ export const NFT = {
       textInsert: isSet(object.textInsert) ? String(object.textInsert) : "",
       collectionName: isSet(object.collectionName) ? String(object.collectionName) : "",
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+      nftContractAddress: isSet(object.nftContractAddress) ? String(object.nftContractAddress) : "",
+      lockedOn: isSet(object.lockedOn) ? String(object.lockedOn) : "",
+      attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: NFT): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.network !== undefined && (obj.network = networkToJSON(message.network));
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     message.imageUri !== undefined && (obj.imageUri = message.imageUri);
     message.name !== undefined && (obj.name = message.name);
     message.mintAddress !== undefined && (obj.mintAddress = message.mintAddress);
@@ -442,13 +524,20 @@ export const NFT = {
     message.textInsert !== undefined && (obj.textInsert = message.textInsert);
     message.collectionName !== undefined && (obj.collectionName = message.collectionName);
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    message.nftContractAddress !== undefined && (obj.nftContractAddress = message.nftContractAddress);
+    message.lockedOn !== undefined && (obj.lockedOn = message.lockedOn);
+    if (message.attributes) {
+      obj.attributes = message.attributes.map((e) => e ? Attribute.toJSON(e) : undefined);
+    } else {
+      obj.attributes = [];
+    }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<NFT>, I>>(object: I): NFT {
     const message = createBaseNFT();
     message.id = object.id ?? "";
-    message.network = object.network ?? 0;
+    message.networkId = object.networkId ?? "";
     message.imageUri = object.imageUri ?? "";
     message.name = object.name ?? "";
     message.mintAddress = object.mintAddress ?? "";
@@ -458,12 +547,15 @@ export const NFT = {
     message.textInsert = object.textInsert ?? "";
     message.collectionName = object.collectionName ?? "";
     message.ownerId = object.ownerId ?? "";
+    message.nftContractAddress = object.nftContractAddress ?? "";
+    message.lockedOn = object.lockedOn ?? "";
+    message.attributes = object.attributes?.map((e) => Attribute.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseAmount(): Amount {
-  return { denom: "", quantity: 0 };
+  return { denom: "", quantity: "" };
 }
 
 export const Amount = {
@@ -471,8 +563,8 @@ export const Amount = {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
-    if (message.quantity !== 0) {
-      writer.uint32(16).int64(message.quantity);
+    if (message.quantity !== "") {
+      writer.uint32(26).string(message.quantity);
     }
     return writer;
   },
@@ -487,8 +579,8 @@ export const Amount = {
         case 1:
           message.denom = reader.string();
           break;
-        case 2:
-          message.quantity = longToNumber(reader.int64() as Long);
+        case 3:
+          message.quantity = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -501,21 +593,21 @@ export const Amount = {
   fromJSON(object: any): Amount {
     return {
       denom: isSet(object.denom) ? String(object.denom) : "",
-      quantity: isSet(object.quantity) ? Number(object.quantity) : 0,
+      quantity: isSet(object.quantity) ? String(object.quantity) : "",
     };
   },
 
   toJSON(message: Amount): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.quantity !== undefined && (obj.quantity = Math.round(message.quantity));
+    message.quantity !== undefined && (obj.quantity = message.quantity);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Amount>, I>>(object: I): Amount {
     const message = createBaseAmount();
     message.denom = object.denom ?? "";
-    message.quantity = object.quantity ?? 0;
+    message.quantity = object.quantity ?? "";
     return message;
   },
 };
@@ -528,10 +620,11 @@ function createBaseCollection(): Collection {
     creatorName: "",
     verified: false,
     mintAddress: "",
-    network: 0,
+    networkId: "",
     volume: "",
     volumeDenom: "",
     creatorId: "",
+    secondaryDuringMint: false,
   };
 }
 
@@ -555,8 +648,8 @@ export const Collection = {
     if (message.mintAddress !== "") {
       writer.uint32(50).string(message.mintAddress);
     }
-    if (message.network !== 0) {
-      writer.uint32(56).int32(message.network);
+    if (message.networkId !== "") {
+      writer.uint32(90).string(message.networkId);
     }
     if (message.volume !== "") {
       writer.uint32(66).string(message.volume);
@@ -566,6 +659,9 @@ export const Collection = {
     }
     if (message.creatorId !== "") {
       writer.uint32(82).string(message.creatorId);
+    }
+    if (message.secondaryDuringMint === true) {
+      writer.uint32(96).bool(message.secondaryDuringMint);
     }
     return writer;
   },
@@ -595,8 +691,8 @@ export const Collection = {
         case 6:
           message.mintAddress = reader.string();
           break;
-        case 7:
-          message.network = reader.int32() as any;
+        case 11:
+          message.networkId = reader.string();
           break;
         case 8:
           message.volume = reader.string();
@@ -606,6 +702,9 @@ export const Collection = {
           break;
         case 10:
           message.creatorId = reader.string();
+          break;
+        case 12:
+          message.secondaryDuringMint = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -623,10 +722,11 @@ export const Collection = {
       creatorName: isSet(object.creatorName) ? String(object.creatorName) : "",
       verified: isSet(object.verified) ? Boolean(object.verified) : false,
       mintAddress: isSet(object.mintAddress) ? String(object.mintAddress) : "",
-      network: isSet(object.network) ? networkFromJSON(object.network) : 0,
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
       volume: isSet(object.volume) ? String(object.volume) : "",
       volumeDenom: isSet(object.volumeDenom) ? String(object.volumeDenom) : "",
       creatorId: isSet(object.creatorId) ? String(object.creatorId) : "",
+      secondaryDuringMint: isSet(object.secondaryDuringMint) ? Boolean(object.secondaryDuringMint) : false,
     };
   },
 
@@ -638,10 +738,11 @@ export const Collection = {
     message.creatorName !== undefined && (obj.creatorName = message.creatorName);
     message.verified !== undefined && (obj.verified = message.verified);
     message.mintAddress !== undefined && (obj.mintAddress = message.mintAddress);
-    message.network !== undefined && (obj.network = networkToJSON(message.network));
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     message.volume !== undefined && (obj.volume = message.volume);
     message.volumeDenom !== undefined && (obj.volumeDenom = message.volumeDenom);
     message.creatorId !== undefined && (obj.creatorId = message.creatorId);
+    message.secondaryDuringMint !== undefined && (obj.secondaryDuringMint = message.secondaryDuringMint);
     return obj;
   },
 
@@ -653,10 +754,11 @@ export const Collection = {
     message.creatorName = object.creatorName ?? "";
     message.verified = object.verified ?? false;
     message.mintAddress = object.mintAddress ?? "";
-    message.network = object.network ?? 0;
+    message.networkId = object.networkId ?? "";
     message.volume = object.volume ?? "";
     message.volumeDenom = object.volumeDenom ?? "";
     message.creatorId = object.creatorId ?? "";
+    message.secondaryDuringMint = object.secondaryDuringMint ?? false;
     return message;
   },
 };
@@ -988,13 +1090,13 @@ export const Quest = {
 };
 
 function createBasePriceDatum(): PriceDatum {
-  return { price: 0, time: "" };
+  return { price: "", time: "" };
 }
 
 export const PriceDatum = {
   encode(message: PriceDatum, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.price !== 0) {
-      writer.uint32(9).double(message.price);
+    if (message.price !== "") {
+      writer.uint32(26).string(message.price);
     }
     if (message.time !== "") {
       writer.uint32(18).string(message.time);
@@ -1009,8 +1111,8 @@ export const PriceDatum = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.price = reader.double();
+        case 3:
+          message.price = reader.string();
           break;
         case 2:
           message.time = reader.string();
@@ -1025,7 +1127,7 @@ export const PriceDatum = {
 
   fromJSON(object: any): PriceDatum {
     return {
-      price: isSet(object.price) ? Number(object.price) : 0,
+      price: isSet(object.price) ? String(object.price) : "",
       time: isSet(object.time) ? String(object.time) : "",
     };
   },
@@ -1039,26 +1141,38 @@ export const PriceDatum = {
 
   fromPartial<I extends Exact<DeepPartial<PriceDatum>, I>>(object: I): PriceDatum {
     const message = createBasePriceDatum();
-    message.price = object.price ?? 0;
+    message.price = object.price ?? "";
     message.time = object.time ?? "";
     return message;
   },
 };
 
 function createBaseCollectionsRequest(): CollectionsRequest {
-  return { kind: 0, limit: 0, offset: 0 };
+  return { limit: 0, offset: 0, sort: 0, sortDirection: 0, upcoming: false, networkId: "", mintState: 0 };
 }
 
 export const CollectionsRequest = {
   encode(message: CollectionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.kind !== 0) {
-      writer.uint32(8).int32(message.kind);
-    }
     if (message.limit !== 0) {
       writer.uint32(16).int32(message.limit);
     }
     if (message.offset !== 0) {
       writer.uint32(24).int32(message.offset);
+    }
+    if (message.sort !== 0) {
+      writer.uint32(32).int32(message.sort);
+    }
+    if (message.sortDirection !== 0) {
+      writer.uint32(40).int32(message.sortDirection);
+    }
+    if (message.upcoming === true) {
+      writer.uint32(48).bool(message.upcoming);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(58).string(message.networkId);
+    }
+    if (message.mintState !== 0) {
+      writer.uint32(64).int32(message.mintState);
     }
     return writer;
   },
@@ -1070,14 +1184,26 @@ export const CollectionsRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.kind = reader.int32() as any;
-          break;
         case 2:
           message.limit = reader.int32();
           break;
         case 3:
           message.offset = reader.int32();
+          break;
+        case 4:
+          message.sort = reader.int32() as any;
+          break;
+        case 5:
+          message.sortDirection = reader.int32() as any;
+          break;
+        case 6:
+          message.upcoming = reader.bool();
+          break;
+        case 7:
+          message.networkId = reader.string();
+          break;
+        case 8:
+          message.mintState = reader.int32() as any;
           break;
         default:
           reader.skipType(tag & 7);
@@ -1089,31 +1215,43 @@ export const CollectionsRequest = {
 
   fromJSON(object: any): CollectionsRequest {
     return {
-      kind: isSet(object.kind) ? collectionsRequest_KindFromJSON(object.kind) : 0,
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
+      sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
+      sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
+      upcoming: isSet(object.upcoming) ? Boolean(object.upcoming) : false,
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
+      mintState: isSet(object.mintState) ? mintStateFromJSON(object.mintState) : 0,
     };
   },
 
   toJSON(message: CollectionsRequest): unknown {
     const obj: any = {};
-    message.kind !== undefined && (obj.kind = collectionsRequest_KindToJSON(message.kind));
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    message.sort !== undefined && (obj.sort = sortToJSON(message.sort));
+    message.sortDirection !== undefined && (obj.sortDirection = sortDirectionToJSON(message.sortDirection));
+    message.upcoming !== undefined && (obj.upcoming = message.upcoming);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
+    message.mintState !== undefined && (obj.mintState = mintStateToJSON(message.mintState));
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<CollectionsRequest>, I>>(object: I): CollectionsRequest {
     const message = createBaseCollectionsRequest();
-    message.kind = object.kind ?? 0;
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
+    message.sort = object.sort ?? 0;
+    message.sortDirection = object.sortDirection ?? 0;
+    message.upcoming = object.upcoming ?? false;
+    message.networkId = object.networkId ?? "";
+    message.mintState = object.mintState ?? 0;
     return message;
   },
 };
 
 function createBaseCollectionStatsRequest(): CollectionStatsRequest {
-  return { collectionId: "", ownerId: "" };
+  return { collectionId: "", ownerId: "", networkId: "" };
 }
 
 export const CollectionStatsRequest = {
@@ -1123,6 +1261,9 @@ export const CollectionStatsRequest = {
     }
     if (message.ownerId !== "") {
       writer.uint32(18).string(message.ownerId);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(26).string(message.networkId);
     }
     return writer;
   },
@@ -1140,6 +1281,9 @@ export const CollectionStatsRequest = {
         case 2:
           message.ownerId = reader.string();
           break;
+        case 3:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1152,6 +1296,7 @@ export const CollectionStatsRequest = {
     return {
       collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -1159,6 +1304,7 @@ export const CollectionStatsRequest = {
     const obj: any = {};
     message.collectionId !== undefined && (obj.collectionId = message.collectionId);
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -1166,6 +1312,7 @@ export const CollectionStatsRequest = {
     const message = createBaseCollectionStatsRequest();
     message.collectionId = object.collectionId ?? "";
     message.ownerId = object.ownerId ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -1270,7 +1417,7 @@ export const CollectionsResponse = {
 };
 
 function createBaseNFTsRequest(): NFTsRequest {
-  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0 };
+  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0, networkId: "" };
 }
 
 export const NFTsRequest = {
@@ -1292,6 +1439,9 @@ export const NFTsRequest = {
     }
     if (message.sortDirection !== 0) {
       writer.uint32(48).int32(message.sortDirection);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(58).string(message.networkId);
     }
     return writer;
   },
@@ -1321,6 +1471,9 @@ export const NFTsRequest = {
         case 6:
           message.sortDirection = reader.int32() as any;
           break;
+        case 7:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1337,6 +1490,7 @@ export const NFTsRequest = {
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -1348,6 +1502,7 @@ export const NFTsRequest = {
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     message.sort !== undefined && (obj.sort = sortToJSON(message.sort));
     message.sortDirection !== undefined && (obj.sortDirection = sortDirectionToJSON(message.sortDirection));
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -1359,6 +1514,7 @@ export const NFTsRequest = {
     message.ownerId = object.ownerId ?? "";
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -1525,7 +1681,7 @@ export const QuestsResponse = {
 };
 
 function createBaseActivityRequest(): ActivityRequest {
-  return { collectionId: "", nftId: "", limit: 0, offset: 0 };
+  return { collectionId: "", nftId: "", limit: 0, offset: 0, networkId: "" };
 }
 
 export const ActivityRequest = {
@@ -1541,6 +1697,9 @@ export const ActivityRequest = {
     }
     if (message.offset !== 0) {
       writer.uint32(32).int32(message.offset);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(42).string(message.networkId);
     }
     return writer;
   },
@@ -1564,6 +1723,9 @@ export const ActivityRequest = {
         case 4:
           message.offset = reader.int32();
           break;
+        case 5:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1578,6 +1740,7 @@ export const ActivityRequest = {
       nftId: isSet(object.nftId) ? String(object.nftId) : "",
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -1587,6 +1750,7 @@ export const ActivityRequest = {
     message.nftId !== undefined && (obj.nftId = message.nftId);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -1596,6 +1760,7 @@ export const ActivityRequest = {
     message.nftId = object.nftId ?? "";
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -1661,13 +1826,16 @@ export const ActivityResponse = {
 };
 
 function createBaseNFTPriceHistoryRequest(): NFTPriceHistoryRequest {
-  return { id: "" };
+  return { id: "", networkId: "" };
 }
 
 export const NFTPriceHistoryRequest = {
   encode(message: NFTPriceHistoryRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(18).string(message.networkId);
     }
     return writer;
   },
@@ -1682,6 +1850,9 @@ export const NFTPriceHistoryRequest = {
         case 1:
           message.id = reader.string();
           break;
+        case 2:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1691,18 +1862,23 @@ export const NFTPriceHistoryRequest = {
   },
 
   fromJSON(object: any): NFTPriceHistoryRequest {
-    return { id: isSet(object.id) ? String(object.id) : "" };
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
+    };
   },
 
   toJSON(message: NFTPriceHistoryRequest): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<NFTPriceHistoryRequest>, I>>(object: I): NFTPriceHistoryRequest {
     const message = createBaseNFTPriceHistoryRequest();
     message.id = object.id ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -1758,6 +1934,401 @@ export const NFTPriceHistoryResponse = {
   },
 };
 
+function createBaseAction(): Action {
+  return { label: "", url: "" };
+}
+
+export const Action = {
+  encode(message: Action, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.label !== "") {
+      writer.uint32(10).string(message.label);
+    }
+    if (message.url !== "") {
+      writer.uint32(18).string(message.url);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Action {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAction();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.label = reader.string();
+          break;
+        case 2:
+          message.url = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Action {
+    return { label: isSet(object.label) ? String(object.label) : "", url: isSet(object.url) ? String(object.url) : "" };
+  },
+
+  toJSON(message: Action): unknown {
+    const obj: any = {};
+    message.label !== undefined && (obj.label = message.label);
+    message.url !== undefined && (obj.url = message.url);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Action>, I>>(object: I): Action {
+    const message = createBaseAction();
+    message.label = object.label ?? "";
+    message.url = object.url ?? "";
+    return message;
+  },
+};
+
+function createBaseNews(): News {
+  return { title: "", subtitle: "", text: "", image: "", actions: [] };
+}
+
+export const News = {
+  encode(message: News, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.subtitle !== "") {
+      writer.uint32(18).string(message.subtitle);
+    }
+    if (message.text !== "") {
+      writer.uint32(26).string(message.text);
+    }
+    if (message.image !== "") {
+      writer.uint32(34).string(message.image);
+    }
+    for (const v of message.actions) {
+      Action.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): News {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNews();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.title = reader.string();
+          break;
+        case 2:
+          message.subtitle = reader.string();
+          break;
+        case 3:
+          message.text = reader.string();
+          break;
+        case 4:
+          message.image = reader.string();
+          break;
+        case 5:
+          message.actions.push(Action.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): News {
+    return {
+      title: isSet(object.title) ? String(object.title) : "",
+      subtitle: isSet(object.subtitle) ? String(object.subtitle) : "",
+      text: isSet(object.text) ? String(object.text) : "",
+      image: isSet(object.image) ? String(object.image) : "",
+      actions: Array.isArray(object?.actions) ? object.actions.map((e: any) => Action.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: News): unknown {
+    const obj: any = {};
+    message.title !== undefined && (obj.title = message.title);
+    message.subtitle !== undefined && (obj.subtitle = message.subtitle);
+    message.text !== undefined && (obj.text = message.text);
+    message.image !== undefined && (obj.image = message.image);
+    if (message.actions) {
+      obj.actions = message.actions.map((e) => e ? Action.toJSON(e) : undefined);
+    } else {
+      obj.actions = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<News>, I>>(object: I): News {
+    const message = createBaseNews();
+    message.title = object.title ?? "";
+    message.subtitle = object.subtitle ?? "";
+    message.text = object.text ?? "";
+    message.image = object.image ?? "";
+    message.actions = object.actions?.map((e) => Action.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseBanner(): Banner {
+  return { image: "", url: "" };
+}
+
+export const Banner = {
+  encode(message: Banner, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.image !== "") {
+      writer.uint32(10).string(message.image);
+    }
+    if (message.url !== "") {
+      writer.uint32(18).string(message.url);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Banner {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBanner();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.image = reader.string();
+          break;
+        case 2:
+          message.url = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Banner {
+    return { image: isSet(object.image) ? String(object.image) : "", url: isSet(object.url) ? String(object.url) : "" };
+  },
+
+  toJSON(message: Banner): unknown {
+    const obj: any = {};
+    message.image !== undefined && (obj.image = message.image);
+    message.url !== undefined && (obj.url = message.url);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Banner>, I>>(object: I): Banner {
+    const message = createBaseBanner();
+    message.image = object.image ?? "";
+    message.url = object.url ?? "";
+    return message;
+  },
+};
+
+function createBaseBannersRequest(): BannersRequest {
+  return { testnet: false };
+}
+
+export const BannersRequest = {
+  encode(message: BannersRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.testnet === true) {
+      writer.uint32(8).bool(message.testnet);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BannersRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBannersRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.testnet = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BannersRequest {
+    return { testnet: isSet(object.testnet) ? Boolean(object.testnet) : false };
+  },
+
+  toJSON(message: BannersRequest): unknown {
+    const obj: any = {};
+    message.testnet !== undefined && (obj.testnet = message.testnet);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<BannersRequest>, I>>(object: I): BannersRequest {
+    const message = createBaseBannersRequest();
+    message.testnet = object.testnet ?? false;
+    return message;
+  },
+};
+
+function createBaseBannersResponse(): BannersResponse {
+  return { banners: [] };
+}
+
+export const BannersResponse = {
+  encode(message: BannersResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.banners) {
+      Banner.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BannersResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBannersResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.banners.push(Banner.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BannersResponse {
+    return { banners: Array.isArray(object?.banners) ? object.banners.map((e: any) => Banner.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: BannersResponse): unknown {
+    const obj: any = {};
+    if (message.banners) {
+      obj.banners = message.banners.map((e) => e ? Banner.toJSON(e) : undefined);
+    } else {
+      obj.banners = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<BannersResponse>, I>>(object: I): BannersResponse {
+    const message = createBaseBannersResponse();
+    message.banners = object.banners?.map((e) => Banner.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseNewsRequest(): NewsRequest {
+  return { testnet: false };
+}
+
+export const NewsRequest = {
+  encode(message: NewsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.testnet === true) {
+      writer.uint32(8).bool(message.testnet);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NewsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNewsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.testnet = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NewsRequest {
+    return { testnet: isSet(object.testnet) ? Boolean(object.testnet) : false };
+  },
+
+  toJSON(message: NewsRequest): unknown {
+    const obj: any = {};
+    message.testnet !== undefined && (obj.testnet = message.testnet);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<NewsRequest>, I>>(object: I): NewsRequest {
+    const message = createBaseNewsRequest();
+    message.testnet = object.testnet ?? false;
+    return message;
+  },
+};
+
+function createBaseNewsResponse(): NewsResponse {
+  return { news: [] };
+}
+
+export const NewsResponse = {
+  encode(message: NewsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.news) {
+      News.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NewsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNewsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.news.push(News.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NewsResponse {
+    return { news: Array.isArray(object?.news) ? object.news.map((e: any) => News.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: NewsResponse): unknown {
+    const obj: any = {};
+    if (message.news) {
+      obj.news = message.news.map((e) => e ? News.toJSON(e) : undefined);
+    } else {
+      obj.news = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<NewsResponse>, I>>(object: I): NewsResponse {
+    const message = createBaseNewsResponse();
+    message.news = object.news?.map((e) => News.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
   CollectionStats(
@@ -1771,6 +2342,8 @@ export interface MarketplaceService {
     request: DeepPartial<NFTPriceHistoryRequest>,
     metadata?: grpc.Metadata,
   ): Promise<NFTPriceHistoryResponse>;
+  Banners(request: DeepPartial<BannersRequest>, metadata?: grpc.Metadata): Promise<BannersResponse>;
+  News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse>;
 }
 
 export class MarketplaceServiceClientImpl implements MarketplaceService {
@@ -1784,6 +2357,8 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.Quests = this.Quests.bind(this);
     this.Activity = this.Activity.bind(this);
     this.NFTPriceHistory = this.NFTPriceHistory.bind(this);
+    this.Banners = this.Banners.bind(this);
+    this.News = this.News.bind(this);
   }
 
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse> {
@@ -1814,6 +2389,14 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     metadata?: grpc.Metadata,
   ): Promise<NFTPriceHistoryResponse> {
     return this.rpc.unary(MarketplaceServiceNFTPriceHistoryDesc, NFTPriceHistoryRequest.fromPartial(request), metadata);
+  }
+
+  Banners(request: DeepPartial<BannersRequest>, metadata?: grpc.Metadata): Promise<BannersResponse> {
+    return this.rpc.unary(MarketplaceServiceBannersDesc, BannersRequest.fromPartial(request), metadata);
+  }
+
+  News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse> {
+    return this.rpc.unary(MarketplaceServiceNewsDesc, NewsRequest.fromPartial(request), metadata);
   }
 }
 
@@ -1943,6 +2526,50 @@ export const MarketplaceServiceNFTPriceHistoryDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...NFTPriceHistoryResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceBannersDesc: UnaryMethodDefinitionish = {
+  methodName: "Banners",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return BannersRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...BannersResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceNewsDesc: UnaryMethodDefinitionish = {
+  methodName: "News",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return NewsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...NewsResponse.decode(data),
         toObject() {
           return this;
         },

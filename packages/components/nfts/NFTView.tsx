@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   ViewStyle,
   Image,
@@ -17,22 +17,23 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
-import { protobufNetworkToNetwork } from "../../utils/network";
+import { Network } from "../../utils/network";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
 import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
+import { NetworkIcon } from "../NetworkIcon";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
-import { NetworkIcon } from "../images/NetworkIcon";
 import { SpacerColumn, SpacerRow } from "../spacer";
 import { NFTTransferModal } from "./NFTTransferModal";
 
@@ -48,14 +49,27 @@ export const NFTView: React.FC<{
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const tnsMetadata = useTNSMetadata(nft.ownerId.replace("tori-", ""));
+  const selectedNetwork = useSelectedNetwork();
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
   const dropdownRef = useRef<TouchableOpacity>(null);
 
-  const isOwner =
-    nft.ownerId === `tori-${selectedWallet?.address}` && !nft.isListed;
+  const isOwner = useMemo(() => {
+    switch (selectedNetwork) {
+      case Network.Teritori:
+        return nft.ownerId === `tori-${selectedWallet?.address}`;
+      case Network.Ethereum:
+        return (
+          nft.ownerId.toLowerCase() === selectedWallet?.address.toLowerCase()
+        );
+      default:
+        return false;
+    }
+  }, [selectedNetwork, nft.ownerId]);
+
+  const isOwnerAndNotListed = isOwner && !nft.isListed;
 
   // put margins on touchable opacity
   const {
@@ -72,6 +86,16 @@ export const NFTView: React.FC<{
   // functions
   const toggleTransferNFT = () =>
     setIsTransferNFTVisible(!isTransferNFTVisible);
+
+  const onPressPriceButton = () => {
+    if (isOwner) navigation.navigate("NFTDetail", { id: nft.id });
+    else {
+      navigation.navigate("NFTDetail", {
+        id: nft.id,
+        openBuy: true,
+      });
+    }
+  };
 
   // returns
   return (
@@ -155,7 +179,7 @@ export const NFTView: React.FC<{
                     </BrandText>
                   </View>
                 </View>
-                {isOwner && (
+                {isOwnerAndNotListed && (
                   <View style={{ position: "relative", zIndex: 1000 }}>
                     <Pressable
                       onPress={() => onPressDropdownButton(dropdownRef)}
@@ -232,10 +256,7 @@ export const NFTView: React.FC<{
                     alignItems: "center",
                   }}
                 >
-                  <NetworkIcon
-                    size={12}
-                    network={protobufNetworkToNetwork(nft.network)}
-                  />
+                  <NetworkIcon size={12} networkId={nft.networkId} />
                   <BrandText
                     style={{
                       fontSize: 12,
@@ -269,7 +290,7 @@ export const NFTView: React.FC<{
                   <>
                     <CurrencyIcon
                       size={24}
-                      networkId={process.env.TERITORI_NETWORK_ID || ""}
+                      networkId={nft.networkId}
                       denom={nft.denom}
                     />
                     {/* FIXME: should come from price denom */}
@@ -299,12 +320,8 @@ export const NFTView: React.FC<{
                 <View style={{ flex: 1 }}>
                   <SecondaryButton
                     size="XS"
-                    text={prettyPrice(
-                      process.env.TERITORI_NETWORK_ID || "",
-                      nft.price,
-                      nft.denom
-                    )}
-                    onPress={() => {}}
+                    text={prettyPrice(nft.networkId, nft.price, nft.denom)}
+                    onPress={onPressPriceButton}
                     fullWidth
                     numberOfLines={1}
                     activeOpacity={1}

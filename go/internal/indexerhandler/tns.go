@@ -5,7 +5,6 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -24,10 +23,12 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 	// create collection
 	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
-		ID:       collectionId,
-		Network:  marketplacepb.Network_NETWORK_TERITORI,
-		Name:     tnsInstantiateMsg.Name,
-		ImageURI: h.config.TNSDefaultImageURL,
+		ID:                  collectionId,
+		NetworkId:           "teritori",
+		Name:                tnsInstantiateMsg.Name,
+		ImageURI:            h.config.TNSDefaultImageURL,
+		MaxSupply:           -1,
+		SecondaryDuringMint: true,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  contractAddress,
@@ -136,7 +137,7 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 
 	// create mint activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		ID:   indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindMint,
 		Time: blockTime,
 		Mint: &indexerdb.Mint{

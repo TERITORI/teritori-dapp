@@ -117,7 +117,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       setToastSuccess({ title: "Delegation success", message: "" });
       onClose && onClose();
     } catch (error) {
-      triggerError({ error, callback: onClose });
+      triggerError({ title: "Delegation failed!", error, callback: onClose });
     }
   };
 
