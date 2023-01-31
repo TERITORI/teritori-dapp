@@ -6,27 +6,15 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { ExecuteMsg, Addr, Nft, GetConfigResponse, GetNftLastStakeTimeResponse, GetSquadResponse, Squad, GetUserLastStakeTimeResponse, GetUserSquadCountResponse, InstantiateMsg, QueryMsg } from "./TeritoriSquadStaking.types";
+import { ExecuteMsg, Addr, Nft, GetConfigResponse, GetSquadResponse, Squad, GetUserSquadCountResponse, InstantiateMsg, IsCollectionWhitelistedResponse, QueryMsg } from "./TeritoriSquadStaking.types";
 export interface TeritoriSquadStakingReadOnlyInterface {
   contractAddress: string;
   getConfig: () => Promise<GetConfigResponse>;
-  getUserLastStakeTime: ({
-    user
-  }: {
-    user: Addr;
-  }) => Promise<GetUserLastStakeTimeResponse>;
   getUserSquadCount: ({
     user
   }: {
     user: Addr;
   }) => Promise<GetUserSquadCountResponse>;
-  getNftLastStakeTime: ({
-    contractAddr,
-    tokenId
-  }: {
-    contractAddr: string;
-    tokenId: string;
-  }) => Promise<GetNftLastStakeTimeResponse>;
   getSquad: ({
     owner
   }: {
@@ -46,9 +34,7 @@ export class TeritoriSquadStakingQueryClient implements TeritoriSquadStakingRead
     this.client = client;
     this.contractAddress = contractAddress;
     this.getConfig = this.getConfig.bind(this);
-    this.getUserLastStakeTime = this.getUserLastStakeTime.bind(this);
     this.getUserSquadCount = this.getUserSquadCount.bind(this);
-    this.getNftLastStakeTime = this.getNftLastStakeTime.bind(this);
     this.getSquad = this.getSquad.bind(this);
     this.isCollectionWhitelisted = this.isCollectionWhitelisted.bind(this);
   }
@@ -56,17 +42,6 @@ export class TeritoriSquadStakingQueryClient implements TeritoriSquadStakingRead
   getConfig = async (): Promise<GetConfigResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
       get_config: {}
-    });
-  };
-  getUserLastStakeTime = async ({
-    user
-  }: {
-    user: Addr;
-  }): Promise<GetUserLastStakeTimeResponse> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      get_user_last_stake_time: {
-        user
-      }
     });
   };
   getUserSquadCount = async ({
@@ -77,20 +52,6 @@ export class TeritoriSquadStakingQueryClient implements TeritoriSquadStakingRead
     return this.client.queryContractSmart(this.contractAddress, {
       get_user_squad_count: {
         user
-      }
-    });
-  };
-  getNftLastStakeTime = async ({
-    contractAddr,
-    tokenId
-  }: {
-    contractAddr: string;
-    tokenId: string;
-  }): Promise<GetNftLastStakeTimeResponse> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      get_nft_last_stake_time: {
-        contract_addr: contractAddr,
-        token_id: tokenId
       }
     });
   };
@@ -135,11 +96,9 @@ export interface TeritoriSquadStakingInterface extends TeritoriSquadStakingReadO
     isSupported: boolean;
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   updateCooldown: ({
-    cooldownPeriod,
-    cooldownUnit
+    cooldownPeriod
   }: {
     cooldownPeriod: number;
-    cooldownUnit: number;
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   updateSquadSize: ({
     maxSquadSize,
@@ -208,16 +167,13 @@ export class TeritoriSquadStakingClient extends TeritoriSquadStakingQueryClient 
     }, fee, memo, funds);
   };
   updateCooldown = async ({
-    cooldownPeriod,
-    cooldownUnit
+    cooldownPeriod
   }: {
     cooldownPeriod: number;
-    cooldownUnit: number;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       update_cooldown: {
-        cooldown_period: cooldownPeriod,
-        cooldown_unit: cooldownUnit
+        cooldown_period: cooldownPeriod
       }
     }, fee, memo, funds);
   };

@@ -17,7 +17,6 @@ export type ExecuteMsg = {
 } | {
   update_cooldown: {
     cooldown_period: number;
-    cooldown_unit: number;
   };
 } | {
   update_squad_size: {
@@ -43,14 +42,10 @@ export interface Nft {
 export interface GetConfigResponse {
   bonus_multiplier: number[];
   cooldown_period: number;
-  cooldown_unit: number;
   max_squad_size: number;
   min_squad_size: number;
   owner: Addr;
   squad_count_limit: number;
-}
-export interface GetNftLastStakeTimeResponse {
-  last_stake_time: number;
 }
 export type GetSquadResponse = Squad[];
 export interface Squad {
@@ -58,33 +53,21 @@ export interface Squad {
   nfts: Nft[];
   start_time: number;
 }
-export interface GetUserLastStakeTimeResponse {
-  last_stake_time: number;
-}
 export interface GetUserSquadCountResponse {
   count: number;
 }
 export interface InstantiateMsg {
   bonus_multiplier: number[];
   cooldown_period: number;
-  cooldown_unit: number;
   max_squad_size: number;
   min_squad_size: number;
 }
+export type IsCollectionWhitelistedResponse = boolean;
 export type QueryMsg = {
   get_config: {};
 } | {
-  get_user_last_stake_time: {
-    user: Addr;
-  };
-} | {
   get_user_squad_count: {
     user: Addr;
-  };
-} | {
-  get_nft_last_stake_time: {
-    contract_addr: string;
-    token_id: string;
   };
 } | {
   get_squad: {
