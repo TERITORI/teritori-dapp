@@ -43,6 +43,10 @@ export const FreelanceServicesCards: React.FC<{
         onPress={() => {
           nav.navigate(navigation);
         }}
+        disabled={navigation === "ComingSoon"}
+        style={{
+          opacity: navigation === "ComingSoon" ? 0.5 : 1,
+        }}
       >
         <View style={{ height: height - 30, justifyContent: "space-between" }}>
           <SVG source={iconSVG} />
@@ -56,9 +60,8 @@ export const FreelanceServicesCards: React.FC<{
             }}
           >
             <BrandText style={fontSemibold14}>{text}</BrandText>
-            <TouchableOpacity>
-              <SVG source={iconNearTextSVG} />
-            </TouchableOpacity>
+
+            <SVG source={iconNearTextSVG} />
           </View>
         </View>
       </TouchableOpacity>

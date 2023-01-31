@@ -1,19 +1,19 @@
 import React from "react";
 import {
-  View,
-  StyleProp,
-  ViewStyle,
-  TouchableOpacity,
-  ImageSourcePropType,
   Image,
+  StyleProp,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from "react-native";
 
 import dotsCircle from "../../../../assets/icons/dots-circle.svg";
 import star from "../../../../assets/icons/yellow-star.svg";
-import { yellowDefault, neutral77 } from "../../../utils/style/colors";
+import { ServiceFields } from "../../../screens/FreelanceServices/types/fields";
+import { neutral77, yellowDefault } from "../../../utils/style/colors";
 import {
-  fontSemibold12,
   fontMedium10,
+  fontSemibold12,
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
@@ -26,16 +26,14 @@ export const ServiceCard: React.FC<{
   height: number;
   mainContainerStyle?: StyleProp<ViewStyle>;
   boxStyle?: StyleProp<ViewStyle>;
-  backgroundPic: ImageSourcePropType;
-  profilePic: ImageSourcePropType;
+  data: ServiceFields;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
   height,
   mainContainerStyle,
   boxStyle,
-  backgroundPic,
-  profilePic,
+  data,
 }) => {
   return (
     <TertiaryBox
@@ -44,7 +42,10 @@ export const ServiceCard: React.FC<{
       mainContainerStyle={[mainContainerStyle]}
       style={[boxStyle]}
     >
-      <Image source={backgroundPic} style={{ width: 274, height: 172 }} />
+      <Image
+        source={data.user.backgroundPic}
+        style={{ width: 274, height: 172 }}
+      />
       <View
         style={{
           flexDirection: "row",
@@ -55,13 +56,13 @@ export const ServiceCard: React.FC<{
       >
         <View style={{ flexDirection: "row" }}>
           <Image
-            source={profilePic}
+            source={data.user.profilePic}
             style={{ width: 32, height: 32, marginRight: 4 }}
           />
           <View style={{ flexDirection: "column" }}>
-            <BrandText style={fontSemibold12}>@username</BrandText>
+            <BrandText style={fontSemibold12}>@{data.user.username}</BrandText>
             <BrandText style={[fontMedium10, { color: neutral77 }]}>
-              level 2 seller
+              {data.user.description}
             </BrandText>
           </View>
         </View>
@@ -75,7 +76,7 @@ export const ServiceCard: React.FC<{
           fontSemibold12,
         ]}
       >
-        I will do modern time fnzeless logo design with copyrights
+        {data.description}
       </BrandText>
       <Separator style={{ width: 274, marginTop: 12 }} />
 
@@ -90,15 +91,17 @@ export const ServiceCard: React.FC<{
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SVG source={star} width={24} height={24} color={yellowDefault} />
           <BrandText style={[{ color: yellowDefault }, fontSemibold12]}>
-            4,9
+            {data.user.rating}
           </BrandText>
         </View>
 
         <View style={{ flexDirection: "column" }}>
           <BrandText style={[{ color: neutral77 }, fontSemibold12]}>
-            Starting at
+            {data.pricePreText}
           </BrandText>
-          <BrandText style={[fontSemibold14]}>50,0 TORI</BrandText>
+          <BrandText style={[fontSemibold14]}>
+            {data.price.value} {data.price.currency}
+          </BrandText>
         </View>
       </View>
     </TertiaryBox>

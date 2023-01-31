@@ -3,7 +3,7 @@ import { View, TouchableOpacity } from "react-native";
 
 import chevronLeft from "../../../../assets/icons/chevron-left.svg";
 import chevronRight from "../../../../assets/icons/chevron-right.svg";
-import dimaond from "../../../../assets/icons/diamond.svg";
+import diamond from "../../../../assets/icons/diamond.svg";
 import GoToPageIcon from "../../../../assets/icons/freelance-service/ChangePage.svg";
 import glasses from "../../../../assets/icons/glasses.svg";
 import halfStar from "../../../../assets/icons/half-star.svg";
@@ -18,7 +18,7 @@ import { FreelanceServicesCards } from "../Cards/FreelanceServicesCards";
 const data = [
   {
     name: "Logo Design",
-    icon: dimaond,
+    icon: diamond,
     iconChangePage: GoToPageIcon,
     navigation: "LogoDesign",
   },

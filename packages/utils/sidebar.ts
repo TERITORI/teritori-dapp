@@ -45,6 +45,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
       },
       seller: {
         title: "Seller",
+        // @ts-ignore
         route: "SellerDetails",
         icon: marketplaceSVG,
       },

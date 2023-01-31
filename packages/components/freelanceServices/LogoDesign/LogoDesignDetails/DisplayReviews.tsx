@@ -1,9 +1,8 @@
 import React from "react";
 import { View, Image } from "react-native";
 
-import profilePic from "../../../../../assets/banners/freelance-service/profile-pic.png";
-import usFlag from "../../../../../assets/banners/freelance-service/us-flag.png";
-import star from "../../../../../assets/icons/yellow-star.svg";
+import usFlag from "../../../../../assets/banners/freelance-service/flags/us-flag.png";
+import { ReviewFields } from "../../../../screens/FreelanceServices/types/fields";
 import {
   yellowDefault,
   neutral77,
@@ -16,16 +15,16 @@ import {
   fontSemibold14,
 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText/BrandText";
-import { SVG } from "../../../SVG";
 import { TertiaryBox } from "../../../boxes/TertiaryBox";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
+import { StarRating } from "../../StarRating";
 
-const data = ["1", "2", "3"];
-
-export const DisplayReviews: React.FC = () => {
+export const DisplayReviews: React.FC<{ reviews: ReviewFields[] }> = ({
+  reviews,
+}) => {
   return (
     <View style={{ flexDirection: "column", marginTop: 30, marginBottom: 30 }}>
-      {data.map((item, index) => (
+      {reviews.map((item, index) => (
         <TertiaryBox fullWidth key={index} style={{ marginBottom: 12 }}>
           <View
             style={{
@@ -39,10 +38,12 @@ export const DisplayReviews: React.FC = () => {
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Image
-                source={profilePic}
+                source={item.user.profilePic}
                 style={{ width: 32, height: 32, marginRight: 8 }}
               />
-              <BrandText style={fontSemibold16}>@username</BrandText>
+              <BrandText style={fontSemibold16}>
+                @{item.user.username}
+              </BrandText>
               <View
                 style={{
                   width: 24,
@@ -61,15 +62,11 @@ export const DisplayReviews: React.FC = () => {
               </BrandText>
             </View>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <SVG source={star} width={24} height={24} />
-              <SVG source={star} width={24} height={24} />
-              <SVG source={star} width={24} height={24} />
-              <SVG source={star} width={24} height={24} />
-              <SVG source={star} width={24} height={24} />
+              <StarRating rating={item.rating} />
               <BrandText
                 style={[{ color: yellowDefault, marginLeft: 12 }, fontMedium14]}
               >
-                4.9
+                {item.rating}
               </BrandText>
               <View
                 style={{
@@ -81,17 +78,13 @@ export const DisplayReviews: React.FC = () => {
                 }}
               />
               <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
-                2 month ago
+                {item.date}
               </BrandText>
             </View>
           </View>
           <View style={{ width: 650, marginBottom: 12 }}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Username was great! We commissioned him for a logo for an upcoming
-              education-based NGO, which I imagine is not a common request. We
-              chose the Premium package, and it was well worth the cost! Good
-              communication from start to finish. Five designs were lorem ipsum
-              lorem ipsum dolor sit amet dolor lorem ipsum dolor sit am...
+              {item.text}
             </BrandText>
             <BrandText
               style={[

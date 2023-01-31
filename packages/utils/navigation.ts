@@ -20,8 +20,8 @@ export type RootStackParamList = {
   FreelanceServices: undefined;
   GraphicsAndDesign: undefined;
   LogoDesign: undefined;
-  LogoDesignDetails: { title: string };
-  SellerDetails: undefined;
+  LogoDesignDetails: { id: string };
+  SellerDetails: { id: string };
   OrderDetails: { modal: string; name?: string } | undefined;
   Launchpad: undefined;
   LaunchpadApply: undefined;
@@ -120,7 +120,7 @@ const navConfig: {
     MyCollection: "my-collection",
     GraphicsAndDesign: "graphics-and-design",
     FreelanceServices: "freelance-services",
-    SellerDetails: "seller-details",
+    SellerDetails: "seller-details/:id",
     OrderDetails: "order-details/:modal?",
     LogoDesign: "logo-design",
     LogoDesignDetails: "logo-design-details",
