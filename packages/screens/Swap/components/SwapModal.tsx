@@ -246,11 +246,10 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     setSettingsOpened(false);
     setToastSuccessVisible(false);
     setToastErrorVisible(false);
-    const swapResult = await swap(parseFloat(amountIn), amountOut);
+    const swapResult = await swap(parseFloat(amountIn), amountOut, slippage);
     setSwapResult(swapResult);
 
-    if (!swapResult) return;
-    if (swapResult.isError) setToastErrorVisible(true);
+    if (swapResult?.isError) setToastErrorVisible(true);
     else {
       setToastSuccessVisible(true);
       setAmountIn("");

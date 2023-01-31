@@ -1,5 +1,6 @@
 import { coins, isDeliverTxFailure, StdFee } from "@cosmjs/stargate";
 import {
+  calculateAmountWithSlippage,
   CoinValue,
   LcdPool,
   lookupRoutesForTrade,
@@ -338,7 +339,7 @@ export const useSwap = (
     }
   );
 
-  const swap = async (amountIn: number, amountOut: number) => {
+  const swap = async (amountIn: number, amountOut: number, slippage: number) => {
     if (!currencyIn || !currencyOut || !selectedWallet || !selectedNetwork)
       return;
     const amountInMicro = amountToCurrencyMicro(
@@ -393,12 +394,17 @@ export const useSwap = (
         return swapAmountInRoute;
       });
 
+      // ==== Handling splippage
+      const amountOutMicroWithSlippage = Math.round(
+        parseFloat(calculateAmountWithSlippage(amountOutMicro, slippage))
+      ).toString();
+
       // ==== Make a trade between two currencies
       const msgValue: MsgSwapExactAmountIn = {
         sender: selectedWallet.address || "",
         routes,
         tokenIn: { denom: currencyIn.denom, amount: amountInMicro } as Coin,
-        tokenOutMinAmount: "1",
+        tokenOutMinAmount: amountOutMicroWithSlippage,
       };
       const msg = swapExactAmountIn(msgValue);
 
@@ -427,11 +433,11 @@ export const useSwap = (
         message: "",
       } as SwapResult;
     } catch (e) {
-      console.error(e);
+      console.error("tx failed", e);
       return {
         isError: true,
         title: "Transaction failed",
-        message: e,
+        message: e.message,
       } as SwapResult;
     }
   };

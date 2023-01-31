@@ -17,7 +17,7 @@
     "@cosmjs/math": "^0.28.13",
     "@cosmjs/proto-signing": "^0.28.13",
     "@cosmjs/stargate": "^0.28.13",
-    "@cosmology/core": "^1.15.0",
+    "@cosmology/core": "^1.16.0",
     "@expo-google-fonts/exo": "^0.2.2",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@inline-svg-unique-id/react": "^1.2.3",

@@ -3066,10 +3066,10 @@
   resolved "https://registry.yarnpkg.com/@cosmjs/utils/-/utils-0.29.5.tgz#3fed1b3528ae8c5f1eb5d29b68755bebfd3294ee"
   integrity sha512-m7h+RXDUxOzEOGt4P+3OVPX7PuakZT3GBmaM/Y2u+abN3xZkziykD/NvedYFvvCCdQo714XcGl33bwifS9FZPQ==
 
-"@cosmology/core@^1.15.0":
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/@cosmology/core/-/core-1.15.0.tgz#cf1ddd0d5080834c0a31c5a29bdc093009ce7746"
-  integrity sha512-Yliub4TOYbXVs4J9sGM7ghDCW7voumPmwmF9Kv6aumch0geoo+L95+G84t4XEd6X6ILEa8BH+jrK+OqW9ZSD0Q==
+"@cosmology/core@^1.16.0":
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/@cosmology/core/-/core-1.16.0.tgz#d7785b7fe441a778fe9efd1bee0c84d307fe70d2"
+  integrity sha512-oaX8f5LWrwcBlNqc8qes7MVC7DuTT/DV+HIM6VQDx25v9vi0j6JJUsvgFj7lpUJje7a41Fv67GoMDiLpSiA0ow==
   dependencies:
     "@babel/runtime" "^7.18.9"
     "@cosmjs/amino" "0.29.5"
