@@ -98,19 +98,11 @@ export const ListServices: React.FC = () => {
   }
 
   function checkIfLowerLimitIsReached() {
-    if (pageLimitMin === 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return pageLimitMin === 0;
   }
 
   function checkIfMaxLimitIsReached() {
-    if (pageLimitMax >= data.length) {
-      return true;
-    } else {
-      return false;
-    }
+    return pageLimitMax >= data.length;
   }
 
   return (
@@ -176,9 +168,7 @@ export const ListServices: React.FC = () => {
           <TouchableOpacity
             disabled={checkIfLowerLimitIsReached()}
             onPress={() => {
-              if (pageLimitMax === 0) {
-                return null;
-              } else {
+              if (pageLimitMax !== 0) {
                 reducePageLimits();
               }
             }}
@@ -216,9 +206,7 @@ export const ListServices: React.FC = () => {
           <TouchableOpacity
             disabled={checkIfMaxLimitIsReached()}
             onPress={() => {
-              if (pageLimitMax >= data.length) {
-                return null;
-              } else {
+              if (pageLimitMax < data.length) {
                 addPageLimits();
               }
             }}
