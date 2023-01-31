@@ -95,6 +95,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
     if (item.externalRoute) {
       Linking.openURL(item.externalRoute);
     } else if (item.route) {
+      // @ts-ignore
       navigation.navigate(item.route);
     }
   };

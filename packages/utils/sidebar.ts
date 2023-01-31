@@ -50,10 +50,11 @@ export const SIDEBAR_LIST: SidebarRecordType = {
       },
       order: {
         title: "Order",
+        // @ts-ignore
         route: "OrderDetails",
         icon: marketplaceSVG,
-      }
-    }
+      },
+    },
   },
   launchpad: {
     title: "Launchpad",

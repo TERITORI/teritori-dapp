@@ -42,7 +42,7 @@ const data = [
   "business",
   "vector",
   "text logo",
-  "logowitheffect",
+  "logo-with-effect",
 ];
 
 const dataEducation = [

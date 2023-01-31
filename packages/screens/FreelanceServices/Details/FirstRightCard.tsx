@@ -1,18 +1,19 @@
 import React from "react";
 import { View } from "react-native";
+
 import { BrandText } from "../../../components/BrandText";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import {
   primaryColor,
   neutral77,
   neutral00,
 } from "../../../utils/style/colors";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import {
   fontMedium14,
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 
 export const FirstRightCard: React.FC = () => {
   return (

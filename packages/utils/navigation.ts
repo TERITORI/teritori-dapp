@@ -117,9 +117,9 @@ const navConfig: {
 } = {
   screens: {
     Home: "",
-    FreelanceServices: "freelance-services",
     MyCollection: "my-collection",
     GraphicsAndDesign: "graphics-and-design",
+    FreelanceServices: "freelance-services",
     SellerDetails: "seller-details",
     OrderDetails: "order-details/:modal?",
     LogoDesign: "logo-design",

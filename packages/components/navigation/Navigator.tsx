@@ -2,12 +2,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
+import { OrderDetails } from "../../screens/FreelanceServices/Details/OrderDetails";
 import { FreelanceServicesScreen } from "../../screens/FreelanceServices/FreelanceServicesScreen";
 import { GraphicsAndDesignScreen } from "../../screens/FreelanceServices/GraphicsAndDesignScreen/GraphicsAndDesignScreen";
 import { LogoDesignDetailsScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignDetailsScreen";
 import { LogoDesignScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignScreen";
 import { SellerDetailsScreen } from "../../screens/FreelanceServices/SellersDetails/SellerDetailsScreen";
-import { OrderDetails } from "../../screens/FreelanceServices/Details/OrderDetails";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";

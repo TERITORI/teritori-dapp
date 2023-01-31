@@ -9,6 +9,7 @@ import glasses from "../../../../assets/icons/glasses.svg";
 import halfStar from "../../../../assets/icons/half-star.svg";
 import house from "../../../../assets/icons/house.svg";
 import imageEditing from "../../../../assets/icons/image-editing.svg";
+import { FreelancerServiceRouteTypes } from "../../../screens/FreelanceServices/types/routes";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
@@ -25,27 +26,27 @@ const data = [
     name: "Architecture & \nInterior Design",
     icon: house,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
   {
     name: "Image Editing",
     icon: imageEditing,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
   {
     name: "NFT Art",
     icon: halfStar,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
   {
     name: "Merch Design",
     icon: glasses,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
-];
+] as FreelancerServiceRouteTypes[];
 
 export const PopularDesignExplorer: React.FC = () => {
   return (

@@ -10,7 +10,8 @@ import Feather from "../../../../assets/icons/freelance-service/Feather.svg";
 import LifeStyle from "../../../../assets/icons/freelance-service/LifeStyle.svg";
 import Music from "../../../../assets/icons/freelance-service/Music.svg";
 import Pen from "../../../../assets/icons/freelance-service/Pen.svg";
-import Suitecase from "../../../../assets/icons/freelance-service/Suitecase.svg";
+import Suitcase from "../../../../assets/icons/freelance-service/Suitcase.svg";
+import { FreelancerServiceRouteTypes } from "../../../screens/FreelanceServices/types/routes";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { FreelanceServicesCards } from "../Cards/FreelanceServicesCards";
@@ -26,51 +27,51 @@ const data = [
     name: "Digital Marketing",
     icon: Computer,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
   {
     name: "Wiriting & Translation",
     icon: Pen,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
   {
     name: "Video & Animation",
     icon: BallBounce,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
   {
     name: "Music & Audio",
     icon: Music,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
   {
     name: "Dev & Tech",
     icon: Code,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
   {
     name: "Business",
-    icon: Suitecase,
+    icon: Suitcase,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
   {
     name: "Lifestyle",
     icon: LifeStyle,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
   {
     name: "Data",
     icon: Data,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    navigation: "ComingSoon",
   },
-];
+] as FreelancerServiceRouteTypes[];
 
 export const ExplorerMarketPlace: React.FC = () => {
   return (

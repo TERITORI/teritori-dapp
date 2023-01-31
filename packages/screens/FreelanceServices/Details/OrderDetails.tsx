@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { RadioButton } from "react-native-paper";
+
+import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
+import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { FirstRightCard } from "./FirstRightCard";
-import { SecondRightCard } from "./SecondRightCard";
-import { FirstStep } from "./FirstStep";
+import { ScreenContainer } from "../../../components/ScreenContainer";
+import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
+import { FreelanceOrderModal } from "../../../components/modals/freelanceOrder/FreelanceOrderModal";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { TeritoriOrderClient } from "../../../contracts-clients/teritori-freelance-order/TeritoriOrder.client";
+import { OrderParams } from "../../../contracts-clients/teritori-freelance-order/TeritoriOrder.types";
+import { useIsKeplrConnected } from "../../../hooks/useIsKeplrConnected";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getSigningCosmWasmClient } from "../../../utils/keplr";
+import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
   primaryColor,
   neutral77,
@@ -13,30 +23,20 @@ import {
   secondaryColor,
   neutral33,
 } from "../../../utils/style/colors";
-import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
-import { BrandText } from "../../../components/BrandText";
-import { TouchableOpacity } from "react-native";
 import { fontSemibold16, fontSemibold20 } from "../../../utils/style/fonts";
-import { RadioButton } from "react-native-paper";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TeritoriOrderClient } from "../../../contracts-clients/teritori-freelance-order/TeritoriOrder.client";
-import { getSigningCosmWasmClient } from "../../../utils/keplr";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
-import { FreelanceOrderModal } from "../../../components/modals/freelanceOrder/FreelanceOrderModal";
-import { OrderParams } from "../../../contracts-clients/teritori-freelance-order/TeritoriOrder.types";
-import { useIsKeplrConnected } from "../../../hooks/useIsKeplrConnected";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { FirstRightCard } from "./FirstRightCard";
+import { FirstStep } from "./FirstStep";
+import { SecondRightCard } from "./SecondRightCard";
 
 export type OrderModals = "Order";
 const OrderPathMap = {
   Order: "order",
-}
+};
 export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
   const wallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const isKeplrConnected = useIsKeplrConnected();
-  const { setToastSuccess, setToastError } = useFeedbacks();
+  const { setToastError } = useFeedbacks();
 
   const currentStyle = StyleSheet.create({
     circle: {
@@ -86,11 +86,11 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
   const [step, setStep] = useState<number>(2);
   const [firstStepStyle, setFirstStepStyle] = useState(currentStyle);
   const [secondStepStyle, setSecondStepStyle] = useState(nextStyle);
-  const [thirdStepStyle, setThirdStepStyle] = useState(nextStyle);
+  const thirdStepStyle = nextStyle;
 
   const [payment, setPayment] = useState<string>("");
 
-  const [activeModal, setActiveModal] = useState<OrderModals>();
+  const [, setActiveModal] = useState<OrderModals>();
   const [modalOrderVisible, setModalOrderVisible] = useState(false);
 
   const handleModalChange = (modal?: string, name?: string) => {
@@ -123,7 +123,7 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
     handleModalChange(route.params?.modal, route.params?.name);
   }, [route]);
 
-  const submitData = async ( data:OrderParams ) => {
+  const submitData = async (data: OrderParams) => {
     setModalOrderVisible(false);
     if (!isKeplrConnected) {
       setToastError({
@@ -132,28 +132,31 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
       });
       return;
     }
-    try{
+    try {
       const client = new TeritoriOrderClient(
         await getSigningCosmWasmClient(),
         wallet?.address || "",
         process.env.TERITORI_ESCROW_CONTRACT_ADDRESS || ""
       );
 
-      let cw20Addr = data.cw20Addr!;
-      let amount = data.amount!; //need to change later.
-      let receiver = data.seller!; //need to change later.
-      let expireAt = data.expireAt!; // need to change later
+      const cw20Addr = data.cw20Addr!;
+      const amount = data.amount!; //need to change later.
+      const receiver = data.seller!; //need to change later.
+      const expireAt = data.expireAt!; // need to change later
 
-      await client.createContract({cw20Addr, amount, receiver, expireAt: parseInt(expireAt)});
-
-    }catch (err) {
+      await client.createContract({
+        cw20Addr,
+        amount,
+        receiver,
+        expireAt: parseInt(expireAt, 2),
+      });
+    } catch (err) {
       console.log(err);
     }
-
-  }
+  };
 
   return (
-    <ScreenContainer fullWidth={true}>
+    <ScreenContainer fullWidth>
       <View
         style={{
           marginTop: 24,
@@ -229,8 +232,8 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
               </BrandText>
             </TouchableOpacity>
           </View>
-          {step == 1 && <FirstStep />}
-          {step == 2 && (
+          {step === 1 && <FirstStep />}
+          {step === 2 && (
             <View>
               <View
                 style={{
@@ -306,8 +309,8 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
                 color={neutral00}
                 backgroundColor={primaryColor}
                 style={{ marginTop: 24, marginBottom: 20 }}
-                onPress={async ()=>{
-                  navigation.navigate("OrderDetails", { modal: "order" })                  
+                onPress={async () => {
+                  navigation.navigate("OrderDetails", { modal: "order" });
                 }}
               />
             </View>
@@ -322,8 +325,8 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
           onEnter={submitData}
         />
 
-        {step == 1 && <FirstRightCard />}
-        {step == 2 && <SecondRightCard />}
+        {step === 1 && <FirstRightCard />}
+        {step === 2 && <SecondRightCard />}
       </View>
     </ScreenContainer>
   );
