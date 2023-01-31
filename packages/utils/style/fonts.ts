@@ -110,6 +110,13 @@ export const fontMedium48: StyleProp<TextStyle> = {
   fontFamily: "Exo_500Medium",
   fontWeight: "500",
 };
+export const fontMedium40: StyleProp<TextStyle> = {
+  fontSize: 40,
+  letterSpacing: -(40 * 0.02),
+  lineHeight: 32,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "500",
+};
 export const fontMedium32: StyleProp<TextStyle> = {
   fontSize: 32,
   letterSpacing: -(32 * 0.02),

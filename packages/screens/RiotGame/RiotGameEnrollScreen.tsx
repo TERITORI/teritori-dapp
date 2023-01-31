@@ -13,7 +13,6 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { StakingState } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   fontMedium32,
@@ -25,11 +24,10 @@ import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalV2";
 import { SimpleButton } from "./component/SimpleButton";
-import { P2E_PAUSED } from "./settings";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
-const embeddedVideoUri =
-  "https://bafybeieid23jjpzug42y6u5au2noc6hpyayqd56udgvh7pfd45jeksykoe.ipfs.nftstorage.link/";
+const EMBEDDED_VIDEO_URI =
+  "https://bafybeid5x2gujvk3cggzz2qvewf6ykzie2iqb7ry4qtew63tolanerw4ja.ipfs.nftstorage.link/";
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
@@ -42,16 +40,11 @@ export const RiotGameEnrollScreen = () => {
 
   const { myAvailableRippers } = useRippers();
   const {
-    currentSquad,
     squadStakingConfig,
     squadStake,
-    stakingState,
     estimateStakingDuration,
-    lastStakeTime,
-    isStakingStateLoaded,
-    isLastStakeTimeLoaded,
-    isSquadLoaded,
-    updateStakingState,
+    isSquadsLoaded,
+    squads,
   } = useSquadStaking();
 
   // Stop video when changing screen through react-navigation
@@ -69,7 +62,7 @@ export const RiotGameEnrollScreen = () => {
     const selectedIds = selectedRippers.map((r) => r.id);
 
     return myAvailableRippers.filter((r) => !selectedIds.includes(r.id));
-  }, [myAvailableRippers, selectedRippers, currentSquad]);
+  }, [myAvailableRippers, selectedRippers]);
 
   const stakingDuration = useMemo<number>(() => {
     if (selectedRippers.length === 0 || !squadStakingConfig) return 0;
@@ -97,15 +90,6 @@ export const RiotGameEnrollScreen = () => {
   };
 
   const joinTheFight = async () => {
-    // NOTE: temporary code for phase transition
-    if (P2E_PAUSED) {
-      return setToastError({
-        title: "Warning",
-        message: `Season 1 is closed. Philipp Rustov is defeated. 
-        Now wait for the next instructions`,
-      });
-    }
-
     if (!squadStakingConfig) {
       return setToastError({
         title: "Error",
@@ -131,25 +115,15 @@ export const RiotGameEnrollScreen = () => {
     }
   };
 
-  // If we are in state Relax/Ongoing or there is squad the goto fight screen
   useEffect(() => {
     if (
-      isSquadLoaded &&
-      isStakingStateLoaded &&
-      (currentSquad ||
-        [StakingState.RELAX, StakingState.ONGOING].includes(stakingState))
+      isSquadsLoaded &&
+      squadStakingConfig?.owner &&
+      squads.length === squadStakingConfig.squad_count_limit
     ) {
       navigation.replace("RiotGameFight");
     }
-  }, [isSquadLoaded, isStakingStateLoaded]);
-
-  // Update staking state
-  useEffect(() => {
-    if (!isSquadLoaded || !isLastStakeTimeLoaded || !squadStakingConfig?.owner)
-      return;
-
-    updateStakingState(currentSquad, lastStakeTime, squadStakingConfig);
-  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.owner]);
+  }, [isSquadsLoaded, squadStakingConfig?.owner, squads.length]);
 
   return (
     <GameContentView>
@@ -213,7 +187,7 @@ export const RiotGameEnrollScreen = () => {
               ref={videoRef}
               style={{ borderRadius: 25 }}
               source={{
-                uri: embeddedVideoUri,
+                uri: EMBEDDED_VIDEO_URI,
               }}
               useNativeControls
               resizeMode={ResizeMode.CONTAIN}
@@ -226,7 +200,7 @@ export const RiotGameEnrollScreen = () => {
         disabled={selectedRippers.length === 0}
         onPress={joinTheFight}
         containerStyle={{ marginVertical: layout.padding_x4 }}
-        title="Join the Fight"
+        text="Join the Fight"
         loading={isJoiningFight}
       />
 

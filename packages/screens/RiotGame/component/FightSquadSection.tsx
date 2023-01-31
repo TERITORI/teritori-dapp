@@ -1,8 +1,8 @@
 import React from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, ImageBackground, StyleSheet, View } from "react-native";
 
+import brokenBoxPNG from "../../../../assets/game/broken-box.png";
 import { BrandText } from "../../../components/BrandText";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontMedium32, fontMedium13 } from "../../../utils/style/fonts";
@@ -20,13 +20,16 @@ export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
   stakedRippers,
 }) => {
   return (
-    <TertiaryBox
-      width={380}
-      height={310}
-      noBrokenCorners
-      mainContainerStyle={{
+    <ImageBackground
+      source={brokenBoxPNG}
+      resizeMode="stretch"
+      style={{
+        width: 360,
+        height: 300,
+        justifyContent: "center",
+        alignItems: "center",
         padding: layout.padding_x3,
-        borderWidth: 3,
+        marginTop: layout.padding_x4,
       }}
     >
       <BrandText style={fontMedium32}>Your Squad</BrandText>
@@ -61,7 +64,7 @@ export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
           );
         }}
       />
-    </TertiaryBox>
+    </ImageBackground>
   );
 };
 

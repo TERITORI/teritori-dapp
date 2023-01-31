@@ -17,7 +17,7 @@ message AllSeasonsRequest {
 message SeasonWithoutPrize {
   string id = 1;
   string boss_name = 2;
-  int32 boss_hp = 3;
+  float boss_hp = 3;
 }
 
 message AllSeasonsResponse {
@@ -32,8 +32,9 @@ message CurrentSeasonResponse {
   string denom = 2;
   int32 total_prize = 3;
   string boss_name = 4;
-  int32 boss_hp = 5;
+  float boss_hp = 5;
   float remaining_hp = 6;
+  string boss_image = 7;
 }
 
 message UserRankRequest {

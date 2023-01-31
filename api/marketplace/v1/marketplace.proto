@@ -52,6 +52,7 @@ message NFT {
   string owner_id = 13;
   string nft_contract_address = 15;
   string locked_on = 16;
+  uint64 last_stake_time = 18;
   repeated Attribute attributes = 17;
 }
 message Amount {

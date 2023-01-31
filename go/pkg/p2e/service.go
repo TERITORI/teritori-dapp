@@ -16,9 +16,8 @@ type P2eService struct {
 }
 
 type Config struct {
-	Logger            *zap.Logger
-	IndexerDB         *gorm.DB
-	RiotGameStartedAt string
+	Logger    *zap.Logger
+	IndexerDB *gorm.DB
 }
 
 func NewP2eService(ctx context.Context, conf *Config) p2epb.P2EServiceServer {
@@ -126,16 +125,22 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 }
 
 func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeasonRequest) (*p2epb.CurrentSeasonResponse, error) {
-	currentSeason, remainingHp, err := GetCurrentSeason(s.conf.RiotGameStartedAt)
+	currentSeason, remainingHp, err := GetCurrentSeason()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get current season")
+	}
+
+	bossHp, err := GetBossHp(currentSeason)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get boss HP")
 	}
 
 	return &p2epb.CurrentSeasonResponse{
 		Id:          currentSeason.ID,
 		TotalPrize:  currentSeason.TotalPrize,
 		BossName:    currentSeason.BossName,
-		BossHp:      currentSeason.BossHp,
+		BossHp:      bossHp,
+		BossImage:   currentSeason.BossImage,
 		Denom:       currentSeason.Denom,
 		RemainingHp: float32(remainingHp),
 	}, nil
@@ -147,10 +152,15 @@ func (s *P2eService) AllSeasons(ctx context.Context, req *p2epb.AllSeasonsReques
 	var data []*p2epb.SeasonWithoutPrize
 
 	for _, season := range allSeasons {
+		bossHp, err := GetBossHp(season)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get boss HP")
+		}
+
 		data = append(data, &p2epb.SeasonWithoutPrize{
 			Id:       season.ID,
 			BossName: season.BossName,
-			BossHp:   season.BossHp,
+			BossHp:   bossHp,
 		})
 	}
 

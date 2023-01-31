@@ -1,6 +1,5 @@
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import moment from "moment";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import {
@@ -16,7 +15,6 @@ import {
   buildApproveNFTMsg,
   buildStakingMsg,
   getRipperTraitValue,
-  StakingState,
   getRipperTokenId,
 } from "../../utils/game";
 import {
@@ -28,28 +26,15 @@ import useSelectedWallet from "../useSelectedWallet";
 import {
   GetSquadResponse,
   GetConfigResponse,
-  GetLastStakeTimeResponse,
   Nft as SquadStakeNFT,
+  Squad,
 } from "./../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 
 export const useSquadStaking = () => {
   const [squadStakingConfig, setSquadStakingConfig] =
     useState<GetConfigResponse>();
-  const [currentSquad, setCurrentSquad] = useState<GetSquadResponse>();
-  const [remainingTime, setRemainingTime] = useState<number>(0);
-  const [stakingState, setStakingState] = useState<StakingState>(
-    StakingState.UNKNOWN
-  );
-  const [lastStakeTime, setLastStakeTime] = useState<moment.Moment>();
-
-  const [isLastStakeTimeLoaded, setIsLastStakeTimeLoaded] =
-    useState<boolean>(false);
-  const [isSquadLoaded, setIsSquadLoaded] = useState<boolean>(false);
-  const [isStakingStateLoaded, setIsStakingStateLoaded] =
-    useState<boolean>(false);
-
-  const timerRef = useRef<NodeJS.Timer>();
-
+  const [squads, setSquads] = useState<Squad[]>([]);
+  const [isSquadsLoaded, setIsSquadsLoaded] = useState<boolean>(false);
   const selectedWallet = useSelectedWallet();
 
   const getSquadStakingQueryClient = useCallback(async () => {
@@ -82,6 +67,7 @@ export const useSquadStaking = () => {
         token_id: tokenId,
       });
     }
+
     const approveMsgs = [];
     for (const selectedNft of selectedNfts) {
       const msg = buildApproveNFTMsg(
@@ -111,13 +97,13 @@ export const useSquadStaking = () => {
     setSquadStakingConfig(config);
   };
 
-  const fetchSquadStaking = async (user: string) => {
+  const fetchSquads = async (user: string) => {
     try {
-      const squadStakingQueryClient = await getSquadStakingQueryClient();
-      const squad: GetSquadResponse = await squadStakingQueryClient.getSquad({
+      const queryClient = await getSquadStakingQueryClient();
+      const squads: GetSquadResponse = await queryClient.getSquad({
         owner: user,
       });
-      setCurrentSquad(squad);
+      setSquads(squads);
     } catch (e: any) {
       if (e.message?.includes("Squad not found")) {
         console.log("Squad not found:", e.message);
@@ -125,7 +111,7 @@ export const useSquadStaking = () => {
         throw e;
       }
     } finally {
-      setIsSquadLoaded(true);
+      setIsSquadsLoaded(true);
     }
   };
 
@@ -155,103 +141,22 @@ export const useSquadStaking = () => {
     return duration * 60 * 60 * 1000; // Convert to milliseconds
   };
 
-  const fetchLastStakeTime = async (user: string) => {
-    const squadStakingQueryClient = await getSquadStakingQueryClient();
-    const lastStakeTime: GetLastStakeTimeResponse =
-      await squadStakingQueryClient.getLastStakeTime({
-        user,
-      });
-
-    setLastStakeTime(moment(lastStakeTime.last_stake_time * 1000));
-    setIsLastStakeTimeLoaded(true);
-  };
-
-  const updateStakingState = (
-    currentSquad: GetSquadResponse | undefined,
-    lastStakeTime: moment.Moment | undefined,
-    squadStakingConfig: GetConfigResponse
-  ) => {
-    const now = moment();
-    const coolDownPeriod = squadStakingConfig.cooldown_period;
-
-    lastStakeTime = lastStakeTime || moment(0);
-    const completesAt = moment(lastStakeTime).add(coolDownPeriod, "seconds");
-
-    let _remainingTime = 0;
-    let _stakingState = StakingState.UNKNOWN;
-
-    if (!currentSquad) {
-      if (now.isAfter(completesAt)) {
-        _stakingState = StakingState.COMPLETED;
-      } else if (now.isAfter(lastStakeTime)) {
-        _stakingState = StakingState.RELAX;
-        _remainingTime = completesAt.diff(now);
-      }
-    } else {
-      const startsAt = moment(currentSquad.start_time * 1000);
-      const endsAt = moment(currentSquad.end_time * 1000);
-
-      if (now.isAfter(startsAt) && now.isBefore(endsAt)) {
-        _stakingState = StakingState.ONGOING;
-        _remainingTime = endsAt.diff(now);
-      } else if (now.isAfter(completesAt)) {
-        _stakingState = StakingState.COMPLETED;
-      } else if (now.isAfter(endsAt)) {
-        _stakingState = StakingState.RELAX;
-        _remainingTime = completesAt.diff(now);
-      }
-    }
-
-    setStakingState(_stakingState);
-    setRemainingTime(_remainingTime);
-    setIsStakingStateLoaded(true);
-  };
-
-  const startStakingTimer = (
-    currentSquad: GetSquadResponse | undefined,
-    lastStakeTime: moment.Moment | undefined,
-    squadStakingConfig: GetConfigResponse
-  ) => {
-    if (timerRef.current) return;
-
-    // Calculate current state and remaining time
-    updateStakingState(currentSquad, lastStakeTime, squadStakingConfig); // Call immediately for the first time
-    timerRef.current = setInterval(
-      () => updateStakingState(currentSquad, lastStakeTime, squadStakingConfig),
-      1000
-    );
-  };
-
   useEffect(() => {
     if (!selectedWallet?.address) return;
 
     fetchSquadStakingConfig();
-    fetchSquadStaking(selectedWallet.address);
-    fetchLastStakeTime(selectedWallet.address);
+    fetchSquads(selectedWallet.address);
   }, [selectedWallet?.address]); // Use attributes as dependencies to avoid deep compare
-
-  useEffect(() => {
-    return () => {
-      timerRef.current && clearInterval(timerRef.current);
-      timerRef.current = undefined;
-    };
-  }, []);
 
   return {
     currentUser: selectedWallet?.address,
     squadStakingConfig,
-    currentSquad,
+    squads,
     squadStake,
     squadWithdraw,
     estimateStakingDuration,
-    remainingTime,
-    stakingState,
-    startStakingTimer,
-    lastStakeTime,
-    isSquadLoaded,
-    isStakingStateLoaded,
-    isLastStakeTimeLoaded,
-    setCurrentSquad,
-    updateStakingState,
+    isSquadsLoaded,
+    setSquads,
+    fetchSquads,
   };
 };

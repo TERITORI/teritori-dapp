@@ -346,13 +346,14 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			NetworkId:          nft.Collection.NetworkId,
 			ImageUri:           ipfsutil.IPFSURIToURL(imageURI),
 			IsListed:           nft.IsListed,
-			Price:              nft.PriceAmount.String,
+			Price:              nft.PriceAmount,
 			Denom:              nft.PriceDenom,
 			TextInsert:         textInsert,
 			OwnerId:            string(nft.OwnerID),
 			Attributes:         attributes,
 			NftContractAddress: nft.Collection.TeritoriCollection.NFTContractAddress,
 			LockedOn:           nft.LockedOn,
+			LastStakeTime:      nft.LastStakeTime,
 		}}); err != nil {
 			return errors.Wrap(err, "failed to send nft")
 		}

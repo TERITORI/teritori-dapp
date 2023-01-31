@@ -16,6 +16,7 @@ type GameContentViewProps = {
   containerStyle?: ViewStyle;
   contentStyle?: ViewStyle;
   bgImage?: ImageSourcePropType;
+  bgImageURI?: string;
   hideStats?: boolean;
   loading?: boolean;
 };
@@ -24,6 +25,7 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
   containerStyle,
   contentStyle,
   bgImage,
+  bgImageURI,
   hideStats = false,
   loading = false,
   ...props
@@ -45,10 +47,10 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
       <RiotGameHeader />
       <LoaderFullScreen visible={loading} />
 
-      {bgImage ? (
+      {bgImage || bgImageURI ? (
         <ImageBackground
           style={{ flex: 1 }}
-          source={bgImage}
+          source={bgImage || { uri: bgImageURI }}
           resizeMode="cover"
         >
           {content}

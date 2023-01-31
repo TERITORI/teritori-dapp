@@ -3,8 +3,10 @@ package indexerdb
 // Delete the record when user unstake
 type P2eSquadStaking struct {
 	OwnerID   UserID `gorm:"primaryKey"`
-	StartTime uint64 `gorm:"index"`
+	StartTime uint64 `gorm:"primaryKey"`
+	SeasonID  string `gorm:"index"`
 	EndTime   uint64 `gorm:"index"`
+	TokenIDs  string
 }
 
 // For the global leaderboard in the future

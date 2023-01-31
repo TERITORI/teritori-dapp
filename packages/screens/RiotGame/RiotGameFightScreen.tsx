@@ -1,201 +1,135 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
 
-import fightBgPNG from "../../../assets/game/fight-bg.png";
-import victoryBgPNG from "../../../assets/game/victory-bg.png";
-import addCircleSFilledVG from "../../../assets/icons/add-circle-filled.svg";
-import { BrandText } from "../../components/BrandText";
-import FlexRow from "../../components/FlexRow";
+import addCircleSFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { NftInfoResponse } from "../../contracts-clients/teritori-nft/TeritoriNft.types";
-import { Nft } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
-import { useRippers } from "../../hooks/riotGame/useRippers";
+import { SpacerColumn } from "../../components/spacer";
+import { Squad } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { StakingState } from "../../utils/game";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { getNonSigningCosmWasmClient } from "../../utils/keplr";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
-import { fontMedium48 } from "../../utils/style/fonts";
-import { headerHeight, layout } from "../../utils/style/layout";
-import { FightBossSection } from "./component/FightBossSection";
-import { FightCountdownSection } from "./component/FightCountdownSection";
-import { FightSquadSection } from "./component/FightSquadSection";
+import { layout } from "../../utils/style/layout";
+import { FightSection } from "./component/FightSection";
+import { FightSectionHeader } from "./component/FightSectionHeader";
 import { GameContentView } from "./component/GameContentView";
-import { UnstakeModal } from "./component/UnstakeModal";
-import { RipperLightInfo } from "./types";
 
-const PAGE_TITLE_MAP = {
-  [StakingState.UNKNOWN]: "There is no ongoing fight",
-  [StakingState.ONGOING]: "Ongoing fight",
-  [StakingState.RELAX]: "Relax time",
-  [StakingState.COMPLETED]: "Completed",
-};
+const FIGHT_BG_URI =
+  "https://bafybeidca53mhjmgmu4uer4u3pr6hyvardmnwzlvmaemvgzrwl7knup2e4.ipfs.nftstorage.link/";
 
 export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();
-  const { setToastError } = useFeedbacks();
-  const { myAvailableRippers } = useRippers();
-
-  const [isShowClaimModal, setIsShowClaimModal] = useState(false);
-  const [isUnstaking, setIsUnstaking] = useState(false);
-
-  const [stakedRippers, setStakedRippers] = useState<RipperLightInfo[]>([]);
 
   const {
-    currentSquad,
+    squads,
     squadStakingConfig,
     currentUser,
     squadWithdraw,
-    remainingTime,
-    stakingState,
-    startStakingTimer,
-    lastStakeTime,
-    isLastStakeTimeLoaded,
-    isStakingStateLoaded,
-    isSquadLoaded,
-    setCurrentSquad,
+    isSquadsLoaded,
+    fetchSquads,
   } = useSquadStaking();
 
-  const fetchCurrentStakedRippers = async (currentStakedNfts: Nft[]) => {
-    const client = await getNonSigningCosmWasmClient();
+  const [now, setNow] = useState<number>(0);
 
-    const nftInfos: NftInfoResponse[] = await Promise.all(
-      currentStakedNfts.map((nft) =>
-        client.queryContractSmart(nft.contract_addr, {
-          nft_info: { token_id: nft.token_id },
-        })
-      )
-    );
+  const isCompleted = (squad: Squad) => now - squad.end_time * 1000 >= 0;
 
-    const stakedRippers: RipperLightInfo[] = nftInfos.map(({ extension }) => ({
-      imageUri: ipfsURLToHTTPURL(`${extension?.image}`),
-      name: `${extension?.name}`,
-    }));
-
-    setStakedRippers(stakedRippers);
-  };
-
-  const unstake = async () => {
-    if (!currentUser) return;
-
-    try {
-      setIsUnstaking(true);
-
-      await squadWithdraw(currentUser);
-      setIsShowClaimModal(true);
-    } catch (e: any) {
-      setToastError({
-        title: "Error occurs",
-        message: e.message,
-      });
-    } finally {
-      setIsUnstaking(false);
-    }
-  };
+  const ongoingSquads = useMemo(
+    () => squads.filter((m) => !isCompleted(m)),
+    [now]
+  );
+  const completedSquads = useMemo(() => squads.filter(isCompleted), [now]);
 
   const gotoMarketplace = () => {
     navigation.navigate("RiotGameMarketplace");
   };
 
   const onCloseClaimModal = () => {
-    setIsShowClaimModal(false);
-    setCurrentSquad(undefined);
+    fetchSquads(currentUser || "");
   };
 
-  /*
-  - If there is squad, in all case we need to keep the fight screen
-  - If there is no squad:
-    + If state is Completed/Unknown => go to enroll screen
-    + If state is Relax => show fight screen with countdown base on lastStakeTime
-  */
   useEffect(() => {
-    if (
-      isSquadLoaded &&
-      !currentSquad &&
-      isStakingStateLoaded &&
-      [StakingState.COMPLETED, StakingState.UNKNOWN].includes(stakingState)
-    ) {
+    const interval = setInterval(() => {
+      setNow(+new Date());
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isSquadsLoaded && squadStakingConfig?.owner && squads.length === 0) {
       navigation.replace("RiotGameEnroll");
     }
-  }, [isSquadLoaded, isStakingStateLoaded]);
-
-  // Start the timer
-  useEffect(() => {
-    if (!isSquadLoaded || !squadStakingConfig?.owner || !isLastStakeTimeLoaded)
-      return;
-
-    startStakingTimer(currentSquad, lastStakeTime, squadStakingConfig);
-  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.owner]);
-
-  useEffect(() => {
-    if (!currentSquad?.nfts) return;
-
-    fetchCurrentStakedRippers(currentSquad.nfts);
-  }, [myAvailableRippers, currentSquad?.nfts.length]);
+  }, [isSquadsLoaded, squadStakingConfig?.owner, squads.length]);
 
   return (
-    <GameContentView
-      bgImage={
-        stakingState === StakingState.ONGOING ? fightBgPNG : victoryBgPNG
-      }
-    >
-      <BrandText style={styles.pageTitle}>
-        {PAGE_TITLE_MAP[stakingState]}
-      </BrandText>
+    <GameContentView bgImageURI={FIGHT_BG_URI}>
+      {squads.length === 0 && (
+        <FightSectionHeader title="No fights" total={0} />
+      )}
 
-      <View style={styles.contentContainer}>
-        <FlexRow justifyContent="space-between" breakpoint={992}>
-          <View style={styles.col}>
-            <FightBossSection />
-          </View>
-
-          <View style={styles.col}>
-            <FightSquadSection stakedRippers={stakedRippers} />
-          </View>
-        </FlexRow>
-
-        <FightCountdownSection
-          isUnstaking={isUnstaking}
-          remainingTime={remainingTime}
-          currentSquad={currentSquad}
-          stakingState={stakingState}
-          unstake={unstake}
+      {ongoingSquads.length > 0 && (
+        <FightSectionHeader
+          title="Ongoing fights"
+          total={ongoingSquads.length}
+          hasStakeButton={
+            squads?.length < (squadStakingConfig?.squad_count_limit || 0)
+          }
         />
+      )}
 
-        {stakingState === StakingState.RELAX && (
-          <PrimaryButtonOutline
-            style={{ margin: layout.padding_x2 }}
-            onPress={gotoMarketplace}
-            color={yellowDefault}
-            size="M"
-            text="Buy new one"
-            iconSVG={addCircleSFilledVG}
+      {ongoingSquads.map((squad) => {
+        return (
+          <FightSection
+            key={squad.start_time}
+            currentUser={currentUser}
+            squadWithdraw={squadWithdraw}
+            squad={squad}
+            onCloseClaimModal={onCloseClaimModal}
+            now={now}
+            cooldown={squadStakingConfig?.cooldown_period || 0}
           />
-        )}
-      </View>
+        );
+      })}
 
-      <UnstakeModal
-        onClose={onCloseClaimModal}
-        currentSquad={currentSquad}
-        visible={isShowClaimModal}
+      <SpacerColumn size={2} />
+
+      {completedSquads.length > 0 && (
+        <FightSectionHeader
+          title="Victories"
+          total={completedSquads.length}
+          hasStakeButton={
+            squads?.length < (squadStakingConfig?.squad_count_limit || 0)
+          }
+        />
+      )}
+
+      {completedSquads.map((squad) => {
+        return (
+          <FightSection
+            key={squad.start_time}
+            currentUser={currentUser}
+            squadWithdraw={squadWithdraw}
+            squad={squad}
+            onCloseClaimModal={onCloseClaimModal}
+            now={now}
+            cooldown={squadStakingConfig?.cooldown_period || 0}
+          />
+        );
+      })}
+
+      <PrimaryButtonOutline
+        style={{
+          alignSelf: "flex-end",
+          marginTop: layout.padding_x1_5,
+          paddingRight: 2 * layout.padding_x4,
+        }}
+        onPress={gotoMarketplace}
+        color={yellowDefault}
+        size="M"
+        text="Buy new one"
+        iconSVG={addCircleSFilledSVG}
+        noBrokenCorners
       />
     </GameContentView>
   );
 };
-
-const styles = StyleSheet.create({
-  pageTitle: {
-    alignSelf: "center",
-    ...(fontMedium48 as object),
-  },
-  contentContainer: {
-    paddingHorizontal: headerHeight,
-  },
-  col: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: layout.padding_x4,
-  },
-});

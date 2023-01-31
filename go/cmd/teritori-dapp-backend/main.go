@@ -33,7 +33,6 @@ func main() {
 		tlsKeyFilePath     = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
 		tnsContractAddress = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
 		tnsDefaultImageURL = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
-		riotGameStartedAt  = fs.String("the-riot-game-started-at", "", "date when the riot game starts")
 		dbHost             = fs.String("db-dapp-host", "", "host postgreSQL database")
 		dbPort             = fs.String("db-dapp-port", "", "port for postgreSQL database")
 		dbPass             = fs.String("postgres-password", "", "password for postgreSQL database")
@@ -77,10 +76,6 @@ func main() {
 		whitelist[i] = strings.TrimFunc(elem, unicode.IsSpace)
 	}
 
-	if riotGameStartedAt == nil {
-		panic(errors.New("missing riot-game-started-at configuration"))
-	}
-
 	marketplaceSvc := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
 		Logger:             logger,
 		IndexerDB:          indexerDB,
@@ -92,9 +87,8 @@ func main() {
 		AirtableAPIKey:     *airtableAPIKey,
 	})
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
-		Logger:            logger,
-		IndexerDB:         indexerDB,
-		RiotGameStartedAt: *riotGameStartedAt,
+		Logger:    logger,
+		IndexerDB: indexerDB,
 	})
 
 	server := grpc.NewServer()

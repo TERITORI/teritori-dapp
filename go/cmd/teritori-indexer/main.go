@@ -42,7 +42,6 @@ func main() {
 		vaultContractAddress           = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")
 		squadStakingContactAddress     = fs.String("the-riot-squad-staking-contract-address", "", "address of the teritori squad staking contract")
 		theRiotBreedingContractAddress = fs.String("the-riot-breeding-contract-address", "", "address of the breeding contract")
-		theRiotGameStartedAt           = fs.String("the-riot-game-started-at", "", "time where the riot game starts")
 		minterCodeIDs                  = fs.String("teritori-minter-code-ids", "", "code ids of teritori minter contracts")
 		tnsDefaultImageURL             = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
 		dbHost                         = fs.String("db-indexer-host", "", "host postgreSQL database")
@@ -71,9 +70,6 @@ func main() {
 	}
 	if *tendermintWebsocketEndpoint == "" {
 		panic(errors.New("missing tendermint-websocket-endpoint flag"))
-	}
-	if *theRiotGameStartedAt == "" {
-		panic(errors.New("missing the-riot-game-started-at"))
 	}
 
 	// parse minter code ids
@@ -234,7 +230,6 @@ func main() {
 					VaultContractAddress:           *vaultContractAddress,
 					SquadStakingContractAddress:    *squadStakingContactAddress,
 					TheRiotBreedingContractAddress: *theRiotBreedingContractAddress,
-					TheRiotGameStartedAt:           *theRiotGameStartedAt,
 					TNSContractAddress:             *tnsContractAddress,
 					TNSDefaultImageURL:             *tnsDefaultImageURL,
 					TendermintClient:               client,
