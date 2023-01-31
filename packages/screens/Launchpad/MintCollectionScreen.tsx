@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
+import { Dimensions } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
@@ -222,6 +223,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   } = info;
   const hasLinks = discordLink || twitterLink || websiteLink;
 
+  const windowWidth = Dimensions.get("window").width;
+
   if (notFound) {
     return (
       <ScreenContainer noMargin>
@@ -233,7 +236,13 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   } else
     return (
       <ScreenContainer noMargin fullWidth>
-        <View style={{ alignItems: "center" }}>
+        <View
+          style={{
+            alignItems: "center",
+            width: windowWidth < 660 ? "90%" : "100%",
+            margin: "auto",
+          }}
+        >
           <View
             style={{
               flexDirection: "row",
