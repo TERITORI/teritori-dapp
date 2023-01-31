@@ -29,7 +29,7 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   tokenInfo,
   onClose,
 }) => {
-  const { info: collectionInfo = {} } = useCollectionInfo(
+  const { info: collectionInfo = { mintPhases: [] } } = useCollectionInfo(
     THE_RIOT_COLLECTION_ID
   );
 

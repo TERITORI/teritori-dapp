@@ -96,7 +96,7 @@ export const Header: React.FC<{
   sortDirection: SortDirection;
   onChangeSortDirection: (val: SortDirection) => void;
 }> = ({
-  collectionInfo = {},
+  collectionInfo = { mintPhases: [] },
   selectedTab,
   onSelectTab,
   collectionId,

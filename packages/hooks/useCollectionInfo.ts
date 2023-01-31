@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { BigNumber } from "ethers";
+import Long from "long";
 
 import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
@@ -13,6 +14,14 @@ import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bun
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 
 export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
+
+export interface MintPhase {
+  mintMax: Long;
+  start: Long;
+  end: Long;
+  mintPrice: Long;
+  size: Long;
+}
 
 export interface CollectionInfo {
   image?: string;
@@ -28,8 +37,6 @@ export interface CollectionInfo {
   website?: string;
   maxPerAddress?: string;
   hasPresale?: boolean;
-  whitelistMaxPerAddress?: string;
-  whitelistSize?: number;
   isInPresalePeriod?: boolean;
   isMintable?: boolean;
   publicSaleEnded?: boolean;
@@ -37,18 +44,22 @@ export interface CollectionInfo {
   mintStarted?: boolean;
   publicSaleStartTime?: number; // seconds since epoch
   state?: MintState;
+  mintPhases: MintPhase[];
 }
 
-const getTnsCollectionInfo = () => {
+const getTnsCollectionInfo = (): CollectionInfo => {
   return {
     name: "Teritori Name Service", // FIXME: should fetch from contract or be in env
     image: ipfsURLToHTTPURL(
       process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
     ),
+    mintPhases: [],
   };
 };
 
-const getBreedingCollectionInfo = async (mintAddress: string) => {
+const getBreedingCollectionInfo = async (
+  mintAddress: string
+): Promise<CollectionInfo> => {
   const cosmwasm = await getNonSigningCosmWasmClient();
 
   const breedingClient = new TeritoriBreedingQueryClient(cosmwasm, mintAddress);
@@ -72,11 +83,14 @@ const getBreedingCollectionInfo = async (mintAddress: string) => {
     twitter: metadata.twitter,
     website: metadata.website,
     bannerImage: ipfsURLToHTTPURL(metadata.banner),
+    mintPhases: [],
   };
   return info;
 };
 
-const getTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
+const getTeritoriBunkerCollectionInfo = async (
+  mintAddress: string
+): Promise<CollectionInfo> => {
   const cosmwasm = await getNonSigningCosmWasmClient();
   const minterClient = new TeritoriBunkerMinterQueryClient(
     cosmwasm,
@@ -123,6 +137,18 @@ const getTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
     unitPrice = conf.nft_price_amount;
   }
 
+  const mintPhases: MintPhase[] = [];
+  if (hasWhitelistPeriod) {
+    const start = Long.fromNumber(conf.mint_start_time);
+    mintPhases.push({
+      mintPrice: Long.fromString(conf.whitelist_mint_price_amount || "0"),
+      mintMax: Long.fromString(conf.whitelist_mint_max || "0"),
+      start,
+      end: start.add(conf.whitelist_mint_period),
+      size: Long.fromNumber(whitelistSize),
+    });
+  }
+
   const info: CollectionInfo = {
     name: nftInfo.name,
     image: ipfsURLToHTTPURL(metadata.image || ""),
@@ -141,25 +167,26 @@ const getTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
     twitter: metadata.twitter,
     website: metadata.website,
     maxPerAddress: conf.mint_max || undefined,
-    whitelistMaxPerAddress: conf.whitelist_mint_max || undefined,
-    whitelistSize,
     hasPresale: hasWhitelistPeriod,
     publicSaleEnded,
     isMintable: !publicSaleEnded && conf.is_mintable,
     isInPresalePeriod: state === "whitelist",
     publicSaleStartTime: whitelistEnd,
     bannerImage: ipfsURLToHTTPURL(metadata.banner),
+    mintPhases,
     state,
   };
 
   return info;
 };
 
-const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
+const getEthereumTeritoriBunkerCollectionInfo = async (
+  mintAddress: string
+): Promise<CollectionInfo> => {
   const provider = await getEthereumProvider();
   if (!provider) {
     console.error("no eth provider found");
-    return {};
+    return { mintPhases: [] };
   }
 
   const minterClient = TeritoriMinter__factory.connect(mintAddress, provider);
@@ -174,35 +201,43 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   const metadataReply = await fetch(metadataURL);
   const metadata = await metadataReply.json();
 
-  const secondsSinceEpoch = Date.now() / 1000;
+  const secondsSinceEpoch = Long.fromNumber(Date.now() / 1000);
 
   const name = await nftClient.callStatic.name();
 
   const priceDenom = WEI_TOKEN_ADDRESS;
   const maxSupply = minterConfig.maxSupply.toString();
-  const mintStartedAt = minterConfig.mintStartTime.toNumber();
-  const mintStarted = secondsSinceEpoch >= mintStartedAt;
+  const mintStartedAt = Long.fromString(minterConfig.mintStartTime.toString());
+  const mintStarted = secondsSinceEpoch.greaterThanOrEqual(mintStartedAt);
 
   // Fetch all whitelist phrases
-  const whitelistPhases = [];
+  const whitelistPhases: MintPhase[] = [];
   let isLastPhase = false;
-  let phase = 0;
+  let phase = BigNumber.from(0);
+  let phaseStart = mintStartedAt;
 
   while (!isLastPhase) {
-    const phaseConfig = await minterClient.callStatic.whitelists(
-      BigNumber.from(phase)
-    );
+    const phaseConfig = await minterClient.callStatic.whitelists(phase);
+
+    const size = await minterClient.callStatic.whitelistSize(phase);
+
+    const mintPeriod = Long.fromString(phaseConfig.mintPeriod.toString());
+
+    const phaseEnd = phaseStart.add(mintPeriod);
 
     // If phase is invalid
     if (!phaseConfig.mintPeriod.toNumber()) {
       isLastPhase = true;
     } else {
       whitelistPhases.push({
-        mintMax: phaseConfig.mintMax.toNumber(),
-        mintPeriod: phaseConfig.mintPeriod.toNumber(),
-        mintPrice: phaseConfig.mintPrice.toString(),
+        mintMax: Long.fromString(phaseConfig.mintMax.toString()),
+        start: phaseStart,
+        end: phaseEnd,
+        mintPrice: Long.fromString(phaseConfig.mintPrice.toString()),
+        size: Long.fromString(size.toString()),
       });
-      phase++;
+      phase = phase.add(1);
+      phaseStart = phaseEnd;
       isLastPhase = false;
     }
   }
@@ -211,9 +246,8 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   let currentPhase;
   let whitelistEndedAt = mintStartedAt;
   for (const [idx, whitelistPhase] of whitelistPhases.entries()) {
-    whitelistEndedAt += whitelistPhase.mintPeriod;
-
-    if (secondsSinceEpoch < whitelistEndedAt) {
+    whitelistEndedAt = whitelistPhase.end;
+    if (secondsSinceEpoch.lessThan(whitelistEndedAt)) {
       currentPhase = idx;
       break;
     }
@@ -226,7 +260,10 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   let state: MintState;
   if (!mintStarted) {
     state = "not-started";
-  } else if (hasWhitelistPeriod && secondsSinceEpoch < whitelistEndedAt) {
+  } else if (
+    hasWhitelistPeriod &&
+    secondsSinceEpoch.lessThan(whitelistEndedAt)
+  ) {
     state = "whitelist";
   } else if (!publicSaleEnded) {
     state = "public-sale";
@@ -235,18 +272,10 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
   }
 
   const maxPerAddress = minterConfig.publicMintMax.toString() || undefined;
-  let whitelistSize = 0;
   let unitPrice = minterConfig.publicMintPrice.toString();
-  let whitelistMaxPerAddress = undefined;
-
   if (state === "whitelist" && currentPhase !== undefined) {
     const phaseData = whitelistPhases[currentPhase];
-
-    whitelistSize = (
-      await minterClient.callStatic.whitelistSize(BigNumber.from(currentPhase))
-    ).toNumber();
-    unitPrice = phaseData.mintPrice;
-    whitelistMaxPerAddress = phaseData.mintMax.toString();
+    unitPrice = phaseData.mintPrice.toString();
   }
 
   const info: CollectionInfo = {
@@ -267,15 +296,14 @@ const getEthereumTeritoriBunkerCollectionInfo = async (mintAddress: string) => {
     twitter: metadata.twitter,
     website: metadata.website,
     maxPerAddress,
-    whitelistMaxPerAddress,
-    whitelistSize,
     hasPresale: hasWhitelistPeriod,
     publicSaleEnded,
     isMintable: !publicSaleEnded && !isPaused,
     isInPresalePeriod: state === "whitelist",
-    publicSaleStartTime: whitelistEndedAt,
+    publicSaleStartTime: whitelistEndedAt.toNumber(),
     bannerImage: ipfsURLToHTTPURL(metadata.banner),
     state,
+    mintPhases: whitelistPhases,
   };
   return info;
 };
@@ -288,7 +316,7 @@ export const useCollectionInfo = (id: string) => {
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
     async (): Promise<CollectionInfo> => {
-      let info: CollectionInfo = {};
+      let info: CollectionInfo = { mintPhases: [] };
 
       const [addressPrefix, mintAddress] = id.split("-");
 
