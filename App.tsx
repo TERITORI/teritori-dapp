@@ -7,6 +7,7 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
+import { MetaMaskProvider } from "metamask-react";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform } from "react-native";
@@ -46,26 +47,28 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <FormProvider<DefaultForm> {...methods}>
-        <NavigationContainer linking={linking}>
-          <SafeAreaProvider>
-            <ReduxProvider store={store}>
-              <FeedbacksContextProvider>
-                <DropdownsContextProvider>
-                  <WalletsProvider>
-                    <TransactionModalsProvider>
-                      <TNSContextProvider>
-                        <SidebarContextProvider>
-                          <StatusBar style="inverted" />
-                          <Navigator />
-                        </SidebarContextProvider>
-                      </TNSContextProvider>
-                    </TransactionModalsProvider>
-                  </WalletsProvider>
-                </DropdownsContextProvider>
-              </FeedbacksContextProvider>
-            </ReduxProvider>
-          </SafeAreaProvider>
-        </NavigationContainer>
+        <MetaMaskProvider>
+          <NavigationContainer linking={linking}>
+            <SafeAreaProvider>
+              <ReduxProvider store={store}>
+                <FeedbacksContextProvider>
+                  <DropdownsContextProvider>
+                    <WalletsProvider>
+                      <TransactionModalsProvider>
+                        <TNSContextProvider>
+                          <SidebarContextProvider>
+                            <StatusBar style="inverted" />
+                            <Navigator />
+                          </SidebarContextProvider>
+                        </TNSContextProvider>
+                      </TransactionModalsProvider>
+                    </WalletsProvider>
+                  </DropdownsContextProvider>
+                </FeedbacksContextProvider>
+              </ReduxProvider>
+            </SafeAreaProvider>
+          </NavigationContainer>
+        </MetaMaskProvider>
       </FormProvider>
     </QueryClientProvider>
   );

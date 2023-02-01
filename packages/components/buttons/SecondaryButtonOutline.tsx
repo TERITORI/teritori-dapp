@@ -27,6 +27,7 @@ export const SecondaryButtonOutline: React.FC<{
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
+  iconColor?: string;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -42,6 +43,7 @@ export const SecondaryButtonOutline: React.FC<{
   iconSVG,
   disabled = false,
   fullWidth = false,
+  iconColor,
 }) => {
   const boxProps = {
     style,
@@ -75,6 +77,7 @@ export const SecondaryButtonOutline: React.FC<{
             width={16}
             height={16}
             style={{ marginRight: 8 }}
+            color={iconColor}
           />
         ) : null}
 

@@ -14,8 +14,10 @@ import (
 type UserID string
 
 type App struct {
-	ID     uint
-	Height int64
+	ID            uint
+	Height        int64
+	ChunkedHeight int64
+	TxHash        string
 }
 
 type User struct {
@@ -51,6 +53,10 @@ var allModels = []interface{}{
 	// quests
 	&Quest{},
 	&QuestCompletion{},
+
+	// p2e
+	&P2eSquadStaking{},
+	&P2eLeaderboard{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

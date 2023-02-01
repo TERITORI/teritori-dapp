@@ -2,12 +2,13 @@ import React from "react";
 import { View, StyleProp, ViewStyle, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import { FreelancerServiceRouteTypes } from "../../../screens/FreelanceServices/types/routes";
+import { useAppNavigation } from "../../../utils/navigation";
 import { neutral17 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
-import { useAppNavigation } from "../../../utils/navigation";
 
 export const FreelanceServicesCards: React.FC<{
   width: number;
@@ -17,7 +18,7 @@ export const FreelanceServicesCards: React.FC<{
   iconSVG: React.FC<SvgProps>;
   iconNearTextSVG: React.FC<SvgProps>;
   text: string;
-  navigation: string;
+  navigation: FreelancerServiceRouteTypes["navigation"];
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -30,7 +31,7 @@ export const FreelanceServicesCards: React.FC<{
   navigation,
 }) => {
   const nav = useAppNavigation();
-  //@ts-ignore
+
   return (
     <TertiaryBox
       width={width}
@@ -38,7 +39,15 @@ export const FreelanceServicesCards: React.FC<{
       mainContainerStyle={[{ backgroundColor: neutral17 }, mainContainerStyle]}
       style={boxStyle}
     >
-      <TouchableOpacity onPress={() => { navigation !="" && nav.navigate(navigation)}}>
+      <TouchableOpacity
+        onPress={() => {
+          nav.navigate(navigation);
+        }}
+        disabled={navigation === "ComingSoon"}
+        style={{
+          opacity: navigation === "ComingSoon" ? 0.5 : 1,
+        }}
+      >
         <View style={{ height: height - 30, justifyContent: "space-between" }}>
           <SVG source={iconSVG} />
           <View
@@ -51,9 +60,8 @@ export const FreelanceServicesCards: React.FC<{
             }}
           >
             <BrandText style={fontSemibold14}>{text}</BrandText>
-            <TouchableOpacity>
-              <SVG source={iconNearTextSVG} />
-            </TouchableOpacity>
+
+            <SVG source={iconNearTextSVG} />
           </View>
         </View>
       </TouchableOpacity>

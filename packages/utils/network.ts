@@ -1,14 +1,15 @@
 import { PublicKey } from "@solana/web3.js";
 import { bech32 } from "bech32";
 
-import { Network as ProtobufNetwork } from "../api/marketplace/v1/marketplace";
+import { WalletProvider } from "./walletProvider";
 
 export enum Network {
   Unknown = "Unknown",
-  Solana = "Solana",
   Teritori = "Teritori",
+  Solana = "Solana",
   Ethereum = "Ethereum",
   Atom = "Atom",
+  CosmosHub = "CosmosHub",
   Juno = "Juno",
   Osmosis = "Osmosis",
 }
@@ -29,13 +30,17 @@ export const addressToNetwork = (address: string) => {
   return Network.Unknown;
 };
 
-export const protobufNetworkToNetwork = (network: ProtobufNetwork) => {
-  switch (network) {
-    case ProtobufNetwork.NETWORK_SOLANA:
-      return Network.Solana;
-    case ProtobufNetwork.NETWORK_TERITORI:
-      return Network.Teritori;
-    default:
-      return Network.Unknown;
+export const walletProviderToNetwork = (walletProvider: WalletProvider) => {
+  let network: Network | null = null;
+
+  switch (walletProvider) {
+    case WalletProvider.Metamask:
+      network = Network.Ethereum;
+      break;
+    case WalletProvider.Keplr:
+      network = Network.Teritori;
+      break;
   }
+
+  return network;
 };

@@ -1,6 +1,7 @@
 package indexerhandler
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -11,10 +12,10 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pricespb"
 	"github.com/allegro/bigcache/v3"
 	"github.com/pkg/errors"
 	abcitypes "github.com/tendermint/tendermint/abci/types"
-	"go.uber.org/zap"
 )
 
 type StringEventAttribute struct {
@@ -183,40 +184,53 @@ func (h *Handler) HistoricalPrice(denom string, t time.Time) (float64, error) {
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to get native currency")
 	}
-	price, err := h.config.CoinGeckoPrices.Historical(nativeCurrency.CoinGeckoID, t)
+
+	vsId := "usd"
+
+	res, err := h.config.PricesClient.Prices(context.Background(), &pricespb.PricesRequest{
+		Id:    nativeCurrency.CoinGeckoID,
+		VsIds: []string{vsId},
+		Time:  t.Format(time.RFC3339),
+	})
 	if err != nil {
-		return 0, errors.Wrap(err, fmt.Sprintf(`failed to get historical price for %s`, nativeCurrency.CoinGeckoID))
+		return 0, errors.Wrap(err, "failed to query price")
 	}
+
+	price := float64(0)
+	for _, p := range res.GetPrices() {
+		if p.GetId() == vsId {
+			price = p.GetValue()
+			break
+		}
+	}
+
 	return price, nil
 }
 
-func (h *Handler) usdAmount(denom string, amount string, t time.Time) float64 {
+func (h *Handler) usdAmount(denom string, amount string, t time.Time) (float64, error) {
 	// we don't return an error because we shouldn't error-out in case a currency is not registered
 
 	currency, err := networks.GetNativeCurrency(h.config.NetworkID, denom)
 	if err != nil {
-		h.logger.Debug("failed to derive usd amount: failed to get native currency", zap.Error(err))
-		return 0
+		return 0, errors.Wrap(err, "failed to get native currency")
 	}
 
 	// FIXME: this could be more precise
 	bigAmount, _, err := big.ParseFloat(amount, 10, 18, big.AwayFromZero)
 	if err != nil {
-		h.logger.Debug("failed to derive usd amount: failed to parse amount into big float", zap.Error(err))
-		return 0
+		return 0, errors.Wrap(err, "failed to parse amount into big float")
 	}
 	divider := big.NewFloat(math.Pow(10, float64(currency.Decimals)))
 	bigAmount.Quo(bigAmount, divider)
 
 	coinUSDPrice, err := h.HistoricalPrice(denom, t)
 	if err != nil {
-		h.logger.Debug("failed to derive usd amount: failed to get historical price", zap.Error(err))
-		return 0
+		return 0, errors.Wrap(err, "failed to get historical price")
 	}
 	bigCoinUSDPrice := big.NewFloat(coinUSDPrice)
 
 	bigAmount.Mul(bigAmount, bigCoinUSDPrice)
 
 	usdPrice, _ := bigAmount.Float64()
-	return usdPrice
+	return usdPrice, nil
 }

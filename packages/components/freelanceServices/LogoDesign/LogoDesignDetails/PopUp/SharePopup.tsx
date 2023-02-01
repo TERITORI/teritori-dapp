@@ -30,7 +30,6 @@ export const SharePopup: React.FC<{
       label="Share This Gig"
       visible={displayDescriptionReportPopUp}
       width={372}
-      labelStyle={{ alignSelf: "center" }}
       description="  Spread the word about this Gig on Teritori"
     >
       <View

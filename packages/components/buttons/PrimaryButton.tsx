@@ -26,11 +26,13 @@ export const PrimaryButton: React.FC<{
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
+  iconColor?: string;
   disabled?: boolean;
   fullWidth?: boolean;
   loader?: boolean;
   touchableStyle?: StyleProp<ViewStyle>;
   RightComponent?: React.FC;
+  color?: string;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -45,6 +47,8 @@ export const PrimaryButton: React.FC<{
   loader,
   touchableStyle = {},
   RightComponent,
+  iconColor,
+  color = primaryColor,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -82,7 +86,7 @@ export const PrimaryButton: React.FC<{
         mainContainerStyle={{
           flexDirection: "row",
           borderRadius: borderRadiusButton(size),
-          backgroundColor: primaryColor,
+          backgroundColor: color,
           paddingHorizontal: 20,
           opacity: isDisabled ? 0.5 : 1,
         }}
@@ -94,6 +98,7 @@ export const PrimaryButton: React.FC<{
             width={16}
             height={16}
             style={{ marginRight: 8 }}
+            color={iconColor}
           />
         ) : null}
 

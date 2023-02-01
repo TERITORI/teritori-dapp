@@ -3,9 +3,9 @@ import {
   Modal,
   Pressable,
   View,
-  ViewStyle,
   ScrollView,
-  TextStyle,
+  ViewComponent,
+  ViewStyle,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -23,9 +23,9 @@ import { SpacerColumn } from "../spacer";
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
-// The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
-export const ModalBase: React.FC<{
+type ModalBaseProps = {
   label?: string;
+  labelComponent?: React.FC | ViewComponent | JSX.Element;
   onClose?: () => void;
   onBackPress?: () => void;
   width?: number;
@@ -38,9 +38,12 @@ export const ModalBase: React.FC<{
   scrollable?: boolean;
   contentStyle?: ViewStyle;
   containerStyle?: ViewStyle;
-  labelStyle?: TextStyle;
-}> = ({
+};
+
+// The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
+export const ModalBase: React.FC<ModalBaseProps> = ({
   label,
+  labelComponent,
   visible,
   width,
   onClose,
@@ -54,7 +57,6 @@ export const ModalBase: React.FC<{
   containerStyle,
   onBackPress,
   noBrokenCorners,
-  labelStyle,
 }) => {
   return (
     <Modal
@@ -112,7 +114,7 @@ export const ModalBase: React.FC<{
               padding: modalMarginPadding,
             }}
           >
-            {(label || description) && (
+            {(label || labelComponent || description) && (
               <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
               >
@@ -136,12 +138,12 @@ export const ModalBase: React.FC<{
 
                 <View style={{ flex: 1, width: "100%" }}>
                   {label && (
-                    <BrandText
-                      style={[{ color: "white", lineHeight: 24 }, labelStyle]}
-                    >
+                    <BrandText style={{ color: "white", lineHeight: 24 }}>
                       {label}
                     </BrandText>
                   )}
+
+                  {labelComponent}
 
                   {description && (
                     <>
@@ -154,7 +156,6 @@ export const ModalBase: React.FC<{
                             width: "100%",
                             lineHeight: 20,
                             flexWrap: "wrap",
-                            alignSelf: "center",
                           },
                         ]}
                       >

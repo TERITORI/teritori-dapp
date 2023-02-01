@@ -9,7 +9,6 @@ import githubIcon from "../../../../assets/icons/social-network/github-grey.svg"
 import googleIcon from "../../../../assets/icons/social-network/google-grey.svg";
 import twitterIcon from "../../../../assets/icons/social-network/twitter-grey.svg";
 import youtubeIcon from "../../../../assets/icons/social-network/youtube-grey.svg";
-import star from "../../../../assets/icons/yellow-star.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
@@ -17,6 +16,8 @@ import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { SecondaryCard } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/SecondaryCard";
+import { StarRating } from "../../../components/freelanceServices/StarRating";
+import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral44,
   neutral00,
@@ -27,6 +28,7 @@ import {
   secondaryColor,
   neutral17,
   neutral67,
+  errorColor,
 } from "../../../utils/style/colors";
 import {
   fontMedium14,
@@ -34,38 +36,14 @@ import {
   fontSemibold20,
   fontSemibold14,
 } from "../../../utils/style/fonts";
-import boredApe from "./bored-ape.png";
+import { getUser } from "../query/data";
 
-const data = [
-  "minimalist",
-  "logo",
-  "business",
-  "vector",
-  "text logo",
-  "logowitheffect",
-];
-
-const dataEducation = [
-  {
-    school: "B.Cs -  Information Technology",
-    description: "Gujarat Technological University, India, Graduated 2014",
+export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
+  route: {
+    params: { id },
   },
-];
-
-const dataCertifications = [
-  {
-    certification: "IELTS English Language Proficiency Examination",
-    description: "British Council 2014",
-  },
-  { certification: "Logo Design Mastery", description: "UXAcademy 2020" },
-  {
-    certification: "UX Designers and Branding Strategy",
-    description: "Google 2021",
-  },
-  { certification: "Adobe Certified Expert", description: "Adobe 2015" },
-];
-
-export const SellerDetailsScreen: React.FC = () => {
+}) => {
+  const data = getUser(id);
   return (
     <ScreenContainer>
       <View
@@ -104,9 +82,10 @@ export const SellerDetailsScreen: React.FC = () => {
                     width={24}
                     height={24}
                     style={{ marginRight: 80 }}
+                    fill={data.isFavorite ? "red" : "none"}
                   />
                   <Image
-                    source={boredApe}
+                    source={data.profilePic}
                     style={{ width: 104, height: 104 }}
                   />
                   <View
@@ -134,7 +113,10 @@ export const SellerDetailsScreen: React.FC = () => {
                     >
                       <View
                         style={{
-                          backgroundColor: successColor,
+                          backgroundColor:
+                            data.onlineStatus === "online"
+                              ? successColor
+                              : errorColor,
                           width: 6,
                           height: 6,
                           borderRadius: 24,
@@ -143,11 +125,17 @@ export const SellerDetailsScreen: React.FC = () => {
                       <BrandText
                         style={[
                           fontSemibold16,
-                          { color: successColor, marginLeft: 4 },
+                          {
+                            color:
+                              data.onlineStatus === "online"
+                                ? successColor
+                                : errorColor,
+                            marginLeft: 4,
+                          },
                         ]}
                       >
                         {" "}
-                        online
+                        {data.onlineStatus}
                       </BrandText>
                     </View>
                   </View>
@@ -159,7 +147,7 @@ export const SellerDetailsScreen: React.FC = () => {
                     fontSemibold14,
                   ]}
                 >
-                  Nothing Beats the Experience!
+                  {data.tagline}
                 </BrandText>
                 <View
                   style={{
@@ -168,21 +156,17 @@ export const SellerDetailsScreen: React.FC = () => {
                     marginRight: 12,
                   }}
                 >
-                  <SVG source={star} width={24} height={24} />
-                  <SVG source={star} width={24} height={24} />
-                  <SVG source={star} width={24} height={24} />
-                  <SVG source={star} width={24} height={24} />
-                  <SVG source={star} width={24} height={24} />
+                  <StarRating rating={data.rating} />
                   <BrandText
                     style={[
                       { color: yellowDefault, marginRight: 12 },
                       fontMedium14,
                     ]}
                   >
-                    4.9
+                    {data.rating}
                   </BrandText>
                   <BrandText style={[{ color: neutral77 }, fontMedium14]}>
-                    (40,543)
+                    ({data.totalReviews})
                   </BrandText>
                 </View>
                 <Separator
@@ -207,7 +191,7 @@ export const SellerDetailsScreen: React.FC = () => {
                     >
                       From
                     </BrandText>
-                    <BrandText style={fontSemibold14}>India</BrandText>
+                    <BrandText style={fontSemibold14}>{data.country}</BrandText>
                   </View>
                   <View style={{ flexDirection: "column", width: 160 }}>
                     <BrandText
@@ -218,7 +202,9 @@ export const SellerDetailsScreen: React.FC = () => {
                     >
                       Member Since
                     </BrandText>
-                    <BrandText style={fontSemibold14}>Dec 2022</BrandText>
+                    <BrandText style={fontSemibold14}>
+                      {data.createDate.toLocaleDateString()}
+                    </BrandText>
                   </View>
                 </View>
                 <View
@@ -289,11 +275,7 @@ export const SellerDetailsScreen: React.FC = () => {
             <BrandText
               style={[fontSemibold16, { color: neutral77, marginTop: 12 }]}
             >
-              ‘We’ ‘Perfectionist’ is a highly talented and dedicated team,
-              focused on providing unique logo design absolutely from scratch. A
-              Logo is the face of your brand which is as equally important as
-              the success of your business and we make sure to dig the pillars
-              of your success from depth.
+              {data.intro}
             </BrandText>
 
             <Separator
@@ -301,16 +283,13 @@ export const SellerDetailsScreen: React.FC = () => {
             />
 
             <BrandText style={fontSemibold20}>Languages</BrandText>
-            <BrandText
-              style={[fontSemibold16, { color: neutral77, marginTop: 16 }]}
-            >
-              English - Native/Bilingual
-            </BrandText>
-            <BrandText
-              style={[fontSemibold16, { color: neutral77, marginTop: 16 }]}
-            >
-              German - Intermediate
-            </BrandText>
+            {data.languages.map((item, index) => (
+              <BrandText
+                style={[fontSemibold16, { color: neutral77, marginTop: 16 }]}
+              >
+                {item.title} - {item.description}
+              </BrandText>
+            ))}
 
             <Separator
               style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
@@ -464,7 +443,7 @@ export const SellerDetailsScreen: React.FC = () => {
                 marginTop: 16,
               }}
             >
-              {data.map((item, index) => (
+              {data.skills.map((skill, index) => (
                 <View
                   key={index}
                   style={{
@@ -477,7 +456,7 @@ export const SellerDetailsScreen: React.FC = () => {
                   }}
                 >
                   <BrandText style={[fontMedium14, { margin: 12 }]}>
-                    {item}
+                    {skill}
                   </BrandText>
                 </View>
               ))}
@@ -491,18 +470,18 @@ export const SellerDetailsScreen: React.FC = () => {
               Education
             </BrandText>
 
-            {dataEducation.map((item, index) => (
+            {data.education.map((education, index) => (
               <View
                 style={{ flexDirection: "column", marginBottom: 8 }}
                 key={index}
               >
                 <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-                  {item.school}
+                  {education.title}
                 </BrandText>
                 <BrandText
                   style={[fontSemibold14, { color: neutral67, marginTop: 8 }]}
                 >
-                  {item.description}
+                  {education.description}
                 </BrandText>
               </View>
             ))}
@@ -515,18 +494,18 @@ export const SellerDetailsScreen: React.FC = () => {
               Certifications
             </BrandText>
 
-            {dataCertifications.map((item, index) => (
+            {data.certifications.map((certs, index) => (
               <View
                 style={{ flexDirection: "column", marginBottom: 12 }}
                 key={index}
               >
                 <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-                  {item.certification}
+                  {certs.title}
                 </BrandText>
                 <BrandText
                   style={[fontMedium14, { color: neutral67, marginTop: 8 }]}
                 >
-                  {item.description}
+                  {certs.description}
                 </BrandText>
               </View>
             ))}

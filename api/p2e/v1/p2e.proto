@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package p2e.v1;
+option go_package = "./p2epb";
+
+service P2eService {
+  rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
+  rpc CurrentSeason(CurrentSeasonRequest) returns (CurrentSeasonResponse);
+  rpc UserRank(UserRankRequest) returns (UserRankResponse);
+  rpc AllSeasons(AllSeasonsRequest) returns (AllSeasonsResponse);
+}
+
+
+message AllSeasonsRequest {
+}
+
+message SeasonWithoutPrize {
+  string id = 1;
+  string boss_name = 2;
+  int32 boss_hp = 3;
+}
+
+message AllSeasonsResponse {
+  repeated SeasonWithoutPrize seasons = 1;
+}
+
+message CurrentSeasonRequest {
+}
+
+message CurrentSeasonResponse {
+  string id = 1;
+  string denom = 2;
+  int32 total_prize = 3;
+  string boss_name = 4;
+  int32 boss_hp = 5;
+  float remaining_hp = 6;
+}
+
+message UserRankRequest {
+  string season_id = 1;
+  string user_id = 2;
+}
+
+message UserRankResponse {
+  UserScore user_score = 1;
+  int32 total_users =  2;
+}
+
+message LeaderboardRequest {
+  string season_id = 1; 
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message UserScore {
+  int32 rank = 1;
+  int32 snapshot_rank = 2;
+  string user_id = 3;
+  int64 in_progress_score = 4;
+  int64 snapshot_score = 5;
+  string season_id = 6; 
+}
+
+message LeaderboardResponse {
+  UserScore user_score = 1;
+}

@@ -114,7 +114,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
       refreshBondedTokens();
       onClose && onClose();
     } catch (error) {
-      triggerError({ error, callback: onClose });
+      triggerError({ title: "Undelegation failed!", error, callback: onClose });
     }
   };
 

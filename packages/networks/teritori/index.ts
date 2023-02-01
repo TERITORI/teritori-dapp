@@ -1,8 +1,10 @@
 import { NetworkInfo } from "../types";
+import { Network } from "./../../utils/network";
 import { teritoriCurrencies } from "./currencies";
 
 export const teritoriNetwork: NetworkInfo = {
   id: "teritori",
+  network: Network.Teritori,
   chainId: "teritori-1",
   displayName: "Teritori",
   icon: "icons/networks/teritori-circle.svg",

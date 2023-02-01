@@ -1,16 +1,15 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import profilePic from "../../../../../assets/banners/freelance-service/profile-pic.png";
-import serviceBackground from "../../../../../assets/banners/freelance-service/service-card-background.png";
 import chevronLeft from "../../../../../assets/icons/chevron-left.svg";
 import chevronRight from "../../../../../assets/icons/chevron-right.svg";
+import { getServiceListing } from "../../../../screens/FreelanceServices/query/data";
 import { fontSemibold20 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText/BrandText";
 import { SVG } from "../../../SVG";
 import { ServiceCard } from "../../Cards/ServiceCard";
 
-const data = ["1", "2", "3", "4"];
+const data = getServiceListing();
 
 export const DisplayMoreServices: React.FC = () => {
   return (
@@ -41,13 +40,7 @@ export const DisplayMoreServices: React.FC = () => {
         }}
       >
         {data.map((item, index) => (
-          <ServiceCard
-            key={index}
-            width={306}
-            height={336}
-            profilePic={profilePic}
-            backgroundPic={serviceBackground}
-          />
+          <ServiceCard key={index} width={306} height={336} data={item} />
         ))}
       </View>
     </View>

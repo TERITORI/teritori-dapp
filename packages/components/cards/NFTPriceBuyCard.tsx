@@ -1,12 +1,14 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { prettyPrice } from "../../utils/coins";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+import { GradientText } from "../gradientText";
 
 // TODO: Dynamic data + props
 
@@ -16,6 +18,8 @@ export const NFTPriceBuyCard: React.FC<{
   onPressBuy: () => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ price = "", priceDenom = "", onPressBuy, style }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+
   return (
     <TertiaryBox
       fullWidth
@@ -32,18 +36,14 @@ export const NFTPriceBuyCard: React.FC<{
           Current Price
         </BrandText>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {/*TODO: Text gradient pink*/}
-          <BrandText
-            style={[fontSemibold28, { color: "#DBAEFF", marginRight: 12 }]}
+          <GradientText
+            gradientType="purple"
+            style={[fontSemibold28, { marginRight: 12 }]}
           >
-            {prettyPrice(
-              process.env.TERITORI_NETWORK_ID || "",
-              price,
-              priceDenom
-            )}
-          </BrandText>
+            {prettyPrice(selectedNetworkId, price, priceDenom)}
+          </GradientText>
           <CurrencyIcon
-            networkId={process.env.TERITORI_NETWORK_ID || ""}
+            networkId={selectedNetworkId}
             denom={priceDenom}
             size={24}
           />

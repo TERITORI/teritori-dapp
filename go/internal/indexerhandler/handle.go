@@ -7,7 +7,7 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/coingeckoprices"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pricespb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/tmws"
 	"github.com/allegro/bigcache/v3"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -32,14 +32,18 @@ type Message struct {
 }
 
 type Config struct {
-	TNSContractAddress   string
-	MinterCodeIDs        []uint64
-	VaultContractAddress string
-	TNSDefaultImageURL   string
-	TendermintClient     *tmws.Client
-	NetworkID            string
-	CoinGeckoPrices      *coingeckoprices.CoinGeckoPrices
-	BlockTimeCache       *bigcache.BigCache
+	TNSContractAddress             string
+	MinterCodeIDs                  []uint64
+	VaultContractAddress           string
+	SquadStakingContractAddress    string
+	TheRiotCollectionAddress       string
+	TheRiotBreedingContractAddress string
+	TheRiotGameStartedAt           string
+	TNSDefaultImageURL             string
+	TendermintClient               *tmws.Client
+	NetworkID                      string
+	BlockTimeCache                 *bigcache.BigCache
+	PricesClient                   pricespb.PricesServiceClient
 }
 
 type Handler struct {
@@ -141,6 +145,11 @@ func (h *Handler) handleInstantiate(e *Message) error {
 			return errors.Wrap(err, "failed to handle tns minter instantiation")
 		}
 		return nil
+	case h.config.TheRiotBreedingContractAddress:
+		if err := h.handleInstantiateBreeding(e, contractAddress, &instantiateMsg); err != nil {
+			return errors.Wrap(err, "failed to handle breeding instantiation")
+		}
+		return nil
 	}
 
 	if slices.Contains(h.config.MinterCodeIDs, instantiateMsg.CodeID) {
@@ -192,8 +201,15 @@ func (h *Handler) handleExecute(e *Message) error {
 			return errors.Wrap(err, "failed to handle send_nft")
 		}
 	case "withdraw":
-		if err := h.handleExecuteWithdraw(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle withdraw")
+		// Squad unstaking
+		if executeMsg.Contract == h.config.SquadStakingContractAddress {
+			if err := h.handleExecuteSquadUnstake(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle squad unstake")
+			}
+		} else {
+			if err := h.handleExecuteWithdraw(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle withdraw")
+			}
 		}
 	case "burn":
 		if err := h.handleExecuteBurn(e, &executeMsg); err != nil {
@@ -205,20 +221,35 @@ func (h *Handler) handleExecute(e *Message) error {
 		}
 	case "transfer_nft":
 		if err := h.handleExecuteTransferNFT(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle transfer_nft")
 		}
 	case "update_metadata":
 		if err := h.handleExecuteUpdateTNSMetadata(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle update_metadata")
 		}
 	case "set_admin_address":
 		if err := h.handleExecuteTNSSetAdminAddress(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle set_admin_address")
 		}
 	case "update_config":
 		if err := h.handleExecuteBunkerUpdateConfig(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle update_config")
 		}
+	case "pause":
+		if err := h.handleExecuteBunkerPause(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle pause")
+		}
+	case "unpause":
+		if err := h.handleExecuteBunkerUnpause(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle unpause")
+		}
+	case "stake":
+		if executeMsg.Contract == h.config.SquadStakingContractAddress {
+			if err := h.handleExecuteSquadStake(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle squad stake")
+			}
+		}
+		// NOTE: add another stake handler here if needed
 	}
 
 	return nil

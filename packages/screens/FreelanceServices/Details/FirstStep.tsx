@@ -1,6 +1,13 @@
+import Checkbox from "expo-checkbox";
 import React, { useState } from "react";
 import { Image, ImageBackground, View } from "react-native";
+
+import backgroundPic from "../../../../assets/banners/freelance-service/background-pic.png";
+import profilePic from "../../../../assets/banners/freelance-service/profile-pic.png";
+import checkIcon from "../../../../assets/icons/blue-check.svg";
+import star from "../../../../assets/icons/yellow-star.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
 import {
   primaryColor,
   neutral77,
@@ -8,7 +15,6 @@ import {
   yellowDefault,
   neutral33,
 } from "../../../utils/style/colors";
-import { SVG } from "../../../components/SVG";
 import {
   fontSemibold16,
   fontSemibold20,
@@ -16,11 +22,6 @@ import {
   fontMedium14,
   fontSemibold14,
 } from "../../../utils/style/fonts";
-import profilePic from "../../../../assets/banners/freelance-service/profile-pic.png";
-import backgroundPic from "../../../../assets/banners/freelance-service/background-pic.png";
-import star from "../../../../assets/icons/yellow-star.svg";
-import Checkbox from "expo-checkbox";
-import checkIcon from "../../../../assets/icons/blue-check.svg";
 
 const title = [
   "Extra Fast 2 Days Delivery",
@@ -38,7 +39,7 @@ const title = [
 
 const text = [
   "",
-  "Add an additional revision your seller will prodive after the delivery.",
+  "Add an additional revision your seller will provide after the delivery.",
   "You'll get graphics showing your logo that you can use on social media platforms. Ex. Facebook and Instagram.",
   "You'll get a template with your logo to use for stationary—letterhead, envelopes, business cards, etc.",
   "Add another (1) logo concept.",
@@ -208,7 +209,7 @@ export const FirstStep: React.FC = () => {
         }}
       />
       <BrandText style={[fontSemibold20]}>
-        Updgrade your order with extras
+        Upgrade your order with extras
       </BrandText>
       {title.map((item: string, index: number) => (
         <View>

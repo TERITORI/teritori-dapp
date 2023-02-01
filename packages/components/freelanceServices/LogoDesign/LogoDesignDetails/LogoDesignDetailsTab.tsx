@@ -15,7 +15,7 @@ import { SVG } from "../../../SVG";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
 
 export const LogoDesignDetailsTab: React.FC = () => {
-  const [checked, setChecked] = useState("nothingChecked");
+  const [checked, setChecked] = useState<boolean>();
 
   return (
     <View style={{ width: "100%", flexDirection: "column" }}>
@@ -666,8 +666,8 @@ export const LogoDesignDetailsTab: React.FC = () => {
               value=""
               color="#16BBFF"
               uncheckedColor="#777777"
-              status={checked === "Yes" ? "checked" : "unchecked"}
-              onPress={() => setChecked("Yes")}
+              status={checked ? "checked" : "unchecked"}
+              onPress={() => setChecked(true)}
             />
           </View>
           <View
@@ -687,8 +687,8 @@ export const LogoDesignDetailsTab: React.FC = () => {
               value=""
               color="#16BBFF"
               uncheckedColor="#777777"
-              status={checked === "Yes" ? "checked" : "unchecked"}
-              onPress={() => setChecked("Yes")}
+              status={checked ? "checked" : "unchecked"}
+              onPress={() => setChecked(true)}
             />
           </View>
         </View>
@@ -712,8 +712,8 @@ export const LogoDesignDetailsTab: React.FC = () => {
               value=""
               color="#16BBFF"
               uncheckedColor="#777777"
-              status={checked === "Yes" ? "checked" : "unchecked"}
-              onPress={() => setChecked("Yes")}
+              status={checked ? "checked" : "unchecked"}
+              onPress={() => setChecked(true)}
             />
           </View>
           <View
@@ -733,8 +733,8 @@ export const LogoDesignDetailsTab: React.FC = () => {
               value=""
               color="#16BBFF"
               uncheckedColor="#777777"
-              status={checked === "Yes" ? "checked" : "unchecked"}
-              onPress={() => setChecked("Yes")}
+              status={checked ? "checked" : "unchecked"}
+              onPress={() => setChecked(true)}
             />
           </View>
         </View>
@@ -763,8 +763,8 @@ export const LogoDesignDetailsTab: React.FC = () => {
               value=""
               color="#16BBFF"
               uncheckedColor="#777777"
-              status={checked === "Yes" ? "checked" : "unchecked"}
-              onPress={() => setChecked("Yes")}
+              status={checked ? "checked" : "unchecked"}
+              onPress={() => setChecked(true)}
             />
           </View>
           <View
@@ -784,8 +784,8 @@ export const LogoDesignDetailsTab: React.FC = () => {
               value=""
               color="#16BBFF"
               uncheckedColor="#777777"
-              status={checked === "Yes" ? "checked" : "unchecked"}
-              onPress={() => setChecked("Yes")}
+              status={checked ? "checked" : "unchecked"}
+              onPress={() => setChecked(true)}
             />
           </View>
         </View>

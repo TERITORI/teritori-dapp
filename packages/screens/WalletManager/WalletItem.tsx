@@ -14,10 +14,13 @@ import { Menu } from "../../components/Menu";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { rewardsPrice, TotalRewards } from "../../hooks/useRewards";
+import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { accountExplorerLink } from "../../utils/teritori";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
+
 export interface WalletItemProps {
   index: number;
   itemsCount: number;
@@ -25,7 +28,8 @@ export interface WalletItemProps {
     id: number;
     title: string;
     address: string;
-    pendingReward: number;
+    pendingRewards: TotalRewards[];
+    claimReward: (validatorAddress: string) => Promise<void>;
     staked: number;
   };
 }
@@ -38,6 +42,10 @@ export const WalletItem: React.FC<WalletItemProps> = ({
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
   const navigation = useAppNavigation();
+  const selectedNetwork = useSelectedNetwork();
+
+  // Total rewards price with all denoms
+  const claimablePrice = rewardsPrice(item.pendingRewards);
 
   return (
     <View
@@ -162,22 +170,20 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {`$${item.pendingReward.toFixed(2)}`}
+            {`$${claimablePrice.toFixed(2)}`}
           </BrandText>
         </View>
 
         {width > 1150 && (
-          <>
-            <SecondaryButton
-              size="XS"
-              text="Claim reward"
-              onPress={() => navigation.navigate("Staking")}
-              style={{
-                backgroundColor: neutral33,
-                marginRight: 16,
-              }}
-            />
-          </>
+          <SecondaryButton
+            size="XS"
+            text="Claim rewards"
+            disabled={!claimablePrice}
+            onPress={() => {
+              item.claimReward(item.address);
+            }}
+            style={{ marginRight: 16 }}
+          />
         )}
 
         <Menu
@@ -186,8 +192,9 @@ export const WalletItem: React.FC<WalletItemProps> = ({
             ...(width <= 1150
               ? [
                   {
-                    label: "Claim reward",
-                    onPress: () => {},
+                    label: "Claim rewards",
+                    onPress: () => navigation.navigate("Staking"),
+                    disabled: !claimablePrice,
                   },
                   {
                     label: "Stake",
@@ -197,7 +204,10 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               : []),
             {
               label: "View on Explorer",
-              onPress: () => Linking.openURL(accountExplorerLink(item.address)),
+              onPress: () =>
+                Linking.openURL(
+                  accountExplorerLink(selectedNetwork, item.address)
+                ),
             },
             {
               label: "Rename address",

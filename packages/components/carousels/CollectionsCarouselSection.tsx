@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import {
   Collection,
-  CollectionsRequest_Kind,
+  CollectionsRequest,
+  MintState,
+  Sort,
+  SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -15,21 +18,32 @@ import { CarouselSection } from "./CarouselSection";
 
 const gap = 24;
 
-const renderItem = (props: { item: Collection }) => (
-  <CollectionView item={props.item} />
-);
+const defaultRequest: CollectionsRequest = {
+  networkId: "fake",
+  sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+  sort: Sort.SORTING_UNSPECIFIED,
+  limit: 16,
+  offset: 0,
+  upcoming: false,
+  mintState: MintState.MINT_STATE_UNSPECIFIED,
+};
 
 export const CollectionsCarouselSection: React.FC<{
   title: string;
-  kind?: CollectionsRequest_Kind;
-}> = ({ title, kind = CollectionsRequest_Kind.KIND_FAKE }) => {
-  const [collections, fetchMore] = useCollections({
-    kind,
-    limit: 16,
-    offset: 0,
-  });
+  linkToMint?: boolean;
+  req?: CollectionsRequest;
+  filter?: (c: Collection) => boolean;
+}> = ({ title, req = defaultRequest, linkToMint, filter }) => {
+  const [collections, fetchMore] = useCollections(req, filter);
 
   const { width } = useMaxResolution();
+
+  const renderItem = useCallback(
+    (props: { item: Collection }) => (
+      <CollectionView item={props.item} linkToMint={linkToMint} />
+    ),
+    [linkToMint]
+  );
 
   return (
     <CarouselSection

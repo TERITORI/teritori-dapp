@@ -28,6 +28,8 @@ type MarketplaceServiceClient interface {
 	Quests(ctx context.Context, in *QuestsRequest, opts ...grpc.CallOption) (MarketplaceService_QuestsClient, error)
 	Activity(ctx context.Context, in *ActivityRequest, opts ...grpc.CallOption) (MarketplaceService_ActivityClient, error)
 	NFTPriceHistory(ctx context.Context, in *NFTPriceHistoryRequest, opts ...grpc.CallOption) (*NFTPriceHistoryResponse, error)
+	Banners(ctx context.Context, in *BannersRequest, opts ...grpc.CallOption) (*BannersResponse, error)
+	News(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (*NewsResponse, error)
 }
 
 type marketplaceServiceClient struct {
@@ -184,6 +186,24 @@ func (c *marketplaceServiceClient) NFTPriceHistory(ctx context.Context, in *NFTP
 	return out, nil
 }
 
+func (c *marketplaceServiceClient) Banners(ctx context.Context, in *BannersRequest, opts ...grpc.CallOption) (*BannersResponse, error) {
+	out := new(BannersResponse)
+	err := c.cc.Invoke(ctx, "/marketplace.v1.MarketplaceService/Banners", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketplaceServiceClient) News(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (*NewsResponse, error) {
+	out := new(NewsResponse)
+	err := c.cc.Invoke(ctx, "/marketplace.v1.MarketplaceService/News", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MarketplaceServiceServer is the server API for MarketplaceService service.
 // All implementations must embed UnimplementedMarketplaceServiceServer
 // for forward compatibility
@@ -194,6 +214,8 @@ type MarketplaceServiceServer interface {
 	Quests(*QuestsRequest, MarketplaceService_QuestsServer) error
 	Activity(*ActivityRequest, MarketplaceService_ActivityServer) error
 	NFTPriceHistory(context.Context, *NFTPriceHistoryRequest) (*NFTPriceHistoryResponse, error)
+	Banners(context.Context, *BannersRequest) (*BannersResponse, error)
+	News(context.Context, *NewsRequest) (*NewsResponse, error)
 	mustEmbedUnimplementedMarketplaceServiceServer()
 }
 
@@ -218,6 +240,12 @@ func (UnimplementedMarketplaceServiceServer) Activity(*ActivityRequest, Marketpl
 }
 func (UnimplementedMarketplaceServiceServer) NFTPriceHistory(context.Context, *NFTPriceHistoryRequest) (*NFTPriceHistoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NFTPriceHistory not implemented")
+}
+func (UnimplementedMarketplaceServiceServer) Banners(context.Context, *BannersRequest) (*BannersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Banners not implemented")
+}
+func (UnimplementedMarketplaceServiceServer) News(context.Context, *NewsRequest) (*NewsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method News not implemented")
 }
 func (UnimplementedMarketplaceServiceServer) mustEmbedUnimplementedMarketplaceServiceServer() {}
 
@@ -352,6 +380,42 @@ func _MarketplaceService_NFTPriceHistory_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MarketplaceService_Banners_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BannersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketplaceServiceServer).Banners(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/marketplace.v1.MarketplaceService/Banners",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketplaceServiceServer).Banners(ctx, req.(*BannersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MarketplaceService_News_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NewsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketplaceServiceServer).News(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/marketplace.v1.MarketplaceService/News",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketplaceServiceServer).News(ctx, req.(*NewsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MarketplaceService_ServiceDesc is the grpc.ServiceDesc for MarketplaceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -366,6 +430,14 @@ var MarketplaceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NFTPriceHistory",
 			Handler:    _MarketplaceService_NFTPriceHistory_Handler,
+		},
+		{
+			MethodName: "Banners",
+			Handler:    _MarketplaceService_Banners_Handler,
+		},
+		{
+			MethodName: "News",
+			Handler:    _MarketplaceService_News_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

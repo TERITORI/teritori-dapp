@@ -5,6 +5,7 @@ import { View, TouchableOpacity } from "react-native";
 import chevronUp from "../../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../../assets/icons/freelance-service/chevron-down.svg";
 import star from "../../../../../assets/icons/yellow-star.svg";
+import { ReviewFields } from "../../../../screens/FreelanceServices/types/fields";
 import {
   secondaryColor,
   yellowDefault,
@@ -20,9 +21,12 @@ import {
 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText/BrandText";
 import { SVG } from "../../../SVG";
+import { StarRating } from "../../StarRating";
 
-export const ReviewsStats: React.FC = () => {
-  const [isDeplayed, setIsDeplayed] = useState(false);
+export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
+  reviews,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <View style={{ flexDirection: "column", marginTop: 30, marginBottom: 30 }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -30,11 +34,7 @@ export const ReviewsStats: React.FC = () => {
           <BrandText style={[fontSemibold20, { marginRight: 12 }]}>
             40,546 Reviews
           </BrandText>
-          <SVG source={star} width={24} height={24} />
-          <SVG source={star} width={24} height={24} />
-          <SVG source={star} width={24} height={24} />
-          <SVG source={star} width={24} height={24} />
-          <SVG source={star} width={24} height={24} />
+          <StarRating rating={4.9} />
           <BrandText
             style={[{ color: yellowDefault, marginLeft: 12 }, fontMedium14]}
           >
@@ -50,14 +50,14 @@ export const ReviewsStats: React.FC = () => {
           <BrandText
             style={[fontSemibold16, { color: secondaryColor, marginRight: 8 }]}
           >
-            Most Relevent
+            Most Relevant
           </BrandText>
           <TouchableOpacity
             onPress={() => {
-              setIsDeplayed(!isDeplayed);
+              setIsOpen(!isOpen);
             }}
           >
-            {isDeplayed ? (
+            {isOpen ? (
               <SVG source={chevronDown} width={16} height={16} />
             ) : (
               <SVG source={chevronUp} width={16} height={16} />

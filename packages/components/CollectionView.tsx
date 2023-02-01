@@ -5,9 +5,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Collection } from "../api/marketplace/v1/marketplace";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
 import { useTNSMetadata } from "../hooks/useTNSMetadata";
-import { lavenderDefault } from "../utils/style/colors";
+import { fontSemibold14 } from "../utils/style/fonts";
 import { BrandText } from "./BrandText";
 import { TertiaryBox } from "./boxes/TertiaryBox";
+import { GradientText } from "./gradientText";
 
 export const collectionItemHeight = 266;
 export const collectionItemWidth = 196;
@@ -15,10 +16,14 @@ const contentWidth = 172;
 
 export const CollectionView: React.FC<{
   item: Collection;
-}> = ({ item }) => {
-  const creatorAddress = item.creatorId.replace("tori-", "");
+  linkToMint?: boolean;
+}> = ({ item, linkToMint }) => {
+  const creatorAddress = item.creatorId.split("-")[1];
   const tnsMetadata = useTNSMetadata(creatorAddress);
-  const navigateToCollection = useNavigateToCollection(item.id);
+  const navigateToCollection = useNavigateToCollection(item.id, {
+    forceSecondaryDuringMint: item.secondaryDuringMint,
+    forceLinkToMint: linkToMint,
+  });
   return (
     <TouchableOpacity onPress={navigateToCollection} disabled={!item.id}>
       <TertiaryBox
@@ -55,15 +60,16 @@ export const CollectionView: React.FC<{
               marginTop: 8,
             }}
           >
-            <BrandText
-              style={{ color: lavenderDefault, fontSize: 14 }}
+            <GradientText
+              style={fontSemibold14}
               ellipsizeMode="tail"
               numberOfLines={1}
+              gradientType="purple"
             >
               {tnsMetadata.metadata?.tokenId ||
                 item.creatorName ||
                 creatorAddress}
-            </BrandText>
+            </GradientText>
           </View>
         </View>
       </TertiaryBox>

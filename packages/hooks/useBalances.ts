@@ -2,8 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
-import { getNativeCurrency, getNetwork } from "../networks";
+import { getNativeCurrency, getNetwork, WEI_TOKEN_ADDRESS } from "../networks";
 import { Balance } from "../utils/coins";
+import { getMetaMaskEthereumSigner } from "../utils/ethereum";
+import { Network } from "../utils/network";
 import { CosmosBalancesResponse } from "../utils/teritori";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
@@ -23,7 +25,7 @@ export const useBalances = (
     { initialData: [], refetchInterval: 5000 }
   );
 
-  const prices = useCoingeckoPrices(
+  const { prices } = useCoingeckoPrices(
     networkBalances.map((bal) => ({ networkId, denom: bal.denom }))
   );
 
@@ -60,9 +62,35 @@ const getNetworkBalances = async (
   if (!network) {
     return [];
   }
-  const response = await fetch(
-    `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
-  );
-  const responseJSON: CosmosBalancesResponse = await response.json();
-  return responseJSON.balances;
+
+  // Support for ethereum balances
+  if (network.network === Network.Ethereum) {
+    const signer = await getMetaMaskEthereumSigner();
+    if (!signer) return [];
+
+    const balance = await signer.getBalance();
+
+    const balanceItem = {
+      amount: balance.toString(),
+      denom: WEI_TOKEN_ADDRESS,
+    };
+    return [balanceItem];
+  }
+
+  // Support for cosmos balances
+  else if (
+    network.network === Network.Teritori ||
+    network.network === Network.CosmosHub
+  ) {
+    const response = await fetch(
+      `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
+    );
+    const responseJSON: CosmosBalancesResponse = await response.json();
+    return responseJSON.balances;
+  }
+  // Unsupported network
+  else {
+    console.error(`unsupported network ${network.network}`);
+    return [];
+  }
 };

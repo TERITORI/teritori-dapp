@@ -1,23 +1,24 @@
 import React from "react";
 import { ImageBackground, View } from "react-native";
+
+import backgroundPic from "../../../../assets/banners/freelance-service/background-pic.png";
+import checkIcon from "../../../../assets/icons/blue-check.svg";
 import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import {
   primaryColor,
   neutral77,
   neutral00,
   neutral33,
 } from "../../../utils/style/colors";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import {
   fontMedium14,
   fontSemibold14,
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import backgroundPic from "../../../../assets/banners/freelance-service/background-pic.png";
-import checkIcon from "../../../../assets/icons/blue-check.svg";
-import { SVG } from "../../../components/SVG";
 
 const checkFirst = [
   "4 concepts included",
@@ -151,7 +152,7 @@ export const SecondRightCard: React.FC = () => {
             }}
           >
             <BrandText style={[fontSemibold20, { color: neutral77 }]}>
-              SUbtotal
+              Sub-total
             </BrandText>
             <BrandText style={[fontSemibold20]}>3000 TORI</BrandText>
           </View>

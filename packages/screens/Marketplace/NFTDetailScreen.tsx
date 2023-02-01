@@ -11,15 +11,21 @@ import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
+import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { NFTVault__factory } from "../../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
+import { secondaryDuringMintList } from "../../utils/collections";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
+import { Network } from "../../utils/network";
 import { vaultContractAddress } from "../../utils/teritori";
 import { NFTAttribute } from "../../utils/types/nft";
 
@@ -43,6 +49,7 @@ export interface NFTInfo {
   collectionImageURL: string;
   mintDenom: string;
   royalty: number;
+  breedingsAvailable?: number;
 }
 
 const Content: React.FC<{
@@ -53,12 +60,16 @@ const Content: React.FC<{
   const { setToastError } = useFeedbacks();
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.address);
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ noMargin: true });
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetwork = selectedNetworkInfo?.network;
 
   const collectionAddress = id.split("-")[1];
-  const mintEnded = useMintEnded(`tori-${collectionAddress}`);
+
+  const collectionId = `${selectedNetworkInfo?.addressPrefix}-${collectionAddress}`;
+  const mintEnded = useMintEnded(collectionId);
   const showMarketplace =
-    collectionAddress !== process.env.THE_RIOT_COLLECTION_ADDRESS ||
+    secondaryDuringMintList.includes(collectionId) ||
     (mintEnded !== undefined && mintEnded);
 
   const screenTabItems = {
@@ -86,68 +97,123 @@ const Content: React.FC<{
     if (!wallet?.connected || !wallet.address || !info?.nftAddress) {
       return;
     }
+
+    let buyFunc: CallableFunction | null = null;
+    switch (selectedNetwork) {
+      case Network.Teritori:
+        buyFunc = teritoriBuy;
+        break;
+      case Network.Ethereum:
+        buyFunc = ethereumBuy;
+        break;
+    }
+
+    if (!buyFunc) {
+      setToastError({
+        title: "Error",
+        message: `Unsupported network ${selectedNetwork}`,
+      });
+      return;
+    }
+
     setToastError(initialToastError);
     try {
-      const signingCosmwasmClient = await getSigningCosmWasmClient();
-      const signingVaultClient = new TeritoriNftVaultClient(
-        signingCosmwasmClient,
-        wallet.address,
-        vaultContractAddress
-      );
-      const reply = await signingVaultClient.buy(
-        { nftContractAddr: info.nftAddress, nftTokenId: info.tokenId },
-        "auto",
-        undefined,
-        [
-          {
-            amount: info.price,
-            denom: info.priceDenom,
-          },
-        ]
-      );
-      console.log("buy", reply);
+      const txHash = await buyFunc(wallet, info);
+
+      console.log("buy", txHash);
       refresh();
-      return reply;
-    } catch (err) {
-      console.error(err);
-      if (err instanceof Error) {
+
+      return txHash;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof Error) {
         setToastError({
           title: "Failed to buy NFT",
-          message: err.message,
+          message: e.message,
         });
-        return undefined;
       }
     }
-  }, [wallet, info]);
+  }, [
+    wallet?.address,
+    wallet?.connected,
+    info?.tokenId,
+    info?.nftAddress,
+    selectedNetwork,
+  ]);
 
-  const sell = useSellNFT();
+  const teritoriBuy = async (wallet: Wallet, info: NFTInfo) => {
+    const signingCosmwasmClient = await getSigningCosmWasmClient();
+    const signingVaultClient = new TeritoriNftVaultClient(
+      signingCosmwasmClient,
+      wallet.address,
+      vaultContractAddress
+    );
+    const tx = await signingVaultClient.buy(
+      { nftContractAddr: info.nftAddress, nftTokenId: info.tokenId },
+      "auto",
+      undefined,
+      [
+        {
+          amount: info.price,
+          denom: info.priceDenom,
+        },
+      ]
+    );
+    return tx.transactionHash;
+  };
+
+  const ethereumBuy = async (wallet: Wallet, nftInfo: NFTInfo) => {
+    const signer = await getMetaMaskEthereumSigner(wallet.address);
+    if (!signer) {
+      throw Error("Unable to get signer");
+    }
+
+    const vaultClient = await NFTVault__factory.connect(
+      process.env.ETHEREUM_VAULT_ADDRESS || "",
+      signer
+    );
+
+    const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+    const tx = await vaultClient.buyNFT(nftInfo.nftAddress, nftInfo.tokenId, {
+      maxFeePerGas: maxFeePerGas?.toNumber(),
+      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+      value: nftInfo.price,
+    });
+
+    await tx.wait();
+
+    return tx.hash;
+  };
+
+  const sell = useSellNFT(selectedNetwork);
 
   const handleSell = useCallback(
     async (price: string, denom: string | undefined) => {
       if (!info) {
         return;
       }
-      const reply = await sell(info.nftAddress, info.tokenId, price, denom);
-      console.log(reply);
+      const txHash = await sell(info.nftAddress, info.tokenId, price, denom);
+      console.log("txHash:", txHash);
       refresh();
-      return reply;
+      return txHash;
     },
-    [info, sell, refresh]
+    [info, sell, selectedNetwork, refresh]
   );
 
   const cancelListing = useCancelNFTListing(
+    selectedNetwork,
     info?.nftAddress || "",
     info?.tokenId || ""
   );
 
   const handleCancelListing = useCallback(async () => {
-    const reply = await cancelListing();
-    console.log(reply);
+    const txHash = await cancelListing();
+    console.log("txHash:", txHash);
     refresh();
-    return reply;
-  }, [cancelListing, refresh]);
+    return txHash;
+  }, [cancelListing, refresh, selectedNetwork]);
 
-  if (!id.startsWith("tori-")) {
+  if (!id.startsWith("tori-") && !id.startsWith("eth-")) {
     return (
       <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
         <BrandText>Network not supported</BrandText>

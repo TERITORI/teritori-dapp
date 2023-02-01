@@ -1,4 +1,3 @@
-import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import React, { useState } from "react";
 
 import { useTransactionModals } from "../../../context/TransactionModalsProvider";
@@ -9,7 +8,7 @@ import { TransactionSuccessModal } from "./TransactionSuccessModal";
 
 // It concerns only NFTs for now TODO: More global for all types of transaction ? This design could be used for all transactions ? Better to use ContextAPI instead of useTransactionModals hook ?
 export const TransactionModals: React.FC<{
-  startTransaction: () => Promise<ExecuteResult | undefined>;
+  startTransaction: () => Promise<string | undefined>;
   nftInfo?: NFTInfo;
   textComponentPayment: JSX.Element;
   textComponentSuccess: JSX.Element;
@@ -30,11 +29,11 @@ export const TransactionModals: React.FC<{
   const handleStartTransaction = async () => {
     closeTransactionPaymentModal();
     setTransactionPendingModalVisible(true);
-    startTransaction().then((reply) => {
-      if (!reply) {
+    startTransaction().then((txHash) => {
+      if (!txHash) {
         setTransactionPendingModalVisible(false);
       } else {
-        setTransactionHash(reply?.transactionHash || "");
+        setTransactionHash(txHash);
         setTransactionPendingModalVisible(false);
         setTransactionSuccessModalVisible(true);
       }

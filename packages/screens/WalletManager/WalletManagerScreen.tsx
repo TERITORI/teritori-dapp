@@ -17,16 +17,17 @@ import { Wallets } from "./Wallets";
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetwork = useSelectedNetworkId();
+  const selectedNetworkId = useSelectedNetworkId();
   const areThereWallets = useAreThereWallets();
   const { height } = useMaxResolution();
-  const balances = useBalances(selectedNetwork, selectedWallet?.address);
+  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
+
   return (
     <WalletManagerScreenContainer>
       {areThereWallets ? (
         <View style={styles.container}>
           <WalletDashboardHeader />
-          <Assets networkId={selectedNetwork} balances={balances} />
+          <Assets networkId={selectedNetworkId} balances={balances} />
           <Wallets />
           <MyNFTs />
         </View>

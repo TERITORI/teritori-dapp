@@ -2,11 +2,11 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"strconv"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/contracts/bunker_minter_types"
-	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -34,13 +34,26 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 		h.logger.Error("failed to fetch collection metadata", zap.String("metadata-uri", metadataURI), zap.Error(err))
 	}
 
+	maxSupply, err := strconv.Atoi(minterInstantiateMsg.NftMaxSupply)
+	if err != nil {
+		h.logger.Error("failed to parse nft max supply", zap.Error(err))
+		maxSupply = -1
+	}
+
+	secondaryDuringMint := false
+	if sdm, ok := minterInstantiateMsg.SecondaryDuringMint.(bool); ok {
+		secondaryDuringMint = sdm
+	}
+
 	// create collection
 	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
-		ID:       collectionId,
-		Network:  marketplacepb.Network_NETWORK_TERITORI,
-		Name:     minterInstantiateMsg.NftName,
-		ImageURI: metadata.ImageURI,
+		ID:                  collectionId,
+		NetworkId:           "teritori", // FIXME: get from networks config
+		Name:                minterInstantiateMsg.NftName,
+		ImageURI:            metadata.ImageURI,
+		MaxSupply:           maxSupply,
+		SecondaryDuringMint: secondaryDuringMint,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
@@ -55,8 +68,9 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 }
 
 type BunkerMetadata struct {
-	Name     string `json:"name"`
-	ImageURL string `json:"image"`
+	Name       string               `json:"name"`
+	ImageURL   string               `json:"image"`
+	Attributes indexerdb.ArrayJSONB `json:"attributes"`
 }
 
 func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Collection, tokenId string, execMsg *wasmtypes.MsgExecuteContract) error {
@@ -84,10 +98,12 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 		Name:         metadata.Name,
 		ImageURI:     metadata.ImageURL,
 		CollectionID: collection.ID,
+		Attributes:   metadata.Attributes,
 		TeritoriNFT: &indexerdb.TeritoriNFT{
 			TokenID: tokenId,
 		},
 	}
+
 	if err := h.db.Create(&nft).Error; err != nil {
 		spew.Dump(nft)
 		return errors.Wrap(err, "failed to create nft in db")
@@ -101,7 +117,7 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 
 	// create mint activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		ID:   indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindMint,
 		Time: blockTime,
 		Mint: &indexerdb.Mint{
@@ -120,7 +136,8 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 
 type BunkerUpdateConfigMsg struct {
 	Payload struct {
-		Owner *string `json:"owner"`
+		Owner               *string `json:"owner"`
+		SecondaryDuringMint *bool   `json:"secondary_during_mint"`
 	} `json:"update_config"`
 }
 
@@ -130,16 +147,49 @@ func (h *Handler) handleExecuteBunkerUpdateConfig(e *Message, execMsg *wasmtypes
 		return errors.Wrap(err, "failed to unmarshal tns set_adming_address msg")
 	}
 
+	updates := make(map[string]interface{})
+
 	if msg.Payload.Owner != nil {
+		updates["CreatorAddress"] = *msg.Payload.Owner
+	}
+	if msg.Payload.SecondaryDuringMint != nil {
+		updates["SecondaryDuringMint"] = *msg.Payload.SecondaryDuringMint
+	}
+
+	if len(updates) != 0 {
 		if err := h.db.
 			Model(&indexerdb.TeritoriCollection{}).
 			Where("collection_id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
-			UpdateColumn("CreatorAddress", msg.Payload.Owner).
+			UpdateColumns(updates).
 			Error; err != nil {
 			return errors.Wrap(err, "failed to update bunker creator")
 		}
-		h.logger.Info("updated bunker creator")
+		h.logger.Info("updated bunker config")
 	}
 
+	return nil
+}
+
+func (h *Handler) handleExecuteBunkerPause(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	if err := h.db.
+		Model(&indexerdb.Collection{}).
+		Where("id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
+		UpdateColumn("Paused", true).
+		Error; err != nil {
+		return errors.Wrap(err, "failed to pause bunker")
+	}
+	h.logger.Info("paused bunker")
+	return nil
+}
+
+func (h *Handler) handleExecuteBunkerUnpause(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	if err := h.db.
+		Model(&indexerdb.Collection{}).
+		Where("id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
+		UpdateColumn("Paused", false).
+		Error; err != nil {
+		return errors.Wrap(err, "failed to unpause bunker")
+	}
+	h.logger.Info("unpaused bunker")
 	return nil
 }

@@ -6,20 +6,21 @@ import { BrandText } from "../../components/BrandText";
 import { OwnedNFTs } from "../../components/OwnedNFTs";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 
 /*
-  NOTE: this whole thing need to be rewritten using indexers and better data organisation
+  NOTE: this whole thing need to be rewritten using indexers and better data organization
 */
 
 export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
-  // variables
   const selectedWallet = useSelectedWallet();
-  const ownerId = `tori-${selectedWallet?.address}`; // FIXME: make this network-independent
+  const selectedNetworkInfo = useSelectedNetworkInfo();
 
-  // returns
+  const ownerId = `${selectedNetworkInfo?.addressPrefix}-${selectedWallet?.address}`;
+
   const EmptyListComponent = useCallback(
     () => (
       <View style={styles.emptyContainer}>

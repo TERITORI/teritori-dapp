@@ -1,15 +1,17 @@
 import { NetworkInfo } from "../types";
+import { Network } from "./../../utils/network";
 import { cosmosHubCurrencies } from "./currencies";
 
 export const cosmosNetwork: NetworkInfo = {
   id: "cosmos-hub",
+  network: Network.CosmosHub,
   chainId: "cosmoshub-4",
   displayName: "Cosmos Hub",
   icon: "icons/networks/cosmos-hub-circle.svg",
   currencies: cosmosHubCurrencies,
   addressPrefix: "cosmos",
-  restEndpoint: "https://cosmos-mainnet-rpc.allthatnode.com:1317",
-  rpcEndpoint: "https://cosmos-mainnet-rpc.allthatnode.com:26657",
+  restEndpoint: "https://api-cosmoshub-ia.cosmosia.notional.ventures",
+  rpcEndpoint: "https://rpc-cosmoshub-ia.cosmosia.notional.ventures",
   stakeCurrency: "uatom",
   gasPriceStep: {
     low: 0.01,
