@@ -3,8 +3,8 @@ import { View, TouchableOpacity } from "react-native";
 
 import chevronLeft from "../../../../assets/icons/chevron-left.svg";
 import chevronRight from "../../../../assets/icons/chevron-right.svg";
-import diamond from "../../../../assets/icons/diamond.svg";
 import GoToPageIcon from "../../../../assets/icons/freelance-service/ChangePage.svg";
+import diamond from "../../../../assets/icons/freelance-service/diamond.svg";
 import glasses from "../../../../assets/icons/glasses.svg";
 import halfStar from "../../../../assets/icons/half-star.svg";
 import house from "../../../../assets/icons/house.svg";
