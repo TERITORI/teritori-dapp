@@ -4,12 +4,14 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
+import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
@@ -89,6 +91,10 @@ export const RiotGameEnrollScreen = () => {
     setSelectedRippers(newSelectedRippers);
   };
 
+  const gotoCurrentFight = () => {
+    navigation.replace("RiotGameFight");
+  };
+
   const joinTheFight = async () => {
     if (!squadStakingConfig) {
       return setToastError({
@@ -104,7 +110,7 @@ export const RiotGameEnrollScreen = () => {
 
       // Wait a little before redirection to be sure that we have passed the fight start time
       setTimeout(() => {
-        navigation.replace("RiotGameFight");
+        navigation.navigate("RiotGameFight");
       }, 1000);
     } catch (e: any) {
       setToastError({
@@ -196,13 +202,29 @@ export const RiotGameEnrollScreen = () => {
         </View>
       </FlexRow>
 
-      <SimpleButton
-        disabled={selectedRippers.length === 0}
-        onPress={joinTheFight}
-        containerStyle={{ marginVertical: layout.padding_x4 }}
-        text="Join the Fight"
-        loading={isJoiningFight}
-      />
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        {squads.length > 0 && (
+          <SimpleButton
+            onPress={gotoCurrentFight}
+            containerStyle={{
+              marginVertical: layout.padding_x4,
+            }}
+            text="Goto current Fight"
+            loading={isJoiningFight}
+            iconSVG={controllerSVG}
+            outline
+          />
+        )}
+        <SpacerRow size={2} />
+
+        <SimpleButton
+          disabled={selectedRippers.length === 0}
+          onPress={joinTheFight}
+          containerStyle={{ marginVertical: layout.padding_x4 }}
+          text="Join the Fight"
+          loading={isJoiningFight}
+        />
+      </View>
 
       <RipperSelectorModal
         visible={selectedSlot !== undefined}

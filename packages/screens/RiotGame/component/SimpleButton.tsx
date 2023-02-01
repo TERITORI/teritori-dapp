@@ -4,7 +4,11 @@ import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { primaryTextColor, yellowDefault } from "../../../utils/style/colors";
+import {
+  neutral00,
+  primaryTextColor,
+  yellowDefault,
+} from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
@@ -18,6 +22,7 @@ interface SimpleButtonProps {
   loading?: boolean;
   disabled?: boolean;
   iconSVG?: React.FC<SvgProps>;
+  outline?: boolean;
 }
 
 export const SimpleButton: React.FC<SimpleButtonProps> = ({
@@ -30,6 +35,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
   disabled,
   containerStyle,
   iconSVG = null,
+  outline = false,
 }) => {
   let padH: number;
   let padV: number;
@@ -60,8 +66,10 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
           styles.btnStyle,
           {
             display: "flex",
-            color,
-            backgroundColor: bgColor,
+            color: outline ? yellowDefault : color,
+            backgroundColor: outline ? neutral00 : bgColor,
+            borderColor: outline ? yellowDefault : bgColor,
+            borderWidth: 1,
             paddingHorizontal: padH,
             paddingVertical: padV,
           },
