@@ -6,10 +6,10 @@ import {
   TextStyle,
   View,
   ViewStyle,
+  Dimensions,
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
-import { Dimensions } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
@@ -294,12 +294,14 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 </View>
               </View>
 
+              <View style={{ maxWidth: 420 }}>
               <GradientText
                 gradientType="grayLight"
-                style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
+                  style={[fontSemibold14, { marginBottom: 24 }]}
               >
                 {info.description}
               </GradientText>
+              </View>
 
               <ProgressionCard
                 label="Tokens Minted"
