@@ -136,7 +136,7 @@ export const FreelanceOrderModal: React.FC<{
       <TextInputCustom<OrderFormType>
         name="cw20_addr"
         label="Cw20_Token"
-        placeHolder="Type cw20 token here"
+        placeHolder="Empty string for native token"
         onChangeText={setCw20Addr}
         value={cw20Addr}
         regexp={new RegExp(/^[a-zA-Z\d]+$/)}
@@ -174,7 +174,7 @@ export const FreelanceOrderModal: React.FC<{
         text="Order"
         touchableStyle={{ marginBottom: 20 }}
         fullWidth
-        disabled={!cw20Addr || !amount || !seller || !expireAt}
+        disabled={!amount || !seller || !expireAt}
         onPress={onPressEnter}
       />
     </ModalBase>

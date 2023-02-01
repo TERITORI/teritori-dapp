@@ -1,5 +1,5 @@
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
-import { Coin, StdFee } from "@cosmjs/amino";
+import { Coin, StdFee, coins } from "@cosmjs/amino";
 import { Extension } from "./TeritoriOrder.types";
 
 export class TeritoriOrderClient {
@@ -12,13 +12,25 @@ export class TeritoriOrderClient {
         this.sender = sender;
         this.contractAddress = contractAddress;
         this.createContract = this.createContract.bind(this);
+        this.createContractCw20 = this.createContractCw20.bind(this);
         this.cancelContract = this.cancelContract.bind(this);
         this.acceptContract = this.acceptContract.bind(this);
         this.completeContract = this.completeContract.bind(this);
         this.pauseContract = this.pauseContract.bind(this);
         this.mintFeedback = this.mintFeedback.bind(this);
     }
-    createContract = async({ cw20Addr, amount, receiver, expireAt }: {cw20Addr: string, amount: string, receiver: string, expireAt: number},
+    createContract = async({ amount, receiver, expireAt }: { amount: string, receiver: string, expireAt: number},
+        fee: number | StdFee | "auto" = "auto",
+        memo?: string,
+    ):Promise<ExecuteResult> => {
+        return await this.client.execute( this.sender, this.contractAddress, {
+            create_contract:{
+                receiver,
+                expire_at: expireAt
+            }
+        }, fee, memo, coins(amount, process.env.PUBLIC_STAKING_DENOM!));
+    }
+    createContractCw20 = async({ cw20Addr, amount, receiver, expireAt }: {cw20Addr: string, amount: string, receiver: string, expireAt: number},
         fee: number | StdFee | "auto" = "auto",
         memo?: string,
         funds?: Coin[]
