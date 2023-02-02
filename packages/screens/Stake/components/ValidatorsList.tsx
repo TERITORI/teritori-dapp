@@ -1,5 +1,12 @@
 import React from "react";
-import { FlatList, StyleProp, View, ViewStyle } from "react-native";
+import {
+  FlatList,
+  StyleProp,
+  View,
+  ViewStyle,
+  useWindowDimensions,
+} from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import validatorIconSVG from "../../../../assets/default-images/validator-icon.svg";
 import { Avatar } from "../../../components/Avatar";
@@ -14,36 +21,9 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { removeObjectKey } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { layout, modalWidthRatio } from "../../../utils/style/layout";
 import { thousandSeparator } from "../../../utils/text";
 import { ValidatorInfo } from "../types";
-
-const TABLE_ROWS: { [key in string]: TableRowHeading } = {
-  rank: {
-    label: "Rank",
-    flex: 1,
-  },
-  name: {
-    label: "Name",
-    flex: 4,
-  },
-  votingPower: {
-    label: "Voting Power",
-    flex: 3,
-  },
-  commission: {
-    label: "Commission",
-    flex: 2,
-  },
-  claimable: {
-    label: "Claimable reward",
-    flex: 3,
-  },
-  actions: {
-    label: "",
-    flex: 2,
-  },
-};
 
 interface ValidatorsListAction {
   label?: string;
@@ -57,13 +37,74 @@ export const ValidatorsTable: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ validators, actions, style }) => {
   // variables
+
+  const { width } = useWindowDimensions();
+
+const TABLE_ROWS: { [key in string]: TableRowHeading } = {
+  rank: {
+    label: "Rank",
+      flex: 0.5,
+  },
+  name: {
+    label: "Name",
+      flex: 4.5,
+  },
+  votingPower: {
+    label: "Voting Power",
+    flex: 3,
+  },
+  commission: {
+    label: "Commission",
+    flex: 2,
+  },
+  claimable: {
+    label: "Claimable reward",
+      flex: 2,
+    },
+    actions: {
+      label: "Action",
+      flex: width < 650 ? 4 : 3,
+    },
+  };
+
+  const TABLE_ROWS_MOBILE: { [key in string]: TableRowHeading } = {
+    rank: {
+      label: "Rank",
+      flex: 0.5,
+    },
+    name: {
+      label: "Name",
+      flex: 4.5,
+    },
+    actions: {
+      label: "Action",
+      flex: 4,
+    },
+    votingPower: {
+      label: "Voting Power",
+    flex: 3,
+  },
+    commission: {
+      label: "Commission",
+      flex: 2,
+    },
+    claimable: {
+      label: "Claimable reward",
+    flex: 2,
+  },
+};
+
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
+  const ROWS_MOBILE = actions
+    ? TABLE_ROWS_MOBILE
+    : removeObjectKey(TABLE_ROWS_MOBILE, "actions");
   const selectedWallet = useSelectedWallet();
   const { rewards, claimReward } = useRewards(selectedWallet?.address);
-
   // returns
   return (
-    <>
+    <View>
+      {width > 650 && (
+        <View>
       <TableRow headings={Object.values(ROWS)} />
       <FlatList
         data={validators}
@@ -80,7 +121,35 @@ export const ValidatorsTable: React.FC<{
           />
         )}
       />
-    </>
+        </View>
+      )}
+      {width < 650 && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ width: modalWidthRatio * (width - 75), margin: "auto" }}
+        >
+          <View>
+            <TableRow headings={Object.values(ROWS_MOBILE)} />
+            <FlatList
+              data={validators}
+              style={style}
+              keyExtractor={(item) => item.address}
+              renderItem={({ item }) => (
+                <ValidatorRow
+                  validator={item}
+                  actions={actions}
+                  pendingRewards={rewards.filter(
+                    (reward) => reward.validator === item.address
+                  )}
+                  claimReward={claimReward}
+                />
+              )}
+            />
+          </View>
+        </ScrollView>
+      )}
+    </View>
   );
 };
 
@@ -96,6 +165,35 @@ const ValidatorRow: React.FC<{
   // Rewards price with all denoms
   const claimablePrice = rewardsPrice(pendingRewards);
 
+  const { width } = useWindowDimensions();
+
+  const TABLE_ROWS: { [key in string]: TableRowHeading } = {
+    rank: {
+      label: "Rank",
+      flex: 0.5,
+    },
+    name: {
+      label: "Name",
+      flex: 4.5,
+    },
+    votingPower: {
+      label: "Voting Power",
+      flex: 3,
+    },
+    commission: {
+      label: "Commission",
+      flex: 2,
+    },
+    claimable: {
+      label: "Claimable reward",
+      flex: 2,
+    },
+    actions: {
+      label: "Action",
+      flex: width < 650 ? 4 : 3,
+    },
+  };
+
   return (
     <View
       style={{
@@ -104,7 +202,8 @@ const ValidatorRow: React.FC<{
         justifyContent: "space-between",
         width: "100%",
         minHeight: layout.contentPadding,
-        paddingHorizontal: layout.padding_x2_5,
+        // paddingHorizontal: layout.padding_x2_5,
+        paddingHorizontal: layout.padding_x1,
         borderColor: mineShaftColor,
         borderTopWidth: 1,
         paddingVertical: layout.padding_x2,
@@ -130,6 +229,36 @@ const ValidatorRow: React.FC<{
         <SpacerRow size={1} />
         <BrandText style={fontSemibold13}>{validator?.moniker || ""}</BrandText>
       </View>
+
+      {actions && width < 650 && (
+        <View
+          style={{
+            flex: TABLE_ROWS.actions.flex,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          {actions(validator).map((action, index) =>
+            action?.renderComponent ? (
+              action.renderComponent()
+            ) : (
+              <SecondaryButtonOutline
+                key={index}
+                onPress={() => {
+                  if (typeof action.onPress !== "function") {
+                    return;
+                  }
+                  action.onPress(validator);
+                }}
+                text={action?.label || ""}
+                size="XS"
+              />
+            )
+          )}
+        </View>
+      )}
+
       <BrandText
         style={[
           fontSemibold13,
@@ -141,6 +270,7 @@ const ValidatorRow: React.FC<{
       >
         {thousandSeparator(validator.votingPower, " ")}
       </BrandText>
+
       <BrandText
         style={[
           fontSemibold13,
@@ -179,13 +309,13 @@ const ValidatorRow: React.FC<{
         )}
       </View>
 
-      {actions && (
+      {actions && width > 650 && (
         <View
           style={{
             flex: TABLE_ROWS.actions.flex,
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "flex-start",
           }}
         >
           {actions(validator).map((action, index) =>

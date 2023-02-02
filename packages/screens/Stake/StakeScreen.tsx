@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -65,11 +65,47 @@ export const StakeScreen: React.FC = () => {
     setStakeDetailModalVisible(false);
   };
 
+  const { width } = useWindowDimensions();
+
+  const styles = StyleSheet.create({
+    nameContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    rowHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      flexWrap: width < 650 ? "wrap" : "nowrap",
+      justifyContent: "space-between",
+      paddingTop: layout.contentPadding,
+      marginBottom: layout.padding_x2_5,
+    },
+    rowWithCenter: {
+      flexDirection: "row",
+      alignItems: "center",
+      width: width < 650 ? "100%" : "",
+      justifyContent: "center",
+    },
+    upperCase: {
+      textTransform: "uppercase",
+    },
+  });
+
   // returns
   return (
-    <ScreenContainer>
+    <ScreenContainer noMargin={width <= 1600}>
       <View style={styles.rowHeader}>
-        <BrandText style={fontSemibold28}>Stake</BrandText>
+        <BrandText
+          style={[
+            fontSemibold28,
+            {
+              width: width < 650 ? "100%" : "",
+              textAlign: "center",
+            },
+          ]}
+        >
+          Stake
+        </BrandText>
         <View style={styles.rowWithCenter}>
           <Tabs
             items={tabs}
@@ -88,6 +124,7 @@ export const StakeScreen: React.FC = () => {
             ? () => [{ label: "Manage", onPress: toggleDetailModal }]
             : undefined
         }
+        style={{ width: "100%" }}
       />
       <StakeDetailModal
         visible={stakeDetailModalVisible}
@@ -115,24 +152,3 @@ export const StakeScreen: React.FC = () => {
     </ScreenContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  nameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  rowHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: layout.contentPadding,
-    marginBottom: layout.padding_x2_5,
-  },
-  rowWithCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  upperCase: {
-    textTransform: "uppercase",
-  },
-});

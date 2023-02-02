@@ -1,7 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { View, Image, Linking, ScrollView } from "react-native";
-import { Dimensions } from "react-native";
+import {
+  View,
+  Image,
+  Linking,
+  ScrollView,
+  useWindowDimensions,
+} from "react-native";
 
 import defaultNewsBanner from "../../../assets/default-images/default-news-banner.png";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
@@ -19,6 +24,7 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { backendClient } from "../../utils/backend";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
+import { smallMobileWidth } from "../../utils/style/layout";
 import { Link } from "../Link";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
@@ -26,7 +32,6 @@ import { LabelCard } from "../cards/LabelCard";
 import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
-import { homeCardGroupWidth, smallMobileWidth } from "../../utils/style/layout";
 
 const gridHalfGutter = 12;
 
@@ -41,7 +46,7 @@ export const HubLanding: React.FC = () => {
   );
   const banner = banners?.length ? banners[0] : undefined;
 
-  const windowWidth = Dimensions.get("window").width;
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
@@ -65,10 +70,7 @@ export const HubLanding: React.FC = () => {
         <Section title="My Dashboard">
           {windowWidth > smallMobileWidth && <DashboardCardGroup />}
           {windowWidth < smallMobileWidth && (
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <DashboardCardGroup />
             </ScrollView>
           )}
@@ -77,10 +79,7 @@ export const HubLanding: React.FC = () => {
         <Section title="Coming soon dApps">
           {windowWidth > smallMobileWidth && <CommingCardGroup />}
           {windowWidth < smallMobileWidth && (
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <CommingCardGroup />
             </ScrollView>
           )}
@@ -105,7 +104,7 @@ export const HubLanding: React.FC = () => {
 
 export const DashboardCardGroup: React.FC = () => {
   const navigation = useAppNavigation();
-  const windowWidth = Dimensions.get("window").width;
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <View
@@ -158,7 +157,7 @@ export const DashboardCardGroup: React.FC = () => {
 };
 
 export const CommingCardGroup = () => {
-  const windowWidth = Dimensions.get("window").width;
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <View

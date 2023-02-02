@@ -2,8 +2,8 @@ import { useLinkTo } from "@react-navigation/native";
 import React, { useCallback } from "react";
 import { Image, Linking, useWindowDimensions, View } from "react-native";
 
+import GuardianPng from "../../../assets/default-images/default-guardian-nft.png";
 import { News } from "../../api/marketplace/v1/marketplace";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import {
   fontSemibold14,
@@ -14,7 +14,6 @@ import { BrandText } from "../BrandText";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { GradientText } from "../gradientText";
-import GuardianPng from "../../../assets/default-images/default-guardian-nft.png";
 
 const breakPoint = 1000;
 
@@ -119,8 +118,8 @@ export const NewsBox: React.FC<{
             style={{
               // height: 342,
               // width: 342,
-              height: 300,
-              width: 300,
+              height: width < 400 ? 260 : 300,
+              width: width < 400 ? 260 : 300,
               aspectRatio: 1,
               borderRadius: 10,
             }}

@@ -1,6 +1,5 @@
 import React from "react";
-import { Image, ImageBackground, StyleSheet, View } from "react-native";
-import { Dimensions } from "react-native";
+import { Image, StyleSheet, View, useWindowDimensions } from "react-native";
 
 import LaunchpadBannerImage from "../../../../assets/banners/launchpad.png";
 import LogoSimpleSvg from "../../../../assets/icons/logo-simple.svg";
@@ -20,7 +19,7 @@ export const LaunchpadBanner: React.FC = () => {
     maxSize: { width: maxWidth },
   });
 
-  const windowWidth = Dimensions.get("window").width;
+  const { width: windowWidth } = useWindowDimensions();
 
   // returns
   return (
@@ -28,7 +27,7 @@ export const LaunchpadBanner: React.FC = () => {
       <Image
         source={LaunchpadBannerImage}
         style={{
-          width: width,
+          width,
           height: windowWidth < smallMobileWidth ? 200 : height,
           resizeMode: "stretch",
         }}

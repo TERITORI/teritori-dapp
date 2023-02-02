@@ -6,11 +6,12 @@ import {
   StyleProp,
   StyleSheet,
   ViewStyle,
+  useWindowDimensions,
 } from "react-native";
 
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, smallMobileWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
@@ -38,6 +39,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   style?: StyleProp<ViewStyle>;
   hideSelector?: boolean;
 }) => {
+  const { width } = useWindowDimensions();
   const { scrollTo } = useScrollTo();
   const itemsArray = Object.entries(items);
   return (
@@ -89,17 +91,21 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
               </BrandText>
 
               {item.badgeCount && <SpacerRow size={1} />}
-              {item.badgeCount ? (
-                isSelected ? (
-                  <PrimaryBadge
-                    size="SM"
-                    backgroundColor="secondary"
-                    label={item.badgeCount}
-                  />
-                ) : (
-                  <TertiaryBadge size="SM" label={item.badgeCount} />
-                )
-              ) : null}
+              <View
+                style={{ display: width < smallMobileWidth ? "none" : "flex" }}
+              >
+                {item.badgeCount ? (
+                  isSelected ? (
+                    <PrimaryBadge
+                      size="SM"
+                      backgroundColor="secondary"
+                      label={item.badgeCount}
+                    />
+                  ) : (
+                    <TertiaryBadge size="SM" label={item.badgeCount} />
+                  )
+                ) : null}
+              </View>
             </View>
             {!hideSelector && isSelected && (
               <View

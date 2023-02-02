@@ -1,7 +1,12 @@
 import React, { useMemo, useRef } from "react";
-import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
-import { useWindowDimensions } from "react-native";
 
 import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
@@ -24,7 +29,6 @@ import { Section } from "../Section";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { GradientText } from "../gradientText";
-import { Dimensions } from "react-native";
 
 const defaultRequest: CollectionsRequest = {
   networkId: "fake",
@@ -48,7 +52,7 @@ const CarouselCollectionItem: React.FC<{
     forceLinkToMint: linkToMint,
   });
 
-  const windowWidth = Dimensions.get("window").width;
+  const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
 
   return (
@@ -118,7 +122,7 @@ export const CollectionsCarouselHeader: React.FC<{
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
 
-  const windowWidth = Dimensions.get("window").width;
+  const { width: windowWidth } = useWindowDimensions();
 
   const collection_height =
     windowWidth < smallMobileWidth ? windowWidth * 0.75 + 130 : 550;

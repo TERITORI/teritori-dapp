@@ -1,7 +1,12 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
-import { useWindowDimensions } from "react-native";
+import {
+  StyleProp,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+  useWindowDimensions,
+} from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
@@ -13,9 +18,9 @@ import { useTokenList } from "../../hooks/tokens";
 import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
 import { neutral17, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { modalWidthRatio, smallMobileWidth } from "../../utils/style/layout";
 import { tokenWithoutTld } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
-import { smallMobileWidth } from "../../utils/style/layout";
 
 const NameCard: React.FC<{
   fullName: string;
@@ -106,7 +111,7 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
       onClose={() => onClose()}
       hideMainSeparator
       label={` Welcome back, ${alias} !`}
-      width={width < smallMobileWidth ? 0.95 * width : 457}
+      width={width < smallMobileWidth ? modalWidthRatio * width : 457}
     >
       <View style={{ flex: 1, alignItems: "center" }}>
         {!tokens.length ? (

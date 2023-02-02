@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 
 import validatorIconSVG from "../../../../assets/default-images/validator-icon.svg";
 import { Avatar } from "../../../components/Avatar";
@@ -18,7 +18,11 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import {
+  layout,
+  modalWidthRatio,
+  smallMobileWidth,
+} from "../../../utils/style/layout";
 import { ValidatorInfo } from "../types";
 
 interface StakeDetailModalProps {
@@ -46,7 +50,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
         <View style={styles.rowWithCenter}>
           <Avatar size="medium" uri={imageURL} defaultIcon={validatorIconSVG} />
           <SpacerRow size={2} />
-          <View>
+          <View style={{ display: width < smallMobileWidth ? "none" : "flex" }}>
             <BrandText style={fontSemibold20}>{data?.moniker}</BrandText>
             <SpacerColumn size={0.5} />
             <View style={styles.rowWithCenter}>
@@ -67,9 +71,16 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
 
   const Footer = useCallback(
     () => (
-      <>
+      <View>
         <Separator />
         <View style={styles.footerRow}>
+          <View
+            style={{
+              width: width < smallMobileWidth ? "100%" : "",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
           <PrimaryButton size="SM" text="Close" onPress={onClose} />
           <SpacerRow size={2} />
           <SecondaryButton
@@ -77,7 +88,16 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
             text="Undelegate"
             onPress={onPressUndelegate}
           />
+          </View>
           <SpacerRow size={2} />
+          <View
+            style={{
+              width: width < smallMobileWidth ? "100%" : "",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: width < smallMobileWidth ? 20 : 0,
+            }}
+          >
           <SecondaryButton
             size="SM"
             text="Redelegate"
@@ -90,10 +110,31 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
             onPress={onPressDelegate}
           />
         </View>
-      </>
+        </View>
+      </View>
     ),
     [visible]
   );
+
+  const { width } = useWindowDimensions();
+
+  const styles = StyleSheet.create({
+    footerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: layout.padding_x2_5,
+      flexWrap: width < smallMobileWidth ? "wrap" : "nowrap",
+    },
+    container: {
+      width: width < smallMobileWidth ? modalWidthRatio * width - 40 : 446,
+    },
+    alternateText: { color: neutral77, flexShrink: 1 },
+    rowWithCenter: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+  });
 
   return (
     <ModalBase
@@ -103,6 +144,9 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
       Header={Header}
       childrenBottom={Footer()}
       hideMainSeparator
+      contentStyle={{
+        width: width < smallMobileWidth ? modalWidthRatio * width : 486,
+      }}
     >
       <View style={styles.container}>
         <Separator />
@@ -129,20 +173,3 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
     </ModalBase>
   );
 };
-
-const styles = StyleSheet.create({
-  footerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: layout.padding_x2_5,
-  },
-  container: {
-    width: 446,
-  },
-  alternateText: { color: neutral77, flexShrink: 1 },
-  rowWithCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});

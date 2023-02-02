@@ -1,7 +1,6 @@
 import React from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useWindowDimensions } from "react-native";
 
 import penSVG from "../../../assets/icons/manage.svg";
 import { BrandText } from "../../components/BrandText";
@@ -14,10 +13,9 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
-import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
-import { mobileWidth, smallMobileWidth } from "../../utils/style/layout";
 import { getShortAddress_Big } from "../../utils/strings";
+import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
+import { layout, smallMobileWidth } from "../../utils/style/layout";
 
 interface WalletDashboardHeaderProps {
   title: string;

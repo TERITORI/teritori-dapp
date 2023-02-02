@@ -1,7 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { View, ViewStyle } from "react-native";
-import { Dimensions } from "react-native";
+import { View, ViewStyle, useWindowDimensions } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
 import { smallMobileWidth } from "../utils/style/layout";
@@ -19,7 +18,7 @@ export const ProgressLine: React.FC<ProgressLineProps> = ({
   width = DEFAULT_WIDTH,
   style,
 }) => {
-  const windowWidth = Dimensions.get("window").width;
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <View

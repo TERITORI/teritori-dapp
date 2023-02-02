@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
-import { useWindowDimensions } from "react-native";
-import { ScrollView } from "react-native";
+import { View, useWindowDimensions, ScrollView } from "react-native";
 
 import { Quest } from "../api/marketplace/v1/marketplace";
 import { backendClient } from "../utils/backend";
-import { QuestCard } from "./cards/QuestCard";
 import { smallMobileWidth } from "../utils/style/layout";
+import { QuestCard } from "./cards/QuestCard";
 
 export const Quests: React.FC<{
   userId?: string;
@@ -60,7 +57,7 @@ export const Quests: React.FC<{
         ))}
       </View>
       {width < smallMobileWidth && (
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {quests.map((quest) => (
             <QuestCard
               key={quest.id}

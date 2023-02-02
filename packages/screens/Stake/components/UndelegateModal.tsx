@@ -2,7 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
@@ -28,7 +28,11 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import {
+  layout,
+  modalWidthRatio,
+  smallMobileWidth,
+} from "../../../utils/style/layout";
 import {
   getTeritoriSigningStargateClient,
   toriCurrency,
@@ -124,7 +128,12 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
       <View>
         <BrandText style={fontSemibold20}>Undelegate Tokens</BrandText>
         <SpacerColumn size={0.5} />
-        <BrandText style={[styles.alternateText, fontSemibold16]}>
+        <BrandText
+          style={[
+            styles.alternateText,
+            width < smallMobileWidth ? fontSemibold12 : fontSemibold16,
+          ]}
+        >
           Select an amount of {toriDisplayDenom} to undelegate
         </BrandText>
       </View>
@@ -156,6 +165,32 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
     ),
     [watchAll]
   );
+
+  const { width } = useWindowDimensions();
+
+  const styles = StyleSheet.create({
+    container: {
+      width: width < smallMobileWidth ? modalWidthRatio * width - 40 : 446,
+    },
+    footerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: "100%",
+      padding: layout.padding_x2_5,
+    },
+    alternateText: {
+      ...StyleSheet.flatten(fontSemibold12),
+      color: neutral77,
+    },
+    maxText: {
+      ...StyleSheet.flatten(fontSemibold12),
+      backgroundColor: primaryColor,
+      color: neutral22,
+      borderRadius: layout.borderRadius,
+      paddingHorizontal: layout.padding_x0_5,
+    },
+  });
 
   return (
     <ModalBase
@@ -217,27 +252,3 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
     </ModalBase>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: 446,
-  },
-  footerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    padding: layout.padding_x2_5,
-  },
-  alternateText: {
-    ...StyleSheet.flatten(fontSemibold12),
-    color: neutral77,
-  },
-  maxText: {
-    ...StyleSheet.flatten(fontSemibold12),
-    backgroundColor: primaryColor,
-    color: neutral22,
-    borderRadius: layout.borderRadius,
-    paddingHorizontal: layout.padding_x0_5,
-  },
-});

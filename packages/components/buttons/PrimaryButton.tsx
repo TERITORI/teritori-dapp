@@ -4,6 +4,7 @@ import {
   StyleProp,
   TouchableOpacity,
   ViewStyle,
+  useWindowDimensions,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
@@ -14,6 +15,7 @@ import {
 } from "../../utils/style/buttons";
 import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { smallMobileWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { SecondaryBox } from "../boxes/SecondaryBox";
@@ -75,6 +77,8 @@ export const PrimaryButton: React.FC<{
     fullWidth,
   };
 
+  const { width: windowsWidth } = useWindowDimensions();
+
   return (
     <TouchableOpacity
       onPress={onPress ? handlePress : undefined}
@@ -87,7 +91,7 @@ export const PrimaryButton: React.FC<{
           flexDirection: "row",
           borderRadius: borderRadiusButton(size),
           backgroundColor: color,
-          paddingHorizontal: 20,
+          paddingHorizontal: windowsWidth < smallMobileWidth ? 18 : 20,
           opacity: isDisabled ? 0.5 : 1,
         }}
         {...boxProps}

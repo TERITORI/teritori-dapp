@@ -22,46 +22,59 @@ export const Section: React.FC<{
       style={{
         marginTop: layout.contentPadding,
         overflow: "hidden",
-        width: "100%",
         maxWidth: width,
       }}
     >
-      <>
+      {/* <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: width,
+        }}
+      > */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: 20,
+          width,
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 20,
+            maxWidth: width - 56,
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <BrandText
+            style={{
+              color: "#FFFFFF",
+              fontSize,
+              letterSpacing: -(fontSize * 0.04),
+              flex: 1,
+            }}
+            numberOfLines={2}
+          >
+            {title}
+          </BrandText>
+
+          {subtitle ? (
             <BrandText
-              style={{
-                color: "#FFFFFF",
-                fontSize,
-                letterSpacing: -(fontSize * 0.04),
-                flex: 1,
-                width: width
-              }}
-              numberOfLines={2}
+              style={[fontSemibold20, { color: neutral77, marginLeft: 10 }]}
             >
-              {title}
+              {subtitle}
             </BrandText>
-
-            {subtitle ? (
-              <BrandText
-                style={[fontSemibold20, { color: neutral77, marginLeft: 9 }]}
-              >
-                {subtitle}
-              </BrandText>
-            ) : null}
-          </View>
-
-          <>{topRightChild}</>
+          ) : null}
         </View>
-        {children}
-      </>
+
+        <View>{topRightChild}</View>
+      </View>
+      {/* </View> */}
+      {children}
     </View>
   );
 };

@@ -2,7 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
@@ -25,7 +25,11 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import {
+  layout,
+  modalWidthRatio,
+  smallMobileWidth,
+} from "../../../utils/style/layout";
 import {
   getTeritoriSigningStargateClient,
   toriCurrency,
@@ -121,13 +125,38 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     }
   };
 
+  const { width } = useWindowDimensions();
+
+  const styles = StyleSheet.create({
+    container: {
+      width: width < smallMobileWidth ? modalWidthRatio * width - 40 : 446,
+    },
+    footerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: "100%",
+      padding: layout.padding_x2_5,
+    },
+    alternateText: {
+      ...StyleSheet.flatten(fontSemibold12),
+      color: neutral77,
+      flexShrink: 1,
+    },
+  });
+
   // returns
   const Header = useCallback(
     () => (
       <View>
         <BrandText style={fontSemibold20}>Stake Tokens</BrandText>
         <SpacerColumn size={0.5} />
-        <BrandText style={[styles.alternateText, fontSemibold16]}>
+        <BrandText
+          style={[
+            styles.alternateText,
+            width < smallMobileWidth ? fontSemibold12 : fontSemibold16,
+          ]}
+        >
           Select a validator and amount of {toriDisplayDenom} to stake.
         </BrandText>
       </View>
@@ -218,21 +247,3 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     </ModalBase>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: 446,
-  },
-  footerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    padding: layout.padding_x2_5,
-  },
-  alternateText: {
-    ...StyleSheet.flatten(fontSemibold12),
-    color: neutral77,
-    flexShrink: 1,
-  },
-});

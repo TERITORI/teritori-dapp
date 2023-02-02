@@ -1,7 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
-import { View } from "react-native";
-import { useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
@@ -21,10 +20,10 @@ import {
 } from "../../utils/keplr";
 import { defaultMemo } from "../../utils/memo";
 import { neutral17 } from "../../utils/style/colors";
+import { modalWidthRatio, smallMobileWidth } from "../../utils/style/layout";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
-import { smallMobileWidth } from "../../utils/style/layout";
 
 interface TNSUpdateNameScreenProps extends TNSModalCommonProps {}
 
@@ -142,7 +141,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
       hideMainSeparator
       onClose={() => onClose()}
       scrollable
-      width={width < smallMobileWidth ? 0.95 * width : 457}
+      width={width < smallMobileWidth ? modalWidthRatio * width : 457}
       contentStyle={{
         backgroundColor: neutral17,
       }}

@@ -89,7 +89,6 @@ export const SecondaryButton: React.FC<{
           backgroundColor,
           paddingHorizontal: 20,
           opacity: disabled ? 0.5 : 1,
-          width: "100%",
         }}
         {...boxProps}
       >

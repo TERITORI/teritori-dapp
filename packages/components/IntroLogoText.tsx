@@ -1,6 +1,10 @@
 import React from "react";
-import { StyleProp, ViewStyle, ImageBackground } from "react-native";
-import { useWindowDimensions } from "react-native";
+import {
+  StyleProp,
+  ViewStyle,
+  ImageBackground,
+  useWindowDimensions,
+} from "react-native";
 
 import logoSVG from "../../assets/logos/logo-white.svg";
 import { fontSemibold24, fontSemibold28 } from "../utils/style/fonts";
@@ -25,7 +29,7 @@ export const IntroLogoText: React.FC<{
           justifyContent: "center",
           maxHeight: height,
           height,
-          width: "100%"
+          width: "100%",
         },
         style,
       ]}

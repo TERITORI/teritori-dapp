@@ -4,8 +4,7 @@ import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { bech32 } from "bech32";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
-import { useWindowDimensions } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 
 import arrowDivideSVG from "../../../../assets/icons/arrow-divide.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -27,15 +26,16 @@ import {
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
+import { getShortAddress_Chain } from "../../../utils/strings";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout, smallMobileWidth } from "../../../utils/style/layout";
+import {
+  layout,
+  modalWidthRatio,
+  smallMobileWidth,
+} from "../../../utils/style/layout";
 import { capitalize } from "../../../utils/text";
 import { TransactionForm } from "../types";
-import {
-  getShortAddress_Chain,
-  getShortAddress_Small,
-} from "../../../utils/strings";
 
 type DepositModalProps = {
   variation: "deposit" | "withdraw";
@@ -161,7 +161,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
       visible={isVisible}
       onClose={onClose}
       Header={ModalHeader}
-      width={width < smallMobileWidth ? 0.9 * width : 460}
+      width={width < smallMobileWidth ? modalWidthRatio * width : 460}
     >
       <View style={styles.container}>
         <BrandText style={[fontSemibold14, styles.selfCenter]}>

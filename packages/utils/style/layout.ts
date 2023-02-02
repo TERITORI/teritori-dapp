@@ -13,6 +13,7 @@ export const mobileWidth = 768;
 export const smallMobileWidth = 512;
 export const homeCardGroupWidth = 1002;
 export const homeHighLightedWidth = 1000;
+export const modalWidthRatio = 0.95;
 
 const BASE_SIZE = 8;
 

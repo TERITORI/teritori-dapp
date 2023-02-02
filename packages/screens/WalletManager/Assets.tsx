@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
-import { useWindowDimensions } from "react-native";
+import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
@@ -12,9 +11,8 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetwork } from "../../networks";
 import { Balance, prettyPrice } from "../../utils/coins";
 import { neutral22, neutral33 } from "../../utils/style/colors";
-import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
 import { smallMobileWidth } from "../../utils/style/layout";
-import { fontSemibold16, fontSemibold20 } from "../../utils/style/fonts";
+import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
 
 const collapsedCount = 5;
 
@@ -27,6 +25,7 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
   const [targetCurrency, setTargetCurrency] = useState<string>();
   const [expanded, setExpanded] = useState(false);
   const selectedNetworkId = useSelectedNetworkId();
+  const { width } = useWindowDimensions();
 
   const network = getNetwork(networkId);
   if (!network) {
@@ -64,8 +63,6 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
   if (!expanded) {
     currencies = currencies.slice(0, collapsedCount);
   }
-
-  const { width } = useWindowDimensions();
 
   return (
     <View

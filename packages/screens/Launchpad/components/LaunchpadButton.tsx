@@ -1,6 +1,11 @@
 import React from "react";
-import { Linking, Pressable, StyleSheet, View } from "react-native";
-import { useWindowDimensions } from "react-native";
+import {
+  Linking,
+  Pressable,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 
 import ChevronRightSvg from "../../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../../components/BrandText";

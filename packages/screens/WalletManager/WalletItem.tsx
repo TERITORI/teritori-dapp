@@ -17,11 +17,11 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { rewardsPrice, TotalRewards } from "../../hooks/useRewards";
 import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import { useAppNavigation } from "../../utils/navigation";
+import { getShortAddress_Small } from "../../utils/strings";
 import { neutral33, neutral77 } from "../../utils/style/colors";
+import { smallMobileWidth } from "../../utils/style/layout";
 import { accountExplorerLink } from "../../utils/teritori";
 import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
-import { getShortAddress_Small } from "../../utils/strings";
-import { smallMobileWidth } from "../../utils/style/layout";
 
 export interface WalletItemProps {
   index: number;

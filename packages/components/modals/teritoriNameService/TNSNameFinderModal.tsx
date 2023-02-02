@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { View } from "react-native";
-import { useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { useTNS } from "../../../context/TNSProvider";
 import {
@@ -9,12 +8,12 @@ import {
   neutral77,
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
+import { modalWidthRatio, smallMobileWidth } from "../../../utils/style/layout";
 import { NameFinderFormType } from "../../../utils/types/tns";
 import { BrandText } from "../../BrandText";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
-import { smallMobileWidth } from "../../../utils/style/layout";
 
 const AVAILABLE_DOMAINS = [".tori"];
 const COMING_SOON_DOMAINS = [".rioter"];
@@ -126,7 +125,7 @@ export const TNSNameFinderModal: React.FC<{
       onClose={onClose}
       label="Find a name"
       childrenBottom={<DomainsAvailability />}
-      width={width < smallMobileWidth ? 0.95 * width : 457}
+      width={width < smallMobileWidth ? modalWidthRatio * width : 457}
     >
       <TextInputCustom<NameFinderFormType>
         name="name"

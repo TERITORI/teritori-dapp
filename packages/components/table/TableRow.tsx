@@ -1,9 +1,9 @@
 import React from "react";
-import { StyleSheet, View, TextStyle } from "react-native";
+import { StyleSheet, View, TextStyle, useWindowDimensions } from "react-native";
 
 import { codGrayColor, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, smallMobileWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 
 export type TableRowHeading = { label: string; flex: number };
@@ -14,6 +14,30 @@ interface TableRowProps {
 }
 
 export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
+  const { width } = useWindowDimensions();
+
+  const styles = StyleSheet.create({
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: "100%",
+      backgroundColor: codGrayColor,
+      minHeight: layout.contentPadding,
+      paddingHorizontal:
+        width < smallMobileWidth ? layout.padding_x0_5 : layout.padding_x1,
+      borderTopLeftRadius: layout.borderRadius,
+      borderTopRightRadius: layout.borderRadius,
+    },
+    labelText: StyleSheet.flatten([
+      fontSemibold12,
+      {
+        color: secondaryColor,
+        opacity: 0.4,
+      },
+    ]),
+  });
+
   return (
     <View style={styles.row}>
       {headings.map(({ label, flex }, index) => (
@@ -35,24 +59,3 @@ export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    backgroundColor: codGrayColor,
-    minHeight: layout.contentPadding,
-    paddingHorizontal: layout.padding_x2_5,
-    borderTopLeftRadius: layout.borderRadius,
-    borderTopRightRadius: layout.borderRadius,
-  },
-  labelText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      color: secondaryColor,
-      opacity: 0.4,
-    },
-  ]),
-});

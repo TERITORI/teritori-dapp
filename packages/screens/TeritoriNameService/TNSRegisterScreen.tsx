@@ -1,4 +1,5 @@
 import React from "react";
+import { useWindowDimensions } from "react-native";
 
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import ModalBase from "../../components/modals/GradientModalBase";
@@ -9,10 +10,9 @@ import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
+import { modalWidthRatio, smallMobileWidth } from "../../utils/style/layout";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSCloseHandler } from "./TNSHomeScreen";
-import { useWindowDimensions } from "react-native";
-import { smallMobileWidth } from "../../utils/style/layout";
 
 interface TNSRegisterScreenProps {
   onClose: TNSCloseHandler;
@@ -35,7 +35,7 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
     <ModalBase
       onClose={() => onClose()}
       label="Find a name"
-      width={width < smallMobileWidth ? 0.95 * width : 457}
+      width={width < smallMobileWidth ? modalWidthRatio * width : 457}
       modalStatus={name && nameAvailable ? "success" : "danger"}
       hideMainSeparator
       scrollable

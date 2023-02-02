@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
-import { useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { CopyToClipboard } from "../../components/CopyToClipboard";
@@ -18,9 +17,9 @@ import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { neutral17, neutral33 } from "../../utils/style/colors";
+import { modalWidthRatio, smallMobileWidth } from "../../utils/style/layout";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
-import { smallMobileWidth } from "../../utils/style/layout";
 
 const NotOwnerActions: React.FC = () => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
@@ -129,7 +128,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
       onBackPress={() => onClose(navigateBackTo)}
       hideMainSeparator
       label={name}
-      width={width < smallMobileWidth ? 0.95 * width : 480}
+      width={width < smallMobileWidth ? modalWidthRatio * width : 480}
       contentStyle={{
         backgroundColor: neutral17,
         borderWidth: 1,
@@ -171,8 +170,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
                     {!!token.contract_address && (
                       // {1 && (
                       <CopyToClipboard
-                        // text={token.contract_address}
-                        text={"Contract Address"}
+                        text={token.contract_address}
                         squaresBackgroundColor={neutral17}
                       />
                     )}

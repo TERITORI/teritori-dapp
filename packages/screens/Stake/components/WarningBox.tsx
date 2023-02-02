@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, useWindowDimensions } from "react-native";
 
 import warningTriangleSVG from "../../../../assets/icons/warning-triangle.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -7,17 +7,19 @@ import { SVG } from "../../../components/SVG";
 import { SpacerRow, SpacerColumn } from "../../../components/spacer";
 import { errorColor, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold12 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { layout, smallMobileWidth } from "../../../utils/style/layout";
 
 export const WarningBox: React.FC<{
   title: string;
   description: string;
 }> = ({ title, description }) => {
+  const { width } = useWindowDimensions();
+
   return (
     <View style={styles.stakeWarningContainer}>
       <SVG width={24} height={24} source={warningTriangleSVG} />
-      <SpacerRow size={3} />
-      <View>
+      {width > smallMobileWidth && <SpacerRow size={3} />}
+      <View style={{ width: "100%" }}>
         <BrandText style={fontSemibold13}>{title}</BrandText>
         <SpacerColumn size={0.5} />
         <BrandText style={[styles.alternateText, { maxWidth: 350 }]}>

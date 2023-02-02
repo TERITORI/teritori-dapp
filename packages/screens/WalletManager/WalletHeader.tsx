@@ -1,6 +1,5 @@
 import React from "react";
-import { View } from "react-native";
-import { useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 

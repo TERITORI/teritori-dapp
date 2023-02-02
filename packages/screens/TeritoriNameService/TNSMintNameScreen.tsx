@@ -1,8 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { View } from "react-native";
-import { useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
@@ -30,11 +29,11 @@ import { defaultMemo } from "../../utils/memo";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { modalWidthRatio, smallMobileWidth } from "../../utils/style/layout";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
-import { smallMobileWidth } from "../../utils/style/layout";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,
@@ -67,7 +66,7 @@ const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
           source={coinSVG}
           style={{
             marginLeft: width < smallMobileWidth ? 12 : 24,
-            marginRight: 12,
+            marginRight: 9,
           }}
         />
 
@@ -204,7 +203,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     <ModalBase
       onClose={() => onClose()}
       onBackPress={() => onClose(navigateBackTo)}
-      width={width < smallMobileWidth ? 0.95 * width : 480}
+      width={width < smallMobileWidth ? modalWidthRatio * width : 480}
       scrollable
       label={name}
       hideMainSeparator
