@@ -50,8 +50,6 @@ type NFT struct {
 	PriceDenom  string
 	LockedOn    string
 
-	LastStakeTime uint64
-
 	// "belongs to" relations
 	CollectionID string `gorm:"index"`
 	Collection   *Collection

@@ -160,7 +160,6 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 			UPDATE nfts AS n
 			SET 
 				locked_on = ?,
-				last_stake_time = ?
 			FROM 
 				teritori_collections AS tc,
 				teritori_nfts AS tn 
@@ -169,7 +168,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 				AND tn.nft_id = n.id 
 				AND tc.nft_contract_address = ?
 				AND tn.token_id = ?
-		`, lockedOn, startTime, nft.ContractAddr, nft.TokenId)
+		`, lockedOn, nft.ContractAddr, nft.TokenId)
 		if result.Error != nil {
 			return errors.New("failed to update lockedOn")
 		}

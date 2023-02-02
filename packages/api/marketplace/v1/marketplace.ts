@@ -150,7 +150,6 @@ export interface NFT {
   ownerId: string;
   nftContractAddress: string;
   lockedOn: string;
-  lastStakeTime: number;
   attributes: Attribute[];
 }
 
@@ -385,7 +384,6 @@ function createBaseNFT(): NFT {
     ownerId: "",
     nftContractAddress: "",
     lockedOn: "",
-    lastStakeTime: 0,
     attributes: [],
   };
 }
@@ -430,9 +428,6 @@ export const NFT = {
     }
     if (message.lockedOn !== "") {
       writer.uint32(130).string(message.lockedOn);
-    }
-    if (message.lastStakeTime !== 0) {
-      writer.uint32(144).uint64(message.lastStakeTime);
     }
     for (const v of message.attributes) {
       Attribute.encode(v!, writer.uint32(138).fork()).ldelim();
@@ -486,9 +481,6 @@ export const NFT = {
         case 16:
           message.lockedOn = reader.string();
           break;
-        case 18:
-          message.lastStakeTime = longToNumber(reader.uint64() as Long);
-          break;
         case 17:
           message.attributes.push(Attribute.decode(reader, reader.uint32()));
           break;
@@ -515,7 +507,6 @@ export const NFT = {
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
       nftContractAddress: isSet(object.nftContractAddress) ? String(object.nftContractAddress) : "",
       lockedOn: isSet(object.lockedOn) ? String(object.lockedOn) : "",
-      lastStakeTime: isSet(object.lastStakeTime) ? Number(object.lastStakeTime) : 0,
       attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
     };
   },
@@ -535,7 +526,6 @@ export const NFT = {
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     message.nftContractAddress !== undefined && (obj.nftContractAddress = message.nftContractAddress);
     message.lockedOn !== undefined && (obj.lockedOn = message.lockedOn);
-    message.lastStakeTime !== undefined && (obj.lastStakeTime = Math.round(message.lastStakeTime));
     if (message.attributes) {
       obj.attributes = message.attributes.map((e) => e ? Attribute.toJSON(e) : undefined);
     } else {
@@ -559,7 +549,6 @@ export const NFT = {
     message.ownerId = object.ownerId ?? "";
     message.nftContractAddress = object.nftContractAddress ?? "";
     message.lockedOn = object.lockedOn ?? "";
-    message.lastStakeTime = object.lastStakeTime ?? 0;
     message.attributes = object.attributes?.map((e) => Attribute.fromPartial(e)) || [];
     return message;
   },
