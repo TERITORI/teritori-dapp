@@ -144,14 +144,21 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
       const receiver = data.seller!; //need to change later.
       const expireAt = data.expireAt!; // need to change later
 
-      if (cw20Addr){
-        await client.createContractCw20({cw20Addr, amount, receiver, expireAt: parseInt(expireAt)});
-      }else{
-        await client.createContract({amount, receiver, expireAt: parseInt(expireAt)});
+      if (cw20Addr) {
+        await client.createContractCw20({
+          cw20Addr,
+          amount,
+          receiver,
+          expireAt: parseInt(expireAt, 2),
+        });
+      } else {
+        await client.createContract({
+          amount,
+          receiver,
+          expireAt: parseInt(expireAt, 2),
+        });
       }
-
-
-    }catch (err) {
+    } catch (err) {
       console.log(err);
     }
   };
