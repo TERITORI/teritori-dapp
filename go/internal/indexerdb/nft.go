@@ -1,6 +1,7 @@
 package indexerdb
 
 import (
+	"database/sql"
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
@@ -46,7 +47,7 @@ type NFT struct {
 	ImageURI    string
 	OwnerID     UserID
 	IsListed    bool
-	PriceAmount string
+	PriceAmount sql.NullString `gorm:"type:numeric"`
 	PriceDenom  string
 	LockedOn    string
 

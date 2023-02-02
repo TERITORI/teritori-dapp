@@ -40,7 +40,8 @@ func main() {
 		pollDelay                      = fs.Duration("poll-delay", 2*time.Second, "delay between tail queries")
 		tnsContractAddress             = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
 		vaultContractAddress           = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")
-		squadStakingContactAddress     = fs.String("the-riot-squad-staking-contract-address", "", "address of the teritori squad staking contract")
+		squadStakingContactAddressV1   = fs.String("the-riot-squad-staking-contract-address-v1", "", "address of the teritori squad staking contract V1")
+		squadStakingContactAddressV2   = fs.String("the-riot-squad-staking-contract-address-v2", "", "address of the teritori squad staking contract V2")
 		theRiotBreedingContractAddress = fs.String("the-riot-breeding-contract-address", "", "address of the breeding contract")
 		minterCodeIDs                  = fs.String("teritori-minter-code-ids", "", "code ids of teritori minter contracts")
 		tnsDefaultImageURL             = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
@@ -228,7 +229,8 @@ func main() {
 				handler, err := indexerhandler.NewHandler(dbtx, indexerhandler.Config{
 					MinterCodeIDs:                  mcis,
 					VaultContractAddress:           *vaultContractAddress,
-					SquadStakingContractAddress:    *squadStakingContactAddress,
+					SquadStakingContractAddressV1:  *squadStakingContactAddressV1,
+					SquadStakingContractAddressV2:  *squadStakingContactAddressV2,
 					TheRiotBreedingContractAddress: *theRiotBreedingContractAddress,
 					TNSContractAddress:             *tnsContractAddress,
 					TNSDefaultImageURL:             *tnsDefaultImageURL,

@@ -159,7 +159,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 		result := h.db.Exec(`
 			UPDATE nfts AS n
 			SET 
-				locked_on = ?,
+				locked_on = ?
 			FROM 
 				teritori_collections AS tc,
 				teritori_nfts AS tn 

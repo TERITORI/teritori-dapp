@@ -2,6 +2,7 @@ package p2e
 
 import (
 	"fmt"
+	"math"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,7 +17,7 @@ func GetAllSeasons() []Season {
 	return THE_RIOT_SEASONS
 }
 
-func GetBossHp(season Season) (float32, error) {
+func GetBossHp(season Season) (int32, error) {
 	layout := "2006-01-02T15:04:05"
 	startsAt, err := time.Parse(layout, season.StartsAt)
 	if err != nil {
@@ -28,7 +29,7 @@ func GetBossHp(season Season) (float32, error) {
 		return 0, errors.Wrap(err, "failed to parsed season end time")
 	}
 
-	return float32(endsAt.Sub(startsAt).Hours() / 24), nil
+	return int32(math.Ceil(endsAt.Sub(startsAt).Hours() / 24)), nil
 }
 
 // returns: season, time passed in days, error

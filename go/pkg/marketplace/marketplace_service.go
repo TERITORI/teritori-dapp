@@ -346,7 +346,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			NetworkId:          nft.Collection.NetworkId,
 			ImageUri:           ipfsutil.IPFSURIToURL(imageURI),
 			IsListed:           nft.IsListed,
-			Price:              nft.PriceAmount,
+			Price:              nft.PriceAmount.String,
 			Denom:              nft.PriceDenom,
 			TextInsert:         textInsert,
 			OwnerId:            string(nft.OwnerID),

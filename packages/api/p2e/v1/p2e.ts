@@ -115,7 +115,7 @@ export const SeasonWithoutPrize = {
       writer.uint32(18).string(message.bossName);
     }
     if (message.bossHp !== 0) {
-      writer.uint32(29).float(message.bossHp);
+      writer.uint32(24).int32(message.bossHp);
     }
     return writer;
   },
@@ -134,7 +134,7 @@ export const SeasonWithoutPrize = {
           message.bossName = reader.string();
           break;
         case 3:
-          message.bossHp = reader.float();
+          message.bossHp = reader.int32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -156,7 +156,7 @@ export const SeasonWithoutPrize = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.bossName !== undefined && (obj.bossName = message.bossName);
-    message.bossHp !== undefined && (obj.bossHp = message.bossHp);
+    message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
     return obj;
   },
 
@@ -280,7 +280,7 @@ export const CurrentSeasonResponse = {
       writer.uint32(34).string(message.bossName);
     }
     if (message.bossHp !== 0) {
-      writer.uint32(45).float(message.bossHp);
+      writer.uint32(40).int32(message.bossHp);
     }
     if (message.remainingHp !== 0) {
       writer.uint32(53).float(message.remainingHp);
@@ -311,7 +311,7 @@ export const CurrentSeasonResponse = {
           message.bossName = reader.string();
           break;
         case 5:
-          message.bossHp = reader.float();
+          message.bossHp = reader.int32();
           break;
         case 6:
           message.remainingHp = reader.float();
@@ -345,7 +345,7 @@ export const CurrentSeasonResponse = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.totalPrize !== undefined && (obj.totalPrize = Math.round(message.totalPrize));
     message.bossName !== undefined && (obj.bossName = message.bossName);
-    message.bossHp !== undefined && (obj.bossHp = message.bossHp);
+    message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
     message.remainingHp !== undefined && (obj.remainingHp = message.remainingHp);
     message.bossImage !== undefined && (obj.bossImage = message.bossImage);
     return obj;
