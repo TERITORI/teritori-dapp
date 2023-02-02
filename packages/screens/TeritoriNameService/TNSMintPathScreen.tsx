@@ -135,7 +135,7 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
       const signingClient = await getSigningCosmWasmClient();
 
       const mintedToken = await signingClient.execute(
-        walletAddress!,
+        walletAddress,
         contractAddress,
         msg,
         "auto"

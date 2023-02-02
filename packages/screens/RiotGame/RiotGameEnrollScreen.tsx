@@ -74,7 +74,7 @@ export const RiotGameEnrollScreen = () => {
     if (selectedRippers.length === 0 || !squadStakingConfig) return 0;
 
     return estimateStakingDuration(selectedRippers, squadStakingConfig);
-  }, [selectedRippers, squadStakingConfig]);
+  }, [estimateStakingDuration, selectedRippers, squadStakingConfig]);
 
   const showRipperSelector = (slotId: number) => {
     setSelectedSlot(slotId);
@@ -164,7 +164,13 @@ export const RiotGameEnrollScreen = () => {
     ) {
       navigation.replace("RiotGameFight");
     }
-  }, [isSquadsLoaded, squadStakingConfig?.owner, squads.length]);
+  }, [
+    isSquadsLoaded,
+    navigation,
+    squadStakingConfig?.owner,
+    squadStakingConfig?.squad_count_limit,
+    squads.length,
+  ]);
 
   return (
     <GameContentView>

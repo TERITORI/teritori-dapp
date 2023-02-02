@@ -21,7 +21,7 @@ export interface NFTAttribute {
   display_type?: string;
 }
 
-export type nftDropedAdjustmentType = {
+export type NFTDropedAdjustmentType = {
   x: number;
   y: number;
   width: number;

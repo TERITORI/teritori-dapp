@@ -36,11 +36,11 @@ export const NFTSellInfo: React.FC<{
     const foo = (decPrice.toFloatApproximation() * (1 - feeGain)).toFixed(
       currency.decimals
     );
-    const willReceiveDec = Decimal.fromUserInput(foo, currency?.decimals);
+    const willReceiveDec = Decimal.fromUserInput(foo, currency.decimals);
     willReceive = prettyPrice(
       networkId,
       willReceiveDec.atomics,
-      nftInfo?.mintDenom
+      nftInfo.mintDenom
     );
   } catch {}
 

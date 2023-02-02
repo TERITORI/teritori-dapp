@@ -5,10 +5,10 @@ import { useAnimatedGestureHandler } from "react-native-reanimated";
 import { clamp } from "react-native-redash";
 
 import { primaryColor } from "../../utils/style/colors";
-import { nftDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
+import { NFTDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
 
 const NftDragResizerCorner: React.FC<{
-  nftDropedAdjustment: nftDropedAdjustmentType;
+  nftDropedAdjustment: NFTDropedAdjustmentType;
   oldNftPositions: FooterNftData[];
   style: ViewStyle | ViewStyle[];
   onResize: (adjustment: {

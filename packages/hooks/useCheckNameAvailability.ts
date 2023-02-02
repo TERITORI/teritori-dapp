@@ -67,7 +67,7 @@ export const useCheckNameAvailability = (name: string, tokens: string[]) => {
           message: e.message,
         });
       });
-  }, [name]);
+  }, [name, setToastError, tokens]);
 
   return { nameAvailable, nameError, loading };
 };

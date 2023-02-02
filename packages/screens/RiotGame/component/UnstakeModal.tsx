@@ -15,7 +15,7 @@ import { Squad } from "../../../contracts-clients/teritori-squad-staking/Teritor
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
-import { durationToXP } from "../../../utils/game";
+import { durationToXP, THE_RIOT_COLLECTION_ID } from "../../../utils/game";
 import {
   mineShaftColor,
   neutral77,
@@ -23,7 +23,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { THE_RIOT_COLLECTION_ID } from "../settings";
 
 type UnstakeModalProps = {
   visible?: boolean;
@@ -82,7 +81,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
 
         <BrandText style={fontSemibold20}>
           {tinyAddress(
-            tnsMetadata?.metadata?.tokenId || selectedWallet?.address || ""
+            tnsMetadata.metadata?.tokenId || selectedWallet?.address || ""
           )}
         </BrandText>
 

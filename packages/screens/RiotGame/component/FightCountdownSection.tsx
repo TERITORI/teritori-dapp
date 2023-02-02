@@ -68,7 +68,7 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
       remainingTime,
       stakingState,
     };
-  }, [now, cooldown]);
+  }, [squad.start_time, squad.end_time, cooldown, now]);
 
   const isOnGoing = stakingState === StakingState.ONGOING;
   const isCompleted = stakingState === StakingState.COMPLETED;

@@ -14,12 +14,10 @@ import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
 import { NFT } from "../api/marketplace/v1/marketplace";
-import { Nft as SquadStakeNFT } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import {
-  DURATION_TO_XP_COEF,
-  THE_RIOT_BREEDING_CONTRACT_ADDRESS,
-  THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
-} from "../screens/RiotGame/settings";
+  GetConfigResponse,
+  Nft as SquadStakeNFT,
+} from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import {
   GameBgCardItem,
   RipperRarity,
@@ -94,7 +92,7 @@ export const getRipperTraitValue = (
   ripper: NFT,
   traitType: RipperTraitType
 ) => {
-  let res: any = ripper?.attributes.find(
+  let res: any = ripper.attributes.find(
     (attr) => attr.traitType === traitType
   )?.value;
 
@@ -344,3 +342,39 @@ export const gameBgData: GameBgCardItem[] = [
   { id: 49, type: "BLANK" },
   { id: 50, type: "BLANK" },
 ];
+
+export const estimateStakingDuration = (
+  rippers: NFT[],
+  squadStakingConfig: GetConfigResponse
+) => {
+  const bonusMultiplier = squadStakingConfig.bonus_multiplier;
+
+  let duration = 0;
+
+  const ripperCount = rippers.length;
+  if (ripperCount > 0) {
+    // Get base stamina from Squad leader at slot 0
+    const baseStamina = getRipperTraitValue(rippers[0], "Stamina");
+    duration =
+      baseStamina * SQUAD_STAKE_COEF * (bonusMultiplier[ripperCount - 1] / 100);
+  }
+
+  return duration * 60 * 60 * 1000; // Convert to milliseconds
+};
+
+export const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
+export const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
+
+export const THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS =
+  process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS_V2 || "";
+
+export const THE_RIOT_COLLECTION_ADDRESS =
+  process.env.THE_RIOT_COLLECTION_ADDRESS || "";
+
+export const THE_RIOT_COLLECTION_ID = `tori-${THE_RIOT_COLLECTION_ADDRESS}`;
+
+export const THE_RIOT_BREEDING_CONTRACT_ADDRESS =
+  process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS || "";
+
+export const TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS =
+  process.env.TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS || "";

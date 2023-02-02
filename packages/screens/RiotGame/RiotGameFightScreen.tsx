@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import addCircleSFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
@@ -29,13 +29,19 @@ export const RiotGameFightScreen = () => {
 
   const [now, setNow] = useState<number>(0);
 
-  const isCompleted = (squad: Squad) => now - squad.end_time * 1000 >= 0;
+  const isCompleted = useCallback(
+    (squad: Squad) => now - squad.end_time * 1000 >= 0,
+    [now]
+  );
 
   const ongoingSquads = useMemo(
     () => squads.filter((m) => !isCompleted(m)),
-    [now]
+    [isCompleted, squads]
   );
-  const completedSquads = useMemo(() => squads.filter(isCompleted), [now]);
+  const completedSquads = useMemo(
+    () => squads.filter(isCompleted),
+    [isCompleted, squads]
+  );
 
   const gotoMarketplace = () => {
     navigation.navigate("RiotGameMarketplace");
@@ -59,7 +65,7 @@ export const RiotGameFightScreen = () => {
     if (isSquadsLoaded && squadStakingConfig?.owner && squads.length === 0) {
       navigation.replace("RiotGameEnroll");
     }
-  }, [isSquadsLoaded, squadStakingConfig?.owner, squads.length]);
+  }, [isSquadsLoaded, navigation, squadStakingConfig?.owner, squads.length]);
 
   return (
     <GameContentView bgImage={{ uri: FIGHT_BG_URI }}>

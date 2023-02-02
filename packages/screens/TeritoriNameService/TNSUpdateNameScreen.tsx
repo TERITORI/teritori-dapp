@@ -101,7 +101,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
       const signingClient = await getSigningCosmWasmClient();
 
       const updatedToken = await signingClient.execute(
-        walletAddress!,
+        walletAddress,
         contractAddress,
         msg,
         "auto"

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Image, ImageBackground, StyleSheet } from "react-native";
 
 import brokenBoxPNG from "../../../../assets/game/broken-box.png";
@@ -15,7 +15,7 @@ export const FightBossSection: React.FC = () => {
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
   const { setToastError } = useFeedbacks();
 
-  const fetchCurrentSeason = async () => {
+  const fetchCurrentSeason = useCallback(async () => {
     try {
       const currentSeason = await p2eBackendClient.CurrentSeason({});
       setCurrentSeason(currentSeason);
@@ -25,20 +25,20 @@ export const FightBossSection: React.FC = () => {
       }
       throw e;
     }
-  };
+  }, [setToastError]);
 
   const remainingPercentage = useMemo(() => {
     if (!currentSeason?.bossHp) return 100;
 
     return (
-      Math.round((10000 * currentSeason?.remainingHp) / currentSeason?.bossHp) /
+      Math.round((10000 * currentSeason.remainingHp) / currentSeason.bossHp) /
       100
     );
-  }, [currentSeason?.remainingHp]);
+  }, [currentSeason?.bossHp, currentSeason?.remainingHp]);
 
   useEffect(() => {
     fetchCurrentSeason();
-  }, []);
+  }, [fetchCurrentSeason]);
 
   return (
     <ImageBackground

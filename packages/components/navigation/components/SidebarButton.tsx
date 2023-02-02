@@ -62,7 +62,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
     } else {
       return route === currentRouteName;
     }
-  }, [isNestedBarExpanded, currentRouteName, nested]);
+  }, [nested, allNestedRoutes, currentRouteName, isNestedBarExpanded, route]);
 
   // hooks
   useEffect(() => {
@@ -75,7 +75,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
     } else if (!isFocused && isNestedBarExpanded) {
       setIsNestedBarExpanded(false);
     }
-  }, [currentRouteName, isFocused]);
+  }, [allNestedRoutes, currentRouteName, isFocused, isNestedBarExpanded]);
 
   // functions
   const toggleNestedSidebar = () =>

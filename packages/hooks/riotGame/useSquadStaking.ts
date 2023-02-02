@@ -7,14 +7,12 @@ import {
   TeritoriSquadStakingQueryClient,
 } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
 import {
-  SQUAD_STAKE_COEF,
-  THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
-} from "../../screens/RiotGame/settings";
-import {
   buildApproveNFTMsg,
   buildStakingMsg,
   getRipperTraitValue,
   getRipperTokenId,
+  THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
+  SQUAD_STAKE_COEF,
 } from "../../utils/game";
 import {
   getNonSigningCosmWasmClient,
@@ -36,67 +34,53 @@ export const useSquadStaking = () => {
   const [isSquadsLoaded, setIsSquadsLoaded] = useState<boolean>(false);
   const selectedWallet = useSelectedWallet();
 
-  const getSquadStakingQueryClient = useCallback(async () => {
-    const nonSigningClient = await getNonSigningCosmWasmClient();
-    return new TeritoriSquadStakingQueryClient(
-      nonSigningClient,
-      THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS
-    );
-  }, []);
+  const squadStake = useCallback(
+    async (selectedRippers: NFT[]) => {
+      const client = await getSigningCosmWasmClient();
+      const sender = selectedWallet?.address || "";
 
-  const getSquadStakingClient = useCallback(async (sender: string) => {
-    const signingClient = await getSigningCosmWasmClient();
-    return new TeritoriSquadStakingClient(
-      signingClient,
-      sender,
-      THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS
-    );
-  }, []);
+      const selectedNfts: SquadStakeNFT[] = [];
+      for (const selectedRipper of selectedRippers) {
+        const tokenId = getRipperTokenId(selectedRipper);
 
-  const squadStake = async (selectedRippers: NFT[]) => {
-    const client = await getSigningCosmWasmClient();
-    const sender = selectedWallet?.address || "";
+        selectedNfts.push({
+          contract_addr: selectedRipper.nftContractAddress,
+          token_id: tokenId,
+        });
+      }
 
-    const selectedNfts: SquadStakeNFT[] = [];
-    for (const selectedRipper of selectedRippers) {
-      const tokenId = getRipperTokenId(selectedRipper);
+      const approveMsgs = [];
+      for (const selectedNft of selectedNfts) {
+        const msg = buildApproveNFTMsg(
+          sender,
+          THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
+          selectedNft.token_id,
+          selectedNft.contract_addr
+        );
+        approveMsgs.push(msg);
+      }
 
-      selectedNfts.push({
-        contract_addr: selectedRipper.nftContractAddress,
-        token_id: tokenId,
-      });
-    }
+      const stakeMsg = buildStakingMsg(sender, selectedNfts);
+      const msgs = [...approveMsgs, stakeMsg];
 
-    const approveMsgs = [];
-    for (const selectedNft of selectedNfts) {
-      const msg = buildApproveNFTMsg(
-        sender,
-        THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
-        selectedNft.token_id,
-        selectedNft.contract_addr
-      );
-      approveMsgs.push(msg);
-    }
+      const tx = await client.signAndBroadcast(sender, msgs, "auto");
 
-    const stakeMsg = buildStakingMsg(sender, selectedNfts);
-    const msgs = [...approveMsgs, stakeMsg];
+      if (isDeliverTxFailure(tx)) {
+        throw Error(tx.transactionHash);
+      }
 
-    const tx = await client.signAndBroadcast(sender, msgs, "auto");
+      return tx;
+    },
+    [selectedWallet?.address]
+  );
 
-    if (isDeliverTxFailure(tx)) {
-      throw Error(tx.transactionHash);
-    }
-
-    return tx;
-  };
-
-  const fetchSquadStakingConfig = async () => {
+  const fetchSquadStakingConfig = useCallback(async () => {
     const squadStakingQueryClient = await getSquadStakingQueryClient();
     const config: GetConfigResponse = await squadStakingQueryClient.getConfig();
     setSquadStakingConfig(config);
-  };
+  }, []);
 
-  const fetchSquadSeason1 = async (user: string) => {
+  const fetchSquadSeason1 = useCallback(async (user: string) => {
     try {
       const nonSigningClient = await getNonSigningCosmWasmClient();
       const client = new TeritoriSquadStakingQueryClient(
@@ -116,9 +100,9 @@ export const useSquadStaking = () => {
         throw e;
       }
     }
-  };
+  }, []);
 
-  const fetchSquads = async (user: string) => {
+  const fetchSquads = useCallback(async (user: string) => {
     try {
       const queryClient = await getSquadStakingQueryClient();
       const squads: GetSquadResponse = await queryClient.getSquad({
@@ -134,9 +118,9 @@ export const useSquadStaking = () => {
     } finally {
       setIsSquadsLoaded(true);
     }
-  };
+  }, []);
 
-  const squadWithdrawSeason1 = async (user: string) => {
+  const squadWithdrawSeason1 = useCallback(async (user: string) => {
     const signingClient = await getSigningCosmWasmClient();
     const client = new TeritoriSquadStakingClient(
       signingClient,
@@ -144,33 +128,33 @@ export const useSquadStaking = () => {
       process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS_V1 || ""
     );
     return await client.withdraw();
-  };
+  }, []);
 
-  const squadWithdraw = async (user: string) => {
+  const squadWithdraw = useCallback(async (user: string) => {
     const squadStakingClient = await getSquadStakingClient(user);
     return await squadStakingClient.withdraw();
-  };
+  }, []);
 
-  const estimateStakingDuration = (
-    rippers: NFT[],
-    squadStakingConfig: GetConfigResponse
-  ) => {
-    const bonusMultiplier = squadStakingConfig.bonus_multiplier;
+  const estimateStakingDuration = useCallback(
+    (rippers: NFT[], squadStakingConfig: GetConfigResponse) => {
+      const bonusMultiplier = squadStakingConfig.bonus_multiplier;
 
-    let duration = 0;
+      let duration = 0;
 
-    const ripperCount = rippers.length;
-    if (ripperCount > 0) {
-      // Get base stamina from Squad leader at slot 0
-      const baseStamina = getRipperTraitValue(rippers[0], "Stamina");
-      duration =
-        baseStamina *
-        SQUAD_STAKE_COEF *
-        (bonusMultiplier[ripperCount - 1] / 100);
-    }
+      const ripperCount = rippers.length;
+      if (ripperCount > 0) {
+        // Get base stamina from Squad leader at slot 0
+        const baseStamina = getRipperTraitValue(rippers[0], "Stamina");
+        duration =
+          baseStamina *
+          SQUAD_STAKE_COEF *
+          (bonusMultiplier[ripperCount - 1] / 100);
+      }
 
-    return duration * 60 * 60 * 1000; // Convert to milliseconds
-  };
+      return duration * 60 * 60 * 1000; // Convert to milliseconds
+    },
+    []
+  );
 
   useEffect(() => {
     if (!selectedWallet?.address) return;
@@ -178,7 +162,12 @@ export const useSquadStaking = () => {
     fetchSquadStakingConfig();
     fetchSquads(selectedWallet.address);
     fetchSquadSeason1(selectedWallet.address);
-  }, [selectedWallet?.address]); // Use attributes as dependencies to avoid deep compare
+  }, [
+    fetchSquadSeason1,
+    fetchSquadStakingConfig,
+    fetchSquads,
+    selectedWallet?.address,
+  ]); // Use attributes as dependencies to avoid deep compare
 
   return {
     currentUser: selectedWallet?.address,
@@ -194,4 +183,21 @@ export const useSquadStaking = () => {
     fetchSquads,
     squadSeason1,
   };
+};
+
+const getSquadStakingClient = async (sender: string) => {
+  const signingClient = await getSigningCosmWasmClient();
+  return new TeritoriSquadStakingClient(
+    signingClient,
+    sender,
+    THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS
+  );
+};
+
+const getSquadStakingQueryClient = async () => {
+  const nonSigningClient = await getNonSigningCosmWasmClient();
+  return new TeritoriSquadStakingQueryClient(
+    nonSigningClient,
+    THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS
+  );
 };

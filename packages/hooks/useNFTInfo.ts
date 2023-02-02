@@ -75,7 +75,7 @@ export const useNFTInfo = (id: string, wallet: string | undefined) => {
       }
     };
     effect();
-  }, [id, wallet, refreshIndex, breedingConfig?.owner]);
+  }, [id, wallet, refreshIndex, breedingConfig]);
 
   return { info, refresh, notFound, loading };
 };
@@ -263,7 +263,7 @@ const getStandardNFTInfo = async (
     });
 
     breedingsAvailable = Math.max(
-      (breedingConfig?.breed_count_limit || 0) - breededCount,
+      (breedingConfig.breed_count_limit || 0) - breededCount,
       0
     );
   }
@@ -295,11 +295,11 @@ const getStandardNFTInfo = async (
     description = nftMetadata.description;
     attributes = nftMetadata.attributes;
   } else if (nftInfo.extension?.image) {
-    name = (nftInfo.extension?.name as any) || "";
-    image = (nftInfo.extension?.image as any) || "";
-    description = (nftInfo.extension?.description as any) || "";
-    attributes = (nftInfo.extension?.attributes as any) || [];
-    royalties = ((nftInfo.extension?.royalty_percentage as number) || 0) / 100;
+    name = (nftInfo.extension.name as any) || "";
+    image = (nftInfo.extension.image as any) || "";
+    description = (nftInfo.extension.description as any) || "";
+    attributes = (nftInfo.extension.attributes as any) || [];
+    royalties = ((nftInfo.extension.royalty_percentage as number) || 0) / 100;
   }
   // ======== Getting NFT owner
   const { owner } = await nftClient.ownerOf({ tokenId });
@@ -397,11 +397,11 @@ const getRiotBreedingNFTInfo = async (
     description = nftMetadata.description;
     attributes = nftMetadata.attributes;
   } else if (nftInfo.extension?.image) {
-    name = (nftInfo.extension?.name as any) || "";
-    image = (nftInfo.extension?.image as any) || "";
-    description = (nftInfo.extension?.description as any) || "";
-    attributes = (nftInfo.extension?.attributes as any) || [];
-    royalties = ((nftInfo.extension?.royalty_percentage as number) || 0) / 100;
+    name = (nftInfo.extension.name as any) || "";
+    image = (nftInfo.extension.image as any) || "";
+    description = (nftInfo.extension.description as any) || "";
+    attributes = (nftInfo.extension.attributes as any) || [];
+    royalties = ((nftInfo.extension.royalty_percentage as number) || 0) / 100;
   }
   // ======== Getting NFT owner
   const { owner } = await nftClient.ownerOf({ tokenId });

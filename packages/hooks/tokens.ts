@@ -68,7 +68,7 @@ export function useTokenList() {
     };
 
     getTokens();
-  }, [tokens.length, startAfter, selectedWallet?.address]);
+  }, [tokens.length, startAfter, selectedWallet?.address, contract]);
 
   return {
     pathsAndTokens,
@@ -136,7 +136,7 @@ export function useToken(tokenId: string, tld: string) {
           });
         });
     }
-  }, [tokenId]);
+  }, [contract, setToastError, tld, tokenId]);
 
   return { token, loadingToken, notFound };
 }

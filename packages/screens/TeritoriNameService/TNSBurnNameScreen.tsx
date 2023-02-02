@@ -65,7 +65,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       const walletAddress = (await getFirstKeplrAccount()).address;
 
       const updatedToken = await signingClient.execute(
-        walletAddress!,
+        walletAddress,
         contractAddress,
         msg,
         "auto"

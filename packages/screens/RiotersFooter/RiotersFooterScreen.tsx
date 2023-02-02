@@ -47,7 +47,7 @@ import {
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { toriCurrency } from "../../utils/teritori";
-import { nftDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
+import { NFTDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
 
 export const RiotersFooterScreen: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
@@ -63,7 +63,7 @@ export const RiotersFooterScreen: React.FC = () => {
 
   const [nftDroped, setNftDroped] = useState<NFT | undefined>(undefined);
   const [nftDropedAdjustment, setNftDropedAdjustment] = useState<
-    nftDropedAdjustmentType | undefined
+    NFTDropedAdjustmentType | undefined
   >(undefined);
 
   const [oldNftPositions, setOldNftPositions] = useState<FooterNftData[]>([]);
@@ -112,7 +112,7 @@ export const RiotersFooterScreen: React.FC = () => {
       setPrice(await getPrice());
     };
     effect();
-  }, [nftDropedAdjustment, client]);
+  }, [nftDropedAdjustment, client, getPrice]);
 
   useEffect(() => {
     const effect = async () => {
@@ -189,7 +189,7 @@ export const RiotersFooterScreen: React.FC = () => {
       (collection) => collection.id === nftCollectionId
     );
     setCurrentCollection(current);
-  }, [nftCollectionId]);
+  }, [collections, nftCollectionId]);
 
   const MapNftType = new Map([
     [
@@ -212,7 +212,7 @@ export const RiotersFooterScreen: React.FC = () => {
 
     const rioterFooterClient = new RioterFooterNftClient(
       cosmwasmClientSignIn,
-      wallet?.address,
+      wallet.address,
       process.env.RIOTERS_FOOTER_CONTRACT_ADDRESS || ""
     );
     if (!rioterFooterClient) return;
@@ -253,14 +253,14 @@ export const RiotersFooterScreen: React.FC = () => {
           },
         ]
       );
-      setTransactionHash(response?.transactionHash);
+      setTransactionHash(response.transactionHash);
       setTransactionPendingModalVisible(false);
       setTransactionSuccessModalVisible(true);
     } catch (e) {
       setTransactionPendingModalVisible(false);
       console.log("error", e);
     }
-  }, [nftDropedAdjustment, nftDroped, client]);
+  }, [getPrice, nftDropedAdjustment, wallet, nftDroped?.id]);
 
   const isCloseToBottom = useCallback(
     ({ layoutMeasurement, contentOffset, contentSize }: NativeScrollEvent) => {
@@ -422,7 +422,7 @@ export const RiotersFooterScreen: React.FC = () => {
               style={{
                 alignSelf: "center",
                 marginTop: 43,
-                zIndex: (oldNftPositions?.length || 0) + 3,
+                zIndex: (oldNftPositions.length || 0) + 3,
               }}
             />
             {oldNftPositions &&
