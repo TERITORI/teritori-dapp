@@ -16,7 +16,7 @@ import { Quests } from "../Quests";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
-import { UserImage } from "../images/UserImage";
+import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { Tabs } from "../tabs/Tabs";
 import { ProfileButton } from "./ProfileButton";
 
@@ -47,6 +47,11 @@ const ConnectedIntro: React.FC = () => {
         width: "100%",
       }}
     >
+      {/*<AvatarWithFrame*/}
+      {/*  isLoading={tnsMetadata?.loading}*/}
+      {/*  image={tnsMetadata?.metadata?.image}*/}
+      {/*  size="XL"*/}
+      {/*/>*/}
       <UserImage networkId={networkId} imageURI={userInfo.metadata?.image} />
 
       <ProfileButton touchableStyle={{ marginTop: 40 }} />

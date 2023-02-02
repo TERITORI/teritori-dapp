@@ -6,6 +6,8 @@ import {
   Pressable,
   StyleProp,
   StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
   View,
   ViewStyle,
 } from "react-native";
@@ -69,6 +71,7 @@ export interface SocialCommentCardProps {
 }
 
 const MARGIN_HEIGHT = 56;
+const breakpoint = 1110;
 
 export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   style,
@@ -82,6 +85,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   parentOffsetValue = 0,
 }) => {
   const imageMarginRight = layout.padding_x3_5;
+  const { width: windowWidth } = useWindowDimensions();
   const [localComment, setLocalComment] = useState({ ...comment });
   const navigation = useAppNavigation();
   const [replyShown, setReplyShown] = useState(false);
@@ -195,18 +199,22 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           </AnimationFadeInOut>
 
           <View style={styles.commentContainerInside}>
-            <AvatarWithFrame
-              image={postByTNSMetadata?.metadata?.image}
-              style={{
-                marginRight: imageMarginRight,
-              }}
-              size={68}
+            <TouchableOpacity
               onPress={() =>
                 navigation.navigate("UserPublicProfile", {
                   id: `tori-${localComment.post_by}`,
                 })
               }
-            />
+              style={{
+                marginRight: imageMarginRight,
+              }}
+            >
+              <AvatarWithFrame
+                isLoading={postByTNSMetadata?.loading}
+                image={postByTNSMetadata?.metadata?.image}
+                size={windowWidth < breakpoint ? "M" : "L"}
+              />
+            </TouchableOpacity>
             <View style={styles.content}>
               <View style={styles.detailsContainer}>
                 <View style={styles.rowCenter}>
@@ -360,8 +368,8 @@ const styles = StyleSheet.create({
     width: 60,
     height: 10,
     marginTop: 70,
-    borderLeftWidth: 2,
-    borderBottomWidth: 2,
+    borderLeftWidth: 1,
+    borderBottomWidth: 1,
     borderBottomLeftRadius: 30,
     borderColor: neutral22,
   },

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Pressable,
+  useWindowDimensions,
 } from "react-native";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
@@ -13,7 +14,6 @@ import { SendFundModal } from "../../components/modals/teritoriNameService/TNSSe
 import { useTNS } from "../../context/TNSProvider";
 import { useTeritoriSocialFeedReactPostMutation } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
@@ -38,7 +38,6 @@ import { EmojiSelector } from "../EmojiSelector";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { SocialActions, socialActionsHeight } from "../SocialActions";
 import {
-  SectionDivider,
   SocialReactionActions,
 } from "../SocialReactionActions";
 import { SocialThreadContent } from "../SocialThread/SocialThreadContent";
@@ -49,17 +48,7 @@ import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { FeedPostShareModal } from "../modals/FeedPostShareModal";
 import { SpacerRow } from "../spacer";
 
-export const getResponsiveAvatarSize = (width: number) => {
-  if (width >= 992) {
-    return 92;
-  } else if (width >= 768) {
-    return 48;
-  } else if (width >= 576) {
-    return 32;
-  } else {
-    return 24;
-  }
-};
+const breakpoint = 1110;
 
 export const SocialThreadCard: React.FC<{
   post: PostResult;
@@ -82,7 +71,7 @@ export const SocialThreadCard: React.FC<{
   const { setName } = useTNS();
   const imageMarginRight = layout.padding_x3_5;
   const tertiaryBoxPaddingHorizontal = layout.padding_x3;
-  const { width: containerWidth } = useMaxResolution();
+  const { width: windowWidth } = useWindowDimensions();
   const { mutate, isLoading: isReactLoading } =
     useTeritoriSocialFeedReactPostMutation({
       onSuccess(_data, variables) {
@@ -153,20 +142,22 @@ export const SocialThreadCard: React.FC<{
           ]}
         >
           <View style={{ flexDirection: "row", flex: 1 }}>
-            <AvatarWithFrame
+            <TouchableOpacity
               onPress={() =>
                 navigation.navigate("UserPublicProfile", {
                   id: `tori-${localPost.post_by}`,
                 })
               }
-              image={postByTNSMetadata?.metadata?.image}
               style={{
                 marginRight: imageMarginRight,
               }}
-              size={singleView ? 68 : getResponsiveAvatarSize(containerWidth)}
-              isLoading={postByTNSMetadata.loading}
-            />
-
+            >
+              <AvatarWithFrame
+                image={postByTNSMetadata?.metadata?.image}
+                size={windowWidth < breakpoint ? "M" : "L"}
+                isLoading={postByTNSMetadata.loading}
+              />
+            </TouchableOpacity>
             <View
               style={{
                 flex: 1,
