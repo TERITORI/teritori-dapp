@@ -33,6 +33,7 @@ export const LogoDesignMenu: React.FC = () => {
         marginBottom: 70,
         alignSelf: "center",
         width: 1290,
+        zIndex: 2,
       }}
     >
       <View
