@@ -37,12 +37,17 @@ import { DateTime } from "../DateTime";
 import { EmojiSelector } from "../EmojiSelector";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { SocialActions, socialActionsHeight } from "../SocialActions";
-import { SocialReactionActions } from "../SocialReactionActions";
+import {
+  SectionDivider,
+  SocialReactionActions,
+} from "../SocialReactionActions";
 import { SocialThreadContent } from "../SocialThread/SocialThreadContent";
 import { tinyAddress } from "../WalletSelector";
 import { AnimationFadeIn } from "../animations";
 import { DotBadge } from "../badges/DotBadge";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
+import { FeedPostShareModal } from "../modals/FeedPostShareModal";
+import { SpacerRow } from "../spacer";
 
 export const getResponsiveAvatarSize = (width: number) => {
   if (width >= 992) {
@@ -245,6 +250,7 @@ export const SocialThreadCard: React.FC<{
                     onPressReaction={handleReaction}
                     showEmojiSelector
                     isReactionLoading={isReactLoading}
+                    postId={localPost.identifier}
                     isTippable={
                       postByTNSMetadata.metadata?.tokenId !==
                       currentUserMetadata?.metadata?.tokenId
@@ -277,11 +283,14 @@ export const SocialThreadCard: React.FC<{
         )}
 
         {!singleView && (
-          <EmojiSelector
-            containerStyle={styles.container}
-            onEmojiSelected={handleReaction}
-            isLoading={isReactLoading}
-          />
+          <View style={styles.container}>
+            <EmojiSelector
+              onEmojiSelected={handleReaction}
+              isLoading={isReactLoading}
+            />
+            <SpacerRow size={layout.padding_x0_25} />
+            <FeedPostShareModal postId={localPost.identifier} />
+          </View>
         )}
         <SendFundModal
           onClose={() => {
@@ -298,9 +307,11 @@ export const SocialThreadCard: React.FC<{
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 20,
+    bottom: 38,
     right: 20,
     zIndex: 9,
+    flexDirection: "row",
+    alignItems: "center",
   },
 
   actionContainer: {
