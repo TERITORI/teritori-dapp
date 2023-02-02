@@ -23,9 +23,13 @@ export const useFetchFeed = () => {
   const req = useInfiniteQuery<FetchFeedResponse>(
     ["FetchFeed", wallet?.address],
     async ({ pageParam }) => {
+      if (!wallet?.address) {
+        return;
+      }
       try {
-        //@ts-ignore
-        const client = await socialFeedClient({});
+        const client = await socialFeedClient({
+          walletAddress: wallet?.address,
+        });
 
         const mainPosts = await client.queryMainPosts({
           count: 10,

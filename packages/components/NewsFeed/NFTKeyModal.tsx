@@ -83,7 +83,7 @@ export const NFTKeyModal: React.FC<NFTKeyModalProps> = ({ onClose }) => {
           <PrimaryButton
             squaresBackgroundColor={neutral17}
             text="Submit"
-            disabled={apiKey.trim().length !== 235}
+            disabled={!apiKey.trim().length}
             size="M"
             style={{
               marginLeft: layout.padding_x2,
