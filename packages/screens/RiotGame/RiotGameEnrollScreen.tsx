@@ -8,7 +8,6 @@ import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../components/spacer";
@@ -137,7 +136,7 @@ export const RiotGameEnrollScreen = () => {
         <BrandText style={styles.pageTitle}>Send to fight</BrandText>
       </View>
 
-      <FlexRow breakpoint={1080} style={styles.enrollContainer}>
+      <View style={styles.enrollContainer}>
         <View style={styles.col}>
           <BrandText style={styles.sectionTitle}>
             Enroll your Ripper(s)
@@ -200,7 +199,7 @@ export const RiotGameEnrollScreen = () => {
             />
           </View>
         </View>
-      </FlexRow>
+      </View>
 
       <View style={{ flexDirection: "row", justifyContent: "center" }}>
         {squads.length > 0 && (
@@ -250,6 +249,8 @@ const styles = StyleSheet.create({
   enrollContainer: {
     justifyContent: "space-around",
     marginTop: layout.padding_x1,
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   col: {
     justifyContent: "center",
