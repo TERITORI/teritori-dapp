@@ -13,6 +13,7 @@ import { Metadata } from "../../contracts-clients/teritori-name-service/Teritori
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral00, neutral55, purpleDefault } from "../../utils/style/colors";
 import { fontBold16, fontMedium14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 
 export const PublicProfileIntro: React.FC<{
   userId: string;
@@ -30,44 +31,46 @@ export const PublicProfileIntro: React.FC<{
           }}
           style={{ height: 320, width: "100%" }}
         />
-        <View
+        <AvatarWithFrame
+          image={metadata?.image}
+          size="XL"
           style={{
             position: "absolute",
-            top: 217,
-            left: 16,
-            alignItems: "center",
+            top: 100,
+            left: 24,
           }}
-        >
-          <AvatarWithFrame image={metadata?.image} />
-          <View style={{ marginTop: 5, alignItems: "center" }}>
-            <BrandText style={[fontBold16]}>{metadata?.public_name}</BrandText>
-            <BrandText
-              style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
-            >
-              @{metadata?.tokenId || ""}
-            </BrandText>
-          </View>
-        </View>
-
+        />
         <View
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: 54,
+            alignItems: "center",
+            marginTop: layout.padding_x3,
           }}
         >
-          <View
-            style={{
-              marginTop: 50,
-            }}
-          >
+          <View>
+            <View
+              style={{
+                marginBottom: layout.padding_x1_5,
+              }}
+            >
+              <BrandText style={[fontBold16]}>
+                {metadata?.public_name}
+              </BrandText>
+              <BrandText
+                style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
+              >
+                @{metadata?.tokenId || ""}
+              </BrandText>
+            </View>
+
             <BrandText style={[fontMedium14, { maxWidth: 500 }]}>
               {metadata?.public_bio}
             </BrandText>
 
             <View
               style={{
-                marginVertical: 16,
+                marginVertical: layout.padding_x1_5,
                 flexDirection: "row",
               }}
             >

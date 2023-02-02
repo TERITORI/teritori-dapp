@@ -20,12 +20,13 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 import { ProfileButton } from "../hub/ProfileButton";
-import { UserImage } from "../images/UserImage";
+import { AvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const UPPIntro: React.FC<{
   userId: string;
   isUserOwner?: boolean;
-}> = ({ userId, isUserOwner }) => {
+  isLoading?: boolean;
+}> = ({ userId, isUserOwner, isLoading }) => {
   const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const { width } = useWindowDimensions();
@@ -109,12 +110,31 @@ export const UPPIntro: React.FC<{
             isEdit
           />
         )}
+        {/*<AvatarWithFrame*/}
+        {/*  isLoading={isLoading}*/}
+        {/*  image={metadata?.image}*/}
+        {/*  style={{*/}
+        {/*    position: "absolute",*/}
+        {/*    top: 217,*/}
+        {/*    left: 16,*/}
+        {/*  }}*/}
+        {/*  size="XL"*/}
+        {/*/>*/}
         <UserImage
           networkId={network?.id}
           imageURI={metadata?.image}
           style={{
             position: "absolute",
             top: 217,
+            left: 16,
+          }}
+          size="XL"
+        />
+
+        <View
+          style={{
+            position: "absolute",
+            top: 420,
             left: 16,
           }}
         >
@@ -136,7 +156,7 @@ export const UPPIntro: React.FC<{
           >
             {metadata?.public_bio || ""}
           </BrandText>
-        </UserImage>
+        </View>
       </TertiaryBox>
 
       <View
