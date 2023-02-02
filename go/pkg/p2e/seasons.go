@@ -55,7 +55,7 @@ var THE_RIOT_SEASONS = []Season{
 		BossImage:  "https://bafybeigidzbfvy6t2a3cjff4zc2e6kk36uml5nn6acyuxaiwyvuuq6ww3a.ipfs.nftstorage.link/",
 		TopN:       500,
 		StartsAt:   "2023-01-31T01:00:00",
-		EndsAt:     "2023-02-31T01:00:00",
+		EndsAt:     "2023-02-28T01:00:00",
 	},
 
 	// {ID: "Season 3", GameID: THE_RIOT_GAME_ID, TotalPrize: 1_620_000, Denom: "tori", Decimals: 6, BossDefaultName: "Boss", BossHp: 30, TopN: 500},
