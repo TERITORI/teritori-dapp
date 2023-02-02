@@ -1,12 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
-  ActivityIndicator,
   Image,
-  ImageStyle,
-  Pressable,
   StyleProp,
   View,
   ViewStyle,
+  StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 
 import userImageFrameSVG from "../../../assets/user-image-frame.svg";
@@ -14,57 +13,96 @@ import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations";
 
-interface AvatarWithFrameProps {
-  image: string | null | undefined;
-  style?: StyleProp<ViewStyle>;
-  size?: number;
-  isLoading?: boolean;
-  onPress?(): void;
-}
+type AvatarWithFrameSize = "XL" | "L" | "M";
 
-export const AvatarWithFrame: React.FC<AvatarWithFrameProps> = ({
-  image,
-  style,
-  size = 92,
-  isLoading,
-  onPress,
-}) => {
-  const sizeStyle: ImageStyle = {
-    top: size * 0.24,
-    left: size * 0.24,
-    zIndex: 2,
-    position: "absolute",
-    borderRadius: 24,
-    width: size,
-    height: size,
-    justifyContent: "center",
-  };
+export const AvatarWithFrame: React.FC<{
+  image: string | null | undefined;
+  size: AvatarWithFrameSize;
+  isLoading?: boolean;
+  style?: StyleProp<ViewStyle>;
+}> = ({ image, size, isLoading, style }) => {
+  const sizedStyles = useMemo(
+    () => StyleSheet.flatten(flatStyles[size]),
+    [size]
+  );
 
   return (
-    <Pressable style={style} onPress={onPress}>
+    <View style={[styles.container, style]}>
+      <SVG
+        source={userImageFrameSVG}
+        width={sizedStyles.frame.width}
+        height={sizedStyles.frame.height}
+      />
+
       {isLoading ? (
-        <View style={sizeStyle}>
-          <ActivityIndicator />
-        </View>
+        <ActivityIndicator
+          size={sizedStyles.image.width * 0.5}
+          style={styles.absolute}
+        />
       ) : (
-        <AnimationFadeIn>
+        <AnimationFadeIn style={styles.absolute}>
           <Image
+            resizeMode="contain"
             source={{
               uri: ipfsURLToHTTPURL(
                 image
                   ? image
                   : process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
               ),
-            }} // TODO: proper fallback
-            style={sizeStyle}
+            }}
+            style={sizedStyles.image}
           />
         </AnimationFadeIn>
       )}
-      <SVG
-        source={userImageFrameSVG}
-        width={size * 1.51}
-        height={size * 1.51}
-      />
-    </Pressable>
+    </View>
   );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  absolute: {
+    position: "absolute",
+    zIndex: 2,
+  },
+});
+
+const flatStyles = {
+  XL: {
+    image: {
+      width: 132,
+      height: 132,
+      borderRadius: 24,
+    },
+    frame: {
+      width: 196,
+      height: 196,
+    },
+  },
+
+  L: {
+    image: {
+      width: 62,
+      height: 62,
+      borderRadius: 11,
+    },
+    frame: {
+      width: 92,
+      height: 92,
+    },
+  },
+
+  M: {
+    image: {
+      width: 46,
+      height: 46,
+      borderRadius: 8,
+    },
+    frame: {
+      width: 68,
+      height: 68,
+    },
+  },
 };
