@@ -13,7 +13,7 @@ interface MatchText {
   text: string;
 }
 
-const getComponent = ({ type, text, key }: MatchText) => {
+const Component = ({ type, text, key }: MatchText) => {
   if (!type) {
     return null;
   }
@@ -22,10 +22,10 @@ const getComponent = ({ type, text, key }: MatchText) => {
     return <HashRender text={text} />;
   } else if (type === "url") {
     return <UrlRender text={text} />;
-  }
-  if (type === "mention") {
+  } else if (type === "mention") {
     return <MentionRender text={text} />;
   }
+  return null;
 };
 
 export const TextRenderer = ({ text }: { text: string }) => {
@@ -56,7 +56,7 @@ export const TextRenderer = ({ text }: { text: string }) => {
     return splittedText.map((item, index) => (
       <React.Fragment key={index}>
         {item}
-        {getComponent(matchTextReference[index] || {})}
+        <Component {...(matchTextReference[index] || {})} />
       </React.Fragment>
     ));
   }, [text]);

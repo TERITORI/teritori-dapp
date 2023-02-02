@@ -154,6 +154,7 @@ export const SocialActions: React.FC<{
           reactions={post.reactions}
           onPressReaction={onPressReaction}
           isReactionLoading={isReactionLoading}
+          postId={post.identifier}
         />
       )}
     </View>

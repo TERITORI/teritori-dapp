@@ -6,6 +6,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   withTiming,
@@ -24,9 +25,10 @@ import { SVG } from "./SVG";
 import { SocialStat } from "./SocialStat";
 import { AnimationFadeIn } from "./animations";
 import { AnimationFadeInOut } from "./animations/AnimationFadeInOut";
+import { FeedPostShareModal } from "./modals/FeedPostShareModal";
 import { SpacerRow } from "./spacer";
 
-const SectionDivider = () => (
+export const SectionDivider = () => (
   <View style={styles.sectionDivider}>
     <View style={styles.separator} />
   </View>
@@ -35,6 +37,7 @@ const SectionDivider = () => (
 interface SocialReactionActionsProps {
   reactions: PostResult["reactions"];
   isTippable: boolean;
+  postId: string;
   statStyle?: ViewStyle;
   isComment?: boolean;
   commentCount?: number;
@@ -56,6 +59,7 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
   onPressReaction,
   isReactionLoading,
   showEmojiSelector,
+  postId,
 }) => {
   // variables
   const reactionWidthRef = useRef<number>();
@@ -110,16 +114,18 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
       )}
 
       {isTippable && (
-        <Pressable
-          style={[styles.rowCenter, { zIndex: 9 }]}
-          onPress={onPressTip}
-        >
-          <SVG source={tipSVG} width={20} height={20} />
-          <SpacerRow size={1.5} />
-          <BrandText style={fontSemibold14}>Tip</BrandText>
-        </Pressable>
+        <>
+          <Pressable
+            style={[styles.rowCenter, { zIndex: 9 }]}
+            onPress={onPressTip}
+          >
+            <SVG source={tipSVG} width={20} height={20} />
+            <SpacerRow size={1.5} />
+            <BrandText style={fontSemibold14}>Tip</BrandText>
+          </Pressable>
+          <SectionDivider />
+        </>
       )}
-      {!!reactions.length && <SectionDivider />}
 
       <Animated.View style={[styles.rowCenter, reactionAnimation]}>
         {isReactionLoading && (
@@ -127,33 +133,44 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
             <ActivityIndicator color={secondaryColor} />
           </AnimationFadeIn>
         )}
-        <AnimationFadeInOut
-          visible={!isReactionLoading}
-          style={styles.rowCenter}
-          onLayout={(e) => {
-            reactionWidthRef.current = e.nativeEvent.layout.width;
-          }}
-        >
-          {reactions.map((reaction, index) => (
-            <View key={index}>
-              <SocialStat
-                label={String(reaction.count)}
-                emoji={reaction.icon}
-                style={statStyle}
-                onPress={() => onPressReaction(reaction.icon)}
-              />
-              <SpacerRow size={1} />
-            </View>
-          ))}
-        </AnimationFadeInOut>
+        {!!reactions.length && (
+          <AnimationFadeInOut
+            visible={!isReactionLoading}
+            style={styles.rowCenter}
+            onLayout={(e) => {
+              reactionWidthRef.current = e.nativeEvent.layout.width;
+            }}
+          >
+            <FlatList
+              scrollEnabled
+              data={reactions}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item: reaction }) => (
+                <View style={{ marginRight: layout.padding_x0_25 }}>
+                  <SocialStat
+                    label={String(reaction.count)}
+                    emoji={reaction.icon}
+                    style={statStyle}
+                    onPress={() => onPressReaction(reaction.icon)}
+                  />
+                </View>
+              )}
+              keyExtractor={(item) => String(item.id)}
+            />
+          </AnimationFadeInOut>
+        )}
       </Animated.View>
 
       {showEmojiSelector && (
         <>
+          <SectionDivider />
           <EmojiSelector
             onEmojiSelected={onPressReaction}
             isLoading={isReactionLoading}
           />
+          <SectionDivider />
+          <FeedPostShareModal postId={postId} />
         </>
       )}
     </View>
