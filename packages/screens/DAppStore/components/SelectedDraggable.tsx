@@ -109,11 +109,6 @@ export function SelectedDraggable({
             flexDirection: "row",
             alignItems: "center",
             width: "100%",
-            ...Platform.select({
-              web: {
-                cursor: "grab",
-              },
-            }),
           }}
         >
           <SecondaryBox
@@ -139,7 +134,18 @@ export function SelectedDraggable({
               {title}
             </BrandText>
           </View>
-          <Bars3Icon size={24} fill={neutral44} />
+          <View
+            style={{
+              marginLeft: 6,
+              ...Platform.select({
+                web: {
+                  cursor: "grab",
+                },
+              }),
+            }}
+          >
+            <Bars3Icon size={24} fill={neutral44} />
+          </View>
         </View>
       </SecondaryBox>
     </Hoverable>
