@@ -8,13 +8,15 @@ export interface FreelanceServicePriceType {
 }
 
 export interface User {
+  id: string;
   backgroundPic: ImageSourcePropType;
   profilePic: ImageSourcePropType;
   username: string;
-  description: string;
+  levelText: string;
   intro: string;
   isFavorite: boolean;
   rating: number;
+  totalQueue: number;
   totalReviews: number;
   country: CountryType["name"];
   onlineStatus: "online" | "offline";
@@ -50,17 +52,43 @@ export interface User {
 export interface ServiceFields {
   id: string;
   user: User;
+  title: string;
   description: string;
   pricePreText: string;
+  isFavorite: boolean;
   price: FreelanceServicePriceType;
-  reviews?: ReviewFields[];
+  reviews?: ReviewFields;
   tags?: string[];
+  serviceLevels?: ServiceLevels[];
 }
 
-export interface ReviewFields {
+export interface ReviewType {
   id: string;
   user: User;
   rating: number;
-  date: Date;
+  date: string; // TODO: decide if string or date (for momentJS type of dates
   text: string;
+}
+
+export interface ServiceLevels {
+  text: string;
+  description: string;
+  price: FreelanceServicePriceType;
+  daysToDelivery: number;
+  maximumRevisions: number;
+  included: string[];
+}
+
+export interface ReviewFields {
+  stats: {
+    starsCount: number[];
+    total: number;
+    avgRating: {
+      total: number;
+      communication: number;
+      recommendToFriend: number;
+      serviceAsDescribed: number;
+    };
+  };
+  items: ReviewType[];
 }

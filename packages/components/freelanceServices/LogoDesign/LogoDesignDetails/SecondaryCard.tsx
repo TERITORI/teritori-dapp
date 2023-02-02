@@ -6,9 +6,7 @@ import chevronUp from "../../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../../assets/icons/freelance-service/chevron-down.svg";
 import clockIcon from "../../../../../assets/icons/grey-clock.svg";
 import refreshIcon from "../../../../../assets/icons/refresh-grey.svg";
-import { SVG } from "../../../../components/SVG";
-import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { SecondaryButton } from "../../../../components/buttons/SecondaryButton";
+import { ServiceLevels } from "../../../../screens/FreelanceServices/types/fields";
 import {
   neutral44,
   primaryColor,
@@ -23,13 +21,16 @@ import {
   fontSemibold14,
   fontSemibold16,
 } from "../../../../utils/style/fonts";
-import { BrandText } from "../../../BrandText/BrandText";
+import { BrandText } from "../../../BrandText";
+import { SVG } from "../../../SVG";
+import { TertiaryBox } from "../../../boxes/TertiaryBox";
+import { SecondaryButton } from "../../../buttons/SecondaryButton";
 
-const data = ["Basic", "Standard", "Premium"];
-
-export const SecondaryCard: React.FC = () => {
-  const [selected, setSelected] = useState(data[1]);
-  const [isDeplayed, setIsDeplayed] = useState(false);
+export const SecondaryCard: React.FC<{ data: ServiceLevels[] }> = ({
+  data,
+}) => {
+  const [selected, setSelected] = useState<number>(1);
+  const [open, setOpen] = useState(false);
   return (
     <TertiaryBox width={440} style={{ marginTop: 24 }}>
       <View style={{ width: 400, marginTop: 20, flexDirection: "column" }}>
@@ -47,40 +48,43 @@ export const SecondaryCard: React.FC = () => {
               height: "fit-content",
             }}
           >
-            {data.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  setSelected(item);
-                }}
-              >
-                <BrandText
-                  style={[
-                    {
-                      borderBottomColor:
-                        selected === item ? secondaryColor : neutral00,
-                      borderBottomWidth: 2,
-                      paddingBottom: 12,
-                      width: "fit-content",
-                      marginRight: 20,
-                    },
-                    fontMedium14,
-                  ]}
+            {data
+              .map((item) => item.text)
+              .map((serviceText, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    setSelected(index);
+                  }}
                 >
-                  {item}
-                </BrandText>
-              </TouchableOpacity>
-            ))}
+                  <BrandText
+                    style={[
+                      {
+                        borderBottomColor:
+                          data[selected].text === serviceText
+                            ? secondaryColor
+                            : neutral00,
+                        borderBottomWidth: 2,
+                        paddingBottom: 12,
+                        width: "fit-content",
+                        marginRight: 20,
+                      },
+                      fontMedium14,
+                    ]}
+                  >
+                    {serviceText}
+                  </BrandText>
+                </TouchableOpacity>
+              ))}
           </View>
         </View>
         <BrandText style={[{ marginTop: 24 }, fontSemibold28]}>
-          1500 TORI
+          {data[selected].price.value} {data[selected].price.currency}
         </BrandText>
         <BrandText
           style={[fontSemibold14, { color: neutral77, marginTop: 24 }]}
         >
-          4 HQ UltraQuality Logos + AI EPS Vector Source File + 3D Mockup + VIP
-          Support + 5 Social Media Covers
+          {data[selected].description}
         </BrandText>
         <View style={{ flexDirection: "row", marginTop: 24 }}>
           <View
@@ -94,7 +98,7 @@ export const SecondaryCard: React.FC = () => {
             <BrandText
               style={[fontSemibold14, { color: neutral77, marginLeft: 8 }]}
             >
-              3 Days Delivery
+              {data[selected].daysToDelivery} Days Delivery
             </BrandText>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -107,7 +111,7 @@ export const SecondaryCard: React.FC = () => {
             <BrandText
               style={[fontSemibold14, { color: neutral77, marginLeft: 8 }]}
             >
-              5 Revisions
+              {data[selected].maximumRevisions} Revisions
             </BrandText>
           </View>
         </View>
@@ -124,10 +128,10 @@ export const SecondaryCard: React.FC = () => {
           <BrandText style={fontSemibold16}>What's included</BrandText>
           <TouchableOpacity
             onPress={() => {
-              setIsDeplayed(!isDeplayed);
+              setOpen(!open);
             }}
           >
-            {isDeplayed ? (
+            {open ? (
               <SVG source={chevronDown} width={16} height={16} />
             ) : (
               <SVG source={chevronUp} width={16} height={16} />
@@ -135,50 +139,16 @@ export const SecondaryCard: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        {isDeplayed && (
+        {open && (
           <View style={{ flexDirection: "column" }}>
-            <View style={{ flexDirection: "row" }}>
-              <SVG source={checkIcon} width={24} height={24} />
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                4 concepts included
-              </BrandText>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <SVG source={checkIcon} width={24} height={24} />
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                Logo transparency
-              </BrandText>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <SVG source={checkIcon} width={24} height={24} />
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                Vector file
-              </BrandText>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <SVG source={checkIcon} width={24} height={24} />
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                Printable file
-              </BrandText>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <SVG source={checkIcon} width={24} height={24} />
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                Include 3D Mockup
-              </BrandText>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <SVG source={checkIcon} width={24} height={24} />
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                Include source file
-              </BrandText>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <SVG source={checkIcon} width={24} height={24} />
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                Include social media kit
-              </BrandText>
-            </View>
+            {data[selected].included.map((included, index) => (
+              <View key={index} style={{ flexDirection: "row" }}>
+                <SVG source={checkIcon} width={24} height={24} />
+                <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                  {included}
+                </BrandText>
+              </View>
+            ))}
           </View>
         )}
 

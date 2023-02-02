@@ -38,6 +38,8 @@ import {
   fontSemibold28,
 } from "../../../utils/style/fonts";
 import { getService } from "../query/data";
+import { OrdersInQueue } from "./OrdersInQueue";
+import { TopRatedSeller } from "./TopRatedSeller";
 
 export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
   route: {
@@ -51,7 +53,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
       <View
         style={{ flexDirection: "column", width: 1280, alignSelf: "center" }}
       >
-        <LogoDesignDetailsHeader />
+        <LogoDesignDetailsHeader data={data} />
 
         <View
           style={{
@@ -61,7 +63,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
           }}
         >
           <View style={{ width: 750, marginTop: 24 }}>
-            <BrandText style={fontSemibold28}>{data.description}</BrandText>
+            <BrandText style={fontSemibold28}>{data.title}</BrandText>
             <View
               style={{
                 flexDirection: "row",
@@ -76,9 +78,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
               <BrandText style={[fontMedium14, { marginRight: 12 }]}>
                 @{data.user.username}
               </BrandText>
-              <BrandText style={[{ color: yellowDefault }, fontMedium14]}>
-                Top Rated Seller
-              </BrandText>
+              <TopRatedSeller rating={data.user.rating} />
               <View
                 style={{
                   width: 24,
@@ -99,17 +99,17 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
               <BrandText style={[{ color: neutral77 }, fontMedium14]}>
                 ({data.user.totalReviews})
               </BrandText>
-              <View
-                style={{
-                  width: 24,
-                  borderColor: neutral33,
-                  borderWidth: 0.5,
-                  transform: [{ rotate: "90deg" }],
-                }}
-              />
-              <BrandText style={[{ color: neutral77 }, fontMedium14]}>
-                353 Orders in Queue
-              </BrandText>
+              {data.user.totalQueue > 0 ? (
+                <View
+                  style={{
+                    width: 24,
+                    borderColor: neutral33,
+                    borderWidth: 0.5,
+                    transform: [{ rotate: "90deg" }],
+                  }}
+                />
+              ) : null}
+              <OrdersInQueue totalQueue={data.user.totalQueue} />
             </View>
             <Separator
               style={{ width: "100%", marginTop: 20, marginBottom: 16 }}
@@ -170,24 +170,33 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
                 </View>
               </ImageBackground>
             </TertiaryBox>
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 40,
-                alignItems: "center",
-              }}
-            >
-              <BrandText style={fontSemibold20}>
-                What people loved about the seller
-              </BrandText>
-              <SecondaryButton size="SM" text="See all reviews" />
-            </View>
+            {data.reviews?.items ? (
+              <View
+                style={{
+                  width: "100%",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 40,
+                  alignItems: "center",
+                }}
+              >
+                <BrandText style={fontSemibold20}>
+                  What people loved about the seller
+                </BrandText>
 
-            <ReviewCard />
+                <SecondaryButton size="SM" text="See all reviews" />
+              </View>
+            ) : (
+              <></>
+            )}
 
-            <View style={{ marginTop: 40, width: "100%" }}>
+            {data.reviews?.items ? (
+              <ReviewCard reviews={data.reviews.items} />
+            ) : (
+              <></>
+            )}
+
+            <View nativeID="about" style={{ marginTop: 40, width: "100%" }}>
               <BrandText style={fontSemibold20}>About This Gig</BrandText>
               <BrandText
                 style={[
@@ -195,14 +204,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
                   { marginTop: 12, marginBottom: 12, color: neutral77 },
                 ]}
               >
-                “Creating beautiful brand face, one at a time”
-              </BrandText>
-              <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-                ‘We’ ‘Perfectionist’ is a highly talented and dedicated team,
-                focused on providing unique logo design absolutely from scratch.
-                A Logo is the face of your brand which is as equally important
-                as the success of your business and we make sure to dig the
-                pillars of your success from depth.
+                {data.description}
               </BrandText>
             </View>
 
@@ -311,7 +313,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
                       </View>
                     </View>
                     <BrandText style={[fontMedium14, { color: neutralA3 }]}>
-                      Nothing Beats the Experience!
+                      {data.user.tagline}
                     </BrandText>
                     <View
                       style={{
@@ -400,7 +402,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
             <BrandText
               style={[fontSemibold16, { color: neutral77, width: "100%" }]}
             >
-              {data.user.description}
+              {data.user.levelText}
             </BrandText>
 
             <View
@@ -437,14 +439,20 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
             <LogoDesignDetailsTab />
 
             {data.reviews ? <ReviewsStats reviews={data.reviews} /> : <></>}
-            {data.reviews ? <DisplayReviews reviews={data.reviews} /> : <></>}
+            {data.reviews?.items ? (
+              <DisplayReviews reviews={data.reviews.items} />
+            ) : (
+              <></>
+            )}
 
             {data.tags ? <RelatedTags tags={data.tags} /> : <></>}
 
             <DisplayMoreServices />
           </View>
 
-          <SecondaryCard />
+          {data.serviceLevels ? (
+            <SecondaryCard data={data.serviceLevels} />
+          ) : null}
         </View>
       </View>
     </ScreenContainer>

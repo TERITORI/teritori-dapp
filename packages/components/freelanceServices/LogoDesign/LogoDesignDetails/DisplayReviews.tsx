@@ -14,12 +14,12 @@ import {
   fontSemibold16,
   fontSemibold14,
 } from "../../../../utils/style/fonts";
-import { BrandText } from "../../../BrandText/BrandText";
+import { BrandText } from "../../../BrandText";
 import { TertiaryBox } from "../../../boxes/TertiaryBox";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
 import { StarRating } from "../../StarRating";
 
-export const DisplayReviews: React.FC<{ reviews: ReviewFields[] }> = ({
+export const DisplayReviews: React.FC<{ reviews: ReviewFields["items"] }> = ({
   reviews,
 }) => {
   return (

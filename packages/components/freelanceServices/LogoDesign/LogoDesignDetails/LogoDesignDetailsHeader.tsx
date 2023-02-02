@@ -4,6 +4,7 @@ import { View, TouchableOpacity } from "react-native";
 import heartIcon from "../../../../../assets/icons/heart.svg";
 import reportIcon from "../../../../../assets/icons/report.svg";
 import shareIcon from "../../../../../assets/icons/share-white.svg";
+import { ServiceFields } from "../../../../screens/FreelanceServices/types/fields";
 import {
   neutral44,
   secondaryColor,
@@ -12,12 +13,12 @@ import {
   neutral33,
 } from "../../../../utils/style/colors";
 import { fontMedium14 } from "../../../../utils/style/fonts";
-import { BrandText } from "../../../BrandText/BrandText";
+import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
 import { ReportPopUp } from "./PopUp/ReportPopUp";
 import { SharePopup } from "./PopUp/SharePopup";
 
-const data = [
+const tabs = [
   "Overview",
   "Description",
   "About the seller",
@@ -26,8 +27,10 @@ const data = [
   "Reviews",
 ];
 
-export const LogoDesignDetailsHeader: React.FC = () => {
-  const [selected, setSelected] = useState(data[0]);
+export const LogoDesignDetailsHeader: React.FC<{ data: ServiceFields }> = ({
+  data,
+}) => {
+  const [selected, setSelected] = useState(tabs[0]);
   const [displayReportPopup, setDisplayReportPopup] = useState(false);
   const [displaySharePopup, setDisplaySharePopup] = useState(false);
 
@@ -66,7 +69,7 @@ export const LogoDesignDetailsHeader: React.FC = () => {
           height: "fit-content",
         }}
       >
-        {data.map((item, index) => (
+        {tabs.map((item, index) => (
           <TouchableOpacity
             key={index}
             onPress={() => {
@@ -101,11 +104,16 @@ export const LogoDesignDetailsHeader: React.FC = () => {
         <View style={{ alignItems: "center", flexDirection: "row" }}>
           <TouchableOpacity>
             <View style={{ alignItems: "center", flexDirection: "row" }}>
-              <SVG source={heartIcon} width={24} height={24} />
+              <SVG
+                source={heartIcon}
+                width={24}
+                height={24}
+                fill={data.isFavorite ? "red" : "none"}
+              />
               <BrandText
                 style={[fontMedium14, { color: neutralA3, marginLeft: 12 }]}
               >
-                69,863
+                {data.reviews?.stats.total}
               </BrandText>
             </View>
           </TouchableOpacity>

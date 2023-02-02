@@ -62,7 +62,7 @@ export const ServiceCard: React.FC<{
           <View style={{ flexDirection: "column" }}>
             <BrandText style={fontSemibold12}>@{data.user.username}</BrandText>
             <BrandText style={[fontMedium10, { color: neutral77 }]}>
-              {data.user.description}
+              {data.user.levelText}
             </BrandText>
           </View>
         </View>
@@ -76,7 +76,7 @@ export const ServiceCard: React.FC<{
           fontSemibold12,
         ]}
       >
-        {data.description}
+        {data.title}
       </BrandText>
       <Separator style={{ width: 274, marginTop: 12 }} />
 

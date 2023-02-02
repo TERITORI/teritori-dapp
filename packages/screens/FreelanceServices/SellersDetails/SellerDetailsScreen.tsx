@@ -15,7 +15,7 @@ import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { SecondaryCard } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/SecondaryCard";
+// import { SecondaryCard } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/SecondaryCard";
 import { StarRating } from "../../../components/freelanceServices/StarRating";
 import { ScreenFC } from "../../../utils/navigation";
 import {
@@ -285,6 +285,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
             <BrandText style={fontSemibold20}>Languages</BrandText>
             {data.languages.map((item, index) => (
               <BrandText
+                key={index}
                 style={[fontSemibold16, { color: neutral77, marginTop: 16 }]}
               >
                 {item.title} - {item.description}
@@ -511,7 +512,8 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
             ))}
           </View>
 
-          <SecondaryCard />
+          {/*Need to have the notion of Services provided in general ?*/}
+          {/*<SecondaryCard />*/}
         </View>
       </View>
     </ScreenContainer>

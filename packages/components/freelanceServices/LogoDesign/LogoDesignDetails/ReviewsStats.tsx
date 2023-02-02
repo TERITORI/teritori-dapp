@@ -19,11 +19,45 @@ import {
   fontSemibold16,
   fontSemibold14,
 } from "../../../../utils/style/fonts";
-import { BrandText } from "../../../BrandText/BrandText";
+import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
 import { StarRating } from "../../StarRating";
 
-export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
+const PerStarRatingDetail: React.FC<{
+  star: number;
+  stats: ReviewFields["stats"];
+}> = ({ star, stats }) => {
+  const percentage = `${(stats.starsCount[star - 1] * 100) / stats.total}%`;
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", width: 500 }}>
+      <BrandText
+        style={[fontSemibold16, { color: neutralA3, marginRight: 12 }]}
+      >
+        {star} stars
+      </BrandText>
+      <View
+        style={{
+          width: 284,
+          height: 6,
+          borderRadius: 6,
+          backgroundColor: neutral33,
+        }}
+      >
+        <LinearGradient
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={{ height: "100%", width: percentage, borderRadius: 24 }}
+          colors={["#5433FF", "#20BDFF", "#A5FECB"]}
+        />
+      </View>
+      <BrandText style={[fontSemibold16, { color: neutralA3, marginLeft: 12 }]}>
+        ({stats.starsCount[star - 1]})
+      </BrandText>
+    </View>
+  );
+};
+
+export const ReviewsStats: React.FC<{ reviews: ReviewFields }> = ({
   reviews,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,13 +66,13 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <BrandText style={[fontSemibold20, { marginRight: 12 }]}>
-            40,546 Reviews
+            {reviews.stats.total} Reviews
           </BrandText>
-          <StarRating rating={4.9} />
+          <StarRating rating={reviews.stats.avgRating.total} />
           <BrandText
             style={[{ color: yellowDefault, marginLeft: 12 }, fontMedium14]}
           >
-            4.9
+            {reviews.stats.avgRating.total}
           </BrandText>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -69,35 +103,7 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
       <View
         style={{ flexDirection: "row", alignItems: "center", marginTop: 16 }}
       >
-        <View
-          style={{ flexDirection: "row", alignItems: "center", width: 500 }}
-        >
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginRight: 12 }]}
-          >
-            5 stars
-          </BrandText>
-          <View
-            style={{
-              width: 284,
-              height: 6,
-              borderRadius: 6,
-              backgroundColor: neutral33,
-            }}
-          >
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={{ height: "100%", width: "80%", borderRadius: 24 }}
-              colors={["#5433FF", "#20BDFF", "#A5FECB"]}
-            />
-          </View>
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginLeft: 12 }]}
-          >
-            (36,543)
-          </BrandText>
-        </View>
+        <PerStarRatingDetail stats={reviews.stats} star={5} />
         <BrandText style={[fontSemibold16, { color: neutral77 }]}>
           Rating Breakdown
         </BrandText>
@@ -106,35 +112,7 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
       <View
         style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
       >
-        <View
-          style={{ flexDirection: "row", alignItems: "center", width: 500 }}
-        >
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginRight: 12 }]}
-          >
-            4 stars
-          </BrandText>
-          <View
-            style={{
-              width: 284,
-              height: 6,
-              borderRadius: 6,
-              backgroundColor: neutral33,
-            }}
-          >
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={{ height: "100%", width: "20%", borderRadius: 6 }}
-              colors={["#5433FF", "#20BDFF", "#A5FECB"]}
-            />
-          </View>
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginLeft: 12 }]}
-          >
-            (36,543)
-          </BrandText>
-        </View>
+        <PerStarRatingDetail stats={reviews.stats} star={4} />
         <View
           style={{
             width: 250,
@@ -151,7 +129,7 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
             <BrandText
               style={[{ color: yellowDefault, marginLeft: 4 }, fontMedium14]}
             >
-              4.9
+              {reviews.stats.avgRating.communication.toFixed(1)}
             </BrandText>
           </View>
         </View>
@@ -160,35 +138,7 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
       <View
         style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
       >
-        <View
-          style={{ flexDirection: "row", alignItems: "center", width: 500 }}
-        >
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginRight: 12 }]}
-          >
-            3 stars
-          </BrandText>
-          <View
-            style={{
-              width: 284,
-              height: 6,
-              borderRadius: 6,
-              backgroundColor: neutral33,
-            }}
-          >
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={{ height: "100%", width: "20%", borderRadius: 6 }}
-              colors={["#5433FF", "#20BDFF", "#A5FECB"]}
-            />
-          </View>
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginLeft: 12 }]}
-          >
-            (36,543)
-          </BrandText>
-        </View>
+        <PerStarRatingDetail stats={reviews.stats} star={3} />
         <View
           style={{
             width: 250,
@@ -205,7 +155,7 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
             <BrandText
               style={[{ color: yellowDefault, marginLeft: 4 }, fontMedium14]}
             >
-              4.9
+              {reviews.stats.avgRating.recommendToFriend.toFixed(1)}
             </BrandText>
           </View>
         </View>
@@ -214,35 +164,7 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
       <View
         style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
       >
-        <View
-          style={{ flexDirection: "row", alignItems: "center", width: 500 }}
-        >
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginRight: 12 }]}
-          >
-            2 stars
-          </BrandText>
-          <View
-            style={{
-              width: 284,
-              height: 6,
-              borderRadius: 6,
-              backgroundColor: neutral33,
-            }}
-          >
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={{ height: "100%", width: "20%", borderRadius: 6 }}
-              colors={["#5433FF", "#20BDFF", "#A5FECB"]}
-            />
-          </View>
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginLeft: 12 }]}
-          >
-            (36,543)
-          </BrandText>
-        </View>
+        <PerStarRatingDetail stats={reviews.stats} star={2} />
         <View
           style={{
             width: 250,
@@ -259,7 +181,7 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
             <BrandText
               style={[{ color: yellowDefault, marginLeft: 4 }, fontMedium14]}
             >
-              4.9
+              {reviews.stats.avgRating.serviceAsDescribed.toFixed(1)}
             </BrandText>
           </View>
         </View>
@@ -268,35 +190,7 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields[] }> = ({
       <View
         style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
       >
-        <View
-          style={{ flexDirection: "row", alignItems: "center", width: 500 }}
-        >
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginRight: 15 }]}
-          >
-            1 stars
-          </BrandText>
-          <View
-            style={{
-              width: 284,
-              height: 6,
-              borderRadius: 6,
-              backgroundColor: neutral33,
-            }}
-          >
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={{ height: "100%", width: "20%", borderRadius: 6 }}
-              colors={["#5433FF", "#20BDFF", "#A5FECB"]}
-            />
-          </View>
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginLeft: 12 }]}
-          >
-            (36,543)
-          </BrandText>
-        </View>
+        <PerStarRatingDetail stats={reviews.stats} star={1} />
       </View>
     </View>
   );
