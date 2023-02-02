@@ -87,7 +87,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("nfts");
 
-  const { metadata } = useNSUserInfo(id);
+  const { metadata, loading } = useNSUserInfo(id);
   const selectedWallet = useSelectedWallet();
   const [network] = parseUserId(id);
   setDocumentTitle(`User: ${metadata?.tokenId}`);
@@ -102,7 +102,12 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     >
       <View style={{ flex: 1, alignItems: "center" }}>
         <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-          <UPPIntro userId={id} isUserOwner={selectedWallet?.userId === id} />
+          <UPPIntro
+            userId={id}
+            isLoading={loading}
+            metadata={metadata}
+            isUserOwner={selectedWallet?.userId === id}
+          />
 
           <Tabs
             items={screenTabItems}
