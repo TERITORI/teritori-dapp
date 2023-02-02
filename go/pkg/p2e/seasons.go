@@ -28,8 +28,8 @@ var THE_RIOT_SEASONS = []Season{
 		BossName:   "Philipp Rustov",
 		BossImage:  "",
 		TopN:       500,
-		StartsAt:   "2022-12-01",
-		EndsAt:     "2022-12-31",
+		StartsAt:   "2022-12-01T00:00:00",
+		EndsAt:     "2023-02-02T17:00:00",
 	},
 	// Pre-Season 2
 	{
@@ -41,8 +41,8 @@ var THE_RIOT_SEASONS = []Season{
 		BossName:   `== $*=|'¤?")à-£_%`,
 		BossImage:  "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
 		TopN:       0,
-		StartsAt:   "2022-12-31",
-		EndsAt:     "2023-01-30",
+		StartsAt:   "2023-02-02T17:00:00",
+		EndsAt:     "2023-02-02T17:30:00",
 	},
 	// Season 2
 	{
@@ -54,8 +54,8 @@ var THE_RIOT_SEASONS = []Season{
 		BossName:   "Ursula Delahaye",
 		BossImage:  "https://bafybeigidzbfvy6t2a3cjff4zc2e6kk36uml5nn6acyuxaiwyvuuq6ww3a.ipfs.nftstorage.link/",
 		TopN:       500,
-		StartsAt:   "2023-01-30",
-		EndsAt:     "2023-02-10",
+		StartsAt:   "2023-02-02T17:30:00",
+		EndsAt:     "2023-02-10T17:30:00",
 	},
 
 	// {ID: "Season 3", GameID: THE_RIOT_GAME_ID, TotalPrize: 1_620_000, Denom: "tori", Decimals: 6, BossDefaultName: "Boss", BossHp: 30, TopN: 500},

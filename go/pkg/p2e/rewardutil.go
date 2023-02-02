@@ -17,7 +17,7 @@ func GetAllSeasons() []Season {
 }
 
 func GetBossHp(season Season) (float32, error) {
-	layout := "2006-01-02"
+	layout := "2006-01-02T15:04:05"
 	startsAt, err := time.Parse(layout, season.StartsAt)
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to parsed season start time")
@@ -33,7 +33,7 @@ func GetBossHp(season Season) (float32, error) {
 
 // returns: season, time passed in days, error
 func GetSeasonByTime(givenTime time.Time) (Season, float64, error) {
-	layout := "2006-01-02"
+	layout := "2006-01-02T15:04:05"
 
 	for _, season := range GetAllSeasons() {
 		seasonStartsAt, err := time.Parse(layout, season.StartsAt)

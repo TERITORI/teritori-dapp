@@ -14,6 +14,7 @@ import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
+import { p2eBackendClient } from "../../utils/backend";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   fontMedium32,
@@ -99,6 +100,14 @@ export const RiotGameEnrollScreen = () => {
       return setToastError({
         title: "Error",
         message: "Failed to load SquadStakingConfig",
+      });
+    }
+
+    const currentSeason = await p2eBackendClient.CurrentSeason({});
+    if (currentSeason.totalPrize === 0) {
+      return setToastError({
+        title: "Warning",
+        message: "Season has not started yet",
       });
     }
 
