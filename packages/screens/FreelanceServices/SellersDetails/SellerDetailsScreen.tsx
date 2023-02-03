@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 
 import heart from "../../../../assets/icons/heart.svg";
 import behanceIcon from "../../../../assets/icons/social-network/behance-grey.svg";
@@ -19,22 +19,22 @@ import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { StarRating } from "../../../components/freelanceServices/StarRating";
 import { ScreenFC } from "../../../utils/navigation";
 import {
-  neutral44,
+  errorColor,
   neutral00,
+  neutral17,
+  neutral44,
+  neutral67,
   neutral77,
-  yellowDefault,
-  successColor,
   neutralA3,
   secondaryColor,
-  neutral17,
-  neutral67,
-  errorColor,
+  successColor,
+  yellowDefault,
 } from "../../../utils/style/colors";
 import {
   fontMedium14,
+  fontSemibold14,
   fontSemibold16,
   fontSemibold20,
-  fontSemibold14,
 } from "../../../utils/style/fonts";
 import { getUser } from "../query/data";
 

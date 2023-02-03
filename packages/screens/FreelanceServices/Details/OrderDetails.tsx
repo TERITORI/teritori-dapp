@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
 import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
@@ -16,12 +16,12 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getSigningCosmWasmClient } from "../../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
-  primaryColor,
-  neutral77,
-  neutral22,
   neutral00,
-  secondaryColor,
+  neutral22,
   neutral33,
+  neutral77,
+  primaryColor,
+  secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "../../../utils/style/fonts";
 import { FirstRightCard } from "./FirstRightCard";

@@ -9,18 +9,18 @@ import star from "../../../../assets/icons/yellow-star.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import {
-  primaryColor,
-  neutral77,
   neutral00,
-  yellowDefault,
   neutral33,
+  neutral77,
+  primaryColor,
+  yellowDefault,
 } from "../../../utils/style/colors";
 import {
+  fontMedium14,
+  fontSemibold14,
   fontSemibold16,
   fontSemibold20,
   fontSemibold28,
-  fontMedium14,
-  fontSemibold14,
 } from "../../../utils/style/fonts";
 
 const title = [

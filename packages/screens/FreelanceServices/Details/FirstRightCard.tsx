@@ -5,9 +5,9 @@ import { BrandText } from "../../../components/BrandText";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import {
-  primaryColor,
-  neutral77,
   neutral00,
+  neutral77,
+  primaryColor,
 } from "../../../utils/style/colors";
 import {
   fontMedium14,

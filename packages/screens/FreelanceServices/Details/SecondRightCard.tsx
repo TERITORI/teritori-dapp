@@ -8,10 +8,10 @@ import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import {
-  primaryColor,
-  neutral77,
   neutral00,
   neutral33,
+  neutral77,
+  primaryColor,
 } from "../../../utils/style/colors";
 import {
   fontMedium14,
