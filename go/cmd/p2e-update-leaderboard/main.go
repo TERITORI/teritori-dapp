@@ -219,7 +219,7 @@ func main() {
 			return
 		}
 
-		if season.TotalPrize == 0 {
+		if season.IsPre {
 			logger.Info("do not need to update leaderboard", zap.String("season", season.ID))
 			return
 		}
@@ -244,7 +244,7 @@ func main() {
 			return
 		}
 
-		if season.TotalPrize == 0 {
+		if season.IsPre {
 			logger.Info("do not need to send rewards", zap.String("season", season.ID))
 			return
 		}

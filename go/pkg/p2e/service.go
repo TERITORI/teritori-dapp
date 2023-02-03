@@ -143,6 +143,7 @@ func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeason
 		BossImage:   currentSeason.BossImage,
 		Denom:       currentSeason.Denom,
 		RemainingHp: float32(remainingHp),
+		IsPre:       currentSeason.IsPre,
 	}, nil
 }
 

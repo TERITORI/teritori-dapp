@@ -104,7 +104,7 @@ export const RiotGameEnrollScreen = () => {
     }
 
     const currentSeason = await p2eBackendClient.CurrentSeason({});
-    if (currentSeason.totalPrize === 0) {
+    if (currentSeason.isPre) {
       return setToastError({
         title: "Warning",
         message: "Season has not started yet",

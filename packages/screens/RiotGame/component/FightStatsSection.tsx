@@ -120,7 +120,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
       <InfoBox
         size="SM"
         title="Prize Pool"
-        content={`${currentSeason?.totalPrize || 0} ${
+        content={`${currentSeason?.isPre ? 0 : currentSeason?.totalPrize} ${
           currentSeason?.denom.toUpperCase() || ""
         }`}
         width={150}

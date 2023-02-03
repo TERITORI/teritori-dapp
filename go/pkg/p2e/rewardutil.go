@@ -83,13 +83,13 @@ func GetDailyRewardsConfigBySeason(seasonId string) (sdk.DecCoins, error) {
 		return nil, err
 	}
 
+	bossHp, err := GetBossHp(season)
+	if err != nil {
+		return nil, err
+	}
+
 	var dailyRewards sdk.DecCoins
 	for _, reward := range seasonRewards {
-		bossHp, err := GetBossHp(season)
-		if err != nil {
-			return nil, err
-		}
-
 		amount := reward.QuoInt64(int64(bossHp))
 
 		// Contract take utori so we need convert tori => utori
