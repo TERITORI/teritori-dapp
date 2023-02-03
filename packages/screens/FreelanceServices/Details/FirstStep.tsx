@@ -1,9 +1,7 @@
 import Checkbox from "expo-checkbox";
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, Image, ImageBackground, View } from "react-native";
 
-import backgroundPic from "../../../../assets/banners/freelance-service/background-pic.png";
-import profilePic from "../../../../assets/banners/freelance-service/profile-pic.png";
 import checkIcon from "../../../../assets/icons/blue-check.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -24,103 +22,7 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { TopRatedSeller } from "../LogoDesign/TopRatedSeller";
-
-const title = [
-  {
-    text: "Extra Fast 2 Days Delivery",
-    subtext: "",
-    price: {
-      value: 1500,
-      currency: "TORI",
-    },
-  },
-  {
-    text: "Additional revision",
-    subtext:
-      "Add an additional revision your seller will provide after the delivery.",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-  },
-  {
-    text: "Include social media kit",
-    subtext:
-      "You'll get graphics showing your logo that you can use on social media platforms. Ex. Facebook and Instagram.",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-  },
-  {
-    text: "Stationery designs",
-    subtext:
-      "You'll get a template with your logo to use for stationary—letterhead, envelopes, business cards, etc.",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-  },
-  {
-    text: "Additional logo",
-    subtext: "Add another (1) logo concept.",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-  },
-  {
-    text: "Full Vector Package",
-    subtext:
-      "I will provide full HQ resolution logo files in 5000 X 5000 Vector AI EPS PDF JPG PNG on transparent BG",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-  },
-  {
-    text: "Favicon Design",
-    subtext: "I will design favicon for your Website",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-  },
-  {
-    text: "E Mail Signature",
-    subtext: "I will design E-Mail signature for digital branding",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-  },
-  {
-    text: "Full Color Codes",
-    subtext:
-      "I will provide color codes in HEX RGB and CMYK for the final logo",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-  },
-  {
-    text: "Branding Design",
-    subtext:
-      "I will design double sided business card and letterhead design to build your brand",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-  },
-  {
-    text: "Logo Guidelines",
-    subtext: "I will design an outstanding Logo Guidelines",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-  },
-];
+import { ServiceFields } from "../types/fields";
 
 function SelectedExtra(props: { item: any }) {
   return (
@@ -147,22 +49,22 @@ function SelectedExtra(props: { item: any }) {
   );
 }
 
-export const FirstStep: React.FC = () => {
-  const [selected, setSelected] = useState<Set<number>>(new Set());
-
+export const FirstStep: React.FC<{
+  service: ServiceFields;
+  selected: Set<number>;
+  setSelected: (value: Set<number>) => void;
+}> = ({ service, selected, setSelected }) => {
   return (
     <View style={{ width: 840 }}>
       <View style={{ flexDirection: "row", marginTop: 24, display: "flex" }}>
         <ImageBackground
-          source={backgroundPic}
+          source={service.user.backgroundPic}
           style={{ width: 148, height: 148 }}
         />
         <View style={{ padding: 20 }}>
-          <BrandText style={[fontSemibold28]}>
-            I will design 3 modern minimalist logo designs
-          </BrandText>
+          <BrandText style={[fontSemibold28]}>{service.title}</BrandText>
           <BrandText style={[fontSemibold16, { marginTop: 12 }]}>
-            1500 TORI
+            {service.price.value} {service.price.currency}
           </BrandText>
           <View
             style={{
@@ -173,13 +75,13 @@ export const FirstStep: React.FC = () => {
             }}
           >
             <Image
-              source={profilePic}
+              source={service.user.profilePic}
               style={{ width: 32, height: 32, marginRight: 12 }}
             />
             <BrandText style={[fontMedium14, { marginRight: 12 }]}>
-              @username
+              @{service.user.username}
             </BrandText>
-            <TopRatedSeller rating={4.9} />
+            <TopRatedSeller rating={service.user.rating} />
             <View
               style={{
                 width: 24,
@@ -188,14 +90,14 @@ export const FirstStep: React.FC = () => {
                 transform: [{ rotate: "90deg" }],
               }}
             />
-            <StarRating rating={4.9} />
+            <StarRating rating={service.user.rating} />
             <BrandText
               style={[{ color: yellowDefault, marginRight: 12 }, fontMedium14]}
             >
-              4.9
+              {service.user.rating}
             </BrandText>
             <BrandText style={[{ color: neutral77 }, fontMedium14]}>
-              (40,543)
+              ({service.reviews?.stats.total})
             </BrandText>
             <View
               style={{
@@ -228,9 +130,9 @@ export const FirstStep: React.FC = () => {
         }}
       >
         <FlatList
-          data={title.filter((element, index) => {
-            return selected.has(index);
-          })}
+          data={service.serviceLevels[1].extras.filter((element, index) =>
+            selected.has(index)
+          )}
           numColumns={4}
           renderItem={({ item }) => <SelectedExtra item={item} />}
           keyExtractor={(item) => item.text}
@@ -248,7 +150,7 @@ export const FirstStep: React.FC = () => {
       <BrandText style={[fontSemibold20]}>
         Upgrade your order with extras
       </BrandText>
-      {title.map((item, index: number) => (
+      {service.serviceLevels[1].extras.map((item, index: number) => (
         <View>
           <View
             style={{
@@ -295,7 +197,7 @@ export const FirstStep: React.FC = () => {
               { color: neutral77, marginTop: 6, marginLeft: 48 },
             ]}
           >
-            {item.subtext}
+            {item.description}
           </BrandText>
         </View>
       ))}

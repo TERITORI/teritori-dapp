@@ -24,6 +24,7 @@ import {
   secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "../../../utils/style/fonts";
+import { getService } from "../query/data";
 import { FirstRightCard } from "./FirstRightCard";
 import { FirstStep } from "./FirstStep";
 import { SecondRightCard } from "./SecondRightCard";
@@ -32,7 +33,100 @@ export type OrderModals = "Order";
 const OrderPathMap = {
   Order: "order",
 };
+
+function SecondStep(props: {
+  payment: string;
+  onPress: () => void;
+  onPress1: () => void;
+  onPress2: () => void;
+  onPress3: () => Promise<void>;
+}) {
+  return (
+    <View>
+      <View
+        style={{
+          width: "100%",
+          height: 1,
+          backgroundColor: neutral33,
+          marginTop: 24,
+          marginBottom: 24,
+        }}
+      />
+      <BrandText style={[fontSemibold20]}>Payment Options</BrandText>
+      <View
+        style={{
+          flexDirection: "row",
+          display: "flex",
+          marginTop: 12,
+          alignItems: "center",
+        }}
+      >
+        <RadioButton
+          value=""
+          color="#16BBFF"
+          uncheckedColor="#777777"
+          status={props.payment === "Tori" ? "checked" : "unchecked"}
+          onPress={props.onPress}
+        />
+        <BrandText style={[fontSemibold16, { marginLeft: 16 }]}>
+          Tori Wallet
+        </BrandText>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          display: "flex",
+          marginTop: 12,
+          alignItems: "center",
+        }}
+      >
+        <RadioButton
+          value=""
+          color="#16BBFF"
+          uncheckedColor="#777777"
+          status={props.payment === "Ethereum" ? "checked" : "unchecked"}
+          onPress={props.onPress1}
+        />
+        <BrandText style={[fontSemibold16, { marginLeft: 16 }]}>
+          Ethereum Wallet
+        </BrandText>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          display: "flex",
+          marginTop: 12,
+          alignItems: "center",
+        }}
+      >
+        <RadioButton
+          value=""
+          color="#16BBFF"
+          uncheckedColor="#777777"
+          status={props.payment === "Solana" ? "checked" : "unchecked"}
+          onPress={props.onPress2}
+        />
+        <BrandText style={[fontSemibold16, { marginLeft: 16 }]}>
+          Solana Wallet
+        </BrandText>
+      </View>
+      <SecondaryButton
+        text="Order"
+        size="SM"
+        fullWidth
+        color={neutral00}
+        backgroundColor={primaryColor}
+        style={{ marginTop: 24, marginBottom: 20 }}
+        onPress={props.onPress3}
+      />
+    </View>
+  );
+}
+
 export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
+  // const data = getService(params.id);
+  const data = getService("123");
+  const [extraSelection, setExtraSelection] = useState<Set<number>>(new Set());
   const wallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const isKeplrConnected = useIsKeplrConnected();
@@ -88,7 +182,7 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
   const [secondStepStyle, setSecondStepStyle] = useState(nextStyle);
   const thirdStepStyle = nextStyle;
 
-  const [payment, setPayment] = useState<string>("");
+  const [payment, setPayment] = useState<"TORI" | "ETH" | "SOL">("TORI");
 
   const [, setActiveModal] = useState<OrderModals>();
   const [modalOrderVisible, setModalOrderVisible] = useState(false);
@@ -240,88 +334,23 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
               </BrandText>
             </TouchableOpacity>
           </View>
-          {step === 1 && <FirstStep />}
+          {step === 1 && (
+            <FirstStep
+              service={data}
+              selected={extraSelection}
+              setSelected={setExtraSelection}
+            />
+          )}
           {step === 2 && (
-            <View>
-              <View
-                style={{
-                  width: "100%",
-                  height: 1,
-                  backgroundColor: neutral33,
-                  marginTop: 24,
-                  marginBottom: 24,
-                }}
-              />
-              <BrandText style={[fontSemibold20]}>Payment Options</BrandText>
-              <View
-                style={{
-                  flexDirection: "row",
-                  display: "flex",
-                  marginTop: 12,
-                  alignItems: "center",
-                }}
-              >
-                <RadioButton
-                  value=""
-                  color="#16BBFF"
-                  uncheckedColor="#777777"
-                  status={payment === "Tori" ? "checked" : "unchecked"}
-                  onPress={() => setPayment("Tori")}
-                />
-                <BrandText style={[fontSemibold16, { marginLeft: 16 }]}>
-                  Tori Wallet
-                </BrandText>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  display: "flex",
-                  marginTop: 12,
-                  alignItems: "center",
-                }}
-              >
-                <RadioButton
-                  value=""
-                  color="#16BBFF"
-                  uncheckedColor="#777777"
-                  status={payment === "Ethereum" ? "checked" : "unchecked"}
-                  onPress={() => setPayment("Ethereum")}
-                />
-                <BrandText style={[fontSemibold16, { marginLeft: 16 }]}>
-                  Ethereum Wallet
-                </BrandText>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  display: "flex",
-                  marginTop: 12,
-                  alignItems: "center",
-                }}
-              >
-                <RadioButton
-                  value=""
-                  color="#16BBFF"
-                  uncheckedColor="#777777"
-                  status={payment === "Solana" ? "checked" : "unchecked"}
-                  onPress={() => setPayment("Solana")}
-                />
-                <BrandText style={[fontSemibold16, { marginLeft: 16 }]}>
-                  Solana Wallet
-                </BrandText>
-              </View>
-              <SecondaryButton
-                text="Order"
-                size="SM"
-                fullWidth
-                color={neutral00}
-                backgroundColor={primaryColor}
-                style={{ marginTop: 24, marginBottom: 20 }}
-                onPress={async () => {
-                  navigation.navigate("OrderDetails", { modal: "order" });
-                }}
-              />
-            </View>
+            <SecondStep
+              payment={payment}
+              onPress={() => setPayment("TORI")}
+              onPress1={() => setPayment("ETH")}
+              onPress2={() => setPayment("SOL")}
+              onPress3={async () => {
+                navigation.navigate("OrderDetails", { modal: "order" });
+              }}
+            />
           )}
         </View>
         <FreelanceOrderModal
@@ -333,8 +362,18 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
           onEnter={submitData}
         />
 
-        {step === 1 && <FirstRightCard />}
-        {step === 2 && <SecondRightCard />}
+        {step === 1 && (
+          <FirstRightCard
+            serviceLevels={data.serviceLevels[1]}
+            selected={extraSelection}
+          />
+        )}
+        {step === 2 && (
+          <SecondRightCard
+            serviceLevels={data.serviceLevels[1]}
+            selected={extraSelection}
+          />
+        )}
       </View>
     </ScreenContainer>
   );

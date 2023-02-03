@@ -59,7 +59,7 @@ export interface ServiceFields {
   price: FreelanceServicePriceType;
   reviews?: ReviewFields;
   tags?: string[];
-  serviceLevels?: ServiceLevels[];
+  serviceLevels: ServiceLevels[];
 }
 
 export interface ReviewType {
@@ -70,6 +70,12 @@ export interface ReviewType {
   text: string;
 }
 
+export interface ServiceLevelsExtra {
+  text: string;
+  description: string;
+  price: FreelanceServicePriceType;
+}
+
 export interface ServiceLevels {
   text: string;
   description: string;
@@ -77,6 +83,7 @@ export interface ServiceLevels {
   daysToDelivery: number;
   maximumRevisions: number;
   included: string[];
+  extras: ServiceLevelsExtra[];
 }
 
 export interface ReviewFields {

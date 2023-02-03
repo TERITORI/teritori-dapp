@@ -14,8 +14,21 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
+import { ServiceLevels } from "../types/fields";
 
-export const FirstRightCard: React.FC = () => {
+const SERVICE_FEE_IN_TORI = 100;
+
+export const FirstRightCard: React.FC<{
+  serviceLevels: ServiceLevels;
+  selected: Set<number>;
+}> = ({ serviceLevels, selected }) => {
+  const getTotalPrice = (serviceLevels: ServiceLevels, selected: Set<number>) =>
+    serviceLevels.extras
+      .filter((element, index) => selected.has(index))
+      .reduce((previousValue, currentValue) => {
+        return previousValue + currentValue.price.value;
+      }, serviceLevels.price.value);
+
   return (
     <TertiaryBox width={440}>
       <View
@@ -37,7 +50,10 @@ export const FirstRightCard: React.FC = () => {
           <BrandText style={{ color: neutral77, fontSize: 16 }}>
             Subtotal
           </BrandText>
-          <BrandText style={{ fontSize: 16 }}>1500 TORI</BrandText>
+          <BrandText style={{ fontSize: 16 }}>
+            {getTotalPrice(serviceLevels, selected)}{" "}
+            {serviceLevels.price.currency}
+          </BrandText>
         </View>
         <View
           style={{
@@ -51,7 +67,9 @@ export const FirstRightCard: React.FC = () => {
           <BrandText style={[fontSemibold16, { color: neutral77 }]}>
             Service Fee
           </BrandText>
-          <BrandText style={[fontSemibold16]}>100 TORI</BrandText>
+          <BrandText style={[fontSemibold16]}>
+            {SERVICE_FEE_IN_TORI} TORI
+          </BrandText>
         </View>
         <View
           style={{
@@ -76,7 +94,10 @@ export const FirstRightCard: React.FC = () => {
           <BrandText style={[fontSemibold20, { color: neutral77 }]}>
             Total
           </BrandText>
-          <BrandText style={[fontSemibold20]}>1500 TORI</BrandText>
+          <BrandText style={[fontSemibold20]}>
+            {getTotalPrice(serviceLevels, selected) + SERVICE_FEE_IN_TORI}{" "}
+            {serviceLevels.price.currency}
+          </BrandText>
         </View>
         <View
           style={{

@@ -16,6 +16,7 @@ export function getServiceListing(): ServiceFields[] {
         currency: "TORI",
       },
       tags: ["minimalist", "logo", "business", "vector"],
+      serviceLevels: [],
     },
   ];
 }
@@ -127,6 +128,17 @@ const serviceLevels: ServiceLevels[] = [
     daysToDelivery: 5,
     maximumRevisions: 3,
     included: ["4 concepts included", "Logo transparency"],
+    extras: [
+      {
+        text: "Additional revision",
+        description:
+          "Add an additional revision your seller will provide after the delivery.",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
+    ],
   },
   {
     text: "Standard",
@@ -146,6 +158,102 @@ const serviceLevels: ServiceLevels[] = [
       "Include 3D Mockup",
       "Include source file",
       "Include social media kit",
+    ],
+    extras: [
+      {
+        text: "Extra Fast 2 Days Delivery",
+        description: "",
+        price: {
+          value: 1500,
+          currency: "TORI",
+        },
+      },
+      {
+        text: "Additional revision",
+        description:
+          "Add an additional revision your seller will provide after the delivery.",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
+      {
+        text: "Include social media kit",
+        description:
+          "You'll get graphics showing your logo that you can use on social media platforms. Ex. Facebook and Instagram.",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
+      {
+        text: "Stationery designs",
+        description:
+          "You'll get a template with your logo to use for stationary—letterhead, envelopes, business cards, etc.",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
+      {
+        text: "Additional logo",
+        description: "Add another (1) logo concept.",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
+      {
+        text: "Full Vector Package",
+        description:
+          "I will provide full HQ resolution logo files in 5000 X 5000 Vector AI EPS PDF JPG PNG on transparent BG",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
+      {
+        text: "Favicon Design",
+        description: "I will design favicon for your Website",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
+      {
+        text: "E Mail Signature",
+        description: "I will design E-Mail signature for digital branding",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
+      {
+        text: "Full Color Codes",
+        description:
+          "I will provide color codes in HEX RGB and CMYK for the final logo",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
+      {
+        text: "Branding Design",
+        description:
+          "I will design double sided business card and letterhead design to build your brand",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
+      {
+        text: "Logo Guidelines",
+        description: "I will design an outstanding Logo Guidelines",
+        price: {
+          value: 500,
+          currency: "TORI",
+        },
+      },
     ],
   },
   {
@@ -167,5 +275,6 @@ const serviceLevels: ServiceLevels[] = [
       "Include social media kit",
       "Keys to the Kingdom",
     ],
+    extras: [],
   },
 ];
