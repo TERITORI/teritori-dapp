@@ -17,6 +17,13 @@ import { Separator } from "../../../../Separator";
 import { ModalBase } from "../../../../modals/ModalBase";
 import { DescritpionReportPopup } from "./DescritpionReportPopup";
 
+const options = [
+  "Non Original Content",
+  "Inappropriate Gig",
+  "Trademark Violations",
+  "Copyright Violations",
+];
+
 export const ReportPopUp: React.FC<{
   visible?: boolean;
   onClose: () => void;
@@ -73,73 +80,28 @@ export const ReportPopUp: React.FC<{
       <BrandText style={[fontSemibold14, { color: neutral77, marginTop: 12 }]}>
         Your report will be kept anonymous
       </BrandText>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: 12,
-          marginTop: 12,
-        }}
-      >
-        <RadioButton
-          value=""
-          color="#16BBFF"
-          uncheckedColor="#777777"
-          status={
-            isSelected === "Non orininal Content" ? "checked" : "unchecked"
-          }
-          onPress={() => setIsSelected("Non orininal Content")}
-        />
-        <BrandText style={[fontSemibold16, { marginLeft: 8 }]}>
-          Non Original Content
-        </BrandText>
-      </View>
-      <View
-        style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}
-      >
-        <RadioButton
-          value=""
-          color="#16BBFF"
-          uncheckedColor="#777777"
-          status={isSelected === "Inappropriate Gig" ? "checked" : "unchecked"}
-          onPress={() => setIsSelected("Inappropriate Gig")}
-        />
-        <BrandText style={[fontSemibold16, { marginLeft: 8 }]}>
-          Inappropriate Gig
-        </BrandText>
-      </View>
-      <View
-        style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}
-      >
-        <RadioButton
-          value=""
-          color="#16BBFF"
-          uncheckedColor="#777777"
-          status={
-            isSelected === "Trademark Violations" ? "checked" : "unchecked"
-          }
-          onPress={() => setIsSelected("Trademark Violations")}
-        />
-        <BrandText style={[fontSemibold16, { marginLeft: 8 }]}>
-          Trademark Violations
-        </BrandText>
-      </View>
-      <View
-        style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}
-      >
-        <RadioButton
-          value=""
-          color="#16BBFF"
-          uncheckedColor="#777777"
-          status={
-            isSelected === "Copyright Violations" ? "checked" : "unchecked"
-          }
-          onPress={() => setIsSelected("Copyright Violations")}
-        />
-        <BrandText style={[fontSemibold16, { marginLeft: 8 }]}>
-          Copyright Violations
-        </BrandText>
-      </View>
+      {options.map((option, index) => (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 12,
+            marginTop: 12,
+          }}
+          key={index}
+        >
+          <RadioButton
+            value={option}
+            color="#16BBFF"
+            uncheckedColor="#777777"
+            status={isSelected === option ? "checked" : "unchecked"}
+            onPress={() => setIsSelected(option)}
+          />
+          <BrandText style={[fontSemibold16, { marginLeft: 8 }]}>
+            {option}
+          </BrandText>
+        </View>
+      ))}
     </ModalBase>
   );
 };
