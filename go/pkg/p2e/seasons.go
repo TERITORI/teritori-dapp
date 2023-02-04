@@ -39,7 +39,7 @@ var THE_RIOT_SEASONS = []Season{
 		BossName:  `== $*=|'¤?")à-£_%`,
 		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
 		StartsAt:  "2023-01-24T00:00:00",
-		EndsAt:    "2023-02-04T00:00:00",
+		EndsAt:    "2023-02-05T00:00:00",
 		IsPre:     true,
 	},
 	// Season 2
@@ -52,8 +52,8 @@ var THE_RIOT_SEASONS = []Season{
 		BossName:   "Ursula Delahaye",
 		BossImage:  "https://bafybeigidzbfvy6t2a3cjff4zc2e6kk36uml5nn6acyuxaiwyvuuq6ww3a.ipfs.nftstorage.link/",
 		TopN:       500,
-		StartsAt:   "2023-02-04T00:00:00",
-		EndsAt:     "2023-02-14T00:00:00",
+		StartsAt:   "2023-02-05T00:00:00",
+		EndsAt:     "2023-02-15T00:00:00",
 	},
 	// Pre-Season 3
 	{
@@ -61,21 +61,8 @@ var THE_RIOT_SEASONS = []Season{
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
 		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
-		StartsAt:  "2023-02-03T16:18:00",
-		EndsAt:    "2023-02-03T16:21:00",
+		StartsAt:  "2023-02-15T00:00:00",
+		EndsAt:    "2023-12-30T00:00:00",
 		IsPre:     true,
-	},
-	// Season 3
-	{
-		ID:         "Season 3",
-		GameID:     THE_RIOT_GAME_ID,
-		Denom:      "tori",
-		Decimals:   6,
-		TotalPrize: 500,
-		BossName:   `Boss III`,
-		BossImage:  "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
-		TopN:       300,
-		StartsAt:   "2023-02-03T16:21:00",
-		EndsAt:     "2023-02-03T17:00:00",
 	},
 }
