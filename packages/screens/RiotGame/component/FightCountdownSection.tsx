@@ -45,8 +45,8 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
   cooldown,
 }) => {
   const { remainingTime, stakingState } = useMemo(() => {
-    let _remainingTime = 0;
-    let _stakingState = StakingState.UNKNOWN;
+    let remainingTime = 0;
+    let stakingState = StakingState.UNKNOWN;
 
     const startsAt = moment(squad.start_time * 1000);
     const endsAt = moment(squad.end_time * 1000);
@@ -55,18 +55,18 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
     const nowDt = moment(now);
 
     if (nowDt.isAfter(startsAt) && nowDt.isBefore(endsAt)) {
-      _stakingState = StakingState.ONGOING;
-      _remainingTime = endsAt.diff(now);
+      stakingState = StakingState.ONGOING;
+      remainingTime = endsAt.diff(now);
     } else if (nowDt.isAfter(endsAt) && nowDt.isBefore(completesAt)) {
-      _stakingState = StakingState.RELAX;
-      _remainingTime = completesAt.diff(now);
+      stakingState = StakingState.RELAX;
+      remainingTime = completesAt.diff(now);
     } else if (nowDt.isAfter(completesAt)) {
-      _stakingState = StakingState.COMPLETED;
+      stakingState = StakingState.COMPLETED;
     }
 
     return {
-      remainingTime: _remainingTime,
-      stakingState: _stakingState,
+      remainingTime,
+      stakingState,
     };
   }, [now, cooldown]);
 

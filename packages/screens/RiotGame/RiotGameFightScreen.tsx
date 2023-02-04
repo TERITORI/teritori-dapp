@@ -47,7 +47,7 @@ export const RiotGameFightScreen = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setNow(+new Date());
+      setNow(Date.now());
     }, 1000);
 
     return () => {
@@ -62,7 +62,7 @@ export const RiotGameFightScreen = () => {
   }, [isSquadsLoaded, squadStakingConfig?.owner, squads.length]);
 
   return (
-    <GameContentView bgImageURI={FIGHT_BG_URI}>
+    <GameContentView bgImage={{ uri: FIGHT_BG_URI }}>
       {squads.length === 0 && (
         <FightSectionHeader title="No fights" total={0} />
       )}
