@@ -61,6 +61,7 @@ export interface InstantiateMsg {
   cooldown_period: number;
   max_squad_size: number;
   min_squad_size: number;
+  squad_count_limit: number;
 }
 export type IsCollectionWhitelistedResponse = boolean;
 export type QueryMsg = {
