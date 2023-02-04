@@ -14,7 +14,11 @@ import cryptoLogoSVG from "../../../assets/icons/crypto-logo.svg";
 import volDownSVG from "../../../assets/icons/vol-down.svg";
 import volUpSVG from "../../../assets/icons/vol-up.svg";
 import logoSVG from "../../../assets/logos/logo-white.svg";
-import { LeaderboardResponse, UserScore } from "../../api/p2e/v1/p2e";
+import {
+  CurrentSeasonResponse,
+  LeaderboardResponse,
+  UserScore,
+} from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
@@ -32,10 +36,13 @@ import {
   neutral77,
   primaryColor,
 } from "../../utils/style/colors";
-import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
+import {
+  fontMedium16,
+  fontSemibold12,
+  fontSemibold28,
+} from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
-import { P2E_PAUSED } from "./settings";
 
 type RankProps = {
   changes: number;
@@ -124,14 +131,16 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
 
 export const RiotGameLeaderboardScreen = () => {
   const [userScores, setUserScores] = useState<UserScore[]>([]);
+  const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
 
   const fetchLeaderboard = async () => {
     const _userScores: UserScore[] = [];
 
-    const { id } = await p2eBackendClient.CurrentSeason({});
+    const currentSeason = await p2eBackendClient.CurrentSeason({});
+    setCurrentSeason(currentSeason);
 
     const streamData = await p2eBackendClient.Leaderboard({
-      seasonId: id,
+      seasonId: currentSeason.id,
       limit: 500,
       offset: 0,
     });
@@ -143,7 +152,7 @@ export const RiotGameLeaderboardScreen = () => {
   };
 
   useEffect(() => {
-    !P2E_PAUSED && fetchLeaderboard();
+    fetchLeaderboard();
   }, []);
 
   return (
@@ -154,6 +163,10 @@ export const RiotGameLeaderboardScreen = () => {
         <SpacerColumn size={2} />
 
         <BrandText style={fontSemibold28}>THE R!OT LEADERBOARD</BrandText>
+
+        <SpacerColumn size={2} />
+
+        <BrandText style={fontMedium16}>{currentSeason?.id}</BrandText>
       </ImageBackground>
 
       <TertiaryBox fullWidth style={{ marginTop: layout.padding_x2 }}>

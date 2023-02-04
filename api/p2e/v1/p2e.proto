@@ -34,6 +34,8 @@ message CurrentSeasonResponse {
   string boss_name = 4;
   int32 boss_hp = 5;
   float remaining_hp = 6;
+  string boss_image = 7;
+  bool isPre = 8;
 }
 
 message UserRankRequest {

@@ -6,20 +6,25 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { ExecuteMsg, Addr, Nft, GetConfigResponse, GetLastStakeTimeResponse, GetSquadResponse, InstantiateMsg, QueryMsg } from "./TeritoriSquadStaking.types";
+import { ExecuteMsg, Addr, Nft, GetConfigResponse, GetSquadResponse, Squad, GetUserSquadCountResponse, InstantiateMsg, IsCollectionWhitelistedResponse, QueryMsg } from "./TeritoriSquadStaking.types";
 export interface TeritoriSquadStakingReadOnlyInterface {
   contractAddress: string;
   getConfig: () => Promise<GetConfigResponse>;
-  getLastStakeTime: ({
+  getUserSquadCount: ({
     user
   }: {
     user: Addr;
-  }) => Promise<GetLastStakeTimeResponse>;
+  }) => Promise<GetUserSquadCountResponse>;
   getSquad: ({
     owner
   }: {
     owner: Addr;
   }) => Promise<GetSquadResponse>;
+  isCollectionWhitelisted: ({
+    contractAddr
+  }: {
+    contractAddr: string;
+  }) => Promise<IsCollectionWhitelistedResponse>;
 }
 export class TeritoriSquadStakingQueryClient implements TeritoriSquadStakingReadOnlyInterface {
   client: CosmWasmClient;
@@ -29,8 +34,9 @@ export class TeritoriSquadStakingQueryClient implements TeritoriSquadStakingRead
     this.client = client;
     this.contractAddress = contractAddress;
     this.getConfig = this.getConfig.bind(this);
-    this.getLastStakeTime = this.getLastStakeTime.bind(this);
+    this.getUserSquadCount = this.getUserSquadCount.bind(this);
     this.getSquad = this.getSquad.bind(this);
+    this.isCollectionWhitelisted = this.isCollectionWhitelisted.bind(this);
   }
 
   getConfig = async (): Promise<GetConfigResponse> => {
@@ -38,13 +44,13 @@ export class TeritoriSquadStakingQueryClient implements TeritoriSquadStakingRead
       get_config: {}
     });
   };
-  getLastStakeTime = async ({
+  getUserSquadCount = async ({
     user
   }: {
     user: Addr;
-  }): Promise<GetLastStakeTimeResponse> => {
+  }): Promise<GetUserSquadCountResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
-      get_last_stake_time: {
+      get_user_squad_count: {
         user
       }
     });
@@ -60,14 +66,27 @@ export class TeritoriSquadStakingQueryClient implements TeritoriSquadStakingRead
       }
     });
   };
+  isCollectionWhitelisted = async ({
+    contractAddr
+  }: {
+    contractAddr: string;
+  }): Promise<IsCollectionWhitelistedResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      is_collection_whitelisted: {
+        contract_addr: contractAddr
+      }
+    });
+  };
 }
 export interface TeritoriSquadStakingInterface extends TeritoriSquadStakingReadOnlyInterface {
   contractAddress: string;
   sender: string;
   updateConfig: ({
-    owner
+    owner,
+    squadCountLimit
   }: {
-    owner: Addr;
+    owner?: Addr;
+    squadCountLimit?: number;
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   setSupportedCollection: ({
     contractAddr,
@@ -77,11 +96,9 @@ export interface TeritoriSquadStakingInterface extends TeritoriSquadStakingReadO
     isSupported: boolean;
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   updateCooldown: ({
-    cooldownPeriod,
-    cooldownUnit
+    cooldownPeriod
   }: {
     cooldownPeriod: number;
-    cooldownUnit: number;
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[]) => Promise<ExecuteResult>;
   updateSquadSize: ({
     maxSquadSize,
@@ -122,13 +139,16 @@ export class TeritoriSquadStakingClient extends TeritoriSquadStakingQueryClient 
   }
 
   updateConfig = async ({
-    owner
+    owner,
+    squadCountLimit
   }: {
-    owner: Addr;
+    owner?: Addr;
+    squadCountLimit?: number;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       update_config: {
-        owner
+        owner,
+        squad_count_limit: squadCountLimit
       }
     }, fee, memo, funds);
   };
@@ -147,16 +167,13 @@ export class TeritoriSquadStakingClient extends TeritoriSquadStakingQueryClient 
     }, fee, memo, funds);
   };
   updateCooldown = async ({
-    cooldownPeriod,
-    cooldownUnit
+    cooldownPeriod
   }: {
     cooldownPeriod: number;
-    cooldownUnit: number;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       update_cooldown: {
-        cooldown_period: cooldownPeriod,
-        cooldown_unit: cooldownUnit
+        cooldown_period: cooldownPeriod
       }
     }, fee, memo, funds);
   };

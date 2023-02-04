@@ -4,16 +4,17 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
+import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { StakingState } from "../../utils/game";
+import { p2eBackendClient } from "../../utils/backend";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   fontMedium32,
@@ -25,11 +26,10 @@ import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalV2";
 import { SimpleButton } from "./component/SimpleButton";
-import { P2E_PAUSED } from "./settings";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
-const embeddedVideoUri =
-  "https://bafybeieid23jjpzug42y6u5au2noc6hpyayqd56udgvh7pfd45jeksykoe.ipfs.nftstorage.link/";
+const EMBEDDED_VIDEO_URI =
+  "https://bafybeid5x2gujvk3cggzz2qvewf6ykzie2iqb7ry4qtew63tolanerw4ja.ipfs.nftstorage.link/";
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
@@ -42,16 +42,11 @@ export const RiotGameEnrollScreen = () => {
 
   const { myAvailableRippers } = useRippers();
   const {
-    currentSquad,
     squadStakingConfig,
     squadStake,
-    stakingState,
     estimateStakingDuration,
-    lastStakeTime,
-    isStakingStateLoaded,
-    isLastStakeTimeLoaded,
-    isSquadLoaded,
-    updateStakingState,
+    isSquadsLoaded,
+    squads,
   } = useSquadStaking();
 
   // Stop video when changing screen through react-navigation
@@ -69,7 +64,7 @@ export const RiotGameEnrollScreen = () => {
     const selectedIds = selectedRippers.map((r) => r.id);
 
     return myAvailableRippers.filter((r) => !selectedIds.includes(r.id));
-  }, [myAvailableRippers, selectedRippers, currentSquad]);
+  }, [myAvailableRippers, selectedRippers]);
 
   const stakingDuration = useMemo<number>(() => {
     if (selectedRippers.length === 0 || !squadStakingConfig) return 0;
@@ -96,20 +91,23 @@ export const RiotGameEnrollScreen = () => {
     setSelectedRippers(newSelectedRippers);
   };
 
-  const joinTheFight = async () => {
-    // NOTE: temporary code for phase transition
-    if (P2E_PAUSED) {
-      return setToastError({
-        title: "Warning",
-        message: `Season 1 is closed. Philipp Rustov is defeated. 
-        Now wait for the next instructions`,
-      });
-    }
+  const gotoCurrentFight = () => {
+    navigation.replace("RiotGameFight");
+  };
 
+  const joinTheFight = async () => {
     if (!squadStakingConfig) {
       return setToastError({
         title: "Error",
         message: "Failed to load SquadStakingConfig",
+      });
+    }
+
+    const currentSeason = await p2eBackendClient.CurrentSeason({});
+    if (currentSeason.isPre) {
+      return setToastError({
+        title: "Warning",
+        message: "Season has not started yet",
       });
     }
 
@@ -120,7 +118,7 @@ export const RiotGameEnrollScreen = () => {
 
       // Wait a little before redirection to be sure that we have passed the fight start time
       setTimeout(() => {
-        navigation.replace("RiotGameFight");
+        navigation.navigate("RiotGameFight");
       }, 1000);
     } catch (e: any) {
       setToastError({
@@ -131,25 +129,15 @@ export const RiotGameEnrollScreen = () => {
     }
   };
 
-  // If we are in state Relax/Ongoing or there is squad the goto fight screen
   useEffect(() => {
     if (
-      isSquadLoaded &&
-      isStakingStateLoaded &&
-      (currentSquad ||
-        [StakingState.RELAX, StakingState.ONGOING].includes(stakingState))
+      isSquadsLoaded &&
+      squadStakingConfig?.owner &&
+      squads.length === squadStakingConfig.squad_count_limit
     ) {
       navigation.replace("RiotGameFight");
     }
-  }, [isSquadLoaded, isStakingStateLoaded]);
-
-  // Update staking state
-  useEffect(() => {
-    if (!isSquadLoaded || !isLastStakeTimeLoaded || !squadStakingConfig?.owner)
-      return;
-
-    updateStakingState(currentSquad, lastStakeTime, squadStakingConfig);
-  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.owner]);
+  }, [isSquadsLoaded, squadStakingConfig?.owner, squads.length]);
 
   return (
     <GameContentView>
@@ -157,7 +145,7 @@ export const RiotGameEnrollScreen = () => {
         <BrandText style={styles.pageTitle}>Send to fight</BrandText>
       </View>
 
-      <FlexRow breakpoint={1080} style={styles.enrollContainer}>
+      <View style={styles.enrollContainer}>
         <View style={styles.col}>
           <BrandText style={styles.sectionTitle}>
             Enroll your Ripper(s)
@@ -213,22 +201,38 @@ export const RiotGameEnrollScreen = () => {
               ref={videoRef}
               style={{ borderRadius: 25 }}
               source={{
-                uri: embeddedVideoUri,
+                uri: EMBEDDED_VIDEO_URI,
               }}
               useNativeControls
               resizeMode={ResizeMode.CONTAIN}
             />
           </View>
         </View>
-      </FlexRow>
+      </View>
 
-      <SimpleButton
-        disabled={selectedRippers.length === 0}
-        onPress={joinTheFight}
-        containerStyle={{ marginVertical: layout.padding_x4 }}
-        title="Join the Fight"
-        loading={isJoiningFight}
-      />
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        {squads.length > 0 && (
+          <SimpleButton
+            onPress={gotoCurrentFight}
+            containerStyle={{
+              marginVertical: layout.padding_x4,
+            }}
+            text="Goto current Fight"
+            loading={isJoiningFight}
+            iconSVG={controllerSVG}
+            outline
+          />
+        )}
+        <SpacerRow size={2} />
+
+        <SimpleButton
+          disabled={selectedRippers.length === 0}
+          onPress={joinTheFight}
+          containerStyle={{ marginVertical: layout.padding_x4 }}
+          text="Join the Fight"
+          loading={isJoiningFight}
+        />
+      </View>
 
       <RipperSelectorModal
         visible={selectedSlot !== undefined}
@@ -254,6 +258,8 @@ const styles = StyleSheet.create({
   enrollContainer: {
     justifyContent: "space-around",
     marginTop: layout.padding_x1,
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   col: {
     justifyContent: "center",
