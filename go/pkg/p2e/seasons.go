@@ -29,7 +29,7 @@ var THE_RIOT_SEASONS = []Season{
 		BossName:   "Philipp Rustov",
 		BossImage:  "",
 		TopN:       500,
-		StartsAt:   "2022-12-24T00:00:00",
+		StartsAt:   "2022-12-01T00:00:00",
 		EndsAt:     "2023-01-24T00:00:00",
 	},
 	// Pre-Season 2
