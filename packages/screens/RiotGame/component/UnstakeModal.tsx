@@ -37,7 +37,9 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
   visible = false,
 }) => {
   const selectedWallet = useSelectedWallet();
-  const { info = {} } = useCollectionInfo(THE_RIOT_COLLECTION_ID);
+  const { info = { mintPhases: [] } } = useCollectionInfo(
+    THE_RIOT_COLLECTION_ID
+  );
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
 
   const startTime = squad?.start_time || 0;
