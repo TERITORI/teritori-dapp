@@ -53,7 +53,7 @@ var THE_RIOT_SEASONS = []Season{
 		BossImage:  "https://bafybeigidzbfvy6t2a3cjff4zc2e6kk36uml5nn6acyuxaiwyvuuq6ww3a.ipfs.nftstorage.link/",
 		TopN:       500,
 		StartsAt:   "2023-02-05T00:00:00",
-		EndsAt:     "2023-02-15T00:00:00",
+		EndsAt:     "2023-02-16T00:00:00",
 	},
 	// Pre-Season 3
 	{
@@ -61,7 +61,7 @@ var THE_RIOT_SEASONS = []Season{
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
 		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
-		StartsAt:  "2023-02-15T00:00:00",
+		StartsAt:  "2023-02-16T00:00:00",
 		EndsAt:    "2023-12-30T00:00:00",
 		IsPre:     true,
 	},
