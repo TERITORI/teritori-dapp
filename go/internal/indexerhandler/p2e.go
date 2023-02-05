@@ -225,11 +225,17 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 		if err != nil {
 			return errors.Wrap(err, "failed to get season")
 		}
+		seasonId := season.ID
+
+		// Unstake NFTs from previous contracts
+		if execMsg.Contract == h.config.SquadStakingContractAddressV1 {
+			seasonId = "Season 1"
+		}
 
 		var userScore indexerdb.P2eLeaderboard
 		q2 := &indexerdb.P2eLeaderboard{
 			UserID:   userId,
-			SeasonID: season.ID,
+			SeasonID: seasonId,
 		}
 		// Normally, an user score record has to exist here (created when first stake)
 		if err := h.db.Where(q2).First(&userScore).Error; err != nil {

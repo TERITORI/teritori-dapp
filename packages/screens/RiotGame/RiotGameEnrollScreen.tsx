@@ -10,7 +10,6 @@ import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
@@ -35,7 +34,7 @@ const embeddedVideoWidth = 468;
 
 export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
-  const { setToastError } = useFeedbacks();
+  const { setToastError, setToastSuccess } = useFeedbacks();
 
   const videoRef = React.useRef<Video>(null);
   const isScreenFocused = useIsFocused();
@@ -47,6 +46,10 @@ export const RiotGameEnrollScreen = () => {
     estimateStakingDuration,
     isSquadsLoaded,
     squads,
+    squadWithdrawSeason1,
+    currentUser,
+    squadSeason1,
+    setSquadSeason1,
   } = useSquadStaking();
 
   // Stop video when changing screen through react-navigation
@@ -59,6 +62,7 @@ export const RiotGameEnrollScreen = () => {
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);
   const [isJoiningFight, setIsJoiningFight] = useState(false);
+  const [isUnstaking, setIsUnstaking] = useState(false);
 
   const availableForEnrollRippers = useMemo(() => {
     const selectedIds = selectedRippers.map((r) => r.id);
@@ -93,6 +97,29 @@ export const RiotGameEnrollScreen = () => {
 
   const gotoCurrentFight = () => {
     navigation.replace("RiotGameFight");
+  };
+
+  const unstakeSeason1 = async () => {
+    if (!currentUser) return;
+
+    try {
+      setIsUnstaking(true);
+
+      await squadWithdrawSeason1(currentUser);
+      setToastSuccess({
+        title: "Success",
+        message: "Unstake successfully",
+      });
+
+      setSquadSeason1(undefined);
+    } catch (e: any) {
+      setToastError({
+        title: "Error occurs",
+        message: e.message,
+      });
+    } finally {
+      setIsUnstaking(false);
+    }
   };
 
   const joinTheFight = async () => {
@@ -216,6 +243,7 @@ export const RiotGameEnrollScreen = () => {
             onPress={gotoCurrentFight}
             containerStyle={{
               marginVertical: layout.padding_x4,
+              marginRight: layout.padding_x2,
             }}
             text="Goto current Fight"
             loading={isJoiningFight}
@@ -223,7 +251,6 @@ export const RiotGameEnrollScreen = () => {
             outline
           />
         )}
-        <SpacerRow size={2} />
 
         <SimpleButton
           disabled={selectedRippers.length === 0}
@@ -233,6 +260,17 @@ export const RiotGameEnrollScreen = () => {
           loading={isJoiningFight}
         />
       </View>
+
+      {squadSeason1 && (
+        <SimpleButton
+          disabled={isUnstaking}
+          onPress={unstakeSeason1}
+          containerStyle={{ marginVertical: layout.padding_x2 }}
+          text="Retrieve Season 1 Squad"
+          loading={isUnstaking}
+          outline
+        />
+      )}
 
       <RipperSelectorModal
         visible={selectedSlot !== undefined}

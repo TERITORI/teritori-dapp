@@ -34,6 +34,7 @@ export const useSquadStaking = () => {
   const [squadStakingConfig, setSquadStakingConfig] =
     useState<GetConfigResponse>();
   const [squads, setSquads] = useState<Squad[]>([]);
+  const [squadSeason1, setSquadSeason1] = useState<Squad>();
   const [isSquadsLoaded, setIsSquadsLoaded] = useState<boolean>(false);
   const selectedWallet = useSelectedWallet();
 
@@ -97,6 +98,28 @@ export const useSquadStaking = () => {
     setSquadStakingConfig(config);
   };
 
+  const fetchSquadSeason1 = async (user: string) => {
+    try {
+      const nonSigningClient = await getNonSigningCosmWasmClient();
+      const client = new TeritoriSquadStakingQueryClient(
+        nonSigningClient,
+        process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS_V1 || ""
+      );
+      const squad = await client.getSquad({
+        owner: user,
+      });
+      // NOTE: contract client V1 is not compatible with V2
+      // V1 return Squad and V2 return Squad[] so we have to use any in this case
+      setSquadSeason1(squad as any);
+    } catch (e: any) {
+      if (e.message?.includes("Squad not found")) {
+        console.log("Squad Season 1 not found:", e.message);
+      } else {
+        throw e;
+      }
+    }
+  };
+
   const fetchSquads = async (user: string) => {
     try {
       const queryClient = await getSquadStakingQueryClient();
@@ -113,6 +136,16 @@ export const useSquadStaking = () => {
     } finally {
       setIsSquadsLoaded(true);
     }
+  };
+
+  const squadWithdrawSeason1 = async (user: string) => {
+    const signingClient = await getSigningCosmWasmClient();
+    const client = new TeritoriSquadStakingClient(
+      signingClient,
+      user,
+      process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS_V1 || ""
+    );
+    return await client.withdraw(defaultExecuteFee, defaultMemo);
   };
 
   const squadWithdraw = async (user: string) => {
@@ -146,6 +179,7 @@ export const useSquadStaking = () => {
 
     fetchSquadStakingConfig();
     fetchSquads(selectedWallet.address);
+    fetchSquadSeason1(selectedWallet.address);
   }, [selectedWallet?.address]); // Use attributes as dependencies to avoid deep compare
 
   return {
@@ -154,9 +188,12 @@ export const useSquadStaking = () => {
     squads,
     squadStake,
     squadWithdraw,
+    squadWithdrawSeason1,
+    setSquadSeason1,
     estimateStakingDuration,
     isSquadsLoaded,
     setSquads,
     fetchSquads,
+    squadSeason1,
   };
 };
