@@ -29,6 +29,7 @@ export interface SocialFeedMetadata {
   title: string;
   message: string;
   files?: RemoteFileData[];
+  gifs?: string[];
   hashtags: string[];
   createdAt: string;
   updatedAt: string;

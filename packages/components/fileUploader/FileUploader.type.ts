@@ -10,4 +10,5 @@ export interface FileUploaderProps {
   multiple?: boolean;
   mimeTypes?: string[];
   children?: ({ onPress }: { onPress: () => void }) => React.ReactNode;
+  maxUpload?: number;
 }

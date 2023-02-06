@@ -37,9 +37,7 @@ import { DateTime } from "../DateTime";
 import { EmojiSelector } from "../EmojiSelector";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { SocialActions, socialActionsHeight } from "../SocialActions";
-import {
-  SocialReactionActions,
-} from "../SocialReactionActions";
+import { SocialReactionActions } from "../SocialReactionActions";
 import { SocialThreadContent } from "../SocialThread/SocialThreadContent";
 import { tinyAddress } from "../WalletSelector";
 import { AnimationFadeIn } from "../animations";
