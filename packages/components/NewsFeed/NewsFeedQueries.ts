@@ -194,6 +194,7 @@ interface GeneratePostMetadataParams {
   message: string;
   files: RemoteFileData[];
   hashtags: string[];
+  gifs?: string[];
 }
 
 export const generatePostMetadata = ({
@@ -201,12 +202,14 @@ export const generatePostMetadata = ({
   message,
   files,
   hashtags,
+  gifs,
 }: GeneratePostMetadataParams): SocialFeedMetadata => {
   return {
     title: title || "",
     message: message || "",
     files,
     hashtags: hashtags || [],
+    gifs: gifs || [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };

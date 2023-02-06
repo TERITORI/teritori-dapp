@@ -1,4 +1,7 @@
-import { getSigningCosmWasmClient } from "../utils/keplr";
+import {
+  getSigningCosmWasmClient,
+  getNonSigningCosmWasmClient,
+} from "../utils/keplr";
 import { TeritoriSocialFeedClient } from "./../contracts-clients/teritori-social-feed/TeritoriSocialFeed.client";
 
 interface SocialFeedClientParams {
@@ -21,7 +24,9 @@ export const socialFeedClient = async ({
   if (cachedClients[cacheKey]) {
     return cachedClients[cacheKey];
   } else {
-    const signingComswasmClient = await getSigningCosmWasmClient();
+    const signingComswasmClient = walletAddress
+      ? await getSigningCosmWasmClient()
+      : await getNonSigningCosmWasmClient();
     const client = new TeritoriSocialFeedClient(
       signingComswasmClient,
       walletAddress,

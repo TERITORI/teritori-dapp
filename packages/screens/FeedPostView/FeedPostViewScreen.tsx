@@ -69,13 +69,10 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   );
 
   const fetchPost = async () => {
-    if (!wallet?.connected || !wallet.address) {
-      return;
-    }
     try {
       isLoadingValue.value = true;
       const client = await socialFeedClient({
-        walletAddress: wallet.address,
+        walletAddress: wallet?.address || "",
       });
       const _post = await client.queryPost({ identifier: id });
       setPost(_post);
