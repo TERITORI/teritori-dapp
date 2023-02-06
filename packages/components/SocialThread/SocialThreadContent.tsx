@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import { layout } from "../../utils/style/layout";
 import { AudioPreview } from "../FilePreview/AudioPreview";
+import { convertGIFToLocalFileType } from "../FilePreview/UploadedFilePreview/FilePreviewContainer";
 import { ImagePreview } from "../FilePreview/UploadedFilePreview/ImagePreview";
 import { VideoPreview } from "../FilePreview/UploadedFilePreview/VideoPreview";
 import { SocialFeedMetadata, PostCategory } from "../NewsFeed/NewsFeed.type";
@@ -32,9 +33,13 @@ export const SocialThreadContent: React.FC<Props> = ({ metadata, type }) => {
           <VideoPreview file={metadata.files[0]} onDelete={() => null} />
         )}
 
-        {metadata.files?.[0]?.fileType === "image" && (
+        {(metadata.files?.[0]?.fileType === "image" ||
+          metadata.gifs?.length) && (
           <ImagePreview
-            files={metadata.files || []}
+            files={[
+              ...(metadata.files || []),
+              ...(metadata.gifs || []).map(convertGIFToLocalFileType),
+            ]}
             isEditable={false}
             onDelete={() => null}
           />

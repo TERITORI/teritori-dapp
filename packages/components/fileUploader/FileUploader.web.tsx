@@ -22,6 +22,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   multiple,
   mimeTypes,
   children,
+  maxUpload,
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
@@ -29,9 +30,13 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
-    const supportedFiles = [...files].filter((file) =>
+    let supportedFiles = [...files].filter((file) =>
       mimeTypes?.includes(file.type)
     );
+
+    if (maxUpload && supportedFiles.length) {
+      supportedFiles = supportedFiles.slice(0, maxUpload);
+    }
 
     if (supportedFiles.length === 0) {
       setToastError({

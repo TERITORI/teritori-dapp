@@ -21,14 +21,11 @@ export const useFetchFeed = () => {
 
   // request
   const req = useInfiniteQuery<FetchFeedResponse>(
-    ["FetchFeed", wallet?.address],
+    ["FetchFeed"],
     async ({ pageParam }) => {
-      if (!wallet?.address) {
-        return;
-      }
       try {
         const client = await socialFeedClient({
-          walletAddress: wallet?.address,
+          walletAddress: wallet?.address || "",
         });
 
         const mainPosts = await client.queryMainPosts({

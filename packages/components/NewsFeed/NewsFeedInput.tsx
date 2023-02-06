@@ -4,7 +4,6 @@ import {
   TextInput,
   View,
   ViewStyle,
-  TouchableOpacity,
   Pressable,
   StyleSheet,
   useWindowDimensions,
@@ -34,7 +33,6 @@ import { SOCIAL_FEED_MAX_CHAR_LIMIT } from "../../utils/social-feed";
 import {
   neutral17,
   neutral22,
-  neutral33,
   neutral77,
   secondaryColor,
 } from "../../utils/style/colors";
@@ -47,6 +45,7 @@ import { layout } from "../../utils/style/layout";
 import { replaceBetweenString } from "../../utils/text";
 import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
+import { CircleIconBox } from "../CircleIconBox";
 import { EmojiSelector } from "../EmojiSelector";
 import { FilePreviewContainer } from "../FilePreview/UploadedFilePreview/FilePreviewContainer";
 import { GIFSelector } from "../GIFSelector";
@@ -197,6 +196,7 @@ export const NewsFeedInput = React.forwardRef<
           message: formValues.message || "",
           files,
           hashtags: [],
+          gifs: formValues?.gifs || [],
         });
 
         await mutate({
@@ -357,6 +357,10 @@ export const NewsFeedInput = React.forwardRef<
                   "files",
                   formValues.files?.filter((file) => file.url !== fileIndex)
                 );
+                setValue(
+                  "gifs",
+                  formValues.gifs?.filter((file) => file !== fileIndex)
+                );
               } else {
                 setValue("files", []);
               }
@@ -426,6 +430,13 @@ export const NewsFeedInput = React.forwardRef<
               onGIFSelected={(url) =>
                 url && setValue("gifs", [...(formValues.gifs || []), url])
               }
+              disabled={
+                (formValues.files?.[0] &&
+                  formValues.files[0].fileType !== "image") ||
+                (formValues.files || []).length +
+                  (formValues.gifs || [])?.length >=
+                  4
+              }
             />
             <SpacerRow size={2.5} />
 
@@ -440,21 +451,14 @@ export const NewsFeedInput = React.forwardRef<
               mimeTypes={AUDIO_MIME_TYPES}
             >
               {({ onPress }) => (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={{
-                    height: 32,
-                    width: 32,
-                    borderRadius: 24,
-                    backgroundColor: neutral33,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: layout.padding_x2_5,
-                  }}
+                <CircleIconBox
+                  icon={audioSVG}
                   onPress={onPress}
-                >
-                  <SVG source={audioSVG} width={20} height={20} />
-                </TouchableOpacity>
+                  style={{ marginRight: layout.padding_x2_5 }}
+                  disabled={
+                    !!formValues.files?.length || !!formValues.gifs?.length
+                  }
+                />
               )}
             </FileUploader>
             <FileUploader
@@ -462,21 +466,14 @@ export const NewsFeedInput = React.forwardRef<
               mimeTypes={VIDEO_MIME_TYPES}
             >
               {({ onPress }) => (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={{
-                    height: 32,
-                    width: 32,
-                    borderRadius: 24,
-                    backgroundColor: neutral33,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: layout.padding_x2_5,
-                  }}
+                <CircleIconBox
+                  icon={videoSVG}
                   onPress={onPress}
-                >
-                  <SVG source={videoSVG} width={20} height={20} />
-                </TouchableOpacity>
+                  style={{ marginRight: layout.padding_x2_5 }}
+                  disabled={
+                    !!formValues.files?.length || !!formValues.gifs?.length
+                  }
+                />
               )}
             </FileUploader>
             <FileUploader
@@ -485,23 +482,29 @@ export const NewsFeedInput = React.forwardRef<
                 setValue("files", [...(formValues.files || []), ...files])
               }
               mimeTypes={IMAGE_MIME_TYPES}
+              maxUpload={
+                4 -
+                (formValues.files?.length || 0) -
+                (formValues.gifs?.length || 0)
+              }
             >
               {({ onPress }) => (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={{
-                    height: 32,
-                    width: 32,
-                    borderRadius: 24,
-                    backgroundColor: neutral33,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: isMobile ? 0 : layout.padding_x2_5,
-                  }}
+                <CircleIconBox
+                  disabled={
+                    (formValues.files?.[0] &&
+                      formValues.files[0].fileType !== "image") ||
+                    (formValues.files || []).length +
+                      (formValues.gifs || [])?.length >=
+                      4
+                  }
+                  icon={cameraSVG}
                   onPress={onPress}
-                >
-                  <SVG source={cameraSVG} width={16} height={16} />
-                </TouchableOpacity>
+                  style={{ marginRight: layout.padding_x2_5 }}
+                  iconProps={{
+                    height: 18,
+                    width: 18,
+                  }}
+                />
               )}
             </FileUploader>
             <PrimaryButton
