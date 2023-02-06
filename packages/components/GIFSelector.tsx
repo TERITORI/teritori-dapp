@@ -21,14 +21,18 @@ import { neutral33, neutral67, secondaryColor } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
-import { SVG } from "./SVG";
+import { CircleIconBox } from "./CircleIconBox";
 import { SpacerColumn } from "./spacer";
 
 type GIFSelectorProps = {
+  disabled?: boolean;
   onGIFSelected?: (GIFurl: string | null) => void;
 };
 
-export const GIFSelector: React.FC<GIFSelectorProps> = ({ onGIFSelected }) => {
+export const GIFSelector: React.FC<GIFSelectorProps> = ({
+  onGIFSelected,
+  disabled,
+}) => {
   // functions
   const [isGIFModalVisible, setIsGIFModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -90,9 +94,14 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({ onGIFSelected }) => {
       // renderer={renderers.Popover}
       rendererProps={{ placement: "bottom" }}
     >
-      <MenuTrigger onPress={toggleGIFModal} style={styles.icon}>
-        <SVG source={gifSVG} height={16} width={16} />
+      <MenuTrigger onPress={() => !disabled && toggleGIFModal}>
+        <CircleIconBox
+          icon={gifSVG}
+          onPress={toggleGIFModal}
+          disabled={disabled}
+        />
       </MenuTrigger>
+
       <MenuOptions
         customStyles={{
           optionsContainer: styles.optionsContainer,
@@ -153,16 +162,7 @@ const styles = StyleSheet.create({
     height: 300,
     borderRadius: 10,
   },
-  icon: {
-    width: 32,
-    height: 32,
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    backgroundColor: neutral33,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   input: {
     backgroundColor: neutral33,
     width: "100%",

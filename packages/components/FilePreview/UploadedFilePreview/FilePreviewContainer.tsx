@@ -16,6 +16,15 @@ interface FilePreviewContainerProps {
   onUploadThumbnail: (file: LocalFileData) => void;
 }
 
+export const convertGIFToLocalFileType = (gif: string): LocalFileData => ({
+  file: new File([], ""),
+  fileName: "gif",
+  mimeType: "images/gif",
+  size: 120,
+  url: gif,
+  fileType: "image",
+});
+
 export const FilePreviewContainer: React.FC<FilePreviewContainerProps> = ({
   files,
   gifs,
@@ -45,9 +54,12 @@ export const FilePreviewContainer: React.FC<FilePreviewContainerProps> = ({
           onUploadThumbnail={onUploadThumbnail}
         />
       )}
-      {files?.[0]?.fileType === "image" && (
+      {(files?.[0]?.fileType === "image" || gifs?.length) && (
         <ImagePreview
-          files={files}
+          files={[
+            ...(gifs?.map(convertGIFToLocalFileType) || []),
+            ...(files || []),
+          ]}
           onDelete={(url) => onDelete(url)}
           isEditable
         />
