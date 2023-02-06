@@ -99,21 +99,23 @@ func updateLeaderboard(seasonId string, db *gorm.DB) error {
 	currentTimestamp := time.Now().UTC().Unix()
 
 	// Update Rules:
-	// - Only counting the stakings which have been started
 	// - If staking is in progress => in progress duration = current - start_time
 	// - If staking ends => if progress duration = end_time - start_time
 	updateScoreErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET 
-			in_progress_score = score + LEAST(ss.end_time - ss.start_time, ? - ss.start_time)
-		FROM p2e_squad_stakings as ss
-		WHERE lb.user_id = ss.owner_id 
+			in_progress_score = score + aggregated_ss.in_progress
+		FROM (
+			SELECT owner_id, season_id, SUM( LEAST(ss.end_time - ss.start_time, ? - ss.start_time) ) as in_progress
+			FROM p2e_squad_stakings as ss
+			GROUP BY owner_id, season_id
+		) as aggregated_ss
+		WHERE lb.user_id = aggregated_ss.owner_id
+			AND lb.season_id = aggregated_ss.season_id
 			AND lb.season_id = ?
-			AND ss.start_time < ?
 	`,
 		currentTimestamp,
 		seasonId,
-		currentTimestamp,
 	).Error
 	if updateScoreErr != nil {
 		return errors.Wrap(updateScoreErr, "failed to update in progress score")
@@ -158,7 +160,6 @@ func main() {
 		distributorOwnerMnemonic   = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of the owner of distributor contract")
 		chainId                    = fs.String("public-chain-id", "", "public chain id")
 		rpcEndpoint                = fs.String("public-chain-rpc-endpoint", "", "public chain rpc endpoint")
-		theRiotGameStartedAt       = fs.String("the-riot-game-started-at", "", "time where the riot game starts")
 
 		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
@@ -202,23 +203,24 @@ func main() {
 		panic(errors.New("rpc-endpoint is mandatory"))
 	}
 
-	if *theRiotGameStartedAt == "" {
-		panic(errors.New("the-riot-game-started-at is mandatory"))
-	}
-
 	if *distributorContractAddress == "" {
 		panic(errors.New("distributor-contract-address is mandatory"))
 	}
 
 	if *distributorOwnerMnemonic == "" {
-		panic(errors.New("distributor-owner-mnemonic is mandatory. You have to add it in .env for local testing (Don't commit this value on repo)"))
+		panic(errors.New("distributor-owner-mnemonic is mandatory. You have to add TERITORI_DISTRIBUTOR_OWNER_MNEMONIC in .env for local testing (Don't commit this value on repo)"))
 	}
 
 	schedule := gocron.NewScheduler(time.UTC)
 	schedule.Every(5).Minutes().Do(func() {
-		season, _, err := p2e.GetSeasonByTime(*theRiotGameStartedAt, time.Now().UTC())
+		season, _, err := p2e.GetSeasonByTime(time.Now().UTC())
 		if err != nil {
 			logger.Error("failed to get current season", zap.Error(err))
+			return
+		}
+
+		if season.IsPre {
+			logger.Info("do not need to update leaderboard", zap.String("season", season.ID))
 			return
 		}
 
@@ -236,9 +238,14 @@ func main() {
 
 	// Run a bit earlier than midnight to be sure that we snapshot on current season (if case of the season transition moment)
 	schedule.Every(1).Day().At("23:59").Do(func() {
-		season, _, err := p2e.GetCurrentSeason(*theRiotGameStartedAt)
+		season, _, err := p2e.GetCurrentSeason()
 		if err != nil {
 			logger.Error("failed to get current season", zap.Error(err))
+			return
+		}
+
+		if season.IsPre {
+			logger.Info("do not need to send rewards", zap.String("season", season.ID))
 			return
 		}
 

@@ -35,10 +35,10 @@ type Config struct {
 	TNSContractAddress             string
 	MinterCodeIDs                  []uint64
 	VaultContractAddress           string
-	SquadStakingContractAddress    string
+	SquadStakingContractAddressV1  string
+	SquadStakingContractAddressV2  string
 	TheRiotCollectionAddress       string
 	TheRiotBreedingContractAddress string
-	TheRiotGameStartedAt           string
 	TNSDefaultImageURL             string
 	TendermintClient               *tmws.Client
 	NetworkID                      string
@@ -202,7 +202,7 @@ func (h *Handler) handleExecute(e *Message) error {
 		}
 	case "withdraw":
 		// Squad unstaking
-		if executeMsg.Contract == h.config.SquadStakingContractAddress {
+		if executeMsg.Contract == h.config.SquadStakingContractAddressV1 || executeMsg.Contract == h.config.SquadStakingContractAddressV2 {
 			if err := h.handleExecuteSquadUnstake(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle squad unstake")
 			}
@@ -244,7 +244,7 @@ func (h *Handler) handleExecute(e *Message) error {
 			return errors.Wrap(err, "failed to handle unpause")
 		}
 	case "stake":
-		if executeMsg.Contract == h.config.SquadStakingContractAddress {
+		if executeMsg.Contract == h.config.SquadStakingContractAddressV1 || executeMsg.Contract == h.config.SquadStakingContractAddressV2 {
 			if err := h.handleExecuteSquadStake(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}

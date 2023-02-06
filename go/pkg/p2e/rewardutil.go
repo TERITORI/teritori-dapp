@@ -2,6 +2,7 @@ package p2e
 
 import (
 	"fmt"
+	"math"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,37 +17,47 @@ func GetAllSeasons() []Season {
 	return THE_RIOT_SEASONS
 }
 
-// returns: season, time passed in days, error
-func GetSeasonByTime(gameStartedAt string, givenTime time.Time) (Season, float64, error) {
-	layout := "2006-01-02"
-	startedAt, err := time.Parse(layout, gameStartedAt)
-
+func GetBossHp(season Season) (int32, error) {
+	layout := "2006-01-02T15:04:05"
+	startsAt, err := time.Parse(layout, season.StartsAt)
 	if err != nil {
-		return Season{}, 0, errors.Wrap(err, "failed to parsed game started time")
+		return 0, errors.Wrap(err, "failed to parsed season start time")
 	}
 
-	passedDuration := givenTime.Sub(startedAt)
-
-	if passedDuration.Milliseconds() <= 0 {
-		return Season{}, 0, errors.New("game has not started yet")
+	endsAt, err := time.Parse(layout, season.EndsAt)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to parsed season end time")
 	}
 
-	passedHours := passedDuration.Hours()
-	totalHoursFromStart := float64(0)
-
-	for _, season := range GetAllSeasons() {
-		totalHoursFromStart += float64(season.BossHp * 24)
-		if passedHours <= totalHoursFromStart {
-			return season, (totalHoursFromStart - passedHours) / 24, nil
-		}
-	}
-
-	return Season{}, 0, errors.New("game has ended")
+	return int32(math.Ceil(endsAt.Sub(startsAt).Hours() / 24)), nil
 }
 
 // returns: season, time passed in days, error
-func GetCurrentSeason(gameStartedAt string) (Season, float64, error) {
-	return GetSeasonByTime(gameStartedAt, time.Now().UTC())
+func GetSeasonByTime(givenTime time.Time) (Season, float64, error) {
+	layout := "2006-01-02T15:04:05"
+
+	for _, season := range GetAllSeasons() {
+		seasonStartsAt, err := time.Parse(layout, season.StartsAt)
+		if err != nil {
+			return Season{}, 0, errors.Wrap(err, "failed to parsed season start time")
+		}
+
+		seasonEndsAt, err := time.Parse(layout, season.EndsAt)
+		if err != nil {
+			return Season{}, 0, errors.Wrap(err, "failed to parsed season end time")
+		}
+
+		if givenTime.After(seasonStartsAt) && givenTime.Before(seasonEndsAt) {
+			return season, seasonEndsAt.Sub(givenTime).Hours() / 24, nil
+		}
+	}
+
+	return Season{}, 0, errors.New("not in any season")
+}
+
+// returns: season, time passed in days, error
+func GetCurrentSeason() (Season, float64, error) {
+	return GetSeasonByTime(time.Now().UTC())
 }
 
 func GetSeasonById(seasonId string) (Season, error) {
@@ -72,9 +83,14 @@ func GetDailyRewardsConfigBySeason(seasonId string) (sdk.DecCoins, error) {
 		return nil, err
 	}
 
+	bossHp, err := GetBossHp(season)
+	if err != nil {
+		return nil, err
+	}
+
 	var dailyRewards sdk.DecCoins
 	for _, reward := range seasonRewards {
-		amount := reward.QuoInt64(int64(season.BossHp))
+		amount := reward.QuoInt64(int64(bossHp))
 
 		// Contract take utori so we need convert tori => utori
 		dailyAmountInt := sdk.NewIntWithDecimal(amount.RoundInt64(), int(season.Decimals))

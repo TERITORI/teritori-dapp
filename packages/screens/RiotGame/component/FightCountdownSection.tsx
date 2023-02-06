@@ -1,130 +1,159 @@
 import moment from "moment";
-import React from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useMemo } from "react";
+import {
+  Image,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
+import brokenBoxPNG from "../../../../assets/game/broken-box.png";
 import clockSVG from "../../../../assets/game/clock.svg";
 import countDownPNG from "../../../../assets/game/countdown.png";
 import unstakeSVG from "../../../../assets/icons/unstake.svg";
 import { BrandText } from "../../../components/BrandText";
-import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SpacerRow } from "../../../components/spacer";
-import { GetSquadResponse } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
+import { SpacerColumn } from "../../../components/spacer";
+import { Squad } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { StakingState } from "../../../utils/game";
 import {
-  neutral33,
   neutral77,
   redDefault,
   yellowDefault,
 } from "../../../utils/style/colors";
 import {
-  fontMedium48,
   fontSemibold20,
   fontSemibold14,
+  fontMedium40,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 type FightCountdownSectionProps = {
-  isUnstaking: boolean;
-  remainingTime: number;
-  currentSquad: GetSquadResponse | undefined;
-  stakingState: StakingState;
   unstake(): void;
+  isUnstaking: boolean;
+  squad: Squad;
+  now: number;
+  cooldown: number;
 };
 
 export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
-  isUnstaking,
-  remainingTime,
-  currentSquad,
-  stakingState,
   unstake,
+  isUnstaking,
+  squad,
+  now,
+  cooldown,
 }) => {
+  const { remainingTime, stakingState } = useMemo(() => {
+    let remainingTime = 0;
+    let stakingState = StakingState.UNKNOWN;
+
+    const startsAt = moment(squad.start_time * 1000);
+    const endsAt = moment(squad.end_time * 1000);
+    const completesAt = moment(startsAt).add(cooldown, "seconds");
+
+    const nowDt = moment(now);
+
+    if (nowDt.isAfter(startsAt) && nowDt.isBefore(endsAt)) {
+      stakingState = StakingState.ONGOING;
+      remainingTime = endsAt.diff(now);
+    } else if (nowDt.isAfter(endsAt) && nowDt.isBefore(completesAt)) {
+      stakingState = StakingState.RELAX;
+      remainingTime = completesAt.diff(now);
+    } else if (nowDt.isAfter(completesAt)) {
+      stakingState = StakingState.COMPLETED;
+    }
+
+    return {
+      remainingTime,
+      stakingState,
+    };
+  }, [now, cooldown]);
+
   const isOnGoing = stakingState === StakingState.ONGOING;
   const isCompleted = stakingState === StakingState.COMPLETED;
 
   const countdownColor = isOnGoing ? redDefault : yellowDefault;
-  const actionLabelColor = isOnGoing ? neutral77 : yellowDefault;
-  const actionIconColor = isOnGoing ? neutral77 : yellowDefault;
+  const actionLabelColor = isCompleted ? yellowDefault : neutral77;
+  const actionIconColor = isCompleted ? yellowDefault : neutral77;
 
   return (
-    <TertiaryBox
-      fullWidth
-      mainContainerStyle={styles.countDownSection}
-      noBrokenCorners
+    <ImageBackground
+      source={brokenBoxPNG}
+      resizeMode="stretch"
+      style={{
+        width: 480,
+        height: 300,
+        padding: layout.padding_x3,
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginTop: layout.padding_x4,
+      }}
     >
-      <FlexRow style={{ flex: 1 }} breakpoint={992}>
-        <View style={{ flex: 2 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          alignSelf: "flex-start",
+        }}
+      >
+        <SVG
+          style={{
+            marginRight: layout.padding_x4,
+            marginLeft: layout.padding_x2,
+          }}
+          color={countdownColor}
+          source={clockSVG}
+        />
+
+        <View>
           <BrandText style={fontSemibold20}>
             {isOnGoing ? "Remaining Fight Time" : "Relax Period"}
           </BrandText>
-          <FlexRow>
-            <BrandText
-              style={[fontMedium48, { color: countdownColor, minWidth: 260 }]}
-            >
-              {isCompleted
-                ? "Completed"
-                : moment.utc(remainingTime).format("HH[h]mm[m]ss")}
-            </BrandText>
-            <SpacerRow size={2} />
-            <SVG color={countdownColor} source={clockSVG} />
-          </FlexRow>
+
+          <SpacerColumn size={1} />
+
+          <BrandText
+            style={[fontMedium40, { color: countdownColor, minWidth: 260 }]}
+          >
+            {isCompleted
+              ? "Completed"
+              : moment.utc(remainingTime).format("HH[h]mm[m]ss")}
+          </BrandText>
         </View>
+      </View>
 
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <Image style={{ width: 152, height: 88 }} source={countDownPNG} />
-        </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around",
+          width: "100%",
+        }}
+      >
+        <Image style={{ width: 240, height: 140 }} source={countDownPNG} />
 
-        <FlexRow style={styles.actionsSection}>
-          {currentSquad && (
-            <>
-              <View style={styles.divider} />
-
-              <SVG color={actionIconColor} source={unstakeSVG} />
-              <TouchableOpacity
-                disabled={
-                  isUnstaking ||
-                  [StakingState.UNKNOWN, StakingState.ONGOING].includes(
-                    stakingState
-                  )
-                }
-                onPress={unstake}
-              >
-                <BrandText
-                  style={[styles.actionLabel, { color: actionLabelColor }]}
-                >
-                  {isUnstaking ? "Unstaking..." : "Unstake"}
-                </BrandText>
-              </TouchableOpacity>
-            </>
-          )}
-        </FlexRow>
-      </FlexRow>
-    </TertiaryBox>
+        <TouchableOpacity
+          style={styles.actionsSection}
+          disabled={isUnstaking || stakingState !== StakingState.COMPLETED}
+          onPress={unstake}
+        >
+          <SVG color={actionIconColor} source={unstakeSVG} />
+          <BrandText style={[styles.actionLabel, { color: actionLabelColor }]}>
+            {isUnstaking ? "Unstaking..." : "Unstake"}
+          </BrandText>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  countDownSection: {
-    paddingVertical: layout.padding_x2_5,
-    paddingHorizontal: layout.padding_x4,
-    marginTop: layout.padding_x4,
-    justifyContent: "space-around",
-    flexDirection: "row",
-  },
   actionsSection: {
-    justifyContent: "flex-end",
+    justifyContent: "center",
     alignItems: "center",
-    flex: 2,
   },
   actionLabel: {
     marginLeft: layout.padding_x0_5,
     ...(fontSemibold14 as object),
-  },
-  divider: {
-    marginHorizontal: layout.padding_x4,
-    height: 56,
-    width: 1,
-    backgroundColor: neutral33,
   },
 });
