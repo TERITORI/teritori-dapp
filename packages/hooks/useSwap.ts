@@ -339,7 +339,11 @@ export const useSwap = (
     }
   );
 
-  const swap = async (amountIn: number, amountOut: number, slippage: number) => {
+  const swap = async (
+    amountIn: number,
+    amountOut: number,
+    slippage: number
+  ) => {
     if (!currencyIn || !currencyOut || !selectedWallet || !selectedNetwork)
       return;
     const amountInMicro = amountToCurrencyMicro(
@@ -380,21 +384,33 @@ export const useSwap = (
         rpcEndpoint: selectedNetwork.rpcEndpoint || "",
         signer,
       });
+      let routes: SwapAmountInRoute[];
+      if (isMultihop) {
+        routes = [];
+        routes.push({
+          poolId: Long.fromString(multihopPools[0].id),
+          tokenOutDenom: "uosmo",
+        } as SwapAmountInRoute);
 
-      // ==== Getting trading routes
-      const routes = lookupRoutesForTrade({
-        trade,
-        pairs,
-      }).map((tradeRoute) => {
-        const { poolId, tokenOutDenom } = tradeRoute;
-        const swapAmountInRoute: SwapAmountInRoute = {
-          poolId: Long.fromString(poolId),
-          tokenOutDenom,
-        };
-        return swapAmountInRoute;
-      });
+        routes.push({
+          poolId: Long.fromString(multihopPools[1].id),
+          tokenOutDenom: currencyOut.denom,
+        } as SwapAmountInRoute);
+      } else {
+        // ==== Getting trading routes
+        routes = lookupRoutesForTrade({
+          trade,
+          pairs,
+        }).map((tradeRoute) => {
+          const { poolId, tokenOutDenom } = tradeRoute;
+          const swapAmountInRoute: SwapAmountInRoute = {
+            poolId: Long.fromString(poolId),
+            tokenOutDenom,
+          };
+          return swapAmountInRoute;
+        });
+      }
 
-      // ==== Handling splippage
       const amountOutMicroWithSlippage = Math.round(
         parseFloat(calculateAmountWithSlippage(amountOutMicro, slippage))
       ).toString();
