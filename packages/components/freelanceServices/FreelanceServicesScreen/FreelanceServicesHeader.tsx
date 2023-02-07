@@ -17,7 +17,7 @@ export const FreelanceServicesHeader: React.FC = () => {
       <TextInputCustom<{ Search: string }>
         label=""
         name="Search"
-        width={430}
+        width={480}
         placeHolder="Search..."
         style={{ alignSelf: "center", marginTop: 30 }}
         mainContainerStyle={{
@@ -32,7 +32,7 @@ export const FreelanceServicesHeader: React.FC = () => {
           style={{ marginRight: 12 }}
         />
       </TextInputCustom>
-      <Separator style={{ width: 320, alignSelf: "center", marginTop: 50 }} />
+      <Separator style={{ width: 360, alignSelf: "center", marginTop: 50 }} />
     </View>
   );
 };
