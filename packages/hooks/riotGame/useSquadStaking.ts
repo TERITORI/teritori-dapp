@@ -10,7 +10,6 @@ import {
   SQUAD_STAKE_COEF,
   THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
 } from "../../screens/RiotGame/settings";
-import { defaultExecuteFee } from "../../utils/fee";
 import {
   buildApproveNFTMsg,
   buildStakingMsg,
@@ -21,7 +20,6 @@ import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
-import { defaultMemo } from "../../utils/memo";
 import useSelectedWallet from "../useSelectedWallet";
 import {
   GetSquadResponse,
@@ -83,7 +81,7 @@ export const useSquadStaking = () => {
     const stakeMsg = buildStakingMsg(sender, selectedNfts);
     const msgs = [...approveMsgs, stakeMsg];
 
-    const tx = await client.signAndBroadcast(sender, msgs, "auto", defaultMemo);
+    const tx = await client.signAndBroadcast(sender, msgs, "auto");
 
     if (isDeliverTxFailure(tx)) {
       throw Error(tx.transactionHash);
@@ -145,12 +143,12 @@ export const useSquadStaking = () => {
       user,
       process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS_V1 || ""
     );
-    return await client.withdraw(defaultExecuteFee, defaultMemo);
+    return await client.withdraw();
   };
 
   const squadWithdraw = async (user: string) => {
     const squadStakingClient = await getSquadStakingClient(user);
-    return await squadStakingClient.withdraw(defaultExecuteFee, defaultMemo);
+    return await squadStakingClient.withdraw();
   };
 
   const estimateStakingDuration = (
