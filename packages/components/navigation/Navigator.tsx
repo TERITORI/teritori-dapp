@@ -234,36 +234,42 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="FreelanceServices"
         component={FreelanceServicesScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
       />
 
       <Stack.Screen
         name="GraphicsAndDesign"
         component={GraphicsAndDesignScreen}
-        options={{ header: () => null }}
+        options={{
+          header: () => null,
+          title: screenTitle("Graphics & Design"),
+        }}
       />
 
       <Stack.Screen
         name="LogoDesign"
         component={LogoDesignScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Logo & Design") }}
       />
 
       <Stack.Screen
         name="LogoDesignDetails"
         component={LogoDesignDetailsScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Logo & Design") }}
       />
 
       <Stack.Screen
         name="SellerDetails"
         component={SellerDetailsScreen}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Seller Details") }}
       />
       <Stack.Screen
         name="OrderDetails"
         component={OrderDetails}
-        options={{ header: () => null }}
+        options={{ header: () => null, title: screenTitle("Order Details") }}
       />
     </Stack.Navigator>
   );
