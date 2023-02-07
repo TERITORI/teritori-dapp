@@ -1,5 +1,5 @@
 import { useIsFocused, useRoute } from "@react-navigation/native";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   // Extrapolate,
@@ -66,20 +66,25 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
 
   // hooks
   useEffect(() => {
-    if (
-      allNestedRoutes &&
-      allNestedRoutes.includes(currentRouteName as SidebarType["route"]) &&
-      !isNestedBarExpanded
-    ) {
-      setIsNestedBarExpanded(true);
-    } else if (!isFocused && isNestedBarExpanded) {
-      setIsNestedBarExpanded(false);
-    }
-  }, [allNestedRoutes, currentRouteName, isFocused, isNestedBarExpanded]);
+    setIsNestedBarExpanded((isNestedBarExpanded) => {
+      if (
+        allNestedRoutes &&
+        allNestedRoutes.includes(currentRouteName as SidebarType["route"]) &&
+        !isNestedBarExpanded
+      ) {
+        return true;
+      } else if (!isFocused && isNestedBarExpanded) {
+        return false;
+      }
+      return isNestedBarExpanded;
+    });
+  }, [allNestedRoutes, currentRouteName, isFocused]);
 
   // functions
-  const toggleNestedSidebar = () =>
-    setIsNestedBarExpanded(!isNestedBarExpanded);
+  const toggleNestedSidebar = useCallback(
+    () => setIsNestedBarExpanded((isNestedBarExpanded) => !isNestedBarExpanded),
+    []
+  );
 
   // animations
   const opacityStyle = useAnimatedStyle(
