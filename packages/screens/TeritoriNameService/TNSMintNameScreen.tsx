@@ -20,12 +20,10 @@ import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { prettyPrice } from "../../utils/coins";
-import { defaultMintFee } from "../../utils/fee";
 import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
-import { defaultMemo } from "../../utils/memo";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -163,8 +161,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
         walletAddress!,
         contractAddress,
         msg,
-        defaultMintFee,
-        defaultMemo,
+        "auto",
+        undefined,
         [price]
       );
       if (mintedToken) {

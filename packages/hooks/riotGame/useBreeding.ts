@@ -11,7 +11,6 @@ import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
-import { defaultMemo } from "../../utils/memo";
 import useSelectedWallet from "../useSelectedWallet";
 import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 
@@ -66,7 +65,7 @@ export const useBreeding = () => {
 
     msgs = [...msgs, breedMsg];
 
-    const tx = await client.signAndBroadcast(sender, msgs, "auto", defaultMemo);
+    const tx = await client.signAndBroadcast(sender, msgs, "auto");
 
     if (isDeliverTxFailure(tx)) {
       throw Error(tx.transactionHash);
