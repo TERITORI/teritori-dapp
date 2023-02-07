@@ -40,7 +40,7 @@ export const ButtonGroup: React.FC<{
               borderTopLeftRadius: 20,
               borderBottomLeftRadius: 20,
             },
-            index === buttons?.length - 1 && {
+            index === buttons.length - 1 && {
               borderTopRightRadius: 20,
               borderBottomRightRadius: 20,
             },
@@ -50,7 +50,7 @@ export const ButtonGroup: React.FC<{
             style={{
               fontSize: 14,
               lineHeight: 16,
-              color: button?.isActive ? primaryTextColor : "white",
+              color: button.isActive ? primaryTextColor : "white",
             }}
           >
             {button.label}

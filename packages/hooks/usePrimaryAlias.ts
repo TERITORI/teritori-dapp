@@ -4,8 +4,6 @@ import { getFirstKeplrAccount, getSigningCosmWasmClient } from "../utils/keplr";
 import { useIsKeplrConnected } from "./useIsKeplrConnected";
 
 export function usePrimaryAlias() {
-  const contract = process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
-
   const [alias, setPrimaryAlias] = useState("");
 
   const [loadingAlias, setLoading] = useState(false);
@@ -24,11 +22,14 @@ export function usePrimaryAlias() {
 
         const walletAddress = (await getFirstKeplrAccount()).address;
 
-        const aliasResponse = await signingClient.queryContractSmart(contract, {
-          primary_alias: {
-            address: walletAddress,
-          },
-        });
+        const aliasResponse = await signingClient.queryContractSmart(
+          process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "",
+          {
+            primary_alias: {
+              address: walletAddress,
+            },
+          }
+        );
         //setAlias(aliasResponse.username)
         setPrimaryAlias(aliasResponse.username);
         setLoading(false);

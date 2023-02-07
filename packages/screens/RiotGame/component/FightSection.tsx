@@ -79,7 +79,7 @@ export const FightSection: React.FC<FightSectionProps> = ({
 
   useEffect(() => {
     fetchCurrentStakedRippers(squad.nfts);
-  }, [squad.nfts.length]);
+  }, [squad.nfts]);
 
   return (
     <FlexRow

@@ -12,14 +12,13 @@ export type UsePhantomResult =
   | [false, true, undefined];
 
 export const usePhantom: () => UsePhantomResult = () => {
-  const phantom = (window as any)?.solana;
-  const hasPhantom = !!phantom?.isPhantom;
-
   const [publicKey, setPublicKey] = useState("");
   const [ready, setReady] = useState(false);
-  // const dispatch = useAppDispatch();
 
   useEffect(() => {
+    const phantom = getPhantom();
+    const hasPhantom = checkHasPhantom();
+
     if (!hasPhantom) {
       return;
     }
@@ -56,6 +55,8 @@ export const usePhantom: () => UsePhantomResult = () => {
 
   useEffect(() => {
     const effect = async () => {
+      const phantom = getPhantom();
+      const hasPhantom = checkHasPhantom();
       if (!hasPhantom) {
         return;
       }
@@ -95,5 +96,13 @@ export const usePhantom: () => UsePhantomResult = () => {
   }, [wallet]);
   */
 
-  return hasPhantom ? [true, ready, wallet] : [false, true, undefined];
+  return checkHasPhantom() ? [true, ready, wallet] : [false, true, undefined];
+};
+
+const getPhantom = () => {
+  return (window as any)?.solana;
+};
+
+const checkHasPhantom = () => {
+  return !!getPhantom()?.isPhantom;
 };

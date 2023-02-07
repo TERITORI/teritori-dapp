@@ -125,30 +125,56 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     return msg;
   };
 
-  const ethereumMint = async (wallet: Wallet) => {
-    const signer = await getMetaMaskEthereumSigner(wallet.address);
-    if (!signer) {
-      throw Error("no account connected");
-    }
+  const ethereumMint = useCallback(
+    async (wallet: Wallet) => {
+      const signer = await getMetaMaskEthereumSigner(wallet.address);
+      if (!signer) {
+        throw Error("no account connected");
+      }
 
-    const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
-    const userState = await minterClient.callStatic.userState(wallet.address);
+      const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
+      const userState = await minterClient.callStatic.userState(wallet.address);
 
-    // TODO: check this properly later
-    // if (!userState.userCanMint) {
-    //   throw Error("You cannot mint now");
-    // }
+      // TODO: check this properly later
+      // if (!userState.userCanMint) {
+      //   throw Error("You cannot mint now");
+      // }
 
-    const address = await signer.getAddress();
+      const address = await signer.getAddress();
 
-    const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
-    const tx = await minterClient.requestMint(address, 1, {
-      maxFeePerGas: maxFeePerGas?.toNumber(),
-      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
-      value: userState.mintPrice,
-    });
-    await tx.wait();
-  };
+      const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+      const tx = await minterClient.requestMint(address, 1, {
+        maxFeePerGas: maxFeePerGas?.toNumber(),
+        maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+        value: userState.mintPrice,
+      });
+      await tx.wait();
+    },
+    [mintAddress]
+  );
+
+  const teritoriMint = useCallback(
+    async (wallet: Wallet) => {
+      const sender = wallet.address;
+      if (!sender || !info?.unitPrice || !info.priceDenom) {
+        throw Error("invalid mint args");
+      }
+      const cosmwasmClient = await getSigningCosmWasmClient();
+      const minterClient = new TeritoriBunkerMinterClient(
+        cosmwasmClient,
+        sender,
+        mintAddress
+      );
+
+      let funds;
+      if (info.unitPrice !== "0") {
+        funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
+      }
+
+      await minterClient.requestMint({ addr: sender }, "auto", "", funds);
+    },
+    [info?.priceDenom, info?.unitPrice, mintAddress]
+  );
 
   const mint = useCallback(async () => {
     let mintFunc: CallableFunction | null = null;
@@ -185,27 +211,14 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       }
       console.error(e);
     }
-  }, [wallet?.address, id, info?.unitPrice, info?.priceDenom]);
-
-  const teritoriMint = async (wallet: Wallet) => {
-    const sender = wallet?.address;
-    if (!sender || !info?.unitPrice || !info.priceDenom) {
-      throw Error("invalid mint args");
-    }
-    const cosmwasmClient = await getSigningCosmWasmClient();
-    const minterClient = new TeritoriBunkerMinterClient(
-      cosmwasmClient,
-      sender,
-      mintAddress
-    );
-
-    let funds;
-    if (info.unitPrice !== "0") {
-      funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
-    }
-
-    await minterClient.requestMint({ addr: sender }, "auto", "", funds);
-  };
+  }, [
+    addressPrefix,
+    teritoriMint,
+    ethereumMint,
+    setToastError,
+    networkId,
+    wallet,
+  ]);
 
   const mintTermsConditionsURL = useMemo(() => {
     switch (mintAddress) {

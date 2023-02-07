@@ -18,7 +18,10 @@ import { useBreeding } from "../../hooks/riotGame/useBreeding";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { prettyPrice } from "../../utils/coins";
-import { getRipperTokenId } from "../../utils/game";
+import {
+  getRipperTokenId,
+  THE_RIOT_COLLECTION_ADDRESS,
+} from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -30,7 +33,6 @@ import { BreedingSlot } from "./component/BreedingSlot";
 import { GameContentView } from "./component/GameContentView";
 import { InfoBox } from "./component/InfoBox";
 import { RipperSelectorModal } from "./component/RipperSelectorModal";
-import { THE_RIOT_COLLECTION_ADDRESS } from "./settings";
 
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();
@@ -136,8 +138,8 @@ export const RiotGameBreedingScreen = () => {
           breedingConfig.breed_price_denom
         ),
         breedingConfig.breed_duration,
-        getRipperTokenId(selectedRippers[0]?.ripper),
-        getRipperTokenId(selectedRippers[1]?.ripper),
+        getRipperTokenId(selectedRippers[0].ripper),
+        getRipperTokenId(selectedRippers[1].ripper),
         breedingConfig.parent_contract_addr
       );
 
@@ -201,14 +203,14 @@ export const RiotGameBreedingScreen = () => {
           style={{ justifyContent: "center", marginTop: layout.padding_x4 }}
         >
           <BreedingSlot
-            ripper={selectedRippers[0]?.ripper}
-            breedingsLeft={selectedRippers[0]?.breedingsLeft}
+            ripper={selectedRippers[0].ripper}
+            breedingsLeft={selectedRippers[0].breedingsLeft}
             onPress={() => openSelectorModal(0)}
           />
           <SpacerRow size={3} />
           <BreedingSlot
-            ripper={selectedRippers[1]?.ripper}
-            breedingsLeft={selectedRippers[1]?.breedingsLeft}
+            ripper={selectedRippers[1].ripper}
+            breedingsLeft={selectedRippers[1].breedingsLeft}
             onPress={() => openSelectorModal(1)}
           />
         </FlexRow>

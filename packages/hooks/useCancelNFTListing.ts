@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
-import { Wallet } from "../context/WalletsProvider";
 import { TeritoriNftVaultClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import { getMetaMaskEthereumSigner } from "../utils/ethereum";
@@ -11,14 +10,14 @@ import { Network } from "./../utils/network";
 import useSelectedWallet from "./useSelectedWallet";
 
 const teritoriCancelNFTListing = async (
-  wallet: Wallet,
+  sender: string,
   nftContractAddress: string,
   tokenId: string
 ) => {
   const cosmwasmClient = await getSigningCosmWasmClient();
   const vaultClient = new TeritoriNftVaultClient(
     cosmwasmClient,
-    wallet.address,
+    sender,
     vaultContractAddress
   );
   const reply = await vaultClient.withdraw({
@@ -29,11 +28,11 @@ const teritoriCancelNFTListing = async (
 };
 
 const ethereumCancelNFTListing = async (
-  wallet: Wallet,
+  sender: string,
   nftContractAddress: string,
   tokenId: string
 ) => {
-  const signer = await getMetaMaskEthereumSigner(wallet.address);
+  const signer = await getMetaMaskEthereumSigner(sender);
   if (!signer) {
     throw Error("Unable to get signer");
   }
@@ -72,7 +71,7 @@ export const useCancelNFTListing = (
         throw Error("Bad wallet");
       }
 
-      let cancelNFTListingFunc: CallableFunction | null = null;
+      let cancelNFTListingFunc;
       switch (network) {
         case Network.Teritori:
           cancelNFTListingFunc = teritoriCancelNFTListing;
@@ -84,7 +83,11 @@ export const useCancelNFTListing = (
           throw Error(`Unsupported network ${network}`);
       }
 
-      return await cancelNFTListingFunc(wallet, nftContractAddress, tokenId);
+      return await cancelNFTListingFunc(
+        wallet.address,
+        nftContractAddress,
+        tokenId
+      );
     } catch (err) {
       console.error(err);
       if (err instanceof Error) {
@@ -94,5 +97,5 @@ export const useCancelNFTListing = (
         });
       }
     }
-  }, [nftContractAddress, tokenId, wallet]);
+  }, [network, nftContractAddress, setToastError, tokenId, wallet]);
 };

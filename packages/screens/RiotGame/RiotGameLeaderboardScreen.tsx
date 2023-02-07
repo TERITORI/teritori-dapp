@@ -56,7 +56,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   const address = userId.split("-")[1];
   const tnsMetadata = useTNSMetadata(address);
 
-  const name = tnsMetadata?.metadata?.tokenId || address || "";
+  const name = tnsMetadata.metadata?.tokenId || address || "";
 
   return (
     <FlexRow width="auto" alignItems="center">
@@ -71,7 +71,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
         <Image
           source={{
             uri: ipfsURLToHTTPURL(
-              tnsMetadata?.metadata?.image ||
+              tnsMetadata.metadata?.image ||
                 process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
                 ""
             ),

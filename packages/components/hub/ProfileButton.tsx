@@ -30,7 +30,7 @@ export const ProfileButton: React.FC<{
                 })
             : () =>
                 navigation.navigate("UserPublicProfile", {
-                  id: `tori-${selectedWallet?.address}`,
+                  id: `tori-${selectedWallet.address}`,
                 })
         }
         touchableStyle={touchableStyle}

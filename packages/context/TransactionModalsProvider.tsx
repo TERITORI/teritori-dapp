@@ -35,10 +35,10 @@ export const useTransactionModals = () => {
   // The parents just want to open this modals flow. You can use openTransactionModals from the parents
   const openTransactionModals = useCallback(() => {
     setTransactionPaymentModalVisible(true);
-  }, []);
+  }, [setTransactionPaymentModalVisible]);
   const closeTransactionPaymentModal = useCallback(() => {
     setTransactionPaymentModalVisible(false);
-  }, []);
+  }, [setTransactionPaymentModalVisible]);
   return {
     openTransactionModals,
     transactionPaymentModalVisible,

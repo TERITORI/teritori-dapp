@@ -4,8 +4,11 @@ import { Coin } from "cosmwasm";
 import { useCallback, useEffect, useState } from "react";
 
 import { TeritoriBreedingQueryClient } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
-import { THE_RIOT_BREEDING_CONTRACT_ADDRESS } from "../../screens/RiotGame/settings";
-import { buildApproveNFTMsg, buildBreedingMsg } from "../../utils/game";
+import {
+  buildApproveNFTMsg,
+  buildBreedingMsg,
+  THE_RIOT_BREEDING_CONTRACT_ADDRESS,
+} from "../../utils/game";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   getNonSigningCosmWasmClient,
@@ -19,14 +22,6 @@ export const useBreeding = () => {
   const [remainingTokens, setRemainingTokens] = useState<number>(0);
 
   const selectedWallet = useSelectedWallet();
-
-  const getBreedingQueryClient = useCallback(async () => {
-    const nonSigningClient = await getNonSigningCosmWasmClient();
-    return new TeritoriBreedingQueryClient(
-      nonSigningClient,
-      THE_RIOT_BREEDING_CONTRACT_ADDRESS
-    );
-  }, []);
 
   const breed = async (
     breedingPrice: Coin,
@@ -88,14 +83,14 @@ export const useBreeding = () => {
     return tokens;
   };
 
-  const fetchBreedingConfig = async () => {
+  const fetchBreedingConfig = useCallback(async () => {
     // Just load config once
     if (breedingConfig) return;
 
     const breedingQueryClient = await getBreedingQueryClient();
     const config: ConfigResponse = await breedingQueryClient.config();
     setBreedingConfig(config);
-  };
+  }, [breedingConfig]);
 
   const fetchRemainingTokens = async (breedingConfig: ConfigResponse) => {
     const client = await getNonSigningCosmWasmClient();
@@ -136,13 +131,13 @@ export const useBreeding = () => {
 
   useEffect(() => {
     fetchBreedingConfig();
-  }, []); // Depend on one attribute to avoid deep compare
+  }, [fetchBreedingConfig]); // Depend on one attribute to avoid deep compare
 
   useEffect(() => {
     if (!breedingConfig?.child_contract_addr) return;
 
     fetchRemainingTokens(breedingConfig);
-  }, [breedingConfig?.child_contract_addr]);
+  }, [breedingConfig]);
 
   return {
     breedingConfig,
@@ -153,4 +148,12 @@ export const useBreeding = () => {
     getBreedingsLefts,
     fetchRemainingTokens,
   };
+};
+
+const getBreedingQueryClient = async () => {
+  const nonSigningClient = await getNonSigningCosmWasmClient();
+  return new TeritoriBreedingQueryClient(
+    nonSigningClient,
+    THE_RIOT_BREEDING_CONTRACT_ADDRESS
+  );
 };

@@ -122,7 +122,7 @@ export const Header: React.FC<{
       networkId,
       denom: fp.denom,
     }));
-  }, [stats?.floorPrice]);
+  }, [networkId, stats?.floorPrice]);
 
   const { prices } = useCoingeckoPrices(coins);
 
@@ -196,7 +196,7 @@ export const Header: React.FC<{
     <View style={{ maxWidth: width, alignSelf: "center" }}>
       <Image
         source={
-          collectionInfo?.bannerImage
+          collectionInfo.bannerImage
             ? { uri: collectionInfo.bannerImage }
             : bannerCollection
         }

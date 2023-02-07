@@ -7,13 +7,14 @@ import { useMemo } from "react";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { getNetwork } from "../networks";
+import { CoingeckoCoin, getCoingeckoPrice } from "../utils/coingecko";
 import { getKeplrOfflineSigner } from "../utils/keplr";
 import { Network } from "../utils/network";
 import {
   CosmosRewardsResponse,
   getTeritoriSigningStargateClient,
 } from "../utils/teritori";
-import { CoingeckoCoin, useCoingeckoPrices } from "./useCoingeckoPrices";
+import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useErrorHandler } from "./useErrorHandler";
 import { useSelectedNetworkId } from "./useSelectedNetwork";
 
@@ -138,7 +139,7 @@ export const useRewards = (walletAddress?: string) => {
       });
     });
     return memoDenoms;
-  }, [networkId, networkRewards.rewards]);
+  }, [networkRewards.rewards]);
 
   // ---- Get all prices for these denoms
   const coins: CoingeckoCoin[] = useMemo(() => {
@@ -152,7 +153,7 @@ export const useRewards = (walletAddress?: string) => {
     return memoCoins;
   }, [networkId, denoms]);
 
-  const { prices, getCoingeckoPrice } = useCoingeckoPrices(coins);
+  const { prices } = useCoingeckoPrices(coins);
 
   // ========= Handle rewards per validator
   const rewards: Reward[] = useMemo(() => {

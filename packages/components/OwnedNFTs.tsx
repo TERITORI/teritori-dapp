@@ -34,7 +34,7 @@ export const OwnedNFTs: React.FC<{
     mintState: MintState.MINT_STATE_UNSPECIFIED,
   }); // FIXME: add owner filter and pagination
 
-  if (!collections?.length && EmptyListComponent) {
+  if (!collections.length && EmptyListComponent) {
     return <EmptyListComponent />;
   }
 

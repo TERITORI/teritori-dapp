@@ -133,57 +133,7 @@ const Content: React.FC<{
         });
       }
     }
-  }, [
-    wallet?.address,
-    wallet?.connected,
-    info?.tokenId,
-    info?.nftAddress,
-    selectedNetwork,
-  ]);
-
-  const teritoriBuy = async (wallet: Wallet, info: NFTInfo) => {
-    const signingCosmwasmClient = await getSigningCosmWasmClient();
-    const signingVaultClient = new TeritoriNftVaultClient(
-      signingCosmwasmClient,
-      wallet.address,
-      vaultContractAddress
-    );
-    const tx = await signingVaultClient.buy(
-      { nftContractAddr: info.nftAddress, nftTokenId: info.tokenId },
-      "auto",
-      undefined,
-      [
-        {
-          amount: info.price,
-          denom: info.priceDenom,
-        },
-      ]
-    );
-    return tx.transactionHash;
-  };
-
-  const ethereumBuy = async (wallet: Wallet, nftInfo: NFTInfo) => {
-    const signer = await getMetaMaskEthereumSigner(wallet.address);
-    if (!signer) {
-      throw Error("Unable to get signer");
-    }
-
-    const vaultClient = await NFTVault__factory.connect(
-      process.env.ETHEREUM_VAULT_ADDRESS || "",
-      signer
-    );
-
-    const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
-    const tx = await vaultClient.buyNFT(nftInfo.nftAddress, nftInfo.tokenId, {
-      maxFeePerGas: maxFeePerGas?.toNumber(),
-      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
-      value: nftInfo.price,
-    });
-
-    await tx.wait();
-
-    return tx.hash;
-  };
+  }, [wallet, info, selectedNetwork, setToastError, refresh]);
 
   const sell = useSellNFT(selectedNetwork);
 
@@ -197,7 +147,7 @@ const Content: React.FC<{
       refresh();
       return txHash;
     },
-    [info, sell, selectedNetwork, refresh]
+    [info, sell, refresh]
   );
 
   const cancelListing = useCancelNFTListing(
@@ -211,7 +161,7 @@ const Content: React.FC<{
     console.log("txHash:", txHash);
     refresh();
     return txHash;
-  }, [cancelListing, refresh, selectedNetwork]);
+  }, [cancelListing, refresh]);
 
   if (!id.startsWith("tori-") && !id.startsWith("eth-")) {
     return (
@@ -285,4 +235,48 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
       <Content key={id} id={id} />
     </ScreenContainer>
   );
+};
+
+const teritoriBuy = async (wallet: Wallet, info: NFTInfo) => {
+  const signingCosmwasmClient = await getSigningCosmWasmClient();
+  const signingVaultClient = new TeritoriNftVaultClient(
+    signingCosmwasmClient,
+    wallet.address,
+    vaultContractAddress
+  );
+  const tx = await signingVaultClient.buy(
+    { nftContractAddr: info.nftAddress, nftTokenId: info.tokenId },
+    "auto",
+    undefined,
+    [
+      {
+        amount: info.price,
+        denom: info.priceDenom,
+      },
+    ]
+  );
+  return tx.transactionHash;
+};
+
+const ethereumBuy = async (wallet: Wallet, nftInfo: NFTInfo) => {
+  const signer = await getMetaMaskEthereumSigner(wallet.address);
+  if (!signer) {
+    throw Error("Unable to get signer");
+  }
+
+  const vaultClient = await NFTVault__factory.connect(
+    process.env.ETHEREUM_VAULT_ADDRESS || "",
+    signer
+  );
+
+  const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+  const tx = await vaultClient.buyNFT(nftInfo.nftAddress, nftInfo.tokenId, {
+    maxFeePerGas: maxFeePerGas?.toNumber(),
+    maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+    value: nftInfo.price,
+  });
+
+  await tx.wait();
+
+  return tx.hash;
 };

@@ -115,7 +115,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     if (route.params?.name) {
       setName(route.params.name);
     }
-  }, [route]);
+  }, [route, setName]);
 
   const tnsModalCommonProps = {
     onClose: handleModalClose,

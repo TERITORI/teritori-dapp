@@ -138,7 +138,7 @@ export const NFTMainInfo: React.FC<{
                   Breedings available
                 </BrandText>
                 <BrandText style={fontMedium14} numberOfLines={1}>
-                  {nftInfo?.breedingsAvailable}
+                  {nftInfo.breedingsAvailable}
                 </BrandText>
               </View>
             )}
@@ -151,7 +151,7 @@ export const NFTMainInfo: React.FC<{
 
   useEffect(() => {
     if (params.openBuy) openTransactionModals();
-  }, []);
+  }, [openTransactionModals, params.openBuy]);
 
   return (
     <>
@@ -197,7 +197,7 @@ export const NFTMainInfo: React.FC<{
                   networkId={nftNetworkId}
                 />
               )}
-              {nftInfo?.isListed && !nftInfo?.isOwner && (
+              {nftInfo?.isListed && !nftInfo.isOwner && (
                 <NFTPriceBuyCard
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressBuy={openTransactionModals}
@@ -205,7 +205,7 @@ export const NFTMainInfo: React.FC<{
                   priceDenom={nftInfo.priceDenom}
                 />
               )}
-              {nftInfo?.isListed && nftInfo?.isOwner && (
+              {nftInfo?.isListed && nftInfo.isOwner && (
                 <NFTCancelListingCard
                   style={{ marginTop: 24, marginBottom: 40 }}
                   price={nftInfo.price}
