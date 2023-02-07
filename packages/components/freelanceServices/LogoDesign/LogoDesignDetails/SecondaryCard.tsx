@@ -132,9 +132,9 @@ export const SecondaryCard: React.FC<{ data: ServiceLevels[] }> = ({
             }}
           >
             {open ? (
-              <SVG source={chevronDown} width={16} height={16} />
-            ) : (
               <SVG source={chevronUp} width={16} height={16} />
+            ) : (
+              <SVG source={chevronDown} width={16} height={16} />
             )}
           </TouchableOpacity>
         </View>

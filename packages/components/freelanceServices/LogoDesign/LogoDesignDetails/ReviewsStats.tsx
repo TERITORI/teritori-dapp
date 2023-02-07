@@ -81,20 +81,25 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields }> = ({
           >
             Sort by
           </BrandText>
-          <BrandText
-            style={[fontSemibold16, { color: secondaryColor, marginRight: 8 }]}
-          >
-            Most Relevant
-          </BrandText>
           <TouchableOpacity
+            style={{ flexDirection: "row", alignItems: "center" }}
             onPress={() => {
               setIsOpen(!isOpen);
             }}
           >
+            <BrandText
+              style={[
+                fontSemibold16,
+                { color: secondaryColor, marginRight: 8 },
+              ]}
+            >
+              Most Relevant
+            </BrandText>
+
             {isOpen ? (
-              <SVG source={chevronDown} width={16} height={16} />
-            ) : (
               <SVG source={chevronUp} width={16} height={16} />
+            ) : (
+              <SVG source={chevronDown} width={16} height={16} />
             )}
           </TouchableOpacity>
         </View>
