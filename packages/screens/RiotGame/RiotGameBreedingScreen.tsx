@@ -124,6 +124,13 @@ export const RiotGameBreedingScreen = () => {
       });
     }
 
+    if (!selectedRippers[0] || !selectedRippers[1]) {
+      return setToastError({
+        title: "Error",
+        message: "Not enough rippers selected",
+      });
+    }
+
     setIsBreeding(true);
 
     const currentChildTokenIds = await getChildTokenIds(
@@ -203,14 +210,14 @@ export const RiotGameBreedingScreen = () => {
           style={{ justifyContent: "center", marginTop: layout.padding_x4 }}
         >
           <BreedingSlot
-            ripper={selectedRippers[0].ripper}
-            breedingsLeft={selectedRippers[0].breedingsLeft}
+            ripper={selectedRippers[0]?.ripper}
+            breedingsLeft={selectedRippers[0]?.breedingsLeft}
             onPress={() => openSelectorModal(0)}
           />
           <SpacerRow size={3} />
           <BreedingSlot
-            ripper={selectedRippers[1].ripper}
-            breedingsLeft={selectedRippers[1].breedingsLeft}
+            ripper={selectedRippers[1]?.ripper}
+            breedingsLeft={selectedRippers[1]?.breedingsLeft}
             onPress={() => openSelectorModal(1)}
           />
         </FlexRow>
