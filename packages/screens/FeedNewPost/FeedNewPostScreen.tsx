@@ -5,18 +5,6 @@ import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ErrorText } from "../../components/ErrorText";
-import { NFTKeyModal } from "../../components/NewsFeed/NFTKeyModal";
-import {
-  NewPostFormValues,
-  PostCategory,
-} from "../../components/NewsFeed/NewsFeed.type";
-import {
-  getAvailableFreePost,
-  getPostCategory,
-  getPostFee,
-  createPost,
-} from "../../components/NewsFeed/NewsFeedQueries";
-import { NotEnoughFundModal } from "../../components/NewsFeed/NotEnoughFundModal";
 import { RichText } from "../../components/RichText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { WalletStatusBox } from "../../components/WalletStatusBox";
@@ -26,6 +14,18 @@ import {
   Label,
   TextInputCustom,
 } from "../../components/inputs/TextInputCustom";
+import { NFTKeyModal } from "../../components/socialFeed/NewsFeed/NFTKeyModal";
+import {
+  NewPostFormValues,
+  PostCategory,
+} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
+import {
+  getAvailableFreePost,
+  getPostCategory,
+  getPostFee,
+  createPost,
+} from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
+import { NotEnoughFundModal } from "../../components/socialFeed/NewsFeed/NotEnoughFundModal";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useOpenGraph } from "../../hooks/feed/useOpenGraph";
 import { useBalances } from "../../hooks/useBalances";

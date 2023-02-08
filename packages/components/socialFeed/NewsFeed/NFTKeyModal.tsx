@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Linking, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import ModalBase from "../../components/modals/ModalBase";
-import { neutral17, primaryColor } from "../../utils/style/colors";
-import { fontSemibold12 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
-import { PrimaryButton } from "../buttons/PrimaryButton";
-import { TextInputCustom } from "../inputs/TextInputCustom";
+import { neutral17, primaryColor } from "../../../utils/style/colors";
+import { fontSemibold12 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { BrandText } from "../../BrandText";
+import { PrimaryButton } from "../../buttons/PrimaryButton";
+import { TextInputCustom } from "../../inputs/TextInputCustom";
+import ModalBase from "../../modals/ModalBase";
 
 interface NFTKeyModalProps {
   onClose: (key?: string) => void;

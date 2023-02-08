@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import { NewsFeed } from "../../components/NewsFeed/NewsFeed";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { screenTabItems } from "../../utils/feed";
 import { ScreenFC } from "../../utils/navigation";
 import { FeedHeader } from "./components/FeedHeader";
@@ -10,6 +10,10 @@ export interface SelectedTabContentProps {
   selectedTab?: keyof typeof screenTabItems;
   Header: React.ComponentType;
 }
+
+export const socialFeedBreakpointXL = 1024;
+export const socialFeedBreakpointSM = 926;
+export const socialFeedBreakpointXS = 0;
 
 const SelectedTabContent: React.FC<SelectedTabContentProps> = ({
   selectedTab,

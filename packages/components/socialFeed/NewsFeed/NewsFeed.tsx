@@ -7,12 +7,15 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
-import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { combineFetchFeedPages, useFetchFeed } from "../../hooks/useFetchFeed";
-import { layout } from "../../utils/style/layout";
-import { NEWS_FEED_MAX_WIDTH } from "../../utils/types/feed";
-import { RefreshButton } from "../RefreshButton";
-import { SocialThreadCard } from "../cards/SocialThreadCard";
+import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import {
+  combineFetchFeedPages,
+  useFetchFeed,
+} from "../../../hooks/useFetchFeed";
+import { layout } from "../../../utils/style/layout";
+import { NEWS_FEED_MAX_WIDTH } from "../../../utils/types/feed";
+import { RefreshButton } from "../../RefreshButton";
+import { SocialThreadCard } from "../../cards/SocialThreadCard";
 import { NewsFeedInput } from "./NewsFeedInput";
 
 const SCROLL_OFFSET_VALUE = 240;
@@ -118,7 +121,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     <Animated.FlatList
       scrollEventThrottle={0.1}
       data={posts as PostResult[]}
-      renderItem={({ item: post, index }) => (
+      renderItem={({ item: post }) => (
         <SocialThreadCard
           post={post}
           style={{ marginBottom: 74 }}
@@ -127,7 +130,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       )}
       ListHeaderComponentStyle={{ zIndex: 1 }}
       ListHeaderComponent={ListHeaderComponent}
-      keyExtractor={(item: PostResult) => item.identifier}
+      keyExtractor={(post: PostResult) => post.identifier}
       onScroll={scrollHandler}
       contentContainerStyle={styles.content}
       onEndReachedThreshold={1}

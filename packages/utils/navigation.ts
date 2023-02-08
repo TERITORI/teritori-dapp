@@ -2,7 +2,7 @@ import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
-import { NewPostFormValues } from "../components/NewsFeed/NewsFeed.type";
+import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 
 export type RootStackParamList = {
   Home: undefined;
