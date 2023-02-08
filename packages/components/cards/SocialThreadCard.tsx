@@ -37,20 +37,16 @@ import { BrandText } from "../BrandText";
 import { DateTime } from "../DateTime";
 import { EmojiSelector } from "../EmojiSelector";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
-import { SocialActions, socialActionsHeight } from "../SocialActions";
-import { SocialReactionActions } from "../SocialReactionActions";
-import { SocialThreadContent } from "../SocialThread/SocialThreadContent";
 import { tinyAddress } from "../WalletSelector";
 import { AnimationFadeIn } from "../animations";
 import { DotBadge } from "../badges/DotBadge";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { FeedPostShareModal } from "../modals/FeedPostShareModal";
-import { SocialFeedMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 import {
   SocialActions,
   socialActionsHeight,
-} from "../socialFeed/SocialActions";
-import { SocialReactionActions } from "../socialFeed/SocialReactionActions/SocialReactionActions";
+} from "../socialFeed/SocialActions/SocialActions";
+import { SocialReactionActions } from "../socialFeed/SocialActions/SocialReactionActions";
 import { SocialThreadContent } from "../socialFeed/SocialThread/SocialThreadContent";
 import { SpacerRow } from "../spacer";
 
