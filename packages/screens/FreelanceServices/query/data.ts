@@ -1,6 +1,13 @@
 import profilePic from "../../../../assets/banners/freelance-service/profile-pic.png";
 import serviceBackground from "../../../../assets/banners/freelance-service/service-card-background.png";
-import { ServiceFields, ServiceLevels, User } from "../types/fields";
+import { allCountries } from "../../../utils/allCountries";
+import {
+  CheckableType,
+  FilterOptionType,
+  ServiceFields,
+  ServiceLevels,
+  User,
+} from "../types/fields";
 
 export function getServiceListing(): ServiceFields[] {
   return [
@@ -278,3 +285,129 @@ const serviceLevels: ServiceLevels[] = [
     extras: [],
   },
 ];
+
+export const getFilterOptions = (type: string): FilterOptionType[] => {
+  if (type === "logo") {
+    // placeholder
+    return [
+      {
+        text: "File Format",
+        checkables: [
+          {
+            text: "PNG",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "JPG",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "PDF",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "ALL",
+            checked: false,
+            count: 123,
+          },
+        ],
+      },
+      {
+        text: "Service includes",
+        checkables: [
+          {
+            text: "Logo transparency",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "Printable file",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "Vector file",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "Source file",
+            checked: false,
+            count: 123,
+          },
+        ],
+      },
+    ];
+  } else {
+    return [
+      {
+        text: "Seller Level",
+        checkables: [
+          {
+            text: "Top Rated Seller",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "Lever Two",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "Level One",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "New Seller",
+            checked: false,
+            count: 123,
+          },
+        ],
+      },
+      {
+        text: "Seller speaks",
+        checkables: [
+          {
+            text: "English",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "Spanish",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "French",
+            checked: false,
+            count: 123,
+          },
+          {
+            text: "German",
+            checked: false,
+            count: 123,
+          },
+        ],
+      },
+      {
+        text: "Seller lives in",
+        checkables: allCountries
+          .map((country): CheckableType => {
+            return {
+              text: country.name,
+              checked: false,
+              count: Math.floor(Math.random() * 10),
+            };
+          })
+          .sort((a, b) => {
+            return b.count - a.count;
+          })
+          .slice(0, 10),
+      },
+    ];
+  }
+};

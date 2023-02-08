@@ -99,3 +99,14 @@ export interface ReviewFields {
   };
   items: ReviewType[];
 }
+
+export interface FilterOptionType {
+  text: string;
+  checkables: CheckableType[];
+}
+
+export interface CheckableType {
+  text: string;
+  checked: boolean;
+  count: number;
+}

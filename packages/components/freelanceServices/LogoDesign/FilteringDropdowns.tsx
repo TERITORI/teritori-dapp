@@ -4,26 +4,30 @@ import { TouchableOpacity, View } from "react-native";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
 import sort from "../../../../assets/icons/sort.svg";
+import { getFilterOptions } from "../../../screens/FreelanceServices/query/data";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { BudgetDropDownMenu } from "./DropDownMenu/BudgetDropDownMenu";
 import { DeliveryTimeDropDownMenu } from "./DropDownMenu/DeliveryTimeDropDownMenu";
-import { LogoOptionsDropDownMenu } from "./DropDownMenu/LogoOptionsDropDownMenu";
-import { SellerDetailsDropDownMenu } from "./DropDownMenu/SellerDetailsDropDownMenu";
+import { DropdownFilterWithCheckbox } from "./DropDownMenu/DropdownFilterWithCheckbox";
 
 export const FilteringDropdowns = () => {
   const options = [
     {
       text: "Logo Options",
       opened: false,
-      linkedElement: <LogoOptionsDropDownMenu />,
+      linkedElement: (
+        <DropdownFilterWithCheckbox initOptions={getFilterOptions("logo")} />
+      ),
     },
     {
       text: "Seller Details",
       opened: false,
-      linkedElement: <SellerDetailsDropDownMenu />,
+      linkedElement: (
+        <DropdownFilterWithCheckbox initOptions={getFilterOptions("seller")} />
+      ),
     },
     {
       text: "Budget",
