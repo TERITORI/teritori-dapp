@@ -16,7 +16,7 @@ import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 // import { SecondaryCard } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/SecondaryCard";
-import { StarRating } from "../../../components/freelanceServices/StarRating";
+import { StarRating } from "../../../components/freelanceServices/common/StarRating";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   errorColor,

@@ -1,43 +1,24 @@
 import React from "react";
-import {
-  View,
-  StyleProp,
-  ViewStyle,
-  ImageBackground,
-  ImageSourcePropType,
-  Image,
-  TextStyle,
-} from "react-native";
+import { View, ImageBackground, Image } from "react-native";
 
+import { GalleryCardTProps } from "../../../screens/FreelanceServices/query/getGallery";
 import { neutralA3, neutral17 } from "../../../utils/style/colors";
 import { fontSemibold16, fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 
-export const TertiaryCard: React.FC<{
-  width: number;
-  height?: number;
-  mainContainerStyle?: StyleProp<ViewStyle>;
-  boxStyle?: StyleProp<ViewStyle>;
-  firstTitle?: string;
-  secondTitle?: string;
-  imageBackground: ImageSourcePropType;
-  profilePic?: ImageSourcePropType;
-  firstTitleStyle?: TextStyle;
-  descriptionTitle?: string;
-  descriptionList?: string[];
-}> = ({
+export const CutOffCard: React.FC<GalleryCardTProps> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
   height,
   mainContainerStyle,
   boxStyle,
-  firstTitle,
-  secondTitle,
+  title,
+  subtitle,
   imageBackground,
   profilePic,
-  firstTitleStyle,
+  titleStyle,
   descriptionTitle,
   descriptionList,
 }) => {
@@ -88,14 +69,14 @@ export const TertiaryCard: React.FC<{
                     }}
                   />
                 )}
-                <BrandText style={[fontMedium14, firstTitleStyle]}>
-                  {firstTitle}
+                <BrandText style={[fontMedium14, titleStyle]}>
+                  {title}
                 </BrandText>
               </View>
               <BrandText
                 style={[fontSemibold16, { marginTop: layout.padding_x0_5 }]}
               >
-                {secondTitle}
+                {subtitle}
               </BrandText>
             </View>
           </View>

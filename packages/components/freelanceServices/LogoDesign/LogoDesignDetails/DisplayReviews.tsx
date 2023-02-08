@@ -17,7 +17,7 @@ import {
 import { BrandText } from "../../../BrandText";
 import { TertiaryBox } from "../../../boxes/TertiaryBox";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
-import { StarRating } from "../../StarRating";
+import { StarRating } from "../../common/StarRating";
 
 export const DisplayReviews: React.FC<{ reviews: ReviewFields["items"] }> = ({
   reviews,

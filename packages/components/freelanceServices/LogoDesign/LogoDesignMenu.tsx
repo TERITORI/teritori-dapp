@@ -6,7 +6,7 @@ import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
-import { FilteringOptions } from "./FilteringOptions";
+import { FilteringOptions } from "../common/FilteringOptions";
 
 export const LogoDesignMenu: React.FC = () => {
   return (

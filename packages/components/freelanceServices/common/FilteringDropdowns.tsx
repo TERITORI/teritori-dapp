@@ -9,9 +9,9 @@ import { fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
-import { BudgetDropDownMenu } from "./DropDownMenu/BudgetDropDownMenu";
-import { DeliveryTimeDropDownMenu } from "./DropDownMenu/DeliveryTimeDropDownMenu";
-import { DropdownFilterWithCheckbox } from "./DropDownMenu/DropdownFilterWithCheckbox";
+import { BudgetDropDownMenu } from "../LogoDesign/DropDownMenu/BudgetDropDownMenu";
+import { DeliveryTimeDropDownMenu } from "../LogoDesign/DropDownMenu/DeliveryTimeDropDownMenu";
+import { DropdownFilterWithCheckbox } from "../LogoDesign/DropDownMenu/DropdownFilterWithCheckbox";
 
 export const FilteringDropdowns = () => {
   const options = [

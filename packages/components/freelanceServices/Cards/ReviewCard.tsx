@@ -15,7 +15,7 @@ import { fontMedium14, fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
-import { StarRating } from "../StarRating";
+import { StarRating } from "../common/StarRating";
 
 export const ReviewCard: React.FC<{ reviews: ReviewFields["items"] }> = ({
   reviews,

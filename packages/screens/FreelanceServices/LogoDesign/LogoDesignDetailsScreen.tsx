@@ -19,7 +19,7 @@ import { LogoDesignDetailsTab } from "../../../components/freelanceServices/Logo
 import { RelatedTags } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/RelatedTags";
 import { ReviewsStats } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/ReviewsStats";
 import { SecondaryCard } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/SecondaryCard";
-import { StarRating } from "../../../components/freelanceServices/StarRating";
+import { StarRating } from "../../../components/freelanceServices/common/StarRating";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   neutral00,

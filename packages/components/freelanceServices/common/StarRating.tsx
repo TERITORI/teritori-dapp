@@ -1,7 +1,7 @@
 import React from "react";
 
-import star from "../../../assets/icons/yellow-star.svg";
-import { SVG } from "../SVG";
+import star from "../../../../assets/icons/yellow-star.svg";
+import { SVG } from "../../SVG";
 
 export const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   return (

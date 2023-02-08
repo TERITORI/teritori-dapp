@@ -5,7 +5,7 @@ import { FlatList, Image, ImageBackground, View } from "react-native";
 import checkIcon from "../../../../assets/icons/blue-check.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { StarRating } from "../../../components/freelanceServices/StarRating";
+import { StarRating } from "../../../components/freelanceServices/common/StarRating";
 import {
   neutral00,
   neutral33,
