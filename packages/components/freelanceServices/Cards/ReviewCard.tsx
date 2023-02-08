@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 
-import usFlag from "../../../../assets/banners/freelance-service/flags/us-flag.png";
 import chevronLeft from "../../../../assets/icons/chevron-left.svg";
 import chevronRight from "../../../../assets/icons/chevron-right.svg";
 import { ReviewFields } from "../../../screens/FreelanceServices/types/fields";
 import {
+  neutral00,
   neutral33,
   neutral77,
   yellowDefault,
-  neutral00,
 } from "../../../utils/style/colors";
 import { fontMedium14, fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
+import { FlagIcon } from "../common/FlagIcon";
 import { StarRating } from "../common/StarRating";
 
 export const ReviewCard: React.FC<{ reviews: ReviewFields["items"] }> = ({
@@ -91,12 +91,9 @@ export const ReviewCard: React.FC<{ reviews: ReviewFields["items"] }> = ({
                     transform: [{ rotate: "90deg" }],
                   }}
                 />
-                <Image
-                  source={usFlag}
-                  style={{ width: 21, height: 15, marginRight: 8 }}
-                />
+                <FlagIcon alphaCode={currentReview.user.country.alpha} />
                 <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                  {currentReview.user.country}
+                  {currentReview.user.country.name}
                 </BrandText>
                 <StarRating rating={currentReview.rating} />
                 <BrandText

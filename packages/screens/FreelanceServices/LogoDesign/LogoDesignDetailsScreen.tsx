@@ -352,7 +352,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
                     From
                   </BrandText>
                   <BrandText style={fontSemibold14}>
-                    {data.user.country}
+                    {data.user.country.name}
                   </BrandText>
                 </View>
                 <View style={{ flexDirection: "column", width: 500 }}>

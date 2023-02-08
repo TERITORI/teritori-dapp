@@ -18,7 +18,7 @@ export interface User {
   rating: number;
   totalQueue: number;
   totalReviews: number;
-  country: CountryType["name"];
+  country: CountryType;
   onlineStatus: "online" | "offline";
   createDate: Date;
   tagline: string;

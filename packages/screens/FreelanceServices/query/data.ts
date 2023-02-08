@@ -85,7 +85,11 @@ export function getUser(id: string): User {
     tagline: "Tag line here",
     rating: 4.9,
     totalReviews: 666,
-    country: "Argentina",
+    country: {
+      name: "Argentina",
+      alpha: "ar",
+      "country-code": "54",
+    },
     onlineStatus: "online",
     createDate: new Date(),
     totalQueue: 5,

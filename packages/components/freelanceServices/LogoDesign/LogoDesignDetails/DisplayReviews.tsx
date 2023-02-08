@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Image } from "react-native";
 
-import usFlag from "../../../../../assets/banners/freelance-service/flags/us-flag.png";
 import { ReviewFields } from "../../../../screens/FreelanceServices/types/fields";
 import {
   yellowDefault,
@@ -17,6 +16,7 @@ import {
 import { BrandText } from "../../../BrandText";
 import { TertiaryBox } from "../../../boxes/TertiaryBox";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
+import { FlagIcon } from "../../common/FlagIcon";
 import { StarRating } from "../../common/StarRating";
 
 export const DisplayReviews: React.FC<{ reviews: ReviewFields["items"] }> = ({
@@ -53,12 +53,9 @@ export const DisplayReviews: React.FC<{ reviews: ReviewFields["items"] }> = ({
                   transform: [{ rotate: "90deg" }],
                 }}
               />
-              <Image
-                source={usFlag}
-                style={{ width: 21, height: 15, marginRight: 8 }}
-              />
+              <FlagIcon alphaCode={item.user.country.alpha} />
               <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
-                United States
+                {item.user.country.name}
               </BrandText>
             </View>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
