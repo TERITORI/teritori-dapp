@@ -384,31 +384,25 @@ export const useSwap = (
         rpcEndpoint: selectedNetwork.rpcEndpoint || "",
         signer,
       });
-      let routes: SwapAmountInRoute[];
+      let routes: SwapAmountInRoute[] = [];
       if (isMultihop) {
-        routes = [];
+
+        if (multihopPools[0].poolAssets[0].token.denom )
         routes.push({
           poolId: Long.fromString(multihopPools[0].id),
-          tokenOutDenom: "uosmo",
+          tokenOutDenom: "uosmo",   // multihopPools must have osmo token as asset
         } as SwapAmountInRoute);
 
         routes.push({
           poolId: Long.fromString(multihopPools[1].id),
           tokenOutDenom: currencyOut.denom,
         } as SwapAmountInRoute);
-      } else {
-        // ==== Getting trading routes
-        routes = lookupRoutesForTrade({
-          trade,
-          pairs,
-        }).map((tradeRoute) => {
-          const { poolId, tokenOutDenom } = tradeRoute;
-          const swapAmountInRoute: SwapAmountInRoute = {
-            poolId: Long.fromString(poolId),
-            tokenOutDenom,
-          };
-          return swapAmountInRoute;
-        });
+      } else { //use directPool
+        //only one route
+        routes.push({
+          poolId: Long.fromString(directPool?.id!),
+          tokenOutDenom: currencyOut.denom,
+        })
       }
 
       const amountOutMicroWithSlippage = Math.round(
