@@ -124,8 +124,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 <SimpleButton
                   disabled={!selectedRipper}
                   onPress={confirmRipper}
-                  size="small"
-                  title={confirmButton}
+                  size="SM"
+                  text={confirmButton}
                 />
               </View>
             </View>

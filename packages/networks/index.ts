@@ -101,6 +101,7 @@ export const keplrChainInfoFromNetworkInfo = (
     chainName: network.displayName,
     rpc: network.rpcEndpoint,
     rest: network.restEndpoint,
+    walletUrlForStaking: network.walletUrlForStaking,
     stakeCurrency,
     bip44: {
       coinType: 118,

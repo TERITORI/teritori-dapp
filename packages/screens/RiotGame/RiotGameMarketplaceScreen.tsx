@@ -3,13 +3,13 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { THE_RIOT_COLLECTION_ID } from "../../utils/game";
 import {
   TabsListType,
   Header as CollectionHeader,
   Content as CollectionContent,
 } from "../Marketplace/CollectionScreen";
 import { GameContentView } from "./component/GameContentView";
-import { THE_RIOT_COLLECTION_ID } from "./settings";
 
 export const RiotGameMarketplaceScreen = () => {
   const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");

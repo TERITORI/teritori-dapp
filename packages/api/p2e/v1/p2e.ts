@@ -31,6 +31,8 @@ export interface CurrentSeasonResponse {
   bossName: string;
   bossHp: number;
   remainingHp: number;
+  bossImage: string;
+  isPre: boolean;
 }
 
 export interface UserRankRequest {
@@ -261,7 +263,7 @@ export const CurrentSeasonRequest = {
 };
 
 function createBaseCurrentSeasonResponse(): CurrentSeasonResponse {
-  return { id: "", denom: "", totalPrize: 0, bossName: "", bossHp: 0, remainingHp: 0 };
+  return { id: "", denom: "", totalPrize: 0, bossName: "", bossHp: 0, remainingHp: 0, bossImage: "", isPre: false };
 }
 
 export const CurrentSeasonResponse = {
@@ -283,6 +285,12 @@ export const CurrentSeasonResponse = {
     }
     if (message.remainingHp !== 0) {
       writer.uint32(53).float(message.remainingHp);
+    }
+    if (message.bossImage !== "") {
+      writer.uint32(58).string(message.bossImage);
+    }
+    if (message.isPre === true) {
+      writer.uint32(64).bool(message.isPre);
     }
     return writer;
   },
@@ -312,6 +320,12 @@ export const CurrentSeasonResponse = {
         case 6:
           message.remainingHp = reader.float();
           break;
+        case 7:
+          message.bossImage = reader.string();
+          break;
+        case 8:
+          message.isPre = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -328,6 +342,8 @@ export const CurrentSeasonResponse = {
       bossName: isSet(object.bossName) ? String(object.bossName) : "",
       bossHp: isSet(object.bossHp) ? Number(object.bossHp) : 0,
       remainingHp: isSet(object.remainingHp) ? Number(object.remainingHp) : 0,
+      bossImage: isSet(object.bossImage) ? String(object.bossImage) : "",
+      isPre: isSet(object.isPre) ? Boolean(object.isPre) : false,
     };
   },
 
@@ -339,6 +355,8 @@ export const CurrentSeasonResponse = {
     message.bossName !== undefined && (obj.bossName = message.bossName);
     message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
     message.remainingHp !== undefined && (obj.remainingHp = message.remainingHp);
+    message.bossImage !== undefined && (obj.bossImage = message.bossImage);
+    message.isPre !== undefined && (obj.isPre = message.isPre);
     return obj;
   },
 
@@ -350,6 +368,8 @@ export const CurrentSeasonResponse = {
     message.bossName = object.bossName ?? "";
     message.bossHp = object.bossHp ?? 0;
     message.remainingHp = object.remainingHp ?? 0;
+    message.bossImage = object.bossImage ?? "";
+    message.isPre = object.isPre ?? false;
     return message;
   },
 };

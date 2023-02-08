@@ -64,9 +64,12 @@ export const useCollections = (
     return collections.filter(filter);
   }, [collections, filter]);
 
-  const fetchMore = useCallback(async (index: number) => {
-    await fetchNextPage({ pageParam: index });
-  }, []);
+  const fetchMore = useCallback(
+    async (index: number) => {
+      await fetchNextPage({ pageParam: index });
+    },
+    [fetchNextPage]
+  );
 
   return [filteredCollections, fetchMore];
 };

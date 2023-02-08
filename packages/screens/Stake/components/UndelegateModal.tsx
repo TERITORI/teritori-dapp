@@ -56,67 +56,81 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   const { triggerError } = useErrorHandler();
 
   // variables
-  const { control, setValue, handleSubmit, watch, reset } =
+  const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
-  const watchAll = watch();
 
   // hooks
   useEffect(() => {
     reset();
-  }, [visible]);
+  }, [reset, visible]);
 
   useEffect(() => {
     setValue("validatorName", data?.moniker || "");
-  }, [data?.moniker]);
+  }, [data?.moniker, setValue]);
 
   // functions
-  const onSubmit = async (formData: StakeFormValuesType) => {
-    try {
-      if (!wallet?.connected || !wallet.address) {
-        console.warn("invalid wallet", wallet);
-        setToastError({
-          title: "Invalid wallet",
-          message: "",
-        });
-        return;
-      }
-      if (!data) {
-        setToastError({
-          title: "Internal error",
-          message: "No data",
-        });
-        return;
-      }
-      const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
-      const txResponse = await client.undelegateTokens(
-        wallet.address,
-        data.address,
-        {
-          amount: Decimal.fromUserInput(
-            formData.amount,
-            toriCurrency.coinDecimals
-          ).atomics,
-          denom: toriCurrency.coinMinimalDenom,
-        },
-        "auto"
-      );
-      if (isDeliverTxFailure(txResponse)) {
-        console.error("tx failed", txResponse);
+  const onSubmit = useCallback(
+    async (formData: StakeFormValuesType) => {
+      try {
+        if (!wallet?.connected || !wallet.address) {
+          console.warn("invalid wallet", wallet);
+          setToastError({
+            title: "Invalid wallet",
+            message: "",
+          });
+          return;
+        }
+        if (!data) {
+          setToastError({
+            title: "Internal error",
+            message: "No data",
+          });
+          return;
+        }
+        const signer = await getKeplrOfflineSigner();
+        const client = await getTeritoriSigningStargateClient(signer);
+        const txResponse = await client.undelegateTokens(
+          wallet.address,
+          data.address,
+          {
+            amount: Decimal.fromUserInput(
+              formData.amount,
+              toriCurrency.coinDecimals
+            ).atomics,
+            denom: toriCurrency.coinMinimalDenom,
+          },
+          "auto"
+        );
+        if (isDeliverTxFailure(txResponse)) {
+          console.error("tx failed", txResponse);
+          onClose && onClose();
+          setToastError({
+            title: "Transaction failed",
+            message: txResponse.rawLog || "",
+          });
+          return;
+        }
+        setToastSuccess({ title: "Undelegation success", message: "" });
+        refreshBondedTokens();
         onClose && onClose();
-        setToastError({
-          title: "Transaction failed",
-          message: txResponse.rawLog || "",
+      } catch (error) {
+        triggerError({
+          title: "Undelegation failed!",
+          error,
+          callback: onClose,
         });
-        return;
       }
-      setToastSuccess({ title: "Undelegation success", message: "" });
-      refreshBondedTokens();
-      onClose && onClose();
-    } catch (error) {
-      triggerError({ title: "Undelegation failed!", error, callback: onClose });
-    }
-  };
+    },
+    [
+      data,
+      onClose,
+      refreshBondedTokens,
+      setToastError,
+      setToastSuccess,
+      triggerError,
+      wallet,
+    ]
+  );
 
   // returns
   const Header = useCallback(
@@ -129,7 +143,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         </BrandText>
       </View>
     ),
-    [data]
+    []
   );
 
   const Footer = useCallback(
@@ -154,7 +168,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         </View>
       </>
     ),
-    [watchAll]
+    [handleSubmit, onClose, onSubmit]
   );
 
   return (

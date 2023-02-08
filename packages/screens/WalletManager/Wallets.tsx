@@ -31,7 +31,7 @@ export const Wallets: React.FC = () => {
     const wallet = {
       id: 0,
       title,
-      address: selectedWallet?.address,
+      address: selectedWallet.address,
       pendingRewards: totalsRewards,
       claimReward,
       staked: 42,

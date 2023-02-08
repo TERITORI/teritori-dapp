@@ -6,6 +6,7 @@ export interface NetworkInfo {
   displayName: string;
   currencies: CurrencyInfo[];
   icon?: string;
+  walletUrlForStaking?: string;
   addressPrefix: string;
   restEndpoint: string;
   rpcEndpoint: string;

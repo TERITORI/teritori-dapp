@@ -141,8 +141,8 @@ export const Sidebar: React.FC = () => {
         {tnsMetadata.metadata && (
           <SidebarProfileButton
             walletAddress={selectedWallet?.address || ""}
-            tokenId={tnsMetadata?.metadata?.tokenId || ""}
-            image={tnsMetadata?.metadata?.image || ""}
+            tokenId={tnsMetadata.metadata.tokenId || ""}
+            image={tnsMetadata.metadata.image || ""}
             isExpanded={isSidebarExpanded}
           />
         )}

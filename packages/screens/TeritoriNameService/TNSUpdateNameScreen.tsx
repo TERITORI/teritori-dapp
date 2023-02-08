@@ -12,13 +12,11 @@ import { Metadata } from "../../contracts-clients/teritori-name-service/Teritori
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { defaultMintFee } from "../../utils/fee";
 import {
   getFirstKeplrAccount,
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
-import { defaultMemo } from "../../utils/memo";
 import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
@@ -103,11 +101,10 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
       const signingClient = await getSigningCosmWasmClient();
 
       const updatedToken = await signingClient.execute(
-        walletAddress!,
+        walletAddress,
         contractAddress,
         msg,
-        defaultMintFee,
-        defaultMemo
+        "auto"
       );
       if (updatedToken) {
         console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token

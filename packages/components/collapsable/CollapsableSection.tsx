@@ -68,7 +68,7 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
         setIsExpanded(true);
       }
     }, 1000);
-  }, []);
+  }, [isExpandedByDefault]);
 
   // functions
   const toggleExpansion = () => {

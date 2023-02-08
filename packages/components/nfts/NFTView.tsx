@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   ViewStyle,
   Image,
@@ -56,7 +56,7 @@ export const NFTView: React.FC<{
     useState<boolean>(false);
   const dropdownRef = useRef<TouchableOpacity>(null);
 
-  const isOwner = useMemo(() => {
+  const isOwner = (() => {
     switch (selectedNetwork) {
       case Network.Teritori:
         return nft.ownerId === `tori-${selectedWallet?.address}`;
@@ -67,7 +67,7 @@ export const NFTView: React.FC<{
       default:
         return false;
     }
-  }, [selectedNetwork, nft.ownerId]);
+  })();
 
   const isOwnerAndNotListed = isOwner && !nft.isListed;
 

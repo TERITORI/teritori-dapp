@@ -4,16 +4,16 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
+import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
-import { StakingState } from "../../utils/game";
+import { p2eBackendClient } from "../../utils/backend";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   fontMedium32,
@@ -27,30 +27,29 @@ import { RipperSelectorModal } from "./component/RipperSelectorModalV2";
 import { SimpleButton } from "./component/SimpleButton";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
-const embeddedVideoUri =
-  "https://bafybeieid23jjpzug42y6u5au2noc6hpyayqd56udgvh7pfd45jeksykoe.ipfs.nftstorage.link/";
+const EMBEDDED_VIDEO_URI =
+  "https://bafybeid5x2gujvk3cggzz2qvewf6ykzie2iqb7ry4qtew63tolanerw4ja.ipfs.nftstorage.link/";
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
 export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
-  const { setToastError } = useFeedbacks();
+  const { setToastError, setToastSuccess } = useFeedbacks();
 
   const videoRef = React.useRef<Video>(null);
   const isScreenFocused = useIsFocused();
 
   const { myAvailableRippers } = useRippers();
   const {
-    currentSquad,
     squadStakingConfig,
     squadStake,
-    stakingState,
     estimateStakingDuration,
-    lastStakeTime,
-    isStakingStateLoaded,
-    isLastStakeTimeLoaded,
-    isSquadLoaded,
-    updateStakingState,
+    isSquadsLoaded,
+    squads,
+    squadWithdrawSeason1,
+    currentUser,
+    squadSeason1,
+    setSquadSeason1,
   } = useSquadStaking();
 
   // Stop video when changing screen through react-navigation
@@ -63,18 +62,19 @@ export const RiotGameEnrollScreen = () => {
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);
   const [isJoiningFight, setIsJoiningFight] = useState(false);
+  const [isUnstaking, setIsUnstaking] = useState(false);
 
   const availableForEnrollRippers = useMemo(() => {
     const selectedIds = selectedRippers.map((r) => r.id);
 
     return myAvailableRippers.filter((r) => !selectedIds.includes(r.id));
-  }, [myAvailableRippers, selectedRippers, currentSquad]);
+  }, [myAvailableRippers, selectedRippers]);
 
   const stakingDuration = useMemo<number>(() => {
     if (selectedRippers.length === 0 || !squadStakingConfig) return 0;
 
     return estimateStakingDuration(selectedRippers, squadStakingConfig);
-  }, [selectedRippers, squadStakingConfig]);
+  }, [estimateStakingDuration, selectedRippers, squadStakingConfig]);
 
   const showRipperSelector = (slotId: number) => {
     setSelectedSlot(slotId);
@@ -95,11 +95,46 @@ export const RiotGameEnrollScreen = () => {
     setSelectedRippers(newSelectedRippers);
   };
 
+  const gotoCurrentFight = () => {
+    navigation.replace("RiotGameFight");
+  };
+
+  const unstakeSeason1 = async () => {
+    if (!currentUser) return;
+
+    try {
+      setIsUnstaking(true);
+
+      await squadWithdrawSeason1(currentUser);
+      setToastSuccess({
+        title: "Success",
+        message: "Unstake successfully",
+      });
+
+      setSquadSeason1(undefined);
+    } catch (e: any) {
+      setToastError({
+        title: "Error occurs",
+        message: e.message,
+      });
+    } finally {
+      setIsUnstaking(false);
+    }
+  };
+
   const joinTheFight = async () => {
     if (!squadStakingConfig) {
       return setToastError({
         title: "Error",
         message: "Failed to load SquadStakingConfig",
+      });
+    }
+
+    const currentSeason = await p2eBackendClient.CurrentSeason({});
+    if (currentSeason.isPre) {
+      return setToastError({
+        title: "Warning",
+        message: "Season has not started yet",
       });
     }
 
@@ -110,7 +145,7 @@ export const RiotGameEnrollScreen = () => {
 
       // Wait a little before redirection to be sure that we have passed the fight start time
       setTimeout(() => {
-        navigation.replace("RiotGameFight");
+        navigation.navigate("RiotGameFight");
       }, 1000);
     } catch (e: any) {
       setToastError({
@@ -121,25 +156,21 @@ export const RiotGameEnrollScreen = () => {
     }
   };
 
-  // If we are in state Relax/Ongoing or there is squad the goto fight screen
   useEffect(() => {
     if (
-      isSquadLoaded &&
-      isStakingStateLoaded &&
-      (currentSquad ||
-        [StakingState.RELAX, StakingState.ONGOING].includes(stakingState))
+      isSquadsLoaded &&
+      squadStakingConfig?.owner &&
+      squads.length === squadStakingConfig.squad_count_limit
     ) {
       navigation.replace("RiotGameFight");
     }
-  }, [isSquadLoaded, isStakingStateLoaded]);
-
-  // Update staking state
-  useEffect(() => {
-    if (!isSquadLoaded || !isLastStakeTimeLoaded || !squadStakingConfig?.owner)
-      return;
-
-    updateStakingState(currentSquad, lastStakeTime, squadStakingConfig);
-  }, [isSquadLoaded, isLastStakeTimeLoaded, squadStakingConfig?.owner]);
+  }, [
+    isSquadsLoaded,
+    navigation,
+    squadStakingConfig?.owner,
+    squadStakingConfig?.squad_count_limit,
+    squads.length,
+  ]);
 
   return (
     <GameContentView>
@@ -147,7 +178,7 @@ export const RiotGameEnrollScreen = () => {
         <BrandText style={styles.pageTitle}>Send to fight</BrandText>
       </View>
 
-      <FlexRow breakpoint={1080} style={styles.enrollContainer}>
+      <View style={styles.enrollContainer}>
         <View style={styles.col}>
           <BrandText style={styles.sectionTitle}>
             Enroll your Ripper(s)
@@ -203,22 +234,49 @@ export const RiotGameEnrollScreen = () => {
               ref={videoRef}
               style={{ borderRadius: 25 }}
               source={{
-                uri: embeddedVideoUri,
+                uri: EMBEDDED_VIDEO_URI,
               }}
               useNativeControls
               resizeMode={ResizeMode.CONTAIN}
             />
           </View>
         </View>
-      </FlexRow>
+      </View>
 
-      <SimpleButton
-        disabled={selectedRippers.length === 0}
-        onPress={joinTheFight}
-        containerStyle={{ marginVertical: layout.padding_x4 }}
-        title="Join the Fight"
-        loading={isJoiningFight}
-      />
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        {squads.length > 0 && (
+          <SimpleButton
+            onPress={gotoCurrentFight}
+            containerStyle={{
+              marginVertical: layout.padding_x4,
+              marginRight: layout.padding_x2,
+            }}
+            text="Goto current Fight"
+            loading={isJoiningFight}
+            iconSVG={controllerSVG}
+            outline
+          />
+        )}
+
+        <SimpleButton
+          disabled={selectedRippers.length === 0}
+          onPress={joinTheFight}
+          containerStyle={{ marginVertical: layout.padding_x4 }}
+          text="Join the Fight"
+          loading={isJoiningFight}
+        />
+      </View>
+
+      {squadSeason1 && (
+        <SimpleButton
+          disabled={isUnstaking}
+          onPress={unstakeSeason1}
+          containerStyle={{ marginVertical: layout.padding_x2 }}
+          text="Retrieve Season 1 Squad"
+          loading={isUnstaking}
+          outline
+        />
+      )}
 
       <RipperSelectorModal
         visible={selectedSlot !== undefined}
@@ -244,6 +302,8 @@ const styles = StyleSheet.create({
   enrollContainer: {
     justifyContent: "space-around",
     marginTop: layout.padding_x1,
+    flexDirection: "row",
+    flexWrap: "wrap",
   },
   col: {
     justifyContent: "center",

@@ -12,12 +12,10 @@ import { useTNS } from "../../context/TNSProvider";
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { defaultExecuteFee } from "../../utils/fee";
 import {
   getFirstKeplrAccount,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
-import { defaultMemo } from "../../utils/memo";
 import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
@@ -67,11 +65,10 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       const walletAddress = (await getFirstKeplrAccount()).address;
 
       const updatedToken = await signingClient.execute(
-        walletAddress!,
+        walletAddress,
         contractAddress,
         msg,
-        defaultExecuteFee,
-        defaultMemo
+        "auto"
       );
       if (updatedToken) {
         console.log(normalizedTokenId + " successfully burnt");

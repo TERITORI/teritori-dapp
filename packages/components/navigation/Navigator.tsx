@@ -14,7 +14,6 @@ import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScreen";
 import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "../../screens/Launchpad/MintCollectionScreen";
-import { CollectionActivityScreen } from "../../screens/Marketplace/CollectionActivityScreen";
 import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
@@ -199,14 +198,6 @@ export const Navigator: React.FC = () => {
         name="Collection"
         component={CollectionScreen}
         options={{ header: () => null, title: screenTitle("Collection") }}
-      />
-      <Stack.Screen
-        name="CollectionActivity"
-        component={CollectionActivityScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Collection Activity"),
-        }}
       />
       <Stack.Screen
         name="NFTDetail"

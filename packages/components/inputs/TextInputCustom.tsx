@@ -93,12 +93,14 @@ export const TextInputCustom = <T extends FieldValues>({
     if (defaultValue) {
       handleChangeText(defaultValue);
     }
+    // handleChangeText changes on every render and we want to call handleChangeText only when default value changes so we disable exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
   const error = useMemo(() => {
     if (fieldState.error) {
-      if (fieldState.error?.message) {
-        return fieldState.error?.message;
+      if (fieldState.error.message) {
+        return fieldState.error.message;
       }
       return DEFAULT_FORM_ERRORS.required;
     }
@@ -117,7 +119,7 @@ export const TextInputCustom = <T extends FieldValues>({
 
       if (reg.test(value) || !value) {
         field.onChange(value);
-        if (restProps?.onChangeText) {
+        if (restProps.onChangeText) {
           restProps.onChangeText(value);
           return;
         }
@@ -127,7 +129,7 @@ export const TextInputCustom = <T extends FieldValues>({
 
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
       field.onChange(value);
-      if (restProps?.onChangeText) {
+      if (restProps.onChangeText) {
         restProps.onChangeText(value);
       }
     }

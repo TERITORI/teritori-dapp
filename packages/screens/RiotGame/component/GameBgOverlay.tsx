@@ -32,7 +32,7 @@ export const GameBgOverlay: React.FC<GameBgOverlayProps> = ({ type }) => {
       default:
         return DEFAULT_SIZE;
     }
-  }, [type, width, height]);
+  }, [type, height]);
 
   const shadowWidth = useMemo(() => {
     switch (type) {
@@ -47,7 +47,7 @@ export const GameBgOverlay: React.FC<GameBgOverlayProps> = ({ type }) => {
       default:
         return width;
     }
-  }, [type, width, height]);
+  }, [type, width]);
 
   // returns
   return (

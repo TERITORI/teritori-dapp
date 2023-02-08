@@ -1,3 +1,4 @@
+import Long from "long";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -27,7 +28,7 @@ import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { MintPhase, useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCurrency } from "../../networks";
@@ -106,42 +107,74 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     if (typeof msg !== "string") {
       return `${err}`;
     }
-    if (msg.includes("Already minted maximum for whitelist period")) {
+    if (
+      msg.includes("Already minted maximum for whitelist period") ||
+      msg.includes("EXCEED_WHITELIST_MINT_MAX")
+    ) {
       return "You already minted the maximum allowed per address during presale";
     }
-    if (msg.includes("Already minted maximum")) {
+    if (
+      msg.includes("Already minted maximum") ||
+      msg.includes("EXCEED_MINT_MAX")
+    ) {
       return "You already minted the maximum allowed per address";
     }
-    if (msg.includes("Not whitelisted!")) {
+    if (msg.includes("Not whitelisted!") || msg.includes("NOT_WHITELISTED")) {
       return "You are not in the presale whitelist";
     }
     return msg;
   };
 
-  const ethereumMint = async (wallet: Wallet) => {
-    const signer = await getMetaMaskEthereumSigner(wallet.address);
-    if (!signer) {
-      throw Error("no account connected");
-    }
+  const ethereumMint = useCallback(
+    async (wallet: Wallet) => {
+      const signer = await getMetaMaskEthereumSigner(wallet.address);
+      if (!signer) {
+        throw Error("no account connected");
+      }
 
-    const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
-    const userState = await minterClient.callStatic.userState(wallet.address);
+      const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
+      const userState = await minterClient.callStatic.userState(wallet.address);
 
-    // TODO: check this properly later
-    // if (!userState.userCanMint) {
-    //   throw Error("You cannot mint now");
-    // }
+      // TODO: check this properly later
+      // if (!userState.userCanMint) {
+      //   throw Error("You cannot mint now");
+      // }
 
-    const address = await signer.getAddress();
+      const address = await signer.getAddress();
 
-    const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
-    const tx = await minterClient.requestMint(address, 1, {
-      maxFeePerGas: maxFeePerGas?.toNumber(),
-      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
-      value: userState.mintPrice,
-    });
-    await tx.wait();
-  };
+      const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+      const tx = await minterClient.requestMint(address, 1, {
+        maxFeePerGas: maxFeePerGas?.toNumber(),
+        maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+        value: userState.mintPrice,
+      });
+      await tx.wait();
+    },
+    [mintAddress]
+  );
+
+  const teritoriMint = useCallback(
+    async (wallet: Wallet) => {
+      const sender = wallet.address;
+      if (!sender || !info?.unitPrice || !info.priceDenom) {
+        throw Error("invalid mint args");
+      }
+      const cosmwasmClient = await getSigningCosmWasmClient();
+      const minterClient = new TeritoriBunkerMinterClient(
+        cosmwasmClient,
+        sender,
+        mintAddress
+      );
+
+      let funds;
+      if (info.unitPrice !== "0") {
+        funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
+      }
+
+      await minterClient.requestMint({ addr: sender }, "auto", "", funds);
+    },
+    [info?.priceDenom, info?.unitPrice, mintAddress]
+  );
 
   const mint = useCallback(async () => {
     let mintFunc: CallableFunction | null = null;
@@ -178,27 +211,14 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       }
       console.error(e);
     }
-  }, [wallet?.address, id, info?.unitPrice, info?.priceDenom]);
-
-  const teritoriMint = async (wallet: Wallet) => {
-    const sender = wallet?.address;
-    if (!sender || !info?.unitPrice || !info.priceDenom) {
-      throw Error("invalid mint args");
-    }
-    const cosmwasmClient = await getSigningCosmWasmClient();
-    const minterClient = new TeritoriBunkerMinterClient(
-      cosmwasmClient,
-      sender,
-      mintAddress
-    );
-
-    let funds;
-    if (info.unitPrice !== "0") {
-      funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
-    }
-
-    await minterClient.requestMint({ addr: sender }, "auto", "", funds);
-  };
+  }, [
+    addressPrefix,
+    teritoriMint,
+    ethereumMint,
+    setToastError,
+    networkId,
+    wallet,
+  ]);
 
   const mintTermsConditionsURL = useMemo(() => {
     switch (mintAddress) {
@@ -424,13 +444,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               </BrandText>
               {info.mintStarted ? (
                 <>
-                  {info.hasPresale && (
-                    <PresaleActivy
-                      running={!info.publicSaleEnded && info.isInPresalePeriod}
-                      whitelistSize={info.whitelistSize || 0}
-                      maxPerAddress={info.whitelistMaxPerAddress || "0"}
-                    />
-                  )}
+                  {info.mintPhases.map((phase, index) => {
+                    return <PresaleActivy key={index} info={phase} />;
+                  })}
                   <PublicSaleActivity
                     started={!info.isInPresalePeriod}
                     ended={!!info.publicSaleEnded}
@@ -486,10 +502,12 @@ const AttributesCard: React.FC<{
 };
 
 const PresaleActivy: React.FC<{
-  running?: boolean;
-  whitelistSize: number;
-  maxPerAddress: string;
-}> = ({ running, whitelistSize, maxPerAddress }) => {
+  info: MintPhase;
+}> = ({ info }) => {
+  const now = Long.fromNumber(Date.now() / 1000);
+  const running = info.start.lessThanOrEqual(now) && info.end.greaterThan(now);
+  const incoming = info.start.greaterThan(now);
+  const maxPerAddress = info.mintMax.toString();
   return (
     <View>
       <View
@@ -504,6 +522,8 @@ const PresaleActivy: React.FC<{
           <BrandText style={[fontSemibold16, { color: primaryColor }]}>
             IN PROGRESS
           </BrandText>
+        ) : incoming ? (
+          <PhaseCountdown startsAt={info.start.toNumber()} />
         ) : (
           <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
             ENDED
@@ -534,7 +554,7 @@ const PresaleActivy: React.FC<{
           >
             Whitelist
           </BrandText>
-          <BrandText style={fontSemibold16}>{whitelistSize}</BrandText>
+          <BrandText style={fontSemibold16}>{info.size.toString()}</BrandText>
 
           <View
             style={{
@@ -573,6 +593,29 @@ const PresaleActivy: React.FC<{
   );
 };
 
+const PhaseCountdown: React.FC<{
+  onCountdownEnd?: () => void;
+  startsAt?: number;
+}> = ({ onCountdownEnd, startsAt }) => {
+  const now = Date.now() / 1000;
+  return (
+    <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
+      STARTS IN
+      <CountDown
+        until={(startsAt || now) - now}
+        onFinish={onCountdownEnd}
+        size={8}
+        style={{ marginLeft: layout.padding_x1 }}
+        digitTxtStyle={countDownTxtStyleStarts}
+        separatorStyle={countDownTxtStyleStarts}
+        digitStyle={{ backgroundColor: "none" }}
+        showSeparator
+        timeLabels={{ d: "", h: "", m: "", s: "" }}
+      />
+    </BrandText>
+  );
+};
+
 const PublicSaleActivity: React.FC<{
   started?: boolean;
   startsAt?: number;
@@ -580,7 +623,6 @@ const PublicSaleActivity: React.FC<{
   running?: boolean;
   onCountdownEnd?: () => void;
 }> = ({ started, running, ended, startsAt, onCountdownEnd }) => {
-  const now = Date.now() / 1000;
   return (
     <View
       style={{
@@ -591,20 +633,7 @@ const PublicSaleActivity: React.FC<{
     >
       <TertiaryBadge label="Public Mint" />
       {!started && !ended ? (
-        <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
-          STARTS IN
-          <CountDown
-            until={(startsAt || now) - now}
-            onFinish={onCountdownEnd}
-            size={8}
-            style={{ marginLeft: layout.padding_x1 }}
-            digitTxtStyle={countDownTxtStyleStarts}
-            separatorStyle={countDownTxtStyleStarts}
-            digitStyle={{ backgroundColor: "none" }}
-            showSeparator
-            timeLabels={{ d: "", h: "", m: "", s: "" }}
-          />
-        </BrandText>
+        <PhaseCountdown onCountdownEnd={onCountdownEnd} startsAt={startsAt} />
       ) : running ? (
         <BrandText style={[fontSemibold16, { color: primaryColor }]}>
           IN PROGRESS

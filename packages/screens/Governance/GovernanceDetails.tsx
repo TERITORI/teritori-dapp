@@ -138,7 +138,13 @@ export const GovernanceDetails: React.FC<{
         });
       }
     }
-  }, [selectedWallet]);
+  }, [
+    numberProposal,
+    selectedWallet?.address,
+    selectedWallet?.connected,
+    setToastError,
+    voteOption,
+  ]);
 
   function deleteConfirmationVote() {
     setdisplayConfirmationVote(false);

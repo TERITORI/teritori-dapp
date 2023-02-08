@@ -11,13 +11,11 @@ import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori
 import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { defaultMintFee } from "../../utils/fee";
 import {
   getFirstKeplrAccount,
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../utils/keplr";
-import { defaultMemo } from "../../utils/memo";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17 } from "../../utils/style/colors";
 import { isTokenOwnedByUser, tokenWithoutTld } from "../../utils/tns";
@@ -137,11 +135,10 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
       const signingClient = await getSigningCosmWasmClient();
 
       const mintedToken = await signingClient.execute(
-        walletAddress!,
+        walletAddress,
         contractAddress,
         msg,
-        defaultMintFee,
-        defaultMemo
+        "auto"
       );
       if (mintedToken) {
         console.log(normalizedPathId + " successfully minted"); //TODO: redirect to the token

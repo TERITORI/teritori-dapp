@@ -8,10 +8,10 @@ import { CollectionSocialButtons } from "../../../components/collections/Collect
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
+import { THE_RIOT_COLLECTION_ID } from "../../../utils/game";
 import { mineShaftColor, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { THE_RIOT_COLLECTION_ID } from "../settings";
 
 export type TokenInfo = {
   id: string;
@@ -29,7 +29,7 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   tokenInfo,
   onClose,
 }) => {
-  const { info: collectionInfo = {} } = useCollectionInfo(
+  const { info: collectionInfo = { mintPhases: [] } } = useCollectionInfo(
     THE_RIOT_COLLECTION_ID
   );
 

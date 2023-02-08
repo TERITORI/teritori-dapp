@@ -30,7 +30,6 @@ export type RootStackParamList = {
   Marketplace: undefined;
   Collection: { id: string };
   CollectionTools: { id: string };
-  CollectionActivity: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
 
   RiotGame: undefined;
@@ -83,7 +82,6 @@ export const useAppNavigation = () => {
       "Marketplace",
       "Collection",
       "CollectionTools",
-      "CollectionActivity",
       "NFTDetail",
 
       // ==== ComingSoon
@@ -107,6 +105,9 @@ export const useAppNavigation = () => {
     // user has not been redirected to allowed route yet so we could be in a state where wrong toast is displayed
     // so we need to clear toast once the we are in the right screen
     setToastError({ title: "", message: "", duration: 0 });
+
+    // this effect will be removed with proper multi-network support and I don't want to look into all side effects of proper hooks deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.name, selectedNetwork]);
 
   return useNavigation<AppNavigationProp>();
@@ -155,7 +156,6 @@ const navConfig: {
     Marketplace: "marketplace",
     Collection: "collection/:id",
     CollectionTools: "collection/:id/tools",
-    CollectionActivity: "collection/:id/activity",
     NFTDetail: "nft/:id",
     // ==== Staking
     Staking: "staking",

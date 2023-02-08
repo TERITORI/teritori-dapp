@@ -42,7 +42,7 @@ export const GameBgCard: React.FC<GameBgCardProps> = ({
       default:
         return null;
     }
-  }, [item.type, width, height]);
+  }, [item.type, item.data, width, height]);
 
   return (
     <View style={[styles.card, { width, height }]}>

@@ -24,7 +24,7 @@ export function convertDenomToMicroDenom(amount: number | string): string {
 }
 
 export function convertFromMicroDenom(denom: string) {
-  return denom?.substring(1).toUpperCase();
+  return denom.substring(1).toUpperCase();
 }
 
 export function convertToFixedDecimals(amount: number | string): string {
