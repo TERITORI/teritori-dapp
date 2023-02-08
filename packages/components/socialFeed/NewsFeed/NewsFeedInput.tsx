@@ -11,49 +11,49 @@ import {
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
-import audioSVG from "../../../assets/icons/audio.svg";
-import cameraSVG from "../../../assets/icons/camera.svg";
-import penSVG from "../../../assets/icons/pen.svg";
-import priceSVG from "../../../assets/icons/price.svg";
-import videoSVG from "../../../assets/icons/video.svg";
-import { socialFeedClient } from "../../client-creators/socialFeedClient";
-import { useCreatePost } from "../../hooks/feed/useCreatePost";
-import { useBalances } from "../../hooks/useBalances";
-import { useIsMobileView } from "../../hooks/useIsMobileView";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ReplyToType } from "../../screens/FeedPostView/types";
-import { defaultSocialFeedFee } from "../../utils/fee";
+import audioSVG from "../../../../assets/icons/audio.svg";
+import cameraSVG from "../../../../assets/icons/camera.svg";
+import penSVG from "../../../../assets/icons/pen.svg";
+import priceSVG from "../../../../assets/icons/price.svg";
+import videoSVG from "../../../../assets/icons/video.svg";
+import { socialFeedClient } from "../../../client-creators/socialFeedClient";
+import { useCreatePost } from "../../../hooks/feed/useCreatePost";
+import { useBalances } from "../../../hooks/useBalances";
+import { useIsMobileView } from "../../../hooks/useIsMobileView";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { ReplyToType } from "../../../screens/FeedPostView/types";
+import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
   VIDEO_MIME_TYPES,
-} from "../../utils/mime";
-import { useAppNavigation } from "../../utils/navigation";
-import { SOCIAL_FEED_MAX_CHAR_LIMIT } from "../../utils/social-feed";
+} from "../../../utils/mime";
+import { useAppNavigation } from "../../../utils/navigation";
+import { SOCIAL_FEED_MAX_CHAR_LIMIT } from "../../../utils/social-feed";
 import {
   neutral17,
   neutral22,
   neutral77,
   secondaryColor,
-} from "../../utils/style/colors";
+} from "../../../utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold13,
   fontSemibold16,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { replaceBetweenString } from "../../utils/text";
-import { RemoteFileData } from "../../utils/types/feed";
-import { BrandText } from "../BrandText";
-import { CircleIconBox } from "../CircleIconBox";
-import { EmojiSelector } from "../EmojiSelector";
-import { FilePreviewContainer } from "../FilePreview/UploadedFilePreview/FilePreviewContainer";
-import { GIFSelector } from "../GIFSelector";
-import { SVG } from "../SVG";
-import { TertiaryBox } from "../boxes/TertiaryBox";
-import { PrimaryButton } from "../buttons/PrimaryButton";
-import { FileUploader } from "../fileUploader";
-import { SpacerRow } from "../spacer";
+} from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { replaceBetweenString } from "../../../utils/text";
+import { RemoteFileData } from "../../../utils/types/feed";
+import { BrandText } from "../../BrandText";
+import { CircleIconBox } from "../../CircleIconBox";
+import { EmojiSelector } from "../../EmojiSelector";
+import { FilePreviewContainer } from "../../FilePreview/UploadedFilePreview/FilePreviewContainer";
+import { GIFSelector } from "../../GIFSelector";
+import { SVG } from "../../SVG";
+import { TertiaryBox } from "../../boxes/TertiaryBox";
+import { PrimaryButton } from "../../buttons/PrimaryButton";
+import { FileUploader } from "../../fileUploader";
+import { SpacerRow } from "../../spacer";
 import { NFTKeyModal } from "./NFTKeyModal";
 import { NewPostFormValues, SocialFeedMetadata } from "./NewsFeed.type";
 import {

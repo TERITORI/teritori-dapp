@@ -1,12 +1,12 @@
 import { omit } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
-import { nftStorageFile } from "../../candymachine/nft-storage-upload";
-import { socialFeedClient } from "../../client-creators/socialFeedClient";
-import { OpenGraphType } from "../../hooks/feed/types";
-import { LocalFileData, RemoteFileData } from "../../utils/types/feed";
-import { Wallet } from "./../../context/WalletsProvider/wallet";
-import { defaultSocialFeedFee } from "./../../utils/fee";
+import { nftStorageFile } from "../../../candymachine/nft-storage-upload";
+import { socialFeedClient } from "../../../client-creators/socialFeedClient";
+import { Wallet } from "../../../context/WalletsProvider";
+import { OpenGraphType } from "../../../hooks/feed/types";
+import { defaultSocialFeedFee } from "../../../utils/fee";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 import {
   PostCategory,
   NewPostFormValues,
@@ -69,7 +69,7 @@ export const getPostCategory = ({
   title,
   files,
 }: NewPostFormValues): PostCategory => {
-  let category = PostCategory.Normal;
+  let category: PostCategory;
   if (files?.length) {
     if (files[0].fileType === "image") {
       category = PostCategory.Picture;
@@ -102,8 +102,7 @@ export const createPost = async ({
   freePostCount,
   fee,
   parentId,
-  openGraph,
-  nftStorageApiToken,
+                                   nftStorageApiToken,
 }: CreatePostParams) => {
   if (!wallet?.connected || !wallet.address) {
     return;

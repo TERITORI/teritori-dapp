@@ -15,15 +15,15 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
-import {
-  NewsFeedInput,
-  NewsFeedInputHandle,
-} from "../../components/NewsFeed/NewsFeedInput";
 import { RefreshButton } from "../../components/RefreshButton";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CommentsContainer } from "../../components/cards/CommentsContainer";
 import { SocialThreadCard } from "../../components/cards/SocialThreadCard";
 import { BackTo } from "../../components/navigation/BackTo";
+import {
+  NewsFeedInput,
+  NewsFeedInputHandle,
+} from "../../components/socialFeed/NewsFeed/NewsFeedInput";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useErrorHandler } from "../../hooks/useErrorHandler";
 import {

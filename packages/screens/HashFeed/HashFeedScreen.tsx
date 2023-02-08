@@ -2,8 +2,8 @@ import React from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
-import { NewsFeed } from "../../components/NewsFeed/NewsFeed";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { screenTabItems } from "../../utils/feed";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral22, primaryColor } from "../../utils/style/colors";

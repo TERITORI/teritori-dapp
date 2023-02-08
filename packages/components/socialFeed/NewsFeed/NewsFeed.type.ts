@@ -1,6 +1,6 @@
-import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { OpenGraphType } from "../../hooks/feed/types";
-import { LocalFileData, RemoteFileData } from "../../utils/types/feed";
+import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { OpenGraphType } from "../../../hooks/feed/types";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 
 export enum PostCategory {
   Reaction,

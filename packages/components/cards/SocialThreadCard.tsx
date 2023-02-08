@@ -10,12 +10,13 @@ import {
 } from "react-native";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
-import { SendFundModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
+import { SendFundModal } from "../modals/teritoriNameService/TNSSendFundsModal";
 import { useTNS } from "../../context/TNSProvider";
 import { useTeritoriSocialFeedReactPostMutation } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { socialFeedBreakpointXL } from "../../screens/Feed/FeedScreen";
 import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -44,9 +45,14 @@ import { AnimationFadeIn } from "../animations";
 import { DotBadge } from "../badges/DotBadge";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { FeedPostShareModal } from "../modals/FeedPostShareModal";
+import { SocialFeedMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
+import {
+  SocialActions,
+  socialActionsHeight,
+} from "../socialFeed/SocialActions";
+import { SocialReactionActions } from "../socialFeed/SocialReactionActions/SocialReactionActions";
+import { SocialThreadContent } from "../socialFeed/SocialThread/SocialThreadContent";
 import { SpacerRow } from "../spacer";
-
-const breakpoint = 1110;
 
 export const SocialThreadCard: React.FC<{
   post: PostResult;
@@ -63,8 +69,7 @@ export const SocialThreadCard: React.FC<{
   singleView,
   isGovernance,
   fadeInDelay,
-  allowTruncation,
-}) => {
+                                     }) => {
   const [localPost, setLocalPost] = useState(post);
   const { setName } = useTNS();
   const imageMarginRight = layout.padding_x3_5;
@@ -152,7 +157,7 @@ export const SocialThreadCard: React.FC<{
             >
               <AvatarWithFrame
                 image={postByTNSMetadata?.metadata?.image}
-                size={windowWidth < breakpoint ? "M" : "L"}
+                size={windowWidth < socialFeedBreakpointXL ? "M" : "L"}
                 isLoading={postByTNSMetadata.loading}
               />
             </TouchableOpacity>
