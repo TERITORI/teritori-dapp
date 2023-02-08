@@ -21,6 +21,7 @@ import {
 import { usePrevious } from "../../hooks/usePrevious";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { socialFeedBreakpointXL } from "../../screens/Feed/FeedScreen";
 import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -48,13 +49,13 @@ import { layout } from "../../utils/style/layout";
 import { replaceTextWithComponent } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { FilePreview } from "../FilePreview/FilePreview";
-import { PostResultExtra } from "../NewsFeed/NewsFeed.type";
-import { SocialReactionActions } from "../SocialReactionActions";
 import { tinyAddress } from "../WalletSelector";
 import { AnimationFadeIn } from "../animations";
 import { AnimationFadeInOut } from "../animations/AnimationFadeInOut";
 import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
+import { PostResultExtra } from "../socialFeed/NewsFeed/NewsFeed.type";
+import { SocialReactionActions } from "../socialFeed/SocialReactionActions/SocialReactionActions";
 import { SpacerColumn, SpacerRow } from "../spacer";
 import { CommentsContainer } from "./CommentsContainer";
 
@@ -71,7 +72,6 @@ export interface SocialCommentCardProps {
 }
 
 const MARGIN_HEIGHT = 56;
-const breakpoint = 1110;
 
 export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   style,
@@ -133,7 +133,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   }, [comment.isInLocal]);
 
   useEffect(() => {
-    if (oldIsFetching === true && isFetching === false) {
+    if (oldIsFetching === true && !isFetching) {
       onScrollTo &&
         onScrollTo(
           replyListYOffset.reduce((acc, cur) => acc + cur, parentOffsetValue)
@@ -212,7 +212,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               <AvatarWithFrame
                 isLoading={postByTNSMetadata?.loading}
                 image={postByTNSMetadata?.metadata?.image}
-                size={windowWidth < breakpoint ? "M" : "L"}
+                size={windowWidth < socialFeedBreakpointXL ? "M" : "L"}
               />
             </TouchableOpacity>
             <View style={styles.content}>
@@ -297,12 +297,12 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                     currentUserMetadata?.metadata?.tokenId
                   }
                   reactions={localComment.reactions}
-                  statStyle={styles.stat}
                   isComment
                   onPressReply={handleReply}
                   showEmojiSelector
                   onPressReaction={handleReaction}
                   isReactionLoading={isReactLoading}
+                  postId={comment.identifier}
                 />
               </View>
             </View>
@@ -407,7 +407,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  stat: { backgroundColor: neutral22 },
   extraLineHider: {
     marginTop: 73,
     width: 1,
