@@ -1,18 +1,18 @@
 import React from "react";
 import { View } from "react-native";
 
-import priceSVG from "../../../assets/icons/price.svg";
+import priceSVG from "../../../../assets/icons/price.svg";
 import {
   errorColor,
   neutral11,
   neutral77,
   redDefault,
-} from "../../utils/style/colors";
-import { fontSemibold13 } from "../../utils/style/fonts";
-import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
-import { SecondaryButton } from "../buttons/SecondaryButton";
-import ModalBase from "../modals/ModalBase";
+} from "../../../utils/style/colors";
+import { fontSemibold13 } from "../../../utils/style/fonts";
+import { BrandText } from "../../BrandText";
+import { SVG } from "../../SVG";
+import { SecondaryButton } from "../../buttons/SecondaryButton";
+import ModalBase from "../../modals/ModalBase";
 
 const DO_SOMETHING_BUTTONS = [
   {

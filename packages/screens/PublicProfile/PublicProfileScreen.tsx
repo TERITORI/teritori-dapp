@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
-import { NewsFeed } from "../../components/NewsFeed/NewsFeed";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
 import { screenTitle } from "../../components/navigation/Navigator";
+import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { screenTabItems } from "../../utils/feed";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
