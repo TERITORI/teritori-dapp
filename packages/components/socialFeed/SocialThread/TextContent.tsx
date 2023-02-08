@@ -6,7 +6,7 @@ import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
-import { SocialFeedMetadata } from "../../NewsFeed/NewsFeed.type";
+import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { TextRenderer } from "../../TextRenderer/TextRenderer";
 
 interface Props {
