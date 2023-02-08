@@ -6,7 +6,7 @@ import { AudioPreview } from "../../FilePreview/AudioPreview";
 import { convertGIFToLocalFileType } from "../../FilePreview/UploadedFilePreview/FilePreviewContainer";
 import { ImagePreview } from "../../FilePreview/UploadedFilePreview/ImagePreview";
 import { VideoPreview } from "../../FilePreview/UploadedFilePreview/VideoPreview";
-import { SocialFeedMetadata, PostCategory } from "../NewsFeed/NewsFeed.type";
+import { SocialFeedMetadata, PostCategory } from "../../NewsFeed/NewsFeed.type";
 import { ArticlePreview } from "./ArticlePreview";
 import { TextContent } from "./TextContent";
 interface Props {
