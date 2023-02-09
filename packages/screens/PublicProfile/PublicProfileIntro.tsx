@@ -19,7 +19,7 @@ export const PublicProfileIntro: React.FC<{
   userId: string;
   metadata?: (Metadata & { tokenId: string }) | null;
   isUserOwner?: boolean;
-}> = ({metadata}) => {
+}> = ({ metadata }) => {
   return (
     <>
       <View>

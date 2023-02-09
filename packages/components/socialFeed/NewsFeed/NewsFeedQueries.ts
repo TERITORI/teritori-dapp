@@ -102,7 +102,7 @@ export const createPost = async ({
   freePostCount,
   fee,
   parentId,
-                                   nftStorageApiToken,
+  nftStorageApiToken,
 }: CreatePostParams) => {
   if (!wallet?.connected || !wallet.address) {
     return;

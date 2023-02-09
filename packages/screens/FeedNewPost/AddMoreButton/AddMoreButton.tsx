@@ -1,27 +1,35 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryBox } from "../../../components/boxes/PrimaryBox";
+import {
+  gradientColorBlue,
+  gradientColorDarkerBlue,
+  gradientColorTurquoise,
+} from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { AddMoreButtonProps } from "./AddMoreButton.type";
 
 export const AddMoreButton: React.FC<AddMoreButtonProps> = ({ onPress }) => (
-  <View style={{ flex: 1 }}>
-    <PrimaryBox fullWidth>
-      <TouchableOpacity
-        style={{
-          padding: layout.padding_x2,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-        onPress={onPress}
-      >
-        <BrandText style={[fontSemibold13]}>More tools</BrandText>
-      </TouchableOpacity>
+  <TouchableOpacity style={{ width: "100%", maxWidth: 412 }} onPress={onPress}>
+    <PrimaryBox
+      fullWidth
+      height={48}
+      colors={[
+        gradientColorDarkerBlue,
+        gradientColorBlue,
+        gradientColorTurquoise,
+      ]}
+      mainContainerStyle={{
+        paddingHorizontal: layout.padding_x2,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <BrandText style={[fontSemibold13]}>More tools</BrandText>
     </PrimaryBox>
-  </View>
+  </TouchableOpacity>
 );
