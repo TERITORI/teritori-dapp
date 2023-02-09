@@ -18,7 +18,6 @@ import { SVG } from "./SVG";
 
 interface RefreshButtonProps {
   isRefreshing: SharedValue<boolean>;
-  title: string;
   onPress?(): void;
   widthToAnimate: number;
 }
@@ -28,7 +27,6 @@ const SVG_SIZE = 16;
 const LOADING_WIDTH = SVG_SIZE + layout.padding_x1_5 * 2;
 
 export const RefreshButton: React.FC<RefreshButtonProps> = ({
-  title,
   isRefreshing,
   onPress,
   widthToAnimate,
@@ -90,7 +88,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
           <SVG source={refreshSVG} width={SVG_SIZE} height={SVG_SIZE} />
         </Animated.View>
         <Animated.View style={[styles.textContainer, opacityStyle]}>
-          <BrandText style={fontSemibold14}>{title}</BrandText>
+          <BrandText style={fontSemibold14}>Refresh feed</BrandText>
         </Animated.View>
       </Pressable>
     </Animated.View>

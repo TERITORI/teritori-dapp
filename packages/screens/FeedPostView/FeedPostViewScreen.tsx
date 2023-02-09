@@ -186,7 +186,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             refetch();
             setRefresh((prev) => ++prev);
           }}
-          title="Refresh feed"
           widthToAnimate={140}
         />
       </Animated.View>
