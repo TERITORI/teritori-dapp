@@ -1,18 +1,19 @@
 import React from "react";
 
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { ExplorerMarketPlace } from "../../components/freelanceServices/FreelanceServicesScreen/ExploreMarketPlace";
 import { FreelanceServicesHeader } from "../../components/freelanceServices/FreelanceServicesScreen/FreelanceServicesHeader";
 import { GenericGallery } from "../../components/freelanceServices/FreelanceServicesScreen/GenericGallery";
+import { ScreenFC } from "../../utils/navigation";
+import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 import { Gallery, getGallery } from "./query/getGallery";
 
 const galleries: Gallery[] = [
   getGallery("popular-services"),
   getGallery("freelancer-featured"),
 ];
-export const FreelanceServicesScreen: React.FC = () => {
+export const FreelanceServicesHome: ScreenFC<"FreelanceServicesHome"> = () => {
   return (
-    <ScreenContainer>
+    <FreelanceServicesScreenWrapper>
       <FreelanceServicesHeader />
       <ExplorerMarketPlace />
       {galleries.map((gallery, index) => (
@@ -23,6 +24,6 @@ export const FreelanceServicesScreen: React.FC = () => {
           cardsToShow={gallery.cardsToShow}
         />
       ))}
-    </ScreenContainer>
+    </FreelanceServicesScreenWrapper>
   );
 };

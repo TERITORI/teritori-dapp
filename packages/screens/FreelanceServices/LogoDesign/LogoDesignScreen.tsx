@@ -1,16 +1,17 @@
 import React from "react";
 
-import { ScreenContainer } from "../../../components/ScreenContainer";
 import { LogoDesignHeader } from "../../../components/freelanceServices/LogoDesign/Header";
 import { ListServices } from "../../../components/freelanceServices/LogoDesign/ListServices";
 import { LogoDesignMenu } from "../../../components/freelanceServices/LogoDesign/LogoDesignMenu";
+import { ScreenFC } from "../../../utils/navigation";
+import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
 
-export const LogoDesignScreen: React.FC = () => {
+export const LogoDesignScreen: ScreenFC<"LogoDesign"> = () => {
   return (
-    <ScreenContainer>
+    <FreelanceServicesScreenWrapper>
       <LogoDesignHeader />
       <LogoDesignMenu />
       <ListServices />
-    </ScreenContainer>
+    </FreelanceServicesScreenWrapper>
   );
 };

@@ -7,7 +7,6 @@ import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
@@ -37,6 +36,7 @@ import {
   fontSemibold20,
   fontSemibold28,
 } from "../../../utils/style/fonts";
+import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
 import { getService } from "../query/data";
 import { OrdersInQueue } from "./OrdersInQueue";
 import { TopRatedSeller } from "./TopRatedSeller";
@@ -49,7 +49,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
   const data = getService(id);
 
   return (
-    <ScreenContainer>
+    <FreelanceServicesScreenWrapper>
       <View
         style={{ flexDirection: "column", width: 1280, alignSelf: "center" }}
       >
@@ -455,6 +455,6 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
           ) : null}
         </View>
       </View>
-    </ScreenContainer>
+    </FreelanceServicesScreenWrapper>
   );
 };

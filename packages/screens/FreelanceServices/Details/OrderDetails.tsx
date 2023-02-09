@@ -5,7 +5,6 @@ import { RadioButton } from "react-native-paper";
 import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { ScreenContainer } from "../../../components/ScreenContainer";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { FreelanceOrderModal } from "../../../components/modals/freelanceOrder/FreelanceOrderModal";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
@@ -24,6 +23,7 @@ import {
   secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "../../../utils/style/fonts";
+import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
 import { getService } from "../query/data";
 import { FirstRightCard } from "./FirstRightCard";
 import { FirstStep } from "./FirstStep";
@@ -258,7 +258,7 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
   };
 
   return (
-    <ScreenContainer fullWidth>
+    <FreelanceServicesScreenWrapper>
       <View
         style={{
           marginTop: 24,
@@ -375,6 +375,6 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
           />
         )}
       </View>
-    </ScreenContainer>
+    </FreelanceServicesScreenWrapper>
   );
 };

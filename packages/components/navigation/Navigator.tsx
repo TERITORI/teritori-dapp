@@ -3,7 +3,7 @@ import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { OrderDetails } from "../../screens/FreelanceServices/Details/OrderDetails";
-import { FreelanceServicesScreen } from "../../screens/FreelanceServices/FreelanceServicesScreen";
+import { FreelanceServicesHome } from "../../screens/FreelanceServices/FreelanceServicesHome";
 import { GraphicsAndDesignScreen } from "../../screens/FreelanceServices/GraphicsAndDesignScreen/GraphicsAndDesignScreen";
 import { LogoDesignDetailsScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignDetailsScreen";
 import { LogoDesignScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignScreen";
@@ -223,8 +223,8 @@ export const Navigator: React.FC = () => {
       {/* ==== Freelance Services */}
 
       <Stack.Screen
-        name="FreelanceServices"
-        component={FreelanceServicesScreen}
+        name="FreelanceServicesHome"
+        component={FreelanceServicesHome}
         options={{
           header: () => null,
           title: screenTitle("Freelance Services"),

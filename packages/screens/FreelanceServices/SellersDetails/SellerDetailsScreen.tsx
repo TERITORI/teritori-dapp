@@ -11,11 +11,9 @@ import twitterIcon from "../../../../assets/icons/social-network/twitter-grey.sv
 import youtubeIcon from "../../../../assets/icons/social-network/youtube-grey.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-// import { SecondaryCard } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/SecondaryCard";
 import { StarRating } from "../../../components/freelanceServices/common/StarRating";
 import { ScreenFC } from "../../../utils/navigation";
 import {
@@ -36,6 +34,7 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
+import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
 import { getUser } from "../query/data";
 
 export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
@@ -45,7 +44,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
 }) => {
   const data = getUser(id);
   return (
-    <ScreenContainer>
+    <FreelanceServicesScreenWrapper>
       <View
         style={{ flexDirection: "column", width: 1280, alignSelf: "center" }}
       >
@@ -516,6 +515,6 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
           {/*<SecondaryCard />*/}
         </View>
       </View>
-    </ScreenContainer>
+    </FreelanceServicesScreenWrapper>
   );
 };

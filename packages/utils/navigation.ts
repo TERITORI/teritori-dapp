@@ -2,8 +2,8 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useMemo } from "react";
 
-import { useFeedbacks } from "./../context/FeedbacksProvider";
-import { useSelectedNetwork } from "./../hooks/useSelectedNetwork";
+import { useFeedbacks } from "../context/FeedbacksProvider";
+import { useSelectedNetwork } from "../hooks/useSelectedNetwork";
 import { Network } from "./network";
 
 export type RootStackParamList = {
@@ -17,7 +17,7 @@ export type RootStackParamList = {
   Governance: undefined;
   UserPublicProfile: { id: string };
   RiotersFooter: undefined;
-  FreelanceServices: undefined;
+  FreelanceServicesHome: undefined;
   GraphicsAndDesign: undefined;
   LogoDesign: undefined;
   LogoDesignDetails: { id: string };
@@ -120,7 +120,7 @@ const navConfig: {
     Home: "",
     MyCollection: "my-collection",
     GraphicsAndDesign: "graphics-and-design",
-    FreelanceServices: "freelance-services",
+    FreelanceServicesHome: "freelance-services",
     SellerDetails: "seller-details/:id",
     OrderDetails: "order-details/:modal?",
     LogoDesign: "logo-design",
