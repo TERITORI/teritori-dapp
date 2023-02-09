@@ -1,15 +1,12 @@
 import { coins, isDeliverTxFailure, StdFee } from "@cosmjs/stargate";
 import {
   calculateAmountWithSlippage,
-  CoinValue,
   LcdPool,
-  lookupRoutesForTrade,
   makeLcdPoolPretty,
-  makePoolPairs,
   OsmosisApiClient,
 } from "@cosmology/core";
 import { assets as osmosisAssets } from "@cosmology/core/src/assets";
-import { PoolAsset, PriceHash, Trade } from "@cosmology/core/src/types";
+import { PoolAsset, PriceHash } from "@cosmology/core/src/types";
 import { useQuery } from "@tanstack/react-query";
 import Long from "long";
 import { osmosis, getSigningOsmosisClient } from "osmojs";
@@ -359,24 +356,7 @@ export const useSwap = (
 
     const { swapExactAmountIn } =
       osmosis.gamm.v1beta1.MessageComposer.withTypeUrl;
-    // ===== Making a trade
-    const trade: Trade = {
-      sell: {
-        denom: currencyIn.denom,
-        amount: amountInMicro,
-      } as CoinValue,
-      buy: {
-        denom: currencyOut.denom,
-        amount: amountOutMicro,
-      } as CoinValue,
 
-      //TODO: Which value ?
-      beliefValue: "1",
-    };
-
-    const prettyPools = cleanedLcdPools.map((pool) => lcdPoolPretty(pool));
-
-    const pairs = makePoolPairs(prettyPools, 0);
     try {
       // ===== Getting Osmosis client for RPC use
       const signer = await getKeplrOfflineSigner(selectedNetwork);
@@ -384,25 +364,25 @@ export const useSwap = (
         rpcEndpoint: selectedNetwork.rpcEndpoint || "",
         signer,
       });
-      let routes: SwapAmountInRoute[] = [];
+      const routes: SwapAmountInRoute[] = [];
       if (isMultihop) {
-
-        if (multihopPools[0].poolAssets[0].token.denom )
-        routes.push({
-          poolId: Long.fromString(multihopPools[0].id),
-          tokenOutDenom: "uosmo",   // multihopPools must have osmo token as asset
-        } as SwapAmountInRoute);
+        if (multihopPools[0].poolAssets[0].token.denom)
+          routes.push({
+            poolId: Long.fromString(multihopPools[0].id),
+            tokenOutDenom: "uosmo", // multihopPools must have osmo token as asset
+          } as SwapAmountInRoute);
 
         routes.push({
           poolId: Long.fromString(multihopPools[1].id),
           tokenOutDenom: currencyOut.denom,
         } as SwapAmountInRoute);
-      } else { //use directPool
+      } else {
+        //use directPool
         //only one route
         routes.push({
           poolId: Long.fromString(directPool?.id!),
           tokenOutDenom: currencyOut.denom,
-        })
+        });
       }
 
       const amountOutMicroWithSlippage = Math.round(
