@@ -1,16 +1,16 @@
 import React, { SyntheticEvent, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import gradientDottedCardSVG from "../../../assets/cards/gradient-dotted-card.svg";
 import bucketSVG from "../../../assets/icons/bucket.svg";
 import uploadSVG from "../../../assets/icons/upload.svg";
-import { BrandText } from "../../components/BrandText";
-import { GradientText } from "../../components/gradientText";
-import { Label } from "../../components/inputs/TextInputCustom";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { neutral17, neutral77, redDefault } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { PrimaryBox } from "../boxes/PrimaryBox";
+import { GradientText } from "../gradientText";
+import { Label } from "../inputs/TextInputCustom";
 import { FileUploaderProps } from "./FileUploader.type";
 import { formatFile } from "./formatFile";
 const FILE_HEIGHT = 256;
@@ -113,13 +113,22 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     <>
       <View style={[style]}>
         {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
-        <PrimaryBox
-          fullWidth
+        <View
           style={{
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
             height: file ? FILE_HEIGHT : 80,
             borderRadius: 10,
           }}
         >
+          <SVG
+            source={gradientDottedCardSVG}
+            height={80}
+            width="100%"
+            style={{ position: "absolute" }}
+          />
+
           {file ? (
             <div
               style={{
@@ -209,7 +218,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
               </div>
             </TouchableOpacity>
           )}
-        </PrimaryBox>
+        </View>
       </View>
       {InputComponent}
     </>

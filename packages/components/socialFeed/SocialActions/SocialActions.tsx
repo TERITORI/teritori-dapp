@@ -144,7 +144,7 @@ export const SocialActions: React.FC<{
             width={20}
             style={{ marginRight: layout.padding_x1_5 }}
           />
-          <BrandText style={fontSemibold14}>Open the threads</BrandText>
+          <BrandText style={fontSemibold14}>Open the thread</BrandText>
         </TouchableOpacity>
       )}
       {(!isGovernanceAction || containerWidth > 800) && (

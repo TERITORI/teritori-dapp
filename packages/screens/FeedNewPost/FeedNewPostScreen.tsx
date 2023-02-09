@@ -233,6 +233,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
         />
 
         <TextInputCustom<NewPostFormValues>
+          height={52}
           label="Give it a title to make long post"
           placeHolder="Type title here"
           name="title"
