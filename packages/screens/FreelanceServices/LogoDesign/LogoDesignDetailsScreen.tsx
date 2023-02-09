@@ -436,7 +436,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
               Compare Package
             </BrandText>
 
-            <LogoDesignDetailsTab />
+            <LogoDesignDetailsTab serviceLevels={data.serviceLevels} />
 
             {data.reviews ? <ReviewsStats reviews={data.reviews} /> : <></>}
             {data.reviews?.items ? (

@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
+import xIcon from "../../../../../assets/icons/Xicon.svg";
 import checkIcon from "../../../../../assets/icons/blue-check.svg";
+import { ServiceLevels } from "../../../../screens/FreelanceServices/types/fields";
 import {
   secondaryColor,
   neutral00,
@@ -10,11 +12,13 @@ import {
   neutral33,
 } from "../../../../utils/style/colors";
 import { fontMedium14, fontSemibold16 } from "../../../../utils/style/fonts";
-import { BrandText } from "../../../BrandText/BrandText";
+import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
 
-export const LogoDesignDetailsTab: React.FC = () => {
+export const LogoDesignDetailsTab: React.FC<{
+  serviceLevels: ServiceLevels[];
+}> = ({ serviceLevels }) => {
   const [checked, setChecked] = useState<boolean>();
 
   return (
@@ -43,535 +47,78 @@ export const LogoDesignDetailsTab: React.FC = () => {
             Package
           </BrandText>
         </View>
-        <View
-          style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
-        >
-          <BrandText
-            style={[
-              fontSemibold16,
-              { color: neutralA3, marginTop: 8, marginLeft: 8 },
-            ]}
+        {serviceLevels.map((service, index) => (
+          <View
+            key={index}
+            style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
           >
-            500 TORI
-          </BrandText>
-          <BrandText
-            style={[
-              fontSemibold16,
-              {
-                color: neutralA3,
-                marginTop: 8,
-                marginLeft: 8,
-                marginBottom: 8,
-              },
-            ]}
-          >
-            Basic
-          </BrandText>
-        </View>
-        <View
-          style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
-        >
-          <BrandText
-            style={[
-              fontSemibold16,
-              { color: neutralA3, marginTop: 8, marginLeft: 8 },
-            ]}
-          >
-            100 TORI
-          </BrandText>
-          <BrandText
-            style={[
-              fontSemibold16,
-              {
-                color: neutralA3,
-                marginTop: 8,
-                marginLeft: 8,
-                marginBottom: 8,
-              },
-            ]}
-          >
-            Standard
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            borderTopRightRadius: 8,
-          }}
-        >
-          <BrandText
-            style={[
-              fontSemibold16,
-              { color: neutralA3, marginTop: 8, marginLeft: 8 },
-            ]}
-          >
-            1500 TORI
-          </BrandText>
-          <BrandText
-            style={[
-              fontSemibold16,
-              {
-                color: neutralA3,
-                marginTop: 8,
-                marginLeft: 8,
-                marginBottom: 8,
-              },
-            ]}
-          >
-            Premium
-          </BrandText>
-        </View>
+            <BrandText
+              style={[
+                fontSemibold16,
+                { color: neutralA3, marginTop: 8, marginLeft: 8 },
+              ]}
+            >
+              {service.price.value} {service.price.currency}
+            </BrandText>
+            <BrandText
+              style={[
+                fontSemibold16,
+                {
+                  color: neutralA3,
+                  marginTop: 8,
+                  marginLeft: 8,
+                  marginBottom: 8,
+                },
+              ]}
+            >
+              {service.text}
+            </BrandText>
+          </View>
+        ))}
       </View>
-      <View style={{ flexDirection: "row" }}>
-        <View
-          style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
-        >
-          <BrandText
-            style={[
-              fontMedium14,
-              {
-                color: neutral33,
-                marginTop: 8,
-                marginLeft: 8,
-                marginBottom: 8,
-              },
-            ]}
+      {serviceLevels[2].included.map((serviceText, index) => (
+        <View key={index} style={{ flexDirection: "row" }}>
+          <View
+            style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
           >
-            Logo Transparency
-          </BrandText>
+            <BrandText
+              style={[
+                fontMedium14,
+                {
+                  color: neutral33,
+                  marginTop: 8,
+                  marginLeft: 8,
+                  marginBottom: 8,
+                },
+              ]}
+            >
+              {serviceText}
+            </BrandText>
+          </View>
+          {serviceLevels.map((serviceLevel, index) => (
+            <View
+              key={index}
+              style={{
+                width: "25%",
+                borderColor: neutral33,
+                borderWidth: 0.5,
+                justifyContent: "center",
+              }}
+            >
+              <SVG
+                source={
+                  serviceLevel.included.includes(serviceText)
+                    ? checkIcon
+                    : xIcon
+                }
+                width={16}
+                height={16}
+                style={{ marginLeft: 8 }}
+              />
+            </View>
+          ))}
         </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-      </View>
-      <View style={{ flexDirection: "row" }}>
-        <View
-          style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
-        >
-          <BrandText
-            style={[
-              fontMedium14,
-              {
-                color: neutral33,
-                marginTop: 8,
-                marginLeft: 8,
-                marginBottom: 8,
-              },
-            ]}
-          >
-            Vector file
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-      </View>
-      <View style={{ flexDirection: "row" }}>
-        <View
-          style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
-        >
-          <BrandText
-            style={[
-              fontMedium14,
-              {
-                color: neutral33,
-                marginTop: 8,
-                marginLeft: 8,
-                marginBottom: 8,
-              },
-            ]}
-          >
-            Printable file
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-      </View>
-      <View style={{ flexDirection: "row" }}>
-        <View
-          style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
-        >
-          <BrandText
-            style={[
-              fontMedium14,
-              {
-                color: neutral33,
-                marginTop: 8,
-                marginLeft: 8,
-                marginBottom: 8,
-              },
-            ]}
-          >
-            3d mockup
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-      </View>
-      <View style={{ flexDirection: "row" }}>
-        <View
-          style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
-        >
-          <BrandText
-            style={[
-              fontMedium14,
-              {
-                color: neutral33,
-                marginTop: 8,
-                marginLeft: 8,
-                marginBottom: 8,
-              },
-            ]}
-          >
-            Source file
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-      </View>
-      <View style={{ flexDirection: "row" }}>
-        <View
-          style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
-        >
-          <BrandText
-            style={[
-              fontMedium14,
-              {
-                color: neutral33,
-                marginTop: 8,
-                marginLeft: 8,
-                marginBottom: 8,
-              },
-            ]}
-          >
-            Stationary
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-      </View>
-      <View style={{ flexDirection: "row" }}>
-        <View
-          style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
-        >
-          <BrandText
-            style={[
-              fontMedium14,
-              {
-                color: neutral33,
-                marginTop: 8,
-                marginLeft: 8,
-                marginBottom: 8,
-              },
-            ]}
-          >
-            Social media kit
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <SVG
-            source={checkIcon}
-            width={16}
-            height={16}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-      </View>
+      ))}
       <View style={{ flexDirection: "row" }}>
         <View
           style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
@@ -590,48 +137,25 @@ export const LogoDesignDetailsTab: React.FC = () => {
             Revisions
           </BrandText>
         </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginLeft: 8 }]}
+        {serviceLevels.map((serviceLevel, index) => (
+          <View
+            key={index}
+            style={{
+              width: "25%",
+              borderColor: neutral33,
+              borderWidth: 0.5,
+              justifyContent: "center",
+            }}
           >
-            3
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginLeft: 8 }]}
-          >
-            4
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            justifyContent: "center",
-          }}
-        >
-          <BrandText
-            style={[fontSemibold16, { color: neutralA3, marginLeft: 8 }]}
-          >
-            Unlimited
-          </BrandText>
-        </View>
+            <BrandText
+              style={[fontSemibold16, { color: neutralA3, marginLeft: 8 }]}
+            >
+              {serviceLevel.maximumRevisions === -1
+                ? "Unlimited"
+                : serviceLevel.maximumRevisions}
+            </BrandText>
+          </View>
+        ))}
       </View>
       <View style={{ flexDirection: "row" }}>
         <View
@@ -808,98 +332,43 @@ export const LogoDesignDetailsTab: React.FC = () => {
             Overall
           </BrandText>
         </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            alignItems: "center",
-          }}
-        >
-          <BrandText
-            style={[
-              fontSemibold16,
-              {
-                color: neutralA3,
-                alignSelf: "flex-start",
-                marginLeft: 12,
-                marginBottom: 8,
-                marginTop: 16,
-              },
-            ]}
+        {serviceLevels.map((serviceLevel, index) => (
+          <View
+            key={index}
+            style={{
+              width: "25%",
+              borderColor: neutral33,
+              borderWidth: 0.5,
+              alignItems: "center",
+            }}
           >
-            500 TORI
-          </BrandText>
-          <SecondaryButton
-            size="M"
-            text="Select"
-            backgroundColor={secondaryColor}
-            color={neutral00}
-            width={165}
-            style={{ marginBottom: 8 }}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            alignItems: "center",
-          }}
-        >
-          <BrandText
-            style={[
-              fontSemibold16,
-              {
-                color: neutralA3,
-                alignSelf: "flex-start",
-                marginLeft: 12,
-                marginBottom: 8,
-                marginTop: 16,
-              },
-            ]}
-          >
-            1500 TORI
-          </BrandText>
-          <SecondaryButton
-            size="M"
-            text="Select"
-            backgroundColor={secondaryColor}
-            color={neutral00}
-            width={165}
-          />
-        </View>
-        <View
-          style={{
-            width: "25%",
-            borderColor: neutral33,
-            borderWidth: 0.5,
-            borderBottomRightRadius: 8,
-            alignItems: "center",
-          }}
-        >
-          <BrandText
-            style={[
-              fontSemibold16,
-              {
-                color: neutralA3,
-                alignSelf: "flex-start",
-                marginLeft: 12,
-                marginBottom: 8,
-                marginTop: 16,
-              },
-            ]}
-          >
-            3000 TORI
-          </BrandText>
-          <SecondaryButton
-            size="M"
-            text="Select"
-            backgroundColor={secondaryColor}
-            color={neutral00}
-            width={165}
-          />
-        </View>
+            <BrandText
+              style={[
+                fontSemibold16,
+                {
+                  color: neutralA3,
+                  alignSelf: "flex-start",
+                  marginLeft: 12,
+                  marginBottom: 8,
+                  marginTop: 16,
+                },
+              ]}
+            >
+              {serviceLevel.price.value} {serviceLevel.price.currency}
+            </BrandText>
+            <SecondaryButton
+              onPress={() => {
+                console.log("TODO Navigate to service level", index);
+              }}
+              size="M"
+              text="Select"
+              backgroundColor={secondaryColor}
+              color={neutral00}
+              width={165}
+              style={{ marginBottom: 8 }}
+            />
+          </View>
+        ))}
       </View>
     </View>
   );
