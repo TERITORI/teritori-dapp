@@ -95,10 +95,31 @@ func sendRewardsList(seasonId string, leaderboard []indexerdb.P2eLeaderboard, ch
 	return contractClient.ExecuteWasm(distributorContractAddress, execMsgStr, funds, "Send rewards list to top players")
 }
 
+func resetLeaderboard(seasonId string, db *gorm.DB) error {
+	err := db.Exec(`
+		UPDATE p2e_leaderboards as lb
+		SET score = 0
+		WHERE lb.season_id = ?
+	`,
+		seasonId,
+	).Error
+	if err != nil {
+		return errors.Wrap(err, "failed to execute reset leaderboard query")
+	}
+	return nil
+}
+
 func updateLeaderboard(seasonId string, db *gorm.DB) error {
-	currentTimestamp := time.Now().UTC().Unix()
+	now := time.Now()
+	currentTimestamp := now.Unix()
+	dayBeginning := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	dayBeginning = dayBeginning.Add(-1 * time.Minute) // We reset at 23h59 so adjust beginning of day to that time
+	dayBeginningTimestamp := dayBeginning.Unix()
 
 	// Update Rules:
+	// - For S3: because we reset at midnight so the rule is:
+	//   + start < current begin of day => start = current begin of day of end time
+	//   + start > current begin of day => start = start
 	// - If staking is in progress => in progress duration = current - start_time
 	// - If staking ends => if progress duration = end_time - start_time
 	updateScoreErr := db.Exec(`
@@ -106,7 +127,10 @@ func updateLeaderboard(seasonId string, db *gorm.DB) error {
 		SET 
 			in_progress_score = score + aggregated_ss.in_progress
 		FROM (
-			SELECT owner_id, season_id, SUM( LEAST(ss.end_time - ss.start_time, ? - ss.start_time) ) as in_progress
+			SELECT
+				owner_id, 
+				season_id, 
+				SUM( LEAST(ss.end_time - ss.start_time, ? - ss.start_time, ss.end_time - ?, ? - ?) ) as in_progress
 			FROM p2e_squad_stakings as ss
 			GROUP BY owner_id, season_id
 		) as aggregated_ss
@@ -115,6 +139,9 @@ func updateLeaderboard(seasonId string, db *gorm.DB) error {
 			AND lb.season_id = ?
 	`,
 		currentTimestamp,
+		dayBeginningTimestamp,
+		currentTimestamp,
+		dayBeginningTimestamp,
 		seasonId,
 	).Error
 	if updateScoreErr != nil {
@@ -284,6 +311,12 @@ func main() {
 		}
 
 		logger.Info(fmt.Sprintf("send daily rewards successfully for season: %s", season.ID), zap.String("TxHash", txResponse.TxHash))
+
+		// Season 3: Reset leaderboard after rewards distribution
+		if err := resetLeaderboard(season.ID, db); err != nil {
+			logger.Error("failed to reset leaderboard", zap.Error(err))
+			return
+		}
 	})
 
 	schedule.StartBlocking()
