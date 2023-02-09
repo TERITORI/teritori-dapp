@@ -13,7 +13,7 @@ import { layout } from "../../../utils/style/layout";
 import { AddMoreButtonProps } from "./AddMoreButton.type";
 
 export const AddMoreButton: React.FC<AddMoreButtonProps> = ({ onPress }) => (
-  <TouchableOpacity style={{ width: "100%", maxWidth: 412 }} onPress={onPress}>
+  <TouchableOpacity style={{ width: "100%", maxWidth: 468 }} onPress={onPress}>
     <PrimaryBox
       fullWidth
       height={48}

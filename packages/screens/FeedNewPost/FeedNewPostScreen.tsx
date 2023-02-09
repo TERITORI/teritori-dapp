@@ -179,7 +179,8 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
           style={{
             flexDirection: "row",
             alignItems: "center",
-            width: "100%",
+            justifyContent: "space-between",
+            flex: 1,
             paddingVertical: layout.padding_x2_5,
           }}
         >
@@ -193,7 +194,6 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
                 : ""
             }`}
             size="M"
-            style={{ marginLeft: layout.padding_x3 }}
             onPress={handleSubmit(onSubmit)}
           />
         </View>

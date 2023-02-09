@@ -22,7 +22,7 @@ export const AddMoreButton: React.FC<AddMoreButtonProps> = ({ onPress }) => {
 
   return (
     <TouchableOpacity
-      style={{ width: "100%", maxWidth: 412 }}
+      style={{ width: "100%", maxWidth: 468 }}
       onPress={onPress}
     >
       <PrimaryBox
