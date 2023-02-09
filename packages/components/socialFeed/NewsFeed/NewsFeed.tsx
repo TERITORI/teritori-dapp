@@ -108,7 +108,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           <RefreshButton
             isRefreshing={isLoadingValue}
             onPress={refetch}
-            title="Refresh feed"
             widthToAnimate={140}
           />
         </Animated.View>

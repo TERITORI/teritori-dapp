@@ -10,7 +10,6 @@ import {
 } from "react-native";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
-import { SendFundModal } from "../modals/teritoriNameService/TNSSendFundsModal";
 import { useTNS } from "../../context/TNSProvider";
 import { useTeritoriSocialFeedReactPostMutation } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
@@ -42,6 +41,7 @@ import { AnimationFadeIn } from "../animations";
 import { DotBadge } from "../badges/DotBadge";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { FeedPostShareModal } from "../modals/FeedPostShareModal";
+import { SendFundModal } from "../modals/teritoriNameService/TNSSendFundsModal";
 import {
   SocialActions,
   socialActionsHeight,
@@ -59,13 +59,7 @@ export const SocialThreadCard: React.FC<{
   fadeInDelay?: number;
   onPressReply?: OnPressReplyType;
   allowTruncation?: boolean;
-}> = ({
-  post,
-  style,
-  singleView,
-  isGovernance,
-  fadeInDelay,
-                                     }) => {
+}> = ({ post, style, singleView, isGovernance, fadeInDelay }) => {
   const [localPost, setLocalPost] = useState(post);
   const { setName } = useTNS();
   const imageMarginRight = layout.padding_x3_5;
