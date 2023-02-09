@@ -14,13 +14,13 @@ import {
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { p2eBackendClient } from "../../../utils/backend";
 import { decimalFromAtomics } from "../../../utils/coins";
+import { TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS } from "../../../utils/game";
 import {
   getNonSigningCosmWasmClient,
   getSigningCosmWasmClient,
 } from "../../../utils/keplr";
 import { yellowDefault } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS } from "../settings";
 import { InfoBox } from "./InfoBox";
 
 type FightStatsSectionProps = {
@@ -120,7 +120,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
       <InfoBox
         size="SM"
         title="Prize Pool"
-        content={`${currentSeason?.totalPrize || 0} ${
+        content={`${currentSeason?.isPre ? 0 : currentSeason?.totalPrize} ${
           currentSeason?.denom.toUpperCase() || ""
         }`}
         width={150}

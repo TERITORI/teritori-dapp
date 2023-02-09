@@ -227,7 +227,7 @@ const ValidatorRow: React.FC<{
       >
         <Avatar uri={imageURL} defaultIcon={validatorIconSVG} />
         <SpacerRow size={1} />
-        <BrandText style={fontSemibold13}>{validator?.moniker || ""}</BrandText>
+        <BrandText style={fontSemibold13}>{validator.moniker || ""}</BrandText>
       </View>
 
       {actions && width < 650 && (
@@ -319,7 +319,7 @@ const ValidatorRow: React.FC<{
           }}
         >
           {actions(validator).map((action, index) =>
-            action?.renderComponent ? (
+            action.renderComponent ? (
               action.renderComponent()
             ) : (
               <SecondaryButtonOutline
@@ -330,7 +330,7 @@ const ValidatorRow: React.FC<{
                   }
                   action.onPress(validator);
                 }}
-                text={action?.label || ""}
+                text={action.label || ""}
                 size="XS"
               />
             )

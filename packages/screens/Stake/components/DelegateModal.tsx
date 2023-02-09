@@ -62,68 +62,70 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     toriBalance?.amount || "0",
     toriCurrency.coinDecimals
   );
-  const { control, setValue, handleSubmit, watch, reset } =
+  const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
-  const watchAll = watch();
 
   // hooks
   useEffect(() => {
     reset();
-  }, [visible]);
+  }, [reset, visible]);
 
   useEffect(() => {
     setValue("validatorName", data?.moniker || "");
-  }, [data?.moniker]);
+  }, [data?.moniker, setValue]);
 
   // functions
-  const onSubmit = async (formData: StakeFormValuesType) => {
-    try {
-      if (!wallet?.connected || !wallet.address) {
-        console.warn("invalid wallet", wallet);
-        setToastError({
-          title: "Invalid wallet",
-          message: "",
-        });
-        return;
-      }
-      if (!data) {
-        setToastError({
-          title: "Internal error",
-          message: "No data",
-        });
-        return;
-      }
-      const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
-      const txResponse = await client.delegateTokens(
-        wallet.address,
-        data.address,
-        {
-          amount: Decimal.fromUserInput(
-            formData.amount,
-            toriCurrency.coinDecimals
-          ).atomics,
-          denom: toriCurrency.coinMinimalDenom,
-        },
-        "auto"
-      );
+  const onSubmit = useCallback(
+    async (formData: StakeFormValuesType) => {
+      try {
+        if (!wallet?.connected || !wallet.address) {
+          console.warn("invalid wallet", wallet);
+          setToastError({
+            title: "Invalid wallet",
+            message: "",
+          });
+          return;
+        }
+        if (!data) {
+          setToastError({
+            title: "Internal error",
+            message: "No data",
+          });
+          return;
+        }
+        const signer = await getKeplrOfflineSigner();
+        const client = await getTeritoriSigningStargateClient(signer);
+        const txResponse = await client.delegateTokens(
+          wallet.address,
+          data.address,
+          {
+            amount: Decimal.fromUserInput(
+              formData.amount,
+              toriCurrency.coinDecimals
+            ).atomics,
+            denom: toriCurrency.coinMinimalDenom,
+          },
+          "auto"
+        );
 
-      if (isDeliverTxFailure(txResponse)) {
-        console.error("tx failed", txResponse);
+        if (isDeliverTxFailure(txResponse)) {
+          console.error("tx failed", txResponse);
+          onClose && onClose();
+          setToastError({
+            title: "Transaction failed",
+            message: txResponse.rawLog || "",
+          });
+          return;
+        }
+
+        setToastSuccess({ title: "Delegation success", message: "" });
         onClose && onClose();
-        setToastError({
-          title: "Transaction failed",
-          message: txResponse.rawLog || "",
-        });
-        return;
+      } catch (error) {
+        triggerError({ title: "Delegation failed!", error, callback: onClose });
       }
-
-      setToastSuccess({ title: "Delegation success", message: "" });
-      onClose && onClose();
-    } catch (error) {
-      triggerError({ title: "Delegation failed!", error, callback: onClose });
-    }
-  };
+    },
+    [data, onClose, setToastError, setToastSuccess, triggerError, wallet]
+  );
 
   const { width } = useWindowDimensions();
 
@@ -161,7 +163,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         </BrandText>
       </View>
     ),
-    [data]
+    []
   );
 
   const Footer = useCallback(
@@ -186,7 +188,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         </View>
       </>
     ),
-    [watchAll]
+    [handleSubmit, onClose, onSubmit]
   );
 
   return (

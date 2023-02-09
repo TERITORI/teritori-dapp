@@ -52,7 +52,7 @@ export const useKeplr: () => UseKeplrResult = () => {
         console.error("no teritori chain id");
         return;
       }
-      const keplr = (window as KeplrWindow).keplr;
+      const keplr = (window as KeplrWindow)?.keplr;
       if (!keplr) {
         console.error("no keplr");
         return;
@@ -73,7 +73,7 @@ export const useKeplr: () => UseKeplrResult = () => {
       }
 
       try {
-        const keplr = (window as KeplrWindow).keplr;
+        const keplr = (window as KeplrWindow)?.keplr;
         if (!keplr) {
           console.error("no keplr");
           return;
@@ -140,7 +140,7 @@ export const useKeplr: () => UseKeplrResult = () => {
     }
 
     return wallets;
-  }, [addresses]);
+  }, [addresses, dispatch, selectedNetworkInfo?.network]);
 
   return hasKeplr ? [true, ready, wallets] : [false, ready, undefined];
 };

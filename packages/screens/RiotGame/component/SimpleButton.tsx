@@ -3,42 +3,55 @@ import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "../../../components/BrandText";
-import { primaryTextColor, yellowDefault } from "../../../utils/style/colors";
+import { SVG } from "../../../components/SVG";
+import {
+  neutral00,
+  primaryTextColor,
+  yellowDefault,
+} from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 interface SimpleButtonProps {
-  title: string;
-  size?: "medium" | "small";
-  svgIcon?: React.FC<SvgProps>;
+  text: string;
+  size?: "SM" | "M" | "XL";
   color?: string;
   bgColor?: string;
   onPress?(): void;
   containerStyle?: ViewStyle;
   loading?: boolean;
   disabled?: boolean;
+  iconSVG?: React.FC<SvgProps>;
+  outline?: boolean;
 }
 
 export const SimpleButton: React.FC<SimpleButtonProps> = ({
-  title,
-  size = "medium",
+  text,
+  size = "M",
   color = primaryTextColor,
   bgColor = yellowDefault,
   onPress,
   loading,
   disabled,
   containerStyle,
+  iconSVG = null,
+  outline = false,
 }) => {
   let padH: number;
   let padV: number;
 
   switch (size) {
-    case "medium":
-      padH = 22;
-      padV = 16;
+    case "XL":
+      padH = layout.padding_x3;
+      padV = layout.padding_x2_5;
       break;
-    case "small":
-      padH = 16;
-      padV = 12;
+    case "M":
+      padH = layout.padding_x2_5;
+      padV = layout.padding_x2;
+      break;
+    case "SM":
+      padH = layout.padding_x2;
+      padV = layout.padding_x1_5;
       break;
   }
 
@@ -52,14 +65,24 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
         style={[
           styles.btnStyle,
           {
-            color,
-            backgroundColor: bgColor,
+            display: "flex",
+            color: outline ? yellowDefault : color,
+            backgroundColor: outline ? neutral00 : bgColor,
+            borderColor: outline ? yellowDefault : bgColor,
+            borderWidth: 1,
             paddingHorizontal: padH,
             paddingVertical: padV,
           },
         ]}
       >
-        {loading ? "Loading..." : title}
+        {iconSVG && (
+          <SVG
+            style={{ marginRight: layout.padding_x1 }}
+            height={layout.padding_x2}
+            source={iconSVG}
+          />
+        )}
+        {loading ? "Loading..." : text}
       </BrandText>
     </TouchableOpacity>
   );

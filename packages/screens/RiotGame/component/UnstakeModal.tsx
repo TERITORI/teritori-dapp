@@ -11,11 +11,11 @@ import { tinyAddress } from "../../../components/WalletSelector";
 import { CollectionSocialButtons } from "../../../components/collections/CollectionSocialButtons";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { GetSquadResponse } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
+import { Squad } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
-import { durationToXP } from "../../../utils/game";
+import { durationToXP, THE_RIOT_COLLECTION_ID } from "../../../utils/game";
 import {
   mineShaftColor,
   neutral77,
@@ -23,25 +23,26 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { THE_RIOT_COLLECTION_ID } from "../settings";
 
 type UnstakeModalProps = {
   visible?: boolean;
   onClose?(): void;
-  currentSquad?: GetSquadResponse;
+  squad?: Squad;
 };
 
 export const UnstakeModal: React.FC<UnstakeModalProps> = ({
-  currentSquad,
+  squad,
   onClose,
   visible = false,
 }) => {
   const selectedWallet = useSelectedWallet();
-  const { info = {} } = useCollectionInfo(THE_RIOT_COLLECTION_ID);
+  const { info = { mintPhases: [] } } = useCollectionInfo(
+    THE_RIOT_COLLECTION_ID
+  );
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
 
-  const startTime = currentSquad?.start_time || 0;
-  const endTime = currentSquad?.end_time || 0;
+  const startTime = squad?.start_time || 0;
+  const endTime = squad?.end_time || 0;
   const xp = durationToXP(endTime - startTime);
 
   return (
@@ -80,7 +81,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
 
         <BrandText style={fontSemibold20}>
           {tinyAddress(
-            tnsMetadata?.metadata?.tokenId || selectedWallet?.address || ""
+            tnsMetadata.metadata?.tokenId || selectedWallet?.address || ""
           )}
         </BrandText>
 

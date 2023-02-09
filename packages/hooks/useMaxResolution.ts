@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useWindowDimensions } from "react-native";
 
 import { useSidebar } from "../context/SidebarProvider";

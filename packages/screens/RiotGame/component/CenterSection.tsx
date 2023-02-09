@@ -21,18 +21,18 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
   onPress,
 }) => {
   // variables
-  const pulseOpacityRef = useRef(new Animated.Value(1)).current;
+  const pulseOpacityRef = useRef(new Animated.Value(1));
 
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
-        Animated.timing(pulseOpacityRef, {
+        Animated.timing(pulseOpacityRef.current, {
           toValue: 0.4,
           duration: 2000,
           delay: 500,
           useNativeDriver: true,
         }),
-        Animated.timing(pulseOpacityRef, {
+        Animated.timing(pulseOpacityRef.current, {
           toValue: 1,
           duration: 2000,
           useNativeDriver: true,
@@ -69,7 +69,7 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
           <Animated.View
             style={[
               {
-                opacity: pulseOpacityRef,
+                opacity: pulseOpacityRef.current,
                 backgroundColor: neutral00,
                 position: "relative",
                 width: cardWidth * 2 - layout.padding_x2_5 * 2,

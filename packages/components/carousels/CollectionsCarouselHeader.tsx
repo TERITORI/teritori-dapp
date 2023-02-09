@@ -160,7 +160,7 @@ export const CollectionsCarouselHeader: React.FC<{
         renderItem={({ item }) => (
           <CarouselCollectionItem
             collection={item}
-            networkId={req?.networkId}
+            networkId={req.networkId}
             linkToMint={linkToMint}
           />
         )}

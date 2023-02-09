@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, SetStateAction, useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 
 import TrashSVG from "../../../assets/icons/trash.svg";
@@ -13,7 +13,7 @@ import {
   errorColor,
 } from "../../utils/style/colors";
 import { toriCurrency } from "../../utils/teritori";
-import { nftDropedAdjustmentType } from "../../utils/types/nft";
+import { NFTDropedAdjustmentType } from "../../utils/types/nft";
 import Slider from "../Slider";
 import { IconButton } from "../buttons/IconButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
@@ -23,9 +23,9 @@ import { SpacerColumn } from "../spacer";
 const NftAdjustments: React.FC<{
   nftDroped: NFT;
   setNftDroped: (nftDroped: NFT | undefined) => void;
-  nftDropedAdjustment: nftDropedAdjustmentType;
+  nftDropedAdjustment: NFTDropedAdjustmentType;
   setNftDropedAdjustment: (
-    nftDropedAdjustment: nftDropedAdjustmentType | undefined
+    nftDropedAdjustment: SetStateAction<NFTDropedAdjustmentType | undefined>
   ) => void;
   price: number | undefined;
   setTransactionPaymentModalVisible: (visible: boolean) => void;
@@ -44,11 +44,14 @@ const NftAdjustments: React.FC<{
     const [percentage, setPercentage] = useState(0);
 
     useEffect(() => {
-      setNftDropedAdjustment({
-        ...nftDropedAdjustment,
-        borderRadius: percentage,
-      });
-    }, [percentage]);
+      setNftDropedAdjustment(
+        (nftDropedAdjustment) =>
+          nftDropedAdjustment && {
+            ...nftDropedAdjustment,
+            borderRadius: percentage,
+          }
+      );
+    }, [nftDropedAdjustment, percentage, setNftDropedAdjustment]);
 
     useEffect(() => {
       setPercentage((Math.round((sliderValue * 100) / 220) * 2) / 2);

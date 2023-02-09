@@ -113,7 +113,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
         </View>
       </View>
     ),
-    [visible]
+    [onClose, onPressDelegate, onPressRedelegate, onPressUndelegate]
   );
 
   const { width } = useWindowDimensions();

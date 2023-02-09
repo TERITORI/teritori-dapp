@@ -45,7 +45,7 @@ const ConnectedIntro: React.FC = () => {
         width: "100%",
       }}
     >
-      <UserImage image={tnsMetadata?.metadata?.image} />
+      <UserImage image={tnsMetadata.metadata?.image} />
 
       <ProfileButton touchableStyle={{ marginTop: 40 }} />
 

@@ -28,11 +28,11 @@ export const useMetamask: () => UseMetamaskResult = () => {
     }
     return {
       id: walletId,
-      address: address?.toString() || "",
+      address: address.toString() || "",
       provider: WalletProvider.Metamask,
       connected: isConnected,
     };
-  }, [address, isConnected, selectedNetworkInfo?.network]);
+  }, [address, dispatch, isConnected, selectedNetworkInfo?.network]);
 
   const hasMetamask = useMemo(() => {
     return typeof (window as any).ethereum !== "undefined";

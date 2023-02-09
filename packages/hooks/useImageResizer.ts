@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Image, ImageSourcePropType } from "react-native";
+import { Image } from "react-native";
 
 interface Props {
-  image: ImageSourcePropType;
+  image: string | undefined;
   maxSize: { width?: number; height?: number };
 }
 
@@ -10,7 +10,10 @@ export const useImageResizer = ({ image, maxSize }: Props) => {
   const [size, setSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    Image.getSize(image as string, (width, height) => {
+    if (!image) {
+      return;
+    }
+    Image.getSize(image, (width, height) => {
       const aspectRatio = width / height;
       if (maxSize.height) {
         setSize({
@@ -21,7 +24,7 @@ export const useImageResizer = ({ image, maxSize }: Props) => {
         setSize({ height: maxSize.width / aspectRatio, width: maxSize.width });
       }
     });
-  }, [maxSize.width, maxSize.height]);
+  }, [maxSize.width, maxSize.height, image]);
 
   return size;
 };

@@ -6,9 +6,9 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import {
-  THE_RIOT_COLLECTION_ADDRESS,
   THE_RIOT_BREEDING_CONTRACT_ADDRESS,
-} from "../../screens/RiotGame/settings";
+  THE_RIOT_COLLECTION_ADDRESS,
+} from "../../utils/game";
 import { useNFTs } from "../useNFTs";
 import useSelectedWallet from "../useSelectedWallet";
 import { useSelectedNetworkId } from "./../useSelectedNetwork";

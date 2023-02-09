@@ -31,9 +31,8 @@ export const tinyAddress = (
   }
   const chainIdReg = fullAddress.match(/.+?(?=\d+)/);
   const chainIdName = chainIdReg?.length ? chainIdReg[0] : "";
-  const startingCharLength =
-    Math.ceil(totalCount / 2) - chainIdName?.length / 2;
-  const endingCharLength = Math.floor(totalCount / 2) - chainIdName?.length / 2;
+  const startingCharLength = Math.ceil(totalCount / 2) - chainIdName.length / 2;
+  const endingCharLength = Math.floor(totalCount / 2) - chainIdName.length / 2;
 
   return `${fullAddress.substring(
     0,
@@ -64,7 +63,7 @@ const WalletView: React.FC<{
         ellipsizeMode="middle"
       >
         {tinyAddress(
-          tnsMetadata?.metadata?.tokenId || wallet?.address || "",
+          tnsMetadata.metadata?.tokenId || wallet?.address || "",
           16
         )}
       </BrandText>

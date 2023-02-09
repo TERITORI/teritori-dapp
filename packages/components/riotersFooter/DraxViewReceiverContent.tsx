@@ -1,10 +1,10 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, SetStateAction, useCallback } from "react";
 import { StyleSheet, View, Image } from "react-native";
 
 import teritorriSvg from "../../../assets/icons/networks/teritori.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { neutral33 } from "../../utils/style/colors";
-import { nftDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
+import { NFTDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
 import { SVG } from "../SVG";
 import DragAndDropNftInReceiverView from "./DragAndDropNftInReceiverView";
 import NftDragResizerCorner from "./NftDragResizerCorner";
@@ -12,9 +12,9 @@ import NftDragResizerCorner from "./NftDragResizerCorner";
 const DraxViewReceiverContent: React.FC<{
   oldNftPositions: FooterNftData[];
   nftDroped: NFT | undefined;
-  nftDropedAdjustment: nftDropedAdjustmentType | undefined;
+  nftDropedAdjustment: NFTDropedAdjustmentType | undefined;
   setNftDropedAdjustment: (
-    nftDropedAdjustment: nftDropedAdjustmentType
+    nftDropedAdjustment: SetStateAction<NFTDropedAdjustmentType | undefined>
   ) => void;
 }> = memo(
   ({
@@ -23,25 +23,22 @@ const DraxViewReceiverContent: React.FC<{
     nftDropedAdjustment,
     setNftDropedAdjustment,
   }) => {
-    const NtfDragAndDropInReceiverViewCallback = useCallback(
-      ({ nftDroped, nftDropedAdjustment, oldNftPositions }) => (
-        <DragAndDropNftInReceiverView
-          nftDroped={nftDroped}
-          nftDropedAdjustment={nftDropedAdjustment}
-          oldNftPositions={oldNftPositions}
-        />
-      ),
-      [nftDropedAdjustment?.x, nftDropedAdjustment?.y]
-    );
-
-    const OnResize = useCallback(
-      (adjustment) => {
-        setNftDropedAdjustment({
-          ...nftDropedAdjustment,
-          ...adjustment,
-        });
+    const handleResize = useCallback(
+      (adjustment: {
+        x?: number | undefined;
+        y?: number | undefined;
+        width: number;
+        height: number;
+      }) => {
+        setNftDropedAdjustment(
+          (nftDropedAdjustment) =>
+            nftDropedAdjustment && {
+              ...nftDropedAdjustment,
+              ...adjustment,
+            }
+        );
       },
-      [nftDropedAdjustment]
+      [setNftDropedAdjustment]
     );
 
     return (
@@ -78,7 +75,7 @@ const DraxViewReceiverContent: React.FC<{
           })}
         {nftDroped && nftDropedAdjustment && (
           <>
-            <NtfDragAndDropInReceiverViewCallback
+            <DragAndDropNftInReceiverView
               nftDroped={nftDroped}
               nftDropedAdjustment={nftDropedAdjustment}
               oldNftPositions={oldNftPositions}
@@ -91,7 +88,7 @@ const DraxViewReceiverContent: React.FC<{
               }}
               oldNftPositions={oldNftPositions}
               cornerPosition="topLeft"
-              onResize={OnResize}
+              onResize={handleResize}
             />
             <NftDragResizerCorner
               nftDropedAdjustment={nftDropedAdjustment}
@@ -102,7 +99,7 @@ const DraxViewReceiverContent: React.FC<{
               }}
               oldNftPositions={oldNftPositions}
               cornerPosition="topRight"
-              onResize={OnResize}
+              onResize={handleResize}
             />
             <NftDragResizerCorner
               nftDropedAdjustment={nftDropedAdjustment}
@@ -113,7 +110,7 @@ const DraxViewReceiverContent: React.FC<{
               }}
               oldNftPositions={oldNftPositions}
               cornerPosition="bottomLeft"
-              onResize={OnResize}
+              onResize={handleResize}
             />
             <NftDragResizerCorner
               nftDropedAdjustment={nftDropedAdjustment}
@@ -125,7 +122,7 @@ const DraxViewReceiverContent: React.FC<{
               }}
               oldNftPositions={oldNftPositions}
               cornerPosition="bottomRight"
-              onResize={OnResize}
+              onResize={handleResize}
             />
           </>
         )}

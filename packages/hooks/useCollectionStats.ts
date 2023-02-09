@@ -46,7 +46,7 @@ export const useCollectionStats = (collectionId: string, address?: string) => {
       ...data,
       totalVolume: `${+ether * usdPrice}`,
     };
-  }, [usdPrice, collectionId, data]);
+  }, [data, addressPrefix, usdPrice]);
 
   return adjustedData;
 };

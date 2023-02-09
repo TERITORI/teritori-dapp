@@ -8,6 +8,7 @@ export const teritoriNetwork: NetworkInfo = {
   chainId: "teritori-1",
   displayName: "Teritori",
   icon: "icons/networks/teritori-circle.svg",
+  walletUrlForStaking: "https://explorer.teritori.com/teritori/staking",
   currencies: teritoriCurrencies,
   addressPrefix: "tori",
   restEndpoint: "https://rest.mainnet.teritori.com",

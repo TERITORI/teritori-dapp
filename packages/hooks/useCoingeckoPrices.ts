@@ -1,14 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { Decimal } from "cosmwasm";
 
 import { getNativeCurrency } from "../networks";
+import { CoingeckoCoin, CoingeckoPrices } from "../utils/coingecko";
 import { isDefined } from "../utils/filter";
-
-type CoingeckoPrices = { [key: string]: { usd: number } };
-export type CoingeckoCoin = {
-  networkId: string | undefined;
-  denom: string | undefined;
-};
 
 export const useCoingeckoPrices = (coins: CoingeckoCoin[]) => {
   const ids = coins
@@ -37,22 +31,5 @@ export const useCoingeckoPrices = (coins: CoingeckoCoin[]) => {
     }
   );
 
-  const getCoingeckoPrice = (
-    networkId: string,
-    denom: string,
-    amount: string,
-    prices: CoingeckoPrices
-  ) => {
-    const currency = getNativeCurrency(networkId, denom);
-    return (
-      currency &&
-      Decimal.fromAtomics(
-        // An amount with not enough decimals will be considered as zero
-        Math.round(parseFloat(amount)).toString(),
-        currency.decimals
-      ).toFloatApproximation() * (prices[currency.coingeckoId]?.usd || 0)
-    );
-  };
-
-  return { prices: data, getCoingeckoPrice };
+  return { prices: data };
 };

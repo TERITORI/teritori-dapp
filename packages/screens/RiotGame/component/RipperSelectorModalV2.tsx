@@ -203,8 +203,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 <SimpleButton
                   disabled={!selectedRipper}
                   onPress={enrollRipper}
-                  size="small"
-                  title={confirmButton}
+                  size="SM"
+                  text={confirmButton}
                 />
               </View>
             </View>

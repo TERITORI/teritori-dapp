@@ -115,7 +115,7 @@ export const TNSNameFinderModal: React.FC<{
   useEffect(() => {
     // Reset the name each time the modal appears
     if (visible) setName("");
-  }, [visible]);
+  }, [setName, visible]);
 
   const { width } = useWindowDimensions();
 

@@ -4,6 +4,7 @@ import { SvgProps } from "react-native-svg";
 type BlankType = {
   id: number;
   type: "BLANK";
+  data?: undefined;
 };
 
 type PointsType = {
