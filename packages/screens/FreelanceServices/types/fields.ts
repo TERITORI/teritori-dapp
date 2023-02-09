@@ -22,6 +22,10 @@ export interface User {
   onlineStatus: "online" | "offline";
   createDate: Date;
   tagline: string;
+  times: {
+    avgResponseTime: string;
+    lastDelivery: string;
+  };
   languages: [
     {
       title: string;

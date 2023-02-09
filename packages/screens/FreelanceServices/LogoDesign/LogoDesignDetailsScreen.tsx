@@ -2,7 +2,6 @@ import React from "react";
 import { Image, ImageBackground, TouchableOpacity, View } from "react-native";
 
 import backgroundPic from "../../../../assets/banners/freelance-service/background-pic.png";
-import profilePic from "../../../../assets/banners/freelance-service/profile-pic.png";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -255,7 +254,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
               >
                 <View style={{ flexDirection: "row" }}>
                   <Image
-                    source={profilePic}
+                    source={data.user.profilePic}
                     style={{ width: 104, height: 104 }}
                   />
                   <View
@@ -268,7 +267,9 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      <BrandText style={fontSemibold16}>username</BrandText>
+                      <BrandText style={fontSemibold16}>
+                        {data.user.username}
+                      </BrandText>
                       <View
                         style={{
                           width: "fit-content",
@@ -379,7 +380,9 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
                   >
                     Avg. response time
                   </BrandText>
-                  <BrandText style={fontSemibold14}>2 hours</BrandText>
+                  <BrandText style={fontSemibold14}>
+                    {data.user.times.avgResponseTime}
+                  </BrandText>
                 </View>
                 <View style={{ flexDirection: "column", width: 500 }}>
                   <BrandText
@@ -390,7 +393,9 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
                   >
                     Last delivery
                   </BrandText>
-                  <BrandText style={fontSemibold14}>about 11 minutes</BrandText>
+                  <BrandText style={fontSemibold14}>
+                    {data.user.times.lastDelivery}
+                  </BrandText>
                 </View>
               </View>
             </View>
