@@ -1,11 +1,3 @@
-import { getFromAirTable } from "./getFromAirTable";
-
-export const getFromAPI = async () => {
-  const data = await getFromAirTable();
-  if (data) {
-  }
-};
-
 export function getSelectedApps(): string[] {
   return window.localStorage.getItem("teritori-dappstore")
     ? Array.from(
