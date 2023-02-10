@@ -6,6 +6,7 @@ import chevronDown from "../../../../assets/icons/freelance-service/chevron-down
 import sort from "../../../../assets/icons/sort.svg";
 import { getFilterOptions } from "../../../screens/FreelanceServices/query/data";
 import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
@@ -43,7 +44,13 @@ export const FilteringDropdowns = () => {
   const [option, setOption] = useState(options);
 
   return (
-    <View style={{ flexDirection: "row" }}>
+    <View
+      style={{
+        flexDirection: "row",
+        marginBottom: layout.padding_x2,
+        justifyContent: "center",
+      }}
+    >
       {option.map((item, index) => (
         <View key={index}>
           <TertiaryBox

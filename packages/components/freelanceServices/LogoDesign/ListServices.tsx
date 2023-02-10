@@ -20,8 +20,8 @@ import {
   fontMedium14,
   fontSemibold20,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText/BrandText";
+import { layout, leftMarginMainContent } from "../../../utils/style/layout";
+import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
@@ -82,9 +82,10 @@ export const ListServices: React.FC = () => {
       <View
         style={{
           alignSelf: "center",
-          width: 1290,
+          width: "100%",
           flexDirection: "row",
           flexWrap: "wrap",
+          paddingHorizontal: leftMarginMainContent,
           zIndex: -1,
         }}
       >
@@ -115,7 +116,8 @@ export const ListServices: React.FC = () => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          width: 1270,
+          width: "100%",
+          paddingHorizontal: leftMarginMainContent,
           justifyContent: "space-between",
           alignSelf: "center",
         }}

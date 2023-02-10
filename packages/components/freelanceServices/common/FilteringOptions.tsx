@@ -1,14 +1,17 @@
 import React from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
+import { leftMarginMainContent } from "../../../utils/style/layout";
 import { FilterCheckbox } from "./FilterCheckbox";
 import { FilteringDropdowns } from "./FilteringDropdowns";
 
 export const FilteringOptions = () => {
+  const { width } = useWindowDimensions();
   return (
     <View
       style={{
-        flexDirection: "row",
+        paddingHorizontal: leftMarginMainContent,
+        flexDirection: width > 1440 ? "row" : "column",
         justifyContent: "space-between",
       }}
     >

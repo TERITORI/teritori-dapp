@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import BallBounce from "../../../../assets/icons/freelance-service/BallBounce.svg";
 import GoToPageIcon from "../../../../assets/icons/freelance-service/ChangePage.svg";
@@ -12,7 +12,7 @@ import Music from "../../../../assets/icons/freelance-service/Music.svg";
 import Pen from "../../../../assets/icons/freelance-service/Pen.svg";
 import Suitcase from "../../../../assets/icons/freelance-service/Suitcase.svg";
 import { FreelancerServiceRouteTypes } from "../../../screens/FreelanceServices/types/routes";
-import { layout } from "../../../utils/style/layout";
+import { layout, leftMarginMainContent } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { FreelanceServicesCards } from "../Cards/FreelanceServicesCards";
 
@@ -74,12 +74,14 @@ const data = [
 ] as FreelancerServiceRouteTypes[];
 
 export const ExplorerMarketPlace: React.FC = () => {
+  const { width } = useWindowDimensions();
   return (
     <View
       style={{
         flexDirection: "column",
         alignSelf: "center",
-        width: 1290,
+        width: "100%",
+        paddingHorizontal: leftMarginMainContent,
         justifyContent: "flex-start",
       }}
     >
@@ -100,7 +102,7 @@ export const ExplorerMarketPlace: React.FC = () => {
             iconSVG={item.icon}
             iconNearTextSVG={item.iconChangePage}
             text={item.name}
-            width={242}
+            width={width > 1024 ? 242 : 170}
             height={156}
             boxStyle={{
               marginRight: layout.padding_x2,

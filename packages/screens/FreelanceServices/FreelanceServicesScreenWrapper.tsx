@@ -7,6 +7,8 @@ export const FreelanceServicesScreenWrapper: React.FC = ({ children }) => {
   return (
     <ScreenContainer
       smallMargin
+      fullWidth
+      noMargin
       headerChildren={<BrandText>Freelance Service</BrandText>}
     >
       {children}

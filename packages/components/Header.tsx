@@ -4,6 +4,7 @@ import { View, ViewStyle, StyleProp } from "react-native";
 import { neutral33 } from "../utils/style/colors";
 import {
   headerHeight,
+  leftMarginMainContent,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
 
@@ -34,7 +35,9 @@ export const Header: React.FC<{
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: smallMargin ? 32 : screenContainerContentMarginHorizontal,
+          marginLeft: smallMargin
+            ? leftMarginMainContent
+            : screenContainerContentMarginHorizontal,
         }}
       >
         <>{children}</>

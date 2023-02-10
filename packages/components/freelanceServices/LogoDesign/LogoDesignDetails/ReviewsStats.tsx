@@ -19,6 +19,7 @@ import {
   fontSemibold16,
   fontSemibold14,
 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
 import { StarRating } from "../../common/StarRating";
@@ -29,7 +30,7 @@ const PerStarRatingDetail: React.FC<{
 }> = ({ star, stats }) => {
   const percentage = `${(stats.starsCount[star - 1] * 100) / stats.total}%`;
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", width: 500 }}>
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
       <BrandText
         style={[fontSemibold16, { color: neutralA3, marginRight: 12 }]}
       >
@@ -56,6 +57,30 @@ const PerStarRatingDetail: React.FC<{
     </View>
   );
 };
+
+const RatingBreakdownItem: React.FC<{
+  text: string;
+  value: number;
+}> = ({ text, value }) => (
+  <View
+    style={{
+      width: 250,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    <BrandText style={[fontSemibold14, { color: neutral77 }]}>{text}</BrandText>
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <SVG source={star} width={24} height={24} />
+      <BrandText
+        style={[{ color: yellowDefault, marginLeft: 4 }, fontMedium14]}
+      >
+        {value.toFixed(1)}
+      </BrandText>
+    </View>
+  </View>
+);
 
 export const ReviewsStats: React.FC<{ reviews: ReviewFields }> = ({
   reviews,
@@ -106,96 +131,57 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields }> = ({
       </View>
 
       <View
-        style={{ flexDirection: "row", alignItems: "center", marginTop: 16 }}
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 16,
+          height: "100%",
+        }}
       >
-        <PerStarRatingDetail stats={reviews.stats} star={5} />
-        <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-          Rating Breakdown
-        </BrandText>
-      </View>
-
-      <View
-        style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
-      >
-        <PerStarRatingDetail stats={reviews.stats} star={4} />
         <View
           style={{
-            width: 250,
-            flexDirection: "row",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            height: 125,
             justifyContent: "space-between",
-            alignItems: "center",
           }}
         >
-          <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-            Seller communication level
-          </BrandText>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <SVG source={star} width={24} height={24} />
-            <BrandText
-              style={[{ color: yellowDefault, marginLeft: 4 }, fontMedium14]}
-            >
-              {reviews.stats.avgRating.communication.toFixed(1)}
-            </BrandText>
-          </View>
+          <PerStarRatingDetail stats={reviews.stats} star={5} />
+          <PerStarRatingDetail stats={reviews.stats} star={4} />
+          <PerStarRatingDetail stats={reviews.stats} star={3} />
+          <PerStarRatingDetail stats={reviews.stats} star={2} />
+          <PerStarRatingDetail stats={reviews.stats} star={1} />
         </View>
-      </View>
-
-      <View
-        style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
-      >
-        <PerStarRatingDetail stats={reviews.stats} star={3} />
         <View
           style={{
-            width: 250,
-            flexDirection: "row",
+            flexDirection: "column",
+            // height: "100%",
             justifyContent: "space-between",
-            alignItems: "center",
           }}
         >
-          <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-            Recommend to a friend
+          <BrandText
+            style={[
+              fontSemibold16,
+              { color: neutral77, marginBottom: layout.padding_x1 },
+            ]}
+          >
+            Rating Breakdown
           </BrandText>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <SVG source={star} width={24} height={24} />
-            <BrandText
-              style={[{ color: yellowDefault, marginLeft: 4 }, fontMedium14]}
-            >
-              {reviews.stats.avgRating.recommendToFriend.toFixed(1)}
-            </BrandText>
-          </View>
+          <RatingBreakdownItem
+            text="Seller communication level"
+            value={reviews.stats.avgRating.communication}
+          />
+          <RatingBreakdownItem
+            text="Recommend to a friend"
+            value={reviews.stats.avgRating.recommendToFriend}
+          />
+          <RatingBreakdownItem
+            text="Service as described"
+            value={reviews.stats.avgRating.serviceAsDescribed}
+          />
         </View>
-      </View>
-
-      <View
-        style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
-      >
-        <PerStarRatingDetail stats={reviews.stats} star={2} />
-        <View
-          style={{
-            width: 250,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-            Service as described
-          </BrandText>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <SVG source={star} width={24} height={24} />
-            <BrandText
-              style={[{ color: yellowDefault, marginLeft: 4 }, fontMedium14]}
-            >
-              {reviews.stats.avgRating.serviceAsDescribed.toFixed(1)}
-            </BrandText>
-          </View>
-        </View>
-      </View>
-
-      <View
-        style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}
-      >
-        <PerStarRatingDetail stats={reviews.stats} star={1} />
       </View>
     </View>
   );

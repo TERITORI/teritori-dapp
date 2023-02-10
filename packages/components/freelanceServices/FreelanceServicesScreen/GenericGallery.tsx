@@ -5,7 +5,7 @@ import chevronLeft from "../../../../assets/icons/chevron-left.svg";
 import chevronRight from "../../../../assets/icons/chevron-right.svg";
 import { Gallery } from "../../../screens/FreelanceServices/query/getGallery";
 import { neutral77, secondaryColor } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
+import { layout, leftMarginMainContent } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { CutOffCard } from "../Cards/CutOffCard";
@@ -16,7 +16,14 @@ export const GenericGallery: React.FC<Gallery> = ({
   header,
 }) => {
   return (
-    <View style={{ flexDirection: "column", width: 1280, alignSelf: "center" }}>
+    <View
+      style={{
+        flexDirection: "column",
+        width: "100%",
+        alignSelf: "center",
+        paddingHorizontal: leftMarginMainContent,
+      }}
+    >
       <View
         style={{
           flexDirection: "row",

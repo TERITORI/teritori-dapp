@@ -46,9 +46,8 @@ export const ScreenContainer: React.FC<{
 }) => {
   // variables
   const { height } = useWindowDimensions();
-  const hasMargin = !noMargin;
   const hasScroll = !noScroll;
-  const marginStyle = hasMargin && {
+  const marginStyle = !noMargin && {
     marginHorizontal: screenContainerContentMarginHorizontal,
   };
   const { width: maxWidth } = useMaxResolution();

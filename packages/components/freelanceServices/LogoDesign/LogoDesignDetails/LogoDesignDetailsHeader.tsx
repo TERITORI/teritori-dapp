@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 
 import heartIcon from "../../../../../assets/icons/heart.svg";
 import reportIcon from "../../../../../assets/icons/report.svg";
@@ -13,6 +13,7 @@ import {
   neutral33,
 } from "../../../../utils/style/colors";
 import { fontMedium14 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
 import { ReportPopUp } from "./PopUp/ReportPopUp";
@@ -33,6 +34,7 @@ export const LogoDesignDetailsHeader: React.FC<{ data: ServiceFields }> = ({
   const [selected, setSelected] = useState(tabs[0]);
   const [displayReportPopup, setDisplayReportPopup] = useState(false);
   const [displaySharePopup, setDisplaySharePopup] = useState(false);
+  const { width } = useWindowDimensions();
 
   return (
     <View
@@ -41,7 +43,7 @@ export const LogoDesignDetailsHeader: React.FC<{ data: ServiceFields }> = ({
         marginTop: 30,
         borderBottomColor: neutral44,
         borderBottomWidth: 1,
-        flexDirection: "row",
+        flexDirection: width > 1024 ? "row" : "column",
         alignItems: "center",
         justifyContent: "space-between",
       }}
@@ -82,7 +84,8 @@ export const LogoDesignDetailsHeader: React.FC<{ data: ServiceFields }> = ({
                   borderBottomColor:
                     selected === item ? secondaryColor : neutral00,
                   borderBottomWidth: 2,
-                  paddingBottom: 12,
+                  paddingBottom: width > 1024 ? "12" : "5",
+                  marginBottom: width > 1024 ? 0 : 10,
                   width: "fit-content",
                   marginRight: 20,
                 },
@@ -99,6 +102,7 @@ export const LogoDesignDetailsHeader: React.FC<{ data: ServiceFields }> = ({
           flexDirection: "row",
           alignItems: "flex-start",
           height: "100%",
+          marginBottom: width > 1024 ? 2 : layout.padding_x1,
         }}
       >
         <View style={{ alignItems: "center", flexDirection: "row" }}>

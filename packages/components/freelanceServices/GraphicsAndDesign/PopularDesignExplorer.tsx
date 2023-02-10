@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 
 import chevronLeft from "../../../../assets/icons/chevron-left.svg";
 import chevronRight from "../../../../assets/icons/chevron-right.svg";
@@ -10,7 +10,7 @@ import halfStar from "../../../../assets/icons/half-star.svg";
 import house from "../../../../assets/icons/house.svg";
 import imageEditing from "../../../../assets/icons/image-editing.svg";
 import { FreelancerServiceRouteTypes } from "../../../screens/FreelanceServices/types/routes";
-import { layout } from "../../../utils/style/layout";
+import { layout, leftMarginMainContent } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { FreelanceServicesCards } from "../Cards/FreelanceServicesCards";
@@ -49,8 +49,17 @@ const data = [
 ] as FreelancerServiceRouteTypes[];
 
 export const PopularDesignExplorer: React.FC = () => {
+  const { width } = useWindowDimensions();
+
   return (
-    <View style={{ flexDirection: "column", width: 1290, alignSelf: "center" }}>
+    <View
+      style={{
+        flexDirection: "column",
+        width: "100%",
+        alignSelf: "center",
+        paddingHorizontal: leftMarginMainContent,
+      }}
+    >
       <View
         style={{
           flexDirection: "row",
@@ -83,7 +92,7 @@ export const PopularDesignExplorer: React.FC = () => {
           alignSelf: "center",
           width: "100%",
           marginTop: layout.padding_x2_5,
-          justifyContent: "space-between",
+          // justifyContent: "space-between",
         }}
       >
         {data.map((item, index) => (
@@ -91,9 +100,9 @@ export const PopularDesignExplorer: React.FC = () => {
             iconSVG={item.icon}
             iconNearTextSVG={item.iconChangePage}
             text={item.name}
-            width={242}
+            width={width > 1024 ? 242 : 180}
             height={156}
-            // boxStyle={{ margin: layout.padding_x1 }}
+            boxStyle={{ margin: layout.padding_x1 }}
             key={index}
             navigation={item.navigation}
           />

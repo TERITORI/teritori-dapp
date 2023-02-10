@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image } from "react-native";
+import { View, Image, useWindowDimensions } from "react-native";
 
 import { ReviewFields } from "../../../../screens/FreelanceServices/types/fields";
 import {
@@ -22,6 +22,7 @@ import { StarRating } from "../../common/StarRating";
 export const DisplayReviews: React.FC<{ reviews: ReviewFields["items"] }> = ({
   reviews,
 }) => {
+  const { width } = useWindowDimensions();
   return (
     <View style={{ flexDirection: "column", marginTop: 30, marginBottom: 30 }}>
       {reviews.map((item, index) => (
@@ -30,9 +31,9 @@ export const DisplayReviews: React.FC<{ reviews: ReviewFields["items"] }> = ({
             style={{
               marginTop: 12,
               marginBottom: 8,
-              flexDirection: "row",
+              flexDirection: width < 1024 ? "column" : "row",
               justifyContent: "space-between",
-              width: 710,
+              width: "95%",
               alignSelf: "center",
             }}
           >
@@ -79,7 +80,7 @@ export const DisplayReviews: React.FC<{ reviews: ReviewFields["items"] }> = ({
               </BrandText>
             </View>
           </View>
-          <View style={{ width: 650, marginBottom: 12 }}>
+          <View style={{ width: "95%", marginBottom: 12 }}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
               {item.text}
             </BrandText>

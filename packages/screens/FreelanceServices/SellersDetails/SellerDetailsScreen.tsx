@@ -34,6 +34,7 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../../utils/style/fonts";
+import { leftMarginMainContent } from "../../../utils/style/layout";
 import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
 import { getUser } from "../query/data";
 
@@ -46,7 +47,12 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
   return (
     <FreelanceServicesScreenWrapper>
       <View
-        style={{ flexDirection: "column", width: 1280, alignSelf: "center" }}
+        style={{
+          flexDirection: "column",
+          width: "100%",
+          alignSelf: "center",
+          paddingHorizontal: leftMarginMainContent,
+        }}
       >
         <View
           style={{
@@ -190,7 +196,9 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                     >
                       From
                     </BrandText>
-                    <BrandText style={fontSemibold14}>{data.country}</BrandText>
+                    <BrandText style={fontSemibold14}>
+                      {data.country.name}
+                    </BrandText>
                   </View>
                   <View style={{ flexDirection: "column", width: 160 }}>
                     <BrandText
@@ -222,7 +230,9 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                     >
                       Avg. response time
                     </BrandText>
-                    <BrandText style={fontSemibold14}>2 hours</BrandText>
+                    <BrandText style={fontSemibold14}>
+                      {data.times.avgResponseTime}
+                    </BrandText>
                   </View>
                   <View style={{ flexDirection: "column", width: 160 }}>
                     <BrandText
@@ -234,7 +244,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       Last delivery
                     </BrandText>
                     <BrandText style={fontSemibold14}>
-                      about 11 minutes
+                      {data.times.lastDelivery}
                     </BrandText>
                   </View>
                 </View>

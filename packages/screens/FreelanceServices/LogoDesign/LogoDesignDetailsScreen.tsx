@@ -1,5 +1,11 @@
 import React from "react";
-import { Image, ImageBackground, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import backgroundPic from "../../../../assets/banners/freelance-service/background-pic.png";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
@@ -35,6 +41,7 @@ import {
   fontSemibold20,
   fontSemibold28,
 } from "../../../utils/style/fonts";
+import { leftMarginMainContent } from "../../../utils/style/layout";
 import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
 import { getService } from "../query/data";
 import { OrdersInQueue } from "./OrdersInQueue";
@@ -46,22 +53,29 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
   },
 }) => {
   const data = getService(id);
+  const { width } = useWindowDimensions();
 
   return (
     <FreelanceServicesScreenWrapper>
       <View
-        style={{ flexDirection: "column", width: 1280, alignSelf: "center" }}
+        style={{
+          flexDirection: "column",
+          width: "100%",
+          minHeight: 1075,
+          alignSelf: "center",
+          paddingHorizontal: leftMarginMainContent,
+        }}
       >
         <LogoDesignDetailsHeader data={data} />
 
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: width < 1440 ? "column" : "row",
             width: "100%",
             justifyContent: "space-between",
           }}
         >
-          <View style={{ width: 750, marginTop: 24 }}>
+          <View style={{ width: width < 1440 ? "100%" : "66%", marginTop: 24 }}>
             <BrandText style={fontSemibold28}>{data.title}</BrandText>
             <View
               style={{
@@ -427,6 +441,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
                 width: "100%",
                 justifyContent: "space-between",
                 flexDirection: "row",
+                flexWrap: "wrap",
                 marginTop: 20,
               }}
             >

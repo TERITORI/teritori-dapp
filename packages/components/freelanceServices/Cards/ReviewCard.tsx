@@ -68,7 +68,7 @@ export const ReviewCard: React.FC<{ reviews: ReviewFields["items"] }> = ({
             </View>
           </TouchableOpacity>
           {currentReview ? (
-            <View style={{ flexDirection: "column" }}>
+            <View style={{ flexDirection: "column", width: "85%" }}>
               <View
                 style={{
                   flexDirection: "row",

@@ -4,6 +4,7 @@ import { TouchableOpacity, View } from "react-native";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
+import { leftMarginMainContent } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { FilteringOptions } from "../common/FilteringOptions";
@@ -16,7 +17,7 @@ export const LogoDesignMenu: React.FC = () => {
         marginTop: 60,
         marginBottom: 70,
         alignSelf: "center",
-        width: 1290,
+        width: "100%",
         zIndex: 2,
       }}
     >
@@ -28,6 +29,7 @@ export const LogoDesignMenu: React.FC = () => {
           marginTop: 30,
           width: "100%",
           justifyContent: "space-between",
+          paddingHorizontal: leftMarginMainContent,
           zIndex: -1,
         }}
       >

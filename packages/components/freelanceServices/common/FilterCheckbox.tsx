@@ -24,7 +24,7 @@ export const FilterCheckbox = () => {
   const [option, setOption] = useState(options);
 
   return (
-    <View style={{ flexDirection: "row" }}>
+    <View style={{ flexDirection: "row", justifyContent: "center" }}>
       {option.map((item, index) => (
         <View
           key={index}
