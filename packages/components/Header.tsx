@@ -10,7 +10,7 @@ import {
 export const Header: React.FC<{
   smallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ children, style }) => {
+}> = ({ children, style, smallMargin }) => {
   return (
     <View
       style={[
@@ -34,7 +34,7 @@ export const Header: React.FC<{
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: screenContainerContentMarginHorizontal,
+          marginLeft: smallMargin ? 32 : screenContainerContentMarginHorizontal,
         }}
       >
         <>{children}</>

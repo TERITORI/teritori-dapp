@@ -6,7 +6,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 export const FreelanceServicesScreenWrapper: React.FC = ({ children }) => {
   return (
     <ScreenContainer
-      fullWidth
+      smallMargin
       headerChildren={<BrandText>Freelance Service</BrandText>}
     >
       {children}
