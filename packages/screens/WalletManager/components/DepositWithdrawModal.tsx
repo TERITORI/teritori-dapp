@@ -143,7 +143,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
         </BrandText>
       </View>
     ),
-    [variation, networkId]
+    [variation, networkId, width, styles]
   );
 
   const maxAtomics =

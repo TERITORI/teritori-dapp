@@ -95,6 +95,31 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
     }
   }, [allValidators, bondedTokens, data?.moniker]);
 
+  const { width } = useWindowDimensions();
+  const styles = StyleSheet.create({
+    container: {
+      width: width < 800 ? modalWidthRatio * width - 40 : 700,
+    },
+    footerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: "100%",
+      padding: layout.padding_x2_5,
+    },
+    alternateText: {
+      ...StyleSheet.flatten(fontSemibold12),
+      color: neutral77,
+    },
+    maxText: {
+      ...StyleSheet.flatten(fontSemibold12),
+      backgroundColor: primaryColor,
+      color: neutral22,
+      borderRadius: layout.borderRadius,
+      paddingHorizontal: layout.padding_x0_5,
+    },
+  });
+
   // functions
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
@@ -195,7 +220,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         </BrandText>
       </View>
     ),
-    []
+    [styles, width]
   );
 
   const Footer = useCallback(
@@ -220,34 +245,8 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         </View>
       </>
     ),
-    [handleSubmit, onClose, onSubmit]
+    [handleSubmit, onClose, onSubmit, styles]
   );
-
-  const { width } = useWindowDimensions();
-
-  const styles = StyleSheet.create({
-    container: {
-      width: width < 800 ? modalWidthRatio * width - 40 : 700,
-    },
-    footerRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      width: "100%",
-      padding: layout.padding_x2_5,
-    },
-    alternateText: {
-      ...StyleSheet.flatten(fontSemibold12),
-      color: neutral77,
-    },
-    maxText: {
-      ...StyleSheet.flatten(fontSemibold12),
-      backgroundColor: primaryColor,
-      color: neutral22,
-      borderRadius: layout.borderRadius,
-      paddingHorizontal: layout.padding_x0_5,
-    },
-  });
 
   return (
     <ModalBase

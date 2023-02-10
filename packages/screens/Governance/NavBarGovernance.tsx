@@ -1,33 +1,35 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { neutral33 } from "../../utils/style/colors";
+import { smallMobileWidth } from "../../utils/style/layout";
 import { ProposalStatus } from "./types";
-
-const def = {
-  all: {
-    name: "All Periods",
-    filter: undefined,
-  },
-  voting: {
-    name: "Voting",
-    filter: "PROPOSAL_STATUS_VOTING",
-  },
-  passed: {
-    name: "Passed",
-    filter: "PROPOSAL_STATUS_PASSED",
-  },
-  rejected: {
-    name: "Rejected",
-    filter: "PROPOSAL_STATUS_REJECTED",
-  },
-};
 
 export const NavBarGovernance: React.FC<{
   onChange: (filter?: ProposalStatus) => void;
 }> = ({ onChange }) => {
   const [selected, setSelected] = useState<keyof typeof def>("all");
+  const { width } = useWindowDimensions();
+
+  const def = {
+    all: {
+      name: width < smallMobileWidth ? "All" : "All Periods",
+      filter: undefined,
+    },
+    voting: {
+      name: "Voting",
+      filter: "PROPOSAL_STATUS_VOTING",
+    },
+    passed: {
+      name: "Passed",
+      filter: "PROPOSAL_STATUS_PASSED",
+    },
+    rejected: {
+      name: "Rejected",
+      filter: "PROPOSAL_STATUS_REJECTED",
+    },
+  };
 
   return (
     <View
@@ -70,7 +72,7 @@ export const NavBarGovernance: React.FC<{
               <BrandText
                 style={{
                   color: selected === key ? "black" : "white",
-                  fontSize: 14,
+                  fontSize: width < smallMobileWidth ? 12 : 14,
                   paddingHorizontal: 12,
                   textAlign: "center",
                   top: 6,

@@ -74,6 +74,25 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     setValue("validatorName", data?.moniker || "");
   }, [data?.moniker, setValue]);
 
+  const { width } = useWindowDimensions();
+  const styles = StyleSheet.create({
+    container: {
+      width: width < smallMobileWidth ? modalWidthRatio * width - 40 : 446,
+    },
+    footerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: "100%",
+      padding: layout.padding_x2_5,
+    },
+    alternateText: {
+      ...StyleSheet.flatten(fontSemibold12),
+      color: neutral77,
+      flexShrink: 1,
+    },
+  });
+
   // functions
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
@@ -127,26 +146,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     [data, onClose, setToastError, setToastSuccess, triggerError, wallet]
   );
 
-  const { width } = useWindowDimensions();
-
-  const styles = StyleSheet.create({
-    container: {
-      width: width < smallMobileWidth ? modalWidthRatio * width - 40 : 446,
-    },
-    footerRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      width: "100%",
-      padding: layout.padding_x2_5,
-    },
-    alternateText: {
-      ...StyleSheet.flatten(fontSemibold12),
-      color: neutral77,
-      flexShrink: 1,
-    },
-  });
-
   // returns
   const Header = useCallback(
     () => (
@@ -163,7 +162,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         </BrandText>
       </View>
     ),
-    []
+    [styles, width]
   );
 
   const Footer = useCallback(
@@ -188,7 +187,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         </View>
       </>
     ),
-    [handleSubmit, onClose, onSubmit]
+    [handleSubmit, onClose, onSubmit, styles]
   );
 
   return (

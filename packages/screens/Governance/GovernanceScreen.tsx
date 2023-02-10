@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
@@ -35,21 +35,41 @@ export const GovernanceScreen: React.FC = () => {
     [filter, proposals]
   );
 
+  const { width } = useWindowDimensions();
+
   return (
     <ScreenContainer>
       <View
         style={{
           flexDirection: "row",
           display: "flex",
-          width: 1240,
-          right: 75,
+          flexWrap: "wrap",
+          width: "100%",
+          margin: "auto",
           justifyContent: "space-between",
           top: 55,
         }}
       >
-        <BrandText style={{ fontSize: 28 }}>Decentralized Governance</BrandText>
+        <BrandText
+          style={{
+            fontSize: 28,
+            width: width < 1200 ? "100%" : "",
+            textAlign: "center",
+          }}
+        >
+          Decentralized Governance
+        </BrandText>
 
-        <View style={{ bottom: 10, right: 100 }}>
+        <View
+          style={{
+            bottom: 10,
+            width: width < 1200 ? "100%" : "",
+            minWidth: 250,
+            flexDirection: "row",
+            justifyContent: "center",
+            paddingTop: width < 1200 ? 10 : 0,
+          }}
+        >
           <NavBarGovernance onChange={setFilter} />
         </View>
       </View>
@@ -58,10 +78,9 @@ export const GovernanceScreen: React.FC = () => {
         style={{
           display: "flex",
           flexDirection: "row",
+          justifyContent: "space-between",
           flexWrap: "wrap",
           marginTop: 110,
-          marginLeft: -70,
-          marginRight: -60,
         }}
       >
         {filteredProposals.map((proposals, index) => (

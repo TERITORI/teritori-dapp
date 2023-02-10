@@ -1,11 +1,18 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
-import { ColorValue, ScrollView, TouchableOpacity, View } from "react-native";
+import {
+  ColorValue,
+  ScrollView,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { GovernanceDetails } from "../../screens/Governance/GovernanceDetails";
 import { ProposalStatus } from "../../screens/Governance/types";
+import { mobileWidth, smallMobileWidth } from "../../utils/style/layout";
 
 // FIXME: code dedup
 
@@ -104,16 +111,28 @@ export const GovernanceBox: React.FC<{
     }
   }
 
+  const { width } = useWindowDimensions();
+
   return (
-    <View style={{ width: "50%", marginBottom: 20 }}>
+    <View style={{ width: width < 1400 ? "100%" : "50%", marginBottom: 20 }}>
       <TouchableOpacity
+        style={{ margin: "auto" }}
         onPress={() => {
           activePopup();
         }}
       >
         {activeGovernanceDetailsPopup()}
 
-        <TertiaryBox width={600} height={300}>
+        <TertiaryBox
+          width={
+            width < 1400
+              ? width < mobileWidth
+                ? 0.9 * (width - 75)
+                : 0.6 * width
+              : 0.3 * width
+          }
+          height={300}
+        >
           <View
             style={{
               flexDirection: "column",
@@ -219,7 +238,7 @@ export const GovernanceBox: React.FC<{
 
                 <BrandText
                   style={{
-                    fontSize: 17,
+                    fontSize: width < smallMobileWidth ? 13 : 18,
                     paddingLeft: 10,
                   }}
                 >
@@ -229,14 +248,14 @@ export const GovernanceBox: React.FC<{
             </View>
             <View
               style={{
-                width: 550,
+                width: "100%",
                 height: 100,
               }}
             >
               <ScrollView>
                 <BrandText
                   style={{
-                    fontSize: 18,
+                    fontSize: width < smallMobileWidth ? 13 : 18,
                     color: "#808080",
                   }}
                 >
@@ -287,8 +306,19 @@ export const GovernanceBox: React.FC<{
               </View>
             </View>
 
-            <View style={{ flexDirection: "row", paddingTop: 20 }}>
-              <View style={{ flexDirection: "column" }}>
+            <ScrollView
+              horizontal
+              style={{
+                flexDirection: "row",
+                paddingTop: 20,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "column",
+                  // width: width < 500 ? "100%" : "",
+                }}
+              >
                 <BrandText
                   style={{
                     fontSize: 12,
@@ -381,7 +411,7 @@ export const GovernanceBox: React.FC<{
                   </BrandText>
                 </View>
               </View>
-            </View>
+            </ScrollView>
           </View>
         </TertiaryBox>
       </TouchableOpacity>

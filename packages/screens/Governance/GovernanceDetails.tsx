@@ -1,8 +1,13 @@
 import { MsgVoteEncodeObject, isDeliverTxFailure } from "@cosmjs/stargate";
 import Long from "long";
-import moment from "moment";
 import React, { useState, useCallback } from "react";
-import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
+import {
+  ScrollView,
+  ViewStyle,
+  StyleProp,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { RadioButton } from "react-native-paper";
 import { VictoryPie } from "victory";
 
@@ -16,6 +21,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
 import { neutral44 } from "../../utils/style/colors";
+import { modalWidthRatio, smallMobileWidth } from "../../utils/style/layout";
 import { getTeritoriSigningStargateClient } from "../../utils/teritori";
 import { ProposalStatus } from "./types";
 
@@ -170,7 +176,8 @@ export const GovernanceDetails: React.FC<{
     setdisplayVote(!displayVote);
   }
 
-  const canVoteDeposit = () => moment(votingDepositEndTime).isAfter(moment());
+  // const canVoteDeposit = () => moment(votingDepositEndTime).isAfter(moment());
+  const { width } = useWindowDimensions();
 
   return (
     <ModalBase
@@ -179,7 +186,7 @@ export const GovernanceDetails: React.FC<{
       }}
       label="Governance Details"
       visible={displayPopup}
-      width={1300}
+      width={width < 1400 ? modalWidthRatio * width : 1300}
     >
       <View
         style={{
@@ -275,342 +282,369 @@ export const GovernanceDetails: React.FC<{
         )}
       </View>
 
-      <View
-        style={{
-          flexDirection: "row",
-          display: "flex",
-          width: "70%",
-          paddingTop: 20,
-          right: "0.5%",
-          justifyContent: "space-evenly",
-          alignContent: "center",
-          flexWrap: "wrap",
-        }}
-      >
-        <View>
-          <BrandText
-            style={{
-              fontSize: 12,
-              color: "#808080",
-            }}
-          >
-            Submit Time
-          </BrandText>
-          <BrandText
-            style={{
-              fontSize: 13,
-            }}
-          >
-            {votingSubmitTime.slice(0, 10)}
-            {"\u00A0"}
-            {votingSubmitTime.slice(11, 16)}
-            {"\u00A0"} UTC
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: 35,
-            height: 0,
-            borderWidth: 0.5,
-            borderColor: "#808080",
-            transform: [{ rotate: "90deg" }],
-            marginTop: 15,
-          }}
-        />
-
-        <View>
-          <BrandText
-            style={{
-              fontSize: 12,
-              color: "#808080",
-            }}
-          >
-            Deposit End Time
-          </BrandText>
-          <BrandText
-            style={{
-              fontSize: 13,
-            }}
-          >
-            {votingDepositEndTime.slice(0, 10)}
-            {"\u00A0"}
-            {votingDepositEndTime.slice(11, 16)}
-            {"\u00A0"} UTC
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: 35,
-            height: 0,
-            borderWidth: 0.5,
-            borderColor: "#808080",
-            transform: [{ rotate: "90deg" }],
-            marginTop: 15,
-          }}
-        />
-
-        <View>
-          <BrandText
-            style={{
-              fontSize: 12,
-              color: "#808080",
-            }}
-          >
-            Voting Start
-          </BrandText>
-          <BrandText
-            style={{
-              fontSize: 13,
-            }}
-          >
-            {votingStartTime.slice(0, 10)}
-            {"\u00A0"}
-            {votingStartTime.slice(11, 16)}
-            {"\u00A0"} UTC
-          </BrandText>
-        </View>
-        <View
-          style={{
-            width: 35,
-            height: 0,
-            borderWidth: 0.5,
-            borderColor: "#808080",
-            transform: [{ rotate: "90deg" }],
-            marginTop: 15,
-          }}
-        />
-
-        <View>
-          <BrandText
-            style={{
-              fontSize: 12,
-              color: "#808080",
-            }}
-          >
-            Voting End
-          </BrandText>
-          <BrandText
-            style={{
-              fontSize: 13,
-            }}
-          >
-            {votingEndTime.slice(0, 10)}
-            {"\u00A0"}
-            {votingEndTime.slice(11, 16)}
-            {"\u00A0"} UTC
-          </BrandText>
-        </View>
-      </View>
-
-      <TertiaryBox
-        width={1240}
-        height={196}
-        style={{ right: "-0.5%", marginTop: 25 }}
-      >
+      <ScrollView horizontal>
         <View
           style={{
             flexDirection: "row",
             display: "flex",
-            width: "23%",
-            paddingTop: 0,
-            right: "22%",
-            bottom: 35,
-            justifyContent: "space-evenly",
-            alignContent: "center",
-            flexWrap: "wrap",
+            width: "100%",
+            paddingTop: 20,
+            alignItems: "center",
           }}
         >
           <View>
             <BrandText
               style={{
-                fontSize: 20,
+                fontSize: 12,
                 color: "#808080",
               }}
             >
-              Total
+              Submit Time
+            </BrandText>
+            <BrandText
+              style={{
+                fontSize: 13,
+              }}
+            >
+              {votingSubmitTime.slice(0, 10)}
+              {"\u00A0"}
+              {votingSubmitTime.slice(11, 16)}
+              {"\u00A0"} UTC
             </BrandText>
           </View>
+          <View
+            style={{
+              width: 35,
+              height: 0,
+              borderWidth: 0.5,
+              borderColor: "#808080",
+              transform: [{ rotate: "90deg" }],
+            }}
+          />
+
           <View>
             <BrandText
               style={{
-                fontSize: 20,
+                fontSize: 12,
+                color: "#808080",
               }}
             >
-              {totalParticipant}
+              Deposit End Time
+            </BrandText>
+            <BrandText
+              style={{
+                fontSize: 13,
+              }}
+            >
+              {votingDepositEndTime.slice(0, 10)}
+              {"\u00A0"}
+              {votingDepositEndTime.slice(11, 16)}
+              {"\u00A0"} UTC
+            </BrandText>
+          </View>
+          <View
+            style={{
+              width: 35,
+              height: 0,
+              borderWidth: 0.5,
+              borderColor: "#808080",
+              transform: [{ rotate: "90deg" }],
+            }}
+          />
+
+          <View>
+            <BrandText
+              style={{
+                fontSize: 12,
+                color: "#808080",
+              }}
+            >
+              Voting Start
+            </BrandText>
+            <BrandText
+              style={{
+                fontSize: 13,
+              }}
+            >
+              {votingStartTime.slice(0, 10)}
+              {"\u00A0"}
+              {votingStartTime.slice(11, 16)}
+              {"\u00A0"} UTC
+            </BrandText>
+          </View>
+          <View
+            style={{
+              width: 35,
+              height: 0,
+              borderWidth: 0.5,
+              borderColor: "#808080",
+              transform: [{ rotate: "90deg" }],
+            }}
+          />
+
+          <View>
+            <BrandText
+              style={{
+                fontSize: 12,
+                color: "#808080",
+              }}
+            >
+              Voting End
+            </BrandText>
+            <BrandText
+              style={{
+                fontSize: 13,
+              }}
+            >
+              {votingEndTime.slice(0, 10)}
+              {"\u00A0"}
+              {votingEndTime.slice(11, 16)}
+              {"\u00A0"} UTC
             </BrandText>
           </View>
         </View>
+      </ScrollView>
 
+      <View
+        style={{
+          position: "relative",
+          width: width < 1400 ? modalWidthRatio * width - 40 : 1240,
+          marginTop: 20,
+        }}
+      >
         <View
           style={{
-            width: 210,
             position: "absolute",
-            left: 5,
-          }}
-        >
-          <VictoryPie
-            innerRadius={70}
-            colorScale={["#16BBFF", "#EAA54B", "#808080"]}
-            data={[
-              { x: "Pourcentage Yes", y: valueChartYes },
-              { x: "Pourcentage No", y: valueChartNo },
-              { x: "Pourcentage Abstain", y: valueChartAbstain },
-            ]}
-            labels={() => null}
-          />
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
             display: "flex",
-            justifyContent: "space-evenly",
-            alignItems: "center",
-            backgroundColor: "#171717",
-            borderRadius: 100,
-            height: 27,
-            width: 125,
-            bottom: 25,
-            right: "28%",
-          }}
-        >
-          <BrandText
-            style={{
-              fontSize: 13,
-              color: "#777777",
-            }}
-          >
-            Turnout:
-          </BrandText>
-          <BrandText
-            style={{
-              fontSize: 13,
-            }}
-          >
-            {percentageTotalParticipant}
-          </BrandText>
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            display: "flex",
-            width: "60%",
-            top: 20,
-            right: "4%",
-            justifyContent: "space-evenly",
-            alignContent: "center",
-            flexWrap: "wrap",
+            flexDirection: width < 1000 ? "column" : "row",
+            zIndex: 999,
           }}
         >
           <View
             style={{
-              width: 12,
-              height: 12,
-              backgroundColor: "#16BBFF",
-              borderRadius: 12,
-            }}
-          />
-          <BrandText
-            style={{
-              fontSize: 14,
+              width: 210,
+              margin: "auto",
             }}
           >
-            Yes {percentageYes}
-          </BrandText>
+            <VictoryPie
+              innerRadius={70}
+              colorScale={["#16BBFF", "#EAA54B", "#808080"]}
+              data={[
+                { x: "Pourcentage Yes", y: valueChartYes },
+                { x: "Pourcentage No", y: valueChartNo },
+                { x: "Pourcentage Abstain", y: valueChartAbstain },
+              ]}
+              labels={() => null}
+            />
+          </View>
 
           <View
             style={{
-              width: 40,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              top: 10,
-            }}
-          />
-
-          <View
-            style={{
-              width: 12,
-              height: 12,
-              backgroundColor: "#EAA54B",
-              borderRadius: 12,
-            }}
-          />
-          <BrandText
-            style={{
-              fontSize: 14,
+              paddingVertical: 15,
+              width:
+                width < 1400
+                  ? width < 1000
+                    ? "90%"
+                    : modalWidthRatio * width - 60 - 210
+                  : 1240 - 210,
+              margin: "auto",
             }}
           >
-            Yes {percentageNo}
-          </BrandText>
+            <View
+              style={{
+                flexDirection: "row",
+                display: "flex",
+                alignContent: "center",
+              }}
+            >
+              <BrandText
+                style={{
+                  fontSize: 20,
+                  color: "#808080",
+                  marginRight: 30,
+                }}
+              >
+                Total
+              </BrandText>
+              <BrandText
+                style={{
+                  fontSize: 20,
+                }}
+              >
+                {totalParticipant}
+              </BrandText>
+            </View>
 
-          <View
-            style={{
-              width: 40,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              top: 10,
-            }}
-          />
+            <View
+              style={{
+                flexDirection: "row",
+                display: "flex",
+                justifyContent: "space-evenly",
+                alignItems: "center",
+                backgroundColor: "#171717",
+                borderRadius: 100,
+                height: 27,
+                width: 125,
+                marginTop: 10,
+              }}
+            >
+              <BrandText
+                style={{
+                  fontSize: 13,
+                  color: "#777777",
+                }}
+              >
+                Turnout:
+              </BrandText>
+              <BrandText
+                style={{
+                  fontSize: 13,
+                }}
+              >
+                {percentageTotalParticipant}
+              </BrandText>
+            </View>
 
-          <View
-            style={{
-              width: 12,
-              height: 12,
-              backgroundColor: "#F46F76",
-              borderRadius: 12,
-            }}
-          />
-          <BrandText
-            style={{
-              fontSize: 14,
-            }}
-          >
-            NoWithVeto {percentageNoWithVeto}
-          </BrandText>
+            <ScrollView horizontal>
+              <View
+                style={{
+                  flexDirection: "row",
+                  display: "flex",
+                  marginTop: 20,
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    backgroundColor: "#16BBFF",
+                    borderRadius: 12,
+                  }}
+                />
+                <BrandText
+                  style={{
+                    fontSize: 14,
+                    marginLeft: 20,
+                  }}
+                >
+                  Yes {percentageYes}
+                </BrandText>
 
-          <View
-            style={{
-              width: 40,
-              height: 0,
-              borderWidth: 0.5,
-              borderColor: "#808080",
-              transform: [{ rotate: "90deg" }],
-              top: 10,
-            }}
-          />
+                <View
+                  style={{
+                    width: 1,
+                    height: "100%",
+                    backgroundColor: "#808080",
+                    marginHorizontal: 20,
+                  }}
+                />
 
-          <View
-            style={{
-              width: 12,
-              height: 12,
-              backgroundColor: "#333333",
-              borderRadius: 12,
-            }}
-          />
-          <BrandText
-            style={{
-              fontSize: 14,
-            }}
-          >
-            NoWithVeto {percentageNoWithVeto}
-          </BrandText>
+                <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    backgroundColor: "#EAA54B",
+                    borderRadius: 12,
+                  }}
+                />
+                <BrandText
+                  style={{
+                    fontSize: 14,
+                    marginLeft: 20,
+                  }}
+                >
+                  Yes {percentageNo}
+                </BrandText>
+
+                <View
+                  style={{
+                    width: 1,
+                    height: "100%",
+                    backgroundColor: "#808080",
+                    marginHorizontal: 20,
+                  }}
+                />
+
+                <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    backgroundColor: "#F46F76",
+                    borderRadius: 12,
+                  }}
+                />
+                <BrandText
+                  style={{
+                    fontSize: 14,
+                    marginLeft: 20,
+                  }}
+                >
+                  NoWithVeto {percentageNoWithVeto}
+                </BrandText>
+
+                <View
+                  style={{
+                    width: 1,
+                    height: "100%",
+                    backgroundColor: "#808080",
+                    marginHorizontal: 20,
+                  }}
+                />
+
+                <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    backgroundColor: "#333333",
+                    borderRadius: 12,
+                  }}
+                />
+                <BrandText
+                  style={{
+                    fontSize: 14,
+                    marginLeft: 20,
+                  }}
+                >
+                  NoWithVeto {percentageNoWithVeto}
+                </BrandText>
+              </View>
+            </ScrollView>
+
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: width < 1000 ? "center" : "flex-end",
+                width: "100%",
+                paddingRight: width < 1000 ? 0 : 30,
+                marginTop: 20,
+              }}
+            >
+              {/* {canVoteDeposit() && ( */}
+              {1 && (
+                <PrimaryButton
+                  width={150}
+                  size="XS"
+                  text="Vote"
+                  onPress={() => activeVote()}
+                />
+              )}
+            </View>
+          </View>
         </View>
 
-        {canVoteDeposit() && (
-          <PrimaryButton
-            width={150}
-            size="XL"
-            style={{ position: "absolute", left: 510, bottom: -40 }}
-            text="Vote"
-            onPress={() => activeVote()}
-          />
-        )}
-      </TertiaryBox>
+        <TertiaryBox
+          // width={1240}
+          width={width < 1400 ? modalWidthRatio * width - 40 : 1260}
+          height={width < 1000 ? 440 : 216}
+        />
+      </View>
 
       {activeConfirmationVotePopup()}
 
@@ -618,7 +652,7 @@ export const GovernanceDetails: React.FC<{
         onClose={() => setdisplayVote(false)}
         label="Your vote"
         visible={displayVote}
-        width={372}
+        width={width < smallMobileWidth ? modalWidthRatio * width : 480}
         childrenBottom={
           <>
             <Separator />
@@ -630,8 +664,7 @@ export const GovernanceDetails: React.FC<{
                 justifyContent: "space-evenly",
                 alignItems: "center",
                 height: 70,
-                width: 480,
-                right: 50,
+                width: "100%",
               }}
             >
               <View>
@@ -797,11 +830,16 @@ export const GovernanceDetails: React.FC<{
         </View>
       </ModalBase>
 
-      <ScrollView style={{ height: 260, marginBottom: 50 }}>
-        <View style={{ width: 1200, marginTop: 50 }}>
+      <ScrollView style={{ marginBottom: width < smallMobileWidth ? 20 : 50 }}>
+        <View
+          style={{
+            width: "100%",
+            marginTop: width < smallMobileWidth ? 20 : 50,
+          }}
+        >
           <BrandText
             style={{
-              fontSize: 16,
+              fontSize: width < smallMobileWidth ? 12 : 16,
               color: "#777777",
             }}
           >

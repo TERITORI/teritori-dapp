@@ -42,6 +42,24 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
   onPressUndelegate,
   onPressRedelegate,
 }) => {
+  const { width } = useWindowDimensions();
+  const styles = StyleSheet.create({
+    footerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: layout.padding_x2_5,
+      flexWrap: width < smallMobileWidth ? "wrap" : "nowrap",
+    },
+    container: {
+      width: width < smallMobileWidth ? modalWidthRatio * width - 40 : 446,
+    },
+    alternateText: { color: neutral77, flexShrink: 1 },
+    rowWithCenter: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+  });
   const imageURL = useKeybaseAvatarURL(data?.identity || "");
   // returns
   const Header = useCallback(
@@ -66,7 +84,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
         </View>
       </>
     ),
-    [data, imageURL]
+    [data, imageURL, width, styles]
   );
 
   const Footer = useCallback(
@@ -81,13 +99,13 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
               justifyContent: "space-between",
             }}
           >
-          <PrimaryButton size="SM" text="Close" onPress={onClose} />
-          <SpacerRow size={2} />
-          <SecondaryButton
-            size="SM"
-            text="Undelegate"
-            onPress={onPressUndelegate}
-          />
+            <PrimaryButton size="SM" text="Close" onPress={onClose} />
+            <SpacerRow size={2} />
+            <SecondaryButton
+              size="SM"
+              text="Undelegate"
+              onPress={onPressUndelegate}
+            />
           </View>
           <SpacerRow size={2} />
           <View
@@ -98,43 +116,30 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
               marginTop: width < smallMobileWidth ? 20 : 0,
             }}
           >
-          <SecondaryButton
-            size="SM"
-            text="Redelegate"
-            onPress={onPressRedelegate}
-          />
-          <SpacerRow size={2} />
-          <SecondaryButton
-            size="SM"
-            text="Delegate"
-            onPress={onPressDelegate}
-          />
-        </View>
+            <SecondaryButton
+              size="SM"
+              text="Redelegate"
+              onPress={onPressRedelegate}
+            />
+            <SpacerRow size={2} />
+            <SecondaryButton
+              size="SM"
+              text="Delegate"
+              onPress={onPressDelegate}
+            />
+          </View>
         </View>
       </View>
     ),
-    [onClose, onPressDelegate, onPressRedelegate, onPressUndelegate]
+    [
+      onClose,
+      onPressDelegate,
+      onPressRedelegate,
+      onPressUndelegate,
+      width,
+      styles,
+    ]
   );
-
-  const { width } = useWindowDimensions();
-
-  const styles = StyleSheet.create({
-    footerRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: layout.padding_x2_5,
-      flexWrap: width < smallMobileWidth ? "wrap" : "nowrap",
-    },
-    container: {
-      width: width < smallMobileWidth ? modalWidthRatio * width - 40 : 446,
-    },
-    alternateText: { color: neutral77, flexShrink: 1 },
-    rowWithCenter: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-  });
 
   return (
     <ModalBase
