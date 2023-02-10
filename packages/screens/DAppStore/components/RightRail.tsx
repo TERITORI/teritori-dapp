@@ -16,41 +16,36 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
     <View
       style={{
         flex: 1,
-        marginLeft: "3em",
         minHeight: 250,
         maxWidth: 1024,
+        paddingLeft: layout.padding_x3,
         paddingTop: layout.padding_x4,
       }}
     >
       {Object.values(availableApps).map((element, index) => {
         return element.active ? (
-          <View
-            style={{
-              marginBottom: layout.padding_x2,
-            }}
-            key={index}
-          >
-            <BrandText
+          <View key={index}>
+            <View
               style={{
-                height: layout.padding_x4 + layout.padding_x4,
-                display: "flex",
+                flexDirection: "row",
                 alignItems: "center",
+                marginBottom: layout.padding_x2_5,
               }}
             >
               <SVGorImageIcon
                 icon={element.icon}
                 key={element.id}
-                iconSize={32}
+                iconSize={24}
                 style={{
-                  marginRight: layout.padding_x1,
+                  marginRight: layout.padding_x1_5,
                 }}
               />
-              {element.groupName}
-            </BrandText>
+              <BrandText>{element.groupName}</BrandText>
+            </View>
             <View
               style={{
                 flex: 1,
-                marginBottom: layout.padding_x2,
+                marginBottom: layout.padding_x2_5,
                 flexDirection: "row",
                 flexWrap: "wrap",
               }}
@@ -60,7 +55,16 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                   option.title.toLowerCase().includes(searchInput.toLowerCase())
                 )
                 .map((option: dAppType, index: React.Key) => {
-                  return <DAppBox key={index} option={option} />;
+                  return (
+                    <DAppBox
+                      key={index}
+                      option={option}
+                      style={{
+                        marginRight: layout.padding_x2_5,
+                        marginBottom: layout.padding_x2_5,
+                      }}
+                    />
+                  );
                 })}
             </View>
           </View>

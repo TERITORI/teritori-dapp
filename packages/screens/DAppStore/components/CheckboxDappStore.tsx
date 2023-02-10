@@ -1,23 +1,45 @@
-import Checkbox from "expo-checkbox";
-import React from "react";
-import { View } from "react-native";
+import { StyleProp, ViewStyle, StyleSheet, View } from "react-native";
 
-import { gradientColorBlue, neutral44 } from "../../../utils/style/colors";
+import checkSVG from "../../../../assets/icons/check.svg";
+import { SVG } from "../../../components/SVG";
+import {
+  neutral17,
+  neutralA3,
+  primaryColor,
+  secondaryColor,
+} from "../../../utils/style/colors";
 
-export function CheckboxDappStore({
-  isChecked,
-  styles,
-}: {
-  isChecked: boolean;
-  styles: any;
-}) {
+export const CheckboxDappStore: React.FC<{
+  isChecked?: boolean;
+  style?: StyleProp<ViewStyle>;
+}> = ({ isChecked = false, style }) => {
   return (
-    <View style={styles.container}>
-      <Checkbox
-        style={[styles.checkbox]}
-        value={isChecked}
-        color={isChecked ? gradientColorBlue : neutral44}
-      />
+    <View
+      style={[
+        styles.container,
+        isChecked && {
+          backgroundColor: primaryColor,
+          borderColor: primaryColor,
+        },
+        style,
+      ]}
+    >
+      {isChecked && (
+        <SVG source={checkSVG} width={12} height={12} fill={secondaryColor} />
+      )}
     </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    width: 20,
+    height: 20,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: neutralA3,
+    backgroundColor: neutral17,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

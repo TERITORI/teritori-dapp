@@ -1,10 +1,10 @@
+import dappStoreSVG from "../../assets/icons/dapp-store.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
 import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
-import marketplaceSVG from "../../assets/icons/marketplace.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
 import riotersGameSVG from "../../assets/icons/rioters-game.svg";
 import stakingSVG from "../../assets/icons/staking.svg";
@@ -96,9 +96,9 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     icon: rioterFooterSVG,
   },
   DAppsStore: {
-    title: "dApps Store",
-    id: "dApps Store",
+    title: "dApp Store",
+    id: "dApp Store",
     route: "DAppStore",
-    icon: marketplaceSVG,
+    icon: dappStoreSVG,
   },
 };

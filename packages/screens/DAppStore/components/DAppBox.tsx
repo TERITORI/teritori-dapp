@@ -1,45 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableHighlight, View } from "react-native";
+import { StyleProp, TouchableHighlight, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import {
   selectCheckedApps,
   setCheckedApp,
 } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
-import {
-  mineShaftColor,
-  neutral17,
-  neutral67,
-  withAlpha,
-} from "../../../utils/style/colors";
-import { fontMedium14, fontSemibold12 } from "../../../utils/style/fonts";
+import { neutral00, neutral17, neutral77 } from "../../../utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { dAppType } from "../types";
 import { CheckboxDappStore } from "./CheckboxDappStore";
 
-const checkBoxStyles = StyleSheet.create({
-  container: {
-    marginHorizontal: layout.padding_x2,
-    marginVertical: layout.padding_x4,
-  },
-  checkbox: {
-    margin: layout.padding_x1,
-    width: layout.padding_x2_5,
-    height: layout.padding_x2_5,
-    borderRadius: 4,
-    borderWidth: 1,
-  },
-});
-
-export function DAppBox({
-  option: { description, groupKey, icon, id, title },
-}: {
+export const DAppBox: React.FC<{
   option: dAppType;
-}) {
+  style?: StyleProp<ViewStyle>;
+}> = ({ option: { description, groupKey, icon, id, title }, style }) => {
   const selectedApps = useSelector(selectCheckedApps);
   const dispatch = useAppDispatch();
   const draggableId = `${groupKey}*SEPARATOR*${id}`;
@@ -55,67 +36,64 @@ export function DAppBox({
 
   useEffect(() => {
     setChecked(selectedApps.includes(draggableId));
-  }, [selectedApps]);
+  }, [selectedApps, draggableId]);
 
   return (
     <TouchableHighlight onPress={handleClick}>
-      <SecondaryBox
-        height={85}
-        width={320}
+      <TertiaryBox
+        height={88}
+        width={306}
         noBrokenCorners
-        style={{
-          marginRight: 12,
-          marginBottom: 12,
-        }}
+        style={style}
         mainContainerStyle={{
-          alignItems: "flex-start",
-          padding: layout.padding_x1,
-          borderRadius: 22,
-          borderColor: mineShaftColor,
-          backgroundColor: isChecked ? withAlpha(neutral17, 0.64) : undefined,
-          borderWidth: 1,
+          alignItems: "center",
+          justifyContent: "space-between",
+          flex: 1,
+          flexDirection: "row",
+          paddingVertical: layout.padding_x1_5,
+          paddingLeft: layout.padding_x1_5,
+          paddingRight: layout.padding_x2_5,
+          borderRadius: 20,
+          backgroundColor: isChecked ? neutral17 : neutral00,
         }}
       >
-        <View
-          style={{ flexDirection: "row", alignItems: "center", width: "100%" }}
-        >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SecondaryBox
             noBrokenCorners
-            style={{ marginLeft: 6 }}
             mainContainerStyle={{
-              backgroundColor: withAlpha(neutral17, 0.64),
-              borderRadius: 6,
-              padding: 6,
+              backgroundColor: neutral17,
+              borderRadius: 12,
+              padding: layout.padding_x1,
             }}
             width={64}
             height={64}
-            cornerWidth={5.5}
           >
             <SVGorImageIcon icon={icon} iconSize={48} />
           </SecondaryBox>
           <View
             style={{
-              flexDirection: "column",
-              marginLeft: layout.padding_x2,
-              width: "50%",
+              marginHorizontal: layout.padding_x2,
+              maxWidth: 158,
+              width: "100%",
             }}
           >
-            <BrandText style={[fontMedium14]} numberOfLines={1}>
+            <BrandText style={fontSemibold14} numberOfLines={1}>
               {title}
             </BrandText>
             <BrandText
+              isTicker
               style={[
-                fontSemibold12,
-                { color: neutral67, marginTop: layout.padding_x0_5 },
+                fontSemibold13,
+                { color: neutral77, marginTop: layout.padding_x0_5 },
               ]}
-              numberOfLines={1}
             >
               {description}
             </BrandText>
           </View>
-          <CheckboxDappStore isChecked={isChecked} styles={checkBoxStyles} />
         </View>
-      </SecondaryBox>
+
+        <CheckboxDappStore isChecked={isChecked} />
+      </TertiaryBox>
     </TouchableHighlight>
   );
-}
+};

@@ -104,7 +104,7 @@ export const Sidebar: React.FC = () => {
       };
     });
     return dynamicAppsSelection;
-  }, [selectedApps]);
+  }, [selectedApps, availableApps]);
 
   // returns
   return (

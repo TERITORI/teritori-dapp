@@ -25,20 +25,21 @@ export const LeftRail = () => {
     <View
       style={{
         flex: 1,
-        marginLeft: layout.padding_x4,
+        marginLeft: layout.padding_x3,
         marginRight: layout.padding_x2,
         paddingTop: layout.padding_x4,
         maxWidth: 300,
         height: "100%",
       }}
     >
-      <BrandText style={{ height: 32 }}>dApps in sidebar</BrandText>
+      <BrandText style={{ marginBottom: layout.padding_x2_5 }}>
+        dApps in sidebar
+      </BrandText>
       {selectedApps.length > 0 && Object.keys(availableApps).length > 0 ? (
         <DraxProvider>
           <View
             style={{
               minHeight: 250,
-              paddingTop: layout.padding_x4,
             }}
           >
             <DraxList

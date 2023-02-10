@@ -1,35 +1,32 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
 import { useDropdowns } from "../../../context/DropdownsProvider";
 import {
   selectAvailableApps,
   setAvailableApps,
 } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
-import { neutral17, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold12 } from "../../../utils/style/fonts";
+import {
+  neutral33,
+  neutralA3,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { CheckboxDappStore } from "./CheckboxDappStore";
 
-const checkBoxStyles = StyleSheet.create({
-  container: {},
-  checkbox: {
-    margin: layout.padding_x1,
-    width: layout.padding_x2_5,
-    height: layout.padding_x2_5,
-    borderRadius: 4,
-    borderWidth: 1,
-  },
-});
-
-function SelectableOption({ id, name }: { name: string; id: string }) {
+const SelectableOption: React.FC<{
+  name: string;
+  id: string;
+  style?: StyleProp<ViewStyle>;
+}> = ({ id, name, style }) => {
   const availableApps = useSelector(selectAvailableApps);
   const dispatch = useAppDispatch();
   const group = { ...availableApps[id] };
@@ -46,19 +43,20 @@ function SelectableOption({ id, name }: { name: string; id: string }) {
 
   useEffect(() => {
     setChecked(group.active);
-  }, [availableApps]);
+  }, [group.active]);
 
   return (
-    <Pressable onPress={handleClick}>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <CheckboxDappStore isChecked={isChecked} styles={checkBoxStyles} />
-        <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
-          {name}
-        </BrandText>
-      </View>
-    </Pressable>
+    <TouchableOpacity
+      onPress={handleClick}
+      style={[{ flexDirection: "row", alignItems: "center" }, style]}
+    >
+      <CheckboxDappStore isChecked={isChecked} />
+      <BrandText style={[fontSemibold13, { marginLeft: 12, color: neutralA3 }]}>
+        {name}
+      </BrandText>
+    </TouchableOpacity>
   );
-}
+};
 
 export const DropdownDappsStoreFilter: React.FC = () => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
@@ -76,8 +74,8 @@ export const DropdownDappsStoreFilter: React.FC = () => {
       ref={dropdownRef}
       style={{
         alignSelf: "flex-end",
-        marginRight: layout.padding_x2_5,
-        marginBottom: layout.padding_x1_5,
+        marginRight: layout.padding_x3,
+        marginBottom: layout.padding_x2,
       }}
     >
       <TouchableOpacity
@@ -88,7 +86,7 @@ export const DropdownDappsStoreFilter: React.FC = () => {
         activeOpacity={1}
         onPress={() => onPressDropdownButton(dropdownRef)}
       >
-        <BrandText style={{ fontSize: layout.padding_x1_5 }}>
+        <BrandText style={[fontSemibold14, { marginRight: layout.padding_x1 }]}>
           All dApps
         </BrandText>
         <SVG
@@ -100,27 +98,26 @@ export const DropdownDappsStoreFilter: React.FC = () => {
       </TouchableOpacity>
 
       {isDropdownOpen(dropdownRef) && (
-        <TertiaryBox
-          width={210}
+        <SecondaryBox
+          noBrokenCorners
+          width={248}
           style={{ position: "absolute", top: 29, right: -14 }}
           mainContainerStyle={{
-            paddingHorizontal: layout.padding_x3,
-            paddingTop: layout.padding_x1,
-            paddingBottom: layout.padding_x1,
-            backgroundColor: neutral17,
+            paddingHorizontal: layout.padding_x1_5,
+            paddingTop: layout.padding_x1_5,
+            backgroundColor: neutral33,
             alignItems: "flex-start",
           }}
         >
-          {options.map((option) => {
-            return (
-              <SelectableOption
-                key={option.id}
-                name={option.name}
-                id={option.id}
-              />
-            );
-          })}
-        </TertiaryBox>
+          {options.map((option) => (
+            <SelectableOption
+              style={{ marginBottom: layout.padding_x1_5 }}
+              key={option.id}
+              name={option.name}
+              id={option.id}
+            />
+          ))}
+        </SecondaryBox>
       )}
     </View>
   );

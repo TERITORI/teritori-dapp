@@ -6,12 +6,11 @@ import { Hoverable } from "react-native-hoverable";
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { setCheckedApp } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import {
   errorColor,
-  mineShaftColor,
-  neutral17,
   neutral33,
   neutral44,
   neutral67,
@@ -65,21 +64,13 @@ export function SelectedDraggable({
         <TouchableOpacity onPress={deleteFromList}>
           <SecondaryBox
             noBrokenCorners
-            style={{
-              marginLeft: 6,
-              ...Platform.select({
-                web: {
-                  cursor: "pointer",
-                },
-              }),
-            }}
             mainContainerStyle={{
               backgroundColor: !showTrashIcon
                 ? withAlpha(neutral33, 0.64)
                 : withAlpha(errorColor, 0.14),
             }}
             width={32}
-            height={50}
+            height={48}
           >
             <BrandText
               style={[fontBold12, { color: neutral67 }]}
@@ -90,64 +81,41 @@ export function SelectedDraggable({
           </SecondaryBox>
         </TouchableOpacity>
       </Hoverable>
-      <SecondaryBox
-        height={50}
+
+      <TertiaryBox
+        height={48}
         width={256}
         noBrokenCorners
         style={{
-          marginLeft: 5,
+          marginLeft: layout.padding_x1,
+          ...Platform.select({
+            web: {
+              cursor: "grab",
+            },
+          }),
         }}
         mainContainerStyle={{
-          alignItems: "flex-start",
-          borderRadius: 8,
-          borderColor: mineShaftColor,
-          borderWidth: 1,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingVertical: layout.padding_x1_5,
+          paddingLeft: layout.padding_x1_5,
+          paddingRight: layout.padding_x2,
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <SecondaryBox
-            noBrokenCorners
-            style={{ marginLeft: 6 }}
-            mainContainerStyle={{
-              backgroundColor: withAlpha(neutral17, 0.64),
-              padding: 2,
-            }}
-            width={32}
-            height={32}
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <SVGorImageIcon icon={icon} iconSize={24} />
+
+          <BrandText
+            style={[fontBold12, { marginLeft: layout.padding_x1_5 }]}
+            numberOfLines={1}
           >
-            <SVGorImageIcon icon={icon} iconSize={32} />
-          </SecondaryBox>
-          <View
-            style={{
-              flexDirection: "column",
-              marginLeft: 16,
-              width: "58%",
-            }}
-          >
-            <BrandText style={[fontBold12]} numberOfLines={1}>
-              {title}
-            </BrandText>
-          </View>
-          <View
-            style={{
-              marginLeft: 6,
-              ...Platform.select({
-                web: {
-                  cursor: "grab",
-                },
-              }),
-            }}
-          >
-            <Bars3Icon size={24} fill={neutral44} />
-          </View>
+            {title}
+          </BrandText>
         </View>
-      </SecondaryBox>
+
+        <Bars3Icon size={24} fill={neutral44} />
+      </TertiaryBox>
     </Hoverable>
   );
 }

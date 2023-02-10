@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { BrandText } from "../../../components/BrandText";
 import { SearchInput } from "../../../components/sorts/SearchInput";
 import { fontSemibold28 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { DropdownDappsStoreFilter } from "./Dropdown";
 
 export function Header({
@@ -29,7 +30,13 @@ export function Header({
       <BrandText style={fontSemibold28}>dApp Store</BrandText>
 
       <SearchInput
-        style={{ width: 480, marginTop: 32, marginBottom: 32 }}
+        style={{
+          width: 432,
+          marginTop: layout.padding_x3,
+          marginBottom: layout.padding_x1,
+          height: 40,
+        }}
+        borderRadius={12}
         handleChangeText={handleChangeText}
       />
 

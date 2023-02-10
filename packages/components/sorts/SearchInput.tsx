@@ -9,16 +9,18 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SearchInput: React.FC<{
   style?: StyleProp<ViewStyle>;
+  borderRadius?: number;
   handleChangeText?: (e: string) => void;
-}> = (props) => {
+}> = ({ handleChangeText, borderRadius, style }) => {
   return (
     <TertiaryBox
-      style={props.style}
-      height={48}
+      style={style}
+      height={40}
       mainContainerStyle={{
         padding: 12,
         flexDirection: "row",
         alignItems: "center",
+        borderRadius,
       }}
       fullWidth
     >
@@ -28,7 +30,7 @@ export const SearchInput: React.FC<{
       />
       <TextInput
         placeholder="Search..."
-        onChangeText={props.handleChangeText}
+        onChangeText={handleChangeText}
         placeholderTextColor="#FFFFFF"
         style={textInputStyle}
       />
