@@ -111,17 +111,22 @@ func resetLeaderboard(seasonId string, db *gorm.DB) error {
 
 func updateLeaderboard(seasonId string, db *gorm.DB) error {
 	now := time.Now()
-	currentTimestamp := now.Unix()
-	dayBeginning := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	dayBeginning = dayBeginning.Add(-1 * time.Minute) // We reset at 23h59 so adjust beginning of day to that time
-	dayBeginningTimestamp := dayBeginning.Unix()
 
-	// Update Rules:
-	// - For S3: because we reset at midnight so the rule is:
-	//   + start < current begin of day => start = current begin of day of end time
-	//   + start > current begin of day => start = start
-	// - If staking is in progress => in progress duration = current - start_time
-	// - If staking ends => if progress duration = end_time - start_time
+	currentTimestamp := now.Unix()
+	dayBeginningTimestamp := time.Date(now.UTC().Year(), now.UTC().Month(), now.UTC().Day(), 0, 0, 0, 0, time.UTC).Unix()
+
+	// S3 Rules:
+	// - duration = (current/end - start/dayBegin)
+	// - start is always < end and < current
+	// - current is always >= dayBegin
+	// All possibles cases:
+	// - start     -> dayBegin  -> current   -> end         Duration: current - dayBegin > 0                     Tested
+	// - start     -> dayBegin  -> end       -> current     Duration: end - dayBegin  > 0                        Tested
+	// - start     -> end       -> dayBegin  -> current     Duration: end - dayBegin < 0 => duration = 0         Tested
+	// - dayBegin  -> start     -> current   -> end         Duration: current - start > 0
+	// - dayBegin  -> start     -> end       -> current     Duration: end - start > 0
+	// Result: GREATEST (duration, 0)
+
 	updateScoreErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET 
@@ -130,7 +135,7 @@ func updateLeaderboard(seasonId string, db *gorm.DB) error {
 			SELECT
 				owner_id, 
 				season_id, 
-				SUM( LEAST(ss.end_time - ss.start_time, ? - ss.start_time, ss.end_time - ?, ? - ?) ) as in_progress
+				SUM( GREATEST ( LEAST( ?, ss.end_time ) - GREATEST( ?, ss.start_time ) , 0 ) ) as in_progress
 			FROM p2e_squad_stakings as ss
 			GROUP BY owner_id, season_id
 		) as aggregated_ss
@@ -138,8 +143,6 @@ func updateLeaderboard(seasonId string, db *gorm.DB) error {
 			AND lb.season_id = aggregated_ss.season_id
 			AND lb.season_id = ?
 	`,
-		currentTimestamp,
-		dayBeginningTimestamp,
 		currentTimestamp,
 		dayBeginningTimestamp,
 		seasonId,
