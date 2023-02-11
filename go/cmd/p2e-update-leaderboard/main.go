@@ -123,8 +123,8 @@ func updateLeaderboard(seasonId string, db *gorm.DB) error {
 	// - start     -> dayBegin  -> current   -> end         Duration: current - dayBegin > 0                     Tested
 	// - start     -> dayBegin  -> end       -> current     Duration: end - dayBegin  > 0                        Tested
 	// - start     -> end       -> dayBegin  -> current     Duration: end - dayBegin < 0 => duration = 0         Tested
-	// - dayBegin  -> start     -> current   -> end         Duration: current - start > 0
-	// - dayBegin  -> start     -> end       -> current     Duration: end - start > 0
+	// - dayBegin  -> start     -> current   -> end         Duration: current - start > 0                        Tested
+	// - dayBegin  -> start     -> end       -> current     Duration: end - start > 0                            Tested
 	// Result: GREATEST (duration, 0)
 
 	updateScoreErr := db.Exec(`
