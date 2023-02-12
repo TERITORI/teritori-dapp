@@ -18,7 +18,7 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { SpacerRow } from "../../../components/spacer";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
-import { getRipperTokenId } from "../../../utils/game";
+import { getRipperTokenId, isNFTStaked } from "../../../utils/game";
 import {
   neutral00,
   withAlpha,
@@ -140,6 +140,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   size={RIPPER_IMAGE_SIZE}
                   rounded
                   containerStyle={styles.roundedContainer}
+                  isStaked={isNFTStaked(selectedRipper)}
                 />
               </ImageBackground>
 

@@ -8,6 +8,7 @@ import {
 import {
   THE_RIOT_BREEDING_CONTRACT_ADDRESS,
   THE_RIOT_COLLECTION_ADDRESS,
+  isNFTStaked,
 } from "../../utils/game";
 import { useNFTs } from "../useNFTs";
 import useSelectedWallet from "../useSelectedWallet";
@@ -44,7 +45,7 @@ export const useRippers = () => {
     if (!selectedWallet?.address) return [];
 
     return [...myRippers, ...myRipperChilds].filter(
-      (r) => !r.isListed && !r.lockedOn
+      (r) => !r.isListed && (!r.lockedOn || isNFTStaked(r))
     );
   }, [myRippers, myRipperChilds, selectedWallet?.address]);
 

@@ -10,6 +10,7 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { SpacerRow } from "../../components/spacer";
 import { useRippers } from "../../hooks/riotGame/useRippers";
+import { isNFTStaked } from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import {
   fontMedium14,
@@ -96,7 +97,11 @@ export const RiotGameBreedingScreen = () => {
                   width={172}
                   height={148}
                 >
-                  <RipperAvatar size={120} source={ripper.imageUri} />
+                  <RipperAvatar
+                    size={120}
+                    source={ripper.imageUri}
+                    isStaked={isNFTStaked(ripper)}
+                  />
                 </TertiaryBox>
               );
             }}
