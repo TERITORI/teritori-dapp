@@ -21,7 +21,7 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer";
-import { getRipperRarity } from "../../../utils/game";
+import { getRipperRarity, isNFTStaked } from "../../../utils/game";
 import {
   neutral00,
   secondaryColor,
@@ -162,6 +162,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                               size={THUMB_SIZE}
                               source={item.imageUri}
                               rarity={getRipperRarity(item)}
+                              isStaked={isNFTStaked(item)}
                             />
 
                             {isSelected && <View style={styles.arrowRight} />}
@@ -181,6 +182,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                     size={RIPPER_IMAGE_SIZE}
                     rounded
                     containerStyle={styles.roundedContainer}
+                    isStaked={isNFTStaked(selectedRipper)}
                   />
                 </ImageBackground>
               </View>

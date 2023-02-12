@@ -25,6 +25,7 @@ import {
   Nft as SquadStakeNFT,
   Squad,
 } from "./../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
+import { useSelectedNetwork } from "./../useSelectedNetwork";
 
 export const useSquadStaking = () => {
   const [squadStakingConfig, setSquadStakingConfig] =
@@ -33,6 +34,15 @@ export const useSquadStaking = () => {
   const [squadSeason1, setSquadSeason1] = useState<Squad>();
   const [isSquadsLoaded, setIsSquadsLoaded] = useState<boolean>(false);
   const selectedWallet = useSelectedWallet();
+  const selectedNetwork = useSelectedNetwork();
+
+  const getSquadPresetId = useCallback(
+    (squadId: number) => {
+      if (!selectedNetwork || !selectedWallet?.address || !squadId) return;
+      return `${selectedNetwork}-${selectedWallet.address}-${squadId}`;
+    },
+    [selectedNetwork, selectedWallet?.address]
+  );
 
   const squadStake = useCallback(
     async (selectedRippers: NFT[]) => {
@@ -182,6 +192,7 @@ export const useSquadStaking = () => {
     setSquads,
     fetchSquads,
     squadSeason1,
+    getSquadPresetId,
   };
 };
 

@@ -4,17 +4,19 @@ import { useDispatch } from "react-redux";
 import { persistStore, persistReducer } from "redux-persist";
 
 import { settingsReducer } from "./slices/settings";
+import { squadPresetsReducer } from "./slices/squadPresets";
 import { walletsReducer } from "./slices/wallets";
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["wallets", "settings"],
+  whitelist: ["wallets", "settings", "squadPresets"],
 };
 
 const rootReducer = combineReducers({
   wallets: walletsReducer,
   settings: settingsReducer,
+  squadPresets: squadPresetsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

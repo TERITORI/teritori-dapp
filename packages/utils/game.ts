@@ -362,6 +362,15 @@ export const estimateStakingDuration = (
   return duration * 60 * 60 * 1000; // Convert to milliseconds
 };
 
+export const isNFTStaked = (ripper: NFT | undefined) => {
+  if (!ripper) return false;
+  const contractV1 = process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS_V1;
+  const contractV2 = process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS_V2;
+
+  // TODO: make this network dependent
+  return ["tori-" + contractV1, "tori-" + contractV2].includes(ripper.lockedOn);
+};
+
 export const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
 export const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
 
