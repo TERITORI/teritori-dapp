@@ -1,11 +1,3 @@
-export function getSelectedApps(): string[] {
-  return window.localStorage.getItem("teritori-dappstore")
-    ? Array.from(
-        JSON.parse(window.localStorage.getItem("teritori-dappstore") as string)
-      )
-    : [];
-}
-
 export function getValuesFromId(option: string) {
   const separator = "*SEPARATOR*";
   const separatorLen = separator.length;

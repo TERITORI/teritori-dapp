@@ -10,7 +10,7 @@ import { walletsReducer } from "./slices/wallets";
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["wallets", "settings"],
+  whitelist: ["wallets", "settings", "dAppsStore"],
 };
 
 const rootReducer = combineReducers({

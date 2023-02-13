@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { getSelectedApps } from "../../screens/DAppStore/query/query";
 import { dAppGroup } from "../../screens/DAppStore/types";
 import { RootState } from "../store";
 
@@ -12,7 +11,7 @@ interface DappsStorage {
 }
 
 const initialState: DappsStorage = {
-  selectedApps: getSelectedApps(),
+  selectedApps: [],
   availableApps: {},
 };
 
@@ -22,17 +21,6 @@ export const selectAvailableApps = (state: RootState) =>
 export const selectCheckedApps = (state: RootState) => [
   ...new Set(state.dAppsStore.selectedApps),
 ];
-
-const persist = (state: pinnedAppsCollection) => {
-  state = [...new Set(state)];
-  const pureMagic = JSON.stringify(state, function replacer(key, value) {
-    if (Array.isArray(value) && value.length === 0) {
-      return { ...value }; // Converts empty array with string properties into a POJO
-    }
-    return value;
-  });
-  window.localStorage.setItem("teritori-dappstore", pureMagic);
-};
 
 const dAppsStore = createSlice({
   name: "dapps-storage",
@@ -63,7 +51,6 @@ const dAppsStore = createSlice({
         }
       }
       state.selectedApps = newValues;
-      persist(state.selectedApps);
     },
   },
 });
