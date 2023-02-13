@@ -35,7 +35,6 @@ import { tokenWithoutTld } from "../../utils/tns";
 import { BrandText } from "../BrandText";
 import { DateTime } from "../DateTime";
 import { EmojiSelector } from "../EmojiSelector";
-import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { tinyAddress } from "../WalletSelector";
 import { AnimationFadeIn } from "../animations";
 import { DotBadge } from "../badges/DotBadge";
@@ -49,6 +48,7 @@ import {
 import { SocialReactionActions } from "../socialFeed/SocialActions/SocialReactionActions";
 import { SocialThreadContent } from "../socialFeed/SocialThread/SocialThreadContent";
 import { SpacerRow } from "../spacer";
+import {SocialFeedMetadata} from "../socialFeed/NewsFeed/NewsFeed.type";
 
 export const SocialThreadCard: React.FC<{
   post: PostResult;

@@ -7,6 +7,8 @@ import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
+import {ipfsURLToHTTPURL} from "../../../utils/ipfs";
+import {THUMBNAIL_WIDTH} from "./SocialThreadContent";
 
 interface Props {
   metadata: SocialFeedMetadata;
@@ -39,13 +41,13 @@ export const ArticlePreview: React.FC<Props> = ({ metadata }) => {
       </View>
       {!!metadata.files?.length && (
         <Image
-          source={{ uri: metadata.files[0]?.url }}
+          source={{ uri: ipfsURLToHTTPURL(metadata.files[0]?.url) }}
           resizeMode="cover"
           style={{
-            height: 140,
-            width: 140,
+            height: THUMBNAIL_WIDTH,
+            width: THUMBNAIL_WIDTH,
             marginLeft: layout.padding_x2,
-            borderRadius: 2,
+            borderRadius: 4
           }}
         />
       )}
