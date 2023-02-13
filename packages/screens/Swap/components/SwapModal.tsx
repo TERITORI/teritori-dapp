@@ -38,7 +38,7 @@ import {
   CurrencyInfo,
   getNativeCurrency,
   getNetwork,
-  isTestMode,
+  isNetworkTestnet,
   NativeCurrencyInfo,
 } from "../../../networks";
 import { NetworkName } from "../../../networks/NetworkName";
@@ -111,7 +111,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       selectedNetwork?.currencies.find(
         (currencyInfo) =>
           currencyInfo.sourceNetworkDisplayName ===
-          (isTestMode() ? NetworkName.CosmosHubTheta : NetworkName.CosmosHub)
+          (isNetworkTestnet(selectedNetworkId) ? NetworkName.CosmosHubTheta : NetworkName.CosmosHub)
       ),
     [selectedNetwork?.currencies]
   );
@@ -120,7 +120,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       selectedNetwork?.currencies.find(
         (currencyInfo) =>
           currencyInfo.sourceNetworkDisplayName ===
-          (isTestMode() ? NetworkName.TeritoriTestnet : NetworkName.Teritori)
+          (isNetworkTestnet(selectedNetworkId) ? NetworkName.TeritoriTestnet : NetworkName.Teritori)
       ),
     [selectedNetwork?.currencies]
   );
