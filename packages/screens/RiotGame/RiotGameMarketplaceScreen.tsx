@@ -1,44 +1,36 @@
-import React, { useState } from "react";
-import { ScrollView } from "react-native-gesture-handler";
+import React from "react";
+import { View } from "react-native";
 
-import { SortDirection } from "../../api/marketplace/v1/marketplace";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
-import { THE_RIOT_COLLECTION_ID } from "../../utils/game";
 import {
-  TabsListType,
-  Header as CollectionHeader,
-  Content as CollectionContent,
-} from "../Marketplace/CollectionScreen";
+  THE_RIOT_COLLECTION_ID,
+  THE_RIOT_CHILD_COLLECTION_ID,
+} from "../../utils/game";
+import { ScreenFC } from "../../utils/navigation";
+import { CollectionThumb } from "./component/CollectionThumb";
+import { CollectionView } from "./component/CollectionView";
 import { GameContentView } from "./component/GameContentView";
 
-export const RiotGameMarketplaceScreen = () => {
-  const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
-  const { info } = useCollectionInfo(THE_RIOT_COLLECTION_ID);
-  const [sortDirection, setSortDirection] = useState(
-    SortDirection.SORT_DIRECTION_ASCENDING
-  );
+export const RiotGameMarketplaceScreen: ScreenFC<"RiotGameMarketplace"> = ({
+  route,
+}) => {
+  const collectionId = route.params?.collectionId || "";
 
-  // returns
   return (
     <GameContentView>
-      <ScrollView
-        style={{ width: "100%" }}
-        contentContainerStyle={{ alignItems: "center" }}
-      >
-        <CollectionHeader
-          collectionId={THE_RIOT_COLLECTION_ID}
-          collectionInfo={info}
-          selectedTab={selectedTab}
-          onSelectTab={setSelectedTab}
-          onChangeSortDirection={setSortDirection}
-          sortDirection={sortDirection}
-        />
-        <CollectionContent
-          id={THE_RIOT_COLLECTION_ID}
-          selectedTab={selectedTab}
-          sortDirection={sortDirection}
-        />
-      </ScrollView>
+      {collectionId ? (
+        <CollectionView collectionId={collectionId} />
+      ) : (
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            flexWrap: "wrap",
+          }}
+        >
+          <CollectionThumb collectionId={THE_RIOT_COLLECTION_ID} />
+          <CollectionThumb collectionId={THE_RIOT_CHILD_COLLECTION_ID} />
+        </View>
+      )}
     </GameContentView>
   );
 };
