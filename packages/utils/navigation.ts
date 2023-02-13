@@ -33,7 +33,7 @@ export type RootStackParamList = {
   RiotGameFight: undefined;
   RiotGameBreeding: undefined;
   RiotGameMemories: undefined;
-  RiotGameMarketplace: undefined;
+  RiotGameMarketplace: { collectionId?: string } | undefined;
   RiotGameLeaderboard: undefined;
   RiotGameInventory: undefined;
   RiotGameRarity: undefined;

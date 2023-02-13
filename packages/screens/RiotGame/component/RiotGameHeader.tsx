@@ -35,7 +35,9 @@ import { PickByValue } from "../../../utils/types/helper";
 type MenuItem = {
   id: string;
   name: string;
-  route?: keyof PickByValue<RootStackParamList, undefined>;
+  route?:
+    | keyof PickByValue<RootStackParamList, undefined>
+    | "RiotGameMarketplace";
   externalRoute?: string;
   iconSVG: React.FC<SvgProps>;
 };
