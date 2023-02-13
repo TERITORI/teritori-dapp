@@ -13,6 +13,7 @@ interface Props {
   metadata: SocialFeedMetadata;
   type: PostCategory;
 }
+export const THUMBNAIL_WIDTH = 140;
 
 export const SocialThreadContent: React.FC<Props> = ({ metadata, type }) => {
   if (type === PostCategory.Article || metadata?.message.length > 1000) {
