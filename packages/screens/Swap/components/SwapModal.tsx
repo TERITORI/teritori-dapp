@@ -53,10 +53,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import {
-  toastErrorWidth,
-  toastSuccessWidth,
-} from "../../../utils/style/toasts";
 import { isFloatText } from "../../../utils/text";
 import { CurrencyAmount } from "./CurrencyAmount";
 import { SelectableCurrency } from "./SelectableCurrency";
@@ -486,14 +482,12 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
           title={swapResult?.title || "Error"}
           onPress={() => setToastErrorVisible(false)}
           message={swapResult?.message || "Error"}
-          style={{ left: modalWidth / 2 - toastErrorWidth / 2, top: -220 }}
         />
       )}
       {toastSuccessVisible && (
         <ToastSuccess
           title={swapResult?.title || "Success"}
           onPress={() => setToastSuccessVisible(false)}
-          style={{ left: modalWidth / 2 - toastSuccessWidth / 2, top: -220 }}
         />
       )}
     </ModalBase>

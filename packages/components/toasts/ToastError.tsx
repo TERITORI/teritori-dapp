@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   TouchableOpacity,
   View,
   Dimensions,
   StyleProp,
   ViewStyle,
+  Modal,
 } from "react-native";
 
 import warningSVG from "../../../assets/icons/warning.svg";
@@ -20,38 +21,53 @@ export const ToastError: React.FC<{
   message?: string;
   style?: StyleProp<ViewStyle>;
 }> = ({ title, onPress, message, style }) => {
+  useEffect(()=>{
+    const interval = setInterval(()=>{
+      onPress()
+    },3000);
+    return ()=>{
+      clearInterval(interval);
+    }
+  },[])
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[
-        {
-          flexDirection: "row",
-          alignItems: "center",
-          backgroundColor: neutral11,
-          borderColor: errorColor,
-          borderRadius: 8,
-          borderWidth: 1,
-          borderStyle: "solid",
-          maxWidth: toastErrorWidth,
-          width: toastErrorWidth,
-          height: "auto",
-          position: "absolute",
-          top: 24,
-          left: Dimensions.get("window").width / 2 - toastErrorWidth / 2,
-          zIndex: 999,
-        },
-        style,
-      ]}
+    <Modal
+      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      animationType="fade"
+      transparent
+      visible={true}
     >
-      <SpacerRow size={3} />
-      <SVG width={24} height={24} source={warningSVG} />
-      <SpacerRow size={3} />
-      <View style={{ maxWidth: 287, marginVertical: 12 }}>
-        <BrandText style={{ fontSize: 13, lineHeight: 20 }}>{title}</BrandText>
-        <BrandText style={{ fontSize: 13, lineHeight: 15, color: neutral77 }}>
-          {message}
-        </BrandText>
-      </View>
-    </TouchableOpacity>
+      <TouchableOpacity
+        onPress={onPress}
+        style={[
+          {
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: neutral11,
+            borderColor: errorColor,
+            borderRadius: 8,
+            borderWidth: 1,
+            borderStyle: "solid",
+            maxWidth: toastErrorWidth,
+            width: toastErrorWidth,
+            height: "auto",
+            position: "absolute",
+            top: Dimensions.get("window").height/2,
+            left: Dimensions.get("window").width / 2 - toastErrorWidth / 2,
+            zIndex: 999,
+          },
+          style,
+        ]}
+      >
+        <SpacerRow size={3} />
+        <SVG width={24} height={24} source={warningSVG} />
+        <SpacerRow size={3} />
+        <View style={{ maxWidth: 287, marginVertical: 12 }}>
+          <BrandText style={{ fontSize: 13, lineHeight: 20 }}>{title}</BrandText>
+          <BrandText style={{ fontSize: 13, lineHeight: 15, color: neutral77 }}>
+            {message}
+          </BrandText>
+        </View>
+      </TouchableOpacity>
+    </Modal>
   );
 };
