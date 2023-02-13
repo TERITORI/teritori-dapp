@@ -1,14 +1,16 @@
 import React from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import searchSVG from "../../../../assets/icons/search.svg";
 import { neutral33 } from "../../../utils/style/colors";
-import { BrandText } from "../../BrandText/BrandText";
+import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { Separator } from "../../Separator";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 
 export const FreelanceServicesHeader: React.FC = () => {
+  const { width } = useWindowDimensions();
+
   return (
     <View>
       <BrandText style={{ fontSize: 28, alignSelf: "center", marginTop: 50 }}>
@@ -17,7 +19,7 @@ export const FreelanceServicesHeader: React.FC = () => {
       <TextInputCustom<{ Search: string }>
         label=""
         name="Search"
-        width={480}
+        width={width > 1024 ? 480 : 300}
         placeHolder="Search..."
         style={{ alignSelf: "center", marginTop: 30 }}
         mainContainerStyle={{

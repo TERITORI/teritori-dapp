@@ -92,6 +92,7 @@ export const ExplorerMarketPlace: React.FC = () => {
         style={{
           flexDirection: "row",
           flexWrap: "wrap",
+          justifyContent: width > 1280 ? "flex-start" : "center",
           alignSelf: "center",
           width: "100%",
           marginTop: layout.padding_x2_5,
@@ -105,6 +106,7 @@ export const ExplorerMarketPlace: React.FC = () => {
             width={width > 1024 ? 242 : 170}
             height={156}
             boxStyle={{
+              justifyContent: width > 1280 ? "flex-start" : "center",
               marginRight: layout.padding_x2,
               marginTop: layout.padding_x2,
             }}
