@@ -15,18 +15,10 @@ import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { AudioWaveform } from "./AudioWaveform";
-
-const THUMBNAIL_WIDTH = 180;
-
-const getWidth = (width: number, hasThumbnail: boolean) => {
-  if (width > 900) {
-    return 900 - 380 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
-  } else {
-    return width - 380 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
-  }
-};
+import {THUMBNAIL_WIDTH} from "../socialFeed/SocialThread/SocialThreadContent";
 
 export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
+  const { width } = useMaxResolution();
   const [sound, setSound] = useState<Audio.Sound>();
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
   const duration = useMemo(
@@ -63,17 +55,25 @@ export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
     loadSound();
   }, []);
 
-  const positionPercent =
+  const hasThumbnail = useMemo(() => typeof file?.thumbnailFileData?.url === "string", [file?.thumbnailFileData?.url]);
+
+  const audioWaveWidth = useMemo(() => {
+    if (width > 900) {
+      return 900 - 342 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+    } else {
+      return width - 342 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+    }
+  }, [width, hasThumbnail]);
+
+  const positionPercent = useMemo(() => (
     ((playbackStatus?.isLoaded && playbackStatus?.positionMillis) || 0) /
-    ((playbackStatus?.isLoaded && playbackStatus?.durationMillis) || 1);
+    ((playbackStatus?.isLoaded && playbackStatus?.durationMillis) || 1)
+  ), [playbackStatus])
 
-  const { width } = useMaxResolution();
 
-  const hasThumbnail = typeof file?.thumbnailFileData?.url === "string";
   return (
     <View
       style={{
-        paddingVertical: layout.padding_x3,
         flexDirection: "row",
         alignItems: "center",
       }}
@@ -150,11 +150,11 @@ export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
             <View
               style={{
                 overflow: "hidden",
-                width: getWidth(width, hasThumbnail),
+                width: audioWaveWidth,
               }}
             >
               <AudioWaveform
-                waveFormContainerWidth={getWidth(width, hasThumbnail)}
+                waveFormContainerWidth={audioWaveWidth}
                 waveform={file.audioMetadata?.waveform || []}
                 positionPercent={positionPercent}
                 duration={
@@ -174,11 +174,12 @@ export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
               source={{
                 uri: ipfsURLToHTTPURL(file?.thumbnailFileData?.url || ""),
               }}
-              resizeMode="contain"
+              resizeMode="cover"
               style={{
                 height: THUMBNAIL_WIDTH,
                 width: THUMBNAIL_WIDTH,
                 marginLeft: layout.padding_x1,
+                borderRadius: 4
               }}
             />
           )}
