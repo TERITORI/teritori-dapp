@@ -1,21 +1,24 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Linking, StyleSheet, View } from "react-native";
 
 import firePNG from "../../../../assets/game/fire.png";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
+import twitterSVG from "../../../../assets/icons/twitter.svg";
 import teritoriLogoSVG from "../../../../assets/logos/logo.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { tinyAddress } from "../../../components/WalletSelector";
-import { CollectionSocialButtons } from "../../../components/collections/CollectionSocialButtons";
+import { SocialButton } from "../../../components/buttons/SocialButton";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { Squad } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
-import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
+import { useGameRewards } from "../../../hooks/riotGame/useGameRewards";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
-import { durationToXP, THE_RIOT_COLLECTION_ID } from "../../../utils/game";
+import { decimalFromAtomics } from "../../../utils/coins";
+import { durationToXP } from "../../../utils/game";
 import {
   mineShaftColor,
   neutral77,
@@ -36,14 +39,25 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
   visible = false,
 }) => {
   const selectedWallet = useSelectedWallet();
-  const { info = { mintPhases: [] } } = useCollectionInfo(
-    THE_RIOT_COLLECTION_ID
-  );
+  const { claimableAmount } = useGameRewards();
+  const networkId = useSelectedNetworkId();
   const tnsMetadata = useTNSMetadata(selectedWallet?.address);
 
   const startTime = squad?.start_time || 0;
   const endTime = squad?.end_time || 0;
   const xp = durationToXP(endTime - startTime);
+
+  const onPressTwitter = () => {
+    const twitterShareMessage = `Join The R!ot now ⛩️\nI played and earned ${decimalFromAtomics(
+      networkId,
+      "" + claimableAmount,
+      "utori"
+    )} $TORI!\nSee you on the battlefield: https://app.teritori.com/riot-game`;
+    const twitterShareLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      twitterShareMessage
+    )}`;
+    Linking.openURL(twitterShareLink);
+  };
 
   return (
     <ModalBase
@@ -68,8 +82,12 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
 
           <SpacerColumn size={2} />
 
-          <FlexRow style={{ width: "100%", justifyContent: "space-between" }}>
-            <CollectionSocialButtons collectionInfo={info} />
+          <FlexRow style={{ width: "100%", justifyContent: "center" }}>
+            <SocialButton
+              text="Twitter"
+              iconSvg={twitterSVG}
+              onPress={onPressTwitter}
+            />
           </FlexRow>
         </View>
       }
