@@ -1,5 +1,10 @@
 import React from "react";
-import { Image, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import heart from "../../../../assets/icons/heart.svg";
 import behanceIcon from "../../../../assets/icons/social-network/behance-grey.svg";
@@ -14,6 +19,9 @@ import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
+import { DisplayMoreServices } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/DisplayMoreServices";
+import { DisplayReviews } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/DisplayReviews";
+import { ReviewsStats } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/ReviewsStats";
 import { StarRating } from "../../../components/freelanceServices/common/StarRating";
 import { ScreenFC } from "../../../utils/navigation";
 import {
@@ -36,19 +44,23 @@ import {
 } from "../../../utils/style/fonts";
 import { leftMarginMainContent } from "../../../utils/style/layout";
 import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
-import { getUser } from "../query/data";
+import { getService, getUser } from "../query/data";
 
 export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
   route: {
     params: { id },
   },
 }) => {
-  const data = getUser(id);
+  const user = getUser(id);
+  const data = getService(id);
+  const { width } = useWindowDimensions();
+
   return (
     <FreelanceServicesScreenWrapper>
       <View
         style={{
-          flexDirection: "column",
+          flexDirection: width > 1280 ? "row" : "column",
+          maxWidth: 1440,
           width: "100%",
           alignSelf: "center",
           paddingHorizontal: leftMarginMainContent,
@@ -57,15 +69,16 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
         <View
           style={{
             flexDirection: "row",
-            width: "100%",
+            width: width > 1280 ? "40%" : "100%",
+            minWidth: 330,
             justifyContent: "space-between",
           }}
         >
-          <View style={{ width: 400, marginTop: 24 }}>
+          <View style={{ width: "100%", marginTop: 24 }}>
             <TertiaryBox fullWidth>
               <View
                 style={{
-                  width: 355,
+                  width: "90%",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
@@ -87,10 +100,10 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                     width={24}
                     height={24}
                     style={{ marginRight: 80 }}
-                    fill={data.isFavorite ? "red" : "none"}
+                    fill={user.isFavorite ? "red" : "none"}
                   />
                   <Image
-                    source={data.profilePic}
+                    source={user.profilePic}
                     style={{ width: 104, height: 104 }}
                   />
                   <View
@@ -119,7 +132,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       <View
                         style={{
                           backgroundColor:
-                            data.onlineStatus === "online"
+                            user.onlineStatus === "online"
                               ? successColor
                               : errorColor,
                           width: 6,
@@ -132,7 +145,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                           fontSemibold16,
                           {
                             color:
-                              data.onlineStatus === "online"
+                              user.onlineStatus === "online"
                                 ? successColor
                                 : errorColor,
                             marginLeft: 4,
@@ -140,19 +153,19 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                         ]}
                       >
                         {" "}
-                        {data.onlineStatus}
+                        {user.onlineStatus}
                       </BrandText>
                     </View>
                   </View>
                 </View>
-                <BrandText style={fontSemibold20}>username</BrandText>
+                <BrandText style={fontSemibold20}>{user.username}</BrandText>
                 <BrandText
                   style={[
                     { color: neutralA3, marginTop: 8, marginBottom: 8 },
                     fontSemibold14,
                   ]}
                 >
-                  {data.tagline}
+                  {user.tagline}
                 </BrandText>
                 <View
                   style={{
@@ -161,17 +174,17 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                     marginRight: 12,
                   }}
                 >
-                  <StarRating rating={data.rating} />
+                  <StarRating rating={user.rating} />
                   <BrandText
                     style={[
                       { color: yellowDefault, marginRight: 12 },
                       fontMedium14,
                     ]}
                   >
-                    {data.rating}
+                    {user.rating}
                   </BrandText>
                   <BrandText style={[{ color: neutral77 }, fontMedium14]}>
-                    ({data.totalReviews})
+                    ({user.totalReviews})
                   </BrandText>
                 </View>
                 <Separator
@@ -197,7 +210,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       From
                     </BrandText>
                     <BrandText style={fontSemibold14}>
-                      {data.country.name}
+                      {user.country.name}
                     </BrandText>
                   </View>
                   <View style={{ flexDirection: "column", width: 160 }}>
@@ -210,7 +223,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       Member Since
                     </BrandText>
                     <BrandText style={fontSemibold14}>
-                      {data.createDate.toLocaleDateString()}
+                      {user.createDate.toLocaleDateString()}
                     </BrandText>
                   </View>
                 </View>
@@ -231,7 +244,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       Avg. response time
                     </BrandText>
                     <BrandText style={fontSemibold14}>
-                      {data.times.avgResponseTime}
+                      {user.times.avgResponseTime}
                     </BrandText>
                   </View>
                   <View style={{ flexDirection: "column", width: 160 }}>
@@ -244,7 +257,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       Last delivery
                     </BrandText>
                     <BrandText style={fontSemibold14}>
-                      {data.times.lastDelivery}
+                      {user.times.lastDelivery}
                     </BrandText>
                   </View>
                 </View>
@@ -284,7 +297,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
             <BrandText
               style={[fontSemibold16, { color: neutral77, marginTop: 12 }]}
             >
-              {data.intro}
+              {user.intro}
             </BrandText>
 
             <Separator
@@ -292,7 +305,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
             />
 
             <BrandText style={fontSemibold20}>Languages</BrandText>
-            {data.languages.map((item, index) => (
+            {user.languages.map((item, index) => (
               <BrandText
                 key={index}
                 style={[fontSemibold16, { color: neutral77, marginTop: 16 }]}
@@ -453,7 +466,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                 marginTop: 16,
               }}
             >
-              {data.skills.map((skill, index) => (
+              {user.skills.map((skill, index) => (
                 <View
                   key={index}
                   style={{
@@ -480,7 +493,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
               Education
             </BrandText>
 
-            {data.education.map((education, index) => (
+            {user.education.map((education, index) => (
               <View
                 style={{ flexDirection: "column", marginBottom: 8 }}
                 key={index}
@@ -504,7 +517,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
               Certifications
             </BrandText>
 
-            {data.certifications.map((certs, index) => (
+            {user.certifications.map((certs, index) => (
               <View
                 style={{ flexDirection: "column", marginBottom: 12 }}
                 key={index}
@@ -523,6 +536,21 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
 
           {/*Need to have the notion of Services provided in general ?*/}
           {/*<SecondaryCard />*/}
+        </View>
+        <View
+          style={{
+            width: width > 1280 ? "60%" : "100%",
+            paddingLeft: width > 1280 ? 60 : 0,
+            // paddingHorizontal: width > 1280 ? 30 : 0,
+          }}
+        >
+          <DisplayMoreServices />
+          {data.reviews ? <ReviewsStats reviews={data.reviews} /> : <></>}
+          {data.reviews?.items ? (
+            <DisplayReviews reviews={data.reviews.items} />
+          ) : (
+            <></>
+          )}
         </View>
       </View>
     </FreelanceServicesScreenWrapper>
