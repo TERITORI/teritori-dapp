@@ -27,13 +27,12 @@ import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
-import { ToastError } from "../../../components/toasts/ToastError";
-import { ToastSuccess } from "../../../components/toasts/ToastSuccess";
 import { DropdownRef, useDropdowns } from "../../../context/DropdownsProvider";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { SwapResult, useSwap } from "../../../hooks/useSwap";
+import { useSwap } from "../../../hooks/useSwap";
 import {
   CurrencyInfo,
   getNativeCurrency,
@@ -70,13 +69,16 @@ type SwapModalProps = {
 
 export const ModalHeader: React.FC<{
   setSettingsOpened?: Dispatch<SetStateAction<boolean>>;
-}> = ({ setSettingsOpened }) => {
+  networkDisplayName?: string;
+}> = ({ setSettingsOpened, networkDisplayName }) => {
   return (
     <>
       <View style={styles.modalHeaderContainer}>
         <View style={styles.modalHeaderLogoTitle}>
           <SVG source={osmosisLogo} height={32} width={32} />
-          <BrandText style={styles.modalHeaderTitle}>Swap on OSMOSIS</BrandText>
+          <BrandText style={styles.modalHeaderTitle}>
+            Swap on {networkDisplayName || "Osmosis"}
+          </BrandText>
         </View>
         {setSettingsOpened && (
           <TouchableOpacity
@@ -96,9 +98,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const selectedNetwork = getNetwork(selectedNetworkId);
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
-  const [swapResult, setSwapResult] = useState<SwapResult>();
-  const [toastErrorVisible, setToastErrorVisible] = useState(false);
-  const [toastSuccessVisible, setToastSuccessVisible] = useState(false);
+  const { setToastError, setToastSuccess } = useFeedbacks();
   const modalWidth = 456;
 
   // ---- Default currencies
@@ -107,7 +107,9 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       selectedNetwork?.currencies.find(
         (currencyInfo) =>
           currencyInfo.sourceNetworkDisplayName ===
-          (isNetworkTestnet(selectedNetworkId) ? NetworkName.CosmosHubTheta : NetworkName.CosmosHub)
+          (isNetworkTestnet(selectedNetworkId)
+            ? NetworkName.CosmosHubTheta
+            : NetworkName.CosmosHub)
       ),
     [selectedNetwork?.currencies]
   );
@@ -116,7 +118,9 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       selectedNetwork?.currencies.find(
         (currencyInfo) =>
           currencyInfo.sourceNetworkDisplayName ===
-          (isNetworkTestnet(selectedNetworkId) ? NetworkName.TeritoriTestnet : NetworkName.Teritori)
+          (isNetworkTestnet(selectedNetworkId)
+            ? NetworkName.TeritoriTestnet
+            : NetworkName.Teritori)
       ),
     [selectedNetwork?.currencies]
   );
@@ -242,15 +246,19 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     setAmountIn(parseFloat(currencyInAmount).toString());
   };
   const onPressSwap = async () => {
-    setSettingsOpened(false);
-    setToastSuccessVisible(false);
-    setToastErrorVisible(false);
     const swapResult = await swap(parseFloat(amountIn), amountOut, slippage);
-    setSwapResult(swapResult);
+    setSettingsOpened(false);
 
-    if (swapResult?.isError) setToastErrorVisible(true);
-    else {
-      setToastSuccessVisible(true);
+    if (swapResult?.isError) {
+      setToastError({
+        title: swapResult?.title || "Error",
+        message: swapResult?.message || "Error",
+      });
+    } else {
+      setToastSuccess({
+        title: swapResult?.title || "Success",
+        message: "",
+      });
       setAmountIn("");
     }
   };
@@ -304,7 +312,12 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
           setSlippageValue={setSlippage}
         />
       }
-      Header={() => <ModalHeader setSettingsOpened={setSettingsOpened} />}
+      Header={() => (
+        <ModalHeader
+          setSettingsOpened={setSettingsOpened}
+          networkDisplayName={selectedNetwork?.displayName}
+        />
+      )}
       width={modalWidth}
       visible={visible}
       onClose={onCloseModal}
@@ -474,21 +487,6 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
           <View style={styles.loaderBackground} />
           <ActivityIndicator size="large" style={styles.loader} />
         </View>
-      )}
-
-      {/*======= We use Toastes here to get above the Modal*/}
-      {toastErrorVisible && (
-        <ToastError
-          title={swapResult?.title || "Error"}
-          onPress={() => setToastErrorVisible(false)}
-          message={swapResult?.message || "Error"}
-        />
-      )}
-      {toastSuccessVisible && (
-        <ToastSuccess
-          title={swapResult?.title || "Success"}
-          onPress={() => setToastSuccessVisible(false)}
-        />
       )}
     </ModalBase>
   );
