@@ -278,6 +278,7 @@ export function RichText({
         paddingBottom: staticToolbar ? 40 : 12,
       }}
     >
+      {/*TODO: Scroll here and noScroll on ScreenContainer*/}
       <Editor
         editorState={editorState}
         onChange={handleChange}

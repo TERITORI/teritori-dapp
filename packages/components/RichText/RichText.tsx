@@ -16,6 +16,7 @@ export const RichText = ({ onChange = () => {}, onBlur }: RichTextProps) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
+        {/*TODO: Scroll here and noScroll on ScreenContainer*/}
         <RichEditor ref={richText} onChange={onChange} onBlur={onBlur} />
       </KeyboardAvoidingView>
       <RichToolbar
