@@ -1,0 +1,52 @@
+.public-DraftEditor-content {
+  color: white;
+  line-height: 20px;
+  font-size: 14px;
+  font-family: Exo_500Medium;
+}
+
+.public-DraftEditorPlaceholder-root {
+  color: #777777;
+  line-height: 20px;
+  font-size: 14px;
+  font-family: Exo_500Medium;
+}
+
+/* Static toolbar */
+.draftjs-static-toolbar {
+  border-radius: 6px;
+  z-index: 999;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.draftjs-static-toolbar-buttonWrapper button {
+  background: #333333;
+  border-radius: 4px;
+  color: white;
+  margin-left: 2px;
+  margin-right: 2px;
+  height: 30px;
+  border: none;
+}
+
+.draftjs-static-toolbar-buttonWrapper button:first-child {
+  margin-left: 4px;
+}
+
+.draftjs-static-toolbar-buttonWrapper button:last-child {
+  margin-right: 4px;
+}
+
+
+.draftjs-static-toolbar-buttonWrapper button svg {
+  fill: white !important;
+}
+
+.draftjs-static-toolbar-buttonWrapper button:hover, .draftjs-static-toolbar-buttonWrapper button:hover svg {
+  fill: #333333 !important;
+}
