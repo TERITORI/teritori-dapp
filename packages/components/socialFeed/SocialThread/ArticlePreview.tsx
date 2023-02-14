@@ -1,14 +1,14 @@
 import React from "react";
 import { Image, View } from "react-native";
 
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { HTML_TAG_REGEXP } from "../../../utils/regex";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
-import {ipfsURLToHTTPURL} from "../../../utils/ipfs";
-import {THUMBNAIL_WIDTH} from "./SocialThreadContent";
+import { THUMBNAIL_WIDTH } from "./SocialThreadContent";
 
 interface Props {
   metadata: SocialFeedMetadata;
@@ -47,7 +47,7 @@ export const ArticlePreview: React.FC<Props> = ({ metadata }) => {
             height: THUMBNAIL_WIDTH,
             width: THUMBNAIL_WIDTH,
             marginLeft: layout.padding_x2,
-            borderRadius: 4
+            borderRadius: 4,
           }}
         />
       )}

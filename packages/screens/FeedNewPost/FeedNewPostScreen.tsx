@@ -5,10 +5,8 @@ import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ErrorText } from "../../components/ErrorText";
-import { RichText } from "../../components/RichText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { WalletStatusBox } from "../../components/WalletStatusBox";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { FileUploader } from "../../components/fileUploader";
 import {
   Label,
@@ -26,6 +24,7 @@ import {
   createPost,
 } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
 import { NotEnoughFundModal } from "../../components/socialFeed/NewsFeed/NotEnoughFundModal";
+import { RichText } from "../../components/socialFeed/RichText";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useOpenGraph } from "../../hooks/feed/useOpenGraph";
 import { useBalances } from "../../hooks/useBalances";
@@ -36,7 +35,6 @@ import { URL_REGEX } from "../../utils/regex";
 import { neutral00 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { AddMoreButton } from "./AddMoreButton";
 
 export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
   route: { params },
@@ -48,7 +46,6 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     PostCategory.Normal
   );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-  const [isAddMoreVisible, setIsAddMoreVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const oldUrlMatch = useRef<string>();
   const [isNFTKeyModal, setIsNFTKeyModal] = useState(false);
@@ -149,8 +146,6 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     setLoading(false);
   };
 
-  const toggleAddMore = () => setIsAddMoreVisible(!isAddMoreVisible);
-
   const handleOnChange = (html: string) => {
     const currentUrlMatches = [...html.matchAll(new RegExp(URL_REGEX, "gi"))];
 
@@ -174,30 +169,6 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
       maxWidth={592}
       headerChildren={<BrandText style={fontSemibold20}>New Post</BrandText>}
       onBackPress={navigateBack}
-      fixedFooterChildren={
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flex: 1,
-            paddingVertical: layout.padding_x2_5,
-          }}
-        >
-          <AddMoreButton onPress={toggleAddMore} />
-          <PrimaryButton
-            disabled={loading}
-            loader={loading}
-            text={`Publish ${
-              postFee > 0 && !freePostCount
-                ? `${((postFee || 0) / 1000000).toFixed(4)} TORI`
-                : ""
-            }`}
-            size="M"
-            onPress={handleSubmit(onSubmit)}
-          />
-        </View>
-      }
       footerChildren
     >
       {isNFTKeyModal && (
@@ -254,14 +225,22 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
           }}
           render={({ field: { onChange, onBlur } }) => (
             <RichText
-              staticToolbar={isAddMoreVisible}
-              onChange={(html) => {
+              onChange={(html, hashtags) => {
                 onChange(html);
                 handleOnChange(html);
               }}
               onBlur={onBlur}
               initialValue={formValues.message}
               openGraph={data}
+              publishButtonProps={{
+                loading,
+                text: `Publish ${
+                  postFee > 0 && !freePostCount
+                    ? `${((postFee || 0) / 1000000).toFixed(4)} TORI`
+                    : ""
+                }`,
+                onPress: handleSubmit(onSubmit),
+              }}
             />
           )}
         />
