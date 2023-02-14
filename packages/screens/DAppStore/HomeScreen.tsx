@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -16,14 +16,15 @@ import { getFromAirTable } from "./query/getFromAirTable";
 export const DAppStore: ScreenFC<"DAppStore"> = () => {
   const dispatch = useAppDispatch();
   const [searchInput, setSearchInput] = useState("");
-
-  const wrap = async () => {
-    const data = await getFromAirTable();
-    if (data) {
-      dispatch(setAvailableApps(data));
-    }
-  };
-  wrap();
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getFromAirTable();
+      if (data) {
+        dispatch(setAvailableApps(data));
+      }
+    };
+    fetchData();
+  }, [dispatch]);
 
   return (
     <ScreenContainer
