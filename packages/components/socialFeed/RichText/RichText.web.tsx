@@ -1,4 +1,3 @@
-import "@draft-js-plugins/inline-toolbar/lib/plugin.css";
 import "@draft-js-plugins/static-toolbar/lib/plugin.css";
 import "./draft.css";
 import createLinkPlugin from "@draft-js-plugins/anchor";
@@ -15,10 +14,7 @@ import {
   BlockquoteButton,
 } from "@draft-js-plugins/buttons";
 import Editor from "@draft-js-plugins/editor";
-import createInlineToolbarPlugin from "@draft-js-plugins/inline-toolbar";
-import createToolbarPlugin, {
-  Separator,
-} from "@draft-js-plugins/static-toolbar";
+import createToolbarPlugin from "@draft-js-plugins/static-toolbar";
 import { convertToHTML } from "draft-convert";
 import {
   ContentBlock,
@@ -27,17 +23,20 @@ import {
   EditorState,
 } from "draft-js";
 import React, { useEffect, useRef } from "react";
-import { Linking } from "react-native";
+import { Linking, ScrollView, View } from "react-native";
 
-import { useAppNavigation } from "../../utils/navigation";
-import { HANDLE_REGEX, HASH_REGEX, URL_REGEX } from "../../utils/regex";
+import { useAppNavigation } from "../../../utils/navigation";
+import { HANDLE_REGEX, HASH_REGEX, URL_REGEX } from "../../../utils/regex";
 import {
   DEFAULT_USERNAME,
   SOCIAL_FEED_MAX_CHAR_LIMIT,
-} from "../../utils/social-feed";
-import { neutral33, primaryColor } from "../../utils/style/colors";
+} from "../../../utils/social-feed";
+import { primaryColor } from "../../../utils/style/colors";
+import { ActionsContainer } from "./ActionsContainer";
+import { PublishButton } from "./PublishButton";
 import { RichOpenGraphCard } from "./RichOpenGraphCard";
 import { RichTextProps } from "./RichText.type";
+import { ToolbarContainer } from "./ToolbarContainer";
 
 const mentionStrategy = (
   contentBlock: ContentBlock,
@@ -133,16 +132,6 @@ const HashRender = (props: { children: { props: { text: string } }[] }) => {
 };
 
 const LinkPlugin = createLinkPlugin();
-const inlineToolbarPlugin = createInlineToolbarPlugin({
-  theme: {
-    toolbarStyles: {
-      toolbar: "draftjs-inline-toolbar",
-    },
-    buttonStyles: {
-      buttonWrapper: "draftjs-inline-toolbar-buttonWrapper",
-    },
-  },
-});
 const staticToolbarPlugin = createToolbarPlugin({
   theme: {
     toolbarStyles: {
@@ -154,7 +143,6 @@ const staticToolbarPlugin = createToolbarPlugin({
   },
 });
 const { Toolbar } = staticToolbarPlugin;
-const { InlineToolbar } = inlineToolbarPlugin;
 
 const compositeDecorator = {
   decorators: [
@@ -172,12 +160,7 @@ const compositeDecorator = {
     },
   ],
 };
-const plugins = [
-  inlineToolbarPlugin,
-  staticToolbarPlugin,
-  LinkPlugin,
-  compositeDecorator,
-];
+const plugins = [staticToolbarPlugin, LinkPlugin, compositeDecorator];
 
 const createStateFromHTML = (html: string) => {
   const blocksFromHTML = convertFromHTML(html);
@@ -193,9 +176,9 @@ export function RichText({
   onBlur,
   initialValue,
   readOnly,
-  staticToolbar,
   openGraph,
   allowTruncation,
+  publishButtonProps,
 }: RichTextProps) {
   const editorRef = useRef<Editor>(null);
   const [editorState, setEditorState] = React.useState(
@@ -269,64 +252,50 @@ export function RichText({
   };
 
   return (
-    <div
+    <View
       style={{
-        borderBottom: readOnly ? "" : `1px solid ${neutral33}`,
-        minHeight: readOnly ? "auto" : 126 + (staticToolbar ? 40 : 0),
+        minHeight: readOnly ? "auto" : 126,
         position: "relative",
         padding: "12px 0",
-        paddingBottom: staticToolbar ? 40 : 12,
+        paddingBottom: 12,
       }}
     >
-      {/*TODO: Scroll here and noScroll on ScreenContainer*/}
-      <Editor
-        editorState={editorState}
-        onChange={handleChange}
-        plugins={plugins}
-        placeholder={readOnly ? "" : "Type message here"}
-        readOnly={readOnly}
-        onBlur={onBlur}
-        ref={editorRef}
-        decorators={compositeDecorator.decorators}
-      />
+      <ScrollView style={{ height: "100%", maxHeight: 453 }}>
+        <Editor
+          editorState={editorState}
+          onChange={handleChange}
+          plugins={plugins}
+          placeholder={readOnly ? "" : "Type message here"}
+          readOnly={readOnly}
+          onBlur={onBlur}
+          ref={editorRef}
+          decorators={compositeDecorator.decorators}
+        />
+      </ScrollView>
       {openGraph && <RichOpenGraphCard {...openGraph} />}
-      {!readOnly && (
-        <>
-          {staticToolbar ? (
-            <Toolbar>
-              {(externalProps) => (
-                <>
-                  <BoldButton {...externalProps} />
-                  <ItalicButton {...externalProps} />
-                  <UnderlineButton {...externalProps} />
-                  <CodeButton {...externalProps} />
-                  <LinkPlugin.LinkButton {...externalProps} />
-                  <Separator />
-                  <HeadlineOneButton {...externalProps} />
-                  <HeadlineTwoButton {...externalProps} />
-                  <HeadlineThreeButton {...externalProps} />
-                  <UnorderedListButton {...externalProps} />
-                  <OrderedListButton {...externalProps} />
-                  <BlockquoteButton {...externalProps} />
-                </>
-              )}
-            </Toolbar>
-          ) : (
-            <InlineToolbar>
-              {(externalProps) => {
-                return (
-                  <div>
-                    <BoldButton {...externalProps} />
-                    <ItalicButton {...externalProps} />
-                    <UnderlineButton {...externalProps} />
-                    <CodeButton {...externalProps} />
-                  </div>
-                );
-              }}
-            </InlineToolbar>
-          )}
-        </>
-      )}
-    </div>
+
+      <ActionsContainer readOnly={readOnly}>
+        <ToolbarContainer>
+          <Toolbar>
+            {(externalProps) => (
+              <>
+                <BoldButton {...externalProps} />
+                <ItalicButton {...externalProps} />
+                <UnderlineButton {...externalProps} />
+                <CodeButton {...externalProps} />
+                <LinkPlugin.LinkButton {...externalProps} />
+                <HeadlineOneButton {...externalProps} />
+                <HeadlineTwoButton {...externalProps} />
+                <HeadlineThreeButton {...externalProps} />
+                <UnorderedListButton {...externalProps} />
+                <OrderedListButton {...externalProps} />
+                <BlockquoteButton {...externalProps} />
+              </>
+            )}
+          </Toolbar>
+        </ToolbarContainer>
+        <PublishButton {...publishButtonProps} />
+      </ActionsContainer>
+    </View>
   );
 }
