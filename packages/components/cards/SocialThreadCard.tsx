@@ -41,6 +41,7 @@ import { DotBadge } from "../badges/DotBadge";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { FeedPostShareModal } from "../modals/FeedPostShareModal";
 import { SendFundModal } from "../modals/teritoriNameService/TNSSendFundsModal";
+import { SocialFeedMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 import {
   SocialActions,
   socialActionsHeight,
@@ -48,7 +49,6 @@ import {
 import { SocialReactionActions } from "../socialFeed/SocialActions/SocialReactionActions";
 import { SocialThreadContent } from "../socialFeed/SocialThread/SocialThreadContent";
 import { SpacerRow } from "../spacer";
-import {SocialFeedMetadata} from "../socialFeed/NewsFeed/NewsFeed.type";
 
 export const SocialThreadCard: React.FC<{
   post: PostResult;

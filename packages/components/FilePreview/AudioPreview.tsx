@@ -14,8 +14,8 @@ import { layout } from "../../utils/style/layout";
 import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialThreadContent";
 import { AudioWaveform } from "./AudioWaveform";
-import {THUMBNAIL_WIDTH} from "../socialFeed/SocialThread/SocialThreadContent";
 
 export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
   const { width } = useMaxResolution();
@@ -55,7 +55,10 @@ export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
     loadSound();
   }, []);
 
-  const hasThumbnail = useMemo(() => typeof file?.thumbnailFileData?.url === "string", [file?.thumbnailFileData?.url]);
+  const hasThumbnail = useMemo(
+    () => typeof file?.thumbnailFileData?.url === "string",
+    [file?.thumbnailFileData?.url]
+  );
 
   const audioWaveWidth = useMemo(() => {
     if (width > 900) {
@@ -65,11 +68,12 @@ export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
     }
   }, [width, hasThumbnail]);
 
-  const positionPercent = useMemo(() => (
-    ((playbackStatus?.isLoaded && playbackStatus?.positionMillis) || 0) /
-    ((playbackStatus?.isLoaded && playbackStatus?.durationMillis) || 1)
-  ), [playbackStatus])
-
+  const positionPercent = useMemo(
+    () =>
+      ((playbackStatus?.isLoaded && playbackStatus?.positionMillis) || 0) /
+      ((playbackStatus?.isLoaded && playbackStatus?.durationMillis) || 1),
+    [playbackStatus]
+  );
 
   return (
     <View
@@ -179,7 +183,7 @@ export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
                 height: THUMBNAIL_WIDTH,
                 width: THUMBNAIL_WIDTH,
                 marginLeft: layout.padding_x1,
-                borderRadius: 4
+                borderRadius: 4,
               }}
             />
           )}
