@@ -1,5 +1,5 @@
 import "@draft-js-plugins/static-toolbar/lib/plugin.css";
-import "./draft.css";
+import "./draftjs.css";
 import createLinkPlugin from "@draft-js-plugins/anchor";
 import {
   ItalicButton,
@@ -29,7 +29,7 @@ import { useAppNavigation } from "../../../utils/navigation";
 import { HANDLE_REGEX, HASH_REGEX, URL_REGEX } from "../../../utils/regex";
 import {
   DEFAULT_USERNAME,
-  SOCIAL_FEED_MAX_CHAR_LIMIT,
+  SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT,
 } from "../../../utils/social-feed";
 import { primaryColor } from "../../../utils/style/colors";
 import { ActionsContainer } from "./ActionsContainer";
@@ -212,11 +212,11 @@ export function RichText({
     while (!isTruncated && blocks[index]) {
       const block = blocks[index];
       const length = block.getLength();
-      if (currentLength + length > SOCIAL_FEED_MAX_CHAR_LIMIT) {
+      if (currentLength + length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT) {
         isTruncated = true;
         const truncatedText = block
           .getText()
-          .slice(0, SOCIAL_FEED_MAX_CHAR_LIMIT - currentLength);
+          .slice(0, SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT - currentLength);
 
         const blocksFromHTML = convertFromHTML(
           `${truncatedText} <br/>...see more`
@@ -256,8 +256,8 @@ export function RichText({
       style={{
         minHeight: readOnly ? "auto" : 126,
         position: "relative",
-        padding: "12px 0",
-        paddingBottom: 12,
+        // padding: "12px 0",
+        // paddingBottom: 12,
       }}
     >
       <ScrollView style={{ height: "100%", maxHeight: 453 }}>

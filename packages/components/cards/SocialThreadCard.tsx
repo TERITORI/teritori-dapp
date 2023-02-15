@@ -53,6 +53,7 @@ import { SpacerRow } from "../spacer";
 export const SocialThreadCard: React.FC<{
   post: PostResult;
   style?: StyleProp<ViewStyle>;
+  // singleView is true if the user consults the post on feed/post/{postId}
   singleView?: boolean;
   isGovernance?: boolean;
   refresh?: number;
@@ -60,7 +61,7 @@ export const SocialThreadCard: React.FC<{
   onPressReply?: OnPressReplyType;
   allowTruncation?: boolean;
 }> = ({ post, style, singleView, isGovernance, fadeInDelay }) => {
-  const [localPost, setLocalPost] = useState(post);
+  const [localPost, setLocalPost] = useState<PostResult>(post);
   const { setName } = useTNS();
   const imageMarginRight = layout.padding_x3_5;
   const tertiaryBoxPaddingHorizontal = layout.padding_x3;
@@ -219,6 +220,7 @@ export const SocialThreadCard: React.FC<{
                 )}
               </View>
               <SocialThreadContent
+                singleView={singleView}
                 metadata={metadata}
                 type={localPost.category}
               />

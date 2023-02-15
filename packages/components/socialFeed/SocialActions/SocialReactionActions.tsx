@@ -2,7 +2,6 @@ import React, { useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
-  StyleProp,
   StyleSheet,
   View,
   ViewStyle,
@@ -33,14 +32,6 @@ import { SpacerRow } from "../../spacer";
 import { SocialStat } from "../SocialStat";
 import { MoreReactionsButton } from "./MoreReactionsButton";
 import { MoreReactionsMenu } from "./MoreReactionsMenu";
-
-export const SectionDivider: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
-  style,
-}) => (
-  <View style={[styles.sectionDivider, style]}>
-    <View style={styles.separator} />
-  </View>
-);
 
 interface SocialReactionActionsProps {
   reactions: PostResult["reactions"];
@@ -75,8 +66,6 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
   // variables
   const reactionWidthRef = useRef<number>();
   const [isMoreReactionShown, setMoreReactionsShown] = useState(false);
-
-  console.log("reactionsreactionsreactionsreactions", reactions);
 
   const sortedReactions = useMemo(
     () => reactions.sort((a, b) => b.count - a.count),
@@ -124,7 +113,7 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
             <SpacerRow size={1.5} />
             <BrandText style={fontSemibold14}>{commentCount}</BrandText>
           </Pressable>
-          <SectionDivider />
+          <SpacerRow size={2.5} />
         </>
       )}
 
@@ -142,7 +131,7 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
             <SpacerRow size={1.5} />
             <BrandText style={fontSemibold14}>Reply</BrandText>
           </Pressable>
-          {(isTippable || !!reactions.length) && <SectionDivider />}
+          {(isTippable || !!reactions.length) && <SpacerRow size={2.5} />}
         </>
       )}
 
@@ -156,9 +145,7 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
             <SpacerRow size={1.5} />
             <BrandText style={fontSemibold14}>Tip</BrandText>
           </Pressable>
-          {!!reactions.length && (
-            <SectionDivider style={{ paddingRight: layout.padding_x1_5 }} />
-          )}
+          {!!reactions.length && <SpacerRow size={2.5} />}
         </>
       )}
 
@@ -201,36 +188,40 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
             />
 
             {!!hiddenReactions.length && (
-              <MoreReactionsButton
-                label={moreReactionsButtonLabel}
-                style={{ marginHorizontal: layout.padding_x0_25 }}
-                onPress={() => setMoreReactionsShown((shown) => !shown)}
-              />
+              <>
+                <MoreReactionsButton
+                  label={moreReactionsButtonLabel}
+                  style={{ marginHorizontal: layout.padding_x0_25 }}
+                  onPress={() => setMoreReactionsShown((shown) => !shown)}
+                />
+              </>
             )}
 
             {/*TODO: This menu is under others SocialReactActions due to his DOM level. We need a proper "absolute menus handling (and close the opened one by clicking outside)"*/}
             {!!hiddenReactions.length && isMoreReactionShown && (
-              <MoreReactionsMenu
-                moreReactionsButtonLabel={moreReactionsButtonLabel}
-                sortedReactions={sortedReactions}
-                onPressReaction={(reactionIcon) =>
-                  onPressReaction(reactionIcon)
-                }
-                onPressMore={() => setMoreReactionsShown((shown) => !shown)}
-              />
+              <>
+                <MoreReactionsMenu
+                  moreReactionsButtonLabel={moreReactionsButtonLabel}
+                  sortedReactions={sortedReactions}
+                  onPressReaction={(reactionIcon) =>
+                    onPressReaction(reactionIcon)
+                  }
+                  onPressMore={() => setMoreReactionsShown((shown) => !shown)}
+                />
+              </>
             )}
+            <SpacerRow size={2.5} />
           </AnimationFadeInOut>
         )}
       </Animated.View>
 
       {showEmojiSelector && (
         <>
-          <SectionDivider />
           <EmojiSelector
             onEmojiSelected={onPressReaction}
             isLoading={isReactionLoading}
           />
-          <SectionDivider />
+          <SpacerRow size={2.5} />
           <FeedPostShareModal postId={postId} />
         </>
       )}
@@ -240,9 +231,6 @@ export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
 
 const styles = StyleSheet.create({
   rowCenter: { flexDirection: "row", alignItems: "center" },
-  sectionDivider: {
-    paddingHorizontal: layout.padding_x2,
-  },
   separator: { height: 18, width: 1, backgroundColor: neutral33 },
   replyIconContainer: {
     borderWidth: 1.2,
