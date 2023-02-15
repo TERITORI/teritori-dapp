@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import userImageFrameSVG from "../../../assets/user-image-frame.svg";
+import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations";
@@ -29,7 +29,7 @@ export const AvatarWithFrame: React.FC<{
   return (
     <View style={[styles.container, style]}>
       <SVG
-        source={userImageFrameSVG}
+        source={emptyCircleFrameSVG}
         width={sizedStyles.frame.width}
         height={sizedStyles.frame.height}
       />
@@ -72,9 +72,11 @@ const styles = StyleSheet.create({
 const flatStyles = {
   XL: {
     image: {
-      width: 132,
-      height: 132,
-      borderRadius: 24,
+      height: 138,
+      width: 138,
+      left: 1,
+      top: -1,
+      borderRadius: 999,
     },
     frame: {
       width: 196,
@@ -84,9 +86,11 @@ const flatStyles = {
 
   L: {
     image: {
-      width: 62,
-      height: 62,
-      borderRadius: 11,
+      height: 64,
+      width: 64,
+      left: 0.5,
+      top: -0.5,
+      borderRadius: 999,
     },
     frame: {
       width: 92,
@@ -96,9 +100,11 @@ const flatStyles = {
 
   M: {
     image: {
-      width: 46,
-      height: 46,
-      borderRadius: 8,
+      height: 48,
+      left: 0.5,
+      top: -0.5,
+      width: 48,
+      borderRadius: 999,
     },
     frame: {
       width: 68,
