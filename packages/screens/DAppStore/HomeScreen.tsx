@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -11,20 +11,17 @@ import { ScreenFC } from "../../utils/navigation";
 import { Header } from "./components/Header";
 import { LeftRail } from "./components/LeftRail";
 import { RightRail } from "./components/RightRail";
-import { getFromAirTable } from "./query/getFromAirTable";
+import { useDAppStoreData } from "./query/useDAppStoreData";
 
 export const DAppStore: ScreenFC<"DAppStore"> = () => {
   const dispatch = useAppDispatch();
   const [searchInput, setSearchInput] = useState("");
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getFromAirTable();
-      if (data) {
-        dispatch(setAvailableApps(data));
-      }
-    };
-    fetchData();
-  }, [dispatch]);
+
+  const data = useDAppStoreData();
+
+  if (data) {
+    dispatch(setAvailableApps(data));
+  }
 
   return (
     <ScreenContainer

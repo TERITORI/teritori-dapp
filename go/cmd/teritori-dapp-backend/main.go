@@ -28,19 +28,20 @@ var (
 func main() {
 	fs := flag.NewFlagSet("teritori-dapp-backend", flag.ContinueOnError)
 	var (
-		enableTls          = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
-		tlsCertFilePath    = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
-		tlsKeyFilePath     = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
-		tnsContractAddress = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
-		tnsDefaultImageURL = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
-		dbHost             = fs.String("db-dapp-host", "", "host postgreSQL database")
-		dbPort             = fs.String("db-dapp-port", "", "port for postgreSQL database")
-		dbPass             = fs.String("postgres-password", "", "password for postgreSQL database")
-		dbName             = fs.String("database-name", "", "database name for postgreSQL")
-		dbUser             = fs.String("postgres-user", "", "username for postgreSQL")
-		theGraphEndpoint   = fs.String("ethereum-graph-endpoint", "", "the graph url for ethereum marketplace")
-		whitelistString    = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
-		airtableAPIKey     = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
+		enableTls                = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
+		tlsCertFilePath          = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
+		tlsKeyFilePath           = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
+		tnsContractAddress       = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
+		tnsDefaultImageURL       = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
+		dbHost                   = fs.String("db-dapp-host", "", "host postgreSQL database")
+		dbPort                   = fs.String("db-dapp-port", "", "port for postgreSQL database")
+		dbPass                   = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName                   = fs.String("database-name", "", "database name for postgreSQL")
+		dbUser                   = fs.String("postgres-user", "", "username for postgreSQL")
+		theGraphEndpoint         = fs.String("ethereum-graph-endpoint", "", "the graph url for ethereum marketplace")
+		whitelistString          = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
+		airtableAPIKey           = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
+		airtableAPIKeydappsStore = fs.String("airtable-api-key-dapps-store", "", "api key of airtable for the dapps store")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -77,14 +78,15 @@ func main() {
 	}
 
 	marketplaceSvc := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
-		Logger:             logger,
-		IndexerDB:          indexerDB,
-		GraphqlEndpoint:    graphqlEndpoint,
-		TNSContractAddress: *tnsContractAddress,
-		TNSDefaultImageURL: *tnsDefaultImageURL,
-		Whitelist:          whitelist,
-		TheGraphEndpoint:   *theGraphEndpoint,
-		AirtableAPIKey:     *airtableAPIKey,
+		Logger:                   logger,
+		IndexerDB:                indexerDB,
+		GraphqlEndpoint:          graphqlEndpoint,
+		TNSContractAddress:       *tnsContractAddress,
+		TNSDefaultImageURL:       *tnsDefaultImageURL,
+		Whitelist:                whitelist,
+		TheGraphEndpoint:         *theGraphEndpoint,
+		AirtableAPIKey:           *airtableAPIKey,
+		AirtableAPIKeydappsStore: *airtableAPIKeydappsStore,
 	})
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
 		Logger:    logger,

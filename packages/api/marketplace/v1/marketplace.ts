@@ -290,6 +290,23 @@ export interface News {
   actions: Action[];
 }
 
+export interface DAppGroup {
+  id: string;
+  groupName: string;
+  icon: string;
+  options: string[];
+}
+
+export interface DApp {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  route: string;
+  groupKey: string;
+  airtableId: string;
+}
+
 export interface Banner {
   image: string;
   url: string;
@@ -309,6 +326,17 @@ export interface NewsRequest {
 
 export interface NewsResponse {
   news: News[];
+}
+
+export interface DAppsStoreRequest {
+}
+
+export interface DAppGroupsResponse {
+  group: DAppGroup[];
+}
+
+export interface DAppResponse {
+  group: DApp[];
 }
 
 function createBaseAttribute(): Attribute {
@@ -2078,6 +2106,189 @@ export const News = {
   },
 };
 
+function createBaseDAppGroup(): DAppGroup {
+  return { id: "", groupName: "", icon: "", options: [] };
+}
+
+export const DAppGroup = {
+  encode(message: DAppGroup, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.groupName !== "") {
+      writer.uint32(18).string(message.groupName);
+    }
+    if (message.icon !== "") {
+      writer.uint32(26).string(message.icon);
+    }
+    for (const v of message.options) {
+      writer.uint32(34).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppGroup {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppGroup();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.groupName = reader.string();
+          break;
+        case 3:
+          message.icon = reader.string();
+          break;
+        case 4:
+          message.options.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DAppGroup {
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      groupName: isSet(object.groupName) ? String(object.groupName) : "",
+      icon: isSet(object.icon) ? String(object.icon) : "",
+      options: Array.isArray(object?.options) ? object.options.map((e: any) => String(e)) : [],
+    };
+  },
+
+  toJSON(message: DAppGroup): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.groupName !== undefined && (obj.groupName = message.groupName);
+    message.icon !== undefined && (obj.icon = message.icon);
+    if (message.options) {
+      obj.options = message.options.map((e) => e);
+    } else {
+      obj.options = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppGroup>, I>>(object: I): DAppGroup {
+    const message = createBaseDAppGroup();
+    message.id = object.id ?? "";
+    message.groupName = object.groupName ?? "";
+    message.icon = object.icon ?? "";
+    message.options = object.options?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseDApp(): DApp {
+  return { id: "", title: "", description: "", icon: "", route: "", groupKey: "", airtableId: "" };
+}
+
+export const DApp = {
+  encode(message: DApp, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.title !== "") {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.description !== "") {
+      writer.uint32(26).string(message.description);
+    }
+    if (message.icon !== "") {
+      writer.uint32(34).string(message.icon);
+    }
+    if (message.route !== "") {
+      writer.uint32(42).string(message.route);
+    }
+    if (message.groupKey !== "") {
+      writer.uint32(50).string(message.groupKey);
+    }
+    if (message.airtableId !== "") {
+      writer.uint32(58).string(message.airtableId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DApp {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDApp();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.title = reader.string();
+          break;
+        case 3:
+          message.description = reader.string();
+          break;
+        case 4:
+          message.icon = reader.string();
+          break;
+        case 5:
+          message.route = reader.string();
+          break;
+        case 6:
+          message.groupKey = reader.string();
+          break;
+        case 7:
+          message.airtableId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DApp {
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      title: isSet(object.title) ? String(object.title) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      icon: isSet(object.icon) ? String(object.icon) : "",
+      route: isSet(object.route) ? String(object.route) : "",
+      groupKey: isSet(object.groupKey) ? String(object.groupKey) : "",
+      airtableId: isSet(object.airtableId) ? String(object.airtableId) : "",
+    };
+  },
+
+  toJSON(message: DApp): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.title !== undefined && (obj.title = message.title);
+    message.description !== undefined && (obj.description = message.description);
+    message.icon !== undefined && (obj.icon = message.icon);
+    message.route !== undefined && (obj.route = message.route);
+    message.groupKey !== undefined && (obj.groupKey = message.groupKey);
+    message.airtableId !== undefined && (obj.airtableId = message.airtableId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DApp>, I>>(object: I): DApp {
+    const message = createBaseDApp();
+    message.id = object.id ?? "";
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
+    message.icon = object.icon ?? "";
+    message.route = object.route ?? "";
+    message.groupKey = object.groupKey ?? "";
+    message.airtableId = object.airtableId ?? "";
+    return message;
+  },
+};
+
 function createBaseBanner(): Banner {
   return { image: "", url: "" };
 }
@@ -2329,6 +2540,147 @@ export const NewsResponse = {
   },
 };
 
+function createBaseDAppsStoreRequest(): DAppsStoreRequest {
+  return {};
+}
+
+export const DAppsStoreRequest = {
+  encode(_: DAppsStoreRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsStoreRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppsStoreRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): DAppsStoreRequest {
+    return {};
+  },
+
+  toJSON(_: DAppsStoreRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppsStoreRequest>, I>>(_: I): DAppsStoreRequest {
+    const message = createBaseDAppsStoreRequest();
+    return message;
+  },
+};
+
+function createBaseDAppGroupsResponse(): DAppGroupsResponse {
+  return { group: [] };
+}
+
+export const DAppGroupsResponse = {
+  encode(message: DAppGroupsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.group) {
+      DAppGroup.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppGroupsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppGroupsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.group.push(DAppGroup.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DAppGroupsResponse {
+    return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DAppGroup.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: DAppGroupsResponse): unknown {
+    const obj: any = {};
+    if (message.group) {
+      obj.group = message.group.map((e) => e ? DAppGroup.toJSON(e) : undefined);
+    } else {
+      obj.group = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppGroupsResponse>, I>>(object: I): DAppGroupsResponse {
+    const message = createBaseDAppGroupsResponse();
+    message.group = object.group?.map((e) => DAppGroup.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseDAppResponse(): DAppResponse {
+  return { group: [] };
+}
+
+export const DAppResponse = {
+  encode(message: DAppResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.group) {
+      DApp.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.group.push(DApp.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DAppResponse {
+    return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DApp.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: DAppResponse): unknown {
+    const obj: any = {};
+    if (message.group) {
+      obj.group = message.group.map((e) => e ? DApp.toJSON(e) : undefined);
+    } else {
+      obj.group = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppResponse>, I>>(object: I): DAppResponse {
+    const message = createBaseDAppResponse();
+    message.group = object.group?.map((e) => DApp.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
   CollectionStats(
@@ -2344,6 +2696,8 @@ export interface MarketplaceService {
   ): Promise<NFTPriceHistoryResponse>;
   Banners(request: DeepPartial<BannersRequest>, metadata?: grpc.Metadata): Promise<BannersResponse>;
   News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse>;
+  DApps(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppResponse>;
+  DAppsGroups(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppGroupsResponse>;
 }
 
 export class MarketplaceServiceClientImpl implements MarketplaceService {
@@ -2359,6 +2713,8 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.NFTPriceHistory = this.NFTPriceHistory.bind(this);
     this.Banners = this.Banners.bind(this);
     this.News = this.News.bind(this);
+    this.DApps = this.DApps.bind(this);
+    this.DAppsGroups = this.DAppsGroups.bind(this);
   }
 
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse> {
@@ -2397,6 +2753,14 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
 
   News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse> {
     return this.rpc.unary(MarketplaceServiceNewsDesc, NewsRequest.fromPartial(request), metadata);
+  }
+
+  DApps(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppResponse> {
+    return this.rpc.unary(MarketplaceServiceDAppsDesc, DAppsStoreRequest.fromPartial(request), metadata);
+  }
+
+  DAppsGroups(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppGroupsResponse> {
+    return this.rpc.unary(MarketplaceServiceDAppsGroupsDesc, DAppsStoreRequest.fromPartial(request), metadata);
   }
 }
 
@@ -2570,6 +2934,50 @@ export const MarketplaceServiceNewsDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...NewsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceDAppsDesc: UnaryMethodDefinitionish = {
+  methodName: "DApps",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return DAppsStoreRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...DAppResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceDAppsGroupsDesc: UnaryMethodDefinitionish = {
+  methodName: "DAppsGroups",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return DAppsStoreRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...DAppGroupsResponse.decode(data),
         toObject() {
           return this;
         },
