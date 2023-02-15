@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 
+import iconFightSVG from "../../../assets/game/icon-fight.svg";
+import iconXPSVG from "../../../assets/game/icon-xp.svg";
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
 import badgeSVG from "../../../assets/icons/badge.svg";
-import cryptoLogoSVG from "../../../assets/icons/crypto-logo.svg";
 import volDownSVG from "../../../assets/icons/vol-down.svg";
 import volUpSVG from "../../../assets/icons/vol-up.svg";
 import logoSVG from "../../../assets/logos/logo-white.svg";
@@ -218,7 +219,7 @@ export const RiotGameLeaderboardScreen = () => {
               <View
                 style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
               >
-                <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
+                <SVG style={{ width: 24, height: 24 }} source={iconXPSVG} />
 
                 <SpacerRow size={1} />
 
@@ -227,7 +228,7 @@ export const RiotGameLeaderboardScreen = () => {
               <View
                 style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
               >
-                <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
+                <SVG style={{ width: 24, height: 24 }} source={iconFightSVG} />
 
                 <SpacerRow size={1} />
 
