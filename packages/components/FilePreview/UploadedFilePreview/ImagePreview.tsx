@@ -75,7 +75,7 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
           )}
           <Image
             source={{ uri: ipfsURLToHTTPURL(file.url) }}
-            resizeMode="cover"
+            resizeMode="contain"
             style={{
               height: "100%",
               width: "100%",

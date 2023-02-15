@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
+import { SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT } from "../../../utils/social-feed";
 import { layout } from "../../../utils/style/layout";
 import { AudioPreview } from "../../FilePreview/AudioPreview";
 import { convertGIFToLocalFileType } from "../../FilePreview/UploadedFilePreview/FilePreviewContainer";
@@ -12,14 +13,22 @@ import { TextContent } from "./TextContent";
 interface Props {
   metadata: SocialFeedMetadata;
   type: PostCategory;
+  singleView?: boolean;
 }
 export const THUMBNAIL_WIDTH = 140;
 
-export const SocialThreadContent: React.FC<Props> = ({ metadata, type }) => {
-  if (type === PostCategory.Article || metadata?.message.length > 1000) {
+export const SocialThreadContent: React.FC<Props> = ({
+  metadata,
+  singleView,
+  type,
+}) => {
+  if (
+    type === PostCategory.Article ||
+    metadata?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT
+  ) {
     return (
       <View>
-        <ArticlePreview metadata={metadata} />
+        <ArticlePreview metadata={metadata} singleView={singleView} />
       </View>
     );
   } else {
