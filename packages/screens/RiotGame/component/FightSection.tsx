@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
-import FlexRow from "../../../components/FlexRow";
+import FlexRow from "../../../components/containers/FlexRow";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { TeritoriNftQueryClient } from "../../../contracts-clients/teritori-nft/TeritoriNft.client";
 import { Squad } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";

@@ -13,7 +13,6 @@ import clockSVG from "../../../../assets/game/clock.svg";
 import countDownPNG from "../../../../assets/game/countdown.png";
 import unstakeSVG from "../../../../assets/icons/unstake.svg";
 import { BrandText } from "../../../components/BrandText";
-import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
 import { Squad } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
