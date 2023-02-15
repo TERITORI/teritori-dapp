@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     flexDirection: "row",
     backgroundColor: transparentColor,
-    marginTop: layout.padding_x2,
+    marginVertical: layout.padding_x2,
     maxWidth: 850,
   },
   image: { height: 106, width: 106 },

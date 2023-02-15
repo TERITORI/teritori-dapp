@@ -6,16 +6,18 @@ export interface PublishButtonProps {
   onPress: () => void;
   text: string;
   loading?: boolean;
+  disabled?: boolean;
 }
 
 export const PublishButton: React.FC<PublishButtonProps> = ({
   onPress,
   text,
   loading,
+  disabled,
 }) => {
   return (
     <PrimaryButton
-      disabled={loading}
+      disabled={disabled || loading}
       loader={loading}
       text={text}
       size="M"
