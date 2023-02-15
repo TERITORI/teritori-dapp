@@ -4,7 +4,6 @@ import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
-import { ErrorText } from "../../components/ErrorText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { WalletStatusBox } from "../../components/WalletStatusBox";
 import { FileUploader } from "../../components/fileUploader";
@@ -233,6 +232,8 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
               initialValue={formValues.message}
               openGraph={data}
               publishButtonProps={{
+                disabled:
+                  errors?.message?.type === "required" || !formValues.message,
                 loading,
                 text: `Publish ${
                   postFee > 0 && !freePostCount
@@ -244,9 +245,10 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
             />
           )}
         />
-        {errors?.message?.type === "required" && (
-          <ErrorText>Message is required</ErrorText>
-        )}
+        {/*TODO: remove that since PublishButton is disabled if !formValues.message ? */}
+        {/*{errors?.message?.type === "required" && (*/}
+        {/*  <ErrorText>Message is required</ErrorText>*/}
+        {/*)}*/}
       </View>
     </ScreenContainer>
   );

@@ -29,7 +29,7 @@ import {
   VIDEO_MIME_TYPES,
 } from "../../../utils/mime";
 import { useAppNavigation } from "../../../utils/navigation";
-import { SOCIAL_FEED_MAX_CHAR_LIMIT } from "../../../utils/social-feed";
+import { SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT } from "../../../utils/social-feed";
 import {
   neutral17,
   neutral22,
@@ -235,7 +235,7 @@ export const NewsFeedInput = React.forwardRef<
     const handleTextChange = (text: string) => {
       setValue("message", text);
 
-      if (text.length > 2500 && type === "post") {
+      if (text.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT && type === "post") {
         redirectToNewPost();
       }
     };
@@ -340,7 +340,7 @@ export const NewsFeedInput = React.forwardRef<
                 },
               ]}
             >
-              {formValues?.message?.length}/{SOCIAL_FEED_MAX_CHAR_LIMIT}
+              {formValues?.message?.length}/{SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT}
             </BrandText>
           </Pressable>
           <FilePreviewContainer

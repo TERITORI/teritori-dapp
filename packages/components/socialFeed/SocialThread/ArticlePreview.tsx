@@ -12,9 +12,10 @@ import { THUMBNAIL_WIDTH } from "./SocialThreadContent";
 
 interface Props {
   metadata: SocialFeedMetadata;
+  singleView?: boolean;
 }
 
-export const ArticlePreview: React.FC<Props> = ({ metadata }) => {
+export const ArticlePreview: React.FC<Props> = ({ metadata, singleView }) => {
   return (
     <View
       style={{
@@ -34,7 +35,7 @@ export const ArticlePreview: React.FC<Props> = ({ metadata }) => {
         )}
         <BrandText
           style={[fontSemibold13, { color: neutralA3 }]}
-          numberOfLines={4}
+          numberOfLines={singleView ? undefined : 5}
         >
           {metadata.message.replace(HTML_TAG_REGEXP, "")}
         </BrandText>
