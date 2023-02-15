@@ -7,7 +7,6 @@ import { FeedNewPostScreen } from "../../screens/FeedNewPost/FeedNewPostScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
-import { GuardiansGameScreen } from "../../screens/GuardiansGame/GuardiansGameScreen";
 import { HashFeedScreen } from "../../screens/HashFeed/HashFeedScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScreen";
@@ -18,6 +17,7 @@ import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionTools
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { PublicProfileScreen } from "../../screens/PublicProfile/PublicProfileScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -26,8 +26,6 @@ import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeader
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
-import { OrganizationPublicProfileScreen } from "../../screens/OrganizationPublicProfile/OrganizationPublicProfileScreen";
-import { PublicProfileScreen } from "../../screens/PublicProfile/PublicProfileScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";

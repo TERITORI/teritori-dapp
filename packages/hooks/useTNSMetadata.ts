@@ -26,19 +26,15 @@ export const useTNSMetadata = (address?: string) => {
       try {
         let aliasResponse: PrimaryAliasResponse = { username: address };
 
-      // TODO: Do not support NS for Ethereum for now
-      if (selectedNetworkInfo.network === Network.Ethereum) {
-        return null;
-      }
+        // TODO: Do not support NS for Ethereum for now
+        if (selectedNetworkInfo.network === Network.Ethereum) {
+          return null;
+        }
 
-      // NOTE: sometime, network changed before collections changed
-      // so we have to check here one more time
-      if (!address.startsWith("tori")) return null;
+        // NOTE: sometime, network changed before collections changed
+        // so we have to check here one more time
+        if (!address.startsWith("tori")) return null;
 
-      const contractAddress =
-        process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "";
-      // We just want to read, so we use a non-signing client
-      const cosmWasmClient = await getNonSigningCosmWasmClient();
         const contractAddress =
           process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "";
         // We just want to read, so we use a non-signing client
