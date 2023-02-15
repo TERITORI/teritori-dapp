@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
 import emptyCircleFrameSVG from "../../../../assets/empty-circle-frame.svg";
 import { getCosmosNetwork, parseUserId } from "../../../networks";
@@ -9,15 +9,16 @@ import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold9 } from "../../../utils/style/fonts";
 import { fullSidebarWidth, layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
-import { SVG } from "../../SVG";
 import { CustomPressable } from "../../buttons/CustomPressable";
+import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 
 export const SidebarProfileButton: React.FC<{
   userId: string;
   image: string;
   tokenId: string;
   isExpanded?: boolean;
-}> = ({ userId, image, tokenId, isExpanded }) => {
+  isLoading?: boolean;
+}> = ({ userId, image, tokenId, isExpanded, isLoading }) => {
   const navigation = useAppNavigation();
   const imageWidth = 68;
   const [network] = parseUserId(userId);
@@ -40,6 +41,8 @@ export const SidebarProfileButton: React.FC<{
           isExpanded && { flexDirection: "row", alignItems: "center" },
         ]}
       >
+        {/*<AvatarWithFrame image={image} size="M" isLoading={isLoading} />*/}
+
         <Image
           source={{
             uri: ipfsURLToHTTPURL(

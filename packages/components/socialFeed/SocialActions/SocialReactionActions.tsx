@@ -51,8 +51,7 @@ interface SocialReactionActionsProps {
 export const nbReactionsShown = 3;
 
 export const SocialReactionActions: React.FC<SocialReactionActionsProps> = ({
-  reactions,
-  statStyle,
+  reactions = [],
   isComment,
   isTippable,
   commentCount,

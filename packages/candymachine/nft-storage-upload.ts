@@ -4,8 +4,6 @@ import fs from "fs";
 import { NFTStorage, File } from "nft.storage/dist/bundle.esm.min.js";
 import path from "path";
 
-import config from "./config.json";
-
 const assertOnlyNumbers = (str: string) => {
   if (!/^[0-9]+$/.test(str)) {
     throw new Error("string is not a number");
