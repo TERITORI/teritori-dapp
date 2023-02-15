@@ -70,7 +70,7 @@ export const SendModal: React.FC<SendModalProps> = ({
         <BrandText>{`Send ${nativeCurrency?.displayName}`}</BrandText>
       </FlexRow>
     ),
-    [networkId]
+    [networkId, nativeCurrency?.displayName]
   );
 
   const maxAtomics =
