@@ -77,19 +77,19 @@ export const PrimaryButtonOutline: React.FC<{
           <ActivityIndicator color={primaryColor} />
         ) : (
           <>
-        {iconSVG ? (
-          <SVG
-            source={iconSVG}
-            color={color}
-            width={16}
-            height={16}
-            style={{ marginRight: 8 }}
-          />
-        ) : null}
+            {iconSVG ? (
+              <SVG
+                source={iconSVG}
+                color={color}
+                width={16}
+                height={16}
+                style={{ marginRight: 8 }}
+              />
+            ) : null}
 
-        <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
-          {text}
-        </BrandText>
+            <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
+              {text}
+            </BrandText>
           </>
         )}
       </TertiaryBox>

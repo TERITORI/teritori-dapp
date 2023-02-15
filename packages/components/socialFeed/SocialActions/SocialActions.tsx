@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -49,6 +49,10 @@ export const SocialActions: React.FC<{
   const navigation = useAppNavigation();
   const { width: containerWidth } = useMaxResolution();
   const [isGovernanceAction, setGovernanceAction] = useState(false);
+
+  useEffect(() => {
+    console.log("postpostpost", post);
+  }, [post]);
 
   // returns
   return (

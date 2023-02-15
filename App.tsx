@@ -74,7 +74,7 @@ export default function App() {
               </ReduxProvider>
             </SafeAreaProvider>
           </NavigationContainer>
-        <MetaMaskProvider>
+        </MetaMaskProvider>
       </FormProvider>
     </QueryClientProvider>
   );

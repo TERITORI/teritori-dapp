@@ -110,19 +110,19 @@ export const TertiaryBox: React.FC<{
               {/* Right bottom broken corner */}
               {!noRightBrokenBorder && (
                 <View
-                style={{
-                  width: 8,
-                  height: 18,
-                  right: 0,
-                  bottom: -5,
-                  transform: [{ rotate: "225deg" }],
-                  backgroundColor: squaresBackgroundColor,
-                  borderRightColor: borderColor,
-                  borderRightWidth: brokenCornerWidth,
-                  position: "absolute",
-                  zIndex: 2,
-                }}
-              />
+                  style={{
+                    width: 8,
+                    height: 18,
+                    right: 0,
+                    bottom: -5,
+                    transform: [{ rotate: "225deg" }],
+                    backgroundColor: squaresBackgroundColor,
+                    borderRightColor: borderColor,
+                    borderRightWidth: brokenCornerWidth,
+                    position: "absolute",
+                    zIndex: 2,
+                  }}
+                />
               )}
             </>
           )}
