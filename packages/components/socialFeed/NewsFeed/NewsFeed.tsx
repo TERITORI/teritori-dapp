@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -16,20 +16,15 @@ import { layout } from "../../../utils/style/layout";
 import { NEWS_FEED_MAX_WIDTH } from "../../../utils/types/feed";
 import { RefreshButton } from "../../RefreshButton";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
-import { NewsFeedInput } from "./NewsFeedInput";
 
 const SCROLL_OFFSET_VALUE = 240;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
-  hasInput?: boolean;
   hash?: string;
 }
 
-export const NewsFeed: React.FC<NewsFeedProps> = ({
-  Header,
-  hasInput = false,
-}) => {
+export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed();
   const isLoadingValue = useSharedValue(false);
@@ -93,15 +88,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 
   const ListHeaderComponent = useCallback(
     () => (
-      <View>
+      <>
         <Header />
-        {hasInput && (
-          <NewsFeedInput
-            type="post"
-            onSubmitSuccess={refetch}
-            style={{ maxWidth: NEWS_FEED_MAX_WIDTH }}
-          />
-        )}
         <Animated.View
           style={[{ paddingVertical: layout.padding_x1 }, animationStyle]}
         >
@@ -111,7 +99,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
             widthToAnimate={140}
           />
         </Animated.View>
-      </View>
+      </>
     ),
     [isLoadingValue, Header]
   );

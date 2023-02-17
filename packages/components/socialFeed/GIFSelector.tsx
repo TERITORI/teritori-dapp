@@ -3,34 +3,37 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  Pressable,
   StyleSheet,
   TextInput,
   View,
+  ViewStyle,
 } from "react-native";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
-import gifSVG from "../../assets/icons/gif.svg";
-import { TenorItemType } from "../hooks/tenor/types";
+import gifSVG from "../../../assets/icons/gif.svg";
+import { TenorItemType } from "../../hooks/tenor/types";
 import {
   combineTenorFetchPages,
   useTenorFetchFeatured,
-} from "../hooks/tenor/useTenorFetchFeatured";
-import { useTenorSearch } from "../hooks/tenor/useTenorSearch";
-import { neutral33, neutral67, secondaryColor } from "../utils/style/colors";
-import { fontSemibold14 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { CircleIconBox } from "./CircleIconBox";
-import { SpacerColumn } from "./spacer";
+} from "../../hooks/tenor/useTenorFetchFeatured";
+import { useTenorSearch } from "../../hooks/tenor/useTenorSearch";
+import { neutral33, neutral67, secondaryColor } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { CircleIconBox } from "../CircleIconBox";
+import { CustomPressable } from "../buttons/CustomPressable";
+import { SpacerColumn } from "../spacer";
 
 type GIFSelectorProps = {
   disabled?: boolean;
+  optionsContainer?: ViewStyle;
   onGIFSelected?: (GIFurl: string | null) => void;
 };
 
 export const GIFSelector: React.FC<GIFSelectorProps> = ({
   onGIFSelected,
+  optionsContainer,
   disabled,
 }) => {
   // functions
@@ -91,7 +94,6 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
     <Menu
       opened={isGIFModalVisible}
       onBackdropPress={toggleGIFModal}
-      // renderer={renderers.Popover}
       rendererProps={{ placement: "bottom" }}
     >
       <MenuTrigger onPress={() => !disabled && toggleGIFModal}>
@@ -104,7 +106,10 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
 
       <MenuOptions
         customStyles={{
-          optionsContainer: styles.optionsContainer,
+          optionsContainer: StyleSheet.flatten([
+            styles.optionsContainer,
+            optionsContainer,
+          ]),
         }}
       >
         <View style={styles.modalContainer}>
@@ -130,12 +135,12 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
             keyExtractor={(item) => item.id}
             numColumns={4}
             renderItem={({ item }) => (
-              <Pressable onPress={() => onPressItem(item)}>
+              <CustomPressable onPress={() => onPressItem(item)}>
                 <Image
                   source={{ uri: item.media_formats["gif"].url }}
                   style={styles.gif}
                 />
-              </Pressable>
+              </CustomPressable>
             )}
             ListFooterComponent={
               isLoading
