@@ -218,7 +218,7 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="FeedNewPost"
         component={FeedNewPostScreen}
-        options={{ header: () => null, title: screenTitle("New Post") }}
+        options={{ header: () => null, title: screenTitle("New Article") }}
       />
       <Stack.Screen
         name="PublicProfile"

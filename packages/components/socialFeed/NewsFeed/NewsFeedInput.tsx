@@ -156,7 +156,7 @@ export const NewsFeedInput = React.forwardRef<
     }, [formValues]);
 
     const onSubmit = async () => {
-      if (formValues.files && !formValues.nftStorageApiToken) {
+      if (!!formValues.files?.length && !formValues.nftStorageApiToken) {
         return setIsNFTKeyModal(true);
       }
       processSubmit();
@@ -508,7 +508,11 @@ export const NewsFeedInput = React.forwardRef<
               )}
             </FileUploader>
             <PrimaryButton
-              disabled={!formValues?.message}
+              disabled={
+                !formValues?.message &&
+                !formValues?.files?.length &&
+                !formValues?.gifs?.length
+              }
               isLoading={isLoading || isMutateLoading}
               size="M"
               width={110}
