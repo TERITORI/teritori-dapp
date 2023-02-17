@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
@@ -36,27 +36,30 @@ export const useGameRewards = () => {
   );
   const claimableAmount = data || 0;
 
-  const claimRewards = async (user: string) => {
-    setIsClaiming(true);
-    try {
-      const signingClient = await getSigningCosmWasmClient();
-      const distributorClient = new TeritoriDistributorClient(
-        signingClient,
-        user,
-        TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS
-      );
+  const claimRewards = useCallback(
+    async (user: string) => {
+      setIsClaiming(true);
+      try {
+        const signingClient = await getSigningCosmWasmClient();
+        const distributorClient = new TeritoriDistributorClient(
+          signingClient,
+          user,
+          TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS
+        );
 
-      await distributorClient.claim();
-      setToastSuccess({
-        title: "Success",
-        message: "Your rewards have been sent to your wallet",
-      });
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
-    } finally {
-      setIsClaiming(false);
-    }
-  };
+        await distributorClient.claim();
+        setToastSuccess({
+          title: "Success",
+          message: "Your rewards have been sent to your wallet",
+        });
+      } catch (e: any) {
+        setToastError({ title: "Error", message: e.message });
+      } finally {
+        setIsClaiming(false);
+      }
+    },
+    [setToastError, setToastSuccess]
+  );
 
   return { isClaiming, claimableAmount, claimRewards };
 };
