@@ -1,5 +1,5 @@
 import { Audio, AVPlaybackStatus } from "expo-av";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
@@ -14,10 +14,12 @@ import { layout } from "../../utils/style/layout";
 import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialThreadContent";
+import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialMessageContent";
 import { AudioWaveform } from "./AudioWaveform";
 
-export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
+export const AudioPreview: React.FC<{
+  file: RemoteFileData;
+}> = ({ file }) => {
   const { width } = useMaxResolution();
   const [sound, setSound] = useState<Audio.Sound>();
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
@@ -25,15 +27,6 @@ export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
     () => getAudioDuration(file.audioMetadata?.duration),
     [file]
   );
-
-  const loadSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: ipfsURLToHTTPURL(file.url) },
-      { progressUpdateIntervalMillis: 400 },
-      (status) => setPlaybackStatus(status)
-    );
-    setSound(sound);
-  };
 
   const handlePlayPause = async () => {
     if (playbackStatus?.isLoaded && playbackStatus?.isPlaying) {
@@ -43,7 +36,7 @@ export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     return sound
       ? () => {
           sound.unloadAsync();
@@ -51,7 +44,15 @@ export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
       : undefined;
   }, [sound]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const loadSound = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: ipfsURLToHTTPURL(file.url) },
+        { progressUpdateIntervalMillis: 400 },
+        (status) => setPlaybackStatus(status)
+      );
+      setSound(sound);
+    };
     loadSound();
   }, []);
 
@@ -62,9 +63,9 @@ export const AudioPreview = ({ file }: { file: RemoteFileData }) => {
 
   const audioWaveWidth = useMemo(() => {
     if (width > 900) {
-      return 900 - 342 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+      return 900 - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
     } else {
-      return width - 342 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+      return width - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
     }
   }, [width, hasThumbnail]);
 

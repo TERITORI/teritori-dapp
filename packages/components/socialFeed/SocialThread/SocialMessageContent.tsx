@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "react-native";
 
 import { SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT } from "../../../utils/social-feed";
-import { layout } from "../../../utils/style/layout";
 import { AudioPreview } from "../../FilePreview/AudioPreview";
 import { convertGIFToLocalFileType } from "../../FilePreview/UploadedFilePreview/FilePreviewContainer";
 import { ImagePreview } from "../../FilePreview/UploadedFilePreview/ImagePreview";
@@ -13,13 +12,13 @@ import { TextContent } from "./TextContent";
 interface Props {
   metadata: SocialFeedMetadata;
   type: PostCategory;
-  singleView?: boolean;
+  isPostConsultation?: boolean;
 }
 export const THUMBNAIL_WIDTH = 140;
 
-export const SocialThreadContent: React.FC<Props> = ({
+export const SocialMessageContent: React.FC<Props> = ({
   metadata,
-  singleView,
+  isPostConsultation,
   type,
 }) => {
   if (
@@ -28,17 +27,17 @@ export const SocialThreadContent: React.FC<Props> = ({
   ) {
     return (
       <View>
-        <ArticlePreview metadata={metadata} singleView={singleView} />
+        <ArticlePreview
+          metadata={metadata}
+          isPostConsultation={isPostConsultation}
+        />
       </View>
     );
   } else {
     return (
-      <View
-        style={{
-          paddingBottom: layout.padding_x1,
-        }}
-      >
+      <>
         <TextContent metadata={metadata} />
+
         {metadata.files?.[0]?.fileType === "video" && (
           <VideoPreview file={metadata.files[0]} onDelete={() => null} />
         )}
@@ -54,10 +53,11 @@ export const SocialThreadContent: React.FC<Props> = ({
             onDelete={() => null}
           />
         )}
+
         {metadata.files?.[0]?.fileType === "audio" && (
           <AudioPreview file={metadata.files?.[0]} />
         )}
-      </View>
+      </>
     );
   }
 };

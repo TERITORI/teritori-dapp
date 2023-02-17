@@ -3,7 +3,10 @@ import { StyleSheet, View } from "react-native";
 
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { neutral22 } from "../../utils/style/colors";
-import { SocialCommentCard, SocialCommentCardProps } from "./SocialCommentCard";
+import {
+  SocialCommentCard,
+  SocialCommentCardProps,
+} from "../socialFeed/SocialThread/SocialCommentCard";
 
 interface CommentsContainerProps
   extends Omit<SocialCommentCardProps, "comment" | "isLast"> {

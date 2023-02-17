@@ -17,16 +17,11 @@ export const TextContent: React.FC<Props> = ({ metadata }) => {
   return (
     <View>
       {!!metadata?.title && (
-        <BrandText style={{ marginVertical: layout.padding_x1 }}>
+        <BrandText style={{ marginBottom: layout.padding_x1 }}>
           {metadata.title}
         </BrandText>
       )}
-      <BrandText
-        style={[
-          fontSemibold13,
-          { color: neutralA3, marginBottom: layout.padding_x2 },
-        ]}
-      >
+      <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
         <TextRenderer text={metadata.message.replace(HTML_TAG_REGEXP, "")} />
       </BrandText>
     </View>

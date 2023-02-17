@@ -6,7 +6,7 @@ import { neutral15, neutral22 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { SocialStat } from "../SocialStat";
 import { MoreReactionsButton } from "./MoreReactionsButton";
-import { nbReactionsShown } from "./SocialReactionActions";
+import { nbReactionsShown } from "./Reactions";
 
 export const MoreReactionsMenu: React.FC<{
   sortedReactions: Reaction[];

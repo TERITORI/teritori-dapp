@@ -1,5 +1,5 @@
 import { Audio, AVPlaybackStatus } from "expo-av";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, View, TouchableOpacity, ActivityIndicator } from "react-native";
 
 import pauseSVG from "../../../../assets/icons/pause.svg";
@@ -34,7 +34,7 @@ export const AudioPreview: React.FC<AudioPreviewProps> = ({
   const [sound, setSound] = useState<Audio.Sound>();
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     return sound
       ? () => {
           sound.unloadAsync();
@@ -42,18 +42,17 @@ export const AudioPreview: React.FC<AudioPreviewProps> = ({
       : undefined;
   }, [sound]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const loadSound = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+        { uri: file.url },
+        { progressUpdateIntervalMillis: 400 },
+        (status) => setPlaybackStatus(status)
+      );
+      setSound(sound);
+    };
     loadSound();
   }, []);
-
-  const loadSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: file.url },
-      { progressUpdateIntervalMillis: 400 },
-      (status) => setPlaybackStatus(status)
-    );
-    setSound(sound);
-  };
 
   const handlePlayPause = async () => {
     if (playbackStatus?.isLoaded && playbackStatus?.isPlaying) {
