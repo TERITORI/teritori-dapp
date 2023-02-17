@@ -8,34 +8,32 @@ import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
-import { THUMBNAIL_WIDTH } from "./SocialThreadContent";
+import { THUMBNAIL_WIDTH } from "./SocialMessageContent";
 
 interface Props {
   metadata: SocialFeedMetadata;
-  singleView?: boolean;
+  isPostConsultation?: boolean;
 }
 
-export const ArticlePreview: React.FC<Props> = ({ metadata, singleView }) => {
+export const ArticlePreview: React.FC<Props> = ({
+  metadata,
+  isPostConsultation,
+}) => {
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        paddingBottom: layout.padding_x1,
-      }}
-    >
+    <View style={{ flexDirection: "row" }}>
       <View
         style={{
           flex: 1,
         }}
       >
         {!!metadata?.title && (
-          <BrandText style={{ marginVertical: layout.padding_x1 }}>
+          <BrandText style={{ marginBottom: layout.padding_x1 }}>
             {metadata.title}
           </BrandText>
         )}
         <BrandText
           style={[fontSemibold13, { color: neutralA3 }]}
-          numberOfLines={singleView ? undefined : 5}
+          numberOfLines={isPostConsultation ? undefined : 5}
         >
           {metadata.message.replace(HTML_TAG_REGEXP, "")}
         </BrandText>

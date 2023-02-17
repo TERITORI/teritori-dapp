@@ -1,63 +1,59 @@
-import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   LayoutRectangle,
-  Pressable,
   StyleProp,
   StyleSheet,
   TouchableOpacity,
-  useWindowDimensions,
   View,
   ViewStyle,
 } from "react-native";
 
-import { socialFeedClient } from "../../client-creators/socialFeedClient";
-import { useTeritoriSocialFeedReactPostMutation } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
+import { socialFeedClient } from "../../../client-creators/socialFeedClient";
+import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import {
   combineFetchCommentPages,
   useFetchComments,
-} from "../../hooks/useFetchComments";
-import { usePrevious } from "../../hooks/usePrevious";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
-import { socialFeedBreakpointXL } from "../../screens/Feed/FeedScreen";
-import { OnPressReplyType } from "../../screens/FeedPostView/FeedPostViewScreen";
-import { useAppNavigation } from "../../utils/navigation";
+} from "../../../hooks/useFetchComments";
+import { usePrevious } from "../../../hooks/usePrevious";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
+import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
+import { useAppNavigation } from "../../../utils/navigation";
 import {
   DEFAULT_NAME,
   DEFAULT_USERNAME,
   getUpdatedReactions,
-} from "../../utils/social-feed";
+} from "../../../utils/social-feed";
 import {
   neutral00,
   neutral22,
   neutral33,
   neutral77,
-  neutralA3,
   primaryColor,
   secondaryColor,
   withAlpha,
-} from "../../utils/style/colors";
-import {
-  fontMedium13,
-  fontSemibold12,
-  fontSemibold13,
-  fontSemibold16,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { replaceTextWithComponent } from "../../utils/text";
-import { BrandText } from "../BrandText";
-import { FilePreview } from "../FilePreview/FilePreview";
-import { tinyAddress } from "../WalletSelector";
-import { AnimationFadeIn } from "../animations";
-import { AnimationFadeInOut } from "../animations/AnimationFadeInOut";
-import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
-import { AvatarWithFrame } from "../images/AvatarWithFrame";
-import { PostResultExtra } from "../socialFeed/NewsFeed/NewsFeed.type";
-import { SocialReactionActions } from "../socialFeed/SocialActions/SocialReactionActions";
-import { SpacerColumn, SpacerRow } from "../spacer";
-import { CommentsContainer } from "./CommentsContainer";
+} from "../../../utils/style/colors";
+import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { BrandText } from "../../BrandText";
+import { EmojiSelector } from "../../EmojiSelector";
+import FlexRow from "../../FlexRow";
+import { tinyAddress } from "../../WalletSelector";
+import { AnimationFadeIn } from "../../animations";
+import { AnimationFadeInOut } from "../../animations/AnimationFadeInOut";
+import { PrimaryButtonOutline } from "../../buttons/PrimaryButtonOutline";
+import { CommentsContainer } from "../../cards/CommentsContainer";
+import { AvatarWithFrame } from "../../images/AvatarWithFrame";
+import { SpacerColumn, SpacerRow } from "../../spacer";
+import { PostResultExtra } from "../NewsFeed/NewsFeed.type";
+import { CommentsButton } from "../SocialActions/CommentsButton";
+import { Reactions } from "../SocialActions/Reactions";
+import { RepplyButton } from "../SocialActions/RepplyButton";
+import { ShareButton } from "../SocialActions/ShareButton";
+import { TipButton } from "../SocialActions/TipButton";
+import { DateTime } from "./DateTime";
+import { SocialMessageContent } from "./SocialMessageContent";
 
 export interface SocialCommentCardProps {
   comment: PostResultExtra;
@@ -71,7 +67,7 @@ export interface SocialCommentCardProps {
   parentOffsetValue?: number;
 }
 
-const MARGIN_HEIGHT = 56;
+const MARGIN_HEIGHT = layout.padding_x3;
 
 export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   style,
@@ -84,8 +80,6 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   onScrollTo,
   parentOffsetValue = 0,
 }) => {
-  const imageMarginRight = layout.padding_x3_5;
-  const { width: windowWidth } = useWindowDimensions();
   const [localComment, setLocalComment] = useState({ ...comment });
   const navigation = useAppNavigation();
   const [replyShown, setReplyShown] = useState(false);
@@ -190,6 +184,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
         <View style={styles.curvedLine} />
         {isLast && <View style={styles.extraLineHider} />}
 
+        {/*========== Card */}
         <View style={[styles.commentContainer, style]}>
           <AnimationFadeInOut
             visible={!!localComment.isInLocal}
@@ -199,113 +194,109 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           </AnimationFadeInOut>
 
           <View style={styles.commentContainerInside}>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("UserPublicProfile", {
-                  id: `tori-${localComment.post_by}`,
-                })
-              }
-              style={{
-                marginRight: imageMarginRight,
-              }}
-            >
-              <AvatarWithFrame
-                isLoading={postByTNSMetadata?.loading}
-                image={postByTNSMetadata?.metadata?.image}
-                size={windowWidth < socialFeedBreakpointXL ? "M" : "L"}
-              />
-            </TouchableOpacity>
-            <View style={styles.content}>
-              <View style={styles.detailsContainer}>
-                <View style={styles.rowCenter}>
-                  <Pressable
-                    onPress={() =>
-                      navigation.navigate("PublicProfile", {
-                        id: `tori-${localComment.post_by}`,
-                      })
-                    }
-                  >
-                    <BrandText style={fontSemibold16}>
-                      {postByTNSMetadata?.metadata?.public_name || DEFAULT_NAME}
-                    </BrandText>
-                  </Pressable>
-                  <SpacerRow size={1.5} />
-                  <Pressable
-                    onPress={() =>
-                      navigation.navigate("PublicProfile", {
-                        id: `tori-${localComment.post_by}`,
-                      })
-                    }
-                  >
-                    <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-                      @
-                      {postByTNSMetadata?.metadata?.tokenId
-                        ? tinyAddress(
-                            postByTNSMetadata?.metadata?.tokenId || "",
-                            19
-                          )
-                        : DEFAULT_USERNAME}
-                    </BrandText>
-                  </Pressable>
-
-                  <BrandText
-                    style={[
-                      fontSemibold12,
-                      {
-                        marginLeft: layout.padding_x1_5,
-                      },
-                    ]}
-                  >
-                    {moment(metadata.createdAt).local().fromNow()}
-                  </BrandText>
-                </View>
-
-                <SpacerColumn size={1} />
-                <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-                  {replaceTextWithComponent(
-                    metadata.message,
-                    /(@[\w&.-]+)/,
-                    ({ match }) => (
-                      <Pressable
-                        onPress={() =>
-                          navigation.navigate("PublicProfile", {
-                            id: match.replace("@", ""),
-                          })
-                        }
-                      >
-                        <BrandText
-                          style={[fontSemibold13, { color: primaryColor }]}
-                        >
-                          {match}
-                        </BrandText>
-                      </Pressable>
-                    )
-                  )}
-                </BrandText>
-                {!!metadata.fileURL && (
-                  <FilePreview fileURL={metadata.fileURL} />
-                )}
-              </View>
-
-              <View style={styles.actionContainer}>
-                <BrandText style={[fontMedium13, { color: neutral77 }]}>
-                  {localComment.post_by}
-                </BrandText>
-                <SocialReactionActions
-                  isTippable={
-                    postByTNSMetadata.metadata?.tokenId !==
-                    currentUserMetadata?.metadata?.tokenId
-                  }
-                  reactions={localComment.reactions}
-                  isComment
-                  onPressReply={handleReply}
-                  showEmojiSelector
-                  onPressReaction={handleReaction}
-                  isReactionLoading={isReactLoading}
-                  postId={localComment.identifier}
+            {/*====== Card Header */}
+            <FlexRow>
+              {/*---- User image */}
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("UserPublicProfile", {
+                    id: `tori-${localComment.post_by}`,
+                  })
+                }
+                style={{
+                  marginRight: layout.padding_x2,
+                }}
+              >
+                <AvatarWithFrame
+                  image={postByTNSMetadata?.metadata?.image}
+                  size="M"
+                  isLoading={postByTNSMetadata.loading}
                 />
-              </View>
-            </View>
+              </TouchableOpacity>
+
+              {/*---- User name */}
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("PublicProfile", {
+                    id: `tori-${localComment.post_by}`,
+                  })
+                }
+                activeOpacity={0.7}
+              >
+                <AnimationFadeIn>
+                  <BrandText style={fontSemibold16}>
+                    {postByTNSMetadata?.metadata?.public_name || DEFAULT_NAME}
+                  </BrandText>
+                </AnimationFadeIn>
+              </TouchableOpacity>
+
+              {/*---- User TNS name */}
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("PublicProfile", {
+                    id: `tori-${localComment.post_by}`,
+                  })
+                }
+                style={{ marginHorizontal: layout.padding_x1_5 }}
+              >
+                <BrandText
+                  style={[
+                    fontSemibold14,
+                    {
+                      color: neutral77,
+                    },
+                  ]}
+                >
+                  @
+                  {postByTNSMetadata?.metadata?.tokenId
+                    ? tinyAddress(
+                        postByTNSMetadata?.metadata?.tokenId || "",
+                        19
+                      )
+                    : DEFAULT_USERNAME}
+                </BrandText>
+              </TouchableOpacity>
+
+              {/*---- Date */}
+              <DateTime date={metadata.createdAt} />
+            </FlexRow>
+            <SpacerColumn size={2} />
+
+            {/*====== Card Content */}
+            <SocialMessageContent
+              metadata={metadata}
+              type={localComment.category}
+            />
+
+            {/*====== Card Actions */}
+            <FlexRow justifyContent="flex-end">
+              <Reactions
+                reactions={localComment.reactions}
+                onPressReaction={() => {}}
+              />
+              <SpacerRow size={2.5} />
+              <EmojiSelector
+                onEmojiSelected={handleReaction}
+                isLoading={isReactLoading}
+              />
+              <SpacerRow size={2.5} />
+              <RepplyButton onPress={handleReply} />
+              <SpacerRow size={2.5} />
+              <CommentsButton post={localComment} />
+
+              {postByTNSMetadata.metadata?.tokenId !==
+                currentUserMetadata?.metadata?.tokenId && (
+                <>
+                  <SpacerRow size={2.5} />
+                  <TipButton
+                    postTokenId={postByTNSMetadata?.metadata?.tokenId || ""}
+                  />
+                </>
+              )}
+
+              <SpacerRow size={2.5} />
+              <ShareButton postId={localComment.identifier} />
+            </FlexRow>
           </View>
         </View>
       </View>
@@ -382,10 +373,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   commentContainerInside: {
-    paddingVertical: layout.padding_x3,
-    paddingHorizontal: layout.padding_x3,
-    flex: 1,
-    flexDirection: "row",
+    paddingVertical: layout.padding_x2,
+    paddingHorizontal: layout.padding_x2_5,
   },
   content: { flex: 1 },
   rowCenter: {

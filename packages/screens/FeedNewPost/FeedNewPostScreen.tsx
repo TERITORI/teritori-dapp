@@ -137,9 +137,9 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     } catch (err) {
       setToastError({
         title: "Something went wrong.",
-        message: "Couldn't submit your request, please try again later. ",
+        message: err.message,
       });
-      console.log("post submit error", err);
+      console.error("post submit error", err);
     }
 
     setLoading(false);
@@ -166,7 +166,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     <ScreenContainer
       responsive
       maxWidth={592}
-      headerChildren={<BrandText style={fontSemibold20}>New Post</BrandText>}
+      headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
       onBackPress={navigateBack}
       footerChildren
     >
@@ -203,8 +203,9 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
         />
 
         <TextInputCustom<NewPostFormValues>
+          rules={{ required: true }}
           height={52}
-          label="Give it a title to make long post"
+          label="Give a title to make an Article"
           placeHolder="Type title here"
           name="title"
           control={control}
@@ -214,7 +215,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
             backgroundColor: neutral00,
           }}
         />
-        <Label isRequired>Message</Label>
+        <Label isRequired>Article content</Label>
         {/**@ts-ignore  error:TS2589: Type instantiation is excessively deep and possibly infinite. */}
         <Controller
           name="message"
@@ -224,7 +225,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
           }}
           render={({ field: { onChange, onBlur } }) => (
             <RichText
-              onChange={(html, hashtags) => {
+              onChange={(html) => {
                 onChange(html);
                 handleOnChange(html);
               }}
@@ -233,7 +234,9 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
               openGraph={data}
               publishButtonProps={{
                 disabled:
-                  errors?.message?.type === "required" || !formValues.message,
+                  errors?.message?.type === "required" ||
+                  !formValues.message ||
+                  !formValues.title,
                 loading,
                 text: `Publish ${
                   postFee > 0 && !freePostCount
@@ -245,7 +248,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
             />
           )}
         />
-        {/*TODO: remove that since PublishButton is disabled if !formValues.message ? */}
+        {/*TODO: ok to remove that since PublishButton is disabled if !formValues.message ? */}
         {/*{errors?.message?.type === "required" && (*/}
         {/*  <ErrorText>Message is required</ErrorText>*/}
         {/*)}*/}
