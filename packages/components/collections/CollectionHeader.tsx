@@ -3,9 +3,9 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useMemo } from "react";
 import { View, Image, Platform, StyleSheet, Linking } from "react-native";
 
-import bannerCollection from "../../../../assets/default-images/banner-collection.png";
-import etherscanSVG from "../../../../assets/icons/etherscan.svg";
-import shareSVG from "../../../../assets/icons/share.svg";
+import bannerCollection from "../../../assets/default-images/banner-collection.png";
+import etherscanSVG from "../../../assets/icons/etherscan.svg";
+import shareSVG from "../../../assets/icons/share.svg";
 import {
   NFTsRequest,
   Sort,

@@ -2,7 +2,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import toriSVG from "../../../../assets/icons/networks/teritori-circle.svg";
+import toriSVG from "../../../assets/icons/networks/teritori-circle.svg";
 import { neutral22, neutralA3 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
