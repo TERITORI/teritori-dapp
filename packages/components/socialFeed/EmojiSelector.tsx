@@ -3,26 +3,20 @@ import { StyleSheet, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
-import {
-  neutral33,
-  neutral67,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
-import EmojiModal from "../../EmojiModal";
-import { SVG } from "../../SVG";
-import emojiSVG from "../../assets/icons/emoji.svg";
+import emojiSVG from "../../../assets/icons/emoji.svg";
+import { neutral33, neutral67, secondaryColor } from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
+import EmojiModal from "../EmojiModal";
+import { SVG } from "../SVG";
 
 type EmojiSelectorProps = {
   onEmojiSelected?: (emoji: string) => void;
-  containerStyle?: ViewStyle;
   optionsContainer?: ViewStyle;
   isLoading?: boolean;
 };
 
 export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   onEmojiSelected,
-  containerStyle,
   optionsContainer,
   isLoading,
 }) => {
@@ -32,11 +26,7 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
     !isLoading && setIsEmojiModalVisible(!isEmojiModalVisible);
 
   return (
-    <Menu
-      opened={isEmojiModalVisible}
-      style={containerStyle}
-      onBackdropPress={toggleEmojiModal}
-    >
+    <Menu opened={isEmojiModalVisible} onBackdropPress={toggleEmojiModal}>
       <MenuTrigger onPress={toggleEmojiModal} style={styles.icon}>
         {isLoading ? (
           <ActivityIndicator animating color={secondaryColor} />

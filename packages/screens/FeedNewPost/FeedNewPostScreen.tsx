@@ -236,7 +236,8 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
                 disabled:
                   errors?.message?.type === "required" ||
                   !formValues.message ||
-                  !formValues.title,
+                  !formValues.title ||
+                  !wallet,
                 loading,
                 text: `Publish ${
                   postFee > 0 && !freePostCount
