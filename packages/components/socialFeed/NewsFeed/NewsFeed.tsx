@@ -15,7 +15,7 @@ import {
 import { layout } from "../../../utils/style/layout";
 import { NEWS_FEED_MAX_WIDTH } from "../../../utils/types/feed";
 import { RefreshButton } from "../../RefreshButton";
-import { SocialThreadCard } from "../../cards/SocialThreadCard";
+import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 import { NewsFeedInput } from "./NewsFeedInput";
 
 const SCROLL_OFFSET_VALUE = 240;
@@ -123,7 +123,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       renderItem={({ item: post }) => (
         <SocialThreadCard
           post={post}
-          style={{ marginBottom: 74 }}
+          style={{ marginBottom: layout.padding_x3 }}
           allowTruncation
         />
       )}

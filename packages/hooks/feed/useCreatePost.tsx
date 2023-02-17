@@ -66,9 +66,9 @@ export const useCreatePost = ({
 
       setToastError({
         title: "Something went wrong.",
-        message: "Couldn't submit your request, please try again later. ",
+        message: err.message,
       });
-      console.log("post submit error", err);
+      console.error("post submit error", err);
     },
   });
 
