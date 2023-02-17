@@ -4,15 +4,15 @@ import {
   NFTsRequest,
   Sort,
   SortDirection,
-} from "../../../api/marketplace/v1/marketplace";
-import { ActivityTable } from "../../../components/activity/ActivityTable";
-import { Footer } from "../../../components/footers/Footer";
-import { NFTs } from "../../../components/nfts/NFTs";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { alignDown } from "../../../utils/align";
-import { TabsListType } from "../types";
+} from "../../api/marketplace/v1/marketplace";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { alignDown } from "../../utils/align";
+import { ActivityTable } from "../activity/ActivityTable";
+import { Footer } from "../footers/Footer";
+import { NFTs } from "../nfts/NFTs";
+import { TabsListType } from "./types";
 
 const nftWidth = 268; // FIXME: ssot
 

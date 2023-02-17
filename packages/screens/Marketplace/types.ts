@@ -6,5 +6,3 @@ export type NFTActivityType = {
   buyer: string;
   seller: string;
 };
-
-export type TabsListType = "allNFTs" | "owned" | "activity";
