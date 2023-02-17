@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
 
 import { p2eBackendClient } from "../../utils/backend";
 import useSelectedWallet from "../useSelectedWallet";
@@ -27,10 +26,9 @@ export const useSeasonRank = () => {
     { refetchInterval: 300000, staleTime: 300000 }
   );
 
-  const prettyUserRank = useMemo(
-    () => `${userRank?.userScore?.rank || 0}/${userRank?.totalUsers || 0}`,
-    [userRank]
-  );
+  const prettyUserRank = `${userRank?.userScore?.rank || 0}/${
+    userRank?.totalUsers || 0
+  }`;
 
   return { userRank, prettyUserRank, currentSeason };
 };

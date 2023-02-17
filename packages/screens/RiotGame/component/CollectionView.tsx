@@ -3,11 +3,9 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import { SortDirection } from "../../../api/marketplace/v1/marketplace";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
-import {
-  TabsListType,
-  Header as CollectionHeader,
-  Content as CollectionContent,
-} from "../../Marketplace/CollectionScreen";
+import { CollectionContent } from "../../Marketplace/components/CollectionContent";
+import { CollectionHeader } from "../../Marketplace/components/CollectionHeader";
+import { TabsListType } from "../../Marketplace/types";
 
 type CollectionViewProps = {
   collectionId: string;
