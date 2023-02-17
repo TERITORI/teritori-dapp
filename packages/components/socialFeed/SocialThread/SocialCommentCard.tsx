@@ -37,7 +37,6 @@ import {
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
-import { EmojiSelector } from "../../EmojiSelector";
 import FlexRow from "../../FlexRow";
 import { tinyAddress } from "../../WalletSelector";
 import { AnimationFadeIn } from "../../animations";
@@ -46,6 +45,7 @@ import { PrimaryButtonOutline } from "../../buttons/PrimaryButtonOutline";
 import { CommentsContainer } from "../../cards/CommentsContainer";
 import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../spacer";
+import { EmojiSelector } from "../EmojiSelector";
 import { PostResultExtra } from "../NewsFeed/NewsFeed.type";
 import { CommentsButton } from "../SocialActions/CommentsButton";
 import { Reactions } from "../SocialActions/Reactions";

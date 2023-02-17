@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { CreateShortPostButton } from "../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
+import { CreateShortPostModal } from "../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { screenTabItems } from "../../utils/feed";
 import { ScreenFC } from "../../utils/navigation";
@@ -21,13 +23,14 @@ const SelectedTabContent: React.FC<SelectedTabContentProps> = ({
 }) => {
   switch (selectedTab) {
     case "news":
-      return <NewsFeed Header={Header} hasInput />;
+      return <NewsFeed Header={Header} />;
     default:
-      return <NewsFeed Header={Header} hasInput />;
+      return <NewsFeed Header={Header} />;
   }
 };
 
 export const FeedScreen: ScreenFC<"Feed"> = () => {
+  const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("news");
 
@@ -38,6 +41,12 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
         Header={() => (
           <FeedHeader selectedTab={selectedTab} onTabChange={setSelectedTab} />
         )}
+      />
+
+      <CreateShortPostButton onPress={() => setCreateModalVisible(true)} />
+      <CreateShortPostModal
+        isVisible={isCreateModalVisible}
+        onClose={() => setCreateModalVisible(false)}
       />
     </ScreenContainer>
   );

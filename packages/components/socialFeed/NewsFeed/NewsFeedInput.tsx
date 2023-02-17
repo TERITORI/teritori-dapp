@@ -46,14 +46,14 @@ import { replaceBetweenString } from "../../../utils/text";
 import { RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { CircleIconBox } from "../../CircleIconBox";
-import { EmojiSelector } from "../../EmojiSelector";
 import { FilePreviewContainer } from "../../FilePreview/UploadedFilePreview/FilePreviewContainer";
-import { GIFSelector } from "../../GIFSelector";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { FileUploader } from "../../fileUploader";
 import { SpacerRow } from "../../spacer";
+import { EmojiSelector } from "../EmojiSelector";
+import { GIFSelector } from "../GIFSelector";
 import { NFTKeyModal } from "./NFTKeyModal";
 import { NewPostFormValues, SocialFeedMetadata } from "./NewsFeed.type";
 import {
@@ -216,7 +216,6 @@ export const NewsFeedInput = React.forwardRef<
       } catch (err) {
         console.log("post submit err", err);
       }
-
       setLoading(false);
     };
 
@@ -427,6 +426,7 @@ export const NewsFeedInput = React.forwardRef<
             }}
           >
             <GIFSelector
+              optionsContainer={{ marginLeft: -186, marginTop: -20 }}
               onGIFSelected={(url) =>
                 url && setValue("gifs", [...(formValues.gifs || []), url])
               }
@@ -442,7 +442,7 @@ export const NewsFeedInput = React.forwardRef<
 
             <EmojiSelector
               onEmojiSelected={onEmojiSelected}
-              optionsContainer={{ marginLeft: -80 }}
+              optionsContainer={{ marginLeft: -80, marginTop: -20 }}
             />
             <SpacerRow size={2.5} />
 
