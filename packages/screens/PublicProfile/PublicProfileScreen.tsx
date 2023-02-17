@@ -24,7 +24,7 @@ const SelectedTabContent: React.FC<SelectedTabContentProps> = ({
 }) => {
   switch (selectedTab) {
     case "news":
-      return <NewsFeed Header={Header} hasInput />;
+      return <NewsFeed Header={Header} />;
     default:
       return null;
   }

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 import governanceCircleSVG from "../../../../assets/icons/governance-circle.svg";
 import {
@@ -11,6 +10,7 @@ import {
   redDefault,
 } from "../../../utils/style/colors";
 import { SVG } from "../../SVG";
+import { CustomPressable } from "../../buttons/CustomPressable";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
 import { SpacerRow } from "../../spacer";
 
@@ -21,14 +21,8 @@ export const SocialThreadGovernance: React.FC<{
 
   return (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => setGovernanceAction((prev) => !prev)}
-      >
-        <SVG source={governanceCircleSVG} height={36} width={36} />
-      </TouchableOpacity>
       {isGovernanceAction && (
-        <View style={{ flexDirection: "row", marginLeft: 12 }}>
+        <View style={{ flexDirection: "row", marginRight: 12 }}>
           <SecondaryButton
             squaresBackgroundColor={squaresBackgroundColor}
             text="Yes!"
@@ -62,6 +56,9 @@ export const SocialThreadGovernance: React.FC<{
           />
         </View>
       )}
+      <CustomPressable onPress={() => setGovernanceAction((prev) => !prev)}>
+        <SVG source={governanceCircleSVG} height={36} width={36} />
+      </CustomPressable>
     </View>
   );
 };
