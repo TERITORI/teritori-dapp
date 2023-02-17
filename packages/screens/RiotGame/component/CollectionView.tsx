@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { SortDirection } from "../../../api/marketplace/v1/marketplace";
+import { CollectionContent } from "../../../components/collections/CollectionContent";
+import { CollectionHeader } from "../../../components/collections/CollectionHeader";
+import { TabsListType } from "../../../components/collections/types";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
-import { CollectionContent } from "../../Marketplace/components/CollectionContent";
-import { CollectionHeader } from "../../Marketplace/components/CollectionHeader";
-import { TabsListType } from "../../Marketplace/types";
 
 type CollectionViewProps = {
   collectionId: string;

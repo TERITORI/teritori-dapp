@@ -8,6 +8,9 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { ActivityTable } from "../../components/activity/ActivityTable";
+import { CollectionContent } from "../../components/collections/CollectionContent";
+import { CollectionHeader } from "../../components/collections/CollectionHeader";
+import { TabsListType } from "../../components/collections/types";
 import { Footer } from "../../components/footers/Footer";
 import { NFTs } from "../../components/nfts/NFTs";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
@@ -16,9 +19,6 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { alignDown } from "../../utils/align";
 import { ScreenFC } from "../../utils/navigation";
-import { CollectionContent } from "./components/CollectionContent";
-import { CollectionHeader } from "./components/CollectionHeader";
-import { TabsListType } from "./types";
 
 const nftWidth = 268; // FIXME: ssot
 
