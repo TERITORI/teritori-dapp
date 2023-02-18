@@ -2,8 +2,8 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useMemo } from "react";
 
-import { useFeedbacks } from "./../context/FeedbacksProvider";
-import { useSelectedNetwork } from "./../hooks/useSelectedNetwork";
+import { useFeedbacks } from "../context/FeedbacksProvider";
+import { useSelectedNetwork } from "../hooks/useSelectedNetwork";
 import { Network } from "./network";
 
 export type RootStackParamList = {
@@ -42,6 +42,7 @@ export type RootStackParamList = {
 
   ComingSoon: undefined;
   DAppStore: undefined;
+  ToriPunks: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -154,6 +155,7 @@ const navConfig: {
     ComingSoon: "coming-soon",
     // ==== DAppStore
     DAppStore: "dapp-store",
+    ToriPunks: "dapp-store/tori-punks",
   },
 };
 

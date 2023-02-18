@@ -3,6 +3,7 @@ import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { DAppStore } from "../../screens/DAppStore/HomeScreen";
+import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
@@ -218,6 +219,11 @@ export const Navigator: React.FC = () => {
         name="DAppStore"
         component={DAppStore}
         options={{ header: () => null, title: screenTitle("dApp Store") }}
+      />
+      <Stack.Screen
+        name="ToriPunks"
+        component={ToriPunks}
+        options={{ header: () => null, title: screenTitle("ToriPunks") }}
       />
     </Stack.Navigator>
   );
