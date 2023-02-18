@@ -6,19 +6,12 @@ import { View, Image, Platform, StyleSheet, Linking } from "react-native";
 import bannerCollection from "../../../assets/default-images/banner-collection.png";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
 import shareSVG from "../../../assets/icons/share.svg";
-import {
-  NFTsRequest,
-  Sort,
-  SortDirection,
-} from "../../api/marketplace/v1/marketplace";
+import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import { ActivityTable } from "../../components/activity/ActivityTable";
 import { PrimaryBox } from "../../components/boxes/PrimaryBox";
 import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSecondary";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
-import { Footer } from "../../components/footers/Footer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
-import { NFTs } from "../../components/nfts/NFTs";
 import { SortButton } from "../../components/sorts/SortButton";
 import { SpacerRow } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
@@ -31,53 +24,11 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNativeCurrency } from "../../networks";
-import { alignDown } from "../../utils/align";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { CollectionStat } from "./CollectionStat";
 import { TabsListType } from "./types";
-const nftWidth = 268; // FIXME: ssot
-
-export const Content: React.FC<{
-  id: string;
-  selectedTab: TabsListType;
-  sortDirection: SortDirection;
-}> = React.memo(({ id, selectedTab, sortDirection }) => {
-  const wallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
-
-  const { width } = useMaxResolution();
-  const numColumns = Math.floor(width / nftWidth);
-
-  const nftsRequest: NFTsRequest = {
-    networkId: selectedNetworkId,
-    collectionId: id,
-    ownerId:
-      selectedTab === "owned" && wallet?.address
-        ? `tori-${wallet.address}`
-        : "",
-    limit: alignDown(20, numColumns) || numColumns,
-    offset: 0,
-    sort: Sort.SORTING_PRICE,
-    sortDirection,
-  };
-
-  switch (selectedTab) {
-    case "allNFTs":
-    case "owned":
-      return (
-        <NFTs
-          key={selectedTab}
-          req={nftsRequest}
-          numColumns={numColumns}
-          ListFooterComponent={<Footer />}
-        />
-      );
-    case "activity":
-      return <ActivityTable collectionId={id} />;
-  }
-});
 
 // All the screen content before the Flatlist used to display NFTs
 export const CollectionHeader: React.FC<{
