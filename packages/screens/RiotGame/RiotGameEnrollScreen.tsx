@@ -1,8 +1,9 @@
 import { useIsFocused } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
@@ -10,11 +11,23 @@ import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
+import {
+  persistSquadPreset,
+  selectSquadPresets,
+} from "../../store/slices/squadPresets";
+import { useAppDispatch } from "../../store/store";
 import { p2eBackendClient } from "../../utils/backend";
 import { useAppNavigation } from "../../utils/navigation";
+import {
+  neutral00,
+  neutral33,
+  secondaryColor,
+  yellowDefault,
+} from "../../utils/style/colors";
 import {
   fontMedium32,
   fontMedium48,
@@ -23,7 +36,7 @@ import {
 import { layout } from "../../utils/style/layout";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
-import { RipperSelectorModal } from "./component/RipperSelectorModalV2";
+import { RipperSelectorModal } from "./component/RipperGridSelectorModal";
 import { SimpleButton } from "./component/SimpleButton";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
@@ -35,6 +48,7 @@ const embeddedVideoWidth = 468;
 export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
   const { setToastError, setToastSuccess } = useFeedbacks();
+  const [activeSquadId, setActiveSquadId] = useState<number>(1);
 
   const videoRef = React.useRef<Video>(null);
   const isScreenFocused = useIsFocused();
@@ -50,6 +64,7 @@ export const RiotGameEnrollScreen = () => {
     currentUser,
     squadSeason1,
     setSquadSeason1,
+    getSquadPresetId,
   } = useSquadStaking();
 
   // Stop video when changing screen through react-navigation
@@ -59,10 +74,16 @@ export const RiotGameEnrollScreen = () => {
     }
   }, [isScreenFocused]);
 
+  const squadPresets = useSelector(selectSquadPresets);
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);
   const [isJoiningFight, setIsJoiningFight] = useState(false);
   const [isUnstaking, setIsUnstaking] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const squadPresetId = useMemo(() => {
+    return getSquadPresetId(activeSquadId);
+  }, [activeSquadId, getSquadPresetId]);
 
   const availableForEnrollRippers = useMemo(() => {
     const selectedIds = selectedRippers.map((r) => r.id);
@@ -145,7 +166,7 @@ export const RiotGameEnrollScreen = () => {
 
       // Wait a little before redirection to be sure that we have passed the fight start time
       setTimeout(() => {
-        navigation.navigate("RiotGameFight");
+        navigation.replace("RiotGameFight");
       }, 1000);
     } catch (e: any) {
       setToastError({
@@ -155,6 +176,48 @@ export const RiotGameEnrollScreen = () => {
       setIsJoiningFight(false);
     }
   };
+
+  const loadSquadPreset = useCallback(async () => {
+    if (!squadPresetId) return;
+
+    const ripperIds = squadPresets[squadPresetId] || [];
+    const presetRippers: NFT[] = [];
+
+    for (const ripperId of ripperIds) {
+      const ripper = myAvailableRippers.find((ar) => ar.id === ripperId);
+      if (ripper) {
+        presetRippers.push(ripper);
+      }
+    }
+
+    setSelectedRippers(presetRippers);
+  }, [squadPresets, squadPresetId, myAvailableRippers]);
+
+  const saveSquadPreset = async (squadId: number) => {
+    const squadPresetId = getSquadPresetId(squadId);
+    if (!squadPresetId) {
+      return setToastError({
+        title: "Error",
+        message: "failed to get squadPresetId",
+      });
+    }
+
+    dispatch(
+      persistSquadPreset({
+        squadPresetId,
+        ripperIds: selectedRippers.map((r) => r.id),
+      })
+    );
+
+    setToastSuccess({
+      title: "Success",
+      message: `Saved as Squad ${squadId}`,
+    });
+  };
+
+  useEffect(() => {
+    loadSquadPreset();
+  }, [loadSquadPreset]);
 
   useEffect(() => {
     if (
@@ -179,16 +242,58 @@ export const RiotGameEnrollScreen = () => {
       </View>
 
       <View style={styles.enrollContainer}>
-        <View style={styles.col}>
-          <BrandText style={styles.sectionTitle}>
-            Enroll your Ripper(s)
-          </BrandText>
+        <View style={[styles.col, { maxWidth: 575 }]}>
+          <View
+            style={{
+              marginTop: layout.padding_x1,
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <BrandText style={fontMedium32}>Enroll your Ripper(s)</BrandText>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginRight: layout.padding_x2_5,
+              }}
+            >
+              <SimpleButton
+                text="Squad 1"
+                size="XS"
+                color={activeSquadId === 1 ? neutral00 : secondaryColor}
+                bgColor={activeSquadId === 1 ? yellowDefault : neutral33}
+                style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+                onPress={() => setActiveSquadId(1)}
+              />
+              <SimpleButton
+                text="Squad 2"
+                size="XS"
+                color={activeSquadId === 2 ? neutral00 : secondaryColor}
+                bgColor={activeSquadId === 2 ? yellowDefault : neutral33}
+                style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                onPress={() => setActiveSquadId(2)}
+              />
+            </View>
+          </View>
 
           <FlatList
             scrollEnabled={false}
             data={RIPPER_SLOTS}
             numColumns={3}
             keyExtractor={(item, index) => "" + index}
+            ListFooterComponent={
+              activeSquadId ? (
+                <TertiaryButton
+                  style={{ marginTop: layout.padding_x2_5 }}
+                  text={`Save as Squad ${activeSquadId}`}
+                  size="XS"
+                  onPress={() => saveSquadPreset(activeSquadId)}
+                />
+              ) : null
+            }
             renderItem={({ item: slotId }) => (
               <View style={styles.ripperSlot}>
                 {selectedRippers[slotId] && (
@@ -210,8 +315,10 @@ export const RiotGameEnrollScreen = () => {
           />
         </View>
 
-        <View style={styles.col}>
-          <BrandText style={styles.sectionTitle}>Staking duration</BrandText>
+        <View style={[styles.col, { maxWidth: 540 }]}>
+          <View style={{ marginTop: layout.padding_x1, width: "100%" }}>
+            <BrandText style={fontMedium32}>Staking duration</BrandText>
+          </View>
 
           <TertiaryBox
             mainContainerStyle={{
@@ -251,7 +358,7 @@ export const RiotGameEnrollScreen = () => {
               marginVertical: layout.padding_x4,
               marginRight: layout.padding_x2,
             }}
-            text="Goto current Fight"
+            text="Go to current Fight"
             loading={isJoiningFight}
             iconSVG={controllerSVG}
             outline
@@ -295,10 +402,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     ...(fontMedium48 as object),
   },
-  sectionTitle: {
-    marginTop: layout.padding_x1,
-    ...(fontMedium32 as object),
-  },
   enrollContainer: {
     justifyContent: "space-around",
     marginTop: layout.padding_x1,
@@ -308,7 +411,6 @@ const styles = StyleSheet.create({
   col: {
     justifyContent: "center",
     alignItems: "center",
-    maxWidth: 548,
     width: "100%",
   },
   ripperSlot: {

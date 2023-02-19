@@ -62,7 +62,30 @@ var THE_RIOT_SEASONS = []Season{
 		BossName:  `== $*=|'¤?")à-£_%`,
 		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
 		StartsAt:  "2023-02-15T00:00:00",
-		EndsAt:    "2023-12-30T00:00:00",
+		EndsAt:    "2023-02-20T00:00:00",
+		IsPre:     true,
+	},
+	// Season 3
+	{
+		ID:         "Season 3",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 1_200_000,
+		BossName:   "Justin Trado",
+		BossImage:  "https://bafybeidxomcyjsr2iach6ms5ceaj53znjrnx5xlo5qnoldbswcfwocg75i.ipfs.nftstorage.link/",
+		TopN:       500,
+		StartsAt:   "2023-02-20T00:00:00",
+		EndsAt:     "2023-03-22T00:00:00",
+	},
+	// Pre-Season 4
+	{
+		ID:        "Pre-Season 4",
+		GameID:    THE_RIOT_GAME_ID,
+		BossName:  `== $*=|'¤?")à-£_%`,
+		BossImage: "https://bafkreideajx2dscsgyhnowpm4cavr5vd6pf5no6es326ziul7u2xuot3je.ipfs.nftstorage.link/",
+		StartsAt:  "2023-03-22T00:00:00",
+		EndsAt:    "2023-12-17T00:00:00",
 		IsPre:     true,
 	},
 }
