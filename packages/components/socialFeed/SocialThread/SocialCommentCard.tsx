@@ -47,7 +47,7 @@ import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { PostResultExtra } from "../NewsFeed/NewsFeed.type";
-import { CommentsButton } from "../SocialActions/CommentsButton";
+import { CommentsCount } from "../SocialActions/CommentsCount";
 import { Reactions } from "../SocialActions/Reactions";
 import { RepplyButton } from "../SocialActions/RepplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
@@ -62,12 +62,9 @@ export interface SocialCommentCardProps {
   onPressReply?: OnPressReplyType;
   overrideParentId?: string;
   refresh?: number;
-  isFirst?: boolean;
   onScrollTo?: (y: number) => void;
   parentOffsetValue?: number;
 }
-
-const MARGIN_HEIGHT = layout.padding_x3;
 
 export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   style,
@@ -76,7 +73,6 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   onPressReply,
   overrideParentId,
   refresh,
-  isFirst,
   onScrollTo,
   parentOffsetValue = 0,
 }) => {
@@ -172,177 +168,183 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   };
 
   return (
-    <AnimationFadeIn
-      onLayout={(e) =>
-        setReplyListYOffset((prev) => {
-          prev[0] = e.nativeEvent.layout.y;
-          return prev;
-        })
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("FeedPostView", { id: localComment.identifier })
       }
     >
-      <View style={[styles.container, isFirst && { marginTop: MARGIN_HEIGHT }]}>
-        <View style={styles.curvedLine} />
-        {isLast && <View style={styles.extraLineHider} />}
+      <AnimationFadeIn
+        onLayout={(e) =>
+          setReplyListYOffset((prev) => {
+            prev[0] = e.nativeEvent.layout.y;
+            return prev;
+          })
+        }
+      >
+        <View style={[styles.container]}>
+          <View style={styles.curvedLine} />
+          {isLast && <View style={styles.extraLineHider} />}
 
-        {/*========== Card */}
-        <View style={[styles.commentContainer, style]}>
-          <AnimationFadeInOut
-            visible={!!localComment.isInLocal}
-            style={styles.loadingOverlay}
-          >
-            <ActivityIndicator color={primaryColor} />
-          </AnimationFadeInOut>
+          {/*========== Card */}
+          <View style={[styles.commentContainer, style]}>
+            <AnimationFadeInOut
+              visible={!!localComment.isInLocal}
+              style={styles.loadingOverlay}
+            >
+              <ActivityIndicator color={primaryColor} />
+            </AnimationFadeInOut>
 
-          <View style={styles.commentContainerInside}>
-            {/*====== Card Header */}
-            <FlexRow>
-              {/*---- User image */}
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("UserPublicProfile", {
-                    id: `tori-${localComment.post_by}`,
-                  })
-                }
-                style={{
-                  marginRight: layout.padding_x2,
-                }}
-              >
-                <AvatarWithFrame
-                  image={postByTNSMetadata?.metadata?.image}
-                  size="M"
-                  isLoading={postByTNSMetadata.loading}
-                />
-              </TouchableOpacity>
-
-              {/*---- User name */}
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("PublicProfile", {
-                    id: `tori-${localComment.post_by}`,
-                  })
-                }
-                activeOpacity={0.7}
-              >
-                <AnimationFadeIn>
-                  <BrandText style={fontSemibold16}>
-                    {postByTNSMetadata?.metadata?.public_name || DEFAULT_NAME}
-                  </BrandText>
-                </AnimationFadeIn>
-              </TouchableOpacity>
-
-              {/*---- User TNS name */}
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("PublicProfile", {
-                    id: `tori-${localComment.post_by}`,
-                  })
-                }
-                style={{ marginHorizontal: layout.padding_x1_5 }}
-              >
-                <BrandText
-                  style={[
-                    fontSemibold14,
-                    {
-                      color: neutral77,
-                    },
-                  ]}
+            <View style={styles.commentContainerInside}>
+              {/*====== Card Header */}
+              <FlexRow>
+                {/*---- User image */}
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("UserPublicProfile", {
+                      id: `tori-${localComment.post_by}`,
+                    })
+                  }
+                  style={{
+                    marginRight: layout.padding_x2,
+                  }}
                 >
-                  @
-                  {postByTNSMetadata?.metadata?.tokenId
-                    ? tinyAddress(
-                        postByTNSMetadata?.metadata?.tokenId || "",
-                        19
-                      )
-                    : DEFAULT_USERNAME}
-                </BrandText>
-              </TouchableOpacity>
-
-              {/*---- Date */}
-              <DateTime date={metadata.createdAt} />
-            </FlexRow>
-            <SpacerColumn size={2} />
-
-            {/*====== Card Content */}
-            <SocialMessageContent
-              metadata={metadata}
-              type={localComment.category}
-            />
-
-            {/*====== Card Actions */}
-            <FlexRow justifyContent="flex-end">
-              <Reactions
-                reactions={localComment.reactions}
-                onPressReaction={() => {}}
-              />
-              <SpacerRow size={2.5} />
-              <EmojiSelector
-                onEmojiSelected={handleReaction}
-                isLoading={isReactLoading}
-              />
-              <SpacerRow size={2.5} />
-              <RepplyButton onPress={handleReply} />
-              <SpacerRow size={2.5} />
-              <CommentsButton post={localComment} />
-
-              {postByTNSMetadata.metadata?.tokenId !==
-                currentUserMetadata?.metadata?.tokenId && (
-                <>
-                  <SpacerRow size={2.5} />
-                  <TipButton
-                    postTokenId={postByTNSMetadata?.metadata?.tokenId || ""}
+                  <AvatarWithFrame
+                    image={postByTNSMetadata?.metadata?.image}
+                    size="M"
+                    isLoading={postByTNSMetadata.loading}
                   />
-                </>
-              )}
+                </TouchableOpacity>
 
-              <SpacerRow size={2.5} />
-              <ShareButton postId={localComment.identifier} />
-            </FlexRow>
+                {/*---- User name */}
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("PublicProfile", {
+                      id: `tori-${localComment.post_by}`,
+                    })
+                  }
+                  activeOpacity={0.7}
+                >
+                  <AnimationFadeIn>
+                    <BrandText style={fontSemibold16}>
+                      {postByTNSMetadata?.metadata?.public_name || DEFAULT_NAME}
+                    </BrandText>
+                  </AnimationFadeIn>
+                </TouchableOpacity>
+
+                {/*---- User TNS name */}
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("PublicProfile", {
+                      id: `tori-${localComment.post_by}`,
+                    })
+                  }
+                  style={{ marginHorizontal: layout.padding_x1_5 }}
+                >
+                  <BrandText
+                    style={[
+                      fontSemibold14,
+                      {
+                        color: neutral77,
+                      },
+                    ]}
+                  >
+                    @
+                    {postByTNSMetadata?.metadata?.tokenId
+                      ? tinyAddress(
+                          postByTNSMetadata?.metadata?.tokenId || "",
+                          19
+                        )
+                      : DEFAULT_USERNAME}
+                  </BrandText>
+                </TouchableOpacity>
+
+                {/*---- Date */}
+                <DateTime date={metadata.createdAt} />
+              </FlexRow>
+              <SpacerColumn size={2} />
+
+              {/*====== Card Content */}
+              <SocialMessageContent
+                metadata={metadata}
+                type={localComment.category}
+              />
+
+              {/*====== Card Actions */}
+              <FlexRow justifyContent="flex-end">
+                <Reactions
+                  reactions={localComment.reactions}
+                  onPressReaction={() => {}}
+                />
+                <SpacerRow size={2.5} />
+                <EmojiSelector
+                  onEmojiSelected={handleReaction}
+                  isLoading={isReactLoading}
+                />
+                <SpacerRow size={2.5} />
+                <RepplyButton onPress={handleReply} />
+                <SpacerRow size={2.5} />
+                <CommentsCount post={localComment} />
+
+                {postByTNSMetadata.metadata?.tokenId !==
+                  currentUserMetadata?.metadata?.tokenId && (
+                  <>
+                    <SpacerRow size={2.5} />
+                    <TipButton
+                      postTokenId={postByTNSMetadata?.metadata?.tokenId || ""}
+                    />
+                  </>
+                )}
+
+                <SpacerRow size={2.5} />
+                <ShareButton postId={localComment.identifier} />
+              </FlexRow>
+            </View>
           </View>
         </View>
-      </View>
 
-      {comments && (
-        <View
-          style={styles.subCommentContainer}
-          onLayout={(e) =>
-            setReplyListYOffset((prev) => {
-              prev[2] = e.nativeEvent.layout.height;
-              setReplyListLayout(e.nativeEvent.layout);
-              return prev;
-            })
-          }
-        >
-          {isLast && <View style={[styles.extraLineHider, { left: -61 }]} />}
-          <CommentsContainer
-            comments={comments}
-            onPressReply={onPressReply}
-            overrideParentId={localComment.identifier}
-          />
-        </View>
-      )}
-
-      {isLast && overrideParentId ? null : (
-        <AnimationFadeIn
-          style={styles.footer}
-          onLayout={(e) =>
-            setReplyListYOffset((prev) => {
-              prev[1] = e.nativeEvent.layout.y;
-              return prev;
-            })
-          }
-        >
-          {moreCommentsCount > 0 && (
-            <PrimaryButtonOutline
-              size="SM"
-              text={`View Replies (${moreCommentsCount})`}
-              onPress={onShowReply}
-              isLoading={isFetching}
-              width={200}
+        {comments && (
+          <View
+            style={styles.subCommentContainer}
+            onLayout={(e) =>
+              setReplyListYOffset((prev) => {
+                prev[2] = e.nativeEvent.layout.height;
+                setReplyListLayout(e.nativeEvent.layout);
+                return prev;
+              })
+            }
+          >
+            {isLast && <View style={[styles.extraLineHider, { left: -61 }]} />}
+            <CommentsContainer
+              comments={comments}
+              onPressReply={onPressReply}
+              overrideParentId={localComment.identifier}
             />
-          )}
-        </AnimationFadeIn>
-      )}
-    </AnimationFadeIn>
+          </View>
+        )}
+
+        {isLast && overrideParentId ? null : (
+          <AnimationFadeIn
+            style={styles.showReplyButtonContainer}
+            onLayout={(e) =>
+              setReplyListYOffset((prev) => {
+                prev[1] = e.nativeEvent.layout.y;
+                return prev;
+              })
+            }
+          >
+            {moreCommentsCount > 0 && (
+              <PrimaryButtonOutline
+                size="SM"
+                text={`View Replies (${moreCommentsCount})`}
+                onPress={onShowReply}
+                isLoading={isFetching}
+                width={200}
+              />
+            )}
+          </AnimationFadeIn>
+        )}
+      </AnimationFadeIn>
+    </TouchableOpacity>
   );
 };
 
@@ -381,11 +383,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  footer: {
-    flexDirection: "row",
+  showReplyButtonContainer: {
+    zIndex: 10,
+    position: "absolute",
+    bottom: -18,
+    right: 0,
+    left: 0,
     alignItems: "center",
     justifyContent: "center",
-    height: MARGIN_HEIGHT,
   },
   detailsContainer: {},
   actionContainer: {

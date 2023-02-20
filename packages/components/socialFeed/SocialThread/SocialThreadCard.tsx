@@ -31,7 +31,7 @@ import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
-import { CommentsButton } from "../SocialActions/CommentsButton";
+import { CommentsCount } from "../SocialActions/CommentsCount";
 import { Reactions } from "../SocialActions/Reactions";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { SocialThreadGovernance } from "../SocialActions/SocialThreadGovernance";
@@ -200,9 +200,11 @@ export const SocialThreadCard: React.FC<{
 
         {/*====== Card Actions */}
         {isGovernance ? (
-          <FlexRow justifyContent="flex-end" style={{height: 48}}>
+          <FlexRow justifyContent="flex-end" style={{ height: 48 }}>
             <SocialThreadGovernance
-              squaresBackgroundColor={isPostConsultation ? neutral17 : neutral00}
+              squaresBackgroundColor={
+                isPostConsultation ? neutral17 : neutral00
+              }
             />
           </FlexRow>
         ) : (
@@ -217,17 +219,17 @@ export const SocialThreadCard: React.FC<{
               isLoading={isReactLoading}
             />
             <SpacerRow size={2.5} />
-            <CommentsButton post={localPost} />
+            <CommentsCount post={localPost} />
 
             {postByTNSMetadata.metadata?.tokenId !==
               currentUserMetadata?.metadata?.tokenId && (
-                <>
-                  <SpacerRow size={2.5} />
-                  <TipButton
-                    postTokenId={postByTNSMetadata?.metadata?.tokenId || ""}
-                  />
-                </>
-              )}
+              <>
+                <SpacerRow size={2.5} />
+                <TipButton
+                  postTokenId={postByTNSMetadata?.metadata?.tokenId || ""}
+                />
+              </>
+            )}
 
             {isPostConsultation && (
               <>

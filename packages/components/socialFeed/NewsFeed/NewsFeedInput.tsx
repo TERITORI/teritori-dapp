@@ -6,7 +6,6 @@ import {
   ViewStyle,
   Pressable,
   StyleSheet,
-  useWindowDimensions,
 } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
@@ -72,6 +71,7 @@ interface NewsFeedInputProps {
   onSubmitSuccess?: () => void;
   onSubmitInProgress?: () => void;
   replyTo?: ReplyToType;
+  onReachCharsLimit?: () => void;
 }
 
 export interface NewsFeedInputHandle {
@@ -85,11 +85,20 @@ export const NewsFeedInput = React.forwardRef<
   NewsFeedInputProps
 >(
   (
-    { type, parentId, style, onSubmitSuccess, replyTo, onSubmitInProgress },
+    {
+      type,
+      parentId,
+      style,
+      onSubmitSuccess,
+      replyTo,
+      onSubmitInProgress,
+      onReachCharsLimit,
+    },
     forwardRef
   ) => {
+    const inputMaxHeight = 400;
+    const inputMinHeight = 20;
     const inputHeight = useSharedValue(20);
-    const { height } = useWindowDimensions();
     const wallet = useSelectedWallet();
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
@@ -214,7 +223,7 @@ export const NewsFeedInput = React.forwardRef<
           },
         });
       } catch (err) {
-        console.log("post submit err", err);
+        console.error("post submit err", err);
       }
       setLoading(false);
     };
@@ -235,13 +244,10 @@ export const NewsFeedInput = React.forwardRef<
       setValue("message", text);
 
       if (text.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT && type === "post") {
-        redirectToNewPost();
+        reset();
+        onReachCharsLimit && onReachCharsLimit();
+        navigation.navigate("FeedNewPost", formValues);
       }
-    };
-
-    const redirectToNewPost = () => {
-      reset();
-      navigation.navigate("FeedNewPost", formValues);
     };
 
     const onEmojiSelected = (emoji: string | null) => {
@@ -309,14 +315,17 @@ export const NewsFeedInput = React.forwardRef<
                 onChangeText={handleTextChange}
                 multiline
                 onContentSizeChange={(e) => {
-                  if (e.nativeEvent.contentSize.height < height * 0.2) {
+                  // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
+                  if (e.nativeEvent.contentSize.height < inputMaxHeight) {
                     inputHeight.value = e.nativeEvent.contentSize.height;
                   }
                 }}
                 style={[
                   fontSemibold16,
                   {
-                    height: inputHeight.value || 40,
+                    height: formValues.message
+                      ? inputHeight.value || inputMinHeight
+                      : inputMinHeight,
                     width: "100%",
                     color: secondaryColor,
                     marginLeft: layout.padding_x1_5,

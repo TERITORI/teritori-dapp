@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import Animated, {
   Easing,
   SharedValue,
@@ -9,35 +9,33 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import refreshSVG from "../../assets/icons/refresh.svg";
-import { neutral17, neutral33 } from "../utils/style/colors";
-import { fontSemibold14 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { SVG } from "./SVG";
+import refreshSVG from "../../../../../assets/icons/refresh.svg";
+import { neutral17, neutral33 } from "../../../../utils/style/colors";
+import { fontSemibold14 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
+import { BrandText } from "../../../BrandText";
+import { SVG } from "../../../SVG";
 
 interface RefreshButtonProps {
   isRefreshing: SharedValue<boolean>;
   onPress?(): void;
-  widthToAnimate: number;
 }
 
 const SVG_SIZE = 16;
-
+const WIDTH = 140;
 const LOADING_WIDTH = SVG_SIZE + layout.padding_x1_5 * 2;
 
 export const RefreshButton: React.FC<RefreshButtonProps> = ({
   isRefreshing,
   onPress,
-  widthToAnimate,
 }) => {
   // variables
   const isRefreshingAnim = useDerivedValue(() => {
     return isRefreshing.value;
   }, [isRefreshing.value]);
 
-  const roateValue = useDerivedValue(() => {
-    return isRefreshingAnim.value === true
+  const rotateValue = useDerivedValue(() => {
+    return isRefreshingAnim.value
       ? withRepeat(
           withTiming(1, {
             duration: 500,
@@ -53,10 +51,9 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
 
   const animStyle = useAnimatedStyle(
     () => ({
-      width:
-        isRefreshingAnim.value === true
-          ? withTiming(LOADING_WIDTH)
-          : withTiming(widthToAnimate),
+      width: isRefreshingAnim.value
+        ? withTiming(LOADING_WIDTH)
+        : withTiming(WIDTH),
     }),
     [isRefreshingAnim.value]
   );
@@ -65,11 +62,11 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
     return {
       transform: [
         {
-          rotateZ: `${roateValue.value * 180}deg`,
+          rotateZ: `${rotateValue.value * 180}deg`,
         },
       ],
     };
-  }, [roateValue.value]);
+  }, [rotateValue.value]);
 
   const opacityStyle = useAnimatedStyle(
     () => ({
@@ -83,14 +80,14 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
   // returns
   return (
     <Animated.View style={[styles.selfCenter, animStyle]}>
-      <Pressable style={styles.container} onPress={onPress}>
+      <TouchableOpacity style={styles.container} onPress={onPress}>
         <Animated.View style={animatedStyles}>
           <SVG source={refreshSVG} width={SVG_SIZE} height={SVG_SIZE} />
         </Animated.View>
         <Animated.View style={[styles.textContainer, opacityStyle]}>
           <BrandText style={fontSemibold14}>Refresh feed</BrandText>
         </Animated.View>
-      </Pressable>
+      </TouchableOpacity>
     </Animated.View>
   );
 };
@@ -105,8 +102,9 @@ const styles = StyleSheet.create({
     backgroundColor: neutral17,
     borderWidth: 1,
     borderColor: neutral33,
-    borderRadius: 32,
-    padding: layout.padding_x1_5,
+    borderRadius: 999,
+    paddingHorizontal: layout.padding_x1_5,
+    height: 42,
   },
   textContainer: {
     marginLeft: layout.padding_x1_5,
