@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { CreateShortPostButton } from "../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
-import { CreateShortPostModal } from "../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { screenTabItems } from "../../utils/feed";
 import { ScreenFC } from "../../utils/navigation";
@@ -17,6 +15,7 @@ export const socialFeedBreakpointXL = 1024;
 export const socialFeedBreakpointSM = 926;
 export const socialFeedBreakpointXS = 0;
 
+//TODO: Row scroll horizontally on mobile. Or dropdown menu
 const SelectedTabContent: React.FC<SelectedTabContentProps> = ({
   selectedTab,
   Header,
@@ -30,7 +29,6 @@ const SelectedTabContent: React.FC<SelectedTabContentProps> = ({
 };
 
 export const FeedScreen: ScreenFC<"Feed"> = () => {
-  const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("news");
 
@@ -41,12 +39,6 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
         Header={() => (
           <FeedHeader selectedTab={selectedTab} onTabChange={setSelectedTab} />
         )}
-      />
-
-      <CreateShortPostButton onPress={() => setCreateModalVisible(true)} />
-      <CreateShortPostModal
-        isVisible={isCreateModalVisible}
-        onClose={() => setCreateModalVisible(false)}
       />
     </ScreenContainer>
   );

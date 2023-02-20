@@ -27,7 +27,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
         gradientText
         textStyle={fontSemibold16}
       />
-      <SpacerColumn size={2.5} />
+      <SpacerColumn size={1.5} />
     </>
   );
 };
