@@ -10,7 +10,7 @@ import { getAudioDuration } from "../../utils/audio";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral00, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
 import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -62,8 +62,8 @@ export const AudioPreview: React.FC<{
   );
 
   const audioWaveWidth = useMemo(() => {
-    if (width > 900) {
-      return 900 - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+    if (width > NEWS_FEED_MAX_WIDTH) {
+      return NEWS_FEED_MAX_WIDTH - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
     } else {
       return width - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
     }

@@ -120,8 +120,8 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     });
   };
 
-  const navigateBack = () =>
-    navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Feed");
+  //TODO: Keep short post formValues in modal
+  const navigateBack = () => navigation.navigate("Feed");
 
   const onSubmit = async () => {
     if (formValues.files && !formValues.nftStorageApiToken) {

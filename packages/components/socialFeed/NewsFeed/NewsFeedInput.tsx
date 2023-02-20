@@ -30,10 +30,13 @@ import {
 import { useAppNavigation } from "../../../utils/navigation";
 import { SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT } from "../../../utils/social-feed";
 import {
+  errorColor,
   neutral17,
   neutral22,
   neutral77,
+  primaryColor,
   secondaryColor,
+  yellowDefault,
 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -49,6 +52,7 @@ import { FilePreviewContainer } from "../../FilePreview/UploadedFilePreview/File
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
+import { PrimaryButtonOutline } from "../../buttons/PrimaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
 import { SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
@@ -71,7 +75,7 @@ interface NewsFeedInputProps {
   onSubmitSuccess?: () => void;
   onSubmitInProgress?: () => void;
   replyTo?: ReplyToType;
-  onReachCharsLimit?: () => void;
+  onCloseCreateModal?: () => void;
 }
 
 export interface NewsFeedInputHandle {
@@ -92,7 +96,7 @@ export const NewsFeedInput = React.forwardRef<
       onSubmitSuccess,
       replyTo,
       onSubmitInProgress,
-      onReachCharsLimit,
+      onCloseCreateModal,
     },
     forwardRef
   ) => {
@@ -119,6 +123,7 @@ export const NewsFeedInput = React.forwardRef<
       onSuccess: () => {
         resetForm();
         onSubmitSuccess && onSubmitSuccess();
+        onCloseCreateModal && onCloseCreateModal();
       },
     });
 
@@ -241,13 +246,15 @@ export const NewsFeedInput = React.forwardRef<
     }));
 
     const handleTextChange = (text: string) => {
+      // Comments are blocked at 2500
+      if (type !== "post" && text.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT)
+        return;
       setValue("message", text);
+    };
 
-      if (text.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT && type === "post") {
-        reset();
-        onReachCharsLimit && onReachCharsLimit();
-        navigation.navigate("FeedNewPost", formValues);
-      }
+    const onPressCreateArticle = () => {
+      navigation.navigate("FeedNewPost", formValues);
+      onCloseCreateModal && onCloseCreateModal();
     };
 
     const onEmojiSelected = (emoji: string | null) => {
@@ -284,6 +291,20 @@ export const NewsFeedInput = React.forwardRef<
             }}
           />
         )}
+
+        {type === "post" && (
+          <PrimaryButtonOutline
+            size="M"
+            touchableStyle={{
+              marginTop: layout.padding_x2,
+              marginBottom: layout.padding_x2,
+              alignSelf: "center",
+            }}
+            text="Create an Article"
+            onPress={onPressCreateArticle}
+          />
+        )}
+
         <TertiaryBox
           fullWidth
           style={{
@@ -300,6 +321,7 @@ export const NewsFeedInput = React.forwardRef<
               width={24}
               source={penSVG}
               color={secondaryColor}
+              style={{ alignSelf: "flex-end" }}
             />
             <Animated.View style={{ flex: 1, height: "auto" }}>
               <TextInput
@@ -341,14 +363,24 @@ export const NewsFeedInput = React.forwardRef<
               style={[
                 fontSemibold12,
                 {
-                  color: neutral77,
+                  color: !formValues?.message
+                    ? neutral77
+                    : formValues?.message?.length > 2300 &&
+                      formValues?.message?.length < 2500
+                    ? yellowDefault
+                    : formValues?.message?.length >= 2500
+                    ? errorColor
+                    : primaryColor,
                   position: "absolute",
                   bottom: 12,
                   right: 20,
                 },
               ]}
             >
-              {formValues?.message?.length}/{SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT}
+              {formValues?.message?.length}
+              <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                /{SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT}
+              </BrandText>
             </BrandText>
           </Pressable>
           <FilePreviewContainer
@@ -435,7 +467,7 @@ export const NewsFeedInput = React.forwardRef<
             }}
           >
             <GIFSelector
-              optionsContainer={{ marginLeft: -186, marginTop: -20 }}
+              optionsContainer={{ marginLeft: -186, marginTop: -16 }}
               onGIFSelected={(url) =>
                 url && setValue("gifs", [...(formValues.gifs || []), url])
               }
@@ -451,7 +483,7 @@ export const NewsFeedInput = React.forwardRef<
 
             <EmojiSelector
               onEmojiSelected={onEmojiSelected}
-              optionsContainer={{ marginLeft: -80, marginTop: -20 }}
+              optionsContainer={{ marginLeft: -80, marginTop: -16 }}
             />
             <SpacerRow size={2.5} />
 
@@ -518,13 +550,13 @@ export const NewsFeedInput = React.forwardRef<
             </FileUploader>
             <PrimaryButton
               disabled={
-                !formValues?.message &&
-                !formValues?.files?.length &&
-                !formValues?.gifs?.length
+                (!formValues?.message &&
+                  !formValues?.files?.length &&
+                  !formValues?.gifs?.length) ||
+                formValues?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT
               }
               isLoading={isLoading || isMutateLoading}
               size="M"
-              width={110}
               text={type === "comment" ? "Comment" : "Publish"}
               squaresBackgroundColor={neutral17}
               onPress={handleSubmit(onSubmit)}
@@ -539,9 +571,9 @@ export const NewsFeedInput = React.forwardRef<
 const styles = StyleSheet.create({
   insideContainer: {
     width: "100%",
-    paddingVertical: layout.padding_x4,
+    paddingVertical: layout.padding_x3,
     paddingHorizontal: layout.padding_x2_5,
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
   },
 });
