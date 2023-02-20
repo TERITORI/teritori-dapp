@@ -33,7 +33,7 @@ import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { URL_REGEX } from "../../utils/regex";
 import { neutral00 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
 
 export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
   route: { params },
@@ -165,7 +165,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
   return (
     <ScreenContainer
       responsive
-      maxWidth={592}
+      maxWidth={NEWS_FEED_MAX_WIDTH}
       headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
       onBackPress={navigateBack}
       footerChildren

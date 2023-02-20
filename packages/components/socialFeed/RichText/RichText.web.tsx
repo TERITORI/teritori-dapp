@@ -260,7 +260,7 @@ export function RichText({
         // paddingBottom: 12,
       }}
     >
-      <ScrollView style={{ height: "100%", maxHeight: 453 }}>
+      <ScrollView style={{ height: "100%", maxHeight: 425 }}>
         <Editor
           editorState={editorState}
           onChange={handleChange}

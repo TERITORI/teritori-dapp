@@ -2,8 +2,7 @@ import React from "react";
 import { MenuProvider } from "react-native-popup-menu";
 
 import { useFetchFeed } from "../../../../hooks/useFetchFeed";
-import { layout } from "../../../../utils/style/layout";
-import { NEWS_FEED_MAX_WIDTH } from "../../../../utils/types/feed";
+import { layout, NEWS_FEED_MAX_WIDTH } from "../../../../utils/style/layout";
 import ModalBase from "../../../modals/ModalBase";
 import { NewsFeedInput } from "../NewsFeedInput";
 
@@ -22,6 +21,7 @@ export const CreateShortPostModal: React.FC<{
     >
       <MenuProvider>
         <NewsFeedInput
+          onReachCharsLimit={onClose}
           type="post"
           onSubmitSuccess={() => {
             onClose();
