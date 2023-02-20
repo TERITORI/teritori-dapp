@@ -1,13 +1,12 @@
 import React from "react";
-import { View, ViewStyle, StyleProp, TouchableOpacity } from "react-native";
+import { View, ViewStyle, StyleProp } from "react-native";
 
-import backSVG from "../../assets/icons/back.svg";
-import { neutral22, neutral33 } from "../utils/style/colors";
+import { neutral33 } from "../utils/style/colors";
 import {
   headerHeight,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
-import { SVG } from "./SVG";
+import { BackButton } from "./navigation/components/BackButton";
 
 export const Header: React.FC<{
   smallMargin?: boolean;
@@ -40,23 +39,7 @@ export const Header: React.FC<{
           marginLeft: screenContainerContentMarginHorizontal,
         }}
       >
-        {!!onBackPress && (
-          <TouchableOpacity
-            onPress={onBackPress}
-            activeOpacity={0.9}
-            style={{
-              backgroundColor: neutral22,
-              height: 32,
-              width: 32,
-              borderRadius: 32,
-              alignItems: "center",
-              justifyContent: "center",
-              marginRight: 12,
-            }}
-          >
-            <SVG source={backSVG} height={24} width={24} />
-          </TouchableOpacity>
-        )}
+        {onBackPress && <BackButton onPress={onBackPress} />}
         {children}
       </View>
 

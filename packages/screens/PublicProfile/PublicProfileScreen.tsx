@@ -3,12 +3,12 @@ import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { BackTo } from "../../components/navigation/BackTo";
 import { screenTitle } from "../../components/navigation/Navigator";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { screenTabItems } from "../../utils/feed";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { FeedHeader } from "../Feed/components/FeedHeader";
 import { PublicProfileIntro } from "./PublicProfileIntro";
@@ -53,7 +53,16 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
   return (
     <ScreenContainer
       fullWidth
-      headerChildren={<BackTo label={metadata?.public_name || ""} />}
+      headerChildren={
+        <BrandText style={fontSemibold20}>
+          {metadata?.public_name || ""}
+        </BrandText>
+      }
+      onBackPress={() => {
+        navigation.canGoBack()
+          ? navigation.goBack()
+          : navigation.navigate("Feed");
+      }}
       footerChildren={<></>}
     >
       {notFound || (!id.startsWith("tori-") && !id.includes(".tori")) ? (

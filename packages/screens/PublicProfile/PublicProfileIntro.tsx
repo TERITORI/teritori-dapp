@@ -64,7 +64,10 @@ export const PublicProfileIntro: React.FC<{
               </BrandText>
             </View>
 
-            <BrandText style={[fontMedium14, { maxWidth: 500 }]}>
+            <BrandText
+              style={[fontMedium14, { maxWidth: 735 }]}
+              numberOfLines={6}
+            >
               {metadata?.public_bio}
             </BrandText>
 
