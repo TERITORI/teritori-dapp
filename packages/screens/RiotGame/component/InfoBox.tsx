@@ -19,7 +19,7 @@ interface InfoBoxProps {
   content: string;
   width?: number;
   height?: number;
-  size?: "SM" | "MD" | "LG";
+  size?: "SM" | "MD" | "LG" | "XS";
 }
 
 export const InfoBox: React.FC<InfoBoxProps> = ({
@@ -33,6 +33,10 @@ export const InfoBox: React.FC<InfoBoxProps> = ({
   let contentFont;
 
   switch (size) {
+    case "XS":
+      titleFont = fontMedium10;
+      contentFont = fontMedium10;
+      break;
     case "SM":
       titleFont = fontMedium10;
       contentFont = fontSemibold15;

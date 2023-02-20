@@ -1,5 +1,6 @@
 import React from "react";
 import { Image, FlatList, View } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
 import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item.png";
@@ -12,14 +13,15 @@ import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutl
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
-import { fontMedium32 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { fontMedium24, fontMedium32 } from "../../utils/style/fonts";
+import { layout, smallMobileWidth } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
 
 export const RiotGameInventoryScreen = () => {
   const navigation = useAppNavigation();
 
+  const { width } = useWindowDimensions();
   const { myAvailableRippers } = useRippers();
 
   const gotoBreeding = () => {
@@ -31,7 +33,7 @@ export const RiotGameInventoryScreen = () => {
       <FlexRow breakpoint={1200} justifyContent="space-around">
         <View style={{ opacity: 0.6, marginTop: layout.padding_x4 }}>
           <FlexRow justifyContent="space-between" alignItems="center">
-            <BrandText style={fontMedium32}>Available Items</BrandText>
+            <BrandText style={width < smallMobileWidth ? fontMedium24 : fontMedium32}>Available Items</BrandText>
 
             <CustomPressable>
               {({ hovered }): React.ReactElement => (
@@ -48,7 +50,7 @@ export const RiotGameInventoryScreen = () => {
 
           <FlatList
             data={Array(9).fill(0)}
-            numColumns={3}
+            numColumns={width < smallMobileWidth ? 2 : 3}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => "" + index}
             renderItem={() => {
@@ -68,11 +70,11 @@ export const RiotGameInventoryScreen = () => {
           />
         </View>
 
-        <View style={{ minWidth: "500px", marginTop: layout.padding_x4 }}>
+        <View style={{ minWidth: width < smallMobileWidth ? `332px` : "500px", marginTop: layout.padding_x4 }}>
           <FlexRow
             style={{ justifyContent: "space-between", alignItems: "center" }}
           >
-            <BrandText style={fontMedium32}>Available Rippers</BrandText>
+            <BrandText style={width < smallMobileWidth ? fontMedium24 : fontMedium32}>Available Rippers</BrandText>
             <PrimaryButtonOutline
               onPress={gotoBreeding}
               color={yellowDefault}

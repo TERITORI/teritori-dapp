@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { StyleSheet, View, ViewStyle, useWindowDimensions } from "react-native";
 
 import {
   CurrentSeasonResponse,
@@ -20,7 +20,7 @@ import {
   getSigningCosmWasmClient,
 } from "../../../utils/keplr";
 import { yellowDefault } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
+import { layout, mobileWidth, smallMobileWidth } from "../../../utils/style/layout";
 import { InfoBox } from "./InfoBox";
 
 type FightStatsSectionProps = {
@@ -36,6 +36,15 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [isClaiming, setIsClaiming] = useState(false);
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
+
+  const { width } = useWindowDimensions();
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: width < mobileWidth ? "column" : "row",
+      margin: layout.padding_x1_5,
+      alignItems: "center",
+    },
+  });
 
   const claimRewards = async (user: string) => {
     setIsClaiming(true);
@@ -111,30 +120,32 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
 
   return (
     <View style={[containerStyle, styles.container]}>
-      <InfoBox
-        size="SM"
-        title="Number of Fighters"
-        content={`${userRank?.totalUsers || 0} Rippers`}
-        width={120}
-      />
-      <InfoBox
-        size="SM"
-        title="Prize Pool"
-        content={`${currentSeason?.isPre ? 0 : currentSeason?.totalPrize} ${
-          currentSeason?.denom.toUpperCase() || ""
-        }`}
-        width={150}
-      />
-      <InfoBox
-        size="SM"
-        title="Rank"
-        content={`${userRank?.userScore?.rank || 0}/${
-          userRank?.totalUsers || 0
-        }`}
-        width={120}
-      />
-
-      {claimableAmount !== 0 && selectedWallet?.address && (
+      <View style={{ display: "flex", alignItems: "center", flexDirection: "row" }}>
+        <InfoBox
+          size={width < smallMobileWidth ? "XS" : "SM"}
+          title="Number of Fighters"
+          content={`${userRank?.totalUsers || 0} Rippers`}
+          width={width < smallMobileWidth ? 110 : 120}
+        />
+        <InfoBox
+          size={width < smallMobileWidth ? "XS" : "SM"}
+          // size="SM"
+          title="Prize Pool"
+          content={`${currentSeason?.isPre ? 0 : currentSeason?.totalPrize} ${currentSeason?.denom.toUpperCase() || ""
+            }`}
+          width={width < smallMobileWidth ? 100 : 150}
+        />
+        <InfoBox
+          // size="SM"
+          size={width < smallMobileWidth ? "XS" : "SM"}
+          title="Rank"
+          content={`${userRank?.userScore?.rank || 0}/${userRank?.totalUsers || 0
+            }`}
+          width={width < smallMobileWidth ? 80 : 120}
+        />
+      </View>
+      {/* {claimableAmount !== 0 && selectedWallet?.address && ( */}
+      {1 && (
         <PrimaryButtonOutline
           disabled={isClaiming}
           color={yellowDefault}
@@ -143,24 +154,16 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
             isClaiming
               ? "Claiming..."
               : `Claim available rewards: ${decimalFromAtomics(
-                  process.env.TERITORI_NETWORK_ID || "",
-                  "" + claimableAmount,
-                  "utori"
-                )} TORI`
+                process.env.TERITORI_NETWORK_ID || "",
+                "" + claimableAmount,
+                "utori"
+              )} TORI`
           }
-          style={{ marginLeft: layout.padding_x1 }}
-          onPress={() => claimRewards(selectedWallet.address)}
+          style={{ marginLeft: layout.padding_x1, width: width < mobileWidth ? "90%" : "", marginTop: width < mobileWidth ? 10 : 0 }}
+          // onPress={() => claimRewards(selectedWallet.address)}
           noBrokenCorners
         />
       )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    margin: layout.padding_x1_5,
-    alignItems: "center",
-  },
-});

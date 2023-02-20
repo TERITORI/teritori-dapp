@@ -7,6 +7,7 @@ import {
   ImageBackground,
   ScrollView,
   Pressable,
+  useWindowDimensions
 } from "react-native";
 
 import controllerSVG from "../../../../assets/game/controller.svg";
@@ -29,7 +30,7 @@ import {
   fontMedium32,
   fontMedium48,
 } from "../../../utils/style/fonts";
-import { headerHeight, layout } from "../../../utils/style/layout";
+import { headerHeight, layout, smallMobileWidth } from "../../../utils/style/layout";
 import { AvailableRippersGrid } from "./AvailableRippersGrid";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStatsSection } from "./RipperStatsSection";
@@ -57,6 +58,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   const [selectedRipper, setSelectedRipper] = useState<NFT | undefined>();
   const [breedingsLeft, setBreedingsLeft] = useState<number>(0);
   const { getBreedingsLefts } = useBreeding();
+
+  const { width } = useWindowDimensions()
 
   const selectRipper = async (ripper: NFT) => {
     setSelectedRipper(ripper);
@@ -102,14 +105,14 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           contentContainerStyle={{ alignItems: "center" }}
           showsVerticalScrollIndicator={false}
         >
-          <BrandText style={[fontMedium48, { marginTop: layout.padding_x2 }]}>
+          <BrandText style={[width < smallMobileWidth ? fontMedium32 : fontMedium48, { marginTop: layout.padding_x2 }]}>
             {selectedRipper?.name || "Please select a Ripper"}
           </BrandText>
 
           <FlexRow breakpoint={992} justifyContent="space-around">
             <View style={{ justifyContent: "space-around" }}>
               <View>
-                <BrandText style={[fontMedium32]}>Available Rippers</BrandText>
+                <BrandText style={[width < smallMobileWidth ? fontMedium24 : fontMedium32]}>Available Rippers</BrandText>
 
                 <AvailableRippersGrid
                   availableRippers={availableRippers}
@@ -161,6 +164,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 breedingsLeft={breedingsLeft}
                 size="MD"
               />
+              <View style={{ marginBottom: 20 }} />
             </View>
           </FlexRow>
         </ScrollView>

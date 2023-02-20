@@ -2,7 +2,13 @@ import { useIsFocused } from "@react-navigation/native";
 import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 
 import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
@@ -18,9 +24,11 @@ import { useAppNavigation } from "../../utils/navigation";
 import {
   fontMedium32,
   fontMedium48,
+  fontSemibold20,
+  fontSemibold24,
   fontSemibold28,
 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, smallMobileWidth } from "../../utils/style/layout";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperSelectorModalV2";
@@ -58,6 +66,49 @@ export const RiotGameEnrollScreen = () => {
       videoRef.current.pauseAsync();
     }
   }, [isScreenFocused]);
+
+  const { width } = useWindowDimensions();
+
+  const styles = StyleSheet.create({
+    pageTitle: {
+      marginTop: width < smallMobileWidth ? layout.padding_x2 : 0,
+      alignSelf: "center",
+      ...(width < smallMobileWidth ? fontSemibold28 : fontMedium48 as object),
+    },
+    sectionTitle: {
+      marginTop: layout.padding_x1,
+      ...(width < smallMobileWidth ? fontSemibold20 : fontMedium32 as object),
+    },
+    enrollContainer: {
+      justifyContent: "space-around",
+      marginTop: layout.padding_x1,
+      flexDirection: "row",
+      flexWrap: "wrap",
+    },
+    col: {
+      justifyContent: "center",
+      alignItems: "center",
+      maxWidth: 548,
+      width: "100%",
+    },
+    ripperSlot: {
+      // marginRight: layout.padding_x2_5,
+      marginTop: layout.padding_x2_5,
+      marginHorizontal: width < smallMobileWidth ? layout.padding_x1 : layout.padding_x1_5
+    },
+    videoContainer: {
+      marginTop: layout.padding_x2_5,
+      alignSelf: "center",
+      width: width < 600 ? "90%" : embeddedVideoWidth,
+      height: embeddedVideoHeight,
+    },
+    clearIcon: {
+      position: "absolute",
+      right: layout.padding_x1,
+      top: layout.padding_x1,
+      zIndex: 1,
+    },
+  });
 
   const [selectedSlot, setSelectedSlot] = useState<number>();
   const [selectedRippers, setSelectedRippers] = useState<NFT[]>([]);
@@ -187,7 +238,7 @@ export const RiotGameEnrollScreen = () => {
           <FlatList
             scrollEnabled={false}
             data={RIPPER_SLOTS}
-            numColumns={3}
+            numColumns={width < 600 ? 2 : 3}
             keyExtractor={(item, index) => "" + index}
             renderItem={({ item: slotId }) => (
               <View style={styles.ripperSlot}>
@@ -217,6 +268,8 @@ export const RiotGameEnrollScreen = () => {
             mainContainerStyle={{
               padding: layout.padding_x4,
               alignItems: "flex-start",
+              width: "90%",
+              margin: "auto"
             }}
             style={{ marginTop: layout.padding_x2 }}
             fullWidth
@@ -289,42 +342,3 @@ export const RiotGameEnrollScreen = () => {
     </GameContentView>
   );
 };
-
-const styles = StyleSheet.create({
-  pageTitle: {
-    alignSelf: "center",
-    ...(fontMedium48 as object),
-  },
-  sectionTitle: {
-    marginTop: layout.padding_x1,
-    ...(fontMedium32 as object),
-  },
-  enrollContainer: {
-    justifyContent: "space-around",
-    marginTop: layout.padding_x1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  col: {
-    justifyContent: "center",
-    alignItems: "center",
-    maxWidth: 548,
-    width: "100%",
-  },
-  ripperSlot: {
-    marginRight: layout.padding_x2_5,
-    marginTop: layout.padding_x2_5,
-  },
-  videoContainer: {
-    marginTop: layout.padding_x2_5,
-    alignSelf: "center",
-    width: embeddedVideoWidth,
-    height: embeddedVideoHeight,
-  },
-  clearIcon: {
-    position: "absolute",
-    right: layout.padding_x1,
-    top: layout.padding_x1,
-    zIndex: 1,
-  },
-});

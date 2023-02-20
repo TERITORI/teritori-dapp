@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, useWindowDimensions } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
@@ -33,11 +33,13 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
   breedingsLeft,
   active,
 }) => {
+  const { width } = useWindowDimensions();
+
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
       <TertiaryBox
-        width={200}
-        height={200}
+        width={width < 500 ? 150 : 200}
+        height={width < 500 ? 150 : 200}
         mainContainerStyle={{
           padding: layout.padding_x2,
           borderRadius: 8,

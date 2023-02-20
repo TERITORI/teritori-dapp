@@ -1,5 +1,5 @@
 import React from "react";
-import { Linking } from "react-native";
+import { Linking, useWindowDimensions } from "react-native";
 
 import discordSVG from "../../../assets/icons/discord.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
@@ -15,6 +15,7 @@ export const CollectionSocialButtons: React.FC<{
     twitter: twitterLink,
     website: websiteLink,
   } = collectionInfo;
+  const { width } = useWindowDimensions();
 
   return (
     <>
@@ -38,7 +39,7 @@ export const CollectionSocialButtons: React.FC<{
         <SocialButton
           text="Twitter"
           iconSvg={twitterSVG}
-          style={{ marginRight: 12 }}
+          style={{ marginRight: width < 868 ? 0 : 12 }}
           onPress={() => Linking.openURL(twitterLink)}
         />
       )}

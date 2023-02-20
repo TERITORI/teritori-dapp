@@ -6,6 +6,7 @@ import {
   Image,
   View,
   TouchableOpacity,
+  useWindowDimensions
 } from "react-native";
 
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
@@ -41,8 +42,9 @@ import {
   fontSemibold12,
   fontSemibold28,
 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, mobileWidth, smallMobileWidth } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
+import { ScrollView } from "react-native-gesture-handler";
 
 type RankProps = {
   changes: number;
@@ -72,8 +74,8 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
           source={{
             uri: ipfsURLToHTTPURL(
               tnsMetadata.metadata?.image ||
-                process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
-                ""
+              process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
+              ""
             ),
           }}
           style={{
@@ -133,6 +135,8 @@ export const RiotGameLeaderboardScreen = () => {
   const [userScores, setUserScores] = useState<UserScore[]>([]);
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
 
+  const { width } = useWindowDimensions();
+
   const fetchLeaderboard = async () => {
     const _userScores: UserScore[] = [];
 
@@ -162,84 +166,89 @@ export const RiotGameLeaderboardScreen = () => {
 
         <SpacerColumn size={2} />
 
-        <BrandText style={fontSemibold28}>THE R!OT LEADERBOARD</BrandText>
+        <BrandText style={fontSemibold28}>THE RIOT LEADERBOARD</BrandText>
 
         <SpacerColumn size={2} />
 
         <BrandText style={fontMedium16}>{currentSeason?.id}</BrandText>
       </ImageBackground>
 
-      <TertiaryBox fullWidth style={{ marginTop: layout.padding_x2 }}>
-        <FlexRow>
-          <View style={{ flex: 1 }}>
-            <BrandText
-              style={[styles.colHeaderTitle, { marginLeft: layout.padding_x2 }]}
-            >
-              Rank
-            </BrandText>
-          </View>
-          <View style={{ flex: 5 }}>
-            <BrandText style={styles.colHeaderTitle}>Player</BrandText>
-          </View>
-          <View style={{ flex: 2 }}>
-            <BrandText style={styles.colHeaderTitle}>
-              Current Fight XP
-            </BrandText>
-          </View>
-          <View style={{ flex: 2 }}>
-            <BrandText style={styles.colHeaderTitle}>
-              Time spent in Fight
-            </BrandText>
-          </View>
-          <View style={{ flex: 1 }}>
-            <BrandText style={styles.colHeaderTitle}>24 hours Change</BrandText>
-          </View>
-        </FlexRow>
-      </TertiaryBox>
-
-      <FlatList
-        data={userScores}
-        keyExtractor={(item, index) => " " + index}
-        renderItem={({ item: userScore }) => {
-          const { xp, hours, rankChanges } = parseUserScoreInfo(userScore);
-
-          return (
-            <FlexRow style={styles.rowItem}>
+      <ScrollView horizontal contentContainerStyle={{ width: width < mobileWidth ? mobileWidth - 40 : "100%", overflow: "hidden", margin: "auto" }}>
+        <View style={{ minWidth: width < mobileWidth ? mobileWidth - 40 : "100%" }}>
+          <TertiaryBox fullWidth style={{ marginTop: layout.padding_x2 }} mainContainerStyle={{ width: "100%" }}>
+            <FlexRow>
               <View style={{ flex: 1 }}>
                 <BrandText
-                  style={[styles.colData, { marginLeft: layout.padding_x3 }]}
+                  style={[styles.colHeaderTitle, { marginLeft: layout.padding_x2 }]}
                 >
-                  {userScore.rank}
+                  Rank
                 </BrandText>
               </View>
               <View style={{ flex: 5 }}>
-                <PlayerName userId={userScore.userId} />
+                <BrandText style={styles.colHeaderTitle}>Player</BrandText>
               </View>
-              <View
-                style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
-              >
-                <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
-
-                <SpacerRow size={1} />
-
-                <BrandText style={styles.colData}>{xp}</BrandText>
+              <View style={{ flex: 2 }}>
+                <BrandText style={styles.colHeaderTitle}>
+                  Current Fight XP
+                </BrandText>
               </View>
-              <View
-                style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
-              >
-                <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
-
-                <SpacerRow size={1} />
-
-                <BrandText style={styles.colData}>{hours} hours</BrandText>
+              <View style={{ flex: 2 }}>
+                <BrandText style={styles.colHeaderTitle}>
+                  Time spent in Fight
+                </BrandText>
               </View>
-              <View style={{ flex: 1 }}>
-                <Rank changes={rankChanges} />
+              <View style={{ flex: 2 }}>
+                <BrandText style={styles.colHeaderTitle}>24 hours Change</BrandText>
               </View>
             </FlexRow>
-          );
-        }}
-      />
+          </TertiaryBox>
+
+          <FlatList
+            data={userScores}
+            keyExtractor={(item, index) => " " + index}
+            renderItem={({ item: userScore }) => {
+              const { xp, hours, rankChanges } = parseUserScoreInfo(userScore);
+
+              return (
+                <FlexRow style={styles.rowItem}>
+                  <View style={{ flex: 1 }}>
+                    <BrandText
+                      style={[styles.colData, { marginLeft: layout.padding_x3 }]}
+                    >
+                      {userScore.rank}
+                    </BrandText>
+                  </View>
+                  <View style={{ flex: 5 }}>
+                    <PlayerName userId={userScore.userId} />
+                  </View>
+                  <View
+                    style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
+                  >
+                    <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
+
+                    <SpacerRow size={1} />
+
+                    <BrandText style={styles.colData}>{xp}</BrandText>
+                  </View>
+                  <View
+                    style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
+                  >
+                    <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
+
+                    <SpacerRow size={1} />
+
+                    <BrandText style={styles.colData}>{hours} hours</BrandText>
+                  </View>
+                  <View style={{ flex: 2 }}>
+                    <Rank changes={rankChanges} />
+                  </View>
+                </FlexRow>
+              );
+            }}
+          />
+        </View>
+      </ScrollView>
+
     </GameContentView>
   );
 };

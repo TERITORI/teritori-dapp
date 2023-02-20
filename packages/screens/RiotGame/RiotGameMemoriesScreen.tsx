@@ -15,15 +15,9 @@ import { EmbeddedWeb } from "../../components/EmbeddedWeb";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../components/spacer";
 import { fontMedium32 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, mobileWidth } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 
-const seasonVideoUri =
-  "https://www.youtube.com/embed/videoseries?list=PLRcO8OPsbd7zhj7PDysX2XIh095tazSWM";
-const seasonVideoHeight = 293;
-const seasonVideoWidth = 516;
-const episodeVideoSmHeight = 245;
-const episodeVideoSmWidth = 430;
 
 //TODO: Type and fetch this dynamically
 const episodes = [
@@ -43,6 +37,14 @@ export const RiotGameMemoriesScreen = () => {
   const episodesVideosRefs = useRef<Video[]>([]);
   const [displayYT, setDisplayYT] = useState(false);
   const isScreenFocused = useIsFocused();
+
+  const seasonVideoUri =
+    "https://www.youtube.com/embed/videoseries?list=PLRcO8OPsbd7zhj7PDysX2XIh095tazSWM";
+  const seasonVideoWidth = width < mobileWidth ? width - 64 : 516;
+  const seasonVideoHeight = Math.floor(seasonVideoWidth * 9 / 16);
+  const episodeVideoSmWidth = width < mobileWidth ? width - 64 : 430;
+  const episodeVideoSmHeight = Math.floor((episodeVideoSmWidth - 2) * 9 / 16 + 2);
+
 
   // Stop videos when changing screen through react-navigation
   useEffect(() => {
@@ -65,6 +67,25 @@ export const RiotGameMemoriesScreen = () => {
   if (width < 768) {
     numCol = 1;
   }
+
+  const styles = StyleSheet.create({
+    contentContainer: {
+      padding: layout.padding_x4,
+    },
+    videoSmBox: {
+      margin: "auto",
+      marginRight: width < mobileWidth ? undefined : layout.padding_x2_5,
+      marginBottom: layout.padding_x2_5,
+    },
+    videoSmImageFallback: {
+      height: "100%",
+      width: "100%",
+      borderRadius: 7,
+    },
+    title: {
+      marginBottom: layout.padding_x2,
+    },
+  });
 
   return (
     <GameContentView>
@@ -98,6 +119,7 @@ export const RiotGameMemoriesScreen = () => {
               key={index}
               height={episodeVideoSmHeight - 2}
               width={episodeVideoSmWidth}
+              // mainContainerStyle={{ width: "20%" }}
               style={styles.videoSmBox}
             >
               {item.videoUri ? (
@@ -121,27 +143,11 @@ export const RiotGameMemoriesScreen = () => {
                 />
               )}
             </TertiaryBox>
-          )}
+          )
+          }
+          style={{}}
         />
       </View>
     </GameContentView>
   );
 };
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    padding: layout.padding_x4,
-  },
-  videoSmBox: {
-    marginRight: layout.padding_x2_5,
-    marginBottom: layout.padding_x2_5,
-  },
-  videoSmImageFallback: {
-    height: "100%",
-    width: "100%",
-    borderRadius: 7,
-  },
-  title: {
-    marginBottom: layout.padding_x2,
-  },
-});

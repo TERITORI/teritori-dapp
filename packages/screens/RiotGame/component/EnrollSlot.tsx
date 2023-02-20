@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useWindowDimensions } from "react-native";
 
 import addSVG from "../../../../assets/icons/add.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
@@ -15,7 +16,7 @@ import {
   withAlpha,
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { layout, smallMobileWidth } from "../../../utils/style/layout";
 
 interface EnrollSlotProps {
   isLeader?: boolean;
@@ -28,11 +29,12 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
   ripper,
   isLeader,
 }) => {
+  const { width } = useWindowDimensions();
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
       <TertiaryBox
-        width={172}
-        height={148}
+        width={width < smallMobileWidth ? 160 : 172}
+        height={width < smallMobileWidth ? 140 : 148}
         mainContainerStyle={{
           padding: layout.padding_x2,
           borderRadius: layout.padding_x1,
