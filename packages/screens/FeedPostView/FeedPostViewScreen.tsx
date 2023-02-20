@@ -1,21 +1,12 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
-  useAnimatedStyle,
   useSharedValue,
-  withSpring,
 } from "react-native-reanimated";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
-import { RefreshButton } from "../../components/RefreshButton";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CommentsContainer } from "../../components/cards/CommentsContainer";
 import { BackTo } from "../../components/navigation/BackTo";
@@ -23,6 +14,8 @@ import {
   NewsFeedInput,
   NewsFeedInputHandle,
 } from "../../components/socialFeed/NewsFeed/NewsFeedInput";
+import { RefreshButton } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButton";
+import { RefreshButtonRound } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
 import { SocialThreadCard } from "../../components/socialFeed/SocialThread/SocialThreadCard";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useErrorHandler } from "../../hooks/useErrorHandler";
@@ -51,10 +44,11 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const aref = useAnimatedRef<Animated.ScrollView>();
 
+  const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
+  const [threadCardOffsetY, setThreadCardOffsetY] = useState(0);
+
   const isLoadingValue = useSharedValue(false);
-  const translationY = useSharedValue(0);
   const isGoingUp = useSharedValue(false);
-  const btnOffsetValue = useSharedValue(0);
   const isFirstLoad = useSharedValue(true);
   const { data, refetch, hasNextPage, fetchNextPage, isFetching } =
     useFetchComments({
@@ -129,69 +123,21 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           fetchNextPage();
         }
 
-        if (translationY.value > event.contentOffset.y) {
+        if (flatListContentOffsetY > event.contentOffset.y) {
           isGoingUp.value = true;
-        } else if (translationY.value < event.contentOffset.y) {
+        } else if (flatListContentOffsetY < event.contentOffset.y) {
           isGoingUp.value = false;
         }
-        translationY.value = event.contentOffset.y;
+        setFlatListContentOffsetY(event.contentOffset.y);
       },
     },
     [post?.identifier]
   );
 
-  const animationStyle = useAnimatedStyle(() => {
-    let animeValue = isFirstLoad.value ? 0 : btnOffsetValue.value;
-
-    if (isLoadingValue.value) {
-      if (translationY.value >= btnOffsetValue.value && !isGoingUp.value) {
-        animeValue = withSpring(translationY.value);
-      } else if (isGoingUp.value && translationY.value > btnOffsetValue.value) {
-        animeValue = translationY.value - btnOffsetValue.value;
-      }
-    } else if (translationY.value < btnOffsetValue.value) {
-      animeValue = isFirstLoad.value
-        ? withSpring(btnOffsetValue.value)
-        : btnOffsetValue.value;
-    } else {
-      animeValue = translationY.value - 100;
-    }
-
-    return {
-      position: "absolute",
-      zIndex: 10000,
-      transform: [
-        {
-          translateY: animeValue,
-        },
-      ],
-      left: 0,
-      right: 0,
-    };
-  }, [post?.identifier, translationY.value]);
-
   const handleSubmitInProgress = () => {
     if (replyTo?.parentId) aref.current?.scrollTo(replyTo.yOffsetValue);
     else aref.current?.scrollTo(0);
   };
-
-  const ListHeaderComponent = useCallback(
-    () => (
-      <Animated.View
-        style={[{ paddingVertical: layout.padding_x1 }, animationStyle]}
-      >
-        <RefreshButton
-          isRefreshing={isLoadingValue}
-          onPress={() => {
-            refetch();
-            setRefresh((prev) => ++prev);
-          }}
-          widthToAnimate={140}
-        />
-      </Animated.View>
-    ),
-    [isLoadingValue]
-  );
 
   return (
     <ScreenContainer
@@ -211,9 +157,9 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           <View
             onLayout={({
               nativeEvent: {
-                layout: { height: h },
+                layout: { height },
               },
-            }) => (btnOffsetValue.value = h)}
+            }) => setThreadCardOffsetY(height)}
           >
             <SocialThreadCard
               post={post}
@@ -221,9 +167,32 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               refresh={refresh}
               onPressReply={onPressReply}
             />
+
+            {/*========== Refresh button */}
+            <Animated.View
+              style={[
+                {
+                  position: "absolute",
+                  top: threadCardOffsetY - 22,
+                  flexDirection: "row",
+                  width: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 10000,
+                },
+              ]}
+            >
+              <RefreshButton
+                isRefreshing={isLoadingValue}
+                onPress={() => {
+                  refetch();
+                  setRefresh((prev) => ++prev);
+                }}
+              />
+            </Animated.View>
           </View>
         )}
-        <ListHeaderComponent />
+
         <View onLayout={(e) => setParentOffsetValue(e.nativeEvent.layout.y)}>
           <CommentsContainer
             comments={comments}
@@ -234,6 +203,12 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           />
         </View>
       </Animated.ScrollView>
+
+      {flatListContentOffsetY >= threadCardOffsetY + 66 && (
+        <View style={styles.floatingActions}>
+          <RefreshButtonRound isRefreshing={isLoadingValue} onPress={refetch} />
+        </View>
+      )}
 
       <View style={styles.footer}>
         <NewsFeedInput
@@ -261,5 +236,12 @@ const styles = StyleSheet.create({
   indicator: {
     marginBottom: 56,
     marginLeft: 56,
+  },
+  floatingActions: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    right: 68,
+    bottom: 230,
   },
 });

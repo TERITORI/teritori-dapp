@@ -10,6 +10,7 @@ export const walletSelectorWidth = 220;
 export const smallSidebarWidth = 76;
 export const fullSidebarWidth = 210;
 export const mobileWidth = 768;
+export const NEWS_FEED_MAX_WIDTH = 900;
 
 const BASE_SIZE = 8;
 
