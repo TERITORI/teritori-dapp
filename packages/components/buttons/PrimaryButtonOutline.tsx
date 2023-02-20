@@ -25,6 +25,7 @@ export const PrimaryButtonOutline: React.FC<{
   onPress?: () => void;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
+  touchableStyle?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
@@ -39,6 +40,7 @@ export const PrimaryButtonOutline: React.FC<{
   onPress,
   squaresBackgroundColor,
   style,
+  touchableStyle = {},
   iconSVG,
   disabled = false,
   fullWidth = false,
@@ -60,7 +62,10 @@ export const PrimaryButtonOutline: React.FC<{
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      style={{ width: fullWidth ? "100%" : width, opacity: disabled ? 0.5 : 1 }}
+      style={[
+        { width: fullWidth ? "100%" : width, opacity: disabled ? 0.5 : 1 },
+        touchableStyle,
+      ]}
     >
       <TertiaryBox
         height={heightButton(size)}

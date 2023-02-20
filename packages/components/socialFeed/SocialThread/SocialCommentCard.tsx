@@ -169,6 +169,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
   return (
     <TouchableOpacity
+      disabled={!!localComment.isInLocal}
       onPress={() =>
         navigation.navigate("FeedPostView", { id: localComment.identifier })
       }
@@ -321,29 +322,29 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
             />
           </View>
         )}
-
-        {isLast && overrideParentId ? null : (
-          <AnimationFadeIn
-            style={styles.showReplyButtonContainer}
-            onLayout={(e) =>
-              setReplyListYOffset((prev) => {
-                prev[1] = e.nativeEvent.layout.y;
-                return prev;
-              })
-            }
-          >
-            {moreCommentsCount > 0 && (
-              <PrimaryButtonOutline
-                size="SM"
-                text={`View Replies (${moreCommentsCount})`}
-                onPress={onShowReply}
-                isLoading={isFetching}
-                width={200}
-              />
-            )}
-          </AnimationFadeIn>
-        )}
       </AnimationFadeIn>
+
+      {isLast && overrideParentId ? null : (
+        <AnimationFadeIn
+          style={styles.repliesButtonContainer}
+          onLayout={(e) =>
+            setReplyListYOffset((prev) => {
+              prev[1] = e.nativeEvent.layout.y;
+              return prev;
+            })
+          }
+        >
+          {moreCommentsCount > 0 && (
+            <PrimaryButtonOutline
+              size="XS"
+              text={`Show Replies (${moreCommentsCount})`}
+              onPress={onShowReply}
+              isLoading={isFetching}
+              width={200}
+            />
+          )}
+        </AnimationFadeIn>
+      )}
     </TouchableOpacity>
   );
 };
@@ -383,10 +384,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  showReplyButtonContainer: {
+  repliesButtonContainer: {
     zIndex: 10,
     position: "absolute",
-    bottom: -18,
+    bottom: -16,
     right: 0,
     left: 0,
     alignItems: "center",

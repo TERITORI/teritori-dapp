@@ -21,13 +21,12 @@ export const CreateShortPostModal: React.FC<{
     >
       <MenuProvider>
         <NewsFeedInput
-          onReachCharsLimit={onClose}
+          onCloseCreateModal={onClose}
           type="post"
           onSubmitSuccess={() => {
-            onClose();
             refetch();
           }}
-          style={{ marginBottom: layout.padding_x2_5, paddingVertical: 70 }}
+          style={{ marginBottom: layout.padding_x2_5, paddingBottom: 70 }}
         />
       </MenuProvider>
     </ModalBase>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Linking, useWindowDimensions, View } from "react-native";
+import { Image, Linking, View } from "react-native";
 
 import defaultUserProfileBannerPNG from "../../../assets/default-images/default-user-profile-banner.png";
 import discordSVG from "../../../assets/icons/discord.svg";
@@ -10,7 +10,7 @@ import websiteSVG from "../../../assets/icons/website.svg";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { neutral77, withAlpha } from "../../utils/style/colors";
+import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
@@ -29,7 +29,6 @@ export const UPPIntro: React.FC<{
 }> = ({ userId, isUserOwner, isLoading }) => {
   const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
-  const { width } = useWindowDimensions();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
   const [network, userAddress] = parseUserId(userId);
 
@@ -81,21 +80,6 @@ export const UPPIntro: React.FC<{
               onPress={() => Linking.openURL(metadata.twitter_id || "")}
             />
           )}
-          {width > 670 &&
-          (metadata?.twitter_id ||
-            metadata?.discord_id ||
-            metadata?.external_url) ? (
-            <View
-              style={[
-                {
-                  width: 1,
-                  height: 24,
-                  backgroundColor: withAlpha("#FFFFFF", 0.15),
-                },
-                socialButtonStyle,
-              ]}
-            />
-          ) : null}
           {/* This Share button link works only on web */}
           <SocialButtonSecondary
             style={socialButtonStyle}
@@ -130,14 +114,17 @@ export const UPPIntro: React.FC<{
           }}
           size="XL"
         />
+      </TertiaryBox>
 
-        <View
-          style={{
-            position: "absolute",
-            top: 420,
-            left: 16,
-          }}
-        >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: 100,
+        }}
+      >
+        <View>
           {/* Pseudo and bio */}
           <BrandText style={[fontSemibold20, { marginTop: 10 }]}>
             {metadata?.tokenId || ""}
@@ -150,23 +137,13 @@ export const UPPIntro: React.FC<{
                 color: neutral77,
                 marginTop: 12,
                 marginBottom: 20,
-                maxWidth: 1000,
+                maxWidth: 820,
               },
             ]}
           >
             {metadata?.public_bio || ""}
           </BrandText>
         </View>
-      </TertiaryBox>
-
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          marginTop: 100,
-        }}
-      >
         {/* Stats and public address */}
         <TertiaryBox mainContainerStyle={{ padding: 16 }}>
           <View
