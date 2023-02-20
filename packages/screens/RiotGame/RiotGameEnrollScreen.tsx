@@ -41,7 +41,7 @@ import { SimpleButton } from "./component/SimpleButton";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const EMBEDDED_VIDEO_URI =
-  "https://bafybeid5x2gujvk3cggzz2qvewf6ykzie2iqb7ry4qtew63tolanerw4ja.ipfs.nftstorage.link/";
+  "https://bafybeigr4ib4hzwnnyz2fpwdatac2uhcvx4suzujzdotxwdy2cd7ylqneq.ipfs.nftstorage.link/";
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
