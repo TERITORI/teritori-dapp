@@ -7,9 +7,9 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
+import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CommentsContainer } from "../../components/cards/CommentsContainer";
-import { BackTo } from "../../components/navigation/BackTo";
 import {
   NewsFeedInput,
   NewsFeedInputHandle,
@@ -24,8 +24,12 @@ import {
   useFetchComments,
 } from "../../hooks/useFetchComments";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ScreenFC } from "../../utils/navigation";
-import { layout } from "../../utils/style/layout";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { fontSemibold20 } from "../../utils/style/fonts";
+import {
+  layout,
+  screenContainerContentMarginHorizontal,
+} from "../../utils/style/layout";
 import { ReplyToType } from "./types";
 
 export type OnPressReplyType = (replyTo: ReplyToType) => void;
@@ -35,6 +39,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     params: { id },
   },
 }) => {
+  const navigation = useAppNavigation();
   const wallet = useSelectedWallet();
   const [refresh, setRefresh] = useState(0);
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
@@ -142,7 +147,19 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   return (
     <ScreenContainer
       responsive
-      headerChildren={<BackTo label="Feed" />}
+      headerChildren={
+        <BrandText style={fontSemibold20}>
+          {post?.parent_post_identifier ? "Sub-Posted" : "Posted"} by{" "}
+          {post?.post_by || ""}
+        </BrandText>
+      }
+      onBackPress={() => {
+        post?.parent_post_identifier
+          ? navigation.navigate("FeedPostView", {
+              id: post?.parent_post_identifier || "",
+            })
+          : navigation.navigate("Feed");
+      }}
       footerChildren
       fullWidth
       noScroll
@@ -167,31 +184,32 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               refresh={refresh}
               onPressReply={onPressReply}
             />
-
-            {/*========== Refresh button */}
-            <Animated.View
-              style={[
-                {
-                  position: "absolute",
-                  top: threadCardOffsetY - 22,
-                  flexDirection: "row",
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  zIndex: 10000,
-                },
-              ]}
-            >
-              <RefreshButton
-                isRefreshing={isLoadingValue}
-                onPress={() => {
-                  refetch();
-                  setRefresh((prev) => ++prev);
-                }}
-              />
-            </Animated.View>
           </View>
         )}
+
+        {/*========== Refresh button */}
+        <Animated.View
+          style={[
+            {
+              position: "absolute",
+              top: threadCardOffsetY + layout.contentPadding - 22,
+              flexDirection: "row",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 10000,
+              paddingRight: screenContainerContentMarginHorizontal * 2,
+            },
+          ]}
+        >
+          <RefreshButton
+            isRefreshing={isLoadingValue}
+            onPress={() => {
+              refetch();
+              setRefresh((prev) => ++prev);
+            }}
+          />
+        </Animated.View>
 
         <View onLayout={(e) => setParentOffsetValue(e.nativeEvent.layout.y)}>
           <CommentsContainer
@@ -227,11 +245,11 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 const styles = StyleSheet.create({
   contentContainer: {
     paddingTop: layout.contentPadding,
-    paddingHorizontal: layout.contentPadding,
+    paddingHorizontal: screenContainerContentMarginHorizontal,
   },
   footer: {
     marginBottom: layout.padding_x2,
-    marginHorizontal: layout.contentPadding,
+    marginHorizontal: screenContainerContentMarginHorizontal,
   },
   indicator: {
     marginBottom: 56,

@@ -13,8 +13,9 @@ import { UPPSocialFeed } from "../../components/userPublicProfile/UPPSocialFeed"
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { parseUserId } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
@@ -88,6 +89,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 
   const { metadata, loading } = useNSUserInfo(id);
   const selectedWallet = useSelectedWallet();
+  const navigation = useAppNavigation();
   const [network] = parseUserId(id);
 
   return (
@@ -97,6 +99,11 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       footerChildren={<></>}
       headerChildren={
         <BrandText style={fontSemibold20}>{metadata?.tokenId || ""}</BrandText>
+      }
+      onBackPress={() =>
+        navigation.canGoBack()
+          ? navigation.goBack()
+          : navigation.navigate("Home")
       }
     >
       <View style={{ flex: 1, alignItems: "center" }}>
