@@ -15,7 +15,7 @@ export const ToolbarContainer: React.FC = ({ children }) => {
         gradientColorBlue,
         gradientColorTurquoise,
       ]}
-      style={{ maxWidth: 790 }}
+      style={{ maxWidth: 700 }}
       mainContainerStyle={{
         flexDirection: "row",
         alignItems: "center",

@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import gradientDottedCardSVG from "../../../assets/cards/gradient-dotted-card.svg";
@@ -25,7 +25,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   maxUpload,
 }) => {
   const { setToastError } = useFeedbacks();
-  const hiddenFileInput = React.useRef<HTMLInputElement>(null);
+  const hiddenFileInput = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState("");
 
   const handleFiles = async (files: File[]) => {
