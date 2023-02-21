@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
@@ -10,16 +10,18 @@ import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../../hooks/useFetchFeed";
+import { useAppNavigation } from "../../../utils/navigation";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
 import { SpacerColumn } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
+import { NewPostFormValues } from "./NewsFeed.type";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
 
-const OFFSET_Y_LIMIT_FLOATING = 300;
+const OFFSET_Y_LIMIT_FLOATING = 224;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
@@ -29,7 +31,7 @@ interface NewsFeedProps {
 export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed();
-
+  const navigation = useAppNavigation();
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const posts: PostResult[] = useMemo(
@@ -38,6 +40,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
   );
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
+  const [headerHeight, setHeaderHeight] = useState(0);
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -67,10 +70,20 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
     }
   };
 
+  const onPressCreateArticle = (formValues: NewPostFormValues) => {
+    navigation.navigate("FeedNewPost", formValues);
+  };
+
+  const onHeaderLayout = (e: LayoutChangeEvent) => {
+    setHeaderHeight(e.nativeEvent.layout.height);
+  };
+
   const ListHeaderComponent = useCallback(
     () => (
       <>
-        <Header />
+        <View onLayout={onHeaderLayout}>
+          <Header />
+        </View>
         <SpacerColumn size={2.5} />
         <Animated.View
           style={[
@@ -81,6 +94,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
           ]}
         >
           <NewsFeedInput
+            onPressCreateArticle={onPressCreateArticle}
             type="post"
             onSubmitSuccess={refetch}
             style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}
@@ -114,7 +128,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
         onEndReached={onEndReached}
       />
 
-      {flatListContentOffsetY >= OFFSET_Y_LIMIT_FLOATING && (
+      {flatListContentOffsetY >= OFFSET_Y_LIMIT_FLOATING + headerHeight && (
         <View style={styles.floatingActions}>
           <CreateShortPostButtonRound
             onPress={() => setCreateModalVisible(true)}

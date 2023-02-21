@@ -22,7 +22,7 @@ import {
   convertFromHTML,
   EditorState,
 } from "draft-js";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Linking, ScrollView, View } from "react-native";
 
 import { useAppNavigation } from "../../../utils/navigation";
@@ -171,7 +171,7 @@ const createStateFromHTML = (html: string) => {
   return EditorState.createWithContent(content);
 };
 
-export function RichText({
+export const RichText: React.FC<RichTextProps> = ({
   onChange = () => {},
   onBlur,
   initialValue,
@@ -179,9 +179,9 @@ export function RichText({
   openGraph,
   allowTruncation,
   publishButtonProps,
-}: RichTextProps) {
+}) => {
   const editorRef = useRef<Editor>(null);
-  const [editorState, setEditorState] = React.useState(
+  const [editorState, setEditorState] = useState(
     initialValue ? createStateFromHTML(initialValue) : EditorState.createEmpty()
   );
 
@@ -298,4 +298,4 @@ export function RichText({
       </ActionsContainer>
     </View>
   );
-}
+};

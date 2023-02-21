@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 
@@ -77,7 +77,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
 
   // hooks
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (wallet?.connected && wallet?.address) {
         updateAvailableFreePost();
         updatePostFee();
