@@ -1,9 +1,13 @@
+import React from "react";
 import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 
-import {neutral17, neutral33, secondaryColor} from "../../../../utils/style/colors";
-import penSVG from "../../../../../assets/icons/pen.svg"
-import {SVG} from "../../../SVG";
-import React from "react";
+import penSVG from "../../../../../assets/icons/pen.svg";
+import {
+  neutral17,
+  neutral33,
+  secondaryColor,
+} from "../../../../utils/style/colors";
+import { SVG } from "../../../SVG";
 
 export const CreateShortPostButtonRound: React.FC<{
   onPress: () => void;
@@ -26,12 +30,7 @@ export const CreateShortPostButtonRound: React.FC<{
         style,
       ]}
     >
-      <SVG
-        height={24}
-        width={24}
-        source={penSVG}
-        color={secondaryColor}
-      />
+      <SVG height={24} width={24} source={penSVG} color={secondaryColor} />
     </TouchableOpacity>
   );
 };

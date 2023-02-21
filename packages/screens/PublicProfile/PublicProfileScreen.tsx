@@ -18,6 +18,7 @@ export interface SelectedTabContentProps {
   Header: React.ComponentType;
 }
 
+//TODO: Row scroll horizontally on mobile. Or dropdown menu
 const SelectedTabContent: React.FC<SelectedTabContentProps> = ({
   selectedTab,
   Header,
@@ -26,7 +27,7 @@ const SelectedTabContent: React.FC<SelectedTabContentProps> = ({
     case "news":
       return <NewsFeed Header={Header} />;
     default:
-      return null;
+      return <NewsFeed Header={Header} />;
   }
 };
 
@@ -53,10 +54,12 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
 
   return (
     <ScreenContainer
+      responsive
       fullWidth
+      noScroll
       headerChildren={
         <BrandText style={fontSemibold20}>
-          {metadata?.public_name || ""}
+          {metadata?.public_name || "Anon"}
         </BrandText>
       }
       onBackPress={() => {

@@ -27,7 +27,6 @@ import {
   IMAGE_MIME_TYPES,
   VIDEO_MIME_TYPES,
 } from "../../../utils/mime";
-import { useAppNavigation } from "../../../utils/navigation";
 import { SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT } from "../../../utils/social-feed";
 import {
   errorColor,
@@ -52,6 +51,7 @@ import { FilePreviewContainer } from "../../FilePreview/UploadedFilePreview/File
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
+import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
 import { SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
@@ -66,7 +66,6 @@ import {
   uploadPostFilesToNFTStorage,
 } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
-import {SecondaryButtonOutline} from "../../buttons/SecondaryButtonOutline";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -76,6 +75,7 @@ interface NewsFeedInputProps {
   onSubmitInProgress?: () => void;
   replyTo?: ReplyToType;
   onCloseCreateModal?: () => void;
+  onPressCreateArticle?: (formValues: NewPostFormValues) => void;
 }
 
 export interface NewsFeedInputHandle {
@@ -97,6 +97,7 @@ export const NewsFeedInput = React.forwardRef<
       replyTo,
       onSubmitInProgress,
       onCloseCreateModal,
+      onPressCreateArticle,
     },
     forwardRef
   ) => {
@@ -110,7 +111,6 @@ export const NewsFeedInput = React.forwardRef<
     const [isNFTKeyModal, setIsNFTKeyModal] = useState(false);
     const [postFee, setPostFee] = useState(0);
     const [freePostCount, setFreePostCount] = useState(0);
-    const navigation = useAppNavigation();
     const [isLoading, setLoading] = useState(false);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
@@ -126,6 +126,11 @@ export const NewsFeedInput = React.forwardRef<
         onCloseCreateModal && onCloseCreateModal();
       },
     });
+    const resetForm = () => {
+      reset();
+      updateAvailableFreePost();
+      updatePostFee();
+    };
 
     const balances = useBalances(
       process.env.TERITORI_NETWORK_ID,
@@ -233,12 +238,6 @@ export const NewsFeedInput = React.forwardRef<
       setLoading(false);
     };
 
-    const resetForm = () => {
-      reset();
-      updateAvailableFreePost();
-      updatePostFee();
-    };
-
     useImperativeHandle(forwardRef, () => ({
       resetForm,
       setValue: handleTextChange,
@@ -250,11 +249,6 @@ export const NewsFeedInput = React.forwardRef<
       if (type !== "post" && text.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT)
         return;
       setValue("message", text);
-    };
-
-    const onPressCreateArticle = () => {
-      navigation.navigate("FeedNewPost", formValues);
-      onCloseCreateModal && onCloseCreateModal();
     };
 
     const onEmojiSelected = (emoji: string | null) => {
@@ -546,7 +540,12 @@ export const NewsFeedInput = React.forwardRef<
                 }}
                 backgroundColor={neutral17}
                 text="Create an Article"
-                onPress={onPressCreateArticle}
+                onPress={
+                  onPressCreateArticle
+                    ? () =>
+                        onPressCreateArticle && onPressCreateArticle(formValues)
+                    : undefined
+                }
                 squaresBackgroundColor={neutral17}
               />
             )}
