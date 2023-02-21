@@ -11,15 +11,15 @@ import {
   useFetchFeed,
 } from "../../../hooks/useFetchFeed";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
-import { SpacerColumn, SpacerRow } from "../../spacer";
+import { SpacerColumn } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
-import { CreateShortPostButton } from "./CreateShortPost/CreateShortPostButton";
-import { CreateShortPostButtonFloating } from "./CreateShortPost/CreateShortPostButtonFloating";
+import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
+import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
 
-const OFFSET_Y_LIMIT_FLOATING = 140;
+const OFFSET_Y_LIMIT_FLOATING = 300;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
@@ -71,17 +71,21 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
     () => (
       <>
         <Header />
+        <SpacerColumn size={2.5} />
         <Animated.View
           style={[
             {
-              paddingVertical: layout.padding_x1,
-              flexDirection: "row",
               justifyContent: "center",
+              alignItems: "center",
             },
           ]}
         >
-          <CreateShortPostButton onPress={() => setCreateModalVisible(true)} />
-          <SpacerRow size={2} />
+          <NewsFeedInput
+            type="post"
+            onSubmitSuccess={refetch}
+            style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}
+          />
+          <SpacerColumn size={1.5} />
           <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
         </Animated.View>
         <SpacerColumn size={1.5} />
@@ -112,7 +116,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
 
       {flatListContentOffsetY >= OFFSET_Y_LIMIT_FLOATING && (
         <View style={styles.floatingActions}>
-          <CreateShortPostButtonFloating
+          <CreateShortPostButtonRound
             onPress={() => setCreateModalVisible(true)}
             style={{ marginBottom: layout.padding_x2 }}
           />
