@@ -45,7 +45,8 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
   useEffect(() => {
     if (metadata?.public_name) {
       navigation.setOptions({
-        title: screenTitle((metadata?.public_name).toUpperCase()),
+        // TODO: If org, make it uppercase
+        title: screenTitle(metadata?.public_name),
       });
     }
   }, [metadata?.public_name]);

@@ -1,10 +1,11 @@
 import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 
-import { neutral17, neutral33 } from "../../../../utils/style/colors";
-import { fontSemibold28 } from "../../../../utils/style/fonts";
-import { BrandText } from "../../../BrandText";
+import {neutral17, neutral33, secondaryColor} from "../../../../utils/style/colors";
+import penSVG from "../../../../../assets/icons/pen.svg"
+import {SVG} from "../../../SVG";
+import React from "react";
 
-export const CreateShortPostButtonFloating: React.FC<{
+export const CreateShortPostButtonRound: React.FC<{
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ onPress, style }) => {
@@ -25,7 +26,12 @@ export const CreateShortPostButtonFloating: React.FC<{
         style,
       ]}
     >
-      <BrandText style={fontSemibold28}>+</BrandText>
+      <SVG
+        height={24}
+        width={24}
+        source={penSVG}
+        color={secondaryColor}
+      />
     </TouchableOpacity>
   );
 };

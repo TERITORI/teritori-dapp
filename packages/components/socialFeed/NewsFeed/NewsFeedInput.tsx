@@ -52,7 +52,6 @@ import { FilePreviewContainer } from "../../FilePreview/UploadedFilePreview/File
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
-import { PrimaryButtonOutline } from "../../buttons/PrimaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
 import { SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
@@ -67,6 +66,7 @@ import {
   uploadPostFilesToNFTStorage,
 } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
+import {SecondaryButtonOutline} from "../../buttons/SecondaryButtonOutline";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -292,19 +292,6 @@ export const NewsFeedInput = React.forwardRef<
           />
         )}
 
-        {type === "post" && (
-          <PrimaryButtonOutline
-            size="M"
-            touchableStyle={{
-              marginTop: layout.padding_x2,
-              marginBottom: layout.padding_x2,
-              alignSelf: "center",
-            }}
-            text="Create an Article"
-            onPress={onPressCreateArticle}
-          />
-        )}
-
         <TertiaryBox
           fullWidth
           style={{
@@ -467,7 +454,7 @@ export const NewsFeedInput = React.forwardRef<
             }}
           >
             <GIFSelector
-              optionsContainer={{ marginLeft: -186, marginTop: -16 }}
+              optionsContainer={{ marginLeft: -186, marginTop: -6 }}
               onGIFSelected={(url) =>
                 url && setValue("gifs", [...(formValues.gifs || []), url])
               }
@@ -483,7 +470,7 @@ export const NewsFeedInput = React.forwardRef<
 
             <EmojiSelector
               onEmojiSelected={onEmojiSelected}
-              optionsContainer={{ marginLeft: -80, marginTop: -16 }}
+              optionsContainer={{ marginLeft: -80, marginTop: -6 }}
             />
             <SpacerRow size={2.5} />
 
@@ -548,6 +535,22 @@ export const NewsFeedInput = React.forwardRef<
                 />
               )}
             </FileUploader>
+
+            {type === "post" && (
+              <SecondaryButtonOutline
+                size="M"
+                color={primaryColor}
+                borderColor={primaryColor}
+                touchableStyle={{
+                  marginRight: layout.padding_x2_5,
+                }}
+                backgroundColor={neutral17}
+                text="Create an Article"
+                onPress={onPressCreateArticle}
+                squaresBackgroundColor={neutral17}
+              />
+            )}
+
             <PrimaryButton
               disabled={
                 (!formValues?.message &&
