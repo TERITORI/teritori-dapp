@@ -362,9 +362,11 @@ export const gameBgData: GameBgCardItem[] = [
 ];
 
 export const isNFTStaked = (ripper: NFT | undefined) => {
-  const network = getCosmosNetwork(ripper?.networkId);
+  if (!ripper) return false;
 
-  if (!network || !ripper) return false;
+  const network = getCosmosNetwork(ripper.networkId);
+
+  if (!network) return false;
 
   const ids: string[] = [];
 

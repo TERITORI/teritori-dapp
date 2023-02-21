@@ -16,6 +16,7 @@ export const useNFTs = (req: NFTsRequest) => {
 
       const objectId = req.ownerId || req.collectionId;
       const [network] = parseNetworkObjectId(objectId);
+
       if (!network) {
         return { nextCursor: pageParam + req.limit, nfts };
       }

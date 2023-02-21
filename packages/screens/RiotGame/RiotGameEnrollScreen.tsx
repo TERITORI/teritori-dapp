@@ -71,6 +71,7 @@ export const RiotGameEnrollScreen = () => {
   const isScreenFocused = useIsFocused();
 
   const { myAvailableRippers } = useRippers();
+
   const { data: squadStakingConfig } = useSquadStakingConfig(networkId);
   const { data: squads, isInitialLoading } = useSquadStakingSquadsV2(
     selectedWallet?.userId

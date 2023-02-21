@@ -68,10 +68,12 @@ export const RiotGameBreedingScreen = () => {
     const selectedIds = Object.values(selectedRippers).map((r) => r.ripper.id);
 
     return myAvailableRippers.filter((r) => {
-      if (!selectedIds.includes(r.id)) {
+      if (selectedIds.includes(r.id)) {
         return false;
       }
+
       const [network, collectionAddress] = parseNftId(r.id);
+
       if (network?.kind !== NetworkKind.Cosmos) {
         return false;
       }
@@ -79,7 +81,16 @@ export const RiotGameBreedingScreen = () => {
       if (!collectionId) {
         return false;
       }
-      return collectionId === network.riotContractAddressGen0;
+
+      const gen0CollectionId = getCollectionId(
+        network?.id,
+        network.riotContractAddressGen0
+      );
+      if (!gen0CollectionId) {
+        return false;
+      }
+
+      return collectionId === gen0CollectionId;
     });
   }, [myAvailableRippers, selectedRippers]);
 

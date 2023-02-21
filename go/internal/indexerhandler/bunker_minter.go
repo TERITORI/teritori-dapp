@@ -47,9 +47,14 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 
 	// create collection
 	collectionId := h.config.Network.CollectionID(contractAddress)
+	network, _, err := h.config.NetworkStore.ParseCollectionID(string(collectionId))
+	if err != nil {
+		return errors.Wrap(err, "failed to get network from collectionID")
+	}
+
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkId:           "teritori", // FIXME: get from networks config
+		NetworkId:           network.GetBase().ID,
 		Name:                minterInstantiateMsg.NftName,
 		ImageURI:            metadata.ImageURI,
 		MaxSupply:           maxSupply,
