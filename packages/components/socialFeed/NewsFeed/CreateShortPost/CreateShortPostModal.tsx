@@ -26,7 +26,7 @@ export const CreateShortPostModal: React.FC<{
           onSubmitSuccess={() => {
             refetch();
           }}
-          style={{ marginBottom: layout.padding_x2_5, paddingBottom: 70 }}
+          style={{ marginBottom: layout.padding_x2_5, paddingVertical: 70 }}
         />
       </MenuProvider>
     </ModalBase>
