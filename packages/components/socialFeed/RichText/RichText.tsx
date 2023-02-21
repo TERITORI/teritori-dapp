@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { View, KeyboardAvoidingView, Platform } from "react-native";
 import {
   actions,
@@ -17,7 +17,7 @@ export const RichText: React.FC<RichTextProps> = ({
   readOnly,
   publishButtonProps,
 }) => {
-  const richText = React.useRef(null);
+  const richText = useRef(null);
   return (
     <View>
       <KeyboardAvoidingView

@@ -10,6 +10,7 @@ import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CommentsContainer } from "../../components/cards/CommentsContainer";
+import { NewPostFormValues } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import {
   NewsFeedInput,
   NewsFeedInputHandle,
@@ -144,6 +145,10 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     else aref.current?.scrollTo(0);
   };
 
+  const onPressCreateArticle = (formValues: NewPostFormValues) => {
+    navigation.navigate("FeedNewPost", formValues);
+  };
+
   return (
     <ScreenContainer
       responsive
@@ -216,7 +221,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             comments={comments}
             onPressReply={onPressReply}
             refresh={refresh}
-            onScrollTo={(y) => aref.current?.scrollTo(y)}
+            onScrollTo={(y: number) => aref.current?.scrollTo(y)}
             parentOffsetValue={parentOffsetValue}
           />
         </View>
@@ -230,6 +235,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 
       <View style={styles.footer}>
         <NewsFeedInput
+          onPressCreateArticle={onPressCreateArticle}
           ref={feedInputRef}
           type="comment"
           parentId={id}
