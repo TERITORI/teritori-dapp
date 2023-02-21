@@ -16,6 +16,7 @@ import {
   parseNftId,
   WEI_TOKEN_ADDRESS,
   NetworkKind,
+  getUserId,
 } from "../networks";
 import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
 import { getEthereumProvider } from "../utils/ethereum";
@@ -94,7 +95,7 @@ const getTNSNFTInfo = async (
   network: CosmosNetworkInfo,
   contractAddress: string,
   tokenId: string,
-  wallet?: string
+  userId: string | undefined
 ) => {
   if (!network.vaultContractAddress) {
     throw new Error("network not supported");
@@ -133,9 +134,10 @@ const getTNSNFTInfo = async (
     // ======== The NFT is not on sale
   }
   const isOwner =
-    !!wallet &&
-    ((!!owner && owner === wallet) ||
-      (!!vaultOwnerAddress && vaultOwnerAddress === wallet));
+    !!userId &&
+    ((!!owner && getUserId(network.id, owner) === userId) ||
+      (!!vaultOwnerAddress &&
+        getUserId(network.id, vaultOwnerAddress) === userId));
 
   // NFT base info
   const nfo: NFTInfo = {
@@ -175,7 +177,7 @@ const getEthereumStandardNFTInfo = async (
   network: EthereumNetworkInfo,
   minterContractAddress: string,
   tokenId: string,
-  wallet: string | undefined
+  userId: string | undefined
 ) => {
   const provider = await getEthereumProvider(network);
   if (!provider) {
@@ -225,7 +227,7 @@ const getEthereumStandardNFTInfo = async (
     ownerAddress = saledNft.owner.toLowerCase();
   }
 
-  const isOwner = wallet?.toLowerCase() === ownerAddress.toLowerCase();
+  const isOwner = userId === getUserId(network.id, ownerAddress);
 
   const nfo: NFTInfo = {
     name: metadata.name,
@@ -258,7 +260,7 @@ const getTeritoriBunkerNFTInfo = async (
   network: CosmosNetworkInfo,
   minterContractAddress: string,
   tokenId: string,
-  wallet: string | undefined,
+  userId: string | undefined,
   breedingConfig: BreedingConfigResponse | null | undefined
 ) => {
   if (!network.vaultContractAddress || !network.riotContractAddressGen1) {
@@ -350,9 +352,10 @@ const getTeritoriBunkerNFTInfo = async (
     // ======== The NFT is not on sale
   }
   const isOwner =
-    !!wallet &&
-    ((!!owner && owner === wallet) ||
-      (!!vaultOwnerAddress && vaultOwnerAddress === wallet));
+    !!userId &&
+    ((!!owner && getUserId(network.id, owner) === userId) ||
+      (!!vaultOwnerAddress &&
+        getUserId(network.id, vaultOwnerAddress) === userId));
 
   // NFT base info
   const nfo: NFTInfo = {
@@ -386,7 +389,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
   network: CosmosNetworkInfo,
   minterContractAddress: string,
   tokenId: string,
-  wallet: string | undefined
+  userId: string | undefined
 ) => {
   if (!network.vaultContractAddress) {
     throw new Error("network not supported");
@@ -459,9 +462,10 @@ const getTeritoriRiotBreedingNFTInfo = async (
     // ======== The NFT is not on sale
   }
   const isOwner =
-    !!wallet &&
-    ((!!owner && owner === wallet) ||
-      (!!vaultOwnerAddress && vaultOwnerAddress === wallet));
+    !!userId &&
+    ((!!owner && getUserId(network.id, owner) === userId) ||
+      (!!vaultOwnerAddress &&
+        getUserId(network.id, vaultOwnerAddress) === userId));
 
   // NFT base info
   const nfo: NFTInfo = {
