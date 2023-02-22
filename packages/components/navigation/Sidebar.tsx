@@ -146,7 +146,7 @@ export const Sidebar: React.FC = () => {
           connected &&
           userInfo.metadata && (
             <SidebarProfileButton
-              isLoading={tnsMetadata.loading}
+              isLoading={userInfo.loading}
               userId={selectedWallet?.userId || ""}
               tokenId={userInfo.metadata.tokenId || ""}
               image={userInfo.metadata.image || ""}

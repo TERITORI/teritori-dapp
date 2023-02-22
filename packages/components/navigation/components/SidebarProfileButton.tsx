@@ -1,9 +1,6 @@
 import React from "react";
 import { View } from "react-native";
 
-import emptyCircleFrameSVG from "../../../../assets/empty-circle-frame.svg";
-import { getCosmosNetwork, parseUserId } from "../../../networks";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold9 } from "../../../utils/style/fonts";
@@ -21,8 +18,6 @@ export const SidebarProfileButton: React.FC<{
 }> = ({ userId, image, tokenId, isExpanded, isLoading }) => {
   const navigation = useAppNavigation();
   const imageWidth = 68;
-  const [network] = parseUserId(userId);
-  const cosmosNetwork = getCosmosNetwork(network?.id);
 
   return (
     <CustomPressable
@@ -41,34 +36,7 @@ export const SidebarProfileButton: React.FC<{
           isExpanded && { flexDirection: "row", alignItems: "center" },
         ]}
       >
-        {/*<AvatarWithFrame image={image} size="M" isLoading={isLoading} />*/}
-
-        <Image
-          source={{
-            uri: ipfsURLToHTTPURL(
-              image ? image : cosmosNetwork?.nameServiceDefaultImage || ""
-            ),
-          }} // TODO: proper fallback
-          style={[
-            {
-              top: 14,
-              left: 14,
-              zIndex: 2,
-              marginBottom: 20,
-              position: "absolute",
-              borderRadius: 999,
-            },
-            {
-              width: 40,
-              aspectRatio: 1,
-            },
-          ]}
-        />
-        <SVG
-          source={emptyCircleFrameSVG}
-          width={imageWidth}
-          height={imageWidth}
-        />
+        <AvatarWithFrame image={image} size="M" isLoading={isLoading} />
 
         <View
           style={[

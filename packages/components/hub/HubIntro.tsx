@@ -4,7 +4,6 @@ import { View } from "react-native";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
@@ -36,7 +35,6 @@ const ConnectedIntro: React.FC = () => {
     useState<keyof typeof walletsManagerTabItems>("overview");
 
   const selectedWallet = useSelectedWallet();
-  const networkId = useSelectedNetworkId();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
 
   return (
@@ -47,12 +45,11 @@ const ConnectedIntro: React.FC = () => {
         width: "100%",
       }}
     >
-      {/*<AvatarWithFrame*/}
-      {/*  isLoading={tnsMetadata?.loading}*/}
-      {/*  image={tnsMetadata?.metadata?.image}*/}
-      {/*  size="XL"*/}
-      {/*/>*/}
-      <UserImage networkId={networkId} imageURI={userInfo.metadata?.image} />
+      <AvatarWithFrame
+        isLoading={userInfo?.loading}
+        image={userInfo?.metadata?.image}
+        size="XL"
+      />
 
       <ProfileButton touchableStyle={{ marginTop: 40 }} />
 

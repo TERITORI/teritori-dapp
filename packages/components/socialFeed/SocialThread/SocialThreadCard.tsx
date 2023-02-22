@@ -4,15 +4,13 @@ import { StyleProp, View, ViewStyle, TouchableOpacity } from "react-native";
 import { socialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
+import { getUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../utils/navigation";
-import {
-  DEFAULT_NAME,
-  DEFAULT_USERNAME,
-  getUpdatedReactions,
-} from "../../../utils/social-feed";
+import { getUpdatedReactions } from "../../../utils/social-feed";
 import { getCommunityHashtag } from "../../../utils/socialFeedCommunityHashtags";
 import {
   neutral00,
@@ -61,10 +59,12 @@ export const SocialThreadCard: React.FC<{
     });
 
   const wallet = useSelectedWallet();
-  const postByTNSMetadata = useTNSMetadata(localPost.post_by);
+  const selectedNetworkId = useSelectedNetworkId();
+  const authorId = getUserId(selectedNetworkId, localPost.post_by);
+  const authorNSInfo = useNSUserInfo(authorId);
+  const userInfo = useNSUserInfo(wallet?.userId);
   const navigation = useAppNavigation();
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
-  const currentUserMetadata = useTNSMetadata(wallet?.address);
 
   const hashtag = useMemo(() => {
     return getCommunityHashtag(metadata?.hashtags || []);
@@ -75,6 +75,7 @@ export const SocialThreadCard: React.FC<{
       return;
     }
     const client = await socialFeedClient({
+      networkId: selectedNetworkId,
       walletAddress: wallet.address,
     });
 
@@ -120,7 +121,7 @@ export const SocialThreadCard: React.FC<{
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("UserPublicProfile", {
-                  id: `tori-${localPost.post_by}`,
+                  id: authorId,
                 })
               }
               style={{
@@ -128,9 +129,9 @@ export const SocialThreadCard: React.FC<{
               }}
             >
               <AvatarWithFrame
-                image={postByTNSMetadata?.metadata?.image}
+                image={authorNSInfo?.metadata?.image}
                 size="M"
-                isLoading={postByTNSMetadata.loading}
+                isLoading={authorNSInfo.loading}
               />
             </TouchableOpacity>
 
@@ -138,42 +139,41 @@ export const SocialThreadCard: React.FC<{
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("PublicProfile", {
-                  id: `tori-${localPost.post_by}`,
+                  id: authorId,
                 })
               }
+              style={{ marginRight: layout.padding_x1_5 }}
               activeOpacity={0.7}
             >
               <AnimationFadeIn>
                 <BrandText style={fontSemibold16}>
-                  {postByTNSMetadata?.metadata?.public_name || DEFAULT_NAME}
+                  {authorNSInfo?.metadata?.public_name || localPost.post_by}
                 </BrandText>
               </AnimationFadeIn>
             </TouchableOpacity>
 
             {/*---- User TNS name */}
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("PublicProfile", {
-                  id: `tori-${localPost.post_by}`,
-                })
-              }
-              style={{ marginHorizontal: layout.padding_x1_5 }}
-            >
-              <BrandText
-                style={[
-                  fontSemibold14,
-                  {
-                    color: neutral77,
-                  },
-                ]}
+            {authorNSInfo?.metadata?.tokenId && (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("PublicProfile", {
+                    id: authorId,
+                  })
+                }
+                style={{ marginRight: layout.padding_x1_5 }}
               >
-                @
-                {postByTNSMetadata?.metadata?.tokenId
-                  ? tinyAddress(postByTNSMetadata?.metadata?.tokenId || "", 19)
-                  : DEFAULT_USERNAME}
-              </BrandText>
-            </TouchableOpacity>
-
+                <BrandText
+                  style={[
+                    fontSemibold14,
+                    {
+                      color: neutral77,
+                    },
+                  ]}
+                >
+                  @{tinyAddress(authorNSInfo.metadata.tokenId, 19)}
+                </BrandText>
+              </TouchableOpacity>
+            )}
             {/*---- Date */}
             <DateTime date={metadata.createdAt} />
           </View>
@@ -222,12 +222,11 @@ export const SocialThreadCard: React.FC<{
             <SpacerRow size={2.5} />
             <CommentsCount post={localPost} />
 
-            {postByTNSMetadata.metadata?.tokenId !==
-              currentUserMetadata?.metadata?.tokenId && (
+            {authorNSInfo.metadata?.tokenId !== userInfo?.metadata?.tokenId && (
               <>
                 <SpacerRow size={2.5} />
                 <TipButton
-                  postTokenId={postByTNSMetadata?.metadata?.tokenId || ""}
+                  postTokenId={authorNSInfo?.metadata?.tokenId || ""}
                 />
               </>
             )}
