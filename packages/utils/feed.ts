@@ -1,21 +1,37 @@
+import { PostCategory } from "../components/socialFeed/NewsFeed/NewsFeed.type";
+
 export const screenTabItems = {
-  news: {
+  all: {
     name: "Jungle News Feed",
   },
-  marketPlaceProfile: {
+  sounds: {
     name: "Sound Feed",
     disabled: true,
   },
-  bounties: {
+  videosPics: {
     name: "Video & Pic Feed",
     disabled: true,
   },
-  governance: {
+  articles: {
     name: "Articles Feed",
     disabled: true,
   },
-  dao: {
+  governance: {
     name: "Governance Feed ",
     disabled: true,
   },
+};
+
+// The Social Feed tabs doesn't fully correspond to the Posts categories, so we need to parse like this
+export const feedTabToCategories = (tab: keyof typeof screenTabItems) => {
+  switch (tab) {
+    case "sounds":
+      return [PostCategory.Audio];
+    case "videosPics":
+      return [PostCategory.Picture, PostCategory.Video];
+    case "articles":
+      return [PostCategory.Article];
+    default:
+      return [];
+  }
 };

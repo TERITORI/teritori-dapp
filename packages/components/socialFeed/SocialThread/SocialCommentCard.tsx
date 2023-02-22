@@ -41,6 +41,7 @@ import FlexRow from "../../FlexRow";
 import { tinyAddress } from "../../WalletSelector";
 import { AnimationFadeIn } from "../../animations";
 import { AnimationFadeInOut } from "../../animations/AnimationFadeInOut";
+import { CustomPressable } from "../../buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../buttons/PrimaryButtonOutline";
 import { CommentsContainer } from "../../cards/CommentsContainer";
 import { AvatarWithFrame } from "../../images/AvatarWithFrame";
@@ -168,7 +169,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   };
 
   return (
-    <TouchableOpacity
+    <CustomPressable
       disabled={!!localComment.isInLocal}
       onPress={() =>
         navigation.navigate("FeedPostView", { id: localComment.identifier })
@@ -345,7 +346,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           )}
         </AnimationFadeIn>
       )}
-    </TouchableOpacity>
+    </CustomPressable>
   );
 };
 

@@ -120,6 +120,7 @@ export const PublicProfileIntro: React.FC<{
             text="Follow this Teritori"
             size="XL"
             backgroundColor={neutral00}
+            disabled
           />
         </View>
       </View>
