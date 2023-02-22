@@ -13,10 +13,12 @@ import {
   SocialFeedMetadata,
 } from "./NewsFeed.type";
 interface GetAvailableFreePostParams {
+  networkId: string;
   wallet?: Wallet;
 }
 
 export const getAvailableFreePost = async ({
+  networkId,
   wallet,
 }: GetAvailableFreePostParams) => {
   try {
@@ -25,6 +27,7 @@ export const getAvailableFreePost = async ({
     }
 
     const client = await socialFeedClient({
+      networkId,
       walletAddress: wallet.address,
     });
 
@@ -39,11 +42,13 @@ export const getAvailableFreePost = async ({
 };
 
 interface GetPostFeeParams {
+  networkId: string;
   wallet?: Wallet;
   postCategory: PostCategory;
 }
 
 export const getPostFee = async ({
+  networkId,
   wallet,
   postCategory,
 }: GetPostFeeParams) => {
@@ -52,6 +57,7 @@ export const getPostFee = async ({
       return;
     }
     const client = await socialFeedClient({
+      networkId,
       walletAddress: wallet.address,
     });
 
@@ -87,6 +93,7 @@ export const getPostCategory = ({
 };
 
 interface CreatePostParams {
+  networkId: string;
   wallet: Wallet | undefined;
   formValues: NewPostFormValues;
   freePostCount: number;
@@ -97,6 +104,7 @@ interface CreatePostParams {
 }
 
 export const createPost = async ({
+  networkId,
   wallet,
   formValues,
   freePostCount,
@@ -110,6 +118,7 @@ export const createPost = async ({
 
   const postCategory = getPostCategory(formValues);
   const client = await socialFeedClient({
+    networkId,
     walletAddress: wallet.address,
   });
 

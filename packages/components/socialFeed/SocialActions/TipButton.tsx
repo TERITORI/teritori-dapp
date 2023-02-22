@@ -4,10 +4,10 @@ import { TouchableOpacity } from "react-native";
 import tipSVG from "../../../../assets/icons/tip.svg";
 import { useTNS } from "../../../context/TNSProvider";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { tokenWithoutTld } from "../../../utils/tns";
+import { nsTokenWithoutTLD } from "../../../utils/tns";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
-import { SendFundModal } from "../../modals/teritoriNameService/TNSSendFundsModal";
+import { TNSSendFundsModal } from "../../modals/teritoriNameService/TNSSendFundsModal";
 import { SpacerRow } from "../../spacer";
 
 export const TipButton: React.FC<{
@@ -17,7 +17,7 @@ export const TipButton: React.FC<{
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
 
   const onPress = () => {
-    setName(tokenWithoutTld(postTokenId));
+    setName(nsTokenWithoutTLD(postTokenId));
     setSendFundsModalVisible(true);
   };
 
@@ -32,12 +32,12 @@ export const TipButton: React.FC<{
         <BrandText style={fontSemibold14}>0</BrandText>
       </TouchableOpacity>
 
-      <SendFundModal
+      <TNSSendFundsModal
         onClose={() => {
           setName("");
           setSendFundsModalVisible(false);
         }}
-        visible={sendFundsModalVisible}
+        isVisible={sendFundsModalVisible}
       />
     </>
   );

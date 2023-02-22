@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -24,7 +24,9 @@ import {
   combineFetchCommentPages,
   useFetchComments,
 } from "../../hooks/useFetchComments";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import {
@@ -42,6 +44,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 }) => {
   const navigation = useAppNavigation();
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
   const [refresh, setRefresh] = useState(0);
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
   const { triggerError } = useErrorHandler();
@@ -72,12 +75,16 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     try {
       isLoadingValue.value = true;
       const client = await socialFeedClient({
+        networkId: selectedNetworkId,
         walletAddress: wallet?.address || "",
       });
       const _post = await client.queryPost({ identifier: id });
       setPost(_post);
     } catch (error) {
-      triggerError({ error });
+      triggerError({
+        title: "",
+        error,
+      });
     } finally {
       isLoadingValue.value = false;
     }
@@ -151,6 +158,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 
   return (
     <ScreenContainer
+      forceNetworkKind={NetworkKind.Cosmos}
       responsive
       headerChildren={
         <BrandText style={fontSemibold20}>

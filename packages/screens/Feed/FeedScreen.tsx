@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { FeedRequest } from "../../hooks/useFetchFeed";
+import { NetworkKind } from "../../networks";
 import { feedTabToCategories, screenTabItems } from "../../utils/feed";
 import { ScreenFC } from "../../utils/navigation";
 import { FeedHeader } from "./components/FeedHeader";
@@ -22,7 +23,13 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
   }, [selectedTab]);
 
   return (
-    <ScreenContainer responsive fullWidth noScroll footerChildren={<></>}>
+    <ScreenContainer
+      responsive
+      fullWidth
+      noScroll
+      footerChildren={<></>}
+      forceNetworkKind={NetworkKind.Cosmos}
+    >
       <NewsFeed
         req={feedRequest}
         Header={() => (

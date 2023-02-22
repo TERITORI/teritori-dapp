@@ -1,8 +1,8 @@
 import React from "react";
 import { View } from "react-native";
 
+import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
-import { addressToNetwork } from "../utils/network";
 import { neutral11, neutral77 } from "../utils/style/colors";
 import {
   fontSemibold12,
@@ -10,9 +10,8 @@ import {
   fontSemibold14,
 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
-import { getWalletIconFromTitle } from "../utils/walletManagerHelpers";
 import { BrandText } from "./BrandText";
-import { SVG } from "./SVG";
+import { NetworkIcon } from "./NetworkIcon";
 import { tinyAddress } from "./WalletSelector";
 import { SuccessBadge } from "./badges/SuccessBadge";
 import { TertiaryBox } from "./boxes/TertiaryBox";
@@ -21,6 +20,7 @@ export const WalletStatusBox: React.FC<{ maxAddressLength?: number }> = ({
   maxAddressLength = 10,
 }) => {
   const selectedWallet = useSelectedWallet();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
 
   return (
     <TertiaryBox
@@ -43,16 +43,10 @@ export const WalletStatusBox: React.FC<{ maxAddressLength?: number }> = ({
               alignItems: "center",
             }}
           >
-            <SVG
-              source={getWalletIconFromTitle(
-                addressToNetwork(selectedWallet.address)
-              )}
-              height={24}
-              style={{ marginRight: layout.padding_x1 }}
-            />
-            <View>
+            <NetworkIcon networkId={selectedNetworkInfo?.id || ""} size={24} />
+            <View style={{ marginLeft: layout.padding_x1 }}>
               <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                {addressToNetwork(selectedWallet.address)}
+                {selectedNetworkInfo?.displayName}
               </BrandText>
               <BrandText style={[fontSemibold13]}>
                 {tinyAddress(selectedWallet.address, maxAddressLength)}

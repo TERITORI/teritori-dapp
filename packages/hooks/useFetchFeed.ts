@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { socialFeedClient } from "../client-creators/socialFeedClient";
 import { PostCategory } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { useSelectedNetworkId } from "./useSelectedNetwork";
 import useSelectedWallet from "./useSelectedWallet";
 
 export type FetchFeedResponse = {
@@ -29,6 +30,7 @@ export const combineFetchFeedPages = (pages: FetchFeedResponse[]) =>
 export const useFetchFeed = (req?: FeedRequest) => {
   // variable
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
 
   const categoriesKey = useMemo(() => {
     let result = "";
@@ -52,6 +54,7 @@ export const useFetchFeed = (req?: FeedRequest) => {
     async ({ pageParam }) => {
       try {
         const client = await socialFeedClient({
+          networkId: selectedNetworkId,
           walletAddress: wallet?.address || "",
         });
 

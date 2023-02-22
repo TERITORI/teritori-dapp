@@ -9,7 +9,6 @@ import { UPPGigServices } from "../../components/userPublicProfile/UPPGigService
 import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
-import { UPPSocialFeed } from "../../components/userPublicProfile/UPPSocialFeed";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -63,7 +62,7 @@ const SelectedTabContent: React.FC<{
 }> = ({ userId, selectedTab }) => {
   switch (selectedTab) {
     case "social-feed":
-      return <UPPSocialFeed />;
+      return <></>;
     case "nfts":
       return <UPPNFTs userId={userId} />;
     case "activity":
@@ -87,7 +86,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("nfts");
 
-  const { metadata, loading } = useNSUserInfo(id);
+  const { metadata } = useNSUserInfo(id);
   const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const [network] = parseUserId(id);
@@ -108,12 +107,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     >
       <View style={{ flex: 1, alignItems: "center" }}>
         <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-          <UPPIntro
-            userId={id}
-            isLoading={loading}
-            metadata={metadata}
-            isUserOwner={selectedWallet?.userId === id}
-          />
+          <UPPIntro userId={id} isUserOwner={selectedWallet?.userId === id} />
 
           <Tabs
             items={screenTabItems}
