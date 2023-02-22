@@ -8,8 +8,11 @@ import Animated, {
 import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import {
   combineFetchFeedPages,
+  FeedRequest,
   useFetchFeed,
 } from "../../../hooks/useFetchFeed";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../../utils/navigation";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
 import { SpacerColumn } from "../../spacer";
@@ -25,13 +28,14 @@ const OFFSET_Y_LIMIT_FLOATING = 224;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
-  hash?: string;
+  req?: FeedRequest;
 }
 
-export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
+export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
-    useFetchFeed();
+    useFetchFeed(req);
   const navigation = useAppNavigation();
+  const selectedWallet = useSelectedWallet();
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const posts: PostResult[] = useMemo(
@@ -41,6 +45,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
+  const { metadata } = useTNSMetadata(req.user);
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -78,6 +83,14 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
     setHeaderHeight(e.nativeEvent.layout.height);
   };
 
+  // If we are on the PublicProfileScreen of a user, he will be automatically mentioned in the written post
+  // (Except if it's the connected user's PublicProfileScreen)
+  const mentionedUser = useMemo(() => {
+    if (selectedWallet?.address !== req.user) {
+      return metadata?.public_name || req.user;
+    }
+  }, [selectedWallet?.address, req.user, metadata?.public_name]);
+
   const ListHeaderComponent = useCallback(
     () => (
       <>
@@ -98,6 +111,9 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header }) => {
             type="post"
             onSubmitSuccess={refetch}
             style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}
+            mentionedUser={mentionedUser}
+            // If we are on a HashFeedScreen, the corresponding hash will be automatically added in the written post
+            hash={req.hash}
           />
           <SpacerColumn size={1.5} />
           <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
