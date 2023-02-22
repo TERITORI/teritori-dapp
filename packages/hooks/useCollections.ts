@@ -5,44 +5,49 @@ import {
   Collection,
   CollectionsRequest,
 } from "../api/marketplace/v1/marketplace";
-import { backendClient } from "../utils/backend";
-import { Network } from "../utils/network";
-import { addCollectionMetadatas } from "./../utils/ethereum";
-import { useSelectedNetwork } from "./useSelectedNetwork";
+import { getNetwork, NetworkKind } from "../networks";
+import { mustGetMarketplaceClient } from "../utils/backend";
+import { addCollectionMetadata } from "./../utils/ethereum";
 
 export const useCollections = (
   req: CollectionsRequest,
   filter?: (c: Collection) => boolean
 ): [Collection[], (index: number) => Promise<void>] => {
   const baseOffset = useRef(req.offset);
-  const selectedNetwork = useSelectedNetwork();
 
   const { data, fetchNextPage } = useInfiniteQuery(
-    [
-      "collections",
-      req.networkId,
-      req.mintState,
-      req.sort,
-      req.sortDirection,
-      req.upcoming,
-    ],
+    ["collections", { ...req, baseOffset }],
     async ({ pageParam = 0 }) => {
       let collections: Collection[] = [];
+
+      if (!req.networkId) {
+        return { nextCursor: pageParam + req.limit, collections };
+      }
+
+      const marketplaceClient = mustGetMarketplaceClient(req.networkId);
+
       const pageReq = {
         ...req,
         offset: baseOffset.current + pageParam,
       };
 
-      const stream = backendClient.Collections(pageReq);
+      const stream = marketplaceClient.Collections(pageReq);
 
       await stream.forEach(({ collection }) => {
         collection && collections.push(collection);
       });
 
-      if (selectedNetwork === Network.Ethereum) {
-        // TODO: Hack for adding metadata for ethereum collections, should use an indexed data
-        collections = await addCollectionMetadatas(collections);
-      }
+      // FIXME: refactor into addCollectionListMetadata
+
+      collections = await Promise.all(
+        collections.map(async (c) => {
+          const network = getNetwork(c.networkId);
+          if (network?.kind === NetworkKind.Ethereum) {
+            return addCollectionMetadata(c);
+          }
+          return c;
+        })
+      );
 
       return { nextCursor: pageParam + req.limit, collections };
     },

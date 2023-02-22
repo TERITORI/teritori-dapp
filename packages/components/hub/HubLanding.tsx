@@ -15,7 +15,9 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { backendClient } from "../../utils/backend";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getNetwork } from "../../networks";
+import { mustGetMarketplaceClient } from "../../utils/backend";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { Link } from "../Link";
@@ -35,9 +37,8 @@ export const HubLanding: React.FC = () => {
     image: defaultNewsBanner,
     maxSize: { width: maxWidth },
   });
-  const banners = useBanners(
-    process.env.TERITORI_NETWORK_ID === "teritori-testnet"
-  );
+  const networkId = useSelectedNetworkId();
+  const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
 
   return (
@@ -140,7 +141,7 @@ Launch"
           title="Upcoming Launches on Teritori Launch Pad"
           req={{
             upcoming: true,
-            networkId: "",
+            networkId,
             sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
             sort: Sort.SORTING_UNSPECIFIED,
             limit: 16,
@@ -153,11 +154,15 @@ Launch"
   );
 };
 
-const useBanners = (testnet: boolean) => {
+const useBanners = (networkId: string) => {
   const { data } = useQuery(
-    ["banners", testnet],
+    ["banners", networkId],
     async () => {
-      const { banners } = await backendClient.Banners({ testnet });
+      const backendClient = mustGetMarketplaceClient(networkId);
+      const network = getNetwork(networkId);
+      const { banners } = await backendClient.Banners({
+        testnet: network?.testnet,
+      });
       return banners;
     },
     { staleTime: Infinity }

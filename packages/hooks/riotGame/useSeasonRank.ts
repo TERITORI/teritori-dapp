@@ -1,26 +1,38 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { p2eBackendClient } from "../../utils/backend";
+import { parseUserId } from "../../networks";
+import { getP2eClient } from "../../utils/backend";
+import { useSelectedNetworkId } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useSeasonRank = () => {
   const selectedWallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
 
   const { data: currentSeason } = useQuery(
-    ["currentSeason"],
+    ["currentSeason", networkId],
     async () => {
-      return await p2eBackendClient.CurrentSeason({});
+      const client = getP2eClient(networkId);
+      if (!client) {
+        return null;
+      }
+      return await client.CurrentSeason({});
     },
     { refetchInterval: 300000, staleTime: 300000 }
   );
 
   const { data: userRank } = useQuery(
-    ["userRank", selectedWallet?.address, currentSeason?.id],
+    ["userRank", selectedWallet?.userId, currentSeason?.id],
     async () => {
-      if (!selectedWallet?.address || !currentSeason?.id) return null;
-      return await p2eBackendClient.UserRank({
+      const [network, userAddress] = parseUserId(selectedWallet?.userId);
+      if (!network || !userAddress || !currentSeason?.id) return null;
+      const client = getP2eClient(network.id);
+      if (!client) {
+        return null;
+      }
+      return await client.UserRank({
         seasonId: currentSeason.id,
-        userId: selectedWallet.address,
+        userId: selectedWallet?.userId, // FIXME: is it safe to change this id shape mid-season?
       });
     },
     { refetchInterval: 300000, staleTime: 300000 }

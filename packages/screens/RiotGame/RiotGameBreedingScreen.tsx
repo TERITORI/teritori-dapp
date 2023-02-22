@@ -16,12 +16,11 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { ConfigResponse } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { useBreeding } from "../../hooks/riotGame/useBreeding";
 import { useRippers } from "../../hooks/riotGame/useRippers";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind, getCollectionId, parseNftId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import {
-  getRipperTokenId,
-  THE_RIOT_COLLECTION_ADDRESS,
-} from "../../utils/game";
+import { getRipperTokenId } from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -42,6 +41,7 @@ export const RiotGameBreedingScreen = () => {
   const [isBreeding, setIsBreeding] = useState(false);
   const { setToastError } = useFeedbacks();
   const [newTokenInfo, setNewTokenInfo] = useState<TokenInfo>();
+  const selectedNetworkId = useSelectedNetworkId();
 
   const [selectedRippers, setSelectedRippers] = useState<{
     [slotId: string]: {
@@ -59,7 +59,7 @@ export const RiotGameBreedingScreen = () => {
     getChildTokenIds,
     getTokenInfo,
     fetchRemainingTokens,
-  } = useBreeding();
+  } = useBreeding(selectedNetworkId);
 
   const intervalRef = useRef<NodeJS.Timer>();
 
@@ -67,11 +67,31 @@ export const RiotGameBreedingScreen = () => {
     // Only original Rioter can breed
     const selectedIds = Object.values(selectedRippers).map((r) => r.ripper.id);
 
-    return myAvailableRippers.filter(
-      (r) =>
-        !selectedIds.includes(r.id) &&
-        r.id.startsWith(`tori-${THE_RIOT_COLLECTION_ADDRESS}`)
-    );
+    return myAvailableRippers.filter((r) => {
+      if (selectedIds.includes(r.id)) {
+        return false;
+      }
+
+      const [network, collectionAddress] = parseNftId(r.id);
+
+      if (network?.kind !== NetworkKind.Cosmos) {
+        return false;
+      }
+      const collectionId = getCollectionId(network?.id, collectionAddress);
+      if (!collectionId) {
+        return false;
+      }
+
+      const gen0CollectionId = getCollectionId(
+        network?.id,
+        network.riotContractAddressGen0
+      );
+      if (!gen0CollectionId) {
+        return false;
+      }
+
+      return collectionId === gen0CollectionId;
+    });
   }, [myAvailableRippers, selectedRippers]);
 
   /**
@@ -227,7 +247,7 @@ export const RiotGameBreedingScreen = () => {
             size="LG"
             title="Price"
             content={prettyPrice(
-              process.env.TERITORI_NETWORK_ID || "",
+              selectedWallet?.networkId || "",
               breedingConfig?.breed_price_amount || "",
               breedingConfig?.breed_price_denom || ""
             )}

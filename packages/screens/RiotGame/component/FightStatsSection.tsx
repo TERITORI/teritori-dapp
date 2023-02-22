@@ -47,13 +47,13 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
             isClaiming
               ? "Claiming..."
               : `Claim available rewards: ${decimalFromAtomics(
-                  process.env.TERITORI_NETWORK_ID || "",
+                  selectedWallet?.networkId,
                   "" + claimableAmount,
-                  "utori"
+                  "utori" // FIXME: don't hardcode denom and use prettyPrice
                 )} TORI`
           }
           style={{ marginLeft: layout.padding_x1 }}
-          onPress={() => claimRewards(selectedWallet.address)}
+          onPress={claimRewards}
           noBrokenCorners
         />
       )}

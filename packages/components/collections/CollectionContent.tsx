@@ -6,7 +6,6 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { alignDown } from "../../utils/align";
 import { ActivityTable } from "../activity/ActivityTable";
@@ -22,18 +21,13 @@ export const CollectionContent: React.FC<{
   sortDirection: SortDirection;
 }> = React.memo(({ id, selectedTab, sortDirection }) => {
   const wallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
 
   const { width } = useMaxResolution();
   const numColumns = Math.floor(width / nftWidth);
 
   const nftsRequest: NFTsRequest = {
-    networkId: selectedNetworkId,
     collectionId: id,
-    ownerId:
-      selectedTab === "owned" && wallet?.address
-        ? `tori-${wallet.address}`
-        : "",
+    ownerId: (selectedTab === "owned" && wallet?.userId) || "",
     limit: alignDown(20, numColumns) || numColumns,
     offset: 0,
     sort: Sort.SORTING_PRICE,

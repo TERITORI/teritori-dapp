@@ -12,7 +12,6 @@ import {
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { useNFTs } from "../../hooks/useNFTs";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { alignDown } from "../../utils/align";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
@@ -32,10 +31,7 @@ const SelectNewNft: React.FC<{
     setSearchNft,
     currentCollection,
   }) => {
-    const selectedNetworkId = useSelectedNetworkId();
-
     const { nfts, fetchMore } = useNFTs({
-      networkId: selectedNetworkId,
       collectionId: nftCollectionId,
       ownerId: "",
       limit: alignDown(20, 2) || 2,

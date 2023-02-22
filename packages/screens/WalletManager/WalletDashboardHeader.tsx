@@ -8,10 +8,9 @@ import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { rewardsPrice, useRewards } from "../../hooks/useRewards";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
@@ -88,17 +87,15 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
 
 export const WalletDashboardHeader: React.FC = () => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
-  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+  const selectedNetworkId = selectedWallet?.networkId;
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const navigation = useAppNavigation();
   const totalUSDBalance = balances.reduce(
     (total, bal) => total + (bal.usdAmount || 0),
     0
   );
-  const { totalsRewards, claimAllRewards } = useRewards(
-    selectedWallet?.address
-  );
+  const { totalsRewards, claimAllRewards } = useRewards(selectedWallet?.userId);
   // Total rewards price with all denoms
   const claimablePrice = rewardsPrice(totalsRewards);
 
@@ -149,7 +146,7 @@ export const WalletDashboardHeader: React.FC = () => {
               fontSize: 20,
             }}
           >
-            {tnsMetadata.metadata?.tokenId || selectedWallet?.address || ""}
+            {userInfo.metadata?.tokenId || selectedWallet?.address || ""}
           </BrandText>
         </View>
       </View>
