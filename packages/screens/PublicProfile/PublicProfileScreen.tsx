@@ -1,35 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { screenTitle } from "../../components/navigation/Navigator";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { FeedRequest } from "../../hooks/useFetchFeed";
 import { useTNSMetadata } from "../../hooks/useTNSMetadata";
-import { screenTabItems } from "../../utils/feed";
+import { feedTabToCategories, screenTabItems } from "../../utils/feed";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { FeedHeader } from "../Feed/components/FeedHeader";
 import { PublicProfileIntro } from "./PublicProfileIntro";
-
-export interface SelectedTabContentProps {
-  selectedTab: keyof typeof screenTabItems;
-  Header: React.ComponentType;
-}
-
-//TODO: Row scroll horizontally on mobile. Or dropdown menu
-const SelectedTabContent: React.FC<SelectedTabContentProps> = ({
-  selectedTab,
-  Header,
-}) => {
-  switch (selectedTab) {
-    case "news":
-      return <NewsFeed Header={Header} />;
-    default:
-      return <NewsFeed Header={Header} />;
-  }
-};
 
 export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
   route: {
@@ -38,10 +21,12 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
 }) => {
   const navigation = useAppNavigation();
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("news");
-  const { metadata, notFound } = useTNSMetadata(
-    id.includes(".tori") ? id : id.replace("tori-", "")
+    useState<keyof typeof screenTabItems>("all");
+  const userAddress = useMemo(
+    () => (id.includes(".tori") ? id : id.replace("tori-", "")),
+    [id]
   );
+  const { metadata, notFound } = useTNSMetadata(userAddress);
 
   useEffect(() => {
     if (metadata?.public_name) {
@@ -51,6 +36,13 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
       });
     }
   }, [metadata?.public_name]);
+
+  const feedRequest: FeedRequest = useMemo(() => {
+    return {
+      user: userAddress,
+      categories: feedTabToCategories(selectedTab),
+    };
+  }, [userAddress, selectedTab]);
 
   return (
     <ScreenContainer
@@ -62,11 +54,11 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
           {metadata?.public_name || "Anon"}
         </BrandText>
       }
-      onBackPress={() => {
+      onBackPress={() =>
         navigation.canGoBack()
           ? navigation.goBack()
-          : navigation.navigate("Feed");
-      }}
+          : navigation.navigate("Feed")
+      }
       footerChildren={<></>}
     >
       {notFound || (!id.startsWith("tori-") && !id.includes(".tori")) ? (
@@ -81,8 +73,8 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
         </View>
       ) : (
         <View style={{ flex: 1 }}>
-          <SelectedTabContent
-            selectedTab={selectedTab}
+          <NewsFeed
+            req={feedRequest}
             Header={() => (
               <>
                 <PublicProfileIntro

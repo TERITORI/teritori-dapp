@@ -158,13 +158,13 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           {post?.post_by || ""}
         </BrandText>
       }
-      onBackPress={() => {
+      onBackPress={() =>
         post?.parent_post_identifier
           ? navigation.navigate("FeedPostView", {
               id: post?.parent_post_identifier || "",
             })
-          : navigation.navigate("Feed");
-      }}
+          : navigation.navigate("Feed")
+      }
       footerChildren
       fullWidth
       noScroll

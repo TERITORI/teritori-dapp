@@ -27,6 +27,7 @@ import FlexRow from "../../FlexRow";
 import { tinyAddress } from "../../WalletSelector";
 import { AnimationFadeIn } from "../../animations";
 import { DotBadge } from "../../badges/DotBadge";
+import { CustomPressable } from "../../buttons/CustomPressable";
 import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
@@ -92,7 +93,7 @@ export const SocialThreadCard: React.FC<{
   }, [post]);
 
   return (
-    <TouchableOpacity
+    <CustomPressable
       disabled={isPostConsultation}
       onPress={() =>
         navigation.navigate("FeedPostView", { id: post.identifier })
@@ -240,6 +241,6 @@ export const SocialThreadCard: React.FC<{
           </FlexRow>
         )}
       </AnimationFadeIn>
-    </TouchableOpacity>
+    </CustomPressable>
   );
 };
