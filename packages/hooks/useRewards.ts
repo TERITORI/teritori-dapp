@@ -6,17 +6,16 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
-import { getNetwork } from "../networks";
-import { CoingeckoCoin, getCoingeckoPrice } from "../utils/coingecko";
-import { getKeplrOfflineSigner } from "../utils/keplr";
-import { Network } from "../utils/network";
 import {
-  CosmosRewardsResponse,
-  getTeritoriSigningStargateClient,
-} from "../utils/teritori";
+  getKeplrSigningStargateClient,
+  getNetwork,
+  parseNetworkObjectId,
+  NetworkKind,
+} from "../networks";
+import { CoingeckoCoin, getCoingeckoPrice } from "../utils/coingecko";
+import { CosmosRewardsResponse } from "../utils/teritori";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useErrorHandler } from "./useErrorHandler";
-import { useSelectedNetworkId } from "./useSelectedNetwork";
 
 export type Reward = {
   validator: string;
@@ -35,17 +34,17 @@ const initialData = { rewards: [], total: [] };
 // TODO: Handle multiple wallets addresses (Maybe use useWallets + useQueries)
 
 // Getting the rewards, by user's wallet address, and by network.
-export const useRewards = (walletAddress?: string) => {
-  const selectedNetwork = useSelectedNetworkId();
-  const networkId = selectedNetwork || process.env.TERITORI_NETWORK_ID || "";
+export const useRewards = (userId: string | undefined) => {
+  const [network, userAddress] = parseNetworkObjectId(userId);
+  const networkId = network?.id || "";
   const { setToastSuccess, setToastError } = useFeedbacks();
   const { triggerError } = useErrorHandler();
 
   const claimAllRewards = async (callback?: () => void) => {
     try {
-      if (!walletAddress) return;
-      const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
+      if (!userAddress || !networkId) return;
+
+      const client = await getKeplrSigningStargateClient(networkId);
 
       const msgs: MsgWithdrawDelegatorRewardEncodeObject[] = [];
       networkRewards.rewards.forEach((rew) => {
@@ -53,14 +52,14 @@ export const useRewards = (walletAddress?: string) => {
         msgs.push({
           typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
           value: {
-            delegatorAddress: walletAddress,
+            delegatorAddress: userAddress,
             validatorAddress: rew.validator_address,
           },
         });
       });
       if (!msgs.length) return;
       const txResponse = await client.signAndBroadcast(
-        walletAddress,
+        userAddress,
         msgs,
         "auto"
       );
@@ -84,18 +83,18 @@ export const useRewards = (walletAddress?: string) => {
     callback?: () => void
   ) => {
     try {
-      if (!walletAddress) return;
-      const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
+      if (!userAddress || !networkId) return;
+
+      const client = await getKeplrSigningStargateClient(userAddress);
       const msg: MsgWithdrawDelegatorRewardEncodeObject = {
         typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
         value: {
-          delegatorAddress: walletAddress,
+          delegatorAddress: userAddress,
           validatorAddress,
         },
       };
       const txResponse = await client.signAndBroadcast(
-        walletAddress,
+        userAddress,
         [msg],
         "auto"
       );
@@ -116,12 +115,12 @@ export const useRewards = (walletAddress?: string) => {
 
   // ---- Getting rewards from cosmos distribution
   const { data: networkRewards } = useQuery(
-    ["rewards", networkId, walletAddress],
+    ["rewards", networkId, userAddress],
     async () => {
-      if (!walletAddress || !networkId) {
+      if (!userAddress || !networkId) {
         return initialData;
       }
-      return getNetworkRewards(networkId, walletAddress);
+      return getNetworkRewards(networkId, userAddress);
     },
     { initialData, refetchInterval: 5000 }
   );
@@ -205,9 +204,9 @@ const getNetworkRewards = async (
     return initialData;
   }
 
-  // TODO: Do not support ETH for now
-  if (network.network === Network.Ethereum) {
-    return { total: [], rewards: [] };
+  // TODO: support other networks kinds
+  if (network.kind !== NetworkKind.Cosmos) {
+    return initialData;
   }
 
   const response = await fetch(

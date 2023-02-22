@@ -14,9 +14,9 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { Squad } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { useGameRewards } from "../../../hooks/riotGame/useGameRewards";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
 import { decimalFromAtomics } from "../../../utils/coins";
 import { durationToXP } from "../../../utils/game";
 import {
@@ -41,7 +41,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
   const selectedWallet = useSelectedWallet();
   const { claimableAmount } = useGameRewards();
   const networkId = useSelectedNetworkId();
-  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
 
   const startTime = squad?.start_time || 0;
   const endTime = squad?.end_time || 0;
@@ -99,7 +99,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
 
         <BrandText style={fontSemibold20}>
           {tinyAddress(
-            tnsMetadata.metadata?.tokenId || selectedWallet?.address || ""
+            userInfo.metadata?.tokenId || selectedWallet?.address || ""
           )}
         </BrandText>
 

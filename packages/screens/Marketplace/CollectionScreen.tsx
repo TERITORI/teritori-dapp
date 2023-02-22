@@ -7,6 +7,7 @@ import { CollectionContent } from "../../components/collections/CollectionConten
 import { CollectionHeader } from "../../components/collections/CollectionHeader";
 import { TabsListType } from "../../components/collections/types";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { parseCollectionId } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
@@ -17,10 +18,17 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );
+  const [network] = parseCollectionId(id);
 
   // returns
   return (
-    <ScreenContainer fullWidth footerChildren={<></>} noMargin noScroll>
+    <ScreenContainer
+      fullWidth
+      footerChildren={<></>}
+      noMargin
+      noScroll
+      forceNetworkId={network?.id}
+    >
       <ScrollView
         style={{ width: "100%" }}
         contentContainerStyle={{ alignItems: "center" }}

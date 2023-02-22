@@ -6,60 +6,78 @@ import {
   TeritoriDistributorClient,
   TeritoriDistributorQueryClient,
 } from "../../contracts-clients/teritori-distributor/TeritoriDistributor.client";
-import { TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS } from "../../utils/game";
 import {
-  getNonSigningCosmWasmClient,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+  getKeplrSigningCosmWasmClient,
+  mustGetNonSigningCosmWasmClient,
+  NetworkKind,
+  parseUserId,
+} from "../../networks";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useGameRewards = () => {
   const selectedWallet = useSelectedWallet();
+  const userId = selectedWallet?.userId;
   const { setToastSuccess, setToastError } = useFeedbacks();
   const [isClaiming, setIsClaiming] = useState(false);
 
   const { data } = useQuery(
-    ["claimableAmount", selectedWallet?.address],
+    ["claimableAmount", userId],
     async () => {
-      if (!selectedWallet?.address) return 0;
+      const [network, userAddress] = parseUserId(userId);
+      if (
+        network?.kind !== NetworkKind.Cosmos ||
+        !network.distributorContractAddress ||
+        !userAddress
+      ) {
+        return "0";
+      }
 
-      const nonSigningClient = await getNonSigningCosmWasmClient();
+      const nonSigningClient = await mustGetNonSigningCosmWasmClient(
+        network.id
+      );
       const distributorQueryClient = new TeritoriDistributorQueryClient(
         nonSigningClient,
-        TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS
+        network.distributorContractAddress
       );
       return await distributorQueryClient.userClaimable({
-        addr: selectedWallet.address,
+        addr: userAddress,
       });
     },
     { staleTime: Infinity }
   );
   const claimableAmount = data || 0;
 
-  const claimRewards = useCallback(
-    async (user: string) => {
-      setIsClaiming(true);
-      try {
-        const signingClient = await getSigningCosmWasmClient();
-        const distributorClient = new TeritoriDistributorClient(
-          signingClient,
-          user,
-          TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS
-        );
+  const claimRewards = useCallback(async () => {
+    setIsClaiming(true);
+    try {
+      const [network, userAddress] = parseUserId(userId);
 
-        await distributorClient.claim();
-        setToastSuccess({
-          title: "Success",
-          message: "Your rewards have been sent to your wallet",
-        });
-      } catch (e: any) {
-        setToastError({ title: "Error", message: e.message });
-      } finally {
-        setIsClaiming(false);
+      if (
+        network?.kind !== NetworkKind.Cosmos ||
+        !network.distributorContractAddress ||
+        !userAddress
+      ) {
+        throw new Error("invalid user id");
       }
-    },
-    [setToastError, setToastSuccess]
-  );
+
+      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
+      const distributorClient = new TeritoriDistributorClient(
+        signingClient,
+        userAddress,
+        network.distributorContractAddress
+      );
+
+      await distributorClient.claim();
+      setToastSuccess({
+        title: "Success",
+        message: "Your rewards have been sent to your wallet",
+      });
+    } catch (e: any) {
+      setToastError({ title: "Error", message: e.message });
+    } finally {
+      setIsClaiming(false);
+    }
+  }, [userId, setToastError, setToastSuccess]);
 
   return { isClaiming, claimableAmount, claimRewards };
 };

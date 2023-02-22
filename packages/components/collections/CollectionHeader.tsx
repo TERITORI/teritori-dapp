@@ -21,9 +21,12 @@ import { CollectionInfo } from "../../hooks/useCollectionInfo";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getNativeCurrency } from "../../networks";
+import {
+  contractExplorerLink,
+  getNativeCurrency,
+  parseCollectionId,
+} from "../../networks";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -48,24 +51,24 @@ export const CollectionHeader: React.FC<{
 }) => {
   const wallet = useSelectedWallet();
   // variables
-  const stats = useCollectionStats(collectionId, wallet?.address);
+  const stats = useCollectionStats(collectionId, wallet?.userId);
   const { width: maxWidth } = useMaxResolution();
   const { width, height } = useImageResizer({
     image: collectionInfo.bannerImage || bannerCollection,
     maxSize: { width: maxWidth },
   });
+  const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
-  const networkId = useSelectedNetworkId();
 
   const coins = useMemo(() => {
-    if (!stats?.floorPrice) {
+    if (!network?.id || !stats?.floorPrice) {
       return [];
     }
     return stats.floorPrice.map((fp) => ({
-      networkId,
+      networkId: network.id,
       denom: fp.denom,
     }));
-  }, [networkId, stats?.floorPrice]);
+  }, [network?.id, stats?.floorPrice]);
 
   const { prices } = useCoingeckoPrices(coins);
 
@@ -93,7 +96,7 @@ export const CollectionHeader: React.FC<{
     }
     return [...stats.floorPrice]
       .map((fp) => {
-        const currency = getNativeCurrency(networkId, fp.denom);
+        const currency = getNativeCurrency(network?.id, fp.denom);
         if (!currency) {
           return Infinity;
         }
@@ -114,7 +117,7 @@ export const CollectionHeader: React.FC<{
       .sort((a, b) => {
         return b - a;
       })[0];
-  }, [prices, stats?.floorPrice, networkId]);
+  }, [prices, stats?.floorPrice, network?.id]);
 
   // functions
   const onShare = () => {
@@ -216,9 +219,10 @@ export const CollectionHeader: React.FC<{
               iconSvg={etherscanSVG}
               style={{ marginRight: 12 }}
               onPress={() => {
-                const url = (
-                  process.env.TERITORI_CONTRACT_EXPLORER_URL || ""
-                ).replace("$address", collectionId.replace("tori-", ""));
+                const url = contractExplorerLink(
+                  network?.id,
+                  collectionMintAddress
+                );
                 Linking.openURL(url);
               }}
             />

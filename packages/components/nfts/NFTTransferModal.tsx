@@ -7,12 +7,16 @@ import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import { TeritoriNft__factory } from "../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkInfo } from "../../networks";
+import {
+  NetworkKind,
+  CosmosNetworkInfo,
+  EthereumNetworkInfo,
+  getKeplrSigningCosmWasmClient,
+  getNetwork,
+  parseNftId,
+} from "../../networks";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
-import { getSigningCosmWasmClient } from "../../utils/keplr";
-import { Network } from "../../utils/network";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -36,19 +40,20 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
   nft,
   onSubmit,
 }) => {
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetwork = selectedNetworkInfo?.network;
+  const networkId = nft?.networkId;
+  const network = getNetwork(networkId);
+  const networkKind = network?.kind;
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const { handleSubmit: formHandleSubmit, control } =
     useForm<NFTTransferForm>();
 
-  const teritoriSendNFT = async (
+  const cosmosSendNFT = async (
     nftContractAddress: string,
     tokenId: string,
     sender: string,
     receiver: string,
-    networkInfo: NetworkInfo
+    networkInfo: CosmosNetworkInfo
   ) => {
     // validate address
     const address = bech32.decode(receiver);
@@ -58,7 +63,9 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
     }
 
     // create client
-    const signingComswasmClient = await getSigningCosmWasmClient();
+    const signingComswasmClient = await getKeplrSigningCosmWasmClient(
+      networkInfo.id
+    );
     const nftClient = new TeritoriNftClient(
       signingComswasmClient,
       sender,
@@ -73,13 +80,13 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
   };
 
   const ethereumSendNFT = async (
+    network: EthereumNetworkInfo,
     nftContractAddress: string,
     tokenId: string,
     sender: string,
-    receiver: string,
-    networkInfo: NetworkInfo
+    receiver: string
   ) => {
-    const signer = await getMetaMaskEthereumSigner(sender);
+    const signer = await getMetaMaskEthereumSigner(network, sender);
     if (!signer) {
       throw Error("Unable to get signer");
     }
@@ -104,9 +111,13 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
         throw Error(`No NFT selected`);
       }
 
-      const nftPrefix = nft.id.split("-")[0] || "";
+      const [network, , tokenId] = parseNftId(nft.id);
 
-      if (!["tori", "eth"].includes(nftPrefix)) {
+      if (
+        ![NetworkKind.Ethereum, NetworkKind.Cosmos].includes(
+          network?.kind || NetworkKind.Unknown
+        )
+      ) {
         throw Error(`Network not supported`);
       }
 
@@ -117,34 +128,32 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
       }
 
       // check for network
-      if (!selectedNetwork) {
+      if (!network) {
         throw Error(`No network`);
       }
 
-      // get token id
-      const tokenId = nft.id.split("-").slice(2).join("-");
-
-      let sendNFTFunc: CallableFunction | null = null;
-      switch (selectedNetwork) {
-        case Network.Teritori:
-          sendNFTFunc = teritoriSendNFT;
+      switch (network.kind) {
+        case NetworkKind.Cosmos:
+          await cosmosSendNFT(
+            nft.nftContractAddress,
+            tokenId,
+            sender,
+            formValues.receiverAddress,
+            network
+          );
           break;
-        case Network.Ethereum:
-          sendNFTFunc = ethereumSendNFT;
+        case NetworkKind.Ethereum:
+          await ethereumSendNFT(
+            network,
+            nft.nftContractAddress,
+            tokenId,
+            sender,
+            formValues.receiverAddress
+          );
           break;
+        default:
+          throw Error(`unsupported network kind ${networkKind}`);
       }
-
-      if (!sendNFTFunc) {
-        throw Error(`Unsupported network ${selectedNetwork}`);
-      }
-
-      await sendNFTFunc(
-        nft.nftContractAddress,
-        tokenId,
-        sender,
-        formValues.receiverAddress,
-        selectedNetworkInfo
-      );
 
       setToastSuccess({
         title: "NFT transfered",
