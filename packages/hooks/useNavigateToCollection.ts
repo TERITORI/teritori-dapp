@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { parseNetworkObjectId } from "../networks";
+import { secondaryDuringMintList } from "../utils/collections";
 import { useAppNavigation } from "../utils/navigation";
 import { useMintEnded } from "./useMintEnded";
 
@@ -17,15 +17,13 @@ export const useNavigateToCollection = (
 ) => {
   const navigation = useAppNavigation();
 
-  const [network, contractAddress] = parseNetworkObjectId(id);
-
-  const secondaryDuringMint = (network?.secondaryDuringMintList || []).includes(
-    contractAddress
-  );
+  const secondaryDuringMint =
+    opts?.forceSecondaryDuringMint || secondaryDuringMintList.includes(id);
 
   const noFetch = secondaryDuringMint || !!opts?.forceLinkToMint;
 
-  const mintEnded = useMintEnded(id, !noFetch);
+  // the ternary in next line is to prevent calling the api when it's not necessary
+  const mintEnded = useMintEnded(noFetch ? "" : id);
 
   const navToMint = useCallback(
     () => navigation.navigate("MintCollection", { id }),

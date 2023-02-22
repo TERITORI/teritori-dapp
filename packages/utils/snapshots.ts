@@ -1,12 +1,11 @@
 import { MarketplaceService } from "../api/marketplace/v1/marketplace";
-import { parseNftId, parseUserId } from "../networks";
 
 const batchSize = 1000;
 
 // returns the number of nfts owned per address
 export const snapshotCollectionOwners = async (
   collectionId: string,
-  backendClient: MarketplaceService | undefined
+  backendClient: MarketplaceService
 ) => {
   const listByOwner = await snapshotCollectionOwnersWithIds(
     collectionId,
@@ -21,11 +20,8 @@ export const snapshotCollectionOwners = async (
 // returns the list of nfts owned per address
 export const snapshotCollectionOwnersWithIds = async (
   collectionId: string,
-  backendClient: MarketplaceService | undefined
+  backendClient: MarketplaceService
 ) => {
-  if (!backendClient) {
-    return {};
-  }
   let offset = 0;
   const listByOwner: { [key: string]: string[] } = {};
   const seen: { [key: string]: boolean } = {};
@@ -41,9 +37,9 @@ export const snapshotCollectionOwnersWithIds = async (
       if (!res.nft) {
         return;
       }
-      const [, addr] = parseUserId(res.nft.ownerId);
+      const addr = res.nft.ownerId.replace("tori-", "");
       if (!listByOwner[addr]) listByOwner[addr] = [];
-      const [, , tokenId] = parseNftId(res.nft.id);
+      const tokenId = res.nft.id.split("-")[2];
       if (seen[tokenId]) {
         throw new Error(`${tokenId} already seen`);
       }
@@ -64,11 +60,8 @@ export const snapshotCollectionOwnersWithIds = async (
 // returns the count of nfts by address that minted an nft and never tried to sell it
 export const snapshotCollectionOGs = async (
   collectionId: string,
-  backendClient: MarketplaceService | undefined
+  backendClient: MarketplaceService
 ) => {
-  if (!backendClient) {
-    return {};
-  }
   let offset = 0;
   const countByMinter: { [key: string]: string[] } = {};
   const listed: { [key: string]: boolean } = {};
@@ -85,7 +78,7 @@ export const snapshotCollectionOGs = async (
         return;
       }
       if (res.activity.transactionKind === "mint") {
-        const [, addr] = parseUserId(res.activity.buyerId);
+        const addr = res.activity.buyerId.replace("tori-", "");
         if (!countByMinter[addr]) countByMinter[addr] = [];
         countByMinter[addr].push(res.activity.targetName);
       }

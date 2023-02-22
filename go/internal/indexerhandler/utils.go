@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/pricespb"
 	"github.com/allegro/bigcache/v3"
 	"github.com/pkg/errors"
@@ -179,7 +180,7 @@ func (h *Handler) blockTime(height int64) (time.Time, error) {
 }
 
 func (h *Handler) HistoricalPrice(denom string, t time.Time) (float64, error) {
-	nativeCurrency, err := h.config.NetworkStore.GetNativeCurrency(h.config.Network.ID, denom)
+	nativeCurrency, err := networks.GetNativeCurrency(h.config.NetworkID, denom)
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to get native currency")
 	}
@@ -209,7 +210,7 @@ func (h *Handler) HistoricalPrice(denom string, t time.Time) (float64, error) {
 func (h *Handler) usdAmount(denom string, amount string, t time.Time) (float64, error) {
 	// we don't return an error because we shouldn't error-out in case a currency is not registered
 
-	currency, err := h.config.NetworkStore.GetNativeCurrency(h.config.Network.ID, denom)
+	currency, err := networks.GetNativeCurrency(h.config.NetworkID, denom)
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to get native currency")
 	}

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import { getNetwork } from "../networks";
@@ -10,14 +9,14 @@ import { useAppDispatch } from "../store/store";
 
 export const useSelectedNetworkId = () => {
   const dispatch = useAppDispatch();
+
   const currentNetworkId = useSelector(selectSelectedNetworkId);
-  const networkId = currentNetworkId || "teritori";
-  useEffect(() => {
-    if (!currentNetworkId) {
-      dispatch(setSelectedNetworkId(networkId));
-    }
-  }, [currentNetworkId, dispatch, networkId]);
-  return networkId;
+  const networkId = currentNetworkId || process.env.TERITORI_NETWORK_ID || "";
+  if (!currentNetworkId) {
+    dispatch(setSelectedNetworkId(networkId));
+  }
+
+  return networkId || "";
 };
 
 export const useSelectedNetworkInfo = () => {
@@ -25,7 +24,7 @@ export const useSelectedNetworkInfo = () => {
   return getNetwork(selectedNetworkId);
 };
 
-export const useSelectedNetworkKind = () => {
+export const useSelectedNetwork = () => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
-  return selectedNetworkInfo?.kind;
+  return selectedNetworkInfo?.network;
 };

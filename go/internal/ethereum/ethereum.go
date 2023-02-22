@@ -3,40 +3,41 @@ package ethereum
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"math/big"
 
 	"github.com/Khan/genqlient/graphql"
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/thegraph"
 	"github.com/dgraph-io/ristretto"
-	"github.com/pkg/errors"
 )
 
 type Provider struct {
-	cache    *ristretto.Cache
-	netstore networks.NetworkStore
+	client graphql.Client
+	cache  *ristretto.Cache
 }
 
 var refreshTime = time.Minute
 
-func NewEthereumProvider(netstore networks.NetworkStore) (*Provider, error) {
+func NewEthereumProvider(graphqlEndpoint string) *Provider {
+	client := graphql.NewClient(graphqlEndpoint, nil)
 	cache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e7,
 		MaxCost:     1 << 30,
 		BufferItems: 64,
 	})
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create cache")
+		log.Fatal(err)
 	}
-
 	return &Provider{
-		cache:    cache,
-		netstore: netstore,
-	}, nil
+		client: client,
+		cache:  cache,
+	}
 }
 
 type Volume struct {
@@ -50,22 +51,12 @@ func (p *Provider) GetCollections(ctx context.Context, networkId string) ([]mark
 	if ok {
 		return data.([]marketplacepb.Collection), nil
 	}
-
-	network, err := p.netstore.GetEthereumNetwork(networkId)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get network")
-	}
-
 	//30 days window
 	unixTime := time.Now().AddDate(0, 0, -30).Unix()
-
-	// fetch
-	client := graphql.NewClient(network.TheGraphEndpoint, nil)
-	collections, err := thegraph.GetCollections(ctx, client, fmt.Sprint(unixTime))
+	collections, err := thegraph.GetCollections(ctx, p.client, fmt.Sprint(unixTime))
 	if err != nil {
 		return nil, err
 	}
-
 	//volumeByCollectionByDenom
 	volumeByCollection := make(map[string]Volume)
 	//Fill collection volume
@@ -82,11 +73,11 @@ func (p *Provider) GetCollections(ctx context.Context, networkId string) ([]mark
 	for _, contract := range collections.NftContracts {
 		res = append(res, marketplacepb.Collection{
 			NetworkId:      networkId,
-			Id:             string(network.CollectionID(contract.Minter)),
+			Id:             indexerdb.EthereumCollectionID(contract.Minter),
 			CollectionName: contract.Name,
 			MintAddress:    contract.Minter,
 			Volume:         fmt.Sprint(volumeByCollection[contract.Id].volume),
-			CreatorId:      string(network.UserID(contract.Minter)),
+			CreatorId:      fmt.Sprintf("eth-%s", contract.Minter),
 			VolumeDenom:    volumeByCollection[contract.Id].denom,
 		})
 	}
@@ -95,28 +86,19 @@ func (p *Provider) GetCollections(ctx context.Context, networkId string) ([]mark
 }
 
 func (p *Provider) GetCollectionStats(ctx context.Context, collectionID string, owner string) (*marketplacepb.CollectionStats, error) {
-	network, minter, err := p.netstore.ParseCollectionID(collectionID)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse collection id")
-	}
-
-	ethNetwork, ok := network.(*networks.EthereumNetwork)
-	if !ok {
-		return nil, errors.New("collection network is not an ethereum network")
-	}
-
+	minter := strings.Replace(collectionID, "eth-", "", 1)
 	cacheKey := fmt.Sprintf("col_stats_%s", collectionID)
 	data, ok := p.cache.Get(cacheKey)
+	var err error
 	var collectionsStats *thegraph.GetCollectionStatsResponse
 	if ok {
 		collectionsStats = data.(*thegraph.GetCollectionStatsResponse)
 	} else {
-		client := graphql.NewClient(ethNetwork.TheGraphEndpoint, nil)
-		var err error
-		if collectionsStats, err = thegraph.GetCollectionStats(ctx, client, minter); err != nil {
-			return nil, err
-		}
+		collectionsStats, err = thegraph.GetCollectionStats(ctx, p.client, minter)
 		p.cache.SetWithTTL(cacheKey, collectionsStats, 0, refreshTime)
+	}
+	if err != nil {
+		return nil, err
 	}
 
 	if len(collectionsStats.NftContracts) == 0 {
@@ -184,30 +166,11 @@ func (p *Provider) GetCollectionStats(ctx context.Context, collectionID string, 
 	return res, nil
 }
 
-func (p *Provider) GetNFTs(ctx context.Context, collectionID string, ownerID string, limit, offset int, orderDirection marketplacepb.SortDirection) ([]*marketplacepb.NFT, error) {
+func (p *Provider) GetNFTs(ctx context.Context, networkID string, collectionID string, ownerId string, limit, offset int, orderDirection marketplacepb.SortDirection) ([]*marketplacepb.NFT, error) {
 	// TODO: find how to send the whole `where` filter to query with genqlcient instead of separating into 2 queries
 
-	var err error
-	var network networks.Network
-
-	minter := ""
-	if collectionID != "" {
-		if network, minter, err = p.netstore.ParseCollectionID(collectionID); err != nil {
-			return nil, errors.Wrap(err, "failed to parse collection id")
-		}
-	}
-
-	owner := ""
-	if ownerID != "" {
-		if network, owner, err = p.netstore.ParseUserID(ownerID); err != nil {
-			return nil, errors.Wrap(err, "failed to parse owner id")
-		}
-	}
-
-	ethNetwork, ok := network.(*networks.EthereumNetwork)
-	if !ok {
-		return nil, errors.New("object network is not an ethereum network")
-	}
+	minter := strings.Replace(collectionID, "eth-", "", 1)
+	owner := strings.Replace(ownerId, "eth-", "", 1)
 
 	nftContractFilter := thegraph.NftContract_filter{}
 	// FIXME: re-work on indexer to keep ownerInfo/lockedOn info, for now we have to make 2 queries
@@ -228,20 +191,18 @@ func (p *Provider) GetNFTs(ctx context.Context, collectionID string, ownerID str
 	if orderDirection == marketplacepb.SortDirection_SORT_DIRECTION_DESCENDING {
 		sortDirection = thegraph.OrderDirectionDesc
 	}
-	cacheKey := fmt.Sprintf("nft_%s_%s_%s", collectionID, ownerID, sortDirection)
+	cacheKey := fmt.Sprintf("nft_%s_%s_%s", minter, owner, sortDirection)
 	var res []*marketplacepb.NFT
 	data, ok := p.cache.Get(cacheKey)
 	if ok {
 		res = data.([]*marketplacepb.NFT)
 	} else {
-		client := graphql.NewClient(ethNetwork.TheGraphEndpoint, nil)
-
-		collection1, err := thegraph.GetCollectionNFTs(ctx, client, nftContractFilter, nftFilter1, thegraph.Nft_orderByPrice, sortDirection)
+		collection1, err := thegraph.GetCollectionNFTs(ctx, p.client, nftContractFilter, nftFilter1, thegraph.Nft_orderByPrice, sortDirection)
 		if err != nil {
 			return nil, err
 		}
 
-		collection2, err := thegraph.GetCollectionNFTs(ctx, client, nftContractFilter, nftFilter2, thegraph.Nft_orderByPrice, sortDirection)
+		collection2, err := thegraph.GetCollectionNFTs(ctx, p.client, nftContractFilter, nftFilter2, thegraph.Nft_orderByPrice, sortDirection)
 		if err != nil {
 			return nil, err
 		}
@@ -261,8 +222,8 @@ func (p *Provider) GetNFTs(ctx context.Context, collectionID string, ownerID str
 				}
 
 				nft := marketplacepb.NFT{
-					Id:                 string(ethNetwork.NFTID(nftContract.Minter, nft.TokenID)),
-					NetworkId:          string(ethNetwork.CollectionID(nftContract.Minter)),
+					Id:                 fmt.Sprintf("eth-%s-%s", nftContract.Minter, nft.TokenID),
+					NetworkId:          networkID,
 					ImageUri:           nft.TokenURI,
 					MintAddress:        nftContract.Minter,
 					Price:              nft.Price,
@@ -293,8 +254,8 @@ func (p *Provider) GetNFTs(ctx context.Context, collectionID string, ownerID str
 				}
 
 				nft := marketplacepb.NFT{
-					Id:                 string(ethNetwork.NFTID(nftContract.Minter, nft.TokenID)),
-					NetworkId:          ethNetwork.ID,
+					Id:                 fmt.Sprintf("eth-%s-%s", nftContract.Minter, nft.TokenID),
+					NetworkId:          networkID,
 					ImageUri:           nft.TokenURI,
 					MintAddress:        nftContract.Minter,
 					Price:              nft.Price,
@@ -326,8 +287,7 @@ func (p *Provider) GetNFTs(ctx context.Context, collectionID string, ownerID str
 }
 
 func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID string, limit, offset int) ([]*marketplacepb.Activity, int, error) {
-	var network *networks.EthereumNetwork
-
+	minter := strings.Replace(collectionID, "eth-", "", 1)
 	var activities []thegraph.Activities
 	cacheKey := fmt.Sprintf("Act_%s_%s", collectionID, nftID)
 	data, ok := p.cache.Get(cacheKey)
@@ -335,29 +295,13 @@ func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID
 		activities = data.([]thegraph.Activities)
 	} else {
 		if nftID != "" {
-			nftNetwork, _, _, err := p.netstore.ParseNFTID(nftID)
-			if err != nil {
-				return nil, 0, errors.Wrap(err, "failed to parse nft id")
-			}
-			if network, ok = nftNetwork.(*networks.EthereumNetwork); !ok {
-				return nil, 0, errors.New("nft network is not an ethereum network")
-			}
-			client := graphql.NewClient(network.TheGraphEndpoint, nil)
-			res, err := thegraph.GetNFTActivities(ctx, client, nftID)
+			res, err := thegraph.GetNFTActivities(ctx, p.client, nftID)
 			if err != nil {
 				return nil, 0, err
 			}
 			activities = res.Actions
 		} else {
-			collectionNetwork, minter, err := p.netstore.ParseCollectionID(collectionID)
-			if err != nil {
-				return nil, 0, errors.Wrap(err, "failed to parse collection id")
-			}
-			if network, ok = collectionNetwork.(*networks.EthereumNetwork); !ok {
-				return nil, 0, errors.New("collection network is not an ethereum network")
-			}
-			client := graphql.NewClient(network.TheGraphEndpoint, nil)
-			res, err := thegraph.GetCollectionActivities(ctx, client, minter)
+			res, err := thegraph.GetCollectionActivities(ctx, p.client, minter)
 			if err != nil {
 				return nil, 0, err
 			}
@@ -377,7 +321,7 @@ func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID
 	activities = activities[offset:end]
 	for index, activity := range activities {
 		activityItem := marketplacepb.Activity{
-			Id:              string(network.ActivityID(activity.TxID, index)),
+			Id:              indexerdb.EthereumActivityID(activity.TxID, index),
 			TransactionKind: activity.Action,
 			TargetImageUri:  activity.Nft.TokenURI,
 			ContractName:    activity.Nft.Contract.Name,
@@ -388,17 +332,17 @@ func (p *Provider) GetActivities(ctx context.Context, collectionID string, nftID
 		case "trade":
 			activityItem.Amount = activity.Buy.Price
 			activityItem.Denom = activity.Buy.Denom
-			activityItem.BuyerId = string(network.UserID(activity.Actor))
-			activityItem.SellerId = string(network.UserID(activity.Buy.Seller))
+			activityItem.BuyerId = UserIDString(activity.Actor)
+			activityItem.SellerId = UserIDString(activity.Buy.Seller)
 		case "list":
 			activityItem.Amount = activity.List.Price
 			activityItem.Denom = activity.List.Denom
-			activityItem.SellerId = string(network.UserID(activity.Actor))
+			activityItem.SellerId = UserIDString(activity.Actor)
 		case "cancel_list":
-			activityItem.SellerId = string(network.UserID(activity.Actor))
+			activityItem.SellerId = UserIDString(activity.Actor)
 		case "transfer-nft":
-			activityItem.SellerId = string(network.UserID(activity.Actor))
-			activityItem.BuyerId = string(network.UserID(activity.Receiver))
+			activityItem.SellerId = UserIDString(activity.Actor)
+			activityItem.BuyerId = UserIDString(activity.Receiver)
 		}
 		res[index] = &activityItem
 	}
@@ -420,17 +364,7 @@ func stringToBigInt(val string) *big.Int {
 }
 
 func (p *Provider) GetNFTPriceHistory(ctx context.Context, nftID string) ([]*marketplacepb.PriceDatum, error) {
-	network, _, _, err := p.netstore.ParseNFTID(nftID)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse nft id")
-	}
-	ethNetwork, ok := network.(*networks.EthereumNetwork)
-	if !ok {
-		return nil, errors.New("nft network is not an ethereum network")
-	}
-	client := graphql.NewClient(ethNetwork.TheGraphEndpoint, nil)
-
-	buys, err := thegraph.GetNFTPriceHistory(ctx, client, nftID)
+	buys, err := thegraph.GetNFTPriceHistory(ctx, p.client, nftID)
 	if err != nil {
 		return nil, err
 	}
@@ -444,6 +378,10 @@ func (p *Provider) GetNFTPriceHistory(ctx context.Context, nftID string) ([]*mar
 	}
 	return res, nil
 
+}
+
+func UserIDString(addr string) string {
+	return string(indexerdb.EthereumUserID(addr))
 }
 
 // In order to always push the non-listed nfts at the end

@@ -4,26 +4,36 @@ import { View } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getNetwork } from "../../networks";
 import { neutral33 } from "../../utils/style/colors";
+import { WalletTitle } from "../../utils/walletManagerHelpers";
+import { WalletProvider } from "../../utils/walletProvider";
 import { WalletItem } from "./WalletItem";
 
 export const Wallets: React.FC = () => {
   const selectedWallet = useSelectedWallet();
 
   // TODO: Handle multiple wallets addresses
-  const { totalsRewards } = useRewards(selectedWallet?.userId);
+  const { totalsRewards, claimReward } = useRewards(selectedWallet?.address);
 
   const wallets = [];
+  let title = "";
 
   if (selectedWallet) {
-    const network = getNetwork(selectedWallet.networkId);
+    switch (selectedWallet.provider) {
+      case WalletProvider.Keplr:
+        title = WalletTitle.Teritori;
+        break;
+      case WalletProvider.Metamask:
+        title = WalletTitle.Ethereum;
+        break;
+    }
+
     const wallet = {
       id: 0,
-      title: network?.displayName || selectedWallet.networkId,
+      title,
       address: selectedWallet.address,
       pendingRewards: totalsRewards,
-      networkId: selectedWallet.networkId,
+      claimReward,
       staked: 42,
     };
     wallets.push(wallet);

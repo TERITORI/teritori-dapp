@@ -13,8 +13,12 @@ import {
 } from "victory-native";
 
 import priceHistorySVG from "../../../../assets/icons/price-history.svg";
-import { parseNetworkObjectId, NetworkKind } from "../../../networks";
-import { mustGetMarketplaceClient } from "../../../utils/backend";
+import {
+  useSelectedNetwork,
+  useSelectedNetworkId,
+} from "../../../hooks/useSelectedNetwork";
+import { backendClient } from "../../../utils/backend";
+import { Network } from "../../../utils/network";
 import {
   neutral33,
   neutral77,
@@ -39,23 +43,24 @@ export const CollapsablePiceHistory: React.FC<{ nftId: string }> = ({
   nftId,
 }) => {
   const data = useNFTPriceHistory(nftId);
-  const [network] = parseNetworkObjectId(nftId);
-  const networkKind = network?.kind;
+  const selectedNetwork = useSelectedNetwork();
 
-  const currency = networkKind === NetworkKind.Ethereum ? "ETH" : "USD";
+  const currency = useMemo(
+    () => (selectedNetwork === Network.Ethereum ? "ETH" : "USD"),
+    [selectedNetwork]
+  );
 
-  const convertedData = useMemo(() => {
-    if (!data) {
-      return [];
-    }
-    return data.map((d) => ({
-      y:
-        networkKind === NetworkKind.Ethereum
-          ? +ethers.utils.formatEther(BigNumber.from(d.price))
-          : d.price,
-      x: new Date(d.time),
-    }));
-  }, [data, networkKind]);
+  const convertedData = useMemo(
+    () =>
+      data.map((d) => ({
+        y:
+          selectedNetwork === Network.Ethereum
+            ? +ethers.utils.formatEther(BigNumber.from(d.price))
+            : d.price,
+        x: new Date(d.time),
+      })),
+    [data, selectedNetwork]
+  );
 
   return (
     <CollapsableSection
@@ -98,20 +103,18 @@ export const CollapsablePiceHistory: React.FC<{ nftId: string }> = ({
 };
 
 const useNFTPriceHistory = (nftId: string) => {
-  const [network] = parseNetworkObjectId(nftId);
-  const { data } = useQuery(
-    ["nftPriceHistory", nftId],
-    async () => {
-      const marketplaceClient = mustGetMarketplaceClient(network?.id);
+  const networkId = useSelectedNetworkId();
 
-      const { data } = await marketplaceClient.NFTPriceHistory({
+  const { data } = useQuery(
+    ["nftPriceHistory", nftId, networkId],
+    async () => {
+      const { data } = await backendClient.NFTPriceHistory({
         id: nftId,
+        networkId,
       });
       if (data.length === 0) {
         return data;
       }
-
-      // hack: add start and end point for a cleaner curve
       data.unshift({
         price: data[0].price,
         time: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -120,7 +123,6 @@ const useNFTPriceHistory = (nftId: string) => {
         price: data[data.length - 1].price,
         time: new Date().toISOString(),
       });
-
       console.log("data", data);
       return data;
     },

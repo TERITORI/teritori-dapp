@@ -14,7 +14,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          cache: "yarn"
+          cache: 'yarn'
           node-version: 16
 
       - name: Install node modules
@@ -23,11 +23,11 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Validate networks
-        run: make validate-networks
-
       - name: Build web app
         run: yarn expo build:web
 
       - name: Check that there is no diff
-        run: git diff --exit-code
+        run: |
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --

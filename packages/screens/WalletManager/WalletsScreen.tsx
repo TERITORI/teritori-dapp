@@ -4,7 +4,6 @@ import { View, TouchableOpacity } from "react-native";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../components/BrandText";
-import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -12,8 +11,9 @@ import { ConnectWalletModal } from "../../components/connectWallet/ConnectWallet
 import { useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
-import { walletProviderToNetworkKind } from "../../utils/network";
+import { walletProviderToNetwork } from "../../utils/network";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
+import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 import { WalletItem, WalletItemProps } from "./WalletItem";
 import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
 
@@ -60,7 +60,11 @@ const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
               alignItems: "center",
             }}
           >
-            <NetworkIcon networkId={item.data[0].networkId} size={32} />
+            <SVG
+              source={getWalletIconFromTitle(item.title)}
+              height={32}
+              width={32}
+            />
             <BrandText
               style={{
                 marginLeft: 12,
@@ -108,11 +112,11 @@ export const WalletManagerWalletsScreen: ScreenFC<
   const selectedWallet = useSelectedWallet();
 
   // TODO: Handle multiple wallets addresses
-  const { totalsRewards, claimReward } = useRewards(selectedWallet?.userId);
+  const { totalsRewards, claimReward } = useRewards(selectedWallet?.address);
 
-  const title = walletProviderToNetworkKind(selectedWallet?.provider);
-
-  // FIXME: architectural problems with wallets management
+  const title = selectedWallet
+    ? walletProviderToNetwork(selectedWallet.provider) || ""
+    : "";
 
   const wallets = selectedWallet
     ? [
@@ -123,7 +127,6 @@ export const WalletManagerWalletsScreen: ScreenFC<
               id: 0,
               title,
               address: selectedWallet.address,
-              networkId: selectedWallet.networkId,
               pendingRewards: totalsRewards,
               claimReward,
               staked: 42,

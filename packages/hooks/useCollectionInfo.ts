@@ -5,17 +5,11 @@ import Long from "long";
 import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
-import {
-  CosmosNetworkInfo,
-  EthereumNetworkInfo,
-  mustGetNonSigningCosmWasmClient,
-  parseNetworkObjectId,
-  WEI_TOKEN_ADDRESS,
-  NetworkKind,
-} from "../networks";
+import { WEI_TOKEN_ADDRESS } from "../networks";
 import { prettyPrice } from "../utils/coins";
 import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
+import { getNonSigningCosmWasmClient } from "../utils/keplr";
 import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 
@@ -53,19 +47,20 @@ export interface CollectionInfo {
   mintPhases: MintPhase[];
 }
 
-const getTnsCollectionInfo = (network: CosmosNetworkInfo): CollectionInfo => {
+const getTnsCollectionInfo = (): CollectionInfo => {
   return {
-    name: `${network.displayName} Name Service`, // FIXME: should fetch from contract or be in env
-    image: ipfsURLToHTTPURL(network?.nameServiceDefaultImage || ""),
+    name: "Teritori Name Service", // FIXME: should fetch from contract or be in env
+    image: ipfsURLToHTTPURL(
+      process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
+    ),
     mintPhases: [],
   };
 };
 
-const getTeritoriBreedingCollectionInfo = async (
-  network: CosmosNetworkInfo,
+const getBreedingCollectionInfo = async (
   mintAddress: string
-) => {
-  const cosmwasm = await mustGetNonSigningCosmWasmClient(network.id);
+): Promise<CollectionInfo> => {
+  const cosmwasm = await getNonSigningCosmWasmClient();
 
   const breedingClient = new TeritoriBreedingQueryClient(cosmwasm, mintAddress);
   const conf = await breedingClient.config();
@@ -93,11 +88,10 @@ const getTeritoriBreedingCollectionInfo = async (
   return info;
 };
 
-const getCosmosBunkerCollectionInfo = async (
-  network: CosmosNetworkInfo,
+const getTeritoriBunkerCollectionInfo = async (
   mintAddress: string
-) => {
-  const cosmwasm = await mustGetNonSigningCosmWasmClient(network.id);
+): Promise<CollectionInfo> => {
+  const cosmwasm = await getNonSigningCosmWasmClient();
   const minterClient = new TeritoriBunkerMinterQueryClient(
     cosmwasm,
     mintAddress
@@ -159,7 +153,11 @@ const getCosmosBunkerCollectionInfo = async (
     name: nftInfo.name,
     image: ipfsURLToHTTPURL(metadata.image || ""),
     description: metadata.description,
-    prettyUnitPrice: prettyPrice(network.id, unitPrice, conf.price_denom),
+    prettyUnitPrice: prettyPrice(
+      process.env.TERITORI_NETWORK_ID || "",
+      unitPrice,
+      conf.price_denom
+    ),
     unitPrice,
     priceDenom: conf.price_denom,
     maxSupply: conf.nft_max_supply,
@@ -183,10 +181,9 @@ const getCosmosBunkerCollectionInfo = async (
 };
 
 const getEthereumTeritoriBunkerCollectionInfo = async (
-  network: EthereumNetworkInfo,
   mintAddress: string
-) => {
-  const provider = await getEthereumProvider(network);
+): Promise<CollectionInfo> => {
+  const provider = await getEthereumProvider();
   if (!provider) {
     console.error("no eth provider found");
     return { mintPhases: [] };
@@ -285,7 +282,11 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
     name,
     image: ipfsURLToHTTPURL(metadata.image || ""),
     description: metadata.description,
-    prettyUnitPrice: prettyPrice(network.id, unitPrice, priceDenom),
+    prettyUnitPrice: prettyPrice(
+      process.env.ETHEREUM_NETWORK_ID || "",
+      unitPrice,
+      priceDenom
+    ),
     unitPrice,
     priceDenom,
     maxSupply,
@@ -309,47 +310,30 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
 
 // NOTE: consider using the indexer for this
 export const useCollectionInfo = (id: string) => {
-  const [network, mintAddress] = parseNetworkObjectId(id);
-
   // Request to ETH blockchain is not free so for ETH we do not re-fetch much
-  const refetchInterval =
-    network?.kind === NetworkKind.Ethereum ? 60_000 : 5000;
+  const refetchInterval = id.startsWith("eth-") ? 60_000 : 5000;
 
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
     async (): Promise<CollectionInfo> => {
       let info: CollectionInfo = { mintPhases: [] };
 
-      if (!network) {
-        return info;
-      }
+      const [addressPrefix, mintAddress] = id.split("-");
 
-      switch (network.kind) {
-        case NetworkKind.Cosmos: {
-          switch (mintAddress) {
-            case network.nameServiceContractAddress:
-              info = getTnsCollectionInfo(network);
-              break;
-            case network.riotContractAddressGen1:
-              info = await getTeritoriBreedingCollectionInfo(
-                network,
-                mintAddress
-              );
-              break;
-            default:
-              info = await getCosmosBunkerCollectionInfo(network, mintAddress);
-          }
-          break;
+      if (addressPrefix === "tori") {
+        switch (mintAddress) {
+          case process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS:
+            info = await getTnsCollectionInfo();
+            break;
+          case process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS:
+            info = await getBreedingCollectionInfo(mintAddress);
+            break;
+          default:
+            info = await getTeritoriBunkerCollectionInfo(mintAddress);
         }
-        case NetworkKind.Ethereum: {
-          info = await getEthereumTeritoriBunkerCollectionInfo(
-            network,
-            mintAddress
-          );
-          break;
-        }
+      } else if (addressPrefix === "eth") {
+        info = await getEthereumTeritoriBunkerCollectionInfo(mintAddress);
       }
-
       return info;
     },
     { refetchInterval, staleTime: refetchInterval }

@@ -10,7 +10,7 @@ export interface Balance {
 }
 
 export const decimalFromAtomics = (
-  networkId: string | undefined,
+  networkId: string,
   value: string,
   denom: string
 ) => {
@@ -18,16 +18,14 @@ export const decimalFromAtomics = (
   if (currency) {
     return Decimal.fromAtomics(value, currency.decimals);
   }
-  return Decimal.fromAtomics("0", 0);
+  throw new Error("unknown denom");
 };
 
 const units = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
 
-// FIXME: rename to prettyAmount
-
 // Returns the price with denom (Text + denom)
 export const prettyPrice = (
-  networkId: string | undefined,
+  networkId: string,
   value: string,
   denom: string
 ) => {

@@ -1,11 +1,9 @@
 package indexerdb
 
-import "github.com/TERITORI/teritori-dapp/go/pkg/networks"
-
 type Collection struct {
 	// ID is network-dependent
-	// Teritori: <id_prefix>-<bech32_mint_contract_address>
-	ID networks.CollectionID `gorm:"primaryKey"`
+	// Teritori: tori-<bech32_mint_contract_address>
+	ID string `gorm:"primaryKey"`
 
 	NetworkId           string
 	Name                string
@@ -22,8 +20,8 @@ type Collection struct {
 }
 
 type TeritoriCollection struct {
-	CollectionID        networks.CollectionID `gorm:"index"`
-	MintContractAddress string                `gorm:"primaryKey"`
+	CollectionID        string `gorm:"index"`
+	MintContractAddress string `gorm:"primaryKey"`
 	NFTContractAddress  string
 	CreatorAddress      string
 }

@@ -4,7 +4,6 @@ import { Image, ScrollView, StyleSheet, View } from "react-native";
 import TrashSVG from "../../../assets/icons/trash.svg";
 import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { prettyPrice } from "../../utils/coins";
 import {
   neutral33,
@@ -13,6 +12,7 @@ import {
   primaryColor,
   errorColor,
 } from "../../utils/style/colors";
+import { toriCurrency } from "../../utils/teritori";
 import { NFTDropedAdjustmentType } from "../../utils/types/nft";
 import Slider from "../Slider";
 import { IconButton } from "../buttons/IconButton";
@@ -40,8 +40,6 @@ const NftAdjustments: React.FC<{
     setTransactionPaymentModalVisible,
     currentCollection,
   }) => {
-    const networkId = useSelectedNetworkId();
-
     const [sliderValue, setSliderValue] = useState(0);
     const [percentage, setPercentage] = useState(0);
 
@@ -118,9 +116,9 @@ const NftAdjustments: React.FC<{
             style={{ fontSize: 16, color: primaryColor, fontWeight: "700" }}
           >
             {prettyPrice(
-              networkId,
+              process.env.TERITORI_NETWORK_ID || "",
               price?.toString() || "",
-              "utori" // FIXME: don't hardcode
+              toriCurrency.coinMinimalDenom
             )}
           </BrandText>
         </View>

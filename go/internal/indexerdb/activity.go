@@ -1,10 +1,6 @@
 package indexerdb
 
-import (
-	"time"
-
-	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
-)
+import "time"
 
 type ActivityKind string
 
@@ -23,7 +19,7 @@ const (
 type Activity struct {
 	// ID is network-dependent
 	// Teritori: tori-<tx_hash>-<msg_index>
-	ID   networks.ActivityID
+	ID   string
 	Kind ActivityKind `gorm:"index"`
 	Time time.Time    `gorm:"index"`
 
@@ -38,61 +34,61 @@ type Activity struct {
 	UpdateNFTPrice *UpdateNFTPrice
 
 	// "belongs to" relations
-	NFTID networks.NFTID `gorm:"index"`
+	NFTID string `gorm:"index"`
 	NFT   *NFT
 }
 
 type Listing struct {
-	ActivityID networks.ActivityID `gorm:"primaryKey"`
+	ActivityID string `gorm:"primaryKey"`
 	Price      string
 	PriceDenom string
 	USDPrice   float64
-	SellerID   networks.UserID
+	SellerID   UserID
 }
 
 type CancelListing struct {
-	ActivityID networks.ActivityID `gorm:"primaryKey"`
-	SellerID   networks.UserID
+	ActivityID string `gorm:"primaryKey"`
+	SellerID   UserID
 }
 
 type UpdateNFTPrice struct {
-	ActivityID networks.ActivityID `gorm:"primaryKey"`
-	SellerID   networks.UserID
+	ActivityID string `gorm:"primaryKey"`
+	SellerID   UserID
 	Price      string
 	PriceDenom string
 	USDPrice   float64
 }
 
 type Trade struct {
-	ActivityID networks.ActivityID `gorm:"primaryKey"`
+	ActivityID string `gorm:"primaryKey"`
 	Price      string
 	PriceDenom string
 	USDPrice   float64
-	BuyerID    networks.UserID
-	SellerID   networks.UserID
+	BuyerID    UserID
+	SellerID   UserID
 }
 
 type Mint struct {
-	ActivityID networks.ActivityID `gorm:"primaryKey"`
+	ActivityID string `gorm:"primaryKey"`
 	Price      string
 	PriceDenom string
 	USDPrice   float64
-	BuyerID    networks.UserID
+	BuyerID    UserID
 }
 
 type Burn struct {
-	ActivityID networks.ActivityID `gorm:"primaryKey"`
-	BurnerID   networks.UserID
+	ActivityID string `gorm:"primaryKey"`
+	BurnerID   UserID
 }
 
 type SendNFT struct {
-	ActivityID networks.ActivityID `gorm:"primaryKey"`
-	Sender     networks.UserID
-	Receiver   networks.UserID
+	ActivityID string `gorm:"primaryKey"`
+	Sender     UserID
+	Receiver   UserID
 }
 
 type TransferNFT struct {
-	ActivityID networks.ActivityID `gorm:"primaryKey"`
-	Sender     networks.UserID
-	Receiver   networks.UserID
+	ActivityID string `gorm:"primaryKey"`
+	Sender     UserID
+	Receiver   UserID
 }

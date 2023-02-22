@@ -5,167 +5,139 @@ import { useCallback, useEffect, useState } from "react";
 
 import { TeritoriBreedingQueryClient } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import {
-  getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  mustGetNonSigningCosmWasmClient,
-} from "../../networks";
-import { buildApproveNFTMsg, buildBreedingMsg } from "../../utils/game";
+  buildApproveNFTMsg,
+  buildBreedingMsg,
+  THE_RIOT_BREEDING_CONTRACT_ADDRESS,
+} from "../../utils/game";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { useBreedingConfig } from "../useBreedingConfig";
+import {
+  getNonSigningCosmWasmClient,
+  getSigningCosmWasmClient,
+} from "../../utils/keplr";
 import useSelectedWallet from "../useSelectedWallet";
 import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 
-export const useBreeding = (networkId: string | undefined) => {
+export const useBreeding = () => {
+  const [breedingConfig, setBreedingConfig] = useState<ConfigResponse>();
   const [remainingTokens, setRemainingTokens] = useState<number>(0);
 
   const selectedWallet = useSelectedWallet();
-  const breedingConfig = useBreedingConfig(networkId);
-  const breedingContractAddress =
-    getCosmosNetwork(networkId)?.riotContractAddressGen1;
 
-  const getBreedingQueryClient = useCallback(async () => {
-    if (!networkId) {
-      throw new Error("no network id");
+  const breed = async (
+    breedingPrice: Coin,
+    breedDuration: number,
+    tokenId1: string,
+    tokenId2: string,
+    parentContract: string
+  ) => {
+    if (!tokenId1 || !tokenId2) {
+      throw Error("Not select enough rippers to breed");
     }
-    if (!breedingContractAddress) {
-      throw new Error("no breeding contract address");
+
+    const client = await getSigningCosmWasmClient();
+    const sender = selectedWallet?.address || "";
+
+    let msgs: EncodeObject[] = [];
+
+    if (breedDuration > 0) {
+      const approveMsgs = [tokenId1, tokenId2].map((tokenId) =>
+        buildApproveNFTMsg(
+          sender,
+          THE_RIOT_BREEDING_CONTRACT_ADDRESS,
+          tokenId,
+          parentContract
+        )
+      );
+      msgs = [...msgs, ...approveMsgs];
     }
-    const nonSigningClient = await mustGetNonSigningCosmWasmClient(networkId);
-    return new TeritoriBreedingQueryClient(
-      nonSigningClient,
-      breedingContractAddress
+
+    const breedMsg = buildBreedingMsg(
+      sender,
+      breedingPrice,
+      tokenId1,
+      tokenId2
     );
-  }, [breedingContractAddress, networkId]);
 
-  const breed = useCallback(
-    async (
-      breedingPrice: Coin,
-      breedDuration: number,
-      tokenId1: string,
-      tokenId2: string,
-      parentContract: string
-    ) => {
-      if (!networkId) {
-        throw new Error("no network id");
+    msgs = [...msgs, breedMsg];
+
+    const tx = await client.signAndBroadcast(sender, msgs, "auto");
+
+    if (isDeliverTxFailure(tx)) {
+      throw Error(tx.transactionHash);
+    }
+
+    return tx;
+  };
+
+  const getChildTokenIds = async (
+    userAddress: string,
+    childContractAddress: string
+  ) => {
+    const client = await getNonSigningCosmWasmClient();
+    const { tokens } = await client.queryContractSmart(childContractAddress, {
+      tokens: {
+        owner: userAddress,
+      },
+    });
+
+    return tokens;
+  };
+
+  const fetchBreedingConfig = useCallback(async () => {
+    // Just load config once
+    if (breedingConfig) return;
+
+    const breedingQueryClient = await getBreedingQueryClient();
+    const config: ConfigResponse = await breedingQueryClient.config();
+    setBreedingConfig(config);
+  }, [breedingConfig]);
+
+  const fetchRemainingTokens = async (breedingConfig: ConfigResponse) => {
+    const client = await getNonSigningCosmWasmClient();
+    const { count } = await client.queryContractSmart(
+      breedingConfig.child_contract_addr,
+      {
+        num_tokens: {},
       }
+    );
+    setRemainingTokens(breedingConfig.child_nft_max_supply - count);
+  };
 
-      if (!breedingContractAddress) {
-        throw new Error("no breeding contract address");
-      }
+  const getTokenInfo = async (
+    tokenId: string,
+    childContractAddress: string
+  ) => {
+    const client = await getNonSigningCosmWasmClient();
 
-      if (!tokenId1 || !tokenId2) {
-        throw Error("Not select enough rippers to breed");
-      }
+    const {
+      extension: { image },
+    } = await client.queryContractSmart(childContractAddress, {
+      nft_info: {
+        token_id: tokenId,
+      },
+    });
 
-      const client = await getKeplrSigningCosmWasmClient(networkId);
-      const sender = selectedWallet?.address || "";
+    const tokenInfo = { id: tokenId, imageUri: ipfsURLToHTTPURL(image) };
+    return tokenInfo;
+  };
 
-      let msgs: EncodeObject[] = [];
+  const getBreedingsLefts = async (tokenId: string) => {
+    const breedingQueryClient = await getBreedingQueryClient();
+    const breededCount = await breedingQueryClient.breededCount({
+      parentNftTokenId: tokenId,
+    });
+    return (breedingConfig?.breed_count_limit || 0) - breededCount;
+  };
 
-      if (breedDuration > 0) {
-        const approveMsgs = [tokenId1, tokenId2].map((tokenId) =>
-          buildApproveNFTMsg(
-            sender,
-            breedingContractAddress,
-            tokenId,
-            parentContract
-          )
-        );
-        msgs = [...msgs, ...approveMsgs];
-      }
-
-      const breedMsg = buildBreedingMsg(
-        sender,
-        breedingPrice,
-        tokenId1,
-        tokenId2,
-        breedingContractAddress
-      );
-
-      msgs = [...msgs, breedMsg];
-
-      const tx = await client.signAndBroadcast(sender, msgs, "auto");
-
-      if (isDeliverTxFailure(tx)) {
-        throw Error(tx.transactionHash);
-      }
-
-      return tx;
-    },
-    [breedingContractAddress, networkId, selectedWallet?.address]
-  );
-
-  const getChildTokenIds = useCallback(
-    async (userAddress: string, childContractAddress: string) => {
-      if (!networkId) {
-        throw new Error("no network id");
-      }
-      const client = await mustGetNonSigningCosmWasmClient(networkId);
-      const { tokens } = await client.queryContractSmart(childContractAddress, {
-        tokens: {
-          owner: userAddress,
-        },
-      });
-
-      return tokens;
-    },
-    [networkId]
-  );
-
-  const fetchRemainingTokens = useCallback(
-    async (breedingConfig: ConfigResponse) => {
-      if (!networkId) {
-        throw new Error("no network id");
-      }
-      const client = await mustGetNonSigningCosmWasmClient(networkId);
-      const { count } = await client.queryContractSmart(
-        breedingConfig.child_contract_addr,
-        {
-          num_tokens: {},
-        }
-      );
-      setRemainingTokens(breedingConfig.child_nft_max_supply - count);
-    },
-    [networkId]
-  );
-
-  const getTokenInfo = useCallback(
-    async (tokenId: string, childContractAddress: string) => {
-      if (!networkId) {
-        throw new Error("no network id");
-      }
-      const client = await mustGetNonSigningCosmWasmClient(networkId);
-
-      const {
-        extension: { image },
-      } = await client.queryContractSmart(childContractAddress, {
-        nft_info: {
-          token_id: tokenId,
-        },
-      });
-
-      const tokenInfo = { id: tokenId, imageUri: ipfsURLToHTTPURL(image) };
-      return tokenInfo;
-    },
-    [networkId]
-  );
-
-  const getBreedingsLefts = useCallback(
-    async (tokenId: string) => {
-      const breedingQueryClient = await getBreedingQueryClient();
-      const breededCount = await breedingQueryClient.breededCount({
-        parentNftTokenId: tokenId,
-      });
-      return (breedingConfig?.breed_count_limit || 0) - breededCount;
-    },
-    [breedingConfig?.breed_count_limit, getBreedingQueryClient]
-  );
+  useEffect(() => {
+    fetchBreedingConfig();
+  }, [fetchBreedingConfig]); // Depend on one attribute to avoid deep compare
 
   useEffect(() => {
     if (!breedingConfig?.child_contract_addr) return;
 
     fetchRemainingTokens(breedingConfig);
-  }, [breedingConfig, fetchRemainingTokens]);
+  }, [breedingConfig]);
 
   return {
     breedingConfig,
@@ -176,4 +148,12 @@ export const useBreeding = (networkId: string | undefined) => {
     getBreedingsLefts,
     fetchRemainingTokens,
   };
+};
+
+const getBreedingQueryClient = async () => {
+  const nonSigningClient = await getNonSigningCosmWasmClient();
+  return new TeritoriBreedingQueryClient(
+    nonSigningClient,
+    THE_RIOT_BREEDING_CONTRACT_ADDRESS
+  );
 };

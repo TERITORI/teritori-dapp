@@ -1,5 +1,4 @@
 import { useIsFocused } from "@react-navigation/native";
-import { useQueryClient } from "@tanstack/react-query";
 import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -15,26 +14,13 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
-import { useSquadStakingConfig } from "../../hooks/riotGame/useSquadStakingConfig";
-import {
-  getSquadStakingSquadsV1QueryKey,
-  useSquadStakingSquadsV1,
-} from "../../hooks/riotGame/useSquadStakingSquadsV1";
-import { useSquadStakingSquadsV2 } from "../../hooks/riotGame/useSquadStakingSquadsV2";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
 import {
   persistSquadPreset,
   selectSquadPresets,
 } from "../../store/slices/squadPresets";
 import { useAppDispatch } from "../../store/store";
-import { getP2eClient } from "../../utils/backend";
-import {
-  estimateStakingDuration,
-  getSquadPresetId,
-  squadStake,
-  squadWithdrawSeason1,
-} from "../../utils/game";
+import { p2eBackendClient } from "../../utils/backend";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral00,
@@ -63,22 +49,23 @@ export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [activeSquadId, setActiveSquadId] = useState<number>(1);
-  const selectedWallet = useSelectedWallet();
-  const networkId = useSelectedNetworkId();
-  const queryClient = useQueryClient();
 
   const videoRef = React.useRef<Video>(null);
   const isScreenFocused = useIsFocused();
 
   const { myAvailableRippers } = useRippers();
-
-  const { data: squadStakingConfig } = useSquadStakingConfig(networkId);
-  const { data: squads, isInitialLoading } = useSquadStakingSquadsV2(
-    selectedWallet?.userId
-  );
-  const { data: squadSeason1 } = useSquadStakingSquadsV1(
-    selectedWallet?.userId
-  );
+  const {
+    squadStakingConfig,
+    squadStake,
+    estimateStakingDuration,
+    isSquadsLoaded,
+    squads,
+    squadWithdrawSeason1,
+    currentUser,
+    squadSeason1,
+    setSquadSeason1,
+    getSquadPresetId,
+  } = useSquadStaking();
 
   // Stop video when changing screen through react-navigation
   useEffect(() => {
@@ -94,14 +81,9 @@ export const RiotGameEnrollScreen = () => {
   const [isUnstaking, setIsUnstaking] = useState(false);
   const dispatch = useAppDispatch();
 
-  const squadPresetId = getSquadPresetId(selectedWallet?.userId, activeSquadId);
-
-  useEffect(() => {
-    setSelectedRippers([]);
-    setSelectedSlot(undefined);
-    setIsJoiningFight(false);
-    setIsUnstaking(false);
-  }, [networkId]);
+  const squadPresetId = useMemo(() => {
+    return getSquadPresetId(activeSquadId);
+  }, [activeSquadId, getSquadPresetId]);
 
   const availableForEnrollRippers = useMemo(() => {
     const selectedIds = selectedRippers.map((r) => r.id);
@@ -113,7 +95,7 @@ export const RiotGameEnrollScreen = () => {
     if (selectedRippers.length === 0 || !squadStakingConfig) return 0;
 
     return estimateStakingDuration(selectedRippers, squadStakingConfig);
-  }, [selectedRippers, squadStakingConfig]);
+  }, [estimateStakingDuration, selectedRippers, squadStakingConfig]);
 
   const showRipperSelector = (slotId: number) => {
     setSelectedSlot(slotId);
@@ -139,25 +121,24 @@ export const RiotGameEnrollScreen = () => {
   };
 
   const unstakeSeason1 = async () => {
-    if (!selectedWallet) return;
+    if (!currentUser) return;
 
     try {
       setIsUnstaking(true);
 
-      await squadWithdrawSeason1(selectedWallet.userId);
+      await squadWithdrawSeason1(currentUser);
       setToastSuccess({
         title: "Success",
         message: "Unstake successfully",
       });
+
+      setSquadSeason1(undefined);
     } catch (e: any) {
       setToastError({
         title: "Error occurs",
         message: e.message,
       });
     } finally {
-      await queryClient.invalidateQueries(
-        getSquadStakingSquadsV1QueryKey(selectedWallet.userId)
-      );
       setIsUnstaking(false);
     }
   };
@@ -170,15 +151,7 @@ export const RiotGameEnrollScreen = () => {
       });
     }
 
-    const p2eClient = getP2eClient(selectedWallet?.networkId);
-    if (!p2eClient) {
-      return setToastError({
-        title: "Error",
-        message: "Failed to get P2E client",
-      });
-    }
-
-    const currentSeason = await p2eClient.CurrentSeason({});
+    const currentSeason = await p2eBackendClient.CurrentSeason({});
     if (currentSeason.isPre) {
       return setToastError({
         title: "Warning",
@@ -189,7 +162,7 @@ export const RiotGameEnrollScreen = () => {
     setIsJoiningFight(true);
 
     try {
-      await squadStake(selectedWallet?.userId, selectedRippers);
+      await squadStake(selectedRippers);
 
       // Wait a little before redirection to be sure that we have passed the fight start time
       setTimeout(() => {
@@ -221,7 +194,7 @@ export const RiotGameEnrollScreen = () => {
   }, [squadPresets, squadPresetId, myAvailableRippers]);
 
   const saveSquadPreset = async (squadId: number) => {
-    const squadPresetId = getSquadPresetId(selectedWallet?.userId, squadId);
+    const squadPresetId = getSquadPresetId(squadId);
     if (!squadPresetId) {
       return setToastError({
         title: "Error",
@@ -248,18 +221,18 @@ export const RiotGameEnrollScreen = () => {
 
   useEffect(() => {
     if (
-      !isInitialLoading &&
+      isSquadsLoaded &&
       squadStakingConfig?.owner &&
       squads.length === squadStakingConfig.squad_count_limit
     ) {
       navigation.replace("RiotGameFight");
     }
   }, [
-    isInitialLoading,
+    isSquadsLoaded,
     navigation,
     squadStakingConfig?.owner,
     squadStakingConfig?.squad_count_limit,
-    squads,
+    squads.length,
   ]);
 
   return (

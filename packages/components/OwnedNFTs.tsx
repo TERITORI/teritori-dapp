@@ -9,7 +9,7 @@ import {
 } from "../api/marketplace/v1/marketplace";
 import { useCollections } from "../hooks/useCollections";
 import { useNFTs } from "../hooks/useNFTs";
-import { parseNetworkObjectId } from "../networks";
+import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import { layout } from "../utils/style/layout";
 import { NetworkIcon } from "./NetworkIcon";
 import { Section } from "./Section";
@@ -22,11 +22,10 @@ export const OwnedNFTs: React.FC<{
   style?: StyleProp<ViewStyle>;
   EmptyListComponent?: React.ComponentType;
 }> = ({ ownerId, style, EmptyListComponent }) => {
-  const [network] = parseNetworkObjectId(ownerId);
-  const networkId = network?.id || "";
+  const selectedNetworkId = useSelectedNetworkId();
 
   const [collections] = useCollections({
-    networkId,
+    networkId: selectedNetworkId,
     sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
     upcoming: false,
     sort: Sort.SORTING_VOLUME,
@@ -59,7 +58,10 @@ const OwnedNFTsSection: React.FC<{
   ownerId: string;
   collection: Collection;
 }> = ({ ownerId, collection }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+
   const { nfts } = useNFTs({
+    networkId: selectedNetworkId,
     offset: 0,
     limit: 100, // FIXME: pagination
     ownerId,

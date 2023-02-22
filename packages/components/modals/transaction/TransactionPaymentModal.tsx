@@ -1,10 +1,16 @@
 import React from "react";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { useBalances } from "../../../hooks/useBalances";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { parseNetworkObjectId, NetworkKind } from "../../../networks";
+import {
+  selectIsKeplrConnected,
+  selectIsMetamaskConnected,
+} from "../../../store/slices/settings";
 import { decimalFromAtomics, prettyPrice } from "../../../utils/coins";
+import { Network } from "../../../utils/network";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
@@ -18,7 +24,6 @@ import ModalBase from "../ModalBase";
 // Modal with price, fee,  Teritori wallet connexion and status and Payment button
 export const TransactionPaymentModal: React.FC<{
   label: string;
-  nftId: string;
   price?: string;
   priceDenom?: string;
   textComponent: JSX.Element;
@@ -27,7 +32,6 @@ export const TransactionPaymentModal: React.FC<{
   visible?: boolean;
 }> = ({
   label,
-  nftId,
   price = "",
   priceDenom = "",
   textComponent,
@@ -35,21 +39,29 @@ export const TransactionPaymentModal: React.FC<{
   onClose,
   visible = false,
 }) => {
+  const isKeplrConnected = useSelector(selectIsKeplrConnected);
+  const isMetamaskConnected = useSelector(selectIsMetamaskConnected);
   const selectedWallet = useSelectedWallet();
-  const [nftNetwork] = parseNetworkObjectId(nftId);
-  const nftNetworkId = nftNetwork?.id;
-  const balances = useBalances(nftNetworkId, selectedWallet?.address);
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkId = selectedNetworkInfo?.id || "";
+  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const balance =
     balances.find((bal) => bal.denom === priceDenom)?.amount || "0";
-  const isWalletConnected = !!selectedWallet?.connected;
 
+  // TODO: Should use nft id, but for now we can not get network id from nftInfo quickly
+  // so we can assume that NFT is listed on the same network as it's nft
+  const nftNetworkId = selectedNetworkId;
+
+  let isWalletConnected = false;
   let WalletConnectComponent = null;
 
-  switch (nftNetwork?.kind) {
-    case NetworkKind.Cosmos:
+  switch (selectedNetworkInfo?.network) {
+    case Network.Teritori:
+      isWalletConnected = isKeplrConnected && !!selectedWallet?.address;
       WalletConnectComponent = ConnectKeplrButton;
       break;
-    case NetworkKind.Ethereum:
+    case Network.Ethereum:
+      isWalletConnected = isMetamaskConnected && !!selectedWallet?.address;
       WalletConnectComponent = ConnectMetamaskButton;
       break;
   }

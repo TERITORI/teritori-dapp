@@ -10,11 +10,11 @@ import Animated, {
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
+import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
+import { Network } from "../../utils/network";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import {
@@ -40,9 +40,8 @@ const SpringConfig: WithSpringConfig = {
 
 export const Sidebar: React.FC = () => {
   const selectedWallet = useSelectedWallet();
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
-  const selectedNetworkKind = useSelectedNetworkKind();
-  const connected = selectedWallet?.connected;
+  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+  const selectedNetwork = useSelectedNetwork();
 
   // variables
   const navigation = useAppNavigation();
@@ -101,11 +100,7 @@ export const Sidebar: React.FC = () => {
         keyExtractor={(item) => item.title}
         renderItem={({ item }) => {
           let { route } = item;
-          if (
-            item.disabledOn?.includes(
-              selectedNetworkKind || NetworkKind.Unknown
-            )
-          ) {
+          if (item.disabledOn?.includes(selectedNetwork || Network.Unknown)) {
             route = "ComingSoon";
           }
 
@@ -142,16 +137,14 @@ export const Sidebar: React.FC = () => {
           }}
         />
 
-        {selectedNetworkKind === NetworkKind.Cosmos &&
-          connected &&
-          userInfo.metadata && (
-            <SidebarProfileButton
-              userId={selectedWallet?.userId || ""}
-              tokenId={userInfo.metadata.tokenId || ""}
-              image={userInfo.metadata.image || ""}
-              isExpanded={isSidebarExpanded}
-            />
-          )}
+        {tnsMetadata.metadata && (
+          <SidebarProfileButton
+            walletAddress={selectedWallet?.address || ""}
+            tokenId={tnsMetadata.metadata.tokenId || ""}
+            image={tnsMetadata.metadata.image || ""}
+            isExpanded={isSidebarExpanded}
+          />
+        )}
       </View>
     </Animated.View>
   );

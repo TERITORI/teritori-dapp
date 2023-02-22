@@ -5,6 +5,7 @@ import { VictoryPie } from "victory-native";
 import { BrandText } from "../../../components/BrandText";
 import { CurrencyIcon } from "../../../components/CurrencyIcon";
 import { useBalances } from "../../../hooks/useBalances";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getNativeCurrency } from "../../../networks";
 import { neutral33 } from "../../../utils/style/colors";
@@ -15,7 +16,7 @@ interface TokenAllocationProps {
 
 export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetWorkId = selectedWallet?.networkId || "";
+  const selectedNetWorkId = useSelectedNetworkId();
   const allBalances = useBalances(selectedNetWorkId, selectedWallet?.address);
   const balances = allBalances.filter(
     (bal) => bal.usdAmount && bal.usdAmount > 0

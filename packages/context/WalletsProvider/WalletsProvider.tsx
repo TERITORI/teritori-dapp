@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useMemo } from "react";
+// import { useSelector } from "react-redux";
 
 import { WalletProvider } from "../../utils/walletProvider";
 import { useKeplr } from "./keplr";
@@ -7,6 +8,11 @@ import { Wallet } from "./wallet";
 // import { usePhantom } from "./phantom";
 // import { selectStoreWallets, storeWalletId } from "../../store/slices/wallets";
 // import { WalletProvider } from "../../utils/walletProvider";
+
+/**
+ * FIXME: We should change the architecture of this and split "wallets addresses"
+ * from "wallets providers" instead of having the Wallet type to represent both
+ */
 
 type WalletsContextValue = {
   wallets: Wallet[];
@@ -86,7 +92,13 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       walletProviders.push(WalletProvider.Keplr);
 
       if (keplrWallets?.[0]?.connected) {
-        wallets.push(keplrWallets[0]);
+        const wallet = keplrWallets[0];
+        wallets.push({
+          id: wallet.id,
+          address: wallet.address,
+          provider: WalletProvider.Keplr,
+          connected: true,
+        });
       }
     }
 
@@ -94,7 +106,13 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       walletProviders.push(WalletProvider.Metamask);
 
       if (metamaskWallets?.[0]?.connected) {
-        wallets.push(metamaskWallets[0]);
+        const wallet = metamaskWallets[0];
+        wallets.push({
+          id: wallet.id,
+          address: wallet.address,
+          provider: WalletProvider.Metamask,
+          connected: true,
+        });
       }
     }
 

@@ -60,6 +60,4 @@ COPY --from=builder /app/build/teritori-dapp-backend /bin/teritori-dapp-backend
 ENV HOME /app
 WORKDIR $HOME
 
-COPY networks.json $HOME/networks.json
-
 ENTRYPOINT ["teritori-dapp-backend"]

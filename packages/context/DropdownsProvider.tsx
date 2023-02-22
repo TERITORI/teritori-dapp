@@ -1,5 +1,10 @@
 import React, { createContext, RefObject, useContext, useState } from "react";
-import { GestureResponderEvent, Pressable, StyleSheet } from "react-native";
+import {
+  NativeSyntheticEvent,
+  NativeTouchEvent,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 
 interface DefaultValue {
   onPressDropdownButton: (dropdownRef: RefObject<any>) => void;
@@ -34,7 +39,7 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
     return dropdownRef === openedDropdownRef;
   };
 
-  const handlePressOut = (e: GestureResponderEvent) => {
+  const onPressOut = (e: NativeSyntheticEvent<NativeTouchEvent>) => {
     if (
       openedDropdownRef &&
       openedDropdownRef.current &&
@@ -52,7 +57,7 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
         closeOpenedDropdown,
       }}
     >
-      <Pressable onPressOut={handlePressOut} style={styles.pressable}>
+      <Pressable onPressOut={(e) => onPressOut(e)} style={styles.pressable}>
         {children}
       </Pressable>
     </DropdownsContext.Provider>

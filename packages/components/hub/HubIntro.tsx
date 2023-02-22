@@ -3,9 +3,8 @@ import { View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
 import { Overview } from "../../screens/WalletManager/components/Overview";
@@ -36,8 +35,7 @@ const ConnectedIntro: React.FC = () => {
     useState<keyof typeof walletsManagerTabItems>("overview");
 
   const selectedWallet = useSelectedWallet();
-  const networkId = useSelectedNetworkId();
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
 
   return (
     <View
@@ -47,13 +45,13 @@ const ConnectedIntro: React.FC = () => {
         width: "100%",
       }}
     >
-      <UserImage networkId={networkId} imageURI={userInfo.metadata?.image} />
+      <UserImage image={tnsMetadata.metadata?.image} />
 
       <ProfileButton touchableStyle={{ marginTop: 40 }} />
 
       <Section title="Quests" subtitle="4">
         <FullWidthSeparator />
-        <Quests userId={selectedWallet?.userId} />
+        <Quests userId={`tori-${selectedWallet?.address}`} />
       </Section>
 
       <Section title="Wallets manager">

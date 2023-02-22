@@ -5,26 +5,22 @@ import {
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
-import { getCollectionId, getCosmosNetwork } from "../../networks";
-import { isNFTStaked } from "../../utils/game";
+import {
+  THE_RIOT_BREEDING_CONTRACT_ADDRESS,
+  THE_RIOT_COLLECTION_ADDRESS,
+  isNFTStaked,
+} from "../../utils/game";
 import { useNFTs } from "../useNFTs";
 import useSelectedWallet from "../useSelectedWallet";
+import { useSelectedNetworkId } from "./../useSelectedNetwork";
 
 export const useRippers = () => {
   const selectedWallet = useSelectedWallet();
-  const networkId = selectedWallet?.networkId;
-  const network = getCosmosNetwork(networkId);
-  const riotCollectionIdGen0 = getCollectionId(
-    networkId,
-    network?.riotContractAddressGen0
-  );
-  const breedingCollectionId = getCollectionId(
-    networkId,
-    network?.riotContractAddressGen1
-  );
+  const selectedNetworkId = useSelectedNetworkId();
 
-  const nftReq: Omit<NFTsRequest, "collectionId"> = {
-    ownerId: selectedWallet?.userId || "",
+  const nftReq = {
+    ownerId: selectedWallet?.address ? `tori-${selectedWallet.address}` : "",
+    networkId: selectedNetworkId,
     limit: 1000,
     offset: 0,
     sort: Sort.SORTING_UNSPECIFIED,
@@ -33,25 +29,25 @@ export const useRippers = () => {
 
   // Support squad stake for rioter NFT + their child
   const myRippersRequest: NFTsRequest = {
-    collectionId: riotCollectionIdGen0,
+    collectionId: `tori-${THE_RIOT_COLLECTION_ADDRESS}`,
     ...nftReq,
   };
 
   const myRipperChildsRequest: NFTsRequest = {
-    collectionId: breedingCollectionId,
+    collectionId: `tori-${THE_RIOT_BREEDING_CONTRACT_ADDRESS}`,
     ...nftReq,
   };
-
-  // FIXME: allow to pass multiple collection ids in backend api
 
   const { nfts: myRippers } = useNFTs(myRippersRequest);
   const { nfts: myRipperChilds } = useNFTs(myRipperChildsRequest);
 
   const myAvailableRippers = useMemo(() => {
+    if (!selectedWallet?.address) return [];
+
     return [...myRippers, ...myRipperChilds].filter(
       (r) => !r.isListed && (!r.lockedOn || isNFTStaked(r))
     );
-  }, [myRipperChilds, myRippers]);
+  }, [myRippers, myRipperChilds, selectedWallet?.address]);
 
   return {
     myRippers,

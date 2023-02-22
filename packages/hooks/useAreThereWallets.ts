@@ -1,13 +1,18 @@
 import { useWallets } from "../context/WalletsProvider";
+import { walletProviderToNetwork } from "../utils/network";
 import { WalletProvider } from "../utils/walletProvider";
-import { useSelectedNetworkId } from "./useSelectedNetwork";
+import { useSelectedNetworkInfo } from "./useSelectedNetwork";
 
 export const useAreThereWallets = () => {
   const { wallets } = useWallets();
-  const selectedNetworkId = useSelectedNetworkId();
-  return !!wallets.find(
-    (wallet) =>
-      (wallet.connected || wallet.provider === WalletProvider.Store) &&
-      wallet.networkId === selectedNetworkId
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+
+  return (
+    wallets.filter(
+      (wallet) =>
+        (wallet.connected || wallet.provider === WalletProvider.Store) &&
+        walletProviderToNetwork(wallet.provider) ===
+          selectedNetworkInfo?.network
+    ).length > 0
   );
 };

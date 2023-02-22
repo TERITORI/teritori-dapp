@@ -14,8 +14,9 @@ import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrSigningStargateClient } from "../../networks";
+import { getKeplrOfflineSigner } from "../../utils/keplr";
 import { neutral44 } from "../../utils/style/colors";
+import { getTeritoriSigningStargateClient } from "../../utils/teritori";
 import { ProposalStatus } from "./types";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
@@ -104,9 +105,8 @@ export const GovernanceDetails: React.FC<{
     }
 
     try {
-      const client = await getKeplrSigningStargateClient(
-        selectedWallet.networkId
-      );
+      const keplrSigner = await getKeplrOfflineSigner();
+      const client = await getTeritoriSigningStargateClient(keplrSigner);
 
       const vote: MsgVoteEncodeObject = {
         typeUrl: "/cosmos.gov.v1beta1.MsgVote",
@@ -142,7 +142,6 @@ export const GovernanceDetails: React.FC<{
     numberProposal,
     selectedWallet?.address,
     selectedWallet?.connected,
-    selectedWallet?.networkId,
     setToastError,
     voteOption,
   ]);

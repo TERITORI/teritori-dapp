@@ -1,20 +1,14 @@
-import { NetworkInfo, NetworkKind } from "../types";
+import { Network } from "../../utils/network";
+import { NetworkInfo } from "../types";
 import { cosmosHubThetaCurrencies } from "./currencies";
 
 export const cosmosThetaNetwork: NetworkInfo = {
   id: "cosmos-hub-theta",
-  kind: NetworkKind.Cosmos,
+  network: Network.CosmosHub,
   chainId: "theta-testnet-001",
   displayName: "Cosmos Hub Theta",
-  icon: "icons/networks/cosmos-hub.svg",
+  icon: "icons/networks/cosmos-hub-circle.svg",
   currencies: cosmosHubThetaCurrencies,
-  txExplorer: "https://explorer.theta-testnet.polypore.xyz/transactions/$hash",
-  accountExplorer:
-    "https://explorer.theta-testnet.polypore.xyz/accounts/$address",
-  contractExplorer: "",
-  idPrefix: "cosmtest",
-  testnet: true,
-  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   addressPrefix: "cosmos",
   restEndpoint: "https://cosmos-testnet-rpc.allthatnode.com:1317",
   rpcEndpoint: "https://cosmos-testnet-rpc.allthatnode.com:26657",

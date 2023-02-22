@@ -3,9 +3,8 @@ import { Image, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { Collection } from "../api/marketplace/v1/marketplace";
-import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
-import { parseUserId } from "../networks";
+import { useTNSMetadata } from "../hooks/useTNSMetadata";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { BrandText } from "./BrandText";
 import { TertiaryBox } from "./boxes/TertiaryBox";
@@ -19,8 +18,8 @@ export const CollectionView: React.FC<{
   item: Collection;
   linkToMint?: boolean;
 }> = ({ item, linkToMint }) => {
-  const [, creatorAddress] = parseUserId(item.creatorId);
-  const userInfo = useNSUserInfo(item.creatorId);
+  const creatorAddress = item.creatorId.split("-")[1];
+  const tnsMetadata = useTNSMetadata(creatorAddress);
   const navigateToCollection = useNavigateToCollection(item.id, {
     forceSecondaryDuringMint: item.secondaryDuringMint,
     forceLinkToMint: linkToMint,
@@ -67,7 +66,9 @@ export const CollectionView: React.FC<{
               numberOfLines={1}
               gradientType="purple"
             >
-              {userInfo.metadata?.tokenId || item.creatorName || creatorAddress}
+              {tnsMetadata.metadata?.tokenId ||
+                item.creatorName ||
+                creatorAddress}
             </GradientText>
           </View>
         </View>

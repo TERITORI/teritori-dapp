@@ -12,15 +12,11 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  getKeplrSigningStargateClient,
-  getStakingCurrency,
-  keplrCurrencyFromNativeCurrencyInfo,
-} from "../../../networks";
+import { useSelectedWalletBondedToris } from "../../../hooks/useSelectedWalletBondedToris";
 import { prettyPrice } from "../../../utils/coins";
+import { getKeplrOfflineSigner } from "../../../utils/keplr";
 import {
   neutral22,
   neutral77,
@@ -33,25 +29,28 @@ import {
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import {
+  getTeritoriSigningStargateClient,
+  toriCurrency,
+  toriDisplayDenom,
+} from "../../../utils/teritori";
 import { StakeFormValuesType, ValidatorInfo } from "../types";
 import { WarningBox } from "./WarningBox";
 
 interface UndelegateModalProps {
   onClose?: () => void;
   visible?: boolean;
-  validator?: ValidatorInfo;
+  data?: ValidatorInfo;
 }
 
 export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   onClose,
   visible,
-  validator,
+  data,
 }) => {
   const wallet = useSelectedWallet();
-  const networkId = wallet?.networkId || "";
-  const { bondedTokens, refreshBondedTokens } = useCosmosValidatorBondedAmount(
-    wallet?.userId,
-    validator?.address
+  const { bondedTokens, refreshBondedTokens } = useSelectedWalletBondedToris(
+    data?.address
   );
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
@@ -59,7 +58,6 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   // variables
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
-  const stakingCurrency = getStakingCurrency(networkId);
 
   // hooks
   useEffect(() => {
@@ -67,21 +65,13 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   }, [reset, visible]);
 
   useEffect(() => {
-    setValue("validatorName", validator?.moniker || "");
-  }, [validator?.moniker, setValue]);
+    setValue("validatorName", data?.moniker || "");
+  }, [data?.moniker, setValue]);
 
   // functions
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
       try {
-        if (!stakingCurrency) {
-          console.warn("staking currency not found");
-          setToastError({
-            title: "Staking currency not found",
-            message: "",
-          });
-          return;
-        }
         if (!wallet?.connected || !wallet.address) {
           console.warn("invalid wallet", wallet);
           setToastError({
@@ -90,23 +80,24 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           });
           return;
         }
-        if (!validator) {
+        if (!data) {
           setToastError({
             title: "Internal error",
             message: "No data",
           });
           return;
         }
-        const client = await getKeplrSigningStargateClient(wallet.networkId);
+        const signer = await getKeplrOfflineSigner();
+        const client = await getTeritoriSigningStargateClient(signer);
         const txResponse = await client.undelegateTokens(
           wallet.address,
-          validator.address,
+          data.address,
           {
             amount: Decimal.fromUserInput(
               formData.amount,
-              stakingCurrency.decimals
+              toriCurrency.coinDecimals
             ).atomics,
-            denom: stakingCurrency.denom,
+            denom: toriCurrency.coinMinimalDenom,
           },
           "auto"
         );
@@ -121,6 +112,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         }
         setToastSuccess({ title: "Undelegation success", message: "" });
         refreshBondedTokens();
+        onClose && onClose();
       } catch (error) {
         triggerError({
           title: "Undelegation failed!",
@@ -130,12 +122,11 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
       }
     },
     [
-      validator,
+      data,
       onClose,
       refreshBondedTokens,
       setToastError,
       setToastSuccess,
-      stakingCurrency,
       triggerError,
       wallet,
     ]
@@ -148,11 +139,11 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         <BrandText style={fontSemibold20}>Undelegate Tokens</BrandText>
         <SpacerColumn size={0.5} />
         <BrandText style={[styles.alternateText, fontSemibold16]}>
-          Select an amount of {stakingCurrency?.displayName} to undelegate
+          Select an amount of {toriDisplayDenom} to undelegate
         </BrandText>
       </View>
     ),
-    [stakingCurrency?.displayName]
+    []
   );
 
   const Footer = useCallback(
@@ -193,7 +184,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         <SpacerColumn size={2.5} />
         <WarningBox
           title="Undelegating will keep your funds locked for 21 days"
-          description={`Once you undelegate your staked ${stakingCurrency?.displayName}, you will need to wait 21 days for your tokens to be liquid and you won't receive rewards during this time`}
+          description={`Once you undelegate your staked ${toriDisplayDenom}, you will need to wait 21 days for your tokens to be liquid and you won't receive rewards during this time`}
         />
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
@@ -211,7 +202,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           label="Amount"
           control={control}
           placeHolder="0"
-          currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
+          currency={toriCurrency}
           defaultValue=""
           rules={{ required: true, max: bondedTokens.toString() }}
         >
@@ -230,9 +221,9 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
         <BrandText style={fontSemibold13}>
           Bonded tokens:{" "}
           {prettyPrice(
-            networkId,
+            process.env.TERITORI_NETWORK_ID || "",
             bondedTokens.atomics,
-            stakingCurrency?.denom || ""
+            toriCurrency.coinMinimalDenom
           )}
         </BrandText>
         <SpacerColumn size={2.5} />

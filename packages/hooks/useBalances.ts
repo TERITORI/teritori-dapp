@@ -2,14 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
-import {
-  getNativeCurrency,
-  getNetwork,
-  WEI_TOKEN_ADDRESS,
-  NetworkKind,
-} from "../networks";
+import { getNativeCurrency, getNetwork, WEI_TOKEN_ADDRESS } from "../networks";
 import { Balance } from "../utils/coins";
-import { getEthereumProvider } from "../utils/ethereum";
+import { getMetaMaskEthereumSigner } from "../utils/ethereum";
+import { Network } from "../utils/network";
 import { CosmosBalancesResponse } from "../utils/teritori";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
@@ -24,7 +20,7 @@ export const useBalances = (
         return [];
       }
 
-      return await getNetworkBalances(networkId, address);
+      return getNetworkBalances(networkId, address);
     },
     { initialData: [], refetchInterval: 5000 }
   );
@@ -67,29 +63,34 @@ const getNetworkBalances = async (
     return [];
   }
 
-  switch (network.kind) {
-    case NetworkKind.Ethereum: {
-      const provider = await getEthereumProvider(network);
-      if (!provider) return [];
+  // Support for ethereum balances
+  if (network.network === Network.Ethereum) {
+    const signer = await getMetaMaskEthereumSigner();
+    if (!signer) return [];
 
-      const balance = await provider.getBalance(address);
+    const balance = await signer.getBalance();
 
-      const balanceItem = {
-        amount: balance.toString(),
-        denom: WEI_TOKEN_ADDRESS,
-      };
-      return [balanceItem];
-    }
+    const balanceItem = {
+      amount: balance.toString(),
+      denom: WEI_TOKEN_ADDRESS,
+    };
+    return [balanceItem];
+  }
 
-    case NetworkKind.Cosmos: {
-      const response = await fetch(
-        `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
-      );
-      const responseJSON: CosmosBalancesResponse = await response.json();
-      return responseJSON.balances;
-    }
-
-    default:
-      return [];
+  // Support for cosmos balances
+  else if (
+    network.network === Network.Teritori ||
+    network.network === Network.CosmosHub
+  ) {
+    const response = await fetch(
+      `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
+    );
+    const responseJSON: CosmosBalancesResponse = await response.json();
+    return responseJSON.balances;
+  }
+  // Unsupported network
+  else {
+    console.error(`unsupported network ${network.network}`);
+    return [];
   }
 };

@@ -1,34 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
-import { getCosmosNetwork, mustGetNonSigningCosmWasmClient } from "../networks";
+import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
-export const useBreedingConfig = (networkId: string | undefined) => {
+export const useBreedingConfig = () => {
   const { data } = useQuery(
-    ["breedingConfig", networkId],
+    ["breedingConfig"],
     async () => {
-      if (!networkId) {
-        return null;
-      }
-
-      const breedingContractAddress =
-        getCosmosNetwork(networkId)?.riotContractAddressGen1;
-      if (!breedingContractAddress) {
-        return null;
-      }
-
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
+      const cosmwasmClient = await getNonSigningCosmWasmClient();
 
       const breedingClient = new TeritoriBreedingQueryClient(
         cosmwasmClient,
-        breedingContractAddress
+        process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS || ""
       );
 
       const conf = await breedingClient.config();
 
       return conf;
     },
-    { staleTime: Infinity, enabled: !!networkId }
+    { staleTime: Infinity }
   );
   return data;
 };

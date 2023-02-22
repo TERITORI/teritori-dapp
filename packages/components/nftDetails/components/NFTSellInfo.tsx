@@ -2,14 +2,10 @@ import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriNftVaultQueryClient } from "../../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import {
-  getNativeCurrency,
-  getNetwork,
-  mustGetNonSigningCosmWasmClient,
-  NetworkKind,
-} from "../../../networks";
+import { getNativeCurrency } from "../../../networks";
 import { NFTInfo } from "../../../screens/Marketplace/NFTDetailScreen";
 import { prettyPrice } from "../../../utils/coins";
+import { getNonSigningCosmWasmClient } from "../../../utils/keplr";
 import { trimFixed } from "../../../utils/numbers";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
@@ -17,10 +13,9 @@ import { BrandText } from "../../BrandText";
 export const NFTSellInfo: React.FC<{
   nftInfo?: NFTInfo;
   price: string;
-}> = ({ nftInfo, price }) => {
-  const networkId = nftInfo?.networkId;
-
-  const vaultConfig = useVaultConfig(networkId);
+  networkId?: string;
+}> = ({ nftInfo, price, networkId }) => {
+  const vaultConfig = useVaultConfig();
   const currency = getNativeCurrency(networkId, nftInfo?.mintDenom);
 
   if (!currency || !vaultConfig || !nftInfo || !networkId) {
@@ -64,23 +59,14 @@ export const NFTSellInfo: React.FC<{
   );
 };
 
-const useVaultConfig = (networkId: string | undefined) => {
+const useVaultConfig = () => {
   const { data } = useQuery(
-    ["vaultConfig", networkId],
+    ["vaultConfig"],
     async () => {
-      const network = getNetwork(networkId);
-
-      if (
-        network?.kind !== NetworkKind.Cosmos ||
-        !network.vaultContractAddress
-      ) {
-        return null;
-      }
-
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
+      const cosmwasmClient = await getNonSigningCosmWasmClient();
       const vaultClient = new TeritoriNftVaultQueryClient(
         cosmwasmClient,
-        network.vaultContractAddress
+        process.env.TERITORI_VAULT_CONTRACT_ADDRESS || ""
       );
       return await vaultClient.config();
     },

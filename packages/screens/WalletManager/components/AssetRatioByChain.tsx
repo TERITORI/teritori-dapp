@@ -9,8 +9,8 @@ import teritoriSVG from "../../../../assets/icons/networks/teritori-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import { ProgressLine } from "../../../components/ProgressLine";
 import { SVG } from "../../../components/SVG";
-import { useSelectedNetworkKind } from "../../../hooks/useSelectedNetwork";
-import { NetworkKind } from "../../../networks";
+import { useSelectedNetwork } from "../../../hooks/useSelectedNetwork";
+import { Network } from "../../../utils/network";
 import { OVERVIEW_FLEX_BREAK_WIDTH } from "../constants";
 
 interface AssetRatioData {
@@ -64,17 +64,17 @@ interface AssetRatioByChainProps {
 export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
   style,
 }) => {
-  const selectedNetWorkKind = useSelectedNetworkKind();
+  const selectedNetWork = useSelectedNetwork();
 
   // TODO: handle multi asset from multi wallets/multi networks
   const assetRatioData = useMemo(() => {
     let toriPercent = 0;
     let ethPercent = 0;
-    switch (selectedNetWorkKind) {
-      case NetworkKind.Ethereum:
+    switch (selectedNetWork) {
+      case Network.Ethereum:
         ethPercent = 100;
         break;
-      case NetworkKind.Cosmos:
+      case Network.Teritori:
         toriPercent = 100;
         break;
     }
@@ -96,7 +96,7 @@ export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
         percent: ethPercent,
       },
     ];
-  }, [selectedNetWorkKind]);
+  }, [selectedNetWork]);
 
   return (
     <View style={[style]}>

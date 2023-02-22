@@ -18,7 +18,6 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { SpacerRow } from "../../../components/spacer";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { getRipperTokenId, isNFTStaked } from "../../../utils/game";
 import {
   neutral00,
@@ -57,8 +56,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 }) => {
   const [selectedRipper, setSelectedRipper] = useState<NFT | undefined>();
   const [breedingsLeft, setBreedingsLeft] = useState<number>(0);
-  const networkId = useSelectedNetworkId();
-  const { getBreedingsLefts } = useBreeding(networkId);
+  const { getBreedingsLefts } = useBreeding();
 
   const selectRipper = async (ripper: NFT) => {
     setSelectedRipper(ripper);

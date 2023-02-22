@@ -4,12 +4,7 @@ import { Linking } from "react-native";
 
 import keplrSVG from "../../../assets/icons/keplr.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import {
-  getCosmosNetwork,
-  keplrChainInfoFromNetworkInfo,
-  selectableCosmosNetworks,
-} from "../../networks";
+import { getNetwork, keplrChainInfoFromNetworkInfo } from "../../networks";
 import {
   setIsKeplrConnected,
   setSelectedNetworkId,
@@ -22,7 +17,6 @@ export const ConnectKeplrButton: React.FC<{
 }> = ({ onDone }) => {
   const { setToastError } = useFeedbacks();
   const dispatch = useAppDispatch();
-  const networkId = useSelectedNetworkId();
   const handlePress = async () => {
     try {
       const keplr = (window as KeplrWindow)?.keplr;
@@ -32,28 +26,30 @@ export const ConnectKeplrButton: React.FC<{
         );
         return;
       }
-
-      let network = getCosmosNetwork(networkId);
-      if (!network) {
-        if (selectableCosmosNetworks.length) {
-          network = selectableCosmosNetworks[0];
-        }
+      const teritoriNetworkId = process.env.TERITORI_NETWORK_ID;
+      if (!teritoriNetworkId) {
+        console.error("no teritori network id");
+        return;
       }
+      const network = getNetwork(teritoriNetworkId);
       if (!network) {
-        throw new Error("no suitable network");
+        console.error(`no ${teritoriNetworkId} network`);
+        return;
       }
-
       await keplr.experimentalSuggestChain(
         keplrChainInfoFromNetworkInfo(network)
       );
-
       await keplr.enable(network.chainId);
 
-      dispatch(setSelectedNetworkId(network.id));
+      dispatch(setSelectedNetworkId(teritoriNetworkId));
       dispatch(setIsKeplrConnected(true));
-
-      onDone && onDone();
+      if (typeof onDone === "function") {
+        onDone();
+      }
     } catch (err) {
+      if (typeof onDone === "function") {
+        onDone(err);
+      }
       console.error(err);
       if (err instanceof Error) {
         setToastError({
@@ -61,7 +57,6 @@ export const ConnectKeplrButton: React.FC<{
           message: err.message,
         });
       }
-      onDone && onDone(err);
     }
   };
   return (

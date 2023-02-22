@@ -2,59 +2,51 @@ import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import {
-  mustGetNonSigningCosmWasmClient,
-  parseNetworkObjectId,
-  NetworkKind,
-} from "../networks";
 import { getEthereumProvider } from "../utils/ethereum";
+import { getNonSigningCosmWasmClient } from "../utils/keplr";
 
-export const useMintEnded = (collectionId: string, enabled: boolean = true) => {
-  const { data } = useQuery(
-    ["mintEnded", collectionId],
-    async () => {
-      if (!collectionId) {
+export const useMintEnded = (id: string) => {
+  const { data } = useQuery(["mintEnded", id], async () => {
+    if (!id) {
+      return false;
+    }
+
+    const [addressPrefix, mintAddress] = id.split("-");
+
+    if (addressPrefix === "tori") {
+      if (mintAddress === process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS) {
         return false;
       }
 
-      const [network, mintAddress] = parseNetworkObjectId(collectionId);
+      const cosmwasm = await getNonSigningCosmWasmClient();
 
-      if (network?.kind === NetworkKind.Cosmos) {
-        if (mintAddress === network.nameServiceContractAddress) {
-          return false;
-        }
+      const minterClient = new TeritoriBunkerMinterQueryClient(
+        cosmwasm,
+        mintAddress
+      );
+      const conf = await minterClient.config();
 
-        const cosmwasm = await mustGetNonSigningCosmWasmClient(network.id);
+      const mintedAmount = await minterClient.currentSupply();
 
-        const minterClient = new TeritoriBunkerMinterQueryClient(
-          cosmwasm,
-          mintAddress
-        );
-        const conf = await minterClient.config();
-
-        const mintedAmount = await minterClient.currentSupply();
-
-        return mintedAmount === conf.nft_max_supply;
-      } else if (network?.kind === NetworkKind.Ethereum) {
-        const provider = await getEthereumProvider(network);
-        if (!provider) {
-          console.error("no eth provider found");
-          return false;
-        }
-
-        const minterClient = TeritoriMinter__factory.connect(
-          mintAddress,
-          provider
-        );
-        const minterConfig = await minterClient.callStatic.config();
-        const mintedAmount = (await minterClient.currentSupply()).toNumber();
-        return mintedAmount === minterConfig.maxSupply.toNumber();
+      return mintedAmount === conf.nft_max_supply;
+    } else if (addressPrefix === "eth") {
+      const provider = await getEthereumProvider();
+      if (!provider) {
+        console.error("no eth provider found");
+        return false;
       }
 
-      console.error(`unknown collectionId ${collectionId}`);
-      return false;
-    },
-    { enabled }
-  );
+      const minterClient = TeritoriMinter__factory.connect(
+        mintAddress,
+        provider
+      );
+      const minterConfig = await minterClient.callStatic.config();
+      const mintedAmount = (await minterClient.currentSupply()).toNumber();
+      return mintedAmount === minterConfig.maxSupply.toNumber();
+    }
+
+    console.error(`unknown collectionId ${id}`);
+    return false;
+  });
   return data;
 };

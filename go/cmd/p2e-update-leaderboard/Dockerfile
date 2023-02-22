@@ -60,6 +60,4 @@ COPY --from=builder /app/build/p2e-update-leaderboard /bin/p2e-update-leaderboar
 ENV HOME /app
 WORKDIR $HOME
 
-COPY networks.json $HOME/networks.json
-
 ENTRYPOINT ["p2e-update-leaderboard"]

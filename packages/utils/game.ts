@@ -1,4 +1,3 @@
-import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { Coin, toUtf8 } from "cosmwasm";
 
 import backpackSVG from "../../assets/game/backpack.svg";
@@ -15,26 +14,16 @@ import nft5 from "../../assets/game/nft-5.png";
 import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
 import { NFT } from "../api/marketplace/v1/marketplace";
-import { TeritoriSquadStakingClient } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
 import {
   GetConfigResponse,
   Nft as SquadStakeNFT,
 } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
-import {
-  getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  getUserId,
-  mustGetCosmosNetwork,
-  parseNftId,
-  parseUserId,
-} from "../networks";
 import {
   GameBgCardItem,
   RipperRarity,
   RipperTraitType,
 } from "../screens/RiotGame/types";
 import { UserScore } from "./../api/p2e/v1/p2e";
-import { getKeplrSquadStakingClient } from "./contracts";
 
 const round = (input: number) => {
   return Math.floor(100 * input) / 100;
@@ -116,10 +105,8 @@ export const getRipperTraitValue = (
   return res;
 };
 
-export const getRipperTokenId = (ripperListItem: NFT) => {
-  const [, , tokenId] = parseNftId(ripperListItem.id);
-  return tokenId;
-};
+export const getRipperTokenId = (ripperListItem: NFT) =>
+  ripperListItem.id.split("-")[2];
 
 export enum StakingState {
   UNKNOWN = "UNKNOWN",
@@ -156,8 +143,7 @@ export const buildBreedingMsg = (
   sender: string,
   breedingPrice: Coin,
   tokenId1: string,
-  tokeId2: string,
-  contractAddress: string
+  tokeId2: string
 ) => {
   return {
     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
@@ -171,17 +157,13 @@ export const buildBreedingMsg = (
           },
         })
       ),
-      contract: contractAddress,
+      contract: THE_RIOT_BREEDING_CONTRACT_ADDRESS,
       funds: [breedingPrice],
     },
   };
 };
 
-export const buildStakingMsg = (
-  sender: string,
-  nfts: SquadStakeNFT[],
-  contractAddress: string
-) => {
+export const buildStakingMsg = (sender: string, nfts: SquadStakeNFT[]) => {
   return {
     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
     value: {
@@ -193,7 +175,7 @@ export const buildStakingMsg = (
           },
         })
       ),
-      contract: contractAddress,
+      contract: THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS,
       funds: [],
     },
   };
@@ -361,57 +343,6 @@ export const gameBgData: GameBgCardItem[] = [
   { id: 50, type: "BLANK" },
 ];
 
-export const isNFTStaked = (ripper: NFT | undefined) => {
-  if (!ripper) return false;
-
-  const network = getCosmosNetwork(ripper.networkId);
-
-  if (!network) return false;
-
-  const ids: string[] = [];
-
-  const v1Id = getUserId(network.id, network.riotSquadStakingContractAddressV1);
-  if (v1Id) {
-    ids.push(v1Id);
-  }
-  const v2Id = getUserId(network.id, network.riotSquadStakingContractAddressV2);
-  if (v2Id) {
-    ids.push(v2Id);
-  }
-
-  return ids.includes(ripper.lockedOn);
-};
-
-export const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
-export const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
-
-export const squadWithdrawSeason1 = async (userId: string | undefined) => {
-  const [network, userAddress] = parseUserId(userId);
-  if (!network || !userAddress) {
-    return null;
-  }
-
-  const cosmosNetwork = getCosmosNetwork(network.id);
-  const contractAddress = cosmosNetwork?.riotSquadStakingContractAddressV1;
-
-  if (!contractAddress) {
-    return null;
-  }
-
-  const signingClient = await getKeplrSigningCosmWasmClient(network.id);
-  const client = new TeritoriSquadStakingClient(
-    signingClient,
-    userAddress,
-    contractAddress
-  );
-  return await client.withdraw();
-};
-
-export const squadWithdraw = async (userId: string | undefined) => {
-  const squadStakingClient = await getKeplrSquadStakingClient(userId);
-  return await squadStakingClient.withdraw();
-};
-
 export const estimateStakingDuration = (
   rippers: NFT[],
   squadStakingConfig: GetConfigResponse
@@ -431,61 +362,29 @@ export const estimateStakingDuration = (
   return duration * 60 * 60 * 1000; // Convert to milliseconds
 };
 
-export const getSquadPresetId = (
-  userId: string | undefined,
-  squadId: number | undefined
-) => {
-  if (!userId || !squadId) return undefined;
-  return `${userId}-${squadId}`;
+export const isNFTStaked = (ripper: NFT | undefined) => {
+  if (!ripper) return false;
+  const contractV1 = process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS_V1;
+  const contractV2 = process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS_V2;
+
+  // TODO: make this network dependent
+  return ["tori-" + contractV1, "tori-" + contractV2].includes(ripper.lockedOn);
 };
 
-export const squadStake = async (
-  userId: string | undefined,
-  selectedRippers: NFT[]
-) => {
-  const [network, sender] = parseUserId(userId);
-  if (!network || !sender) {
-    throw new Error("invalid user id");
-  }
+export const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
+export const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
 
-  const cosmosNetwork = mustGetCosmosNetwork(network.id);
-  const contractAddress = cosmosNetwork?.riotSquadStakingContractAddressV2;
+export const THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS =
+  process.env.THE_RIOT_SQUAD_STAKING_CONTRACT_ADDRESS_V2 || "";
 
-  if (!contractAddress) {
-    throw new Error("missing squad staking contract address in network config");
-  }
+export const THE_RIOT_COLLECTION_ADDRESS =
+  process.env.THE_RIOT_COLLECTION_ADDRESS || "";
 
-  const client = await getKeplrSigningCosmWasmClient(network.id);
+export const THE_RIOT_BREEDING_CONTRACT_ADDRESS =
+  process.env.THE_RIOT_BREEDING_CONTRACT_ADDRESS || "";
 
-  const selectedNfts: SquadStakeNFT[] = [];
-  for (const selectedRipper of selectedRippers) {
-    const tokenId = getRipperTokenId(selectedRipper);
+export const TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS =
+  process.env.TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS || "";
 
-    selectedNfts.push({
-      contract_addr: selectedRipper.nftContractAddress,
-      token_id: tokenId,
-    });
-  }
-
-  const approveMsgs = [];
-  for (const selectedNft of selectedNfts) {
-    const msg = buildApproveNFTMsg(
-      sender,
-      contractAddress,
-      selectedNft.token_id,
-      selectedNft.contract_addr
-    );
-    approveMsgs.push(msg);
-  }
-
-  const stakeMsg = buildStakingMsg(sender, selectedNfts, contractAddress);
-  const msgs = [...approveMsgs, stakeMsg];
-
-  const tx = await client.signAndBroadcast(sender, msgs, "auto");
-
-  if (isDeliverTxFailure(tx)) {
-    throw Error(tx.transactionHash);
-  }
-
-  return tx;
-};
+export const THE_RIOT_COLLECTION_ID = `tori-${THE_RIOT_COLLECTION_ADDRESS}`;
+export const THE_RIOT_CHILD_COLLECTION_ID = `tori-${THE_RIOT_BREEDING_CONTRACT_ADDRESS}`;

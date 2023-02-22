@@ -4,8 +4,7 @@ import { View } from "react-native";
 import { BrandText } from "../../components/BrandText/BrandText";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkKind, mustGetCosmosNetwork } from "../../networks";
+import { teritoriRestProvider } from "../../utils/teritori";
 import { NavBarGovernance } from "./NavBarGovernance";
 import { Proposal, ProposalStatus } from "./types";
 
@@ -14,14 +13,12 @@ import { Proposal, ProposalStatus } from "./types";
 export const GovernanceScreen: React.FC = () => {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [filter, setFilter] = useState<ProposalStatus>();
-  const selectedNetworkId = useSelectedNetworkId();
 
   useEffect(() => {
     const effect = async () => {
       try {
-        const network = mustGetCosmosNetwork(selectedNetworkId);
         const res = await fetch(
-          `${network.restEndpoint}/cosmos/gov/v1beta1/proposals`
+          `${teritoriRestProvider}/cosmos/gov/v1beta1/proposals`
         );
         const data = await res.json();
 
@@ -31,7 +28,7 @@ export const GovernanceScreen: React.FC = () => {
       }
     };
     effect();
-  }, [selectedNetworkId]);
+  }, []);
 
   const filteredProposals = useMemo(
     () => (filter ? proposals.filter((p) => p.status === filter) : proposals),
@@ -39,7 +36,7 @@ export const GovernanceScreen: React.FC = () => {
   );
 
   return (
-    <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
+    <ScreenContainer>
       <View
         style={{
           flexDirection: "row",

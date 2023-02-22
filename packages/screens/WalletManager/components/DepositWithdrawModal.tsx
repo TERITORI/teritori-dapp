@@ -20,7 +20,6 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
-  getCosmosNetwork,
   getIBCCurrency,
   getKeplrSigningStargateClient,
   getNativeCurrency,
@@ -336,10 +335,10 @@ const convertCosmosAddress = (
   sourceAddress: string | undefined,
   targetNetworkId: string | undefined
 ) => {
-  if (!sourceAddress) {
+  if (!sourceAddress || !targetNetworkId) {
     return undefined;
   }
-  const targetNetwork = getCosmosNetwork(targetNetworkId);
+  const targetNetwork = getNetwork(targetNetworkId);
   if (!targetNetwork) {
     return undefined;
   }

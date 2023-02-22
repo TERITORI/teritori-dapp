@@ -1,5 +1,5 @@
 import Long from "long";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -29,20 +29,14 @@ import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bun
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
 import { MintPhase, useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  NetworkKind,
-  CosmosNetworkInfo,
-  EthereumNetworkInfo,
-  getCosmosNetwork,
-  getCurrency,
-  getKeplrSigningCosmWasmClient,
-  getNativeCurrency,
-  parseNetworkObjectId,
-  getEthereumNetwork,
-} from "../../networks";
+import { getCurrency } from "../../networks";
+import { setSelectedNetworkId } from "../../store/slices/settings";
+import { useAppDispatch } from "../../store/store";
 import { prettyPrice } from "../../utils/coins";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
+import { getSigningCosmWasmClient } from "../../utils/keplr";
 import { ScreenFC } from "../../utils/navigation";
 import {
   neutral33,
@@ -83,15 +77,27 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     params: { id },
   },
 }) => {
+  const [addressPrefix, mintAddress] = id.split("-");
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
   const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
-  const [network, mintAddress] = parseNetworkObjectId(id);
-  const balances = useBalances(network?.id, wallet?.address);
+  const networkId = useSelectedNetworkId();
+  const balances = useBalances(networkId, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (id.startsWith("eth-")) {
+      dispatch(setSelectedNetworkId(process.env.ETHEREUM_NETWORK_ID || ""));
+      return;
+    }
+    if (id.startsWith("tori-")) {
+      dispatch(setSelectedNetworkId(process.env.TERITORI_NETWORK_ID || ""));
+    }
+  }, [id, dispatch]);
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
   const mintButtonDisabled = minted || !wallet?.connected;
@@ -120,8 +126,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   };
 
   const ethereumMint = useCallback(
-    async (network: EthereumNetworkInfo, wallet: Wallet) => {
-      const signer = await getMetaMaskEthereumSigner(network, wallet.address);
+    async (wallet: Wallet) => {
+      const signer = await getMetaMaskEthereumSigner(wallet.address);
       if (!signer) {
         throw Error("no account connected");
       }
@@ -147,13 +153,13 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     [mintAddress]
   );
 
-  const cosmosMint = useCallback(
-    async (network: CosmosNetworkInfo, wallet: Wallet) => {
+  const teritoriMint = useCallback(
+    async (wallet: Wallet) => {
       const sender = wallet.address;
       if (!sender || !info?.unitPrice || !info.priceDenom) {
         throw Error("invalid mint args");
       }
-      const cosmwasmClient = await getKeplrSigningCosmWasmClient(network.id);
+      const cosmwasmClient = await getSigningCosmWasmClient();
       const minterClient = new TeritoriBunkerMinterClient(
         cosmwasmClient,
         sender,
@@ -171,29 +177,27 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   );
 
   const mint = useCallback(async () => {
+    let mintFunc: CallableFunction | null = null;
+    switch (addressPrefix) {
+      case "tori":
+        mintFunc = teritoriMint;
+        break;
+      case "eth":
+        mintFunc = ethereumMint;
+        break;
+    }
+
+    if (!mintFunc) {
+      return setToastError({
+        title: "Error",
+        message: `unsupported network ${networkId}`,
+      });
+    }
+
     try {
       setToastError(initialToastError);
-      if (!wallet) {
-        setToastError({
-          title: "Error",
-          message: `no wallet`,
-        });
-        return;
-      }
-      switch (network?.kind) {
-        case NetworkKind.Cosmos:
-          await cosmosMint(network, wallet);
-          break;
-        case NetworkKind.Ethereum:
-          await ethereumMint(network, wallet);
-          break;
-        default:
-          setToastError({
-            title: "Error",
-            message: `unsupported network ${network?.id}`,
-          });
-          return;
-      }
+
+      await mintFunc(wallet);
 
       setMinted(true);
       await sleep(5000);
@@ -207,18 +211,25 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       }
       console.error(e);
     }
-  }, [cosmosMint, ethereumMint, network, setToastError, wallet]);
+  }, [
+    addressPrefix,
+    teritoriMint,
+    ethereumMint,
+    setToastError,
+    networkId,
+    wallet,
+  ]);
 
   const mintTermsConditionsURL = useMemo(() => {
     switch (mintAddress) {
-      case getCosmosNetwork(network?.id)?.riotContractAddressGen0:
+      case process.env.THE_RIOT_COLLECTION_ADDRESS:
         return "https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b";
-      case getEthereumNetwork(network?.id)?.riotContractAddress:
+      case process.env.ETHEREUM_THE_RIOT_COLLECTION_ADDRESS:
         return "https://teritori.notion.site/The-Riot-Terms-Conditions-ETH-92328fb2d4494b6fb073b38929b28883";
       default:
         return null;
     }
-  }, [mintAddress, network?.id]);
+  }, [mintAddress]);
 
   if (!info) {
     return <ScreenContainer noMargin />;
@@ -231,9 +242,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   } = info;
   const hasLinks = discordLink || twitterLink || websiteLink;
 
-  const priceCurrency = getCurrency(network?.id, info.priceDenom);
-  const priceNativeCurrency = getNativeCurrency(network?.id, info.priceDenom);
-
   if (notFound) {
     return (
       <ScreenContainer noMargin>
@@ -244,7 +252,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     );
   } else
     return (
-      <ScreenContainer noMargin fullWidth forceNetworkId={network?.id}>
+      <ScreenContainer noMargin fullWidth>
         <View style={{ alignItems: "center" }}>
           <View
             style={{
@@ -324,7 +332,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               >
                 Available Balance:{" "}
                 {prettyPrice(
-                  network?.id || "",
+                  networkId || "",
                   balance?.amount || "0",
                   balance?.denom || ""
                 )}
@@ -347,12 +355,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   />
                 )}
 
-                {priceCurrency?.kind === "ibc" && (
+                {getCurrency(process.env.TERITORI_NETWORK_ID, info.priceDenom)
+                  ?.kind === "ibc" && (
                   <PrimaryButton
                     size="XL"
-                    text={`Deposit ${
-                      priceNativeCurrency?.displayName || priceCurrency.denom
-                    }`}
+                    text="Deposit Atom"
                     width={160}
                     disabled={mintButtonDisabled}
                     loader
@@ -456,7 +463,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         </View>
         <DepositWithdrawModal
           variation="deposit"
-          networkId={network?.id || ""}
+          networkId={networkId}
           targetCurrency={info.priceDenom}
           onClose={() => setDepositVisible(false)}
           isVisible={isDepositVisible}

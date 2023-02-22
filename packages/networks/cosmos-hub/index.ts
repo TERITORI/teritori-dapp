@@ -1,19 +1,14 @@
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkInfo } from "../types";
+import { Network } from "./../../utils/network";
 import { cosmosHubCurrencies } from "./currencies";
 
 export const cosmosNetwork: NetworkInfo = {
   id: "cosmos-hub",
-  kind: NetworkKind.Cosmos,
+  network: Network.CosmosHub,
   chainId: "cosmoshub-4",
   displayName: "Cosmos Hub",
-  icon: "icons/networks/cosmos-hub.svg",
+  icon: "icons/networks/cosmos-hub-circle.svg",
   currencies: cosmosHubCurrencies,
-  txExplorer: "https://www.mintscan.io/cosmos/txs/$hash",
-  accountExplorer: "https://www.mintscan.io/cosmos/account/$address",
-  contractExplorer: "https://www.mintscan.io/cosmos/account/$address",
-  idPrefix: "cosm",
-  testnet: false,
-  backendEndpoint: "https://dapp-backend.mainnet.teritori.com",
   addressPrefix: "cosmos",
   restEndpoint: "https://api-cosmoshub-ia.cosmosia.notional.ventures",
   rpcEndpoint: "https://rpc-cosmoshub-ia.cosmosia.notional.ventures",

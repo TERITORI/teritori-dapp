@@ -18,12 +18,13 @@ interface SellNFTForm {
 
 export const NFTSellCard: React.FC<{
   onPressSell: (price: string, denom: string | undefined) => void;
+  networkId?: string;
   style?: StyleProp<ViewStyle>;
   nftInfo?: NFTInfo;
-}> = ({ onPressSell: onSell, style, nftInfo }) => {
+}> = ({ onPressSell: onSell, style, networkId, nftInfo }) => {
   const { control, handleSubmit, watch } = useForm<SellNFTForm>();
   const values = watch();
-  const currency = getNativeCurrency(nftInfo?.networkId, nftInfo?.mintDenom);
+  const currency = getNativeCurrency(networkId, nftInfo?.mintDenom);
   const handleSell: SubmitHandler<SellNFTForm> = useCallback(
     (formValues) => onSell(formValues.price, nftInfo?.mintDenom),
     [onSell, nftInfo?.mintDenom]
@@ -59,7 +60,11 @@ export const NFTSellCard: React.FC<{
           onPress={handleSubmit(handleSell)}
         />
       </TertiaryBox>
-      <NFTSellInfo nftInfo={nftInfo} price={values.price} />
+      <NFTSellInfo
+        nftInfo={nftInfo}
+        networkId={networkId}
+        price={values.price}
+      />
     </View>
   );
 };

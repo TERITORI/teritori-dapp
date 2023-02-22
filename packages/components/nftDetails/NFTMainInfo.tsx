@@ -5,6 +5,7 @@ import { StyleSheet, View } from "react-native";
 
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
@@ -56,6 +57,9 @@ export const NFTMainInfo: React.FC<{
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const { openTransactionModals } = useTransactionModals();
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
+  // TODO: should get networkId from nft when having that info
+
+  const nftNetworkId = useSelectedNetworkId();
 
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("about");
@@ -181,7 +185,7 @@ export const NFTMainInfo: React.FC<{
           <CollectionInfoInline
             imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
             name={nftInfo?.collectionName}
-            id={nftInfo?.collectionId}
+            id={`tori-${nftInfo?.mintAddress}`}
           />
           {showMarketplace ? (
             <>
@@ -190,19 +194,22 @@ export const NFTMainInfo: React.FC<{
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressSell={sell}
                   nftInfo={nftInfo}
+                  networkId={nftNetworkId}
                 />
               )}
               {nftInfo?.isListed && !nftInfo.isOwner && (
                 <NFTPriceBuyCard
-                  nftInfo={nftInfo}
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressBuy={openTransactionModals}
+                  price={nftInfo.price}
+                  priceDenom={nftInfo.priceDenom}
                 />
               )}
               {nftInfo?.isListed && nftInfo.isOwner && (
                 <NFTCancelListingCard
-                  nftInfo={nftInfo}
                   style={{ marginTop: 24, marginBottom: 40 }}
+                  price={nftInfo.price}
+                  priceDenom={nftInfo.priceDenom}
                   onPressCancel={cancelListing}
                 />
               )}
@@ -241,7 +248,7 @@ export const NFTMainInfo: React.FC<{
       {/* ====== "Buy this NFT" three modals*/}
       <TransactionModals
         startTransaction={buy}
-        nftId={nftId}
+        nftInfo={nftInfo}
         textComponentPayment={
           <BrandText style={fontSemibold14}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>

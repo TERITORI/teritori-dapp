@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { prettyPrice } from "../../utils/coins";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -11,10 +11,13 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { GradientText } from "../gradientText";
 
 export const NFTCancelListingCard: React.FC<{
-  nftInfo: NFTInfo;
+  price?: string;
+  priceDenom?: string;
   onPressCancel: () => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ nftInfo, onPressCancel, style }) => {
+}> = ({ price = "", priceDenom = "", onPressCancel, style }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+
   return (
     <TertiaryBox
       fullWidth
@@ -35,11 +38,11 @@ export const NFTCancelListingCard: React.FC<{
             gradientType="purple"
             style={[fontSemibold28, { marginRight: 12 }]}
           >
-            {prettyPrice(nftInfo.networkId, nftInfo.price, nftInfo.priceDenom)}
+            {prettyPrice(selectedNetworkId, price, priceDenom)}
           </GradientText>
           <CurrencyIcon
-            networkId={nftInfo.networkId}
-            denom={nftInfo.priceDenom}
+            networkId={selectedNetworkId}
+            denom={priceDenom}
             size={24}
           />
         </View>

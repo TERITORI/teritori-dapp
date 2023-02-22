@@ -1,4 +1,19 @@
+import { Decimal } from "@cosmjs/math";
+import { OfflineSigner } from "@cosmjs/proto-signing";
+import { GasPrice, SigningStargateClient } from "@cosmjs/stargate";
+import { Currency } from "@keplr-wallet/types";
+
 import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { Network } from "./network";
+
+export const UTORI_PER_TORI = process.env.PUBLIC_BASE_MINT_FEE;
+export const teritoriRestProvider = process.env.PUBLIC_CHAIN_REST_ENDPOINT;
+export const teritoriRPCProvider = process.env.PUBLIC_CHAIN_RPC_ENDPOINT;
+export const teritoriChainId = process.env.PUBLIC_CHAIN_ID;
+export const toriDisplayDenom = process.env.PUBLIC_STAKING_DENOM_DISPLAY_NAME;
+export const vaultContractAddress =
+  process.env.TERITORI_VAULT_CONTRACT_ADDRESS || "";
+const toriDenom = process.env.PUBLIC_STAKING_DENOM;
 
 export interface CosmosRewardsResponse {
   total: {
@@ -17,6 +32,51 @@ export interface CosmosRewardsResponse {
 export interface CosmosBalancesResponse {
   balances: { denom: string; amount: string }[];
 }
+
+export const getCosmosBalances = async (address: string) => {
+  const response = await fetch(
+    `${teritoriRestProvider}/cosmos/bank/v1beta1/balances/${address}`
+  );
+  const responseJSON: CosmosBalancesResponse = await response.json();
+  return responseJSON;
+};
+
+export const teritoriNFTVaultCodeID = 10;
+
+export const getUtoriBalance = async (address: string) => {
+  const cosmosBalances = await getCosmosBalances(address);
+  return cosmosBalances.balances
+    .filter((balance) => balance.denom === toriDenom)
+    .reduce(
+      (total, balance) =>
+        total.plus(
+          Decimal.fromAtomics(balance.amount, toriCurrency.coinDecimals)
+        ),
+      Decimal.fromAtomics("0", toriCurrency.coinDecimals)
+    );
+};
+
+export const toriCurrency: Currency = {
+  // Coin denomination to be displayed to the user.
+  coinDenom: toriDisplayDenom || "",
+  // Actual denom (i.e. uatom, uscrt) used by the blockchain.
+  coinMinimalDenom: toriDenom || "",
+  // # of decimal points to convert minimal denomination to user-facing denomination.
+  coinDecimals: 6,
+  // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
+  // You can get id from https://api.coingecko.com/api/v3/coins/list if it is listed.
+  // coinGeckoId: ""
+};
+
+export const teritoriGasPrice = new GasPrice(
+  Decimal.fromUserInput("0.025", toriCurrency.coinDecimals),
+  toriCurrency.coinMinimalDenom
+);
+
+export const getTeritoriSigningStargateClient = (signer: OfflineSigner) =>
+  SigningStargateClient.connectWithSigner(teritoriRPCProvider || "", signer, {
+    gasPrice: teritoriGasPrice,
+  });
 
 interface PrettyTokenData {
   displayLabel: string;
@@ -80,4 +140,70 @@ export const prettyTokenData = (tokenData: Metadata): PrettyTokenData[] => {
     }
   });
   return finalDatas;
+};
+
+// You can add, remove or modify the domains and their status (See DomainsAvailability in TNSHomeScreen.tsx)
+export const domainsList = [
+  {
+    // Displayed name
+    name: ".teritori",
+    // Is the domains can be minted ? Or just displayed as a "future available domain" (Doesn't exist yet)
+    comingSoon: false,
+    // Is the domain minted ? (To be true, comingSoon=false necessary) (I don't talk about "availability" to avoid confusion)
+    minted: false,
+  },
+  {
+    name: ".tori",
+    comingSoon: false,
+    minted: false,
+  },
+  {
+    name: ".osmo",
+    comingSoon: true,
+    minted: false,
+  },
+  {
+    name: ".atom",
+    comingSoon: true,
+    minted: false,
+  },
+  {
+    name: ".juno",
+    comingSoon: true,
+    minted: false,
+  },
+];
+
+export const txExplorerLink = (
+  network: Network | undefined,
+  txHash: string
+) => {
+  let explorerUrl = "/";
+  switch (network) {
+    case Network.Teritori:
+      explorerUrl = process.env.TERITORI_TRANSACTION_EXPLORER_URL || "";
+      break;
+    case Network.Ethereum:
+      explorerUrl = process.env.ETHEREUM_TRANSACTION_EXPLORER_URL || "";
+      break;
+  }
+
+  return explorerUrl.replace("$hash", txHash);
+};
+
+export const accountExplorerLink = (
+  network: Network | undefined,
+  address: string
+) => {
+  let explorerUrl = "/";
+  switch (network) {
+    case Network.Teritori:
+      explorerUrl = process.env.TERITORI_ACCOUNT_EXPLORER_URL || "";
+      break;
+    case Network.Ethereum:
+      explorerUrl = process.env.ETHEREUM_ACCOUNT_EXPLORER_URL || "";
+      break;
+  }
+
+  return explorerUrl.replace("$address", address);
 };

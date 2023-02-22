@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   ImageBackground,
@@ -25,10 +25,8 @@ import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { getCosmosNetwork, parseUserId } from "../../networks";
-import { mustGetP2eClient } from "../../utils/backend";
+import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { p2eBackendClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
@@ -56,11 +54,10 @@ type PlayerNameProps = {
 
 const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   const navigation = useAppNavigation();
-  const [network, address] = parseUserId(userId);
-  const cosmosNetwork = getCosmosNetwork(network?.id);
-  const userInfo = useNSUserInfo(userId);
+  const address = userId.split("-")[1];
+  const tnsMetadata = useTNSMetadata(address);
 
-  const name = userInfo.metadata?.tokenId || address || "";
+  const name = tnsMetadata.metadata?.tokenId || address || "";
 
   return (
     <FlexRow width="auto" alignItems="center">
@@ -75,8 +72,8 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
         <Image
           source={{
             uri: ipfsURLToHTTPURL(
-              userInfo.metadata?.image ||
-                cosmosNetwork?.nameServiceDefaultImage ||
+              tnsMetadata.metadata?.image ||
+                process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
                 ""
             ),
           }}
@@ -136,17 +133,14 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
 export const RiotGameLeaderboardScreen = () => {
   const [userScores, setUserScores] = useState<UserScore[]>([]);
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
-  const selectedNetwork = useSelectedNetworkInfo();
 
-  const fetchLeaderboard = useCallback(async () => {
-    const p2eClient = mustGetP2eClient(selectedNetwork?.id);
-
+  const fetchLeaderboard = async () => {
     const _userScores: UserScore[] = [];
 
-    const currentSeason = await p2eClient.CurrentSeason({});
+    const currentSeason = await p2eBackendClient.CurrentSeason({});
     setCurrentSeason(currentSeason);
 
-    const streamData = await p2eClient.Leaderboard({
+    const streamData = await p2eBackendClient.Leaderboard({
       seasonId: currentSeason.id,
       limit: 500,
       offset: 0,
@@ -156,11 +150,11 @@ export const RiotGameLeaderboardScreen = () => {
       item.userScore && _userScores.push(item.userScore);
     });
     setUserScores(_userScores.filter((val) => val.rank !== 0));
-  }, [selectedNetwork?.id]);
+  };
 
   useEffect(() => {
     fetchLeaderboard();
-  }, [fetchLeaderboard]);
+  }, []);
 
   return (
     <GameContentView hideStats contentStyle={styles.contentContainer}>

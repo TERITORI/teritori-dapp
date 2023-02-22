@@ -46,15 +46,10 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 	}
 
 	// create collection
-	collectionId := h.config.Network.CollectionID(contractAddress)
-	network, _, err := h.config.NetworkStore.ParseCollectionID(string(collectionId))
-	if err != nil {
-		return errors.Wrap(err, "failed to get network from collectionID")
-	}
-
+	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkId:           network.GetBase().ID,
+		NetworkId:           "teritori", // FIXME: get from networks config
 		Name:                minterInstantiateMsg.NftName,
 		ImageURI:            metadata.ImageURI,
 		MaxSupply:           maxSupply,
@@ -67,7 +62,7 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
 	}
-	h.logger.Info("created collection", zap.String("id", string(collectionId)))
+	h.logger.Info("created collection", zap.String("id", collectionId))
 
 	return nil
 }
@@ -84,9 +79,9 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 		return errors.New("no recipients")
 	}
 	owner := recipients[0]
-	ownerId := h.config.Network.UserID(owner)
+	ownerId := indexerdb.TeritoriUserID(owner)
 
-	nftId := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
 	var mintMsg ExecuteCW721MintMsg
 	if err := json.Unmarshal(execMsg.Msg, &mintMsg); err != nil {
@@ -122,7 +117,7 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 
 	// create mint activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
+		ID:   indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindMint,
 		Time: blockTime,
 		Mint: &indexerdb.Mint{
@@ -134,7 +129,7 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 		return errors.Wrap(err, "failed to create mint activity")
 	}
 
-	h.logger.Info("minted nft", zap.String("id", string(nftId)), zap.String("owner-id", string(ownerId)))
+	h.logger.Info("minted nft", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
 
 	return nil
 }
@@ -164,7 +159,7 @@ func (h *Handler) handleExecuteBunkerUpdateConfig(e *Message, execMsg *wasmtypes
 	if len(updates) != 0 {
 		if err := h.db.
 			Model(&indexerdb.TeritoriCollection{}).
-			Where("collection_id = ?", h.config.Network.CollectionID(execMsg.Contract)).
+			Where("collection_id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
 			UpdateColumns(updates).
 			Error; err != nil {
 			return errors.Wrap(err, "failed to update bunker creator")
@@ -178,7 +173,7 @@ func (h *Handler) handleExecuteBunkerUpdateConfig(e *Message, execMsg *wasmtypes
 func (h *Handler) handleExecuteBunkerPause(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	if err := h.db.
 		Model(&indexerdb.Collection{}).
-		Where("id = ?", h.config.Network.CollectionID(execMsg.Contract)).
+		Where("id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
 		UpdateColumn("Paused", true).
 		Error; err != nil {
 		return errors.Wrap(err, "failed to pause bunker")
@@ -190,7 +185,7 @@ func (h *Handler) handleExecuteBunkerPause(e *Message, execMsg *wasmtypes.MsgExe
 func (h *Handler) handleExecuteBunkerUnpause(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	if err := h.db.
 		Model(&indexerdb.Collection{}).
-		Where("id = ?", h.config.Network.CollectionID(execMsg.Contract)).
+		Where("id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
 		UpdateColumn("Paused", false).
 		Error; err != nil {
 		return errors.Wrap(err, "failed to unpause bunker")

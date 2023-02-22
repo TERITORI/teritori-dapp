@@ -1,8 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getCollectionId, getCosmosNetwork } from "../../networks";
+import {
+  THE_RIOT_COLLECTION_ID,
+  THE_RIOT_CHILD_COLLECTION_ID,
+} from "../../utils/game";
 import { ScreenFC } from "../../utils/navigation";
 import { CollectionThumb } from "./component/CollectionThumb";
 import { CollectionView } from "./component/CollectionView";
@@ -12,8 +14,6 @@ export const RiotGameMarketplaceScreen: ScreenFC<"RiotGameMarketplace"> = ({
   route,
 }) => {
   const collectionId = route.params?.collectionId || "";
-  const networkId = useSelectedNetworkId();
-  const network = getCosmosNetwork(networkId);
 
   return (
     <GameContentView>
@@ -27,18 +27,8 @@ export const RiotGameMarketplaceScreen: ScreenFC<"RiotGameMarketplace"> = ({
             flexWrap: "wrap",
           }}
         >
-          <CollectionThumb
-            collectionId={getCollectionId(
-              network?.id,
-              network?.riotContractAddressGen0
-            )}
-          />
-          <CollectionThumb
-            collectionId={getCollectionId(
-              network?.id,
-              network?.riotContractAddressGen1
-            )}
-          />
+          <CollectionThumb collectionId={THE_RIOT_COLLECTION_ID} />
+          <CollectionThumb collectionId={THE_RIOT_CHILD_COLLECTION_ID} />
         </View>
       )}
     </GameContentView>

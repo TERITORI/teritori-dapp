@@ -3,31 +3,22 @@ import { useCallback } from "react";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftVaultClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
-import {
-  getKeplrSigningCosmWasmClient,
-  getNetwork,
-  mustGetCosmosNetwork,
-  mustGetEthereumNetwork,
-  NetworkKind,
-} from "../networks";
 import { getMetaMaskEthereumSigner } from "../utils/ethereum";
+import { getSigningCosmWasmClient } from "../utils/keplr";
+import { vaultContractAddress } from "../utils/teritori";
+import { Network } from "./../utils/network";
 import useSelectedWallet from "./useSelectedWallet";
 
 const teritoriCancelNFTListing = async (
-  networkId: string,
   sender: string,
   nftContractAddress: string,
   tokenId: string
 ) => {
-  const network = mustGetCosmosNetwork(networkId);
-  if (!network.vaultContractAddress) {
-    throw new Error("network not supported");
-  }
-  const cosmwasmClient = await getKeplrSigningCosmWasmClient(networkId);
+  const cosmwasmClient = await getSigningCosmWasmClient();
   const vaultClient = new TeritoriNftVaultClient(
     cosmwasmClient,
     sender,
-    network.vaultContractAddress
+    vaultContractAddress
   );
   const reply = await vaultClient.withdraw({
     nftContractAddr: nftContractAddress,
@@ -37,21 +28,18 @@ const teritoriCancelNFTListing = async (
 };
 
 const ethereumCancelNFTListing = async (
-  networkId: string,
   sender: string,
   nftContractAddress: string,
   tokenId: string
 ) => {
-  const network = mustGetEthereumNetwork(networkId);
-
-  const signer = await getMetaMaskEthereumSigner(network, sender);
+  const signer = await getMetaMaskEthereumSigner(sender);
   if (!signer) {
     throw Error("Unable to get signer");
   }
 
   const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
-  const vaultClient = NFTVault__factory.connect(
-    network.vaultContractAddress,
+  const vaultClient = await NFTVault__factory.connect(
+    process.env.ETHEREUM_VAULT_ADDRESS || "",
     signer
   );
 
@@ -70,7 +58,7 @@ const ethereumCancelNFTListing = async (
 };
 
 export const useCancelNFTListing = (
-  networkId: string | undefined,
+  network: Network | undefined,
   nftContractAddress: string,
   tokenId: string
 ) => {
@@ -79,33 +67,27 @@ export const useCancelNFTListing = (
 
   return useCallback(async () => {
     try {
-      const network = getNetwork(networkId);
-      if (!network) {
-        throw new Error("unknown network");
-      }
-
       if (!wallet?.address || !wallet.connected) {
-        throw new Error("bad wallet");
+        throw Error("Bad wallet");
       }
 
-      switch (network.kind) {
-        case NetworkKind.Cosmos:
-          return await teritoriCancelNFTListing(
-            network.id,
-            wallet.address,
-            nftContractAddress,
-            tokenId
-          );
-        case NetworkKind.Ethereum:
-          return await ethereumCancelNFTListing(
-            network.id,
-            wallet.address,
-            nftContractAddress,
-            tokenId
-          );
+      let cancelNFTListingFunc;
+      switch (network) {
+        case Network.Teritori:
+          cancelNFTListingFunc = teritoriCancelNFTListing;
+          break;
+        case Network.Ethereum:
+          cancelNFTListingFunc = ethereumCancelNFTListing;
+          break;
         default:
           throw Error(`Unsupported network ${network}`);
       }
+
+      return await cancelNFTListingFunc(
+        wallet.address,
+        nftContractAddress,
+        tokenId
+      );
     } catch (err) {
       console.error(err);
       if (err instanceof Error) {
@@ -115,12 +97,5 @@ export const useCancelNFTListing = (
         });
       }
     }
-  }, [
-    networkId,
-    nftContractAddress,
-    setToastError,
-    tokenId,
-    wallet?.address,
-    wallet?.connected,
-  ]);
+  }, [network, nftContractAddress, setToastError, tokenId, wallet]);
 };

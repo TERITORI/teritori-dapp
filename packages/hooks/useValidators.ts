@@ -3,8 +3,8 @@ import { Decimal } from "cosmwasm";
 import { partition } from "lodash";
 
 import { useFeedbacks } from "../context/FeedbacksProvider";
-import { getCosmosNetwork, getStakingCurrency } from "../networks";
 import { ValidatorInfo } from "../screens/Stake/types";
+import { teritoriRestProvider, toriCurrency } from "../utils/teritori";
 
 interface StakingParams {
   unbonding_time: string;
@@ -20,23 +20,15 @@ const initialData = {
   inactiveValidators: [],
 };
 
-export const useValidators = (networkId: string | undefined) => {
+export const useValidators = () => {
   const { setToastError } = useFeedbacks();
 
   const { data, isFetching } = useQuery(
-    ["validators", networkId],
+    [`teritoriValidators`],
     async () => {
       try {
-        const network = getCosmosNetwork(networkId);
-        if (!network) {
-          return initialData;
-        }
-        const stakingCurrency = getStakingCurrency(networkId);
-        if (!stakingCurrency) {
-          throw new Error("unknown staking currency");
-        }
         const httpResponse = await fetch(
-          `${network.restEndpoint}/cosmos/staking/v1beta1/params`
+          `${teritoriRestProvider}/cosmos/staking/v1beta1/params`
         );
         const response = await httpResponse.json();
         const params: StakingParams = response.params;
@@ -44,7 +36,7 @@ export const useValidators = (networkId: string | undefined) => {
         const validators: ValidatorInfo[] = [];
         while (key !== null) {
           const response = await fetch(
-            network.restEndpoint +
+            teritoriRestProvider +
               "/cosmos/staking/v1beta1/validators?pagination.limit=1000&pagination.key=" +
               encodeURIComponent(key)
           );
@@ -60,7 +52,7 @@ export const useValidators = (networkId: string | undefined) => {
                 address: v.operator_address,
                 votingPower: Decimal.fromAtomics(
                   v.tokens,
-                  stakingCurrency.decimals
+                  toriCurrency.coinDecimals
                 )
                   .toFloatApproximation()
                   .toFixed()
@@ -79,7 +71,6 @@ export const useValidators = (networkId: string | undefined) => {
         }
 
         const tendermintActiveValidators = await getTendermintActiveValidators(
-          network.restEndpoint,
           params.max_validators
         );
 
@@ -128,13 +119,10 @@ const prettyPercent = (val: number) => {
   return (val * 100).toFixed(2) + "%"; // FIXME: cut useless zeros
 };
 
-const getTendermintActiveValidators = async (
-  restProvider: string,
-  limit: number
-): Promise<any[]> => {
+const getTendermintActiveValidators = async (limit: number): Promise<any[]> => {
   const activeValidators = await (
     await fetch(
-      `${restProvider}/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.limit=${limit}&pagination.offset=0`
+      `${teritoriRestProvider}/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.limit=${limit}&pagination.offset=0`
     )
   ).json();
   return activeValidators.validators;

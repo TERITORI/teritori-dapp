@@ -4,16 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/TERITORI/teritori-dapp/go/internal/airtable_fetcher"
 	"github.com/TERITORI/teritori-dapp/go/internal/ethereum"
+	"github.com/TERITORI/teritori-dapp/go/internal/faking"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
 	"github.com/TERITORI/teritori-dapp/go/pkg/holagql"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/bxcodec/faker/v3"
 	"github.com/pkg/errors"
 	"github.com/volatiletech/sqlboiler/v4/queries"
@@ -33,32 +34,30 @@ type MarkteplaceService struct {
 }
 
 type Config struct {
-	Logger         *zap.Logger
-	IndexerDB      *gorm.DB
-	Whitelist      []string
-	AirtableAPIKey string
-	NetworkStore   networks.NetworkStore
+	Logger             *zap.Logger
+	IndexerDB          *gorm.DB
+	GraphqlEndpoint    string
+	TheGraphEndpoint   string
+	TNSContractAddress string
+	TNSDefaultImageURL string
+	Whitelist          []string
+	AirtableAPIKey     string
 }
 
-func NewMarketplaceService(ctx context.Context, conf *Config) (marketplacepb.MarketplaceServiceServer, error) {
+func NewMarketplaceService(ctx context.Context, conf *Config) marketplacepb.MarketplaceServiceServer {
 	var homeProvider *airtable_fetcher.Cache
 	if conf.AirtableAPIKey != "" {
 		homeProvider = airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(conf.AirtableAPIKey), conf.Logger.Named("airtable_fetcher"))
-	}
-
-	ethProvider, err := ethereum.NewEthereumProvider(conf.NetworkStore)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create ethereum provider")
 	}
 
 	// FIXME: validate config
 	return &MarkteplaceService{
 		conf:             conf,
 		homeProvider:     homeProvider,
-		ethereumProvider: ethProvider,
+		ethereumProvider: ethereum.NewEthereumProvider(conf.TheGraphEndpoint),
 		// collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 		// collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
-	}, nil
+	}
 }
 
 type DBCollectionWithExtra struct {
@@ -96,19 +95,9 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		return nil
 	}
 
-	networkID := req.GetNetworkId()
-	if networkID == "" {
-		return errors.New("missing network id")
-	}
+	switch req.GetNetworkId() {
 
-	network, err := s.conf.NetworkStore.GetNetwork(networkID)
-	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
-	}
-
-	switch network := network.(type) {
-
-	case *networks.CosmosNetwork:
+	case "teritori", "teritori-testnet":
 		var collections []DBCollectionWithExtra
 
 		where := ""
@@ -169,7 +158,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				MintAddress:         c.MintContractAddress,
 				NetworkId:           req.GetNetworkId(),
 				Volume:              c.Volume,
-				CreatorId:           string(network.UserID(c.CreatorAddress)),
+				CreatorId:           string(indexerdb.TeritoriUserID(c.CreatorAddress)),
 				SecondaryDuringMint: c.SecondaryDuringMint,
 			}}); err != nil {
 				return errors.Wrap(err, "failed to send collection")
@@ -178,8 +167,16 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 
 		return nil
 
-	case *networks.EthereumNetwork:
-		collections, err := s.ethereumProvider.GetCollections(srv.Context(), networkID)
+	case "fake":
+		for i := int32(0); i < limit; i++ {
+			if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: faking.FakeCollection()}); err != nil {
+				return errors.Wrap(err, "failed to send collection")
+			}
+		}
+		return nil
+
+	case "ethereum", "ethereum-goerli":
+		collections, err := s.ethereumProvider.GetCollections(srv.Context(), req.GetNetworkId())
 		if err != nil {
 			return errors.Wrap(err, "failed to query database")
 		}
@@ -191,7 +188,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		return nil
 	}
 
-	return fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
+	return fmt.Errorf("unknown collection network %s", req.GetNetworkId())
 }
 
 type NFTOwnerInfo struct {
@@ -221,39 +218,22 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	if sortDirection == marketplacepb.SortDirection_SORT_DIRECTION_UNSPECIFIED {
 		sortDirection = marketplacepb.SortDirection_SORT_DIRECTION_ASCENDING
 	}
+	networkID := req.GetNetworkId()
+	collection_id := req.GetCollectionId()
+	ownerId := req.GetOwnerId()
 
-	collectionID := req.GetCollectionId()
-	ownerID := req.GetOwnerId()
-
-	var err error
-	var network networks.Network
-	if ownerID != "" {
-		if network, _, err = s.conf.NetworkStore.ParseUserID(ownerID); err != nil {
-			return errors.Wrap(err, "failed to parse owner id")
+	// FIXME: return fake data if any filter is fake
+	if strings.HasPrefix(collection_id, "fake") {
+		for i := int32(0); i < limit; i++ {
+			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: faking.FakeNFT()}); err != nil {
+				return errors.Wrap(err, "failed to send nft")
+			}
 		}
-	} else if collectionID != "" {
-		if network, _, err = s.conf.NetworkStore.ParseCollectionID(collectionID); err != nil {
-			return errors.Wrap(err, "failed to parse collection id")
-		}
-	} else {
-		return errors.New("missing filter")
+		return nil
 	}
 
-	/*
-		if networkId == "fake" {
-			for i := int32(0); i < limit; i++ {
-				if err := srv.Send(&marketplacepb.NFTsResponse{Nft: faking.FakeNFT()}); err != nil {
-					return errors.Wrap(err, "failed to send nft")
-				}
-			}
-			return nil
-		}
-	*/
-
-	switch network := network.(type) {
-
-	case *networks.EthereumNetwork:
-		nfts, err := s.ethereumProvider.GetNFTs(srv.Context(), collectionID, ownerID, int(limit), int(offset), sortDirection)
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
+		nfts, err := s.ethereumProvider.GetNFTs(srv.Context(), networkID, collection_id, ownerId, int(limit), int(offset), sortDirection)
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection nfts")
 		}
@@ -263,21 +243,13 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			}
 		}
 		return nil
-
-	case *networks.SolanaNetwork:
-		if ownerID != "" {
-			return errors.New("owner id filter not supported on solana")
-		}
-
-		_, collectionAddress, err := s.conf.NetworkStore.ParseCollectionID(collectionID)
-		if err != nil {
-			return errors.Wrap(err, "failed to parse collection id")
-		}
-
-		gqlClient := graphql.NewClient(network.HolaplexGraphqlEndpoint, nil)
+	}
+	// FIXME: support other filters on solana
+	if strings.HasPrefix(collection_id, "sol") {
+		gqlClient := graphql.NewClient(s.conf.GraphqlEndpoint, nil)
 
 		collectionNFTs, err := holagql.GetCollectionNFTs(srv.Context(), gqlClient,
-			collectionAddress,
+			strings.TrimPrefix(collection_id, "sol-"),
 			int(limit),
 			int(offset),
 		)
@@ -301,93 +273,92 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			}
 		}
 		return nil
-
-	case *networks.CosmosNetwork:
-		query := s.conf.IndexerDB.
-			Preload("TeritoriNFT").
-			Preload("Collection").
-			Preload("Collection.TeritoriCollection").
-			Where("burnt = ?", false).
-			Offset(int(offset)).
-			Limit(int(limit)).
-			Order("is_listed DESC")
-
-		if sortDirection == marketplacepb.SortDirection_SORT_DIRECTION_ASCENDING {
-			query = query.Order("price_amount ASC")
-		} else {
-			query = query.Order("price_amount DESC")
-		}
-
-		query = query.Order("id ASC")
-
-		if collectionID != "" {
-			query = query.Where("collection_id = ?", collectionID)
-		}
-
-		if ownerID != "" {
-			query = query.Where("owner_id = ?", ownerID)
-		}
-
-		var nfts []*indexerdb.NFT
-		if err := query. // FIXME: this doesn't support mixed denoms
-					Find(&nfts, &indexerdb.NFT{CollectionID: networks.CollectionID(collectionID)}).
-					Error; err != nil {
-			return errors.Wrap(err, "failed to fetch collection nfts")
-		}
-
-		tnsCollectionID := network.CollectionID(network.NameServiceContractAddress)
-
-		for _, nft := range nfts {
-			if nft.Collection == nil {
-				return errors.New("no collection on nft")
-			}
-
-			imageURI := nft.ImageURI
-			textInsert := ""
-
-			// tns-specific
-			if nft.CollectionID == tnsCollectionID {
-				textInsert = nft.Name
-				if imageURI == "" {
-					imageURI = network.NameServiceDefaultImage
-				}
-			}
-
-			// map => json string
-			jsonStr, err := json.Marshal(nft.Attributes)
-			if err != nil {
-				return errors.Wrap(err, "failed to convert nft attributes => json string")
-			}
-
-			// json string => struct
-			var attributes []*marketplacepb.Attribute
-			if err := json.Unmarshal(jsonStr, &attributes); err != nil {
-				return errors.Wrap(err, "failed to convert nft json string => struct")
-			}
-
-			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &marketplacepb.NFT{
-				Id:                 string(nft.ID),
-				Name:               nft.Name,
-				CollectionName:     nft.Collection.Name,
-				NetworkId:          nft.Collection.NetworkId,
-				ImageUri:           ipfsutil.IPFSURIToURL(imageURI),
-				IsListed:           nft.IsListed,
-				Price:              nft.PriceAmount.String,
-				Denom:              nft.PriceDenom,
-				TextInsert:         textInsert,
-				OwnerId:            string(nft.OwnerID),
-				Attributes:         attributes,
-				NftContractAddress: nft.Collection.TeritoriCollection.NFTContractAddress,
-				LockedOn:           nft.LockedOn,
-			}}); err != nil {
-				return errors.Wrap(err, "failed to send nft")
-			}
-		}
-
-		return nil
 	}
 
-	return fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
+	// teritori
+
+	query := s.conf.IndexerDB.
+		Preload("TeritoriNFT").
+		Preload("Collection").
+		Preload("Collection.TeritoriCollection").
+		Where("burnt = ?", false).
+		Offset(int(offset)).
+		Limit(int(limit)).
+		Order("is_listed DESC")
+
+	if sortDirection == marketplacepb.SortDirection_SORT_DIRECTION_ASCENDING {
+		query = query.Order("price_amount ASC")
+	} else {
+		query = query.Order("price_amount DESC")
+	}
+
+	query = query.Order("id ASC")
+
+	if collection_id != "" {
+		query = query.Where("collection_id = ?", collection_id)
+	}
+
+	if ownerId != "" {
+		query = query.Where("owner_id = ?", ownerId)
+	}
+
+	var nfts []*indexerdb.NFT
+	if err := query. // FIXME: this doesn't support mixed denoms
+				Find(&nfts, &indexerdb.NFT{CollectionID: collection_id}).
+				Error; err != nil {
+		return errors.Wrap(err, "failed to fetch collection nfts")
+	}
+
+	tnsId := indexerdb.TeritoriCollectionID(s.conf.TNSContractAddress)
+
+	for _, nft := range nfts {
+		if nft.Collection == nil {
+			return errors.New("no collection on nft")
+		}
+
+		imageURI := nft.ImageURI
+		textInsert := ""
+
+		// tns-specific
+		if nft.CollectionID == tnsId {
+			textInsert = nft.Name
+			if imageURI == "" {
+				imageURI = s.conf.TNSDefaultImageURL
+			}
+		}
+
+		// map => json string
+		jsonStr, err := json.Marshal(nft.Attributes)
+		if err != nil {
+			return errors.Wrap(err, "failed to convert nft attributes => json string")
+		}
+
+		// json string => struct
+		var attributes []*marketplacepb.Attribute
+		if err := json.Unmarshal(jsonStr, &attributes); err != nil {
+			return errors.Wrap(err, "failed to convert nft json string => struct")
+		}
+
+		if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &marketplacepb.NFT{
+			Id:                 nft.ID,
+			Name:               nft.Name,
+			CollectionName:     nft.Collection.Name,
+			NetworkId:          nft.Collection.NetworkId,
+			ImageUri:           ipfsutil.IPFSURIToURL(imageURI),
+			IsListed:           nft.IsListed,
+			Price:              nft.PriceAmount.String,
+			Denom:              nft.PriceDenom,
+			TextInsert:         textInsert,
+			OwnerId:            string(nft.OwnerID),
+			Attributes:         attributes,
+			NftContractAddress: nft.Collection.TeritoriCollection.NFTContractAddress,
+			LockedOn:           nft.LockedOn,
+		}}); err != nil {
+			return errors.Wrap(err, "failed to send nft")
+		}
+	}
+
+	return nil
 }
 
 func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv marketplacepb.MarketplaceService_ActivityServer) error {
@@ -403,27 +374,10 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 		return errors.New("offset must be greater or equal to 0")
 	}
 
-	var err error
 	collectionID := req.GetCollectionId()
-	nftID := req.GetNftId()
-
-	// find network id
-	var network networks.Network
 	if collectionID != "" {
-		if network, _, err = s.conf.NetworkStore.ParseCollectionID(collectionID); err != nil {
-			return errors.Wrap(err, "failed to parse collection id")
-		}
-	} else if nftID != "" {
-		if network, _, _, err = s.conf.NetworkStore.ParseNFTID(nftID); err != nil {
-			return errors.Wrap(err, "failed to parse nft id")
-		}
-	} else {
-		return errors.New("missing filter")
-	}
-
-	/*
-		// return fake data if fake network
-		if networkId == "fake" {
+		//Check for collection Type
+		if strings.HasPrefix(collectionID, "fake") {
 			for i := int32(0); i < limit; i++ {
 				if err := srv.Send(&marketplacepb.ActivityResponse{Activity: faking.FakeActivity()}); err != nil {
 					return errors.Wrap(err, "failed to send activity")
@@ -431,48 +385,39 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			}
 			return nil
 		}
-	*/
 
-	switch network := network.(type) {
+		if strings.HasPrefix(collectionID, "sol") {
+			gqlClient := graphql.NewClient(s.conf.GraphqlEndpoint, nil)
 
-	case *networks.SolanaNetwork:
-		if nftID != "" {
-			return errors.New("nft id filter not supported on solana")
-		}
-
-		gqlClient := graphql.NewClient(network.HolaplexGraphqlEndpoint, nil)
-
-		_, collectionAddress, err := s.conf.NetworkStore.ParseCollectionID(collectionID)
-		if err != nil {
-			return errors.Wrap(err, "failed to parse collection id")
-		}
-
-		collectionActivity, err := holagql.GetCollectionActivity(srv.Context(), gqlClient,
-			collectionAddress,
-			int(limit),
-			int(offset),
-		)
-		if err != nil {
-			return errors.Wrap(err, "failed to fetch collection activity")
-		}
-
-		for _, activity := range collectionActivity.Collection.Activities {
-			if err := srv.Send(&marketplacepb.ActivityResponse{Activity: &marketplacepb.Activity{
-				Id:              string(network.ActivityID(faker.UUIDDigit(), 0)),
-				Amount:          activity.Price,
-				Denom:           "lamports",
-				TransactionKind: activity.ActivityType,
-				TargetName:      activity.Nft.Name,
-				TargetImageUri:  activity.Nft.Image,
-				Time:            activity.CreatedAt,
-			}}); err != nil {
-				return errors.Wrap(err, "failed to send activity")
+			collectionActivity, err := holagql.GetCollectionActivity(srv.Context(), gqlClient,
+				strings.TrimPrefix(collectionID, "sol-"),
+				int(limit),
+				int(offset),
+			)
+			if err != nil {
+				return errors.Wrap(err, "failed to fetch collection activity")
 			}
+
+			for _, activity := range collectionActivity.Collection.Activities {
+				if err := srv.Send(&marketplacepb.ActivityResponse{Activity: &marketplacepb.Activity{
+					Id:              fmt.Sprintf("%s-%s", "sol", faker.UUIDDigit()),
+					Amount:          activity.Price,
+					Denom:           "lamports",
+					TransactionKind: activity.ActivityType,
+					TargetName:      activity.Nft.Name,
+					TargetImageUri:  activity.Nft.Image,
+					Time:            activity.CreatedAt,
+				}}); err != nil {
+					return errors.Wrap(err, "failed to send activity")
+				}
+			}
+
+			return nil
 		}
-
-		return nil
-
-	case *networks.EthereumNetwork:
+	}
+	networkID := req.GetNetworkId()
+	nftID := req.GetNftId()
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
 		activities, total, err := s.ethereumProvider.GetActivities(srv.Context(), collectionID, nftID, int(limit), int(offset))
 		if err != nil {
 			return errors.Wrap(err, "failed to fetch collection activity")
@@ -486,116 +431,113 @@ func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv ma
 			}
 		}
 		return nil
-
-	case *networks.CosmosNetwork:
-		var totalCount int64
-		if err := s.conf.IndexerDB.
-			Model(&indexerdb.Activity{}).
-			Joins("JOIN nfts on nfts.id = activities.nft_id").
-			Where("nfts.collection_id = ? OR ? = ''", collectionID, collectionID).
-			Where("nfts.id = ? OR ? = ''", nftID, nftID).
-			Count(&totalCount).Error; err != nil {
-			return errors.Wrap(err, "failed to retrieve activities from db")
-		}
-
-		if err := srv.Send(&marketplacepb.ActivityResponse{Total: totalCount}); err != nil {
-			return errors.Wrap(err, "failed to send total count")
-		}
-
-		var activities []*indexerdb.Activity
-		if err := s.conf.IndexerDB.
-			Preload("CancelListing").
-			Preload("UpdateNFTPrice").
-			Preload("TransferNFT").
-			Preload("SendNFT").
-			Preload("Burn").
-			Preload("Mint").
-			Preload("Listing").
-			Preload("Trade").
-			Preload("NFT").
-			Joins("JOIN nfts on nfts.id = activities.nft_id").
-			Order("Time DESC").
-			Limit(int(limit)).
-			Offset(int(offset)).
-			Where("nfts.collection_id = ? OR ? = ''", collectionID, collectionID).
-			Where("nfts.id = ? OR ? = ''", nftID, nftID).
-			Find(&activities).Error; err != nil {
-			return errors.Wrap(err, "failed to retrieve activities from db")
-		}
-		for _, activity := range activities {
-			if activity.NFT == nil {
-				s.conf.Logger.Error("missing NFT on activity")
-				continue
-			}
-			var price, denom, buyerId, sellerId string
-			var usdPrice float64
-			switch activity.Kind {
-			case indexerdb.ActivityKindTrade:
-				if activity.Trade != nil {
-					price = activity.Trade.Price
-					denom = activity.Trade.PriceDenom
-					buyerId = string(activity.Trade.BuyerID)
-					sellerId = string(activity.Trade.SellerID)
-					usdPrice = activity.Trade.USDPrice
-				}
-			case indexerdb.ActivityKindList:
-				if activity.Listing != nil {
-					price = activity.Listing.Price
-					denom = activity.Listing.PriceDenom
-					usdPrice = activity.Listing.USDPrice // beware this will not be the real time price, consider using spot price here
-					sellerId = string(activity.Listing.SellerID)
-				}
-			case indexerdb.ActivityKindMint:
-				if activity.Mint != nil {
-					buyerId = string(activity.Mint.BuyerID)
-				}
-			case indexerdb.ActivityKindBurn:
-				if activity.Burn != nil {
-					sellerId = string(activity.Burn.BurnerID)
-				}
-			case indexerdb.ActivityKindTransferNFT:
-				if activity.TransferNFT != nil {
-					sellerId = string(activity.TransferNFT.Sender)
-					buyerId = string(activity.TransferNFT.Receiver)
-				}
-			case indexerdb.ActivityKindSendNFT:
-				if activity.SendNFT != nil {
-					sellerId = string(activity.SendNFT.Sender)
-					buyerId = string(activity.SendNFT.Receiver)
-				}
-			case indexerdb.ActivityKindCancelListing:
-				if activity.CancelListing != nil {
-					sellerId = string(activity.CancelListing.SellerID)
-				}
-			case indexerdb.ActivityKindUpdateNFTPrice:
-				if activity.UpdateNFTPrice != nil {
-					sellerId = string(activity.UpdateNFTPrice.SellerID)
-					price = activity.UpdateNFTPrice.Price
-					denom = activity.UpdateNFTPrice.PriceDenom
-					usdPrice = activity.UpdateNFTPrice.USDPrice
-				}
-			}
-			if err := srv.Send(&marketplacepb.ActivityResponse{Activity: &marketplacepb.Activity{
-				Id:              string(activity.ID),
-				TransactionKind: string(activity.Kind),
-				TargetName:      activity.NFT.Name,
-				TargetImageUri:  activity.NFT.ImageURI,
-				ContractName:    "ToriVault",
-				Time:            activity.Time.Format(time.RFC3339),
-				Amount:          price,
-				Denom:           denom,
-				UsdPrice:        usdPrice,
-				BuyerId:         buyerId,
-				SellerId:        sellerId,
-			}}); err != nil {
-				return errors.Wrap(err, "failed to send activity")
-			}
-		}
-
-		return nil
 	}
 
-	return fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
+	var totalCount int64
+	if err := s.conf.IndexerDB.
+		Model(&indexerdb.Activity{}).
+		Joins("JOIN nfts on nfts.id = activities.nft_id").
+		Where("nfts.collection_id = ? OR ? = ''", collectionID, collectionID).
+		Where("nfts.id = ? OR ? = ''", nftID, nftID).
+		Count(&totalCount).Error; err != nil {
+		return errors.Wrap(err, "failed to retrieve activities from db")
+	}
+
+	if err := srv.Send(&marketplacepb.ActivityResponse{Total: totalCount}); err != nil {
+		return errors.Wrap(err, "failed to send total count")
+	}
+
+	var activities []*indexerdb.Activity
+	if err := s.conf.IndexerDB.
+		Preload("CancelListing").
+		Preload("UpdateNFTPrice").
+		Preload("TransferNFT").
+		Preload("SendNFT").
+		Preload("Burn").
+		Preload("Mint").
+		Preload("Listing").
+		Preload("Trade").
+		Preload("NFT").
+		Joins("JOIN nfts on nfts.id = activities.nft_id").
+		Order("Time DESC").
+		Limit(int(limit)).
+		Offset(int(offset)).
+		Where("nfts.collection_id = ? OR ? = ''", collectionID, collectionID).
+		Where("nfts.id = ? OR ? = ''", nftID, nftID).
+		Find(&activities).Error; err != nil {
+		return errors.Wrap(err, "failed to retrieve activities from db")
+	}
+	for _, activity := range activities {
+		if activity.NFT == nil {
+			s.conf.Logger.Error("missing NFT on activity")
+			continue
+		}
+		var price, denom, buyerId, sellerId string
+		var usdPrice float64
+		switch activity.Kind {
+		case indexerdb.ActivityKindTrade:
+			if activity.Trade != nil {
+				price = activity.Trade.Price
+				denom = activity.Trade.PriceDenom
+				buyerId = string(activity.Trade.BuyerID)
+				sellerId = string(activity.Trade.SellerID)
+				usdPrice = activity.Trade.USDPrice
+			}
+		case indexerdb.ActivityKindList:
+			if activity.Listing != nil {
+				price = activity.Listing.Price
+				denom = activity.Listing.PriceDenom
+				usdPrice = activity.Listing.USDPrice // beware this will not be the real time price, consider using spot price here
+				sellerId = string(activity.Listing.SellerID)
+			}
+		case indexerdb.ActivityKindMint:
+			if activity.Mint != nil {
+				buyerId = string(activity.Mint.BuyerID)
+			}
+		case indexerdb.ActivityKindBurn:
+			if activity.Burn != nil {
+				sellerId = string(activity.Burn.BurnerID)
+			}
+		case indexerdb.ActivityKindTransferNFT:
+			if activity.TransferNFT != nil {
+				sellerId = string(activity.TransferNFT.Sender)
+				buyerId = string(activity.TransferNFT.Receiver)
+			}
+		case indexerdb.ActivityKindSendNFT:
+			if activity.SendNFT != nil {
+				sellerId = string(activity.SendNFT.Sender)
+				buyerId = string(activity.SendNFT.Receiver)
+			}
+		case indexerdb.ActivityKindCancelListing:
+			if activity.CancelListing != nil {
+				sellerId = string(activity.CancelListing.SellerID)
+			}
+		case indexerdb.ActivityKindUpdateNFTPrice:
+			if activity.UpdateNFTPrice != nil {
+				sellerId = string(activity.UpdateNFTPrice.SellerID)
+				price = activity.UpdateNFTPrice.Price
+				denom = activity.UpdateNFTPrice.PriceDenom
+				usdPrice = activity.UpdateNFTPrice.USDPrice
+			}
+		}
+		if err := srv.Send(&marketplacepb.ActivityResponse{Activity: &marketplacepb.Activity{
+			Id:              activity.ID,
+			TransactionKind: string(activity.Kind),
+			TargetName:      activity.NFT.Name,
+			TargetImageUri:  activity.NFT.ImageURI,
+			ContractName:    "ToriVault",
+			Time:            activity.Time.Format(time.RFC3339),
+			Amount:          price,
+			Denom:           denom,
+			UsdPrice:        usdPrice,
+			BuyerId:         buyerId,
+			SellerId:        sellerId,
+		}}); err != nil {
+			return errors.Wrap(err, "failed to send activity")
+		}
+	}
+
+	return nil
 }
 
 func (s *MarkteplaceService) NFTPriceHistory(ctx context.Context, req *marketplacepb.NFTPriceHistoryRequest) (*marketplacepb.NFTPriceHistoryResponse, error) {
@@ -603,37 +545,32 @@ func (s *MarkteplaceService) NFTPriceHistory(ctx context.Context, req *marketpla
 	if id == "" {
 		return nil, errors.New("empty id")
 	}
-	network, _, _, err := s.conf.NetworkStore.ParseNFTID(id)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse nft id")
-	}
-
-	switch network.(type) {
-
-	case *networks.EthereumNetwork:
-		data, err := s.ethereumProvider.GetNFTPriceHistory(ctx, id)
+	networkID := req.GetNetworkId()
+	var data []*marketplacepb.PriceDatum
+	var err error
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
+		data, err = s.ethereumProvider.GetNFTPriceHistory(ctx, id)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed get price history")
 		}
 		return &marketplacepb.NFTPriceHistoryResponse{Data: data}, nil
-
-	case *networks.CosmosNetwork:
-		var data []*marketplacepb.PriceDatum
-		if err := s.conf.IndexerDB.
-			WithContext(ctx).
-			Model(&indexerdb.Trade{}).
-			Select("trades.usd_price as price, activities.time as time").
-			Joins("JOIN activities ON trades.activity_id = activities.id").
-			Where("activities.time > ?", time.Now().AddDate(0, 0, -7)).
-			Where("activities.nft_id = ?", id).
-			Order("activities.time ASC").
-			Scan(&data).Error; err != nil {
-			return nil, errors.Wrap(err, "failed to retrieve data from db")
-		}
-		return &marketplacepb.NFTPriceHistoryResponse{Data: data}, nil
 	}
 
-	return nil, fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
+	// TODO: data decimation in case we have a lot of samples for the period
+
+	if err := s.conf.IndexerDB.
+		WithContext(ctx).
+		Model(&indexerdb.Trade{}).
+		Select("trades.usd_price as price, activities.time as time").
+		Joins("JOIN activities ON trades.activity_id = activities.id").
+		Where("activities.time > ?", time.Now().AddDate(0, 0, -7)).
+		Where("activities.nft_id = ?", id).
+		Order("activities.time ASC").
+		Scan(&data).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to retrieve data from db")
+	}
+
+	return &marketplacepb.NFTPriceHistoryResponse{Data: data}, nil
 }
 
 type QuestWithCompletion struct {
@@ -682,14 +619,8 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 	}
 	ownerID := req.GetOwnerId()
 
-	network, _, err := s.conf.NetworkStore.ParseCollectionID(collectionID)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse collection id")
-	}
-
-	switch network.(type) {
-
-	case *networks.EthereumNetwork:
+	networkID := req.GetNetworkId()
+	if networkID == "ethereum" || networkID == "ethereum-goerli" {
 		stats, err := s.ethereumProvider.GetCollectionStats(ctx, collectionID, ownerID)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed fetch ethereum collection stats")
@@ -697,55 +628,52 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		return &marketplacepb.CollectionStatsResponse{
 			Stats: stats,
 		}, nil
-
-	case *networks.CosmosNetwork:
-		db, err := s.conf.IndexerDB.DB()
-		if err != nil {
-			return nil, errors.Wrap(err, "failed get DB instance")
-		}
-
-		var stats CollectionStats
-		err = queries.Raw(`with 
-      nfts_in_collection as (
-        SELECT  *  FROM nfts n where n.collection_id = $1
-      ),
-      listed_nfts as (
-        SELECT  * from nfts_in_collection nic where is_listed = true
-      ),
-      min_price_by_denom as (
-        select min(price_amount) price_amount, price_denom from listed_nfts ln2 group by ln2.price_denom 
-      ),
-      trades_in_collection as (
-        select COALESCE(sum(t.usd_price),0) total_volume FROM trades AS t
-        INNER join activities AS a on a.id = t.activity_id 
-        INNER join nfts_in_collection nic on nic.id = a.nft_id
-      )
-      select 
-        to_json(array( select json_build_object('amount',price_amount,'denom',ln2.price_denom) from min_price_by_denom ln2)) lower_price, 
-        (select total_volume from trades_in_collection),
-        (select count(distinct owner_id)  from nfts_in_collection) owners,
-        (select count(1) from listed_nfts) listed,
-        count(1) total_supply,
-        (select count(1) from nfts_in_collection where owner_id = $2) owned
-      from nfts_in_collection`, collectionID, ownerID).Bind(ctx, db, &stats)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to make query")
-		}
-		var coins []coin
-		err = stats.LowerPrice.Unmarshal(&coins)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to unmarshal floor_price struct")
-		}
-		stats.FloorPrice = make([]*marketplacepb.Amount, len(coins))
-		for index, coin := range coins {
-			stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: fmt.Sprint(coin.Amount)}
-		}
-		return &marketplacepb.CollectionStatsResponse{
-			Stats: &stats.CollectionStats,
-		}, nil
 	}
 
-	return nil, fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
+	db, err := s.conf.IndexerDB.DB()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed get DB instance")
+	}
+
+	var stats CollectionStats
+	err = queries.Raw(`with 
+	nfts_in_collection as (
+		SELECT  *  FROM nfts n where n.collection_id = $1
+	),
+	listed_nfts as (
+		SELECT  * from nfts_in_collection nic where is_listed = true
+	),
+	min_price_by_denom as (
+		select min(price_amount) price_amount, price_denom from listed_nfts ln2 group by ln2.price_denom 
+	),
+	trades_in_collection as (
+		select COALESCE(sum(t.usd_price),0) total_volume FROM trades AS t
+		INNER join activities AS a on a.id = t.activity_id 
+		INNER join nfts_in_collection nic on nic.id = a.nft_id
+	)
+	select 
+		to_json(array( select json_build_object('amount',price_amount,'denom',ln2.price_denom) from min_price_by_denom ln2)) lower_price, 
+		(select total_volume from trades_in_collection),
+		(select count(distinct owner_id)  from nfts_in_collection) owners,
+		(select count(1) from listed_nfts) listed,
+		count(1) total_supply,
+		(select count(1) from nfts_in_collection where owner_id = $2) owned
+	from nfts_in_collection`, collectionID, ownerID).Bind(ctx, db, &stats)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to make query")
+	}
+	var coins []coin
+	err = stats.LowerPrice.Unmarshal(&coins)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal floor_price struct")
+	}
+	stats.FloorPrice = make([]*marketplacepb.Amount, len(coins))
+	for index, coin := range coins {
+		stats.FloorPrice[index] = &marketplacepb.Amount{Denom: coin.Denom, Quantity: fmt.Sprint(coin.Amount)}
+	}
+	return &marketplacepb.CollectionStatsResponse{
+		Stats: &stats.CollectionStats,
+	}, nil
 }
 
 func (s *MarkteplaceService) Banners(ctx context.Context, req *marketplacepb.BannersRequest) (*marketplacepb.BannersResponse, error) {

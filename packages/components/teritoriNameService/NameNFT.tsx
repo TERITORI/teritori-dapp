@@ -2,9 +2,7 @@ import React from "react";
 import { Image, StyleProp, ViewStyle, View } from "react-native";
 
 import defaultNameNFT from "../../../assets/default-images/default-name-nft.png";
-import { useNSNameInfo } from "../../hooks/useNSNameInfo";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getCosmosNetwork } from "../../networks";
+import { useToken } from "../../hooks/tokens";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold16 } from "../../utils/style/fonts";
@@ -16,11 +14,7 @@ export const NameNFT: React.FC<{
   name: string;
   width?: number;
 }> = ({ style, name, width = 332 }) => {
-  const networkId = useSelectedNetworkId();
-  const network = getCosmosNetwork(networkId);
-  const tokenId = name + network?.nameServiceTLD || "";
-
-  const { nsInfo: token } = useNSNameInfo(networkId, tokenId);
+  const { token } = useToken(name, process.env.TLD || "");
 
   const imageMargin = 12;
 
@@ -28,8 +22,8 @@ export const NameNFT: React.FC<{
     <View style={[{ alignItems: "center" }, style]}>
       <Image
         source={
-          typeof token?.extension.image === "string"
-            ? ipfsURLToHTTPURL(token.extension.image)
+          token && token.image && token.image !== ""
+            ? ipfsURLToHTTPURL(token.image)
             : defaultNameNFT
         }
         style={{
@@ -41,7 +35,7 @@ export const NameNFT: React.FC<{
       />
 
       <NameAndTldText
-        nameAndTldStr={tokenId}
+        nameAndTldStr={name + process.env.TLD}
         style={{
           justifyContent: "center",
           marginHorizontal: imageMargin,

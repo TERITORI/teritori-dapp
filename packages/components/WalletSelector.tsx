@@ -5,12 +5,12 @@ import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
 import { useWallets, Wallet } from "../context/WalletsProvider";
-import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
+import { useTNSMetadata } from "../hooks/useTNSMetadata";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
-import { walletProviderToNetworkKind } from "../utils/network";
+import { walletProviderToNetwork } from "../utils/network";
 import { neutral17, neutral44, secondaryColor } from "../utils/style/colors";
 import { walletSelectorWidth } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
@@ -44,7 +44,7 @@ const WalletView: React.FC<{
   wallet?: Wallet;
   style?: StyleProp<ViewStyle>;
 }> = ({ wallet, style }) => {
-  const userInfo = useNSUserInfo(wallet?.userId);
+  const tnsMetadata = useTNSMetadata(wallet?.address);
 
   const fontSize = 14;
   return (
@@ -62,7 +62,10 @@ const WalletView: React.FC<{
         }}
         ellipsizeMode="middle"
       >
-        {tinyAddress(userInfo.metadata?.tokenId || wallet?.address || "", 16)}
+        {tinyAddress(
+          tnsMetadata.metadata?.tokenId || wallet?.address || "",
+          16
+        )}
       </BrandText>
     </View>
   );
@@ -89,7 +92,7 @@ export const WalletSelector: React.FC<{
     (wallet) =>
       wallet.id !== selectedWallet.id &&
       wallet.address &&
-      walletProviderToNetworkKind(wallet.provider) === selectedNetworkInfo?.kind
+      walletProviderToNetwork(wallet.provider) === selectedNetworkInfo?.network
   );
 
   const onSelectWallet = (walletId: string) => {

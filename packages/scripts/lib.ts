@@ -4,18 +4,13 @@ import {
   GrpcWebImpl,
   MarketplaceServiceClientImpl,
 } from "../api/marketplace/v1/marketplace";
-import { getNetwork } from "../networks";
 
-export const mustGetNodeMarketplaceClient = (networkId: string) => {
-  const network = getNetwork(networkId);
-  if (!network) {
-    throw new Error("network not found");
-  }
-  const rpc = new GrpcWebImpl(network.backendEndpoint, {
-    transport: NodeHttpTransport(),
-    debug: false,
-    // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
-  });
+const backendEndpoint = "https://dapp-backend.mainnet.teritori.com";
 
-  return new MarketplaceServiceClientImpl(rpc);
-};
+const rpc = new GrpcWebImpl(backendEndpoint, {
+  transport: NodeHttpTransport(),
+  debug: false,
+  // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
+});
+
+export const nodeBackendClient = new MarketplaceServiceClientImpl(rpc);

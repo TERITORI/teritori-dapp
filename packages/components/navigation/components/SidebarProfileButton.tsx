@@ -2,7 +2,6 @@ import React from "react";
 import { Image, View } from "react-native";
 
 import emptyCircleFrameSVG from "../../../../assets/empty-circle-frame.svg";
-import { getCosmosNetwork, parseUserId } from "../../../networks";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
@@ -13,21 +12,19 @@ import { SVG } from "../../SVG";
 import { CustomPressable } from "../../buttons/CustomPressable";
 
 export const SidebarProfileButton: React.FC<{
-  userId: string;
+  walletAddress: string;
   image: string;
   tokenId: string;
   isExpanded?: boolean;
-}> = ({ userId, image, tokenId, isExpanded }) => {
+}> = ({ walletAddress, image, tokenId, isExpanded }) => {
   const navigation = useAppNavigation();
   const imageWidth = 68;
-  const [network] = parseUserId(userId);
-  const cosmosNetwork = getCosmosNetwork(network?.id);
 
   return (
     <CustomPressable
       onPress={() =>
         navigation.navigate("UserPublicProfile", {
-          id: userId,
+          id: `tori-${walletAddress}`,
         })
       }
     >
@@ -43,7 +40,9 @@ export const SidebarProfileButton: React.FC<{
         <Image
           source={{
             uri: ipfsURLToHTTPURL(
-              image ? image : cosmosNetwork?.nameServiceDefaultImage || ""
+              image
+                ? image
+                : process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
             ),
           }} // TODO: proper fallback
           style={[

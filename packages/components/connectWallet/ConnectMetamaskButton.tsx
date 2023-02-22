@@ -4,9 +4,11 @@ import { Linking } from "react-native";
 
 import metamaskSVG from "../../../assets/icons/metamask.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getEthereumNetwork, selectableEthereumNetworks } from "../../networks";
-import { setSelectedNetworkId } from "../../store/slices/settings";
+import { getNetwork } from "../../networks";
+import {
+  setIsMetamaskConnected,
+  setSelectedNetworkId,
+} from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 
@@ -16,7 +18,6 @@ export const ConnectMetamaskButton: React.FC<{
   const { setToastError } = useFeedbacks();
   const dispatch = useAppDispatch();
   const { status, connect } = useMetaMask();
-  const selectedNetworkId = useSelectedNetworkId();
 
   const isConnected = status === "connected";
 
@@ -30,14 +31,15 @@ export const ConnectMetamaskButton: React.FC<{
         );
         return;
       }
-      let network = getEthereumNetwork(selectedNetworkId);
-      if (!network) {
-        if (selectableEthereumNetworks.length) {
-          network = selectableEthereumNetworks[0];
-        }
+      const ethereumNetworkId = process.env.ETHEREUM_NETWORK_ID;
+      if (!ethereumNetworkId) {
+        console.error("no ethereum network id");
+        return;
       }
+      const network = getNetwork(ethereumNetworkId);
       if (!network) {
-        throw new Error("no suitable network");
+        console.error(`no ${ethereumNetworkId} network`);
+        return;
       }
 
       if (!isConnected) {
@@ -45,10 +47,11 @@ export const ConnectMetamaskButton: React.FC<{
         console.log("Connected address:", address);
       }
 
-      dispatch(setSelectedNetworkId(network.id));
-
+      dispatch(setSelectedNetworkId(ethereumNetworkId));
+      dispatch(setIsMetamaskConnected(true));
       onDone && onDone();
     } catch (err) {
+      onDone && onDone(err);
       console.error(err);
       if (err instanceof Error) {
         setToastError({
@@ -56,7 +59,6 @@ export const ConnectMetamaskButton: React.FC<{
           message: err.message,
         });
       }
-      onDone && onDone(err);
     }
   };
   return (

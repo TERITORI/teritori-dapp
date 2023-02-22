@@ -2,22 +2,21 @@ import React from "react";
 import { Image, StyleProp, View, ViewStyle } from "react-native";
 
 import userImageFrameSVG from "../../../assets/user-image-frame.svg";
-import { getCosmosNetwork } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { SVG } from "../SVG";
 
 export const UserImage: React.FC<{
-  networkId: string | undefined;
-  imageURI: string | null | undefined;
+  image: string | null | undefined;
   style?: StyleProp<ViewStyle>;
-}> = ({ networkId, imageURI, style, children }) => {
-  const network = getCosmosNetwork(networkId);
+}> = ({ image, style, children }) => {
   return (
     <View style={style}>
       <Image
         source={{
           uri: ipfsURLToHTTPURL(
-            imageURI ? imageURI : network?.nameServiceDefaultImage || ""
+            image
+              ? image
+              : process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
           ),
         }} // TODO: proper fallback
         style={[
