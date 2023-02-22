@@ -29,7 +29,7 @@ export const useFetchComments = ({
   const wallet = useSelectedWallet();
 
   // request
-  const req = useInfiniteQuery<FetchCommentResponse>(
+  const data = useInfiniteQuery<FetchCommentResponse>(
     ["FetchComment", wallet?.address, parentId],
     async ({ pageParam }) => {
       if (!wallet?.address) {
@@ -69,5 +69,5 @@ export const useFetchComments = ({
     }
   );
 
-  return req;
+  return data;
 };

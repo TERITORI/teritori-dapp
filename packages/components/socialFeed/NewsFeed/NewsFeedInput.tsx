@@ -34,6 +34,7 @@ import {
   neutral22,
   neutral77,
   primaryColor,
+  primaryTextColor,
   secondaryColor,
   yellowDefault,
 } from "../../../utils/style/colors";
@@ -76,6 +77,8 @@ interface NewsFeedInputProps {
   replyTo?: ReplyToType;
   onCloseCreateModal?: () => void;
   onPressCreateArticle?: (formValues: NewPostFormValues) => void;
+  hash?: string;
+  mentionedUser?: string;
 }
 
 export interface NewsFeedInputHandle {
@@ -98,6 +101,8 @@ export const NewsFeedInput = React.forwardRef<
       onSubmitInProgress,
       onCloseCreateModal,
       onPressCreateArticle,
+      hash,
+      mentionedUser,
     },
     forwardRef
   ) => {
@@ -195,6 +200,15 @@ export const NewsFeedInput = React.forwardRef<
           replyTo?.parentId &&
           formValues.message.includes(`@${replyTo.username}`);
 
+        // Adding hashtag or mentioned user
+        let finalMessage = formValues.message || "";
+        if (mentionedUser) {
+          finalMessage += `\n@${mentionedUser}`;
+        }
+        if (hash) {
+          finalMessage += `\n#${hash}`;
+        }
+
         let files: RemoteFileData[] = [];
 
         if (formValues.files?.length && nftStorageApiToken) {
@@ -212,7 +226,7 @@ export const NewsFeedInput = React.forwardRef<
 
         const metadata: SocialFeedMetadata = generatePostMetadata({
           title: formValues.title || "",
-          message: formValues.message || "",
+          message: finalMessage,
           files,
           hashtags: [],
           gifs: formValues?.gifs || [],
@@ -533,12 +547,22 @@ export const NewsFeedInput = React.forwardRef<
             {type === "post" && (
               <SecondaryButtonOutline
                 size="M"
-                color={primaryColor}
+                color={
+                  formValues?.message.length >
+                  SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT
+                    ? primaryTextColor
+                    : primaryColor
+                }
                 borderColor={primaryColor}
                 touchableStyle={{
                   marginRight: layout.padding_x2_5,
                 }}
-                backgroundColor={neutral17}
+                backgroundColor={
+                  formValues?.message.length >
+                  SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT
+                    ? primaryColor
+                    : neutral17
+                }
                 text="Create an Article"
                 onPress={
                   onPressCreateArticle
