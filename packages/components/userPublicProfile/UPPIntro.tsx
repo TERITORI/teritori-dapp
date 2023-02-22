@@ -25,12 +25,11 @@ import { AvatarWithFrame } from "../images/AvatarWithFrame";
 export const UPPIntro: React.FC<{
   userId: string;
   isUserOwner?: boolean;
-  isLoading?: boolean;
-}> = ({ userId, isUserOwner, isLoading }) => {
-  const { metadata } = useNSUserInfo(userId);
+}> = ({ userId, isUserOwner }) => {
+  const { metadata, loading } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
-  const [network, userAddress] = parseUserId(userId);
+  const [, userAddress] = parseUserId(userId);
 
   return (
     <>
@@ -94,19 +93,9 @@ export const UPPIntro: React.FC<{
             isEdit
           />
         )}
-        {/*<AvatarWithFrame*/}
-        {/*  isLoading={isLoading}*/}
-        {/*  image={metadata?.image}*/}
-        {/*  style={{*/}
-        {/*    position: "absolute",*/}
-        {/*    top: 217,*/}
-        {/*    left: 16,*/}
-        {/*  }}*/}
-        {/*  size="XL"*/}
-        {/*/>*/}
-        <UserImage
-          networkId={network?.id}
-          imageURI={metadata?.image}
+        <AvatarWithFrame
+          isLoading={loading}
+          image={metadata?.image}
           style={{
             position: "absolute",
             top: 217,

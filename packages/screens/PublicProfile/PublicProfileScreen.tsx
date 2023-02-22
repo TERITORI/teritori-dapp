@@ -6,7 +6,8 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { screenTitle } from "../../components/navigation/Navigator";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { FeedRequest } from "../../hooks/useFetchFeed";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { NetworkKind, parseNetworkObjectId } from "../../networks";
 import { feedTabToCategories, screenTabItems } from "../../utils/feed";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
@@ -22,20 +23,17 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
   const navigation = useAppNavigation();
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("all");
-  const userAddress = useMemo(
-    () => (id.includes(".tori") ? id : id.replace("tori-", "")),
-    [id]
-  );
-  const { metadata, notFound } = useTNSMetadata(userAddress);
+  const [, userAddress] = parseNetworkObjectId(id);
+  const ownerNSInfo = useNSUserInfo(id);
 
   useEffect(() => {
-    if (metadata?.public_name) {
+    if (ownerNSInfo.metadata.public_name) {
       navigation.setOptions({
         // TODO: If org, make it uppercase
-        title: screenTitle(metadata?.public_name),
+        title: screenTitle(ownerNSInfo.metadata.public_name),
       });
     }
-  }, [metadata?.public_name]);
+  }, [ownerNSInfo.metadata.public_name]);
 
   const feedRequest: FeedRequest = useMemo(() => {
     return {
@@ -46,12 +44,13 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
 
   return (
     <ScreenContainer
+      forceNetworkKind={NetworkKind.Cosmos}
       responsive
       fullWidth
       noScroll
       headerChildren={
         <BrandText style={fontSemibold20}>
-          {metadata?.public_name || "Anon"}
+          {ownerNSInfo.metadata.public_name}
         </BrandText>
       }
       onBackPress={() =>
@@ -61,7 +60,7 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
       }
       footerChildren={<></>}
     >
-      {notFound || (!id.startsWith("tori-") && !id.includes(".tori")) ? (
+      {ownerNSInfo.notFound || !userAddress ? (
         <View
           style={{
             alignItems: "center",
@@ -77,10 +76,7 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
             req={feedRequest}
             Header={() => (
               <>
-                <PublicProfileIntro
-                  userId={id.includes(".tori") ? `@${id}` : id}
-                  metadata={metadata}
-                />
+                <PublicProfileIntro metadata={ownerNSInfo.metadata} />
                 <FeedHeader
                   selectedTab={selectedTab}
                   onTabChange={setSelectedTab}

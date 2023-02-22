@@ -27,7 +27,9 @@ import { RichText } from "../../components/socialFeed/RichText";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useOpenGraph } from "../../hooks/feed/useOpenGraph";
 import { useBalances } from "../../hooks/useBalances";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind } from "../../networks";
 import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { URL_REGEX } from "../../utils/regex";
@@ -52,6 +54,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
   const balances = useBalances(
     process.env.TERITORI_NETWORK_ID,
     wallet?.address
@@ -91,12 +94,19 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
 
   // functions
   const updateAvailableFreePost = async () => {
-    const freePost = await getAvailableFreePost({ wallet });
+    const freePost = await getAvailableFreePost({
+      networkId: selectedNetworkId,
+      wallet,
+    });
     setFreePostCount(freePost || 0);
   };
 
   const updatePostFee = async () => {
-    const fee = await getPostFee({ wallet, postCategory });
+    const fee = await getPostFee({
+      networkId: selectedNetworkId,
+      wallet,
+      postCategory,
+    });
     setPostFee(fee || 0);
   };
 
@@ -111,6 +121,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     }
 
     await createPost({
+      networkId: selectedNetworkId,
       wallet,
       freePostCount,
       fee: postFee,
@@ -164,6 +175,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
 
   return (
     <ScreenContainer
+      forceNetworkKind={NetworkKind.Cosmos}
       responsive
       maxWidth={NEWS_FEED_MAX_WIDTH}
       headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}

@@ -16,9 +16,7 @@ import { fontBold16, fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const PublicProfileIntro: React.FC<{
-  userId: string;
-  metadata?: (Metadata & { tokenId: string }) | null;
-  isUserOwner?: boolean;
+  metadata?: Metadata | any | null;
 }> = ({ metadata }) => {
   return (
     <>

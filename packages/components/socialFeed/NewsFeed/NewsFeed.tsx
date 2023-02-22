@@ -11,8 +11,10 @@ import {
   FeedRequest,
   useFetchFeed,
 } from "../../../hooks/useFetchFeed";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
+import { getUserId } from "../../../networks";
 import { useAppNavigation } from "../../../utils/navigation";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
 import { SpacerColumn } from "../../spacer";
@@ -36,6 +38,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
     useFetchFeed(req);
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const posts: PostResult[] = useMemo(
@@ -45,7 +48,9 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const { metadata } = useTNSMetadata(req.user);
+  const mentionedUserNSInfo = useNSUserInfo(
+    getUserId(selectedNetworkId, req.user)
+  );
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -87,9 +92,13 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
   // (Except if it's the connected user's PublicProfileScreen)
   const mentionedUser = useMemo(() => {
     if (selectedWallet?.address !== req.user) {
-      return metadata?.public_name || req.user;
+      return mentionedUserNSInfo?.metadata.public_name || req.user;
     }
-  }, [selectedWallet?.address, req.user, metadata?.public_name]);
+  }, [
+    selectedWallet?.address,
+    req.user,
+    mentionedUserNSInfo?.metadata.public_name,
+  ]);
 
   const ListHeaderComponent = useCallback(
     () => (
