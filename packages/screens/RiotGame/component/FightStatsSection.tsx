@@ -38,7 +38,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
       />
       <InfoBox size="SM" title="Rank" content={prettyUserRank} width={120} />
 
-      {claimableAmount !== 0 && selectedWallet?.address && (
+      {+claimableAmount !== 0 && selectedWallet?.address && (
         <PrimaryButtonOutline
           disabled={isClaiming}
           color={yellowDefault}
