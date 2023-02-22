@@ -15,13 +15,14 @@ import {
   combineFetchCommentPages,
   useFetchComments,
 } from "../../../hooks/useFetchComments";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../hooks/usePrevious";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
+import { getUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
-  DEFAULT_NAME,
   DEFAULT_USERNAME,
   getUpdatedReactions,
 } from "../../../utils/social-feed";
@@ -83,6 +84,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const [replyListYOffset, setReplyListYOffset] = useState<number[]>([]);
   const [replyListLayout, setReplyListLayout] = useState<LayoutRectangle>();
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
   const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
     useFetchComments({
       parentId: localComment.identifier,
@@ -107,10 +109,11 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const moreCommentsCount = localComment.sub_post_length - comments.length;
 
   const metadata = JSON.parse(localComment.metadata);
-  const postByTNSMetadata = useTNSMetadata(localComment?.post_by);
-  const currentUserMetadata = useTNSMetadata(wallet?.address);
-  const username = postByTNSMetadata?.metadata?.tokenId
-    ? tinyAddress(postByTNSMetadata?.metadata?.tokenId || "", 19)
+  const authorId = getUserId(selectedNetworkId, localComment.post_by);
+  const authorNSInfo = useNSUserInfo(authorId);
+  const userInfo = useNSUserInfo(wallet?.userId);
+  const username = authorNSInfo?.metadata?.tokenId
+    ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
     : DEFAULT_USERNAME;
 
   useEffect(() => {
@@ -155,6 +158,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       return;
     }
     const client = await socialFeedClient({
+      networkId: selectedNetworkId,
       walletAddress: wallet.address,
     });
 
@@ -203,7 +207,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate("UserPublicProfile", {
-                      id: `tori-${localComment.post_by}`,
+                      id: authorId,
                     })
                   }
                   style={{
@@ -211,9 +215,9 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   }}
                 >
                   <AvatarWithFrame
-                    image={postByTNSMetadata?.metadata?.image}
+                    image={authorNSInfo?.metadata?.image}
                     size="M"
-                    isLoading={postByTNSMetadata.loading}
+                    isLoading={authorNSInfo.loading}
                   />
                 </TouchableOpacity>
 
@@ -221,14 +225,15 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate("PublicProfile", {
-                      id: `tori-${localComment.post_by}`,
+                      id: authorId,
                     })
                   }
                   activeOpacity={0.7}
                 >
                   <AnimationFadeIn>
                     <BrandText style={fontSemibold16}>
-                      {postByTNSMetadata?.metadata?.public_name || DEFAULT_NAME}
+                      {authorNSInfo?.metadata?.public_name ||
+                        localComment.post_by}
                     </BrandText>
                   </AnimationFadeIn>
                 </TouchableOpacity>
@@ -237,7 +242,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate("PublicProfile", {
-                      id: `tori-${localComment.post_by}`,
+                      id: authorId,
                     })
                   }
                   style={{ marginHorizontal: layout.padding_x1_5 }}
@@ -251,11 +256,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                     ]}
                   >
                     @
-                    {postByTNSMetadata?.metadata?.tokenId
-                      ? tinyAddress(
-                          postByTNSMetadata?.metadata?.tokenId || "",
-                          19
-                        )
+                    {authorNSInfo?.metadata?.tokenId
+                      ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
                       : DEFAULT_USERNAME}
                   </BrandText>
                 </TouchableOpacity>
@@ -287,12 +289,12 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 <SpacerRow size={2.5} />
                 <CommentsCount post={localComment} />
 
-                {postByTNSMetadata.metadata?.tokenId !==
-                  currentUserMetadata?.metadata?.tokenId && (
+                {authorNSInfo.metadata?.tokenId !==
+                  userInfo?.metadata?.tokenId && (
                   <>
                     <SpacerRow size={2.5} />
                     <TipButton
-                      postTokenId={postByTNSMetadata?.metadata?.tokenId || ""}
+                      postTokenId={authorNSInfo?.metadata?.tokenId || ""}
                     />
                   </>
                 )}

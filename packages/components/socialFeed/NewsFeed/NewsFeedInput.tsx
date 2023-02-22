@@ -19,6 +19,7 @@ import { socialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobileView } from "../../../hooks/useIsMobileView";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { ReplyToType } from "../../../screens/FeedPostView/types";
 import { defaultSocialFeedFee } from "../../../utils/fee";
@@ -110,6 +111,7 @@ export const NewsFeedInput = React.forwardRef<
     const inputMinHeight = 20;
     const inputHeight = useSharedValue(20);
     const wallet = useSelectedWallet();
+    const selectedNetworkId = useSelectedNetworkId();
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
     const isMobile = useIsMobileView();
@@ -156,12 +158,16 @@ export const NewsFeedInput = React.forwardRef<
     const formValues = watch();
 
     const updateAvailableFreePost = async () => {
-      const freePost = await getAvailableFreePost({ wallet });
+      const freePost = await getAvailableFreePost({
+        networkId: selectedNetworkId,
+        wallet,
+      });
       setFreePostCount(freePost || 0);
     };
 
     const updatePostFee = async () => {
       const fee = await getPostFee({
+        networkId: selectedNetworkId,
         wallet,
         postCategory: getPostCategory(formValues),
       });
@@ -221,6 +227,7 @@ export const NewsFeedInput = React.forwardRef<
         const postCategory = getPostCategory(formValues);
 
         const client = await socialFeedClient({
+          networkId: selectedNetworkId,
           walletAddress: wallet?.address || "",
         });
 

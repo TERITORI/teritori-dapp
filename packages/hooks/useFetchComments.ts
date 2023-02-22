@@ -2,6 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { socialFeedClient } from "../client-creators/socialFeedClient";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { useSelectedNetworkId } from "./useSelectedNetwork";
 import useSelectedWallet from "./useSelectedWallet";
 
 export type FetchCommentResponse = {
@@ -27,6 +28,7 @@ export const useFetchComments = ({
 }: ConfigType) => {
   // variable
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
 
   // request
   const data = useInfiniteQuery<FetchCommentResponse>(
@@ -38,6 +40,7 @@ export const useFetchComments = ({
 
       try {
         const client = await socialFeedClient({
+          networkId: selectedNetworkId,
           walletAddress: wallet.address,
         });
 

@@ -9,6 +9,8 @@ import {
 } from "react-native";
 
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getCosmosNetwork } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations";
@@ -21,6 +23,8 @@ export const AvatarWithFrame: React.FC<{
   isLoading?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ image, size, isLoading, style }) => {
+  const networkId = useSelectedNetworkId();
+  const network = getCosmosNetwork(networkId);
   const sizedStyles = useMemo(
     () => StyleSheet.flatten(flatStyles[size]),
     [size]
@@ -45,9 +49,7 @@ export const AvatarWithFrame: React.FC<{
             resizeMode="contain"
             source={{
               uri: ipfsURLToHTTPURL(
-                image
-                  ? image
-                  : process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
+                image ? image : network?.nameServiceDefaultImage || ""
               ),
             }}
             style={sizedStyles.image}
