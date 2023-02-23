@@ -9,15 +9,15 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { isNFTStaked } from "../../../utils/game";
 import {
-  yellowDefault,
   neutral33,
   secondaryColor,
-  orangeLight,
   withAlpha,
   neutralA3,
+  redDefault,
 } from "../../../utils/style/colors";
-import { fontMedium14, fontSemibold13 } from "../../../utils/style/fonts";
+import { fontMedium14, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 interface BreedingSlotProps {
@@ -33,6 +33,8 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
   breedingsLeft,
   active,
 }) => {
+  const isStaked = isNFTStaked(ripper);
+
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
       <TertiaryBox
@@ -65,9 +67,13 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
             </FlexRow>
 
             <Image
-              style={styles.ripperImage}
+              style={[styles.ripperImage, isStaked && { opacity: 0.4 }]}
               source={{ uri: ripper.imageUri }}
             />
+
+            {isStaked && (
+              <BrandText style={styles.stakedTitle}>Staked</BrandText>
+            )}
           </>
         ) : (
           <SVG
@@ -84,15 +90,15 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
 };
 
 const styles = StyleSheet.create({
-  leaderTitle: {
+  stakedTitle: {
     position: "absolute",
-    bottom: 20,
-    color: yellowDefault,
-    backgroundColor: withAlpha(orangeLight, 0.1),
+    top: 2 * layout.padding_x4,
+    color: redDefault,
+    backgroundColor: withAlpha(redDefault, 0.3),
     paddingVertical: layout.padding_x0_5,
     paddingHorizontal: layout.padding_x1_5,
     borderRadius: 100,
-    ...(fontSemibold13 as object),
+    ...(fontSemibold12 as object),
   },
   breedingsLeftTxt: {
     position: "absolute",

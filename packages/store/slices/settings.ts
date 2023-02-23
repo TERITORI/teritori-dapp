@@ -6,16 +6,16 @@ interface Settings {
   selectedNetworkId: string;
   selectedWalletId: string;
   isKeplrConnected: boolean;
-  isMetamaskConnected: boolean;
   alreadyVisited: boolean;
+  areTestnetsEnabled: boolean;
 }
 
 const initialState: Settings = {
   selectedWalletId: "",
   selectedNetworkId: "",
   isKeplrConnected: false,
-  isMetamaskConnected: false,
   alreadyVisited: false,
+  areTestnetsEnabled: false,
 };
 
 export const selectSelectedNetworkId = (state: RootState) =>
@@ -27,8 +27,8 @@ export const selectSelectedWalletId = (state: RootState) =>
 export const selectIsKeplrConnected = (state: RootState) =>
   state.settings.isKeplrConnected;
 
-export const selectIsMetamaskConnected = (state: RootState) =>
-  state.settings.isMetamaskConnected;
+export const selectAreTestnetsEnabled = (state: RootState) =>
+  state.settings.areTestnetsEnabled;
 
 const settingsSlice = createSlice({
   name: "settings",
@@ -43,8 +43,8 @@ const settingsSlice = createSlice({
     setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {
       state.isKeplrConnected = action.payload;
     },
-    setIsMetamaskConnected: (state, action: PayloadAction<boolean>) => {
-      state.isMetamaskConnected = action.payload;
+    setAreTestnetsEnabled: (state, action: PayloadAction<boolean>) => {
+      state.areTestnetsEnabled = action.payload;
     },
   },
 });
@@ -53,7 +53,7 @@ export const {
   setSelectedNetworkId,
   setSelectedWalletId,
   setIsKeplrConnected,
-  setIsMetamaskConnected,
+  setAreTestnetsEnabled,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

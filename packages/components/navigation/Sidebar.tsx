@@ -11,16 +11,16 @@ import { useSelector } from "react-redux";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { NetworkKind } from "../../networks";
 import { getValuesFromId } from "../../screens/DAppStore/query/util";
 import {
   selectAvailableApps,
   selectCheckedApps,
 } from "../../store/slices/dapps-store";
 import { useAppNavigation } from "../../utils/navigation";
-import { Network } from "../../utils/network";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import {
@@ -46,8 +46,9 @@ const SpringConfig: WithSpringConfig = {
 
 export const Sidebar: React.FC = () => {
   const selectedWallet = useSelectedWallet();
-  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
-  const selectedNetwork = useSelectedNetwork();
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const selectedNetworkKind = useSelectedNetworkKind();
+  const connected = selectedWallet?.connected;
 
   // variables
   const navigation = useAppNavigation();
@@ -129,7 +130,11 @@ export const Sidebar: React.FC = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           let { route } = item;
-          if (item.disabledOn?.includes(selectedNetwork || Network.Unknown)) {
+          if (
+            item.disabledOn?.includes(
+              selectedNetworkKind || NetworkKind.Unknown
+            )
+          ) {
             route = "ComingSoon";
           }
 
@@ -168,14 +173,16 @@ export const Sidebar: React.FC = () => {
           }}
         />
 
-        {tnsMetadata.metadata && (
-          <SidebarProfileButton
-            walletAddress={selectedWallet?.address || ""}
-            tokenId={tnsMetadata.metadata.tokenId || ""}
-            image={tnsMetadata.metadata.image || ""}
-            isExpanded={isSidebarExpanded}
-          />
-        )}
+        {selectedNetworkKind === NetworkKind.Cosmos &&
+          connected &&
+          userInfo.metadata && (
+            <SidebarProfileButton
+              userId={selectedWallet?.userId || ""}
+              tokenId={userInfo.metadata.tokenId || ""}
+              image={userInfo.metadata.image || ""}
+              isExpanded={isSidebarExpanded}
+            />
+          )}
       </View>
     </Animated.View>
   );

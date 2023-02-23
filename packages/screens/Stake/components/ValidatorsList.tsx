@@ -59,7 +59,7 @@ export const ValidatorsTable: React.FC<{
   // variables
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
   const selectedWallet = useSelectedWallet();
-  const { rewards, claimReward } = useRewards(selectedWallet?.address);
+  const { rewards, claimReward } = useRewards(selectedWallet?.userId);
 
   // returns
   return (

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { backendClient } from "../../../utils/backend";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { getMarketplaceClient } from "../../../utils/backend";
 import { dAppGroup, dAppType } from "../types";
 
 export const useDAppStoreData = (): dAppGroup | undefined => {
@@ -9,11 +10,13 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
       [key: string]: dAppType;
     };
   }
+  const networkId = useSelectedNetworkId();
 
   const { data: dApps } = useQuery(
-    ["DApps"],
+    ["DApps", networkId],
     async () => {
-      const { group } = await backendClient.DApps({});
+      // @ts-ignore
+      const { group } = await getMarketplaceClient(networkId).DApps({});
       return group;
     },
     {
@@ -22,9 +25,10 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
     }
   );
   const { data: dAppsGroups } = useQuery(
-    ["DAppsGroups"],
+    ["DAppsGroups", networkId],
     async () => {
-      const { group } = await backendClient.DAppsGroups({});
+      // @ts-ignore
+      const { group } = await getMarketplaceClient(networkId).DAppsGroups({});
       return group;
     },
     {

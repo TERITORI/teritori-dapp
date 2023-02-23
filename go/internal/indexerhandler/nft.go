@@ -36,7 +36,7 @@ func (h *Handler) handleExecuteSendNFT(e *Message, execMsg *wasmtypes.MsgExecute
 	}
 
 	// vault
-	if sendNFTMsg.Data.Contract == h.config.VaultContractAddress {
+	if sendNFTMsg.Data.Contract == h.config.Network.VaultContractAddress {
 		if err := h.handleExecuteSendNFTVault(e, execMsg, &sendNFTMsg); err != nil {
 			return errors.Wrap(err, "failed to handle vault listing")
 		}
@@ -72,9 +72,10 @@ func (h *Handler) handleExecuteSendNFTFallback(e *Message, execMsg *wasmtypes.Ms
 	if collection.TeritoriCollection == nil {
 		return errors.New("no teritori info on collection")
 	}
-	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+	nftId := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
-	receiverID := indexerdb.TeritoriUserID(sendNFTMsg.Data.Contract)
+	senderID := h.config.Network.UserID(execMsg.Sender)
+	receiverID := h.config.Network.UserID(sendNFTMsg.Data.Contract)
 
 	// update owner in db
 	if err := h.db.Model(&indexerdb.NFT{ID: nftId}).UpdateColumn("owner_id", receiverID).Error; err != nil {
@@ -89,11 +90,11 @@ func (h *Handler) handleExecuteSendNFTFallback(e *Message, execMsg *wasmtypes.Ms
 
 	// create send activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
+		ID:   h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindSendNFT,
 		Time: blockTime,
 		SendNFT: &indexerdb.SendNFT{
-			Sender:   indexerdb.TeritoriUserID(execMsg.Sender),
+			Sender:   senderID,
 			Receiver: receiverID,
 		},
 		NFTID: nftId,
@@ -136,7 +137,7 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 	tokenId := tokenIds[0]
 
 	// delete
-	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+	nftId := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 	if err := h.db.Model(&indexerdb.NFT{}).Where(&indexerdb.NFT{ID: nftId}).UpdateColumn("burnt", true).Error; err != nil {
 		return errors.Wrap(err, "failed to delete nft")
 	}
@@ -149,18 +150,18 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 
 	// create activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
+		ID:   h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindBurn,
 		Time: blockTime,
 		Burn: &indexerdb.Burn{
-			BurnerID: indexerdb.TeritoriUserID(execMsg.Sender),
+			BurnerID: h.config.Network.UserID(execMsg.Sender),
 		},
 		NFTID: nftId,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create burn activity")
 	}
 
-	h.logger.Debug("burnt nft", zap.String("id", nftId))
+	h.logger.Debug("burnt nft", zap.String("id", string(nftId)))
 
 	return nil
 }
@@ -202,10 +203,10 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 		return errors.Wrap(err, "failed to un marshal msg")
 	}
 
-	receiverID := indexerdb.TeritoriUserID(msg.Data.Recipient)
+	receiverID := h.config.Network.UserID(msg.Data.Recipient)
 
 	// update owner in db
-	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, msg.Data.TokenID)
+	nftId := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, msg.Data.TokenID)
 	if err := h.db.Model(&indexerdb.NFT{ID: nftId}).UpdateColumn("owner_id", receiverID).Error; err != nil {
 		return errors.Wrap(err, "failed to updated owner in db")
 	}
@@ -218,11 +219,11 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 
 	// create transfer activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   indexerdb.TeritoriActivityID(e.TxHash, e.MsgIndex),
+		ID:   h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindTransferNFT,
 		Time: blockTime,
 		TransferNFT: &indexerdb.TransferNFT{
-			Sender:   indexerdb.TeritoriUserID(execMsg.Sender),
+			Sender:   h.config.Network.UserID(execMsg.Sender),
 			Receiver: receiverID,
 		},
 		NFTID: nftId,
@@ -230,7 +231,7 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 		return errors.Wrap(err, "failed to create transfer activity")
 	}
 
-	h.logger.Debug("transfered nft", zap.String("id", nftId))
+	h.logger.Debug("transfered nft", zap.String("id", string(nftId)))
 
 	return nil
 }

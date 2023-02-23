@@ -7,7 +7,9 @@ import { SocialButton } from "../../components/buttons/SocialButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useTNS } from "../../context/TNSProvider";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getCosmosNetwork } from "../../networks";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 
 const Footer: React.FC<{ tokenId: string }> = ({ tokenId }) => {
@@ -78,6 +80,9 @@ export const TNSRegisterSuccess: React.FC<TNSRegisterSuccessProps> = ({
   visible,
 }) => {
   const { name } = useTNS();
+  const selectedNetworkId = useSelectedNetworkId();
+  const network = getCosmosNetwork(selectedNetworkId);
+  const tokenId = name + network?.nameServiceTLD || "";
 
   return (
     <ModalBase
@@ -85,7 +90,7 @@ export const TNSRegisterSuccess: React.FC<TNSRegisterSuccessProps> = ({
       onClose={() => onClose()}
       width={457}
       label="Success"
-      childrenBottom={<Footer tokenId={name + process.env.TLD} />}
+      childrenBottom={<Footer tokenId={tokenId} />}
     >
       <View style={{ flex: 1, alignItems: "center", paddingBottom: 20 }}>
         <NameNFT
