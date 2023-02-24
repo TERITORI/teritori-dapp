@@ -9,15 +9,20 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
 import { AvatarWithFrame } from "../../components/images/AvatarWithFrame";
-import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { DEFAULT_NAME } from "../../utils/social-feed";
 import { neutral00, neutral55, purpleDefault } from "../../utils/style/colors";
 import { fontBold16, fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const PublicProfileIntro: React.FC<{
-  metadata?: Metadata | any | null;
-}> = ({ metadata }) => {
+  userId: string;
+}> = ({ userId }) => {
+  const { metadata, loading } = useNSUserInfo(userId);
+  const [, userAddress] = parseUserId(userId);
+
   return (
     <>
       <View>
@@ -30,6 +35,7 @@ export const PublicProfileIntro: React.FC<{
           style={{ height: 320, width: "100%" }}
         />
         <AvatarWithFrame
+          isLoading={loading}
           image={metadata?.image}
           size="XL"
           style={{
@@ -52,14 +58,29 @@ export const PublicProfileIntro: React.FC<{
                 marginBottom: layout.padding_x1_5,
               }}
             >
-              <BrandText style={[fontBold16]}>
-                {metadata?.public_name}
-              </BrandText>
-              <BrandText
-                style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
-              >
-                @{metadata?.tokenId || ""}
-              </BrandText>
+              {metadata?.tokenId ? (
+                <>
+                  <BrandText style={[fontBold16]}>
+                    {metadata?.public_name}
+                  </BrandText>
+
+                  <BrandText
+                    style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
+                  >
+                    @{metadata.tokenId}
+                  </BrandText>
+                </>
+              ) : (
+                <>
+                  <BrandText style={[fontBold16]}>{DEFAULT_NAME}</BrandText>
+
+                  <BrandText
+                    style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
+                  >
+                    @{userAddress}
+                  </BrandText>
+                </>
+              )}
             </View>
 
             <BrandText
