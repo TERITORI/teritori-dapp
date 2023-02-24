@@ -244,7 +244,20 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}
 		}
-		// NOTE: add another stake handler here if needed
+	// NOTE: add another stake handler here if needed
+	// Feeds actions
+	case "create_post":
+		if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle create post")
+		}
+	case "react_post":
+		if err := h.handleExecuteReactPost(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle react post")
+		}
+	case "delete_post":
+		if err := h.handleExecuteDeletePost(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle delete post")
+		}
 	}
 
 	return nil
