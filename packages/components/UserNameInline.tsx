@@ -1,7 +1,10 @@
 import React from "react";
 import { StyleProp, TextStyle, TouchableOpacity } from "react-native";
 
-import { useTNSMetadata } from "../hooks/useTNSMetadata";
+import { useNSUserInfo } from "../hooks/useNSUserInfo";
+import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
+import useSelectedWallet from "../hooks/useSelectedWallet";
+import { getCosmosNetwork } from "../networks";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { useAppNavigation } from "../utils/navigation";
 import { fontSemibold14 } from "../utils/style/fonts";
@@ -20,10 +23,11 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
   style,
 }) => {
   const navigation = useAppNavigation();
-  const address = userId.split("-")[1];
-  const tnsMetadata = useTNSMetadata(address);
-
-  const name = tnsMetadata?.metadata?.tokenId || address || "";
+  const selectedWallet = useSelectedWallet();
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const selectedNetworkId = useSelectedNetworkId();
+  const network = getCosmosNetwork(selectedNetworkId);
+  const name = userInfo?.metadata?.tokenId || selectedWallet?.address || "";
 
   return (
     <FlexRow alignItems="center" style={style}>
@@ -39,8 +43,8 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
           size="XXS"
           imageSource={{
             uri: ipfsURLToHTTPURL(
-              tnsMetadata?.metadata?.image ||
-                process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
+              userInfo?.metadata?.image ||
+                network?.nameServiceDefaultImage ||
                 ""
             ),
           }}

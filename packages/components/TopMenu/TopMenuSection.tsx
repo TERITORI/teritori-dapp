@@ -5,9 +5,9 @@ import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { Separator } from "../Separator";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
+import { Separator } from "../Separator";
 
 export const TopMenuSection: React.FC<{
   title: string;

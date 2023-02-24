@@ -2,16 +2,16 @@ import React from "react";
 import { Image } from "react-native";
 
 import { useBanners } from "../../hooks/useBanners";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import FlexCol from "../FlexCol";
 import { Link } from "../Link";
 import { PrimaryBox } from "../boxes/PrimaryBox";
-import FlexCol from "../FlexCol";
 import { TopMenuSection } from "./TopMenuSection";
 
 export const HighlightedNews: React.FC = () => {
-  const banners = useBanners(
-    process.env.TERITORI_NETWORK_ID === "teritori-testnet"
-  );
+  const networkId = useSelectedNetworkId();
+  const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
 
   return (

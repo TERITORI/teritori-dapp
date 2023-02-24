@@ -21,10 +21,10 @@ import {
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, topMenuWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import FlexCol from "../FlexCol";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import FlexCol from "../FlexCol";
 import { Account } from "./Account";
 import { HighlightedNews } from "./HighlightedNews";
 import { LiveMint } from "./LiveMint";
@@ -87,7 +87,7 @@ export const TopMenu: React.FC<{
         <LiveMint />
 
         <Separator />
-        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
           <FlexCol style={{ paddingVertical: layout.padding_x1_5 }}>
             <BrandText style={styles.settingsText}>Settings</BrandText>
           </FlexCol>

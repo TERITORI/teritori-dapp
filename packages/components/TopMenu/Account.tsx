@@ -7,11 +7,11 @@ import { purpleLight } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import FlexCol from "../FlexCol";
+import FlexRow from "../FlexRow";
 import { SVG } from "../SVG";
 import { UserNameInline } from "../UserNameInline";
 import { CustomPressable } from "../buttons/CustomPressable";
-import FlexCol from "../FlexCol";
-import FlexRow from "../FlexRow";
 
 export const Account: React.FC = () => {
   const navigation = useAppNavigation();
@@ -20,7 +20,7 @@ export const Account: React.FC = () => {
   return (
     <FlexCol style={styles.container}>
       <UserNameInline
-        userId={`tori-${selectedWallet?.address}`}
+        userId={selectedWallet?.userId || ""}
         style={styles.userImageLine}
       />
 
@@ -40,7 +40,7 @@ export const Account: React.FC = () => {
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("UserPublicProfile", {
-              id: "tori-tori1c4a8e6lc9uuaeqmlsw6gyyxpvun5pjagfs7p5h",
+              id: selectedWallet?.userId || "",
             });
           }}
         >

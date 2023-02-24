@@ -12,8 +12,8 @@ import Carousel, {
 
 import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import { SVG } from "../SVG";
 import FlexRow from "../FlexRow";
+import { SVG } from "../SVG";
 import { InnerSideBlackShadow } from "../shadows/InnerSideBlackShadow";
 
 const chevronSize = 16;
@@ -71,7 +71,7 @@ export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
 ) => {
   const { children, width, height, style, data, ...carouselProps } = props;
   // loop is true by default in Carousel, so we need to override SmallCarousel props.loop like this
-  const isLoop = props.loop === undefined || props.loop
+  const isLoop = props.loop === undefined || props.loop;
 
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const viewWidth = StyleSheet.flatten(style)?.width;

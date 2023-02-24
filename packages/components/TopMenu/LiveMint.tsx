@@ -2,13 +2,14 @@ import React from "react";
 import { View } from "react-native";
 
 import {
+  Collection,
   MintState,
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { useCollections } from "../../hooks/useCollections";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { launchpadCollectionsFilter } from "../../utils/collections";
+import { getNetwork } from "../../networks";
 import { layout, topMenuWidth } from "../../utils/style/layout";
 import {
   CollectionView,
@@ -47,5 +48,11 @@ export const LiveMint: React.FC = () => {
         )}
       />
     </TopMenuSection>
+  );
+};
+
+const launchpadCollectionsFilter = (c: Collection) => {
+  return !(getNetwork(c.networkId)?.excludeFromLaunchpadList || []).includes(
+    c.mintAddress
   );
 };

@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import penSVG from "../../../assets/icons/manage.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
+import { tinyAddress } from "../../components/TopMenu/WalletView";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
+import { useDelegations } from "../../hooks/useDelegations";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { rewardsPrice, useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -91,9 +93,21 @@ export const WalletDashboardHeader: React.FC = () => {
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const navigation = useAppNavigation();
-  const totalUSDBalance = balances.reduce(
-    (total, bal) => total + (bal.usdAmount || 0),
-    0
+  const { delegationsBalances } = useDelegations(
+    selectedNetworkId,
+    selectedWallet?.address
+  );
+  const availableUSDBalance = useMemo(
+    () => balances.reduce((total, bal) => total + (bal.usdAmount || 0), 0),
+    [balances]
+  );
+  const delegationsUsdBalance = useMemo(
+    () =>
+      delegationsBalances.reduce(
+        (total, bal) => total + (bal.usdAmount || 0),
+        0
+      ),
+    [delegationsBalances]
   );
   const { totalsRewards, claimAllRewards } = useRewards(selectedWallet?.userId);
   // Total rewards price with all denoms
@@ -106,7 +120,6 @@ export const WalletDashboardHeader: React.FC = () => {
         alignItems: "center",
         justifyContent: "space-between",
         paddingTop: layout.contentPadding,
-        paddingBottom: 16,
         flex: 1,
         flexWrap: "wrap",
         marginTop: -layout.padding_x3,
@@ -144,9 +157,13 @@ export const WalletDashboardHeader: React.FC = () => {
           <BrandText
             style={{
               fontSize: 20,
+              maxWidth: 324,
             }}
+            numberOfLines={1}
           >
-            {userInfo.metadata?.tokenId || selectedWallet?.address || ""}
+            {userInfo.metadata?.tokenId ||
+              tinyAddress(selectedWallet?.address, 24) ||
+              ""}
           </BrandText>
         </View>
       </View>
@@ -161,7 +178,15 @@ export const WalletDashboardHeader: React.FC = () => {
         <WalletDashboardHeaderCard
           {...{
             title: "Total Balance",
-            data: `$${totalUSDBalance.toFixed(2)}`,
+            data: `$${(availableUSDBalance + delegationsUsdBalance).toFixed(
+              2
+            )}`,
+          }}
+        />
+        <WalletDashboardHeaderCard
+          {...{
+            title: "Staked",
+            data: `$${delegationsUsdBalance.toFixed(2)}`,
           }}
         />
         <WalletDashboardHeaderCard

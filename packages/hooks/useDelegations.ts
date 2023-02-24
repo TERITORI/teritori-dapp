@@ -2,9 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
-import { getNativeCurrency, getNetwork } from "../networks";
+import { getCosmosNetwork, getNativeCurrency } from "../networks";
 import { Balance } from "../utils/coins";
-import { Network } from "../utils/network";
 import { CosmosDelegationsResponse } from "../utils/teritori";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
@@ -61,8 +60,8 @@ const getNetworkDelegations = async (
   networkId: string,
   address: string
 ): Promise<CosmosDelegationsResponse> => {
-  const network = getNetwork(networkId);
-  if (!network || network.network === Network.Ethereum) {
+  const network = getCosmosNetwork(networkId);
+  if (!network) {
     return initialData;
   }
   const response = await fetch(

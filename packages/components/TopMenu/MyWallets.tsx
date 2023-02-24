@@ -5,9 +5,12 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import walletsSVG from "../../../assets/icons/wallets.svg";
 import { useBalances } from "../../hooks/useBalances";
 import { useDelegations } from "../../hooks/useDelegations";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getNetwork, getToriNativeCurrency } from "../../networks";
+import { getToriNativeCurrency, NetworkKind } from "../../networks";
 import { DepositWithdrawModal } from "../../screens/WalletManager/components/DepositWithdrawModal";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -26,10 +29,10 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
-import { SecondaryButton } from "../buttons/SecondaryButton";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
+import { SVG } from "../SVG";
+import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SendModal } from "../modals/SendModal";
 import { TopMenuSection } from "./TopMenuSection";
 
@@ -43,11 +46,11 @@ const TokenBalance: React.FC = () => {
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const GAUGE_WIDTH = 300;
 
-  const totalUSDBalance = useMemo(
+  const availableUSDBalance = useMemo(
     () => balances.reduce((total, bal) => total + (bal.usdAmount || 0), 0),
     [balances]
   );
-  const totalUSDDelegationsBalance = useMemo(
+  const delegationsUsdBalance = useMemo(
     () =>
       delegationsBalances.reduce(
         (total, bal) => total + (bal.usdAmount || 0),
@@ -57,8 +60,10 @@ const TokenBalance: React.FC = () => {
   );
 
   const gaugeStakedWidth = useMemo(
-    () => (totalUSDDelegationsBalance * GAUGE_WIDTH) / totalUSDBalance,
-    [totalUSDDelegationsBalance, totalUSDBalance]
+    () =>
+      (GAUGE_WIDTH * delegationsUsdBalance) /
+      (delegationsUsdBalance + availableUSDBalance),
+    [delegationsUsdBalance, availableUSDBalance]
   );
 
   return (
@@ -67,9 +72,9 @@ const TokenBalance: React.FC = () => {
         <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
           Total balance
         </BrandText>
-        <BrandText style={fontBold12}>{`$${totalUSDBalance.toFixed(
-          2
-        )}`}</BrandText>
+        <BrandText style={fontBold12}>{`$${(
+          availableUSDBalance + delegationsUsdBalance
+        ).toFixed(2)}`}</BrandText>
       </FlexRow>
 
       <FlexRow
@@ -79,7 +84,7 @@ const TokenBalance: React.FC = () => {
           marginTop: layout.padding_x1,
         }}
       >
-        {!totalUSDBalance ? (
+        {!availableUSDBalance ? (
           <View
             style={{
               backgroundColor: neutral77,
@@ -149,9 +154,9 @@ const TokenBalance: React.FC = () => {
             />
             <BrandText style={fontSemibold12}>Available</BrandText>
           </FlexRow>
-          <BrandText style={fontBold12}>{`$${(
-            totalUSDBalance - totalUSDDelegationsBalance
-          ).toFixed(2)}`}</BrandText>
+          <BrandText style={fontBold12}>{`$${availableUSDBalance
+            // totalUSDBalance - totalUSDDelegationsBalance
+            .toFixed(2)}`}</BrandText>
         </FlexRow>
 
         <FlexRow justifyContent="space-between">
@@ -167,7 +172,7 @@ const TokenBalance: React.FC = () => {
             />
             <BrandText style={fontSemibold12}>Staked</BrandText>
           </FlexRow>
-          <BrandText style={fontBold12}>{`$${totalUSDDelegationsBalance.toFixed(
+          <BrandText style={fontBold12}>{`$${delegationsUsdBalance.toFixed(
             2
           )}`}</BrandText>
         </FlexRow>
@@ -177,23 +182,17 @@ const TokenBalance: React.FC = () => {
 };
 
 export const MyWallets: React.FC = () => {
-  const selectedNetworkId = useSelectedNetworkId();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
   const navigation = useAppNavigation();
   const [isDepositVisible, setDepositVisible] = useState(false);
   const [isSendVisible, setSendVisible] = useState(false);
 
   const atomIbcCurrency = useMemo(() => {
-    const network = getNetwork(selectedNetworkId);
-    return network?.currencies.find(
+    return selectedNetworkInfo?.currencies.find(
       (currencyInfo) =>
         currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "uatom"
     );
-  }, [selectedNetworkId]);
-
-  const toriNativeCurrency = useMemo(
-    () => getToriNativeCurrency(selectedNetworkId),
-    [selectedNetworkId]
-  );
+  }, [selectedNetworkInfo]);
 
   return (
     <>
@@ -206,18 +205,21 @@ export const MyWallets: React.FC = () => {
           style={styles.buttonsContainer}
         >
           <SecondaryButton
+            disabled={selectedNetworkInfo?.kind !== NetworkKind.Cosmos}
             paddingHorizontal={layout.padding_x2}
             text="Deposit"
             size="XS"
             onPress={() => setDepositVisible(true)}
           />
           <SecondaryButton
+            disabled={selectedNetworkInfo?.kind !== NetworkKind.Cosmos}
             paddingHorizontal={layout.padding_x2}
             text="Stake"
             size="XS"
             onPress={() => navigation.navigate("Staking")}
           />
           <SecondaryButton
+            disabled={selectedNetworkInfo?.kind !== NetworkKind.Cosmos}
             paddingHorizontal={layout.padding_x2}
             text="Send"
             size="XS"
@@ -244,19 +246,23 @@ export const MyWallets: React.FC = () => {
         </FlexRow>
       </TopMenuSection>
 
-      <DepositWithdrawModal
-        variation="deposit"
-        networkId={selectedNetworkId}
-        targetCurrency={atomIbcCurrency?.denom}
-        onClose={() => setDepositVisible(false)}
-        isVisible={isDepositVisible}
-      />
-      <SendModal
-        networkId={selectedNetworkId}
-        nativeCurrency={toriNativeCurrency}
-        onClose={() => setSendVisible(false)}
-        isVisible={isSendVisible}
-      />
+      {selectedNetworkInfo?.kind === NetworkKind.Cosmos && (
+        <>
+          <DepositWithdrawModal
+            variation="deposit"
+            networkId={selectedNetworkInfo.id}
+            targetCurrency={atomIbcCurrency?.denom}
+            onClose={() => setDepositVisible(false)}
+            isVisible={isDepositVisible}
+          />
+          <SendModal
+            networkId={selectedNetworkInfo.id}
+            nativeCurrency={getToriNativeCurrency(selectedNetworkInfo.id)}
+            onClose={() => setSendVisible(false)}
+            isVisible={isSendVisible}
+          />
+        </>
+      )}
     </>
   );
 };

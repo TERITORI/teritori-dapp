@@ -2,7 +2,7 @@ import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { Wallet } from "../../context/WalletsProvider";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { BrandText } from "../BrandText";
 import { WalletProviderIcon } from "../WalletProviderIcon";
 
@@ -29,7 +29,7 @@ export const WalletView: React.FC<{
   wallet?: Wallet;
   style?: StyleProp<ViewStyle>;
 }> = ({ wallet, style }) => {
-  const tnsMetadata = useTNSMetadata(wallet?.address);
+  const userInfo = useNSUserInfo(wallet?.userId);
 
   const fontSize = 14;
   return (
@@ -47,10 +47,7 @@ export const WalletView: React.FC<{
         }}
         ellipsizeMode="middle"
       >
-        {tinyAddress(
-          tnsMetadata?.metadata?.tokenId || wallet?.address || "",
-          16
-        )}
+        {tinyAddress(userInfo?.metadata?.tokenId || wallet?.address || "", 16)}
       </BrandText>
     </View>
   );

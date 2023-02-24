@@ -23,12 +23,12 @@ import {
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import FlexCol from "../FlexCol";
+import FlexRow from "../FlexRow";
 import { NetworkIcon } from "../NetworkIcon";
 import { SVG } from "../SVG";
 import { MaxButton } from "../buttons/MaxButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
-import FlexCol from "../FlexCol";
-import FlexRow from "../FlexRow";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
 import ModalBase from "./ModalBase";

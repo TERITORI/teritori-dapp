@@ -6,8 +6,8 @@ import { getNetwork } from "../../networks";
 import { neutral17, neutral77 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold13 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { tinyAddress } from "../TopMenu/WalletView";
 import { NetworkIcon } from "../NetworkIcon";
+import { tinyAddress } from "../TopMenu/WalletView";
 import { SuccessBadge } from "../badges/SuccessBadge";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 

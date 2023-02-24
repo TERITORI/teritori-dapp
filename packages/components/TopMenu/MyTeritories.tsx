@@ -11,11 +11,11 @@ import {
 } from "../../utils/style/fonts";
 import { layout, topMenuWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import FlexCol from "../FlexCol";
+import FlexRow from "../FlexRow";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SmallCarousel } from "../carousels/SmallCarousel";
-import FlexCol from "../FlexCol";
-import FlexRow from "../FlexRow";
 import { TopMenuSection } from "./TopMenuSection";
 
 //TODO: Make SmallCarousel with items auto sized instead of fix widths

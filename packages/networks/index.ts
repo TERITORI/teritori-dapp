@@ -4,7 +4,6 @@ import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { CosmWasmClient, GasPrice, SigningCosmWasmClient } from "cosmwasm";
 
 import { getKeplr } from "../utils/keplr";
-import { Network } from "../utils/network";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
@@ -50,7 +49,7 @@ export const getCurrency = (
 
 export const getToriNativeCurrency = (networkId: string) => {
   const network = getNetwork(networkId);
-  if (network?.network === Network.Teritori)
+  if (network?.kind === NetworkKind.Cosmos)
     return network?.currencies.find(
       (currencyInfo) => currencyInfo.kind === "native"
     ) as NativeCurrencyInfo;

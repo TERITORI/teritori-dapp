@@ -6,7 +6,7 @@ import addSVG from "../../../../assets/icons/add.svg";
 import gameBoxSVG from "../../../../assets/icons/game-box.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
-import FlexRow from "../../../components/containers/FlexRow";
+import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { isNFTStaked } from "../../../utils/game";
