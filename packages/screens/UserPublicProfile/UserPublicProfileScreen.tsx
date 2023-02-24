@@ -1,3 +1,4 @@
+import { bech32 } from "bech32";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -10,6 +11,7 @@ import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
+import { UserNotFound } from "../../components/userPublicProfile/UserNotFound";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
@@ -85,10 +87,10 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("nfts");
 
-  const { metadata } = useNSUserInfo(id);
   const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
-  const [network] = parseUserId(id);
+  const [network, userAddress] = parseUserId(id);
+  const { metadata, notFound } = useNSUserInfo(id);
 
   return (
     <ScreenContainer
@@ -96,7 +98,9 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       smallMargin
       footerChildren={<></>}
       headerChildren={
-        <BrandText style={fontSemibold20}>{metadata?.tokenId || ""}</BrandText>
+        <BrandText style={fontSemibold20}>
+          {metadata?.tokenId || userAddress}
+        </BrandText>
       }
       onBackPress={() =>
         navigation.canGoBack()
@@ -104,25 +108,29 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
           : navigation.navigate("Home")
       }
     >
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-          <UPPIntro userId={id} isUserOwner={selectedWallet?.userId === id} />
+      {notFound || !userAddress || !bech32.decodeUnsafe(userAddress) ? (
+        <UserNotFound />
+      ) : (
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
+            <UPPIntro userId={id} isUserOwner={selectedWallet?.userId === id} />
 
-          <Tabs
-            items={screenTabItems}
-            selected={selectedTab}
-            onSelect={setSelectedTab}
-            style={{
-              marginTop: 32,
-              height: 32,
-              marginBottom: layout.padding_x2_5 / 2,
-            }}
-            borderColorTabSelected={primaryColor}
-          />
+            <Tabs
+              items={screenTabItems}
+              selected={selectedTab}
+              onSelect={setSelectedTab}
+              style={{
+                marginTop: 32,
+                height: 32,
+                marginBottom: layout.padding_x2_5 / 2,
+              }}
+              borderColorTabSelected={primaryColor}
+            />
 
-          <SelectedTabContent selectedTab={selectedTab} userId={id} />
+            <SelectedTabContent selectedTab={selectedTab} userId={id} />
+          </View>
         </View>
-      </View>
+      )}
     </ScreenContainer>
   );
 };

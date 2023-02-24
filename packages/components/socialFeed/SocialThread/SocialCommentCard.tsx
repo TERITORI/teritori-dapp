@@ -257,8 +257,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   >
                     @
                     {authorNSInfo?.metadata?.tokenId
-                      ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
-                      : DEFAULT_USERNAME}
+                      ? tinyAddress(authorNSInfo.metadata.tokenId, 19)
+                      : localComment.post_by}
                   </BrandText>
                 </TouchableOpacity>
 

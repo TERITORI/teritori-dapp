@@ -2,7 +2,7 @@ import { cloneDeep } from "lodash";
 
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 
-//TODO: Remove DEFAULT_USERNAME and its usages since we use userId instead
+export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
 export const SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT = 2500;
 

@@ -1,3 +1,4 @@
+import { bech32 } from "bech32";
 import React, { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
@@ -5,13 +6,13 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { screenTitle } from "../../components/navigation/Navigator";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { UserNotFound } from "../../components/userPublicProfile/UserNotFound";
 import { FeedRequest } from "../../hooks/useFetchFeed";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { NetworkKind, parseNetworkObjectId } from "../../networks";
 import { feedTabToCategories, screenTabItems } from "../../utils/feed";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { FeedHeader } from "../Feed/components/FeedHeader";
 import { PublicProfileIntro } from "./PublicProfileIntro";
 
@@ -24,16 +25,16 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("all");
   const [, userAddress] = parseNetworkObjectId(id);
-  const ownerNSInfo = useNSUserInfo(id);
+  const { metadata, notFound } = useNSUserInfo(id);
 
   useEffect(() => {
-    if (ownerNSInfo.metadata.public_name) {
+    if (metadata.public_name) {
       navigation.setOptions({
         // TODO: If org, make it uppercase
-        title: screenTitle(ownerNSInfo.metadata.public_name),
+        title: screenTitle(metadata.public_name),
       });
     }
-  }, [ownerNSInfo.metadata.public_name]);
+  }, [metadata.public_name]);
 
   const feedRequest: FeedRequest = useMemo(() => {
     return {
@@ -50,7 +51,7 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
       noScroll
       headerChildren={
         <BrandText style={fontSemibold20}>
-          {ownerNSInfo.metadata.public_name}
+          {metadata.tokenId || userAddress}
         </BrandText>
       }
       onBackPress={() =>
@@ -60,23 +61,15 @@ export const PublicProfileScreen: ScreenFC<"PublicProfile"> = ({
       }
       footerChildren={<></>}
     >
-      {ownerNSInfo.notFound || !userAddress ? (
-        <View
-          style={{
-            alignItems: "center",
-            width: "100%",
-            marginTop: layout.padding_x4,
-          }}
-        >
-          <BrandText>User not found</BrandText>
-        </View>
+      {notFound || !userAddress || !bech32.decodeUnsafe(userAddress) ? (
+        <UserNotFound />
       ) : (
         <View style={{ flex: 1 }}>
           <NewsFeed
             req={feedRequest}
             Header={() => (
               <>
-                <PublicProfileIntro metadata={ownerNSInfo.metadata} />
+                <PublicProfileIntro userId={id} />
                 <FeedHeader
                   selectedTab={selectedTab}
                   onTabChange={setSelectedTab}
