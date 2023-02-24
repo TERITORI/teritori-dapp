@@ -58,6 +58,7 @@ import { SelectableCurrency } from "./SelectableCurrency";
 import { SelectedCurrency } from "./SelectedCurrency";
 import { SwapDetails } from "./SwapDetails";
 import { SwapModalSettings } from "./SwapModalSettings";
+import { SwapModalTokenList } from "./SwapModalTokenList";
 
 type SwapModalProps = {
   onClose: () => void;
@@ -307,10 +308,28 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   return (
     <ModalBase
       childrenBottom={
+        <>
         <SwapModalSettings
           settingsOpened={settingsOpened}
           setSlippageValue={setSlippage}
         />
+        <SwapModalTokenList
+          isOpened={isDropdownOpen(dropdownOutRef)}
+          close={closeOpenedDropdown}
+          width={modalWidth}
+          currencies={selectableCurrenciesOut}
+          selectedNetworkId = {selectedNetworkId}
+          setCurrency = {setCurrencyOut}
+        />
+        <SwapModalTokenList
+          isOpened={isDropdownOpen(dropdownInRef)}
+          close={closeOpenedDropdown}
+          width={modalWidth}
+          currencies={selectableCurrenciesIn}
+          selectedNetworkId = {selectedNetworkId}
+          setCurrency = {setCurrencyIn}
+        />
+        </>
       }
       Header={() => (
         <ModalHeader
@@ -374,7 +393,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
             </View>
 
             {/*======= Selectable currencies in */}
-            {isDropdownOpen(dropdownInRef) && (
+            {/* {isDropdownOpen(dropdownInRef) && (
               <>
                 {selectableCurrenciesIn?.map((currencyInfo, index) => (
                   <SelectableCurrency
@@ -388,7 +407,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
                   />
                 ))}
               </>
-            )}
+            )} */}
           </TertiaryBox>
 
           {/*======= Second currency */}
@@ -428,8 +447,9 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
                 />
               </View>
 
+
               {/*======= Selectable currencies out */}
-              {isDropdownOpen(dropdownOutRef) && (
+              {/* {isDropdownOpen(dropdownOutRef) && (
                 <>
                   {selectableCurrenciesOut?.map((currencyInfo, index) => (
                     <SelectableCurrency
@@ -443,7 +463,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
                     />
                   ))}
                 </>
-              )}
+              )} */}
             </>
           </TertiaryBox>
         </View>
