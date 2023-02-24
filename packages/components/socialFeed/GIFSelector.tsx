@@ -21,7 +21,7 @@ import { neutral33, neutral67, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { CircleIconBox } from "../CircleIconBox";
+import { IconBox } from "../IconBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn } from "../spacer";
 
@@ -97,11 +97,7 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
       rendererProps={{ placement: "bottom" }}
     >
       <MenuTrigger onPress={() => !disabled && toggleGIFModal}>
-        <CircleIconBox
-          icon={gifSVG}
-          onPress={toggleGIFModal}
-          disabled={disabled}
-        />
+        <IconBox icon={gifSVG} onPress={toggleGIFModal} disabled={disabled} />
       </MenuTrigger>
 
       <MenuOptions
