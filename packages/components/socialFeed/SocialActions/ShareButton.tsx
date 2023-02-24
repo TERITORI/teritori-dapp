@@ -4,7 +4,7 @@ import { View, Linking } from "react-native";
 import shareSVG from "../../../../assets/icons/share.svg";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
 import { layout } from "../../../utils/style/layout";
-import { CircleIconBox } from "../../CircleIconBox";
+import { IconBox } from "../../IconBox";
 import { SocialButton } from "../../buttons/SocialButton";
 import ModalBase from "../../modals/ModalBase";
 interface FeedPostShareModalProps {
@@ -32,7 +32,7 @@ export const ShareButton = ({ postId }: FeedPostShareModalProps) => {
 
   return (
     <>
-      <CircleIconBox icon={shareSVG} onPress={() => setIsModalVisible(true)} />
+      <IconBox icon={shareSVG} onPress={() => setIsModalVisible(true)} />
 
       <ModalBase
         label="Share Post"

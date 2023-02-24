@@ -48,8 +48,8 @@ import { layout } from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
 import { RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
-import { CircleIconBox } from "../../CircleIconBox";
 import { FilePreviewContainer } from "../../FilePreview/UploadedFilePreview/FilePreviewContainer";
+import { IconBox } from "../../IconBox";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
@@ -494,7 +494,7 @@ export const NewsFeedInput = React.forwardRef<
               mimeTypes={AUDIO_MIME_TYPES}
             >
               {({ onPress }) => (
-                <CircleIconBox
+                <IconBox
                   icon={audioSVG}
                   onPress={onPress}
                   style={{ marginRight: layout.padding_x2_5 }}
@@ -509,7 +509,7 @@ export const NewsFeedInput = React.forwardRef<
               mimeTypes={VIDEO_MIME_TYPES}
             >
               {({ onPress }) => (
-                <CircleIconBox
+                <IconBox
                   icon={videoSVG}
                   onPress={onPress}
                   style={{ marginRight: layout.padding_x2_5 }}
@@ -532,7 +532,7 @@ export const NewsFeedInput = React.forwardRef<
               }
             >
               {({ onPress }) => (
-                <CircleIconBox
+                <IconBox
                   disabled={
                     (formValues.files?.[0] &&
                       formValues.files[0].fileType !== "image") ||

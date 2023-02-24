@@ -13,6 +13,7 @@ export interface BaseFileData {
   url: string;
   fileType: FileType;
   audioMetadata?: AudioFileMetadata;
+  isCoverImage?: boolean;
 }
 
 export interface LocalFileData extends BaseFileData {
