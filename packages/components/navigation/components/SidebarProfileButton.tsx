@@ -56,9 +56,11 @@ export const SidebarProfileButton: React.FC<{
             },
           ]}
         >
-          <BrandText style={fontSemibold12} numberOfLines={1}>
-            {`@${tokenId}`}
-          </BrandText>
+          {tokenId && (
+            <BrandText style={fontSemibold12} numberOfLines={1}>
+              {`@${tokenId}`}
+            </BrandText>
+          )}
           <BrandText style={[fontSemibold9, { color: neutral77 }]}>
             My Profile
           </BrandText>

@@ -10,7 +10,10 @@ import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CommentsContainer } from "../../components/cards/CommentsContainer";
-import { NewPostFormValues } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
+import {
+  NewPostFormValues,
+  PostCategory,
+} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import {
   NewsFeedInput,
   NewsFeedInputHandle,
@@ -24,9 +27,10 @@ import {
   combineFetchCommentPages,
   useFetchComments,
 } from "../../hooks/useFetchComments";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
+import { getUserId, NetworkKind } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import {
@@ -49,6 +53,9 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
   const { triggerError } = useErrorHandler();
   const [post, setPost] = useState<PostResult>();
+  const authorNSInfo = useNSUserInfo(
+    getUserId(selectedNetworkId, post?.post_by)
+  );
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const aref = useAnimatedRef<Animated.ScrollView>();
@@ -156,15 +163,19 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     navigation.navigate("FeedNewPost", formValues);
   };
 
+  const headerLabel = () =>
+    post?.category === PostCategory.Article
+      ? "Article by "
+      : post?.parent_post_identifier
+      ? "Sub-Post by "
+      : "Post by " + authorNSInfo.metadata.public_name || post?.post_by || "";
+
   return (
     <ScreenContainer
       forceNetworkKind={NetworkKind.Cosmos}
       responsive
       headerChildren={
-        <BrandText style={fontSemibold20}>
-          {post?.parent_post_identifier ? "Sub-Posted" : "Posted"} by{" "}
-          {post?.post_by || ""}
-        </BrandText>
+        <BrandText style={fontSemibold20}>{headerLabel()}</BrandText>
       }
       onBackPress={() =>
         post?.parent_post_identifier

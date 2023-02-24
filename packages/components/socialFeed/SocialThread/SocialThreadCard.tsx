@@ -10,7 +10,7 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../utils/navigation";
-import { getUpdatedReactions } from "../../../utils/social-feed";
+import { DEFAULT_NAME, getUpdatedReactions } from "../../../utils/social-feed";
 import { getCommunityHashtag } from "../../../utils/socialFeedCommunityHashtags";
 import {
   neutral00,
@@ -142,38 +142,40 @@ export const SocialThreadCard: React.FC<{
                   id: authorId,
                 })
               }
-              style={{ marginRight: layout.padding_x1_5 }}
               activeOpacity={0.7}
             >
               <AnimationFadeIn>
                 <BrandText style={fontSemibold16}>
-                  {authorNSInfo?.metadata?.public_name || localPost.post_by}
+                  {authorNSInfo?.metadata?.public_name || DEFAULT_NAME}
                 </BrandText>
               </AnimationFadeIn>
             </TouchableOpacity>
 
             {/*---- User TNS name */}
-            {authorNSInfo?.metadata?.tokenId && (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("PublicProfile", {
-                    id: authorId,
-                  })
-                }
-                style={{ marginRight: layout.padding_x1_5 }}
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("PublicProfile", {
+                  id: authorId,
+                })
+              }
+              style={{ marginHorizontal: layout.padding_x1_5 }}
+            >
+              <BrandText
+                style={[
+                  fontSemibold14,
+                  {
+                    color: neutral77,
+                  },
+                ]}
               >
-                <BrandText
-                  style={[
-                    fontSemibold14,
-                    {
-                      color: neutral77,
-                    },
-                  ]}
-                >
-                  @{tinyAddress(authorNSInfo.metadata.tokenId, 19)}
-                </BrandText>
-              </TouchableOpacity>
-            )}
+                {" "}
+                @
+                {authorNSInfo?.metadata?.tokenId
+                  ? tinyAddress(authorNSInfo.metadata.tokenId, 19)
+                  : localPost.post_by}
+              </BrandText>
+            </TouchableOpacity>
+
             {/*---- Date */}
             <DateTime date={metadata.createdAt} />
           </View>

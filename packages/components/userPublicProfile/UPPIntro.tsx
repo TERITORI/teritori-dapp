@@ -10,6 +10,7 @@ import websiteSVG from "../../../assets/icons/website.svg";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { DEFAULT_NAME } from "../../utils/social-feed";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
@@ -116,7 +117,7 @@ export const UPPIntro: React.FC<{
         <View>
           {/* Pseudo and bio */}
           <BrandText style={[fontSemibold20, { marginTop: 10 }]}>
-            {metadata?.tokenId || ""}
+            {metadata?.tokenId || DEFAULT_NAME}
           </BrandText>
           <BrandText
             numberOfLines={6}
