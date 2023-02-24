@@ -10,7 +10,7 @@ export interface FreelanceServicePriceType {
 export interface User {
   id: string;
   backgroundPic: ImageSourcePropType;
-  profilePic: ImageSourcePropType;
+  profilePic: string;
   username: string;
   levelText: string;
   intro: string;
@@ -22,16 +22,12 @@ export interface User {
   onlineStatus: "online" | "offline";
   createDate: Date;
   tagline: string;
+  portfolios: string[];
   times: {
     avgResponseTime: string;
     lastDelivery: string;
   };
-  languages: [
-    {
-      title: string;
-      description: string;
-    }
-  ];
+  languages: LangInfo[];
   linkedAccounts: [
     {
       type: "twitter" | "github";
@@ -113,4 +109,19 @@ export interface CheckableType {
   text: string;
   checked: boolean;
   count: number;
+}
+
+export interface LangInfo {
+  name: string;
+  level: string;
+}
+
+export interface EducationInfo {
+  title: string;
+  description: string;
+}
+
+export interface CertificationInfo {
+  title: string;
+  description: string;
 }

@@ -55,6 +55,7 @@ func main() {
 		tailSize                       = fs.Int64("tail-size", 8640, "x blocks tail size means that the tendermint indexer can lag x blocks behind before the indexer misses an event")
 		pricesServiceURI               = fs.String("prices-service-uri", "localhost:9091", "price service URI")
 		insecurePrices                 = fs.Bool("prices-insecure-grpc", false, "do not use TLS to connect to prices service")
+		sellerConractAddress        = fs.String("teritori-seller-contract-address", "", "address of the teritori seller contract")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -69,6 +70,10 @@ func main() {
 	if *tnsContractAddress == "" {
 		panic(errors.New("missing teritori-name-service-contract-address flag"))
 	}
+	if *sellerConractAddress == "" {
+		panic(errors.New("missing teritori-seller-contract-address flag"))
+	}
+
 	if *tendermintWebsocketEndpoint == "" {
 		panic(errors.New("missing tendermint-websocket-endpoint flag"))
 	}
@@ -220,7 +225,7 @@ func main() {
 			}
 
 			if strategy == "tail" {
-				logger.Info(fmt.Sprintf("indexing [%d, ∞]", batchStart), zap.String("strategy", strategy), zap.String("lptxh", lastProcessedHash))
+				logger.Info(fmt.Sprintf("indexing [%d, 8]", batchStart), zap.String("strategy", strategy), zap.String("lptxh", lastProcessedHash))
 			} else { // chunk strategy
 				logger.Info(fmt.Sprintf("indexing [%d, %d]", batchStart, batchEnd-1), zap.String("strategy", strategy))
 			}
@@ -233,6 +238,7 @@ func main() {
 					SquadStakingContractAddressV2:  *squadStakingContactAddressV2,
 					TheRiotBreedingContractAddress: *theRiotBreedingContractAddress,
 					TNSContractAddress:             *tnsContractAddress,
+					SellerContractAddress:          *sellerConractAddress,
 					TNSDefaultImageURL:             *tnsDefaultImageURL,
 					TendermintClient:               client,
 					NetworkID:                      *teritoriNetworkID,

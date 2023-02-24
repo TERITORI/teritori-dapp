@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package sellerprofile.v1;
+option go_package = "./sellerprofilepb";
+
+service SellerprofileService {
+  rpc UpdateProfile(SellerProfileRequest) returns (stream SellerProfileResponse);
+}
+
+message SellerProfileRequest {
+  string user_id = 1;
+  string profile_hash = 2;
+}
+
+message SellerProfileResponse {
+    int32 result = 1;
+}

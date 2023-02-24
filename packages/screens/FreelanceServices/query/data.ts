@@ -1,4 +1,3 @@
-import profilePic from "../../../../assets/banners/freelance-service/profile-pic.png";
 import serviceBackground from "../../../../assets/banners/freelance-service/service-card-background.png";
 import { allCountries } from "../../../utils/allCountries";
 import {
@@ -76,7 +75,7 @@ export function getUser(id: string): User {
   return {
     id,
     backgroundPic: serviceBackground,
-    profilePic,
+    profilePic: "QmdwfuR4doRFsbMzNwDyjNv8ZFd4qUx5JMbbrSuURgESbE",
     username: "freelancerUser100",
     levelText: "Level 2 Seller",
     isFavorite: false,
@@ -95,12 +94,16 @@ export function getUser(id: string): User {
       "country-code": "54",
     },
     onlineStatus: "online",
+    portfolios: [
+      "QmdwfuR4doRFsbMzNwDyjNv8ZFd4qUx5JMbbrSuURgESbE",
+      "QmdwfuR4doRFsbMzNwDyjNv8ZFd4qUx5JMbbrSuURgESbE",
+    ],
     createDate: new Date(),
     totalQueue: 5,
     languages: [
       {
-        title: "English",
-        description: "Native",
+        name: "English",
+        level: "Native",
       },
     ],
     linkedAccounts: [

@@ -33,6 +33,7 @@ type Message struct {
 
 type Config struct {
 	TNSContractAddress             string
+	SellerContractAddress          string
 	MinterCodeIDs                  []uint64
 	VaultContractAddress           string
 	SquadStakingContractAddressV1  string
@@ -249,8 +250,21 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}
 		}
-		// NOTE: add another stake handler here if needed
+	// NOTE: add another stake handler here if needed
+	case "register_seller": //seller_contract
+		if err := h.handleExecuteRegisterSeller(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle register_seller")
+		}
+	case "update_seller": //seller_contract
+		if err := h.handleExecuteUpdateSeller(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle update_seller")
+		}
+	case "update_seller_active": //seller_contract
+		if err := h.handleExecuteSellerActive(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle update_seller_active")
+		}
 	}
+
 
 	return nil
 }

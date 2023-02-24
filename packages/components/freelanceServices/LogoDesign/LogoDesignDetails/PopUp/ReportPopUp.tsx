@@ -50,6 +50,7 @@ export const ReportPopUp: React.FC<{
         <>
           {displayDescriptionReportPopUp && (
             <DescritpionReportPopup
+              userInfo={{ user_addr: "tori1.." }}
               visible
               onClose={() => {
                 setDisplayDescriptionReportPopUp(false);

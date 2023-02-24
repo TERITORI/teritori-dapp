@@ -24,7 +24,9 @@ import { RelatedTags } from "../../../components/freelanceServices/LogoDesign/Lo
 import { ReviewsStats } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/ReviewsStats";
 import { SecondaryCard } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/SecondaryCard";
 import { StarRating } from "../../../components/freelanceServices/common/StarRating";
-import { ScreenFC } from "../../../utils/navigation";
+import { PortfolioImage } from "../../../components/inputs/PortfolioImage";
+import { ipfsPinataUrl } from "../../../utils/ipfs";
+import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
   neutral33,
@@ -52,6 +54,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
     params: { id },
   },
 }) => {
+  const navigation = useAppNavigation();
   const data = getService(id);
   const { width } = useWindowDimensions();
 
@@ -85,7 +88,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
               }}
             >
               <Image
-                source={data.user.profilePic}
+                source={ipfsPinataUrl(data.user.profilePic)}
                 style={{ width: 32, height: 32, marginRight: 12 }}
               />
               <BrandText style={[fontMedium14, { marginRight: 12 }]}>
@@ -268,7 +271,7 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
               >
                 <View style={{ flexDirection: "row" }}>
                   <Image
-                    source={data.user.profilePic}
+                    source={ipfsPinataUrl(data.user.profilePic)}
                     style={{ width: 104, height: 104 }}
                   />
                   <View
@@ -281,9 +284,17 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      <BrandText style={fontSemibold16}>
-                        {data.user.username}
-                      </BrandText>
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.navigate("SellerDetails", {
+                            id: data.id,
+                          });
+                        }}
+                      >
+                        <BrandText style={fontSemibold16}>
+                          {data.user.username}
+                        </BrandText>
+                      </TouchableOpacity>
                       <View
                         style={{
                           width: "fit-content",
@@ -439,15 +450,20 @@ export const LogoDesignDetailsScreen: ScreenFC<"LogoDesignDetails"> = ({
             <View
               style={{
                 width: "100%",
-                justifyContent: "space-between",
                 flexDirection: "row",
                 flexWrap: "wrap",
                 marginTop: 20,
               }}
             >
-              <TertiaryBox width={236} height={236} />
-              <TertiaryBox width={236} height={236} />
-              <TertiaryBox width={236} height={236} />
+              {data.user.portfolios.map((item, index) => (
+                <PortfolioImage
+                  key={`portfolio-${index}`}
+                  width={191}
+                  height={191}
+                  source={item}
+                  style={{ marginLeft: 10, marginTop: 10 }}
+                />
+              ))}
             </View>
 
             <BrandText

@@ -37,25 +37,18 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     title: "Freelance",
     route: "FreelanceServicesHome",
     icon: marketplaceSVG,
-    nested: {
-      freelance: {
-        title: "Freelance",
-        route: "FreelanceServicesHome",
-        icon: marketplaceSVG,
-      },
-      seller: {
-        title: "Seller",
-        // @ts-ignore
-        route: "SellerDetails",
-        icon: marketplaceSVG,
-      },
-      order: {
-        title: "Order",
-        // @ts-ignore
-        route: "OrderDetails",
-        icon: marketplaceSVG,
-      },
-    },
+    // nested: {
+    //   freelance: {
+    //     title: "Freelance",
+    //     route: "FreelanceServices",
+    //     icon: marketplaceSVG,
+    //   },
+    //   order: {
+    //     title: "Order",
+    //     route: "OrderDetails",
+    //     icon: marketplaceSVG,
+    //   }
+    // }
   },
   launchpad: {
     title: "Launchpad",

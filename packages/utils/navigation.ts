@@ -124,7 +124,7 @@ const navConfig: {
     SellerDetails: "seller-details/:id",
     OrderDetails: "order-details/:modal?",
     LogoDesign: "logo-design",
-    LogoDesignDetails: "logo-design-details",
+    LogoDesignDetails: "logo-design-details/:id",
     Activity: "activity",
     Guardians: "guardians",
     WalletManager: "wallet-manager",

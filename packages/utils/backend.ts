@@ -8,6 +8,14 @@ import {
   P2eServiceClientImpl,
   GrpcWebImpl as P2eGrpcWebImpl,
 } from "../api/p2e/v1/p2e";
+import {
+  ReportServiceClientImpl,
+  GrpcWebImpl as ReportGrpcWebImpl,
+} from "../api/report/v1/report";
+import {
+  SellerprofileServiceClientImpl,
+  GrpcWebImpl as SellerprofileGrpcWebImpl,
+} from "../api/sellerprofile/v1/sellerprofile";
 
 const backendEndpoint = process.env.TERITORI_BACKEND_ENDPOINT;
 
@@ -29,3 +37,19 @@ const p2eRpc = new P2eGrpcWebImpl(backendEndpoint, {
 });
 
 export const p2eBackendClient = new P2eServiceClientImpl(p2eRpc);
+
+const reportRpc = new ReportGrpcWebImpl(backendEndpoint, {
+  transport: grpc.WebsocketTransport(),
+  debug: false,
+});
+
+export const reportBackendClient = new ReportServiceClientImpl(reportRpc);
+
+const sellerprofileRpc = new SellerprofileGrpcWebImpl(backendEndpoint, {
+  transport: grpc.WebsocketTransport(),
+  debug: false,
+});
+
+export const sellerprofileBackendClient = new SellerprofileServiceClientImpl(
+  sellerprofileRpc
+);

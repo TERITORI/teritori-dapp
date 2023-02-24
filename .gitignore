@@ -83,3 +83,5 @@ web-build/
 dist/
 
 # @end expo-cli
+
+yarn.lock
