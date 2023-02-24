@@ -8,6 +8,7 @@ import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
+import { RichText } from "../RichText";
 import { THUMBNAIL_WIDTH } from "./SocialMessageContent";
 
 interface Props {
@@ -19,6 +20,31 @@ export const ArticlePreview: React.FC<Props> = ({
   metadata,
   isPostConsultation,
 }) => {
+  if (isPostConsultation) {
+    const coverImage = metadata.files?.find((file) => file.isCoverImage);
+    return (
+      <>
+        {!!metadata?.title && (
+          <BrandText style={{ marginBottom: layout.padding_x1 }}>
+            {metadata.title}
+          </BrandText>
+        )}
+        {!!coverImage && (
+          <Image
+            source={{ uri: ipfsURLToHTTPURL(coverImage.url) }}
+            resizeMode="cover"
+            style={{
+              width: "100%",
+              height: 240,
+              marginBottom: layout.padding_x1_5,
+            }}
+          />
+        )}
+
+        <RichText initialValue={metadata.message} readOnly />
+      </>
+    );
+  }
   return (
     <View style={{ flexDirection: "row" }}>
       <View

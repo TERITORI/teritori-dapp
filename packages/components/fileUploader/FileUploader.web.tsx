@@ -122,12 +122,14 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
             borderRadius: 10,
           }}
         >
-          <SVG
-            source={gradientDottedCardSVG}
-            height={80}
-            width="100%"
-            style={{ position: "absolute" }}
-          />
+          {!file && (
+            <SVG
+              source={gradientDottedCardSVG}
+              height={80}
+              width="100%"
+              style={{ position: "absolute" }}
+            />
+          )}
 
           {file ? (
             <div

@@ -7,6 +7,7 @@ import { Wallet } from "../../../context/WalletsProvider";
 import { OpenGraphType } from "../../../hooks/feed/types";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
+import { ipfsURLToHTTPURL } from "./../../../utils/ipfs";
 import {
   PostCategory,
   NewPostFormValues,
@@ -98,6 +99,7 @@ interface CreatePostParams {
   formValues: NewPostFormValues;
   freePostCount: number;
   fee: number;
+  category: PostCategory;
   parentId?: string;
   openGraph?: OpenGraphType;
   nftStorageApiToken?: string;
@@ -111,12 +113,12 @@ export const createPost = async ({
   fee,
   parentId,
   nftStorageApiToken,
+  category,
 }: CreatePostParams) => {
   if (!wallet?.connected || !wallet.address) {
     return;
   }
 
-  const postCategory = getPostCategory(formValues);
   const client = await socialFeedClient({
     networkId,
     walletAddress: wallet.address,
@@ -131,16 +133,24 @@ export const createPost = async ({
     });
   }
 
+  let message = formValues.message || "";
+
+  if (category === PostCategory.Article) {
+    formValues.files?.map((file, index) => {
+      message = message.replace(file.url, ipfsURLToHTTPURL(files[index].url));
+    });
+  }
+
   const metadata = generatePostMetadata({
     title: formValues.title || "",
-    message: formValues.message || "",
+    message,
     files,
     hashtags: formValues.hashtags || [],
   });
 
   await client.createPost(
     {
-      category: postCategory,
+      category,
       identifier: uuidv4(),
       metadata: JSON.stringify(metadata),
       parentPostIdentifier: parentId,
