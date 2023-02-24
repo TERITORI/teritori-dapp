@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 
@@ -18,7 +18,6 @@ import {
 } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import {
   getAvailableFreePost,
-  getPostCategory,
   getPostFee,
   createPost,
 } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
@@ -43,9 +42,7 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
   // variables
   const [postFee, setPostFee] = useState(0);
   const [freePostCount, setFreePostCount] = useState(0);
-  const [postCategory, setPostCategory] = useState<PostCategory>(
-    PostCategory.Normal
-  );
+
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const oldUrlMatch = useRef<string>();
@@ -88,10 +85,6 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     }, [wallet?.address])
   );
 
-  useEffect(() => {
-    updatePostCategory();
-  }, [formValues]);
-
   // functions
   const updateAvailableFreePost = async () => {
     const freePost = await getAvailableFreePost({
@@ -105,13 +98,9 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     const fee = await getPostFee({
       networkId: selectedNetworkId,
       wallet,
-      postCategory,
+      postCategory: PostCategory.Article,
     });
     setPostFee(fee || 0);
-  };
-
-  const updatePostCategory = () => {
-    setPostCategory(getPostCategory(formValues));
   };
 
   const initSubmit = async (nftStorageApiToken: string) => {
@@ -120,12 +109,20 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
       return setNotEnoughFundModal(true);
     }
 
+    const currentFiles = formValues.files?.filter(
+      (file) => file.isCoverImage || formValues.message.includes(file.url)
+    );
+
     await createPost({
       networkId: selectedNetworkId,
       wallet,
       freePostCount,
+      category: PostCategory.Article,
       fee: postFee,
-      formValues,
+      formValues: {
+        ...formValues,
+        files: currentFiles,
+      },
       openGraph: data,
       nftStorageApiToken,
     });
@@ -205,12 +202,16 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
       >
         <WalletStatusBox maxAddressLength={50} />
         <FileUploader
-          multiple
           label="Cover image"
           style={{
             marginTop: layout.padding_x3,
           }}
-          onUpload={(files) => setValue("files", files)}
+          onUpload={(files) =>
+            setValue("files", [
+              ...(formValues.files || []),
+              { ...files[0], isCoverImage: true },
+            ])
+          }
           mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
         />
 
@@ -242,6 +243,9 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
                 handleOnChange(html);
               }}
               onBlur={onBlur}
+              onImageUpload={(image) =>
+                setValue("files", [...(formValues.files || []), image])
+              }
               initialValue={formValues.message}
               openGraph={data}
               publishButtonProps={{

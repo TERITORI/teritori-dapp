@@ -1,4 +1,7 @@
 import "@draft-js-plugins/static-toolbar/lib/plugin.css";
+import "./inline-toolbar/lib/plugin.css";
+import "@draft-js-plugins/image/lib/plugin.css";
+
 import "./draftjs.css";
 import createLinkPlugin from "@draft-js-plugins/anchor";
 import {
@@ -14,6 +17,7 @@ import {
   BlockquoteButton,
 } from "@draft-js-plugins/buttons";
 import Editor from "@draft-js-plugins/editor";
+import createImagePlugin from "@draft-js-plugins/image";
 import createToolbarPlugin from "@draft-js-plugins/static-toolbar";
 import { convertToHTML } from "draft-convert";
 import {
@@ -25,6 +29,8 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { Linking, ScrollView, View } from "react-native";
 
+import cameraSVG from "../../../../assets/icons/camera.svg";
+import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { useAppNavigation } from "../../../utils/navigation";
 import { HANDLE_REGEX, HASH_REGEX, URL_REGEX } from "../../../utils/regex";
 import {
@@ -32,11 +38,16 @@ import {
   SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT,
 } from "../../../utils/social-feed";
 import { primaryColor } from "../../../utils/style/colors";
+import { layout } from "../../../utils/style/layout";
+import { LocalFileData } from "../../../utils/types/feed";
+import { IconBox } from "../../IconBox";
+import { FileUploader } from "../../fileUploader";
 import { ActionsContainer } from "./ActionsContainer";
 import { PublishButton } from "./PublishButton";
 import { RichOpenGraphCard } from "./RichOpenGraphCard";
 import { RichTextProps } from "./RichText.type";
 import { ToolbarContainer } from "./ToolbarContainer";
+import createInlineToolbarPlugin from "./inline-toolbar";
 
 const mentionStrategy = (
   contentBlock: ContentBlock,
@@ -142,7 +153,20 @@ const staticToolbarPlugin = createToolbarPlugin({
     },
   },
 });
+const inlineToolbarPlugin = createInlineToolbarPlugin({
+  theme: {
+    toolbarStyles: {
+      toolbar: "draftjs-inline-toolbar",
+    },
+    buttonStyles: {
+      buttonWrapper: "draftjs-inline-toolbar-buttonWrapper",
+    },
+  },
+});
+const imagePlugin = createImagePlugin();
+
 const { Toolbar } = staticToolbarPlugin;
+const { InlineToolbar } = inlineToolbarPlugin;
 
 const compositeDecorator = {
   decorators: [
@@ -158,9 +182,19 @@ const compositeDecorator = {
       strategy: hashStrategy,
       component: HashRender,
     },
+    {
+      strategy: hashStrategy,
+      component: HashRender,
+    },
   ],
 };
-const plugins = [staticToolbarPlugin, LinkPlugin, compositeDecorator];
+const plugins = [
+  staticToolbarPlugin,
+  LinkPlugin,
+  compositeDecorator,
+  inlineToolbarPlugin,
+  imagePlugin,
+];
 
 const createStateFromHTML = (html: string) => {
   const blocksFromHTML = convertFromHTML(html);
@@ -168,12 +202,14 @@ const createStateFromHTML = (html: string) => {
     blocksFromHTML.contentBlocks,
     blocksFromHTML.entityMap
   );
+
   return EditorState.createWithContent(content);
 };
 
 export const RichText: React.FC<RichTextProps> = ({
   onChange = () => {},
   onBlur,
+  onImageUpload,
   initialValue,
   readOnly,
   openGraph,
@@ -199,6 +235,12 @@ export const RichText: React.FC<RichTextProps> = ({
       truncate();
     }
   }, []);
+
+  const addImage = (file: LocalFileData) => {
+    const _state = imagePlugin.addImage(editorState, file.url, {});
+    handleChange(_state);
+    onImageUpload?.(file);
+  };
 
   const truncate = () => {
     const contentState = editorState.getCurrentContent();
@@ -246,7 +288,14 @@ export const RichText: React.FC<RichTextProps> = ({
 
     const hashtags = contentState.getPlainText().match(/#\S+/g);
 
-    const html = convertToHTML(contentState);
+    const html = convertToHTML({
+      entityToHTML: (entity, originalText) => {
+        if (entity.type === "IMAGE") {
+          return <img src={entity.data.src} />;
+        }
+        return originalText;
+      },
+    })(contentState);
 
     onChange(html === "<p></p>" ? "" : html, hashtags || []);
   };
@@ -256,11 +305,18 @@ export const RichText: React.FC<RichTextProps> = ({
       style={{
         minHeight: readOnly ? "auto" : 126,
         position: "relative",
+
+        zIndex: 99999,
         // padding: "12px 0",
         // paddingBottom: 12,
       }}
     >
-      <ScrollView style={{ height: "100%", maxHeight: 425 }}>
+      <ScrollView
+        style={{
+          height: "100%",
+          maxHeight: readOnly ? "100%" : 425,
+        }}
+      >
         <Editor
           editorState={editorState}
           onChange={handleChange}
@@ -271,6 +327,16 @@ export const RichText: React.FC<RichTextProps> = ({
           ref={editorRef}
           decorators={compositeDecorator.decorators}
         />
+        <InlineToolbar>
+          {(externalProps) => (
+            <>
+              <BoldButton {...externalProps} />
+              <ItalicButton {...externalProps} />
+              <UnderlineButton {...externalProps} />
+              <CodeButton {...externalProps} />
+            </>
+          )}
+        </InlineToolbar>
       </ScrollView>
       {openGraph && <RichOpenGraphCard {...openGraph} />}
 
@@ -279,6 +345,28 @@ export const RichText: React.FC<RichTextProps> = ({
           <Toolbar>
             {(externalProps) => (
               <>
+                <FileUploader
+                  onUpload={(files) => addImage(files?.[0])}
+                  mimeTypes={IMAGE_MIME_TYPES}
+                >
+                  {({ onPress }) => (
+                    <IconBox
+                      icon={cameraSVG}
+                      onPress={onPress}
+                      style={{
+                        marginRight: layout.padding_x0_25,
+                        borderRadius: 4,
+                        height: 30,
+                        width: 40,
+                      }}
+                      iconProps={{
+                        height: 18,
+                        width: 18,
+                      }}
+                    />
+                  )}
+                </FileUploader>
+
                 <BoldButton {...externalProps} />
                 <ItalicButton {...externalProps} />
                 <UnderlineButton {...externalProps} />
@@ -294,7 +382,7 @@ export const RichText: React.FC<RichTextProps> = ({
             )}
           </Toolbar>
         </ToolbarContainer>
-        <PublishButton {...publishButtonProps} />
+        {!!publishButtonProps && <PublishButton {...publishButtonProps} />}
       </ActionsContainer>
     </View>
   );
