@@ -8,7 +8,7 @@ import { BrandText } from "../../components/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import FlexRow from "../../components/containers/FlexRow";
+import FlexRow from "../../components/FlexRow";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { isNFTStaked } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";

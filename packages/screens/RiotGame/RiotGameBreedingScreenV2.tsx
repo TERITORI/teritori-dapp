@@ -7,7 +7,7 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import FlexRow from "../../components/containers/FlexRow";
+import FlexRow from "../../components/FlexRow";
 import { SpacerRow } from "../../components/spacer";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";

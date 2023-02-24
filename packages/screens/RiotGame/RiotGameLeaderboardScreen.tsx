@@ -23,7 +23,7 @@ import {
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import FlexRow from "../../components/containers/FlexRow";
+import FlexRow from "../../components/FlexRow";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";

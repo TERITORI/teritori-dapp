@@ -28,8 +28,8 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { SecondaryButton } from "../buttons/SecondaryButton";
-import FlexCol from "../containers/FlexCol";
-import FlexRow from "../containers/FlexRow";
+import FlexCol from "../FlexCol";
+import FlexRow from "../FlexRow";
 import { SendModal } from "../modals/SendModal";
 import { TopMenuSection } from "./TopMenuSection";
 

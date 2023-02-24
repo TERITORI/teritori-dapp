@@ -15,7 +15,7 @@ import closeSVG from "../../../../assets/icons/close.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
-import FlexRow from "../../../components/containers/FlexRow";
+import FlexRow from "../../../components/FlexRow";
 import { SpacerRow } from "../../../components/spacer";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";

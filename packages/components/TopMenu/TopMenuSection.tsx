@@ -6,8 +6,8 @@ import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { Separator } from "../Separator";
-import FlexCol from "../containers/FlexCol";
-import FlexRow from "../containers/FlexRow";
+import FlexCol from "../FlexCol";
+import FlexRow from "../FlexRow";
 
 export const TopMenuSection: React.FC<{
   title: string;

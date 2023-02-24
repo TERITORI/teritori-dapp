@@ -13,7 +13,7 @@ import Carousel, {
 import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { SVG } from "../SVG";
-import FlexRow from "../containers/FlexRow";
+import FlexRow from "../FlexRow";
 import { InnerSideBlackShadow } from "../shadows/InnerSideBlackShadow";
 
 const chevronSize = 16;

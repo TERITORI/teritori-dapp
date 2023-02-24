@@ -9,7 +9,7 @@ import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
 import { SVG } from "../../components/SVG";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import FlexRow from "../../components/containers/FlexRow";
+import FlexRow from "../../components/FlexRow";
 import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";

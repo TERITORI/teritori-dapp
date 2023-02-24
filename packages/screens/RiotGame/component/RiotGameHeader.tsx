@@ -16,7 +16,7 @@ import { ConnectWalletButton } from "../../../components/ConnectWalletButton";
 import { NetworkSelector } from "../../../components/NetworkSelector";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
-import FlexRow from "../../../components/containers/FlexRow";
+import FlexRow from "../../../components/FlexRow";
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
 import { useForceNetworkKind } from "../../../hooks/useForceNetworkKind";

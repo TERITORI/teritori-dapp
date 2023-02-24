@@ -19,7 +19,7 @@ import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import FlexRow from "../../../components/containers/FlexRow";
+import FlexRow from "../../../components/FlexRow";
 import { SpacerRow } from "../../../components/spacer";
 import { getRipperRarity, isNFTStaked } from "../../../utils/game";
 import {

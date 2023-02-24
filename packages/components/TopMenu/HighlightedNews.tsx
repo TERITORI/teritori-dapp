@@ -5,7 +5,7 @@ import { useBanners } from "../../hooks/useBanners";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { Link } from "../Link";
 import { PrimaryBox } from "../boxes/PrimaryBox";
-import FlexCol from "../containers/FlexCol";
+import FlexCol from "../FlexCol";
 import { TopMenuSection } from "./TopMenuSection";
 
 export const HighlightedNews: React.FC = () => {

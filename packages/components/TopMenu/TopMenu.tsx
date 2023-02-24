@@ -24,7 +24,7 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import FlexCol from "../containers/FlexCol";
+import FlexCol from "../FlexCol";
 import { Account } from "./Account";
 import { HighlightedNews } from "./HighlightedNews";
 import { LiveMint } from "./LiveMint";

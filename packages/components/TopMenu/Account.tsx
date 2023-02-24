@@ -10,8 +10,8 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { UserNameInline } from "../UserNameInline";
 import { CustomPressable } from "../buttons/CustomPressable";
-import FlexCol from "../containers/FlexCol";
-import FlexRow from "../containers/FlexRow";
+import FlexCol from "../FlexCol";
+import FlexRow from "../FlexRow";
 
 export const Account: React.FC = () => {
   const navigation = useAppNavigation();

@@ -7,7 +7,7 @@ import { useAppNavigation } from "../utils/navigation";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
-import FlexRow from "./containers/FlexRow";
+import FlexRow from "./FlexRow";
 import { RoundedGradientImage } from "./images/RoundedGradientImage";
 
 type PlayerNameProps = {
