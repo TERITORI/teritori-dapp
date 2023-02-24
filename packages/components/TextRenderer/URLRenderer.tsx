@@ -3,7 +3,7 @@ import { Linking, Text } from "react-native";
 
 import { primaryColor } from "../../utils/style/colors";
 
-export const UrlRender = ({ text }: { text: string }) => {
+export const UrlRender: React.FC<{ text: string }> = ({ text }) => {
   return (
     <Text
       style={{ color: primaryColor, cursor: "pointer" }}

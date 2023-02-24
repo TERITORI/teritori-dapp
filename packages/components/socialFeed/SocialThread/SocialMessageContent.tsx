@@ -42,8 +42,7 @@ export const SocialMessageContent: React.FC<Props> = ({
           <VideoPreview file={metadata.files[0]} onDelete={() => null} />
         )}
 
-        {(metadata.files?.[0]?.fileType === "image" ||
-          metadata.gifs?.length) && (
+        {metadata.files?.[0]?.fileType === "image" || metadata.gifs?.length ? (
           <ImagePreview
             files={[
               ...(metadata.files || []),
@@ -52,7 +51,7 @@ export const SocialMessageContent: React.FC<Props> = ({
             isEditable={false}
             onDelete={() => null}
           />
-        )}
+        ) : null}
 
         {metadata.files?.[0]?.fileType === "audio" && (
           <AudioPreview file={metadata.files?.[0]} />
