@@ -75,51 +75,11 @@ export const AudioPreview: React.FC<AudioPreviewProps> = ({
         borderRadius: 4,
         flexDirection: "row",
         alignItems: "center",
+        justifyContent: "space-between",
         position: "relative",
       }}
     >
       <DeleteButton onPress={onDelete} />
-
-      <FileUploader
-        onUpload={(files) => onUploadThumbnail(files[0])}
-        mimeTypes={IMAGE_MIME_TYPES}
-      >
-        {({ onPress }) => (
-          <TouchableOpacity
-            activeOpacity={0.9}
-            style={{
-              height: "100%",
-              width: 80,
-              backgroundColor: neutral44,
-              borderTopLeftRadius: 4,
-              borderBottomLeftRadius: 4,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={onPress}
-          >
-            {file.thumbnailFileData ? (
-              <Image
-                source={{ uri: file.thumbnailFileData.url }}
-                style={{
-                  height: 80,
-                  width: 80,
-                  borderTopLeftRadius: 4,
-                  borderBottomLeftRadius: 4,
-                }}
-                resizeMode="cover"
-              />
-            ) : (
-              <>
-                <BrandText style={[fontMedium32]}>+</BrandText>
-                <BrandText style={[fontSemibold12, { textAlign: "center" }]}>
-                  Thumbnail
-                </BrandText>
-              </>
-            )}
-          </TouchableOpacity>
-        )}
-      </FileUploader>
 
       <View
         style={{
@@ -189,6 +149,46 @@ export const AudioPreview: React.FC<AudioPreviewProps> = ({
           </View>
         )}
       </View>
+      <FileUploader
+        onUpload={(files) => onUploadThumbnail(files[0])}
+        mimeTypes={IMAGE_MIME_TYPES}
+      >
+        {({ onPress }) => (
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={{
+              height: "100%",
+              width: 80,
+              backgroundColor: neutral44,
+              borderTopRightRadius: 4,
+              borderBottomRightRadius: 4,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={onPress}
+          >
+            {file.thumbnailFileData ? (
+              <Image
+                source={{ uri: file.thumbnailFileData.url }}
+                style={{
+                  height: 80,
+                  width: 80,
+                  borderTopLeftRadius: 4,
+                  borderBottomLeftRadius: 4,
+                }}
+                resizeMode="cover"
+              />
+            ) : (
+              <>
+                <BrandText style={[fontMedium32]}>+</BrandText>
+                <BrandText style={[fontSemibold12, { textAlign: "center" }]}>
+                  Thumbnail
+                </BrandText>
+              </>
+            )}
+          </TouchableOpacity>
+        )}
+      </FileUploader>
     </View>
   );
 };
