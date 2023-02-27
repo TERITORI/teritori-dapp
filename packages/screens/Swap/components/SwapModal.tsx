@@ -4,6 +4,7 @@ import React, {
   SetStateAction,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -12,6 +13,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Animated,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -72,6 +74,22 @@ export const ModalHeader: React.FC<{
   setSettingsOpened?: Dispatch<SetStateAction<boolean>>;
   networkDisplayName?: string;
 }> = ({ setSettingsOpened, networkDisplayName }) => {
+  const styles = StyleSheet.create({
+    modalHeaderContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      flex: 1,
+    },
+    modalHeaderLogoTitle: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    modalHeaderTitle: {
+      marginLeft: layout.padding_x2,
+    },
+  });
+
   return (
     <>
       <View style={styles.modalHeaderContainer}>
@@ -95,6 +113,139 @@ export const ModalHeader: React.FC<{
 
 /////////////////// MODAL
 export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
+  const opacity = useRef(new Animated.Value(1)).current;
+  const translateToTop = useRef(new Animated.Value(0)).current;
+  const translateToBottom = useRef(new Animated.Value(0)).current;
+
+  const opacityFunction = () => {
+    Animated.sequence([
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const translateRangeToTop = translateToTop.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -50],
+  });
+
+  const translateRangeToBottom = translateToBottom.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 50],
+  });
+
+  const toBottomFunction = () => {
+    Animated.sequence([
+      Animated.timing(translateToBottom, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateToBottom, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const toTopFunction = () => {
+    Animated.sequence([
+      Animated.timing(translateToTop, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateToTop, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const styles = StyleSheet.create({
+    loaderContainer: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    loaderBackground: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      backgroundColor: neutral00,
+      opacity: 0.6,
+      width: "100%",
+      height: "100%",
+    },
+    loader: {
+      position: "absolute",
+    },
+
+    modalChildrenContainer: {
+      alignItems: "center",
+      paddingBottom: layout.padding_x2_5,
+    },
+    currencyBoxMainContainer: {
+      padding: layout.padding_x2,
+    },
+
+    counts: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
+      marginBottom: layout.padding_x2,
+    },
+    currencies: {
+      width: "100%",
+    },
+
+    currency: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
+    },
+    invertButton: {
+      position: "absolute",
+      zIndex: 20,
+      top: -24,
+    },
+    availableAmount: {
+      color: neutral77,
+      ...StyleSheet.flatten(fontSemibold14),
+    },
+    inputAmount: {
+      height: "100%",
+      outlineStyle: "none",
+      color: secondaryColor,
+      maxWidth: 200,
+      textAlign: "right",
+      ...StyleSheet.flatten(fontSemibold20),
+    },
+    amount: {
+      textAlign: "right",
+    },
+    amountUsd: {
+      color: neutralA3,
+      textAlign: "right",
+      ...StyleSheet.flatten(fontSemibold14),
+    },
+  });
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const selectedNetwork = getNetwork(selectedNetworkId);
@@ -236,9 +387,14 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
 
   // ---- Buttons
   const onPressInvert = () => {
+    opacityFunction();
+    toBottomFunction();
+    toTopFunction();
+    setTimeout(() => {
     setCurrencyIn(currencyOut);
     setCurrencyOut(currencyIn);
     setAmountIn(amountOutWithFee ? amountOutWithFee.toFixed(6) : "");
+    }, 1000);
   };
   const onPressHalf = () => {
     setAmountIn((parseFloat(currencyInAmount) / 2).toString());
@@ -271,7 +427,8 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
   };
 
   // ---- SWAP OSMOSIS
-  const { swap, spotPrice, fee, loading } = useSwap(currencyIn, currencyOut);
+  // const { swap, spotPrice, fee, loading } = useSwap(currencyIn, currencyOut);
+  const { swap, spotPrice, fee } = useSwap(currencyIn, currencyOut);
 
   const amountOut: number = useMemo(() => {
     if (!amountIn || parseFloat(amountIn) === 0 || !spotPrice) return 0;
@@ -370,6 +527,13 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
             </View>
 
             {/*----- Selected currencyIn*/}
+            <Animated.View
+              style={{
+                opacity,
+                width: "100%",
+                transform: [{ translateY: translateRangeToBottom }],
+              }}
+            >
             <View style={styles.currency}>
               <SelectedCurrency
                 currency={currencyIn}
@@ -391,6 +555,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
                 </BrandText>
               </View>
             </View>
+          </Animated.View>
 
             {/*======= Selectable currencies in */}
             {/* {isDropdownOpen(dropdownInRef) && (
@@ -432,6 +597,13 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
               </CustomPressable>
 
               {/*----- Selected currencyOut */}
+              <Animated.View
+                style={{
+                  opacity,
+                  width: "100%",
+                  transform: [{ translateY: translateRangeToTop }],
+                }}
+              >
               <View style={styles.currency}>
                 <SelectedCurrency
                   currency={currencyOut}
@@ -446,7 +618,7 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
                   isApproximate
                 />
               </View>
-
+            </Animated.View>
 
               {/*======= Selectable currencies out */}
               {/* {isDropdownOpen(dropdownOutRef) && (
@@ -502,101 +674,12 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       </View>
 
       {/*======= Loader TODO: Ugly, polish that*/}
-      {loading && (
+      {/* {loading && (
         <View style={styles.loaderContainer}>
           <View style={styles.loaderBackground} />
           <ActivityIndicator size="large" style={styles.loader} />
         </View>
-      )}
+      )} */}
     </ModalBase>
   );
 };
-
-const styles = StyleSheet.create({
-  loaderContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loaderBackground: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    backgroundColor: neutral00,
-    opacity: 0.6,
-    width: "100%",
-    height: "100%",
-  },
-  loader: {
-    position: "absolute",
-  },
-
-  modalHeaderContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flex: 1,
-  },
-  modalHeaderLogoTitle: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  modalHeaderTitle: {
-    marginLeft: layout.padding_x2,
-  },
-
-  modalChildrenContainer: {
-    alignItems: "center",
-    paddingBottom: layout.padding_x2_5,
-  },
-  currencyBoxMainContainer: {
-    padding: layout.padding_x2,
-  },
-
-  counts: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: layout.padding_x2,
-  },
-  currencies: {
-    width: "100%",
-  },
-
-  currency: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-  },
-  invertButton: {
-    position: "absolute",
-    zIndex: 20,
-    top: -24,
-  },
-  availableAmount: {
-    color: neutral77,
-    ...StyleSheet.flatten(fontSemibold14),
-  },
-  inputAmount: {
-    height: "100%",
-    outlineStyle: "none",
-    color: secondaryColor,
-    maxWidth: 200,
-    textAlign: "right",
-    ...StyleSheet.flatten(fontSemibold20),
-  },
-  amount: {
-    textAlign: "right",
-  },
-  amountUsd: {
-    color: neutralA3,
-    textAlign: "right",
-    ...StyleSheet.flatten(fontSemibold14),
-  },
-});
