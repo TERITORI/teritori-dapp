@@ -13,7 +13,7 @@ import { SVG } from "../SVG";
 import { UserNameInline } from "../UserNameInline";
 import { CustomPressable } from "../buttons/CustomPressable";
 
-export const Account: React.FC = () => {
+export const TopMenuAccount: React.FC = () => {
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
 

@@ -154,9 +154,9 @@ const TokenBalance: React.FC = () => {
             />
             <BrandText style={fontSemibold12}>Available</BrandText>
           </FlexRow>
-          <BrandText style={fontBold12}>{`$${availableUSDBalance
-            // totalUSDBalance - totalUSDDelegationsBalance
-            .toFixed(2)}`}</BrandText>
+          <BrandText style={fontBold12}>{`$${availableUSDBalance.toFixed(
+            2
+          )}`}</BrandText>
         </FlexRow>
 
         <FlexRow justifyContent="space-between">
@@ -181,7 +181,7 @@ const TokenBalance: React.FC = () => {
   );
 };
 
-export const MyWallets: React.FC = () => {
+export const TopMenuMyWallets: React.FC = () => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const navigation = useAppNavigation();
   const [isDepositVisible, setDepositVisible] = useState(false);

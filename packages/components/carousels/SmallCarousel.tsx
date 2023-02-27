@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   StyleProp,
   StyleSheet,
@@ -69,7 +69,14 @@ const NextButton: React.FC<ButtonProps> = ({
 export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
   props
 ) => {
-  const { children, width, height, style, data, ...carouselProps } = props;
+  const {
+    children,
+    width = 0,
+    height = 0,
+    style,
+    data,
+    ...carouselProps
+  } = props;
   // loop is true by default in Carousel, so we need to override SmallCarousel props.loop like this
   const isLoop = props.loop === undefined || props.loop;
 
@@ -81,7 +88,8 @@ export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrolling, setScrolling] = useState(false);
 
-  const onScrollEnd = () => {
+  const onScrollEnd = (index: number) => {
+    setCurrentIndex(index);
     // Prevent spamming buttons
     setScrolling(false);
   };
@@ -90,28 +98,39 @@ export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
     // No matter the carousel or items width, if it's the last press on Prev, we set "Reached the carousel's start"
     if (!isLoop && currentIndex - step <= 0) {
       carouselRef.current?.scrollTo({ index: 0, animated: true });
-      setCurrentIndex(0);
-      setScrolling(false);
     } else {
       carouselRef.current?.prev({ count: step });
-      setCurrentIndex(currentIndex - step);
     }
   };
   const onPressNext = () => {
     // No matter the carousel or items width, if it's the last press on Next, we set "Reached the carousel's end"
     if (!isLoop && currentIndex + step >= data.length) {
       carouselRef.current?.scrollTo({ index: data.length - 1, animated: true });
-      setCurrentIndex(data.length - 1);
-      setScrolling(false);
     } else {
       carouselRef.current?.next({ count: step });
-      setCurrentIndex(currentIndex + step);
     }
   };
 
+  const isPrevButtonDisplayed = useMemo(
+    () =>
+      // The button always displayed if loop carousel
+      (isLoop ||
+        // If not loop, the button is hidden if the carousel is at start
+        (!isLoop && currentIndex > 0)) &&
+      // The button is always hidden if all items are visible (without doing next/prev)
+      data.length > step,
+    [isLoop, currentIndex, data.length, step]
+  );
+  const isNextButtonDisplayed = useMemo(
+    () =>
+      (isLoop || (!isLoop && currentIndex < data.length - 1)) &&
+      data.length > step,
+    [isLoop, currentIndex, data.length, step]
+  );
+
   return (
     <FlexRow>
-      {(isLoop || (!isLoop && currentIndex > 0)) && (
+      {isPrevButtonDisplayed && (
         <PrevButton
           shadowHeight={height}
           onPress={!isScrolling ? onPressPrev : undefined}
@@ -121,14 +140,14 @@ export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
         data={data}
         ref={carouselRef}
         style={style}
-        width={width || 0}
-        height={height || 0}
+        width={width}
+        height={height}
         onScrollBegin={() => setScrolling(true)}
         onScrollEnd={onScrollEnd}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
         {...carouselProps}
       />
-      {(isLoop || (!isLoop && currentIndex < data.length - 1)) && (
+      {isNextButtonDisplayed && (
         <NextButton
           shadowHeight={height}
           onPress={!isScrolling ? onPressNext : undefined}

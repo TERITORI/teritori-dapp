@@ -13,10 +13,10 @@ import { TertiaryBox } from "./boxes/TertiaryBox";
 import { GradientText } from "./gradientText";
 
 type CollectionViewSize = "XL" | "XS";
-export const collectionViewSMWidth = 124;
-export const collectionViewSMHeight = 164;
-export const collectionViewXLWidth = 196;
-export const collectionViewXLHeight = 266;
+export const COLLECTION_VIEW_SM_WIDTH = 124;
+export const COLLECTION_VIEW_SM_HEIGHT = 164;
+export const COLLECTION_VIEW_XL_WIDTH = 196;
+export const COLLECTION_VIEW_XL_HEIGHT = 266;
 
 export const CollectionView: React.FC<{
   item: Collection;
@@ -87,8 +87,8 @@ export const CollectionView: React.FC<{
 const styles = {
   XL: {
     box: {
-      width: collectionViewXLWidth,
-      height: collectionViewXLHeight,
+      width: COLLECTION_VIEW_XL_WIDTH,
+      height: COLLECTION_VIEW_XL_HEIGHT,
     },
     boxMainContainer: {
       paddingTop: layout.padding_x1_5,
@@ -113,8 +113,8 @@ const styles = {
 
   XS: {
     box: {
-      width: collectionViewSMWidth,
-      height: collectionViewSMHeight,
+      width: COLLECTION_VIEW_SM_WIDTH,
+      height: COLLECTION_VIEW_SM_HEIGHT,
     },
     boxMainContainer: {
       paddingTop: layout.padding_x1,

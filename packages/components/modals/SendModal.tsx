@@ -41,7 +41,7 @@ type SendModalProps = {
 };
 
 //TODO: Make a reusable component for that, or use an existing one (Which one ? Which other usage for ContactButton ?)
-const ContactButton: React.FC<{ onPress: () => void }> = ({ onPress }) => {
+const ContactButton: React.FC<{ onPress?: () => void }> = ({ onPress }) => {
   //TODO: Remove disabled when contacts are handled
   return (
     <TouchableOpacity style={styles.contactsButton} onPress={onPress} disabled>
@@ -147,12 +147,7 @@ export const SendModal: React.FC<SendModalProps> = ({
             defaultValue=""
           />
         </FlexCol>
-        <ContactButton
-          onPress={
-            () => {}
-            // setContactsVisible(isIt => !isIt)
-          }
-        />
+        <ContactButton />
       </FlexRow>
 
       <SpacerColumn size={2.5} />

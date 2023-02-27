@@ -10,7 +10,6 @@ import arrowDivideSVG from "../../../../assets/icons/arrow-divide.svg";
 import { BrandText } from "../../../components/BrandText";
 import { NetworkIcon } from "../../../components/NetworkIcon";
 import { SVG } from "../../../components/SVG";
-import { tinyAddress } from "../../../components/TopMenu/WalletView";
 import { MaxButton } from "../../../components/buttons/MaxButton";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
@@ -30,7 +29,7 @@ import {
 import { neutral77, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { capitalize } from "../../../utils/text";
+import { capitalize, tinyAddress } from "../../../utils/text";
 import { TransactionForm } from "../types";
 
 type DepositModalProps = {

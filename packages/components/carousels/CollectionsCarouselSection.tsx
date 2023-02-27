@@ -10,8 +10,8 @@ import {
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import {
-  collectionViewXLHeight,
-  collectionViewXLWidth,
+  COLLECTION_VIEW_XL_HEIGHT,
+  COLLECTION_VIEW_XL_WIDTH,
   CollectionView,
 } from "../CollectionView";
 import { CarouselSection } from "./CarouselSection";
@@ -49,8 +49,8 @@ export const CollectionsCarouselSection: React.FC<{
     <CarouselSection
       title={title}
       data={collections}
-      width={collectionViewXLWidth + gap}
-      height={collectionViewXLHeight}
+      width={COLLECTION_VIEW_XL_WIDTH + gap}
+      height={COLLECTION_VIEW_XL_HEIGHT}
       onScrollEnd={fetchMore}
       pagingEnabled
       loop={false}

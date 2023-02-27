@@ -25,11 +25,11 @@ import FlexCol from "../FlexCol";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { Account } from "./Account";
-import { HighlightedNews } from "./HighlightedNews";
-import { LiveMint } from "./LiveMint";
-import { MyTeritories } from "./MyTeritories";
-import { MyWallets } from "./MyWallets";
+import { TopMenuAccount } from "./TopMenuAccount";
+import { TopMenuHighlightedNews } from "./TopMenuHighlightedNews";
+import { TopMenuLiveMint } from "./TopMenuLiveMint";
+import { TopMenuMyTeritories } from "./TopMenuMyTeritories";
+import { TopMenuMyWallets } from "./TopMenuMyWallets";
 import { WalletView } from "./WalletView";
 
 // FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native
@@ -80,11 +80,11 @@ export const TopMenu: React.FC<{
           !isDropdownOpen(dropdownRef) && { display: "none" },
         ]}
       >
-        <Account />
-        <MyWallets />
-        <MyTeritories />
-        <HighlightedNews />
-        <LiveMint />
+        <TopMenuAccount />
+        <TopMenuMyWallets />
+        <TopMenuMyTeritories />
+        <TopMenuHighlightedNews />
+        <TopMenuLiveMint />
 
         <Separator />
         <TouchableOpacity onPress={() => navigation.navigate("Settings")}>

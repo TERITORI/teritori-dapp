@@ -13,13 +13,13 @@ import { getNetwork } from "../../networks";
 import { layout, topMenuWidth } from "../../utils/style/layout";
 import {
   CollectionView,
-  collectionViewSMHeight,
-  collectionViewSMWidth,
+  COLLECTION_VIEW_SM_HEIGHT,
+  COLLECTION_VIEW_SM_WIDTH,
 } from "../CollectionView";
 import { SmallCarousel } from "../carousels/SmallCarousel";
 import { TopMenuSection } from "./TopMenuSection";
 
-export const LiveMint: React.FC = () => {
+export const TopMenuLiveMint: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const [collections] = useCollections(
     {
@@ -37,9 +37,9 @@ export const LiveMint: React.FC = () => {
     <TopMenuSection title="Live Mint" isCarousel>
       <SmallCarousel
         style={{ width: topMenuWidth - 2 }}
-        width={collectionViewSMWidth + layout.padding_x1_5}
+        width={COLLECTION_VIEW_SM_WIDTH + layout.padding_x1_5}
         data={collections}
-        height={collectionViewSMHeight}
+        height={COLLECTION_VIEW_SM_HEIGHT}
         loop={false}
         renderItem={({ item }) => (
           <View style={{ alignItems: "flex-end" }}>

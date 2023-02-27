@@ -19,8 +19,8 @@ import { SmallCarousel } from "../carousels/SmallCarousel";
 import { TopMenuSection } from "./TopMenuSection";
 
 //TODO: Make SmallCarousel with items auto sized instead of fix widths
-const orgCardWidth = 164;
-const orgCardTagWidth = 94;
+const ORG_CARD_WIDTH = 164;
+const ORG_CARD_TAG_WIDTH = 94;
 
 type FakeOrg = {
   name: string;
@@ -44,7 +44,7 @@ const OrgCard: React.FC<{ organization: FakeOrg }> = ({ organization }) => {
     <TouchableOpacity onPress={() => {}}>
       <TertiaryBox
         height={48}
-        width={orgCardWidth}
+        width={ORG_CARD_WIDTH}
         mainContainerStyle={styles.orgCardBoxMainContainer}
       >
         <FlexRow alignItems="center">
@@ -85,7 +85,7 @@ const OrgsComingSoon: React.FC = () => (
 
 //TODO: Remove CustomPressable and OrgsComingSoon when the Multisig feature is available
 
-export const MyTeritories: React.FC = () => {
+export const TopMenuMyTeritories: React.FC = () => {
   return (
     <TopMenuSection title="My Teritories" isCarousel>
       <CustomPressable>
@@ -95,7 +95,7 @@ export const MyTeritories: React.FC = () => {
               style={{
                 width: topMenuWidth - 2,
               }}
-              width={orgCardWidth + layout.padding_x1_5}
+              width={ORG_CARD_WIDTH + layout.padding_x1_5}
               data={fakeOrgs}
               height={48}
               loop={false}
@@ -154,6 +154,6 @@ const styles = StyleSheet.create({
   orgCardTag: {
     ...(fontMedium10 as object),
     color: neutral77,
-    width: orgCardTagWidth,
+    width: ORG_CARD_TAG_WIDTH,
   },
 });

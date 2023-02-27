@@ -5,7 +5,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import penSVG from "../../../assets/icons/manage.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { tinyAddress } from "../../components/TopMenu/WalletView";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
@@ -16,6 +15,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 
 interface WalletDashboardHeaderProps {
   title: string;

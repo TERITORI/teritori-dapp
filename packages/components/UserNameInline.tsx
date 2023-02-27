@@ -9,6 +9,7 @@ import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { useAppNavigation } from "../utils/navigation";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
+import { tinyAddress } from "../utils/text";
 import { BrandText } from "./BrandText";
 import FlexRow from "./FlexRow";
 import { RoundedGradientImage } from "./images/RoundedGradientImage";
@@ -27,7 +28,10 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkId = useSelectedNetworkId();
   const network = getCosmosNetwork(selectedNetworkId);
-  const name = userInfo?.metadata?.tokenId || selectedWallet?.address || "";
+  const name =
+    userInfo?.metadata?.tokenId ||
+    tinyAddress(selectedWallet?.address, 30) ||
+    "";
 
   return (
     <FlexRow alignItems="center" style={style}>

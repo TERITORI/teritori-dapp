@@ -9,7 +9,7 @@ import { Link } from "../Link";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 import { TopMenuSection } from "./TopMenuSection";
 
-export const HighlightedNews: React.FC = () => {
+export const TopMenuHighlightedNews: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
