@@ -65,9 +65,16 @@
   background-color: #000000;
 }
 
+.DraftEditor-editorContainer figure {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
 
 .DraftEditor-editorContainer figure img {
-  width: 100%;
+  width: auto;
+  margin: 10px auto;
+  max-width: 100%;
 }
 
  
