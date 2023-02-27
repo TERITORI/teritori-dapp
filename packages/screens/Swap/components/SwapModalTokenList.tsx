@@ -2,13 +2,12 @@ import React, { Dispatch, SetStateAction } from "react";
 import { View, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import closeSVG from "../../../../assets/icons/close.svg";
+import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { CurrencyInfo } from "../../../networks";
 import { neutral00 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { modalMarginPadding } from "../../../utils/style/modals";
 import { SelectableCurrency } from "./SelectableCurrency";
 export const SwapModalTokenList: React.FC<{
   isOpened: boolean;
@@ -47,17 +46,15 @@ export const SwapModalTokenList: React.FC<{
               flexDirection: "row",
               width: "100%",
               justifyContent: "flex-end",
+              marginBottom: layout.padding_x1_5,
             }}
           >
             <TouchableOpacity
-              containerStyle={[
-                { marginLeft: modalMarginPadding },
-                { alignSelf: "center" },
-              ]}
+              containerStyle={[{ alignSelf: "center" }]}
               style={{ justifyContent: "center" }}
               onPress={close}
             >
-              <SVG width={20} height={20} source={closeSVG} />
+              <SVG width={16} height={16} source={chevronUpSVG} />
             </TouchableOpacity>
           </View>
           <View
@@ -93,5 +90,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, .8)",
+    borderRadius: 20,
   },
 });

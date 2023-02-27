@@ -8,7 +8,6 @@ import React, {
   useState,
 } from "react";
 import {
-  ActivityIndicator,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -56,7 +55,6 @@ import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { isFloatText } from "../../../utils/text";
 import { CurrencyAmount } from "./CurrencyAmount";
-import { SelectableCurrency } from "./SelectableCurrency";
 import { SelectedCurrency } from "./SelectedCurrency";
 import { SwapDetails } from "./SwapDetails";
 import { SwapModalSettings } from "./SwapModalSettings";
@@ -66,6 +64,8 @@ type SwapModalProps = {
   onClose: () => void;
   visible: boolean;
 };
+
+const invertAnimationDuration = 200;
 
 //TODO: Amounts not refreshed (Assets, etc..)
 //TODO:  fix errors useSwap
@@ -121,12 +121,12 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     Animated.sequence([
       Animated.timing(opacity, {
         toValue: 0,
-        duration: 1000,
+        duration: invertAnimationDuration,
         useNativeDriver: true,
       }),
       Animated.timing(opacity, {
         toValue: 1,
-        duration: 1000,
+        duration: invertAnimationDuration,
         useNativeDriver: true,
       }),
     ]).start();
@@ -146,12 +146,12 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     Animated.sequence([
       Animated.timing(translateToBottom, {
         toValue: 1,
-        duration: 1000,
+        duration: invertAnimationDuration,
         useNativeDriver: true,
       }),
       Animated.timing(translateToBottom, {
         toValue: 0,
-        duration: 1000,
+        duration: invertAnimationDuration,
         useNativeDriver: true,
       }),
     ]).start();
@@ -161,91 +161,17 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     Animated.sequence([
       Animated.timing(translateToTop, {
         toValue: 1,
-        duration: 1000,
+        duration: invertAnimationDuration,
         useNativeDriver: true,
       }),
       Animated.timing(translateToTop, {
         toValue: 0,
-        duration: 1000,
+        duration: invertAnimationDuration,
         useNativeDriver: true,
       }),
     ]).start();
   };
 
-  const styles = StyleSheet.create({
-    loaderContainer: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    loaderBackground: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      backgroundColor: neutral00,
-      opacity: 0.6,
-      width: "100%",
-      height: "100%",
-    },
-    loader: {
-      position: "absolute",
-    },
-
-    modalChildrenContainer: {
-      alignItems: "center",
-      paddingBottom: layout.padding_x2_5,
-    },
-    currencyBoxMainContainer: {
-      padding: layout.padding_x2,
-    },
-
-    counts: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%",
-      marginBottom: layout.padding_x2,
-    },
-    currencies: {
-      width: "100%",
-    },
-
-    currency: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%",
-    },
-    invertButton: {
-      position: "absolute",
-      zIndex: 20,
-      top: -24,
-    },
-    availableAmount: {
-      color: neutral77,
-      ...StyleSheet.flatten(fontSemibold14),
-    },
-    inputAmount: {
-      height: "100%",
-      outlineStyle: "none",
-      color: secondaryColor,
-      maxWidth: 200,
-      textAlign: "right",
-      ...StyleSheet.flatten(fontSemibold20),
-    },
-    amount: {
-      textAlign: "right",
-    },
-    amountUsd: {
-      color: neutralA3,
-      textAlign: "right",
-      ...StyleSheet.flatten(fontSemibold14),
-    },
-  });
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelector(selectSelectedNetworkId);
   const selectedNetwork = getNetwork(selectedNetworkId);
@@ -391,10 +317,10 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     toBottomFunction();
     toTopFunction();
     setTimeout(() => {
-    setCurrencyIn(currencyOut);
-    setCurrencyOut(currencyIn);
-    setAmountIn(amountOutWithFee ? amountOutWithFee.toFixed(6) : "");
-    }, 1000);
+      setCurrencyIn(currencyOut);
+      setCurrencyOut(currencyIn);
+      setAmountIn(amountOutWithFee ? amountOutWithFee.toFixed(6) : "");
+    }, invertAnimationDuration);
   };
   const onPressHalf = () => {
     setAmountIn((parseFloat(currencyInAmount) / 2).toString());
@@ -466,26 +392,26 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     <ModalBase
       childrenBottom={
         <>
-        <SwapModalSettings
-          settingsOpened={settingsOpened}
-          setSlippageValue={setSlippage}
-        />
-        <SwapModalTokenList
-          isOpened={isDropdownOpen(dropdownOutRef)}
-          close={closeOpenedDropdown}
-          width={modalWidth}
-          currencies={selectableCurrenciesOut}
-          selectedNetworkId = {selectedNetworkId}
-          setCurrency = {setCurrencyOut}
-        />
-        <SwapModalTokenList
-          isOpened={isDropdownOpen(dropdownInRef)}
-          close={closeOpenedDropdown}
-          width={modalWidth}
-          currencies={selectableCurrenciesIn}
-          selectedNetworkId = {selectedNetworkId}
-          setCurrency = {setCurrencyIn}
-        />
+          <SwapModalSettings
+            settingsOpened={settingsOpened}
+            setSlippageValue={setSlippage}
+          />
+          <SwapModalTokenList
+            isOpened={isDropdownOpen(dropdownOutRef)}
+            close={closeOpenedDropdown}
+            width={modalWidth}
+            currencies={selectableCurrenciesOut}
+            selectedNetworkId={selectedNetworkId}
+            setCurrency={setCurrencyOut}
+          />
+          <SwapModalTokenList
+            isOpened={isDropdownOpen(dropdownInRef)}
+            close={closeOpenedDropdown}
+            width={modalWidth}
+            currencies={selectableCurrenciesIn}
+            selectedNetworkId={selectedNetworkId}
+            setCurrency={setCurrencyIn}
+          />
         </>
       }
       Header={() => (
@@ -534,28 +460,27 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
                 transform: [{ translateY: translateRangeToBottom }],
               }}
             >
-            <View style={styles.currency}>
-              <SelectedCurrency
-                currency={currencyIn}
-                selectedNetworkId={selectedNetworkId}
-                setRef={setDropdownInRef}
-              />
-
-              {/*----- Desired amount for swap */}
-              <View>
-                <TextInput
-                  style={styles.inputAmount}
-                  value={amountIn}
-                  placeholder="0"
-                  placeholderTextColor={neutralA3}
-                  onChangeText={onChangeAmountIn}
+              <View style={styles.currency}>
+                <SelectedCurrency
+                  currency={currencyIn}
+                  selectedNetworkId={selectedNetworkId}
+                  setRef={setDropdownInRef}
                 />
-                <BrandText style={styles.amountUsd}>
-                  ≈ ${parseFloat(amountInUsd.toFixed(2).toString())}
-                </BrandText>
+                {/*----- Desired amount for swap */}
+                <View>
+                  <TextInput
+                    style={styles.inputAmount}
+                    value={amountIn}
+                    placeholder="0"
+                    placeholderTextColor={neutralA3}
+                    onChangeText={onChangeAmountIn}
+                  />
+                  <BrandText style={styles.amountUsd}>
+                    ≈ ${parseFloat(amountInUsd.toFixed(2).toString())}
+                  </BrandText>
+                </View>
               </View>
-            </View>
-          </Animated.View>
+            </Animated.View>
 
             {/*======= Selectable currencies in */}
             {/* {isDropdownOpen(dropdownInRef) && (
@@ -604,21 +529,21 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
                   transform: [{ translateY: translateRangeToTop }],
                 }}
               >
-              <View style={styles.currency}>
-                <SelectedCurrency
-                  currency={currencyOut}
-                  selectedNetworkId={selectedNetworkId}
-                  setRef={setDropdownOutRef}
-                />
+                <View style={styles.currency}>
+                  <SelectedCurrency
+                    currency={currencyOut}
+                    selectedNetworkId={selectedNetworkId}
+                    setRef={setDropdownOutRef}
+                  />
 
-                {/*----- Amount earned after swap */}
-                <CurrencyAmount
-                  amount={amountOutWithFee}
-                  amountUsd={amountOutUsdWithFee}
-                  isApproximate
-                />
-              </View>
-            </Animated.View>
+                  {/*----- Amount earned after swap */}
+                  <CurrencyAmount
+                    amount={amountOutWithFee}
+                    amountUsd={amountOutUsdWithFee}
+                    isApproximate
+                  />
+                </View>
+              </Animated.View>
 
               {/*======= Selectable currencies out */}
               {/* {isDropdownOpen(dropdownOutRef) && (
@@ -683,3 +608,78 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
     </ModalBase>
   );
 };
+
+const styles = StyleSheet.create({
+  loaderContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loaderBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    backgroundColor: neutral00,
+    opacity: 0.6,
+    width: "100%",
+    height: "100%",
+  },
+  loader: {
+    position: "absolute",
+  },
+
+  modalChildrenContainer: {
+    alignItems: "center",
+    paddingBottom: layout.padding_x2_5,
+  },
+  currencyBoxMainContainer: {
+    padding: layout.padding_x2,
+  },
+
+  counts: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: layout.padding_x2,
+  },
+  currencies: {
+    width: "100%",
+  },
+
+  currency: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  invertButton: {
+    position: "absolute",
+    zIndex: 20,
+    top: -24,
+  },
+  availableAmount: {
+    color: neutral77,
+    ...StyleSheet.flatten(fontSemibold14),
+  },
+  inputAmount: {
+    height: "100%",
+    outlineStyle: "none",
+    color: secondaryColor,
+    maxWidth: 200,
+    textAlign: "right",
+    ...StyleSheet.flatten(fontSemibold20),
+  },
+  amount: {
+    textAlign: "right",
+  },
+  amountUsd: {
+    color: neutralA3,
+    textAlign: "right",
+    ...StyleSheet.flatten(fontSemibold14),
+  },
+});
