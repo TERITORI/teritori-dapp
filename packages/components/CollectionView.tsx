@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { Image, Linking, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { Collection } from "../api/marketplace/v1/marketplace";
@@ -25,8 +25,13 @@ export const CollectionView: React.FC<{
     forceSecondaryDuringMint: item.secondaryDuringMint,
     forceLinkToMint: linkToMint,
   });
+  const navigateToTwitter = () => {
+    Linking.openURL(item.twitterUrl);
+  };
   return (
-    <TouchableOpacity onPress={navigateToCollection} disabled={!item.id}>
+    <TouchableOpacity
+      onPress={item.id ? navigateToCollection : navigateToTwitter}
+    >
       <TertiaryBox
         mainContainerStyle={{
           paddingTop: 12,

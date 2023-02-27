@@ -71,6 +71,8 @@ message Collection {
   string volume_denom = 9;
   string creator_id = 10;
   bool secondary_during_mint = 12;
+  string website_url = 13;
+  string twitter_url = 14;
 }
 
 message CollectionStats {

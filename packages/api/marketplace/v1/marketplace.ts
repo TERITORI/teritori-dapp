@@ -170,6 +170,8 @@ export interface Collection {
   volumeDenom: string;
   creatorId: string;
   secondaryDuringMint: boolean;
+  websiteUrl: string;
+  twitterUrl: string;
 }
 
 export interface CollectionStats {
@@ -621,6 +623,8 @@ function createBaseCollection(): Collection {
     volumeDenom: "",
     creatorId: "",
     secondaryDuringMint: false,
+    websiteUrl: "",
+    twitterUrl: "",
   };
 }
 
@@ -658,6 +662,12 @@ export const Collection = {
     }
     if (message.secondaryDuringMint === true) {
       writer.uint32(96).bool(message.secondaryDuringMint);
+    }
+    if (message.websiteUrl !== "") {
+      writer.uint32(106).string(message.websiteUrl);
+    }
+    if (message.twitterUrl !== "") {
+      writer.uint32(114).string(message.twitterUrl);
     }
     return writer;
   },
@@ -702,6 +712,12 @@ export const Collection = {
         case 12:
           message.secondaryDuringMint = reader.bool();
           break;
+        case 13:
+          message.websiteUrl = reader.string();
+          break;
+        case 14:
+          message.twitterUrl = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -723,6 +739,8 @@ export const Collection = {
       volumeDenom: isSet(object.volumeDenom) ? String(object.volumeDenom) : "",
       creatorId: isSet(object.creatorId) ? String(object.creatorId) : "",
       secondaryDuringMint: isSet(object.secondaryDuringMint) ? Boolean(object.secondaryDuringMint) : false,
+      websiteUrl: isSet(object.websiteUrl) ? String(object.websiteUrl) : "",
+      twitterUrl: isSet(object.twitterUrl) ? String(object.twitterUrl) : "",
     };
   },
 
@@ -739,6 +757,8 @@ export const Collection = {
     message.volumeDenom !== undefined && (obj.volumeDenom = message.volumeDenom);
     message.creatorId !== undefined && (obj.creatorId = message.creatorId);
     message.secondaryDuringMint !== undefined && (obj.secondaryDuringMint = message.secondaryDuringMint);
+    message.websiteUrl !== undefined && (obj.websiteUrl = message.websiteUrl);
+    message.twitterUrl !== undefined && (obj.twitterUrl = message.twitterUrl);
     return obj;
   },
 
@@ -755,6 +775,8 @@ export const Collection = {
     message.volumeDenom = object.volumeDenom ?? "";
     message.creatorId = object.creatorId ?? "";
     message.secondaryDuringMint = object.secondaryDuringMint ?? false;
+    message.websiteUrl = object.websiteUrl ?? "";
+    message.twitterUrl = object.twitterUrl ?? "";
     return message;
   },
 };
