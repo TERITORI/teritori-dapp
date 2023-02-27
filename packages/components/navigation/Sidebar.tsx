@@ -88,7 +88,9 @@ export const Sidebar: React.FC = () => {
   const availableApps = useSelector(selectAvailableApps);
 
   const dynamicSidebar = useMemo(() => {
-    const dynamicAppsSelection = Object.values(SIDEBAR_LIST);
+    const dynamicAppsSelection = Object.values(SIDEBAR_LIST) as {
+      [key: string]: any;
+    };
 
     selectedApps.map((element) => {
       const { appId, groupKey } = getValuesFromId(element);
@@ -96,7 +98,7 @@ export const Sidebar: React.FC = () => {
         return;
       }
       const option = availableApps[groupKey].options[appId];
-      // @ts-ignore
+
       dynamicAppsSelection[element] = {
         id: option.id,
         title: option.title,

@@ -15,25 +15,23 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
   const { data: dApps } = useQuery(
     ["DApps", networkId],
     async () => {
-      // @ts-ignore
+      // @ts-expect-error
       const { group } = await getMarketplaceClient(networkId).DApps({});
       return group;
     },
     {
       staleTime: Infinity,
-      // initialData: [],
     }
   );
   const { data: dAppsGroups } = useQuery(
     ["DAppsGroups", networkId],
     async () => {
-      // @ts-ignore
+      // @ts-expect-error
       const { group } = await getMarketplaceClient(networkId).DAppsGroups({});
       return group;
     },
     {
       staleTime: Infinity,
-      // initialData: [],
     }
   );
   if (dAppsGroups === undefined || dApps === undefined) {
