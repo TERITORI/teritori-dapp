@@ -52,7 +52,7 @@ export const CollectionsCarouselSection: React.FC<{
       width={collectionItemWidth + gap}
       height={collectionItemHeight}
       onScrollEnd={fetchMore}
-      pagingEnabled
+      pagingEnabled={collections.length > 5}
       loop={false}
       style={{
         width,
