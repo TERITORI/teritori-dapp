@@ -1,6 +1,6 @@
 import { bech32 } from "bech32";
 import React, { useEffect, useMemo, useState } from "react";
-import { Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 
 import { useNSNameInfo } from "../../hooks/useNSNameInfo";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
@@ -28,15 +28,14 @@ export const MentionRender: React.FC<{ text: string }> = ({ text }) => {
     return <Text style={{ color: neutralA3 }}>{text}</Text>;
   }
   return (
-    <Text
-      style={{ color: primaryColor, cursor: "pointer" }}
-      onClick={() =>
+    <TouchableOpacity
+      onPress={() =>
         navigation.navigate("PublicProfile", {
           id: userId,
         })
       }
     >
-      {text}
-    </Text>
+      <Text style={{ color: primaryColor }}>{text}</Text>
+    </TouchableOpacity>
   );
 };
