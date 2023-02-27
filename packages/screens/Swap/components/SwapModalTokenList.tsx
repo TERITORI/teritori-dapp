@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { Dispatch, SetStateAction, useRef, useEffect } from "react";
+import { Text, View, StyleSheet, Animated } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
@@ -9,6 +9,9 @@ import { CurrencyInfo } from "../../../networks";
 import { neutral00 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { SelectableCurrency } from "./SelectableCurrency";
+import type {PropsWithChildren} from 'react';
+import type {ViewStyle} from 'react-native';
+
 export const SwapModalTokenList: React.FC<{
   isOpened: boolean;
   close: () => void;
@@ -27,18 +30,13 @@ export const SwapModalTokenList: React.FC<{
   if (isOpened)
     return (
       <View style={styles.modalContainer}>
+      <FadeInView style={{position: "absolute", left: 20, top: 50}}>
         <TertiaryBox
           mainContainerStyle={{
             padding: layout.padding_x2_5,
             alignItems: "flex-start",
           }}
           width={width - 40}
-          style={{
-            position: "absolute",
-            left: 20,
-            top: 55,
-            backgroundColor: neutral00,
-          }}
           noBrokenCorners
         >
           <View
@@ -75,9 +73,32 @@ export const SwapModalTokenList: React.FC<{
             ))}
           </View>
         </TertiaryBox>
+      </FadeInView>
       </View>
     );
   return <></>;
+};
+type FadeInViewProps = PropsWithChildren<{style: ViewStyle}>;
+const FadeInView: React.FC<FadeInViewProps> = props => {
+  const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
+  return (
+    <Animated.View // Special animatable View
+      style={{
+        ...props.style,
+        opacity: fadeAnim, // Bind opacity to animated value
+      }}>
+      {props.children}
+    </Animated.View>
+  );
 };
 
 const styles = StyleSheet.create({
