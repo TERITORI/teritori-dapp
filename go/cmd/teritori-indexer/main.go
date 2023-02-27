@@ -11,13 +11,16 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerhandler"
-	"github.com/TERITORI/teritori-dapp/go/pkg/coingeckoprices"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pricespb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/quests"
 	"github.com/TERITORI/teritori-dapp/go/pkg/tmws"
 	"github.com/allegro/bigcache/v3"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"gorm.io/gorm"
 )
 
@@ -36,18 +39,18 @@ func main() {
 		chunkSize                   = fs.Int64("chunk-size", 10000, "maximum number of blocks to query from tendermint at once")
 		txsBatchSize                = fs.Int("txs-batch-size", 10000, "maximum number of txs per query page")
 		pollDelay                   = fs.Duration("poll-delay", 2*time.Second, "delay between tail queries")
-		tnsContractAddress          = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
-		vaultContractAddress        = fs.String("teritori-vault-contract-address", "", "address of the teritori vault contract")
 		minterCodeIDs               = fs.String("teritori-minter-code-ids", "", "code ids of teritori minter contracts")
-		tnsDefaultImageURL          = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
 		dbHost                      = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort                      = fs.String("db-indexer-port", "", "port for postgreSQL database")
 		dbPass                      = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbName                      = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser                      = fs.String("postgres-user", "", "username for postgreSQL")
-		teritoriNetworkID           = fs.String("teritori-network-id", "teritori", "teritori network id")
 		tendermintWebsocketEndpoint = fs.String("tendermint-websocket-endpoint", "", "tendermint websocket endpoint")
 		tailSize                    = fs.Int64("tail-size", 8640, "x blocks tail size means that the tendermint indexer can lag x blocks behind before the indexer misses an event")
+		pricesServiceURI            = fs.String("prices-service-uri", "localhost:9091", "price service URI")
+		insecurePrices              = fs.Bool("prices-insecure-grpc", false, "do not use TLS to connect to prices service")
+		networksFile                = fs.String("networks-file", "networks.json", "path to networks config file")
+		networkID                   = fs.String("indexer-network-id", "teritori", "network id to index")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -59,17 +62,33 @@ func main() {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
 
-	if *tnsContractAddress == "" {
-		panic(errors.New("missing teritori-name-service-contract-address flag"))
-	}
 	if *tendermintWebsocketEndpoint == "" {
 		panic(errors.New("missing tendermint-websocket-endpoint flag"))
 	}
 
+	// load networks
+	networksBytes, err := os.ReadFile(*networksFile)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to read networks config file"))
+	}
+	netstore, err := networks.UnmarshalNetworkStore(networksBytes)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to unmarshal networks config"))
+	}
+
+	// get and validate selected network
+	network := netstore.MustGetCosmosNetwork(*networkID)
+	if network.VaultContractAddress == "" {
+		panic(errors.New("missing vaultContractAddress in network config"))
+	}
+	if network.NameServiceContractAddress == "" {
+		panic(errors.New("missing nameServiceContractAddress in network config"))
+	}
+	// TODO: check other used fields
+
 	// parse minter code ids
 	mcisParts := strings.Split(*minterCodeIDs, ",")
 	mcis := make([]uint64, len(mcisParts))
-	var err error
 	for i, mciStr := range mcisParts {
 		mcis[i], err = strconv.ParseUint(strings.TrimFunc(mciStr, unicode.IsSpace), 10, 64)
 		if err != nil {
@@ -109,12 +128,20 @@ func main() {
 		panic(errors.Wrap(err, "failed to init block time cache"))
 	}
 
-	// get price service
-	cgp, err := coingeckoprices.NewCoinGeckoPrices()
-	if err != nil {
-		panic(errors.Wrap(err, "failed to initialize price service"))
+	// create prices service client
+	popts := []grpc.DialOption{}
+	if *insecurePrices {
+		popts = append(popts, grpc.WithInsecure())
+	} else {
+		popts = append(popts, grpc.WithTransportCredentials(credentials.NewTLS(nil)))
 	}
+	pconn, err := grpc.Dial(*pricesServiceURI, popts...)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to connect to price service"))
+	}
+	ps := pricespb.NewPricesServiceClient(pconn)
 
+	// init db
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
 		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
 	db, err := indexerdb.NewPostgresDB(dataConnexion)
@@ -212,14 +239,12 @@ func main() {
 
 			if err := db.Transaction(func(dbtx *gorm.DB) error {
 				handler, err := indexerhandler.NewHandler(dbtx, indexerhandler.Config{
-					MinterCodeIDs:        mcis,
-					VaultContractAddress: *vaultContractAddress,
-					TNSContractAddress:   *tnsContractAddress,
-					TNSDefaultImageURL:   *tnsDefaultImageURL,
-					TendermintClient:     client,
-					NetworkID:            *teritoriNetworkID,
-					CoinGeckoPrices:      cgp,
-					BlockTimeCache:       blockTimeCache,
+					MinterCodeIDs:    mcis,
+					TendermintClient: client,
+					BlockTimeCache:   blockTimeCache,
+					PricesClient:     ps,
+					Network:          network,
+					NetworkStore:     netstore,
 				}, logger)
 				if err != nil {
 					return errors.Wrap(err, "failed to create handler")

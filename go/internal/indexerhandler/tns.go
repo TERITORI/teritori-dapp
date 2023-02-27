@@ -21,13 +21,14 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 	}
 
 	// create collection
-	collectionId := indexerdb.TeritoriCollectionID(contractAddress)
+	collectionId := h.config.Network.CollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
-		ID:        collectionId,
-		NetworkId: "teritori",
-		Name:      tnsInstantiateMsg.Name,
-		ImageURI:  h.config.TNSDefaultImageURL,
-		MaxSupply: -1,
+		ID:                  collectionId,
+		NetworkId:           "teritori",
+		Name:                tnsInstantiateMsg.Name,
+		ImageURI:            h.config.Network.NameServiceDefaultImage,
+		MaxSupply:           -1,
+		SecondaryDuringMint: true,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  contractAddress,
@@ -36,7 +37,7 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
 	}
-	h.logger.Info("created tns collection", zap.String("id", collectionId))
+	h.logger.Info("created tns collection", zap.String("id", string(collectionId)))
 
 	return nil
 }
@@ -64,9 +65,9 @@ type ExecuteCW721MintMsg struct {
 
 func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collection, tokenId string, execMsg *wasmtypes.MsgExecuteContract) error {
 	minter := execMsg.Sender
-	ownerId := indexerdb.TeritoriUserID(minter)
+	ownerId := h.config.Network.UserID(minter)
 
-	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+	nftId := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
 	// get image URI
 	var executePayload ExecuteCW721MintMsg
@@ -102,7 +103,7 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		if err := h.db.Create(&nft).Error; err != nil {
 			return errors.Wrap(err, "failed to create nft in db")
 		}
-		h.logger.Info("created tns domain", zap.String("id", nftId), zap.String("owner-id", string(ownerId)))
+		h.logger.Info("created tns domain", zap.String("id", string(nftId)), zap.String("owner-id", string(ownerId)))
 	} else {
 		updates := map[string]interface{}{
 			"burnt":     false,
@@ -136,7 +137,7 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 
 	// create mint activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:   indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		ID:   h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindMint,
 		Time: blockTime,
 		Mint: &indexerdb.Mint{
@@ -159,7 +160,7 @@ type TNSUpdateMetadataMsg struct {
 }
 
 func (h *Handler) handleExecuteUpdateTNSMetadata(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	if execMsg.Contract != h.config.TNSContractAddress {
+	if execMsg.Contract != h.config.Network.NameServiceContractAddress {
 		return nil
 	}
 
@@ -173,7 +174,7 @@ func (h *Handler) handleExecuteUpdateTNSMetadata(e *Message, execMsg *wasmtypes.
 	if msg.Payload.Metadata.ImageURI != nil {
 		if err := h.db.
 			Model(&indexerdb.NFT{}).
-			Where("id = ?", indexerdb.TeritoriNFTID(execMsg.Contract, msg.Payload.TokenID)).
+			Where("id = ?", h.config.Network.NFTID(execMsg.Contract, msg.Payload.TokenID)).
 			UpdateColumn("ImageURI", *msg.Payload.Metadata.ImageURI).
 			Error; err != nil {
 			return errors.Wrap(err, "failed to update tns image uri")
@@ -191,7 +192,7 @@ type TNSSetAdminAddressMsg struct {
 }
 
 func (h *Handler) handleExecuteTNSSetAdminAddress(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	if execMsg.Contract != h.config.TNSContractAddress {
+	if execMsg.Contract != h.config.Network.NameServiceContractAddress {
 		return nil
 	}
 
@@ -202,7 +203,7 @@ func (h *Handler) handleExecuteTNSSetAdminAddress(e *Message, execMsg *wasmtypes
 
 	if err := h.db.
 		Model(&indexerdb.TeritoriCollection{}).
-		Where("collection_id = ?", indexerdb.TeritoriCollectionID(execMsg.Contract)).
+		Where("collection_id = ?", h.config.Network.CollectionID(execMsg.Contract)).
 		UpdateColumn("CreatorAddress", msg.Payload.AdminAddress).
 		Error; err != nil {
 		return errors.Wrap(err, "failed to update tns creator")

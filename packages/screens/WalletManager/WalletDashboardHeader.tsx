@@ -8,10 +8,9 @@ import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
-import { useRewardsTotal } from "../../hooks/useRewards";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { rewardsPrice, useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
@@ -22,6 +21,7 @@ interface WalletDashboardHeaderProps {
   actionButton?: {
     label: string;
     onPress: () => void;
+    disabled?: boolean;
   };
 }
 
@@ -68,6 +68,7 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
         </BrandText>
         {!!actionButton && (
           <PrimaryButton
+            disabled={actionButton.disabled}
             size="XS"
             text={actionButton.label}
             onPress={actionButton.onPress}
@@ -86,18 +87,17 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
 
 export const WalletDashboardHeader: React.FC = () => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetwork = useSelectedNetworkId();
-  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
-  const balances = useBalances(selectedNetwork, selectedWallet?.address);
+  const selectedNetworkId = selectedWallet?.networkId;
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const navigation = useAppNavigation();
   const totalUSDBalance = balances.reduce(
     (total, bal) => total + (bal.usdAmount || 0),
     0
   );
-  const { totalAmount } = useRewardsTotal(
-    selectedNetwork,
-    selectedWallet?.address
-  );
+  const { totalsRewards, claimAllRewards } = useRewards(selectedWallet?.userId);
+  // Total rewards price with all denoms
+  const claimablePrice = rewardsPrice(totalsRewards);
 
   return (
     <View
@@ -146,7 +146,7 @@ export const WalletDashboardHeader: React.FC = () => {
               fontSize: 20,
             }}
           >
-            {tnsMetadata.metadata?.tokenId || selectedWallet?.address || ""}
+            {userInfo.metadata?.tokenId || selectedWallet?.address || ""}
           </BrandText>
         </View>
       </View>
@@ -167,10 +167,11 @@ export const WalletDashboardHeader: React.FC = () => {
         <WalletDashboardHeaderCard
           {...{
             title: "Total Claimable Rewards",
-            data: `$${totalAmount?.toFixed(2) || 0}`,
+            data: `$${claimablePrice.toFixed(2)}`,
             actionButton: {
               label: "Claim All",
-              onPress: () => navigation.navigate("Staking"),
+              onPress: claimAllRewards,
+              disabled: !claimablePrice,
             },
           }}
         />

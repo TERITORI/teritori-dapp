@@ -5,10 +5,12 @@ import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
 import { useWallets, Wallet } from "../context/WalletsProvider";
+import { useNSUserInfo } from "../hooks/useNSUserInfo";
+import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../hooks/useTNSMetadata";
 import { setSelectedWalletId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
+import { walletProviderToNetworkKind } from "../utils/network";
 import { neutral17, neutral44, secondaryColor } from "../utils/style/colors";
 import { walletSelectorWidth } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
@@ -29,9 +31,8 @@ export const tinyAddress = (
   }
   const chainIdReg = fullAddress.match(/.+?(?=\d+)/);
   const chainIdName = chainIdReg?.length ? chainIdReg[0] : "";
-  const startingCharLength =
-    Math.ceil(totalCount / 2) - chainIdName?.length / 2;
-  const endingCharLength = Math.floor(totalCount / 2) - chainIdName?.length / 2;
+  const startingCharLength = Math.ceil(totalCount / 2) - chainIdName.length / 2;
+  const endingCharLength = Math.floor(totalCount / 2) - chainIdName.length / 2;
 
   return `${fullAddress.substring(
     0,
@@ -43,7 +44,8 @@ const WalletView: React.FC<{
   wallet?: Wallet;
   style?: StyleProp<ViewStyle>;
 }> = ({ wallet, style }) => {
-  const tnsMetadata = useTNSMetadata(wallet?.address);
+  const userInfo = useNSUserInfo(wallet?.userId);
+
   const fontSize = 14;
   return (
     <View style={[{ flexDirection: "row", alignItems: "center" }, style]}>
@@ -60,10 +62,7 @@ const WalletView: React.FC<{
         }}
         ellipsizeMode="middle"
       >
-        {tinyAddress(
-          tnsMetadata?.metadata?.tokenId || wallet?.address || "",
-          19
-        )}
+        {tinyAddress(userInfo.metadata?.tokenId || wallet?.address || "", 16)}
       </BrandText>
     </View>
   );
@@ -74,6 +73,7 @@ export const WalletSelector: React.FC<{
 }> = ({ style }) => {
   const { wallets } = useWallets();
   const selectedWallet = useSelectedWallet();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
 
@@ -86,8 +86,17 @@ export const WalletSelector: React.FC<{
   }
 
   const otherWallets = wallets.filter(
-    (wallet) => wallet.id !== selectedWallet.id && wallet.address
+    (wallet) =>
+      wallet.id !== selectedWallet.id &&
+      wallet.address &&
+      walletProviderToNetworkKind(wallet.provider) === selectedNetworkInfo?.kind
   );
+
+  const onSelectWallet = (walletId: string) => {
+    closeOpenedDropdown();
+    dispatch(setSelectedWalletId(walletId));
+  };
+
   return (
     <View style={style} ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
@@ -125,8 +134,7 @@ export const WalletSelector: React.FC<{
           {otherWallets.map((wallet) => (
             <TouchableOpacity
               onPress={() => {
-                closeOpenedDropdown();
-                dispatch(setSelectedWalletId(wallet.id));
+                onSelectWallet(wallet.id);
               }}
               key={wallet.id}
               style={{ width: "100%" }}

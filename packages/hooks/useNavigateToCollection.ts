@@ -1,18 +1,56 @@
-import { secondaryDuringMintList } from "../utils/collections";
+import { useCallback } from "react";
+
+import { parseNetworkObjectId } from "../networks";
 import { useAppNavigation } from "../utils/navigation";
 import { useMintEnded } from "./useMintEnded";
 
-export const useNavigateToCollection = (id: string) => {
+export interface NavigateToCollectionOpts {
+  forceSecondaryDuringMint?: boolean;
+  forceLinkToMint?: boolean;
+}
+
+const noop = () => {};
+
+export const useNavigateToCollection = (
+  id: string,
+  opts?: NavigateToCollectionOpts
+) => {
   const navigation = useAppNavigation();
-  const mintEnded = useMintEnded(id);
-  if (secondaryDuringMintList.includes(id)) {
-    return () => navigation.navigate("Collection", { id });
+
+  const [network, contractAddress] = parseNetworkObjectId(id);
+
+  const secondaryDuringMint = (network?.secondaryDuringMintList || []).includes(
+    contractAddress
+  );
+
+  const noFetch = secondaryDuringMint || !!opts?.forceLinkToMint;
+
+  const mintEnded = useMintEnded(id, !noFetch);
+
+  const navToMint = useCallback(
+    () => navigation.navigate("MintCollection", { id }),
+    [navigation, id]
+  );
+  const navToMarketplace = useCallback(
+    () => navigation.navigate("Collection", { id }),
+    [navigation, id]
+  );
+
+  if (opts?.forceLinkToMint) {
+    return navToMint;
   }
+
+  if (secondaryDuringMint) {
+    return navToMarketplace;
+  }
+
   if (mintEnded === undefined) {
-    return () => {};
+    return noop;
   }
+
   if (mintEnded) {
-    return () => navigation.navigate("Collection", { id });
+    return navToMarketplace;
   }
-  return () => navigation.navigate("MintCollection", { id });
+
+  return navToMint;
 };

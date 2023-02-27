@@ -27,7 +27,7 @@ type VaultExecuteUpdatePriceMsgData struct {
 func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	contractAddress := execMsg.Contract
 
-	if contractAddress != h.config.VaultContractAddress {
+	if contractAddress != h.config.Network.VaultContractAddress {
 		return nil
 	}
 
@@ -66,7 +66,7 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 	// update
 	price := updatePriceMsg.Data.Amount
 	denom := updatePriceMsg.Data.Denom
-	nftId := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+	nftId := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 	if err := h.db.Model(&indexerdb.NFT{ID: nftId}).UpdateColumns(map[string]interface{}{
 		"Price": price,
 		"Denom": denom,
@@ -80,30 +80,35 @@ func (h *Handler) handleExecuteUpdatePrice(e *Message, execMsg *wasmtypes.MsgExe
 		return errors.Wrap(err, "failed to get block time")
 	}
 
+	usdAmount, err := h.usdAmount(denom, price, blockTime)
+	if err != nil {
+		return errors.Wrap(err, "failed to derive usd amount")
+	}
+
 	// create activity
 	if err := h.db.Create(&indexerdb.Activity{
-		ID:    indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex),
+		ID:    h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
 		NFTID: nftId,
 		Kind:  indexerdb.ActivityKindUpdateNFTPrice,
 		Time:  blockTime,
 		UpdateNFTPrice: &indexerdb.UpdateNFTPrice{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   h.usdAmount(denom, price, blockTime),
-			SellerID:   indexerdb.TeritoriUserID(execMsg.Sender),
+			USDPrice:   usdAmount,
+			SellerID:   h.config.Network.UserID(execMsg.Sender),
 		},
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create listing in db")
 	}
 
-	h.logger.Debug("updated nft price", zap.String("id", nftId))
+	h.logger.Debug("updated nft price", zap.String("id", string(nftId)))
 
 	return nil
 }
 
 func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	// check that it's the correct vault contract
-	if execMsg.Contract != h.config.VaultContractAddress {
+	if execMsg.Contract != h.config.Network.VaultContractAddress {
 		return nil
 	}
 
@@ -138,7 +143,7 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 	if collection.TeritoriCollection == nil {
 		return errors.New("no teritori info on collection")
 	}
-	nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+	nftID := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
 	// update nft price
 	if err := h.db.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
@@ -160,20 +165,20 @@ func (h *Handler) handleExecuteWithdraw(e *Message, execMsg *wasmtypes.MsgExecut
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 		return errors.Wrap(err, "nft not found in db")
 	}
-	activityID := indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex)
+	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    activityID,
 		NFTID: nftID,
 		Kind:  indexerdb.ActivityKindCancelListing,
 		Time:  blockTime,
 		CancelListing: &indexerdb.CancelListing{
-			SellerID: indexerdb.TeritoriUserID(execMsg.Sender),
+			SellerID: h.config.Network.UserID(execMsg.Sender),
 		},
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create listing cancelation in db")
 	}
 
-	h.logger.Info("created listing cancelation", zap.String("id", activityID))
+	h.logger.Info("created listing cancelation", zap.String("id", string(activityID)))
 
 	return nil
 }
@@ -185,7 +190,7 @@ var amountRegexp = regexp.MustCompile(`(\d+)(.+)`)
 
 func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	// check that it's the correct vault contract
-	if execMsg.Contract != h.config.VaultContractAddress {
+	if execMsg.Contract != h.config.Network.VaultContractAddress {
 		return nil
 	}
 
@@ -208,14 +213,14 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	if len(spenders) < buyerSpenderIndex+1 {
 		return fmt.Errorf("not enough spenders, wanted %d, got %d", buyerSpenderIndex+1, len(spenders))
 	}
-	buyerID := indexerdb.TeritoriUserID(spenders[buyerSpenderIndex])
+	buyerID := h.config.Network.UserID(spenders[buyerSpenderIndex])
 
 	// get seller, it's the last receiver
 	receivers := e.Events["coin_received.receiver"]
 	if len(receivers) < 1 {
 		return fmt.Errorf("not enough receivers, wanted 1, got %d", len(receivers))
 	}
-	sellerID := indexerdb.TeritoriUserID(receivers[len(receivers)-1])
+	sellerID := h.config.Network.UserID(receivers[len(receivers)-1])
 
 	// get price
 	spentAmounts := e.Events["coin_spent.amount"]
@@ -247,7 +252,7 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 	if collection.TeritoriCollection == nil {
 		return errors.New("no teritori info on collection")
 	}
-	nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+	nftID := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
 	// update nft
 	if err := h.db.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
@@ -265,12 +270,17 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		return errors.Wrap(err, "failed to get block time")
 	}
 
+	usdAmount, err := h.usdAmount(denom, price, blockTime)
+	if err != nil {
+		return errors.Wrap(err, "failed to derive usd amount")
+	}
+
 	// create trade
 	var nft indexerdb.NFT
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 		return errors.Wrap(err, "nft not found in db")
 	}
-	activityID := indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex)
+	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    activityID,
 		NFTID: nftID,
@@ -279,7 +289,7 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		Trade: &indexerdb.Trade{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   h.usdAmount(denom, price, blockTime),
+			USDPrice:   usdAmount,
 			BuyerID:    buyerID,
 			SellerID:   sellerID,
 		},
@@ -305,7 +315,7 @@ func (h *Handler) handleExecuteBuy(e *Message, execMsg *wasmtypes.MsgExecuteCont
 		return errors.Wrap(err, "failed to save sell quest completion")
 	}
 
-	h.logger.Info("created trade", zap.String("id", activityID))
+	h.logger.Info("created trade", zap.String("id", string(activityID)))
 
 	return nil
 }
@@ -315,7 +325,7 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 	tokenId := sendNFTMsg.Data.TokenID
 
 	// get sellerID
-	sellerID := indexerdb.TeritoriUserID(execMsg.Sender)
+	sellerID := h.config.Network.UserID(execMsg.Sender)
 
 	// get price from exec msg
 	var hookMsg DepositNFTHookMsg
@@ -343,7 +353,7 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 	if collection.TeritoriCollection == nil {
 		return errors.New("no teritori info on collection")
 	}
-	nftID := indexerdb.TeritoriNFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+	nftID := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
 	// update nft price
 	if err := h.db.Model(&indexerdb.NFT{}).Where("id = ?", nftID).Updates(map[string]interface{}{
@@ -360,12 +370,17 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 		return errors.Wrap(err, "failed to get block time")
 	}
 
+	usdAmount, err := h.usdAmount(denom, price, blockTime)
+	if err != nil {
+		return errors.Wrap(err, "failed to derive usd amount")
+	}
+
 	// create listing
 	var nft indexerdb.NFT
 	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
 		return errors.Wrap(err, "nft not found in db")
 	}
-	activityID := indexerdb.TeritoriActiviyID(e.TxHash, e.MsgIndex)
+	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:    activityID,
 		NFTID: nftID,
@@ -374,7 +389,7 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 		Listing: &indexerdb.Listing{
 			Price:      price,
 			PriceDenom: denom,
-			USDPrice:   h.usdAmount(denom, price, blockTime),
+			USDPrice:   usdAmount,
 			SellerID:   sellerID,
 		},
 	}).Error; err != nil {
@@ -390,7 +405,7 @@ func (h *Handler) handleExecuteSendNFTVault(e *Message, execMsg *wasmtypes.MsgEx
 		return errors.Wrap(err, "failed to save quest completion")
 	}
 
-	h.logger.Info("created listing", zap.String("id", activityID))
+	h.logger.Info("created listing", zap.String("id", string(activityID)))
 
 	return nil
 }

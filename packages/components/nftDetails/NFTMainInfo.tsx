@@ -1,4 +1,3 @@
-import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Target } from "@nandorojo/anchor";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
@@ -47,13 +46,13 @@ const mainInfoTabItems = {
 export const NFTMainInfo: React.FC<{
   nftId: string;
   nftInfo?: NFTInfo;
-  buy: () => Promise<ExecuteResult | undefined>;
+  buy: () => Promise<string | undefined>;
   showMarketplace: boolean;
   sell: (
     price: string,
     denom: string | undefined
-  ) => Promise<ExecuteResult | undefined>;
-  cancelListing: () => Promise<ExecuteResult | undefined>;
+  ) => Promise<string | undefined>;
+  cancelListing: () => Promise<string | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const { openTransactionModals } = useTransactionModals();
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
@@ -123,6 +122,22 @@ export const NFTMainInfo: React.FC<{
                 {nftInfo?.ownerAddress}
               </BrandText>
             </View>
+            {nftInfo?.breedingsAvailable !== undefined && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 6,
+                }}
+              >
+                <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                  Breedings available
+                </BrandText>
+                <BrandText style={fontMedium14} numberOfLines={1}>
+                  {nftInfo.breedingsAvailable}
+                </BrandText>
+              </View>
+            )}
           </View>
         );
       default:
@@ -132,7 +147,7 @@ export const NFTMainInfo: React.FC<{
 
   useEffect(() => {
     if (params.openBuy) openTransactionModals();
-  }, []);
+  }, [openTransactionModals, params.openBuy]);
 
   return (
     <>
@@ -166,7 +181,7 @@ export const NFTMainInfo: React.FC<{
           <CollectionInfoInline
             imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
             name={nftInfo?.collectionName}
-            id={`tori-${nftInfo?.mintAddress}`}
+            id={nftInfo?.collectionId}
           />
           {showMarketplace ? (
             <>
@@ -175,22 +190,19 @@ export const NFTMainInfo: React.FC<{
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressSell={sell}
                   nftInfo={nftInfo}
-                  networkId={process.env.TERITORI_NETWORK_ID || ""}
                 />
               )}
-              {nftInfo?.isListed && !nftInfo?.isOwner && (
+              {nftInfo?.isListed && !nftInfo.isOwner && (
                 <NFTPriceBuyCard
+                  nftInfo={nftInfo}
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressBuy={openTransactionModals}
-                  price={nftInfo.price}
-                  priceDenom={nftInfo.priceDenom}
                 />
               )}
-              {nftInfo?.isListed && nftInfo?.isOwner && (
+              {nftInfo?.isListed && nftInfo.isOwner && (
                 <NFTCancelListingCard
+                  nftInfo={nftInfo}
                   style={{ marginTop: 24, marginBottom: 40 }}
-                  price={nftInfo.price}
-                  priceDenom={nftInfo.priceDenom}
                   onPressCancel={cancelListing}
                 />
               )}
@@ -229,7 +241,7 @@ export const NFTMainInfo: React.FC<{
       {/* ====== "Buy this NFT" three modals*/}
       <TransactionModals
         startTransaction={buy}
-        nftInfo={nftInfo}
+        nftId={nftId}
         textComponentPayment={
           <BrandText style={fontSemibold14}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>

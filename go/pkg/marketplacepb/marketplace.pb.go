@@ -170,28 +170,86 @@ func (MintState) EnumDescriptor() ([]byte, []int) {
 	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{2}
 }
 
+type Attribute struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TraitType string `protobuf:"bytes,1,opt,name=trait_type,json=traitType,proto3" json:"trait_type,omitempty"`
+	Value     string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (x *Attribute) Reset() {
+	*x = Attribute{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Attribute) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Attribute) ProtoMessage() {}
+
+func (x *Attribute) ProtoReflect() protoreflect.Message {
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Attribute.ProtoReflect.Descriptor instead.
+func (*Attribute) Descriptor() ([]byte, []int) {
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Attribute) GetTraitType() string {
+	if x != nil {
+		return x.TraitType
+	}
+	return ""
+}
+
+func (x *Attribute) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
 type NFT struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id             string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	NetworkId      string `protobuf:"bytes,14,opt,name=network_id,json=networkId,proto3" json:"network_id,omitempty"`
-	ImageUri       string `protobuf:"bytes,3,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
-	Name           string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
-	MintAddress    string `protobuf:"bytes,5,opt,name=mint_address,json=mintAddress,proto3" json:"mint_address,omitempty"`
-	Price          string `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
-	Denom          string `protobuf:"bytes,7,opt,name=denom,proto3" json:"denom,omitempty"`
-	IsListed       bool   `protobuf:"varint,8,opt,name=is_listed,json=isListed,proto3" json:"is_listed,omitempty"`
-	TextInsert     string `protobuf:"bytes,9,opt,name=text_insert,json=textInsert,proto3" json:"text_insert,omitempty"`
-	CollectionName string `protobuf:"bytes,10,opt,name=collection_name,json=collectionName,proto3" json:"collection_name,omitempty"`
-	OwnerId        string `protobuf:"bytes,13,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	Id                 string       `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	NetworkId          string       `protobuf:"bytes,14,opt,name=network_id,json=networkId,proto3" json:"network_id,omitempty"`
+	ImageUri           string       `protobuf:"bytes,3,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
+	Name               string       `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	MintAddress        string       `protobuf:"bytes,5,opt,name=mint_address,json=mintAddress,proto3" json:"mint_address,omitempty"`
+	Price              string       `protobuf:"bytes,6,opt,name=price,proto3" json:"price,omitempty"`
+	Denom              string       `protobuf:"bytes,7,opt,name=denom,proto3" json:"denom,omitempty"`
+	IsListed           bool         `protobuf:"varint,8,opt,name=is_listed,json=isListed,proto3" json:"is_listed,omitempty"`
+	TextInsert         string       `protobuf:"bytes,9,opt,name=text_insert,json=textInsert,proto3" json:"text_insert,omitempty"`
+	CollectionName     string       `protobuf:"bytes,10,opt,name=collection_name,json=collectionName,proto3" json:"collection_name,omitempty"`
+	OwnerId            string       `protobuf:"bytes,13,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
+	NftContractAddress string       `protobuf:"bytes,15,opt,name=nft_contract_address,json=nftContractAddress,proto3" json:"nft_contract_address,omitempty"`
+	LockedOn           string       `protobuf:"bytes,16,opt,name=locked_on,json=lockedOn,proto3" json:"locked_on,omitempty"`
+	Attributes         []*Attribute `protobuf:"bytes,17,rep,name=attributes,proto3" json:"attributes,omitempty"`
 }
 
 func (x *NFT) Reset() {
 	*x = NFT{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[0]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -204,7 +262,7 @@ func (x *NFT) String() string {
 func (*NFT) ProtoMessage() {}
 
 func (x *NFT) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[0]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -217,7 +275,7 @@ func (x *NFT) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NFT.ProtoReflect.Descriptor instead.
 func (*NFT) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{0}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *NFT) GetId() string {
@@ -297,19 +355,40 @@ func (x *NFT) GetOwnerId() string {
 	return ""
 }
 
+func (x *NFT) GetNftContractAddress() string {
+	if x != nil {
+		return x.NftContractAddress
+	}
+	return ""
+}
+
+func (x *NFT) GetLockedOn() string {
+	if x != nil {
+		return x.LockedOn
+	}
+	return ""
+}
+
+func (x *NFT) GetAttributes() []*Attribute {
+	if x != nil {
+		return x.Attributes
+	}
+	return nil
+}
+
 type Amount struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	Denom    string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
-	Quantity int64  `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Quantity string `protobuf:"bytes,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
 }
 
 func (x *Amount) Reset() {
 	*x = Amount{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[1]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -322,7 +401,7 @@ func (x *Amount) String() string {
 func (*Amount) ProtoMessage() {}
 
 func (x *Amount) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[1]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -335,7 +414,7 @@ func (x *Amount) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Amount.ProtoReflect.Descriptor instead.
 func (*Amount) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{1}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Amount) GetDenom() string {
@@ -345,11 +424,11 @@ func (x *Amount) GetDenom() string {
 	return ""
 }
 
-func (x *Amount) GetQuantity() int64 {
+func (x *Amount) GetQuantity() string {
 	if x != nil {
 		return x.Quantity
 	}
-	return 0
+	return ""
 }
 
 type Collection struct {
@@ -357,22 +436,23 @@ type Collection struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id             string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ImageUri       string `protobuf:"bytes,2,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
-	CollectionName string `protobuf:"bytes,3,opt,name=collection_name,json=collectionName,proto3" json:"collection_name,omitempty"`
-	CreatorName    string `protobuf:"bytes,4,opt,name=creator_name,json=creatorName,proto3" json:"creator_name,omitempty"`
-	Verified       bool   `protobuf:"varint,5,opt,name=verified,proto3" json:"verified,omitempty"`
-	MintAddress    string `protobuf:"bytes,6,opt,name=mint_address,json=mintAddress,proto3" json:"mint_address,omitempty"`
-	NetworkId      string `protobuf:"bytes,11,opt,name=network_id,json=networkId,proto3" json:"network_id,omitempty"`
-	Volume         string `protobuf:"bytes,8,opt,name=volume,proto3" json:"volume,omitempty"`
-	VolumeDenom    string `protobuf:"bytes,9,opt,name=volume_denom,json=volumeDenom,proto3" json:"volume_denom,omitempty"`
-	CreatorId      string `protobuf:"bytes,10,opt,name=creator_id,json=creatorId,proto3" json:"creator_id,omitempty"`
+	Id                  string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ImageUri            string `protobuf:"bytes,2,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
+	CollectionName      string `protobuf:"bytes,3,opt,name=collection_name,json=collectionName,proto3" json:"collection_name,omitempty"`
+	CreatorName         string `protobuf:"bytes,4,opt,name=creator_name,json=creatorName,proto3" json:"creator_name,omitempty"`
+	Verified            bool   `protobuf:"varint,5,opt,name=verified,proto3" json:"verified,omitempty"`
+	MintAddress         string `protobuf:"bytes,6,opt,name=mint_address,json=mintAddress,proto3" json:"mint_address,omitempty"`
+	NetworkId           string `protobuf:"bytes,11,opt,name=network_id,json=networkId,proto3" json:"network_id,omitempty"`
+	Volume              string `protobuf:"bytes,8,opt,name=volume,proto3" json:"volume,omitempty"`
+	VolumeDenom         string `protobuf:"bytes,9,opt,name=volume_denom,json=volumeDenom,proto3" json:"volume_denom,omitempty"`
+	CreatorId           string `protobuf:"bytes,10,opt,name=creator_id,json=creatorId,proto3" json:"creator_id,omitempty"`
+	SecondaryDuringMint bool   `protobuf:"varint,12,opt,name=secondary_during_mint,json=secondaryDuringMint,proto3" json:"secondary_during_mint,omitempty"`
 }
 
 func (x *Collection) Reset() {
 	*x = Collection{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[2]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -385,7 +465,7 @@ func (x *Collection) String() string {
 func (*Collection) ProtoMessage() {}
 
 func (x *Collection) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[2]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -398,7 +478,7 @@ func (x *Collection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Collection.ProtoReflect.Descriptor instead.
 func (*Collection) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{2}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Collection) GetId() string {
@@ -471,6 +551,13 @@ func (x *Collection) GetCreatorId() string {
 	return ""
 }
 
+func (x *Collection) GetSecondaryDuringMint() bool {
+	if x != nil {
+		return x.SecondaryDuringMint
+	}
+	return false
+}
+
 type CollectionStats struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -487,7 +574,7 @@ type CollectionStats struct {
 func (x *CollectionStats) Reset() {
 	*x = CollectionStats{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[3]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -500,7 +587,7 @@ func (x *CollectionStats) String() string {
 func (*CollectionStats) ProtoMessage() {}
 
 func (x *CollectionStats) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[3]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -513,7 +600,7 @@ func (x *CollectionStats) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CollectionStats.ProtoReflect.Descriptor instead.
 func (*CollectionStats) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{3}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CollectionStats) GetFloorPrice() []*Amount {
@@ -580,7 +667,7 @@ type Activity struct {
 func (x *Activity) Reset() {
 	*x = Activity{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[4]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -593,7 +680,7 @@ func (x *Activity) String() string {
 func (*Activity) ProtoMessage() {}
 
 func (x *Activity) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[4]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -606,7 +693,7 @@ func (x *Activity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Activity.ProtoReflect.Descriptor instead.
 func (*Activity) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{4}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Activity) GetId() string {
@@ -706,7 +793,7 @@ type Quest struct {
 func (x *Quest) Reset() {
 	*x = Quest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[5]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -719,7 +806,7 @@ func (x *Quest) String() string {
 func (*Quest) ProtoMessage() {}
 
 func (x *Quest) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[5]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -732,7 +819,7 @@ func (x *Quest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Quest.ProtoReflect.Descriptor instead.
 func (*Quest) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{5}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Quest) GetId() string {
@@ -761,14 +848,14 @@ type PriceDatum struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Price float64 `protobuf:"fixed64,1,opt,name=price,proto3" json:"price,omitempty"`
-	Time  string  `protobuf:"bytes,2,opt,name=time,proto3" json:"time,omitempty"`
+	Price string `protobuf:"bytes,3,opt,name=price,proto3" json:"price,omitempty"`
+	Time  string `protobuf:"bytes,2,opt,name=time,proto3" json:"time,omitempty"`
 }
 
 func (x *PriceDatum) Reset() {
 	*x = PriceDatum{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[6]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -781,7 +868,7 @@ func (x *PriceDatum) String() string {
 func (*PriceDatum) ProtoMessage() {}
 
 func (x *PriceDatum) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[6]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -794,14 +881,14 @@ func (x *PriceDatum) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PriceDatum.ProtoReflect.Descriptor instead.
 func (*PriceDatum) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{6}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *PriceDatum) GetPrice() float64 {
+func (x *PriceDatum) GetPrice() string {
 	if x != nil {
 		return x.Price
 	}
-	return 0
+	return ""
 }
 
 func (x *PriceDatum) GetTime() string {
@@ -828,7 +915,7 @@ type CollectionsRequest struct {
 func (x *CollectionsRequest) Reset() {
 	*x = CollectionsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[7]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -841,7 +928,7 @@ func (x *CollectionsRequest) String() string {
 func (*CollectionsRequest) ProtoMessage() {}
 
 func (x *CollectionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[7]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -854,7 +941,7 @@ func (x *CollectionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CollectionsRequest.ProtoReflect.Descriptor instead.
 func (*CollectionsRequest) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{7}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CollectionsRequest) GetLimit() int32 {
@@ -918,7 +1005,7 @@ type CollectionStatsRequest struct {
 func (x *CollectionStatsRequest) Reset() {
 	*x = CollectionStatsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[8]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -931,7 +1018,7 @@ func (x *CollectionStatsRequest) String() string {
 func (*CollectionStatsRequest) ProtoMessage() {}
 
 func (x *CollectionStatsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[8]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -944,7 +1031,7 @@ func (x *CollectionStatsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CollectionStatsRequest.ProtoReflect.Descriptor instead.
 func (*CollectionStatsRequest) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{8}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CollectionStatsRequest) GetCollectionId() string {
@@ -972,7 +1059,7 @@ type CollectionStatsResponse struct {
 func (x *CollectionStatsResponse) Reset() {
 	*x = CollectionStatsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[9]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -985,7 +1072,7 @@ func (x *CollectionStatsResponse) String() string {
 func (*CollectionStatsResponse) ProtoMessage() {}
 
 func (x *CollectionStatsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[9]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -998,7 +1085,7 @@ func (x *CollectionStatsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CollectionStatsResponse.ProtoReflect.Descriptor instead.
 func (*CollectionStatsResponse) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{9}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *CollectionStatsResponse) GetStats() *CollectionStats {
@@ -1019,7 +1106,7 @@ type CollectionsResponse struct {
 func (x *CollectionsResponse) Reset() {
 	*x = CollectionsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[10]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1032,7 +1119,7 @@ func (x *CollectionsResponse) String() string {
 func (*CollectionsResponse) ProtoMessage() {}
 
 func (x *CollectionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[10]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1045,7 +1132,7 @@ func (x *CollectionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CollectionsResponse.ProtoReflect.Descriptor instead.
 func (*CollectionsResponse) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{10}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *CollectionsResponse) GetCollection() *Collection {
@@ -1071,7 +1158,7 @@ type NFTsRequest struct {
 func (x *NFTsRequest) Reset() {
 	*x = NFTsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[11]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1084,7 +1171,7 @@ func (x *NFTsRequest) String() string {
 func (*NFTsRequest) ProtoMessage() {}
 
 func (x *NFTsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[11]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1097,7 +1184,7 @@ func (x *NFTsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NFTsRequest.ProtoReflect.Descriptor instead.
 func (*NFTsRequest) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{11}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *NFTsRequest) GetLimit() int32 {
@@ -1153,7 +1240,7 @@ type NFTsResponse struct {
 func (x *NFTsResponse) Reset() {
 	*x = NFTsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[12]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1166,7 +1253,7 @@ func (x *NFTsResponse) String() string {
 func (*NFTsResponse) ProtoMessage() {}
 
 func (x *NFTsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[12]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1179,7 +1266,7 @@ func (x *NFTsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NFTsResponse.ProtoReflect.Descriptor instead.
 func (*NFTsResponse) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{12}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *NFTsResponse) GetNft() *NFT {
@@ -1202,7 +1289,7 @@ type QuestsRequest struct {
 func (x *QuestsRequest) Reset() {
 	*x = QuestsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[13]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1215,7 +1302,7 @@ func (x *QuestsRequest) String() string {
 func (*QuestsRequest) ProtoMessage() {}
 
 func (x *QuestsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[13]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1228,7 +1315,7 @@ func (x *QuestsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuestsRequest.ProtoReflect.Descriptor instead.
 func (*QuestsRequest) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{13}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *QuestsRequest) GetLimit() int32 {
@@ -1263,7 +1350,7 @@ type QuestsResponse struct {
 func (x *QuestsResponse) Reset() {
 	*x = QuestsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[14]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1276,7 +1363,7 @@ func (x *QuestsResponse) String() string {
 func (*QuestsResponse) ProtoMessage() {}
 
 func (x *QuestsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[14]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1289,7 +1376,7 @@ func (x *QuestsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QuestsResponse.ProtoReflect.Descriptor instead.
 func (*QuestsResponse) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{14}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *QuestsResponse) GetQuest() *Quest {
@@ -1313,7 +1400,7 @@ type ActivityRequest struct {
 func (x *ActivityRequest) Reset() {
 	*x = ActivityRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[15]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1326,7 +1413,7 @@ func (x *ActivityRequest) String() string {
 func (*ActivityRequest) ProtoMessage() {}
 
 func (x *ActivityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[15]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1339,7 +1426,7 @@ func (x *ActivityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ActivityRequest.ProtoReflect.Descriptor instead.
 func (*ActivityRequest) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{15}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *ActivityRequest) GetCollectionId() string {
@@ -1382,7 +1469,7 @@ type ActivityResponse struct {
 func (x *ActivityResponse) Reset() {
 	*x = ActivityResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[16]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1395,7 +1482,7 @@ func (x *ActivityResponse) String() string {
 func (*ActivityResponse) ProtoMessage() {}
 
 func (x *ActivityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[16]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1408,7 +1495,7 @@ func (x *ActivityResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ActivityResponse.ProtoReflect.Descriptor instead.
 func (*ActivityResponse) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{16}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *ActivityResponse) GetActivity() *Activity {
@@ -1436,7 +1523,7 @@ type NFTPriceHistoryRequest struct {
 func (x *NFTPriceHistoryRequest) Reset() {
 	*x = NFTPriceHistoryRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[17]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1449,7 +1536,7 @@ func (x *NFTPriceHistoryRequest) String() string {
 func (*NFTPriceHistoryRequest) ProtoMessage() {}
 
 func (x *NFTPriceHistoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[17]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1462,7 +1549,7 @@ func (x *NFTPriceHistoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NFTPriceHistoryRequest.ProtoReflect.Descriptor instead.
 func (*NFTPriceHistoryRequest) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{17}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *NFTPriceHistoryRequest) GetId() string {
@@ -1483,7 +1570,7 @@ type NFTPriceHistoryResponse struct {
 func (x *NFTPriceHistoryResponse) Reset() {
 	*x = NFTPriceHistoryResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[18]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1496,7 +1583,7 @@ func (x *NFTPriceHistoryResponse) String() string {
 func (*NFTPriceHistoryResponse) ProtoMessage() {}
 
 func (x *NFTPriceHistoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[18]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1509,7 +1596,7 @@ func (x *NFTPriceHistoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NFTPriceHistoryResponse.ProtoReflect.Descriptor instead.
 func (*NFTPriceHistoryResponse) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{18}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *NFTPriceHistoryResponse) GetData() []*PriceDatum {
@@ -1531,7 +1618,7 @@ type Action struct {
 func (x *Action) Reset() {
 	*x = Action{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[19]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1544,7 +1631,7 @@ func (x *Action) String() string {
 func (*Action) ProtoMessage() {}
 
 func (x *Action) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[19]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1557,7 +1644,7 @@ func (x *Action) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Action.ProtoReflect.Descriptor instead.
 func (*Action) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{19}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *Action) GetLabel() string {
@@ -1589,7 +1676,7 @@ type News struct {
 func (x *News) Reset() {
 	*x = News{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[20]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1602,7 +1689,7 @@ func (x *News) String() string {
 func (*News) ProtoMessage() {}
 
 func (x *News) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[20]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1615,7 +1702,7 @@ func (x *News) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use News.ProtoReflect.Descriptor instead.
 func (*News) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{20}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *News) GetTitle() string {
@@ -1665,7 +1752,7 @@ type Banner struct {
 func (x *Banner) Reset() {
 	*x = Banner{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[21]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1678,7 +1765,7 @@ func (x *Banner) String() string {
 func (*Banner) ProtoMessage() {}
 
 func (x *Banner) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[21]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1691,7 +1778,7 @@ func (x *Banner) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Banner.ProtoReflect.Descriptor instead.
 func (*Banner) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{21}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *Banner) GetImage() string {
@@ -1719,7 +1806,7 @@ type BannersRequest struct {
 func (x *BannersRequest) Reset() {
 	*x = BannersRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[22]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1732,7 +1819,7 @@ func (x *BannersRequest) String() string {
 func (*BannersRequest) ProtoMessage() {}
 
 func (x *BannersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[22]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1745,7 +1832,7 @@ func (x *BannersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BannersRequest.ProtoReflect.Descriptor instead.
 func (*BannersRequest) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{22}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *BannersRequest) GetTestnet() bool {
@@ -1766,7 +1853,7 @@ type BannersResponse struct {
 func (x *BannersResponse) Reset() {
 	*x = BannersResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[23]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1779,7 +1866,7 @@ func (x *BannersResponse) String() string {
 func (*BannersResponse) ProtoMessage() {}
 
 func (x *BannersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[23]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1792,7 +1879,7 @@ func (x *BannersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BannersResponse.ProtoReflect.Descriptor instead.
 func (*BannersResponse) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{23}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *BannersResponse) GetBanners() []*Banner {
@@ -1813,7 +1900,7 @@ type NewsRequest struct {
 func (x *NewsRequest) Reset() {
 	*x = NewsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[24]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1826,7 +1913,7 @@ func (x *NewsRequest) String() string {
 func (*NewsRequest) ProtoMessage() {}
 
 func (x *NewsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[24]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1839,7 +1926,7 @@ func (x *NewsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NewsRequest.ProtoReflect.Descriptor instead.
 func (*NewsRequest) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{24}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *NewsRequest) GetTestnet() bool {
@@ -1860,7 +1947,7 @@ type NewsResponse struct {
 func (x *NewsResponse) Reset() {
 	*x = NewsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_marketplace_v1_marketplace_proto_msgTypes[25]
+		mi := &file_marketplace_v1_marketplace_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1873,7 +1960,7 @@ func (x *NewsResponse) String() string {
 func (*NewsResponse) ProtoMessage() {}
 
 func (x *NewsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_marketplace_v1_marketplace_proto_msgTypes[25]
+	mi := &file_marketplace_v1_marketplace_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1886,7 +1973,7 @@ func (x *NewsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NewsResponse.ProtoReflect.Descriptor instead.
 func (*NewsResponse) Descriptor() ([]byte, []int) {
-	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{25}
+	return file_marketplace_v1_marketplace_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *NewsResponse) GetNews() []*News {
@@ -1902,50 +1989,66 @@ var file_marketplace_v1_marketplace_proto_rawDesc = []byte{
 	0x0a, 0x20, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x2f, 0x76, 0x31,
 	0x2f, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x12, 0x0e, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x2e,
-	0x76, 0x31, 0x22, 0xb6, 0x02, 0x0a, 0x03, 0x4e, 0x46, 0x54, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x6e, 0x65,
-	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x5f, 0x69, 0x64, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
-	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x49, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x6d, 0x61,
-	0x67, 0x65, 0x5f, 0x75, 0x72, 0x69, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x6d,
-	0x61, 0x67, 0x65, 0x55, 0x72, 0x69, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x6d, 0x69,
-	0x6e, 0x74, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0b, 0x6d, 0x69, 0x6e, 0x74, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a,
-	0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x70, 0x72,
-	0x69, 0x63, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x07, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x73, 0x5f,
-	0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x69, 0x73,
-	0x4c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x74, 0x65, 0x78, 0x74, 0x5f, 0x69,
-	0x6e, 0x73, 0x65, 0x72, 0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x74, 0x65, 0x78,
-	0x74, 0x49, 0x6e, 0x73, 0x65, 0x72, 0x74, 0x12, 0x27, 0x0a, 0x0f, 0x63, 0x6f, 0x6c, 0x6c, 0x65,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4e, 0x61, 0x6d, 0x65,
-	0x12, 0x19, 0x0a, 0x08, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x0d, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x07, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x49, 0x64, 0x22, 0x3a, 0x0a, 0x06, 0x41,
-	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1a, 0x0a, 0x08, 0x71,
-	0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x71,
-	0x75, 0x61, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x22, 0xbd, 0x02, 0x0a, 0x0a, 0x43, 0x6f, 0x6c, 0x6c,
-	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x5f,
-	0x75, 0x72, 0x69, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65,
-	0x55, 0x72, 0x69, 0x12, 0x27, 0x0a, 0x0f, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x63, 0x6f,
-	0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x21, 0x0a, 0x0c,
-	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x12,
-	0x1a, 0x0a, 0x08, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x65, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28,
-	0x08, 0x52, 0x08, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x65, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x6d,
-	0x69, 0x6e, 0x74, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0b, 0x6d, 0x69, 0x6e, 0x74, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1d,
-	0x0a, 0x0a, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x5f, 0x69, 0x64, 0x18, 0x0b, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x09, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x49, 0x64, 0x12, 0x16, 0x0a,
-	0x06, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x76,
-	0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x5f,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x76, 0x6f, 0x6c,
-	0x75, 0x6d, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61,
-	0x74, 0x6f, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x72,
-	0x65, 0x61, 0x74, 0x6f, 0x72, 0x49, 0x64, 0x22, 0xd6, 0x01, 0x0a, 0x0f, 0x43, 0x6f, 0x6c, 0x6c,
+	0x76, 0x31, 0x22, 0x40, 0x0a, 0x09, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x12,
+	0x1d, 0x0a, 0x0a, 0x74, 0x72, 0x61, 0x69, 0x74, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x74, 0x72, 0x61, 0x69, 0x74, 0x54, 0x79, 0x70, 0x65, 0x12, 0x14,
+	0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x22, 0xc0, 0x03, 0x0a, 0x03, 0x4e, 0x46, 0x54, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a,
+	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x5f, 0x69, 0x64, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x09, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x49, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x69,
+	0x6d, 0x61, 0x67, 0x65, 0x5f, 0x75, 0x72, 0x69, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
+	0x69, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x72, 0x69, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x21, 0x0a, 0x0c,
+	0x6d, 0x69, 0x6e, 0x74, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0b, 0x6d, 0x69, 0x6e, 0x74, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12,
+	0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x07,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1b, 0x0a, 0x09, 0x69,
+	0x73, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08,
+	0x69, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x65, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x74, 0x65, 0x78, 0x74,
+	0x5f, 0x69, 0x6e, 0x73, 0x65, 0x72, 0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x74,
+	0x65, 0x78, 0x74, 0x49, 0x6e, 0x73, 0x65, 0x72, 0x74, 0x12, 0x27, 0x0a, 0x0f, 0x63, 0x6f, 0x6c,
+	0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x0a, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4e, 0x61,
+	0x6d, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x0d,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x77, 0x6e, 0x65, 0x72, 0x49, 0x64, 0x12, 0x30, 0x0a,
+	0x14, 0x6e, 0x66, 0x74, 0x5f, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x5f, 0x61, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x6e, 0x66, 0x74,
+	0x43, 0x6f, 0x6e, 0x74, 0x72, 0x61, 0x63, 0x74, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12,
+	0x1b, 0x0a, 0x09, 0x6c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x5f, 0x6f, 0x6e, 0x18, 0x10, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x6c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x4f, 0x6e, 0x12, 0x39, 0x0a, 0x0a,
+	0x61, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x73, 0x18, 0x11, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x19, 0x2e, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x2e, 0x76,
+	0x31, 0x2e, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x52, 0x0a, 0x61, 0x74, 0x74,
+	0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x73, 0x22, 0x3a, 0x0a, 0x06, 0x41, 0x6d, 0x6f, 0x75, 0x6e,
+	0x74, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1a, 0x0a, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74,
+	0x69, 0x74, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x71, 0x75, 0x61, 0x6e, 0x74,
+	0x69, 0x74, 0x79, 0x22, 0xf1, 0x02, 0x0a, 0x0a, 0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
+	0x69, 0x64, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x5f, 0x75, 0x72, 0x69, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x55, 0x72, 0x69, 0x12,
+	0x27, 0x0a, 0x0f, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6e, 0x61,
+	0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x63, 0x6f, 0x6c, 0x6c, 0x65, 0x63,
+	0x74, 0x69, 0x6f, 0x6e, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x63, 0x72, 0x65, 0x61,
+	0x74, 0x6f, 0x72, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x76,
+	0x65, 0x72, 0x69, 0x66, 0x69, 0x65, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x76,
+	0x65, 0x72, 0x69, 0x66, 0x69, 0x65, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x6d, 0x69, 0x6e, 0x74, 0x5f,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x6d,
+	0x69, 0x6e, 0x74, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x6e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x5f, 0x69, 0x64, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x76, 0x6f, 0x6c,
+	0x75, 0x6d, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x76, 0x6f, 0x6c, 0x75, 0x6d,
+	0x65, 0x12, 0x21, 0x0a, 0x0c, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x44,
+	0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72, 0x5f,
+	0x69, 0x64, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f,
+	0x72, 0x49, 0x64, 0x12, 0x32, 0x0a, 0x15, 0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x61, 0x72, 0x79,
+	0x5f, 0x64, 0x75, 0x72, 0x69, 0x6e, 0x67, 0x5f, 0x6d, 0x69, 0x6e, 0x74, 0x18, 0x0c, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x13, 0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x61, 0x72, 0x79, 0x44, 0x75, 0x72,
+	0x69, 0x6e, 0x67, 0x4d, 0x69, 0x6e, 0x74, 0x22, 0xd6, 0x01, 0x0a, 0x0f, 0x43, 0x6f, 0x6c, 0x6c,
 	0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x37, 0x0a, 0x0b, 0x66,
 	0x6c, 0x6f, 0x6f, 0x72, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
 	0x32, 0x16, 0x2e, 0x6d, 0x61, 0x72, 0x6b, 0x65, 0x74, 0x70, 0x6c, 0x61, 0x63, 0x65, 0x2e, 0x76,
@@ -1988,7 +2091,7 @@ var file_marketplace_v1_marketplace_proto_rawDesc = []byte{
 	0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x63, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74,
 	0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x63, 0x6f, 0x6d, 0x70, 0x6c, 0x65,
 	0x74, 0x65, 0x64, 0x22, 0x36, 0x0a, 0x0a, 0x50, 0x72, 0x69, 0x63, 0x65, 0x44, 0x61, 0x74, 0x75,
-	0x6d, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x01,
+	0x6d, 0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x18,
 	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x22, 0xa7, 0x02, 0x0a, 0x12,
 	0x43, 0x6f, 0x6c, 0x6c, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
@@ -2181,75 +2284,77 @@ func file_marketplace_v1_marketplace_proto_rawDescGZIP() []byte {
 }
 
 var file_marketplace_v1_marketplace_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_marketplace_v1_marketplace_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
+var file_marketplace_v1_marketplace_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_marketplace_v1_marketplace_proto_goTypes = []interface{}{
 	(Sort)(0),                       // 0: marketplace.v1.Sort
 	(SortDirection)(0),              // 1: marketplace.v1.SortDirection
 	(MintState)(0),                  // 2: marketplace.v1.MintState
-	(*NFT)(nil),                     // 3: marketplace.v1.NFT
-	(*Amount)(nil),                  // 4: marketplace.v1.Amount
-	(*Collection)(nil),              // 5: marketplace.v1.Collection
-	(*CollectionStats)(nil),         // 6: marketplace.v1.CollectionStats
-	(*Activity)(nil),                // 7: marketplace.v1.Activity
-	(*Quest)(nil),                   // 8: marketplace.v1.Quest
-	(*PriceDatum)(nil),              // 9: marketplace.v1.PriceDatum
-	(*CollectionsRequest)(nil),      // 10: marketplace.v1.CollectionsRequest
-	(*CollectionStatsRequest)(nil),  // 11: marketplace.v1.CollectionStatsRequest
-	(*CollectionStatsResponse)(nil), // 12: marketplace.v1.CollectionStatsResponse
-	(*CollectionsResponse)(nil),     // 13: marketplace.v1.CollectionsResponse
-	(*NFTsRequest)(nil),             // 14: marketplace.v1.NFTsRequest
-	(*NFTsResponse)(nil),            // 15: marketplace.v1.NFTsResponse
-	(*QuestsRequest)(nil),           // 16: marketplace.v1.QuestsRequest
-	(*QuestsResponse)(nil),          // 17: marketplace.v1.QuestsResponse
-	(*ActivityRequest)(nil),         // 18: marketplace.v1.ActivityRequest
-	(*ActivityResponse)(nil),        // 19: marketplace.v1.ActivityResponse
-	(*NFTPriceHistoryRequest)(nil),  // 20: marketplace.v1.NFTPriceHistoryRequest
-	(*NFTPriceHistoryResponse)(nil), // 21: marketplace.v1.NFTPriceHistoryResponse
-	(*Action)(nil),                  // 22: marketplace.v1.Action
-	(*News)(nil),                    // 23: marketplace.v1.News
-	(*Banner)(nil),                  // 24: marketplace.v1.Banner
-	(*BannersRequest)(nil),          // 25: marketplace.v1.BannersRequest
-	(*BannersResponse)(nil),         // 26: marketplace.v1.BannersResponse
-	(*NewsRequest)(nil),             // 27: marketplace.v1.NewsRequest
-	(*NewsResponse)(nil),            // 28: marketplace.v1.NewsResponse
+	(*Attribute)(nil),               // 3: marketplace.v1.Attribute
+	(*NFT)(nil),                     // 4: marketplace.v1.NFT
+	(*Amount)(nil),                  // 5: marketplace.v1.Amount
+	(*Collection)(nil),              // 6: marketplace.v1.Collection
+	(*CollectionStats)(nil),         // 7: marketplace.v1.CollectionStats
+	(*Activity)(nil),                // 8: marketplace.v1.Activity
+	(*Quest)(nil),                   // 9: marketplace.v1.Quest
+	(*PriceDatum)(nil),              // 10: marketplace.v1.PriceDatum
+	(*CollectionsRequest)(nil),      // 11: marketplace.v1.CollectionsRequest
+	(*CollectionStatsRequest)(nil),  // 12: marketplace.v1.CollectionStatsRequest
+	(*CollectionStatsResponse)(nil), // 13: marketplace.v1.CollectionStatsResponse
+	(*CollectionsResponse)(nil),     // 14: marketplace.v1.CollectionsResponse
+	(*NFTsRequest)(nil),             // 15: marketplace.v1.NFTsRequest
+	(*NFTsResponse)(nil),            // 16: marketplace.v1.NFTsResponse
+	(*QuestsRequest)(nil),           // 17: marketplace.v1.QuestsRequest
+	(*QuestsResponse)(nil),          // 18: marketplace.v1.QuestsResponse
+	(*ActivityRequest)(nil),         // 19: marketplace.v1.ActivityRequest
+	(*ActivityResponse)(nil),        // 20: marketplace.v1.ActivityResponse
+	(*NFTPriceHistoryRequest)(nil),  // 21: marketplace.v1.NFTPriceHistoryRequest
+	(*NFTPriceHistoryResponse)(nil), // 22: marketplace.v1.NFTPriceHistoryResponse
+	(*Action)(nil),                  // 23: marketplace.v1.Action
+	(*News)(nil),                    // 24: marketplace.v1.News
+	(*Banner)(nil),                  // 25: marketplace.v1.Banner
+	(*BannersRequest)(nil),          // 26: marketplace.v1.BannersRequest
+	(*BannersResponse)(nil),         // 27: marketplace.v1.BannersResponse
+	(*NewsRequest)(nil),             // 28: marketplace.v1.NewsRequest
+	(*NewsResponse)(nil),            // 29: marketplace.v1.NewsResponse
 }
 var file_marketplace_v1_marketplace_proto_depIdxs = []int32{
-	4,  // 0: marketplace.v1.CollectionStats.floor_price:type_name -> marketplace.v1.Amount
-	0,  // 1: marketplace.v1.CollectionsRequest.sort:type_name -> marketplace.v1.Sort
-	1,  // 2: marketplace.v1.CollectionsRequest.sort_direction:type_name -> marketplace.v1.SortDirection
-	2,  // 3: marketplace.v1.CollectionsRequest.mint_state:type_name -> marketplace.v1.MintState
-	6,  // 4: marketplace.v1.CollectionStatsResponse.stats:type_name -> marketplace.v1.CollectionStats
-	5,  // 5: marketplace.v1.CollectionsResponse.collection:type_name -> marketplace.v1.Collection
-	0,  // 6: marketplace.v1.NFTsRequest.sort:type_name -> marketplace.v1.Sort
-	1,  // 7: marketplace.v1.NFTsRequest.sort_direction:type_name -> marketplace.v1.SortDirection
-	3,  // 8: marketplace.v1.NFTsResponse.nft:type_name -> marketplace.v1.NFT
-	8,  // 9: marketplace.v1.QuestsResponse.quest:type_name -> marketplace.v1.Quest
-	7,  // 10: marketplace.v1.ActivityResponse.activity:type_name -> marketplace.v1.Activity
-	9,  // 11: marketplace.v1.NFTPriceHistoryResponse.data:type_name -> marketplace.v1.PriceDatum
-	22, // 12: marketplace.v1.News.actions:type_name -> marketplace.v1.Action
-	24, // 13: marketplace.v1.BannersResponse.banners:type_name -> marketplace.v1.Banner
-	23, // 14: marketplace.v1.NewsResponse.news:type_name -> marketplace.v1.News
-	10, // 15: marketplace.v1.MarketplaceService.Collections:input_type -> marketplace.v1.CollectionsRequest
-	11, // 16: marketplace.v1.MarketplaceService.CollectionStats:input_type -> marketplace.v1.CollectionStatsRequest
-	14, // 17: marketplace.v1.MarketplaceService.NFTs:input_type -> marketplace.v1.NFTsRequest
-	16, // 18: marketplace.v1.MarketplaceService.Quests:input_type -> marketplace.v1.QuestsRequest
-	18, // 19: marketplace.v1.MarketplaceService.Activity:input_type -> marketplace.v1.ActivityRequest
-	20, // 20: marketplace.v1.MarketplaceService.NFTPriceHistory:input_type -> marketplace.v1.NFTPriceHistoryRequest
-	25, // 21: marketplace.v1.MarketplaceService.Banners:input_type -> marketplace.v1.BannersRequest
-	27, // 22: marketplace.v1.MarketplaceService.News:input_type -> marketplace.v1.NewsRequest
-	13, // 23: marketplace.v1.MarketplaceService.Collections:output_type -> marketplace.v1.CollectionsResponse
-	12, // 24: marketplace.v1.MarketplaceService.CollectionStats:output_type -> marketplace.v1.CollectionStatsResponse
-	15, // 25: marketplace.v1.MarketplaceService.NFTs:output_type -> marketplace.v1.NFTsResponse
-	17, // 26: marketplace.v1.MarketplaceService.Quests:output_type -> marketplace.v1.QuestsResponse
-	19, // 27: marketplace.v1.MarketplaceService.Activity:output_type -> marketplace.v1.ActivityResponse
-	21, // 28: marketplace.v1.MarketplaceService.NFTPriceHistory:output_type -> marketplace.v1.NFTPriceHistoryResponse
-	26, // 29: marketplace.v1.MarketplaceService.Banners:output_type -> marketplace.v1.BannersResponse
-	28, // 30: marketplace.v1.MarketplaceService.News:output_type -> marketplace.v1.NewsResponse
-	23, // [23:31] is the sub-list for method output_type
-	15, // [15:23] is the sub-list for method input_type
-	15, // [15:15] is the sub-list for extension type_name
-	15, // [15:15] is the sub-list for extension extendee
-	0,  // [0:15] is the sub-list for field type_name
+	3,  // 0: marketplace.v1.NFT.attributes:type_name -> marketplace.v1.Attribute
+	5,  // 1: marketplace.v1.CollectionStats.floor_price:type_name -> marketplace.v1.Amount
+	0,  // 2: marketplace.v1.CollectionsRequest.sort:type_name -> marketplace.v1.Sort
+	1,  // 3: marketplace.v1.CollectionsRequest.sort_direction:type_name -> marketplace.v1.SortDirection
+	2,  // 4: marketplace.v1.CollectionsRequest.mint_state:type_name -> marketplace.v1.MintState
+	7,  // 5: marketplace.v1.CollectionStatsResponse.stats:type_name -> marketplace.v1.CollectionStats
+	6,  // 6: marketplace.v1.CollectionsResponse.collection:type_name -> marketplace.v1.Collection
+	0,  // 7: marketplace.v1.NFTsRequest.sort:type_name -> marketplace.v1.Sort
+	1,  // 8: marketplace.v1.NFTsRequest.sort_direction:type_name -> marketplace.v1.SortDirection
+	4,  // 9: marketplace.v1.NFTsResponse.nft:type_name -> marketplace.v1.NFT
+	9,  // 10: marketplace.v1.QuestsResponse.quest:type_name -> marketplace.v1.Quest
+	8,  // 11: marketplace.v1.ActivityResponse.activity:type_name -> marketplace.v1.Activity
+	10, // 12: marketplace.v1.NFTPriceHistoryResponse.data:type_name -> marketplace.v1.PriceDatum
+	23, // 13: marketplace.v1.News.actions:type_name -> marketplace.v1.Action
+	25, // 14: marketplace.v1.BannersResponse.banners:type_name -> marketplace.v1.Banner
+	24, // 15: marketplace.v1.NewsResponse.news:type_name -> marketplace.v1.News
+	11, // 16: marketplace.v1.MarketplaceService.Collections:input_type -> marketplace.v1.CollectionsRequest
+	12, // 17: marketplace.v1.MarketplaceService.CollectionStats:input_type -> marketplace.v1.CollectionStatsRequest
+	15, // 18: marketplace.v1.MarketplaceService.NFTs:input_type -> marketplace.v1.NFTsRequest
+	17, // 19: marketplace.v1.MarketplaceService.Quests:input_type -> marketplace.v1.QuestsRequest
+	19, // 20: marketplace.v1.MarketplaceService.Activity:input_type -> marketplace.v1.ActivityRequest
+	21, // 21: marketplace.v1.MarketplaceService.NFTPriceHistory:input_type -> marketplace.v1.NFTPriceHistoryRequest
+	26, // 22: marketplace.v1.MarketplaceService.Banners:input_type -> marketplace.v1.BannersRequest
+	28, // 23: marketplace.v1.MarketplaceService.News:input_type -> marketplace.v1.NewsRequest
+	14, // 24: marketplace.v1.MarketplaceService.Collections:output_type -> marketplace.v1.CollectionsResponse
+	13, // 25: marketplace.v1.MarketplaceService.CollectionStats:output_type -> marketplace.v1.CollectionStatsResponse
+	16, // 26: marketplace.v1.MarketplaceService.NFTs:output_type -> marketplace.v1.NFTsResponse
+	18, // 27: marketplace.v1.MarketplaceService.Quests:output_type -> marketplace.v1.QuestsResponse
+	20, // 28: marketplace.v1.MarketplaceService.Activity:output_type -> marketplace.v1.ActivityResponse
+	22, // 29: marketplace.v1.MarketplaceService.NFTPriceHistory:output_type -> marketplace.v1.NFTPriceHistoryResponse
+	27, // 30: marketplace.v1.MarketplaceService.Banners:output_type -> marketplace.v1.BannersResponse
+	29, // 31: marketplace.v1.MarketplaceService.News:output_type -> marketplace.v1.NewsResponse
+	24, // [24:32] is the sub-list for method output_type
+	16, // [16:24] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_marketplace_v1_marketplace_proto_init() }
@@ -2259,7 +2364,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_marketplace_v1_marketplace_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NFT); i {
+			switch v := v.(*Attribute); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2271,7 +2376,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Amount); i {
+			switch v := v.(*NFT); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2283,7 +2388,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Collection); i {
+			switch v := v.(*Amount); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2295,7 +2400,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CollectionStats); i {
+			switch v := v.(*Collection); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2307,7 +2412,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Activity); i {
+			switch v := v.(*CollectionStats); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2319,7 +2424,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Quest); i {
+			switch v := v.(*Activity); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2331,7 +2436,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PriceDatum); i {
+			switch v := v.(*Quest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2343,7 +2448,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CollectionsRequest); i {
+			switch v := v.(*PriceDatum); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2355,7 +2460,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CollectionStatsRequest); i {
+			switch v := v.(*CollectionsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2367,7 +2472,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CollectionStatsResponse); i {
+			switch v := v.(*CollectionStatsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2379,7 +2484,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CollectionsResponse); i {
+			switch v := v.(*CollectionStatsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2391,7 +2496,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NFTsRequest); i {
+			switch v := v.(*CollectionsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2403,7 +2508,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NFTsResponse); i {
+			switch v := v.(*NFTsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2415,7 +2520,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuestsRequest); i {
+			switch v := v.(*NFTsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2427,7 +2532,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuestsResponse); i {
+			switch v := v.(*QuestsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2439,7 +2544,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ActivityRequest); i {
+			switch v := v.(*QuestsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2451,7 +2556,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ActivityResponse); i {
+			switch v := v.(*ActivityRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2463,7 +2568,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NFTPriceHistoryRequest); i {
+			switch v := v.(*ActivityResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2475,7 +2580,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NFTPriceHistoryResponse); i {
+			switch v := v.(*NFTPriceHistoryRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2487,7 +2592,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Action); i {
+			switch v := v.(*NFTPriceHistoryResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2499,7 +2604,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*News); i {
+			switch v := v.(*Action); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2511,7 +2616,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Banner); i {
+			switch v := v.(*News); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2523,7 +2628,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BannersRequest); i {
+			switch v := v.(*Banner); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2535,7 +2640,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BannersResponse); i {
+			switch v := v.(*BannersRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2547,7 +2652,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*NewsRequest); i {
+			switch v := v.(*BannersResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2559,6 +2664,18 @@ func file_marketplace_v1_marketplace_proto_init() {
 			}
 		}
 		file_marketplace_v1_marketplace_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NewsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_marketplace_v1_marketplace_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*NewsResponse); i {
 			case 0:
 				return &v.state
@@ -2577,7 +2694,7 @@ func file_marketplace_v1_marketplace_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_marketplace_v1_marketplace_proto_rawDesc,
 			NumEnums:      3,
-			NumMessages:   26,
+			NumMessages:   27,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

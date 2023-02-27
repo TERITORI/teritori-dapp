@@ -24,7 +24,7 @@ export interface MetadataWithTokenId extends Metadata {
   token_id: string;
 }
 
-export type SendFundFormType = {
+export type TNSSendFundsFormType = {
   comment: string;
   amount: string;
 };

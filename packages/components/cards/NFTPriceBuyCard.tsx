@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
+import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { prettyPrice } from "../../utils/coins";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -12,11 +13,10 @@ import { GradientText } from "../gradientText";
 // TODO: Dynamic data + props
 
 export const NFTPriceBuyCard: React.FC<{
-  price?: string;
-  priceDenom?: string;
+  nftInfo: NFTInfo;
   onPressBuy: () => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ price = "", priceDenom = "", onPressBuy, style }) => {
+}> = ({ nftInfo, onPressBuy, style }) => {
   return (
     <TertiaryBox
       fullWidth
@@ -37,15 +37,11 @@ export const NFTPriceBuyCard: React.FC<{
             gradientType="purple"
             style={[fontSemibold28, { marginRight: 12 }]}
           >
-            {prettyPrice(
-              process.env.TERITORI_NETWORK_ID || "",
-              price,
-              priceDenom
-            )}
+            {prettyPrice(nftInfo.networkId, nftInfo.price, nftInfo.priceDenom)}
           </GradientText>
           <CurrencyIcon
-            networkId={process.env.TERITORI_NETWORK_ID || ""}
-            denom={priceDenom}
+            networkId={nftInfo.networkId}
+            denom={nftInfo.priceDenom}
             size={24}
           />
         </View>

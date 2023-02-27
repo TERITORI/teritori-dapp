@@ -5,7 +5,8 @@ import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
 import { useActivity } from "../../hooks/useActivity";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { parseActivityId, parseUserId, txExplorerLink } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import {
   mineShaftColor,
@@ -15,7 +16,6 @@ import {
 } from "../../utils/style/colors";
 import { fontMedium14 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
-import { txExplorerLink } from "../../utils/teritori";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { Pagination } from "../Pagination";
@@ -94,11 +94,12 @@ export const ActivityTable: React.FC<{
 };
 
 const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
-  const txHash = activity.id.split("-")[1];
-  const buyerAddress = activity.buyerId && activity.buyerId.split("-")[1];
-  const sellerAddress = activity.sellerId && activity.sellerId.split("-")[1];
-  const buyerTNSMetadata = useTNSMetadata(buyerAddress);
-  const sellerTNSMetadata = useTNSMetadata(sellerAddress);
+  const [network, txHash] = parseActivityId(activity.id);
+  const [, buyerAddress] = parseUserId(activity.buyerId);
+  const [, sellerAddress] = parseUserId(activity.sellerId);
+  const buyerInfo = useNSUserInfo(activity.buyerId);
+  const sellerInfo = useNSUserInfo(activity.sellerId);
+
   return (
     <View
       style={{
@@ -119,7 +120,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         }}
       >
         <ExternalLink
-          externalUrl={txExplorerLink(txHash)}
+          externalUrl={txExplorerLink(network?.id, txHash)}
           style={[fontMedium14, { width: "100%" }]}
           ellipsizeMode="middle"
           numberOfLines={1}
@@ -156,22 +157,18 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           },
         ]}
       >
-        {prettyPrice(
-          process.env.TERITORI_NETWORK_ID || "",
-          activity.amount,
-          activity.denom
-        )}
+        {prettyPrice(network?.id || "", activity.amount, activity.denom)}
       </BrandText>
       <View
         style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.padding_x1 }}
       >
         <Link
-          to={`/user/tori-${buyerAddress}`}
+          to={`/user/${activity.buyerId}`}
           style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
-          {buyerTNSMetadata.metadata?.tokenId || buyerAddress}
+          {buyerInfo.metadata?.tokenId || buyerAddress}
         </Link>
       </View>
       <View
@@ -181,12 +178,12 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         }}
       >
         <Link
-          to={`/user/tori-${sellerAddress}`}
+          to={`/user/${activity.sellerId}`}
           style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
-          {sellerTNSMetadata.metadata?.tokenId || sellerAddress}
+          {sellerInfo.metadata?.tokenId || sellerAddress}
         </Link>
       </View>
     </View>

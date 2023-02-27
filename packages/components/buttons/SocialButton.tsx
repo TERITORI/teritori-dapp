@@ -13,18 +13,19 @@ export const SocialButton: React.FC<{
   iconSvg: React.FC<SvgProps>;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ text, onPress, iconSvg, style }) => {
+  noBrokenCorners?: boolean;
+}> = ({ text, onPress, iconSvg, style, noBrokenCorners = true }) => {
   return (
     <TouchableOpacity onPress={onPress} style={style}>
       <SecondaryBox
         // We don't handle broken corners for now, because this button can be used on an image
-        noBrokenCorners
+        noBrokenCorners={noBrokenCorners}
         mainContainerStyle={{ backgroundColor: withAlpha(neutral22, 0.64) }}
         height={44}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SecondaryBox
-            noBrokenCorners
+            noBrokenCorners={noBrokenCorners}
             style={{ marginLeft: 6 }}
             mainContainerStyle={{ backgroundColor: neutral33, borderRadius: 6 }}
             width={32}

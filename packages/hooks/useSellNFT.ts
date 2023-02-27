@@ -1,16 +1,115 @@
 import { Decimal } from "cosmwasm";
+import { ethers } from "ethers";
 import { useCallback } from "react";
 
 import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
-import { getNativeCurrency } from "../networks";
-import { getSigningCosmWasmClient } from "../utils/keplr";
-import { vaultContractAddress } from "../utils/teritori";
+import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import {
+  getKeplrSigningCosmWasmClient,
+  getNativeCurrency,
+  mustGetCosmosNetwork,
+  mustGetEthereumNetwork,
+  WEI_TOKEN_ADDRESS,
+  NetworkKind,
+} from "../networks";
+import { Wallet } from "./../context/WalletsProvider/wallet";
+import { getMetaMaskEthereumSigner } from "./../utils/ethereum";
 import useSelectedWallet from "./useSelectedWallet";
 
-export const useSellNFT = () => {
+const teritoriSellNFT = async (
+  wallet: Wallet,
+  nftContractAddress: string,
+  tokenId: string,
+  price: string,
+  denom: string | undefined
+) => {
+  const network = mustGetCosmosNetwork(wallet.networkId);
+  if (!network.vaultContractAddress) {
+    throw new Error("network not supported");
+  }
+  const cosmwasmClient = await getKeplrSigningCosmWasmClient(network.id);
+  const nftClient = new TeritoriNftClient(
+    cosmwasmClient,
+    wallet.address,
+    nftContractAddress
+  );
+  const currency = getNativeCurrency(network.id, denom);
+  if (!currency) {
+    throw Error("Unknown currency");
+  }
+  const atomicPrice = Decimal.fromUserInput(price, currency.decimals);
+  const amount = atomicPrice.atomics;
+  const reply = await nftClient.sendNft({
+    contract: network.vaultContractAddress,
+    tokenId,
+    msg: Buffer.from(
+      JSON.stringify({
+        deposit: {
+          denom,
+          amount,
+        },
+      })
+    ).toString("base64"),
+  });
+  return reply.transactionHash;
+};
+
+const ethereumSellNFT = async (
+  wallet: Wallet,
+  nftContractAddress: string,
+  tokenId: string,
+  price: string,
+  denom: string | undefined
+) => {
+  const network = mustGetEthereumNetwork(wallet.networkId);
+
+  const signer = await getMetaMaskEthereumSigner(network, wallet.address);
+  if (!signer) {
+    throw Error("Unable to get signer");
+  }
+
+  const { maxFeePerGas: maxFee, maxPriorityFeePerGas: maxPrio } =
+    await signer.getFeeData();
+  const maxFeePerGas = maxFee?.toNumber();
+  const maxPriorityFeePerGas = maxPrio?.toNumber();
+  const txFeeData = { maxFeePerGas, maxPriorityFeePerGas };
+
+  // Approve
+  const nftClient = TeritoriNft__factory.connect(nftContractAddress, signer);
+
+  const approveTx = await nftClient.approve(
+    network.vaultContractAddress,
+    tokenId,
+    txFeeData
+  );
+  await approveTx.wait();
+
+  const vaultClient = NFTVault__factory.connect(
+    network.vaultContractAddress,
+    signer
+  );
+
+  const sellTx = await vaultClient.listNFT(
+    nftContractAddress,
+    tokenId,
+    {
+      token: WEI_TOKEN_ADDRESS,
+      amount: ethers.utils.parseEther(price),
+    },
+    txFeeData
+  );
+
+  await sellTx.wait();
+
+  return sellTx.hash;
+};
+
+export const useSellNFT = (networkKind: NetworkKind | undefined) => {
   const { setToastError } = useFeedbacks();
   const wallet = useSelectedWallet();
+
   return useCallback(
     async (
       nftContractAddress: string,
@@ -18,54 +117,37 @@ export const useSellNFT = () => {
       price: string,
       denom: string | undefined
     ) => {
-      if (!wallet?.address || !wallet.connected) {
-        setToastError({
-          title: "Failed to list NFT",
-          message: "Bad wallet",
-        });
-        return;
-      }
-      setToastError(initialToastError);
       try {
-        if (!denom) {
-          setToastError({
-            title: "Failed to list NFT",
-            message: "No denom",
-          });
-          return;
+        if (!wallet?.address || !wallet.connected) {
+          throw Error("Bad wallet");
         }
-        const cosmwasmClient = await getSigningCosmWasmClient();
-        const nftClient = new TeritoriNftClient(
-          cosmwasmClient,
-          wallet.address,
-          nftContractAddress
-        );
-        const currency = getNativeCurrency(
-          process.env.TERITORI_NETWORK_ID,
+
+        if (!denom) {
+          throw Error("No denom");
+        }
+
+        let sellNFTFunc;
+        switch (networkKind) {
+          case NetworkKind.Cosmos:
+            sellNFTFunc = teritoriSellNFT;
+            break;
+          case NetworkKind.Ethereum:
+            sellNFTFunc = ethereumSellNFT;
+            break;
+          default:
+            throw Error(`Unsupported network ${networkKind}`);
+        }
+
+        setToastError(initialToastError);
+        const txHash = await sellNFTFunc(
+          wallet,
+          nftContractAddress,
+          tokenId,
+          price,
           denom
         );
-        if (!currency) {
-          setToastError({
-            title: "Failed to list NFT",
-            message: "Unknown currency",
-          });
-          return;
-        }
-        const atomicPrice = Decimal.fromUserInput(price, currency.decimals);
-        const amount = atomicPrice.atomics;
-        const reply = await nftClient.sendNft({
-          contract: vaultContractAddress,
-          tokenId,
-          msg: Buffer.from(
-            JSON.stringify({
-              deposit: {
-                denom,
-                amount,
-              },
-            })
-          ).toString("base64"),
-        });
-        return reply;
+
+        return txHash;
       } catch (err) {
         console.error(err);
         if (err instanceof Error) {
@@ -76,6 +158,6 @@ export const useSellNFT = () => {
         }
       }
     },
-    [wallet, setToastError]
+    [wallet, setToastError, networkKind]
   );
 };

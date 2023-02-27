@@ -2,8 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
-import { getNativeCurrency, getNetwork } from "../networks";
+import {
+  getNativeCurrency,
+  getNetwork,
+  WEI_TOKEN_ADDRESS,
+  NetworkKind,
+} from "../networks";
 import { Balance } from "../utils/coins";
+import { getEthereumProvider } from "../utils/ethereum";
 import { CosmosBalancesResponse } from "../utils/teritori";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
@@ -18,12 +24,12 @@ export const useBalances = (
         return [];
       }
 
-      return getNetworkBalances(networkId, address);
+      return await getNetworkBalances(networkId, address);
     },
     { initialData: [], refetchInterval: 5000 }
   );
 
-  const prices = useCoingeckoPrices(
+  const { prices } = useCoingeckoPrices(
     networkBalances.map((bal) => ({ networkId, denom: bal.denom }))
   );
 
@@ -60,9 +66,30 @@ const getNetworkBalances = async (
   if (!network) {
     return [];
   }
-  const response = await fetch(
-    `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
-  );
-  const responseJSON: CosmosBalancesResponse = await response.json();
-  return responseJSON.balances;
+
+  switch (network.kind) {
+    case NetworkKind.Ethereum: {
+      const provider = await getEthereumProvider(network);
+      if (!provider) return [];
+
+      const balance = await provider.getBalance(address);
+
+      const balanceItem = {
+        amount: balance.toString(),
+        denom: WEI_TOKEN_ADDRESS,
+      };
+      return [balanceItem];
+    }
+
+    case NetworkKind.Cosmos: {
+      const response = await fetch(
+        `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
+      );
+      const responseJSON: CosmosBalancesResponse = await response.json();
+      return responseJSON.balances;
+    }
+
+    default:
+      return [];
+  }
 };

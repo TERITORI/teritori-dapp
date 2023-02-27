@@ -17,8 +17,9 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { getCosmosNetwork, parseUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
@@ -46,14 +47,16 @@ export const NFTView: React.FC<{
   const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
-  const tnsMetadata = useTNSMetadata(nft.ownerId.replace("tori-", ""));
+  const userInfo = useNSUserInfo(nft.ownerId);
+  const cosmosNetwork = getCosmosNetwork(nft.id);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
   const dropdownRef = useRef<TouchableOpacity>(null);
 
-  const isOwner = nft.ownerId === `tori-${selectedWallet?.address}`;
+  const isOwner = nft.ownerId === selectedWallet?.userId;
+
   const isOwnerAndNotListed = isOwner && !nft.isListed;
 
   // put margins on touchable opacity
@@ -131,10 +134,9 @@ export const NFTView: React.FC<{
                   <Image
                     source={{
                       uri: ipfsURLToHTTPURL(
-                        tnsMetadata.metadata?.image
-                          ? tnsMetadata.metadata.image
-                          : process.env
-                              .TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
+                        userInfo.metadata?.image
+                          ? userInfo.metadata.image
+                          : cosmosNetwork?.nameServiceDefaultImage || ""
                       ),
                     }} // TODO: proper fallback
                     style={{
@@ -159,7 +161,7 @@ export const NFTView: React.FC<{
                         lineHeight: 16,
                       }}
                     >
-                      {tnsMetadata.metadata?.tokenId ||
+                      {userInfo.metadata?.tokenId ||
                         shortUserAddressFromID(nft.ownerId, 10)}
                     </BrandText>
                   </View>
@@ -275,7 +277,7 @@ export const NFTView: React.FC<{
                   <>
                     <CurrencyIcon
                       size={24}
-                      networkId={process.env.TERITORI_NETWORK_ID || ""}
+                      networkId={nft.networkId}
                       denom={nft.denom}
                     />
                     {/* FIXME: should come from price denom */}
@@ -305,11 +307,7 @@ export const NFTView: React.FC<{
                 <View style={{ flex: 1 }}>
                   <SecondaryButton
                     size="XS"
-                    text={prettyPrice(
-                      process.env.TERITORI_NETWORK_ID || "",
-                      nft.price,
-                      nft.denom
-                    )}
+                    text={prettyPrice(nft.networkId, nft.price, nft.denom)}
                     onPress={onPressPriceButton}
                     fullWidth
                     numberOfLines={1}
@@ -348,8 +346,14 @@ const styles = StyleSheet.create({
 
 // using this because ellipizeMode seems broken
 const shortUserAddressFromID = (id: string, size: number) => {
-  if (id.startsWith("tori-")) {
-    return id.substring(5, 5 + size) + "..." + id.substring(id.length - size);
+  const [network] = parseUserId(id);
+  if (network) {
+    const prefixLen = network.idPrefix.length + 1;
+    return (
+      id.substring(prefixLen, prefixLen + size) +
+      "..." +
+      id.substring(id.length - size)
+    );
   }
   return id.substring(0, size) + "..." + id.substring(id.length - size);
 };

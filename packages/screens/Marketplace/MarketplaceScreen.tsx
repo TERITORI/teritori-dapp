@@ -16,6 +16,7 @@ import { layout } from "../../utils/style/layout";
 
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
+
   return (
     <ScreenContainer>
       <View
@@ -51,8 +52,8 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
         <CollectionsCarouselSection
           title="Upcoming Launches"
           req={{
+            networkId: selectedNetworkId,
             upcoming: true,
-            networkId: "",
             sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
             sort: Sort.SORTING_UNSPECIFIED,
             limit: 16,

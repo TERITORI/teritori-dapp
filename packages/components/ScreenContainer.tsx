@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -8,24 +8,21 @@ import {
   Platform,
   ViewStyle,
   StyleProp,
-  TouchableOpacity,
 } from "react-native";
 
-import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
-import { useAreThereWallets } from "../hooks/useAreThereWallets";
+import { useForceNetworkKind } from "../hooks/useForceNetworkKind";
+import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
 import { useMaxResolution } from "../hooks/useMaxResolution";
+import { NetworkInfo, NetworkKind } from "../networks";
 import {
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
-  walletSelectorWidth,
 } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
+import { ConnectWalletButton } from "./ConnectWalletButton";
 import { Header } from "./Header";
 import { NetworkSelector } from "./NetworkSelector";
-import { SVG } from "./SVG";
-import { WalletSelector } from "./WalletSelector";
-import { ConnectWalletModal } from "./connectWallet/ConnectWalletModal";
+import { SelectedNetworkGate } from "./SelectedNetworkGate";
 import { Footer } from "./footers/Footer";
 import { Sidebar } from "./navigation/Sidebar";
 
@@ -39,6 +36,8 @@ export const ScreenContainer: React.FC<{
   noScroll?: boolean;
   fullWidth?: boolean;
   smallMargin?: boolean;
+  forceNetworkId?: string;
+  forceNetworkKind?: NetworkKind;
 }> = ({
   children,
   headerChildren,
@@ -50,6 +49,8 @@ export const ScreenContainer: React.FC<{
   fullWidth,
   smallMargin,
   customSidebar,
+  forceNetworkId,
+  forceNetworkKind,
 }) => {
   // variables
   const { height } = useWindowDimensions();
@@ -58,14 +59,24 @@ export const ScreenContainer: React.FC<{
   const marginStyle = hasMargin && {
     marginHorizontal: screenContainerContentMarginHorizontal,
   };
-  const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
-  const areThereWallets = useAreThereWallets();
   const { width: maxWidth } = useMaxResolution();
   const width = fullWidth ? "100%" : maxWidth;
 
-  // functions
-  const toggleConnectWallet = () =>
-    setIsConnectWalletVisible(!isConnectWalletVisible);
+  useForceNetworkSelection(forceNetworkId);
+  useForceNetworkKind(forceNetworkKind);
+
+  const networkFilter = useCallback(
+    (n: NetworkInfo | undefined) => {
+      if (forceNetworkId && n?.id !== forceNetworkId) {
+        return false;
+      }
+      if (forceNetworkKind && n?.kind !== forceNetworkKind) {
+        return false;
+      }
+      return true;
+    },
+    [forceNetworkId, forceNetworkKind]
+  );
 
   // returns
   return (
@@ -88,34 +99,36 @@ export const ScreenContainer: React.FC<{
           >
             {/*==== Scrollable screen content*/}
             <View style={{ flex: 1 }}>
-              {hasScroll ? (
-                <ScrollView
-                  style={{ width: "100%", flex: 1 }}
-                  contentContainerStyle={[
-                    {
-                      minHeight: height - headerHeight,
-                    },
-                  ]}
-                >
-                  <View
-                    style={[
-                      styles.childrenContainer,
-                      marginStyle,
-                      { width, flex: 1 },
+              <SelectedNetworkGate filter={networkFilter}>
+                {hasScroll ? (
+                  <ScrollView
+                    style={{ width: "100%", flex: 1 }}
+                    contentContainerStyle={[
+                      {
+                        minHeight: height - headerHeight,
+                      },
                     ]}
                   >
+                    <View
+                      style={[
+                        styles.childrenContainer,
+                        marginStyle,
+                        { width, flex: 1 },
+                      ]}
+                    >
+                      {children}
+                    </View>
+                    {footerChildren ? footerChildren : <Footer />}
+                  </ScrollView>
+                ) : (
+                  <View
+                    style={[styles.childrenContainer, marginStyle, { width }]}
+                  >
                     {children}
+                    {footerChildren ? footerChildren : <Footer />}
                   </View>
-                  {footerChildren ? footerChildren : <Footer />}
-                </ScrollView>
-              ) : (
-                <View
-                  style={[styles.childrenContainer, marginStyle, { width }]}
-                >
-                  {children}
-                  {footerChildren ? footerChildren : <Footer />}
-                </View>
-              )}
+                )}
+              </SelectedNetworkGate>
             </View>
           </View>
           {/*
@@ -132,21 +145,13 @@ export const ScreenContainer: React.FC<{
               alignItems: "center",
             }}
           >
-            <NetworkSelector style={{ marginRight: 12 }} />
-
-            {areThereWallets ? (
-              <WalletSelector style={{ marginRight: headerMarginHorizontal }} />
-            ) : (
-              <ConnectWalletButton
-                style={{ marginRight: headerMarginHorizontal }}
-                onPress={toggleConnectWallet}
-              />
-            )}
+            <NetworkSelector
+              forceNetworkId={forceNetworkId}
+              forceNetworkKind={forceNetworkKind}
+              style={{ marginRight: 12 }}
+            />
+            <ConnectWalletButton />
           </View>
-          <ConnectWalletModal
-            visible={isConnectWalletVisible}
-            onClose={toggleConnectWallet}
-          />
         </View>
       </View>
     </SafeAreaView>
@@ -164,42 +169,3 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
-
-// Displayed when no wallet connected. Press to connect wallet
-const ConnectWalletButton: React.FC<{
-  style?: StyleProp<ViewStyle>;
-  onPress: () => void;
-}> = ({ style, onPress }) => {
-  const height = 40;
-
-  return (
-    <TouchableOpacity style={style} onPress={onPress}>
-      <SVG
-        width={walletSelectorWidth}
-        height={height}
-        source={secondaryCardSmSVG}
-        style={{ position: "absolute" }}
-      />
-
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          height,
-          minHeight: height,
-          width: walletSelectorWidth,
-          minWidth: walletSelectorWidth,
-        }}
-      >
-        <BrandText
-          style={{
-            fontSize: 14,
-          }}
-        >
-          Connect wallet
-        </BrandText>
-      </View>
-    </TouchableOpacity>
-  );
-};
