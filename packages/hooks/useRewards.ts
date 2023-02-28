@@ -85,7 +85,7 @@ export const useRewards = (userId: string | undefined) => {
     try {
       if (!userAddress || !networkId) return;
 
-      const client = await getKeplrSigningStargateClient(userAddress);
+      const client = await getKeplrSigningStargateClient(networkId);
       const msg: MsgWithdrawDelegatorRewardEncodeObject = {
         typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
         value: {
