@@ -6,6 +6,7 @@ import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../components/BrandText";
 import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ConnectWalletModal } from "../../components/connectWallet/ConnectWalletModal";
@@ -14,8 +15,8 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
 import { walletProviderToNetworkKind } from "../../utils/network";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
+import { WalletHeader } from "./WalletHeader";
 import { WalletItem, WalletItemProps } from "./WalletItem";
-import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
 
 interface WalletProps {
   index: number;
@@ -134,7 +135,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
     : [];
 
   return (
-    <WalletManagerScreenContainer>
+    <ScreenContainer headerChildren={<WalletHeader />}>
       <View
         style={{
           paddingVertical: 48,
@@ -182,6 +183,6 @@ export const WalletManagerWalletsScreen: ScreenFC<
         visible={showConnectModal}
         onClose={() => setShowConnectModal(false)}
       />
-    </WalletManagerScreenContainer>
+    </ScreenContainer>
   );
 };

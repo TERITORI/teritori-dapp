@@ -44,6 +44,7 @@ export type RootStackParamList = {
   RiotGameLeaderboard: undefined;
   RiotGameInventory: undefined;
 
+  Swap: undefined;
   Staking: undefined;
 
   ComingSoon: undefined;
@@ -104,6 +105,8 @@ const navConfig: {
 
     // ==== Staking
     Staking: "staking",
+    // ==== Swap
+    Swap: "swap",
     // ==== ComingSoon
     ComingSoon: "coming-soon",
     Settings: "settings",

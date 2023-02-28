@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, StyleProp, ViewStyle } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
@@ -15,9 +15,10 @@ import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
 
 const collapsedCount = 5;
 
-export const Assets: React.FC<{ userId: string | undefined }> = ({
-  userId,
-}) => {
+export const Assets: React.FC<{
+  userId: string | undefined;
+  style?: StyleProp<ViewStyle>;
+}> = ({ userId, style }) => {
   const [isDepositVisible, setDepositVisible] = useState(false);
   const [isWithdrawVisible, setWithdrawVisible] = useState(false);
   const [targetCurrency, setTargetCurrency] = useState<string>();
@@ -63,12 +64,15 @@ export const Assets: React.FC<{ userId: string | undefined }> = ({
 
   return (
     <View
-      style={{
-        marginTop: 40,
-        paddingTop: 40,
-        borderTopWidth: 1,
-        borderColor: neutral33,
-      }}
+      style={[
+        {
+          marginTop: 40,
+          paddingTop: 40,
+          borderTopWidth: 1,
+          borderColor: neutral33,
+        },
+        style,
+      ]}
     >
       <View
         style={{

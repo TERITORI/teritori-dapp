@@ -14,6 +14,8 @@ interface CustomPressableProps extends Omit<PressableProps, "Children"> {
     | React.ReactNode
     | ((state: PressableState) => React.ReactNode)
     | undefined;
+  onHoverIn?: (e: MouseEvent) => void;
+  onHoverOut?: (e: MouseEvent) => void;
 }
 
 export const CustomPressable: React.FC<CustomPressableProps> = (props) => {

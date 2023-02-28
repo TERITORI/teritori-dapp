@@ -10,6 +10,7 @@ import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
+import { osmosisTestnetNetwork } from "./osmosis-testnet";
 import { solanaNetwork } from "./solana";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
@@ -34,6 +35,7 @@ export const allNetworks = [
   ethereumNetwork,
   junoNetwork,
   osmosisNetwork,
+  osmosisTestnetNetwork,
   solanaNetwork,
 ];
 
