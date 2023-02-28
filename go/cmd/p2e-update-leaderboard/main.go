@@ -102,7 +102,12 @@ func sendRewardsList(netstore networks.NetworkStore, network *networks.CosmosNet
 func resetLeaderboard(seasonId string, db *gorm.DB) error {
 	err := db.Exec(`
 		UPDATE p2e_leaderboards as lb
-		SET score = 0
+		SET
+			score = 0,
+			rank = 0,
+			in_progress_score = 0,
+			snapshot_rank = 0,
+			snapshot_score = 0
 		WHERE lb.season_id = ?
 	`,
 		seasonId,
