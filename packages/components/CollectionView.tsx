@@ -1,30 +1,36 @@
-import React from "react";
-import { Image, Linking, View } from "react-native";
+import React, { useMemo } from "react";
+import { Image, StyleSheet, Linking, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { Collection } from "../api/marketplace/v1/marketplace";
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
 import { parseUserId } from "../networks";
-import { fontSemibold14 } from "../utils/style/fonts";
+import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
+import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { GradientText } from "./gradientText";
 
-export const collectionItemHeight = 266;
-export const collectionItemWidth = 196;
-const contentWidth = 172;
+type CollectionViewSize = "XL" | "XS";
+export const COLLECTION_VIEW_SM_WIDTH = 124;
+export const COLLECTION_VIEW_SM_HEIGHT = 164;
+export const COLLECTION_VIEW_XL_WIDTH = 196;
+export const COLLECTION_VIEW_XL_HEIGHT = 266;
 
 export const CollectionView: React.FC<{
   item: Collection;
+  size?: CollectionViewSize;
   linkToMint?: boolean;
-}> = ({ item, linkToMint }) => {
+}> = ({ item, size = "XL", linkToMint }) => {
   const [, creatorAddress] = parseUserId(item.creatorId);
   const userInfo = useNSUserInfo(item.creatorId);
   const navigateToCollection = useNavigateToCollection(item.id, {
     forceSecondaryDuringMint: item.secondaryDuringMint,
     forceLinkToMint: linkToMint,
   });
+  const sizedStyles = useMemo(() => StyleSheet.flatten(styles[size]), [size]);
+
   const navigateToTwitter = () => {
     Linking.openURL(item.twitterUrl);
   };
@@ -33,27 +39,29 @@ export const CollectionView: React.FC<{
       onPress={item.id ? navigateToCollection : navigateToTwitter}
     >
       <TertiaryBox
-        mainContainerStyle={{
-          paddingTop: 12,
-          paddingBottom: 20,
-        }}
-        width={collectionItemWidth}
-        height={collectionItemHeight}
+        noBrokenCorners={size === "XS"}
+        mainContainerStyle={sizedStyles.boxMainContainer}
+        width={sizedStyles.box.width}
+        height={sizedStyles.box.height}
       >
         <Image
           source={{ uri: item.imageUri }}
           style={{
-            width: contentWidth,
-            height: 172,
+            width: sizedStyles.image.width,
+            height: sizedStyles.image.height,
             alignSelf: "center",
-            borderRadius: 12,
+            borderRadius: sizedStyles.image.borderRadius,
           }}
         />
         <View
-          style={{ marginHorizontal: 12, marginTop: 16, width: contentWidth }}
+          style={{
+            marginHorizontal: sizedStyles.textsContainer.marginHorizontal,
+            marginTop: sizedStyles.textsContainer.marginTop,
+            width: sizedStyles.image.width,
+          }}
         >
           <BrandText
-            style={{ fontSize: 14 }}
+            style={sizedStyles.collectionName}
             ellipsizeMode="tail"
             numberOfLines={1}
           >
@@ -67,7 +75,7 @@ export const CollectionView: React.FC<{
             }}
           >
             <GradientText
-              style={fontSemibold14}
+              style={sizedStyles.creatorName}
               ellipsizeMode="tail"
               numberOfLines={1}
               gradientType="purple"
@@ -79,4 +87,58 @@ export const CollectionView: React.FC<{
       </TertiaryBox>
     </TouchableOpacity>
   );
+};
+
+const styles = {
+  XL: {
+    box: {
+      width: COLLECTION_VIEW_XL_WIDTH,
+      height: COLLECTION_VIEW_XL_HEIGHT,
+    },
+    boxMainContainer: {
+      paddingTop: layout.padding_x1_5,
+      paddingBottom: layout.padding_x2_5,
+    },
+    image: {
+      width: 172,
+      height: 172,
+      borderRadius: 12,
+    },
+    textsContainer: {
+      marginHorizontal: layout.padding_x1_5,
+      marginTop: layout.padding_x2,
+    },
+    collectionName: {
+      ...(fontSemibold14 as object),
+    },
+    creatorName: {
+      ...(fontSemibold14 as object),
+    },
+  },
+
+  XS: {
+    box: {
+      width: COLLECTION_VIEW_SM_WIDTH,
+      height: COLLECTION_VIEW_SM_HEIGHT,
+    },
+    boxMainContainer: {
+      paddingTop: layout.padding_x1,
+      paddingBottom: layout.padding_x1,
+    },
+    image: {
+      width: 108,
+      height: 108,
+      borderRadius: 4,
+    },
+    textsContainer: {
+      marginHorizontal: layout.padding_x1,
+      marginTop: layout.padding_x1,
+    },
+    collectionName: {
+      ...(fontBold11 as object),
+    },
+    creatorName: {
+      ...(fontMedium10 as object),
+    },
+  },
 };

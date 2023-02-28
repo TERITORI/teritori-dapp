@@ -9,10 +9,10 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold16 } from "../../../utils/style/fonts";
 import { modalMarginPadding } from "../../../utils/style/modals";
+import { tinyAddress } from "../../../utils/text";
 import { BrandText } from "../../BrandText";
 import { CopyToClipboardIcon } from "../../CopyToClipboardIcon";
 import { ExternalLink } from "../../ExternalLink";
-import { tinyAddress } from "../../WalletSelector";
 import { SpacerRow } from "../../spacer";
 import ModalBase from "../ModalBase";
 

@@ -8,7 +8,6 @@ import teritoriLogoSVG from "../../../../assets/logos/logo.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { tinyAddress } from "../../../components/WalletSelector";
 import { SocialButton } from "../../../components/buttons/SocialButton";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
@@ -26,6 +25,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { tinyAddress } from "../../../utils/text";
 
 type UnstakeModalProps = {
   visible?: boolean;

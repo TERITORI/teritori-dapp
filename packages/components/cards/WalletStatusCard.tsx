@@ -5,9 +5,9 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNetwork } from "../../networks";
 import { neutral17, neutral77 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold13 } from "../../utils/style/fonts";
+import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { NetworkIcon } from "../NetworkIcon";
-import { tinyAddress } from "../WalletSelector";
 import { SuccessBadge } from "../badges/SuccessBadge";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
