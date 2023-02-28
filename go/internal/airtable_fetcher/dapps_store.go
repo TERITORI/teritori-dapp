@@ -7,8 +7,7 @@ import (
 )
 
 func (c *Client) FetchAppsGroups() ([]*marketplacepb.DAppGroup, error) {
-	//client := airtable.NewClient(c.config.APIKey)
-	client := airtable.NewClient("patrgs2AMrChxKbKV.2533b7179c056d17160aec75d7b28cf9ff0414f76c3a1a37f82a4bd4cddba1ae")
+	client := airtable.NewClient(c.config.APIKey)
 
 	table := client.GetTable(c.config.DAppStoreBaseID, c.config.dAppGroupsTableID)
 

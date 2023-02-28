@@ -47,6 +47,12 @@ func main() {
 	); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
+	if *airtableAPIKey == "" {
+		panic(errors.New("missing AIRTABLE_API_KEY"))
+	}
+	if *airtableAPIKeydappsStore == "" {
+		panic(errors.New("missing AIRTABLE_API_KEY_DAPPS_STORE"))
+	}
 
 	// load networks
 	networksBytes, err := os.ReadFile(*networksFile)
