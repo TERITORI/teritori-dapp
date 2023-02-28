@@ -94,7 +94,7 @@ const MentionRender = (props: { children: { props: { text: string } }[] }) => {
     <span
       style={{ color: primaryColor, cursor: "pointer" }}
       onClick={() =>
-        navigation.navigate("PublicProfile", {
+        navigation.navigate("UserPublicProfile", {
           id: props.children[0].props.text.replace("@", ""),
         })
       }

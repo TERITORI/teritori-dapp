@@ -11,13 +11,19 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { DEFAULT_NAME } from "../../utils/social-feed";
-import { neutral77 } from "../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
+import { neutral00, neutral55, neutral77 } from "../../utils/style/colors";
+import {
+  fontBold16,
+  fontMedium14,
+  fontSemibold14,
+} from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { useCopyToClipboard } from "../CopyToClipboard";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
 import { tinyAddress } from "../WalletSelector";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 import { ProfileButton } from "../hub/ProfileButton";
@@ -56,7 +62,7 @@ export const UPPIntro: React.FC<{
             right: 14,
           }}
         >
-          {metadata?.external_url && (
+          {!!metadata?.external_url && (
             <SocialButton
               iconSvg={websiteSVG}
               text="Website"
@@ -64,7 +70,7 @@ export const UPPIntro: React.FC<{
               onPress={() => Linking.openURL(metadata.external_url || "")}
             />
           )}
-          {metadata?.discord_id && (
+          {!!metadata?.discord_id && (
             <SocialButton
               iconSvg={discordSVG}
               text="Discord"
@@ -72,7 +78,7 @@ export const UPPIntro: React.FC<{
               onPress={() => Linking.openURL(metadata.discord_id || "")}
             />
           )}
-          {metadata?.twitter_id && (
+          {!!metadata?.twitter_id && (
             <SocialButton
               iconSvg={twitterSVG}
               text="Twitter"
@@ -88,10 +94,18 @@ export const UPPIntro: React.FC<{
             onPress={() => copyToClipboard(window.location.href, "URL copied")}
           />
         </View>
-        {isUserOwner && (
+        {isUserOwner ? (
           <ProfileButton
             touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
             isEdit
+          />
+        ) : (
+          <SecondaryButtonOutline
+            touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
+            text="Follow this Teritori"
+            size="XL"
+            backgroundColor={neutral00}
+            disabled
           />
         )}
         <AvatarWithFrame
@@ -105,7 +119,6 @@ export const UPPIntro: React.FC<{
           size="XL"
         />
       </TertiaryBox>
-
       <View
         style={{
           flexDirection: "row",
@@ -116,22 +129,35 @@ export const UPPIntro: React.FC<{
       >
         <View>
           {/* Pseudo and bio */}
-          <BrandText style={[fontSemibold20, { marginTop: 10 }]}>
-            {metadata?.tokenId || DEFAULT_NAME}
-          </BrandText>
+          {metadata?.tokenId ? (
+            <>
+              <BrandText style={[fontBold16]}>
+                {metadata?.public_name}
+              </BrandText>
+              <BrandText
+                style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
+              >
+                @{metadata.tokenId}
+              </BrandText>
+            </>
+          ) : (
+            <>
+              <BrandText style={[fontBold16]}>{DEFAULT_NAME}</BrandText>
+              <BrandText
+                style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
+              >
+                @{userAddress}
+              </BrandText>
+            </>
+          )}
           <BrandText
-            numberOfLines={6}
             style={[
-              fontSemibold14,
-              {
-                color: neutral77,
-                marginTop: 12,
-                marginBottom: 20,
-                maxWidth: 820,
-              },
+              fontMedium14,
+              { maxWidth: 735, marginTop: layout.padding_x1 },
             ]}
+            numberOfLines={6}
           >
-            {metadata?.public_bio || ""}
+            {metadata?.public_bio}
           </BrandText>
         </View>
         {/* Stats and public address */}

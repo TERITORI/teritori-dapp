@@ -4,66 +4,53 @@ import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Tabs } from "../../components/tabs/Tabs";
+import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPActivity } from "../../components/userPublicProfile/UPPActivity";
 import { UPPGigServices } from "../../components/userPublicProfile/UPPGigServices";
-import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { UserNotFound } from "../../components/userPublicProfile/UserNotFound";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseUserId } from "../../networks";
+import { parseNetworkObjectId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
+import {
+  UserPublicProfileScreenHeader,
+  screenTabItems,
+} from "./UserPublicProfileHeader";
 
-const screenTabItems = {
-  "social-feed": {
-    name: "Social Feed",
-    disabled: true,
-  },
-  nfts: {
-    name: "NFTs",
-  },
-  activity: {
-    name: "Activity",
-    disabled: true,
-  },
-  quests: {
-    name: "Quests",
-  },
-  pathwar: {
-    name: "Pathwar Challenges",
-    disabled: true,
-  },
-  gig: {
-    name: "Gig Services",
-    disabled: true,
-  },
-  votes: {
-    name: "Governance Votes",
-    disabled: true,
-  },
-  footer: {
-    name: "Putted NFT to Rioters Footer",
-    disabled: true,
-  },
-  servers: {
-    name: "Shared servers",
-    disabled: true,
-  },
-};
+const TabContainer: React.FC = ({ children }) => (
+  <View style={{ flex: 1, alignItems: "center" }}>
+    <View style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}>
+      {children}
+    </View>
+  </View>
+);
 
 const SelectedTabContent: React.FC<{
   userId: string;
   selectedTab: keyof typeof screenTabItems;
-}> = ({ userId, selectedTab }) => {
+  setSelectedTab: (tab: keyof typeof screenTabItems) => void;
+}> = ({ userId, selectedTab, setSelectedTab }) => {
+  const [, userAddress] = parseNetworkObjectId(userId);
   switch (selectedTab) {
     case "social-feed":
-      return <></>;
+      return (
+        <NewsFeed
+          Header={() => (
+            <UserPublicProfileScreenHeader
+              userId={userId}
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+            />
+          )}
+          req={{
+            user: userAddress,
+          }}
+        />
+      );
     case "nfts":
       return <UPPNFTs userId={userId} />;
     case "activity":
@@ -85,9 +72,8 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   },
 }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("nfts");
+    useState<keyof typeof screenTabItems>("social-feed");
 
-  const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
   const { metadata, notFound } = useNSUserInfo(id);
@@ -95,6 +81,9 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   return (
     <ScreenContainer
       forceNetworkId={network?.id}
+      responsive
+      fullWidth
+      noScroll={selectedTab === "social-feed"}
       smallMargin
       footerChildren={<></>}
       headerChildren={
@@ -111,25 +100,28 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       {notFound || !userAddress || !bech32.decodeUnsafe(userAddress) ? (
         <UserNotFound />
       ) : (
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-            <UPPIntro userId={id} isUserOwner={selectedWallet?.userId === id} />
-
-            <Tabs
-              items={screenTabItems}
-              selected={selectedTab}
-              onSelect={setSelectedTab}
-              style={{
-                marginTop: 32,
-                height: 32,
-                marginBottom: layout.padding_x2_5 / 2,
-              }}
-              borderColorTabSelected={primaryColor}
+        <>
+          {selectedTab !== "social-feed" ? (
+            <TabContainer>
+              <UserPublicProfileScreenHeader
+                userId={id}
+                selectedTab={selectedTab}
+                setSelectedTab={setSelectedTab}
+              />
+              <SelectedTabContent
+                selectedTab={selectedTab}
+                userId={id}
+                setSelectedTab={setSelectedTab}
+              />
+            </TabContainer>
+          ) : (
+            <SelectedTabContent
+              selectedTab={selectedTab}
+              userId={id}
+              setSelectedTab={setSelectedTab}
             />
-
-            <SelectedTabContent selectedTab={selectedTab} userId={id} />
-          </View>
-        </View>
+          )}
+        </>
       )}
     </ScreenContainer>
   );
