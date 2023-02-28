@@ -138,7 +138,7 @@ export const SocialThreadCard: React.FC<{
             {/*---- User name */}
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("PublicProfile", {
+                navigation.navigate("UserPublicProfile", {
                   id: authorId,
                 })
               }
@@ -154,7 +154,7 @@ export const SocialThreadCard: React.FC<{
             {/*---- User TNS name */}
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("PublicProfile", {
+                navigation.navigate("UserPublicProfile", {
                   id: authorId,
                 })
               }

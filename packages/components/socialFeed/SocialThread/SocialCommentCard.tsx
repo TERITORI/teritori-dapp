@@ -224,7 +224,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 {/*---- User name */}
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("PublicProfile", {
+                    navigation.navigate("UserPublicProfile", {
                       id: authorId,
                     })
                   }
@@ -241,7 +241,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 {/*---- User TNS name */}
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("PublicProfile", {
+                    navigation.navigate("UserPublicProfile", {
                       id: authorId,
                     })
                   }

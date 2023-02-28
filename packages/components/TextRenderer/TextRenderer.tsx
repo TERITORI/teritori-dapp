@@ -9,11 +9,11 @@ const REFERENCE_REG_EXP = /--\S.+--/gm;
 
 interface MatchText {
   type: "hash" | "url" | "mention";
-  key: string;
+  matchKey: string;
   text: string;
 }
 
-const Component = ({ type, text, key }: MatchText) => {
+const Component = ({ type, text }: MatchText) => {
   if (!type) {
     return null;
   }
@@ -37,19 +37,19 @@ export const TextRenderer = ({ text }: { text: string }) => {
     const urlMatch = text.match(new RegExp(URL_REGEX, "g"));
 
     hashMatch?.map((item, index) => {
-      const key = `--${index + 1}hash--`;
-      refText = refText.replace(item, key);
-      matchTextReference.push({ type: "hash", key, text: item });
+      const matchKey = `--${index + 1}hash--`;
+      refText = refText.replace(item, matchKey);
+      matchTextReference.push({ type: "hash", matchKey, text: item });
     });
     urlMatch?.map((item, index) => {
-      const key = `--${index + 1}url--`;
-      refText = refText.replace(item, key);
-      matchTextReference.push({ type: "url", key, text: item });
+      const matchKey = `--${index + 1}url--`;
+      refText = refText.replace(item, matchKey);
+      matchTextReference.push({ type: "url", matchKey, text: item });
     });
     mentionMatch?.map((item, index) => {
-      const key = `--${index + 1}mention--`;
-      refText = refText.replace(item, key);
-      matchTextReference.push({ type: "mention", key, text: item });
+      const matchKey = `--${index + 1}mention--`;
+      refText = refText.replace(item, matchKey);
+      matchTextReference.push({ type: "mention", matchKey, text: item });
     });
 
     const splittedText = refText.split(REFERENCE_REG_EXP);
