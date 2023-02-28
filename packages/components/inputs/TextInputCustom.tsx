@@ -23,11 +23,7 @@ import {
 
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
-import {
-  fontMedium10,
-  fontSemibold13,
-  fontSemibold14,
-} from "../../utils/style/fonts";
+import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -51,7 +47,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
-  subtitle?: string;
+  subtitle?: React.ReactElement;
   labelStyle?: TextStyle;
 }
 
@@ -154,9 +150,7 @@ export const TextInputCustom = <T extends FieldValues>({
             <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
               {label}
             </BrandText>
-            {subtitle && (
-              <BrandText style={fontSemibold13}>{subtitle}</BrandText>
-            )}
+            {subtitle}
           </View>
           <SpacerColumn size={1} />
         </>
