@@ -56,7 +56,7 @@ export const SidebarProfileButton: React.FC<{
             },
           ]}
         >
-          {tokenId && (
+          {!!tokenId && (
             <BrandText style={fontSemibold12} numberOfLines={1}>
               {`@${tokenId}`}
             </BrandText>

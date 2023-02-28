@@ -58,7 +58,7 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
             setActiveIndex(index);
             setFullView(true);
           }}
-          key={file.fileName}
+          key={file.url}
           style={{
             padding: layout.padding_x1,
             ...getDimension(index, files.length),

@@ -17,7 +17,6 @@ import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionTools
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
-import { PublicProfileScreen } from "../../screens/PublicProfile/PublicProfileScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -220,11 +219,7 @@ export const Navigator: React.FC = () => {
         component={FeedNewPostScreen}
         options={{ header: () => null, title: screenTitle("New Article") }}
       />
-      <Stack.Screen
-        name="PublicProfile"
-        component={PublicProfileScreen}
-        options={{ header: () => null, title: "Teritori" }}
-      />
+
       <Stack.Screen
         name="FeedPostView"
         component={FeedPostViewScreen}
