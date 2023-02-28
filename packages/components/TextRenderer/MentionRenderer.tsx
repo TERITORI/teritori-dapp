@@ -30,7 +30,7 @@ export const MentionRender: React.FC<{ text: string }> = ({ text }) => {
   return (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("PublicProfile", {
+        navigation.navigate("UserPublicProfile", {
           id: userId,
         })
       }
