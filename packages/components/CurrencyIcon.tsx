@@ -8,7 +8,7 @@ export const CurrencyIcon: React.FC<{
   networkId: string;
   denom: string;
   size: number;
-  icon?: string;
+  fallback?: string;
 }> = ({ networkId, denom, size, icon }) => {
   const currency = getNativeCurrency(networkId, denom);
   const iconToUse = currency?.icon ? currency.icon : icon;
