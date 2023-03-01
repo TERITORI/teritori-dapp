@@ -272,10 +272,17 @@ export const NewsFeedInput = React.forwardRef<
           postCategory === PostCategory.Question ||
           postCategory === PostCategory.BriefForStableDiffusion
         ) {
-          await botPostMutate({
-            identifier,
-            category: postCategory,
-          });
+          await botPostMutate(
+            {
+              identifier,
+              category: postCategory,
+            },
+            {
+              onSuccess: () => {
+                onSubmitSuccess && onSubmitSuccess();
+              },
+            }
+          );
         }
       } catch (err) {
         console.error("post submit err", err);
