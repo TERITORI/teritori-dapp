@@ -4,9 +4,8 @@ import {
   LcdPool,
   makeLcdPoolPretty,
   OsmosisApiClient,
+  assets as osmosisAssets,
 } from "@cosmology/core";
-// @ts-expect-error FIXME: Could not find a declaration file for module '@cosmology/core/src/assets'
-import { assets as osmosisAssets } from "@cosmology/core/src/assets";
 import { useQuery } from "@tanstack/react-query";
 import Long from "long";
 import { osmosis, getSigningOsmosisClient } from "osmojs";
