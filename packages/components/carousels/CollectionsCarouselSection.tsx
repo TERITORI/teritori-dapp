@@ -16,7 +16,7 @@ import {
 } from "../CollectionView";
 import { CarouselSection } from "./CarouselSection";
 
-const gap = 24;
+const gap = 20;
 
 const defaultRequest: CollectionsRequest = {
   networkId: "fake",
