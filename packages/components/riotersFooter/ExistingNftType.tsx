@@ -1,8 +1,8 @@
 import React, { memo } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 
 import addSvg from "../../../assets/icons/add-circle.svg";
-import nftSvg from "../../../assets/icons/nft.svg";
+import nftPlaceholderImg from "../../../assets/icons/nft.png";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { neutral33, neutral77 } from "../../utils/style/colors";
@@ -11,57 +11,57 @@ const fakeNft = [
   {
     id: "0",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
   {
     id: "1",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
   {
     id: "2",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
   {
     id: "3",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
   {
     id: "4",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
   {
     id: "5",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
   {
     id: "6",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
   {
     id: "7",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
   {
     id: "8",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
   {
     id: "9",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
   {
     id: "10",
     name: "NFT name #4554",
-    svg: nftSvg,
+    image: nftPlaceholderImg,
   },
 ];
 
@@ -106,11 +106,13 @@ const ExistingNftType: React.FC = memo(() => {
             />
           )}
           <BrandText style={{ fontSize: 14 }}>{nft.name}</BrandText>
-          <SVG
-            width={220}
-            height={220}
-            source={nft.svg}
-            style={{ marginTop: 16 }}
+          <Image
+            source={nft.image}
+            style={{
+              height: 220,
+              width: 220,
+              marginTop: 16,
+            }}
           />
         </View>
       ))}
