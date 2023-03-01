@@ -15,13 +15,14 @@ import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
+import { screenTabItems } from "../../../utils/feed";
 import { useAppNavigation } from "../../../utils/navigation";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
 import { SpacerColumn } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
-import { NewPostFormValues } from "./NewsFeed.type";
+import { NewPostFormValues, PostCategory } from "./NewsFeed.type";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
@@ -31,9 +32,14 @@ const OFFSET_Y_LIMIT_FLOATING = 224;
 interface NewsFeedProps {
   Header: React.ComponentType;
   req?: FeedRequest;
+  screenTab: keyof typeof screenTabItems;
 }
 
-export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
+export const NewsFeed: React.FC<NewsFeedProps> = ({
+  Header,
+  req = {},
+  screenTab,
+}) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
   const navigation = useAppNavigation();
@@ -100,6 +106,15 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
     mentionedUserNSInfo?.metadata.public_name,
   ]);
 
+  const defaultPostCategory = useMemo(() => {
+    if (screenTab === "chatBot") {
+      return PostCategory.Question;
+    } else if (screenTab === "stableDiff") {
+      return PostCategory.BriefForStableDiffusion;
+    }
+    return PostCategory.Normal;
+  }, [screenTab]);
+
   const ListHeaderComponent = useCallback(
     () => (
       <>
@@ -123,6 +138,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
             mentionedUser={mentionedUser}
             // If we are on a HashFeedScreen, the corresponding hash will be automatically added in the written post
             hash={req.hash}
+            defaultPostCategory={defaultPostCategory}
           />
           <SpacerColumn size={1.5} />
           <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />

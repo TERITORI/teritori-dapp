@@ -32,6 +32,7 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
     >
       <NewsFeed
         req={feedRequest}
+        screenTab={selectedTab}
         Header={() => (
           <FeedHeader selectedTab={selectedTab} onTabChange={setSelectedTab} />
         )}

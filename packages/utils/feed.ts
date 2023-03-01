@@ -4,6 +4,12 @@ export const screenTabItems = {
   all: {
     name: "Jungle News Feed",
   },
+  chatBot: {
+    name: "AI ChatRoom",
+  },
+  stableDiff: {
+    name: "AI Image Generation",
+  },
   sounds: {
     name: "Sound Feed",
     disabled: true,

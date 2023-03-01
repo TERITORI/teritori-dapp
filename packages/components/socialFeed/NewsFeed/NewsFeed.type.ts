@@ -10,6 +10,8 @@ export enum PostCategory {
   Picture,
   Audio,
   Video,
+  Question,
+  BriefForStableDiffusion,
 }
 
 export interface NewPostFormValues {

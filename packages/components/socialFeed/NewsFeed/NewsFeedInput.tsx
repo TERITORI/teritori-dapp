@@ -16,6 +16,7 @@ import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
 import { socialFeedClient } from "../../../client-creators/socialFeedClient";
+import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobileView } from "../../../hooks/useIsMobileView";
@@ -59,7 +60,11 @@ import { SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 import { NFTKeyModal } from "./NFTKeyModal";
-import { NewPostFormValues, SocialFeedMetadata } from "./NewsFeed.type";
+import {
+  NewPostFormValues,
+  PostCategory,
+  SocialFeedMetadata,
+} from "./NewsFeed.type";
 import {
   generatePostMetadata,
   getAvailableFreePost,
@@ -80,6 +85,7 @@ interface NewsFeedInputProps {
   onPressCreateArticle?: (formValues: NewPostFormValues) => void;
   hash?: string;
   mentionedUser?: string;
+  defaultPostCategory?: PostCategory;
 }
 
 export interface NewsFeedInputHandle {
@@ -104,6 +110,7 @@ export const NewsFeedInput = React.forwardRef<
       onPressCreateArticle,
       hash,
       mentionedUser,
+      defaultPostCategory,
     },
     forwardRef
   ) => {
@@ -123,7 +130,8 @@ export const NewsFeedInput = React.forwardRef<
       start: 10,
       end: 10,
     });
-    const { mutate, isLoading: isMutateLoading } = useCreatePost({
+    const { mutateAsync: botPostMutate } = useBotPost();
+    const { mutateAsync, isLoading: isMutateLoading } = useCreatePost({
       onMutate: () => {
         onSubmitInProgress && onSubmitInProgress();
       },
@@ -169,7 +177,9 @@ export const NewsFeedInput = React.forwardRef<
       const fee = await getPostFee({
         networkId: selectedNetworkId,
         wallet,
-        postCategory: getPostCategory(formValues),
+        postCategory: defaultPostCategory
+          ? defaultPostCategory
+          : getPostCategory(formValues),
       });
       setPostFee(fee || 0);
     };
@@ -224,7 +234,9 @@ export const NewsFeedInput = React.forwardRef<
           });
         }
 
-        const postCategory = getPostCategory(formValues);
+        const postCategory = defaultPostCategory
+          ? defaultPostCategory
+          : getPostCategory(formValues);
 
         const client = await socialFeedClient({
           networkId: selectedNetworkId,
@@ -239,11 +251,13 @@ export const NewsFeedInput = React.forwardRef<
           gifs: formValues?.gifs || [],
         });
 
-        await mutate({
+        const identifier = uuidv4();
+
+        await mutateAsync({
           client,
           msg: {
             category: postCategory,
-            identifier: uuidv4(),
+            identifier,
             metadata: JSON.stringify(metadata),
             parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
           },
@@ -253,6 +267,16 @@ export const NewsFeedInput = React.forwardRef<
             funds: [],
           },
         });
+
+        if (
+          postCategory === PostCategory.Question ||
+          postCategory === PostCategory.BriefForStableDiffusion
+        ) {
+          await botPostMutate({
+            identifier,
+            category: postCategory,
+          });
+        }
       } catch (err) {
         console.error("post submit err", err);
       }
