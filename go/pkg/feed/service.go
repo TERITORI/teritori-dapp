@@ -32,14 +32,16 @@ func NewFeedService(ctx context.Context, conf *Config) feedpb.FeedServiceServer 
 
 func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*feedpb.PostsResponse, error) {
 	filter := req.GetFilter()
-	var categories []uint32
 	var user string
+	var mentions []string
+	var categories []uint32
 	var hashtags []string
 
 	if filter != nil {
 		categories = filter.Categories
 		user = filter.User
 		hashtags = filter.Hashtags
+		mentions = filter.Mentions
 	}
 
 	limit := req.GetLimit()
@@ -67,6 +69,15 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		}
 
 		query = query.Where(fmt.Sprintf("metadata -> 'hashtags' ?| array[%s]", strings.Join(formattedHashtags, ",")))
+	}
+	if len(mentions) > 0 {
+		formattedMentions := make([]string, 0)
+		for _, mention := range mentions {
+			if mention != "" {
+				formattedMentions = append(formattedMentions, fmt.Sprintf("'%s'", mention))
+			}
+		}
+		query = query.Where(fmt.Sprintf("metadata -> 'mentions' ?| array[%s]", strings.Join(formattedMentions, ",")))
 	}
 
 	query = query.
