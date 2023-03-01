@@ -32,15 +32,24 @@ func NewFeedService(ctx context.Context, conf *Config) feedpb.FeedServiceServer 
 
 func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*feedpb.PostsResponse, error) {
 	filter := req.GetFilter()
-	categories := filter.Categories
-	user := filter.User
-	hashtags := filter.Hashtags
+	var categories []uint32
+	var user string
+	var hashtags []string
+
+	if filter != nil {
+		categories = filter.Categories
+		user = filter.User
+		hashtags = filter.Hashtags
+	}
 
 	limit := req.GetLimit()
-	if limit == 0 {
+	if limit <= 0 {
 		limit = 10
 	}
 	offset := req.GetOffset()
+	if offset <= 0 {
+		offset = 0
+	}
 
 	query := s.conf.IndexerDB
 	if len(categories) > 0 {
