@@ -23,8 +23,9 @@ export interface Post {
 }
 
 export interface PostFilter {
-  categories: number[];
   user: string;
+  mentions: string[];
+  categories: number[];
   hashtags: string[];
 }
 
@@ -222,21 +223,24 @@ export const Post = {
 };
 
 function createBasePostFilter(): PostFilter {
-  return { categories: [], user: "", hashtags: [] };
+  return { user: "", mentions: [], categories: [], hashtags: [] };
 }
 
 export const PostFilter = {
   encode(message: PostFilter, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    writer.uint32(10).fork();
+    if (message.user !== "") {
+      writer.uint32(10).string(message.user);
+    }
+    for (const v of message.mentions) {
+      writer.uint32(18).string(v!);
+    }
+    writer.uint32(26).fork();
     for (const v of message.categories) {
       writer.uint32(v);
     }
     writer.ldelim();
-    if (message.user !== "") {
-      writer.uint32(18).string(message.user);
-    }
     for (const v of message.hashtags) {
-      writer.uint32(26).string(v!);
+      writer.uint32(34).string(v!);
     }
     return writer;
   },
@@ -249,6 +253,12 @@ export const PostFilter = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          message.user = reader.string();
+          break;
+        case 2:
+          message.mentions.push(reader.string());
+          break;
+        case 3:
           if ((tag & 7) === 2) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
@@ -258,10 +268,7 @@ export const PostFilter = {
             message.categories.push(reader.uint32());
           }
           break;
-        case 2:
-          message.user = reader.string();
-          break;
-        case 3:
+        case 4:
           message.hashtags.push(reader.string());
           break;
         default:
@@ -274,20 +281,26 @@ export const PostFilter = {
 
   fromJSON(object: any): PostFilter {
     return {
-      categories: Array.isArray(object?.categories) ? object.categories.map((e: any) => Number(e)) : [],
       user: isSet(object.user) ? String(object.user) : "",
+      mentions: Array.isArray(object?.mentions) ? object.mentions.map((e: any) => String(e)) : [],
+      categories: Array.isArray(object?.categories) ? object.categories.map((e: any) => Number(e)) : [],
       hashtags: Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => String(e)) : [],
     };
   },
 
   toJSON(message: PostFilter): unknown {
     const obj: any = {};
+    message.user !== undefined && (obj.user = message.user);
+    if (message.mentions) {
+      obj.mentions = message.mentions.map((e) => e);
+    } else {
+      obj.mentions = [];
+    }
     if (message.categories) {
       obj.categories = message.categories.map((e) => Math.round(e));
     } else {
       obj.categories = [];
     }
-    message.user !== undefined && (obj.user = message.user);
     if (message.hashtags) {
       obj.hashtags = message.hashtags.map((e) => e);
     } else {
@@ -298,8 +311,9 @@ export const PostFilter = {
 
   fromPartial<I extends Exact<DeepPartial<PostFilter>, I>>(object: I): PostFilter {
     const message = createBasePostFilter();
-    message.categories = object.categories?.map((e) => e) || [];
     message.user = object.user ?? "";
+    message.mentions = object.mentions?.map((e) => e) || [];
+    message.categories = object.categories?.map((e) => e) || [];
     message.hashtags = object.hashtags?.map((e) => e) || [];
     return message;
   },
