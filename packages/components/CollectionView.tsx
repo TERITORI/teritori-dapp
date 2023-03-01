@@ -34,7 +34,7 @@ export const CollectionView: React.FC<{
   };
   const { info } = useCollectionInfo(item.id);
   const percentageMinted = info
-    ? Math.floor(
+    ? Math.round(
         (parseInt(info.mintedAmount as string, 10) * 100) /
           parseInt(info.maxSupply as string, 10)
       )
