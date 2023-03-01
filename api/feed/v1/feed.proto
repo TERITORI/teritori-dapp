@@ -24,9 +24,10 @@ message Post {
 }
 
 message PostFilter {
-  repeated uint32 categories = 1;
-  string user = 2;
-  repeated string hashtags = 3;
+  string user = 1;
+  repeated string mentions = 2;
+  repeated uint32 categories = 3;
+  repeated string hashtags = 4;
 }
 
 message PostsRequest {
