@@ -55,7 +55,22 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
         />
 
         <CollectionsCarouselSection
-          title="Available on Marketplace"
+          title="Upcoming"
+          linkToMint
+          filter={filter}
+          req={{
+            networkId: selectedNetworkId,
+            sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+            upcoming: true,
+            sort: Sort.SORTING_VOLUME,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_UNSPECIFIED,
+          }}
+        />
+
+        <CollectionsCarouselSection
+          title="Ended"
           req={{
             upcoming: false,
             networkId: selectedNetworkId,
