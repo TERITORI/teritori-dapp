@@ -9,7 +9,7 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionsCarouselHeader } from "../../components/carousels/CollectionsCarouselHeader";
-import { CollectionsCarouselSection } from "../../components/carousels/CollectionsCarouselSection";
+import { CollectionGallery } from "../../components/collections/CollectionGallery";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetwork } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
@@ -39,7 +39,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
           filter={filter}
         />
 
-        <CollectionsCarouselSection
+        <CollectionGallery
           title="Live Mintable"
           linkToMint
           filter={filter}
@@ -54,7 +54,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
           }}
         />
 
-        <CollectionsCarouselSection
+        <CollectionGallery
           title="Upcoming"
           linkToMint
           filter={filter}
@@ -69,7 +69,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
           }}
         />
 
-        <CollectionsCarouselSection
+        <CollectionGallery
           title="Ended"
           req={{
             upcoming: false,
