@@ -1,10 +1,9 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import { useSelector } from "react-redux";
 
-import osmosisIllustration from "../../../../assets/osmosis-illustration.svg";
+import osmosisIllustration from "../../../../assets/osmosis-illustration.png";
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
@@ -41,7 +40,13 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
       width={456}
     >
       <View style={styles.modalChildren}>
-        <SVG source={osmosisIllustration} height={200} width={160} />
+        <Image
+          source={osmosisIllustration}
+          style={{
+            height: 200,
+            width: 160,
+          }}
+        />
 
         <BrandText style={styles.text}>
           This SWAP Feature is developed by OSMOSIS core team. By using this
