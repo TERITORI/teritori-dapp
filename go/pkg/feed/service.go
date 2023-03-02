@@ -23,6 +23,11 @@ type Config struct {
 	IndexerDB *gorm.DB
 }
 
+type DBPostWithExtra struct {
+	indexerdb.Post
+	SubPostLength uint32
+}
+
 func NewFeedService(ctx context.Context, conf *Config) feedpb.FeedServiceServer {
 	// FIXME: validate config
 	return &FeedService{
@@ -53,7 +58,17 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		offset = 0
 	}
 
-	query := s.conf.IndexerDB
+	query := s.conf.IndexerDB.
+		Table("posts as p1").
+		Select(`
+			p1.*,
+			(
+				SELECT COUNT(p2.identifier) AS sub_post_length
+				FROM posts p2
+				WHERE p2.parent_post_identifier = p1.identifier
+			)
+		`)
+
 	if len(categories) > 0 {
 		query = query.Where("category IN ?", categories)
 	}
@@ -85,13 +100,13 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		Limit(int(limit)).
 		Offset(int(offset))
 
-	var dbPosts []indexerdb.Post
-	if err := query.Find(&dbPosts).Error; err != nil {
+	var dbPostWithExtras []DBPostWithExtra
+	if err := query.Find(&dbPostWithExtras).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to query posts")
 	}
 
-	posts := make([]*feedpb.Post, len(dbPosts))
-	for idx, dbPost := range dbPosts {
+	posts := make([]*feedpb.Post, len(dbPostWithExtras))
+	for idx, dbPost := range dbPostWithExtras {
 		var reactions []*feedpb.Reaction
 		for icon, users := range dbPost.UserReactions {
 			reactions = append(reactions, &feedpb.Reaction{
@@ -111,6 +126,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			Identifier:           dbPost.Identifier,
 			Metadata:             string(medadata),
 			ParentPostIdentifier: dbPost.ParentPostIdentifier,
+			SubPostLength:        dbPost.SubPostLength,
 			CreatedBy:            string(dbPost.CreatedBy),
 			CreatedAt:            dbPost.CreatedAt,
 			Reactions:            reactions,
