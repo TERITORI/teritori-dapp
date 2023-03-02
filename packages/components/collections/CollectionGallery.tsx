@@ -38,7 +38,7 @@ export const CollectionGallery: React.FC<{
     [linkToMint, req.mintState]
   );
 
-  return (
+  return collections.length > 0 ? (
     <Section title={title}>
       <FlatList
         data={collections}
@@ -53,5 +53,5 @@ export const CollectionGallery: React.FC<{
       />
       )
     </Section>
-  );
+  ) : null;
 };
