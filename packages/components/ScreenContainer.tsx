@@ -9,6 +9,7 @@ import {
   ViewStyle,
   StyleProp,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useForceNetworkKind } from "../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
@@ -54,6 +55,7 @@ export const ScreenContainer: React.FC<{
 }) => {
   // variables
   const { height } = useWindowDimensions();
+  const { top, bottom } = useSafeAreaInsets();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
   const marginStyle = hasMargin && {
@@ -80,81 +82,83 @@ export const ScreenContainer: React.FC<{
 
   // returns
   return (
-    <SafeAreaView style={{ width: "100%", flex: 1 }}>
-      {/*TODO: Refactor this*/}
+    <View
+      style={[
+        styles.container,
+        {
+          paddingTop: top,
+          paddingBottom: bottom,
+        },
+      ]}
+    >
+      {["android", "ios"].includes(Platform.OS) ||
+        (!hideSidebar ? <Sidebar /> : null)}
+      {!["android", "ios"].includes(Platform.OS) && customSidebar}
 
-      <View style={styles.container}>
-        {["android", "ios"].includes(Platform.OS) ||
-          (!hideSidebar ? <Sidebar /> : null)}
-        {!["android", "ios"].includes(Platform.OS) && customSidebar}
+      <View style={{ width: "100%", flex: 1 }}>
+        {/*==== Header*/}
+        <Header style={headerStyle} smallMargin={smallMargin}>
+          {headerChildren}
+        </Header>
 
-        <View style={{ width: "100%", flex: 1 }}>
-          {/*==== Header*/}
-          <Header style={headerStyle} smallMargin={smallMargin}>
-            {headerChildren}
-          </Header>
-
-          <View
-            style={{ width: "100%", flexDirection: "row", flex: 1, height }}
-          >
-            {/*==== Scrollable screen content*/}
-            <View style={{ flex: 1 }}>
-              <SelectedNetworkGate filter={networkFilter}>
-                {hasScroll ? (
-                  <ScrollView
-                    style={{ width: "100%", flex: 1 }}
-                    contentContainerStyle={[
-                      {
-                        minHeight: height - headerHeight,
-                      },
+        <View style={{ width: "100%", flexDirection: "row", flex: 1, height }}>
+          {/*==== Scrollable screen content*/}
+          <View style={{ flex: 1 }}>
+            <SelectedNetworkGate filter={networkFilter}>
+              {hasScroll ? (
+                <ScrollView
+                  style={{ width: "100%", flex: 1 }}
+                  contentContainerStyle={[
+                    {
+                      minHeight: height - headerHeight,
+                    },
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.childrenContainer,
+                      marginStyle,
+                      { width, flex: 1 },
                     ]}
                   >
-                    <View
-                      style={[
-                        styles.childrenContainer,
-                        marginStyle,
-                        { width, flex: 1 },
-                      ]}
-                    >
-                      {children}
-                    </View>
-                    {footerChildren ? footerChildren : <Footer />}
-                  </ScrollView>
-                ) : (
-                  <View
-                    style={[styles.childrenContainer, marginStyle, { width }]}
-                  >
                     {children}
-                    {footerChildren ? footerChildren : <Footer />}
                   </View>
-                )}
-              </SelectedNetworkGate>
-            </View>
+                  {footerChildren ? footerChildren : <Footer />}
+                </ScrollView>
+              ) : (
+                <View
+                  style={[styles.childrenContainer, marginStyle, { width }]}
+                >
+                  {children}
+                  {footerChildren ? footerChildren : <Footer />}
+                </View>
+              )}
+            </SelectedNetworkGate>
           </View>
-          {/*
+        </View>
+        {/*
             We render the wallet selector here with absolute position to make sure
             the popup is on top of everything else, otherwise it's unusable
           */}
-          <View
-            style={{
-              position: "absolute",
-              flexDirection: "row",
-              top: 0,
-              right: headerMarginHorizontal,
-              height: headerHeight,
-              alignItems: "center",
-            }}
-          >
-            <NetworkSelector
-              forceNetworkId={forceNetworkId}
-              forceNetworkKind={forceNetworkKind}
-              style={{ marginRight: 12 }}
-            />
-            <ConnectWalletButton />
-          </View>
+        <View
+          style={{
+            position: "absolute",
+            flexDirection: "row",
+            top: 0,
+            right: headerMarginHorizontal,
+            height: headerHeight,
+            alignItems: "center",
+          }}
+        >
+          <NetworkSelector
+            forceNetworkId={forceNetworkId}
+            forceNetworkKind={forceNetworkKind}
+            style={{ marginRight: 12 }}
+          />
+          <ConnectWalletButton />
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useIsFocused, useRoute } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -12,6 +12,7 @@ import Animated, {
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
+import { useCurrentRouteName } from "../../../hooks/useCurrentRouteName";
 import {
   neutral17,
   neutral33,
@@ -44,7 +45,8 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
 }) => {
   // variables
   const { isSidebarExpanded } = useSidebar();
-  const { name: currentRouteName } = useRoute();
+  const currentRouteName = useCurrentRouteName();
+
   const allNestedRoutes = useMemo(
     () => nested && Object.values(nested).map((d) => d.route),
     [nested]
