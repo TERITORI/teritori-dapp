@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-import { LoaderFullScreen } from "../../../components/loaders/LoaderFullScreen";
+import { LoaderFullScreen } from "../../../components/loaders/LoaderFullScreen.native";
 import { neutral00 } from "../../../utils/style/colors";
 import { FightStatsSection } from "./FightStatsSection";
 import { RiotGameHeader } from "./RiotGameHeader";

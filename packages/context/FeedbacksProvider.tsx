@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
+import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen.native";
 import { ToastError } from "../components/toasts/ToastError";
 import { ToastSuccess } from "../components/toasts/ToastSuccess";
 

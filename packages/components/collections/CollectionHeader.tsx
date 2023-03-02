@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import Clipboard from "@react-native-clipboard/clipboard";
+import Clipboard from "expo-clipboard";
 import React, { useMemo } from "react";
 import { View, Image, Platform, StyleSheet, Linking } from "react-native";
 

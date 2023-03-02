@@ -13,11 +13,13 @@ export const CurrencyIcon: React.FC<{
   if (!currency?.icon) {
     return null;
   }
-  const source = require("../../assets/" + currency.icon).default;
-  if (currency.icon.endsWith(".svg")) {
-    return <SVG source={source} width={size} height={size} />;
-  }
-  return (
-    <Image source={{ uri: source }} style={{ width: size, height: size }} />
-  );
+  console.log("currency icon", currency.icon);
+  return null;
+  // const source = require("../../assets/" + currency.icon).default;
+  // if (currency.icon.endsWith(".svg")) {
+  //   return <SVG source={source} width={size} height={size} />;
+  // }
+  // return (
+  //   <Image source={{ uri: source }} style={{ width: size, height: size }} />
+  // );
 };
