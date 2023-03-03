@@ -26,7 +26,7 @@ export const useMaxResolution = ({
       ? responsiveMargin
       : screenContainerContentMarginHorizontal * 2;
     return containerWidth - (noMargin ? 0 : defaultMargin);
-  }, [windowWidth, isSidebarExpanded]);
+  }, [windowWidth, isSidebarExpanded, noMargin]);
 
   return {
     width: width > screenContentMaxWidth ? screenContentMaxWidth : width,

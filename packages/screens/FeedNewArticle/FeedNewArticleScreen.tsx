@@ -1,5 +1,10 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 
@@ -36,7 +41,7 @@ import { neutral00 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
 
-export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
+export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
   route: { params },
 }) => {
   // variables
@@ -69,9 +74,19 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
       message: params?.message || "",
       files: params?.files || [],
       hashtags: params?.hashtags || [],
+      mentions: params?.mentions || [],
     },
     mode: "onBlur",
   });
+  const articleOrigin = useMemo(
+    () =>
+      params?.additionalMention
+        ? `on ${params.additionalMention}`
+        : params?.additionalHashtag
+        ? `on ${params.additionalHashtag}`
+        : "",
+    [params?.additionalMention, params?.additionalHashtag]
+  );
   const { mutate, data } = useOpenGraph();
   const formValues = watch();
 
@@ -108,10 +123,15 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
     if (postFee > Number(toriBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
     }
-
     const currentFiles = formValues.files?.filter(
       (file) => file.isCoverImage || formValues.message.includes(file.url)
     );
+    const additionalMention = params?.additionalMention
+      ? `\n${params?.additionalMention}`
+      : "";
+    const additionalHashtag = params?.additionalHashtag
+      ? `\n${params?.additionalHashtag}`
+      : "";
 
     await createPost({
       networkId: selectedNetworkId,
@@ -122,17 +142,18 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
       formValues: {
         ...formValues,
         files: currentFiles,
+        message: formValues.message + additionalMention + additionalHashtag,
       },
       openGraph: data,
       nftStorageApiToken,
     });
   };
 
-  //TODO: Keep short post formValues in modal
+  //TODO: Keep short post formValues when returning to short post
   const navigateBack = () => navigation.navigate("Feed");
 
   const onSubmit = async () => {
-    if (formValues.files && !formValues.nftStorageApiToken) {
+    if (!!formValues.files?.length && !formValues.nftStorageApiToken) {
       return setIsNFTKeyModal(true);
     }
 
@@ -175,7 +196,11 @@ export const FeedNewPostScreen: ScreenFC<"FeedNewPost"> = ({
       forceNetworkKind={NetworkKind.Cosmos}
       responsive
       maxWidth={NEWS_FEED_MAX_WIDTH}
-      headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
+      headerChildren={
+        <BrandText style={fontSemibold20}>
+          New Article {articleOrigin}
+        </BrandText>
+      }
       onBackPress={navigateBack}
       footerChildren
     >

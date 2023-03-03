@@ -1,7 +1,8 @@
 import { bech32 } from "bech32";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
+import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
@@ -12,6 +13,7 @@ import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPath
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { UserNotFound } from "../../components/userPublicProfile/UserNotFound";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseNetworkObjectId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { setDocumentTitle } from "../../utils/setDocumentTitle";
@@ -35,7 +37,30 @@ const SelectedTabContent: React.FC<{
   selectedTab: keyof typeof screenTabItems;
   setSelectedTab: (tab: keyof typeof screenTabItems) => void;
 }> = ({ userId, selectedTab, setSelectedTab }) => {
+  const selectedWallet = useSelectedWallet();
   const [, userAddress] = parseNetworkObjectId(userId);
+  const userInfo = useNSUserInfo(userId);
+
+  const mentionedUser = useMemo(() => {
+    if (selectedWallet?.address !== userAddress) {
+      return userInfo?.metadata.tokenId || userAddress;
+    }
+  }, [selectedWallet?.address, userAddress, userInfo?.metadata.tokenId]);
+
+  const feedRequest: PostsRequest = useMemo(() => {
+    return {
+      filter: {
+        //TODO: Get posts filtered by userId (author) AND mentions. On UPP, we want author's posts AND posts where he's mentioned
+        user: userId,
+        //TODO: Here, if the user get a NS Name, the old posts that have his address as mention will not be fetched. Maybe check (mention) for NS Name in backend ?
+        mentions: mentionedUser ? [`@${mentionedUser}`] : [],
+        categories: [],
+        hashtags: [],
+      },
+      limit: 10,
+      offset: 0,
+    };
+  }, [userId, mentionedUser]);
   switch (selectedTab) {
     case "social-feed":
       return (
@@ -47,9 +72,8 @@ const SelectedTabContent: React.FC<{
               setSelectedTab={setSelectedTab}
             />
           )}
-          req={{
-            user: userAddress,
-          }}
+          additionalMention={mentionedUser ? `@${mentionedUser}` : undefined}
+          req={feedRequest}
         />
       );
     case "nfts":

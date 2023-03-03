@@ -8,7 +8,7 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { SpacerRow } from "../../spacer";
 
-export const RepplyButton: React.FC<{
+export const ReplyButton: React.FC<{
   onPress: () => void;
 }> = ({ onPress }) => {
   return (
@@ -30,7 +30,7 @@ export const RepplyButton: React.FC<{
         <SVG source={replySVG} color={secondaryColor} width={12} height={12} />
       </View>
       <SpacerRow size={1.5} />
-      <BrandText style={fontSemibold14}>Reply</BrandText>
+      <BrandText style={fontSemibold14}>Mention</BrandText>
     </TouchableOpacity>
   );
 };
