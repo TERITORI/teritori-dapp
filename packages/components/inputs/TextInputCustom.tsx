@@ -58,7 +58,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
-  subtitle?: string;
+  subtitle?: React.ReactElement;
   labelStyle?: TextStyle;
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
@@ -197,9 +197,7 @@ export const TextInputCustom = <T extends FieldValues>({
             <Label style={labelStyle} isRequired={!!rules?.required}>
               {label}
             </Label>
-            {subtitle && (
-              <BrandText style={fontSemibold13}>{subtitle}</BrandText>
-            )}
+            {subtitle}
           </View>
           <SpacerColumn size={1} />
         </>
