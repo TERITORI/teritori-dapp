@@ -1,3 +1,6 @@
+import { EncodeObject } from "@cosmjs/proto-signing";
+import { isDeliverTxFailure } from "@cosmjs/stargate";
+import { toUtf8 } from "cosmwasm";
 import Long from "long";
 import React, { useCallback, useMemo, useState } from "react";
 import {
@@ -11,21 +14,25 @@ import {
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
 
+import addSVG from "../../../assets/icons/add.svg";
+import minusSVG from "../../../assets/icons/minus.svg";
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { IconButton } from "../../components/buttons/IconButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ProgressionCard } from "../../components/cards/ProgressionCard";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
 import { GradientText } from "../../components/gradientText";
+import { TextInputCustom } from "../../components/inputs/TextInputCustom";
+import { SpacerRow } from "../../components/spacer";
 import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
 import { Wallet } from "../../context/WalletsProvider";
-import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
 import { MintPhase, useCollectionInfo } from "../../hooks/useCollectionInfo";
@@ -45,6 +52,7 @@ import { prettyPrice } from "../../utils/coins";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { ScreenFC } from "../../utils/navigation";
 import {
+  neutral00,
   neutral33,
   neutral67,
   neutral77,
@@ -93,8 +101,25 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const balances = useBalances(network?.id, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
 
+  const [totalBulkMint, setTotalBulkMint] = useState(1);
+
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
   const mintButtonDisabled = minted || !wallet?.connected;
+
+  const updateTotalBulkMint = (newTotalBulkMint: number) => {
+    const MAX_BULK = 100;
+
+    let totalBulkMint = newTotalBulkMint;
+    if (newTotalBulkMint < 1) {
+      totalBulkMint = 1;
+    } else if (info?.maxPerAddress && newTotalBulkMint > +info.maxPerAddress) {
+      totalBulkMint = +info.maxPerAddress;
+    } else if (totalBulkMint > 100) {
+      totalBulkMint = MAX_BULK;
+    }
+
+    setTotalBulkMint(totalBulkMint);
+  };
 
   const prettyError = (err: any) => {
     const msg = err?.message;
@@ -140,21 +165,21 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 
       const estimatedGasLimit = await minterClient.estimateGas.requestMint(
         address,
-        1,
+        totalBulkMint,
         {
-          value: userState.mintPrice,
+          value: userState.mintPrice.mul(totalBulkMint),
         }
       );
 
-      const tx = await minterClient.requestMint(address, 1, {
-        value: userState.mintPrice,
+      const tx = await minterClient.requestMint(address, totalBulkMint, {
+        value: userState.mintPrice.mul(totalBulkMint),
         maxFeePerGas: maxFeePerGas?.toNumber(),
         maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
         gasLimit: estimatedGasLimit.mul(150).div(100),
       });
       await tx.wait();
     },
-    [mintAddress]
+    [mintAddress, totalBulkMint]
   );
 
   const cosmosMint = useCallback(
@@ -164,20 +189,41 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         throw Error("invalid mint args");
       }
       const cosmwasmClient = await getKeplrSigningCosmWasmClient(network.id);
-      const minterClient = new TeritoriBunkerMinterClient(
-        cosmwasmClient,
-        sender,
-        mintAddress
-      );
 
-      let funds;
-      if (info.unitPrice !== "0") {
-        funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
+      const msgs: EncodeObject[] = [];
+
+      for (let i = 0; i < totalBulkMint; i++) {
+        let funds;
+        if (info.unitPrice !== "0") {
+          funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
+        }
+
+        const msg = {
+          typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+          value: {
+            sender,
+            msg: toUtf8(
+              JSON.stringify({
+                request_mint: {
+                  addr: sender,
+                },
+              })
+            ),
+            contract: mintAddress,
+            funds,
+          },
+        };
+
+        msgs.push(msg);
       }
 
-      await minterClient.requestMint({ addr: sender }, "auto", "", funds);
+      const tx = await cosmwasmClient.signAndBroadcast(sender, msgs, "auto");
+
+      if (isDeliverTxFailure(tx)) {
+        throw Error(tx.transactionHash);
+      }
     },
-    [info?.priceDenom, info?.unitPrice, mintAddress]
+    [info?.priceDenom, info?.unitPrice, mintAddress, totalBulkMint]
   );
 
   const mint = useCallback(async () => {
@@ -309,7 +355,13 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 
               <GradientText
                 gradientType="grayLight"
-                style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
+                style={[
+                  fontSemibold14,
+                  {
+                    marginBottom: layout.padding_x3,
+                    marginRight: layout.padding_x3,
+                  },
+                ]}
               >
                 {info.description}
               </GradientText>
@@ -321,42 +373,84 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 }
                 valueMax={info.maxSupply ? parseInt(info.maxSupply, 10) : 0}
                 style={{
-                  marginBottom: 24,
+                  marginBottom: layout.padding_x3,
                   maxWidth: 420,
                 }}
               />
 
-              <BrandText
+              <View
                 style={{
-                  fontSize: 14,
-                  marginBottom: 16,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginRight: layout.padding_x3,
                 }}
               >
-                Available Balance:{" "}
-                {prettyPrice(
-                  network?.id || "",
-                  balance?.amount || "0",
-                  balance?.denom || ""
-                )}
-              </BrandText>
+                <BrandText style={fontSemibold14}>
+                  Total price:{" "}
+                  {prettyPrice(
+                    network?.id,
+                    +(info?.unitPrice || "0") * totalBulkMint + "",
+                    info?.priceDenom || ""
+                  )}
+                </BrandText>
 
-              <View style={{ flexDirection: "row", marginBottom: 24 }}>
-                {info.isMintable && (
-                  <PrimaryButton
-                    size="XL"
-                    text="Mint now"
-                    touchableStyle={{ marginRight: 36 }}
-                    width={160}
-                    disabled={
-                      mintButtonDisabled ||
-                      parseInt(balance?.amount || "0", 10) <
-                        parseInt(info.unitPrice || "0", 10)
-                    }
-                    loader
-                    onPress={mint}
+                <BrandText
+                  style={{
+                    fontSize: 14,
+                    marginBottom: layout.padding_x2,
+                  }}
+                >
+                  Available Balance:{" "}
+                  {prettyPrice(
+                    network?.id || "",
+                    balance?.amount || "0",
+                    balance?.denom || ""
+                  )}
+                </BrandText>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginRight: layout.padding_x3,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <IconButton
+                    onPress={() => updateTotalBulkMint(totalBulkMint - 1)}
+                    size="M"
+                    iconSVG={minusSVG}
+                    iconColor={neutral00}
+                    disabled={totalBulkMint <= 1}
+                    noBrokenCorners
                   />
-                )}
 
+                  <SpacerRow size={2} />
+
+                  <TextInputCustom
+                    label=""
+                    name="totalBulkMint"
+                    width={50}
+                    height={50}
+                    value={"" + totalBulkMint}
+                    onChangeText={(val) => updateTotalBulkMint(+val)}
+                    regexp={new RegExp(/^\d+$/)}
+                    noBrokenCorners
+                  />
+
+                  <SpacerRow size={2} />
+
+                  <IconButton
+                    onPress={() => updateTotalBulkMint(totalBulkMint + 1)}
+                    size="M"
+                    iconSVG={addSVG}
+                    disabled={totalBulkMint === +(info?.maxPerAddress || 0)}
+                    noBrokenCorners
+                  />
+                </View>
                 {priceCurrency?.kind === "ibc" && (
                   <PrimaryButton
                     size="XL"
@@ -367,6 +461,29 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     disabled={mintButtonDisabled}
                     loader
                     onPress={() => setDepositVisible(true)}
+                  />
+                )}
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  marginVertical: layout.padding_x3,
+                }}
+              >
+                {info.isMintable && (
+                  <PrimaryButton
+                    size="XL"
+                    text="Mint now"
+                    width={160}
+                    disabled={
+                      mintButtonDisabled ||
+                      parseInt(balance?.amount || "0", 10) <
+                        parseInt(info.unitPrice || "0", 10)
+                    }
+                    loader
+                    onPress={mint}
                   />
                 )}
               </View>
