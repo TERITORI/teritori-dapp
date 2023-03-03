@@ -3,13 +3,13 @@ import { StyleSheet } from "react-native";
 
 import { SpacerColumn } from "../../../components/spacer";
 import { Tabs } from "../../../components/tabs/Tabs";
-import { screenTabItems } from "../../../utils/feed";
+import { feedsTabItems } from "../../../utils/social-feed";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 
 export type FeedHeaderProps = {
-  selectedTab: keyof typeof screenTabItems;
-  onTabChange: (value: keyof typeof screenTabItems) => void;
+  selectedTab: keyof typeof feedsTabItems;
+  onTabChange: (value: keyof typeof feedsTabItems) => void;
 };
 
 export const FeedHeader: React.FC<FeedHeaderProps> = ({
@@ -19,7 +19,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
   return (
     <>
       <Tabs
-        items={screenTabItems}
+        items={feedsTabItems}
         selected={selectedTab}
         onSelect={onTabChange}
         style={styles.header}

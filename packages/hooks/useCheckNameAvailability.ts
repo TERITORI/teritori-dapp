@@ -70,7 +70,7 @@ export const useCheckNameAvailability = (name: string, tokens: string[]) => {
           message: e.message,
         });
       });
-  }, [name, setToastError, tokens]);
+  }, [name, setToastError, tokens, networkId]);
 
   return { nameAvailable, nameError, loading };
 };

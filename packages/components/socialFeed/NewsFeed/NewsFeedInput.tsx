@@ -21,14 +21,17 @@ import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobileView } from "../../../hooks/useIsMobileView";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { ReplyToType } from "../../../screens/FeedPostView/types";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
   VIDEO_MIME_TYPES,
 } from "../../../utils/mime";
-import { SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT } from "../../../utils/social-feed";
+import {
+  SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT,
+  hashMatch,
+  mentionMatch,
+} from "../../../utils/social-feed";
 import {
   errorColor,
   neutral17,
@@ -59,7 +62,11 @@ import { SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 import { NFTKeyModal } from "./NFTKeyModal";
-import { NewPostFormValues, SocialFeedMetadata } from "./NewsFeed.type";
+import {
+  NewPostFormValues,
+  ReplyToType,
+  SocialFeedMetadata,
+} from "./NewsFeed.type";
 import {
   generatePostMetadata,
   getAvailableFreePost,
@@ -78,8 +85,10 @@ interface NewsFeedInputProps {
   replyTo?: ReplyToType;
   onCloseCreateModal?: () => void;
   onPressCreateArticle?: (formValues: NewPostFormValues) => void;
-  hash?: string;
-  mentionedUser?: string;
+  // Receive this if the post is created from HashFeedScreen
+  additionalHashtag?: string;
+  // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
+  additionalMention?: string;
 }
 
 export interface NewsFeedInputHandle {
@@ -102,8 +111,8 @@ export const NewsFeedInput = React.forwardRef<
       onSubmitInProgress,
       onCloseCreateModal,
       onPressCreateArticle,
-      hash,
-      mentionedUser,
+      additionalHashtag,
+      additionalMention,
     },
     forwardRef
   ) => {
@@ -206,13 +215,27 @@ export const NewsFeedInput = React.forwardRef<
           replyTo?.parentId &&
           formValues.message.includes(`@${replyTo.username}`);
 
-        // Adding hashtag or mentioned user
+        // ---- Adding hashtag texts or mentioned texts to the metadata
+        const mentions: string[] = [];
+        mentionMatch(formValues.message)?.map((item) => {
+          //TODO: Check NS token id before sending mentioned text ?
+
+          mentions.push(item);
+        });
+        const hashtags: string[] = [];
+        hashMatch(formValues.message)?.map((item) => {
+          hashtags.push(item);
+        });
+
+        // ---- Adding hashtag or mentioned user at the end of the message and to the metadata
         let finalMessage = formValues.message || "";
-        if (mentionedUser) {
-          finalMessage += `\n@${mentionedUser}`;
+        if (additionalMention) {
+          finalMessage += `\n${additionalMention}`;
+          mentions.push(additionalMention);
         }
-        if (hash) {
-          finalMessage += `\n#${hash}`;
+        if (additionalHashtag) {
+          finalMessage += `\n${additionalHashtag}`;
+          hashtags.push(additionalHashtag);
         }
 
         let files: RemoteFileData[] = [];
@@ -235,7 +258,8 @@ export const NewsFeedInput = React.forwardRef<
           title: formValues.title || "",
           message: finalMessage,
           files,
-          hashtags: [],
+          hashtags,
+          mentions,
           gifs: formValues?.gifs || [],
         });
 

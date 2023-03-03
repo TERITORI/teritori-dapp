@@ -11,8 +11,8 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CommentsContainer } from "../../components/cards/CommentsContainer";
 import {
-  NewPostFormValues,
   PostCategory,
+  ReplyToType,
 } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import {
   NewsFeedInput,
@@ -22,22 +22,22 @@ import { RefreshButton } from "../../components/socialFeed/NewsFeed/RefreshButto
 import { RefreshButtonRound } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
 import { SocialThreadCard } from "../../components/socialFeed/SocialThread/SocialThreadCard";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { useErrorHandler } from "../../hooks/useErrorHandler";
 import {
   combineFetchCommentPages,
   useFetchComments,
-} from "../../hooks/useFetchComments";
+} from "../../hooks/feed/useFetchComments";
+import { useErrorHandler } from "../../hooks/useErrorHandler";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, NetworkKind } from "../../networks";
+import { getUserId, mustGetCosmosNetwork, NetworkKind } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { postResultToPost } from "../../utils/social-feed";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import {
   layout,
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
-import { ReplyToType } from "./types";
 
 export type OnPressReplyType = (replyTo: ReplyToType) => void;
 
@@ -56,13 +56,12 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const authorNSInfo = useNSUserInfo(
     getUserId(selectedNetworkId, post?.post_by)
   );
+  const network = mustGetCosmosNetwork(selectedNetworkId);
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const aref = useAnimatedRef<Animated.ScrollView>();
-
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
   const [threadCardOffsetY, setThreadCardOffsetY] = useState(0);
-
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const isFirstLoad = useSharedValue(true);
@@ -155,20 +154,21 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   );
 
   const handleSubmitInProgress = () => {
-    if (replyTo?.parentId) aref.current?.scrollTo(replyTo.yOffsetValue);
+    if (replyTo?.parentId && replyTo.yOffsetValue)
+      aref.current?.scrollTo(replyTo.yOffsetValue);
     else aref.current?.scrollTo(0);
   };
 
-  const onPressCreateArticle = (formValues: NewPostFormValues) => {
-    navigation.navigate("FeedNewPost", formValues);
-  };
-
   const headerLabel = () =>
-    post?.category === PostCategory.Article
+    (post?.category === PostCategory.Article
       ? "Article by "
-      : post?.parent_post_identifier
+      : post?.parentPostIdentifier
       ? "Sub-Post by "
-      : "Post by " + authorNSInfo.metadata.public_name || post?.post_by || "";
+      : "Post by ") +
+      authorNSInfo.metadata.public_name +
+      (network?.nameServiceTLD || "") ||
+    post?.post_by ||
+    "";
 
   return (
     <ScreenContainer
@@ -178,7 +178,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <BrandText style={fontSemibold20}>{headerLabel()}</BrandText>
       }
       onBackPress={() =>
-        post?.parent_post_identifier
+        post?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {
               id: post?.parent_post_identifier || "",
             })
@@ -203,7 +203,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             }) => setThreadCardOffsetY(height)}
           >
             <SocialThreadCard
-              post={post}
+              post={postResultToPost(selectedNetworkId, post)}
               isPostConsultation
               refresh={refresh}
               onPressReply={onPressReply}
@@ -254,7 +254,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 
       <View style={styles.footer}>
         <NewsFeedInput
-          onPressCreateArticle={onPressCreateArticle}
           ref={feedInputRef}
           type="comment"
           parentId={id}

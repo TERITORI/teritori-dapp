@@ -34,7 +34,7 @@ export const RichText: React.FC<RichTextProps> = ({
             actions={[actions.setBold, actions.setItalic, actions.setUnderline]}
           />
         </ToolbarContainer>
-        <PublishButton {...publishButtonProps} />
+        {!!publishButtonProps && <PublishButton {...publishButtonProps} />}
       </ActionsContainer>
     </View>
   );

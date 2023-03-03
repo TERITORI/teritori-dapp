@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View } from "react-native";
 
+import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
@@ -8,7 +9,7 @@ import { ScreenFC } from "../../utils/navigation";
 import { neutral22, primaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 
-const Header = ({ hash }: { hash: string }) => (
+const Header = ({ hashtag }: { hashtag: string }) => (
   <View
     style={{
       height: 80,
@@ -37,7 +38,7 @@ const Header = ({ hash }: { hash: string }) => (
       </BrandText>
     </View>
 
-    <BrandText>#{hash}</BrandText>
+    <BrandText>{hashtag}</BrandText>
   </View>
 );
 
@@ -46,9 +47,27 @@ export const HashFeedScreen: ScreenFC<"HashFeed"> = ({
     params: { id: hash },
   },
 }) => {
+  const hashtag = useMemo(() => `#${hash}`, [hash]);
+  const feedRequest: PostsRequest = useMemo(() => {
+    return {
+      filter: {
+        user: "",
+        mentions: [],
+        categories: [],
+        hashtags: [hashtag],
+      },
+      limit: 10,
+      offset: 0,
+    };
+  }, [hashtag]);
+
   return (
     <ScreenContainer responsive footerChildren={<></>} fullWidth noScroll>
-      <NewsFeed req={{ hash }} Header={() => <Header hash={hash} />} />
+      <NewsFeed
+        additionalHashtag={hashtag}
+        req={feedRequest}
+        Header={() => <Header hashtag={hashtag} />}
+      />
     </ScreenContainer>
   );
 };

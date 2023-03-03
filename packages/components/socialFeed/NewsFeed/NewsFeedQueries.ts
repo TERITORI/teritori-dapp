@@ -146,6 +146,7 @@ export const createPost = async ({
     message,
     files,
     hashtags: formValues.hashtags || [],
+    mentions: formValues.mentions || [],
   });
 
   await client.createPost(
@@ -212,6 +213,7 @@ interface GeneratePostMetadataParams {
   message: string;
   files: RemoteFileData[];
   hashtags: string[];
+  mentions: string[];
   gifs?: string[];
 }
 
@@ -220,6 +222,7 @@ export const generatePostMetadata = ({
   message,
   files,
   hashtags,
+  mentions,
   gifs,
 }: GeneratePostMetadataParams): SocialFeedMetadata => {
   return {
@@ -227,6 +230,7 @@ export const generatePostMetadata = ({
     message: message || "",
     files,
     hashtags: hashtags || [],
+    mentions: mentions || [],
     gifs: gifs || [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
