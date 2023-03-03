@@ -389,11 +389,13 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               >
                 <BrandText style={fontSemibold14}>
                   Total price:{" "}
-                  {prettyPrice(
-                    network?.id,
-                    +(info?.unitPrice || "0") * totalBulkMint + "",
-                    info?.priceDenom || ""
-                  )}
+                  {info.isMintable
+                    ? prettyPrice(
+                        network?.id,
+                        +(info?.unitPrice || "0") * totalBulkMint + "",
+                        info?.priceDenom || ""
+                      )
+                    : "0"}
                 </BrandText>
 
                 <BrandText
@@ -418,39 +420,42 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   marginRight: layout.padding_x3,
                 }}
               >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <IconButton
-                    onPress={() => updateTotalBulkMint(totalBulkMint - 1)}
-                    size="M"
-                    iconSVG={minusSVG}
-                    iconColor={neutral00}
-                    disabled={totalBulkMint <= 1}
-                    noBrokenCorners
-                  />
+                {info.isMintable && (
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <IconButton
+                      onPress={() => updateTotalBulkMint(totalBulkMint - 1)}
+                      size="M"
+                      iconSVG={minusSVG}
+                      iconColor={neutral00}
+                      disabled={totalBulkMint <= 1}
+                      noBrokenCorners
+                    />
 
-                  <SpacerRow size={2} />
+                    <SpacerRow size={2} />
 
-                  <TextInputCustom
-                    label=""
-                    name="totalBulkMint"
-                    width={50}
-                    height={50}
-                    value={"" + totalBulkMint}
-                    onChangeText={(val) => updateTotalBulkMint(+val)}
-                    regexp={new RegExp(/^\d+$/)}
-                    noBrokenCorners
-                  />
+                    <TextInputCustom
+                      label=""
+                      name="totalBulkMint"
+                      width={50}
+                      height={50}
+                      value={"" + totalBulkMint}
+                      onChangeText={(val) => updateTotalBulkMint(+val)}
+                      regexp={new RegExp(/^\d+$/)}
+                      noBrokenCorners
+                    />
 
-                  <SpacerRow size={2} />
+                    <SpacerRow size={2} />
 
-                  <IconButton
-                    onPress={() => updateTotalBulkMint(totalBulkMint + 1)}
-                    size="M"
-                    iconSVG={addSVG}
-                    disabled={totalBulkMint === +(info?.maxPerAddress || 0)}
-                    noBrokenCorners
-                  />
-                </View>
+                    <IconButton
+                      onPress={() => updateTotalBulkMint(totalBulkMint + 1)}
+                      size="M"
+                      iconSVG={addSVG}
+                      disabled={totalBulkMint === +(info?.maxPerAddress || 0)}
+                      noBrokenCorners
+                    />
+                  </View>
+                )}
+
                 {priceCurrency?.kind === "ibc" && (
                   <PrimaryButton
                     size="XL"
