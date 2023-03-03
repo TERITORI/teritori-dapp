@@ -9,6 +9,6 @@ export interface RichTextProps {
   initialValue?: string;
   readOnly?: boolean;
   openGraph?: OpenGraphType;
-  allowTruncation?: boolean;
+  // allowTruncation?: boolean;
   publishButtonProps?: PublishButtonProps;
 }

@@ -182,10 +182,6 @@ const compositeDecorator = {
       strategy: hashStrategy,
       component: HashRender,
     },
-    {
-      strategy: hashStrategy,
-      component: HashRender,
-    },
   ],
 };
 const plugins = [
@@ -213,7 +209,7 @@ export const RichText: React.FC<RichTextProps> = ({
   initialValue,
   readOnly,
   openGraph,
-  allowTruncation,
+  // allowTruncation,
   publishButtonProps,
 }) => {
   const editorRef = useRef<Editor>(null);
@@ -231,9 +227,10 @@ export const RichText: React.FC<RichTextProps> = ({
         const endState = EditorState.moveSelectionToEnd(editorState);
         setEditorState(endState);
       }, 1000);
-    } else if (allowTruncation) {
-      truncate();
     }
+    // else if (allowTruncation) {
+    //   truncate();
+    // }
   }, []);
 
   const addImage = (file: LocalFileData) => {
@@ -242,45 +239,45 @@ export const RichText: React.FC<RichTextProps> = ({
     onImageUpload?.(file);
   };
 
-  const truncate = () => {
-    const contentState = editorState.getCurrentContent();
-    const blocks = contentState.getBlocksAsArray();
-
-    let index = 0;
-    let currentLength = 0;
-    let isTruncated = false;
-    const truncatedBlocks = [];
-
-    while (!isTruncated && blocks[index]) {
-      const block = blocks[index];
-      const length = block.getLength();
-      if (currentLength + length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT) {
-        isTruncated = true;
-        const truncatedText = block
-          .getText()
-          .slice(0, SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT - currentLength);
-
-        const blocksFromHTML = convertFromHTML(
-          `${truncatedText} <br/>...see more`
-        );
-        const state = ContentState.createFromBlockArray(
-          blocksFromHTML.contentBlocks,
-          blocksFromHTML.entityMap
-        );
-
-        truncatedBlocks.push(state.getFirstBlock());
-      } else {
-        truncatedBlocks.push(block);
-      }
-      currentLength += length + 1;
-      index++;
-    }
-
-    if (isTruncated) {
-      const state = ContentState.createFromBlockArray(truncatedBlocks);
-      setEditorState(EditorState.createWithContent(state));
-    }
-  };
+  // const truncate = () => {
+  //   const contentState = editorState.getCurrentContent();
+  //   const blocks = contentState.getBlocksAsArray();
+  //
+  //   let index = 0;
+  //   let currentLength = 0;
+  //   let isTruncated = false;
+  //   const truncatedBlocks = [];
+  //
+  //   while (!isTruncated && blocks[index]) {
+  //     const block = blocks[index];
+  //     const length = block.getLength();
+  //     if (currentLength + length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT) {
+  //       isTruncated = true;
+  //       const truncatedText = block
+  //         .getText()
+  //         .slice(0, SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT - currentLength);
+  //
+  //       const blocksFromHTML = convertFromHTML(
+  //         `${truncatedText} <br/>...see more`
+  //       );
+  //       const state = ContentState.createFromBlockArray(
+  //         blocksFromHTML.contentBlocks,
+  //         blocksFromHTML.entityMap
+  //       );
+  //
+  //       truncatedBlocks.push(state.getFirstBlock());
+  //     } else {
+  //       truncatedBlocks.push(block);
+  //     }
+  //     currentLength += length + 1;
+  //     index++;
+  //   }
+  //
+  //   if (isTruncated) {
+  //     const state = ContentState.createFromBlockArray(truncatedBlocks);
+  //     setEditorState(EditorState.createWithContent(state));
+  //   }
+  // };
 
   const handleChange = (state: EditorState) => {
     setEditorState(state);

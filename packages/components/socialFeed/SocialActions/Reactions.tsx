@@ -6,10 +6,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import {
-  PostResult,
-  Reaction,
-} from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { Reaction } from "../../../api/feed/v1/feed";
 import { secondaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { AnimationFadeIn } from "../../animations";
@@ -22,7 +19,7 @@ import { MoreReactionsMenu } from "./MoreReactionsMenu";
 export const nbReactionsShown = 3;
 
 export const Reactions: React.FC<{
-  reactions: PostResult["reactions"];
+  reactions: Reaction[];
   onPressReaction: (icon: string) => void;
   isLoading?: boolean;
 }> = ({ reactions = [], onPressReaction, isLoading }) => {

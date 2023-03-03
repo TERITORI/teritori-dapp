@@ -5,16 +5,11 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { Post, PostsRequest } from "../../../api/feed/v1/feed";
 import {
   combineFetchFeedPages,
-  FeedRequest,
   useFetchFeed,
-} from "../../../hooks/useFetchFeed";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId } from "../../../networks";
+} from "../../../hooks/feed/useFetchFeed";
 import { useAppNavigation } from "../../../utils/navigation";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
 import { SpacerColumn } from "../../spacer";
@@ -30,27 +25,31 @@ const OFFSET_Y_LIMIT_FLOATING = 224;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
-  req?: FeedRequest;
+  req: PostsRequest;
+  // Receive this if the post is created from HashFeedScreen
+  additionalHashtag?: string;
+  // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
+  additionalMention?: string;
 }
 
-export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
+export const NewsFeed: React.FC<NewsFeedProps> = ({
+  Header,
+  req,
+  additionalHashtag,
+  additionalMention,
+}) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
   const navigation = useAppNavigation();
-  const selectedWallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
-  const posts: PostResult[] = useMemo(
+  const posts = useMemo(
     () => (data ? combineFetchFeedPages(data.pages) : []),
     [data]
   );
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const mentionedUserNSInfo = useNSUserInfo(
-    getUserId(selectedNetworkId, req.user)
-  );
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -75,30 +74,25 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
 
   // functions
   const onEndReached = () => {
+    console.log("-------------- isLoading", isLoading);
+    console.log("-------------- hasNextPage", hasNextPage);
+
     if (!isLoading && hasNextPage) {
       fetchNextPage();
     }
   };
 
   const onPressCreateArticle = (formValues: NewPostFormValues) => {
-    navigation.navigate("FeedNewPost", formValues);
+    navigation.navigate("FeedNewArticle", {
+      ...formValues,
+      additionalHashtag,
+      additionalMention,
+    });
   };
 
   const onHeaderLayout = (e: LayoutChangeEvent) => {
     setHeaderHeight(e.nativeEvent.layout.height);
   };
-
-  // If we are on the PublicProfileScreen of a user, he will be automatically mentioned in the written post
-  // (Except if it's the connected user's PublicProfileScreen)
-  const mentionedUser = useMemo(() => {
-    if (selectedWallet?.address !== req.user) {
-      return mentionedUserNSInfo?.metadata.public_name || req.user;
-    }
-  }, [
-    selectedWallet?.address,
-    req.user,
-    mentionedUserNSInfo?.metadata.public_name,
-  ]);
 
   const ListHeaderComponent = useCallback(
     () => (
@@ -120,9 +114,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
             type="post"
             onSubmitSuccess={refetch}
             style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}
-            mentionedUser={mentionedUser}
-            // If we are on a HashFeedScreen, the corresponding hash will be automatically added in the written post
-            hash={req.hash}
+            additionalMention={additionalMention}
+            additionalHashtag={additionalHashtag}
           />
           <SpacerColumn size={1.5} />
           <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
@@ -140,13 +133,13 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
         data={posts}
         renderItem={({ item: post }) => (
           <>
-            <SocialThreadCard post={post} allowTruncation />
+            <SocialThreadCard post={post} />
             <SpacerColumn size={3} />
           </>
         )}
         ListHeaderComponentStyle={{ zIndex: 1 }}
         ListHeaderComponent={ListHeaderComponent}
-        keyExtractor={(post: PostResult) => post.identifier}
+        keyExtractor={(post: Post) => post.identifier}
         onScroll={scrollHandler}
         contentContainerStyle={styles.content}
         onEndReachedThreshold={1}
@@ -167,6 +160,9 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({ Header, req = {} }) => {
       <CreateShortPostModal
         isVisible={isCreateModalVisible}
         onClose={() => setCreateModalVisible(false)}
+        additionalMention={additionalMention}
+        additionalHashtag={additionalHashtag}
+        onSubmitSuccess={refetch}
       />
     </>
   );

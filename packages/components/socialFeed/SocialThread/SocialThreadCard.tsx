@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { StyleProp, View, ViewStyle, TouchableOpacity } from "react-native";
 
+import { Post } from "../../../api/feed/v1/feed";
 import { socialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
-import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../utils/navigation";
 import { DEFAULT_NAME, getUpdatedReactions } from "../../../utils/social-feed";
@@ -32,6 +31,7 @@ import { EmojiSelector } from "../EmojiSelector";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { CommentsCount } from "../SocialActions/CommentsCount";
 import { Reactions } from "../SocialActions/Reactions";
+import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { SocialThreadGovernance } from "../SocialActions/SocialThreadGovernance";
 import { TipButton } from "../SocialActions/TipButton";
@@ -39,20 +39,29 @@ import { DateTime } from "./DateTime";
 import { SocialMessageContent } from "./SocialMessageContent";
 
 export const SocialThreadCard: React.FC<{
-  post: PostResult;
+  post: Post;
   style?: StyleProp<ViewStyle>;
   isPostConsultation?: boolean;
   refresh?: number;
   fadeInDelay?: number;
   onPressReply?: OnPressReplyType;
-  allowTruncation?: boolean;
   isGovernance?: boolean;
-}> = ({ post, style, isPostConsultation, fadeInDelay, isGovernance }) => {
-  const [localPost, setLocalPost] = useState<PostResult>(post);
+}> = ({
+  post,
+  style,
+  isPostConsultation,
+  fadeInDelay,
+  onPressReply,
+  isGovernance,
+}) => {
+  const [localPost, setLocalPost] = useState<Post>(post);
   const { mutate, isLoading: isReactLoading } =
     useTeritoriSocialFeedReactPostMutation({
       onSuccess(_data, variables) {
-        const reactions = getUpdatedReactions(post, variables.msg.icon);
+        const reactions = getUpdatedReactions(
+          post.reactions,
+          variables.msg.icon
+        );
 
         setLocalPost({ ...localPost, reactions });
       },
@@ -60,13 +69,14 @@ export const SocialThreadCard: React.FC<{
 
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
-  const authorId = getUserId(selectedNetworkId, localPost.post_by);
-  const authorNSInfo = useNSUserInfo(authorId);
+  const authorNSInfo = useNSUserInfo(localPost.createdBy);
   const userInfo = useNSUserInfo(wallet?.userId);
   const navigation = useAppNavigation();
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
-
-  const hashtag = useMemo(() => {
+  const username = authorNSInfo?.metadata?.tokenId
+    ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
+    : localPost.createdBy;
+  const communityHashtag = useMemo(() => {
     return getCommunityHashtag(metadata?.hashtags || []);
   }, [metadata]);
 
@@ -88,6 +98,11 @@ export const SocialThreadCard: React.FC<{
       },
     });
   };
+
+  const handleReply = () =>
+    onPressReply?.({
+      username,
+    });
 
   useEffect(() => {
     setLocalPost(post);
@@ -121,7 +136,7 @@ export const SocialThreadCard: React.FC<{
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("UserPublicProfile", {
-                  id: authorId,
+                  id: localPost.createdBy,
                 })
               }
               style={{
@@ -139,7 +154,7 @@ export const SocialThreadCard: React.FC<{
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("UserPublicProfile", {
-                  id: authorId,
+                  id: localPost.createdBy,
                 })
               }
               activeOpacity={0.7}
@@ -155,7 +170,7 @@ export const SocialThreadCard: React.FC<{
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("UserPublicProfile", {
-                  id: authorId,
+                  id: localPost.createdBy,
                 })
               }
               style={{ marginHorizontal: layout.padding_x1_5 }}
@@ -172,7 +187,7 @@ export const SocialThreadCard: React.FC<{
                 @
                 {authorNSInfo?.metadata?.tokenId
                   ? tinyAddress(authorNSInfo.metadata.tokenId, 19)
-                  : localPost.post_by}
+                  : localPost.createdBy}
               </BrandText>
             </TouchableOpacity>
 
@@ -181,10 +196,10 @@ export const SocialThreadCard: React.FC<{
           </View>
 
           {/*---- Badges */}
-          {!!hashtag && (
+          {!!communityHashtag && (
             <DotBadge
-              label={hashtag.hashtag}
-              dotColor={hashtag.color}
+              label={communityHashtag.hashtag}
+              dotColor={communityHashtag.color}
               style={{
                 backgroundColor: isPostConsultation ? neutral00 : neutral17,
               }}
@@ -221,8 +236,14 @@ export const SocialThreadCard: React.FC<{
               onEmojiSelected={handleReaction}
               isLoading={isReactLoading}
             />
+            {isPostConsultation && onPressReply && (
+              <>
+                <SpacerRow size={2.5} />
+                <ReplyButton onPress={handleReply} />
+              </>
+            )}
             <SpacerRow size={2.5} />
-            <CommentsCount post={localPost} />
+            <CommentsCount count={localPost.subPostLength} />
 
             {authorNSInfo.metadata?.tokenId !== userInfo?.metadata?.tokenId && (
               <>

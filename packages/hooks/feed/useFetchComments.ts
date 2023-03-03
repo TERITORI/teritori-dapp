@@ -1,9 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import { socialFeedClient } from "../client-creators/socialFeedClient";
-import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { useSelectedNetworkId } from "./useSelectedNetwork";
-import useSelectedWallet from "./useSelectedWallet";
+import { socialFeedClient } from "../../client-creators/socialFeedClient";
+import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { useSelectedNetworkId } from "../useSelectedNetwork";
+import useSelectedWallet from "../useSelectedWallet";
 
 export type FetchCommentResponse = {
   list: PostResult[];

@@ -3,7 +3,7 @@ import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
-import { FeedNewPostScreen } from "../../screens/FeedNewPost/FeedNewPostScreen";
+import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
@@ -215,8 +215,8 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null }}
       />
       <Stack.Screen
-        name="FeedNewPost"
-        component={FeedNewPostScreen}
+        name="FeedNewArticle"
+        component={FeedNewArticleScreen}
         options={{ header: () => null, title: screenTitle("New Article") }}
       />
 
