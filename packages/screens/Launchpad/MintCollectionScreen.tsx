@@ -384,6 +384,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   alignItems: "center",
                   justifyContent: "space-between",
                   marginRight: layout.padding_x3,
+                  marginBottom: layout.padding_x2,
                 }}
               >
                 <BrandText style={fontSemibold14}>
@@ -398,7 +399,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 <BrandText
                   style={{
                     fontSize: 14,
-                    marginBottom: layout.padding_x2,
                   }}
                 >
                   Available Balance:{" "}
