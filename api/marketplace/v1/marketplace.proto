@@ -209,7 +209,9 @@ message DApp {
   string icon = 4;
   string route = 5;
   string groupKey = 6;
-  string airtableId = 7;
+  string linkingId = 7;
+  bool selectedByDefault = 8;
+  bool alwaysOn = 9;
 }
 
 message Banner {

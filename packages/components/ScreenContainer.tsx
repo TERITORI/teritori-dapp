@@ -14,6 +14,9 @@ import { useForceNetworkKind } from "../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
 import { useMaxResolution } from "../hooks/useMaxResolution";
 import { NetworkInfo, NetworkKind } from "../networks";
+import { useDAppStoreData } from "../screens/DAppStore/query/useDAppStoreData";
+import { setAvailableApps } from "../store/slices/dapps-store";
+import { useAppDispatch } from "../store/store";
 import {
   headerHeight,
   headerMarginHorizontal,
@@ -52,6 +55,14 @@ export const ScreenContainer: React.FC<{
   forceNetworkId,
   forceNetworkKind,
 }) => {
+  const dispatch = useAppDispatch();
+
+  const data = useDAppStoreData();
+
+  if (data) {
+    dispatch(setAvailableApps(data));
+  }
+
   // variables
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
@@ -70,10 +81,7 @@ export const ScreenContainer: React.FC<{
       if (forceNetworkId && n?.id !== forceNetworkId) {
         return false;
       }
-      if (forceNetworkKind && n?.kind !== forceNetworkKind) {
-        return false;
-      }
-      return true;
+      return !(forceNetworkKind && n?.kind !== forceNetworkKind);
     },
     [forceNetworkId, forceNetworkKind]
   );
@@ -85,7 +93,7 @@ export const ScreenContainer: React.FC<{
 
       <View style={styles.container}>
         {["android", "ios"].includes(Platform.OS) ||
-          (!hideSidebar ? <Sidebar /> : null)}
+          (!hideSidebar && data ? <Sidebar availableApps={data} /> : null)}
         {!["android", "ios"].includes(Platform.OS) && customSidebar}
 
         <View style={{ width: "100%", flex: 1 }}>

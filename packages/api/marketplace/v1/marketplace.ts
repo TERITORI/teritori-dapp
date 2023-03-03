@@ -300,7 +300,9 @@ export interface DApp {
   icon: string;
   route: string;
   groupKey: string;
-  airtableId: string;
+  linkingId: string;
+  selectedByDefault: boolean;
+  alwaysOn: boolean;
 }
 
 export interface Banner {
@@ -2145,7 +2147,17 @@ export const DAppGroup = {
 };
 
 function createBaseDApp(): DApp {
-  return { id: "", title: "", description: "", icon: "", route: "", groupKey: "", airtableId: "" };
+  return {
+    id: "",
+    title: "",
+    description: "",
+    icon: "",
+    route: "",
+    groupKey: "",
+    linkingId: "",
+    selectedByDefault: false,
+    alwaysOn: false,
+  };
 }
 
 export const DApp = {
@@ -2168,8 +2180,14 @@ export const DApp = {
     if (message.groupKey !== "") {
       writer.uint32(50).string(message.groupKey);
     }
-    if (message.airtableId !== "") {
-      writer.uint32(58).string(message.airtableId);
+    if (message.linkingId !== "") {
+      writer.uint32(58).string(message.linkingId);
+    }
+    if (message.selectedByDefault === true) {
+      writer.uint32(64).bool(message.selectedByDefault);
+    }
+    if (message.alwaysOn === true) {
+      writer.uint32(72).bool(message.alwaysOn);
     }
     return writer;
   },
@@ -2200,7 +2218,13 @@ export const DApp = {
           message.groupKey = reader.string();
           break;
         case 7:
-          message.airtableId = reader.string();
+          message.linkingId = reader.string();
+          break;
+        case 8:
+          message.selectedByDefault = reader.bool();
+          break;
+        case 9:
+          message.alwaysOn = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2218,7 +2242,9 @@ export const DApp = {
       icon: isSet(object.icon) ? String(object.icon) : "",
       route: isSet(object.route) ? String(object.route) : "",
       groupKey: isSet(object.groupKey) ? String(object.groupKey) : "",
-      airtableId: isSet(object.airtableId) ? String(object.airtableId) : "",
+      linkingId: isSet(object.linkingId) ? String(object.linkingId) : "",
+      selectedByDefault: isSet(object.selectedByDefault) ? Boolean(object.selectedByDefault) : false,
+      alwaysOn: isSet(object.alwaysOn) ? Boolean(object.alwaysOn) : false,
     };
   },
 
@@ -2230,7 +2256,9 @@ export const DApp = {
     message.icon !== undefined && (obj.icon = message.icon);
     message.route !== undefined && (obj.route = message.route);
     message.groupKey !== undefined && (obj.groupKey = message.groupKey);
-    message.airtableId !== undefined && (obj.airtableId = message.airtableId);
+    message.linkingId !== undefined && (obj.linkingId = message.linkingId);
+    message.selectedByDefault !== undefined && (obj.selectedByDefault = message.selectedByDefault);
+    message.alwaysOn !== undefined && (obj.alwaysOn = message.alwaysOn);
     return obj;
   },
 
@@ -2242,7 +2270,9 @@ export const DApp = {
     message.icon = object.icon ?? "";
     message.route = object.route ?? "";
     message.groupKey = object.groupKey ?? "";
-    message.airtableId = object.airtableId ?? "";
+    message.linkingId = object.linkingId ?? "";
+    message.selectedByDefault = object.selectedByDefault ?? false;
+    message.alwaysOn = object.alwaysOn ?? false;
     return message;
   },
 };

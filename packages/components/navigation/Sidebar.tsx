@@ -16,10 +16,12 @@ import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
 import { getValuesFromId } from "../../screens/DAppStore/query/util";
+import { dAppGroup } from "../../screens/DAppStore/types";
 import {
-  selectAvailableApps,
   selectCheckedApps,
+  setSelectedApps,
 } from "../../store/slices/dapps-store";
+import { useAppDispatch } from "../../store/store";
 import { useAppNavigation } from "../../utils/navigation";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
@@ -44,7 +46,9 @@ const SpringConfig: WithSpringConfig = {
   restDisplacementThreshold: 0.2,
 };
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: React.FC<{ availableApps: dAppGroup }> = ({
+  availableApps,
+}) => {
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
@@ -85,13 +89,26 @@ export const Sidebar: React.FC = () => {
   };
 
   const selectedApps = useSelector(selectCheckedApps);
-  const availableApps = useSelector(selectAvailableApps);
+  const dispatch = useAppDispatch();
 
   const dynamicSidebar = useMemo(() => {
-    const dynamicAppsSelection = Object.values(SIDEBAR_LIST) as {
+    if (selectedApps.length === 0 && Object.values(availableApps).length > 0) {
+      dispatch(
+        setSelectedApps(
+          Object.values(availableApps).flatMap((item) => {
+            return Object.values(item.options)
+              .filter((dapp) => dapp.selectedByDefault)
+              .map(({ groupKey, id }) => {
+                return `${groupKey}*SEPARATOR*${id}`;
+              });
+          })
+        )
+      );
+    }
+    const dynamicAppsSelection = [] as {
       [key: string]: any;
     };
-
+    dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
     selectedApps.map((element) => {
       const { appId, groupKey } = getValuesFromId(element);
       if (!availableApps[groupKey]) {
@@ -99,15 +116,17 @@ export const Sidebar: React.FC = () => {
       }
       const option = availableApps[groupKey].options[appId];
 
-      dynamicAppsSelection[element] = {
-        id: option.id,
-        title: option.title,
-        route: option.route,
-        icon: option.icon,
-      };
+      dynamicAppsSelection[element] = SIDEBAR_LIST[option.id]
+        ? SIDEBAR_LIST[option.id]
+        : {
+            id: option.id,
+            title: option.title,
+            route: option.route,
+            icon: option.icon,
+          };
     });
     return dynamicAppsSelection;
-  }, [selectedApps, availableApps]);
+  }, [selectedApps, availableApps, dispatch]);
 
   // returns
   return (

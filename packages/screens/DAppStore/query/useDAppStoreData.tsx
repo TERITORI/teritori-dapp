@@ -20,7 +20,7 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
       return group;
     },
     {
-      staleTime: Infinity,
+      cacheTime: 5 * 60 * 1000,
     }
   );
   const { data: dAppsGroups } = useQuery(
@@ -31,7 +31,7 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
       return group;
     },
     {
-      staleTime: Infinity,
+      cacheTime: 5 * 60 * 1000,
     }
   );
   if (dAppsGroups === undefined || dApps === undefined) {
@@ -42,7 +42,7 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
   const formatted: dAppGroup = {};
 
   dApps.forEach((record) => {
-    dAppsCol[record.airtableId] = {
+    dAppsCol[record.linkingId] = {
       [record.id]: {
         id: record.id,
         title: record.title,
@@ -50,6 +50,8 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
         icon: record.icon,
         route: record.route,
         groupKey: record.groupKey,
+        selectedByDefault: record.selectedByDefault,
+        alwaysOn: record.alwaysOn,
       },
     };
   });

@@ -22,56 +22,60 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
         paddingTop: layout.padding_x4,
       }}
     >
-      {Object.values(availableApps).map((element, index) => {
-        return element.active ? (
-          <View key={index}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: layout.padding_x2_5,
-              }}
-            >
-              <SVGorImageIcon
-                icon={element.icon}
-                key={element.id}
-                iconSize={24}
-                style={{
-                  marginRight: layout.padding_x1_5,
-                }}
-              />
-              <BrandText>{element.groupName}</BrandText>
-            </View>
-            <View
-              style={{
-                flex: 1,
-                marginBottom: layout.padding_x2_5,
-                flexDirection: "row",
-                flexWrap: "wrap",
-              }}
-            >
-              {Object.values(element.options)
-                .filter((option: dAppType) =>
-                  option.title.toLowerCase().includes(searchInput.toLowerCase())
-                )
-                .map((option: dAppType, index: React.Key) => {
-                  return (
-                    <DAppBox
-                      key={index}
-                      option={option}
-                      style={{
-                        marginRight: layout.padding_x2_5,
-                        marginBottom: layout.padding_x2_5,
-                      }}
-                    />
-                  );
-                })}
-            </View>
-          </View>
-        ) : (
-          <></>
-        );
-      })}
+      {availableApps
+        ? Object.values(availableApps).map((element, index) => {
+            return element.active ? (
+              <View key={index}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: layout.padding_x2_5,
+                  }}
+                >
+                  <SVGorImageIcon
+                    icon={element.icon}
+                    key={element.id}
+                    iconSize={24}
+                    style={{
+                      marginRight: layout.padding_x1_5,
+                    }}
+                  />
+                  <BrandText>{element.groupName}</BrandText>
+                </View>
+                <View
+                  style={{
+                    flex: 1,
+                    marginBottom: layout.padding_x2_5,
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {Object.values(element.options)
+                    .filter((option: dAppType) =>
+                      option.title
+                        .toLowerCase()
+                        .includes(searchInput.toLowerCase())
+                    )
+                    .map((option: dAppType, index: React.Key) => {
+                      return (
+                        <DAppBox
+                          key={index}
+                          option={option}
+                          style={{
+                            marginRight: layout.padding_x2_5,
+                            marginBottom: layout.padding_x2_5,
+                          }}
+                        />
+                      );
+                    })}
+                </View>
+              </View>
+            ) : (
+              <></>
+            );
+          })
+        : null}
     </View>
   );
 };
