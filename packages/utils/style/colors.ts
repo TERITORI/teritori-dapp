@@ -22,6 +22,8 @@ export const transparentColor = "transparent";
 
 export const gameHighlight = "#FCEE4F";
 
+export const gameHighlight = "#FCEE4F";
+
 export const neutral00 = "#000000";
 export const neutral17 = "#171717";
 export const neutral11 = "#111111";
