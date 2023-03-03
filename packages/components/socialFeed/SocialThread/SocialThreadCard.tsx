@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleProp, View, ViewStyle, TouchableOpacity } from "react-native";
 
 import { Post } from "../../../api/feed/v1/feed";
@@ -10,7 +10,6 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../utils/navigation";
 import { DEFAULT_NAME, getUpdatedReactions } from "../../../utils/social-feed";
-import { getCommunityHashtag } from "../../../utils/socialFeedCommunityHashtags";
 import {
   neutral00,
   neutral17,
@@ -21,9 +20,8 @@ import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
-import { tinyAddress } from "../../WalletSelector";
+import { tinyAddress } from "../../../utils/text";
 import { AnimationFadeIn } from "../../animations";
-import { DotBadge } from "../../badges/DotBadge";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../spacer";
@@ -76,9 +74,9 @@ export const SocialThreadCard: React.FC<{
   const username = authorNSInfo?.metadata?.tokenId
     ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
     : localPost.createdBy;
-  const communityHashtag = useMemo(() => {
-    return getCommunityHashtag(metadata?.hashtags || []);
-  }, [metadata]);
+  // const communityHashtag = useMemo(() => {
+  //   return getCommunityHashtag(metadata?.hashtags || []);
+  // }, [metadata]);
 
   const handleReaction = async (e: string) => {
     if (!wallet?.connected || !wallet.address) {
@@ -195,16 +193,16 @@ export const SocialThreadCard: React.FC<{
             <DateTime date={metadata.createdAt} />
           </View>
 
-          {/*---- Badges */}
-          {!!communityHashtag && (
-            <DotBadge
-              label={communityHashtag.hashtag}
-              dotColor={communityHashtag.color}
-              style={{
-                backgroundColor: isPostConsultation ? neutral00 : neutral17,
-              }}
-            />
-          )}
+          {/*---- Badges TODO: Handle this later */}
+          {/*{!!communityHashtag && (*/}
+          {/*  <DotBadge*/}
+          {/*    label={communityHashtag.hashtag}*/}
+          {/*    dotColor={communityHashtag.color}*/}
+          {/*    style={{*/}
+          {/*      backgroundColor: isPostConsultation ? neutral00 : neutral17,*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*)}*/}
         </FlexRow>
         <SpacerColumn size={2} />
 

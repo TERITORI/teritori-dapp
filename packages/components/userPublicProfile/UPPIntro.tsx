@@ -16,10 +16,8 @@ import {
   fontBold16,
   fontMedium14,
   fontSemibold14,
-  fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { neutral77 } from "../../utils/style/colors";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { useCopyToClipboard } from "../CopyToClipboard";
