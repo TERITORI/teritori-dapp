@@ -1,0 +1,138 @@
+query GetCollectionNFTs(
+  $nftContractFilter: NftContract_filter, 
+  $nftFilter: Nft_filter, 
+  $orderBy: Nft_orderBy, 
+  $orderDirection: OrderDirection
+) {
+  nftContracts(where: $nftContractFilter) {
+		id
+		name
+    minter
+    symbol
+		nfts(where: $nftFilter, orderBy: $orderBy, orderDirection: $orderDirection) {
+      id
+      tokenID
+      owner
+      seller
+      creatorName
+      creatorAddress
+      tokenURI
+      inSale
+      price
+      denom
+      createdAt
+      removedAt
+		}
+	}
+}
+
+query GetCollectionActivities($minter: Bytes!) {
+  # @genqlient(typename: "Activities")
+  actions(where: { minter: $minter }, orderBy: createdAt, orderDirection: desc) {
+    id
+    nft {
+      id
+      tokenURI
+      contract {
+        minter
+        id
+        name
+      }
+    }
+    buy {
+      price
+      denom
+      seller
+    }
+    list {
+      price
+      denom
+    }
+    action
+    actor
+    receiver
+    txID
+    createdAt
+  }
+}
+
+query GetNFTActivities($nftID: String!) {
+  # @genqlient(typename: "Activities")
+  actions(where: { nft: $nftID }, orderBy: createdAt, orderDirection: desc) {
+    id
+    nft {
+      id
+      tokenURI
+      contract {
+        minter
+        id
+        name
+      }
+    }
+    buy {
+      price
+      denom
+      seller
+    }
+    list {
+      price
+      denom
+    }
+    action
+    actor
+    receiver
+    txID
+    createdAt
+  }
+}
+
+query GetNFTPriceHistory($nft: String!) {
+  buys(where: { nft: $nft }) {
+    price
+    denom
+    createdAt
+  }
+}
+
+query GetCollections($from: BigInt!) {
+  nftContracts {
+    id
+    supported
+    name
+    minter
+  }
+  buys(where: { createdAt_gt: $from }) {
+    id
+    nft {
+      id
+      contract {
+        id
+      }
+    }
+    denom
+    price
+  }
+}
+
+query GetCollectionStats($minter: Bytes!) {
+ nftContracts(where: {minter: $minter}) {
+		id
+		name
+    symbol
+    nfts {
+      id
+      owner
+      creatorName
+      creatorAddress
+      tokenURI
+      inSale
+      price
+      denom
+      createdAt
+    }
+  }
+  buys(where: { minter: $minter }) {
+    price
+    denom
+  }
+}

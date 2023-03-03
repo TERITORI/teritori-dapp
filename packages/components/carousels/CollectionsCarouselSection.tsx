@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import {
   Collection,
@@ -10,17 +10,13 @@ import {
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import {
-  collectionItemHeight,
-  collectionItemWidth,
+  COLLECTION_VIEW_XL_HEIGHT,
+  COLLECTION_VIEW_XL_WIDTH,
   CollectionView,
 } from "../CollectionView";
 import { CarouselSection } from "./CarouselSection";
 
 const gap = 24;
-
-const renderItem = (props: { item: Collection }) => (
-  <CollectionView item={props.item} />
-);
 
 const defaultRequest: CollectionsRequest = {
   networkId: "fake",
@@ -34,18 +30,27 @@ const defaultRequest: CollectionsRequest = {
 
 export const CollectionsCarouselSection: React.FC<{
   title: string;
+  linkToMint?: boolean;
   req?: CollectionsRequest;
-}> = ({ title, req = defaultRequest }) => {
-  const [collections, fetchMore] = useCollections(req);
+  filter?: (c: Collection) => boolean;
+}> = ({ title, req = defaultRequest, linkToMint, filter }) => {
+  const [collections, fetchMore] = useCollections(req, filter);
 
   const { width } = useMaxResolution();
+
+  const renderItem = useCallback(
+    (props: { item: Collection }) => (
+      <CollectionView item={props.item} linkToMint={linkToMint} />
+    ),
+    [linkToMint]
+  );
 
   return (
     <CarouselSection
       title={title}
       data={collections}
-      width={collectionItemWidth + gap}
-      height={collectionItemHeight}
+      width={COLLECTION_VIEW_XL_WIDTH + gap}
+      height={COLLECTION_VIEW_XL_HEIGHT}
       onScrollEnd={fetchMore}
       pagingEnabled
       loop={false}

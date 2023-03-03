@@ -12,6 +12,8 @@ import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/
 import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useTNS } from "../../context/TNSProvider";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { NetworkKind } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { TNSBurnNameScreen } from "./TNSBurnNameScreen";
 import { TNSConsultNameScreen } from "./TNSConsultNameScreen";
@@ -63,6 +65,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const [navigateBackTo, setNavigateBackTo] = useState<TNSModals>();
   const { name, setName } = useTNS();
   const navigation = useAppNavigation();
+  const selectedNetwork = useSelectedNetworkInfo();
 
   const isKeplrConnected = useIsKeplrConnected();
 
@@ -115,7 +118,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     if (route.params?.name) {
       setName(route.params.name);
     }
-  }, [route]);
+  }, [route, setName]);
 
   const tnsModalCommonProps = {
     onClose: handleModalClose,
@@ -126,6 +129,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     <ScreenContainer
       noMargin={width <= 1600}
       headerChildren={<BrandText>Name Service</BrandText>}
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <View
         style={{
@@ -133,7 +137,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
         }}
       >
         <IntroLogoText
-          title="Teritori Name Service"
+          title={`${selectedNetwork?.displayName} Name Service`}
           backgroundImage={TNSBannerPNG}
         />
         <View

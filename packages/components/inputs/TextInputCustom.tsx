@@ -30,7 +30,7 @@ import {
   neutral77,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontMedium10 } from "../../utils/style/fonts";
+import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
@@ -64,6 +64,8 @@ export interface TextInputCustomProps<T extends FieldValues>
   inputStyle?: TextStyle;
   hideLabel?: boolean;
   valueModifier?: (value: string) => string;
+  // subtitle?: React.ReactElement;
+  // labelStyle?: TextStyle;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -108,12 +110,14 @@ export const TextInputCustom = <T extends FieldValues>({
     if (defaultValue) {
       handleChangeText(defaultValue);
     }
+    // handleChangeText changes on every render and we want to call handleChangeText only when default value changes so we disable exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
   const error = useMemo(() => {
     if (fieldState.error) {
-      if (fieldState.error?.message) {
-        return fieldState.error?.message;
+      if (fieldState.error.message) {
+        return fieldState.error.message;
       }
       return DEFAULT_FORM_ERRORS.required;
     }
@@ -163,16 +167,26 @@ export const TextInputCustom = <T extends FieldValues>({
 
   return (
     <>
-      {variant &&
-        ["labelOutside", "noCropBorder"].includes(variant) &&
-        !hideLabel && (
-          <TextInputOutsideLabel
-            labelStyle={labelStyle}
-            isAsterickSign={isAsterickSign}
-            subtitle={subtitle}
-            label={label}
-          />
-        )}
+      {variant === "noCropBorder" && !hideLabel && (
+        <TextInputOutsideLabel
+          labelStyle={labelStyle}
+          isAsterickSign={isAsterickSign}
+          subtitle={subtitle}
+          label={label}
+        />
+      )}
+      {variant === "labelOutside" && (
+        <>
+          <View style={styles.rowEnd}>
+            <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
+              {label}
+            </BrandText>
+            {subtitle}
+          </View>
+          <SpacerColumn size={1} />
+        </>
+      )}
+
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
@@ -228,6 +242,11 @@ export const TextInputCustom = <T extends FieldValues>({
 };
 
 const styles = StyleSheet.create({
+  rowEnd: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+  },
   mainContainer: {
     alignItems: "flex-start",
     paddingHorizontal: 12,

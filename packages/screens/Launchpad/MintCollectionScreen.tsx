@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from "react";
+import Long from "long";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -23,13 +24,25 @@ import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
+import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriBunkerMinterClient } from "../../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
+import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { MintPhase, useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCurrency } from "../../networks";
+import {
+  NetworkKind,
+  CosmosNetworkInfo,
+  EthereumNetworkInfo,
+  getCosmosNetwork,
+  getCurrency,
+  getKeplrSigningCosmWasmClient,
+  getNativeCurrency,
+  parseNetworkObjectId,
+  getEthereumNetwork,
+} from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { getSigningCosmWasmClient } from "../../utils/keplr";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { ScreenFC } from "../../utils/navigation";
 import {
   neutral33,
@@ -70,15 +83,14 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     params: { id },
   },
 }) => {
-  const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
   const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
-  const networkId = process.env.TERITORI_NETWORK_ID;
-  const balances = useBalances(networkId, wallet?.address);
+  const [network, mintAddress] = parseNetworkObjectId(id);
+  const balances = useBalances(network?.id, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
@@ -89,48 +101,134 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     if (typeof msg !== "string") {
       return `${err}`;
     }
-    if (msg.includes("Already minted maximum for whitelist period")) {
+    if (
+      msg.includes("Already minted maximum for whitelist period") ||
+      msg.includes("EXCEED_WHITELIST_MINT_MAX")
+    ) {
       return "You already minted the maximum allowed per address during presale";
     }
-    if (msg.includes("Already minted maximum")) {
+    if (
+      msg.includes("Already minted maximum") ||
+      msg.includes("EXCEED_MINT_MAX")
+    ) {
       return "You already minted the maximum allowed per address";
     }
-    if (msg.includes("Not whitelisted!")) {
+    if (msg.includes("Not whitelisted!") || msg.includes("NOT_WHITELISTED")) {
       return "You are not in the presale whitelist";
     }
     return msg;
   };
 
-  const mint = useCallback(async () => {
-    try {
-      const mintAddress = id.startsWith("tori-") ? id.substring(5) : id;
-
-      setToastError(initialToastError);
-      const sender = wallet?.address;
-      if (!sender || !info?.unitPrice || !info.priceDenom) {
-        console.error("invalid mint args");
-        return;
+  const ethereumMint = useCallback(
+    async (network: EthereumNetworkInfo, wallet: Wallet) => {
+      const signer = await getMetaMaskEthereumSigner(network, wallet.address);
+      if (!signer) {
+        throw Error("no account connected");
       }
-      const cosmwasmClient = await getSigningCosmWasmClient();
+
+      const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
+      const userState = await minterClient.callStatic.userState(wallet.address);
+
+      // TODO: check this properly later
+      // if (!userState.userCanMint) {
+      //   throw Error("You cannot mint now");
+      // }
+
+      const address = await signer.getAddress();
+
+      const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+
+      const estimatedGasLimit = await minterClient.estimateGas.requestMint(
+        address,
+        1,
+        {
+          value: userState.mintPrice,
+        }
+      );
+
+      const tx = await minterClient.requestMint(address, 1, {
+        value: userState.mintPrice,
+        maxFeePerGas: maxFeePerGas?.toNumber(),
+        maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+        gasLimit: estimatedGasLimit.mul(150).div(100),
+      });
+      await tx.wait();
+    },
+    [mintAddress]
+  );
+
+  const cosmosMint = useCallback(
+    async (network: CosmosNetworkInfo, wallet: Wallet) => {
+      const sender = wallet.address;
+      if (!sender || !info?.unitPrice || !info.priceDenom) {
+        throw Error("invalid mint args");
+      }
+      const cosmwasmClient = await getKeplrSigningCosmWasmClient(network.id);
       const minterClient = new TeritoriBunkerMinterClient(
         cosmwasmClient,
         sender,
         mintAddress
       );
-      await minterClient.requestMint({ addr: sender }, "auto", "", [
-        { amount: info.unitPrice, denom: info.priceDenom },
-      ]);
+
+      let funds;
+      if (info.unitPrice !== "0") {
+        funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
+      }
+
+      await minterClient.requestMint({ addr: sender }, "auto", "", funds);
+    },
+    [info?.priceDenom, info?.unitPrice, mintAddress]
+  );
+
+  const mint = useCallback(async () => {
+    try {
+      setToastError(initialToastError);
+      if (!wallet) {
+        setToastError({
+          title: "Error",
+          message: `no wallet`,
+        });
+        return;
+      }
+      switch (network?.kind) {
+        case NetworkKind.Cosmos:
+          await cosmosMint(network, wallet);
+          break;
+        case NetworkKind.Ethereum:
+          await ethereumMint(network, wallet);
+          break;
+        default:
+          setToastError({
+            title: "Error",
+            message: `unsupported network ${network?.id}`,
+          });
+          return;
+      }
+
       setMinted(true);
       await sleep(5000);
       setMinted(false);
-    } catch (err) {
-      console.error(err);
-      setToastError({
-        title: "Mint failed",
-        message: prettyError(err),
-      });
+    } catch (e) {
+      if (e instanceof Error) {
+        return setToastError({
+          title: "Mint failed",
+          message: prettyError(e),
+        });
+      }
+      console.error(e);
     }
-  }, [wallet?.address, mintAddress, info?.unitPrice, info?.priceDenom]);
+  }, [cosmosMint, ethereumMint, network, setToastError, wallet]);
+
+  const mintTermsConditionsURL = useMemo(() => {
+    switch (mintAddress) {
+      case getCosmosNetwork(network?.id)?.riotContractAddressGen0:
+        return "https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b";
+      case getEthereumNetwork(network?.id)?.riotContractAddress:
+        return "https://teritori.notion.site/The-Riot-Terms-Conditions-ETH-92328fb2d4494b6fb073b38929b28883";
+      default:
+        return null;
+    }
+  }, [mintAddress, network?.id]);
 
   if (!info) {
     return <ScreenContainer noMargin />;
@@ -143,6 +241,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   } = info;
   const hasLinks = discordLink || twitterLink || websiteLink;
 
+  const priceCurrency = getCurrency(network?.id, info.priceDenom);
+  const priceNativeCurrency = getNativeCurrency(network?.id, info.priceDenom);
+
   if (notFound) {
     return (
       <ScreenContainer noMargin>
@@ -153,7 +254,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     );
   } else
     return (
-      <ScreenContainer noMargin fullWidth>
+      <ScreenContainer noMargin fullWidth forceNetworkId={network?.id}>
         <View style={{ alignItems: "center" }}>
           <View
             style={{
@@ -233,9 +334,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               >
                 Available Balance:{" "}
                 {prettyPrice(
-                  networkId || "",
+                  network?.id || "",
                   balance?.amount || "0",
-                  info.priceDenom || ""
+                  balance?.denom || ""
                 )}
               </BrandText>
 
@@ -256,11 +357,12 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   />
                 )}
 
-                {getCurrency(process.env.TERITORI_NETWORK_ID, info.priceDenom)
-                  ?.kind === "ibc" && (
+                {priceCurrency?.kind === "ibc" && (
                   <PrimaryButton
                     size="XL"
-                    text="Deposit Atom"
+                    text={`Deposit ${
+                      priceNativeCurrency?.displayName || priceCurrency.denom
+                    }`}
                     width={160}
                     disabled={mintButtonDisabled}
                     loader
@@ -284,7 +386,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 </View>
               )}
 
-              {mintAddress === process.env.THE_RIOT_COLLECTION_ADDRESS && (
+              {mintTermsConditionsURL && (
                 <View style={{ flexDirection: "row", marginBottom: 24 }}>
                   <BrandText
                     style={[
@@ -299,7 +401,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   </BrandText>
                   <ExternalLink
                     gradientType="gray"
-                    externalUrl="https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b"
+                    externalUrl={mintTermsConditionsURL}
                     style={[
                       fontSemibold14,
                       {
@@ -345,13 +447,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               </BrandText>
               {info.mintStarted ? (
                 <>
-                  {info.hasPresale && (
-                    <PresaleActivy
-                      running={!info.publicSaleEnded && info.isInPresalePeriod}
-                      whitelistSize={info.whitelistSize || 0}
-                      maxPerAddress={info.whitelistMaxPerAddress || "0"}
-                    />
-                  )}
+                  {info.mintPhases.map((phase, index) => {
+                    return <PresaleActivy key={index} info={phase} />;
+                  })}
                   <PublicSaleActivity
                     started={!info.isInPresalePeriod}
                     ended={!!info.publicSaleEnded}
@@ -368,7 +466,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         </View>
         <DepositWithdrawModal
           variation="deposit"
-          networkId={process.env.TERITORI_NETWORK_ID || ""}
+          networkId={network?.id || ""}
           targetCurrency={info.priceDenom}
           onClose={() => setDepositVisible(false)}
           isVisible={isDepositVisible}
@@ -407,10 +505,12 @@ const AttributesCard: React.FC<{
 };
 
 const PresaleActivy: React.FC<{
-  running?: boolean;
-  whitelistSize: number;
-  maxPerAddress: string;
-}> = ({ running, whitelistSize, maxPerAddress }) => {
+  info: MintPhase;
+}> = ({ info }) => {
+  const now = Long.fromNumber(Date.now() / 1000);
+  const running = info.start.lessThanOrEqual(now) && info.end.greaterThan(now);
+  const incoming = info.start.greaterThan(now);
+  const maxPerAddress = info.mintMax.toString();
   return (
     <View>
       <View
@@ -425,6 +525,8 @@ const PresaleActivy: React.FC<{
           <BrandText style={[fontSemibold16, { color: primaryColor }]}>
             IN PROGRESS
           </BrandText>
+        ) : incoming ? (
+          <PhaseCountdown startsAt={info.start.toNumber()} />
         ) : (
           <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
             ENDED
@@ -455,7 +557,7 @@ const PresaleActivy: React.FC<{
           >
             Whitelist
           </BrandText>
-          <BrandText style={fontSemibold16}>{whitelistSize}</BrandText>
+          <BrandText style={fontSemibold16}>{info.size.toString()}</BrandText>
 
           <View
             style={{
@@ -494,6 +596,29 @@ const PresaleActivy: React.FC<{
   );
 };
 
+const PhaseCountdown: React.FC<{
+  onCountdownEnd?: () => void;
+  startsAt?: number;
+}> = ({ onCountdownEnd, startsAt }) => {
+  const now = Date.now() / 1000;
+  return (
+    <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
+      STARTS IN
+      <CountDown
+        until={(startsAt || now) - now}
+        onFinish={onCountdownEnd}
+        size={8}
+        style={{ marginLeft: layout.padding_x1 }}
+        digitTxtStyle={countDownTxtStyleStarts}
+        separatorStyle={countDownTxtStyleStarts}
+        digitStyle={{ backgroundColor: "none" }}
+        showSeparator
+        timeLabels={{ d: "", h: "", m: "", s: "" }}
+      />
+    </BrandText>
+  );
+};
+
 const PublicSaleActivity: React.FC<{
   started?: boolean;
   startsAt?: number;
@@ -501,7 +626,6 @@ const PublicSaleActivity: React.FC<{
   running?: boolean;
   onCountdownEnd?: () => void;
 }> = ({ started, running, ended, startsAt, onCountdownEnd }) => {
-  const now = Date.now() / 1000;
   return (
     <View
       style={{
@@ -512,20 +636,7 @@ const PublicSaleActivity: React.FC<{
     >
       <TertiaryBadge label="Public Mint" />
       {!started && !ended ? (
-        <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
-          STARTS IN
-          <CountDown
-            until={(startsAt || now) - now}
-            onFinish={onCountdownEnd}
-            size={8}
-            style={{ marginLeft: layout.padding_x1 }}
-            digitTxtStyle={countDownTxtStyleStarts}
-            separatorStyle={countDownTxtStyleStarts}
-            digitStyle={{ backgroundColor: "none" }}
-            showSeparator
-            timeLabels={{ d: "", h: "", m: "", s: "" }}
-          />
-        </BrandText>
+        <PhaseCountdown onCountdownEnd={onCountdownEnd} startsAt={startsAt} />
       ) : running ? (
         <BrandText style={[fontSemibold16, { color: primaryColor }]}>
           IN PROGRESS

@@ -1,10 +1,9 @@
 import React from "react";
 import { View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { selectIsKeplrConnected } from "../../../store/slices/settings";
+import { parseNetworkObjectId, NetworkKind } from "../../../networks";
 import { decimalFromAtomics, prettyPrice } from "../../../utils/coins";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
@@ -13,11 +12,13 @@ import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
 import { WalletStatusCard } from "../../cards/WalletStatusCard";
 import { ConnectKeplrButton } from "../../connectWallet/ConnectKeplrButton";
+import { ConnectMetamaskButton } from "../../connectWallet/ConnectMetamaskButton";
 import ModalBase from "../ModalBase";
 
 // Modal with price, fee,  Teritori wallet connexion and status and Payment button
 export const TransactionPaymentModal: React.FC<{
   label: string;
+  nftId: string;
   price?: string;
   priceDenom?: string;
   textComponent: JSX.Element;
@@ -26,6 +27,7 @@ export const TransactionPaymentModal: React.FC<{
   visible?: boolean;
 }> = ({
   label,
+  nftId,
   price = "",
   priceDenom = "",
   textComponent,
@@ -33,11 +35,24 @@ export const TransactionPaymentModal: React.FC<{
   onClose,
   visible = false,
 }) => {
-  const isKeplrConnected = useSelector(selectIsKeplrConnected);
   const selectedWallet = useSelectedWallet();
-  const networkId = process.env.TERITORI_NETWORK_ID; // FIXME: support other networks
-  const balances = useBalances(networkId, selectedWallet?.address);
-  const balance = balances.find((bal) => bal.denom === priceDenom)?.amount;
+  const [nftNetwork] = parseNetworkObjectId(nftId);
+  const nftNetworkId = nftNetwork?.id;
+  const balances = useBalances(nftNetworkId, selectedWallet?.address);
+  const balance =
+    balances.find((bal) => bal.denom === priceDenom)?.amount || "0";
+  const isWalletConnected = !!selectedWallet?.connected;
+
+  let WalletConnectComponent = null;
+
+  switch (nftNetwork?.kind) {
+    case NetworkKind.Cosmos:
+      WalletConnectComponent = ConnectKeplrButton;
+      break;
+    case NetworkKind.Ethereum:
+      WalletConnectComponent = ConnectMetamaskButton;
+      break;
+  }
 
   return (
     <ModalBase
@@ -54,8 +69,11 @@ export const TransactionPaymentModal: React.FC<{
           {textComponent}
         </View>
 
-        {/*==== Teritori wallet*/}
-        {isKeplrConnected ? <WalletStatusCard /> : <ConnectKeplrButton />}
+        {isWalletConnected ? (
+          <WalletStatusCard />
+        ) : WalletConnectComponent ? (
+          <WalletConnectComponent />
+        ) : null}
 
         {/*==== Amounts*/}
         <View style={{ marginTop: 16 }}>
@@ -72,11 +90,7 @@ export const TransactionPaymentModal: React.FC<{
             </BrandText>
             {/* TODO: Refresh totalString just after connect Keplr*/}
             <BrandText style={fontSemibold14}>
-              {prettyPrice(
-                process.env.TERITORI_NETWORK_ID || "",
-                balance || "0",
-                priceDenom
-              )}
+              {prettyPrice(nftNetworkId, balance, priceDenom)}
             </BrandText>
           </View>
           <View
@@ -90,11 +104,7 @@ export const TransactionPaymentModal: React.FC<{
               You will pay
             </BrandText>
             <BrandText style={fontSemibold14}>
-              {prettyPrice(
-                process.env.TERITORI_NETWORK_ID || "",
-                price,
-                priceDenom
-              )}
+              {prettyPrice(nftNetworkId, price, priceDenom)}
             </BrandText>
           </View>
         </View>
@@ -112,8 +122,8 @@ export const TransactionPaymentModal: React.FC<{
         {
           // Can buy if only the funds are sufficient
           price &&
-          decimalFromAtomics(balance || "0", priceDenom).isLessThan(
-            decimalFromAtomics(price, priceDenom)
+          decimalFromAtomics(nftNetworkId, balance, priceDenom).isLessThan(
+            decimalFromAtomics(nftNetworkId, price, priceDenom)
           ) ? (
             <View style={{ alignItems: "center", width: "100%" }}>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
@@ -126,7 +136,7 @@ export const TransactionPaymentModal: React.FC<{
               size="XS"
               text="Proceed to payment"
               fullWidth
-              disabled={!isKeplrConnected}
+              disabled={!isWalletConnected || !+balance}
             />
           )
         }

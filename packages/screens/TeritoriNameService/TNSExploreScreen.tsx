@@ -3,15 +3,18 @@ import { View } from "react-native";
 
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
+import ModalBase from "../../components/modals/GradientModalBase";
+import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
 import GradientModalBase from "../../components/modals/GradientModalBase";
 import { SendFundModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { useTNS } from "../../context/TNSProvider";
-import { useTokenList } from "../../hooks/tokens";
-import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useNSNameAvailability } from "../../hooks/useNSNameAvailability";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getCosmosNetwork } from "../../networks";
 import { neutral17 } from "../../utils/style/colors";
-import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 interface TNSExploreScreenProps extends TNSModalCommonProps {}
@@ -21,11 +24,14 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
 }) => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const { name, setName } = useTNS();
-  const isKeplrConnected = useIsKeplrConnected();
-  const { tokens } = useTokenList();
-  const { nameAvailable, nameError, loading } = useCheckNameAvailability(
-    name,
-    tokens
+  const selectedWallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
+  const network = getCosmosNetwork(networkId);
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const tokenId = (name + network?.nameServiceTLD || "").toLowerCase();
+  const { nameAvailable, nameError, loading } = useNSNameAvailability(
+    networkId,
+    tokenId
   );
 
   return (
@@ -45,10 +51,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
         loading={loading}
       >
         {/*-----  If name entered, no error and if the name is minted, we display some buttons for Explore flow */}
-        {name &&
-        !nameError &&
-        !nameAvailable &&
-        !isTokenOwnedByUser(tokens, name) ? (
+        {name && !nameError && !nameAvailable ? (
           <View
             style={{
               flex: 1,
@@ -67,7 +70,6 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
               width={154}
               text="View"
               onPress={() => {
-                setName(name);
                 onClose("TNSConsultName");
               }}
               squaresBackgroundColor={neutral17}
@@ -75,7 +77,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
             <PrimaryButtonOutline
               size="XL"
               width={154}
-              disabled={!isKeplrConnected}
+              disabled={tokens.includes(tokenId) || !selectedWallet?.connected}
               text="Send funds"
               onPress={() => setSendFundsModalVisible(true)}
               squaresBackgroundColor={neutral17}
@@ -84,9 +86,9 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
         ) : null}
       </FindAName>
 
-      <SendFundModal
+      <TNSSendFundsModal
         onClose={() => setSendFundsModalVisible(false)}
-        visible={sendFundsModalVisible}
+        isVisible={sendFundsModalVisible}
       />
     </GradientModalBase>
   );

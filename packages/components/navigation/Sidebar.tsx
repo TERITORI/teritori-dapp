@@ -1,24 +1,19 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Pressable,
-  FlatList,
-} from "react-native";
+import { View, StyleSheet, Pressable, FlatList } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
   WithSpringConfig,
 } from "react-native-reanimated";
 
-import addSVG from "../../../assets/icons/add.svg";
+import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import logoTopVersionSVG from "../../../assets/logos/logo-hexagon-version-alpha.svg";
 import { useSidebar } from "../../context/SidebarProvider";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
@@ -34,6 +29,7 @@ import { SpacerColumn } from "../spacer";
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
 import { SidebarProfileButton } from "./components/SidebarProfileButton";
+import { TopLogo } from "./components/TopLogo";
 import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
@@ -45,7 +41,11 @@ const SpringConfig: WithSpringConfig = {
 export const Sidebar: React.FC = () => {
   // variables
   const selectedWallet = useSelectedWallet();
-  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const selectedNetworkKind = useSelectedNetworkKind();
+  const connected = selectedWallet?.connected;
+
+  // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
@@ -76,7 +76,7 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
-    navigation.navigate(name);
+    navigation.navigate("TNSHome");
   };
 
   // returns
@@ -85,15 +85,7 @@ export const Sidebar: React.FC = () => {
       <View style={styles.headerContainer}>
         {currentRouteName === "Home" && <SideNotch />}
 
-        <View style={styles.topDetailContainer}>
-          <TouchableOpacity
-            style={styles.topIconContainer}
-            onPress={() => navigation.navigate("Home")}
-          >
-            <SVG width={68} height={68} source={logoTopVersionSVG} />
-          </TouchableOpacity>
-        </View>
-
+        <TopLogo />
         <Animated.View
           style={[styles.toggleButtonContainer, toggleButtonStyle]}
         >
@@ -105,11 +97,28 @@ export const Sidebar: React.FC = () => {
         <Separator color={neutral33} />
       </View>
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={Object.values(SIDEBAR_LIST)}
         keyExtractor={(item) => item.title}
-        renderItem={({ item }) => (
-          <SidebarButton key={item.title} onPress={onRouteChange} {...item} />
-        )}
+        renderItem={({ item }) => {
+          let { route } = item;
+          if (
+            item.disabledOn?.includes(
+              selectedNetworkKind || NetworkKind.Unknown
+            )
+          ) {
+            route = "ComingSoon";
+          }
+
+          return (
+            <SidebarButton
+              key={item.title}
+              onPress={onRouteChange}
+              {...item}
+              route={route}
+            />
+          );
+        }}
         ListHeaderComponent={<SpacerColumn size={1} />}
         ListFooterComponent={
           <>
@@ -134,14 +143,16 @@ export const Sidebar: React.FC = () => {
           }}
         />
 
-        {tnsMetadata.metadata && (
-          <SidebarProfileButton
-            walletAddress={selectedWallet?.address || ""}
-            tokenId={tnsMetadata?.metadata?.tokenId || ""}
-            image={tnsMetadata?.metadata?.image || ""}
-            isExpanded={isSidebarExpanded}
-          />
-        )}
+        {selectedNetworkKind === NetworkKind.Cosmos &&
+          connected &&
+          userInfo.metadata && (
+            <SidebarProfileButton
+              userId={selectedWallet?.userId || ""}
+              tokenId={userInfo.metadata.tokenId || ""}
+              image={userInfo.metadata.image || ""}
+              isExpanded={isSidebarExpanded}
+            />
+          )}
       </View>
     </Animated.View>
   );
@@ -155,13 +166,6 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     height: headerHeight,
-  },
-  topDetailContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  topIconContainer: {
-    paddingLeft: layout.padding_x0_5,
   },
   toggleButtonContainer: {
     position: "absolute",

@@ -11,13 +11,13 @@ import copySVG from "../../../assets/icons/copy.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import { BrandText } from "../../components/BrandText";
 import { Menu } from "../../components/Menu";
+import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useAppNavigation } from "../../utils/navigation";
+import { rewardsPrice, TotalRewards, useRewards } from "../../hooks/useRewards";
+import { accountExplorerLink, getUserId } from "../../networks";
 import { neutral33, neutral77 } from "../../utils/style/colors";
-import { accountExplorerLink } from "../../utils/teritori";
-import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
 
 export interface WalletItemProps {
   index: number;
@@ -26,8 +26,9 @@ export interface WalletItemProps {
     id: number;
     title: string;
     address: string;
-    pendingReward: number;
+    pendingRewards: TotalRewards[];
     staked: number;
+    networkId: string;
   };
 }
 
@@ -38,7 +39,12 @@ export const WalletItem: React.FC<WalletItemProps> = ({
 }) => {
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
-  const navigation = useAppNavigation();
+  const { claimAllRewards } = useRewards(
+    getUserId(item.networkId, item.address)
+  );
+
+  // Total rewards price with all denoms
+  const claimablePrice = rewardsPrice(item.pendingRewards);
 
   return (
     <View
@@ -58,15 +64,8 @@ export const WalletItem: React.FC<WalletItemProps> = ({
           alignItems: "center",
         }}
       >
-        <SVG
-          source={getWalletIconFromTitle(item.title)}
-          height={64}
-          width={64}
-          style={{
-            marginRight: 16,
-          }}
-        />
-        <View>
+        <NetworkIcon networkId={item.networkId} size={64} />
+        <View style={{ marginLeft: 16 }}>
           <View>
             <BrandText>{item.title}</BrandText>
             <View
@@ -163,22 +162,19 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {`$${item.pendingReward.toFixed(2)}`}
+            {`$${claimablePrice.toFixed(2)}`}
           </BrandText>
         </View>
 
         {width > 1150 && (
-          <>
-            <SecondaryButton
-              size="XS"
-              text="Claim reward"
-              onPress={() => navigation.navigate("Staking")}
-              style={{
-                backgroundColor: neutral33,
-                marginRight: 16,
-              }}
-            />
-          </>
+          <SecondaryButton
+            size="XS"
+            text="Claim rewards"
+            disabled={!claimablePrice}
+            onPress={claimAllRewards}
+            loader
+            style={{ marginRight: 16 }}
+          />
         )}
 
         <Menu
@@ -187,8 +183,9 @@ export const WalletItem: React.FC<WalletItemProps> = ({
             ...(width <= 1150
               ? [
                   {
-                    label: "Claim reward",
-                    onPress: () => {},
+                    label: "Claim rewards",
+                    onPress: claimAllRewards,
+                    disabled: !claimablePrice,
                   },
                   {
                     label: "Stake",
@@ -198,7 +195,12 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               : []),
             {
               label: "View on Explorer",
-              onPress: () => Linking.openURL(accountExplorerLink(item.address)),
+              onPress: () => {
+                console.log("item", item);
+                Linking.openURL(
+                  accountExplorerLink(item.networkId, item.address)
+                );
+              },
             },
             {
               label: "Rename address",

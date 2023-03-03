@@ -33,13 +33,13 @@ export const CarouselSection: React.FC<
           navRef.current = true;
           let finalStep = step;
           if (carouselRef.current.getCurrentIndex() < finalStep) {
-            finalStep = carouselRef.current?.getCurrentIndex() || 0;
+            finalStep = carouselRef.current.getCurrentIndex() || 0;
           }
           if (finalStep === 0) {
             navRef.current = false;
             return;
           }
-          carouselRef.current?.prev({
+          carouselRef.current.prev({
             count: finalStep,
             onFinished: () => (navRef.current = false),
           });
@@ -64,7 +64,7 @@ export const CarouselSection: React.FC<
             navRef.current = false;
             return;
           }
-          carouselRef.current?.next({
+          carouselRef.current.next({
             count: finalStep,
             onFinished: () => (navRef.current = false),
           });

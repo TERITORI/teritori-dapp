@@ -1,35 +1,88 @@
 import React, { useRef } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
+import { useSelector } from "react-redux";
 
 import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
-import teritoriSVG from "../../assets/icons/networks/teritori.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
-import { Network } from "../utils/network";
+import { useFeedbacks } from "../context/FeedbacksProvider";
+import { useWallets } from "../context/WalletsProvider";
+import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
+import {
+  getNetwork,
+  NetworkInfo,
+  NetworkKind,
+  selectableNetworks,
+} from "../networks";
+import {
+  setSelectedWalletId,
+  setSelectedNetworkId,
+  selectAreTestnetsEnabled,
+} from "../store/slices/settings";
+import { useAppDispatch } from "../store/store";
 import { neutral17, secondaryColor } from "../utils/style/colors";
 import { fontSemibold12 } from "../utils/style/fonts";
+import { layout } from "../utils/style/layout";
+import { WalletProvider } from "../utils/walletProvider";
 import { BrandText } from "./BrandText";
+import { NetworkIcon } from "./NetworkIcon";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
-import { NetworkIcon } from "./images/NetworkIcon";
+import { SpacerRow } from "./spacer";
 
 export const NetworkSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
+  forceNetworkId?: string;
+  forceNetworkKind?: NetworkKind;
+}> = ({ style, forceNetworkId, forceNetworkKind }) => {
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const dropdownRef = useRef<View>(null);
+  const dispatch = useAppDispatch();
+  const { wallets } = useWallets();
+  const { setToastError } = useFeedbacks();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
-  const onPressNetwork = () => {
-    //TODO:
+  const onPressNetwork = (networkId: string) => {
+    let walletProvider: WalletProvider | null = null;
+
+    const network = getNetwork(networkId);
+    if (!network) {
+      setToastError({
+        title: "Error",
+        message: `unsupported network ${networkId}`,
+      });
+      return;
+    }
+
+    switch (network.kind) {
+      case NetworkKind.Ethereum:
+        walletProvider = WalletProvider.Metamask;
+        break;
+      case NetworkKind.Cosmos:
+        walletProvider = WalletProvider.Keplr;
+        break;
+    }
+
+    // Auto select the first connected wallet when switching network
+    dispatch(setSelectedNetworkId(networkId));
+
+    const selectedWallet = wallets.find(
+      (w) => w.connected && w.provider === walletProvider
+    );
+
+    dispatch(setSelectedWalletId(selectedWallet?.id || ""));
+
     closeOpenedDropdown();
   };
+
+  const fontSize = 14;
 
   return (
     <View style={style} ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
         <TertiaryBox
-          width={60}
           mainContainerStyle={{
             flexDirection: "row",
             paddingHorizontal: 12,
@@ -37,12 +90,19 @@ export const NetworkSelector: React.FC<{
           }}
           height={40}
         >
-          <SVG
-            style={{ marginRight: 4 }}
-            source={teritoriSVG}
-            width={16}
-            height={16}
-          />
+          <NetworkIcon networkId={selectedNetworkInfo?.id || ""} size={16} />
+          <SpacerRow size={1} />
+          <BrandText
+            style={{
+              color: "white",
+              fontSize,
+              letterSpacing: -(fontSize * 0.04),
+              fontWeight: "500",
+            }}
+          >
+            {selectedNetworkInfo?.displayName}
+          </BrandText>
+          <SpacerRow size={1} />
           <SVG
             source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
             width={16}
@@ -57,30 +117,46 @@ export const NetworkSelector: React.FC<{
           width={172}
           style={{ position: "absolute", top: 44 }}
           mainContainerStyle={{
-            paddingHorizontal: 16,
-            paddingTop: 16,
+            paddingHorizontal: layout.padding_x2,
+            paddingTop: layout.padding_x2,
             backgroundColor: neutral17,
             alignItems: "flex-start",
           }}
         >
-          {Object.values(Network)
-            .filter((n) => n !== Network.Unknown)
+          {(process.env.DISPLAYED_NETWORKS_IDS || "")
+            .split(",")
+            .map((s) => s.trim())
+            .map(getNetwork)
+            .filter((n): n is NetworkInfo => !!n)
+            .filter((network) => {
+              return testnetsEnabled || !network.testnet;
+            })
             .map((network, index) => {
+              const selectable =
+                !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
+                selectedNetworkInfo?.id !== network.id && // check that it's not already selected
+                (!forceNetworkId || network.id === forceNetworkId) && // check that it's the forced network id if forced to
+                (!forceNetworkKind || network.kind === forceNetworkKind); // check that it's the correct network kind if forced to
+
               return (
                 <TouchableOpacity
+                  disabled={!selectable}
                   style={{
-                    marginBottom: 16,
-                    opacity: network !== Network.Teritori ? 0.5 : 1,
+                    marginBottom: layout.padding_x2,
+                    opacity: selectable ? 1 : 0.5,
                   }}
                   key={index}
-                  onPress={
-                    network === Network.Teritori ? onPressNetwork : undefined
-                  }
+                  onPress={() => onPressNetwork(network.id)}
                 >
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <NetworkIcon network={network} size={16} />
-                    <BrandText style={[fontSemibold12, { marginLeft: 12 }]}>
-                      {network}
+                    <NetworkIcon networkId={network.id} size={16} />
+                    <BrandText
+                      style={[
+                        fontSemibold12,
+                        { marginLeft: layout.padding_x1_5 },
+                      ]}
+                    >
+                      {network?.displayName || "Unknown"}
                     </BrandText>
                   </View>
                 </TouchableOpacity>

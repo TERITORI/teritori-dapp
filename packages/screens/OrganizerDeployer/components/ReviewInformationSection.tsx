@@ -3,12 +3,12 @@ import { Image, ScrollView, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
-import { tinyAddress } from "../../../components/WalletSelector";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { neutral00, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { tinyAddress } from "../../../utils/text";
 import {
   CreateDaoFormType,
   ConfigureVotingFormType,

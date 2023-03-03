@@ -7,7 +7,6 @@ export type RootStackParamList = {
   MyCollection: undefined;
   Activity: undefined;
   Guardians: undefined;
-  GuardiansGame: undefined;
   WalletManager: undefined;
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
@@ -16,17 +15,29 @@ export type RootStackParamList = {
   RiotersFooter: undefined;
 
   Launchpad: undefined;
+  LaunchpadApply: undefined;
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
 
   Marketplace: undefined;
   Collection: { id: string };
-  CollectionActivity: { id: string };
+  CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
+
+  RiotGame: undefined;
+  RiotGameEnroll: undefined;
+  RiotGameFight: undefined;
+  RiotGameBreeding: undefined;
+  RiotGameMemories: undefined;
+  RiotGameMarketplace: { collectionId?: string } | undefined;
+  RiotGameLeaderboard: undefined;
+  RiotGameInventory: undefined;
 
   Staking: undefined;
 
   ComingSoon: undefined;
+
+  Settings: undefined;
 
   OrganizationDeployer: undefined;
   OrganizationGetStarted: undefined;
@@ -56,12 +67,22 @@ const navConfig: {
     WalletManager: "wallet-manager",
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
-    GuardiansGame: "guardians-game",
     Governance: "governance",
     UserPublicProfile: "user/:id",
     RiotersFooter: "rioters-footer",
+    // === RiotGame
+    RiotGame: "riot-game",
+    RiotGameEnroll: "riot-game/enroll",
+    RiotGameFight: "riot-game/fight",
+    RiotGameBreeding: "riot-game/breeding",
+    RiotGameMemories: "riot-game/memories",
+    RiotGameMarketplace: "riot-game/marketplace",
+    RiotGameLeaderboard: "riot-game/leaderboard",
+    RiotGameInventory: "riot-game/inventory",
+
     // ==== Launchpad
     Launchpad: "launchpad",
+    LaunchpadApply: "launchpad/apply",
     // Mint NFT collection
     MintCollection: "collection/:id/mint",
     // ==== Teritori Name Service
@@ -70,7 +91,7 @@ const navConfig: {
     // ==== Marketplace
     Marketplace: "marketplace",
     Collection: "collection/:id",
-    CollectionActivity: "collection/:id/activity",
+    CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",
     // ==== Staking
     Staking: "staking",
@@ -84,6 +105,7 @@ const navConfig: {
 
     // ==== ComingSoon
     ComingSoon: "coming-soon",
+    Settings: "settings",
   },
 };
 

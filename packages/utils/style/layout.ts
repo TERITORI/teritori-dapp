@@ -6,12 +6,14 @@ export const screenContentMaxWidth = 1092;
 export const screenContentMaxWidthLarge = 1290;
 export const headerMarginHorizontal = 22;
 export const avatarWidth = 40;
-export const walletSelectorWidth = 220;
+export const topMenuWidth = 332;
 export const smallSidebarWidth = 76;
 export const fullSidebarWidth = 210;
 
+const BASE_SIZE = 8;
+
 export const layout = {
-  padding_x1: 8,
+  padding_x1: BASE_SIZE,
   // 2
   get padding_x0_25() {
     return this.padding_x1 * 0.25;
@@ -44,6 +46,7 @@ export const layout = {
   get padding_x4() {
     return this.padding_x1 * 4;
   },
+
   borderRadius: 12,
   contentPadding: 48,
   topContentPaddingWithHeading: 42,

@@ -1,5 +1,6 @@
 import { SvgProps } from "react-native-svg";
 
+import { NetworkKind } from "../../networks";
 import { RootStackParamList } from "../../utils/navigation";
 import { PickByValue } from "../../utils/types/helper";
 
@@ -17,5 +18,6 @@ export type SidebarRecordType = Record<
     route: keyof PickByValue<RootStackParamList, undefined> | "TNSHome";
     icon: React.FC<SvgProps>;
     nested?: Record<string, SidebarType>;
+    disabledOn?: NetworkKind[];
   }
 >;

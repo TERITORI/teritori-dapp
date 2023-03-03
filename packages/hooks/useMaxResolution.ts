@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useWindowDimensions } from "react-native";
 
 import { useSidebar } from "../context/SidebarProvider";
@@ -13,13 +12,10 @@ import {
 export const useMaxResolution = ({ noMargin = false } = {}) => {
   const { width: windowWidth, height } = useWindowDimensions();
   const { isSidebarExpanded } = useSidebar();
-  const width = useMemo(
-    () =>
-      windowWidth -
-      (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth) -
-      (noMargin ? 0 : screenContainerContentMarginHorizontal * 2),
-    [windowWidth, isSidebarExpanded]
-  );
+  const width =
+    windowWidth -
+    (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth) -
+    (noMargin ? 0 : screenContainerContentMarginHorizontal * 2);
 
   return {
     width: width > screenContentMaxWidth ? screenContentMaxWidth : width,

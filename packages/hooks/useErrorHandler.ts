@@ -2,6 +2,7 @@ import { useFeedbacks } from "../context/FeedbacksProvider";
 import { DETAULT_PROCESS_ERROR } from "../utils/errors";
 
 type ErrorHandlerType = {
+  title: string;
   error: unknown;
   callback?: () => void;
 };
@@ -9,7 +10,7 @@ type ErrorHandlerType = {
 export const useErrorHandler = () => {
   const { setToastError } = useFeedbacks();
 
-  const triggerError = ({ error, callback }: ErrorHandlerType) => {
+  const triggerError = ({ title, error, callback }: ErrorHandlerType) => {
     let errorText = DETAULT_PROCESS_ERROR;
     if (typeof error === "string") {
       errorText = error;
@@ -17,7 +18,7 @@ export const useErrorHandler = () => {
       errorText = error.message;
     }
     callback && callback();
-    setToastError({ title: "Delegation failed!", message: errorText });
+    setToastError({ title, message: errorText });
   };
 
   return { triggerError };

@@ -37,7 +37,7 @@ export const LegalFooter: React.FC = ({ children }) => {
             { color: neutral77, marginLeft: layout.padding_x1_5 },
           ]}
         >
-          2022 Teritori
+          2023 Teritori
         </BrandText>
       </View>
 

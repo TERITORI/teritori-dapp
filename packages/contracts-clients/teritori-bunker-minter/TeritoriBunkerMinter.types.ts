@@ -19,6 +19,7 @@ export interface ConfigResponse {
   price_denom: string;
   royalty_payment_address?: string | null;
   royalty_percentage?: number | null;
+  secondary_during_mint?: boolean | null;
   whitelist_mint_max?: Uint128 | null;
   whitelist_mint_period: number;
   whitelist_mint_price_amount?: Uint128 | null;
@@ -39,6 +40,7 @@ export interface Config {
   price_denom: string;
   royalty_payment_address?: string | null;
   royalty_percentage?: number | null;
+  secondary_during_mint?: boolean | null;
   whitelist_mint_max?: Uint128 | null;
   whitelist_mint_period: number;
   whitelist_mint_price_amount?: Uint128 | null;
@@ -47,12 +49,22 @@ export interface Config {
 export type CurrentSupplyResponse = string;
 export type ExecuteMsg = {
   update_config: {
+    mint_max?: Uint128 | null;
+    mint_start_time?: number | null;
     minter?: string | null;
     nft_addr?: Addr | null;
     nft_base_uri?: string | null;
     nft_max_supply?: Uint128 | null;
     nft_price_amount?: Uint128 | null;
+    nft_symbol?: string | null;
     owner?: string | null;
+    price_denom?: string | null;
+    royalty_payment_address?: string | null;
+    royalty_percentage?: number | null;
+    secondary_during_mint?: boolean | null;
+    whitelist_mint_max?: Uint128 | null;
+    whitelist_mint_period?: number | null;
+    whitelist_mint_price_amount?: Uint128 | null;
     [k: string]: unknown;
   };
 } | {
@@ -62,6 +74,7 @@ export type ExecuteMsg = {
   };
 } | {
   start_mint: {
+    mint_start_time?: number | null;
     [k: string]: unknown;
   };
 } | {
@@ -116,6 +129,7 @@ export interface InstantiateMsg {
   price_denom: string;
   royalty_payment_address?: string | null;
   royalty_percentage?: number | null;
+  secondary_during_mint?: boolean | null;
   whitelist_mint_max?: Uint128 | null;
   whitelist_mint_period: number;
   whitelist_mint_price_amount?: Uint128 | null;
