@@ -18,6 +18,8 @@ export type RootStackParamList = {
   UserPublicProfile: { id: string };
   RiotersFooter: undefined;
   FreelanceServicesHome: undefined;
+  FreelanceServicesHomeSeller: undefined;
+  FreelanceServicesProfileSeller: undefined;
   GraphicsAndDesign: undefined;
   LogoDesign: undefined;
   LogoDesignDetails: { id: string };
@@ -120,7 +122,9 @@ const navConfig: {
     Home: "",
     MyCollection: "my-collection",
     GraphicsAndDesign: "graphics-and-design",
-    FreelanceServicesHome: "freelance-services",
+    FreelanceServicesHome: "freelance-services/buyer",
+    FreelanceServicesHomeSeller: "freelance-services/seller",
+    FreelanceServicesProfileSeller: "freelance-services/profile_seller",
     SellerDetails: "seller-details/:id",
     OrderDetails: "order-details/:modal?",
     LogoDesign: "logo-design",

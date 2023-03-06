@@ -4,6 +4,7 @@ import React from "react";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { OrderDetails } from "../../screens/FreelanceServices/Details/OrderDetails";
 import { FreelanceServicesHome } from "../../screens/FreelanceServices/FreelanceServicesHome";
+import { FreelanceServicesHomeSeller } from "../../screens/FreelanceServices/FreelanceServicesHomeSeller";
 import { GraphicsAndDesignScreen } from "../../screens/FreelanceServices/GraphicsAndDesignScreen/GraphicsAndDesignScreen";
 import { LogoDesignDetailsScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignDetailsScreen";
 import { LogoDesignScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignScreen";
@@ -35,6 +36,7 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+import { FreelanceServicesProfileSeller } from "../../screens/FreelanceServices/FreelanceServicesProfileSeller";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
@@ -225,6 +227,22 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="FreelanceServicesHome"
         component={FreelanceServicesHome}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesHomeSeller"
+        component={FreelanceServicesHomeSeller}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesProfileSeller"
+        component={FreelanceServicesProfileSeller}
         options={{
           header: () => null,
           title: screenTitle("Freelance Services"),

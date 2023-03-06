@@ -1,17 +1,83 @@
 import React from "react";
-
+import { View, Text } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-
-export const FreelanceServicesScreenWrapper: React.FC = ({ children }) => {
+import { headerHeight } from "../../utils/style/layout";
+import { primaryColor, secondaryColor, neutral33, primaryTextColor } from "../../utils/style/colors";
+import { TouchableOpacity } from "react-native";
+import { useAppNavigation } from "../../utils/navigation";
+import { StyleSheet } from "react-native";
+export const FreelanceServicesScreenWrapper: React.FC<{showBuyerSeller?: boolean, isBuyer?: boolean}> = ({showBuyerSeller= false, isBuyer=true, children }) => {
+  const navigation = useAppNavigation();
   return (
     <ScreenContainer
       smallMargin
       fullWidth
       noMargin
-      headerChildren={<BrandText>Freelance Service</BrandText>}
+      headerChildren={
+        <>
+          {showBuyerSeller && <View style={{
+            position: "absolute",
+            top: -26,
+            right: 400,
+            height: headerHeight,
+            borderColor: neutral33,
+            borderLeftWidth: 1,
+            borderRightWidth: 1,
+            justifyContent: "center",
+            paddingHorizontal: 20,
+          }}>
+            <View style={{flexDirection: "row"}}>
+              <View style={[{
+                borderTopLeftRadius: 8,
+                borderBottomLeftRadius: 8,
+                borderColor: neutral33,
+                borderWidth: 1,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
+                borderRightWidth: 0,
+              }, isBuyer && styles.select]}>
+                <TouchableOpacity onPress={() => {
+                  navigation.navigate("FreelanceServicesHome");
+                }}>
+                  <BrandText style={[{paddingHorizontal: 5, fontSize: 14}, isBuyer && styles.select]}>I'm a
+                    Buyer</BrandText>
+                </TouchableOpacity>
+              </View>
+              <View style={[{
+                borderTopRightRadius: 8,
+                borderBottomRightRadius: 8,
+                borderColor: neutral33,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
+                borderWidth: 1,
+                borderLeftWidth: 0,
+              }, !isBuyer && styles.select]}>
+                <TouchableOpacity onPress={() => {
+                  navigation.navigate("FreelanceServicesHomeSeller")
+                }}>
+                  <BrandText style={[{paddingHorizontal: 5, fontSize: 14}, !isBuyer && styles.select]}>I'm a
+                    Seller</BrandText>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+      }
+      <BrandText>Freelance Service</BrandText>
+      </>
+    }
     >
       {children}
     </ScreenContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  select: {
+    color: primaryTextColor,
+    backgroundColor: primaryColor
+  },
+  unselect: {
+    color: secondaryColor,
+  }
+});
