@@ -5,28 +5,34 @@ import Long from "long";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  TouchableOpacity,
   Image,
   StyleProp,
   TextStyle,
   View,
   ViewStyle,
+  useWindowDimensions,
+  TextInput,
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
 
-import addSVG from "../../../assets/icons/add.svg";
+import balanceSVG from "../../../assets/icons/balance.svg";
 import minusSVG from "../../../assets/icons/minus.svg";
+import plusSVG from "../../../assets/icons/plus.svg";
+import sigmaSVG from "../../../assets/icons/sigma.svg";
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
+import FlexRow from "../../components/FlexRow";
+import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { IconButton } from "../../components/buttons/IconButton";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { ProgressionCard } from "../../components/cards/ProgressionCard";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
 import { GradientText } from "../../components/gradientText";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { SpacerRow } from "../../components/spacer";
 import {
   initialToastError,
@@ -52,14 +58,17 @@ import { prettyPrice } from "../../utils/coins";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { ScreenFC } from "../../utils/navigation";
 import {
-  neutral00,
+  neutral17,
+  neutral30,
   neutral33,
   neutral67,
   neutral77,
+  neutral22,
   neutralA3,
   pinkDefault,
   primaryColor,
   yellowDefault,
+  secondaryColor,
 } from "../../utils/style/colors";
 import {
   fontMedium14,
@@ -91,6 +100,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     params: { id },
   },
 }) => {
+  const { width: currentWidth } = useWindowDimensions();
+
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
@@ -106,15 +117,20 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
   const mintButtonDisabled = minted || !wallet?.connected;
 
-  const updateTotalBulkMint = (newTotalBulkMint: number) => {
-    const MAX_BULK = 100;
+  const updateTotalBulkMint = (newTotalBulkMint: number | string) => {
+    const numOnlyRegexp = new RegExp(/^\d+$/);
+    if (!numOnlyRegexp.test("" + newTotalBulkMint)) {
+      return;
+    }
 
-    let totalBulkMint = newTotalBulkMint;
+    const MAX_BULK = 99;
+
+    let totalBulkMint = +newTotalBulkMint;
     if (newTotalBulkMint < 1) {
       totalBulkMint = 1;
     } else if (info?.maxPerAddress && newTotalBulkMint > +info.maxPerAddress) {
       totalBulkMint = +info.maxPerAddress;
-    } else if (totalBulkMint > 100) {
+    } else if (totalBulkMint > MAX_BULK) {
       totalBulkMint = MAX_BULK;
     }
 
@@ -246,7 +262,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         default:
           setToastError({
             title: "Error",
-            message: `unsupported network ${network?.id}`,
+            message: `unsuported network ${network?.id}`,
           });
           return;
       }
@@ -318,6 +334,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 justifyContent: "flex-start",
                 width: "100%",
                 maxWidth: 534,
+                margin: layout.padding_x2,
               }}
             >
               <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
@@ -359,7 +376,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   fontSemibold14,
                   {
                     marginBottom: layout.padding_x3,
-                    marginRight: layout.padding_x3,
                   },
                 ]}
               >
@@ -374,142 +390,212 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 valueMax={info.maxSupply ? parseInt(info.maxSupply, 10) : 0}
                 style={{
                   marginBottom: layout.padding_x3,
-                  maxWidth: 420,
                 }}
               />
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginRight: layout.padding_x3,
-                  marginBottom: layout.padding_x2,
-                }}
-              >
-                <BrandText style={fontSemibold14}>
-                  Total price:{" "}
-                  {info.isMintable
-                    ? prettyPrice(
-                        network?.id,
-                        +(info?.unitPrice || "0") * totalBulkMint + "",
-                        info?.priceDenom || ""
-                      )
-                    : "0"}
-                </BrandText>
-
-                <BrandText
+              <TertiaryBox noBrokenCorners fullWidth>
+                {/* Upper section */}
+                <FlexRow
                   style={{
-                    fontSize: 14,
+                    backgroundColor: neutral17,
+                    borderBottomWidth: 1,
+                    borderBottomColor: neutral33,
+                    width: "100%",
+                    borderTopLeftRadius: 8,
+                    borderTopRightRadius: 8,
                   }}
+                  breakpoint={650}
                 >
-                  Available Balance:{" "}
-                  {prettyPrice(
-                    network?.id || "",
-                    balance?.amount || "0",
-                    balance?.denom || ""
-                  )}
-                </BrandText>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginRight: layout.padding_x3,
-                }}
-              >
-                {info.isMintable && (
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <IconButton
-                      onPress={() => updateTotalBulkMint(totalBulkMint - 1)}
-                      size="M"
-                      iconSVG={minusSVG}
-                      iconColor={neutral00}
-                      disabled={totalBulkMint <= 1}
-                      noBrokenCorners
+                  {/* Left block */}
+                  <View
+                    style={{
+                      padding: layout.padding_x2,
+                      borderRightColor: neutral33,
+                      borderRightWidth: currentWidth >= 650 ? 1 : 0,
+                      flex: 1,
+                      flexDirection: "row",
+                    }}
+                  >
+                    <SVG
+                      style={{
+                        backgroundColor: neutral22,
+                        padding: layout.padding_x1_5,
+                        borderRadius: 8,
+                      }}
+                      source={sigmaSVG}
+                      color={secondaryColor}
                     />
 
                     <SpacerRow size={2} />
 
-                    <TextInputCustom
-                      label=""
-                      name="totalBulkMint"
-                      width={50}
-                      height={50}
-                      value={"" + totalBulkMint}
-                      onChangeText={(val) => updateTotalBulkMint(+val)}
-                      regexp={new RegExp(/^\d+$/)}
-                      noBrokenCorners
-                    />
-
-                    <SpacerRow size={2} />
-
-                    <IconButton
-                      onPress={() => updateTotalBulkMint(totalBulkMint + 1)}
-                      size="M"
-                      iconSVG={addSVG}
-                      disabled={totalBulkMint === +(info?.maxPerAddress || 0)}
-                      noBrokenCorners
-                    />
+                    <View style={{ justifyContent: "center" }}>
+                      <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                        Total price:
+                      </BrandText>
+                      <BrandText style={fontSemibold16}>
+                        {info.isMintable
+                          ? prettyPrice(
+                              network?.id,
+                              +(info?.unitPrice || "0") * totalBulkMint + "",
+                              info?.priceDenom || ""
+                            )
+                          : "0"}
+                      </BrandText>
+                    </View>
                   </View>
-                )}
 
-                {priceCurrency?.kind === "ibc" && (
-                  <PrimaryButton
-                    size="XL"
-                    text={`Deposit ${
-                      priceNativeCurrency?.displayName || priceCurrency.denom
-                    }`}
-                    width={160}
-                    disabled={mintButtonDisabled}
-                    loader
-                    onPress={() => setDepositVisible(true)}
-                  />
-                )}
-              </View>
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  marginVertical: layout.padding_x3,
-                }}
-              >
-                {info.isMintable && (
-                  <PrimaryButton
-                    size="XL"
-                    text="Mint now"
-                    width={160}
-                    disabled={
-                      mintButtonDisabled ||
-                      parseInt(balance?.amount || "0", 10) <
-                        parseInt(info.unitPrice || "0", 10)
-                    }
-                    loader
-                    onPress={mint}
-                  />
-                )}
-              </View>
-
-              {hasLinks && (
-                <View style={{ marginBottom: 24 }}>
+                  {/* Right block */}
                   <View
                     style={{
                       flexDirection: "row",
-                      alignItems: "center",
-                      flexWrap: "wrap",
-                      margin: -cardsHalfGap,
+                      padding: layout.padding_x2,
+                      flex: 1,
                     }}
                   >
-                    <CollectionSocialButtons collectionInfo={info} />
+                    <SVG
+                      style={{
+                        backgroundColor: neutral22,
+                        padding: layout.padding_x1_5,
+                        borderRadius: 8,
+                      }}
+                      source={balanceSVG}
+                      color={secondaryColor}
+                    />
+
+                    <SpacerRow size={2} />
+
+                    <View style={{ justifyContent: "center" }}>
+                      <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                        Available balance:
+                      </BrandText>
+                      <BrandText style={fontSemibold16}>
+                        {prettyPrice(
+                          network?.id || "",
+                          balance?.amount || "0",
+                          balance?.denom || ""
+                        )}
+                      </BrandText>
+                    </View>
                   </View>
-                </View>
-              )}
+                </FlexRow>
+
+                <FlexRow
+                  style={{
+                    width: "100%",
+                    paddingHorizontal: layout.padding_x2,
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                  breakpoint={700}
+                >
+                  {info.isMintable && (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginVertical: layout.padding_x2,
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => updateTotalBulkMint(totalBulkMint - 1)}
+                        style={{
+                          borderRadius: 40,
+                          backgroundColor: neutral30,
+                          width: 40,
+                          height: 40,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <SVG source={minusSVG} color={primaryColor} />
+                      </TouchableOpacity>
+                      <SpacerRow size={2} />
+                      <TextInput
+                        value={"" + totalBulkMint}
+                        onChangeText={(val) => updateTotalBulkMint(+val)}
+                        style={[
+                          {
+                            color: secondaryColor,
+                            width: 20,
+                            textAlign: "center",
+                          },
+                          fontSemibold14,
+                        ]}
+                      />
+                      <SpacerRow size={2} />
+                      <TouchableOpacity
+                        onPress={() => updateTotalBulkMint(totalBulkMint + 1)}
+                        style={{
+                          borderRadius: 40,
+                          backgroundColor: neutral30,
+                          width: 40,
+                          height: 40,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <SVG source={plusSVG} color={primaryColor} />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+
+                  {currentWidth >= 700 && (
+                    <View
+                      style={{
+                        borderRightWidth: 1,
+                        borderRightColor: neutral33,
+                        height: layout.padding_x4,
+                      }}
+                    />
+                  )}
+
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginVertical: layout.padding_x2,
+                    }}
+                  >
+                    {priceCurrency?.kind === "ibc" && (
+                      <SecondaryButton
+                        size="XL"
+                        text={`Deposit ${
+                          priceNativeCurrency?.displayName ||
+                          priceCurrency.denom
+                        }`}
+                        width={150}
+                        disabled={mintButtonDisabled}
+                        loader
+                        onPress={() => setDepositVisible(true)}
+                      />
+                    )}
+
+                    <SpacerRow size={2} />
+
+                    {info.isMintable && (
+                      <PrimaryButton
+                        size="XL"
+                        text="Mint"
+                        width={priceCurrency?.kind === "ibc" ? 100 : 200}
+                        disabled={
+                          mintButtonDisabled ||
+                          parseInt(balance?.amount || "0", 10) <
+                            parseInt(info.unitPrice || "0", 10)
+                        }
+                        loader
+                        onPress={mint}
+                      />
+                    )}
+                  </View>
+                </FlexRow>
+              </TertiaryBox>
 
               {mintTermsConditionsURL && (
-                <View style={{ flexDirection: "row", marginBottom: 24 }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginTop: layout.padding_x0_5,
+                  }}
+                >
                   <BrandText
                     style={[
                       fontSemibold14,
@@ -519,7 +605,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       },
                     ]}
                   >
-                    {'By clicking "Mint now", you agree to the '}
+                    {'By clicking "Mint", you agree to the '}
                   </BrandText>
                   <ExternalLink
                     gradientType="gray"
@@ -537,6 +623,25 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                   </ExternalLink>
                 </View>
               )}
+
+              {hasLinks && (
+                <View
+                  style={{
+                    marginTop: layout.padding_x2_5,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      margin: -cardsHalfGap,
+                    }}
+                  >
+                    <CollectionSocialButtons collectionInfo={info} />
+                  </View>
+                </View>
+              )}
             </View>
 
             {/* ===== Right container */}
@@ -547,6 +652,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 maxWidth: 534,
                 maxHeight: 806,
                 paddingBottom: 72,
+                margin: layout.padding_x2,
               }}
             >
               <TertiaryBox style={{ marginBottom: 40 }}>
