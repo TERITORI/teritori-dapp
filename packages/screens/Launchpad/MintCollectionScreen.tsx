@@ -262,7 +262,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         default:
           setToastError({
             title: "Error",
-            message: `unsuported network ${network?.id}`,
+            message: `unsupported network ${network?.id}`,
           });
           return;
       }
