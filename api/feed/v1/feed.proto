@@ -14,10 +14,11 @@ message Reaction {
 
 message Post {
   uint32 category = 1;
-  bool isDeleted = 2;
+  bool is_deleted = 2;
   string identifier = 3;
-  string metadata = 5;
-  string parent_post_identifier = 6;
+  string metadata = 4;
+  string parent_post_identifier = 5;
+  uint32 sub_post_length = 6;
   string created_by = 7;
   int64 created_at = 8;
   repeated Reaction reactions = 9;

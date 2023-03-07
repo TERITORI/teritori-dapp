@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from "react";
 
+import { PostsRequest } from "../../api/feed/v1/feed";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import { FeedRequest } from "../../hooks/useFetchFeed";
 import { NetworkKind } from "../../networks";
-import { feedTabToCategories, screenTabItems } from "../../utils/feed";
 import { ScreenFC } from "../../utils/navigation";
+import { feedTabToCategories, feedsTabItems } from "../../utils/social-feed";
 import { FeedHeader } from "./components/FeedHeader";
 
 export const socialFeedBreakpointXL = 1024;
@@ -14,11 +14,18 @@ export const socialFeedBreakpointXS = 0;
 
 export const FeedScreen: ScreenFC<"Feed"> = () => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("all");
+    useState<keyof typeof feedsTabItems>("all");
 
-  const feedRequest: FeedRequest = useMemo(() => {
+  const feedRequest: PostsRequest = useMemo(() => {
     return {
-      categories: feedTabToCategories(selectedTab),
+      filter: {
+        categories: feedTabToCategories(selectedTab),
+        user: "",
+        mentions: [],
+        hashtags: [],
+      },
+      limit: 10,
+      offset: 0,
     };
   }, [selectedTab]);
 
@@ -32,7 +39,6 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
     >
       <NewsFeed
         req={feedRequest}
-        screenTab={selectedTab}
         Header={() => (
           <FeedHeader selectedTab={selectedTab} onTabChange={setSelectedTab} />
         )}

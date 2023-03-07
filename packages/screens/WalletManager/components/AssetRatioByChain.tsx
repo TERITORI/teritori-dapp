@@ -164,7 +164,7 @@ export const AssetRatioByChain: React.FC<AssetRatioByChainProps> = ({
               width: 16,
               height: 16,
               borderRadius: 12,
-              backgroundColor: "#5C26F5",
+              backgroundColor: purpleDark,
               marginRight: 12,
             }}
           />

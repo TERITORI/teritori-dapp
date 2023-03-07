@@ -12,7 +12,7 @@ import {
 import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
-import { tinyAddress } from "./WalletSelector";
+import { tinyAddress } from "../utils/text";
 import { SuccessBadge } from "./badges/SuccessBadge";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 

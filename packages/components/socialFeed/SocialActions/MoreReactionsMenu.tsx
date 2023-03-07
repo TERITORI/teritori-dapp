@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-import { Reaction } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { Reaction } from "../../../api/feed/v1/feed";
 import { neutral15, neutral22 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { SocialStat } from "../SocialStat";

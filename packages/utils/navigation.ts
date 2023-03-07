@@ -26,7 +26,12 @@ export type RootStackParamList = {
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
   Feed: undefined;
-  FeedNewPost: NewPostFormValues | undefined;
+  FeedNewArticle:
+    | (NewPostFormValues & {
+        additionalMention?: string;
+        additionalHashtag?: string;
+      })
+    | undefined;
   FeedPostView: { id: string };
   HashFeed: { id: string };
 
@@ -93,7 +98,7 @@ const navConfig: {
     CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",
     Feed: "feed",
-    FeedNewPost: "feed/new",
+    FeedNewArticle: "feed/new",
     FeedPostView: "feed/post/:id",
     HashFeed: "feed/hashtag/:id",
 

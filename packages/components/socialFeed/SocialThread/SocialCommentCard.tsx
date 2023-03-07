@@ -11,10 +11,11 @@ import {
 
 import { socialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
+import { Reaction as ReactionFromContract } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import {
   combineFetchCommentPages,
   useFetchComments,
-} from "../../../hooks/useFetchComments";
+} from "../../../hooks/feed/useFetchComments";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../hooks/usePrevious";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
@@ -39,7 +40,7 @@ import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
-import { tinyAddress } from "../../WalletSelector";
+import { tinyAddress } from "../../../utils/text";
 import { AnimationFadeIn } from "../../animations";
 import { AnimationFadeInOut } from "../../animations/AnimationFadeInOut";
 import { CustomPressable } from "../../buttons/CustomPressable";
@@ -51,7 +52,7 @@ import { EmojiSelector } from "../EmojiSelector";
 import { PostResultExtra } from "../NewsFeed/NewsFeed.type";
 import { CommentsCount } from "../SocialActions/CommentsCount";
 import { Reactions } from "../SocialActions/Reactions";
-import { RepplyButton } from "../SocialActions/RepplyButton";
+import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { TipButton } from "../SocialActions/TipButton";
 import { DateTime } from "./DateTime";
@@ -61,7 +62,7 @@ export interface SocialCommentCardProps {
   comment: PostResultExtra;
   style?: StyleProp<ViewStyle>;
   isLast?: boolean;
-  onPressReply?: OnPressReplyType;
+  onPressReply: OnPressReplyType;
   overrideParentId?: string;
   refresh?: number;
   onScrollTo?: (y: number) => void;
@@ -96,9 +97,14 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const { mutate: reactToComment, isLoading: isReactLoading } =
     useTeritoriSocialFeedReactPostMutation({
       onSuccess(_data, variables) {
-        const reactions = getUpdatedReactions(localComment, variables.msg.icon);
-
-        setLocalComment({ ...localComment, reactions });
+        const reactions = getUpdatedReactions(
+          localComment.reactions,
+          variables.msg.icon
+        );
+        setLocalComment({
+          ...localComment,
+          reactions: reactions as ReactionFromContract[],
+        });
       },
     });
 
@@ -285,9 +291,9 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   isLoading={isReactLoading}
                 />
                 <SpacerRow size={2.5} />
-                <RepplyButton onPress={handleReply} />
+                <ReplyButton onPress={handleReply} />
                 <SpacerRow size={2.5} />
-                <CommentsCount post={localComment} />
+                <CommentsCount count={localComment.sub_post_length} />
 
                 {authorNSInfo.metadata?.tokenId !==
                   userInfo?.metadata?.tokenId && (

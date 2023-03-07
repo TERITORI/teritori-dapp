@@ -17,6 +17,7 @@ export interface Post {
   identifier: string;
   metadata: string;
   parentPostIdentifier: string;
+  subPostLength: number;
   createdBy: string;
   createdAt: number;
   reactions: Reaction[];
@@ -104,6 +105,7 @@ function createBasePost(): Post {
     identifier: "",
     metadata: "",
     parentPostIdentifier: "",
+    subPostLength: 0,
     createdBy: "",
     createdAt: 0,
     reactions: [],
@@ -122,10 +124,13 @@ export const Post = {
       writer.uint32(26).string(message.identifier);
     }
     if (message.metadata !== "") {
-      writer.uint32(42).string(message.metadata);
+      writer.uint32(34).string(message.metadata);
     }
     if (message.parentPostIdentifier !== "") {
-      writer.uint32(50).string(message.parentPostIdentifier);
+      writer.uint32(42).string(message.parentPostIdentifier);
+    }
+    if (message.subPostLength !== 0) {
+      writer.uint32(48).uint32(message.subPostLength);
     }
     if (message.createdBy !== "") {
       writer.uint32(58).string(message.createdBy);
@@ -155,11 +160,14 @@ export const Post = {
         case 3:
           message.identifier = reader.string();
           break;
-        case 5:
+        case 4:
           message.metadata = reader.string();
           break;
-        case 6:
+        case 5:
           message.parentPostIdentifier = reader.string();
+          break;
+        case 6:
+          message.subPostLength = reader.uint32();
           break;
         case 7:
           message.createdBy = reader.string();
@@ -185,6 +193,7 @@ export const Post = {
       identifier: isSet(object.identifier) ? String(object.identifier) : "",
       metadata: isSet(object.metadata) ? String(object.metadata) : "",
       parentPostIdentifier: isSet(object.parentPostIdentifier) ? String(object.parentPostIdentifier) : "",
+      subPostLength: isSet(object.subPostLength) ? Number(object.subPostLength) : 0,
       createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
       createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
       reactions: Array.isArray(object?.reactions) ? object.reactions.map((e: any) => Reaction.fromJSON(e)) : [],
@@ -198,6 +207,7 @@ export const Post = {
     message.identifier !== undefined && (obj.identifier = message.identifier);
     message.metadata !== undefined && (obj.metadata = message.metadata);
     message.parentPostIdentifier !== undefined && (obj.parentPostIdentifier = message.parentPostIdentifier);
+    message.subPostLength !== undefined && (obj.subPostLength = Math.round(message.subPostLength));
     message.createdBy !== undefined && (obj.createdBy = message.createdBy);
     message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
     if (message.reactions) {
@@ -215,6 +225,7 @@ export const Post = {
     message.identifier = object.identifier ?? "";
     message.metadata = object.metadata ?? "";
     message.parentPostIdentifier = object.parentPostIdentifier ?? "";
+    message.subPostLength = object.subPostLength ?? 0;
     message.createdBy = object.createdBy ?? "";
     message.createdAt = object.createdAt ?? 0;
     message.reactions = object.reactions?.map((e) => Reaction.fromPartial(e)) || [];

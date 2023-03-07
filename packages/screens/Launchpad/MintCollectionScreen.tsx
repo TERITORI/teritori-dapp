@@ -137,10 +137,20 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       const address = await signer.getAddress();
 
       const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+
+      const estimatedGasLimit = await minterClient.estimateGas.requestMint(
+        address,
+        1,
+        {
+          value: userState.mintPrice,
+        }
+      );
+
       const tx = await minterClient.requestMint(address, 1, {
+        value: userState.mintPrice,
         maxFeePerGas: maxFeePerGas?.toNumber(),
         maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
-        value: userState.mintPrice,
+        gasLimit: estimatedGasLimit.mul(150).div(100),
       });
       await tx.wait();
     },

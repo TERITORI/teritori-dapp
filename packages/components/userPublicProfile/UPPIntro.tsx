@@ -18,10 +18,10 @@ import {
   fontSemibold14,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { useCopyToClipboard } from "../CopyToClipboard";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
-import { tinyAddress } from "../WalletSelector";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { SocialButton } from "../buttons/SocialButton";

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { HANDLE_REGEX, URL_REGEX } from "../../utils/regex";
+import { hashMatch, mentionMatch, urlMatch } from "../../utils/social-feed";
 import { HashRender } from "./HashRenderer";
 import { MentionRender } from "./MentionRenderer";
 import { UrlRender } from "./URLRenderer";
@@ -32,21 +32,18 @@ export const TextRenderer = ({ text }: { text: string }) => {
   const formattedText = useMemo(() => {
     let refText = text;
     const matchTextReference: MatchText[] = [];
-    const hashMatch = text.match(/#\S+/g);
-    const mentionMatch = text.match(new RegExp(HANDLE_REGEX, "g"));
-    const urlMatch = text.match(new RegExp(URL_REGEX, "g"));
 
-    hashMatch?.map((item, index) => {
+    hashMatch(text)?.map((item, index) => {
       const matchKey = `--${index + 1}hash--`;
       refText = refText.replace(item, matchKey);
       matchTextReference.push({ type: "hash", matchKey, text: item });
     });
-    urlMatch?.map((item, index) => {
+    urlMatch(text)?.map((item, index) => {
       const matchKey = `--${index + 1}url--`;
       refText = refText.replace(item, matchKey);
       matchTextReference.push({ type: "url", matchKey, text: item });
     });
-    mentionMatch?.map((item, index) => {
+    mentionMatch(text)?.map((item, index) => {
       const matchKey = `--${index + 1}mention--`;
       refText = refText.replace(item, matchKey);
       matchTextReference.push({ type: "mention", matchKey, text: item });

@@ -253,9 +253,22 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 			return errors.Wrap(err, "failed to get current user score")
 		}
 
+		// For S3: If staking ended yesterday then do not count because it have been reset at midnight already
+		now := time.Now()
+		dayBeginningTimestamp := time.Date(now.UTC().Year(), now.UTC().Month(), now.UTC().Day(), 0, 0, 0, 0, time.UTC).Unix()
+
+		var adjustedStakingDuration uint64
+		if squadStaking.EndTime <= uint64(dayBeginningTimestamp) {
+			adjustedStakingDuration = 0
+		} else if squadStaking.StartTime < uint64(dayBeginningTimestamp) {
+			adjustedStakingDuration = squadStaking.EndTime - uint64(dayBeginningTimestamp)
+		} else {
+			adjustedStakingDuration = stakingDuration
+		}
+
 		// Update score
 		if err := h.db.Model(&userScore).
-			UpdateColumn("score", gorm.Expr("score  + ?", stakingDuration)).
+			UpdateColumn("score", gorm.Expr("score  + ?", adjustedStakingDuration)).
 			UpdateColumn("in_progress_score", gorm.Expr("score")).
 			Error; err != nil {
 			return errors.Wrap(err, "failed to update user score")

@@ -17,6 +17,7 @@ export enum PostCategory {
 export interface NewPostFormValues {
   title?: string;
   hashtags: string[];
+  mentions: string[];
   message: string;
   files?: LocalFileData[];
   gifs?: string[];
@@ -33,7 +34,14 @@ export interface SocialFeedMetadata {
   files?: RemoteFileData[];
   gifs?: string[];
   hashtags: string[];
+  mentions: string[];
   createdAt: string;
   updatedAt: string;
   openGraph?: OpenGraphType;
 }
+
+export type ReplyToType = {
+  username: string;
+  yOffsetValue?: number;
+  parentId?: string;
+};
