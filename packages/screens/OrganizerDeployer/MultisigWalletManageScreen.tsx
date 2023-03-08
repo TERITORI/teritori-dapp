@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -13,6 +13,7 @@ import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { MultisigWalletItem } from "./components/MultisigWalletItem";
+import { InputMultisigAddressModal } from "../Multisig/components/InputMultisigAddressModal";
 import data from "./multisig-wallet.json";
 
 export const MULTISIG_WALLET_HEADING: { [key in string]: TableRowHeading } = {
@@ -41,7 +42,11 @@ export const MULTISIG_WALLET_HEADING: { [key in string]: TableRowHeading } = {
 export const MultisigWalletManageScreen = () => {
   // variables
   const navigation = useAppNavigation();
+  const [isInputMultisigAddressVisible, setInputMultisigAddressVisible] = useState(false);
 
+  useEffect(()=>{
+    
+  })
   // returns
   return (
     <ScreenContainer
@@ -62,9 +67,9 @@ export const MultisigWalletManageScreen = () => {
             </BrandText>
           </View>
           <View style={styles.rowSB}>
-            <SecondaryButton text="Add existing Wallet" size="M" />
+            <SecondaryButton text="Add existing Wallet" size="M" onPress={()=>setInputMultisigAddressVisible(true)}/>
             <SpacerRow size={2} />
-            <PrimaryButton text="Create Multisig Wallet" size="M" />
+            <PrimaryButton text="Create Multisig Wallet" size="M" onPress={ ()=>navigation.navigate("MultisigCreate") }/>
           </View>
         </View>
         <SpacerColumn size={2.5} />
@@ -83,6 +88,15 @@ export const MultisigWalletManageScreen = () => {
           />
         ))}
       </ScrollView>
+      <InputMultisigAddressModal
+          isVisible={isInputMultisigAddressVisible}
+          networkId={process.env.TERITORI_NETWORK_ID || ""}
+          onClose={() => setInputMultisigAddressVisible(false)}
+          onConfirm={(address)=>{
+            setInputMultisigAddressVisible(false);
+            MULTISIG_WALLET_HEADING
+          }}
+        />
     </ScreenContainer>
   );
 };

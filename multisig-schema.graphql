@@ -5,6 +5,11 @@ type Multisig {
   chainId: String!
 }
 
+type MultisigUser {
+  userAddress: String!
+  multisigAddress: [String!]
+}
+
 type SourceAddress {
   nickname: String
   address: String!
