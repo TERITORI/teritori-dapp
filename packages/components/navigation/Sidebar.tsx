@@ -108,7 +108,6 @@ export const Sidebar: React.FC<{ availableApps: dAppGroup }> = ({
     const dynamicAppsSelection = [] as {
       [key: string]: any;
     };
-    dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
     selectedApps.map((element) => {
       const { appId, groupKey } = getValuesFromId(element);
       if (!availableApps[groupKey]) {
@@ -125,6 +124,8 @@ export const Sidebar: React.FC<{ availableApps: dAppGroup }> = ({
             icon: option.icon,
           };
     });
+    dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
+
     return dynamicAppsSelection;
   }, [selectedApps, availableApps, dispatch]);
 
