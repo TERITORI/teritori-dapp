@@ -102,7 +102,7 @@ export const Pagination = ({
             <BrandText
               style={[fontSemibold14, { marginRight: layout.padding_x1 }]}
             >
-              {itemsPerPage.toString(10)}
+              {itemsPerPage}
             </BrandText>
             <SVG
               source={
@@ -145,7 +145,7 @@ export const Pagination = ({
                 <BrandText
                   style={[fontSemibold13, { marginLeft: 12, color: neutralA3 }]}
                 >
-                  {item.toString(10)}
+                  {item}
                 </BrandText>
               </TouchableOpacity>
             ))}
