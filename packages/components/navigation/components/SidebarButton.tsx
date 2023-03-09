@@ -33,6 +33,7 @@ import { SidebarNestedButton } from "./SidebarNestedButton";
 export interface SidebarButtonProps extends SidebarType {
   onPress?: (routeName: SidebarType["route"]) => void;
   iconSize?: number;
+  expanded?: boolean;
 }
 
 export const SidebarButton: React.FC<SidebarButtonProps> = ({
@@ -42,6 +43,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   route,
   iconSize = 28,
   nested,
+  expanded,
 }) => {
   // variables
   const { isSidebarExpanded } = useSidebar();
@@ -91,15 +93,16 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   // animations
   const opacityStyle = useAnimatedStyle(
     () => ({
-      opacity: isSidebarExpanded
-        ? withTiming(1, {
-            duration: 500,
-          })
-        : withTiming(0, {
-            duration: 100,
-          }),
+      opacity:
+        isSidebarExpanded || expanded
+          ? withTiming(1, {
+              duration: 500,
+            })
+          : withTiming(0, {
+              duration: 100,
+            }),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded, expanded]
   );
 
   // const nestedBarStyle = useAnimatedStyle(

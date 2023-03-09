@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import {
-  SafeAreaView,
   ScrollView,
   View,
   StyleSheet,
@@ -101,13 +100,19 @@ export const ScreenContainer: React.FC<{
           {headerChildren}
         </Header>
 
-        <View style={{ width: "100%", flexDirection: "row", flex: 1, height }}>
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            flex: 1,
+          }}
+        >
           {/*==== Scrollable screen content*/}
           <View style={{ flex: 1 }}>
             <SelectedNetworkGate filter={networkFilter}>
               {hasScroll ? (
                 <ScrollView
-                  style={{ width: "100%", flex: 1 }}
+                  style={{ width: "100%", flex: 1, backgroundColor: "red" }}
                   contentContainerStyle={[
                     {
                       minHeight: height - headerHeight,

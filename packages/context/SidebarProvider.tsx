@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import { Platform } from "react-native";
 
 interface DefaultValue {
   isSidebarExpanded: boolean;
@@ -6,7 +7,7 @@ interface DefaultValue {
 }
 
 const defaultValue: DefaultValue = {
-  isSidebarExpanded: true,
+  isSidebarExpanded: Platform.OS === "web",
   toggleSidebar: () => {},
 };
 

@@ -1,9 +1,11 @@
 import React from "react";
-import { View, ViewStyle, StyleProp } from "react-native";
+import { View, ViewStyle, StyleProp, Platform } from "react-native";
 
+import { useMaxResolution } from "../hooks/useMaxResolution";
 import { neutral33 } from "../utils/style/colors";
 import {
   headerHeight,
+  layout,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
 
@@ -11,6 +13,7 @@ export const Header: React.FC<{
   smallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ children, style }) => {
+  const { width } = useMaxResolution();
   return (
     <View
       style={[
@@ -24,6 +27,7 @@ export const Header: React.FC<{
           alignItems: "center",
           borderBottomColor: neutral33,
           borderBottomWidth: 1,
+          backgroundColor: "green",
         },
         style,
       ]}
@@ -34,14 +38,18 @@ export const Header: React.FC<{
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: screenContainerContentMarginHorizontal,
+          marginLeft:
+            width > 500
+              ? screenContainerContentMarginHorizontal
+              : layout.padding_x1,
+          backgroundColor: "red",
         }}
       >
         <>{children}</>
       </View>
 
       {/* Wallet selector placeholder */}
-      <View />
+      {/* <View /> */}
     </View>
   );
 };

@@ -40,7 +40,7 @@
     "bech32": "^2.0.0",
     "browser-headers": "^0.4.1",
     "cosmwasm": "^1.1.1",
-    "crypto": "git+https://github.com/entronad/crypto-es.git",
+    "crypto": "git+https://github.com/expo/expo.git/packages/expo-crypto",
     "crypto-browserify": "^3.12.0",
     "dotenv-webpack": "^8.0.0",
     "eslint-config-universe": "^11.0.0",
@@ -79,6 +79,7 @@
     "react-native-webview": "11.18.1",
     "react-redux": "^8.0.2",
     "redux-persist": "^6.0.0",
+    "text-encoding-polyfill": "^0.6.7",
     "victory-native": "^36.6.8"
   },
   "devDependencies": {

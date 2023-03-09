@@ -11,6 +11,7 @@ import { MetaMaskProvider } from "metamask-react";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 

@@ -40,7 +40,11 @@ const SpringConfig: WithSpringConfig = {
   restDisplacementThreshold: 0.2,
 };
 
-export const Sidebar: React.FC = (props: DrawerContentComponentProps) => {
+interface SidebarProps extends DrawerContentComponentProps {
+  expanded: boolean;
+}
+
+export const Sidebar = (props: SidebarProps) => {
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
@@ -55,11 +59,12 @@ export const Sidebar: React.FC = (props: DrawerContentComponentProps) => {
   // animations
   const layoutStyle = useAnimatedStyle(
     () => ({
-      width: isSidebarExpanded
-        ? withSpring(fullSidebarWidth, SpringConfig)
-        : withSpring(smallSidebarWidth, SpringConfig),
+      width:
+        isSidebarExpanded || props.expanded
+          ? withSpring(fullSidebarWidth, SpringConfig)
+          : withSpring(smallSidebarWidth, SpringConfig),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded, props.expanded]
   );
 
   const toggleButtonStyle = useAnimatedStyle(
@@ -137,6 +142,7 @@ export const Sidebar: React.FC = (props: DrawerContentComponentProps) => {
               onPress={onRouteChange}
               {...item}
               route={route}
+              expanded={props.expanded}
             />
           );
         }}
@@ -149,6 +155,7 @@ export const Sidebar: React.FC = (props: DrawerContentComponentProps) => {
               route="ComingSoon"
               title=""
               onPress={() => navigation.navigate("ComingSoon")}
+              expanded={props.expanded}
             />
             <SpacerColumn size={1} />
           </>

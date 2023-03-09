@@ -1,6 +1,12 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
-import { ColorValue, ScrollView, TouchableOpacity, View } from "react-native";
+import {
+  ColorValue,
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -129,8 +135,8 @@ export const GovernanceBox: React.FC<{
                   justifyContent: "center",
                   backgroundColor: "#171717",
                   borderRadius: 100,
-                  height: "fit-content",
-                  width: "fit-content",
+                  height: Platform.OS === "web" ? "fit-content" : "100%",
+                  width: Platform.OS === "web" ? "fit-content" : "100%",
                 }}
               >
                 <BrandText
@@ -154,8 +160,8 @@ export const GovernanceBox: React.FC<{
                   justifyContent: "center",
                   backgroundColor: "#171717",
                   borderRadius: 100,
-                  height: "fit-content",
-                  width: "fit-content",
+                  height: Platform.OS === "web" ? "fit-content" : "100%",
+                  width: Platform.OS === "web" ? "fit-content" : "100%",
                 }}
               >
                 <BrandText
@@ -179,8 +185,8 @@ export const GovernanceBox: React.FC<{
                   justifyContent: "center",
                   backgroundColor: "#171717",
                   borderRadius: 100,
-                  height: "fit-content",
-                  width: "fit-content",
+                  height: Platform.OS === "web" ? "fit-content" : "100%",
+                  width: Platform.OS === "web" ? "fit-content" : "100%",
                 }}
               >
                 <BrandText

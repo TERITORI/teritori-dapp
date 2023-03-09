@@ -1,8 +1,9 @@
 import { registerRootComponent } from "expo";
 import React from "react";
-import { AppRegistry, View, LogBox } from "react-native";
+import { AppRegistry } from "react-native";
 import "@react-native-anywhere/polyfill-base64";
 import "react-native-gesture-handler";
+import "text-encoding-polyfill";
 
 import App from "./App";
 

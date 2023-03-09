@@ -251,7 +251,7 @@ export const CollectionHeader: React.FC<{
           onSelect={onSelectTab}
           selected={selectedTab}
           style={{
-            width: "fit-content",
+            width: Platform.OS === "web" ? "fit-content" : "100%",
             height: "100%",
             borderBottomWidth: 0,
           }}

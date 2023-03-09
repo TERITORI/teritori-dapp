@@ -45,7 +45,7 @@ export const Navigator: React.FC = () => {
     <Drawer.Navigator
       initialRouteName="Home"
       drawerContent={(props) =>
-        Platform.OS === "web" ? null : <Sidebar {...props} />
+        Platform.OS === "web" ? null : <Sidebar {...props} expanded />
       }
       screenOptions={{
         drawerStyle: {
