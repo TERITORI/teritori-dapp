@@ -5,6 +5,7 @@ import {
   Switch,
   useWindowDimensions,
   Pressable,
+  Text
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 // import { useSelector } from "react-redux";
@@ -155,9 +156,14 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
         <SpacerColumn size={3} />
 
         <View style={styles.cardContainer}>
+          <View style={[styles.switchBox, { paddingTop: 0 }]}>
           <BrandText style={styles.cardSubtitle}>
             NFT.Storage/Pinata.cloud API key (for Social Feed)
           </BrandText>
+            <Pressable onPress={()=>setApiKey("")}>
+              <Text style={[fontSemibold14, {color: primaryColor}]}>Reset to Teritoris' API key</Text>
+            </Pressable>
+          </View>
           <SpacerColumn size={1.5} />
           <TextInput
             style={[styles.apiInput, { outlineStyle: "none" } as any]}
