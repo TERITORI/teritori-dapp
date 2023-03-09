@@ -14,11 +14,11 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { MULTISIG_WALLET_HEADING } from "../MultisigWalletManageScreen";
-import { MultiSigWalletType } from "../types";
-import { MultisigWalletItemMenu } from "./MultisigWalletItemMenu";
+import { MultisigWalletItemMenu } from "../../OrganizerDeployer/components/MultisigWalletItemMenu";
+import {UserWalletType} from "../types";
 
 interface MultisigWalletItemProps {
-  data: MultiSigWalletType;
+  data: UserWalletType;
   onPress?: () => void;
   onPressTransactions: () => void;
 }
@@ -42,7 +42,7 @@ export const MultisigWalletItem: React.FC<MultisigWalletItemProps> = ({
         <SVG source={toriLogoSVG} width={24} height={24} />
         <SpacerRow size={1} />
         <BrandText style={fontSemibold14}>
-          Tertiori ({data.asset_type})
+          Tertiori
         </BrandText>
       </View>
     ),
@@ -57,7 +57,7 @@ export const MultisigWalletItem: React.FC<MultisigWalletItemProps> = ({
           { flex: MULTISIG_WALLET_HEADING.id.flex },
         ]}
       >
-        <BrandText style={styles.valueText}>{data.id}</BrandText>
+        <BrandText style={styles.valueText}>{data.multisigId}</BrandText>
       </View>
       <View
         style={[
@@ -65,7 +65,7 @@ export const MultisigWalletItem: React.FC<MultisigWalletItemProps> = ({
           { flex: MULTISIG_WALLET_HEADING.name.flex },
         ]}
       >
-        <BrandText style={styles.valueText}>{data.name}</BrandText>
+        <BrandText style={styles.valueText}>{data.walletName}</BrandText>
       </View>
       <View
         style={[
@@ -78,17 +78,11 @@ export const MultisigWalletItem: React.FC<MultisigWalletItemProps> = ({
       <View
         style={[
           styles.valueContainer,
-          { flex: MULTISIG_WALLET_HEADING.approval_required.flex },
+          { flex: MULTISIG_WALLET_HEADING.multisig_addr.flex },
         ]}
       >
         <BrandText style={styles.valueText}>
-          {data.approval} approvals
-        </BrandText>
-        <SpacerRow size={0.5} />
-        <BrandText style={styles.valueText2}>of</BrandText>
-        <SpacerRow size={0.5} />
-        <BrandText style={styles.valueText}>
-          {data.participants} participants
+          {data.multisigAddress}
         </BrandText>
       </View>
       <View

@@ -60,7 +60,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
         !isNestedBarExpanded
       );
     } else {
-      return route === currentRouteName;
+      return route.substring(0,8) === currentRouteName.substring(0,8);
     }
   }, [isNestedBarExpanded, currentRouteName, nested]);
 

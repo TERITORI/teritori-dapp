@@ -11,3 +11,4 @@ export * from "./useDeclineTransaction";
 export * from "./useGetTransactionCount";
 export * from "./useBrodcastTransaction";
 export * from "./useMultisigValidator";
+export * from "./useCreateUserWallet";

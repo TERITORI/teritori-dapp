@@ -11,10 +11,10 @@ import { useAppNavigation } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { BasicTransactionItem } from "./components/BasicTransactionItem";
-import { MakeProposalModal } from "./components/MakeProposalModal";
-import { ProposalItem } from "./components/ProposalItem";
-import multisigTransactions from "./multisig-transactions.json";
+import { BasicTransactionItem } from "../OrganizerDeployer/components/BasicTransactionItem";
+import { MakeProposalModal } from "../OrganizerDeployer/components/MakeProposalModal";
+import { ProposalItem } from "../OrganizerDeployer/components/ProposalItem";
+import multisigTransactions from "../OrganizerDeployer/multisig-transactions.json";
 import { MultiSigWalletTransactionType } from "./types";
 
 export const MultisigWalletTransactionScreen = () => {

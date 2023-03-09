@@ -11,15 +11,18 @@ interface InputMultisigAddressModalProps {
     isVisible: boolean;
     networkId: string;
     onClose?: () => void;
-    onConfirm?: (address: string)=>void;
+    onConfirm?: (walletName: string, address: string)=>void;
   }
 
 export type AddressFormType = {
     address: string;
+    wallet_name: string;
 };
 
 export const InputMultisigAddressModal: React.FC<InputMultisigAddressModalProps> = ({isVisible, networkId, onClose, onConfirm}) =>{
   const [multisigAddress, setMultisigAddress] = useState("");
+  const [walletName, setWalletName] = useState("");
+
   const ModalHeader = useCallback(
     () => (
       <View style={styles.rowCenter}>
@@ -40,22 +43,32 @@ export const InputMultisigAddressModal: React.FC<InputMultisigAddressModalProps>
     >
       <View style={styles.container}>
         <TextInputCustom<AddressFormType>
+          variant="labelOutside"
+          label="Wallet Name"
+          name="wallet_name"
+          rules={{ required: true }}
+          placeHolder=""
+          onChangeText={setWalletName}
+          style={{marginBottom: 15}}
+        />
+
+
+        <TextInputCustom<AddressFormType>
             variant="labelOutside"
             label="Input Multisig Address"
             name="address"
             rules={{ required: true }}
             placeHolder=""
             onChangeText={setMultisigAddress}
+          />
 
-          >
-        </TextInputCustom>
         <SpacerColumn size={4} />
         <PrimaryButton
           size="M"
           text="Use this Multisig"
           fullWidth
-          disabled = { multisigAddress.trim() ==="" }
-          onPress={()=>onConfirm!(multisigAddress)}
+          disabled = { multisigAddress.trim() ==="" || walletName.trim() ==="" }
+          onPress={()=>onConfirm!(walletName, multisigAddress)}
         />
       </View>
     </ModalBase>

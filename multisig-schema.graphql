@@ -5,9 +5,11 @@ type Multisig {
   chainId: String!
 }
 
-type MultisigUser {
+type UserWallet{
   userAddress: String!
-  multisigAddress: [String!]
+  walletName: String!
+  chainId: String!
+  multisig: Multisig @relation
 }
 
 type SourceAddress {
@@ -45,11 +47,13 @@ type Query {
   getTransactionCountByMultisigId(id: String!, types: [String!]!): [Int]!
     @resolver(name: "getTransactionCountByMultisigId")
   getMultisig(address: String!, chainId: String!): Multisig
-  multisigByUserAddress(address: String!): [Multisig!] @resolver
+  multisigByUserAddress(address: String!):[Multisig!] @resolver
   transactionsByMultisigId(id: String!, type: String): [Transaction!]
     @resolver(name: "transactionsByMultisigId", paginated: true)
   transactionsByUserAddress(address: String!, type: String): [Transaction!]
     @resolver(name: "transactionsByUserAddress", paginated: true)
+  getMultisigsByUser(userAddress: String!, chainId: String!): [UserWallet!]
+    @resolver(name: "getMultisigsByUser", paginated: true)
 }
 
 type Mutation {

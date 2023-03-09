@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { DbAccount, DbCreateTransaction, DbSignature } from "./types";
+import {DbAccount, DbCreateTransaction, DbSignature, DbUserWallet} from "./types";
 
 // Graphql base request for Faunadb
 const graphqlReq = axios.create({
@@ -362,6 +362,59 @@ const createSignature = async (
   });
 };
 
+const createUserWallet = async (
+  userWallet: DbUserWallet,
+  multisigId: string
+) => {
+  return graphqlReq({
+    method: "POST",
+    data: {
+      query: `
+        mutation {
+          createUserWallet(data: {
+            walletName: "${userWallet.walletName}",
+            chainId: "${userWallet.chainId}",
+            userAddress: "${userWallet.userAddress}",
+            multisig: {connect:"${multisigId}"}            
+          }) {            
+            walletName
+            userAddress
+          }
+        }
+      `,
+    },
+  });
+};
+
+const getMultisigsByUserWallet = async(
+  userAddress: string,
+  chainId: string
+) => {
+  return graphqlReq({
+    method: "POST",
+    data:{
+      query: `
+        query{
+          getMultisigsByUser(
+            userAddress: "${userAddress}"
+            chainId: "${chainId}"
+          ){
+            data{
+              walletName
+              multisig{
+                 _id
+                 address
+                 userAddresses
+              }              
+            }
+          }
+       }
+      `
+    }
+  })
+}
+
+
 export {
   createOrFindMultisig,
   getMultisig,
@@ -373,4 +426,6 @@ export {
   getTransactionCountByMultisigId,
   transactionsByUserAddress,
   updateTransactionDecliners,
+  createUserWallet,
+  getMultisigsByUserWallet,
 };

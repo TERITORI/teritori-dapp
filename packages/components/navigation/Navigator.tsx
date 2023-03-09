@@ -19,8 +19,8 @@ import { MultisigLegacyScreen } from "../../screens/Multisig/MultisigLegacyScree
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MultisigTransferScreen } from "../../screens/Multisig/MultisigTransferScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
-import { MultisigWalletManageScreen } from "../../screens/OrganizerDeployer/MultisigWalletManageScreen";
-import { MultisigWalletTransactionScreen } from "../../screens/OrganizerDeployer/MultisigWalletTransactionScreen";
+import { MultisigWalletManageScreen } from "../../screens/Multisig/MultisigWalletManageScreen";
+import { MultisigWalletTransactionScreen } from "../../screens/Multisig/MultisigWalletTransactionScreen";
 import { OrganizationGetStartedScreen } from "../../screens/OrganizerDeployer/OrganizationGetStartedScreen";
 import { OrganizerDeployerScreen } from "../../screens/OrganizerDeployer/OrganizerDeployerScreen";
 import { TransactionProposalScreen } from "../../screens/OrganizerDeployer/TransactionProposalScreen";

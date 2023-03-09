@@ -1,3 +1,9 @@
+export interface DbUserWallet{
+  walletName: string;
+  userAddress: string;
+  chainId: string;
+}
+
 export interface DbSignature {
   bodyBytes: string;
   signature: string;

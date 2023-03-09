@@ -29,7 +29,39 @@ export type MultisigType = {
   userAddresses: string[];
 };
 
+export type UserWalletType = {
+  walletName: string;
+  userAddress: string;
+  chainId: string;
+  multisigId: string;
+  multisigAddress: string;
+  multisigUserAddresses: string[];
+};
+
 export enum MultisigTransactionType {
   STAKE = "STAKE",
   TRANSFER = "TRANSFER",
 }
+export type MultiSigWalletTransactionType =
+  | MultiSigWalletTransactionBasicType
+  | MultiSigWalletTransactionProposalType;
+
+export type MultiSigWalletTransactionProposalType = {
+  id: number;
+  type: "proposals";
+  count: number;
+};
+export type MultiSigWalletType = {
+  id: number;
+  name: string;
+  asset_type: string;
+  approval: number;
+  participants: number;
+};
+
+export type MultiSigWalletTransactionBasicType = {
+  id: number;
+  type: "staked" | "received" | "transfered";
+  createdAt: string;
+  amount: string;
+};
