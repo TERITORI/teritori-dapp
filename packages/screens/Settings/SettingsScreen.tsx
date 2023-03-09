@@ -5,7 +5,7 @@ import {
   Switch,
   useWindowDimensions,
   Pressable,
-  Text
+  Text,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 // import { useSelector } from "react-redux";
@@ -161,7 +161,9 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
             NFT.Storage/Pinata.cloud API key (for Social Feed)
           </BrandText>
             <Pressable onPress={()=>setApiKey("")}>
-              <Text style={[fontSemibold14, {color: primaryColor}]}>Reset to Teritoris' API key</Text>
+              <Text style={[fontSemibold14, { color: primaryColor }]}>
+                Reset to Teritoris' API key
+              </Text>
             </Pressable>
           </View>
           <SpacerColumn size={1.5} />
