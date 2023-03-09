@@ -1,13 +1,24 @@
 import React from "react";
 import {StyleSheet, TouchableOpacity, View} from "react-native";
 import {BrandText} from "../../BrandText";
-import {fontSemibold14, fontSemibold20} from "../../../utils/style/fonts";
+import {fontSemibold14} from "../../../utils/style/fonts";
 import {neutral00, neutral22, neutral33, neutral77, primaryColor} from "../../../utils/style/colors";
 import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
 import {SVG} from "../../SVG";
 import {LinearGradient} from "expo-linear-gradient";
+import {ProfileStep} from "../../../utils/types/freelance";
+const CompletionRate = [
+  "0%",
+  "25%",
+  "50%",
+  "75%"
+];
 
-export const ProfileHeader: React.FC = () => {
+export const ProfileHeader: React.FC<{
+  currentStep: ProfileStep,
+  step: ProfileStep,
+  setCurrentStep: (step: ProfileStep)=>void,
+}> = ({currentStep, step, setCurrentStep}) => {
   return (
     <View
       style={{
@@ -22,10 +33,12 @@ export const ProfileHeader: React.FC = () => {
               flexDirection: "row",
               alignItems: "center",
             }}
-            onPress={() => {}}
+            onPress={() => {
+              setCurrentStep(ProfileStep.PersonalInfo)
+            }}
           >
-            <BrandText style={currentStyle.circle}>1</BrandText>
-            <BrandText style={[fontSemibold14, currentStyle.text]}>
+            <BrandText style={ProfileStep.PersonalInfo <= step ? currentStyle.circle: nextStyle.circle}>1</BrandText>
+            <BrandText style={[fontSemibold14, step<= ProfileStep.PersonalInfo ? currentStyle.text: nextStyle.text]}>
               Personal Info
             </BrandText>
           </TouchableOpacity>
@@ -40,10 +53,12 @@ export const ProfileHeader: React.FC = () => {
               flexDirection: "row",
               alignItems: "center",
             }}
-            onPress={() => {}}
+            onPress={() => {
+              ProfileStep.ProfessionalInfo <= step && setCurrentStep(ProfileStep.ProfessionalInfo)
+            }}
           >
-            <BrandText style={nextStyle.circle}>2</BrandText>
-            <BrandText style={[fontSemibold14, nextStyle.text]}>
+            <BrandText style={ProfileStep.ProfessionalInfo <= step ? currentStyle.circle: nextStyle.circle}>2</BrandText>
+            <BrandText style={[fontSemibold14, ProfileStep.ProfessionalInfo <= step ? currentStyle.text: nextStyle.text]}>
               Professional Info
             </BrandText>
           </TouchableOpacity>
@@ -58,10 +73,12 @@ export const ProfileHeader: React.FC = () => {
               flexDirection: "row",
               alignItems: "center",
             }}
-            onPress={() => {}}
+            onPress={() => {
+              ProfileStep.LinkedAccounts <= step && setCurrentStep(ProfileStep.LinkedAccounts)
+            }}
           >
-            <BrandText style={nextStyle.circle}>3</BrandText>
-            <BrandText style={[fontSemibold14, nextStyle.text]}>
+            <BrandText style={ProfileStep.LinkedAccounts <= step ? currentStyle.circle: nextStyle.circle}>3</BrandText>
+            <BrandText style={[fontSemibold14, ProfileStep.LinkedAccounts <= step ? currentStyle.text: nextStyle.text]}>
               Linked Accounts
             </BrandText>
           </TouchableOpacity>
@@ -76,17 +93,19 @@ export const ProfileHeader: React.FC = () => {
               flexDirection: "row",
               alignItems: "center",
             }}
-            onPress={() => {}}
+            onPress={() => {
+              ProfileStep.AccountSecurity <= step && setCurrentStep(ProfileStep.AccountSecurity)
+            }}
           >
-            <BrandText style={nextStyle.circle}>4</BrandText>
-            <BrandText style={[fontSemibold14, nextStyle.text]}>
+            <BrandText style={ProfileStep.AccountSecurity <= step ? currentStyle.circle: nextStyle.circle}>4</BrandText>
+            <BrandText style={[fontSemibold14, ProfileStep.AccountSecurity <= step ? currentStyle.text: nextStyle.text]}>
               Account Security
             </BrandText>
           </TouchableOpacity>
         <View style={{right: 30, position: "absolute", width: 205, flexDirection: "column"}}>
           <View style={{flexDirection:"row", justifyContent: "space-between"}}>
             <BrandText style={[fontSemibold14]}>Completion Rate</BrandText>
-            <BrandText style={[fontSemibold14]}>35%</BrandText>
+            <BrandText style={[fontSemibold14]}>{CompletionRate[step]}</BrandText>
           </View>
           <View
             style={{
@@ -99,7 +118,7 @@ export const ProfileHeader: React.FC = () => {
             <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={{ height: "100%", width: "30%", borderRadius: 24 }}
+              style={{ height: "100%", width: CompletionRate[step], borderRadius: 24 }}
               colors={["#5433FF", "#20BDFF", "#A5FECB"]}
             />
           </View>

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { View, StyleSheet, useWindowDimensions, TextInput } from "react-native";
-import { neutral00, neutral33, neutralA3, primaryColor, secondaryColor } from "../../../utils/style/colors";
+import {additionalRed, neutral00, neutral33, neutralA3, primaryColor, secondaryColor } from "../../../utils/style/colors";
 
 import { BrandText } from "../../BrandText";
 import { TertiaryButton } from "../../buttons/TertiaryButton";
@@ -54,7 +54,7 @@ export const VerifyPhoneModal: React.FC<VerifyPhoneModalProps> = ({
     important: StyleSheet.flatten([
       fontSemibold14,
       {
-        color: "#FFAEAE"
+        color: additionalRed,
       }
     ]),
     input: StyleSheet.flatten([

@@ -73,6 +73,7 @@ export const GeneralSelect: React.FC<GeneralSelectProps> = ({
       position: "absolute",
       top: 52,
       width: "100%",
+      zIndex: 10,
     },
     normalDropdownMenuText: StyleSheet.flatten([
       fontMedium13,

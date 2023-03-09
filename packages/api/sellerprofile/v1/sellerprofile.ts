@@ -8,7 +8,7 @@ import { share } from "rxjs/operators";
 export const protobufPackage = "sellerprofile.v1";
 
 export interface SellerProfileRequest {
-  sellerId: number;
+  sellerId: string;
   profileHash: string;
 }
 
@@ -17,13 +17,13 @@ export interface SellerProfileResponse {
 }
 
 function createBaseSellerProfileRequest(): SellerProfileRequest {
-  return { sellerId: 0, profileHash: "" };
+  return { sellerId: "", profileHash: "" };
 }
 
 export const SellerProfileRequest = {
   encode(message: SellerProfileRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.sellerId !== 0) {
-      writer.uint32(8).uint32(message.sellerId);
+    if (message.sellerId !== "") {
+      writer.uint32(8).string(message.sellerId);
     }
     if (message.profileHash !== "") {
       writer.uint32(18).string(message.profileHash);
@@ -39,7 +39,7 @@ export const SellerProfileRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.sellerId = reader.uint32();
+          message.sellerId = reader.string();
           break;
         case 2:
           message.profileHash = reader.string();
@@ -54,21 +54,21 @@ export const SellerProfileRequest = {
 
   fromJSON(object: any): SellerProfileRequest {
     return {
-      sellerId: isSet(object.sellerId) ? Number(object.sellerId) : 0,
+      sellerId: isSet(object.sellerId) ? String(object.sellerId) : "",
       profileHash: isSet(object.profileHash) ? String(object.profileHash) : "",
     };
   },
 
   toJSON(message: SellerProfileRequest): unknown {
     const obj: any = {};
-    message.sellerId !== undefined && (obj.sellerId = Math.round(message.sellerId));
+    message.sellerId !== undefined && (obj.sellerId = message.sellerId);
     message.profileHash !== undefined && (obj.profileHash = message.profileHash);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<SellerProfileRequest>, I>>(object: I): SellerProfileRequest {
     const message = createBaseSellerProfileRequest();
-    message.sellerId = object.sellerId ?? 0;
+    message.sellerId = object.sellerId ?? "";
     message.profileHash = object.profileHash ?? "";
     return message;
   },

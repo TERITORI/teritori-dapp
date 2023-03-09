@@ -11,9 +11,13 @@ import FacebookIcon from "../../../../assets/icons/account/facebook-icon.svg";
 import GoogleIcon from "../../../../assets/icons/account/google-icon.svg";
 import TwitterIcon from "../../../../assets/icons/account/twitter-icon.svg";
 import AddLinkIcon from "../../../../assets/icons/add-circle.svg"
+import {SellerInfo} from "../../../screens/FreelanceServices/types/fields";
 
 
-export const LinkedAccountsPanel: React.FC = () => {
+export const LinkedAccountsPanel: React.FC<{
+  seller: SellerInfo,
+  setSeller:  React.Dispatch<React.SetStateAction<SellerInfo>>
+}> = ({seller, setSeller}) => {
 
   const mobileWidth = 768;
   const smallMobileWidth = 512;

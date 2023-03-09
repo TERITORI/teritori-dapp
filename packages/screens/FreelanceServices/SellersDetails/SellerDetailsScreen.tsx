@@ -180,7 +180,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
       //store to database using backend_api
 
       const obserable = sellerprofileBackendClient.updateProfile({
-        sellerId: parseInt(id, 10),
+        sellerId: "",
         profileHash,
       });
       obserable.subscribe((ret) => {
@@ -1060,7 +1060,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                   <BrandText
                     style={[fontSemibold14, { color: neutral67, marginTop: 8 }]}
                   >
-                    {item.description}
+                    {item.title}
                   </BrandText>
                 </View>
               ))}
@@ -1130,7 +1130,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                     }}
                   >
                     <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-                      {item.title}
+                      {item.name}
                     </BrandText>
                     <View style={{ flexDirection: "row" }}>
                       <TouchableOpacity
@@ -1175,7 +1175,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                   <BrandText
                     style={[fontMedium14, { color: neutral67, marginTop: 8 }]}
                   >
-                    {item.description}
+                    {item.name}
                   </BrandText>
                 </View>
               ))}

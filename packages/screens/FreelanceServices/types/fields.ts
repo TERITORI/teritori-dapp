@@ -7,6 +7,36 @@ export interface FreelanceServicePriceType {
   currency: "TORI";
 }
 
+export interface SellerInfo {
+  id: string;
+  avatar: string; //ipfs id
+  firstName: string;
+  lastName: string;
+  description: string;
+  profilePicture: string; //ipfs id
+  occupations: Occupation[];
+  languages: LangInfo[];
+  skills: SkillInfo[];
+  educations: EducationInfo[];
+  certifications: CertificationInfo[]
+  personalSite: string;
+}
+
+export const emptySeller:SellerInfo = {
+  id: "",
+  avatar: "",
+  firstName: "",
+  lastName: "",
+  description: "",
+  profilePicture: "",
+  occupations: [],
+  languages: [],
+  skills: [],
+  educations: [],
+  certifications: [],
+  personalSite: ""
+} as SellerInfo;
+
 export interface User {
   id: string;
   backgroundPic: ImageSourcePropType;
@@ -37,14 +67,18 @@ export interface User {
   skills: string[];
   education: [
     {
+      country: string;
+      universityName: string;
       title: string;
-      description: string;
+      major: string;
+      year: number;
     }
   ];
   certifications: [
     {
-      title: string;
-      description: string;
+      name: string;
+      from: string;
+      year: number;
     }
   ];
 }
@@ -111,17 +145,32 @@ export interface CheckableType {
   count: number;
 }
 
+export interface Occupation {
+  occupationId: string;
+  occupationNames: string[];
+  from: number;
+  to: number;
+}
+
 export interface LangInfo {
+  name: string;
+  level: string;
+}
+export interface SkillInfo{
   name: string;
   level: string;
 }
 
 export interface EducationInfo {
+  country: string;
+  universityName: string;
   title: string;
-  description: string;
+  major: string;
+  year: number;
 }
 
 export interface CertificationInfo {
-  title: string;
-  description: string;
+  name: string;
+  from: string;
+  year: number;
 }

@@ -41,11 +41,11 @@ export const AvatarImage: React.FC<{
             onChange={onFileInputChange}
             ref={fileRef}
           />
-          <Image source={ipfsPinataUrl(sourceData)} style={[style]} />
+          <Image source={{uri:ipfsPinataUrl(sourceData)}} style={[style]} />
         </TouchableOpacity>
       )}
       {!onUpdate && (
-        <Image source={ipfsPinataUrl(sourceData)} style={[style]} />
+        <Image source={{uri:ipfsPinataUrl(sourceData)}} style={[style]} />
       )}
     </>
   );

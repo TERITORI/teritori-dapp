@@ -1,9 +1,10 @@
 import React from "react";
 import {View} from "react-native";
 import {neutral33} from "../../../utils/style/colors";
+import { ProfileStep } from "../../../utils/types/freelance";
 import {PrimaryButton} from "../../buttons/PrimaryButton";
 
-export const ProfileFooter: React.FC = () => {
+export const ProfileFooter: React.FC<{step: ProfileStep, nextStep: ()=>void}> = ({step,nextStep}) => {
   return (
     <View style={{flexDirection:"column"}}>
       <View
@@ -15,7 +16,7 @@ export const ProfileFooter: React.FC = () => {
         }}
       />
       <View style={{marginTop: 10, alignItems: "flex-end"}}>
-        <PrimaryButton style={{marginRight: 20}} size={"SM"} text={"Continue"} onPress={()=>{}} />
+        <PrimaryButton style={{marginRight: 20}} size={"SM"} text={step<ProfileStep.AccountSecurity?"Continue":"Continue & Create First Gig"} onPress={nextStep} />
       </View>
     </View>
   )

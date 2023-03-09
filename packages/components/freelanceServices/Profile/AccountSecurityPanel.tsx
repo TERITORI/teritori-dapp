@@ -10,8 +10,12 @@ import { SVG } from "../../SVG";
 import PhoneIcon from "../../../../assets/icons/account/phone-icon.svg";
 import EmailIcon from "../../../../assets/icons/account/email-icon.svg";
 import { VerifyPhoneModal } from "./VerifyPhoneModal";
+import {SellerInfo} from "../../../screens/FreelanceServices/types/fields";
 
-export const AccountSecurityPanel: React.FC = () => {
+export const AccountSecurityPanel: React.FC<{
+  seller: SellerInfo,
+  setSeller:  React.Dispatch<React.SetStateAction<SellerInfo>>
+}> = ({seller, setSeller}) => {
 
   const mobileWidth = 768;
   const smallMobileWidth = 512;
