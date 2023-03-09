@@ -91,6 +91,7 @@ interface NewsFeedInputProps {
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
   additionalMention?: string;
+  defaultPostCategory?: PostCategory;
 }
 
 export interface NewsFeedInputHandle {
@@ -115,6 +116,7 @@ export const NewsFeedInput = React.forwardRef<
       onPressCreateArticle,
       additionalHashtag,
       additionalMention,
+      defaultPostCategory,
     },
     forwardRef
   ) => {
@@ -276,7 +278,7 @@ export const NewsFeedInput = React.forwardRef<
           client,
           msg: {
             category: postCategory,
-            identifier: identifier,
+            identifier,
             metadata: JSON.stringify(metadata),
             parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
           },

@@ -28,6 +28,12 @@ export const feedsTabItems = {
   all: {
     name: "Jungle News Feed",
   },
+  chatBot: {
+    name: "AI ChatRoom",
+  },
+  stableDiff: {
+    name: "AI Image Generation",
+  },
   sounds: {
     name: "Sound Feed",
   },

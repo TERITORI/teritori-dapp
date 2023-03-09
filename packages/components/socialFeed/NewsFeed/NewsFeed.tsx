@@ -16,7 +16,7 @@ import { SpacerColumn } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
-import { NewPostFormValues } from "./NewsFeed.type";
+import { NewPostFormValues, PostCategory } from "./NewsFeed.type";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
@@ -30,6 +30,7 @@ interface NewsFeedProps {
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
   additionalMention?: string;
+  screenTab?: string;
 }
 
 export const NewsFeed: React.FC<NewsFeedProps> = ({
@@ -37,6 +38,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   req,
   additionalHashtag,
   additionalMention,
+  screenTab,
 }) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
@@ -94,6 +96,15 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     setHeaderHeight(e.nativeEvent.layout.height);
   };
 
+  const defaultPostCategory = useMemo(() => {
+    if (screenTab === "chatBot") {
+      return PostCategory.Question;
+    } else if (screenTab === "stableDiff") {
+      return PostCategory.BriefForStableDiffusion;
+    }
+    return PostCategory.Normal;
+  }, [screenTab]);
+
   const ListHeaderComponent = useCallback(
     () => (
       <>
@@ -116,6 +127,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
             style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}
             additionalMention={additionalMention}
             additionalHashtag={additionalHashtag}
+            defaultPostCategory={defaultPostCategory}
           />
           <SpacerColumn size={1.5} />
           <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
