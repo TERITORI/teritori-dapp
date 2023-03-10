@@ -40,6 +40,12 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 		maxSupply = -1
 	}
 
+	price, err := strconv.Atoi(minterInstantiateMsg.NftPriceAmount)
+	if err != nil {
+		h.logger.Error("failed to parse nft price", zap.Error(err))
+		price = -1
+	}
+
 	secondaryDuringMint := false
 	if sdm, ok := minterInstantiateMsg.SecondaryDuringMint.(bool); ok {
 		secondaryDuringMint = sdm
@@ -52,6 +58,12 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 		return errors.Wrap(err, "failed to get network from collectionID")
 	}
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
 		NetworkId:           network.GetBase().ID,
@@ -59,10 +71,13 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 		ImageURI:            metadata.ImageURI,
 		MaxSupply:           maxSupply,
 		SecondaryDuringMint: secondaryDuringMint,
+		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
 			CreatorAddress:      instantiateMsg.Sender,
+			Price:               price,
+			Denom:               minterInstantiateMsg.PriceDenom,
 		},
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")

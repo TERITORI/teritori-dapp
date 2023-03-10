@@ -101,7 +101,7 @@ export const CollectionView: React.FC<{
             }}
           >
             {mintState !== MintState.MINT_STATE_UNSPECIFIED &&
-            info?.maxSupply ? (
+            item.maxSupply !== -1 ? (
               <>
                 <GradientText
                   style={sizedStyles.creatorName}
@@ -109,7 +109,7 @@ export const CollectionView: React.FC<{
                   numberOfLines={1}
                   gradientType="purple"
                 >
-                  {info.maxSupply !== "" ? `Supply ${info?.maxSupply}` : ""}
+                  {item.maxSupply !== -1 ? `Supply ${item.maxSupply}` : ""}
                 </GradientText>
                 <GradientText
                   style={sizedStyles.creatorName}

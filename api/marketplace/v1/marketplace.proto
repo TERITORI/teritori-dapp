@@ -19,6 +19,7 @@ enum Sort {
   SORTING_PRICE = 1;
   SORTING_VOLUME = 2;
   SORTING_MARKET_CAP = 3;
+  SORTING_CREATED_AT = 4;
 }
 
 enum SortDirection {
@@ -73,6 +74,8 @@ message Collection {
   bool secondary_during_mint = 12;
   string website_url = 13;
   string twitter_url = 14;
+  uint64 floor_price = 15;
+  int64 max_supply = 16;
 }
 
 message CollectionStats {

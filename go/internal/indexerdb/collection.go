@@ -1,6 +1,9 @@
 package indexerdb
 
-import "github.com/TERITORI/teritori-dapp/go/pkg/networks"
+import (
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"time"
+)
 
 type Collection struct {
 	// ID is network-dependent
@@ -13,6 +16,7 @@ type Collection struct {
 	MaxSupply           int
 	SecondaryDuringMint bool
 	Paused              bool
+	Time                time.Time
 
 	// "has one" relations
 	TeritoriCollection *TeritoriCollection
@@ -26,4 +30,6 @@ type TeritoriCollection struct {
 	MintContractAddress string                `gorm:"primaryKey"`
 	NFTContractAddress  string
 	CreatorAddress      string
+	Price               int
+	Denom               string
 }

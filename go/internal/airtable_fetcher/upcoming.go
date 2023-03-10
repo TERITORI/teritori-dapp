@@ -37,12 +37,12 @@ func (c *Client) FetchUpcomingLaunches(logger *zap.Logger) ([]*marketplacepb.Col
 
 		websiteUrl, ok := record.Fields["WebsiteURL"].(string)
 		if !ok {
-			continue
+			websiteUrl = ""
 		}
 
 		twitterUrl, ok := record.Fields["TwitterURL"].(string)
 		if !ok {
-			continue
+			twitterUrl = ""
 		}
 
 		pfpArray, ok := record.Fields["CollectionPFP"].([]interface{})
