@@ -21,7 +21,7 @@ export const useFetchFeed = (req: PostsRequest) => {
     useInfiniteQuery(
       ["posts", { ...req }],
 
-      async ({ pageParam = req.limit }) => {
+      async () => {
         try {
           // ===== We use FeedService to be able to fetch filtered posts
           const feedClient = mustGetFeedClient(selectedNetworkId);
@@ -32,7 +32,6 @@ export const useFetchFeed = (req: PostsRequest) => {
           });
           const postsResponse = await feedClient.Posts({
             ...req,
-            offset: pageParam || 0,
           });
           const mainPostsCount = await feedContractClient.queryMainPostsCount();
           return { list: postsResponse.posts, totalCount: mainPostsCount };

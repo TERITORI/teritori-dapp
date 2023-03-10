@@ -42,7 +42,9 @@ export const SocialMessageContent: React.FC<Props> = ({
           <VideoPreview file={metadata.files[0]} onDelete={() => null} />
         )}
 
-        {metadata.files?.[0]?.fileType === "image" || metadata.gifs?.length ? (
+        {metadata.files?.[0]?.fileType === "image" ||
+        metadata.files?.[0]?.fileType === "base64" ||
+        metadata.gifs?.length ? (
           <ImagePreview
             files={[
               ...(metadata.files || []),
