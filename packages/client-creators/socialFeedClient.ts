@@ -15,7 +15,8 @@ export const socialFeedClient = async ({
   networkId,
   walletAddress,
 }: SocialFeedClientParams) => {
-  const socialFeedContractAddress = process.env.TERITORI_SOCIAL_FEED_CONTRACT_ADDRESS || ""
+  const socialFeedContractAddress =
+    process.env.TERITORI_SOCIAL_FEED_CONTRACT_ADDRESS || "";
   const cacheKey = `${walletAddress}${socialFeedContractAddress}`;
 
   if (cachedClients[cacheKey]) {

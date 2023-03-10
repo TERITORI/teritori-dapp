@@ -11,7 +11,7 @@ import { ArticlePreview } from "./ArticlePreview";
 import { TextContent } from "./TextContent";
 interface Props {
   metadata: SocialFeedMetadata;
-  type: PostCategory;
+  postCategory: PostCategory;
   isPostConsultation?: boolean;
 }
 export const THUMBNAIL_WIDTH = 140;
@@ -19,10 +19,10 @@ export const THUMBNAIL_WIDTH = 140;
 export const SocialMessageContent: React.FC<Props> = ({
   metadata,
   isPostConsultation,
-  type,
+  postCategory,
 }) => {
   if (
-    type === PostCategory.Article ||
+    postCategory === PostCategory.Article ||
     metadata?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT
   ) {
     return (

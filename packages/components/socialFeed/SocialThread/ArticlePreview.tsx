@@ -2,14 +2,12 @@ import React from "react";
 import { Image, View } from "react-native";
 
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
-import { HTML_TAG_REGEXP } from "../../../utils/regex";
-import { neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { RichText } from "../RichText";
 import { THUMBNAIL_WIDTH } from "./SocialMessageContent";
+import { TextContent } from "./TextContent";
 
 interface Props {
   metadata: SocialFeedMetadata;
@@ -20,6 +18,7 @@ export const ArticlePreview: React.FC<Props> = ({
   metadata,
   isPostConsultation,
 }) => {
+  // ----- From /feed/post/{postId}
   if (isPostConsultation) {
     const coverImage = metadata.files?.find((file) => file.isCoverImage);
     return (
@@ -45,6 +44,7 @@ export const ArticlePreview: React.FC<Props> = ({
       </>
     );
   }
+  // ----- From /feed
   return (
     <View style={{ flexDirection: "row" }}>
       <View
@@ -57,12 +57,8 @@ export const ArticlePreview: React.FC<Props> = ({
             {metadata.title}
           </BrandText>
         )}
-        <BrandText
-          style={[fontSemibold13, { color: neutralA3 }]}
-          numberOfLines={isPostConsultation ? undefined : 5}
-        >
-          {metadata.message.replace(HTML_TAG_REGEXP, "")}
-        </BrandText>
+
+        <TextContent metadata={metadata} />
       </View>
       {!!metadata.files?.length && (
         <Image

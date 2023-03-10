@@ -110,30 +110,30 @@ export const PrimaryBox: React.FC<{
                   }}
                 />
 
-            {/* Left top gradient (Be careful with the coordinates and the colors)*/}
-            <LinearGradient
-              start={{ x: -1, y: 0 }}
-              end={{ x: 1, y: -1 }}
-              style={{
-                width: 8,
-                height: 17,
-                left: 0,
-                top: -4.5,
-                backgroundColor: squaresBackgroundColor,
-                opacity: disabled ? 0.5 : 1,
-                transform: [{ rotate: "45deg" }],
-                position: "absolute",
-                zIndex: 2,
-              }}
-              // Approximate colors for the corners border, no inconvenient visible to naked eyes.
-              colors={
-                disabled
-                  ? [neutral67, "#666666"]
-                  : colors
-                  ? [colors[0], colors[0]]
-                  : ["#04B4C4", "#04B3C3"]
-              }
-            />
+                {/* Left top gradient (Be careful with the coordinates and the colors)*/}
+                <LinearGradient
+                  start={{ x: -1, y: 0 }}
+                  end={{ x: 1, y: -1 }}
+                  style={{
+                    width: 8,
+                    height: 17,
+                    left: 0,
+                    top: -4.5,
+                    backgroundColor: squaresBackgroundColor,
+                    opacity: disabled ? 0.5 : 1,
+                    transform: [{ rotate: "45deg" }],
+                    position: "absolute",
+                    zIndex: 2,
+                  }}
+                  // Approximate colors for the corners border, no inconvenient visible to naked eyes.
+                  colors={
+                    disabled
+                      ? [neutral67, "#666666"]
+                      : colors
+                      ? [colors[0], colors[0]]
+                      : ["#04B4C4", "#04B3C3"]
+                  }
+                />
 
                 {/* Right bottom broken corner */}
                 <View
@@ -149,30 +149,30 @@ export const PrimaryBox: React.FC<{
                   }}
                 />
 
-            {/* Right bottom gradient (Be careful with the coordinates and the colors) */}
-            <LinearGradient
-              start={{ x: -1, y: 0 }}
-              end={{ x: 1, y: -1 }}
-              style={{
-                width: 8,
-                height: 17,
-                right: 0,
-                bottom: -4.5,
-                backgroundColor: squaresBackgroundColor,
-                opacity: disabled ? 0.5 : 1,
-                transform: [{ rotate: "45deg" }],
-                position: "absolute",
-                zIndex: 2,
-              }}
-              // Approximate colors for the corners border, no inconvenient visible to naked eyes.
-              colors={
-                disabled
-                  ? ["#B7B7B7", "#bebbbb"]
-                  : colors
-                  ? [colors[colors.length - 1], colors[colors.length - 1]]
-                  : ["#7c31a0", "#7c2fa2"]
-              }
-            />
+                {/* Right bottom gradient (Be careful with the coordinates and the colors) */}
+                <LinearGradient
+                  start={{ x: -1, y: 0 }}
+                  end={{ x: 1, y: -1 }}
+                  style={{
+                    width: 8,
+                    height: 17,
+                    right: 0,
+                    bottom: -4.5,
+                    backgroundColor: squaresBackgroundColor,
+                    opacity: disabled ? 0.5 : 1,
+                    transform: [{ rotate: "45deg" }],
+                    position: "absolute",
+                    zIndex: 2,
+                  }}
+                  // Approximate colors for the corners border, no inconvenient visible to naked eyes.
+                  colors={
+                    disabled
+                      ? ["#B7B7B7", "#bebbbb"]
+                      : colors
+                      ? [colors[colors.length - 1], colors[colors.length - 1]]
+                      : ["#7c31a0", "#7c2fa2"]
+                  }
+                />
               </>
             )}
           </LinearGradient>

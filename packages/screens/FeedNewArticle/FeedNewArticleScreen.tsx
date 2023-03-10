@@ -1,10 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 

@@ -4,6 +4,7 @@ import { View } from "react-native";
 
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
+import { NotFound } from "../../components/NotFound";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPActivity } from "../../components/userPublicProfile/UPPActivity";
@@ -11,7 +12,6 @@ import { UPPGigServices } from "../../components/userPublicProfile/UPPGigService
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
-import { UserNotFound } from "../../components/userPublicProfile/UserNotFound";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseNetworkObjectId, parseUserId } from "../../networks";
@@ -40,27 +40,23 @@ const SelectedTabContent: React.FC<{
   const selectedWallet = useSelectedWallet();
   const [, userAddress] = parseNetworkObjectId(userId);
   const userInfo = useNSUserInfo(userId);
-
-  const mentionedUser = useMemo(() => {
-    if (selectedWallet?.address !== userAddress) {
-      return userInfo?.metadata.tokenId || userAddress;
-    }
-  }, [selectedWallet?.address, userAddress, userInfo?.metadata.tokenId]);
-
   const feedRequest: PostsRequest = useMemo(() => {
     return {
       filter: {
-        //TODO: Get posts filtered by userId (author) AND mentions. On UPP, we want author's posts AND posts where he's mentioned
         user: userId,
-        //TODO: Here, if the user get a NS Name, the old posts that have his address as mention will not be fetched. Maybe check (mention) for NS Name in backend ?
-        mentions: mentionedUser ? [`@${mentionedUser}`] : [],
+        mentions: userInfo?.metadata.tokenId
+          ? // The user can be mentioned by his NS name OR his address, so we use both in this filter
+            [`@${userAddress}`, `@${userInfo?.metadata.tokenId}`]
+          : // Btw, is the user has no NS name, we use his address in this filter
+            [`@${userAddress}`],
         categories: [],
         hashtags: [],
       },
       limit: 10,
       offset: 0,
     };
-  }, [userId, mentionedUser]);
+  }, [userId, userInfo?.metadata.tokenId, userAddress]);
+
   switch (selectedTab) {
     case "social-feed":
       return (
@@ -72,7 +68,12 @@ const SelectedTabContent: React.FC<{
               setSelectedTab={setSelectedTab}
             />
           )}
-          additionalMention={mentionedUser ? `@${mentionedUser}` : undefined}
+          isUpp
+          additionalMention={
+            selectedWallet?.address !== userAddress
+              ? `@${userInfo?.metadata.tokenId || userAddress}`
+              : undefined
+          }
           req={feedRequest}
         />
       );
@@ -124,7 +125,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       }
     >
       {notFound || !userAddress || !bech32.decodeUnsafe(userAddress) ? (
-        <UserNotFound />
+        <NotFound label="User" />
       ) : (
         <>
           {selectedTab !== "social-feed" ? (

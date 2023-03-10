@@ -1,10 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
+import { layout } from "../utils/style/layout";
+import { BrandText } from "./BrandText";
 
-export const UserNotFound: React.FC = () => {
+export const NotFound: React.FC<{ label: string }> = ({ label }) => {
   return (
     <View
       style={{
@@ -13,7 +13,7 @@ export const UserNotFound: React.FC = () => {
         marginTop: layout.padding_x4,
       }}
     >
-      <BrandText>User not found</BrandText>
+      <BrandText>{label} not found</BrandText>
     </View>
   );
 };

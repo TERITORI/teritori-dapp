@@ -10,9 +10,9 @@ import {
   fontSemibold14,
 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
+import { tinyAddress } from "../utils/text";
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
-import { tinyAddress } from "../utils/text";
 import { SuccessBadge } from "./badges/SuccessBadge";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 

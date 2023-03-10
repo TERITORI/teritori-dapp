@@ -30,14 +30,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { Linking, ScrollView, View } from "react-native";
 
 import cameraSVG from "../../../../assets/icons/camera.svg";
+import { useMention } from "../../../hooks/feed/useMention";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { useAppNavigation } from "../../../utils/navigation";
 import { HANDLE_REGEX, HASH_REGEX, URL_REGEX } from "../../../utils/regex";
-import {
-  DEFAULT_USERNAME,
-  SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT,
-} from "../../../utils/social-feed";
-import { primaryColor } from "../../../utils/style/colors";
+import { DEFAULT_USERNAME } from "../../../utils/social-feed";
+import { neutralA3, primaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
 import { IconBox } from "../../IconBox";
@@ -70,6 +68,8 @@ const hashStrategy = (
   findWithRegex(HASH_REGEX, contentBlock, callback);
 };
 
+//TODO: add headlineOneStrategy and headlineTwoStrategy and add them in compositeDecorator.decorators. The goal is to add more lineHeight
+
 const findWithRegex = (
   regex: RegExp,
   contentBlock: ContentBlock,
@@ -89,13 +89,19 @@ const findWithRegex = (
 
 const MentionRender = (props: { children: { props: { text: string } }[] }) => {
   const navigation = useAppNavigation();
-
+  const { userId } = useMention(props.children[0].props.text);
+  // Every text with a "@" is a mention. But we consider valid mentions as a valid wallet address or a valid NS token id.
+  if (!userId) {
+    return (
+      <span style={{ color: neutralA3 }}>{props.children[0].props.text}</span>
+    );
+  }
   return (
     <span
       style={{ color: primaryColor, cursor: "pointer" }}
       onClick={() =>
         navigation.navigate("UserPublicProfile", {
-          id: props.children[0].props.text.replace("@", ""),
+          id: userId,
         })
       }
     >
