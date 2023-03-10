@@ -16,8 +16,12 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import {
+  getKeplrSigningStargateClient,
+  getStakingCurrency,
+  keplrCurrencyFromNativeCurrencyInfo,
+} from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
-import { getKeplrOfflineSigner } from "../../../utils/keplr";
 import { neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -26,101 +30,111 @@ import {
   fontSemibold20,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import {
-  getTeritoriSigningStargateClient,
-  toriCurrency,
-  toriDisplayDenom,
-} from "../../../utils/teritori";
 import { StakeFormValuesType, ValidatorInfo } from "../types";
 import { WarningBox } from "./WarningBox";
 
 interface DelegateModalProps {
   onClose?: () => void;
   visible?: boolean;
-  data?: ValidatorInfo;
+  validator?: ValidatorInfo;
 }
 
 export const DelegateModal: React.FC<DelegateModalProps> = ({
   onClose,
   visible,
-  data,
+  validator,
 }) => {
   // variables
   const wallet = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
-  const balances = useBalances(
-    process.env.TERITORI_NETWORK_ID,
-    wallet?.address
-  );
+  const networkId = wallet?.networkId || "";
+  const balances = useBalances(networkId, wallet?.address);
+  const stakingCurrency = getStakingCurrency(networkId);
   const toriBalance = balances.find((bal) => bal.denom === "utori");
   const toriBalanceDecimal = Decimal.fromAtomics(
     toriBalance?.amount || "0",
-    toriCurrency.coinDecimals
+    stakingCurrency?.decimals || 0
   );
-  const { control, setValue, handleSubmit, watch, reset } =
+  const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
-  const watchAll = watch();
-  console.log("data?.address", data?.address);
 
   // hooks
   useEffect(() => {
     reset();
-  }, [visible]);
+  }, [reset, visible]);
 
   useEffect(() => {
-    setValue("validatorName", data?.moniker || "");
-  }, [data?.moniker]);
+    setValue("validatorName", validator?.moniker || "");
+  }, [validator?.moniker, setValue]);
 
   // functions
-  const onSubmit = async (formData: StakeFormValuesType) => {
-    try {
-      if (!wallet?.connected || !wallet.address) {
-        console.warn("invalid wallet", wallet);
-        setToastError({
-          title: "Invalid wallet",
-          message: "",
-        });
-        return;
-      }
-      if (!data) {
-        setToastError({
-          title: "Internal error",
-          message: "No data",
-        });
-        return;
-      }
-      const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
-      const txResponse = await client.delegateTokens(
-        wallet.address,
-        data.address,
-        {
-          amount: Decimal.fromUserInput(
-            formData.amount,
-            toriCurrency.coinDecimals
-          ).atomics,
-          denom: toriCurrency.coinMinimalDenom,
-        },
-        "auto"
-      );
+  const onSubmit = useCallback(
+    async (formData: StakeFormValuesType) => {
+      try {
+        if (!stakingCurrency) {
+          console.warn("staking currency not found");
+          setToastError({
+            title: "Staking currency not found",
+            message: "",
+          });
+          return;
+        }
+        if (!wallet?.connected || !wallet.address) {
+          console.warn("invalid wallet", wallet);
+          setToastError({
+            title: "Invalid wallet",
+            message: "",
+          });
+          return;
+        }
+        if (!validator) {
+          setToastError({
+            title: "Internal error",
+            message: "No data",
+          });
+          return;
+        }
+        const client = await getKeplrSigningStargateClient(wallet.networkId);
+        const txResponse = await client.delegateTokens(
+          wallet.address,
+          validator.address,
+          {
+            amount: Decimal.fromUserInput(
+              formData.amount,
+              stakingCurrency.decimals
+            ).atomics,
+            denom: stakingCurrency.denom,
+          },
+          "auto"
+        );
 
-      if (isDeliverTxFailure(txResponse)) {
-        console.error("tx failed", txResponse);
+        if (isDeliverTxFailure(txResponse)) {
+          console.error("tx failed", txResponse);
+          onClose && onClose();
+          setToastError({
+            title: "Transaction failed",
+            message: txResponse.rawLog || "",
+          });
+          return;
+        }
+
+        setToastSuccess({ title: "Delegation success", message: "" });
         onClose && onClose();
-        setToastError({
-          title: "Transaction failed",
-          message: txResponse.rawLog || "",
-        });
-        return;
+      } catch (error) {
+        triggerError({ title: "Delegation failed!", error, callback: onClose });
       }
-
-      setToastSuccess({ title: "Delegation success", message: "" });
-      onClose && onClose();
-    } catch (error) {
-      triggerError({ error, callback: onClose });
-    }
-  };
+    },
+    [
+      validator,
+      onClose,
+      setToastError,
+      setToastSuccess,
+      stakingCurrency,
+      triggerError,
+      wallet,
+    ]
+  );
 
   // returns
   const Header = useCallback(
@@ -129,11 +143,12 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         <BrandText style={fontSemibold20}>Stake Tokens</BrandText>
         <SpacerColumn size={0.5} />
         <BrandText style={[styles.alternateText, fontSemibold16]}>
-          Select a validator and amount of {toriDisplayDenom} to stake.
+          Select a validator and amount of {stakingCurrency?.displayName} to
+          stake.
         </BrandText>
       </View>
     ),
-    [data]
+    [stakingCurrency?.displayName]
   );
 
   const Footer = useCallback(
@@ -158,7 +173,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         </View>
       </>
     ),
-    [watchAll]
+    [handleSubmit, onClose, onSubmit]
   );
 
   return (
@@ -174,7 +189,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         <SpacerColumn size={2.5} />
         <WarningBox
           title="Staking will lock your funds for 21 days"
-          description={`Once you undelegate your staked ${toriDisplayDenom}, you will need to wait 21 days for your tokens to be liquid.`}
+          description={`Once you undelegate your staked ${stakingCurrency?.displayName}, you will need to wait 21 days for your tokens to be liquid.`}
         />
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
@@ -192,7 +207,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           label="Amount"
           control={control}
           placeHolder="0"
-          currency={toriCurrency}
+          currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
           defaultValue=""
           rules={{ required: true, max: toriBalanceDecimal.toString() }}
         >
@@ -209,9 +224,9 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
         <BrandText style={fontSemibold13}>
           Available balance:{" "}
           {prettyPrice(
-            process.env.TERITORI_NETWORK_ID || "",
+            networkId,
             toriBalanceDecimal.atomics,
-            toriCurrency.coinMinimalDenom
+            stakingCurrency?.denom || ""
           )}
         </BrandText>
         <SpacerColumn size={2.5} />

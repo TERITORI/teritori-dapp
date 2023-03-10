@@ -5,7 +5,9 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { useValidators } from "../../hooks/useValidators";
+import { NetworkKind } from "../../networks";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { DelegateModal } from "./components/DelegateModal";
@@ -17,6 +19,7 @@ import { ValidatorInfo } from "./types";
 
 export const StakeScreen: React.FC = () => {
   //   variables
+  const selectedNetworkId = useSelectedNetworkId();
   const [stakeDetailModalVisible, setStakeDetailModalVisible] = useState(false);
   const [isStakeFormVisible, setIsStakeFormVisible] = useState(false);
   const [isUndelegateModalVisible, setIsUndelegateModalVisible] =
@@ -29,7 +32,7 @@ export const StakeScreen: React.FC = () => {
 
   const {
     data: { activeValidators, inactiveValidators },
-  } = useValidators();
+  } = useValidators(selectedNetworkId);
 
   const tabs = {
     active: {
@@ -67,7 +70,7 @@ export const StakeScreen: React.FC = () => {
 
   // returns
   return (
-    <ScreenContainer>
+    <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
       <View style={styles.rowHeader}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
         <View style={styles.rowWithCenter}>
@@ -100,17 +103,17 @@ export const StakeScreen: React.FC = () => {
       <UndelegateModal
         visible={isUndelegateModalVisible}
         onClose={toggleUndelegateModal}
-        data={selectedStake}
+        validator={selectedStake}
       />
       <RedelegateModal
         visible={isRedelegateModalVisible}
         onClose={toggleRedelegateModal}
-        data={selectedStake}
+        validator={selectedStake}
       />
       <DelegateModal
         visible={isStakeFormVisible}
         onClose={toggleStakeForm}
-        data={selectedStake}
+        validator={selectedStake}
       />
     </ScreenContainer>
   );

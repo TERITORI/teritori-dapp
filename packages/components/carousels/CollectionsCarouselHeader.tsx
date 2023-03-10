@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
@@ -37,11 +37,12 @@ const defaultRequest: CollectionsRequest = {
 const CarouselCollectionItem: React.FC<{
   collection: Collection;
   networkId: string;
-}> = ({ collection, networkId }) => {
-  const navigateToCollection = useNavigateToCollection(
-    collection.id,
-    collection.secondaryDuringMint
-  );
+  linkToMint?: boolean;
+}> = ({ collection, networkId, linkToMint }) => {
+  const navigateToCollection = useNavigateToCollection(collection.id, {
+    forceSecondaryDuringMint: collection.secondaryDuringMint,
+    forceLinkToMint: linkToMint,
+  });
 
   return (
     <View
@@ -103,12 +104,14 @@ const CarouselCollectionItem: React.FC<{
 
 export const CollectionsCarouselHeader: React.FC<{
   req?: CollectionsRequest;
-}> = ({ req = defaultRequest }) => {
-  const [collections, fetchMore] = useCollections(req);
+  linkToMint?: boolean;
+  filter?: (c: Collection) => boolean;
+}> = ({ req = defaultRequest, linkToMint, filter }) => {
+  const [collections] = useCollections(req, filter);
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
 
-  const topRightChild = useCallback(
+  const topRightChild = useMemo(
     () => (
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity
@@ -133,7 +136,6 @@ export const CollectionsCarouselHeader: React.FC<{
         data={collections}
         ref={carouselRef}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
-        onScrollEnd={fetchMore}
         height={370}
         pagingEnabled
         autoPlay
@@ -141,7 +143,8 @@ export const CollectionsCarouselHeader: React.FC<{
         renderItem={({ item }) => (
           <CarouselCollectionItem
             collection={item}
-            networkId={req?.networkId}
+            networkId={req.networkId}
+            linkToMint={linkToMint}
           />
         )}
       />

@@ -131,6 +131,11 @@ export function mintStateToJSON(object: MintState): string {
   }
 }
 
+export interface Attribute {
+  traitType: string;
+  value: string;
+}
+
 export interface NFT {
   id: string;
   networkId: string;
@@ -143,11 +148,14 @@ export interface NFT {
   textInsert: string;
   collectionName: string;
   ownerId: string;
+  nftContractAddress: string;
+  lockedOn: string;
+  attributes: Attribute[];
 }
 
 export interface Amount {
   denom: string;
-  quantity: number;
+  quantity: string;
 }
 
 export interface Collection {
@@ -195,7 +203,7 @@ export interface Quest {
 }
 
 export interface PriceDatum {
-  price: number;
+  price: string;
   time: string;
 }
 
@@ -299,6 +307,64 @@ export interface NewsResponse {
   news: News[];
 }
 
+function createBaseAttribute(): Attribute {
+  return { traitType: "", value: "" };
+}
+
+export const Attribute = {
+  encode(message: Attribute, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.traitType !== "") {
+      writer.uint32(10).string(message.traitType);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Attribute {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttribute();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.traitType = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Attribute {
+    return {
+      traitType: isSet(object.traitType) ? String(object.traitType) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+    };
+  },
+
+  toJSON(message: Attribute): unknown {
+    const obj: any = {};
+    message.traitType !== undefined && (obj.traitType = message.traitType);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Attribute>, I>>(object: I): Attribute {
+    const message = createBaseAttribute();
+    message.traitType = object.traitType ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
 function createBaseNFT(): NFT {
   return {
     id: "",
@@ -312,6 +378,9 @@ function createBaseNFT(): NFT {
     textInsert: "",
     collectionName: "",
     ownerId: "",
+    nftContractAddress: "",
+    lockedOn: "",
+    attributes: [],
   };
 }
 
@@ -349,6 +418,15 @@ export const NFT = {
     }
     if (message.ownerId !== "") {
       writer.uint32(106).string(message.ownerId);
+    }
+    if (message.nftContractAddress !== "") {
+      writer.uint32(122).string(message.nftContractAddress);
+    }
+    if (message.lockedOn !== "") {
+      writer.uint32(130).string(message.lockedOn);
+    }
+    for (const v of message.attributes) {
+      Attribute.encode(v!, writer.uint32(138).fork()).ldelim();
     }
     return writer;
   },
@@ -393,6 +471,15 @@ export const NFT = {
         case 13:
           message.ownerId = reader.string();
           break;
+        case 15:
+          message.nftContractAddress = reader.string();
+          break;
+        case 16:
+          message.lockedOn = reader.string();
+          break;
+        case 17:
+          message.attributes.push(Attribute.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -414,6 +501,9 @@ export const NFT = {
       textInsert: isSet(object.textInsert) ? String(object.textInsert) : "",
       collectionName: isSet(object.collectionName) ? String(object.collectionName) : "",
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
+      nftContractAddress: isSet(object.nftContractAddress) ? String(object.nftContractAddress) : "",
+      lockedOn: isSet(object.lockedOn) ? String(object.lockedOn) : "",
+      attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
     };
   },
 
@@ -430,6 +520,13 @@ export const NFT = {
     message.textInsert !== undefined && (obj.textInsert = message.textInsert);
     message.collectionName !== undefined && (obj.collectionName = message.collectionName);
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
+    message.nftContractAddress !== undefined && (obj.nftContractAddress = message.nftContractAddress);
+    message.lockedOn !== undefined && (obj.lockedOn = message.lockedOn);
+    if (message.attributes) {
+      obj.attributes = message.attributes.map((e) => e ? Attribute.toJSON(e) : undefined);
+    } else {
+      obj.attributes = [];
+    }
     return obj;
   },
 
@@ -446,12 +543,15 @@ export const NFT = {
     message.textInsert = object.textInsert ?? "";
     message.collectionName = object.collectionName ?? "";
     message.ownerId = object.ownerId ?? "";
+    message.nftContractAddress = object.nftContractAddress ?? "";
+    message.lockedOn = object.lockedOn ?? "";
+    message.attributes = object.attributes?.map((e) => Attribute.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseAmount(): Amount {
-  return { denom: "", quantity: 0 };
+  return { denom: "", quantity: "" };
 }
 
 export const Amount = {
@@ -459,8 +559,8 @@ export const Amount = {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
-    if (message.quantity !== 0) {
-      writer.uint32(16).int64(message.quantity);
+    if (message.quantity !== "") {
+      writer.uint32(26).string(message.quantity);
     }
     return writer;
   },
@@ -475,8 +575,8 @@ export const Amount = {
         case 1:
           message.denom = reader.string();
           break;
-        case 2:
-          message.quantity = longToNumber(reader.int64() as Long);
+        case 3:
+          message.quantity = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -489,21 +589,21 @@ export const Amount = {
   fromJSON(object: any): Amount {
     return {
       denom: isSet(object.denom) ? String(object.denom) : "",
-      quantity: isSet(object.quantity) ? Number(object.quantity) : 0,
+      quantity: isSet(object.quantity) ? String(object.quantity) : "",
     };
   },
 
   toJSON(message: Amount): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.quantity !== undefined && (obj.quantity = Math.round(message.quantity));
+    message.quantity !== undefined && (obj.quantity = message.quantity);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Amount>, I>>(object: I): Amount {
     const message = createBaseAmount();
     message.denom = object.denom ?? "";
-    message.quantity = object.quantity ?? 0;
+    message.quantity = object.quantity ?? "";
     return message;
   },
 };
@@ -986,13 +1086,13 @@ export const Quest = {
 };
 
 function createBasePriceDatum(): PriceDatum {
-  return { price: 0, time: "" };
+  return { price: "", time: "" };
 }
 
 export const PriceDatum = {
   encode(message: PriceDatum, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.price !== 0) {
-      writer.uint32(9).double(message.price);
+    if (message.price !== "") {
+      writer.uint32(26).string(message.price);
     }
     if (message.time !== "") {
       writer.uint32(18).string(message.time);
@@ -1007,8 +1107,8 @@ export const PriceDatum = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.price = reader.double();
+        case 3:
+          message.price = reader.string();
           break;
         case 2:
           message.time = reader.string();
@@ -1023,7 +1123,7 @@ export const PriceDatum = {
 
   fromJSON(object: any): PriceDatum {
     return {
-      price: isSet(object.price) ? Number(object.price) : 0,
+      price: isSet(object.price) ? String(object.price) : "",
       time: isSet(object.time) ? String(object.time) : "",
     };
   },
@@ -1037,7 +1137,7 @@ export const PriceDatum = {
 
   fromPartial<I extends Exact<DeepPartial<PriceDatum>, I>>(object: I): PriceDatum {
     const message = createBasePriceDatum();
-    message.price = object.price ?? 0;
+    message.price = object.price ?? "";
     message.time = object.time ?? "";
     return message;
   },

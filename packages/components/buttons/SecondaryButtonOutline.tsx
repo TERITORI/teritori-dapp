@@ -36,6 +36,7 @@ export const SecondaryButtonOutline: React.FC<{
   fullWidth?: boolean;
   autoLoader?: boolean;
   isLoading?: boolean;
+  iconColor?: string;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -53,6 +54,7 @@ export const SecondaryButtonOutline: React.FC<{
   fullWidth = false,
   autoLoader,
   isLoading,
+  iconColor,
 }) => {
   const [isAutoLoading, setIsAutoLoading] = useState(false);
 
@@ -101,6 +103,7 @@ export const SecondaryButtonOutline: React.FC<{
             width={16}
             height={16}
             style={{ marginRight: 8 }}
+            color={iconColor}
           />
         ) : null}
 

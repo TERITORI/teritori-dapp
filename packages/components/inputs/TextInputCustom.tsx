@@ -31,7 +31,7 @@ import {
   neutral77,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontMedium10 } from "../../utils/style/fonts";
+import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
@@ -67,6 +67,9 @@ export interface TextInputCustomProps<T extends FieldValues>
   errorStyle?: ViewStyle;
   valueModifier?: (value: string) => string;
   isLoading?: boolean;
+  subtitle?: React.ReactElement;
+  labelStyle?: TextStyle;
+  noBrokenCorners?: boolean;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -97,6 +100,7 @@ export const TextInputCustom = <T extends FieldValues>({
   valueModifier,
   errorStyle,
   isLoading,
+  noBrokenCorners,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -112,12 +116,14 @@ export const TextInputCustom = <T extends FieldValues>({
     if (defaultValue) {
       handleChangeText(defaultValue || "");
     }
+    // handleChangeText changes on every render and we want to call handleChangeText only when default value changes so we disable exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
   const error = useMemo(() => {
     if (fieldState.error) {
-      if (fieldState.error?.message) {
-        return fieldState.error?.message;
+      if (fieldState.error.message) {
+        return fieldState.error.message;
       }
       return DEFAULT_FORM_ERRORS.required;
     }
@@ -135,8 +141,8 @@ export const TextInputCustom = <T extends FieldValues>({
       }
 
       if (reg.test(value) || !value) {
-        field.onChange(valueModifier ? valueModifier(value) : value);
-        if (restProps?.onChangeText) {
+        field.onChange(value);
+        if (restProps.onChangeText) {
           restProps.onChangeText(value);
           return;
         }
@@ -145,8 +151,8 @@ export const TextInputCustom = <T extends FieldValues>({
     }
 
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
-      field.onChange(valueModifier ? valueModifier(value) : value);
-      if (restProps?.onChangeText) {
+      field.onChange(value);
+      if (restProps.onChangeText) {
         restProps.onChangeText(value);
       }
     }
@@ -167,16 +173,18 @@ export const TextInputCustom = <T extends FieldValues>({
 
   return (
     <>
-      {variant &&
-        ["labelOutside", "noCropBorder"].includes(variant) &&
-        !hideLabel && (
-          <TextInputOutsideLabel
-            labelStyle={labelStyle}
-            isAsterickSign={isAsterickSign}
-            subtitle={subtitle}
-            label={label}
-          />
-        )}
+      {variant === "labelOutside" && (
+        <>
+          <View style={styles.rowEnd}>
+            <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
+              {label}
+            </BrandText>
+            {subtitle}
+          </View>
+          <SpacerColumn size={1} />
+        </>
+      )}
+
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
@@ -188,7 +196,7 @@ export const TextInputCustom = <T extends FieldValues>({
         width={width}
         fullWidth={!width}
         height={height}
-        noBrokenCorners={variant === "noCropBorder"}
+        noBrokenCorners={noBrokenCorners}
       >
         <View style={styles.innerContainer}>
           {iconSVG && (
@@ -214,12 +222,12 @@ export const TextInputCustom = <T extends FieldValues>({
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
-              onChangeText={handleChangeText}
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
               value={field.value}
               style={[styles.textInput, inputStyle]}
               {...restProps}
+              onChangeText={handleChangeText}
             />
           </View>
 

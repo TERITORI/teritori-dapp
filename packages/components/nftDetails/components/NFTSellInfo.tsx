@@ -2,10 +2,14 @@ import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriNftVaultQueryClient } from "../../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { getNativeCurrency } from "../../../networks";
+import {
+  getNativeCurrency,
+  getNetwork,
+  mustGetNonSigningCosmWasmClient,
+  NetworkKind,
+} from "../../../networks";
 import { NFTInfo } from "../../../screens/Marketplace/NFTDetailScreen";
 import { prettyPrice } from "../../../utils/coins";
-import { getNonSigningCosmWasmClient } from "../../../utils/keplr";
 import { trimFixed } from "../../../utils/numbers";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
@@ -13,9 +17,10 @@ import { BrandText } from "../../BrandText";
 export const NFTSellInfo: React.FC<{
   nftInfo?: NFTInfo;
   price: string;
-  networkId?: string;
-}> = ({ nftInfo, price, networkId }) => {
-  const vaultConfig = useVaultConfig();
+}> = ({ nftInfo, price }) => {
+  const networkId = nftInfo?.networkId;
+
+  const vaultConfig = useVaultConfig(networkId);
   const currency = getNativeCurrency(networkId, nftInfo?.mintDenom);
 
   if (!currency || !vaultConfig || !nftInfo || !networkId) {
@@ -36,11 +41,11 @@ export const NFTSellInfo: React.FC<{
     const foo = (decPrice.toFloatApproximation() * (1 - feeGain)).toFixed(
       currency.decimals
     );
-    const willReceiveDec = Decimal.fromUserInput(foo, currency?.decimals);
+    const willReceiveDec = Decimal.fromUserInput(foo, currency.decimals);
     willReceive = prettyPrice(
       networkId,
       willReceiveDec.atomics,
-      nftInfo?.mintDenom
+      nftInfo.mintDenom
     );
   } catch {}
 
@@ -59,14 +64,23 @@ export const NFTSellInfo: React.FC<{
   );
 };
 
-const useVaultConfig = () => {
+const useVaultConfig = (networkId: string | undefined) => {
   const { data } = useQuery(
-    ["vaultConfig"],
+    ["vaultConfig", networkId],
     async () => {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const network = getNetwork(networkId);
+
+      if (
+        network?.kind !== NetworkKind.Cosmos ||
+        !network.vaultContractAddress
+      ) {
+        return null;
+      }
+
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
       const vaultClient = new TeritoriNftVaultQueryClient(
         cosmwasmClient,
-        process.env.TERITORI_VAULT_CONTRACT_ADDRESS || ""
+        network.vaultContractAddress
       );
       return await vaultClient.config();
     },

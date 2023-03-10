@@ -2,14 +2,15 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
+import { NetworkKind, getUserId } from "../../networks";
 import {
   selectIsKeplrConnected,
   setIsKeplrConnected,
+  setSelectedWalletId,
 } from "../../store/slices/settings";
-// import { addWallet } from "../../store/slices/wallets";
 import { useAppDispatch } from "../../store/store";
-import { teritoriChainId } from "../../utils/teritori";
 import { WalletProvider } from "../../utils/walletProvider";
+import { useSelectedNetworkInfo } from "./../../hooks/useSelectedNetwork";
 import { Wallet } from "./wallet";
 
 export type UseKeplrResult =
@@ -19,6 +20,7 @@ export type UseKeplrResult =
 export const useKeplr: () => UseKeplrResult = () => {
   const isKeplrConnected = useSelector(selectIsKeplrConnected);
   const [hasKeplr, setHasKeplr] = useState(false);
+  const selectedNetworkInfo = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
 
   const [addresses, setAddresses] = useState<string[]>([]);
@@ -45,23 +47,24 @@ export const useKeplr: () => UseKeplrResult = () => {
       return;
     }
     const handleKeyChange = async () => {
-      if (!teritoriChainId) {
-        console.error("no teritori chain id");
+      if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
         return;
       }
-      const keplr = (window as KeplrWindow).keplr;
+      const keplr = (window as KeplrWindow)?.keplr;
       if (!keplr) {
         console.error("no keplr");
         return;
       }
-      const offlineSigner = await keplr.getOfflineSignerAuto(teritoriChainId);
+      const offlineSigner = await keplr.getOfflineSignerAuto(
+        selectedNetworkInfo.chainId
+      );
       const accounts = await offlineSigner.getAccounts();
       setAddresses(accounts.map((account) => account.address));
     };
     window.addEventListener("keplr_keystorechange", handleKeyChange);
     return () =>
       window.removeEventListener("keplr_keystorechange", handleKeyChange);
-  }, [hasKeplr]);
+  }, [hasKeplr, selectedNetworkInfo]);
 
   useEffect(() => {
     const effect = async () => {
@@ -70,13 +73,15 @@ export const useKeplr: () => UseKeplrResult = () => {
       }
 
       try {
-        const keplr = (window as KeplrWindow).keplr;
+        const keplr = (window as KeplrWindow)?.keplr;
         if (!keplr) {
           console.error("no keplr");
           return;
         }
-
-        const chainId = teritoriChainId;
+        if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
+          return;
+        }
+        const chainId = selectedNetworkInfo.chainId;
         if (!chainId) {
           console.error("missing chain id");
           return;
@@ -100,45 +105,52 @@ export const useKeplr: () => UseKeplrResult = () => {
       setReady(true);
     };
     effect();
-  }, [hasKeplr, isKeplrConnected, dispatch]);
-
-  /*
-  useEffect(() => {
-    addresses.forEach((address) => {
-      if (!address) {
-        return;
-      }
-      dispatch(
-        addWallet({
-          publicKey: address,
-          network: Network.Teritori,
-        })
-      );
-    });
-  }, [addresses]);
-  */
+  }, [hasKeplr, isKeplrConnected, dispatch, selectedNetworkInfo]);
 
   const wallets = useMemo(() => {
+    let networkId = "";
+    if (selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
+      networkId = selectedNetworkInfo.id;
+    }
+
     if (addresses.length === 0) {
       const wallet: Wallet = {
         address: "",
         provider: WalletProvider.Keplr,
+        networkKind: NetworkKind.Cosmos,
+        networkId,
+        userId: "",
         connected: false,
         id: `keplr`,
       };
       return [wallet];
     }
-    return addresses.map((address, index) => {
+    const wallets = addresses.map((address, index) => {
+      let userId = "";
+      if (selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
+        userId = getUserId(networkId, address);
+      }
+
       const wallet: Wallet = {
         address,
         provider: WalletProvider.Keplr,
+        networkKind: NetworkKind.Cosmos,
+        networkId,
+        userId,
         connected: true,
         id: `keplr-${address}`,
       };
       console.log("keplr", index, wallet);
       return wallet;
     });
-  }, [addresses]);
+
+    const selectedWallet = wallets.find((w) => w.connected);
+    if (selectedWallet && selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
+      dispatch(setSelectedWalletId(selectedWallet.id));
+    }
+
+    return wallets;
+  }, [addresses, dispatch, selectedNetworkInfo]);
 
   return hasKeplr ? [true, ready, wallets] : [false, ready, undefined];
 };

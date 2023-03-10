@@ -92,7 +92,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
         </View>
       </>
     ),
-    [visible]
+    [onClose, onPressDelegate, onPressRedelegate, onPressUndelegate]
   );
 
   return (

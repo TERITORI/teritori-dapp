@@ -11,15 +11,12 @@ import { ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 
 /*
-  NOTE: this whole thing need to be rewritten using indexers and better data organisation
+  FIXME: this needs to handle all collections and all nfts
 */
 
 export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
-  // variables
   const selectedWallet = useSelectedWallet();
-  const ownerId = `tori-${selectedWallet?.address}`; // FIXME: make this network-independent
 
-  // returns
   const EmptyListComponent = useCallback(
     () => (
       <View style={styles.emptyContainer}>
@@ -33,7 +30,7 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
   return (
     <ScreenContainer>
       <OwnedNFTs
-        ownerId={ownerId}
+        ownerId={selectedWallet?.userId || ""}
         style={{ marginHorizontal: layout.padding_x3 }}
         EmptyListComponent={EmptyListComponent}
       />

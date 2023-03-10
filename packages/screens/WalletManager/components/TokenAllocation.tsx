@@ -15,13 +15,12 @@ interface TokenAllocationProps {
 
 export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
   const selectedWallet = useSelectedWallet();
-  const allBalances = useBalances(
-    process.env.TERITORI_NETWORK_ID,
-    selectedWallet?.address
-  );
+  const selectedNetWorkId = selectedWallet?.networkId || "";
+  const allBalances = useBalances(selectedNetWorkId, selectedWallet?.address);
   const balances = allBalances.filter(
     (bal) => bal.usdAmount && bal.usdAmount > 0
   );
+
   const usdSum = balances.reduce(
     (total, bal) => total + (bal.usdAmount || 0),
     0
@@ -45,10 +44,7 @@ export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
           height={216}
           width={216}
           colorScale={balances.map((bal) => {
-            const currency = getNativeCurrency(
-              process.env.TERITORI_NETWORK_ID,
-              bal.denom
-            );
+            const currency = getNativeCurrency(selectedNetWorkId, bal.denom);
             return currency?.color || "#FFFFFF";
           })}
           labels={() => null}
@@ -62,10 +58,7 @@ export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
 
         <View style={{ marginLeft: 32, width: 216 }}>
           {balances.map((item) => {
-            const currency = getNativeCurrency(
-              process.env.TERITORI_NETWORK_ID,
-              item.denom
-            );
+            const currency = getNativeCurrency(selectedNetWorkId, item.denom);
             return (
               <View
                 key={currency?.denom}
@@ -77,7 +70,7 @@ export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
                 }}
               >
                 <CurrencyIcon
-                  networkId={process.env.TERITORI_NETWORK_ID || ""}
+                  networkId={selectedNetWorkId}
                   denom={item.denom}
                   size={24}
                 />

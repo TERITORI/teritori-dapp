@@ -17,6 +17,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrOfflineSigner } from "../../utils/keplr";
 import { neutral44, tulipTree } from "../../utils/style/colors";
 import { getTeritoriSigningStargateClient } from "../../utils/teritori";
+import { getKeplrSigningStargateClient } from "../../networks";
 import { ProposalStatus } from "./types";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
@@ -105,8 +106,9 @@ export const GovernanceDetails: React.FC<{
     }
 
     try {
-      const keplrSigner = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(keplrSigner);
+      const client = await getKeplrSigningStargateClient(
+        selectedWallet.networkId
+      );
 
       const vote: MsgVoteEncodeObject = {
         typeUrl: "/cosmos.gov.v1beta1.MsgVote",
@@ -138,7 +140,14 @@ export const GovernanceDetails: React.FC<{
         });
       }
     }
-  }, [selectedWallet]);
+  }, [
+    numberProposal,
+    selectedWallet?.address,
+    selectedWallet?.connected,
+    selectedWallet?.networkId,
+    setToastError,
+    voteOption,
+  ]);
 
   function deleteConfirmationVote() {
     setdisplayConfirmationVote(false);

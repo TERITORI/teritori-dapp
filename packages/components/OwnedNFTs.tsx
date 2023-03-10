@@ -9,7 +9,7 @@ import {
 } from "../api/marketplace/v1/marketplace";
 import { useCollections } from "../hooks/useCollections";
 import { useNFTs } from "../hooks/useNFTs";
-import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
+import { parseNetworkObjectId } from "../networks";
 import { layout } from "../utils/style/layout";
 import { NetworkIcon } from "./NetworkIcon";
 import { Section } from "./Section";
@@ -22,10 +22,11 @@ export const OwnedNFTs: React.FC<{
   style?: StyleProp<ViewStyle>;
   EmptyListComponent?: React.ComponentType;
 }> = ({ ownerId, style, EmptyListComponent }) => {
-  const selectedNetworkId = useSelectedNetworkId();
+  const [network] = parseNetworkObjectId(ownerId);
+  const networkId = network?.id || "";
 
   const [collections] = useCollections({
-    networkId: selectedNetworkId,
+    networkId,
     sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
     upcoming: false,
     sort: Sort.SORTING_VOLUME,
@@ -34,7 +35,7 @@ export const OwnedNFTs: React.FC<{
     mintState: MintState.MINT_STATE_UNSPECIFIED,
   }); // FIXME: add owner filter and pagination
 
-  if (!collections?.length && EmptyListComponent) {
+  if (!collections.length && EmptyListComponent) {
     return <EmptyListComponent />;
   }
 
