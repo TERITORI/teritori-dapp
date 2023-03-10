@@ -17,6 +17,7 @@ import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
+import { SimpleButtonGroup } from "./component/SimpleButtonGroup";
 
 export const RiotGameInventoryScreen = () => {
   const navigation = useAppNavigation();
@@ -82,6 +83,16 @@ export const RiotGameInventoryScreen = () => {
               iconSVG={breedSVG}
             />
           </FlexRow>
+
+          <SimpleButtonGroup
+            size="XS"
+            buttons={[
+              { text: "Rippers" },
+              { text: "Boxes" },
+              { text: "Keys" },
+              { text: "Perks" },
+            ]}
+          />
 
           <FlatList
             data={myAvailableRippers}
