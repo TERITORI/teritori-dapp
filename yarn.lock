@@ -17584,6 +17584,11 @@ react-native-gradle-plugin@^0.0.6:
   resolved "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.0.6.tgz"
   integrity sha512-eIlgtsmDp1jLC24dRn43hB3kEcZVqx6DUQbR0N1ABXGnMEafm9I3V3dUUeD1vh+Dy5WqijSoEwLNUPLgu5zDMg==
 
+react-native-hoverable@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-hoverable/-/react-native-hoverable-0.2.0.tgz#c65bd8d1f522987cd98733a7070f111273deecad"
+  integrity sha512-iv+soV1UY3ZsEEJhLGzWrsE+yy/QgmDyZuddQWUtI0n9A6Sq6i287p/LtL9TIHDdZWUHtnzMC1aihPbI2a3aJA==
+
 react-native-iphone-x-helper@^1.3.1:
   version "1.3.1"
   resolved "https://registry.npmjs.org/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz"

@@ -144,8 +144,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
               Display all Testnet Networks
             </BrandText>
             <Switch
-              activeThumbColor={primaryColor}
-              thumbColor={neutral55}
+              thumbColor={displayTestnet ? primaryColor : neutral55}
               trackColor={{ true: secondaryColor, false: neutralA3 }}
               onValueChange={() => setDisplayTestnet((value) => !value)}
               value={displayTestnet}
@@ -157,10 +156,10 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
 
         <View style={styles.cardContainer}>
           <View style={[styles.switchBox, { paddingTop: 0 }]}>
-          <BrandText style={styles.cardSubtitle}>
-            NFT.Storage/Pinata.cloud API key (for Social Feed)
-          </BrandText>
-            <Pressable onPress={()=>setApiKey("")}>
+            <BrandText style={styles.cardSubtitle}>
+              NFT.Storage/Pinata.cloud API key (for Social Feed)
+            </BrandText>
+            <Pressable onPress={() => setApiKey("")}>
               <Text style={[fontSemibold14, { color: primaryColor }]}>
                 Reset to Teritoris' API key
               </Text>
@@ -191,8 +190,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
               </BrandText>
             </View>
             <Switch
-              activeThumbColor={primaryColor}
-              thumbColor={neutral55}
+              thumbColor={sales ? primaryColor : neutral55}
               trackColor={{ true: secondaryColor, false: neutralA3 }}
               onValueChange={() => setSales((value) => !value)}
               value={sales}
@@ -206,8 +204,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
               </BrandText>
             </View>
             <Switch
-              activeThumbColor={primaryColor}
-              thumbColor={neutral55}
+              thumbColor={successfulBids ? primaryColor : neutral55}
               trackColor={{ true: secondaryColor, false: neutralA3 }}
               onValueChange={() => setSuccessfulBids((value) => !value)}
               value={successfulBids}
@@ -221,8 +218,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
               </BrandText>
             </View>
             <Switch
-              activeThumbColor={primaryColor}
-              thumbColor={neutral55}
+              thumbColor={doubleBids ? primaryColor : neutral55}
               trackColor={{ true: secondaryColor, false: neutralA3 }}
               onValueChange={() => setDoubleBids((value) => !value)}
               value={doubleBids}
@@ -237,8 +233,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
               </BrandText>
             </View>
             <Switch
-              activeThumbColor={primaryColor}
-              thumbColor={neutral55}
+              thumbColor={expiredBids ? primaryColor : neutral55}
               trackColor={{ true: secondaryColor, false: neutralA3 }}
               onValueChange={() => setExpiredBids((value) => !value)}
               value={expiredBids}
@@ -253,8 +248,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
               </BrandText>
             </View>
             <Switch
-              activeThumbColor={primaryColor}
-              thumbColor={neutral55}
+              thumbColor={purchase ? primaryColor : neutral55}
               trackColor={{ true: secondaryColor, false: neutralA3 }}
               onValueChange={() => setPurchase((value) => !value)}
               value={purchase}
