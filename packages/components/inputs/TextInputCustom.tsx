@@ -49,6 +49,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: React.ReactElement;
   labelStyle?: TextStyle;
+  noBrokenCorners?: boolean;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -71,6 +72,7 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
+  noBrokenCorners,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -163,6 +165,7 @@ export const TextInputCustom = <T extends FieldValues>({
         width={width}
         fullWidth={!width}
         height={height}
+        noBrokenCorners={noBrokenCorners}
       >
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
@@ -178,12 +181,12 @@ export const TextInputCustom = <T extends FieldValues>({
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
-              onChangeText={handleChangeText}
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
               value={field.value}
               style={styles.textInput}
               {...restProps}
+              onChangeText={handleChangeText}
             />
           </View>
 
