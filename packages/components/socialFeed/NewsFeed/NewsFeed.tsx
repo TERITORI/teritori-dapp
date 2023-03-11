@@ -26,7 +26,6 @@ const OFFSET_Y_LIMIT_FLOATING = 224;
 interface NewsFeedProps {
   Header: React.ComponentType;
   req: PostsRequest;
-  isUpp?: boolean;
   // Receive this if the post is created from HashFeedScreen
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
@@ -36,12 +35,11 @@ interface NewsFeedProps {
 export const NewsFeed: React.FC<NewsFeedProps> = ({
   Header,
   req,
-  isUpp,
   additionalHashtag,
   additionalMention,
 }) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
-    useFetchFeed(req, isUpp);
+    useFetchFeed(req);
   const navigation = useAppNavigation();
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);

@@ -7,8 +7,11 @@ import { primaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 
 export const screenTabItems = {
-  "social-feed": {
-    name: "Social Feed",
+  userPosts: {
+    name: "User's Posts",
+  },
+  mentionsPosts: {
+    name: "Mentions Posts",
   },
   nfts: {
     name: "NFTs",
