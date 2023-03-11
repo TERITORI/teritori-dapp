@@ -39,25 +39,38 @@ const SelectedTabContent: React.FC<{
   const selectedWallet = useSelectedWallet();
   const [, userAddress] = parseNetworkObjectId(userId);
   const userInfo = useNSUserInfo(userId);
-  const feedRequest: PostsRequest = useMemo(() => {
+  const feedRequestUser: PostsRequest = useMemo(() => {
     return {
       filter: {
         user: userId,
-        mentions: userInfo?.metadata.tokenId
-          ? // The user can be mentioned by his NS name OR his address, so we use both in this filter
-            [`@${userAddress}`, `@${userInfo?.metadata.tokenId}`]
-          : // Btw, is the user has no NS name, we use his address in this filter
-            [`@${userAddress}`],
+        mentions: [],
         categories: [],
         hashtags: [],
       },
       limit: 10,
       offset: 0,
     };
-  }, [userId, userInfo?.metadata.tokenId, userAddress]);
+  }, [userId]);
+
+  const feedRequestMentions: PostsRequest = useMemo(() => {
+    return {
+      filter: {
+        user: "",
+        mentions: userInfo?.metadata.tokenId
+          ? // The user can be mentioned by his NS name OR his address, so we use both in this filter
+          [`@${userAddress}`, `@${userInfo?.metadata.tokenId}`]
+          : // Btw, is the user has no NS name, we use his address in this filter
+          [`@${userAddress}`],
+        categories: [],
+        hashtags: [],
+      },
+      limit: 10,
+      offset: 0,
+    };
+  }, [userInfo?.metadata.tokenId, userAddress]);
 
   switch (selectedTab) {
-    case "social-feed":
+    case "userPosts":
       return (
         <NewsFeed
           Header={() => (
@@ -67,13 +80,30 @@ const SelectedTabContent: React.FC<{
               setSelectedTab={setSelectedTab}
             />
           )}
-          isUpp
           additionalMention={
             selectedWallet?.address !== userAddress
               ? `@${userInfo?.metadata.tokenId || userAddress}`
               : undefined
           }
-          req={feedRequest}
+          req={feedRequestUser}
+        />
+      );
+    case "mentionsPosts":
+      return (
+        <NewsFeed
+          Header={() => (
+            <UserPublicProfileScreenHeader
+              userId={userId}
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+            />
+          )}
+          additionalMention={
+            selectedWallet?.address !== userAddress
+              ? `@${userInfo?.metadata.tokenId || userAddress}`
+              : undefined
+          }
+          req={feedRequestMentions}
         />
       );
     case "nfts":
@@ -97,7 +127,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   },
 }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("social-feed");
+    useState<keyof typeof screenTabItems>("userPosts");
 
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
@@ -108,7 +138,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       forceNetworkId={network?.id}
       responsive
       fullWidth
-      noScroll={selectedTab === "social-feed"}
+      noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
       smallMargin
       footerChildren={<></>}
       headerChildren={
@@ -126,7 +156,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
         <NotFound label="User" />
       ) : (
         <>
-          {selectedTab !== "social-feed" ? (
+          {(selectedTab !== "userPosts" && selectedTab !== "mentionsPosts") ? (
             <TabContainer>
               <UserPublicProfileScreenHeader
                 userId={id}
