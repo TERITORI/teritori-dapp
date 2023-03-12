@@ -10,11 +10,15 @@ import winorlose from "../../assets/background/winorlose.png";
 const baseStyle = { flex: 1 };
 
 const imgComponent = {
-  disconnect: { src: disconnect, style: { ...baseStyle } },
-  login: { src: login, style: { ...baseStyle, filter: "sepia(1)" } },
-  price: { src: price, style: { ...baseStyle } },
-  score: { src: score, style: { ...baseStyle } },
-  winorlose: { src: winorlose, style: { ...baseStyle } },
+  disconnect: { src: disconnect, style: { ...baseStyle }, imgStyle: {} },
+  login: {
+    src: login,
+    style: { ...baseStyle },
+    imgStyle: { filter: "sepia(1)" },
+  },
+  price: { src: price, style: { ...baseStyle }, imgStyle: {} },
+  score: { src: score, style: { ...baseStyle }, imgStyle: {} },
+  winorlose: { src: winorlose, style: { ...baseStyle }, imgStyle: {} },
 };
 
 export const DefaultBackground: React.FC<{
@@ -25,6 +29,7 @@ export const DefaultBackground: React.FC<{
 
   return (
     <ImageBackground
+      imageStyle={selectedComponnet.imgStyle}
       source={selectedComponnet.src}
       resizeMode="cover"
       style={selectedComponnet.style}

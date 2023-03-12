@@ -22,6 +22,7 @@ const imgComponent = {
   winorlose: (children: JSX.Element) => (
     <DefaultBackground type="winorlose">{children}</DefaultBackground>
   ),
+  raffle: () => null,
 };
 
 export const Background: React.FC<{ children: JSX.Element; type: string }> = ({
