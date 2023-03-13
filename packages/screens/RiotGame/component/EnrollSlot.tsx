@@ -1,7 +1,6 @@
 import React from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, useWindowDimensions } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useWindowDimensions } from "react-native";
 
 import addSVG from "../../../../assets/icons/add.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";

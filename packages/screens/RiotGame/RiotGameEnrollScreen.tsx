@@ -25,7 +25,6 @@ import {
   fontMedium32,
   fontMedium48,
   fontSemibold20,
-  fontSemibold24,
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout, smallMobileWidth } from "../../utils/style/layout";
@@ -73,11 +72,11 @@ export const RiotGameEnrollScreen = () => {
     pageTitle: {
       marginTop: width < smallMobileWidth ? layout.padding_x2 : 0,
       alignSelf: "center",
-      ...(width < smallMobileWidth ? fontSemibold28 : fontMedium48 as object),
+      ...(width < smallMobileWidth ? fontSemibold28 : (fontMedium48 as object)),
     },
     sectionTitle: {
       marginTop: layout.padding_x1,
-      ...(width < smallMobileWidth ? fontSemibold20 : fontMedium32 as object),
+      ...(width < smallMobileWidth ? fontSemibold20 : (fontMedium32 as object)),
     },
     enrollContainer: {
       justifyContent: "space-around",
@@ -94,7 +93,8 @@ export const RiotGameEnrollScreen = () => {
     ripperSlot: {
       // marginRight: layout.padding_x2_5,
       marginTop: layout.padding_x2_5,
-      marginHorizontal: width < smallMobileWidth ? layout.padding_x1 : layout.padding_x1_5
+      marginHorizontal:
+        width < smallMobileWidth ? layout.padding_x1 : layout.padding_x1_5,
     },
     videoContainer: {
       marginTop: layout.padding_x2_5,
@@ -269,7 +269,7 @@ export const RiotGameEnrollScreen = () => {
               padding: layout.padding_x4,
               alignItems: "flex-start",
               width: "90%",
-              margin: "auto"
+              margin: "auto",
             }}
             style={{ marginTop: layout.padding_x2 }}
             fullWidth

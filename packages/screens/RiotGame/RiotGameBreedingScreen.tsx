@@ -24,7 +24,7 @@ import {
 } from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
-import { layout, smallMobileWidth } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
 import {
   BreedingResultModal,
   TokenInfo,
@@ -224,7 +224,13 @@ export const RiotGameBreedingScreen = () => {
           />
         </FlexRow>
 
-        <FlexRow style={{ marginTop: layout.padding_x4, flexDirection: width < 600 ? "column" : "row", alignItems: "center" }}>
+        <FlexRow
+          style={{
+            marginTop: layout.padding_x4,
+            flexDirection: width < 600 ? "column" : "row",
+            alignItems: "center",
+          }}
+        >
           <InfoBox
             size="LG"
             title="Price"
@@ -235,14 +241,14 @@ export const RiotGameBreedingScreen = () => {
             )}
             width={180}
           />
-          <View style={{ marginTop: 10 }}></View>
+          <View style={{ marginTop: 10 }} />
           <InfoBox
             size="LG"
             title="Remaining NFTs"
             content={`${remainingTokens}`}
             width={180}
           />
-          <View style={{ marginTop: 10 }}></View>
+          <View style={{ marginTop: 10 }} />
           <InfoBox size="LG" title="Bonus" content="Coming soon" width={180} />
         </FlexRow>
 
@@ -263,7 +269,11 @@ export const RiotGameBreedingScreen = () => {
         <FlexRow
           width="auto"
           alignItems="center"
-          style={{ marginTop: layout.padding_x2, marginBottom: layout.padding_x2, flexDirection: width < 500 ? "column" : "row" }}
+          style={{
+            marginTop: layout.padding_x2,
+            marginBottom: layout.padding_x2,
+            flexDirection: width < 500 ? "column" : "row",
+          }}
         >
           <BrandText style={[fontMedium14, { color: neutralA3 }]}>
             By clicking "Breed my Rippers" you agree to this
@@ -296,6 +306,6 @@ export const RiotGameBreedingScreen = () => {
         }}
         visible={isShowBreedingResultModal}
       />
-    </GameContentView >
+    </GameContentView>
   );
 };

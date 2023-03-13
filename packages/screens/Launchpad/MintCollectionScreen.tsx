@@ -7,6 +7,7 @@ import {
   TextStyle,
   View,
   ViewStyle,
+  useWindowDimensions,
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
@@ -231,6 +232,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     }
   }, [mintAddress]);
 
+  const { width } = useWindowDimensions();
+
   if (!info) {
     return <ScreenContainer noMargin />;
   }
@@ -253,7 +256,13 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   } else
     return (
       <ScreenContainer noMargin fullWidth>
-        <View style={{ alignItems: "center" }}>
+        <View
+          style={{
+            alignItems: "center",
+            width: width < 660 ? "90%" : "100%",
+            margin: "auto",
+          }}
+        >
           <View
             style={{
               flexDirection: "row",
@@ -305,12 +314,14 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 </View>
               </View>
 
-              <GradientText
-                gradientType="grayLight"
-                style={[fontSemibold14, { marginBottom: 24, marginRight: 24 }]}
-              >
-                {info.description}
-              </GradientText>
+              <View style={{ maxWidth: 420 }}>
+                <GradientText
+                  gradientType="grayLight"
+                  style={[fontSemibold14, { marginBottom: 24 }]}
+                >
+                  {info.description}
+                </GradientText>
+              </View>
 
               <ProgressionCard
                 label="Tokens Minted"

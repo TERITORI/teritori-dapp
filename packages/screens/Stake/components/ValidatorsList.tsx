@@ -40,25 +40,25 @@ export const ValidatorsTable: React.FC<{
 
   const { width } = useWindowDimensions();
 
-const TABLE_ROWS: { [key in string]: TableRowHeading } = {
-  rank: {
-    label: "Rank",
+  const TABLE_ROWS: { [key in string]: TableRowHeading } = {
+    rank: {
+      label: "Rank",
       flex: 0.5,
-  },
-  name: {
-    label: "Name",
+    },
+    name: {
+      label: "Name",
       flex: 4.5,
-  },
-  votingPower: {
-    label: "Voting Power",
-    flex: 3,
-  },
-  commission: {
-    label: "Commission",
-    flex: 2,
-  },
-  claimable: {
-    label: "Claimable reward",
+    },
+    votingPower: {
+      label: "Voting Power",
+      flex: 3,
+    },
+    commission: {
+      label: "Commission",
+      flex: 2,
+    },
+    claimable: {
+      label: "Claimable reward",
       flex: 2,
     },
     actions: {
@@ -82,17 +82,17 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
     },
     votingPower: {
       label: "Voting Power",
-    flex: 3,
-  },
+      flex: 3,
+    },
     commission: {
       label: "Commission",
       flex: 2,
     },
     claimable: {
       label: "Claimable reward",
-    flex: 2,
-  },
-};
+      flex: 2,
+    },
+  };
 
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
   const ROWS_MOBILE = actions
@@ -105,22 +105,22 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
     <View>
       {width > 650 && (
         <View>
-      <TableRow headings={Object.values(ROWS)} />
-      <FlatList
-        data={validators}
-        style={style}
-        keyExtractor={(item) => item.address}
-        renderItem={({ item }) => (
-          <ValidatorRow
-            validator={item}
-            actions={actions}
-            pendingRewards={rewards.filter(
-              (reward) => reward.validator === item.address
+          <TableRow headings={Object.values(ROWS)} />
+          <FlatList
+            data={validators}
+            style={style}
+            keyExtractor={(item) => item.address}
+            renderItem={({ item }) => (
+              <ValidatorRow
+                validator={item}
+                actions={actions}
+                pendingRewards={rewards.filter(
+                  (reward) => reward.validator === item.address
+                )}
+                claimReward={claimReward}
+              />
             )}
-            claimReward={claimReward}
           />
-        )}
-      />
         </View>
       )}
       {width < 650 && (

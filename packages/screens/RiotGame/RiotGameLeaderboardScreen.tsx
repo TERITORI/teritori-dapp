@@ -6,8 +6,9 @@ import {
   Image,
   View,
   TouchableOpacity,
-  useWindowDimensions
+  useWindowDimensions,
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
 import badgeSVG from "../../../assets/icons/badge.svg";
@@ -42,9 +43,8 @@ import {
   fontSemibold12,
   fontSemibold28,
 } from "../../utils/style/fonts";
-import { layout, mobileWidth, smallMobileWidth } from "../../utils/style/layout";
+import { layout, mobileWidth } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
-import { ScrollView } from "react-native-gesture-handler";
 
 type RankProps = {
   changes: number;
@@ -74,8 +74,8 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
           source={{
             uri: ipfsURLToHTTPURL(
               tnsMetadata.metadata?.image ||
-              process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
-              ""
+                process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
+                ""
             ),
           }}
           style={{
@@ -173,13 +173,29 @@ export const RiotGameLeaderboardScreen = () => {
         <BrandText style={fontMedium16}>{currentSeason?.id}</BrandText>
       </ImageBackground>
 
-      <ScrollView horizontal contentContainerStyle={{ width: width < mobileWidth ? mobileWidth - 40 : "100%", overflow: "hidden", margin: "auto" }}>
-        <View style={{ minWidth: width < mobileWidth ? mobileWidth - 40 : "100%" }}>
-          <TertiaryBox fullWidth style={{ marginTop: layout.padding_x2 }} mainContainerStyle={{ width: "100%" }}>
+      <ScrollView
+        horizontal
+        contentContainerStyle={{
+          width: width < mobileWidth ? mobileWidth - 40 : "100%",
+          overflow: "hidden",
+          margin: "auto",
+        }}
+      >
+        <View
+          style={{ minWidth: width < mobileWidth ? mobileWidth - 40 : "100%" }}
+        >
+          <TertiaryBox
+            fullWidth
+            style={{ marginTop: layout.padding_x2 }}
+            mainContainerStyle={{ width: "100%" }}
+          >
             <FlexRow>
               <View style={{ flex: 1 }}>
                 <BrandText
-                  style={[styles.colHeaderTitle, { marginLeft: layout.padding_x2 }]}
+                  style={[
+                    styles.colHeaderTitle,
+                    { marginLeft: layout.padding_x2 },
+                  ]}
                 >
                   Rank
                 </BrandText>
@@ -198,7 +214,9 @@ export const RiotGameLeaderboardScreen = () => {
                 </BrandText>
               </View>
               <View style={{ flex: 2 }}>
-                <BrandText style={styles.colHeaderTitle}>24 hours Change</BrandText>
+                <BrandText style={styles.colHeaderTitle}>
+                  24 hours Change
+                </BrandText>
               </View>
             </FlexRow>
           </TertiaryBox>
@@ -213,7 +231,10 @@ export const RiotGameLeaderboardScreen = () => {
                 <FlexRow style={styles.rowItem}>
                   <View style={{ flex: 1 }}>
                     <BrandText
-                      style={[styles.colData, { marginLeft: layout.padding_x3 }]}
+                      style={[
+                        styles.colData,
+                        { marginLeft: layout.padding_x3 },
+                      ]}
                     >
                       {userScore.rank}
                     </BrandText>
@@ -222,18 +243,32 @@ export const RiotGameLeaderboardScreen = () => {
                     <PlayerName userId={userScore.userId} />
                   </View>
                   <View
-                    style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
+                    style={{
+                      flex: 2,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
                   >
-                    <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
+                    <SVG
+                      style={{ width: 24, height: 24 }}
+                      source={cryptoLogoSVG}
+                    />
 
                     <SpacerRow size={1} />
 
                     <BrandText style={styles.colData}>{xp}</BrandText>
                   </View>
                   <View
-                    style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
+                    style={{
+                      flex: 2,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
                   >
-                    <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
+                    <SVG
+                      style={{ width: 24, height: 24 }}
+                      source={cryptoLogoSVG}
+                    />
 
                     <SpacerRow size={1} />
 
@@ -248,7 +283,6 @@ export const RiotGameLeaderboardScreen = () => {
           />
         </View>
       </ScrollView>
-
     </GameContentView>
   );
 };

@@ -20,7 +20,11 @@ import {
   getSigningCosmWasmClient,
 } from "../../../utils/keplr";
 import { yellowDefault } from "../../../utils/style/colors";
-import { layout, mobileWidth, smallMobileWidth } from "../../../utils/style/layout";
+import {
+  layout,
+  mobileWidth,
+  smallMobileWidth,
+} from "../../../utils/style/layout";
 import { InfoBox } from "./InfoBox";
 
 type FightStatsSectionProps = {
@@ -120,7 +124,9 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
 
   return (
     <View style={[containerStyle, styles.container]}>
-      <View style={{ display: "flex", alignItems: "center", flexDirection: "row" }}>
+      <View
+        style={{ display: "flex", alignItems: "center", flexDirection: "row" }}
+      >
         <InfoBox
           size={width < smallMobileWidth ? "XS" : "SM"}
           title="Number of Fighters"
@@ -131,16 +137,18 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
           size={width < smallMobileWidth ? "XS" : "SM"}
           // size="SM"
           title="Prize Pool"
-          content={`${currentSeason?.isPre ? 0 : currentSeason?.totalPrize} ${currentSeason?.denom.toUpperCase() || ""
-            }`}
+          content={`${currentSeason?.isPre ? 0 : currentSeason?.totalPrize} ${
+            currentSeason?.denom.toUpperCase() || ""
+          }`}
           width={width < smallMobileWidth ? 100 : 150}
         />
         <InfoBox
           // size="SM"
           size={width < smallMobileWidth ? "XS" : "SM"}
           title="Rank"
-          content={`${userRank?.userScore?.rank || 0}/${userRank?.totalUsers || 0
-            }`}
+          content={`${userRank?.userScore?.rank || 0}/${
+            userRank?.totalUsers || 0
+          }`}
           width={width < smallMobileWidth ? 80 : 120}
         />
       </View>
@@ -154,12 +162,16 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
             isClaiming
               ? "Claiming..."
               : `Claim available rewards: ${decimalFromAtomics(
-                process.env.TERITORI_NETWORK_ID || "",
-                "" + claimableAmount,
-                "utori"
-              )} TORI`
+                  process.env.TERITORI_NETWORK_ID || "",
+                  "" + claimableAmount,
+                  "utori"
+                )} TORI`
           }
-          style={{ marginLeft: layout.padding_x1, width: width < mobileWidth ? "90%" : "", marginTop: width < mobileWidth ? 10 : 0 }}
+          style={{
+            marginLeft: layout.padding_x1,
+            width: width < mobileWidth ? "90%" : "",
+            marginTop: width < mobileWidth ? 10 : 0,
+          }}
           // onPress={() => claimRewards(selectedWallet.address)}
           noBrokenCorners
         />

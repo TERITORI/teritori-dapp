@@ -1,7 +1,14 @@
 import { Decimal } from "@cosmjs/math";
 import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useMemo, useState } from "react";
-import { View, Image, Platform, StyleSheet, Linking, useWindowDimensions } from "react-native";
+import {
+  View,
+  Image,
+  Platform,
+  StyleSheet,
+  Linking,
+  useWindowDimensions,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import bannerCollection from "../../../assets/default-images/banner-collection.png";
@@ -104,247 +111,276 @@ export const Header: React.FC<{
   sortDirection,
   onChangeSortDirection,
 }) => {
-    const { width: windowsWidth } = useWindowDimensions();
-    const styles = StyleSheet.create({
-      statRow: {
-        flexDirection: "row",
-        marginTop: layout.padding_x2_5,
-        alignItems: "center",
-        flex: 1,
-        flexWrap: "wrap",
-        justifyContent: "center",
-      },
-    });
+  const { width: windowsWidth } = useWindowDimensions();
+  const styles = StyleSheet.create({
+    statRow: {
+      flexDirection: "row",
+      marginTop: layout.padding_x2_5,
+      alignItems: "center",
+      flex: 1,
+      flexWrap: "wrap",
+      justifyContent: "center",
+    },
+  });
 
-    const wallet = useSelectedWallet();
-    // variables
-    const stats = useCollectionStats(collectionId, wallet?.address);
-    const { width: maxWidth } = useMaxResolution();
-    const { width, height } = useImageResizer({
-      image: collectionInfo.bannerImage || bannerCollection,
-      maxSize: { width: maxWidth },
-    });
-    const { setToastSuccess } = useFeedbacks();
-    const networkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
+  // variables
+  const stats = useCollectionStats(collectionId, wallet?.address);
+  const { width: maxWidth } = useMaxResolution();
+  const { width, height } = useImageResizer({
+    image: collectionInfo.bannerImage || bannerCollection,
+    maxSize: { width: maxWidth },
+  });
+  const { setToastSuccess } = useFeedbacks();
+  const networkId = useSelectedNetworkId();
 
-    const coins = useMemo(() => {
-      if (!stats?.floorPrice) {
-        return [];
-      }
-      return stats.floorPrice.map((fp) => ({
-        networkId,
-        denom: fp.denom,
-      }));
-    }, [networkId, stats?.floorPrice]);
+  const coins = useMemo(() => {
+    if (!stats?.floorPrice) {
+      return [];
+    }
+    return stats.floorPrice.map((fp) => ({
+      networkId,
+      denom: fp.denom,
+    }));
+  }, [networkId, stats?.floorPrice]);
 
-    const { prices } = useCoingeckoPrices(coins);
+  const { prices } = useCoingeckoPrices(coins);
 
-    const collectionScreenTabItems = {
-      allNFTs: {
-        name: "All NFTs",
-        badgeCount: stats?.totalSupply || 0,
-      },
-      ...(stats?.owned
-        ? {
+  const collectionScreenTabItems = {
+    allNFTs: {
+      name: "All NFTs",
+      badgeCount: stats?.totalSupply || 0,
+    },
+    ...(stats?.owned
+      ? {
           owned: {
             name: "Owned",
             badgeCount: stats.owned,
           },
         }
-        : {}),
-      activity: {
-        name: "Activity",
-      },
-    };
+      : {}),
+    activity: {
+      name: "Activity",
+    },
+  };
 
-    const usdFloorPrice = useMemo(() => {
-      if (!stats?.floorPrice || stats.floorPrice.length < 1) {
-        return Infinity;
-      }
-      return [...stats.floorPrice]
-        .map((fp) => {
-          const currency = getNativeCurrency(networkId, fp.denom);
-          if (!currency) {
-            return Infinity;
-          }
-          const id = currency.coingeckoId;
-          const usdValue = id && prices[id]?.usd;
-          if (!usdValue) {
-            return Infinity;
-          }
+  const usdFloorPrice = useMemo(() => {
+    if (!stats?.floorPrice || stats.floorPrice.length < 1) {
+      return Infinity;
+    }
+    return [...stats.floorPrice]
+      .map((fp) => {
+        const currency = getNativeCurrency(networkId, fp.denom);
+        if (!currency) {
+          return Infinity;
+        }
+        const id = currency.coingeckoId;
+        const usdValue = id && prices[id]?.usd;
+        if (!usdValue) {
+          return Infinity;
+        }
 
-          return (
-            usdValue *
-            Decimal.fromAtomics(
-              fp.quantity,
-              currency.decimals
-            ).toFloatApproximation()
-          );
-        })
-        .sort((a, b) => {
-          return b - a;
-        })[0];
-    }, [prices, stats?.floorPrice, networkId]);
+        return (
+          usdValue *
+          Decimal.fromAtomics(
+            fp.quantity,
+            currency.decimals
+          ).toFloatApproximation()
+        );
+      })
+      .sort((a, b) => {
+        return b - a;
+      })[0];
+  }, [prices, stats?.floorPrice, networkId]);
 
-    // functions
-    const onShare = () => {
-      let currentUrl;
-      if (Platform.OS === "web") {
-        currentUrl = window.location.href;
-      }
+  // functions
+  const onShare = () => {
+    let currentUrl;
+    if (Platform.OS === "web") {
+      currentUrl = window.location.href;
+    }
 
-      try {
-        Clipboard.setString(currentUrl || "");
-        setToastSuccess({
-          title: "URL Copied!",
-          message: "",
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    };
+    try {
+      Clipboard.setString(currentUrl || "");
+      setToastSuccess({
+        title: "URL Copied!",
+        message: "",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    // returns
-    return (
-      <View style={{ maxWidth: windowsWidth < smallMobileWidth ? 0.9 * windowsWidth : width, alignSelf: "center" }}>
-        <Image
-          source={
-            collectionInfo.bannerImage
-              ? { uri: collectionInfo.bannerImage }
-              : bannerCollection
-          }
-          style={{
-            height,
-            width: windowsWidth < smallMobileWidth ? 0.9 * windowsWidth : width,
-            margin: "auto",
-            marginBottom: layout.contentPadding,
-          }}
+  // returns
+  return (
+    <View
+      style={{
+        maxWidth: windowsWidth < smallMobileWidth ? 0.9 * windowsWidth : width,
+        alignSelf: "center",
+      }}
+    >
+      <Image
+        source={
+          collectionInfo.bannerImage
+            ? { uri: collectionInfo.bannerImage }
+            : bannerCollection
+        }
+        style={{
+          height,
+          width: windowsWidth < smallMobileWidth ? 0.9 * windowsWidth : width,
+          margin: "auto",
+          marginBottom: layout.contentPadding,
+        }}
+      />
+
+      <View
+        style={{
+          flexDirection: windowsWidth < 1050 ? "column" : "row",
+          alignItems: "center",
+          width: "100%",
+          marginBottom: 24,
+        }}
+      >
+        <RoundedGradientImage
+          imageSource={{ uri: collectionInfo.image }}
+          style={{ marginRight: windowsWidth < 1050 ? 0 : 24 }}
         />
 
         <View
           style={{
-            flexDirection: windowsWidth < 1050 ? "column" : "row",
-            alignItems: "center",
-            width: "100%",
-            marginBottom: 24,
+            flex: 1,
+            alignItems: windowsWidth < 1050 ? "center" : undefined,
+            marginTop: windowsWidth < 1050 ? 20 : 0,
           }}
         >
-          <RoundedGradientImage
-            imageSource={{ uri: collectionInfo.image }}
-            style={{ marginRight: windowsWidth < 1050 ? 0 : 24 }}
-          />
+          <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
+          <View
+            style={{
+              flexDirection: windowsWidth < smallMobileWidth ? "column" : "row",
+              flexWrap: windowsWidth < smallMobileWidth ? undefined : "wrap",
+              marginTop: layout.padding_x2_5,
+            }}
+          >
+            {/* <View style={{ flexDirection: "row" }}> */}
+            <CollectionStat
+              label="Floor"
+              value={
+                usdFloorPrice === Infinity
+                  ? "-"
+                  : `$${usdFloorPrice.toFixed(2)}`
+              }
+            />
+            <SpacerRow size={1.5} />
+            <CollectionStat
+              label="Total Volume"
+              value={
+                stats?.totalVolume
+                  ? "$" + parseFloat(stats.totalVolume).toFixed(2)
+                  : "$0"
+              }
+            />
+            {/* </View> */}
 
-          <View style={{ flex: 1, alignItems: windowsWidth < 1050 ? "center" : undefined, marginTop: windowsWidth < 1050 ? 20 : 0 }}>
-            <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
-            <View style={{ flexDirection: windowsWidth < smallMobileWidth ? "column" : "row", flexWrap: windowsWidth < smallMobileWidth ? undefined : "wrap", marginTop: layout.padding_x2_5 }}>
-              {/* <View style={{ flexDirection: "row" }}> */}
-              <CollectionStat
-                label="Floor"
-                value={
-                  usdFloorPrice === Infinity
-                    ? "-"
-                    : `$${usdFloorPrice.toFixed(2)}`
-                }
-              />
-              <SpacerRow size={1.5} />
-              <CollectionStat
-                label="Total Volume"
-                value={
-                  stats?.totalVolume
-                    ? "$" + parseFloat(stats.totalVolume).toFixed(2)
-                    : "$0"
-                }
-              />
-              {/* </View> */}
+            <SpacerRow size={1.5} />
 
-              <SpacerRow size={1.5} />
-
-              {/* <View style={{ flexDirection: "row" }}> */}
-              <CollectionStat
-                label="Owners"
-                value={(stats?.owners || 0).toString()}
-              />
-              <SpacerRow size={1.5} />
-              <CollectionStat
-                label="Listed"
-                value={(stats?.listed || 0).toString()}
-              />
-              <SpacerRow size={1.5} />
-              <CollectionStat
-                label="Total Supply"
-                value={(stats?.totalSupply || 0).toString()}
-              />
-              {/* </View> */}
-            </View>
-            <View style={styles.statRow}>
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: windowsWidth < 868 ? "100%" : undefined }}>
-                <CollectionSocialButtons collectionInfo={collectionInfo} />
-                {collectionInfo.discord ||
-                  collectionInfo.twitter ||
-                  collectionInfo.website ? (
-                  <View
-                    style={{
-                      height: 32,
-                      width: 1,
-                      backgroundColor: neutral33,
-                      marginRight: 12,
-                      display: windowsWidth < 868 ? "none" : undefined
-                    }}
-                  />
-                ) : null}
-              </View>
-              <View style={{ flexDirection: "row", marginTop: windowsWidth < 868 ? 10 : 0 }}>
-                <SocialButtonSecondary
-                  text="Explorer"
-                  iconSvg={etherscanSVG}
-                  style={{ marginRight: 12 }}
-                  onPress={() => {
-                    const url = (
-                      process.env.TERITORI_CONTRACT_EXPLORER_URL || ""
-                    ).replace("$address", collectionId.replace("tori-", ""));
-                    Linking.openURL(url);
+            {/* <View style={{ flexDirection: "row" }}> */}
+            <CollectionStat
+              label="Owners"
+              value={(stats?.owners || 0).toString()}
+            />
+            <SpacerRow size={1.5} />
+            <CollectionStat
+              label="Listed"
+              value={(stats?.listed || 0).toString()}
+            />
+            <SpacerRow size={1.5} />
+            <CollectionStat
+              label="Total Supply"
+              value={(stats?.totalSupply || 0).toString()}
+            />
+            {/* </View> */}
+          </View>
+          <View style={styles.statRow}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                width: windowsWidth < 868 ? "100%" : undefined,
+              }}
+            >
+              <CollectionSocialButtons collectionInfo={collectionInfo} />
+              {collectionInfo.discord ||
+              collectionInfo.twitter ||
+              collectionInfo.website ? (
+                <View
+                  style={{
+                    height: 32,
+                    width: 1,
+                    backgroundColor: neutral33,
+                    marginRight: 12,
+                    display: windowsWidth < 868 ? "none" : undefined,
                   }}
                 />
-                <SocialButtonSecondary
-                  text="Share"
-                  iconSvg={shareSVG}
-                  onPress={onShare}
-                />
-              </View>
+              ) : null}
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: windowsWidth < 868 ? 10 : 0,
+              }}
+            >
+              <SocialButtonSecondary
+                text="Explorer"
+                iconSvg={etherscanSVG}
+                style={{ marginRight: 12 }}
+                onPress={() => {
+                  const url = (
+                    process.env.TERITORI_CONTRACT_EXPLORER_URL || ""
+                  ).replace("$address", collectionId.replace("tori-", ""));
+                  Linking.openURL(url);
+                }}
+              />
+              <SocialButtonSecondary
+                text="Share"
+                iconSvg={shareSVG}
+                onPress={onShare}
+              />
             </View>
           </View>
         </View>
-
-        <PrimaryBox
-          mainContainerStyle={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingRight: 8,
-            paddingLeft: 20,
-            margin: "auto",
-          }}
-          fullWidth
-          height={64}
-          style={{ marginBottom: 24 }}
-        >
-          <Tabs
-            items={collectionScreenTabItems}
-            onSelect={onSelectTab}
-            selected={selectedTab}
-            style={{
-              width: "fit-content",
-              height: "100%",
-              borderBottomWidth: 0,
-            }}
-          />
-          <SortButton
-            sortDirection={sortDirection}
-            onChangeSortDirection={onChangeSortDirection}
-          />
-        </PrimaryBox>
       </View>
-    );
-  };
+
+      <PrimaryBox
+        mainContainerStyle={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingRight: 8,
+          paddingLeft: 20,
+          margin: "auto",
+        }}
+        fullWidth
+        height={64}
+        style={{ marginBottom: 24 }}
+      >
+        <Tabs
+          items={collectionScreenTabItems}
+          onSelect={onSelectTab}
+          selected={selectedTab}
+          style={{
+            width: "fit-content",
+            height: "100%",
+            borderBottomWidth: 0,
+          }}
+        />
+        <SortButton
+          sortDirection={sortDirection}
+          onChangeSortDirection={onChangeSortDirection}
+        />
+      </PrimaryBox>
+    </View>
+  );
+};
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // variables

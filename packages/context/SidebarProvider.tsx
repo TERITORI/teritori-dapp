@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useWindowDimensions } from "react-native";
+
 import { mobileWidth } from "../utils/style/layout";
 
 interface DefaultValue {

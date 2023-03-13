@@ -1,6 +1,5 @@
 import React from "react";
-import { Image, FlatList, View } from "react-native";
-import { useWindowDimensions } from "react-native";
+import { Image, FlatList, View, useWindowDimensions } from "react-native";
 
 import breedSVG from "../../../assets/game/breed.svg";
 import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item.png";
@@ -33,7 +32,11 @@ export const RiotGameInventoryScreen = () => {
       <FlexRow breakpoint={1200} justifyContent="space-around">
         <View style={{ opacity: 0.6, marginTop: layout.padding_x4 }}>
           <FlexRow justifyContent="space-between" alignItems="center">
-            <BrandText style={width < smallMobileWidth ? fontMedium24 : fontMedium32}>Available Items</BrandText>
+            <BrandText
+              style={width < smallMobileWidth ? fontMedium24 : fontMedium32}
+            >
+              Available Items
+            </BrandText>
 
             <CustomPressable>
               {({ hovered }): React.ReactElement => (
@@ -70,11 +73,20 @@ export const RiotGameInventoryScreen = () => {
           />
         </View>
 
-        <View style={{ minWidth: width < smallMobileWidth ? `332px` : "500px", marginTop: layout.padding_x4 }}>
+        <View
+          style={{
+            minWidth: width < smallMobileWidth ? `332px` : "500px",
+            marginTop: layout.padding_x4,
+          }}
+        >
           <FlexRow
             style={{ justifyContent: "space-between", alignItems: "center" }}
           >
-            <BrandText style={width < smallMobileWidth ? fontMedium24 : fontMedium32}>Available Rippers</BrandText>
+            <BrandText
+              style={width < smallMobileWidth ? fontMedium24 : fontMedium32}
+            >
+              Available Rippers
+            </BrandText>
             <PrimaryButtonOutline
               onPress={gotoBreeding}
               color={yellowDefault}

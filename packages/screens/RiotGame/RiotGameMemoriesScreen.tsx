@@ -18,7 +18,6 @@ import { fontMedium32 } from "../../utils/style/fonts";
 import { layout, mobileWidth } from "../../utils/style/layout";
 import { GameContentView } from "./component/GameContentView";
 
-
 //TODO: Type and fetch this dynamically
 const episodes = [
   {
@@ -41,10 +40,11 @@ export const RiotGameMemoriesScreen = () => {
   const seasonVideoUri =
     "https://www.youtube.com/embed/videoseries?list=PLRcO8OPsbd7zhj7PDysX2XIh095tazSWM";
   const seasonVideoWidth = width < mobileWidth ? width - 64 : 516;
-  const seasonVideoHeight = Math.floor(seasonVideoWidth * 9 / 16);
+  const seasonVideoHeight = Math.floor((seasonVideoWidth * 9) / 16);
   const episodeVideoSmWidth = width < mobileWidth ? width - 64 : 430;
-  const episodeVideoSmHeight = Math.floor((episodeVideoSmWidth - 2) * 9 / 16 + 2);
-
+  const episodeVideoSmHeight = Math.floor(
+    ((episodeVideoSmWidth - 2) * 9) / 16 + 2
+  );
 
   // Stop videos when changing screen through react-navigation
   useEffect(() => {
@@ -143,8 +143,7 @@ export const RiotGameMemoriesScreen = () => {
                 />
               )}
             </TertiaryBox>
-          )
-          }
+          )}
           style={{}}
         />
       </View>

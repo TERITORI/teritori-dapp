@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleProp, TouchableOpacity, View, ViewStyle, useWindowDimensions } from "react-native";
+import {
+  StyleProp,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+  useWindowDimensions,
+} from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
@@ -47,13 +53,11 @@ export const SortButton: React.FC<{
           />
           <BrandText style={fontSemibold14}>
             Price{" "}
-            {width > 500 ?
-              sortDirection === SortDirection.SORT_DIRECTION_ASCENDING
-              ? "Ascending"
+            {width > 500
+              ? sortDirection === SortDirection.SORT_DIRECTION_ASCENDING
+                ? "Ascending"
                 : "Descending"
-              :
-              undefined
-            }
+              : undefined}
           </BrandText>
         </View>
 
