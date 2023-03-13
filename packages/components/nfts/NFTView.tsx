@@ -241,10 +241,12 @@ export const NFTView: React.FC<{
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
+                    flex: 1,
                   }}
                 >
                   <NetworkIcon size={12} networkId={nft.networkId} />
                   <BrandText
+                    numberOfLines={1}
                     style={{
                       fontSize: 12,
                       marginLeft: 10,

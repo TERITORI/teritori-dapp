@@ -8,7 +8,7 @@ import {
   ImageSourcePropType,
 } from "react-native";
 
-type RoundedGradientImageSize = "M" | "XS";
+type RoundedGradientImageSize = "M" | "XS" | "XXS";
 
 const dimension = (size: RoundedGradientImageSize) => {
   switch (size) {
@@ -16,6 +16,8 @@ const dimension = (size: RoundedGradientImageSize) => {
       return 140;
     case "XS":
       return 32;
+    case "XXS":
+      return 24;
   }
 };
 const imageDimension = (size: RoundedGradientImageSize) => {
@@ -23,6 +25,8 @@ const imageDimension = (size: RoundedGradientImageSize) => {
     case "M":
       return dimension(size) - 4;
     case "XS":
+      return dimension(size) - 2;
+    case "XXS":
       return dimension(size) - 2;
   }
 };
