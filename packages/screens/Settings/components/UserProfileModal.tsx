@@ -7,7 +7,6 @@ import {
   Pressable,
 } from "react-native";
 import { DragSortableView } from "react-native-drag-sort";
-import Hoverable from "react-native-hoverable";
 
 import confirmSVG from "../../../../assets/icons/confirm.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -27,6 +26,7 @@ import {
   fontSemibold28,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import Hoverable from "react-native-hoverable";
 
 type toggleUserProfileProps = {
   onClose: () => void;
@@ -35,6 +35,12 @@ type toggleUserProfileProps = {
 
 const smallMobileWidth = 512;
 const mobileWidth = 768;
+
+export type ProfileDataType = {
+  id: number;
+  content: string;
+}
+import {initProfileData} from "./initProfile";
 
 export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   onClose,
@@ -73,56 +79,8 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   const marginChildrenTop =
     width < smallMobileWidth ? layout.padding_x1 : layout.padding_x2;
 
-  interface ProfileDataType {
-    id: number;
-    content: string;
-  }
-  const initProfileData: ProfileDataType[] = [
-    {
-      id: 1,
-      content: "Social Feed",
-    },
-    {
-      id: 2,
-      content: "Albums",
-    },
-    {
-      id: 3,
-      content: "NFTs",
-    },
-    {
-      id: 4,
-      content: "Activity",
-    },
-    {
-      id: 5,
-      content: "Succeed Quests",
-    },
-    {
-      id: 6,
-      content: "Pathwar Challenges",
-    },
-    {
-      id: 7,
-      content: "Gig Services",
-    },
-    {
-      id: 8,
-      content: "Governance Votes",
-    },
-    {
-      id: 9,
-      content: "Putted NFT to Rioters Footer",
-    },
-    {
-      id: 10,
-      content: "Shared servers",
-    },
-  ];
-
-  const [profileData, setProfileData] =
-    useState<ProfileDataType[]>(initProfileData);
-  const [confirmedData, setConfirmedData] = useState<any[]>([]);
+  const [profileData, setProfileData] = useState<ProfileDataType[]>(initProfileData);
+  const [confirmedData, setConfirmedData] = useState<string[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
 
   const styles = StyleSheet.create({
@@ -167,7 +125,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
             : 30 * layout.padding_x0_5
           : 45 * layout.padding_x0_5,
     },
-    unselectedCardBox: {
+    cardBox:{
       display: "flex",
       flexDirection: "row",
       justifyContent: "center",
@@ -176,22 +134,16 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       paddingVertical: layout.padding_x1_5,
       borderColor: neutral33,
       borderWidth: 1,
-      backgroundColor: neutral00,
       borderRadius: layout.padding_x1,
       position: "relative",
     },
-    selectedCardBox: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      width: childrenWidth,
-      paddingVertical: layout.padding_x1_5,
-      borderColor: neutral33,
-      borderWidth: 1,
+
+    unselectedCardBoxBackroundColor: {
+      backgroundColor: neutral00
+    },
+
+    selectedCardBoxBackgroundColor: {
       backgroundColor: neutral17,
-      borderRadius: layout.padding_x1,
-      position: "relative",
     },
     confirmedCardBox: {
       display: "flex",
@@ -235,7 +187,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
     },
   });
 
-  const updateConfirmedData = (item: any) => {
+  const updateConfirmedData = (item: ProfileDataType) => {
     if (!confirmedData.includes(item.content))
       setConfirmedData([...confirmedData, item.content]);
     else {
@@ -246,13 +198,13 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
     }
   };
 
-  const renderItem = (item: any, index: any) => {
+  const renderItem = (item: ProfileDataType, index: number) => {
     return (
       <Hoverable
         style={
           confirmedData.includes(item.content)
             ? styles.confirmedCardBox
-            : styles.unselectedCardBox
+            : [styles.cardBox, styles.unselectedCardBoxBackroundColor]
         }
         onMouseEnter={() => setHoveredIndex(index + 1)}
       >
@@ -304,7 +256,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
             onDataChange={(data) => {
               if (data.length !== profileData.length) setProfileData(data);
             }}
-            renderItem={(item, index) => {
+            renderItem={(item: ProfileDataType, index) => {
               return renderItem(item, index);
             }}
           />
