@@ -11,7 +11,7 @@ enum ListSection {
 }
 
 export const MenuLink = () => {
-  const { setSelectedSectionHandler } = useContentContext();
+  const { setSelectedSectionHandler, selectedSection } = useContentContext();
 
   const Separator = () => (
     <View
@@ -52,6 +52,7 @@ export const MenuLink = () => {
                 borderColor="transparent"
                 squaresBackgroundColor="transparent"
                 onPress={changeSelectedSection}
+                color={link === selectedSection ? "#2AF191" : "#E8E1EF"}
               />
               {index !== Object.keys(ListSection).length - 1 && Separator()}
             </View>
