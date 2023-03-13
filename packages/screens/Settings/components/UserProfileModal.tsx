@@ -7,6 +7,7 @@ import {
   Pressable,
 } from "react-native";
 import { DragSortableView } from "react-native-drag-sort";
+import Hoverable from "react-native-hoverable";
 
 import confirmSVG from "../../../../assets/icons/confirm.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -72,7 +73,11 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   const marginChildrenTop =
     width < smallMobileWidth ? layout.padding_x1 : layout.padding_x2;
 
-  const initProfileData = [
+  interface ProfileDataType {
+    id: number;
+    content: string;
+  }
+  const initProfileData: ProfileDataType[] = [
     {
       id: 1,
       content: "Social Feed",
@@ -115,7 +120,8 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
     },
   ];
 
-  const [profileData, setProfileData] = useState<any[]>(initProfileData);
+  const [profileData, setProfileData] =
+    useState<ProfileDataType[]>(initProfileData);
   const [confirmedData, setConfirmedData] = useState<any[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
 
@@ -234,18 +240,15 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       setConfirmedData([...confirmedData, item.content]);
     else {
       const targetIndex = confirmedData.indexOf(item.content);
-      console.log(targetIndex);
       const targetData = confirmedData;
       targetData.splice(targetIndex, 1);
       setConfirmedData(targetData);
-      console.log(targetData);
     }
   };
 
   const renderItem = (item: any, index: any) => {
     return (
-      // <TouchableOpacity onMouseEnter={() => setHoveredIndex(index + 1)} onMouseLeave={() => setHoveredIndex(0)}>
-      <View
+      <Hoverable
         style={
           confirmedData.includes(item.content)
             ? styles.confirmedCardBox
@@ -270,8 +273,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
             <SVG source={confirmSVG} height={60} width={60} />
           </Pressable>
         )}
-      </View>
-      // </TouchableOpacity>
+      </Hoverable>
     );
   };
 

@@ -25,6 +25,7 @@ export const IconButton: React.FC<{
   backgroundColor?: string;
   borderColor?: string;
   squaresBorderColor?: string;
+  noBrokenCorners?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -39,12 +40,14 @@ export const IconButton: React.FC<{
   backgroundColor = primaryColor,
   borderColor,
   squaresBorderColor,
+  noBrokenCorners,
 }) => {
   const boxProps = {
     style,
     disabled,
     width,
     fullWidth,
+    noBrokenCorners,
   };
 
   return (

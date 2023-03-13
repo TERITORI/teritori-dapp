@@ -1,16 +1,10 @@
 import React, { useRef } from "react";
-import {
-  View,
-  ViewStyle,
-  TouchableOpacity,
-  StyleProp,
-  StyleSheet,
-} from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { Wallet } from "../../context/WalletsProvider";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral00,
@@ -32,23 +26,16 @@ import { TopMenuMyTeritories } from "./TopMenuMyTeritories";
 import { TopMenuMyWallets } from "./TopMenuMyWallets";
 import { WalletView } from "./WalletView";
 
-// FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native
-
 export const TopMenu: React.FC<{
-  style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
-  const selectedWallet = useSelectedWallet();
+  selectedWallet?: Wallet;
+}> = ({ selectedWallet }) => {
   const navigation = useAppNavigation();
 
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
 
-  if (!selectedWallet) {
-    return null;
-  }
-
   return (
-    <View style={style} ref={dropdownRef}>
+    <View ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
         <TertiaryBox
           width={220}
