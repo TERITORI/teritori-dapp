@@ -50,6 +50,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const claimRewards = async (user: string) => {
     setIsClaiming(true);
 
