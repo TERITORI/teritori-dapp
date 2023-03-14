@@ -1,14 +1,15 @@
 import React from "react";
-import { TouchableOpacity, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { neutral33, neutral77, secondaryColor } from "../utils/style/colors";
 import { SVG } from "./SVG";
+import { CustomPressable } from "./buttons/CustomPressable";
 
 interface IconBoxProps {
   onPress: () => void;
   icon: React.FC<SvgProps>;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   disabled?: boolean;
   iconProps?: {
     height: number;
@@ -28,8 +29,7 @@ export const IconBox = ({
   },
 }: IconBoxProps) => {
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
+    <CustomPressable
       style={[
         {
           height: 32,
@@ -49,6 +49,6 @@ export const IconBox = ({
         height={iconProps.height}
         color={iconProps.color || disabled ? neutral77 : secondaryColor}
       />
-    </TouchableOpacity>
+    </CustomPressable>
   );
 };
