@@ -60,12 +60,9 @@ export interface TextInputCustomProps<T extends FieldValues>
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
-  mainContainerStyle?: ViewStyle;
-  inputStyle?: TextStyle;
-  hideLabel?: boolean;
-  valueModifier?: (value: string) => string;
-  // subtitle?: React.ReactElement;
-  // labelStyle?: TextStyle;
+  subtitle?: React.ReactElement;
+  labelStyle?: TextStyle;
+  noBrokenCorners?: boolean;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -88,12 +85,7 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
-  isAsterickSign,
-  iconSVG,
-  mainContainerStyle,
-  inputStyle,
-  hideLabel,
-  valueModifier,
+  noBrokenCorners,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -198,7 +190,7 @@ export const TextInputCustom = <T extends FieldValues>({
         width={width}
         fullWidth={!width}
         height={height}
-        noBrokenCorners={variant === "noCropBorder"}
+        noBrokenCorners={noBrokenCorners}
       >
         <View style={styles.innerContainer}>
           {iconSVG && (
@@ -224,12 +216,12 @@ export const TextInputCustom = <T extends FieldValues>({
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
-              onChangeText={handleChangeText}
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
               value={field.value}
               style={[styles.textInput, inputStyle]}
               {...restProps}
+              onChangeText={handleChangeText}
             />
           </View>
 
