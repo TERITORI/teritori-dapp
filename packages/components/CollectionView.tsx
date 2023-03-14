@@ -28,7 +28,7 @@ export const CollectionView: React.FC<{
     forceLinkToMint: linkToMint,
   });
   const sizedStyles = useMemo(() => StyleSheet.flatten(styles[size]), [size]);
-
+  let maxSupply;
   const navigateToTwitter = () => {
     Linking.openURL(item.twitterUrl);
   };
@@ -39,6 +39,12 @@ export const CollectionView: React.FC<{
           parseInt(info.maxSupply as string, 10)
       )
     : NaN;
+  if (!info) {
+    maxSupply = item.maxSupply;
+  } else {
+    maxSupply = info.maxSupply;
+  }
+
   return (
     <TouchableOpacity
       onPress={item.id ? navigateToCollection : navigateToTwitter}
@@ -101,7 +107,7 @@ export const CollectionView: React.FC<{
             }}
           >
             {mintState !== MintState.MINT_STATE_UNSPECIFIED &&
-            item.maxSupply !== -1 ? (
+            maxSupply !== 0 ? (
               <>
                 <GradientText
                   style={sizedStyles.creatorName}
@@ -109,7 +115,7 @@ export const CollectionView: React.FC<{
                   numberOfLines={1}
                   gradientType="purple"
                 >
-                  {item.maxSupply !== -1 ? `Supply ${item.maxSupply}` : ""}
+                  {maxSupply ? `Supply ${maxSupply}` : ""}
                 </GradientText>
                 <GradientText
                   style={sizedStyles.creatorName}
