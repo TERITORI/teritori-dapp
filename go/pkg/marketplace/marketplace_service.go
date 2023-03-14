@@ -205,7 +205,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		return nil
 
 	case *networks.EthereumNetwork:
-		collections, err := s.ethereumProvider.GetCollections(srv.Context(), networkID)
+		collections, err := s.ethereumProvider.GetCollections(srv.Context(), networkID, req)
 		if err != nil {
 			return errors.Wrap(err, "failed to query database")
 		}
