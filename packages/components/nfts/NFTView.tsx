@@ -1,3 +1,4 @@
+import { Link } from "@react-navigation/native";
 import React, { useRef, useState } from "react";
 import {
   ViewStyle,
@@ -87,10 +88,13 @@ export const NFTView: React.FC<{
 
   // returns
   return (
-    <>
-      <TouchableOpacity
+    <Link to={`/nft/${nft.id}`}>
+      <Pressable
         ref={dropdownRef}
-        onPress={() => navigation.navigate("NFTDetail", { id: nft.id })}
+        onPress={(e) =>
+          // @ts-ignore
+          !e.metaKey ? navigation.navigate("NFTDetail", { id: nft.id }) : null
+        }
         style={{
           margin,
           marginBottom,
@@ -320,14 +324,14 @@ export const NFTView: React.FC<{
             </View>
           </View>
         </TertiaryBox>
-      </TouchableOpacity>
+      </Pressable>
       <NFTTransferModal
         nft={nft}
         isVisible={isTransferNFTVisible}
         onClose={() => toggleTransferNFT()}
         onSubmit={() => toggleTransferNFT()}
       />
-    </>
+    </Link>
   );
 });
 
