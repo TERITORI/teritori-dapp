@@ -11,6 +11,16 @@
   color: #16BBFF;
 }
 
+.public-DraftEditor-content h1 {
+  line-height: 37px;
+}
+.public-DraftEditor-content h2 {
+  line-height: 28px;
+}
+.public-DraftEditor-content h3 {
+  line-height: 23px;
+}
+
 .public-DraftEditorPlaceholder-root {
   color: #777777;
   line-height: 20px;
@@ -54,26 +64,33 @@
   margin-left: 3px;
   margin-right: 3px;
   height: 30px;
+  width: 30px;
   border: 1px solid #333333;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .draftjs-static-toolbar-buttonWrapper button svg {
   fill: #FFFFFF !important;
 }
 
-.draftjs-static-toolbar-buttonWrapper button:hover {
-  background-color: #000000;
-}
+/*.draftjs-static-toolbar-buttonWrapper button:hover {*/
+/*  background-color: #000000;*/
+/*}*/
 
 .DraftEditor-editorContainer figure {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
+  margin: 10px auto;
 }
 
 .DraftEditor-editorContainer figure img {
   width: auto;
-  margin: 10px auto;
+
   max-width: 100%;
 }
 

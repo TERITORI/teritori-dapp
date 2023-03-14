@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  StyleProp,
   StyleSheet,
   TextInput,
   View,
@@ -29,12 +30,14 @@ type GIFSelectorProps = {
   disabled?: boolean;
   optionsContainer?: ViewStyle;
   onGIFSelected?: (GIFurl: string | null) => void;
+  buttonStyle?: StyleProp<ViewStyle>;
 };
 
 export const GIFSelector: React.FC<GIFSelectorProps> = ({
   onGIFSelected,
   optionsContainer,
   disabled,
+  buttonStyle,
 }) => {
   // functions
   const [isGIFModalVisible, setIsGIFModalVisible] = useState(false);
@@ -97,7 +100,12 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
       rendererProps={{ placement: "bottom" }}
     >
       <MenuTrigger onPress={() => !disabled && toggleGIFModal}>
-        <IconBox icon={gifSVG} onPress={toggleGIFModal} disabled={disabled} />
+        <IconBox
+          icon={gifSVG}
+          onPress={toggleGIFModal}
+          disabled={disabled}
+          style={buttonStyle}
+        />
       </MenuTrigger>
 
       <MenuOptions

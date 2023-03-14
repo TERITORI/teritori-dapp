@@ -79,11 +79,14 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   };
 
   const onPressCreateArticle = (formValues: NewPostFormValues) => {
-    navigation.navigate("FeedNewArticle", {
-      ...formValues,
-      additionalHashtag,
-      additionalMention,
-    });
+    navigation.navigate(
+      "FeedNewArticle"
+      //   , {
+      //   ...formValues,
+      //   additionalHashtag,
+      //   additionalMention,
+      // }
+    );
   };
 
   const onHeaderLayout = (e: LayoutChangeEvent) => {

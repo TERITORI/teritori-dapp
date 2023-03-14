@@ -27,11 +27,17 @@ import {
   EditorState,
 } from "draft-js";
 import React, { useEffect, useRef, useState } from "react";
-import { Linking, ScrollView, View } from "react-native";
+import { Linking, ScrollView, StyleSheet, View } from "react-native";
 
+import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
+import videoSVG from "../../../../assets/icons/video.svg";
 import { useMention } from "../../../hooks/feed/useMention";
-import { IMAGE_MIME_TYPES } from "../../../utils/mime";
+import {
+  AUDIO_MIME_TYPES,
+  IMAGE_MIME_TYPES,
+  VIDEO_MIME_TYPES,
+} from "../../../utils/mime";
 import { useAppNavigation } from "../../../utils/navigation";
 import { HANDLE_REGEX, HASH_REGEX, URL_REGEX } from "../../../utils/regex";
 import { DEFAULT_USERNAME } from "../../../utils/social-feed";
@@ -40,6 +46,8 @@ import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
 import { IconBox } from "../../IconBox";
 import { FileUploader } from "../../fileUploader";
+import { EmojiSelector } from "../EmojiSelector";
+import { GIFSelector } from "../GIFSelector";
 import { ActionsContainer } from "./ActionsContainer";
 import { PublishButton } from "./PublishButton";
 import { RichOpenGraphCard } from "./RichOpenGraphCard";
@@ -67,8 +75,6 @@ const hashStrategy = (
 ) => {
   findWithRegex(HASH_REGEX, contentBlock, callback);
 };
-
-//TODO: add headlineOneStrategy and headlineTwoStrategy and add them in compositeDecorator.decorators. The goal is to add more lineHeight
 
 const findWithRegex = (
   regex: RegExp,
@@ -212,6 +218,13 @@ export const RichText: React.FC<RichTextProps> = ({
   onChange = () => {},
   onBlur,
   onImageUpload,
+  onAudioUpload,
+  onVideoUpload,
+  onGIFSelected,
+  onEmojiSelected,
+  isGIFSelectorDisabled,
+  isAudioUploadDisabled,
+  isVideoUploadDisabled,
   initialValue,
   readOnly,
   openGraph,
@@ -240,9 +253,29 @@ export const RichText: React.FC<RichTextProps> = ({
   }, []);
 
   const addImage = (file: LocalFileData) => {
+    if (!onImageUpload) return;
     const _state = imagePlugin.addImage(editorState, file.url, {});
     handleChange(_state);
-    onImageUpload?.(file);
+    onImageUpload([file]);
+    // onImageUpload?.(file);
+  };
+
+  const addAudio = (file: LocalFileData) => {
+    if (!onAudioUpload) return;
+    // TODO:
+    // const _state = imagePlugin.addImage(editorState, file.url, {});
+    // handleChange(_state);
+    onAudioUpload([file]);
+    // onImageUpload?.(file);
+  };
+
+  const addVideo = (file: LocalFileData) => {
+    if (!onVideoUpload) return;
+    // TODO:
+    // const _state = imagePlugin.addImage(editorState, file.url, {});
+    // handleChange(_state);
+    onVideoUpload([file]);
+    // onImageUpload?.(file);
   };
 
   // const truncate = () => {
@@ -314,12 +347,7 @@ export const RichText: React.FC<RichTextProps> = ({
         // paddingBottom: 12,
       }}
     >
-      <ScrollView
-        style={{
-          height: "100%",
-          maxHeight: readOnly ? "100%" : 425,
-        }}
-      >
+      <ScrollView>
         <Editor
           editorState={editorState}
           onChange={handleChange}
@@ -341,6 +369,8 @@ export const RichText: React.FC<RichTextProps> = ({
           )}
         </InlineToolbar>
       </ScrollView>
+
+      {/*FIXME: Graph card doesn't appear*/}
       {openGraph && <RichOpenGraphCard {...openGraph} />}
 
       <ActionsContainer readOnly={readOnly}>
@@ -348,6 +378,50 @@ export const RichText: React.FC<RichTextProps> = ({
           <Toolbar>
             {(externalProps) => (
               <>
+                <GIFSelector
+                  onGIFSelected={onGIFSelected}
+                  disabled={isGIFSelectorDisabled}
+                  optionsContainer={{ marginLeft: -186, marginTop: -6 }}
+                  buttonStyle={styles.toolbarCustomButton}
+                />
+
+                <EmojiSelector
+                  onEmojiSelected={(emoji) =>
+                    onEmojiSelected &&
+                    onEmojiSelected(editorState.getSelection(), emoji)
+                  }
+                  optionsContainer={{ marginLeft: -80, marginTop: -6 }}
+                  buttonStyle={styles.toolbarCustomButton}
+                />
+
+                <FileUploader
+                  onUpload={(files) => addAudio(files?.[0])}
+                  mimeTypes={AUDIO_MIME_TYPES}
+                >
+                  {({ onPress }) => (
+                    <IconBox
+                      icon={audioSVG}
+                      onPress={onPress}
+                      style={styles.toolbarCustomButton}
+                      disabled={isAudioUploadDisabled}
+                    />
+                  )}
+                </FileUploader>
+
+                <FileUploader
+                  onUpload={(files) => addVideo(files?.[0])}
+                  mimeTypes={VIDEO_MIME_TYPES}
+                >
+                  {({ onPress }) => (
+                    <IconBox
+                      icon={videoSVG}
+                      onPress={onPress}
+                      style={styles.toolbarCustomButton}
+                      disabled={isVideoUploadDisabled}
+                    />
+                  )}
+                </FileUploader>
+
                 <FileUploader
                   onUpload={(files) => addImage(files?.[0])}
                   mimeTypes={IMAGE_MIME_TYPES}
@@ -356,15 +430,10 @@ export const RichText: React.FC<RichTextProps> = ({
                     <IconBox
                       icon={cameraSVG}
                       onPress={onPress}
-                      style={{
-                        marginRight: layout.padding_x0_25,
-                        borderRadius: 4,
-                        height: 30,
-                        width: 40,
-                      }}
+                      style={styles.toolbarCustomButton}
                       iconProps={{
-                        height: 18,
                         width: 18,
+                        height: 18,
                       }}
                     />
                   )}
@@ -390,3 +459,12 @@ export const RichText: React.FC<RichTextProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  toolbarCustomButton: {
+    marginHorizontal: layout.padding_x0_75 / 2,
+    borderRadius: 4,
+    height: 30,
+    width: 30,
+  },
+});
