@@ -34,7 +34,7 @@ export const useFetchFeed = (req: PostsRequest) => {
           // Overriding the posts request with the current pageParam as offset
           const postsRequest: PostsRequest = { ...req, offset: pageParam || 0 };
           // Getting posts
-          let list = await getPosts(selectedNetworkId, postsRequest);
+          const list = await getPosts(selectedNetworkId, postsRequest);
 
           return { list, totalCount: mainPostsCount } as PostsList;
         } catch (err) {

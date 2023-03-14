@@ -21,6 +21,7 @@ import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobileView } from "../../../hooks/useIsMobileView";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getUserId } from "../../../networks";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   AUDIO_MIME_TYPES,
@@ -31,6 +32,7 @@ import {
   SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT,
   hashMatch,
   mentionMatch,
+  generateIpfsKey,
 } from "../../../utils/social-feed";
 import {
   errorColor,
@@ -61,7 +63,6 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
-import { NFTKeyModal } from "./NFTKeyModal";
 import {
   NewPostFormValues,
   ReplyToType,
@@ -72,7 +73,7 @@ import {
   getAvailableFreePost,
   getPostCategory,
   getPostFee,
-  uploadPostFilesToNFTStorage,
+  uploadPostFilesToPinata,
 } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
 
@@ -121,10 +122,11 @@ export const NewsFeedInput = React.forwardRef<
     const inputHeight = useSharedValue(20);
     const wallet = useSelectedWallet();
     const selectedNetworkId = useSelectedNetworkId();
+    const selectedWallet = useSelectedWallet();
+    const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
     const isMobile = useIsMobileView();
-    const [isNFTKeyModal, setIsNFTKeyModal] = useState(false);
     const [postFee, setPostFee] = useState(0);
     const [freePostCount, setFreePostCount] = useState(0);
     const [isLoading, setLoading] = useState(false);
@@ -194,16 +196,7 @@ export const NewsFeedInput = React.forwardRef<
       updatePostFee();
     }, [formValues]);
 
-    const onSubmit = async () => {
-      if (!!formValues.files?.length && !formValues.nftStorageApiToken) {
-        return setIsNFTKeyModal(true);
-      }
-      processSubmit();
-    };
-
-    const processSubmit = async (
-      nftStorageApiToken = formValues.nftStorageApiToken
-    ) => {
+    const processSubmit = async () => {
       const toriBalance = balances.find((bal) => bal.denom === "utori");
       if (postFee > Number(toriBalance?.amount) && !freePostCount) {
         return setNotEnoughFundModal(true);
@@ -240,11 +233,13 @@ export const NewsFeedInput = React.forwardRef<
 
         let files: RemoteFileData[] = [];
 
-        if (formValues.files?.length && nftStorageApiToken) {
-          files = await uploadPostFilesToNFTStorage({
+        if (formValues.files?.length) {
+          const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+          files = await uploadPostFilesToPinata({
             files: formValues.files,
-            nftStorageApiToken,
+            pinataJWTKey,
           });
+          console.log("filesfilesfilesfilesfilesfilesfilesfiles", files);
         }
 
         const postCategory = getPostCategory(formValues);
@@ -319,18 +314,6 @@ export const NewsFeedInput = React.forwardRef<
             onClose={() => setNotEnoughFundModal(false)}
           />
         )}
-        {isNFTKeyModal && (
-          <NFTKeyModal
-            onClose={(key?: string) => {
-              if (key) {
-                setValue("nftStorageApiToken", key);
-                processSubmit(key);
-              }
-              setIsNFTKeyModal(false);
-            }}
-          />
-        )}
-
         <TertiaryBox
           fullWidth
           style={{
@@ -616,7 +599,7 @@ export const NewsFeedInput = React.forwardRef<
               size="M"
               text={type === "comment" ? "Comment" : "Publish"}
               squaresBackgroundColor={neutral17}
-              onPress={handleSubmit(onSubmit)}
+              onPress={handleSubmit(processSubmit)}
             />
           </View>
         </View>

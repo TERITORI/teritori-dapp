@@ -30,7 +30,6 @@ import {
 } from "../../utils/style/colors";
 import {
   fontMedium10,
-  fontSemibold13,
   fontSemibold14,
   fontSemibold20,
 } from "../../utils/style/fonts";

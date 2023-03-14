@@ -28,10 +28,11 @@ import { useOpenGraph } from "../../hooks/feed/useOpenGraph";
 import { useBalances } from "../../hooks/useBalances";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
+import { getUserId, NetworkKind } from "../../networks";
 import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { URL_REGEX } from "../../utils/regex";
+import { generateIpfsKey } from "../../utils/social-feed";
 import { neutral00 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
@@ -52,6 +53,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
   const navigation = useAppNavigation();
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
+  const userId = getUserId(selectedNetworkId, wallet?.address);
   const balances = useBalances(
     process.env.TERITORI_NETWORK_ID,
     wallet?.address
@@ -128,6 +130,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
       ? `\n${params?.additionalHashtag}`
       : "";
 
+    const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+
     await createPost({
       networkId: selectedNetworkId,
       wallet,
@@ -140,7 +144,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
         message: formValues.message + additionalMention + additionalHashtag,
       },
       openGraph: data,
-      nftStorageApiToken,
+      pinataJWTKey,
     });
   };
 

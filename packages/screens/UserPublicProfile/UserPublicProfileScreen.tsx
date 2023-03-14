@@ -58,9 +58,9 @@ const SelectedTabContent: React.FC<{
         user: "",
         mentions: userInfo?.metadata.tokenId
           ? // The user can be mentioned by his NS name OR his address, so we use both in this filter
-          [`@${userAddress}`, `@${userInfo?.metadata.tokenId}`]
+            [`@${userAddress}`, `@${userInfo?.metadata.tokenId}`]
           : // Btw, is the user has no NS name, we use his address in this filter
-          [`@${userAddress}`],
+            [`@${userAddress}`],
         categories: [],
         hashtags: [],
       },
@@ -156,7 +156,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
         <NotFound label="User" />
       ) : (
         <>
-          {(selectedTab !== "userPosts" && selectedTab !== "mentionsPosts") ? (
+          {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
             <TabContainer>
               <UserPublicProfileScreenHeader
                 userId={id}
