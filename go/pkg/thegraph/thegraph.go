@@ -414,86 +414,93 @@ type GetNFTPriceHistoryResponse struct {
 func (v *GetNFTPriceHistoryResponse) GetBuys() []GetNFTPriceHistoryBuysBuy { return v.Buys }
 
 type NftContract_filter struct {
-	Id                                 string     `json:"id,omitempty"`
-	Id_not                             string     `json:"id_not,omitempty"`
-	Id_gt                              string     `json:"id_gt,omitempty"`
-	Id_lt                              string     `json:"id_lt,omitempty"`
-	Id_gte                             string     `json:"id_gte,omitempty"`
-	Id_lte                             string     `json:"id_lte,omitempty"`
-	Id_in                              []string   `json:"id_in,omitempty"`
-	Id_not_in                          []string   `json:"id_not_in,omitempty"`
-	Name                               string     `json:"name,omitempty"`
-	Name_not                           string     `json:"name_not,omitempty"`
-	Name_gt                            string     `json:"name_gt,omitempty"`
-	Name_lt                            string     `json:"name_lt,omitempty"`
-	Name_gte                           string     `json:"name_gte,omitempty"`
-	Name_lte                           string     `json:"name_lte,omitempty"`
-	Name_in                            []string   `json:"name_in,omitempty"`
-	Name_not_in                        []string   `json:"name_not_in,omitempty"`
-	Name_contains                      string     `json:"name_contains,omitempty"`
-	Name_contains_nocase               string     `json:"name_contains_nocase,omitempty"`
-	Name_not_contains                  string     `json:"name_not_contains,omitempty"`
-	Name_not_contains_nocase           string     `json:"name_not_contains_nocase,omitempty"`
-	Name_starts_with                   string     `json:"name_starts_with,omitempty"`
-	Name_starts_with_nocase            string     `json:"name_starts_with_nocase,omitempty"`
-	Name_not_starts_with               string     `json:"name_not_starts_with,omitempty"`
-	Name_not_starts_with_nocase        string     `json:"name_not_starts_with_nocase,omitempty"`
-	Name_ends_with                     string     `json:"name_ends_with,omitempty"`
-	Name_ends_with_nocase              string     `json:"name_ends_with_nocase,omitempty"`
-	Name_not_ends_with                 string     `json:"name_not_ends_with,omitempty"`
-	Name_not_ends_with_nocase          string     `json:"name_not_ends_with_nocase,omitempty"`
-	Symbol                             string     `json:"symbol,omitempty"`
-	Symbol_not                         string     `json:"symbol_not,omitempty"`
-	Symbol_gt                          string     `json:"symbol_gt,omitempty"`
-	Symbol_lt                          string     `json:"symbol_lt,omitempty"`
-	Symbol_gte                         string     `json:"symbol_gte,omitempty"`
-	Symbol_lte                         string     `json:"symbol_lte,omitempty"`
-	Symbol_in                          []string   `json:"symbol_in,omitempty"`
-	Symbol_not_in                      []string   `json:"symbol_not_in,omitempty"`
-	Symbol_contains                    string     `json:"symbol_contains,omitempty"`
-	Symbol_contains_nocase             string     `json:"symbol_contains_nocase,omitempty"`
-	Symbol_not_contains                string     `json:"symbol_not_contains,omitempty"`
-	Symbol_not_contains_nocase         string     `json:"symbol_not_contains_nocase,omitempty"`
-	Symbol_starts_with                 string     `json:"symbol_starts_with,omitempty"`
-	Symbol_starts_with_nocase          string     `json:"symbol_starts_with_nocase,omitempty"`
-	Symbol_not_starts_with             string     `json:"symbol_not_starts_with,omitempty"`
-	Symbol_not_starts_with_nocase      string     `json:"symbol_not_starts_with_nocase,omitempty"`
-	Symbol_ends_with                   string     `json:"symbol_ends_with,omitempty"`
-	Symbol_ends_with_nocase            string     `json:"symbol_ends_with_nocase,omitempty"`
-	Symbol_not_ends_with               string     `json:"symbol_not_ends_with,omitempty"`
-	Symbol_not_ends_with_nocase        string     `json:"symbol_not_ends_with_nocase,omitempty"`
-	Supported                          bool       `json:"supported,omitempty"`
-	Supported_not                      bool       `json:"supported_not,omitempty"`
-	Supported_in                       []bool     `json:"supported_in,omitempty"`
-	Supported_not_in                   []bool     `json:"supported_not_in,omitempty"`
-	Minter                             string     `json:"minter,omitempty"`
-	Minter_not                         string     `json:"minter_not,omitempty"`
-	Minter_in                          []string   `json:"minter_in,omitempty"`
-	Minter_not_in                      []string   `json:"minter_not_in,omitempty"`
-	Minter_contains                    string     `json:"minter_contains,omitempty"`
-	Minter_not_contains                string     `json:"minter_not_contains,omitempty"`
-	ContractURI                        string     `json:"contractURI,omitempty"`
-	ContractURI_not                    string     `json:"contractURI_not,omitempty"`
-	ContractURI_gt                     string     `json:"contractURI_gt,omitempty"`
-	ContractURI_lt                     string     `json:"contractURI_lt,omitempty"`
-	ContractURI_gte                    string     `json:"contractURI_gte,omitempty"`
-	ContractURI_lte                    string     `json:"contractURI_lte,omitempty"`
-	ContractURI_in                     []string   `json:"contractURI_in,omitempty"`
-	ContractURI_not_in                 []string   `json:"contractURI_not_in,omitempty"`
-	ContractURI_contains               string     `json:"contractURI_contains,omitempty"`
-	ContractURI_contains_nocase        string     `json:"contractURI_contains_nocase,omitempty"`
-	ContractURI_not_contains           string     `json:"contractURI_not_contains,omitempty"`
-	ContractURI_not_contains_nocase    string     `json:"contractURI_not_contains_nocase,omitempty"`
-	ContractURI_starts_with            string     `json:"contractURI_starts_with,omitempty"`
-	ContractURI_starts_with_nocase     string     `json:"contractURI_starts_with_nocase,omitempty"`
-	ContractURI_not_starts_with        string     `json:"contractURI_not_starts_with,omitempty"`
-	ContractURI_not_starts_with_nocase string     `json:"contractURI_not_starts_with_nocase,omitempty"`
-	ContractURI_ends_with              string     `json:"contractURI_ends_with,omitempty"`
-	ContractURI_ends_with_nocase       string     `json:"contractURI_ends_with_nocase,omitempty"`
-	ContractURI_not_ends_with          string     `json:"contractURI_not_ends_with,omitempty"`
-	ContractURI_not_ends_with_nocase   string     `json:"contractURI_not_ends_with_nocase,omitempty"`
+	Id                                 string     `json:"id"`
+	Id_not                             string     `json:"id_not"`
+	Id_gt                              string     `json:"id_gt"`
+	Id_lt                              string     `json:"id_lt"`
+	Id_gte                             string     `json:"id_gte"`
+	Id_lte                             string     `json:"id_lte"`
+	Id_in                              []string   `json:"id_in"`
+	Id_not_in                          []string   `json:"id_not_in"`
+	Name                               string     `json:"name"`
+	Name_not                           string     `json:"name_not"`
+	Name_gt                            string     `json:"name_gt"`
+	Name_lt                            string     `json:"name_lt"`
+	Name_gte                           string     `json:"name_gte"`
+	Name_lte                           string     `json:"name_lte"`
+	Name_in                            []string   `json:"name_in"`
+	Name_not_in                        []string   `json:"name_not_in"`
+	Name_contains                      string     `json:"name_contains"`
+	Name_contains_nocase               string     `json:"name_contains_nocase"`
+	Name_not_contains                  string     `json:"name_not_contains"`
+	Name_not_contains_nocase           string     `json:"name_not_contains_nocase"`
+	Name_starts_with                   string     `json:"name_starts_with"`
+	Name_starts_with_nocase            string     `json:"name_starts_with_nocase"`
+	Name_not_starts_with               string     `json:"name_not_starts_with"`
+	Name_not_starts_with_nocase        string     `json:"name_not_starts_with_nocase"`
+	Name_ends_with                     string     `json:"name_ends_with"`
+	Name_ends_with_nocase              string     `json:"name_ends_with_nocase"`
+	Name_not_ends_with                 string     `json:"name_not_ends_with"`
+	Name_not_ends_with_nocase          string     `json:"name_not_ends_with_nocase"`
+	Symbol                             string     `json:"symbol"`
+	Symbol_not                         string     `json:"symbol_not"`
+	Symbol_gt                          string     `json:"symbol_gt"`
+	Symbol_lt                          string     `json:"symbol_lt"`
+	Symbol_gte                         string     `json:"symbol_gte"`
+	Symbol_lte                         string     `json:"symbol_lte"`
+	Symbol_in                          []string   `json:"symbol_in"`
+	Symbol_not_in                      []string   `json:"symbol_not_in"`
+	Symbol_contains                    string     `json:"symbol_contains"`
+	Symbol_contains_nocase             string     `json:"symbol_contains_nocase"`
+	Symbol_not_contains                string     `json:"symbol_not_contains"`
+	Symbol_not_contains_nocase         string     `json:"symbol_not_contains_nocase"`
+	Symbol_starts_with                 string     `json:"symbol_starts_with"`
+	Symbol_starts_with_nocase          string     `json:"symbol_starts_with_nocase"`
+	Symbol_not_starts_with             string     `json:"symbol_not_starts_with"`
+	Symbol_not_starts_with_nocase      string     `json:"symbol_not_starts_with_nocase"`
+	Symbol_ends_with                   string     `json:"symbol_ends_with"`
+	Symbol_ends_with_nocase            string     `json:"symbol_ends_with_nocase"`
+	Symbol_not_ends_with               string     `json:"symbol_not_ends_with"`
+	Symbol_not_ends_with_nocase        string     `json:"symbol_not_ends_with_nocase"`
+	Supported                          bool       `json:"supported"`
+	Supported_not                      bool       `json:"supported_not"`
+	Supported_in                       []bool     `json:"supported_in"`
+	Supported_not_in                   []bool     `json:"supported_not_in"`
+	Minter                             string     `json:"minter"`
+	Minter_not                         string     `json:"minter_not"`
+	Minter_gt                          string     `json:"minter_gt"`
+	Minter_lt                          string     `json:"minter_lt"`
+	Minter_gte                         string     `json:"minter_gte"`
+	Minter_lte                         string     `json:"minter_lte"`
+	Minter_in                          []string   `json:"minter_in"`
+	Minter_not_in                      []string   `json:"minter_not_in"`
+	Minter_contains                    string     `json:"minter_contains"`
+	Minter_not_contains                string     `json:"minter_not_contains"`
+	ContractURI                        string     `json:"contractURI"`
+	ContractURI_not                    string     `json:"contractURI_not"`
+	ContractURI_gt                     string     `json:"contractURI_gt"`
+	ContractURI_lt                     string     `json:"contractURI_lt"`
+	ContractURI_gte                    string     `json:"contractURI_gte"`
+	ContractURI_lte                    string     `json:"contractURI_lte"`
+	ContractURI_in                     []string   `json:"contractURI_in"`
+	ContractURI_not_in                 []string   `json:"contractURI_not_in"`
+	ContractURI_contains               string     `json:"contractURI_contains"`
+	ContractURI_contains_nocase        string     `json:"contractURI_contains_nocase"`
+	ContractURI_not_contains           string     `json:"contractURI_not_contains"`
+	ContractURI_not_contains_nocase    string     `json:"contractURI_not_contains_nocase"`
+	ContractURI_starts_with            string     `json:"contractURI_starts_with"`
+	ContractURI_starts_with_nocase     string     `json:"contractURI_starts_with_nocase"`
+	ContractURI_not_starts_with        string     `json:"contractURI_not_starts_with"`
+	ContractURI_not_starts_with_nocase string     `json:"contractURI_not_starts_with_nocase"`
+	ContractURI_ends_with              string     `json:"contractURI_ends_with"`
+	ContractURI_ends_with_nocase       string     `json:"contractURI_ends_with_nocase"`
+	ContractURI_not_ends_with          string     `json:"contractURI_not_ends_with"`
+	ContractURI_not_ends_with_nocase   string     `json:"contractURI_not_ends_with_nocase"`
+	Nfts_                              Nft_filter `json:"nfts_"`
 	// Filter for the block changed event.
-	Change_block BlockChangedFilter `json:"_change_block"`
+	Change_block BlockChangedFilter   `json:"_change_block"`
+	And          []NftContract_filter `json:"and"`
+	Or           []NftContract_filter `json:"or"`
 }
 
 // GetId returns NftContract_filter.Id, and is useful for accessing the field via an interface.
@@ -670,6 +677,18 @@ func (v *NftContract_filter) GetMinter() string { return v.Minter }
 // GetMinter_not returns NftContract_filter.Minter_not, and is useful for accessing the field via an interface.
 func (v *NftContract_filter) GetMinter_not() string { return v.Minter_not }
 
+// GetMinter_gt returns NftContract_filter.Minter_gt, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetMinter_gt() string { return v.Minter_gt }
+
+// GetMinter_lt returns NftContract_filter.Minter_lt, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetMinter_lt() string { return v.Minter_lt }
+
+// GetMinter_gte returns NftContract_filter.Minter_gte, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetMinter_gte() string { return v.Minter_gte }
+
+// GetMinter_lte returns NftContract_filter.Minter_lte, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetMinter_lte() string { return v.Minter_lte }
+
 // GetMinter_in returns NftContract_filter.Minter_in, and is useful for accessing the field via an interface.
 func (v *NftContract_filter) GetMinter_in() []string { return v.Minter_in }
 
@@ -758,141 +777,168 @@ func (v *NftContract_filter) GetContractURI_not_ends_with_nocase() string {
 	return v.ContractURI_not_ends_with_nocase
 }
 
+// GetNfts_ returns NftContract_filter.Nfts_, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetNfts_() Nft_filter { return v.Nfts_ }
+
 // GetChange_block returns NftContract_filter.Change_block, and is useful for accessing the field via an interface.
 func (v *NftContract_filter) GetChange_block() BlockChangedFilter { return v.Change_block }
 
+// GetAnd returns NftContract_filter.And, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetAnd() []NftContract_filter { return v.And }
+
+// GetOr returns NftContract_filter.Or, and is useful for accessing the field via an interface.
+func (v *NftContract_filter) GetOr() []NftContract_filter { return v.Or }
+
 type Nft_filter struct {
-	Id                                 string             `json:"id,omitempty"`
-	Id_not                             string             `json:"id_not,omitempty"`
-	Id_gt                              string             `json:"id_gt,omitempty"`
-	Id_lt                              string             `json:"id_lt,omitempty"`
-	Id_gte                             string             `json:"id_gte,omitempty"`
-	Id_lte                             string             `json:"id_lte,omitempty"`
-	Id_in                              []string           `json:"id_in,omitempty"`
-	Id_not_in                          []string           `json:"id_not_in,omitempty"`
-	Contract                           string             `json:"contract,omitempty"`
-	Contract_not                       string             `json:"contract_not,omitempty"`
-	Contract_gt                        string             `json:"contract_gt,omitempty"`
-	Contract_lt                        string             `json:"contract_lt,omitempty"`
-	Contract_gte                       string             `json:"contract_gte,omitempty"`
-	Contract_lte                       string             `json:"contract_lte,omitempty"`
-	Contract_in                        []string           `json:"contract_in,omitempty"`
-	Contract_not_in                    []string           `json:"contract_not_in,omitempty"`
-	Contract_contains                  string             `json:"contract_contains,omitempty"`
-	Contract_contains_nocase           string             `json:"contract_contains_nocase,omitempty"`
-	Contract_not_contains              string             `json:"contract_not_contains,omitempty"`
-	Contract_not_contains_nocase       string             `json:"contract_not_contains_nocase,omitempty"`
-	Contract_starts_with               string             `json:"contract_starts_with,omitempty"`
-	Contract_starts_with_nocase        string             `json:"contract_starts_with_nocase,omitempty"`
-	Contract_not_starts_with           string             `json:"contract_not_starts_with,omitempty"`
-	Contract_not_starts_with_nocase    string             `json:"contract_not_starts_with_nocase,omitempty"`
-	Contract_ends_with                 string             `json:"contract_ends_with,omitempty"`
-	Contract_ends_with_nocase          string             `json:"contract_ends_with_nocase,omitempty"`
-	Contract_not_ends_with             string             `json:"contract_not_ends_with,omitempty"`
-	Contract_not_ends_with_nocase      string             `json:"contract_not_ends_with_nocase,omitempty"`
-	Contract_                          NftContract_filter `json:"contract_,omitempty"`
-	TokenID                            string             `json:"tokenID,omitempty"`
-	TokenID_not                        string             `json:"tokenID_not,omitempty"`
-	TokenID_gt                         string             `json:"tokenID_gt,omitempty"`
-	TokenID_lt                         string             `json:"tokenID_lt,omitempty"`
-	TokenID_gte                        string             `json:"tokenID_gte,omitempty"`
-	TokenID_lte                        string             `json:"tokenID_lte,omitempty"`
-	TokenID_in                         []string           `json:"tokenID_in,omitempty"`
-	TokenID_not_in                     []string           `json:"tokenID_not_in,omitempty"`
-	Owner                              string             `json:"owner,omitempty"`
-	Owner_not                          string             `json:"owner_not,omitempty"`
-	Owner_in                           []string           `json:"owner_in,omitempty"`
-	Owner_not_in                       []string           `json:"owner_not_in,omitempty"`
-	Owner_contains                     string             `json:"owner_contains,omitempty"`
-	Owner_not_contains                 string             `json:"owner_not_contains,omitempty"`
-	CreatorName                        string             `json:"creatorName,omitempty"`
-	CreatorName_not                    string             `json:"creatorName_not,omitempty"`
-	CreatorName_gt                     string             `json:"creatorName_gt,omitempty"`
-	CreatorName_lt                     string             `json:"creatorName_lt,omitempty"`
-	CreatorName_gte                    string             `json:"creatorName_gte,omitempty"`
-	CreatorName_lte                    string             `json:"creatorName_lte,omitempty"`
-	CreatorName_in                     []string           `json:"creatorName_in,omitempty"`
-	CreatorName_not_in                 []string           `json:"creatorName_not_in,omitempty"`
-	CreatorName_contains               string             `json:"creatorName_contains,omitempty"`
-	CreatorName_contains_nocase        string             `json:"creatorName_contains_nocase,omitempty"`
-	CreatorName_not_contains           string             `json:"creatorName_not_contains,omitempty"`
-	CreatorName_not_contains_nocase    string             `json:"creatorName_not_contains_nocase,omitempty"`
-	CreatorName_starts_with            string             `json:"creatorName_starts_with,omitempty"`
-	CreatorName_starts_with_nocase     string             `json:"creatorName_starts_with_nocase,omitempty"`
-	CreatorName_not_starts_with        string             `json:"creatorName_not_starts_with,omitempty"`
-	CreatorName_not_starts_with_nocase string             `json:"creatorName_not_starts_with_nocase,omitempty"`
-	CreatorName_ends_with              string             `json:"creatorName_ends_with,omitempty"`
-	CreatorName_ends_with_nocase       string             `json:"creatorName_ends_with_nocase,omitempty"`
-	CreatorName_not_ends_with          string             `json:"creatorName_not_ends_with,omitempty"`
-	CreatorName_not_ends_with_nocase   string             `json:"creatorName_not_ends_with_nocase,omitempty"`
-	CreatorAddress                     string             `json:"creatorAddress,omitempty"`
-	CreatorAddress_not                 string             `json:"creatorAddress_not,omitempty"`
-	CreatorAddress_in                  []string           `json:"creatorAddress_in,omitempty"`
-	CreatorAddress_not_in              []string           `json:"creatorAddress_not_in,omitempty"`
-	CreatorAddress_contains            string             `json:"creatorAddress_contains,omitempty"`
-	CreatorAddress_not_contains        string             `json:"creatorAddress_not_contains,omitempty"`
-	Seller                             string             `json:"seller,omitempty"`
-	Seller_not                         string             `json:"seller_not,omitempty"`
-	Seller_in                          []string           `json:"seller_in,omitempty"`
-	Seller_not_in                      []string           `json:"seller_not_in,omitempty"`
-	Seller_contains                    string             `json:"seller_contains,omitempty"`
-	Seller_not_contains                string             `json:"seller_not_contains,omitempty"`
-	TokenURI                           string             `json:"tokenURI,omitempty"`
-	TokenURI_not                       string             `json:"tokenURI_not,omitempty"`
-	TokenURI_gt                        string             `json:"tokenURI_gt,omitempty"`
-	TokenURI_lt                        string             `json:"tokenURI_lt,omitempty"`
-	TokenURI_gte                       string             `json:"tokenURI_gte,omitempty"`
-	TokenURI_lte                       string             `json:"tokenURI_lte,omitempty"`
-	TokenURI_in                        []string           `json:"tokenURI_in,omitempty"`
-	TokenURI_not_in                    []string           `json:"tokenURI_not_in,omitempty"`
-	TokenURI_contains                  string             `json:"tokenURI_contains,omitempty"`
-	TokenURI_contains_nocase           string             `json:"tokenURI_contains_nocase,omitempty"`
-	TokenURI_not_contains              string             `json:"tokenURI_not_contains,omitempty"`
-	TokenURI_not_contains_nocase       string             `json:"tokenURI_not_contains_nocase,omitempty"`
-	TokenURI_starts_with               string             `json:"tokenURI_starts_with,omitempty"`
-	TokenURI_starts_with_nocase        string             `json:"tokenURI_starts_with_nocase,omitempty"`
-	TokenURI_not_starts_with           string             `json:"tokenURI_not_starts_with,omitempty"`
-	TokenURI_not_starts_with_nocase    string             `json:"tokenURI_not_starts_with_nocase,omitempty"`
-	TokenURI_ends_with                 string             `json:"tokenURI_ends_with,omitempty"`
-	TokenURI_ends_with_nocase          string             `json:"tokenURI_ends_with_nocase,omitempty"`
-	TokenURI_not_ends_with             string             `json:"tokenURI_not_ends_with,omitempty"`
-	TokenURI_not_ends_with_nocase      string             `json:"tokenURI_not_ends_with_nocase,omitempty"`
-	InSale                             bool               `json:"inSale,omitempty"`
-	InSale_not                         bool               `json:"inSale_not,omitempty"`
-	InSale_in                          []bool             `json:"inSale_in,omitempty"`
-	InSale_not_in                      []bool             `json:"inSale_not_in,omitempty"`
-	Price                              string             `json:"price,omitempty"`
-	Price_not                          string             `json:"price_not,omitempty"`
-	Price_gt                           string             `json:"price_gt,omitempty"`
-	Price_lt                           string             `json:"price_lt,omitempty"`
-	Price_gte                          string             `json:"price_gte,omitempty"`
-	Price_lte                          string             `json:"price_lte,omitempty"`
-	Price_in                           []string           `json:"price_in,omitempty"`
-	Price_not_in                       []string           `json:"price_not_in,omitempty"`
-	Denom                              string             `json:"denom,omitempty"`
-	Denom_not                          string             `json:"denom_not,omitempty"`
-	Denom_in                           []string           `json:"denom_in,omitempty"`
-	Denom_not_in                       []string           `json:"denom_not_in,omitempty"`
-	Denom_contains                     string             `json:"denom_contains,omitempty"`
-	Denom_not_contains                 string             `json:"denom_not_contains,omitempty"`
-	CreatedAt                          string             `json:"createdAt,omitempty"`
-	CreatedAt_not                      string             `json:"createdAt_not,omitempty"`
-	CreatedAt_gt                       string             `json:"createdAt_gt,omitempty"`
-	CreatedAt_lt                       string             `json:"createdAt_lt,omitempty"`
-	CreatedAt_gte                      string             `json:"createdAt_gte,omitempty"`
-	CreatedAt_lte                      string             `json:"createdAt_lte,omitempty"`
-	CreatedAt_in                       []string           `json:"createdAt_in,omitempty"`
-	CreatedAt_not_in                   []string           `json:"createdAt_not_in,omitempty"`
-	RemovedAt                          string             `json:"removedAt,omitempty"`
-	RemovedAt_not                      string             `json:"removedAt_not,omitempty"`
-	RemovedAt_gt                       string             `json:"removedAt_gt,omitempty"`
-	RemovedAt_lt                       string             `json:"removedAt_lt,omitempty"`
-	RemovedAt_gte                      string             `json:"removedAt_gte,omitempty"`
-	RemovedAt_lte                      string             `json:"removedAt_lte,omitempty"`
-	RemovedAt_in                       []string           `json:"removedAt_in,omitempty"`
-	RemovedAt_not_in                   []string           `json:"removedAt_not_in,omitempty"`
+	Id                                 string              `json:"id"`
+	Id_not                             string              `json:"id_not"`
+	Id_gt                              string              `json:"id_gt"`
+	Id_lt                              string              `json:"id_lt"`
+	Id_gte                             string              `json:"id_gte"`
+	Id_lte                             string              `json:"id_lte"`
+	Id_in                              []string            `json:"id_in"`
+	Id_not_in                          []string            `json:"id_not_in"`
+	Contract                           string              `json:"contract"`
+	Contract_not                       string              `json:"contract_not"`
+	Contract_gt                        string              `json:"contract_gt"`
+	Contract_lt                        string              `json:"contract_lt"`
+	Contract_gte                       string              `json:"contract_gte"`
+	Contract_lte                       string              `json:"contract_lte"`
+	Contract_in                        []string            `json:"contract_in"`
+	Contract_not_in                    []string            `json:"contract_not_in"`
+	Contract_contains                  string              `json:"contract_contains"`
+	Contract_contains_nocase           string              `json:"contract_contains_nocase"`
+	Contract_not_contains              string              `json:"contract_not_contains"`
+	Contract_not_contains_nocase       string              `json:"contract_not_contains_nocase"`
+	Contract_starts_with               string              `json:"contract_starts_with"`
+	Contract_starts_with_nocase        string              `json:"contract_starts_with_nocase"`
+	Contract_not_starts_with           string              `json:"contract_not_starts_with"`
+	Contract_not_starts_with_nocase    string              `json:"contract_not_starts_with_nocase"`
+	Contract_ends_with                 string              `json:"contract_ends_with"`
+	Contract_ends_with_nocase          string              `json:"contract_ends_with_nocase"`
+	Contract_not_ends_with             string              `json:"contract_not_ends_with"`
+	Contract_not_ends_with_nocase      string              `json:"contract_not_ends_with_nocase"`
+	Contract_                          *NftContract_filter `json:"contract_"`
+	TokenID                            string              `json:"tokenID"`
+	TokenID_not                        string              `json:"tokenID_not"`
+	TokenID_gt                         string              `json:"tokenID_gt"`
+	TokenID_lt                         string              `json:"tokenID_lt"`
+	TokenID_gte                        string              `json:"tokenID_gte"`
+	TokenID_lte                        string              `json:"tokenID_lte"`
+	TokenID_in                         []string            `json:"tokenID_in"`
+	TokenID_not_in                     []string            `json:"tokenID_not_in"`
+	Owner                              string              `json:"owner"`
+	Owner_not                          string              `json:"owner_not"`
+	Owner_gt                           string              `json:"owner_gt"`
+	Owner_lt                           string              `json:"owner_lt"`
+	Owner_gte                          string              `json:"owner_gte"`
+	Owner_lte                          string              `json:"owner_lte"`
+	Owner_in                           []string            `json:"owner_in"`
+	Owner_not_in                       []string            `json:"owner_not_in"`
+	Owner_contains                     string              `json:"owner_contains"`
+	Owner_not_contains                 string              `json:"owner_not_contains"`
+	CreatorName                        string              `json:"creatorName"`
+	CreatorName_not                    string              `json:"creatorName_not"`
+	CreatorName_gt                     string              `json:"creatorName_gt"`
+	CreatorName_lt                     string              `json:"creatorName_lt"`
+	CreatorName_gte                    string              `json:"creatorName_gte"`
+	CreatorName_lte                    string              `json:"creatorName_lte"`
+	CreatorName_in                     []string            `json:"creatorName_in"`
+	CreatorName_not_in                 []string            `json:"creatorName_not_in"`
+	CreatorName_contains               string              `json:"creatorName_contains"`
+	CreatorName_contains_nocase        string              `json:"creatorName_contains_nocase"`
+	CreatorName_not_contains           string              `json:"creatorName_not_contains"`
+	CreatorName_not_contains_nocase    string              `json:"creatorName_not_contains_nocase"`
+	CreatorName_starts_with            string              `json:"creatorName_starts_with"`
+	CreatorName_starts_with_nocase     string              `json:"creatorName_starts_with_nocase"`
+	CreatorName_not_starts_with        string              `json:"creatorName_not_starts_with"`
+	CreatorName_not_starts_with_nocase string              `json:"creatorName_not_starts_with_nocase"`
+	CreatorName_ends_with              string              `json:"creatorName_ends_with"`
+	CreatorName_ends_with_nocase       string              `json:"creatorName_ends_with_nocase"`
+	CreatorName_not_ends_with          string              `json:"creatorName_not_ends_with"`
+	CreatorName_not_ends_with_nocase   string              `json:"creatorName_not_ends_with_nocase"`
+	CreatorAddress                     string              `json:"creatorAddress"`
+	CreatorAddress_not                 string              `json:"creatorAddress_not"`
+	CreatorAddress_gt                  string              `json:"creatorAddress_gt"`
+	CreatorAddress_lt                  string              `json:"creatorAddress_lt"`
+	CreatorAddress_gte                 string              `json:"creatorAddress_gte"`
+	CreatorAddress_lte                 string              `json:"creatorAddress_lte"`
+	CreatorAddress_in                  []string            `json:"creatorAddress_in"`
+	CreatorAddress_not_in              []string            `json:"creatorAddress_not_in"`
+	CreatorAddress_contains            string              `json:"creatorAddress_contains"`
+	CreatorAddress_not_contains        string              `json:"creatorAddress_not_contains"`
+	Seller                             string              `json:"seller"`
+	Seller_not                         string              `json:"seller_not"`
+	Seller_gt                          string              `json:"seller_gt"`
+	Seller_lt                          string              `json:"seller_lt"`
+	Seller_gte                         string              `json:"seller_gte"`
+	Seller_lte                         string              `json:"seller_lte"`
+	Seller_in                          []string            `json:"seller_in"`
+	Seller_not_in                      []string            `json:"seller_not_in"`
+	Seller_contains                    string              `json:"seller_contains"`
+	Seller_not_contains                string              `json:"seller_not_contains"`
+	TokenURI                           string              `json:"tokenURI"`
+	TokenURI_not                       string              `json:"tokenURI_not"`
+	TokenURI_gt                        string              `json:"tokenURI_gt"`
+	TokenURI_lt                        string              `json:"tokenURI_lt"`
+	TokenURI_gte                       string              `json:"tokenURI_gte"`
+	TokenURI_lte                       string              `json:"tokenURI_lte"`
+	TokenURI_in                        []string            `json:"tokenURI_in"`
+	TokenURI_not_in                    []string            `json:"tokenURI_not_in"`
+	TokenURI_contains                  string              `json:"tokenURI_contains"`
+	TokenURI_contains_nocase           string              `json:"tokenURI_contains_nocase"`
+	TokenURI_not_contains              string              `json:"tokenURI_not_contains"`
+	TokenURI_not_contains_nocase       string              `json:"tokenURI_not_contains_nocase"`
+	TokenURI_starts_with               string              `json:"tokenURI_starts_with"`
+	TokenURI_starts_with_nocase        string              `json:"tokenURI_starts_with_nocase"`
+	TokenURI_not_starts_with           string              `json:"tokenURI_not_starts_with"`
+	TokenURI_not_starts_with_nocase    string              `json:"tokenURI_not_starts_with_nocase"`
+	TokenURI_ends_with                 string              `json:"tokenURI_ends_with"`
+	TokenURI_ends_with_nocase          string              `json:"tokenURI_ends_with_nocase"`
+	TokenURI_not_ends_with             string              `json:"tokenURI_not_ends_with"`
+	TokenURI_not_ends_with_nocase      string              `json:"tokenURI_not_ends_with_nocase"`
+	InSale                             bool                `json:"inSale"`
+	InSale_not                         bool                `json:"inSale_not"`
+	InSale_in                          []bool              `json:"inSale_in"`
+	InSale_not_in                      []bool              `json:"inSale_not_in"`
+	Price                              string              `json:"price"`
+	Price_not                          string              `json:"price_not"`
+	Price_gt                           string              `json:"price_gt"`
+	Price_lt                           string              `json:"price_lt"`
+	Price_gte                          string              `json:"price_gte"`
+	Price_lte                          string              `json:"price_lte"`
+	Price_in                           []string            `json:"price_in"`
+	Price_not_in                       []string            `json:"price_not_in"`
+	Denom                              string              `json:"denom"`
+	Denom_not                          string              `json:"denom_not"`
+	Denom_gt                           string              `json:"denom_gt"`
+	Denom_lt                           string              `json:"denom_lt"`
+	Denom_gte                          string              `json:"denom_gte"`
+	Denom_lte                          string              `json:"denom_lte"`
+	Denom_in                           []string            `json:"denom_in"`
+	Denom_not_in                       []string            `json:"denom_not_in"`
+	Denom_contains                     string              `json:"denom_contains"`
+	Denom_not_contains                 string              `json:"denom_not_contains"`
+	CreatedAt                          string              `json:"createdAt"`
+	CreatedAt_not                      string              `json:"createdAt_not"`
+	CreatedAt_gt                       string              `json:"createdAt_gt"`
+	CreatedAt_lt                       string              `json:"createdAt_lt"`
+	CreatedAt_gte                      string              `json:"createdAt_gte"`
+	CreatedAt_lte                      string              `json:"createdAt_lte"`
+	CreatedAt_in                       []string            `json:"createdAt_in"`
+	CreatedAt_not_in                   []string            `json:"createdAt_not_in"`
+	RemovedAt                          string              `json:"removedAt"`
+	RemovedAt_not                      string              `json:"removedAt_not"`
+	RemovedAt_gt                       string              `json:"removedAt_gt"`
+	RemovedAt_lt                       string              `json:"removedAt_lt"`
+	RemovedAt_gte                      string              `json:"removedAt_gte"`
+	RemovedAt_lte                      string              `json:"removedAt_lte"`
+	RemovedAt_in                       []string            `json:"removedAt_in"`
+	RemovedAt_not_in                   []string            `json:"removedAt_not_in"`
 	// Filter for the block changed event.
 	Change_block BlockChangedFilter `json:"_change_block"`
+	And          []Nft_filter       `json:"and"`
+	Or           []Nft_filter       `json:"or"`
 }
 
 // GetId returns Nft_filter.Id, and is useful for accessing the field via an interface.
@@ -1016,6 +1062,18 @@ func (v *Nft_filter) GetOwner() string { return v.Owner }
 // GetOwner_not returns Nft_filter.Owner_not, and is useful for accessing the field via an interface.
 func (v *Nft_filter) GetOwner_not() string { return v.Owner_not }
 
+// GetOwner_gt returns Nft_filter.Owner_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOwner_gt() string { return v.Owner_gt }
+
+// GetOwner_lt returns Nft_filter.Owner_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOwner_lt() string { return v.Owner_lt }
+
+// GetOwner_gte returns Nft_filter.Owner_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOwner_gte() string { return v.Owner_gte }
+
+// GetOwner_lte returns Nft_filter.Owner_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOwner_lte() string { return v.Owner_lte }
+
 // GetOwner_in returns Nft_filter.Owner_in, and is useful for accessing the field via an interface.
 func (v *Nft_filter) GetOwner_in() []string { return v.Owner_in }
 
@@ -1102,6 +1160,18 @@ func (v *Nft_filter) GetCreatorAddress() string { return v.CreatorAddress }
 // GetCreatorAddress_not returns Nft_filter.CreatorAddress_not, and is useful for accessing the field via an interface.
 func (v *Nft_filter) GetCreatorAddress_not() string { return v.CreatorAddress_not }
 
+// GetCreatorAddress_gt returns Nft_filter.CreatorAddress_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorAddress_gt() string { return v.CreatorAddress_gt }
+
+// GetCreatorAddress_lt returns Nft_filter.CreatorAddress_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorAddress_lt() string { return v.CreatorAddress_lt }
+
+// GetCreatorAddress_gte returns Nft_filter.CreatorAddress_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorAddress_gte() string { return v.CreatorAddress_gte }
+
+// GetCreatorAddress_lte returns Nft_filter.CreatorAddress_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetCreatorAddress_lte() string { return v.CreatorAddress_lte }
+
 // GetCreatorAddress_in returns Nft_filter.CreatorAddress_in, and is useful for accessing the field via an interface.
 func (v *Nft_filter) GetCreatorAddress_in() []string { return v.CreatorAddress_in }
 
@@ -1119,6 +1189,18 @@ func (v *Nft_filter) GetSeller() string { return v.Seller }
 
 // GetSeller_not returns Nft_filter.Seller_not, and is useful for accessing the field via an interface.
 func (v *Nft_filter) GetSeller_not() string { return v.Seller_not }
+
+// GetSeller_gt returns Nft_filter.Seller_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetSeller_gt() string { return v.Seller_gt }
+
+// GetSeller_lt returns Nft_filter.Seller_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetSeller_lt() string { return v.Seller_lt }
+
+// GetSeller_gte returns Nft_filter.Seller_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetSeller_gte() string { return v.Seller_gte }
+
+// GetSeller_lte returns Nft_filter.Seller_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetSeller_lte() string { return v.Seller_lte }
 
 // GetSeller_in returns Nft_filter.Seller_in, and is useful for accessing the field via an interface.
 func (v *Nft_filter) GetSeller_in() []string { return v.Seller_in }
@@ -1238,6 +1320,18 @@ func (v *Nft_filter) GetDenom() string { return v.Denom }
 // GetDenom_not returns Nft_filter.Denom_not, and is useful for accessing the field via an interface.
 func (v *Nft_filter) GetDenom_not() string { return v.Denom_not }
 
+// GetDenom_gt returns Nft_filter.Denom_gt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetDenom_gt() string { return v.Denom_gt }
+
+// GetDenom_lt returns Nft_filter.Denom_lt, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetDenom_lt() string { return v.Denom_lt }
+
+// GetDenom_gte returns Nft_filter.Denom_gte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetDenom_gte() string { return v.Denom_gte }
+
+// GetDenom_lte returns Nft_filter.Denom_lte, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetDenom_lte() string { return v.Denom_lte }
+
 // GetDenom_in returns Nft_filter.Denom_in, and is useful for accessing the field via an interface.
 func (v *Nft_filter) GetDenom_in() []string { return v.Denom_in }
 
@@ -1301,22 +1395,34 @@ func (v *Nft_filter) GetRemovedAt_not_in() []string { return v.RemovedAt_not_in 
 // GetChange_block returns Nft_filter.Change_block, and is useful for accessing the field via an interface.
 func (v *Nft_filter) GetChange_block() BlockChangedFilter { return v.Change_block }
 
+// GetAnd returns Nft_filter.And, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetAnd() []Nft_filter { return v.And }
+
+// GetOr returns Nft_filter.Or, and is useful for accessing the field via an interface.
+func (v *Nft_filter) GetOr() []Nft_filter { return v.Or }
+
 type Nft_orderBy string
 
 const (
-	Nft_orderById             Nft_orderBy = "id"
-	Nft_orderByContract       Nft_orderBy = "contract"
-	Nft_orderByTokenid        Nft_orderBy = "tokenID"
-	Nft_orderByOwner          Nft_orderBy = "owner"
-	Nft_orderByCreatorname    Nft_orderBy = "creatorName"
-	Nft_orderByCreatoraddress Nft_orderBy = "creatorAddress"
-	Nft_orderBySeller         Nft_orderBy = "seller"
-	Nft_orderByTokenuri       Nft_orderBy = "tokenURI"
-	Nft_orderByInsale         Nft_orderBy = "inSale"
-	Nft_orderByPrice          Nft_orderBy = "price"
-	Nft_orderByDenom          Nft_orderBy = "denom"
-	Nft_orderByCreatedat      Nft_orderBy = "createdAt"
-	Nft_orderByRemovedat      Nft_orderBy = "removedAt"
+	Nft_orderById                  Nft_orderBy = "id"
+	Nft_orderByContract            Nft_orderBy = "contract"
+	Nft_orderByContractId          Nft_orderBy = "contract__id"
+	Nft_orderByContractName        Nft_orderBy = "contract__name"
+	Nft_orderByContractSymbol      Nft_orderBy = "contract__symbol"
+	Nft_orderByContractSupported   Nft_orderBy = "contract__supported"
+	Nft_orderByContractMinter      Nft_orderBy = "contract__minter"
+	Nft_orderByContractContracturi Nft_orderBy = "contract__contractURI"
+	Nft_orderByTokenid             Nft_orderBy = "tokenID"
+	Nft_orderByOwner               Nft_orderBy = "owner"
+	Nft_orderByCreatorname         Nft_orderBy = "creatorName"
+	Nft_orderByCreatoraddress      Nft_orderBy = "creatorAddress"
+	Nft_orderBySeller              Nft_orderBy = "seller"
+	Nft_orderByTokenuri            Nft_orderBy = "tokenURI"
+	Nft_orderByInsale              Nft_orderBy = "inSale"
+	Nft_orderByPrice               Nft_orderBy = "price"
+	Nft_orderByDenom               Nft_orderBy = "denom"
+	Nft_orderByCreatedat           Nft_orderBy = "createdAt"
+	Nft_orderByRemovedat           Nft_orderBy = "removedAt"
 )
 
 // Defines the order direction, either ascending or descending
