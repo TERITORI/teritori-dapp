@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
-import { Image, StyleSheet, Linking, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Image, StyleSheet, Linking, View, Pressable } from "react-native";
 
 import { Collection, MintState } from "../api/marketplace/v1/marketplace";
 import { useCollectionInfo } from "../hooks/useCollectionInfo";
@@ -46,8 +45,9 @@ export const CollectionView: React.FC<{
   }
 
   return (
-    <TouchableOpacity
-      onPress={item.id ? navigateToCollection : navigateToTwitter}
+    <Pressable
+      onPress={item.id !== "" ? navigateToCollection : navigateToTwitter}
+      disabled={item.id === "" && item.twitterUrl === ""}
     >
       <TertiaryBox
         noBrokenCorners={size === "XS"}
@@ -139,7 +139,7 @@ export const CollectionView: React.FC<{
           </View>
         </View>
       </TertiaryBox>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
