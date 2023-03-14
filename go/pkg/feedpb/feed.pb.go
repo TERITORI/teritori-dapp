@@ -20,6 +20,100 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type IPFSKeyRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId string `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+}
+
+func (x *IPFSKeyRequest) Reset() {
+	*x = IPFSKeyRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_feed_v1_feed_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *IPFSKeyRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IPFSKeyRequest) ProtoMessage() {}
+
+func (x *IPFSKeyRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_feed_v1_feed_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IPFSKeyRequest.ProtoReflect.Descriptor instead.
+func (*IPFSKeyRequest) Descriptor() ([]byte, []int) {
+	return file_feed_v1_feed_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *IPFSKeyRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type IPFSKeyResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Jwt string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
+}
+
+func (x *IPFSKeyResponse) Reset() {
+	*x = IPFSKeyResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_feed_v1_feed_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *IPFSKeyResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IPFSKeyResponse) ProtoMessage() {}
+
+func (x *IPFSKeyResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_feed_v1_feed_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IPFSKeyResponse.ProtoReflect.Descriptor instead.
+func (*IPFSKeyResponse) Descriptor() ([]byte, []int) {
+	return file_feed_v1_feed_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *IPFSKeyResponse) GetJwt() string {
+	if x != nil {
+		return x.Jwt
+	}
+	return ""
+}
+
 type Reaction struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -32,7 +126,7 @@ type Reaction struct {
 func (x *Reaction) Reset() {
 	*x = Reaction{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_feed_v1_feed_proto_msgTypes[0]
+		mi := &file_feed_v1_feed_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -45,7 +139,7 @@ func (x *Reaction) String() string {
 func (*Reaction) ProtoMessage() {}
 
 func (x *Reaction) ProtoReflect() protoreflect.Message {
-	mi := &file_feed_v1_feed_proto_msgTypes[0]
+	mi := &file_feed_v1_feed_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -58,7 +152,7 @@ func (x *Reaction) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Reaction.ProtoReflect.Descriptor instead.
 func (*Reaction) Descriptor() ([]byte, []int) {
-	return file_feed_v1_feed_proto_rawDescGZIP(), []int{0}
+	return file_feed_v1_feed_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Reaction) GetIcon() string {
@@ -94,7 +188,7 @@ type Post struct {
 func (x *Post) Reset() {
 	*x = Post{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_feed_v1_feed_proto_msgTypes[1]
+		mi := &file_feed_v1_feed_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -107,7 +201,7 @@ func (x *Post) String() string {
 func (*Post) ProtoMessage() {}
 
 func (x *Post) ProtoReflect() protoreflect.Message {
-	mi := &file_feed_v1_feed_proto_msgTypes[1]
+	mi := &file_feed_v1_feed_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -120,7 +214,7 @@ func (x *Post) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Post.ProtoReflect.Descriptor instead.
 func (*Post) Descriptor() ([]byte, []int) {
-	return file_feed_v1_feed_proto_rawDescGZIP(), []int{1}
+	return file_feed_v1_feed_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Post) GetCategory() uint32 {
@@ -200,7 +294,7 @@ type PostFilter struct {
 func (x *PostFilter) Reset() {
 	*x = PostFilter{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_feed_v1_feed_proto_msgTypes[2]
+		mi := &file_feed_v1_feed_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -213,7 +307,7 @@ func (x *PostFilter) String() string {
 func (*PostFilter) ProtoMessage() {}
 
 func (x *PostFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_feed_v1_feed_proto_msgTypes[2]
+	mi := &file_feed_v1_feed_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -226,7 +320,7 @@ func (x *PostFilter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PostFilter.ProtoReflect.Descriptor instead.
 func (*PostFilter) Descriptor() ([]byte, []int) {
-	return file_feed_v1_feed_proto_rawDescGZIP(), []int{2}
+	return file_feed_v1_feed_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *PostFilter) GetUser() string {
@@ -270,7 +364,7 @@ type PostsRequest struct {
 func (x *PostsRequest) Reset() {
 	*x = PostsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_feed_v1_feed_proto_msgTypes[3]
+		mi := &file_feed_v1_feed_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -283,7 +377,7 @@ func (x *PostsRequest) String() string {
 func (*PostsRequest) ProtoMessage() {}
 
 func (x *PostsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_feed_v1_feed_proto_msgTypes[3]
+	mi := &file_feed_v1_feed_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -296,7 +390,7 @@ func (x *PostsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PostsRequest.ProtoReflect.Descriptor instead.
 func (*PostsRequest) Descriptor() ([]byte, []int) {
-	return file_feed_v1_feed_proto_rawDescGZIP(), []int{3}
+	return file_feed_v1_feed_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *PostsRequest) GetFilter() *PostFilter {
@@ -331,7 +425,7 @@ type PostsResponse struct {
 func (x *PostsResponse) Reset() {
 	*x = PostsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_feed_v1_feed_proto_msgTypes[4]
+		mi := &file_feed_v1_feed_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -344,7 +438,7 @@ func (x *PostsResponse) String() string {
 func (*PostsResponse) ProtoMessage() {}
 
 func (x *PostsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_feed_v1_feed_proto_msgTypes[4]
+	mi := &file_feed_v1_feed_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -357,7 +451,7 @@ func (x *PostsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PostsResponse.ProtoReflect.Descriptor instead.
 func (*PostsResponse) Descriptor() ([]byte, []int) {
-	return file_feed_v1_feed_proto_rawDescGZIP(), []int{4}
+	return file_feed_v1_feed_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *PostsResponse) GetPosts() []*Post {
@@ -371,7 +465,12 @@ var File_feed_v1_feed_proto protoreflect.FileDescriptor
 
 var file_feed_v1_feed_proto_rawDesc = []byte{
 	0x0a, 0x12, 0x66, 0x65, 0x65, 0x64, 0x2f, 0x76, 0x31, 0x2f, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x07, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x76, 0x31, 0x22, 0x34, 0x0a,
+	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x07, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x76, 0x31, 0x22, 0x29, 0x0a,
+	0x0e, 0x49, 0x50, 0x46, 0x53, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x23, 0x0a, 0x0f, 0x49, 0x50, 0x46, 0x53,
+	0x4b, 0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6a,
+	0x77, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6a, 0x77, 0x74, 0x22, 0x34, 0x0a,
 	0x08, 0x52, 0x65, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x69, 0x63, 0x6f,
 	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x69, 0x63, 0x6f, 0x6e, 0x12, 0x14, 0x0a,
 	0x05, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x63, 0x6f,
@@ -413,13 +512,17 @@ var file_feed_v1_feed_proto_rawDesc = []byte{
 	0x66, 0x66, 0x73, 0x65, 0x74, 0x22, 0x34, 0x0a, 0x0d, 0x50, 0x6f, 0x73, 0x74, 0x73, 0x52, 0x65,
 	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x23, 0x0a, 0x05, 0x70, 0x6f, 0x73, 0x74, 0x73, 0x18,
 	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x76, 0x31, 0x2e,
-	0x50, 0x6f, 0x73, 0x74, 0x52, 0x05, 0x70, 0x6f, 0x73, 0x74, 0x73, 0x32, 0x45, 0x0a, 0x0b, 0x46,
-	0x65, 0x65, 0x64, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x36, 0x0a, 0x05, 0x50, 0x6f,
-	0x73, 0x74, 0x73, 0x12, 0x15, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x6f,
-	0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x66, 0x65, 0x65,
-	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x66, 0x65, 0x65, 0x64, 0x70, 0x62, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x50, 0x6f, 0x73, 0x74, 0x52, 0x05, 0x70, 0x6f, 0x73, 0x74, 0x73, 0x32, 0x83, 0x01, 0x0a, 0x0b,
+	0x46, 0x65, 0x65, 0x64, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x36, 0x0a, 0x05, 0x50,
+	0x6f, 0x73, 0x74, 0x73, 0x12, 0x15, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50,
+	0x6f, 0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x66, 0x65,
+	0x65, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x07, 0x49, 0x50, 0x46, 0x53, 0x4b, 0x65, 0x79, 0x12, 0x17,
+	0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x49, 0x50, 0x46, 0x53, 0x4b, 0x65, 0x79,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x76,
+	0x31, 0x2e, 0x49, 0x50, 0x46, 0x53, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x66, 0x65, 0x65, 0x64, 0x70, 0x62, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -434,22 +537,26 @@ func file_feed_v1_feed_proto_rawDescGZIP() []byte {
 	return file_feed_v1_feed_proto_rawDescData
 }
 
-var file_feed_v1_feed_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_feed_v1_feed_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_feed_v1_feed_proto_goTypes = []interface{}{
-	(*Reaction)(nil),      // 0: feed.v1.Reaction
-	(*Post)(nil),          // 1: feed.v1.Post
-	(*PostFilter)(nil),    // 2: feed.v1.PostFilter
-	(*PostsRequest)(nil),  // 3: feed.v1.PostsRequest
-	(*PostsResponse)(nil), // 4: feed.v1.PostsResponse
+	(*IPFSKeyRequest)(nil),  // 0: feed.v1.IPFSKeyRequest
+	(*IPFSKeyResponse)(nil), // 1: feed.v1.IPFSKeyResponse
+	(*Reaction)(nil),        // 2: feed.v1.Reaction
+	(*Post)(nil),            // 3: feed.v1.Post
+	(*PostFilter)(nil),      // 4: feed.v1.PostFilter
+	(*PostsRequest)(nil),    // 5: feed.v1.PostsRequest
+	(*PostsResponse)(nil),   // 6: feed.v1.PostsResponse
 }
 var file_feed_v1_feed_proto_depIdxs = []int32{
-	0, // 0: feed.v1.Post.reactions:type_name -> feed.v1.Reaction
-	2, // 1: feed.v1.PostsRequest.filter:type_name -> feed.v1.PostFilter
-	1, // 2: feed.v1.PostsResponse.posts:type_name -> feed.v1.Post
-	3, // 3: feed.v1.FeedService.Posts:input_type -> feed.v1.PostsRequest
-	4, // 4: feed.v1.FeedService.Posts:output_type -> feed.v1.PostsResponse
-	4, // [4:5] is the sub-list for method output_type
-	3, // [3:4] is the sub-list for method input_type
+	2, // 0: feed.v1.Post.reactions:type_name -> feed.v1.Reaction
+	4, // 1: feed.v1.PostsRequest.filter:type_name -> feed.v1.PostFilter
+	3, // 2: feed.v1.PostsResponse.posts:type_name -> feed.v1.Post
+	5, // 3: feed.v1.FeedService.Posts:input_type -> feed.v1.PostsRequest
+	0, // 4: feed.v1.FeedService.IPFSKey:input_type -> feed.v1.IPFSKeyRequest
+	6, // 5: feed.v1.FeedService.Posts:output_type -> feed.v1.PostsResponse
+	1, // 6: feed.v1.FeedService.IPFSKey:output_type -> feed.v1.IPFSKeyResponse
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
 	3, // [3:3] is the sub-list for extension extendee
 	0, // [0:3] is the sub-list for field type_name
@@ -462,7 +569,7 @@ func file_feed_v1_feed_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_feed_v1_feed_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Reaction); i {
+			switch v := v.(*IPFSKeyRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -474,7 +581,7 @@ func file_feed_v1_feed_proto_init() {
 			}
 		}
 		file_feed_v1_feed_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Post); i {
+			switch v := v.(*IPFSKeyResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -486,7 +593,7 @@ func file_feed_v1_feed_proto_init() {
 			}
 		}
 		file_feed_v1_feed_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PostFilter); i {
+			switch v := v.(*Reaction); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -498,7 +605,7 @@ func file_feed_v1_feed_proto_init() {
 			}
 		}
 		file_feed_v1_feed_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PostsRequest); i {
+			switch v := v.(*Post); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -510,6 +617,30 @@ func file_feed_v1_feed_proto_init() {
 			}
 		}
 		file_feed_v1_feed_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PostFilter); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_feed_v1_feed_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*PostsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_feed_v1_feed_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*PostsResponse); i {
 			case 0:
 				return &v.state
@@ -528,7 +659,7 @@ func file_feed_v1_feed_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_feed_v1_feed_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
