@@ -6,6 +6,14 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "feed.v1";
 
+export interface IPFSKeyRequest {
+  userId: string;
+}
+
+export interface IPFSKeyResponse {
+  jwt: string;
+}
+
 export interface Reaction {
   icon: string;
   count: number;
@@ -39,6 +47,100 @@ export interface PostsRequest {
 export interface PostsResponse {
   posts: Post[];
 }
+
+function createBaseIPFSKeyRequest(): IPFSKeyRequest {
+  return { userId: "" };
+}
+
+export const IPFSKeyRequest = {
+  encode(message: IPFSKeyRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IPFSKeyRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIPFSKeyRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.userId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IPFSKeyRequest {
+    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+  },
+
+  toJSON(message: IPFSKeyRequest): unknown {
+    const obj: any = {};
+    message.userId !== undefined && (obj.userId = message.userId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<IPFSKeyRequest>, I>>(object: I): IPFSKeyRequest {
+    const message = createBaseIPFSKeyRequest();
+    message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
+function createBaseIPFSKeyResponse(): IPFSKeyResponse {
+  return { jwt: "" };
+}
+
+export const IPFSKeyResponse = {
+  encode(message: IPFSKeyResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.jwt !== "") {
+      writer.uint32(10).string(message.jwt);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IPFSKeyResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIPFSKeyResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.jwt = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IPFSKeyResponse {
+    return { jwt: isSet(object.jwt) ? String(object.jwt) : "" };
+  },
+
+  toJSON(message: IPFSKeyResponse): unknown {
+    const obj: any = {};
+    message.jwt !== undefined && (obj.jwt = message.jwt);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<IPFSKeyResponse>, I>>(object: I): IPFSKeyResponse {
+    const message = createBaseIPFSKeyResponse();
+    message.jwt = object.jwt ?? "";
+    return message;
+  },
+};
 
 function createBaseReaction(): Reaction {
   return { icon: "", count: 0 };
@@ -452,6 +554,7 @@ export const PostsResponse = {
 
 export interface FeedService {
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse>;
+  IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse>;
 }
 
 export class FeedServiceClientImpl implements FeedService {
@@ -460,10 +563,15 @@ export class FeedServiceClientImpl implements FeedService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Posts = this.Posts.bind(this);
+    this.IPFSKey = this.IPFSKey.bind(this);
   }
 
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse> {
     return this.rpc.unary(FeedServicePostsDesc, PostsRequest.fromPartial(request), metadata);
+  }
+
+  IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse> {
+    return this.rpc.unary(FeedServiceIPFSKeyDesc, IPFSKeyRequest.fromPartial(request), metadata);
   }
 }
 
@@ -483,6 +591,28 @@ export const FeedServicePostsDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...PostsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FeedServiceIPFSKeyDesc: UnaryMethodDefinitionish = {
+  methodName: "IPFSKey",
+  service: FeedServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return IPFSKeyRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...IPFSKeyResponse.decode(data),
         toObject() {
           return this;
         },
