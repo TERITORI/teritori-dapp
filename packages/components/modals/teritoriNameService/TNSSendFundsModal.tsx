@@ -17,11 +17,11 @@ import {
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
+import { layout } from "../../../utils/style/layout";
 import { TNSSendFundsFormType } from "../../../utils/types/tns";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
-import {layout} from "../../../utils/style/layout";
 
 export const TNSSendFundsModal: React.FC<{
   onClose: () => void;

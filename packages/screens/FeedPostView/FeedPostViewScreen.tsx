@@ -42,29 +42,6 @@ import {
 
 export type OnPressReplyType = (replyTo: ReplyToType) => void;
 
-const PostNotFound: React.FC<{ userAddress: string }> = ({ userAddress }) => {
-  const navigation = useAppNavigation();
-  return (
-    <ScreenContainer
-      forceNetworkKind={NetworkKind.Cosmos}
-      responsive
-      headerChildren={
-        <BrandText style={fontSemibold20}>Post{userAddress}</BrandText>
-      }
-      onBackPress={() =>
-        navigation.canGoBack()
-          ? navigation.goBack()
-          : navigation.navigate("Feed")
-      }
-      footerChildren
-      fullWidth
-      noScroll
-    >
-      <NotFound label="Post" />
-    </ScreenContainer>
-  );
-};
-
 export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   route: {
     params: { id },

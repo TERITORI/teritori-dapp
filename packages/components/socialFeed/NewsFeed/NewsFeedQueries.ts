@@ -1,7 +1,7 @@
 import { omit } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
-import { nftStorageFile } from "../../../candymachine/nft-storage-upload";
+import { pinataPinFileToIPFS } from "../../../candymachine/pinata-upload";
 import { socialFeedClient } from "../../../client-creators/socialFeedClient";
 import { Wallet } from "../../../context/WalletsProvider";
 import { OpenGraphType } from "../../../hooks/feed/types";
@@ -102,7 +102,7 @@ interface CreatePostParams {
   category: PostCategory;
   parentId?: string;
   openGraph?: OpenGraphType;
-  nftStorageApiToken?: string;
+  pinataJWTKey?: string;
 }
 
 export const createPost = async ({
@@ -112,7 +112,7 @@ export const createPost = async ({
   freePostCount,
   fee,
   parentId,
-  nftStorageApiToken,
+  pinataJWTKey,
   category,
 }: CreatePostParams) => {
   if (!wallet?.connected || !wallet.address) {
@@ -126,10 +126,10 @@ export const createPost = async ({
 
   let files: RemoteFileData[] = [];
 
-  if (formValues.files?.[0] && nftStorageApiToken) {
-    files = await uploadPostFilesToNFTStorage({
+  if (formValues.files?.[0] && pinataJWTKey) {
+    files = await uploadPostFilesToPinata({
       files: formValues.files,
-      nftStorageApiToken,
+      pinataJWTKey,
     });
   }
 
@@ -169,43 +169,48 @@ export const createPost = async ({
   );
 };
 
-interface UploadPostFilesToNFTStorageParams {
+interface UploadPostFilesToPinataParams {
   files: LocalFileData[];
-  nftStorageApiToken: string;
+  pinataJWTKey: string;
 }
 
-export const uploadPostFilesToNFTStorage = async ({
+export const uploadPostFilesToPinata = async ({
   files,
-  nftStorageApiToken,
-}: UploadPostFilesToNFTStorageParams): Promise<RemoteFileData[]> => {
-  const formattedFiles: RemoteFileData[] = [];
-  for (const file of files) {
-    const fileData = await nftStorageFile({
-      file: file.file,
-      nftStorageApiToken,
+  pinataJWTKey,
+}: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
+  const storedFile = async (file: LocalFileData): Promise<RemoteFileData> => {
+    const fileData = await pinataPinFileToIPFS({
+      file,
+      pinataJWTKey,
     });
-
     if (file.thumbnailFileData) {
-      const thumbnailData = await nftStorageFile({
-        file: file.thumbnailFileData.file,
-        nftStorageApiToken,
+      const thumbnailData = await pinataPinFileToIPFS({
+        file: file.thumbnailFileData,
+        pinataJWTKey,
       });
-      formattedFiles.push({
+
+      return {
         ...omit(file, "file"),
-        url: fileData.data.image.href,
+        url: fileData?.IpfsHash || "",
         thumbnailFileData: {
           ...omit(file.thumbnailFileData, "file"),
-          url: thumbnailData.data.image.href,
+          url: thumbnailData?.IpfsHash || "",
         },
-      });
+      };
     } else {
-      formattedFiles.push({
+      return {
         ...omit(file, "file"),
-        url: fileData.data.image.href,
-      });
+        url: fileData?.IpfsHash || "",
+      };
     }
+  };
+
+  const queries = [];
+  for (const file of files) {
+    const storedFileQuery = storedFile(file);
+    queries.push(storedFileQuery);
   }
-  return formattedFiles;
+  return await Promise.all(queries);
 };
 
 interface GeneratePostMetadataParams {
