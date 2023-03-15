@@ -1,3 +1,4 @@
+import { coin } from "cosmwasm";
 import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -269,7 +270,7 @@ export const NewsFeedInput = React.forwardRef<
           args: {
             fee: defaultSocialFeedFee,
             memo: "",
-            funds: [],
+            funds: [coin(postFee, "utori")],
           },
         });
       } catch (err) {
