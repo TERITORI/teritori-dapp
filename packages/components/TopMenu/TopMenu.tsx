@@ -5,7 +5,6 @@ import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { Wallet } from "../../context/WalletsProvider";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral00,
   neutral33,
@@ -16,6 +15,7 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, topMenuWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
+import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -29,8 +29,6 @@ import { WalletView } from "./WalletView";
 export const TopMenu: React.FC<{
   selectedWallet?: Wallet;
 }> = ({ selectedWallet }) => {
-  const navigation = useAppNavigation();
-
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
 
@@ -74,11 +72,11 @@ export const TopMenu: React.FC<{
         <TopMenuLiveMint />
 
         <Separator />
-        <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+        <OmniLink to={{ screen: "Settings" }}>
           <FlexCol style={{ paddingVertical: layout.padding_x1_5 }}>
             <BrandText style={styles.settingsText}>Settings</BrandText>
           </FlexCol>
-        </TouchableOpacity>
+        </OmniLink>
       </TertiaryBox>
     </View>
   );
