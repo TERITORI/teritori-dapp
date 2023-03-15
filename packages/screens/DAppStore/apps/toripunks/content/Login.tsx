@@ -15,7 +15,7 @@ export const Login = () => {
   }, []);
 
   return (
-    <View style={{ justifyContent: "flex-end" }}>
+    <View style={{ justifyContent: "flex-end", marginTop: 100 }}>
       <Label
         styleType="H1_Bebas_80"
         style={{ textAlign: "center", color: "#E8E1EF" }}
