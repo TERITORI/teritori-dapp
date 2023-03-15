@@ -3,6 +3,7 @@ import { ImageBackground } from "react-native";
 
 import disconnect from "../../assets/background/disconnect.png";
 import login from "../../assets/background/login.png";
+import main from "../../assets/background/main.png";
 import price from "../../assets/background/price.png";
 import score from "../../assets/background/score.png";
 import winorlose from "../../assets/background/winorlose.png";
@@ -11,6 +12,7 @@ const baseStyle = { flex: 1 };
 
 const imgComponent = {
   disconnect: { src: disconnect, style: { ...baseStyle }, imgStyle: {} },
+  main: { src: main, style: { ...baseStyle }, imgStyle: {} },
   login: {
     src: login,
     style: { ...baseStyle },

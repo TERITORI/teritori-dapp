@@ -1,3 +1,4 @@
+// deprecated.
 import { ImageBackground, View } from "react-native";
 
 import main from "../../assets/background/main.png";

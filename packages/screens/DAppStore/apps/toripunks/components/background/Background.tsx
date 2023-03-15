@@ -1,7 +1,6 @@
 import React from "react";
 
 import { DefaultBackground } from "./DefaultBackground";
-import { MainBackground } from "./MainBackground";
 
 const imgComponent = {
   comicgood: () => null,
@@ -11,7 +10,9 @@ const imgComponent = {
   login: (children: JSX.Element) => (
     <DefaultBackground type="login">{children}</DefaultBackground>
   ),
-  main: (children: JSX.Element) => <MainBackground>{children}</MainBackground>,
+  main: (children: JSX.Element) => (
+    <DefaultBackground type="main">{children}</DefaultBackground>
+  ),
   price: (children: JSX.Element) => (
     <DefaultBackground type="price">{children}</DefaultBackground>
   ),
