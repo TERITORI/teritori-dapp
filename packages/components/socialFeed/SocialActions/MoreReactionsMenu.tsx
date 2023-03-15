@@ -39,6 +39,7 @@ export const MoreReactionsMenu: React.FC<{
       {sortedReactions.map((reaction, index) =>
         index === nbReactionsShown ? (
           <MoreReactionsButton
+            key={index}
             label={moreReactionsButtonLabel}
             onPress={onPressMore}
             style={{
