@@ -17,56 +17,63 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
   },
-  H1_80: {
+  H1_Bebas_80: {
     fontFamily: "Bebas Neue",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 80,
     lineHeight: 96,
   },
-  H1_40: {
+  H1_Bebas_40: {
     fontFamily: "Bebas Neue",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 40,
     lineHeight: 96,
   },
-  H2_80: {
-    fontFamily: "Bebas Neue",
+  H2_DHBS_80: {
+    fontFamily: "Dafter Harder Better Stronger",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 80,
     lineHeight: 96,
   },
-  H2_40: {
-    fontFamily: "Bebas Neue",
+  H2_DHBS_40: {
+    fontFamily: "Dafter Harder Better Stronger",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 40,
     lineHeight: 96,
   },
-  T2_50: {
+  T2_Bebas_50: {
     fontFamily: "Bebas Neue",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 50,
     lineHeight: 96,
   },
-  T2_20: {
+  T2_Bebas_20: {
     fontFamily: "Bebas Neue",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 20,
     lineHeight: 96,
   },
-  T1_20: {
+  T1_Bebas_20: {
     fontFamily: "Bebas Neue",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 20,
     lineHeight: 96,
   },
-  T1_15: {
+  T1_DHBS_20: {
+    fontFamily: "Dafter Harder Better Stronger",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: 20,
+    lineHeight: 96,
+  },
+  T1_Bebas_15: {
     fontFamily: "Bebas Neue",
     fontStyle: "normal",
     fontWeight: "400",
