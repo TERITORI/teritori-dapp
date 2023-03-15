@@ -7,10 +7,6 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { NFTView } from "../../components/nfts/NFTView";
 import { useNFTs } from "../../hooks/useNFTs";
-import {
-  useSelectedNetworkId,
-  useSelectedNetworkInfo,
-} from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
@@ -18,15 +14,11 @@ import { neutral33 } from "../../utils/style/colors";
 export const MyNFTs: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const ownerId = `${selectedNetworkInfo?.addressPrefix}-${selectedWallet?.address}`;
-  const selectedNetworkId = useSelectedNetworkId();
 
   const { nfts, fetchMore } = useNFTs({
-    networkId: selectedNetworkId,
     offset: 0,
     limit: 4,
-    ownerId,
+    ownerId: selectedWallet?.userId || "",
     collectionId: "",
     sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
     sort: Sort.SORTING_PRICE,

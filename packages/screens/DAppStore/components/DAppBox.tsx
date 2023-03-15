@@ -20,7 +20,10 @@ import { CheckboxDappStore } from "./CheckboxDappStore";
 export const DAppBox: React.FC<{
   option: dAppType;
   style?: StyleProp<ViewStyle>;
-}> = ({ option: { description, groupKey, icon, id, title }, style }) => {
+}> = ({
+  option: { description, groupKey, icon, id, title, alwaysOn },
+  style,
+}) => {
   const selectedApps = useSelector(selectCheckedApps);
   const dispatch = useAppDispatch();
   const draggableId = `${groupKey}*SEPARATOR*${id}`;
@@ -39,7 +42,7 @@ export const DAppBox: React.FC<{
   }, [selectedApps, draggableId]);
 
   return (
-    <TouchableHighlight onPress={handleClick}>
+    <TouchableHighlight onPress={handleClick} disabled={alwaysOn}>
       <TertiaryBox
         height={88}
         width={306}
@@ -92,7 +95,7 @@ export const DAppBox: React.FC<{
           </View>
         </View>
 
-        <CheckboxDappStore isChecked={isChecked} />
+        {!alwaysOn ? <CheckboxDappStore isChecked={isChecked} /> : null}
       </TertiaryBox>
     </TouchableHighlight>
   );

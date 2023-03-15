@@ -23,11 +23,7 @@ import {
 
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
-import {
-  fontMedium10,
-  fontSemibold13,
-  fontSemibold14,
-} from "../../utils/style/fonts";
+import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -51,8 +47,9 @@ export interface TextInputCustomProps<T extends FieldValues>
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
-  subtitle?: string;
+  subtitle?: React.ReactElement;
   labelStyle?: TextStyle;
+  noBrokenCorners?: boolean;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -75,6 +72,7 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
+  noBrokenCorners,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -154,9 +152,7 @@ export const TextInputCustom = <T extends FieldValues>({
             <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
               {label}
             </BrandText>
-            {subtitle && (
-              <BrandText style={fontSemibold13}>{subtitle}</BrandText>
-            )}
+            {subtitle}
           </View>
           <SpacerColumn size={1} />
         </>
@@ -169,6 +165,7 @@ export const TextInputCustom = <T extends FieldValues>({
         width={width}
         fullWidth={!width}
         height={height}
+        noBrokenCorners={noBrokenCorners}
       >
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
@@ -184,12 +181,12 @@ export const TextInputCustom = <T extends FieldValues>({
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
-              onChangeText={handleChangeText}
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
               value={field.value}
               style={styles.textInput}
               {...restProps}
+              onChangeText={handleChangeText}
             />
           </View>
 

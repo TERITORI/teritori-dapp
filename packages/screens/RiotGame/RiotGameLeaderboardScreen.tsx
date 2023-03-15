@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   StyleSheet,
   ImageBackground,
@@ -8,9 +8,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 
+import iconFightSVG from "../../../assets/game/icon-fight.svg";
+import iconXPSVG from "../../../assets/game/icon-xp.svg";
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
 import badgeSVG from "../../../assets/icons/badge.svg";
-import cryptoLogoSVG from "../../../assets/icons/crypto-logo.svg";
 import volDownSVG from "../../../assets/icons/vol-down.svg";
 import volUpSVG from "../../../assets/icons/vol-up.svg";
 import logoSVG from "../../../assets/logos/logo-white.svg";
@@ -24,8 +25,10 @@ import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
-import { p2eBackendClient } from "../../utils/backend";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { getCosmosNetwork, parseUserId } from "../../networks";
+import { mustGetP2eClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
@@ -53,10 +56,11 @@ type PlayerNameProps = {
 
 const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   const navigation = useAppNavigation();
-  const address = userId.split("-")[1];
-  const tnsMetadata = useTNSMetadata(address);
+  const [network, address] = parseUserId(userId);
+  const cosmosNetwork = getCosmosNetwork(network?.id);
+  const userInfo = useNSUserInfo(userId);
 
-  const name = tnsMetadata.metadata?.tokenId || address || "";
+  const name = userInfo.metadata?.tokenId || address || "";
 
   return (
     <FlexRow width="auto" alignItems="center">
@@ -71,8 +75,8 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
         <Image
           source={{
             uri: ipfsURLToHTTPURL(
-              tnsMetadata.metadata?.image ||
-                process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL ||
+              userInfo.metadata?.image ||
+                cosmosNetwork?.nameServiceDefaultImage ||
                 ""
             ),
           }}
@@ -132,14 +136,17 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
 export const RiotGameLeaderboardScreen = () => {
   const [userScores, setUserScores] = useState<UserScore[]>([]);
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
+  const selectedNetwork = useSelectedNetworkInfo();
 
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = useCallback(async () => {
+    const p2eClient = mustGetP2eClient(selectedNetwork?.id);
+
     const _userScores: UserScore[] = [];
 
-    const currentSeason = await p2eBackendClient.CurrentSeason({});
+    const currentSeason = await p2eClient.CurrentSeason({});
     setCurrentSeason(currentSeason);
 
-    const streamData = await p2eBackendClient.Leaderboard({
+    const streamData = await p2eClient.Leaderboard({
       seasonId: currentSeason.id,
       limit: 500,
       offset: 0,
@@ -149,11 +156,11 @@ export const RiotGameLeaderboardScreen = () => {
       item.userScore && _userScores.push(item.userScore);
     });
     setUserScores(_userScores.filter((val) => val.rank !== 0));
-  };
+  }, [selectedNetwork?.id]);
 
   useEffect(() => {
     fetchLeaderboard();
-  }, []);
+  }, [fetchLeaderboard]);
 
   return (
     <GameContentView hideStats contentStyle={styles.contentContainer}>
@@ -218,7 +225,7 @@ export const RiotGameLeaderboardScreen = () => {
               <View
                 style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
               >
-                <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
+                <SVG style={{ width: 24, height: 24 }} source={iconXPSVG} />
 
                 <SpacerRow size={1} />
 
@@ -227,7 +234,7 @@ export const RiotGameLeaderboardScreen = () => {
               <View
                 style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
               >
-                <SVG style={{ width: 24, height: 24 }} source={cryptoLogoSVG} />
+                <SVG style={{ width: 24, height: 24 }} source={iconFightSVG} />
 
                 <SpacerRow size={1} />
 

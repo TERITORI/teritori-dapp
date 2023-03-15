@@ -7,7 +7,9 @@ import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { News } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { backendClient } from "../../utils/backend";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getNetwork } from "../../networks";
+import { mustGetMarketplaceClient } from "../../utils/backend";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
@@ -17,7 +19,8 @@ export const NewsCarouselSection: React.FC = () => {
   const { width } = useMaxResolution();
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const renderItem = (props: { item: News }) => <NewsBox news={props.item} />;
-  const news = useNews(process.env.TERITORI_NETWORK_ID === "teritori-testnet");
+  const networkId = useSelectedNetworkId();
+  const news = useNews(networkId);
 
   const topRightChild = (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -61,11 +64,13 @@ export const NewsCarouselSection: React.FC = () => {
   );
 };
 
-const useNews = (testnet: boolean) => {
+const useNews = (networkId: string) => {
   const { data } = useQuery(
-    ["news", testnet],
+    ["news", networkId],
     async () => {
-      const { news } = await backendClient.News({ testnet });
+      const backendClient = mustGetMarketplaceClient(networkId);
+      const network = getNetwork(networkId);
+      const { news } = await backendClient.News({ testnet: network?.testnet });
       return news;
     },
     {

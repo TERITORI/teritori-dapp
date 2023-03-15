@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Image, ImageSourcePropType, View } from "react-native";
 
-import { useSelectedNetwork } from "../../../hooks/useSelectedNetwork";
+import { txExplorerLink } from "../../../networks";
 import {
   neutral44,
   neutral77,
@@ -9,17 +9,17 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold16 } from "../../../utils/style/fonts";
 import { modalMarginPadding } from "../../../utils/style/modals";
-import { txExplorerLink } from "../../../utils/teritori";
+import { tinyAddress } from "../../../utils/text";
 import { BrandText } from "../../BrandText";
 import { CopyToClipboardIcon } from "../../CopyToClipboardIcon";
 import { ExternalLink } from "../../ExternalLink";
-import { tinyAddress } from "../../WalletSelector";
 import { SpacerRow } from "../../spacer";
 import ModalBase from "../ModalBase";
 
 // Modal with a success message after transaction
 export const TransactionSuccessModal: React.FC<{
   image?: ImageSourcePropType;
+  networkId: string | undefined;
   // BrandText with style props. Used to display text with multiple styles (White, gray, ..)
   textComponent: JSX.Element;
   transactionHash?: string;
@@ -29,11 +29,11 @@ export const TransactionSuccessModal: React.FC<{
   image,
   textComponent,
   transactionHash = "",
+  networkId = "",
   onClose,
   visible = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const selectedNetwork = useSelectedNetwork();
 
   const width = 372;
 
@@ -90,7 +90,7 @@ export const TransactionSuccessModal: React.FC<{
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <ExternalLink
               style={fontSemibold16}
-              externalUrl={txExplorerLink(selectedNetwork, transactionHash)}
+              externalUrl={txExplorerLink(networkId, transactionHash)}
             >
               {tinyAddress(transactionHash, 21)}
             </ExternalLink>

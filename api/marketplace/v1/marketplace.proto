@@ -125,7 +125,6 @@ message CollectionsRequest {
 message CollectionStatsRequest {
   string collection_id = 1;
   string owner_id = 2;
-  string network_id = 3;
 }
 
 message CollectionStatsResponse {
@@ -145,8 +144,6 @@ message NFTsRequest {
 
   Sort sort = 5;
   SortDirection sort_direction = 6;
-
-  string network_id = 7;
 }
 
 message NFTsResponse {
@@ -169,7 +166,6 @@ message ActivityRequest {
   string nft_id = 2;
   int32 limit = 3;
   int32 offset = 4;
-  string network_id = 5;
 }
 
 
@@ -180,7 +176,6 @@ message ActivityResponse {
 
 message NFTPriceHistoryRequest {
   string id = 1;
-  string network_id = 2;
 }
 
 message NFTPriceHistoryResponse {
@@ -214,7 +209,9 @@ message DApp {
   string icon = 4;
   string route = 5;
   string groupKey = 6;
-  string airtableId = 7;
+  string linkingId = 7;
+  bool selectedByDefault = 8;
+  bool alwaysOn = 9;
 }
 
 message Banner {

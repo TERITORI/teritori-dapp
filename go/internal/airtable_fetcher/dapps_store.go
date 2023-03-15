@@ -95,14 +95,24 @@ func (c *Client) FetchApps() ([]*marketplacepb.DApp, error) {
 		if !ok {
 			continue
 		}
+		selectedByDefault, ok := record.Fields["selectedByDefault"]
+		if !ok {
+			selectedByDefault = false
+		}
+		alwaysOn, ok := record.Fields["alwaysOn"]
+		if !ok {
+			alwaysOn = false
+		}
 		dApps = append(dApps, &marketplacepb.DApp{
-			Id:          id,
-			Title:       title,
-			Description: description,
-			Icon:        icon,
-			Route:       route,
-			GroupKey:    groupKey,
-			AirtableId:  record.ID,
+			Id:                id,
+			Title:             title,
+			Description:       description,
+			Icon:              icon,
+			Route:             route,
+			GroupKey:          groupKey,
+			LinkingId:         record.ID,
+			SelectedByDefault: selectedByDefault.(bool),
+			AlwaysOn:          alwaysOn.(bool),
 		})
 	}
 

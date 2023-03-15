@@ -22,9 +22,9 @@ import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventor
 import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeaderboardScreen";
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
-import { RiotGameRarityScreen } from "../../screens/RiotGame/RiotGameRarityScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
+import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
@@ -133,14 +133,6 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Inventory"),
         }}
       />
-      <Stack.Screen
-        name="RiotGameRarity"
-        component={RiotGameRarityScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Riot Game Rarity"),
-        }}
-      />
 
       {/* ==== Wallet Manager */}
       <Stack.Screen
@@ -213,6 +205,11 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="CollectionTools"
         component={CollectionToolsScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
         options={{ header: () => null }}
       />
       <Stack.Screen
