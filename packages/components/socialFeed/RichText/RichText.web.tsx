@@ -260,6 +260,15 @@ export const RichText: React.FC<RichTextProps> = ({
     // onImageUpload?.(file);
   };
 
+  const addEmoji = (emoji: string) => {
+
+    // if(onEmojiSelected) {
+    //   const contentState = editorState.getCurrentContent();
+    //   onEmojiSelected(editorState.getSelection(), emoji)
+    //   onChange(contentState);
+    // }
+  }
+
   const addAudio = (file: LocalFileData) => {
     if (!onAudioUpload) return;
     // TODO:
@@ -380,18 +389,17 @@ export const RichText: React.FC<RichTextProps> = ({
               <>
                 <GIFSelector
                   onGIFSelected={onGIFSelected}
-                  disabled={isGIFSelectorDisabled}
+                  // disabled={isGIFSelectorDisabled}
+                  disabled
                   optionsContainer={{ marginLeft: -186, marginTop: -6 }}
                   buttonStyle={styles.toolbarCustomButton}
                 />
 
                 <EmojiSelector
-                  onEmojiSelected={(emoji) =>
-                    onEmojiSelected &&
-                    onEmojiSelected(editorState.getSelection(), emoji)
-                  }
+                  onEmojiSelected={(emoji) => addEmoji(emoji)}
                   optionsContainer={{ marginLeft: -80, marginTop: -6 }}
                   buttonStyle={styles.toolbarCustomButton}
+                  disabled
                 />
 
                 <FileUploader
@@ -403,7 +411,8 @@ export const RichText: React.FC<RichTextProps> = ({
                       icon={audioSVG}
                       onPress={onPress}
                       style={styles.toolbarCustomButton}
-                      disabled={isAudioUploadDisabled}
+                      // disabled={isAudioUploadDisabled}
+                      disabled
                     />
                   )}
                 </FileUploader>
@@ -417,7 +426,8 @@ export const RichText: React.FC<RichTextProps> = ({
                       icon={videoSVG}
                       onPress={onPress}
                       style={styles.toolbarCustomButton}
-                      disabled={isVideoUploadDisabled}
+                      // disabled={isVideoUploadDisabled}
+                      disabled
                     />
                   )}
                 </FileUploader>
