@@ -100,6 +100,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 
 	query := s.conf.IndexerDB.
 		Table("posts as p1").
+		Where("p1.parent_post_identifier = ?", "").
 		Select(`
 			p1.*,
 			(
@@ -136,7 +137,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	}
 
 	query = query.
-		Order("created_at desc").
+		Order("created_at DESC").
 		Limit(int(limit)).
 		Offset(int(offset))
 
@@ -155,7 +156,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			})
 		}
 
-		medadata, err := json.Marshal(dbPost.Metadata)
+		metadata, err := json.Marshal(dbPost.Metadata)
 		if err != nil {
 			return nil, err
 		}
@@ -164,7 +165,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			Category:             dbPost.Category,
 			IsDeleted:            dbPost.IsDeleted,
 			Identifier:           dbPost.Identifier,
-			Metadata:             string(medadata),
+			Metadata:             string(metadata),
 			ParentPostIdentifier: dbPost.ParentPostIdentifier,
 			SubPostLength:        dbPost.SubPostLength,
 			CreatedBy:            string(dbPost.CreatedBy),
