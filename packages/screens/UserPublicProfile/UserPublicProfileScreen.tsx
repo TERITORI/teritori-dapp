@@ -12,7 +12,6 @@ import { UPPGigServices } from "../../components/userPublicProfile/UPPGigService
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
-import { UserNotFound } from "../../components/userPublicProfile/UserNotFound";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseNetworkObjectId, parseUserId } from "../../networks";
