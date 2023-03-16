@@ -93,7 +93,6 @@ interface NewsFeedInputProps {
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
   additionalMention?: string;
-  defaultPostCategory?: PostCategory;
 }
 
 export interface NewsFeedInputHandle {
@@ -118,7 +117,6 @@ export const NewsFeedInput = React.forwardRef<
       onPressCreateArticle,
       additionalHashtag,
       additionalMention,
-      defaultPostCategory,
     },
     forwardRef
   ) => {
@@ -186,9 +184,7 @@ export const NewsFeedInput = React.forwardRef<
       const fee = await getPostFee({
         networkId: selectedNetworkId,
         wallet,
-        postCategory: defaultPostCategory
-          ? defaultPostCategory
-          : getPostCategory(formValues),
+        postCategory: getPostCategory(formValues),
       });
       setPostFee(fee || 0);
     };
@@ -250,9 +246,7 @@ export const NewsFeedInput = React.forwardRef<
           console.log("filesfilesfilesfilesfilesfilesfilesfiles", files);
         }
 
-        const postCategory = defaultPostCategory
-          ? defaultPostCategory
-          : getPostCategory(formValues);
+        const postCategory = getPostCategory(formValues);
 
         const client = await socialFeedClient({
           networkId: selectedNetworkId,

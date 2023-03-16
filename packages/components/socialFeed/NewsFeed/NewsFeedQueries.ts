@@ -75,6 +75,7 @@ export const getPostFee = async ({
 export const getPostCategory = ({
   title,
   files,
+  message,
 }: NewPostFormValues): PostCategory => {
   let category: PostCategory;
   if (files?.length) {
@@ -87,6 +88,10 @@ export const getPostCategory = ({
     }
   } else if (title) {
     category = PostCategory.Article;
+  } else if (message.startsWith("/question")) {
+    category = PostCategory.Question;
+  } else if (message.startsWith("/generate")) {
+    category = PostCategory.BriefForStableDiffusion;
   } else {
     category = PostCategory.Normal;
   }
