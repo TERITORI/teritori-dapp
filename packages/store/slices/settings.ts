@@ -5,6 +5,7 @@ import { RootState } from "../store";
 interface Settings {
   selectedNetworkId: string;
   selectedWalletId: string;
+  NFTStorageAPI: string;
   isKeplrConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
@@ -13,6 +14,7 @@ interface Settings {
 const initialState: Settings = {
   selectedWalletId: "",
   selectedNetworkId: "",
+  NFTStorageAPI: process.env.NFTStorageAPI || "",
   isKeplrConnected: false,
   alreadyVisited: false,
   areTestnetsEnabled: false,
@@ -30,6 +32,9 @@ export const selectIsKeplrConnected = (state: RootState) =>
 export const selectAreTestnetsEnabled = (state: RootState) =>
   state.settings.areTestnetsEnabled;
 
+export const selectNFTStorageAPI = (state: RootState) =>
+  state.settings.NFTStorageAPI;
+
 const settingsSlice = createSlice({
   name: "settings",
   initialState,
@@ -46,6 +51,9 @@ const settingsSlice = createSlice({
     setAreTestnetsEnabled: (state, action: PayloadAction<boolean>) => {
       state.areTestnetsEnabled = action.payload;
     },
+    setNFTStorageAPI: (state, action: PayloadAction<string>) => {
+      state.NFTStorageAPI = action.payload;
+    },
   },
 });
 
@@ -54,6 +62,7 @@ export const {
   setSelectedWalletId,
   setIsKeplrConnected,
   setAreTestnetsEnabled,
+  setNFTStorageAPI,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;
