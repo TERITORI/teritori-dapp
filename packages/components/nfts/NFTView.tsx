@@ -247,7 +247,7 @@ export const NFTView: React.FC<{
                       numberOfLines={1}
                       style={{
                         fontSize: 12,
-                        marginLeft: 10,
+                        marginLeft: layout.padding_x1,
                       }}
                     >
                       {nft.collectionName}
