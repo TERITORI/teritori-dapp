@@ -137,7 +137,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                 height: "100%",
                 width: "100%",
                 justifyContent: "center",
-                display: "flex"
+                display: "flex",
               }}
             >
               <TouchableOpacity

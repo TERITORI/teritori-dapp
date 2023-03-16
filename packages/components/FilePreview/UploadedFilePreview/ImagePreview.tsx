@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
@@ -37,6 +37,29 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isFullView, setFullView] = useState(false);
+  const [formattedFiles, setFormattedFiles] = useState(files);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      const formattedData = await Promise.all(
+        files.map(async (file) => {
+          if (file.fileType === "base64") {
+            const response = await fetch(ipfsURLToHTTPURL(file.url));
+            const content = await response.text();
+            return {
+              ...file,
+              base64Image: content,
+            };
+          }
+          return file;
+        })
+      );
+      setFormattedFiles(formattedData);
+    };
+
+    fetchContent();
+  }, []);
+
   return (
     <View
       style={{
@@ -46,13 +69,17 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
       }}
     >
       <ImageFullViewModal
-        files={files.map((file) => file.url)}
+        files={formattedFiles.map((file) =>
+          file.fileType === "image"
+            ? ipfsURLToHTTPURL(file.url)
+            : file.base64Image || ""
+        )}
         activeIndex={activeIndex}
         isVisible={isFullView}
         onClose={() => setFullView(false)}
       />
 
-      {files.map((file, index) => (
+      {formattedFiles.map((file, index) => (
         <TouchableOpacity
           onPress={() => {
             setActiveIndex(index);
@@ -74,7 +101,12 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
             />
           )}
           <Image
-            source={{ uri: ipfsURLToHTTPURL(file.url) }}
+            source={{
+              uri:
+                file.fileType === "image"
+                  ? ipfsURLToHTTPURL(file.url)
+                  : file.base64Image || "",
+            }}
             resizeMode="contain"
             style={{
               height: "100%",

@@ -4,7 +4,12 @@ import { ActivityIndicator } from "react-native-paper";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import emojiSVG from "../../../assets/icons/emoji.svg";
-import {neutral33, neutral67, neutral77, secondaryColor} from "../../utils/style/colors";
+import {
+  neutral33,
+  neutral67,
+  neutral77,
+  secondaryColor,
+} from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import EmojiModal from "../EmojiModal";
 import { SVG } from "../SVG";
@@ -22,7 +27,7 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   optionsContainer,
   isLoading,
   buttonStyle,
-                                                              disabled
+  disabled,
 }) => {
   const [isEmojiModalVisible, setIsEmojiModalVisible] = useState(false);
 
@@ -39,7 +44,10 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
         {isLoading ? (
           <ActivityIndicator animating color={secondaryColor} />
         ) : (
-          <SVG source={emojiSVG} color={disabled ? neutral77 : secondaryColor}/>
+          <SVG
+            source={emojiSVG}
+            color={disabled ? neutral77 : secondaryColor}
+          />
         )}
       </MenuTrigger>
 

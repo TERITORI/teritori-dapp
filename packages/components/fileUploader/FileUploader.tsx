@@ -47,7 +47,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
             style={{
               height: "100%",
               width: "100%",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <TouchableOpacity

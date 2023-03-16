@@ -17,6 +17,7 @@ import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
 import { socialFeedClient } from "../../../client-creators/socialFeedClient";
+import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobileView } from "../../../hooks/useIsMobileView";
@@ -66,6 +67,7 @@ import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 import {
   NewPostFormValues,
+  PostCategory,
   ReplyToType,
   SocialFeedMetadata,
 } from "./NewsFeed.type";
@@ -135,7 +137,8 @@ export const NewsFeedInput = React.forwardRef<
       start: 10,
       end: 10,
     });
-    const { mutate, isLoading: isMutateLoading } = useCreatePost({
+    const { mutateAsync: botPostMutate } = useBotPost();
+    const { mutateAsync, isLoading: isMutateLoading } = useCreatePost({
       onMutate: () => {
         onSubmitInProgress && onSubmitInProgress();
       },
@@ -259,11 +262,13 @@ export const NewsFeedInput = React.forwardRef<
           gifs: formValues?.gifs || [],
         });
 
-        await mutate({
+        const identifier = uuidv4();
+
+        await mutateAsync({
           client,
           msg: {
             category: postCategory,
-            identifier: uuidv4(),
+            identifier,
             metadata: JSON.stringify(metadata),
             parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
           },
@@ -273,6 +278,23 @@ export const NewsFeedInput = React.forwardRef<
             funds: [coin(postFee, "utori")],
           },
         });
+
+        if (
+          postCategory === PostCategory.Question ||
+          postCategory === PostCategory.BriefForStableDiffusion
+        ) {
+          await botPostMutate(
+            {
+              identifier,
+              category: postCategory,
+            },
+            {
+              onSuccess: () => {
+                onSubmitSuccess && onSubmitSuccess();
+              },
+            }
+          );
+        }
       } catch (err) {
         console.error("post submit err", err);
       }

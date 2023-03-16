@@ -1,4 +1,4 @@
-export type FileType = "audio" | "video" | "image" | "file";
+export type FileType = "audio" | "video" | "image" | "file" | "base64";
 
 export interface AudioFileMetadata {
   waveform: number[];
@@ -14,6 +14,7 @@ export interface BaseFileData {
   fileType: FileType;
   audioMetadata?: AudioFileMetadata;
   isCoverImage?: boolean;
+  base64Image?: string;
 }
 
 export interface LocalFileData extends BaseFileData {

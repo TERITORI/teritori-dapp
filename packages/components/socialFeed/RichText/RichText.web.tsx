@@ -261,13 +261,12 @@ export const RichText: React.FC<RichTextProps> = ({
   };
 
   const addEmoji = (emoji: string) => {
-
     // if(onEmojiSelected) {
     //   const contentState = editorState.getCurrentContent();
     //   onEmojiSelected(editorState.getSelection(), emoji)
     //   onChange(contentState);
     // }
-  }
+  };
 
   const addAudio = (file: LocalFileData) => {
     if (!onAudioUpload) return;
