@@ -8,6 +8,7 @@ import Animated, {
 
 import { socialFeedClient } from "../../client-creators/socialFeedClient";
 import { BrandText } from "../../components/BrandText";
+import { NotFound } from "../../components/NotFound";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CommentsContainer } from "../../components/cards/CommentsContainer";
 import {
@@ -30,9 +31,9 @@ import { useErrorHandler } from "../../hooks/useErrorHandler";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, mustGetCosmosNetwork, NetworkKind } from "../../networks";
+import { getUserId, NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { postResultToPost } from "../../utils/social-feed";
+import { DEFAULT_USERNAME, postResultToPost } from "../../utils/social-feed";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import {
   layout,
@@ -52,11 +53,11 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const [refresh, setRefresh] = useState(0);
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
   const { triggerError } = useErrorHandler();
-  const [post, setPost] = useState<PostResult>();
+  const [postResult, setPostResult] = useState<PostResult>();
   const authorNSInfo = useNSUserInfo(
-    getUserId(selectedNetworkId, post?.post_by)
+    getUserId(selectedNetworkId, postResult?.post_by)
   );
-  const network = mustGetCosmosNetwork(selectedNetworkId);
+  const [, userAddress] = parseUserId(postResult?.post_by);
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const aref = useAnimatedRef<Animated.ScrollView>();
@@ -67,8 +68,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const isFirstLoad = useSharedValue(true);
   const { data, refetch, hasNextPage, fetchNextPage, isFetching } =
     useFetchComments({
-      parentId: post?.identifier,
-      totalCount: post?.sub_post_length,
+      parentId: postResult?.identifier,
+      totalCount: postResult?.sub_post_length,
     });
   const isNextPageAvailable = useSharedValue(hasNextPage);
 
@@ -76,25 +77,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     () => (data ? combineFetchCommentPages(data.pages) : []),
     [data]
   );
-
-  const fetchPost = async () => {
-    try {
-      isLoadingValue.value = true;
-      const client = await socialFeedClient({
-        networkId: selectedNetworkId,
-        walletAddress: wallet?.address || "",
-      });
-      const _post = await client.queryPost({ identifier: id });
-      setPost(_post);
-    } catch (error) {
-      triggerError({
-        title: "",
-        error,
-      });
-    } finally {
-      isLoadingValue.value = false;
-    }
-  };
 
   const onPressReply: OnPressReplyType = (data) => {
     feedInputRef.current?.resetForm();
@@ -104,17 +86,36 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   };
 
   useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        isLoadingValue.value = true;
+        const client = await socialFeedClient({
+          networkId: selectedNetworkId,
+          walletAddress: wallet?.address || "",
+        });
+        const _post = await client.queryPost({ identifier: id });
+        setPostResult(_post);
+      } catch (error) {
+        triggerError({
+          title: "",
+          error,
+        });
+      } finally {
+        isLoadingValue.value = false;
+      }
+    };
+
     fetchPost();
-  }, [id, wallet?.connected]);
+  }, [id, wallet?.address, selectedNetworkId]);
 
   useEffect(() => {
     refetch();
-    if (post) {
+    if (postResult) {
       setTimeout(() => {
         isFirstLoad.value = false;
       }, 1300);
     }
-  }, [post?.identifier, refresh]);
+  }, [postResult?.identifier, refresh]);
 
   useEffect(() => {
     // HECK: updated state was not showing up in scrollhander
@@ -150,7 +151,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         setFlatListContentOffsetY(event.contentOffset.y);
       },
     },
-    [post?.identifier]
+    [postResult?.identifier]
   );
 
   const handleSubmitInProgress = () => {
@@ -159,28 +160,32 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     else aref.current?.scrollTo(0);
   };
 
-  const headerLabel = () =>
-    (post?.category === PostCategory.Article
-      ? "Article by "
-      : post?.parentPostIdentifier
-      ? "Sub-Post by "
-      : "Post by ") +
-      authorNSInfo.metadata.public_name +
-      (network?.nameServiceTLD || "") ||
-    post?.post_by ||
-    "";
+  const headerLabel = useMemo(() => {
+    if (!postResult) return "Post not found";
+    const author =
+      authorNSInfo?.metadata?.tokenId || userAddress || DEFAULT_USERNAME;
+    if (postResult.category === PostCategory.Article)
+      return `Article by ${author}`;
+    if (postResult?.parentPostIdentifier) return `Sub-Post by ${author}`;
+    return `Post by ${author}`;
+  }, [
+    postResult?.category,
+    postResult?.parentPostIdentifier,
+    authorNSInfo?.metadata?.tokenId,
+    userAddress,
+  ]);
 
   return (
     <ScreenContainer
       forceNetworkKind={NetworkKind.Cosmos}
       responsive
       headerChildren={
-        <BrandText style={fontSemibold20}>{headerLabel()}</BrandText>
+        <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
       }
       onBackPress={() =>
-        post?.parentPostIdentifier
+        postResult?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {
-              id: post?.parent_post_identifier || "",
+              id: postResult?.parent_post_identifier || "",
             })
           : navigation.navigate("Feed")
       }
@@ -188,80 +193,91 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       fullWidth
       noScroll
     >
-      <Animated.ScrollView
-        ref={aref}
-        contentContainerStyle={styles.contentContainer}
-        onScroll={scrollHandler}
-        scrollEventThrottle={1}
-      >
-        {!!post && (
-          <View
-            onLayout={({
-              nativeEvent: {
-                layout: { height },
-              },
-            }) => setThreadCardOffsetY(height)}
+      {!postResult ? (
+        <NotFound label="Post" />
+      ) : (
+        <>
+          <Animated.ScrollView
+            ref={aref}
+            contentContainerStyle={styles.contentContainer}
+            onScroll={scrollHandler}
+            scrollEventThrottle={1}
           >
-            <SocialThreadCard
-              post={postResultToPost(selectedNetworkId, post)}
-              isPostConsultation
-              refresh={refresh}
-              onPressReply={onPressReply}
+            {!!postResult && (
+              <View
+                onLayout={({
+                  nativeEvent: {
+                    layout: { height },
+                  },
+                }) => setThreadCardOffsetY(height)}
+              >
+                <SocialThreadCard
+                  post={postResultToPost(selectedNetworkId, postResult)}
+                  isPostConsultation
+                  refresh={refresh}
+                  onPressReply={onPressReply}
+                />
+              </View>
+            )}
+
+            {/*========== Refresh button */}
+            <Animated.View
+              style={[
+                {
+                  position: "absolute",
+                  top: threadCardOffsetY + layout.contentPadding - 22,
+                  flexDirection: "row",
+                  width: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 10000,
+                  paddingRight: screenContainerContentMarginHorizontal * 2,
+                },
+              ]}
+            >
+              <RefreshButton
+                isRefreshing={isLoadingValue}
+                onPress={() => {
+                  refetch();
+                  setRefresh((prev) => ++prev);
+                }}
+              />
+            </Animated.View>
+
+            <View
+              onLayout={(e) => setParentOffsetValue(e.nativeEvent.layout.y)}
+            >
+              <CommentsContainer
+                comments={comments}
+                onPressReply={onPressReply}
+                refresh={refresh}
+                onScrollTo={(y: number) => aref.current?.scrollTo(y)}
+                parentOffsetValue={parentOffsetValue}
+              />
+            </View>
+          </Animated.ScrollView>
+
+          {flatListContentOffsetY >= threadCardOffsetY + 66 && (
+            <View style={styles.floatingActions}>
+              <RefreshButtonRound
+                isRefreshing={isLoadingValue}
+                onPress={refetch}
+              />
+            </View>
+          )}
+
+          <View style={styles.footer}>
+            <NewsFeedInput
+              ref={feedInputRef}
+              type="comment"
+              parentId={id}
+              replyTo={replyTo}
+              onSubmitInProgress={handleSubmitInProgress}
+              onSubmitSuccess={() => setReplyTo(undefined)}
             />
           </View>
-        )}
-
-        {/*========== Refresh button */}
-        <Animated.View
-          style={[
-            {
-              position: "absolute",
-              top: threadCardOffsetY + layout.contentPadding - 22,
-              flexDirection: "row",
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 10000,
-              paddingRight: screenContainerContentMarginHorizontal * 2,
-            },
-          ]}
-        >
-          <RefreshButton
-            isRefreshing={isLoadingValue}
-            onPress={() => {
-              refetch();
-              setRefresh((prev) => ++prev);
-            }}
-          />
-        </Animated.View>
-
-        <View onLayout={(e) => setParentOffsetValue(e.nativeEvent.layout.y)}>
-          <CommentsContainer
-            comments={comments}
-            onPressReply={onPressReply}
-            refresh={refresh}
-            onScrollTo={(y: number) => aref.current?.scrollTo(y)}
-            parentOffsetValue={parentOffsetValue}
-          />
-        </View>
-      </Animated.ScrollView>
-
-      {flatListContentOffsetY >= threadCardOffsetY + 66 && (
-        <View style={styles.floatingActions}>
-          <RefreshButtonRound isRefreshing={isLoadingValue} onPress={refetch} />
-        </View>
+        </>
       )}
-
-      <View style={styles.footer}>
-        <NewsFeedInput
-          ref={feedInputRef}
-          type="comment"
-          parentId={id}
-          replyTo={replyTo}
-          onSubmitInProgress={handleSubmitInProgress}
-          onSubmitSuccess={() => setReplyTo(undefined)}
-        />
-      </View>
     </ScreenContainer>
   );
 };

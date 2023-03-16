@@ -4,6 +4,7 @@ import { View } from "react-native";
 
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
+import { NotFound } from "../../components/NotFound";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPActivity } from "../../components/userPublicProfile/UPPActivity";
@@ -39,29 +40,38 @@ const SelectedTabContent: React.FC<{
   const selectedWallet = useSelectedWallet();
   const [, userAddress] = parseNetworkObjectId(userId);
   const userInfo = useNSUserInfo(userId);
-
-  const mentionedUser = useMemo(() => {
-    if (selectedWallet?.address !== userAddress) {
-      return userInfo?.metadata.tokenId || userAddress;
-    }
-  }, [selectedWallet?.address, userAddress, userInfo?.metadata.tokenId]);
-
-  const feedRequest: PostsRequest = useMemo(() => {
+  const feedRequestUser: PostsRequest = useMemo(() => {
     return {
       filter: {
-        //TODO: Get posts filtered by userId (author) AND mentions. On UPP, we want author's posts AND posts where he's mentioned
         user: userId,
-        //TODO: Here, if the user get a NS Name, the old posts that have his address as mention will not be fetched. Maybe check (mention) for NS Name in backend ?
-        mentions: mentionedUser ? [`@${mentionedUser}`] : [],
+        mentions: [],
         categories: [],
         hashtags: [],
       },
       limit: 10,
       offset: 0,
     };
-  }, [userId, mentionedUser]);
+  }, [userId]);
+
+  const feedRequestMentions: PostsRequest = useMemo(() => {
+    return {
+      filter: {
+        user: "",
+        mentions: userInfo?.metadata.tokenId
+          ? // The user can be mentioned by his NS name OR his address, so we use both in this filter
+            [`@${userAddress}`, `@${userInfo?.metadata.tokenId}`]
+          : // Btw, is the user has no NS name, we use his address in this filter
+            [`@${userAddress}`],
+        categories: [],
+        hashtags: [],
+      },
+      limit: 10,
+      offset: 0,
+    };
+  }, [userInfo?.metadata.tokenId, userAddress]);
+
   switch (selectedTab) {
-    case "social-feed":
+    case "userPosts":
       return (
         <NewsFeed
           Header={() => (
@@ -71,8 +81,30 @@ const SelectedTabContent: React.FC<{
               setSelectedTab={setSelectedTab}
             />
           )}
-          additionalMention={mentionedUser ? `@${mentionedUser}` : undefined}
-          req={feedRequest}
+          additionalMention={
+            selectedWallet?.address !== userAddress
+              ? `@${userInfo?.metadata.tokenId || userAddress}`
+              : undefined
+          }
+          req={feedRequestUser}
+        />
+      );
+    case "mentionsPosts":
+      return (
+        <NewsFeed
+          Header={() => (
+            <UserPublicProfileScreenHeader
+              userId={userId}
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+            />
+          )}
+          additionalMention={
+            selectedWallet?.address !== userAddress
+              ? `@${userInfo?.metadata.tokenId || userAddress}`
+              : undefined
+          }
+          req={feedRequestMentions}
         />
       );
     case "nfts":
@@ -96,7 +128,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   },
 }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("social-feed");
+    useState<keyof typeof screenTabItems>("userPosts");
 
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
@@ -107,7 +139,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       forceNetworkId={network?.id}
       responsive
       fullWidth
-      noScroll={selectedTab === "social-feed"}
+      noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
       smallMargin
       footerChildren={<></>}
       headerChildren={
@@ -122,10 +154,10 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       }
     >
       {notFound || !userAddress || !bech32.decodeUnsafe(userAddress) ? (
-        <UserNotFound />
+        <NotFound label="User" />
       ) : (
         <>
-          {selectedTab !== "social-feed" ? (
+          {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
             <TabContainer>
               <UserPublicProfileScreenHeader
                 userId={id}

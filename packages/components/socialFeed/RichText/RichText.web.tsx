@@ -27,21 +27,27 @@ import {
   EditorState,
 } from "draft-js";
 import React, { useEffect, useRef, useState } from "react";
-import { Linking, ScrollView, View } from "react-native";
+import { Linking, ScrollView, StyleSheet, View } from "react-native";
 
+import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
-import { IMAGE_MIME_TYPES } from "../../../utils/mime";
+import videoSVG from "../../../../assets/icons/video.svg";
+import { useMention } from "../../../hooks/feed/useMention";
+import {
+  AUDIO_MIME_TYPES,
+  IMAGE_MIME_TYPES,
+  VIDEO_MIME_TYPES,
+} from "../../../utils/mime";
 import { useAppNavigation } from "../../../utils/navigation";
 import { HANDLE_REGEX, HASH_REGEX, URL_REGEX } from "../../../utils/regex";
-import {
-  DEFAULT_USERNAME,
-  SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT,
-} from "../../../utils/social-feed";
-import { primaryColor } from "../../../utils/style/colors";
+import { DEFAULT_USERNAME } from "../../../utils/social-feed";
+import { neutralA3, primaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
 import { IconBox } from "../../IconBox";
 import { FileUploader } from "../../fileUploader";
+import { EmojiSelector } from "../EmojiSelector";
+import { GIFSelector } from "../GIFSelector";
 import { ActionsContainer } from "./ActionsContainer";
 import { PublishButton } from "./PublishButton";
 import { RichOpenGraphCard } from "./RichOpenGraphCard";
@@ -89,13 +95,19 @@ const findWithRegex = (
 
 const MentionRender = (props: { children: { props: { text: string } }[] }) => {
   const navigation = useAppNavigation();
-
+  const { userId } = useMention(props.children[0].props.text);
+  // Every text with a "@" is a mention. But we consider valid mentions as a valid wallet address or a valid NS token id.
+  if (!userId) {
+    return (
+      <span style={{ color: neutralA3 }}>{props.children[0].props.text}</span>
+    );
+  }
   return (
     <span
       style={{ color: primaryColor, cursor: "pointer" }}
       onClick={() =>
         navigation.navigate("UserPublicProfile", {
-          id: props.children[0].props.text.replace("@", ""),
+          id: userId,
         })
       }
     >
@@ -206,6 +218,13 @@ export const RichText: React.FC<RichTextProps> = ({
   onChange = () => {},
   onBlur,
   onImageUpload,
+  onAudioUpload,
+  onVideoUpload,
+  onGIFSelected,
+  onEmojiSelected,
+  isGIFSelectorDisabled,
+  isAudioUploadDisabled,
+  isVideoUploadDisabled,
   initialValue,
   readOnly,
   openGraph,
@@ -234,9 +253,37 @@ export const RichText: React.FC<RichTextProps> = ({
   }, []);
 
   const addImage = (file: LocalFileData) => {
+    if (!onImageUpload) return;
     const _state = imagePlugin.addImage(editorState, file.url, {});
     handleChange(_state);
-    onImageUpload?.(file);
+    onImageUpload([file]);
+    // onImageUpload?.(file);
+  };
+
+  const addEmoji = (emoji: string) => {
+    // if(onEmojiSelected) {
+    //   const contentState = editorState.getCurrentContent();
+    //   onEmojiSelected(editorState.getSelection(), emoji)
+    //   onChange(contentState);
+    // }
+  };
+
+  const addAudio = (file: LocalFileData) => {
+    if (!onAudioUpload) return;
+    // TODO:
+    // const _state = imagePlugin.addImage(editorState, file.url, {});
+    // handleChange(_state);
+    onAudioUpload([file]);
+    // onImageUpload?.(file);
+  };
+
+  const addVideo = (file: LocalFileData) => {
+    if (!onVideoUpload) return;
+    // TODO:
+    // const _state = imagePlugin.addImage(editorState, file.url, {});
+    // handleChange(_state);
+    onVideoUpload([file]);
+    // onImageUpload?.(file);
   };
 
   // const truncate = () => {
@@ -308,12 +355,7 @@ export const RichText: React.FC<RichTextProps> = ({
         // paddingBottom: 12,
       }}
     >
-      <ScrollView
-        style={{
-          height: "100%",
-          maxHeight: readOnly ? "100%" : 425,
-        }}
-      >
+      <ScrollView>
         <Editor
           editorState={editorState}
           onChange={handleChange}
@@ -335,6 +377,8 @@ export const RichText: React.FC<RichTextProps> = ({
           )}
         </InlineToolbar>
       </ScrollView>
+
+      {/*FIXME: Graph card doesn't appear*/}
       {openGraph && <RichOpenGraphCard {...openGraph} />}
 
       <ActionsContainer readOnly={readOnly}>
@@ -342,6 +386,51 @@ export const RichText: React.FC<RichTextProps> = ({
           <Toolbar>
             {(externalProps) => (
               <>
+                <GIFSelector
+                  onGIFSelected={onGIFSelected}
+                  // disabled={isGIFSelectorDisabled}
+                  disabled
+                  optionsContainer={{ marginLeft: -186, marginTop: -6 }}
+                  buttonStyle={styles.toolbarCustomButton}
+                />
+
+                <EmojiSelector
+                  onEmojiSelected={(emoji) => addEmoji(emoji)}
+                  optionsContainer={{ marginLeft: -80, marginTop: -6 }}
+                  buttonStyle={styles.toolbarCustomButton}
+                  disabled
+                />
+
+                <FileUploader
+                  onUpload={(files) => addAudio(files?.[0])}
+                  mimeTypes={AUDIO_MIME_TYPES}
+                >
+                  {({ onPress }) => (
+                    <IconBox
+                      icon={audioSVG}
+                      onPress={onPress}
+                      style={styles.toolbarCustomButton}
+                      // disabled={isAudioUploadDisabled}
+                      disabled
+                    />
+                  )}
+                </FileUploader>
+
+                <FileUploader
+                  onUpload={(files) => addVideo(files?.[0])}
+                  mimeTypes={VIDEO_MIME_TYPES}
+                >
+                  {({ onPress }) => (
+                    <IconBox
+                      icon={videoSVG}
+                      onPress={onPress}
+                      style={styles.toolbarCustomButton}
+                      // disabled={isVideoUploadDisabled}
+                      disabled
+                    />
+                  )}
+                </FileUploader>
+
                 <FileUploader
                   onUpload={(files) => addImage(files?.[0])}
                   mimeTypes={IMAGE_MIME_TYPES}
@@ -350,15 +439,10 @@ export const RichText: React.FC<RichTextProps> = ({
                     <IconBox
                       icon={cameraSVG}
                       onPress={onPress}
-                      style={{
-                        marginRight: layout.padding_x0_25,
-                        borderRadius: 4,
-                        height: 30,
-                        width: 40,
-                      }}
+                      style={styles.toolbarCustomButton}
                       iconProps={{
-                        height: 18,
                         width: 18,
+                        height: 18,
                       }}
                     />
                   )}
@@ -384,3 +468,12 @@ export const RichText: React.FC<RichTextProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  toolbarCustomButton: {
+    marginHorizontal: layout.padding_x0_75 / 2,
+    borderRadius: 4,
+    height: 30,
+    width: 30,
+  },
+});

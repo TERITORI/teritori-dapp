@@ -7,6 +7,7 @@ import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clien
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../utils/navigation";
 import { DEFAULT_NAME, getUpdatedReactions } from "../../../utils/social-feed";
@@ -20,7 +21,6 @@ import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
-import { tinyAddress } from "../../../utils/text";
 import { AnimationFadeIn } from "../../animations";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { AvatarWithFrame } from "../../images/AvatarWithFrame";
@@ -68,12 +68,15 @@ export const SocialThreadCard: React.FC<{
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const authorNSInfo = useNSUserInfo(localPost.createdBy);
+  const [, userAddress] = parseUserId(localPost.createdBy);
   const userInfo = useNSUserInfo(wallet?.userId);
   const navigation = useAppNavigation();
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
   const username = authorNSInfo?.metadata?.tokenId
-    ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
-    : localPost.createdBy;
+    ? authorNSInfo?.metadata?.tokenId
+    : userAddress;
+
+  //TODO: Handle this later
   // const communityHashtag = useMemo(() => {
   //   return getCommunityHashtag(metadata?.hashtags || []);
   // }, [metadata]);
@@ -110,7 +113,7 @@ export const SocialThreadCard: React.FC<{
     <CustomPressable
       disabled={isPostConsultation}
       onPress={() =>
-        navigation.navigate("FeedPostView", { id: post.identifier })
+        navigation.navigate("FeedPostView", { id: localPost.identifier })
       }
     >
       <AnimationFadeIn
@@ -180,12 +183,13 @@ export const SocialThreadCard: React.FC<{
                     color: neutral77,
                   },
                 ]}
+                numberOfLines={1}
               >
                 {" "}
                 @
                 {authorNSInfo?.metadata?.tokenId
-                  ? tinyAddress(authorNSInfo.metadata.tokenId, 19)
-                  : localPost.createdBy}
+                  ? authorNSInfo.metadata.tokenId
+                  : userAddress}
               </BrandText>
             </TouchableOpacity>
 
@@ -210,7 +214,7 @@ export const SocialThreadCard: React.FC<{
         <SocialMessageContent
           isPostConsultation={isPostConsultation}
           metadata={metadata}
-          type={localPost.category}
+          postCategory={localPost.category}
         />
         <SpacerColumn size={2} />
 

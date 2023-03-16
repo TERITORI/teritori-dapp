@@ -1,10 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { SelectionState } from "draft-js";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 
@@ -16,7 +12,6 @@ import {
   Label,
   TextInputCustom,
 } from "../../components/inputs/TextInputCustom";
-import { NFTKeyModal } from "../../components/socialFeed/NewsFeed/NFTKeyModal";
 import {
   NewPostFormValues,
   PostCategory,
@@ -33,13 +28,15 @@ import { useOpenGraph } from "../../hooks/feed/useOpenGraph";
 import { useBalances } from "../../hooks/useBalances";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
+import { getUserId, NetworkKind } from "../../networks";
 import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { URL_REGEX } from "../../utils/regex";
+import { generateIpfsKey } from "../../utils/social-feed";
 import { neutral00 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
+import { replaceBetweenString } from "../../utils/text";
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
   route: { params },
@@ -51,12 +48,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const oldUrlMatch = useRef<string>();
-  const [isNFTKeyModal, setIsNFTKeyModal] = useState(false);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
+  const userId = getUserId(selectedNetworkId, wallet?.address);
   const balances = useBalances(
     process.env.TERITORI_NETWORK_ID,
     wallet?.address
@@ -133,6 +130,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
       ? `\n${params?.additionalHashtag}`
       : "";
 
+    const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+
     await createPost({
       networkId: selectedNetworkId,
       wallet,
@@ -145,7 +144,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
         message: formValues.message + additionalMention + additionalHashtag,
       },
       openGraph: data,
-      nftStorageApiToken,
+      pinataJWTKey,
     });
   };
 
@@ -153,10 +152,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
   const navigateBack = () => navigation.navigate("Feed");
 
   const onSubmit = async () => {
-    if (!!formValues.files?.length && !formValues.nftStorageApiToken) {
-      return setIsNFTKeyModal(true);
-    }
-
     setLoading(true);
     try {
       await initSubmit(formValues.nftStorageApiToken || "");
@@ -191,6 +186,19 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
     }
   };
 
+  const onEmojiSelected = (selection: SelectionState, emoji: string | null) => {
+    if (emoji) {
+      let copiedValue = `${formValues.message}`;
+      copiedValue = replaceBetweenString(
+        copiedValue,
+        selection.getStartOffset(),
+        selection.getEndOffset(),
+        emoji
+      );
+      setValue("message", copiedValue);
+    }
+  };
+
   return (
     <ScreenContainer
       forceNetworkKind={NetworkKind.Cosmos}
@@ -204,17 +212,17 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
       onBackPress={navigateBack}
       footerChildren
     >
-      {isNFTKeyModal && (
-        <NFTKeyModal
-          onClose={(key?: string) => {
-            if (key) {
-              setValue("nftStorageApiToken", key);
-              initSubmit(key);
-            }
-            setIsNFTKeyModal(false);
-          }}
-        />
-      )}
+      {/*{isNFTKeyModal && (*/}
+      {/*  <NFTKeyModal*/}
+      {/*    onClose={(key?: string) => {*/}
+      {/*      if (key) {*/}
+      {/*        setValue("nftStorageApiToken", key);*/}
+      {/*        initSubmit(key);*/}
+      {/*      }*/}
+      {/*      setIsNFTKeyModal(false);*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*)}*/}
       <NotEnoughFundModal
         onClose={() => setNotEnoughFundModal(false)}
         visible={isNotEnoughFundModal}
@@ -268,8 +276,27 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
                 handleOnChange(html);
               }}
               onBlur={onBlur}
-              onImageUpload={(image) =>
-                setValue("files", [...(formValues.files || []), image])
+              onImageUpload={(files) =>
+                setValue("files", [...(formValues.files || []), ...files])
+              }
+              onAudioUpload={(files) => setValue("files", [files?.[0]])}
+              onVideoUpload={(files) => setValue("files", [files?.[0]])}
+              onEmojiSelected={onEmojiSelected}
+              onGIFSelected={(url) =>
+                url && setValue("gifs", [...(formValues.gifs || []), url])
+              }
+              isGIFSelectorDisabled={
+                (formValues.files?.[0] &&
+                  formValues.files[0].fileType !== "image") ||
+                (formValues.files || []).length +
+                  (formValues.gifs || [])?.length >=
+                  4
+              }
+              isAudioUploadDisabled={
+                !!formValues.files?.length || !!formValues.gifs?.length
+              }
+              isVideoUploadDisabled={
+                !!formValues.files?.length || !!formValues.gifs?.length
               }
               initialValue={formValues.message}
               openGraph={data}

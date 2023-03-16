@@ -30,7 +30,6 @@ import {
 } from "../../utils/style/colors";
 import {
   fontMedium10,
-  fontSemibold13,
   fontSemibold14,
   fontSemibold20,
 } from "../../utils/style/fonts";
@@ -62,6 +61,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   labelStyle?: TextStyle;
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
+  noBrokenCorners?: boolean;
   error?: string;
   fullWidth?: boolean;
 }
@@ -115,6 +115,7 @@ export const TextInputCustom = <T extends FieldValues>({
   containerStyle,
   boxMainContainerStyle,
   error,
+  noBrokenCorners,
   fullWidth,
   ...restProps
 }: TextInputCustomProps<T>) => {
@@ -208,6 +209,7 @@ export const TextInputCustom = <T extends FieldValues>({
         width={width}
         fullWidth={!width}
         height={height}
+        noBrokenCorners={noBrokenCorners}
       >
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
@@ -223,12 +225,12 @@ export const TextInputCustom = <T extends FieldValues>({
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
-              onChangeText={handleChangeText}
               onKeyPress={handleKeyPress}
               placeholderTextColor="#999999"
               value={field.value}
               style={styles.textInput}
               {...restProps}
+              onChangeText={handleChangeText}
             />
           </View>
 

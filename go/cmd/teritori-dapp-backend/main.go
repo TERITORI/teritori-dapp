@@ -38,6 +38,7 @@ func main() {
 		whitelistString = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
 		airtableAPIKey  = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
 		networksFile    = fs.String("networks-file", "networks.json", "path to networks config file")
+		pinataJWT       = fs.String("pinata-jwt", "", "Pinata admin JWT token")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -47,6 +48,11 @@ func main() {
 		ff.WithAllowMissingConfigFile(true),
 	); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
+	}
+
+	// Load Pinata JWT token
+	if *pinataJWT == "" {
+		panic(errors.New("env var PINATA_JWT must be provided"))
 	}
 
 	// load networks
@@ -104,6 +110,7 @@ func main() {
 	feedSvc := feed.NewFeedService(context.Background(), &feed.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
+		PinataJWT: *pinataJWT,
 	})
 
 	server := grpc.NewServer()

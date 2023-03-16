@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { Pressable, View } from "react-native";
 
-import secondaryCardSmSVG from "../../assets/cards/secondary-card-sm.svg";
-import { useAreThereWallets } from "../hooks/useAreThereWallets";
-import { fontSemibold14 } from "../utils/style/fonts";
-import { headerMarginHorizontal } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { SVG } from "./SVG";
-import { TopMenu } from "./TopMenu/TopMenu";
-import { ConnectWalletModal } from "./connectWallet/ConnectWalletModal";
+import secondaryCardSmSVG from "../../../assets/cards/secondary-card-sm.svg";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { fontSemibold14 } from "../../utils/style/fonts";
+import { headerMarginHorizontal } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
+import { ConnectWalletModal } from "../connectWallet/ConnectWalletModal";
+import { TopMenu } from "./TopMenu";
 
 const HEIGHT = 40;
 const WIDTH = 220;
 
 export const ConnectWalletButton = () => {
   // variables
-  const areThereWallets = useAreThereWallets();
+  const selectedWallet = useSelectedWallet();
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
 
   // functions
@@ -26,8 +26,8 @@ export const ConnectWalletButton = () => {
   return (
     <>
       <View style={{ marginRight: headerMarginHorizontal }}>
-        {areThereWallets ? (
-          <TopMenu />
+        {selectedWallet ? (
+          <TopMenu selectedWallet={selectedWallet} />
         ) : (
           <Pressable onPress={toggleConnectWallet}>
             <SVG

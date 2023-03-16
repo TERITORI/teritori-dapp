@@ -5,6 +5,14 @@ option go_package = "./feedpb";
 
 service FeedService {
   rpc Posts(PostsRequest) returns (PostsResponse);
+  rpc IPFSKey(IPFSKeyRequest) returns (IPFSKeyResponse);
+}
+
+message IPFSKeyRequest {
+  string user_id = 1;
+}
+message IPFSKeyResponse {
+  string jwt = 1;
 }
 
 message Reaction {

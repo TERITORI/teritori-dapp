@@ -28,15 +28,14 @@ export const CommentsContainer: React.FC<CommentsContainerProps> = ({
 
       <View style={{ flex: 1 }}>
         {comments.map((comment, index) => (
-          <>
+          <React.Fragment key={index}>
             <SpacerColumn size={3} />
             <SocialCommentCard
-              key={comment.identifier}
               comment={comment}
               isLast={comments?.length === index + 1}
               {...restProps}
             />
-          </>
+          </React.Fragment>
         ))}
       </View>
     </View>

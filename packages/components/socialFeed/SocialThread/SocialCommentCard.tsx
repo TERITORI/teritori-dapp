@@ -38,9 +38,9 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { tinyAddress } from "../../../utils/text";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
-import { tinyAddress } from "../../../utils/text";
 import { AnimationFadeIn } from "../../animations";
 import { AnimationFadeInOut } from "../../animations/AnimationFadeInOut";
 import { CustomPressable } from "../../buttons/CustomPressable";
@@ -276,7 +276,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               {/*====== Card Content */}
               <SocialMessageContent
                 metadata={metadata}
-                type={localComment.category}
+                postCategory={localComment.category}
               />
 
               {/*====== Card Actions */}

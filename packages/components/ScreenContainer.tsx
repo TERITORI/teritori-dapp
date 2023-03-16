@@ -20,10 +20,10 @@ import {
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
-import { ConnectWalletButton } from "./ConnectWalletButton";
 import { Header } from "./Header";
 import { NetworkSelector } from "./NetworkSelector";
 import { SelectedNetworkGate } from "./SelectedNetworkGate";
+import { ConnectWalletButton } from "./TopMenu/ConnectWalletButton";
 import { Footer } from "./footers/Footer";
 import { Sidebar } from "./navigation/Sidebar";
 

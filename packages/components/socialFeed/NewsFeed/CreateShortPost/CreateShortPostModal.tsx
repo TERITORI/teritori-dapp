@@ -23,11 +23,14 @@ export const CreateShortPostModal: React.FC<{
   const navigation = useAppNavigation();
 
   const onPressCreateArticle = (formValues: NewPostFormValues) => {
-    navigation.navigate("FeedNewArticle", {
-      ...formValues,
-      additionalHashtag,
-      additionalMention,
-    });
+    navigation.navigate(
+      "FeedNewArticle"
+      //   , {
+      //   ...formValues,
+      //   additionalHashtag,
+      //   additionalMention,
+      // }
+    );
     onClose();
   };
 

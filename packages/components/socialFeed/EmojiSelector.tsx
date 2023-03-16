@@ -1,10 +1,15 @@
 import React, { useState } from "react";
-import { StyleSheet, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import emojiSVG from "../../../assets/icons/emoji.svg";
-import { neutral33, neutral67, secondaryColor } from "../../utils/style/colors";
+import {
+  neutral33,
+  neutral67,
+  neutral77,
+  secondaryColor,
+} from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import EmojiModal from "../EmojiModal";
 import { SVG } from "../SVG";
@@ -13,12 +18,16 @@ type EmojiSelectorProps = {
   onEmojiSelected?: (emoji: string) => void;
   optionsContainer?: ViewStyle;
   isLoading?: boolean;
+  buttonStyle?: StyleProp<ViewStyle>;
+  disabled?: boolean;
 };
 
 export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   onEmojiSelected,
   optionsContainer,
   isLoading,
+  buttonStyle,
+  disabled,
 }) => {
   const [isEmojiModalVisible, setIsEmojiModalVisible] = useState(false);
 
@@ -27,11 +36,18 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
 
   return (
     <Menu opened={isEmojiModalVisible} onBackdropPress={toggleEmojiModal}>
-      <MenuTrigger onPress={toggleEmojiModal} style={styles.icon}>
+      <MenuTrigger
+        onPress={() => !disabled && toggleEmojiModal()}
+        disabled={disabled}
+        style={[styles.icon, buttonStyle]}
+      >
         {isLoading ? (
           <ActivityIndicator animating color={secondaryColor} />
         ) : (
-          <SVG source={emojiSVG} height={16} width={16} />
+          <SVG
+            source={emojiSVG}
+            color={disabled ? neutral77 : secondaryColor}
+          />
         )}
       </MenuTrigger>
 
@@ -70,8 +86,6 @@ const styles = StyleSheet.create({
   icon: {
     width: 32,
     height: 32,
-    paddingVertical: 4,
-    paddingHorizontal: 10,
     backgroundColor: neutral33,
     borderRadius: 20,
     alignItems: "center",

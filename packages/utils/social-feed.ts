@@ -2,6 +2,7 @@ import { Post, Reaction } from "../api/feed/v1/feed";
 import { PostCategory } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { getUserId } from "../networks";
+import { mustGetFeedClient } from "./backend";
 import { HANDLE_REGEX, URL_REGEX } from "./regex";
 
 export const DEFAULT_NAME = "Anon";
@@ -82,4 +83,10 @@ export const postResultToPost = (networkId: string, postResult: PostResult) => {
     createdBy: getUserId(networkId, postResult.post_by),
     createdAt: JSON.parse(postResult.metadata).createdAt,
   } as Post;
+};
+
+export const generateIpfsKey = async (networkId: string, userId: string) => {
+  const backendClient = mustGetFeedClient(networkId);
+  const response = await backendClient.IPFSKey({ userId });
+  return response.jwt;
 };

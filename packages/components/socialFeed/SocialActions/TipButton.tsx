@@ -28,8 +28,8 @@ export const TipButton: React.FC<{
         onPress={onPress}
       >
         <SVG source={tipSVG} width={20} height={20} />
-        <SpacerRow size={1.5} />
-        <BrandText style={fontSemibold14}>0</BrandText>
+        {/*<SpacerRow size={1.5} />*/}
+        {/*<BrandText style={fontSemibold14}>0</BrandText>*/}
       </TouchableOpacity>
 
       <TNSSendFundsModal

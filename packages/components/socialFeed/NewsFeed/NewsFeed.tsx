@@ -74,22 +74,21 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     }
   }, [isFetching, isLoading]);
 
-  // functions
   const onEndReached = () => {
-    console.log("-------------- isLoading", isLoading);
-    console.log("-------------- hasNextPage", hasNextPage);
-
     if (!isLoading && hasNextPage) {
       fetchNextPage();
     }
   };
 
   const onPressCreateArticle = (formValues: NewPostFormValues) => {
-    navigation.navigate("FeedNewArticle", {
-      ...formValues,
-      additionalHashtag,
-      additionalMention,
-    });
+    navigation.navigate(
+      "FeedNewArticle"
+      //   , {
+      //   ...formValues,
+      //   additionalHashtag,
+      //   additionalMention,
+      // }
+    );
   };
 
   const onHeaderLayout = (e: LayoutChangeEvent) => {

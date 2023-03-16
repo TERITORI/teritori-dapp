@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
+	"github.com/dgraph-io/ristretto"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -15,12 +17,14 @@ import (
 
 type FeedService struct {
 	feedpb.UnimplementedFeedServiceServer
-	conf *Config
+	conf  *Config
+	cache *ristretto.Cache
 }
 
 type Config struct {
 	Logger    *zap.Logger
 	IndexerDB *gorm.DB
+	PinataJWT string
 }
 
 type DBPostWithExtra struct {
@@ -29,10 +33,46 @@ type DBPostWithExtra struct {
 }
 
 func NewFeedService(ctx context.Context, conf *Config) feedpb.FeedServiceServer {
+	cache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e7,
+		MaxCost:     1 << 30,
+		BufferItems: 64,
+	})
+	if err != nil {
+		panic(fmt.Sprintf("failed to created cache: %s", err))
+	}
+
 	// FIXME: validate config
 	return &FeedService{
-		conf: conf,
+		conf:  conf,
+		cache: cache,
 	}
+}
+
+func (s *FeedService) IPFSKey(ctx context.Context, req *feedpb.IPFSKeyRequest) (*feedpb.IPFSKeyResponse, error) {
+	userId := req.GetUserId()
+	cacheKey := fmt.Sprintf("pinata_jwt_%s", userId)
+
+	cachedJWT, ok := s.cache.Get(cacheKey)
+	if ok {
+		return &feedpb.IPFSKeyResponse{
+			Jwt: cachedJWT.(string),
+		}, nil
+	}
+
+	pinata := NewPinataService(s.conf.PinataJWT)
+	credential, err := pinata.GenerateAPIKey()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to generate api key")
+	}
+
+	// With normal upload flow, suppose that time between posts always > TTL => we always generate a new key
+	// In abnormal case, time < TTL then we return the cached key, the worst case user still have 4s to make the upload request
+	s.cache.SetWithTTL(cacheKey, credential.JWT, 0, time.Second*(KEY_TTL-4))
+
+	return &feedpb.IPFSKeyResponse{
+		Jwt: credential.JWT,
+	}, nil
 }
 
 func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*feedpb.PostsResponse, error) {
@@ -60,6 +100,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 
 	query := s.conf.IndexerDB.
 		Table("posts as p1").
+		Where("p1.parent_post_identifier = ?", "").
 		Select(`
 			p1.*,
 			(
@@ -96,7 +137,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	}
 
 	query = query.
-		Order("created_at desc").
+		Order("created_at DESC").
 		Limit(int(limit)).
 		Offset(int(offset))
 
@@ -115,7 +156,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			})
 		}
 
-		medadata, err := json.Marshal(dbPost.Metadata)
+		metadata, err := json.Marshal(dbPost.Metadata)
 		if err != nil {
 			return nil, err
 		}
@@ -124,7 +165,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			Category:             dbPost.Category,
 			IsDeleted:            dbPost.IsDeleted,
 			Identifier:           dbPost.Identifier,
-			Metadata:             string(medadata),
+			Metadata:             string(metadata),
 			ParentPostIdentifier: dbPost.ParentPostIdentifier,
 			SubPostLength:        dbPost.SubPostLength,
 			CreatedBy:            string(dbPost.CreatedBy),
