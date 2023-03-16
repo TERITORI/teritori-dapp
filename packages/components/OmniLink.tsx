@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 export interface OmniLinkToType {
-  screen: string;
+  screen: string | never;
   params?: object;
 }
 
@@ -19,10 +19,9 @@ export const OmniLink: React.FC<{
   action?: any | undefined;
   children: ReactNode | undefined;
   style?: StyleProp<ViewStyle | TouchableOpacityProps>;
-
   disabled?: boolean;
-}> = ({ to, action, children, style, disabled, ...rest }) => {
-  // @ts-expect-error
+}> = ({ to, action, children, style, disabled }) => {
+  // @ts-ignore
   const { onPress, ...props } = useLinkProps({ to, action });
 
   const [isHovered, setIsHovered] = React.useState(false);
@@ -34,7 +33,9 @@ export const OmniLink: React.FC<{
     // You can add hover effects using `onMouseEnter` and `onMouseLeave`
     return (
       <View
-        // @ts-expect-error
+        // is required to ignore the following to fix a problem with the linter
+        // and allow to use onClick in this special case
+        // @ts-ignore
         onClick={!disabled ? onPress : null}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -46,7 +47,6 @@ export const OmniLink: React.FC<{
           style,
         ]}
         {...props}
-        {...rest}
       >
         {children}
       </View>
@@ -54,7 +54,7 @@ export const OmniLink: React.FC<{
   }
 
   return (
-    <TouchableOpacity style={style} onPress={onPress} {...props} {...rest}>
+    <TouchableOpacity style={style} onPress={onPress} {...props}>
       {children}
     </TouchableOpacity>
   );
