@@ -1,12 +1,15 @@
 import React from "react";
 import { Text, TextProps, StyleSheet } from "react-native";
 
-export const Label: React.FC<TextProps & { styleType: string }> = (props) => {
-  const { style, styleType = "base", ...otherProps } = props;
-
+export const Label: React.FC<TextProps & { styleType: string }> = ({
+  style,
+  styleType = "base",
+  children,
+  ...otherProps
+}) => {
   return (
     <Text style={[(styles as any)[styleType], style]} {...otherProps}>
-      {props.children}
+      {children}
     </Text>
   );
 };

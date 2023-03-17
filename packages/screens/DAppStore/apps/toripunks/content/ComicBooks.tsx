@@ -1,5 +1,5 @@
 import { View } from "react-native";
 
-export const Main = () => {
+export const ComicBooks = () => {
   return <View />;
 };

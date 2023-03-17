@@ -3,7 +3,9 @@ import React from "react";
 import { DefaultBackground } from "./DefaultBackground";
 
 const imgComponent = {
-  comicgood: () => null,
+  comicgood: (children: JSX.Element) => (
+    <DefaultBackground type="comicgood">{children}</DefaultBackground>
+  ),
   disconnect: (children: JSX.Element) => (
     <DefaultBackground type="disconnect">{children}</DefaultBackground>
   ),
@@ -23,7 +25,9 @@ const imgComponent = {
   winorlose: (children: JSX.Element) => (
     <DefaultBackground type="winorlose">{children}</DefaultBackground>
   ),
-  raffle: () => null,
+  raffle: (children: JSX.Element) => (
+    <DefaultBackground type="raffle">{children}</DefaultBackground>
+  ),
 };
 
 export const Background: React.FC<{ children: JSX.Element; type: string }> = ({

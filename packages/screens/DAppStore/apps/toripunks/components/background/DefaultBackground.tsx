@@ -5,6 +5,7 @@ import disconnect from "../../assets/background/disconnect.png";
 import login from "../../assets/background/login.png";
 import main from "../../assets/background/main.png";
 import price from "../../assets/background/price.png";
+import pricePool from "../../assets/background/pricePool.png";
 import score from "../../assets/background/score.png";
 import winorlose from "../../assets/background/winorlose.png";
 
@@ -21,6 +22,8 @@ const imgComponent = {
   price: { src: price, style: { ...baseStyle }, imgStyle: {} },
   score: { src: score, style: { ...baseStyle }, imgStyle: {} },
   winorlose: { src: winorlose, style: { ...baseStyle }, imgStyle: {} },
+  raffle: { src: "", style: { ...baseStyle }, imgStyle: {} },
+  comicgood: { src: pricePool, style: { ...baseStyle }, imgStyle: {} },
 };
 
 export const DefaultBackground: React.FC<{

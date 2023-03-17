@@ -4,8 +4,10 @@ import { View } from "react-native";
 import { Background } from "../components/background/Background";
 import { MenuLink } from "../components/menu-link/MenuLink";
 import { useContentContext } from "../context/ContentProvider";
+import { ComicBooks } from "./ComicBooks";
 import { Login } from "./Login";
-import { Main } from "./Main";
+import { Raffle } from "./Raffle";
+import { Russian } from "./RussianRoulette";
 
 export const Content = () => {
   const { selectedSection } = useContentContext();
@@ -17,9 +19,9 @@ export const Content = () => {
 
   const Section = () => {
     if (selectedSection === "login") return <Login />;
-    if (selectedSection === "main") return <Main />;
-    // if (selectedSection === "raffle") return <Main />;
-    // if (selectedSection === "comicgood") return <Main />;
+    if (selectedSection === "main") return <Russian />;
+    if (selectedSection === "raffle") return <Raffle />;
+    if (selectedSection === "comicgood") return <ComicBooks />;
   };
 
   if (!fontsLoaded) {
