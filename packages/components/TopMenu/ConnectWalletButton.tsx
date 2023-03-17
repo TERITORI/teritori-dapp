@@ -26,7 +26,7 @@ export const ConnectWalletButton = () => {
   return (
     <>
       <View style={{ marginRight: headerMarginHorizontal }}>
-        {!!selectedWallet ? (
+        {selectedWallet ? (
           <TopMenu selectedWallet={selectedWallet} />
         ) : (
           <Pressable onPress={toggleConnectWallet}>
