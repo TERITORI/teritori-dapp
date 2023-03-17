@@ -1,50 +1,44 @@
 import React, { useMemo, useRef, useState } from "react";
-import { ActivityIndicator } from "react-native";
+import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
+import { useAnimatedStyle, withTiming } from "react-native-reanimated";
 
 import { Reaction } from "../../../api/feed/v1/feed";
-import { secondaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { AnimationFadeIn } from "../../animations";
-import { AnimationFadeInOut } from "../../animations/AnimationFadeInOut";
 import { SocialStat } from "../SocialStat";
 import { MoreReactionsButton } from "./MoreReactionsButton";
 import { MoreReactionsMenu } from "./MoreReactionsMenu";
 
 // TODO: (Responsive) Adapt this, depending on breakpoints
-export const nbReactionsShown = 3;
+export const NB_REACTIONS_SHOWN = 10;
 
 export const Reactions: React.FC<{
   reactions: Reaction[];
   onPressReaction: (icon: string) => void;
   isLoading?: boolean;
-}> = ({ reactions = [], onPressReaction, isLoading }) => {
-  const reactionWidthRef = useRef<number>();
-  const reactionAnimation = useAnimatedStyle(
-    () => ({
-      width: isLoading
-        ? withTiming(30)
-        : reactionWidthRef?.current
-        ? withTiming(reactionWidthRef?.current)
-        : undefined,
-    }),
-    [isLoading]
-  );
+}> = ({ reactions = [], onPressReaction}) => {
+  // const reactionWidthRef = useRef<number>();
+  // const reactionAnimation = useAnimatedStyle(
+  //   () => ({
+  //     width: isLoading
+  //       ? withTiming(30)
+  //       : reactionWidthRef?.current
+  //       ? withTiming(reactionWidthRef?.current)
+  //       : undefined,
+  //   }),
+  //   [isLoading]
+  // );
   const [isMoreReactionShown, setMoreReactionsShown] = useState(false);
   const sortedReactions = useMemo(
     () => reactions.sort((a, b) => b.count - a.count),
     [reactions]
   );
   const shownReactions = useMemo(
-    () => sortedReactions.slice(0, nbReactionsShown),
+    () => sortedReactions.slice(0, NB_REACTIONS_SHOWN),
     [sortedReactions]
   );
   const hiddenReactions = useMemo(
-    () => sortedReactions.slice(nbReactionsShown, -1),
+    () => sortedReactions.slice(NB_REACTIONS_SHOWN, -1),
     [sortedReactions]
   );
   const moreReactionsButtonLabel = useMemo(
@@ -53,29 +47,32 @@ export const Reactions: React.FC<{
   );
 
   return (
-    <Animated.View
-      style={[
-        { flexDirection: "row", alignItems: "center" },
-        reactionAnimation,
-      ]}
-    >
-      {isLoading && (
-        <AnimationFadeIn>
-          <ActivityIndicator color={secondaryColor} />
-        </AnimationFadeIn>
-      )}
+    // TODO: Remove animation stuff from this cpt. We'll fix animations later
+    // <Animated.View
+    //   style={[
+    //     { flexDirection: "row", alignItems: "center" },
+    //     reactionAnimation,
+    //   ]}
+    // >
+    <View style={[{ flexDirection: "row", alignItems: "center" }]}>
+      {/*{isLoading && (*/}
+      {/*  <AnimationFadeIn>*/}
+      {/*    <ActivityIndicator color={secondaryColor} />*/}
+      {/*  </AnimationFadeIn>*/}
+      {/*)}*/}
       {!!reactions.length && (
-        <AnimationFadeInOut
-          visible={!isLoading}
-          style={{
-            paddingHorizontal: layout.padding_x0_5,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-          onLayout={(e) => {
-            reactionWidthRef.current = e.nativeEvent.layout.width;
-          }}
-        >
+        <>
+          {/* <AnimationFadeInOut*/}
+          {/*visible={!isLoading}*/}
+          {/*  style={{*/}
+          {/*    paddingHorizontal: layout.padding_x0_5,*/}
+          {/*    flexDirection: "row",*/}
+          {/*    alignItems: "center",*/}
+          {/* }}*/}
+          {/*  onLayout={(e) => {*/}
+          {/*    reactionWidthRef.current = e.nativeEvent.layout.width;*/}
+          {/*   }}*/}
+          {/* >*/}
           <FlatList
             scrollEnabled
             data={shownReactions}
@@ -95,7 +92,7 @@ export const Reactions: React.FC<{
                 style={{ marginHorizontal: layout.padding_x0_25 }}
               />
             )}
-            keyExtractor={(reaction: Reaction) => String(reaction.icon)}
+            keyExtractor={(reaction: Reaction) => reaction.icon}
           />
 
           {!!hiddenReactions.length && (
@@ -115,8 +112,9 @@ export const Reactions: React.FC<{
               onPressMore={() => setMoreReactionsShown((shown) => !shown)}
             />
           )}
-        </AnimationFadeInOut>
+          {/*</AnimationFadeInOut>*/}
+        </>
       )}
-    </Animated.View>
+    </View>
   );
 };

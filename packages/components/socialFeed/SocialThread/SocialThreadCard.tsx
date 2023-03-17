@@ -81,7 +81,7 @@ export const SocialThreadCard: React.FC<{
   //   return getCommunityHashtag(metadata?.hashtags || []);
   // }, [metadata]);
 
-  const handleReaction = async (e: string) => {
+  const handleReaction = async (emoji: string) => {
     if (!wallet?.connected || !wallet.address) {
       return;
     }
@@ -93,7 +93,7 @@ export const SocialThreadCard: React.FC<{
     mutate({
       client,
       msg: {
-        icon: e,
+        icon: emoji,
         identifier: localPost.identifier,
         up: true,
       },
@@ -231,7 +231,8 @@ export const SocialThreadCard: React.FC<{
           <FlexRow justifyContent="flex-end">
             <Reactions
               reactions={localPost.reactions}
-              onPressReaction={() => {}}
+              onPressReaction={handleReaction}
+              isLoading={isReactLoading}
             />
             <SpacerRow size={2.5} />
             <EmojiSelector

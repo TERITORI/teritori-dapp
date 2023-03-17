@@ -42,12 +42,11 @@ const Header = ({ hashtag }: { hashtag: string }) => (
   </View>
 );
 
-export const HashFeedScreen: ScreenFC<"HashFeed"> = ({
+export const HashtagFeedScreen: ScreenFC<"HashtagFeed"> = ({
   route: {
-    params: { id: hash },
+    params: { hashtag },
   },
 }) => {
-  const hashtag = useMemo(() => `#${hash}`, [hash]);
   const feedRequest: PostsRequest = useMemo(() => {
     return {
       filter: {
@@ -66,7 +65,7 @@ export const HashFeedScreen: ScreenFC<"HashFeed"> = ({
       <NewsFeed
         additionalHashtag={hashtag}
         req={feedRequest}
-        Header={() => <Header hashtag={hashtag} />}
+        Header={() => <Header hashtag={`#${hashtag}`} />}
       />
     </ScreenContainer>
   );

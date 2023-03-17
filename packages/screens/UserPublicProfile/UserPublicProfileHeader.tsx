@@ -16,33 +16,33 @@ export const screenTabItems = {
   nfts: {
     name: "NFTs",
   },
-  activity: {
-    name: "Activity",
-    disabled: true,
-  },
+  // activity: {
+  //   name: "Activity",
+  //   disabled: true,
+  // },
   quests: {
     name: "Quests",
   },
-  pathwar: {
-    name: "Pathwar Challenges",
-    disabled: true,
-  },
-  gig: {
-    name: "Gig Services",
-    disabled: true,
-  },
-  votes: {
-    name: "Governance Votes",
-    disabled: true,
-  },
-  footer: {
-    name: "Putted NFT to Rioters Footer",
-    disabled: true,
-  },
-  servers: {
-    name: "Shared servers",
-    disabled: true,
-  },
+  // pathwar: {
+  //   name: "Pathwar Challenges",
+  //   disabled: true,
+  // },
+  // gig: {
+  //   name: "Gig Services",
+  //   disabled: true,
+  // },
+  // votes: {
+  //   name: "Governance Votes",
+  //   disabled: true,
+  // },
+  // footer: {
+  //   name: "Putted NFT to Rioters Footer",
+  //   disabled: true,
+  // },
+  // servers: {
+  //   name: "Shared servers",
+  //   disabled: true,
+  // },
 };
 
 interface UserPublicProfileScreenHeaderProps {

@@ -18,6 +18,6 @@ export interface RichTextProps {
   initialValue?: string;
   readOnly?: boolean;
   openGraph?: OpenGraphType;
-  // allowTruncation?: boolean;
+  isPostConsultation?: boolean;
   publishButtonProps?: PublishButtonProps;
 }

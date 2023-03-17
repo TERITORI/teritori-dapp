@@ -57,3 +57,6 @@ export const replaceTextWithComponent = (
     return str;
   });
 };
+
+export const pluralOrNot = (word: string, quantity: number) =>
+  quantity > 1 ? word + "s" : word;

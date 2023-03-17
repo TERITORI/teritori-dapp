@@ -33,7 +33,7 @@ export type RootStackParamList = {
       })
     | undefined;
   FeedPostView: { id: string };
-  HashFeed: { id: string };
+  HashtagFeed: { hashtag: string };
 
   RiotGame: undefined;
   RiotGameEnroll: undefined;
@@ -100,7 +100,7 @@ const navConfig: {
     Feed: "feed",
     FeedNewArticle: "feed/new",
     FeedPostView: "feed/post/:id",
-    HashFeed: "feed/hashtag/:id",
+    HashtagFeed: "feed/hashtag/:hashtag",
 
     // ==== Staking
     Staking: "staking",

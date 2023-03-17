@@ -3,11 +3,11 @@ import { PostCategory } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { getUserId } from "../networks";
 import { mustGetFeedClient } from "./backend";
-import { HANDLE_REGEX, URL_REGEX } from "./regex";
+import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
 
 export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
-export const SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT = 2500;
+export const SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT = 2500;
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);
@@ -59,8 +59,9 @@ export const feedTabToCategories = (tab: keyof typeof feedsTabItems) => {
 };
 
 export const mentionMatch = (text: string) =>
-  text.match(new RegExp(HANDLE_REGEX, "g"));
-export const hashMatch = (text: string) => text.match(/#\S+/g);
+  text.match(new RegExp(MENTION_REGEX, "g"));
+export const hashtagMatch = (text: string) =>
+  text.match(new RegExp(HASHTAG_REGEX, "g"));
 export const urlMatch = (text: string) =>
   text.match(new RegExp(URL_REGEX, "g"));
 

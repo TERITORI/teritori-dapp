@@ -5,8 +5,8 @@ import { HTML_TAG_REGEXP } from "../../../utils/regex";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
-import { TextRenderer } from "../../TextRenderer/TextRenderer";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
+import { TextRenderer } from "../NewsFeed/TextRenderer/TextRenderer";
 
 interface Props {
   metadata: SocialFeedMetadata;

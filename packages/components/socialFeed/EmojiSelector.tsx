@@ -15,7 +15,7 @@ import EmojiModal from "../EmojiModal";
 import { SVG } from "../SVG";
 
 type EmojiSelectorProps = {
-  onEmojiSelected?: (emoji: string) => void;
+  onEmojiSelected: (emoji: string) => void;
   optionsContainer?: ViewStyle;
   isLoading?: boolean;
   buttonStyle?: StyleProp<ViewStyle>;
@@ -60,9 +60,9 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
         }}
       >
         <EmojiModal
-          onEmojiSelected={(e) => {
-            if (e) {
-              onEmojiSelected?.(e);
+          onEmojiSelected={(emoji) => {
+            if (emoji) {
+              onEmojiSelected(emoji);
             }
             toggleEmojiModal();
           }}

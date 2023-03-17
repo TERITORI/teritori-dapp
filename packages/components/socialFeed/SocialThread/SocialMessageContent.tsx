@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-import { SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT } from "../../../utils/social-feed";
+import { SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT } from "../../../utils/social-feed";
 import { AudioPreview } from "../../FilePreview/AudioPreview";
 import { convertGIFToLocalFileType } from "../../FilePreview/UploadedFilePreview/FilePreviewContainer";
 import { ImagePreview } from "../../FilePreview/UploadedFilePreview/ImagePreview";
@@ -23,7 +23,7 @@ export const SocialMessageContent: React.FC<Props> = ({
 }) => {
   if (
     postCategory === PostCategory.Article ||
-    metadata?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT
+    metadata?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
   ) {
     return (
       <View>

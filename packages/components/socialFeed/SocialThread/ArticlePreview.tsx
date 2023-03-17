@@ -1,25 +1,21 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { Image } from "react-native";
 
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { RichText } from "../RichText";
-import { THUMBNAIL_WIDTH } from "./SocialMessageContent";
-import { TextContent } from "./TextContent";
 
 interface Props {
   metadata: SocialFeedMetadata;
   isPostConsultation?: boolean;
 }
-
+// TODO: Rework this ! Set a max height for preview
 export const ArticlePreview: React.FC<Props> = ({
   metadata,
   isPostConsultation,
 }) => {
-  // ----- From /feed/post/{postId}
-  if (isPostConsultation) {
     const coverImage = metadata.files?.find((file) => file.isCoverImage);
     return (
       <>
@@ -40,38 +36,7 @@ export const ArticlePreview: React.FC<Props> = ({
           />
         )}
 
-        <RichText initialValue={metadata.message} readOnly />
+        <RichText initialValue={metadata.message} readOnly isPostConsultation={!isPostConsultation} />
       </>
     );
-  }
-  // ----- From /feed
-  return (
-    <View style={{ flexDirection: "row" }}>
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
-        {!!metadata?.title && (
-          <BrandText style={{ marginBottom: layout.padding_x1 }}>
-            {metadata.title}
-          </BrandText>
-        )}
-
-        <TextContent metadata={metadata} />
-      </View>
-      {!!metadata.files?.length && (
-        <Image
-          source={{ uri: ipfsURLToHTTPURL(metadata.files[0]?.url) }}
-          resizeMode="cover"
-          style={{
-            height: THUMBNAIL_WIDTH,
-            width: THUMBNAIL_WIDTH,
-            marginLeft: layout.padding_x2,
-            borderRadius: 4,
-          }}
-        />
-      )}
-    </View>
-  );
 };

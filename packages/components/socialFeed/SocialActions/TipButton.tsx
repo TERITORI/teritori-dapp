@@ -3,12 +3,9 @@ import { TouchableOpacity } from "react-native";
 
 import tipSVG from "../../../../assets/icons/tip.svg";
 import { useTNS } from "../../../context/TNSProvider";
-import { fontSemibold14 } from "../../../utils/style/fonts";
 import { nsTokenWithoutTLD } from "../../../utils/tns";
-import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TNSSendFundsModal } from "../../modals/teritoriNameService/TNSSendFundsModal";
-import { SpacerRow } from "../../spacer";
 
 export const TipButton: React.FC<{
   postTokenId: string;
@@ -28,6 +25,7 @@ export const TipButton: React.FC<{
         onPress={onPress}
       >
         <SVG source={tipSVG} width={20} height={20} />
+        {/*TODO: Handle Tip Count later*/}
         {/*<SpacerRow size={1.5} />*/}
         {/*<BrandText style={fontSemibold14}>0</BrandText>*/}
       </TouchableOpacity>

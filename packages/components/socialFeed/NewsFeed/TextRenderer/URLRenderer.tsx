@@ -1,7 +1,7 @@
 import React from "react";
 import { Linking, Text, TouchableOpacity } from "react-native";
 
-import { primaryColor } from "../../utils/style/colors";
+import { primaryColor } from "../../../../utils/style/colors";
 
 const handleLinkPress = (text: string) => {
   let linkText = text;

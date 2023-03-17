@@ -39,13 +39,14 @@ import {
   VIDEO_MIME_TYPES,
 } from "../../../utils/mime";
 import { useAppNavigation } from "../../../utils/navigation";
-import { HANDLE_REGEX, HASH_REGEX, URL_REGEX } from "../../../utils/regex";
-import { DEFAULT_USERNAME } from "../../../utils/social-feed";
+import { MENTION_REGEX, HASHTAG_REGEX, URL_REGEX } from "../../../utils/regex";
+import {DEFAULT_USERNAME, SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT} from "../../../utils/social-feed";
 import { neutralA3, primaryColor } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
 import { IconBox } from "../../IconBox";
 import { FileUploader } from "../../fileUploader";
+import { SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 import { ActionsContainer } from "./ActionsContainer";
@@ -59,7 +60,7 @@ const mentionStrategy = (
   contentBlock: ContentBlock,
   callback: (start: number, end: number) => void
 ) => {
-  findWithRegex(HANDLE_REGEX, contentBlock, callback);
+  findWithRegex(MENTION_REGEX, contentBlock, callback);
 };
 
 const urlStrategy = (
@@ -73,7 +74,7 @@ const hashStrategy = (
   contentBlock: ContentBlock,
   callback: (start: number, end: number) => void
 ) => {
-  findWithRegex(HASH_REGEX, contentBlock, callback);
+  findWithRegex(HASHTAG_REGEX, contentBlock, callback);
 };
 
 const findWithRegex = (
@@ -93,7 +94,9 @@ const findWithRegex = (
     .forEach((v) => v && callback(v[0], v[1]));
 };
 
-const MentionRender = (props: { children: { props: { text: string } }[] }) => {
+const MentionRendererWeb = (props: {
+  children: { props: { text: string } }[];
+}) => {
   const navigation = useAppNavigation();
   const { userId } = useMention(props.children[0].props.text);
   // Every text with a "@" is a mention. But we consider valid mentions as a valid wallet address or a valid NS token id.
@@ -116,7 +119,7 @@ const MentionRender = (props: { children: { props: { text: string } }[] }) => {
   );
 };
 
-const UrlRender = (props: { children: { props: { text: string } }[] }) => {
+const UrlRendererWeb = (props: { children: { props: { text: string } }[] }) => {
   return (
     <span
       style={{ color: primaryColor, cursor: "pointer" }}
@@ -137,15 +140,17 @@ const UrlRender = (props: { children: { props: { text: string } }[] }) => {
   );
 };
 
-const HashRender = (props: { children: { props: { text: string } }[] }) => {
+const HashtagRendererWeb = (props: {
+  children: { props: { text: string } }[];
+}) => {
   const navigation = useAppNavigation();
 
   return (
     <span
       style={{ color: primaryColor, cursor: "pointer" }}
       onClick={() =>
-        navigation.navigate("HashFeed", {
-          id: props.children[0].props.text.replace("#", ""),
+        navigation.navigate("HashtagFeed", {
+          hashtag: props.children[0].props.text.replace("#", ""),
         })
       }
     >
@@ -184,15 +189,15 @@ const compositeDecorator = {
   decorators: [
     {
       strategy: mentionStrategy,
-      component: MentionRender,
+      component: MentionRendererWeb,
     },
     {
       strategy: urlStrategy,
-      component: UrlRender,
+      component: UrlRendererWeb,
     },
     {
       strategy: hashStrategy,
-      component: HashRender,
+      component: HashtagRendererWeb,
     },
   ],
 };
@@ -228,7 +233,7 @@ export const RichText: React.FC<RichTextProps> = ({
   initialValue,
   readOnly,
   openGraph,
-  // allowTruncation,
+                                                    isPostConsultation,
   publishButtonProps,
 }) => {
   const editorRef = useRef<Editor>(null);
@@ -247,9 +252,9 @@ export const RichText: React.FC<RichTextProps> = ({
         setEditorState(endState);
       }, 1000);
     }
-    // else if (allowTruncation) {
-    //   truncate();
-    // }
+    else if (!isPostConsultation) {
+      truncate();
+    }
   }, []);
 
   const addImage = (file: LocalFileData) => {
@@ -286,45 +291,45 @@ export const RichText: React.FC<RichTextProps> = ({
     // onImageUpload?.(file);
   };
 
-  // const truncate = () => {
-  //   const contentState = editorState.getCurrentContent();
-  //   const blocks = contentState.getBlocksAsArray();
-  //
-  //   let index = 0;
-  //   let currentLength = 0;
-  //   let isTruncated = false;
-  //   const truncatedBlocks = [];
-  //
-  //   while (!isTruncated && blocks[index]) {
-  //     const block = blocks[index];
-  //     const length = block.getLength();
-  //     if (currentLength + length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT) {
-  //       isTruncated = true;
-  //       const truncatedText = block
-  //         .getText()
-  //         .slice(0, SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT - currentLength);
-  //
-  //       const blocksFromHTML = convertFromHTML(
-  //         `${truncatedText} <br/>...see more`
-  //       );
-  //       const state = ContentState.createFromBlockArray(
-  //         blocksFromHTML.contentBlocks,
-  //         blocksFromHTML.entityMap
-  //       );
-  //
-  //       truncatedBlocks.push(state.getFirstBlock());
-  //     } else {
-  //       truncatedBlocks.push(block);
-  //     }
-  //     currentLength += length + 1;
-  //     index++;
-  //   }
-  //
-  //   if (isTruncated) {
-  //     const state = ContentState.createFromBlockArray(truncatedBlocks);
-  //     setEditorState(EditorState.createWithContent(state));
-  //   }
-  // };
+  const truncate = () => {
+    const contentState = editorState.getCurrentContent();
+    const blocks = contentState.getBlocksAsArray();
+
+    let index = 0;
+    let currentLength = 0;
+    let isTruncated = false;
+    const truncatedBlocks = [];
+
+    while (!isTruncated && blocks[index]) {
+      const block = blocks[index];
+      const length = block.getLength();
+      if (currentLength + length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT) {
+        isTruncated = true;
+        const truncatedText = block
+          .getText()
+          .slice(0, SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT - currentLength);
+
+        const blocksFromHTML = convertFromHTML(
+          `${truncatedText} <br/><br/><span style="color: ${neutralA3}">...see more</span>`
+        );
+        const state = ContentState.createFromBlockArray(
+          blocksFromHTML.contentBlocks,
+          blocksFromHTML.entityMap
+        );
+
+        truncatedBlocks.push(state.getFirstBlock());
+      } else {
+        truncatedBlocks.push(block);
+      }
+      currentLength += length + 1;
+      index++;
+    }
+
+    if (isTruncated) {
+      const state = ContentState.createFromBlockArray(truncatedBlocks);
+      setEditorState(EditorState.createWithContent(state));
+    }
+  };
 
   const handleChange = (state: EditorState) => {
     setEditorState(state);
@@ -385,20 +390,20 @@ export const RichText: React.FC<RichTextProps> = ({
         <ToolbarContainer>
           <Toolbar>
             {(externalProps) => (
-              <>
+              <View style={styles.toolbarButtonsWrapper}>
+                <EmojiSelector
+                  onEmojiSelected={(emoji) => addEmoji(emoji)}
+                  optionsContainer={{ marginLeft: -80, marginTop: -6 }}
+                  buttonStyle={styles.toolbarCustomButton}
+                  disabled
+                />
+
                 <GIFSelector
                   onGIFSelected={onGIFSelected}
                   // disabled={isGIFSelectorDisabled}
                   disabled
                   optionsContainer={{ marginLeft: -186, marginTop: -6 }}
                   buttonStyle={styles.toolbarCustomButton}
-                />
-
-                <EmojiSelector
-                  onEmojiSelected={(emoji) => addEmoji(emoji)}
-                  optionsContainer={{ marginLeft: -80, marginTop: -6 }}
-                  buttonStyle={styles.toolbarCustomButton}
-                  disabled
                 />
 
                 <FileUploader
@@ -459,11 +464,16 @@ export const RichText: React.FC<RichTextProps> = ({
                 <UnorderedListButton {...externalProps} />
                 <OrderedListButton {...externalProps} />
                 <BlockquoteButton {...externalProps} />
-              </>
+              </View>
             )}
           </Toolbar>
         </ToolbarContainer>
-        {!!publishButtonProps && <PublishButton {...publishButtonProps} />}
+        {!!publishButtonProps && (
+          <>
+            <SpacerRow size={3} />
+            <PublishButton {...publishButtonProps} />
+          </>
+        )}
       </ActionsContainer>
     </View>
   );
@@ -475,5 +485,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     height: 30,
     width: 30,
+  },
+  toolbarButtonsWrapper: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    flexWrap: "wrap",
   },
 });

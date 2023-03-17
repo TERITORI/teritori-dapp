@@ -283,7 +283,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               <FlexRow justifyContent="flex-end">
                 <Reactions
                   reactions={localComment.reactions}
-                  onPressReaction={() => {}}
+                  onPressReaction={handleReaction}
+                  isLoading={isReactLoading}
                 />
                 <SpacerRow size={2.5} />
                 <EmojiSelector

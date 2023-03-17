@@ -7,10 +7,7 @@ import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import { UPPActivity } from "../../components/userPublicProfile/UPPActivity";
-import { UPPGigServices } from "../../components/userPublicProfile/UPPGigServices";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
-import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -83,7 +80,7 @@ const SelectedTabContent: React.FC<{
           )}
           additionalMention={
             selectedWallet?.address !== userAddress
-              ? `@${userInfo?.metadata.tokenId || userAddress}`
+              ? userInfo?.metadata.tokenId || userAddress
               : undefined
           }
           req={feedRequestUser}
@@ -101,7 +98,7 @@ const SelectedTabContent: React.FC<{
           )}
           additionalMention={
             selectedWallet?.address !== userAddress
-              ? `@${userInfo?.metadata.tokenId || userAddress}`
+              ? userInfo?.metadata.tokenId || userAddress
               : undefined
           }
           req={feedRequestMentions}
@@ -109,14 +106,14 @@ const SelectedTabContent: React.FC<{
       );
     case "nfts":
       return <UPPNFTs userId={userId} />;
-    case "activity":
-      return <UPPActivity />;
+    // case "activity":
+    //   return <UPPActivity />;
     case "quests":
       return <UPPQuests userId={userId} />;
-    case "pathwar":
-      return <UPPPathwarChallenges />;
-    case "gig":
-      return <UPPGigServices />;
+    // case "pathwar":
+    //   return <UPPPathwarChallenges />;
+    // case "gig":
+    //   return <UPPGigServices />;
     default:
       return null;
   }

@@ -6,7 +6,7 @@ import { neutral15, neutral22 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { SocialStat } from "../SocialStat";
 import { MoreReactionsButton } from "./MoreReactionsButton";
-import { nbReactionsShown } from "./Reactions";
+import { NB_REACTIONS_SHOWN } from "./Reactions";
 
 export const MoreReactionsMenu: React.FC<{
   sortedReactions: Reaction[];
@@ -30,14 +30,14 @@ export const MoreReactionsMenu: React.FC<{
         flexDirection: "row",
         flexWrap: "wrap",
         position: "absolute",
-        left: 1,
-        right: 1,
+        left: -3,
+        right: -3,
         top: -layout.padding_x0_5 - 1,
         zIndex: -1,
       }}
     >
       {sortedReactions.map((reaction, index) =>
-        index === nbReactionsShown ? (
+        index === NB_REACTIONS_SHOWN ? (
           <MoreReactionsButton
             key={index}
             label={moreReactionsButtonLabel}

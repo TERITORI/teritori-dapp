@@ -166,7 +166,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       authorNSInfo?.metadata?.tokenId || userAddress || DEFAULT_USERNAME;
     if (postResult.category === PostCategory.Article)
       return `Article by ${author}`;
-    if (postResult?.parentPostIdentifier) return `Sub-Post by ${author}`;
+    if (postResult?.parent_post_identifier) return `Comment by ${author}`;
     return `Post by ${author}`;
   }, [
     postResult?.category,
@@ -221,7 +221,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             )}
 
             {/*========== Refresh button */}
-            <Animated.View
+             <Animated.View
               style={[
                 {
                   position: "absolute",
@@ -243,6 +243,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                 }}
               />
             </Animated.View>
+
 
             <View
               onLayout={(e) => setParentOffsetValue(e.nativeEvent.layout.y)}

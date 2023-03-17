@@ -7,6 +7,7 @@ import { View } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { WalletStatusBox } from "../../components/WalletStatusBox";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { FileUploader } from "../../components/fileUploader";
 import {
   Label,
@@ -16,34 +17,35 @@ import {
   NewPostFormValues,
   PostCategory,
 } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import {
-  getAvailableFreePost,
-  getPostFee,
-  createPost,
-} from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
+import { createPost } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
 import { NotEnoughFundModal } from "../../components/socialFeed/NewsFeed/NotEnoughFundModal";
 import { RichText } from "../../components/socialFeed/RichText";
+import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useOpenGraph } from "../../hooks/feed/useOpenGraph";
+import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableFreePost";
+import { useUpdatePostFee } from "../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../hooks/useBalances";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind } from "../../networks";
+import { prettyPrice } from "../../utils/coins";
 import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { URL_REGEX } from "../../utils/regex";
 import { generateIpfsKey } from "../../utils/social-feed";
-import { neutral00 } from "../../utils/style/colors";
-import { fontSemibold20 } from "../../utils/style/fonts";
+import { neutral00, neutral11 } from "../../utils/style/colors";
+import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
-import { replaceBetweenString } from "../../utils/text";
+import { pluralOrNot, replaceBetweenString } from "../../utils/text";
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
   route: { params },
 }) => {
   // variables
-  const [postFee, setPostFee] = useState(0);
-  const [freePostCount, setFreePostCount] = useState(0);
+  const { postFee, updatePostFee } = useUpdatePostFee();
+  const { freePostCount, updateAvailableFreePost } =
+    useUpdateAvailableFreePost();
 
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -90,32 +92,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
   // hooks
   useFocusEffect(
     useCallback(() => {
-      if (wallet?.connected && wallet?.address) {
-        updateAvailableFreePost();
-        updatePostFee();
-      }
+      updateAvailableFreePost(selectedNetworkId, PostCategory.Article, wallet);
+      updatePostFee(selectedNetworkId, PostCategory.Article, wallet);
     }, [wallet?.address])
   );
 
-  // functions
-  const updateAvailableFreePost = async () => {
-    const freePost = await getAvailableFreePost({
-      networkId: selectedNetworkId,
-      wallet,
-    });
-    setFreePostCount(freePost || 0);
-  };
-
-  const updatePostFee = async () => {
-    const fee = await getPostFee({
-      networkId: selectedNetworkId,
-      wallet,
-      postCategory: PostCategory.Article,
-    });
-    setPostFee(fee || 0);
-  };
-
-  const initSubmit = async (nftStorageApiToken: string) => {
+  const initSubmit = async () => {
     const toriBalance = balances.find((bal) => bal.denom === "utori");
     if (postFee > Number(toriBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
@@ -154,7 +136,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
   const onSubmit = async () => {
     setLoading(true);
     try {
-      await initSubmit(formValues.nftStorageApiToken || "");
+      await initSubmit();
       setToastSuccess({ title: "Post submitted successfully.", message: "" });
       navigateBack();
       reset();
@@ -186,6 +168,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
     }
   };
 
+  //FIXME: This doesn't add the emoji to the RichText
   const onEmojiSelected = (selection: SelectionState, emoji: string | null) => {
     if (emoji) {
       let copiedValue = `${formValues.message}`;
@@ -212,6 +195,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
       onBackPress={navigateBack}
       footerChildren
     >
+      {/*TODO: We can now remove that*/}
       {/*{isNFTKeyModal && (*/}
       {/*  <NFTKeyModal*/}
       {/*    onClose={(key?: string) => {*/}
@@ -233,7 +217,35 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
           marginTop: layout.contentPadding,
         }}
       >
-        <WalletStatusBox maxAddressLength={50} />
+        <WalletStatusBox />
+        <SpacerColumn size={3} />
+
+        <TertiaryBox
+          fullWidth
+          mainContainerStyle={{
+            paddingVertical: layout.padding_x1,
+            paddingHorizontal: layout.padding_x1_5,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            height: 48,
+            backgroundColor: neutral11,
+          }}
+        >
+          <BrandText style={fontSemibold13}>
+            {freePostCount
+              ? `You have ${freePostCount} free ${pluralOrNot(
+                  "Article",
+                  freePostCount
+                )} left`
+              : `The cost for this Article is ${prettyPrice(
+                  selectedNetworkId,
+                  postFee.toString(),
+                  "utori"
+                )}`}
+          </BrandText>
+        </TertiaryBox>
+
         <FileUploader
           label="Cover image"
           style={{
@@ -307,11 +319,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
                   !formValues.title ||
                   !wallet,
                 loading,
-                text: `Publish ${
-                  postFee > 0 && !freePostCount
-                    ? `${((postFee || 0) / 1000000).toFixed(4)} TORI`
-                    : ""
-                }`,
+                text: "Publish",
                 onPress: handleSubmit(onSubmit),
               }}
             />

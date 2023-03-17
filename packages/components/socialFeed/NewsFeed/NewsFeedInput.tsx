@@ -19,11 +19,14 @@ import videoSVG from "../../../../assets/icons/video.svg";
 import { socialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
+import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
+import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobileView } from "../../../hooks/useIsMobileView";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
+import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   AUDIO_MIME_TYPES,
@@ -31,8 +34,8 @@ import {
   VIDEO_MIME_TYPES,
 } from "../../../utils/mime";
 import {
-  SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT,
-  hashMatch,
+  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
+  hashtagMatch,
   mentionMatch,
   generateIpfsKey,
 } from "../../../utils/social-feed";
@@ -73,9 +76,7 @@ import {
 } from "./NewsFeed.type";
 import {
   generatePostMetadata,
-  getAvailableFreePost,
   getPostCategory,
-  getPostFee,
   uploadPostFilesToPinata,
 } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
@@ -100,6 +101,8 @@ export interface NewsFeedInputHandle {
   setValue: (text: string) => void;
   focusInput: () => void;
 }
+
+const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92
 
 export const NewsFeedInput = React.forwardRef<
   NewsFeedInputHandle,
@@ -130,8 +133,9 @@ export const NewsFeedInput = React.forwardRef<
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
     const isMobile = useIsMobileView();
-    const [postFee, setPostFee] = useState(0);
-    const [freePostCount, setFreePostCount] = useState(0);
+    const { postFee, updatePostFee } = useUpdatePostFee();
+    const { freePostCount, updateAvailableFreePost } =
+      useUpdateAvailableFreePost();
     const [isLoading, setLoading] = useState(false);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
@@ -150,8 +154,12 @@ export const NewsFeedInput = React.forwardRef<
     });
     const resetForm = () => {
       reset();
-      updateAvailableFreePost();
-      updatePostFee();
+      updateAvailableFreePost(
+        selectedNetworkId,
+        getPostCategory(formValues),
+        wallet
+      );
+      updatePostFee(selectedNetworkId, getPostCategory(formValues), wallet);
     };
 
     const balances = useBalances(
@@ -172,32 +180,17 @@ export const NewsFeedInput = React.forwardRef<
     );
     const formValues = watch();
 
-    const updateAvailableFreePost = async () => {
-      const freePost = await getAvailableFreePost({
-        networkId: selectedNetworkId,
-        wallet,
-      });
-      setFreePostCount(freePost || 0);
-    };
-
-    const updatePostFee = async () => {
-      const fee = await getPostFee({
-        networkId: selectedNetworkId,
-        wallet,
-        postCategory: getPostCategory(formValues),
-      });
-      setPostFee(fee || 0);
-    };
-
     useEffect(() => {
-      if (wallet?.connected && wallet?.address) {
-        updateAvailableFreePost();
-        updatePostFee();
-      }
+      updateAvailableFreePost(
+        selectedNetworkId,
+        getPostCategory(formValues),
+        wallet
+      );
+      updatePostFee(selectedNetworkId, getPostCategory(formValues), wallet);
     }, [wallet?.address]);
 
     useEffect(() => {
-      updatePostFee();
+      updatePostFee(selectedNetworkId, getPostCategory(formValues), wallet);
     }, [formValues]);
 
     const processSubmit = async () => {
@@ -220,19 +213,19 @@ export const NewsFeedInput = React.forwardRef<
           mentions.push(item);
         });
         const hashtags: string[] = [];
-        hashMatch(formValues.message)?.map((item) => {
+        hashtagMatch(formValues.message)?.map((item) => {
           hashtags.push(item);
         });
 
         // ---- Adding hashtag or mentioned user at the end of the message and to the metadata
         let finalMessage = formValues.message || "";
         if (additionalMention) {
-          finalMessage += `\n${additionalMention}`;
-          mentions.push(additionalMention);
+          finalMessage += `\n@${additionalMention}`;
+          mentions.push(`@${additionalMention}`);
         }
         if (additionalHashtag) {
-          finalMessage += `\n${additionalHashtag}`;
-          hashtags.push(additionalHashtag);
+          finalMessage += `\n#${additionalHashtag}`;
+          hashtags.push(`#${additionalHashtag}`);
         }
 
         let files: RemoteFileData[] = [];
@@ -309,7 +302,7 @@ export const NewsFeedInput = React.forwardRef<
 
     const handleTextChange = (text: string) => {
       // Comments are blocked at 2500
-      if (type !== "post" && text.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT)
+      if (type !== "post" && text.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT)
         return;
       setValue("message", text);
     };
@@ -353,7 +346,7 @@ export const NewsFeedInput = React.forwardRef<
               width={24}
               source={penSVG}
               color={secondaryColor}
-              style={{ alignSelf: "flex-end" }}
+              style={{ alignSelf: "flex-end", marginRight: layout.padding_x1_5 }}
             />
             <Animated.View style={{ flex: 1, height: "auto" }}>
               <TextInput
@@ -382,8 +375,6 @@ export const NewsFeedInput = React.forwardRef<
                       : inputMinHeight,
                     width: "100%",
                     color: secondaryColor,
-                    marginLeft: layout.padding_x1_5,
-
                     //@ts-ignore
                     outlineStyle: "none",
                     outlineWidth: 0,
@@ -391,16 +382,17 @@ export const NewsFeedInput = React.forwardRef<
                 ]}
               />
             </Animated.View>
+            {/* Changing this text's color depending on the message length */}
             <BrandText
               style={[
                 fontSemibold12,
                 {
                   color: !formValues?.message
                     ? neutral77
-                    : formValues?.message?.length > 2300 &&
-                      formValues?.message?.length < 2500
+                    : formValues?.message?.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT * CHARS_LIMIT_WARNING_MULTIPLIER &&
+                      formValues?.message?.length < SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                     ? yellowDefault
-                    : formValues?.message?.length >= 2500
+                    : formValues?.message?.length >= SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                     ? errorColor
                     : primaryColor,
                   position: "absolute",
@@ -411,7 +403,7 @@ export const NewsFeedInput = React.forwardRef<
             >
               {formValues?.message?.length}
               <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                /{SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT}
+                /{SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT}
               </BrandText>
             </BrandText>
           </Pressable>
@@ -485,9 +477,11 @@ export const NewsFeedInput = React.forwardRef<
             >
               {freePostCount
                 ? `You have ${freePostCount} free ${type} left`
-                : `The cost for this ${type} is ${(
-                    (postFee || 0) / 1000000
-                  ).toFixed(4)} Tori`}
+                : `The cost for this ${type} is ${prettyPrice(
+                    selectedNetworkId,
+                    postFee.toString(),
+                    "utori"
+                  )}`}
             </BrandText>
           </View>
           <View
@@ -498,6 +492,12 @@ export const NewsFeedInput = React.forwardRef<
               justifyContent: "flex-end",
             }}
           >
+            <EmojiSelector
+              onEmojiSelected={onEmojiSelected}
+              optionsContainer={{ marginLeft: -80, marginTop: -6 }}
+            />
+            <SpacerRow size={2.5} />
+
             <GIFSelector
               optionsContainer={{ marginLeft: -186, marginTop: -6 }}
               onGIFSelected={(url) =>
@@ -510,12 +510,6 @@ export const NewsFeedInput = React.forwardRef<
                   (formValues.gifs || [])?.length >=
                   4
               }
-            />
-            <SpacerRow size={2.5} />
-
-            <EmojiSelector
-              onEmojiSelected={onEmojiSelected}
-              optionsContainer={{ marginLeft: -80, marginTop: -6 }}
             />
             <SpacerRow size={2.5} />
 
@@ -586,7 +580,7 @@ export const NewsFeedInput = React.forwardRef<
                 size="M"
                 color={
                   formValues?.message.length >
-                  SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT
+                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                     ? primaryTextColor
                     : primaryColor
                 }
@@ -596,7 +590,7 @@ export const NewsFeedInput = React.forwardRef<
                 }}
                 backgroundColor={
                   formValues?.message.length >
-                  SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT
+                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                     ? primaryColor
                     : neutral17
                 }
@@ -616,7 +610,7 @@ export const NewsFeedInput = React.forwardRef<
                 (!formValues?.message &&
                   !formValues?.files?.length &&
                   !formValues?.gifs?.length) ||
-                formValues?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHAR_LIMIT
+                formValues?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
               }
               isLoading={isLoading || isMutateLoading}
               size="M"
