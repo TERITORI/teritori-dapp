@@ -38,7 +38,7 @@ const Component = ({ type, text }: MatchText) => {
 
 export const TextRenderer = ({ text }: { text: string }) => {
   const formattedText = useMemo(() => {
-    let refText = text;
+    let refText = text.replace("/generate", "🖼️").replace("/question", "❓");
     const matchTextReference: MatchText[] = [];
 
     hashtagMatch(text)?.map((item, index) => {
