@@ -14,11 +14,12 @@ import { layout } from "../../../utils/style/layout";
 
 interface SimpleButtonProps {
   text: string;
-  size?: "SM" | "M" | "XL";
+  size?: "XS" | "SM" | "M" | "XL";
   color?: string;
   bgColor?: string;
   onPress?(): void;
   containerStyle?: ViewStyle;
+  style?: ViewStyle;
   loading?: boolean;
   disabled?: boolean;
   iconSVG?: React.FC<SvgProps>;
@@ -34,6 +35,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
   loading,
   disabled,
   containerStyle,
+  style,
   iconSVG = null,
   outline = false,
 }) => {
@@ -45,13 +47,18 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
       padH = layout.padding_x3;
       padV = layout.padding_x2_5;
       break;
-    case "M":
-      padH = layout.padding_x2_5;
-      padV = layout.padding_x2;
-      break;
     case "SM":
       padH = layout.padding_x2;
       padV = layout.padding_x1_5;
+      break;
+    case "XS":
+      padH = layout.padding_x1_5;
+      padV = layout.padding_x0_5;
+      break;
+    case "M":
+    default:
+      padH = layout.padding_x2_5;
+      padV = layout.padding_x2;
       break;
   }
 
@@ -73,6 +80,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
             paddingHorizontal: padH,
             paddingVertical: padV,
           },
+          style,
         ]}
       >
         {iconSVG && (
@@ -91,7 +99,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
 const styles = StyleSheet.create({
   btnStyle: {
     alignSelf: "center",
-    borderRadius: 12,
+    borderRadius: layout.padding_x1_5,
     ...(fontSemibold14 as object),
   },
 });

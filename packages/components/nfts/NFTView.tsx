@@ -17,13 +17,12 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
-import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { getCosmosNetwork, parseUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
-import { Network } from "../../utils/network";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -48,26 +47,15 @@ export const NFTView: React.FC<{
   const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
-  const tnsMetadata = useTNSMetadata(nft.ownerId.replace("tori-", ""));
-  const selectedNetwork = useSelectedNetwork();
+  const userInfo = useNSUserInfo(nft.ownerId);
+  const cosmosNetwork = getCosmosNetwork(nft.id);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
   const dropdownRef = useRef<TouchableOpacity>(null);
 
-  const isOwner = (() => {
-    switch (selectedNetwork) {
-      case Network.Teritori:
-        return nft.ownerId === `tori-${selectedWallet?.address}`;
-      case Network.Ethereum:
-        return (
-          nft.ownerId.toLowerCase() === selectedWallet?.address.toLowerCase()
-        );
-      default:
-        return false;
-    }
-  })();
+  const isOwner = nft.ownerId === selectedWallet?.userId;
 
   const isOwnerAndNotListed = isOwner && !nft.isListed;
 
@@ -146,10 +134,9 @@ export const NFTView: React.FC<{
                   <Image
                     source={{
                       uri: ipfsURLToHTTPURL(
-                        tnsMetadata.metadata?.image
-                          ? tnsMetadata.metadata.image
-                          : process.env
-                              .TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
+                        userInfo.metadata?.image
+                          ? userInfo.metadata.image
+                          : cosmosNetwork?.nameServiceDefaultImage || ""
                       ),
                     }} // TODO: proper fallback
                     style={{
@@ -174,7 +161,7 @@ export const NFTView: React.FC<{
                         lineHeight: 16,
                       }}
                     >
-                      {tnsMetadata.metadata?.tokenId ||
+                      {userInfo.metadata?.tokenId ||
                         shortUserAddressFromID(nft.ownerId, 10)}
                     </BrandText>
                   </View>
@@ -254,10 +241,12 @@ export const NFTView: React.FC<{
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
+                    flex: 1,
                   }}
                 >
                   <NetworkIcon size={12} networkId={nft.networkId} />
                   <BrandText
+                    numberOfLines={1}
                     style={{
                       fontSize: 12,
                       marginLeft: 10,
@@ -359,8 +348,14 @@ const styles = StyleSheet.create({
 
 // using this because ellipizeMode seems broken
 const shortUserAddressFromID = (id: string, size: number) => {
-  if (id.startsWith("tori-")) {
-    return id.substring(5, 5 + size) + "..." + id.substring(id.length - size);
+  const [network] = parseUserId(id);
+  if (network) {
+    const prefixLen = network.idPrefix.length + 1;
+    return (
+      id.substring(prefixLen, prefixLen + size) +
+      "..." +
+      id.substring(id.length - size)
+    );
   }
   return id.substring(0, size) + "..." + id.substring(id.length - size);
 };

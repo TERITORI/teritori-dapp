@@ -5,13 +5,13 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strings"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/contractutil"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/go-co-op/gocron"
 	"github.com/peterbourgon/ff/v3"
@@ -20,15 +20,15 @@ import (
 	"gorm.io/gorm"
 )
 
-func sendRewardsList(seasonId string, leaderboard []indexerdb.P2eLeaderboard, chainId string, rpcEndpoint string, distributorContractAddress string, distributorMnemonic string) (*sdk.TxResponse, error) {
+func sendRewardsList(netstore networks.NetworkStore, network *networks.CosmosNetwork, seasonId string, leaderboard []indexerdb.P2eLeaderboard, rpcEndpoint string, distributorMnemonic string) (*sdk.TxResponse, error) {
 	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get rewards")
 	}
 
-	contractQueryClient := contractutil.NewContractQueryClient(chainId, rpcEndpoint)
-	configData, err := contractQueryClient.QueryWasm(distributorContractAddress, `{"config": {}}`)
+	contractQueryClient := contractutil.NewContractQueryClient(network.ChainID, rpcEndpoint)
+	configData, err := contractQueryClient.QueryWasm(network.DistributorContractAddress, `{"config": {}}`)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query contract")
 	}
@@ -42,7 +42,7 @@ func sendRewardsList(seasonId string, leaderboard []indexerdb.P2eLeaderboard, ch
 	distributorOwnerAddress := configData["owner"].(string)
 
 	contractClient, err := contractutil.NewContractClient(
-		chainId,
+		network.ChainID,
 		rpcEndpoint,
 		prefix,
 		distributorOwnerAddress,
@@ -57,7 +57,7 @@ func sendRewardsList(seasonId string, leaderboard []indexerdb.P2eLeaderboard, ch
 
 	rewardCoef := sdk.NewDec(1)
 	// Adjust rewards in testnet
-	if strings.HasPrefix(chainId, "teritori-testnet") {
+	if network.Testnet {
 		rewardCoef = sdk.NewDecWithPrec(1, 6)
 	}
 
@@ -65,7 +65,11 @@ func sendRewardsList(seasonId string, leaderboard []indexerdb.P2eLeaderboard, ch
 	rewardsList := []map[string]interface{}{}
 
 	for _, userScore := range leaderboard {
-		addr := strings.Split(string(userScore.UserID), "-")[1]
+		_, addr, err := netstore.ParseUserID(string(userScore.UserID))
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to parse user id")
+		}
+
 		rank := userScore.Rank
 
 		if rank < 1 {
@@ -92,21 +96,55 @@ func sendRewardsList(seasonId string, leaderboard []indexerdb.P2eLeaderboard, ch
 	}
 	execMsgStr := string(execMsg)
 
-	return contractClient.ExecuteWasm(distributorContractAddress, execMsgStr, funds, "Send rewards list to top players")
+	return contractClient.ExecuteWasm(network.DistributorContractAddress, execMsgStr, funds, "Send rewards list to top players")
+}
+
+func resetLeaderboard(seasonId string, db *gorm.DB) error {
+	err := db.Exec(`
+		UPDATE p2e_leaderboards as lb
+		SET
+			score = 0,
+			rank = 0,
+			in_progress_score = 0,
+			snapshot_rank = 0,
+			snapshot_score = 0
+		WHERE lb.season_id = ?
+	`,
+		seasonId,
+	).Error
+	if err != nil {
+		return errors.Wrap(err, "failed to execute reset leaderboard query")
+	}
+	return nil
 }
 
 func updateLeaderboard(seasonId string, db *gorm.DB) error {
-	currentTimestamp := time.Now().UTC().Unix()
+	now := time.Now()
 
-	// Update Rules:
-	// - If staking is in progress => in progress duration = current - start_time
-	// - If staking ends => if progress duration = end_time - start_time
+	currentTimestamp := now.Unix()
+	dayBeginningTimestamp := time.Date(now.UTC().Year(), now.UTC().Month(), now.UTC().Day(), 0, 0, 0, 0, time.UTC).Unix()
+
+	// S3 Rules:
+	// - duration = (current/end - start/dayBegin)
+	// - start is always < end and < current
+	// - current is always >= dayBegin
+	// All possibles cases:
+	// - start     -> dayBegin  -> current   -> end         Duration: current - dayBegin > 0                     Tested
+	// - start     -> dayBegin  -> end       -> current     Duration: end - dayBegin  > 0                        Tested
+	// - start     -> end       -> dayBegin  -> current     Duration: end - dayBegin < 0 => duration = 0         Tested
+	// - dayBegin  -> start     -> current   -> end         Duration: current - start > 0                        Tested
+	// - dayBegin  -> start     -> end       -> current     Duration: end - start > 0                            Tested
+	// Result: GREATEST (duration, 0)
+
 	updateScoreErr := db.Exec(`
 		UPDATE p2e_leaderboards as lb
 		SET 
 			in_progress_score = score + aggregated_ss.in_progress
 		FROM (
-			SELECT owner_id, season_id, SUM( LEAST(ss.end_time - ss.start_time, ? - ss.start_time) ) as in_progress
+			SELECT
+				owner_id, 
+				season_id, 
+				SUM( GREATEST ( LEAST( ?, ss.end_time ) - GREATEST( ?, ss.start_time ) , 0 ) ) as in_progress
 			FROM p2e_squad_stakings as ss
 			GROUP BY owner_id, season_id
 		) as aggregated_ss
@@ -115,6 +153,7 @@ func updateLeaderboard(seasonId string, db *gorm.DB) error {
 			AND lb.season_id = ?
 	`,
 		currentTimestamp,
+		dayBeginningTimestamp,
 		seasonId,
 	).Error
 	if updateScoreErr != nil {
@@ -156,10 +195,10 @@ func snapshotLeaderboard(seasonId string, db *gorm.DB) error {
 func main() {
 	fs := flag.NewFlagSet("p2e-update-leaderboard", flag.ContinueOnError)
 	var (
-		distributorContractAddress = fs.String("teritori-distributor-contract-address", "", "distributor contract address")
-		distributorOwnerMnemonic   = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of the owner of distributor contract")
-		chainId                    = fs.String("public-chain-id", "", "public chain id")
-		rpcEndpoint                = fs.String("public-chain-rpc-endpoint", "", "public chain rpc endpoint")
+		distributorOwnerMnemonic = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of the owner of distributor contract")
+		rpcEndpoint              = fs.String("p2e-rpc-endpoint", "", "public chain rpc endpoint")
+		networksFile             = fs.String("networks-file", "networks.json", "path to networks config file")
+		networkId                = fs.String("p2e-network-id", "teritori-testnet", "network id")
 
 		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
@@ -183,32 +222,43 @@ func main() {
 		panic(errors.Wrap(err, "failed to init logger"))
 	}
 
+	// load networks
+	networksBytes, err := os.ReadFile(*networksFile)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to read networks config file"))
+	}
+	netstore, err := networks.UnmarshalNetworkStore(networksBytes)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to unmarshal networks config"))
+	}
+
+	// get db
 	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
 		panic(errors.New("missing Database configuration"))
 	}
-
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
 		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
 	db, err := indexerdb.NewPostgresDB(dataConnexion)
-
 	if err != nil {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
 
-	if *chainId == "" {
-		panic(errors.New("chain-id is mandatory"))
+	// validate flags
+
+	if *distributorOwnerMnemonic == "" {
+		panic(errors.New("distributor-owner-mnemonic is mandatory. You have to add TERITORI_DISTRIBUTOR_OWNER_MNEMONIC in .env for local testing (Don't commit this value on repo)"))
 	}
 
 	if *rpcEndpoint == "" {
 		panic(errors.New("rpc-endpoint is mandatory"))
 	}
 
-	if *distributorContractAddress == "" {
-		panic(errors.New("distributor-contract-address is mandatory"))
+	network := netstore.MustGetCosmosNetwork(*networkId)
+	if network.DistributorContractAddress == "" {
+		panic(errors.New("missing distributorContractAddress in network config"))
 	}
-
-	if *distributorOwnerMnemonic == "" {
-		panic(errors.New("distributor-owner-mnemonic is mandatory. You have to add TERITORI_DISTRIBUTOR_OWNER_MNEMONIC in .env for local testing (Don't commit this value on repo)"))
+	if network.ChainID == "" {
+		panic(errors.New("missing chainId in network config"))
 	}
 
 	schedule := gocron.NewScheduler(time.UTC)
@@ -277,13 +327,19 @@ func main() {
 		}
 		logger.Info(fmt.Sprintf("snapshot leaderboard successfully for season: %s", season.ID))
 
-		txResponse, err := sendRewardsList(season.ID, leaderboard, *chainId, *rpcEndpoint, *distributorContractAddress, *distributorOwnerMnemonic)
+		txResponse, err := sendRewardsList(netstore, network, season.ID, leaderboard, *rpcEndpoint, *distributorOwnerMnemonic)
 		if err != nil {
 			logger.Error("failed to send rewards list", zap.Error(err))
 			return
 		}
 
 		logger.Info(fmt.Sprintf("send daily rewards successfully for season: %s", season.ID), zap.String("TxHash", txResponse.TxHash))
+
+		// Season 3: Reset leaderboard after rewards distribution
+		if err := resetLeaderboard(season.ID, db); err != nil {
+			logger.Error("failed to reset leaderboard", zap.Error(err))
+			return
+		}
 	})
 
 	schedule.StartBlocking()

@@ -12,13 +12,15 @@ import gameBoxSVG from "../../../../assets/icons/game-box.svg";
 import inventorySVG from "../../../../assets/icons/inventory.svg";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
 import { BrandText } from "../../../components/BrandText";
-import { ConnectWalletButton } from "../../../components/ConnectWalletButton";
 import FlexRow from "../../../components/FlexRow";
 import { NetworkSelector } from "../../../components/NetworkSelector";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
+import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletButton";
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
+import { useForceNetworkKind } from "../../../hooks/useForceNetworkKind";
+import { NetworkKind } from "../../../networks";
 import {
   RootStackParamList,
   useAppNavigation,
@@ -35,7 +37,9 @@ import { PickByValue } from "../../../utils/types/helper";
 type MenuItem = {
   id: string;
   name: string;
-  route?: keyof PickByValue<RootStackParamList, undefined>;
+  route?:
+    | keyof PickByValue<RootStackParamList, undefined>
+    | "RiotGameMarketplace";
   externalRoute?: string;
   iconSVG: React.FC<SvgProps>;
 };
@@ -90,6 +94,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
 }) => {
   const navigation = useAppNavigation();
   const { name: routeName } = useRoute();
+  useForceNetworkKind(NetworkKind.Cosmos);
 
   const onMenuItemClick = (item: MenuItem) => {
     if (item.externalRoute) {
@@ -151,7 +156,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
           <SpacerRow size={1.5} />
           <Separator horizontal color={neutral33} />
           <SpacerRow size={1.5} />
-          <NetworkSelector />
+          <NetworkSelector forceNetworkKind={NetworkKind.Cosmos} />
           <SpacerRow size={1.5} />
           <ConnectWalletButton />
         </View>

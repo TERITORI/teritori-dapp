@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -10,15 +10,22 @@ import {
   StyleProp,
 } from "react-native";
 
+import { useForceNetworkKind } from "../hooks/useForceNetworkKind";
+import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
 import { useMaxResolution } from "../hooks/useMaxResolution";
+import { NetworkInfo, NetworkKind } from "../networks";
+import { useDAppStoreData } from "../screens/DAppStore/query/useDAppStoreData";
+import { setAvailableApps } from "../store/slices/dapps-store";
+import { useAppDispatch } from "../store/store";
 import {
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
-import { ConnectWalletButton } from "./ConnectWalletButton";
 import { Header } from "./Header";
 import { NetworkSelector } from "./NetworkSelector";
+import { SelectedNetworkGate } from "./SelectedNetworkGate";
+import { ConnectWalletButton } from "./TopMenu/ConnectWalletButton";
 import { Footer } from "./footers/Footer";
 import { Sidebar } from "./navigation/Sidebar";
 
@@ -32,6 +39,8 @@ export const ScreenContainer: React.FC<{
   noScroll?: boolean;
   fullWidth?: boolean;
   smallMargin?: boolean;
+  forceNetworkId?: string;
+  forceNetworkKind?: NetworkKind;
 }> = ({
   children,
   headerChildren,
@@ -43,7 +52,17 @@ export const ScreenContainer: React.FC<{
   fullWidth,
   smallMargin,
   customSidebar,
+  forceNetworkId,
+  forceNetworkKind,
 }) => {
+  const dispatch = useAppDispatch();
+
+  const data = useDAppStoreData();
+
+  if (data) {
+    dispatch(setAvailableApps(data));
+  }
+
   // variables
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
@@ -54,6 +73,19 @@ export const ScreenContainer: React.FC<{
   const { width: maxWidth } = useMaxResolution();
   const width = fullWidth ? "100%" : maxWidth;
 
+  useForceNetworkSelection(forceNetworkId);
+  useForceNetworkKind(forceNetworkKind);
+
+  const networkFilter = useCallback(
+    (n: NetworkInfo | undefined) => {
+      if (forceNetworkId && n?.id !== forceNetworkId) {
+        return false;
+      }
+      return !(forceNetworkKind && n?.kind !== forceNetworkKind);
+    },
+    [forceNetworkId, forceNetworkKind]
+  );
+
   // returns
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
@@ -61,7 +93,7 @@ export const ScreenContainer: React.FC<{
 
       <View style={styles.container}>
         {["android", "ios"].includes(Platform.OS) ||
-          (!hideSidebar ? <Sidebar /> : null)}
+          (!hideSidebar && data ? <Sidebar availableApps={data} /> : null)}
         {!["android", "ios"].includes(Platform.OS) && customSidebar}
 
         <View style={{ width: "100%", flex: 1 }}>
@@ -75,34 +107,36 @@ export const ScreenContainer: React.FC<{
           >
             {/*==== Scrollable screen content*/}
             <View style={{ flex: 1 }}>
-              {hasScroll ? (
-                <ScrollView
-                  style={{ width: "100%", flex: 1 }}
-                  contentContainerStyle={[
-                    {
-                      minHeight: height - headerHeight,
-                    },
-                  ]}
-                >
-                  <View
-                    style={[
-                      styles.childrenContainer,
-                      marginStyle,
-                      { width, flex: 1 },
+              <SelectedNetworkGate filter={networkFilter}>
+                {hasScroll ? (
+                  <ScrollView
+                    style={{ width: "100%", flex: 1 }}
+                    contentContainerStyle={[
+                      {
+                        minHeight: height - headerHeight,
+                      },
                     ]}
                   >
+                    <View
+                      style={[
+                        styles.childrenContainer,
+                        marginStyle,
+                        { width, flex: 1 },
+                      ]}
+                    >
+                      {children}
+                    </View>
+                    {footerChildren ? footerChildren : <Footer />}
+                  </ScrollView>
+                ) : (
+                  <View
+                    style={[styles.childrenContainer, marginStyle, { width }]}
+                  >
                     {children}
+                    {footerChildren ? footerChildren : <Footer />}
                   </View>
-                  {footerChildren ? footerChildren : <Footer />}
-                </ScrollView>
-              ) : (
-                <View
-                  style={[styles.childrenContainer, marginStyle, { width }]}
-                >
-                  {children}
-                  {footerChildren ? footerChildren : <Footer />}
-                </View>
-              )}
+                )}
+              </SelectedNetworkGate>
             </View>
           </View>
           {/*
@@ -119,7 +153,11 @@ export const ScreenContainer: React.FC<{
               alignItems: "center",
             }}
           >
-            <NetworkSelector style={{ marginRight: 12 }} />
+            <NetworkSelector
+              forceNetworkId={forceNetworkId}
+              forceNetworkKind={forceNetworkKind}
+              style={{ marginRight: 12 }}
+            />
             <ConnectWalletButton />
           </View>
         </View>

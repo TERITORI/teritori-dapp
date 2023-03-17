@@ -5,6 +5,8 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
+
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 )
 
 type Attribute struct {
@@ -42,17 +44,17 @@ func (p *ArrayJSONB) Scan(src interface{}) error {
 type NFT struct {
 	// ID is network-dependent
 	// Teritori: tori-<bech32_mint_contract_address>-<token_id>
-	ID          string
+	ID          networks.NFTID
 	Name        string
 	ImageURI    string
-	OwnerID     UserID
+	OwnerID     networks.UserID
 	IsListed    bool
 	PriceAmount sql.NullString `gorm:"type:numeric"`
 	PriceDenom  string
 	LockedOn    string
 
 	// "belongs to" relations
-	CollectionID string `gorm:"index"`
+	CollectionID networks.CollectionID `gorm:"index"`
 	Collection   *Collection
 
 	// "has one" relations

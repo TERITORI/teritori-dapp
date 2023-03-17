@@ -23,7 +23,7 @@ import { dAppType } from "../types";
 export function SelectedDraggable({
   dragHandler,
   index,
-  option: { groupKey, icon, id, title },
+  option: { groupKey, icon, id, title, alwaysOn },
 }: {
   option: dAppType;
   index: number;
@@ -54,14 +54,16 @@ export function SelectedDraggable({
     >
       <Hoverable
         onMouseEnter={() => {
-          setShowTrashIcon(true);
+          if (!alwaysOn) {
+            setShowTrashIcon(true);
+          }
           dragHandler(false);
         }}
         onMouseLeave={() => {
           dragHandler(true);
         }}
       >
-        <TouchableOpacity onPress={deleteFromList}>
+        <TouchableOpacity onPress={deleteFromList} disabled={alwaysOn}>
           <SecondaryBox
             noBrokenCorners
             mainContainerStyle={{

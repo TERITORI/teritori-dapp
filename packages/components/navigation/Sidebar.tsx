@@ -11,16 +11,18 @@ import { useSelector } from "react-redux";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { NetworkKind } from "../../networks";
 import { getValuesFromId } from "../../screens/DAppStore/query/util";
+import { dAppGroup } from "../../screens/DAppStore/types";
 import {
-  selectAvailableApps,
   selectCheckedApps,
+  setSelectedApps,
 } from "../../store/slices/dapps-store";
+import { useAppDispatch } from "../../store/store";
 import { useAppNavigation } from "../../utils/navigation";
-import { Network } from "../../utils/network";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import {
@@ -44,10 +46,13 @@ const SpringConfig: WithSpringConfig = {
   restDisplacementThreshold: 0.2,
 };
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: React.FC<{ availableApps: dAppGroup }> = ({
+  availableApps,
+}) => {
   const selectedWallet = useSelectedWallet();
-  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
-  const selectedNetwork = useSelectedNetwork();
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const selectedNetworkKind = useSelectedNetworkKind();
+  const connected = selectedWallet?.connected;
 
   // variables
   const navigation = useAppNavigation();
@@ -84,27 +89,45 @@ export const Sidebar: React.FC = () => {
   };
 
   const selectedApps = useSelector(selectCheckedApps);
-  const availableApps = useSelector(selectAvailableApps);
+  const dispatch = useAppDispatch();
 
   const dynamicSidebar = useMemo(() => {
-    const dynamicAppsSelection = Object.values(SIDEBAR_LIST);
-
+    if (selectedApps.length === 0 && Object.values(availableApps).length > 0) {
+      dispatch(
+        setSelectedApps(
+          Object.values(availableApps).flatMap((item) => {
+            return Object.values(item.options)
+              .filter((dapp) => dapp.selectedByDefault)
+              .map(({ groupKey, id }) => {
+                return `${groupKey}*SEPARATOR*${id}`;
+              });
+          })
+        )
+      );
+    }
+    const dynamicAppsSelection = [] as {
+      [key: string]: any;
+    };
     selectedApps.map((element) => {
       const { appId, groupKey } = getValuesFromId(element);
       if (!availableApps[groupKey]) {
         return;
       }
       const option = availableApps[groupKey].options[appId];
-      // @ts-ignore
-      dynamicAppsSelection[element] = {
-        id: option.id,
-        title: option.title,
-        route: option.route,
-        icon: option.icon,
-      };
+
+      dynamicAppsSelection[element] = SIDEBAR_LIST[option.id]
+        ? SIDEBAR_LIST[option.id]
+        : {
+            id: option.id,
+            title: option.title,
+            route: option.route,
+            icon: option.icon,
+          };
     });
+    dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
+
     return dynamicAppsSelection;
-  }, [selectedApps, availableApps]);
+  }, [selectedApps, availableApps, dispatch]);
 
   // returns
   return (
@@ -129,7 +152,11 @@ export const Sidebar: React.FC = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           let { route } = item;
-          if (item.disabledOn?.includes(selectedNetwork || Network.Unknown)) {
+          if (
+            item.disabledOn?.includes(
+              selectedNetworkKind || NetworkKind.Unknown
+            )
+          ) {
             route = "ComingSoon";
           }
 
@@ -168,14 +195,16 @@ export const Sidebar: React.FC = () => {
           }}
         />
 
-        {tnsMetadata.metadata && (
-          <SidebarProfileButton
-            walletAddress={selectedWallet?.address || ""}
-            tokenId={tnsMetadata.metadata.tokenId || ""}
-            image={tnsMetadata.metadata.image || ""}
-            isExpanded={isSidebarExpanded}
-          />
-        )}
+        {selectedNetworkKind === NetworkKind.Cosmos &&
+          connected &&
+          userInfo.metadata && (
+            <SidebarProfileButton
+              userId={selectedWallet?.userId || ""}
+              tokenId={userInfo.metadata.tokenId || ""}
+              image={userInfo.metadata.image || ""}
+              isExpanded={isSidebarExpanded}
+            />
+          )}
       </View>
     </Animated.View>
   );

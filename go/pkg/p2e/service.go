@@ -57,7 +57,7 @@ func (s *P2eService) UserRank(ctx context.Context, req *p2epb.UserRankRequest) (
 		WHERE pl.user_id = ?
 	`,
 		seasonId,
-		indexerdb.TeritoriUserID(userId),
+		userId,
 	).Scan(&userRank).Error
 
 	if err != nil {

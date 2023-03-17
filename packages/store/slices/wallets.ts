@@ -1,12 +1,12 @@
 import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { Network } from "../../utils/network";
+import { NetworkKind } from "../../networks";
 import { RootState } from "../store";
 
 export interface StoreWallet {
   publicKey: string;
-  network: Network;
+  network: NetworkKind;
 }
 
 export const storeWalletId = (wallet: StoreWallet) =>
