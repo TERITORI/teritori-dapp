@@ -142,7 +142,7 @@ func (h *Handler) handleExecuteCreatePost(e *Message, execMsg *wasmtypes.MsgExec
 		return errors.Wrap(err, "failed to unmarshal execute create post msg")
 	}
 
-	return h.createPost(e, execMsg, &execCreatePostMsg.CreatePost, true)
+	return h.createPost(e, execMsg, &execCreatePostMsg.CreatePost, false)
 }
 
 func (h *Handler) createPost(

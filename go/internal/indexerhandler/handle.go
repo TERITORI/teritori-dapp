@@ -33,12 +33,13 @@ type Message struct {
 }
 
 type Config struct {
-	MinterCodeIDs    []uint64
-	TendermintClient *tmws.Client
-	BlockTimeCache   *bigcache.BigCache
-	PricesClient     pricespb.PricesServiceClient
-	Network          *networks.CosmosNetwork
-	NetworkStore     networks.NetworkStore
+	MinterCodeIDs             []uint64
+	TendermintClient          *tmws.Client
+	BlockTimeCache            *bigcache.BigCache
+	PricesClient              pricespb.PricesServiceClient
+	Network                   *networks.CosmosNetwork
+	NetworkStore              networks.NetworkStore
+	SocialFeedContractAddress string
 }
 
 type Handler struct {
@@ -244,23 +245,30 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}
 		}
-	// NOTE: add another stake handler here if needed
 	// Feeds actions
 	case "create_post":
-		if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle create post")
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create post")
+			}
 		}
 	case "create_post_by_bot":
-		if err := h.handleExecuteCreatePostByBot(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle create post by bot")
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteCreatePostByBot(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create post by bot")
+			}
 		}
 	case "react_post":
-		if err := h.handleExecuteReactPost(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle react post")
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteReactPost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle react post")
+			}
 		}
 	case "delete_post":
-		if err := h.handleExecuteDeletePost(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle delete post")
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteDeletePost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle delete post")
+			}
 		}
 	}
 
