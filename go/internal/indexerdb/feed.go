@@ -11,13 +11,14 @@ userReactions = [
 */
 
 type Post struct {
-	Identifier           string `gorm:"primaryKey"`
-	ParentPostIdentifier string `gorm:"index"`
-	Category             uint32 `gorm:"index"`
-	IsDeleted            bool
-	IsFree               bool
+	Identifier           string          `gorm:"primaryKey"`
+	ParentPostIdentifier string          `gorm:"index"`
+	Category             uint32          `gorm:"index"`
+	IsBot                bool            `gorm:"default:false"`
 	Metadata             ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`
 	UserReactions        ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`
 	CreatedBy            networks.UserID `gorm:"index"`
 	CreatedAt            int64
+	IsDeleted            bool
+	IsFree               bool
 }

@@ -25,6 +25,10 @@ type ExecCreatePostMsg struct {
 	CreatePost CreatePostMsg `json:"create_post"`
 }
 
+type ExecCreatePostByBotMsg struct {
+	CreatePostByBot CreatePostMsg `json:"create_post_by_bot"`
+}
+
 type ReactPostMsg struct {
 	Identifier string `json:"identifier"`
 	Icon       string `json:"icon"`
@@ -123,16 +127,32 @@ func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecu
 	return nil
 }
 
+func (h *Handler) handleExecuteCreatePostByBot(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	var execCreatePostByBotMsg ExecCreatePostByBotMsg
+	if err := json.Unmarshal(execMsg.Msg, &execCreatePostByBotMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal execute create post by bot msg")
+	}
+
+	return h.createPost(e, execMsg, &execCreatePostByBotMsg.CreatePostByBot, true)
+}
+
 func (h *Handler) handleExecuteCreatePost(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	var execCreatePostMsg ExecCreatePostMsg
 	if err := json.Unmarshal(execMsg.Msg, &execCreatePostMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute create post msg")
 	}
 
-	createPost := execCreatePostMsg.CreatePost
+	return h.createPost(e, execMsg, &execCreatePostMsg.CreatePost, true)
+}
 
+func (h *Handler) createPost(
+	e *Message,
+	execMsg *wasmtypes.MsgExecuteContract,
+	createPostMsg *CreatePostMsg,
+	isBot bool,
+) error {
 	var metadataJSON map[string]interface{}
-	if err := json.Unmarshal([]byte(createPost.Metadata), &metadataJSON); err != nil {
+	if err := json.Unmarshal([]byte(createPostMsg.Metadata), &metadataJSON); err != nil {
 		return errors.Wrap(err, "failed to unmarshal metadata")
 	}
 
@@ -142,13 +162,14 @@ func (h *Handler) handleExecuteCreatePost(e *Message, execMsg *wasmtypes.MsgExec
 	}
 
 	post := indexerdb.Post{
-		Identifier:           createPost.Identifier,
-		ParentPostIdentifier: createPost.ParentPostIdentifier,
-		Category:             createPost.Category,
+		Identifier:           createPostMsg.Identifier,
+		ParentPostIdentifier: createPostMsg.ParentPostIdentifier,
+		Category:             createPostMsg.Category,
 		Metadata:             metadataJSON,
 		UserReactions:        map[string]interface{}{},
 		CreatedBy:            h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:            createdAt.Unix(),
+		IsBot:                isBot,
 	}
 
 	if err := h.db.Create(&post).Error; err != nil {

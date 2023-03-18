@@ -250,6 +250,10 @@ func (h *Handler) handleExecute(e *Message) error {
 		if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle create post")
 		}
+	case "create_post_by_bot":
+		if err := h.handleExecuteCreatePostByBot(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle create post by bot")
+		}
 	case "react_post":
 		if err := h.handleExecuteReactPost(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle react post")

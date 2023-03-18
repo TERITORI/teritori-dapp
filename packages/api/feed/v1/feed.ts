@@ -53,10 +53,7 @@ function createBaseIPFSKeyRequest(): IPFSKeyRequest {
 }
 
 export const IPFSKeyRequest = {
-  encode(
-    message: IPFSKeyRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: IPFSKeyRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userId !== "") {
       writer.uint32(10).string(message.userId);
     }
@@ -91,9 +88,7 @@ export const IPFSKeyRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<IPFSKeyRequest>, I>>(
-    object: I
-  ): IPFSKeyRequest {
+  fromPartial<I extends Exact<DeepPartial<IPFSKeyRequest>, I>>(object: I): IPFSKeyRequest {
     const message = createBaseIPFSKeyRequest();
     message.userId = object.userId ?? "";
     return message;
@@ -105,10 +100,7 @@ function createBaseIPFSKeyResponse(): IPFSKeyResponse {
 }
 
 export const IPFSKeyResponse = {
-  encode(
-    message: IPFSKeyResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: IPFSKeyResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.jwt !== "") {
       writer.uint32(10).string(message.jwt);
     }
@@ -143,9 +135,7 @@ export const IPFSKeyResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<IPFSKeyResponse>, I>>(
-    object: I
-  ): IPFSKeyResponse {
+  fromPartial<I extends Exact<DeepPartial<IPFSKeyResponse>, I>>(object: I): IPFSKeyResponse {
     const message = createBaseIPFSKeyResponse();
     message.jwt = object.jwt ?? "";
     return message;
@@ -157,10 +147,7 @@ function createBaseReaction(): Reaction {
 }
 
 export const Reaction = {
-  encode(
-    message: Reaction,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Reaction, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.icon !== "") {
       writer.uint32(10).string(message.icon);
     }
@@ -307,38 +294,26 @@ export const Post = {
       isDeleted: isSet(object.isDeleted) ? Boolean(object.isDeleted) : false,
       identifier: isSet(object.identifier) ? String(object.identifier) : "",
       metadata: isSet(object.metadata) ? String(object.metadata) : "",
-      parentPostIdentifier: isSet(object.parentPostIdentifier)
-        ? String(object.parentPostIdentifier)
-        : "",
-      subPostLength: isSet(object.subPostLength)
-        ? Number(object.subPostLength)
-        : 0,
+      parentPostIdentifier: isSet(object.parentPostIdentifier) ? String(object.parentPostIdentifier) : "",
+      subPostLength: isSet(object.subPostLength) ? Number(object.subPostLength) : 0,
       createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
       createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
-      reactions: Array.isArray(object?.reactions)
-        ? object.reactions.map((e: any) => Reaction.fromJSON(e))
-        : [],
+      reactions: Array.isArray(object?.reactions) ? object.reactions.map((e: any) => Reaction.fromJSON(e)) : [],
     };
   },
 
   toJSON(message: Post): unknown {
     const obj: any = {};
-    message.category !== undefined &&
-      (obj.category = Math.round(message.category));
+    message.category !== undefined && (obj.category = Math.round(message.category));
     message.isDeleted !== undefined && (obj.isDeleted = message.isDeleted);
     message.identifier !== undefined && (obj.identifier = message.identifier);
     message.metadata !== undefined && (obj.metadata = message.metadata);
-    message.parentPostIdentifier !== undefined &&
-      (obj.parentPostIdentifier = message.parentPostIdentifier);
-    message.subPostLength !== undefined &&
-      (obj.subPostLength = Math.round(message.subPostLength));
+    message.parentPostIdentifier !== undefined && (obj.parentPostIdentifier = message.parentPostIdentifier);
+    message.subPostLength !== undefined && (obj.subPostLength = Math.round(message.subPostLength));
     message.createdBy !== undefined && (obj.createdBy = message.createdBy);
-    message.createdAt !== undefined &&
-      (obj.createdAt = Math.round(message.createdAt));
+    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
     if (message.reactions) {
-      obj.reactions = message.reactions.map((e) =>
-        e ? Reaction.toJSON(e) : undefined
-      );
+      obj.reactions = message.reactions.map((e) => e ? Reaction.toJSON(e) : undefined);
     } else {
       obj.reactions = [];
     }
@@ -355,8 +330,7 @@ export const Post = {
     message.subPostLength = object.subPostLength ?? 0;
     message.createdBy = object.createdBy ?? "";
     message.createdAt = object.createdAt ?? 0;
-    message.reactions =
-      object.reactions?.map((e) => Reaction.fromPartial(e)) || [];
+    message.reactions = object.reactions?.map((e) => Reaction.fromPartial(e)) || [];
     return message;
   },
 };
@@ -366,10 +340,7 @@ function createBasePostFilter(): PostFilter {
 }
 
 export const PostFilter = {
-  encode(
-    message: PostFilter,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PostFilter, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.user !== "") {
       writer.uint32(10).string(message.user);
     }
@@ -424,15 +395,9 @@ export const PostFilter = {
   fromJSON(object: any): PostFilter {
     return {
       user: isSet(object.user) ? String(object.user) : "",
-      mentions: Array.isArray(object?.mentions)
-        ? object.mentions.map((e: any) => String(e))
-        : [],
-      categories: Array.isArray(object?.categories)
-        ? object.categories.map((e: any) => Number(e))
-        : [],
-      hashtags: Array.isArray(object?.hashtags)
-        ? object.hashtags.map((e: any) => String(e))
-        : [],
+      mentions: Array.isArray(object?.mentions) ? object.mentions.map((e: any) => String(e)) : [],
+      categories: Array.isArray(object?.categories) ? object.categories.map((e: any) => Number(e)) : [],
+      hashtags: Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => String(e)) : [],
     };
   },
 
@@ -457,9 +422,7 @@ export const PostFilter = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PostFilter>, I>>(
-    object: I
-  ): PostFilter {
+  fromPartial<I extends Exact<DeepPartial<PostFilter>, I>>(object: I): PostFilter {
     const message = createBasePostFilter();
     message.user = object.user ?? "";
     message.mentions = object.mentions?.map((e) => e) || [];
@@ -474,10 +437,7 @@ function createBasePostsRequest(): PostsRequest {
 }
 
 export const PostsRequest = {
-  encode(
-    message: PostsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PostsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.filter !== undefined) {
       PostFilter.encode(message.filter, writer.uint32(10).fork()).ldelim();
     }
@@ -516,9 +476,7 @@ export const PostsRequest = {
 
   fromJSON(object: any): PostsRequest {
     return {
-      filter: isSet(object.filter)
-        ? PostFilter.fromJSON(object.filter)
-        : undefined,
+      filter: isSet(object.filter) ? PostFilter.fromJSON(object.filter) : undefined,
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
     };
@@ -526,23 +484,17 @@ export const PostsRequest = {
 
   toJSON(message: PostsRequest): unknown {
     const obj: any = {};
-    message.filter !== undefined &&
-      (obj.filter = message.filter
-        ? PostFilter.toJSON(message.filter)
-        : undefined);
+    message.filter !== undefined && (obj.filter = message.filter ? PostFilter.toJSON(message.filter) : undefined);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PostsRequest>, I>>(
-    object: I
-  ): PostsRequest {
+  fromPartial<I extends Exact<DeepPartial<PostsRequest>, I>>(object: I): PostsRequest {
     const message = createBasePostsRequest();
-    message.filter =
-      object.filter !== undefined && object.filter !== null
-        ? PostFilter.fromPartial(object.filter)
-        : undefined;
+    message.filter = (object.filter !== undefined && object.filter !== null)
+      ? PostFilter.fromPartial(object.filter)
+      : undefined;
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
     return message;
@@ -554,10 +506,7 @@ function createBasePostsResponse(): PostsResponse {
 }
 
 export const PostsResponse = {
-  encode(
-    message: PostsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: PostsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.posts) {
       Post.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -583,26 +532,20 @@ export const PostsResponse = {
   },
 
   fromJSON(object: any): PostsResponse {
-    return {
-      posts: Array.isArray(object?.posts)
-        ? object.posts.map((e: any) => Post.fromJSON(e))
-        : [],
-    };
+    return { posts: Array.isArray(object?.posts) ? object.posts.map((e: any) => Post.fromJSON(e)) : [] };
   },
 
   toJSON(message: PostsResponse): unknown {
     const obj: any = {};
     if (message.posts) {
-      obj.posts = message.posts.map((e) => (e ? Post.toJSON(e) : undefined));
+      obj.posts = message.posts.map((e) => e ? Post.toJSON(e) : undefined);
     } else {
       obj.posts = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<PostsResponse>, I>>(
-    object: I
-  ): PostsResponse {
+  fromPartial<I extends Exact<DeepPartial<PostsResponse>, I>>(object: I): PostsResponse {
     const message = createBasePostsResponse();
     message.posts = object.posts?.map((e) => Post.fromPartial(e)) || [];
     return message;
@@ -610,14 +553,8 @@ export const PostsResponse = {
 };
 
 export interface FeedService {
-  Posts(
-    request: DeepPartial<PostsRequest>,
-    metadata?: grpc.Metadata
-  ): Promise<PostsResponse>;
-  IPFSKey(
-    request: DeepPartial<IPFSKeyRequest>,
-    metadata?: grpc.Metadata
-  ): Promise<IPFSKeyResponse>;
+  Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse>;
+  IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse>;
 }
 
 export class FeedServiceClientImpl implements FeedService {
@@ -629,26 +566,12 @@ export class FeedServiceClientImpl implements FeedService {
     this.IPFSKey = this.IPFSKey.bind(this);
   }
 
-  Posts(
-    request: DeepPartial<PostsRequest>,
-    metadata?: grpc.Metadata
-  ): Promise<PostsResponse> {
-    return this.rpc.unary(
-      FeedServicePostsDesc,
-      PostsRequest.fromPartial(request),
-      metadata
-    );
+  Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse> {
+    return this.rpc.unary(FeedServicePostsDesc, PostsRequest.fromPartial(request), metadata);
   }
 
-  IPFSKey(
-    request: DeepPartial<IPFSKeyRequest>,
-    metadata?: grpc.Metadata
-  ): Promise<IPFSKeyResponse> {
-    return this.rpc.unary(
-      FeedServiceIPFSKeyDesc,
-      IPFSKeyRequest.fromPartial(request),
-      metadata
-    );
+  IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse> {
+    return this.rpc.unary(FeedServiceIPFSKeyDesc, IPFSKeyRequest.fromPartial(request), metadata);
   }
 }
 
@@ -698,8 +621,7 @@ export const FeedServiceIPFSKeyDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-interface UnaryMethodDefinitionishR
-  extends grpc.UnaryMethodDefinition<any, any> {
+interface UnaryMethodDefinitionishR extends grpc.UnaryMethodDefinition<any, any> {
   requestStream: any;
   responseStream: any;
 }
@@ -710,7 +632,7 @@ interface Rpc {
   unary<T extends UnaryMethodDefinitionish>(
     methodDesc: T,
     request: any,
-    metadata: grpc.Metadata | undefined
+    metadata: grpc.Metadata | undefined,
   ): Promise<any>;
 }
 
@@ -732,7 +654,7 @@ export class GrpcWebImpl {
       debug?: boolean;
       metadata?: grpc.Metadata;
       upStreamRetryCodes?: number[];
-    }
+    },
   ) {
     this.host = host;
     this.options = options;
@@ -741,16 +663,12 @@ export class GrpcWebImpl {
   unary<T extends UnaryMethodDefinitionish>(
     methodDesc: T,
     _request: any,
-    metadata: grpc.Metadata | undefined
+    metadata: grpc.Metadata | undefined,
   ): Promise<any> {
     const request = { ..._request, ...methodDesc.requestType };
-    const maybeCombinedMetadata =
-      metadata && this.options.metadata
-        ? new BrowserHeaders({
-            ...this.options?.metadata.headersMap,
-            ...metadata?.headersMap,
-          })
-        : metadata || this.options.metadata;
+    const maybeCombinedMetadata = metadata && this.options.metadata
+      ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
+      : metadata || this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
@@ -762,11 +680,7 @@ export class GrpcWebImpl {
           if (response.status === grpc.Code.OK) {
             resolve(response.message);
           } else {
-            const err = new GrpcWebError(
-              response.statusMessage,
-              response.status,
-              response.trailers
-            );
+            const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
           }
         },
@@ -794,31 +708,16 @@ var globalThis: any = (() => {
   throw "Unable to locate global object";
 })();
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin
-  ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-    };
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
@@ -837,11 +736,7 @@ function isSet(value: any): boolean {
 }
 
 export class GrpcWebError extends Error {
-  constructor(
-    message: string,
-    public code: grpc.Code,
-    public metadata: grpc.Metadata
-  ) {
+  constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }
 }
