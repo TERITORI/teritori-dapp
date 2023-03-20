@@ -6,6 +6,7 @@ import { useTeritoriSocialFeedCreatePostMutation } from "../../contracts-clients
 import useSelectedWallet from "../useSelectedWallet";
 import { FetchCommentResponse } from "./useFetchComments";
 
+// =============== Used only for Simple Post for now. (Sorry for the mess)
 export const useCreatePost = ({
   onSuccess,
   onMutate,

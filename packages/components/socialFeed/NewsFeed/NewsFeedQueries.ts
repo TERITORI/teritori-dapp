@@ -1,13 +1,13 @@
+import { coin } from "cosmwasm";
 import { omit } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { pinataPinFileToIPFS } from "../../../candymachine/pinata-upload";
 import { socialFeedClient } from "../../../client-creators/socialFeedClient";
 import { Wallet } from "../../../context/WalletsProvider";
-import { OpenGraphType } from "../../../hooks/feed/types";
 import { defaultSocialFeedFee } from "../../../utils/fee";
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
-import { ipfsURLToHTTPURL } from "./../../../utils/ipfs";
 import {
   PostCategory,
   NewPostFormValues,
@@ -38,7 +38,7 @@ export const getAvailableFreePost = async ({
 
     return Number(freePostCount);
   } catch (err) {
-    console.log("getAvailableFreePost err", err);
+    console.error("getAvailableFreePost err", err);
   }
 };
 
@@ -68,7 +68,7 @@ export const getPostFee = async ({
 
     return +cost;
   } catch (err) {
-    console.log("getPostFee err", err);
+    console.error("getPostFee err", err);
   }
 };
 
@@ -106,10 +106,12 @@ interface CreatePostParams {
   fee: number;
   category: PostCategory;
   parentId?: string;
-  openGraph?: OpenGraphType;
+  // openGraph?: OpenGraphType;
   pinataJWTKey?: string;
+  identifier?: string;
 }
 
+// =============== Used only for Article for now. (Sorry for the mess)
 export const createPost = async ({
   networkId,
   wallet,
@@ -119,6 +121,7 @@ export const createPost = async ({
   parentId,
   pinataJWTKey,
   category,
+  identifier,
 }: CreatePostParams) => {
   if (!wallet?.connected || !wallet.address) {
     return;
@@ -150,6 +153,7 @@ export const createPost = async ({
     title: formValues.title || "",
     message,
     files,
+    gifs: formValues.gifs || [],
     hashtags: formValues.hashtags || [],
     mentions: formValues.mentions || [],
   });
@@ -157,20 +161,13 @@ export const createPost = async ({
   await client.createPost(
     {
       category,
-      identifier: uuidv4(),
+      identifier: identifier || uuidv4(),
       metadata: JSON.stringify(metadata),
       parentPostIdentifier: parentId,
     },
     defaultSocialFeedFee,
     "",
-    freePostCount
-      ? undefined
-      : [
-          {
-            denom: "utori",
-            amount: String(fee),
-          },
-        ]
+    freePostCount ? undefined : [coin(fee, "utori")]
   );
 };
 

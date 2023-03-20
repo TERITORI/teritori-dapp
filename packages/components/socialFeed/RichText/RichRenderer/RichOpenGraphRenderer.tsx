@@ -1,18 +1,18 @@
 import React from "react";
 import { Image, Linking, Pressable, StyleSheet, View } from "react-native";
 
-import { OpenGraphType } from "../../../hooks/feed/types";
+import { OpenGraphType } from "../../../../hooks/feed/types";
 import {
   transparentColor,
   neutral33,
   neutral77,
-} from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText";
-import { SpacerColumn } from "../../spacer";
+} from "../../../../utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
+import { BrandText } from "../../../BrandText";
+import { SpacerColumn } from "../../../spacer";
 
-export const RichOpenGraphCard: React.FC<OpenGraphType> = ({
+export const RichOpenGraphRenderer: React.FC<OpenGraphType> = ({
   domain,
   title,
   description,

@@ -6,8 +6,8 @@ import {
   urlMatch,
 } from "../../../../utils/social-feed";
 import { HashtagRenderer } from "./HashtagRenderer";
-import { MentionRender } from "./MentionRenderer";
-import { UrlRender } from "./URLRenderer";
+import { MentionRenderer } from "./MentionRenderer";
+import { URLRenderer } from "./URLRenderer";
 
 const REFERENCE_REGEX = /(?=--\S.+--)/gm;
 
@@ -29,9 +29,9 @@ const Component = ({ type, text }: MatchText) => {
   if (type === "hashtag") {
     return <HashtagRenderer text={text} />;
   } else if (type === "url") {
-    return <UrlRender text={text} />;
+    return <URLRenderer text={text} />;
   } else if (type === "mention") {
-    return <MentionRender text={text} />;
+    return <MentionRenderer text={text} />;
   }
   return null;
 };

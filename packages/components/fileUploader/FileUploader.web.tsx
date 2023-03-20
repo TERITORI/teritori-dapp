@@ -2,12 +2,12 @@ import React, { SyntheticEvent, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import gradientDottedCardSVG from "../../../assets/cards/gradient-dotted-card.svg";
-import bucketSVG from "../../../assets/icons/bucket.svg";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { neutral17, neutral77, redDefault } from "../../utils/style/colors";
+import { neutral17, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVG } from "../SVG";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
@@ -19,6 +19,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   label,
   style,
   onUpload,
+  // multiple is not used at true for now, needs to refactor in parents
   multiple,
   mimeTypes,
   children,
@@ -140,26 +141,13 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                 display: "flex",
               }}
             >
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={{
-                  height: 32,
-                  width: 32,
-                  borderRadius: 24,
-                  position: "absolute",
-                  top: 12,
-                  right: 12,
-                  backgroundColor: redDefault,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+              <DeleteButton
                 onPress={() => {
                   setFile("");
                   onUpload([]);
                 }}
-              >
-                <SVG source={bucketSVG} height={16} width={16} />
-              </TouchableOpacity>
+                style={{ top: 12, right: 12 }}
+              />
               <img
                 src={file}
                 style={{

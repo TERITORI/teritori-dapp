@@ -9,12 +9,10 @@ import {
   FieldValues,
 } from "react-hook-form";
 import {
-  NativeSyntheticEvent,
   Pressable,
   StyleProp,
   StyleSheet,
   TextInput,
-  TextInputKeyPressEventData,
   TextInputProps,
   TextStyle,
   View,
@@ -22,6 +20,7 @@ import {
 } from "react-native";
 
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
+import { handleKeyPress } from "../../utils/keyboard";
 import {
   additionalRed,
   neutral22,
@@ -175,19 +174,6 @@ export const TextInputCustom = <T extends FieldValues>({
     }
   };
 
-  // Handling key pressing
-  const handleKeyPress = (
-    event: NativeSyntheticEvent<TextInputKeyPressEventData>
-  ) => {
-    const {
-      nativeEvent: { key: keyValue },
-    } = event;
-    switch (keyValue) {
-      case "Enter":
-        if (onPressEnter) onPressEnter();
-    }
-  };
-
   return (
     <View style={containerStyle}>
       {variant === "labelOutside" && (
@@ -225,7 +211,7 @@ export const TextInputCustom = <T extends FieldValues>({
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
-              onKeyPress={handleKeyPress}
+              onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
               placeholderTextColor="#999999"
               value={field.value}
               style={styles.textInput}

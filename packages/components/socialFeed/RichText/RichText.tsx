@@ -6,16 +6,18 @@ import {
   RichToolbar,
 } from "react-native-pell-rich-editor";
 
-import { ActionsContainer } from "./ActionsContainer";
 import { PublishButton } from "./PublishButton";
 import { RichTextProps } from "./RichText.type";
+import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./ToolbarContainer";
+
+// /!\ It will not fully work on mobile
 
 export const RichText: React.FC<RichTextProps> = ({
   onChange = () => {},
   onBlur,
-  readOnly,
   publishButtonProps,
+  isPostConsultation,
 }) => {
   const richText = useRef(null);
   return (
@@ -27,15 +29,21 @@ export const RichText: React.FC<RichTextProps> = ({
         <RichEditor ref={richText} onChange={onChange} onBlur={onBlur} />
       </KeyboardAvoidingView>
 
-      <ActionsContainer readOnly={readOnly}>
-        <ToolbarContainer>
-          <RichToolbar
-            editor={richText}
-            actions={[actions.setBold, actions.setItalic, actions.setUnderline]}
-          />
-        </ToolbarContainer>
-        {!!publishButtonProps && <PublishButton {...publishButtonProps} />}
-      </ActionsContainer>
+      {isPostConsultation && (
+        <ActionsContainer>
+          <ToolbarContainer>
+            <RichToolbar
+              editor={richText}
+              actions={[
+                actions.setBold,
+                actions.setItalic,
+                actions.setUnderline,
+              ]}
+            />
+          </ToolbarContainer>
+          {!!publishButtonProps && <PublishButton {...publishButtonProps} />}
+        </ActionsContainer>
+      )}
     </View>
   );
 };

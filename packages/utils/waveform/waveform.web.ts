@@ -42,7 +42,7 @@ const getWaveFormFromAudio = (buffer: ArrayBuffer): Promise<WaveformData> => {
       } else {
         resolve(waveform);
       }
-      audioContext.close();
+      if (audioContext.state !== "closed") audioContext.close();
     });
   });
 };

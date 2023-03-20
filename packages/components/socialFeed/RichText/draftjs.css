@@ -1,10 +1,25 @@
 /* Editor */
+.DraftEditor-editorContainer figure {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px auto;
+}
+
+.DraftEditor-editorContainer figure img {
+  width: auto;
+  max-width: 100%;
+}
+
+
+
 .public-DraftEditor-content {
   color: #ffffff;
   line-height: 20px;
   font-size: 14px;
   font-family: Exo_500Medium;
-  min-height: 100px;
+  min-height: 60px;
 }
 
 .public-DraftEditor-content a {
@@ -29,6 +44,8 @@
   position: absolute;
 }
 
+
+
 /* Static toolbar */
 .draftjs-static-toolbar {
   border-radius: 6px;
@@ -36,10 +53,11 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 40px;
+  min-height: 40px;
 }
 
 .draftjs-static-toolbar input {
@@ -76,37 +94,21 @@
   fill: #ffffff !important;
 }
 
-/*.draftjs-static-toolbar-buttonWrapper button:hover {*/
-/*  background-color: #000000;*/
-/*}*/
-
-.DraftEditor-editorContainer figure {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px auto;
-}
-
-.DraftEditor-editorContainer figure img {
-  width: auto;
-  max-width: 100%;
-}
 
 /* Inline toolbar */
-
 .draftjs-inline-toolbar {
-  left: 50%;
-  transform: translate(-50%) scale(0);
+  left: 300px !important;
   position: absolute;
-  top: 20px;
-  left: 0;
-  border: 1px solid #333333;
-  background-color: #171717;
   border-radius: 6px;
-  box-shadow: none !important;
-  z-index: 9999;
+  z-index: 999;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 40px;
 }
 
 .draftjs-inline-toolbar-buttonWrapper {
@@ -120,25 +122,21 @@
 }
 
 .draftjs-inline-toolbar-buttonWrapper button {
-  background: #333333;
+  cursor: pointer;
+  background-color: #333333;
   border-radius: 4px;
-  color: white;
-  margin: 4px 2px;
-  border: none;
-}
-
-.draftjs-inline-toolbar-buttonWrapper button:first-child {
-  margin-left: 4px;
-}
-
-.draftjs-inline-toolbar-buttonWrapper button:last-child {
-  margin-right: 4px;
+  color: #ffffff;
+  margin-left: 3px;
+  margin-right: 3px;
+  height: 30px;
+  width: 30px;
+  border: 1px solid #333333;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .draftjs-inline-toolbar-buttonWrapper button svg {
-  fill: white !important;
-}
-
-.draftjs-inline-toolbar-buttonWrapper button:hover {
-  background-color: #000000;
+  fill: #ffffff !important;
 }

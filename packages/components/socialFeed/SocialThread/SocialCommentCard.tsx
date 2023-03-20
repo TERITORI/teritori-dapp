@@ -41,7 +41,7 @@ import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
-import { AnimationFadeIn } from "../../animations";
+import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { AnimationFadeInOut } from "../../animations/AnimationFadeInOut";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../buttons/PrimaryButtonOutline";
@@ -94,7 +94,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     });
   const oldIsFetching = usePrevious(isFetching);
 
-  const { mutate: reactToComment, isLoading: isReactLoading } =
+  const { mutate: postMutate, isLoading: isPostMutationLoading } =
     useTeritoriSocialFeedReactPostMutation({
       onSuccess(_data, variables) {
         const reactions = getUpdatedReactions(
@@ -126,10 +126,12 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     if (replyShown) {
       refetch();
     }
-  }, [comment?.identifier, refresh]);
+  }, [replyShown, refetch]);
 
   useEffect(() => {
-    setLocalComment({ ...localComment, isInLocal: comment.isInLocal });
+    setLocalComment((localComment) => {
+      return { ...localComment, isInLocal: comment.isInLocal };
+    });
   }, [comment.isInLocal]);
 
   useEffect(() => {
@@ -139,7 +141,13 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           replyListYOffset.reduce((acc, cur) => acc + cur, parentOffsetValue)
         );
     }
-  }, [isFetching]);
+  }, [
+    isFetching,
+    oldIsFetching,
+    onScrollTo,
+    parentOffsetValue,
+    replyListYOffset,
+  ]);
 
   const onShowReply = () => {
     if (replyShown) {
@@ -168,7 +176,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       walletAddress: wallet.address,
     });
 
-    reactToComment({
+    postMutate({
       client,
       msg: {
         icon: e,
@@ -284,12 +292,12 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 <Reactions
                   reactions={localComment.reactions}
                   onPressReaction={handleReaction}
-                  isLoading={isReactLoading}
+                  isLoading={isPostMutationLoading}
                 />
                 <SpacerRow size={2.5} />
                 <EmojiSelector
                   onEmojiSelected={handleReaction}
-                  isLoading={isReactLoading}
+                  isLoading={isPostMutationLoading}
                 />
                 <SpacerRow size={2.5} />
                 <ReplyButton onPress={handleReply} />

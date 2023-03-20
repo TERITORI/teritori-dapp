@@ -1,13 +1,17 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import closeSVG from "../../../../assets/icons/close.svg";
-import { AUDIO_MIME_TYPES, VIDEO_MIME_TYPES } from "../../../utils/mime";
-import { neutral22, neutralA3, redDefault } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText";
-import { SVG } from "../../SVG";
-import { PreviewComponentProps } from "./UploadedFilePreview.type";
+import closeSVG from "../../../assets/icons/close.svg";
+import { AUDIO_MIME_TYPES, VIDEO_MIME_TYPES } from "../../utils/mime";
+import { neutral22, neutralA3, redDefault } from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
+
+interface FileViewerProps {
+  file: File;
+  onDelete: () => void;
+}
 
 const getFileByType = (type: string) => {
   if (AUDIO_MIME_TYPES.includes(type)) {
@@ -19,10 +23,7 @@ const getFileByType = (type: string) => {
   }
 };
 
-export const FilePreview: React.FC<PreviewComponentProps> = ({
-  file,
-  onDelete,
-}) => {
+export const FilePreview: React.FC<FileViewerProps> = ({ file, onDelete }) => {
   return (
     <View
       style={{

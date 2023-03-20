@@ -2,37 +2,38 @@ import { Audio, AVPlaybackStatus } from "expo-av";
 import React, { useEffect, useState } from "react";
 import { Image, View, TouchableOpacity, ActivityIndicator } from "react-native";
 
-import pauseSVG from "../../../../assets/icons/pause.svg";
-import playSVG from "../../../../assets/icons/play.svg";
-import { IMAGE_MIME_TYPES } from "../../../utils/mime";
+import pauseSVG from "../../../assets/icons/pause.svg";
+import playSVG from "../../../assets/icons/play.svg";
+import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import {
   neutral00,
   neutral44,
   neutral33,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontMedium32, fontSemibold12 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { LocalFileData } from "../../../utils/types/feed";
-import { BrandText } from "../../BrandText";
-import { SVG } from "../../SVG";
-import { FileUploader } from "../../fileUploader";
-import { AudioWaveform } from "../AudioWaveform";
+} from "../../utils/style/colors";
+import { fontMedium32, fontSemibold12 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { LocalFileData } from "../../utils/types/feed";
+import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
+import { FileUploader } from "../fileUploader";
+import { AudioWaveform } from "./AudioWaveform";
 import { DeleteButton } from "./DeleteButton";
 
 interface AudioPreviewProps {
   file: LocalFileData;
-  onDelete: () => void;
-  onUploadThumbnail: (file: LocalFileData) => void;
+  onDelete: (file: LocalFileData) => void;
+  onUploadThumbnail: (updatedFile: LocalFileData) => void;
 }
 
-export const AudioPreview: React.FC<AudioPreviewProps> = ({
+export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
   file,
   onDelete,
   onUploadThumbnail,
 }) => {
   const [sound, setSound] = useState<Audio.Sound>();
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
+  const [thumbnailFile, setThumbnailFile] = useState<LocalFileData>();
 
   useEffect(() => {
     return sound
@@ -50,9 +51,10 @@ export const AudioPreview: React.FC<AudioPreviewProps> = ({
         (status) => setPlaybackStatus(status)
       );
       setSound(sound);
+      setThumbnailFile(file.thumbnailFileData);
     };
     loadSound();
-  }, []);
+  }, [file]);
 
   const handlePlayPause = async () => {
     if (playbackStatus?.isLoaded && playbackStatus?.isPlaying) {
@@ -79,7 +81,7 @@ export const AudioPreview: React.FC<AudioPreviewProps> = ({
         position: "relative",
       }}
     >
-      <DeleteButton onPress={onDelete} />
+      <DeleteButton onPress={() => onDelete(file)} />
 
       <View
         style={{
@@ -149,8 +151,12 @@ export const AudioPreview: React.FC<AudioPreviewProps> = ({
           </View>
         )}
       </View>
+
       <FileUploader
-        onUpload={(files) => onUploadThumbnail(files[0])}
+        onUpload={(files) => {
+          onUploadThumbnail({ ...file, thumbnailFileData: files[0] });
+          setThumbnailFile(files[0]);
+        }}
         mimeTypes={IMAGE_MIME_TYPES}
       >
         {({ onPress }) => (
@@ -167,9 +173,9 @@ export const AudioPreview: React.FC<AudioPreviewProps> = ({
             }}
             onPress={onPress}
           >
-            {file.thumbnailFileData ? (
+            {thumbnailFile?.url ? (
               <Image
-                source={{ uri: file.thumbnailFileData.url }}
+                source={{ uri: thumbnailFile.url }}
                 style={{
                   height: 80,
                   width: 80,

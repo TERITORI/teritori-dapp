@@ -8,8 +8,13 @@ import playSVG from "../../../assets/icons/play.svg";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { getAudioDuration } from "../../utils/audio";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { neutral00, neutral77, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import {
+  errorColor,
+  neutral00,
+  neutral77,
+  secondaryColor,
+} from "../../utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
 import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
@@ -54,7 +59,7 @@ export const AudioPreview: React.FC<{
       setSound(sound);
     };
     loadSound();
-  }, []);
+  }, [file.url]);
 
   const hasThumbnail = useMemo(
     () => typeof file?.thumbnailFileData?.url === "string",
@@ -76,6 +81,12 @@ export const AudioPreview: React.FC<{
     [playbackStatus]
   );
 
+  if (!file?.thumbnailFileData?.url)
+    return (
+      <BrandText style={[fontSemibold13, { color: errorColor }]}>
+        Audio not found
+      </BrandText>
+    );
   return (
     <View
       style={{

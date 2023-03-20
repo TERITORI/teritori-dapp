@@ -1,10 +1,10 @@
-import { useFocusEffect } from "@react-navigation/native";
-import { SelectionState } from "draft-js";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { View } from "react-native";
 
+import priceSVG from "../../../assets/icons/price.svg";
 import { BrandText } from "../../components/BrandText";
+import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { WalletStatusBox } from "../../components/WalletStatusBox";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -17,12 +17,14 @@ import {
   NewPostFormValues,
   PostCategory,
 } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { createPost } from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
+import {
+  createPost,
+  getPostCategory,
+} from "../../components/socialFeed/NewsFeed/NewsFeedQueries";
 import { NotEnoughFundModal } from "../../components/socialFeed/NewsFeed/NotEnoughFundModal";
 import { RichText } from "../../components/socialFeed/RichText";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useOpenGraph } from "../../hooks/feed/useOpenGraph";
 import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableFreePost";
 import { useUpdatePostFee } from "../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../hooks/useBalances";
@@ -30,26 +32,29 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { FEED_POST_SUPPORTED_MIME_TYPES } from "../../utils/mime";
+import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { URL_REGEX } from "../../utils/regex";
-import { generateIpfsKey } from "../../utils/social-feed";
-import { neutral00, neutral11 } from "../../utils/style/colors";
+import {
+  generateIpfsKey,
+  removeFileFromArray,
+  replaceFileInArray,
+} from "../../utils/social-feed";
+import { neutral00, neutral11, neutral77 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
-import { pluralOrNot, replaceBetweenString } from "../../utils/text";
+import { pluralOrNot } from "../../utils/text";
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
   route: { params },
 }) => {
-  // variables
   const { postFee, updatePostFee } = useUpdatePostFee();
   const { freePostCount, updateAvailableFreePost } =
     useUpdateAvailableFreePost();
 
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const oldUrlMatch = useRef<string>();
+  const [addedHashtags, setAddedHashtags] = useState<string[]>([]);
+  const [addedMentions, setAddedMentions] = useState<string[]>([]);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -86,33 +91,41 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
         : "",
     [params?.additionalMention, params?.additionalHashtag]
   );
-  const { mutate, data } = useOpenGraph();
+  //TODO: Not handled for now
+  // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
+
   const formValues = watch();
 
-  // hooks
-  useFocusEffect(
-    useCallback(() => {
-      updateAvailableFreePost(selectedNetworkId, PostCategory.Article, wallet);
-      updatePostFee(selectedNetworkId, PostCategory.Article, wallet);
-    }, [wallet?.address])
-  );
+  useEffect(() => {
+    updateAvailableFreePost(
+      selectedNetworkId,
+      getPostCategory(formValues),
+      wallet
+    );
+    updatePostFee(selectedNetworkId, getPostCategory(formValues), wallet);
+  }, [
+    formValues,
+    wallet,
+    selectedNetworkId,
+    updatePostFee,
+    updateAvailableFreePost,
+  ]);
 
   const initSubmit = async () => {
     const toriBalance = balances.find((bal) => bal.denom === "utori");
     if (postFee > Number(toriBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
     }
-    const currentFiles = formValues.files?.filter(
-      (file) => file.isCoverImage || formValues.message.includes(file.url)
-    );
     const additionalMention = params?.additionalMention
-      ? `\n${params?.additionalMention}`
+      ? `\n@${params?.additionalMention}`
       : "";
     const additionalHashtag = params?.additionalHashtag
-      ? `\n${params?.additionalHashtag}`
+      ? `\n#${params?.additionalHashtag}`
       : "";
-
-    const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+    let pinataJWTKey = undefined;
+    if (formValues.files?.length) {
+      pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+    }
 
     await createPost({
       networkId: selectedNetworkId,
@@ -122,10 +135,13 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
       fee: postFee,
       formValues: {
         ...formValues,
-        files: currentFiles,
+        files: formValues.files,
+        mentions: [...addedMentions, additionalMention],
+        hashtags: [...addedHashtags, additionalHashtag],
         message: formValues.message + additionalMention + additionalHashtag,
       },
-      openGraph: data,
+      // TODO: We need this in backend, since opengraph card must be added for each written url ?
+      // openGraph: undefined,
       pinataJWTKey,
     });
   };
@@ -151,35 +167,23 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
     setLoading(false);
   };
 
-  const handleOnChange = (html: string) => {
-    const currentUrlMatches = [...html.matchAll(new RegExp(URL_REGEX, "gi"))];
+  // // OpenGraph URL preview
+  // useEffect(() => {
+  //   addedUrls.forEach(url => {
+  //     openGraphMutate({
+  //       url,
+  //     });
+  //
+  //   })
+  // }, [addedUrls])
 
-    if (currentUrlMatches?.length) {
-      const lastUrl = currentUrlMatches.pop();
-      const url = lastUrl && lastUrl[0].split("<")[0];
-
-      if (url && url !== oldUrlMatch.current) {
-        oldUrlMatch.current = url;
-
-        mutate({
-          url,
-        });
-      }
-    }
-  };
-
-  //FIXME: This doesn't add the emoji to the RichText
-  const onEmojiSelected = (selection: SelectionState, emoji: string | null) => {
-    if (emoji) {
-      let copiedValue = `${formValues.message}`;
-      copiedValue = replaceBetweenString(
-        copiedValue,
-        selection.getStartOffset(),
-        selection.getEndOffset(),
-        emoji
-      );
-      setValue("message", copiedValue);
-    }
+  const handleOnChange = (
+    html: string,
+    hashtags?: string[],
+    mentions?: string[]
+  ) => {
+    if (hashtags) setAddedHashtags(hashtags);
+    if (mentions) setAddedMentions(mentions);
   };
 
   return (
@@ -195,18 +199,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
       onBackPress={navigateBack}
       footerChildren
     >
-      {/*TODO: We can now remove that*/}
-      {/*{isNFTKeyModal && (*/}
-      {/*  <NFTKeyModal*/}
-      {/*    onClose={(key?: string) => {*/}
-      {/*      if (key) {*/}
-      {/*        setValue("nftStorageApiToken", key);*/}
-      {/*        initSubmit(key);*/}
-      {/*      }*/}
-      {/*      setIsNFTKeyModal(false);*/}
-      {/*    }}*/}
-      {/*  />*/}
-      {/*)}*/}
       <NotEnoughFundModal
         onClose={() => setNotEnoughFundModal(false)}
         visible={isNotEnoughFundModal}
@@ -227,12 +219,18 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
             paddingHorizontal: layout.padding_x1_5,
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-start",
             height: 48,
             backgroundColor: neutral11,
           }}
         >
-          <BrandText style={fontSemibold13}>
+          <SVG source={priceSVG} height={24} width={24} color={neutral77} />
+          <BrandText
+            style={[
+              fontSemibold13,
+              { color: neutral77, marginLeft: layout.padding_x1 },
+            ]}
+          >
             {freePostCount
               ? `You have ${freePostCount} free ${pluralOrNot(
                   "Article",
@@ -257,12 +255,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
               { ...files[0], isCoverImage: true },
             ])
           }
-          mimeTypes={FEED_POST_SUPPORTED_MIME_TYPES}
+          mimeTypes={IMAGE_MIME_TYPES}
         />
 
         <TextInputCustom<NewPostFormValues>
           rules={{ required: true }}
-          height={52}
+          height={48}
           label="Give a title to make an Article"
           placeHolder="Type title here"
           name="title"
@@ -283,17 +281,32 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
           }}
           render={({ field: { onChange, onBlur } }) => (
             <RichText
-              onChange={(html) => {
-                onChange(html);
-                handleOnChange(html);
+              onChange={(html, hashtags, mentions) => {
+                onChange(html, hashtags, mentions);
+                handleOnChange(html, hashtags, mentions);
               }}
               onBlur={onBlur}
-              onImageUpload={(files) =>
-                setValue("files", [...(formValues.files || []), ...files])
+              onImageUpload={(file) =>
+                setValue("files", [...(formValues.files || []), file])
               }
-              onAudioUpload={(files) => setValue("files", [files?.[0]])}
-              onVideoUpload={(files) => setValue("files", [files?.[0]])}
-              onEmojiSelected={onEmojiSelected}
+              onAudioUpload={(file) =>
+                setValue("files", [...(formValues.files || []), file])
+              }
+              onAudioRemove={(file) =>
+                setValue(
+                  "files",
+                  removeFileFromArray(formValues.files || [], file)
+                )
+              }
+              onAudioUpdate={(file) =>
+                setValue(
+                  "files",
+                  replaceFileInArray(formValues.files || [], file)
+                )
+              }
+              onVideoUpload={(file) =>
+                setValue("files", [...(formValues.files || []), file])
+              }
               onGIFSelected={(url) =>
                 url && setValue("gifs", [...(formValues.gifs || []), url])
               }
@@ -311,7 +324,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
                 !!formValues.files?.length || !!formValues.gifs?.length
               }
               initialValue={formValues.message}
-              openGraph={data}
               publishButtonProps={{
                 disabled:
                   errors?.message?.type === "required" ||
@@ -325,10 +337,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
             />
           )}
         />
-        {/*TODO: ok to remove that since PublishButton is disabled if !formValues.message ? */}
-        {/*{errors?.message?.type === "required" && (*/}
-        {/*  <ErrorText>Message is required</ErrorText>*/}
-        {/*)}*/}
       </View>
     </ScreenContainer>
   );

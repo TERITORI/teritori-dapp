@@ -1,23 +1,26 @@
-import { SelectionState } from "draft-js";
-
-import { OpenGraphType } from "../../../hooks/feed/types";
-import { LocalFileData } from "../../../utils/types/feed";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 import { PublishButtonProps } from "./PublishButton";
 
 export interface RichTextProps {
-  onImageUpload?: (files: LocalFileData[]) => void;
-  onAudioUpload?: (files: LocalFileData[]) => void;
-  onVideoUpload?: (files: LocalFileData[]) => void;
+  onImageUpload?: (file: LocalFileData) => void;
+  onAudioUpload?: (file: LocalFileData) => void;
+  onAudioRemove?: (file: LocalFileData) => void;
+  onAudioUpdate?: (file: LocalFileData) => void;
+  onVideoUpload?: (file: LocalFileData) => void;
   onGIFSelected?: (gifUrl: string | null) => void;
-  onEmojiSelected?: (selection: SelectionState, emoji: string | null) => void;
   isGIFSelectorDisabled?: boolean;
   isAudioUploadDisabled?: boolean;
   isVideoUploadDisabled?: boolean;
-  onChange?: (text: string, hashtags?: string[]) => void;
+  // We need to pass audios since we can't render audio preview in RichText
+  audioFiles?: RemoteFileData[];
+  onChange?: (
+    // TODO: text useless ?
+    text: string,
+    hashtags?: string[],
+    mentions?: string[]
+  ) => void;
   onBlur?: () => void;
   initialValue?: string;
-  readOnly?: boolean;
-  openGraph?: OpenGraphType;
   isPostConsultation?: boolean;
   publishButtonProps?: PublishButtonProps;
 }

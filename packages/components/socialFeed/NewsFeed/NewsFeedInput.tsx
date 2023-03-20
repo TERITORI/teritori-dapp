@@ -17,6 +17,7 @@ import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
 import { socialFeedClient } from "../../../client-creators/socialFeedClient";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
@@ -38,6 +39,7 @@ import {
   hashtagMatch,
   mentionMatch,
   generateIpfsKey,
+  replaceFileInArray,
 } from "../../../utils/social-feed";
 import {
   errorColor,
@@ -58,7 +60,7 @@ import { layout } from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
 import { RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
-import { FilePreviewContainer } from "../../FilePreview/UploadedFilePreview/FilePreviewContainer";
+import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
 import { IconBox } from "../../IconBox";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
@@ -102,7 +104,7 @@ export interface NewsFeedInputHandle {
   focusInput: () => void;
 }
 
-const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92
+const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 
 export const NewsFeedInput = React.forwardRef<
   NewsFeedInputHandle,
@@ -133,6 +135,7 @@ export const NewsFeedInput = React.forwardRef<
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
     const isMobile = useIsMobileView();
+    const { setToastError } = useFeedbacks();
     const { postFee, updatePostFee } = useUpdatePostFee();
     const { freePostCount, updateAvailableFreePost } =
       useUpdateAvailableFreePost();
@@ -147,11 +150,16 @@ export const NewsFeedInput = React.forwardRef<
         onSubmitInProgress && onSubmitInProgress();
       },
       onSuccess: () => {
-        resetForm();
-        onSubmitSuccess && onSubmitSuccess();
-        onCloseCreateModal && onCloseCreateModal();
+        onPostCreationSuccess();
       },
     });
+
+    const onPostCreationSuccess = () => {
+      resetForm();
+      onSubmitSuccess && onSubmitSuccess();
+      onCloseCreateModal && onCloseCreateModal();
+    };
+
     const resetForm = () => {
       reset();
       updateAvailableFreePost(
@@ -187,11 +195,13 @@ export const NewsFeedInput = React.forwardRef<
         wallet
       );
       updatePostFee(selectedNetworkId, getPostCategory(formValues), wallet);
-    }, [wallet?.address]);
-
-    useEffect(() => {
-      updatePostFee(selectedNetworkId, getPostCategory(formValues), wallet);
-    }, [formValues]);
+    }, [
+      formValues,
+      wallet,
+      selectedNetworkId,
+      updatePostFee,
+      updateAvailableFreePost,
+    ]);
 
     const processSubmit = async () => {
       const toriBalance = balances.find((bal) => bal.denom === "utori");
@@ -200,6 +210,7 @@ export const NewsFeedInput = React.forwardRef<
       }
 
       setLoading(true);
+      onSubmitInProgress && onSubmitInProgress();
       try {
         const hasUsername =
           replyTo?.parentId &&
@@ -232,11 +243,12 @@ export const NewsFeedInput = React.forwardRef<
 
         if (formValues.files?.length) {
           const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
-          files = await uploadPostFilesToPinata({
-            files: formValues.files,
-            pinataJWTKey,
-          });
-          console.log("filesfilesfilesfilesfilesfilesfilesfiles", files);
+          if (pinataJWTKey) {
+            files = await uploadPostFilesToPinata({
+              files: formValues.files,
+              pinataJWTKey,
+            });
+          }
         }
 
         const postCategory = getPostCategory(formValues);
@@ -282,14 +294,16 @@ export const NewsFeedInput = React.forwardRef<
               category: postCategory,
             },
             {
-              onSuccess: () => {
-                onSubmitSuccess && onSubmitSuccess();
-              },
+              onSuccess: onPostCreationSuccess,
             }
           );
         }
       } catch (err) {
         console.error("post submit err", err);
+        setToastError({
+          title: "Post creation failed",
+          message: err.message,
+        });
       }
       setLoading(false);
     };
@@ -346,7 +360,10 @@ export const NewsFeedInput = React.forwardRef<
               width={24}
               source={penSVG}
               color={secondaryColor}
-              style={{ alignSelf: "flex-end", marginRight: layout.padding_x1_5 }}
+              style={{
+                alignSelf: "flex-end",
+                marginRight: layout.padding_x1_5,
+              }}
             />
             <Animated.View style={{ flex: 1, height: "auto" }}>
               <TextInput
@@ -389,10 +406,14 @@ export const NewsFeedInput = React.forwardRef<
                 {
                   color: !formValues?.message
                     ? neutral77
-                    : formValues?.message?.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT * CHARS_LIMIT_WARNING_MULTIPLIER &&
-                      formValues?.message?.length < SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                    : formValues?.message?.length >
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
+                          CHARS_LIMIT_WARNING_MULTIPLIER &&
+                      formValues?.message?.length <
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                     ? yellowDefault
-                    : formValues?.message?.length >= SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                    : formValues?.message?.length >=
+                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                     ? errorColor
                     : primaryColor,
                   position: "absolute",
@@ -407,7 +428,8 @@ export const NewsFeedInput = React.forwardRef<
               </BrandText>
             </BrandText>
           </Pressable>
-          <FilePreviewContainer
+
+          <FilesPreviewsContainer
             files={formValues.files}
             gifs={formValues.gifs}
             onDelete={(fileIndex) => {
@@ -429,22 +451,18 @@ export const NewsFeedInput = React.forwardRef<
                 setValue("files", []);
               }
             }}
-            onDeleteGIF={(fileIndex) => {
+            onDeleteGIF={(url) =>
               setValue(
                 "gifs",
-                (formValues?.gifs || [])?.filter(
-                  (_, index) => index !== fileIndex
-                )
-              );
-            }}
-            onUploadThumbnail={(file) => {
-              if (formValues?.files?.[0]) {
-                setValue("files", [
-                  {
-                    ...formValues?.files?.[0],
-                    thumbnailFileData: file,
-                  },
-                ]);
+                (formValues?.gifs || [])?.filter((gif) => gif !== url)
+              )
+            }
+            onAudioUpdate={(updatedFile) => {
+              if (formValues?.files?.length) {
+                setValue(
+                  "files",
+                  replaceFileInArray(formValues?.files, updatedFile)
+                );
               }
             }}
           />
@@ -500,9 +518,11 @@ export const NewsFeedInput = React.forwardRef<
 
             <GIFSelector
               optionsContainer={{ marginLeft: -186, marginTop: -6 }}
-              onGIFSelected={(url) =>
-                url && setValue("gifs", [...(formValues.gifs || []), url])
-              }
+              onGIFSelected={(url) => {
+                // Don't add if already added
+                if (formValues.gifs?.find((gif) => gif === url)) return;
+                url && setValue("gifs", [...(formValues.gifs || []), url]);
+              }}
               disabled={
                 (formValues.files?.[0] &&
                   formValues.files[0].fileType !== "image") ||
@@ -544,10 +564,17 @@ export const NewsFeedInput = React.forwardRef<
               )}
             </FileUploader>
             <FileUploader
-              multiple
-              onUpload={(files) =>
-                setValue("files", [...(formValues.files || []), ...files])
-              }
+              // multiple
+              onUpload={(files) => {
+                // Don't add if already added
+                if (
+                  formValues.files?.find(
+                    (file) => file.fileName === files[0].fileName
+                  )
+                )
+                  return;
+                setValue("files", [...(formValues.files || []), ...files]);
+              }}
               mimeTypes={IMAGE_MIME_TYPES}
               maxUpload={
                 4 -
@@ -610,7 +637,9 @@ export const NewsFeedInput = React.forwardRef<
                 (!formValues?.message &&
                   !formValues?.files?.length &&
                   !formValues?.gifs?.length) ||
-                formValues?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                formValues?.message.length >
+                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
+                !wallet
               }
               isLoading={isLoading || isMutateLoading}
               size="M"

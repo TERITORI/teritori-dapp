@@ -15,7 +15,7 @@ const handleLinkPress = (text: string) => {
   Linking.openURL(linkText);
 };
 
-export const UrlRender: React.FC<{ text: string }> = ({ text }) => {
+export const URLRenderer: React.FC<{ text: string }> = ({ text }) => {
   return (
     <TouchableOpacity onPress={() => handleLinkPress(text)}>
       <Text style={{ color: primaryColor }}>{text}</Text>

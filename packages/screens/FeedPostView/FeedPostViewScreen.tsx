@@ -22,6 +22,7 @@ import {
 import { RefreshButton } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
 import { SocialThreadCard } from "../../components/socialFeed/SocialThread/SocialThreadCard";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import {
   combineFetchCommentPages,
@@ -52,7 +53,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const selectedNetworkId = useSelectedNetworkId();
   const [refresh, setRefresh] = useState(0);
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
-  const { triggerError } = useErrorHandler();
   const [postResult, setPostResult] = useState<PostResult>();
   const authorNSInfo = useNSUserInfo(
     getUserId(selectedNetworkId, postResult?.post_by)
@@ -66,6 +66,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const isFirstLoad = useSharedValue(true);
+  const { setToastError } = useFeedbacks();
   const { data, refetch, hasNextPage, fetchNextPage, isFetching } =
     useFetchComments({
       parentId: postResult?.identifier,
@@ -96,9 +97,9 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         const _post = await client.queryPost({ identifier: id });
         setPostResult(_post);
       } catch (error) {
-        triggerError({
+        setToastError({
           title: "",
-          error,
+          message: error.message,
         });
       } finally {
         isLoadingValue.value = false;
@@ -106,7 +107,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     };
 
     fetchPost();
-  }, [id, wallet?.address, selectedNetworkId]);
+  }, [id, wallet?.address, selectedNetworkId, isLoadingValue, setToastError]);
 
   useEffect(() => {
     refetch();
@@ -115,12 +116,12 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         isFirstLoad.value = false;
       }, 1300);
     }
-  }, [postResult?.identifier, refresh]);
+  }, [postResult, isFirstLoad, refetch]);
 
   useEffect(() => {
     // HECK: updated state was not showing up in scrollhander
     isNextPageAvailable.value = hasNextPage;
-  }, [hasNextPage]);
+  }, [hasNextPage, isNextPageAvailable]);
 
   useEffect(() => {
     if (isFetching) {
@@ -129,7 +130,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     } else {
       isLoadingValue.value = false;
     }
-  }, [isFetching]);
+  }, [isFetching, isGoingUp, isLoadingValue]);
 
   const scrollHandler = useAnimatedScrollHandler(
     {
@@ -168,12 +169,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       return `Article by ${author}`;
     if (postResult?.parent_post_identifier) return `Comment by ${author}`;
     return `Post by ${author}`;
-  }, [
-    postResult?.category,
-    postResult?.parentPostIdentifier,
-    authorNSInfo?.metadata?.tokenId,
-    userAddress,
-  ]);
+  }, [postResult, authorNSInfo?.metadata?.tokenId, userAddress]);
 
   return (
     <ScreenContainer
@@ -221,7 +217,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             )}
 
             {/*========== Refresh button */}
-             <Animated.View
+            <Animated.View
               style={[
                 {
                   position: "absolute",
@@ -243,7 +239,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                 }}
               />
             </Animated.View>
-
 
             <View
               onLayout={(e) => setParentOffsetValue(e.nativeEvent.layout.y)}

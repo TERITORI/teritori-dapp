@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
-import { layout } from "../../../utils/style/layout";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { errorColor } from "../../utils/style/colors";
+import { fontSemibold13 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { LocalFileData, RemoteFileData } from "../../utils/types/feed";
+import { BrandText } from "../BrandText";
 import { DeleteButton } from "./DeleteButton";
-import { ImageFullViewModal } from "./ImageFullViewModal";
+import { ImagesFullViewModal } from "./ImagesFullViewModal";
 
 interface ImagePreviewProps {
   files: LocalFileData[] | RemoteFileData[];
-  onDelete: (url: string) => void;
+  onDelete?: (file: LocalFileData | RemoteFileData) => void;
   isEditable?: boolean;
 }
 
@@ -30,7 +33,7 @@ const getDimension = (index: number, fileLength: number) => {
   }
 };
 
-export const ImagePreview: React.FC<ImagePreviewProps> = ({
+export const ImagesPreviews: React.FC<ImagePreviewProps> = ({
   files,
   onDelete,
   isEditable = false,
@@ -58,7 +61,7 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
     };
 
     fetchContent();
-  }, []);
+  }, [files]);
 
   return (
     <View
@@ -68,7 +71,7 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
         height: 400,
       }}
     >
-      <ImageFullViewModal
+      <ImagesFullViewModal
         files={formattedFiles.map((file) =>
           file.fileType === "image"
             ? ipfsURLToHTTPURL(file.url)
@@ -79,43 +82,54 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
         onClose={() => setFullView(false)}
       />
 
-      {formattedFiles.map((file, index) => (
-        <TouchableOpacity
-          onPress={() => {
-            setActiveIndex(index);
-            setFullView(true);
-          }}
-          key={file.url}
-          style={{
-            padding: layout.padding_x1,
-            ...getDimension(index, files.length),
-          }}
-        >
-          {isEditable && (
-            <DeleteButton
-              onPress={() => onDelete(file.url)}
+      {formattedFiles.map((file, index) => {
+        if (!file?.url)
+          return (
+            <BrandText style={[fontSemibold13, { color: errorColor }]}>
+              Image not found
+            </BrandText>
+          );
+        return (
+          <TouchableOpacity
+            onPress={() => {
+              setActiveIndex(index);
+              setFullView(true);
+            }}
+            key={file.url}
+            //@ts-expect-error
+            style={{
+              padding: layout.padding_x1,
+              ...getDimension(index, files.length),
+            }}
+          >
+            {isEditable && onDelete && (
+              <DeleteButton
+                onPress={() => {
+                  onDelete(file);
+                }}
+                style={{
+                  top: 0,
+                  right: 0,
+                }}
+              />
+            )}
+            <Image
+              source={{
+                uri:
+                  file.fileType === "image"
+                    ? ipfsURLToHTTPURL(file.url)
+                    : file.base64Image || "",
+              }}
+              resizeMode="contain"
               style={{
-                top: 0,
-                right: 0,
+                height: "100%",
+                width: "100%",
+                borderRadius: 4,
               }}
             />
-          )}
-          <Image
-            source={{
-              uri:
-                file.fileType === "image"
-                  ? ipfsURLToHTTPURL(file.url)
-                  : file.base64Image || "",
-            }}
-            resizeMode="contain"
-            style={{
-              height: "100%",
-              width: "100%",
-              borderRadius: 4,
-            }}
-          />
-        </TouchableOpacity>
-      ))}
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };

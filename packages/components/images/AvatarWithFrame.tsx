@@ -13,7 +13,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { SVG } from "../SVG";
-import { AnimationFadeIn } from "../animations";
+import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 
 type AvatarWithFrameSize = "XL" | "L" | "M";
 

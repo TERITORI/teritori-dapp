@@ -14,14 +14,10 @@ import { FileUploaderProps } from "./FileUploader.type";
 
 const FILE_HEIGHT = 256;
 
-export const FileUploader: React.FC<FileUploaderProps> = ({
-  label,
-  style,
-  onUpload,
-}) => {
-  const [files, setFiles] = useState<File[] | FileList>([]);
+//FIXME: Doesn't work for now =>  Only the .web version is used
 
-  const handleClick = () => {};
+export const FileUploader: React.FC<FileUploaderProps> = ({ label, style }) => {
+  const [files, setFiles] = useState<File[] | FileList>([]);
 
   return (
     <View style={style}>
@@ -76,7 +72,6 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
           </View>
         ) : (
           <TouchableOpacity
-            onPress={handleClick}
             style={{
               paddingVertical: 20,
               paddingHorizontal: 20,

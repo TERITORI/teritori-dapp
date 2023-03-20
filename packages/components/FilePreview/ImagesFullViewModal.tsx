@@ -3,17 +3,16 @@ import {
   Image,
   useWindowDimensions,
   View,
-  ViewStyle,
   TouchableOpacity,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import chevronLeft from "../../../../assets/icons/chevron-left.svg";
-import chevronRight from "../../../../assets/icons/chevron-right.svg";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
-import { neutral22, neutral33 } from "../../../utils/style/colors";
-import { SVG } from "../../SVG";
-import ModalBase from "../../modals/ModalBase";
+import chevronLeft from "../../../assets/icons/chevron-left.svg";
+import chevronRight from "../../../assets/icons/chevron-right.svg";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { neutral22, neutral33 } from "../../utils/style/colors";
+import { SVG } from "../SVG";
+import ModalBase from "../modals/ModalBase";
 
 interface ImageFullViewModalProps {
   files: string[];
@@ -22,13 +21,12 @@ interface ImageFullViewModalProps {
   onClose: () => void;
 }
 
-interface IconBoxProps {
+interface PrevNextButtonProps {
   source: React.FC<SvgProps>;
   onPress: () => void;
-  style?: ViewStyle;
 }
 
-const IconBox = ({ source, style, onPress }: IconBoxProps) => {
+const PrevNextButton = ({ source, onPress }: PrevNextButtonProps) => {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -51,7 +49,7 @@ const IconBox = ({ source, style, onPress }: IconBoxProps) => {
   );
 };
 
-export const ImageFullViewModal: React.FC<ImageFullViewModalProps> = ({
+export const ImagesFullViewModal: React.FC<ImageFullViewModalProps> = ({
   isVisible,
   activeIndex,
   files,
@@ -74,7 +72,7 @@ export const ImageFullViewModal: React.FC<ImageFullViewModalProps> = ({
         }}
       >
         {localActiveIndex !== 0 && (
-          <IconBox
+          <PrevNextButton
             source={chevronLeft}
             onPress={() => setLocalActiveIndex((prev) => prev - 1)}
           />
@@ -89,7 +87,7 @@ export const ImageFullViewModal: React.FC<ImageFullViewModalProps> = ({
           }}
         />
         {localActiveIndex < files.length - 1 && (
-          <IconBox
+          <PrevNextButton
             source={chevronRight}
             onPress={() => setLocalActiveIndex((prev) => prev + 1)}
           />

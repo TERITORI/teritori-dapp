@@ -1,9 +1,9 @@
 import React from "react";
 import { TouchableOpacity, ViewStyle } from "react-native";
 
-import closeSVG from "../../../../assets/icons/close.svg";
-import { redDefault } from "../../../utils/style/colors";
-import { SVG } from "../../SVG";
+import bucketSVG from "../../../assets/icons/bucket.svg";
+import { redDefault } from "../../utils/style/colors";
+import { SVG } from "../SVG";
 
 interface Props {
   onPress: () => void;
@@ -24,14 +24,14 @@ export const DeleteButton: React.FC<Props> = ({ onPress, style }) => {
           top: -4,
           right: -4,
           zIndex: 9,
-          height: 12,
-          width: 12,
-          borderRadius: 5,
+          height: 28,
+          width: 28,
+          borderRadius: 999,
         },
         style,
       ]}
     >
-      <SVG source={closeSVG} height={10} width={10} />
+      <SVG source={bucketSVG} height={16} width={16} />
     </TouchableOpacity>
   );
 };

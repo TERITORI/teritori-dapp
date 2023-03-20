@@ -21,7 +21,7 @@ import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
-import { AnimationFadeIn } from "../../animations";
+import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../spacer";
@@ -53,7 +53,7 @@ export const SocialThreadCard: React.FC<{
   isGovernance,
 }) => {
   const [localPost, setLocalPost] = useState<Post>(post);
-  const { mutate, isLoading: isReactLoading } =
+  const { mutate: postMutate, isLoading: isPostMutationLoading } =
     useTeritoriSocialFeedReactPostMutation({
       onSuccess(_data, variables) {
         const reactions = getUpdatedReactions(
@@ -90,7 +90,7 @@ export const SocialThreadCard: React.FC<{
       walletAddress: wallet.address,
     });
 
-    mutate({
+    postMutate({
       client,
       msg: {
         icon: emoji,
@@ -212,7 +212,6 @@ export const SocialThreadCard: React.FC<{
 
         {/*====== Card Content */}
         <SocialMessageContent
-          isPostConsultation={isPostConsultation}
           metadata={metadata}
           postCategory={localPost.category}
         />
@@ -232,12 +231,12 @@ export const SocialThreadCard: React.FC<{
             <Reactions
               reactions={localPost.reactions}
               onPressReaction={handleReaction}
-              isLoading={isReactLoading}
+              isLoading={isPostMutationLoading}
             />
             <SpacerRow size={2.5} />
             <EmojiSelector
               onEmojiSelected={handleReaction}
-              isLoading={isReactLoading}
+              isLoading={isPostMutationLoading}
             />
             {isPostConsultation && onPressReply && (
               <>

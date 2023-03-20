@@ -1,7 +1,6 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { useAnimatedStyle, withTiming } from "react-native-reanimated";
 
 import { Reaction } from "../../../api/feed/v1/feed";
 import { layout } from "../../../utils/style/layout";
@@ -16,7 +15,7 @@ export const Reactions: React.FC<{
   reactions: Reaction[];
   onPressReaction: (icon: string) => void;
   isLoading?: boolean;
-}> = ({ reactions = [], onPressReaction}) => {
+}> = ({ reactions = [], onPressReaction }) => {
   // const reactionWidthRef = useRef<number>();
   // const reactionAnimation = useAnimatedStyle(
   //   () => ({
@@ -47,7 +46,7 @@ export const Reactions: React.FC<{
   );
 
   return (
-    // TODO: Remove animation stuff from this cpt. We'll fix animations later
+    // TODO: Rework animations
     // <Animated.View
     //   style={[
     //     { flexDirection: "row", alignItems: "center" },

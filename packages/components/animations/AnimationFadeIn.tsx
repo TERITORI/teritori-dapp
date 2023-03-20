@@ -31,7 +31,7 @@ export const AnimationFadeIn: React.FC<FadeInProps> = ({
       delay,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [duration, delay, fadeInAnimation]);
 
   // renders
   return (

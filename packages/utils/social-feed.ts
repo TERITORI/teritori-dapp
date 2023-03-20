@@ -4,6 +4,7 @@ import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSo
 import { getUserId } from "../networks";
 import { mustGetFeedClient } from "./backend";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
+import { LocalFileData } from "./types/feed";
 
 export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
@@ -81,7 +82,31 @@ export const postResultToPost = (networkId: string, postResult: PostResult) => {
 };
 
 export const generateIpfsKey = async (networkId: string, userId: string) => {
-  const backendClient = mustGetFeedClient(networkId);
-  const response = await backendClient.IPFSKey({ userId });
-  return response.jwt;
+  try {
+    const backendClient = mustGetFeedClient(networkId);
+    const response = await backendClient.IPFSKey({ userId });
+    return response.jwt;
+  } catch (e) {
+    console.error("ERROR WHILE GENERATING IPFSKey : ", e);
+    return undefined;
+  }
+};
+
+export const replaceFileInArray = (
+  files: LocalFileData[],
+  newFile: LocalFileData
+) => {
+  const oldFile = files.find((file) => file.url === newFile.url);
+  if (!oldFile) return;
+  const i = files.indexOf(oldFile);
+  const filesClone = [...files];
+  filesClone.splice(i, 1, newFile);
+  return filesClone;
+};
+
+export const removeFileFromArray = (
+  files: LocalFileData[],
+  damnedFile: LocalFileData
+) => {
+  return files.filter((file) => file.url !== damnedFile.url);
 };

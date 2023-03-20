@@ -16,7 +16,6 @@ import { SpacerColumn } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
-import { NewPostFormValues } from "./NewsFeed.type";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
@@ -70,23 +69,12 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     } else {
       isLoadingValue.value = false;
     }
-  }, [isFetching, isLoading]);
+  }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
 
   const onEndReached = () => {
     if (!isLoading && hasNextPage) {
       fetchNextPage();
     }
-  };
-
-  const onPressCreateArticle = (formValues: NewPostFormValues) => {
-    navigation.navigate(
-      "FeedNewArticle"
-      //   , {
-      //   ...formValues,
-      //   additionalHashtag,
-      //   additionalMention,
-      // }
-    );
   };
 
   const onHeaderLayout = (e: LayoutChangeEvent) => {
@@ -109,7 +97,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           ]}
         >
           <NewsFeedInput
-            onPressCreateArticle={onPressCreateArticle}
+            onPressCreateArticle={() => navigation.navigate("FeedNewArticle")}
             type="post"
             onSubmitSuccess={refetch}
             style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}
@@ -122,7 +110,14 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         <SpacerColumn size={1.5} />
       </>
     ),
-    [isLoadingValue, Header]
+    [
+      isLoadingValue,
+      Header,
+      additionalMention,
+      additionalHashtag,
+      refetch,
+      navigation,
+    ]
   );
 
   return (

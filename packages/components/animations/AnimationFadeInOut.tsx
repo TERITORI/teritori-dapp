@@ -43,7 +43,7 @@ export const AnimationFadeInOut: React.FC<AnimationFadeInOutProps> = ({
     } else {
       opacity.value = withTiming(0, { duration });
     }
-  }, [visible]);
+  }, [visible, opacity, duration]);
 
   // renders
   return (
