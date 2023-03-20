@@ -7,7 +7,7 @@ import { BrandText } from "../../../components/BrandText";
 import { useCopyToClipboard } from "../../../components/CopyToClipboard";
 import { EmptyList } from "../../../components/EmptyList";
 import { SVG } from "../../../components/SVG";
-import { tinyAddress } from "../../../components/WalletSelector";
+import { tinyAddress } from "../../../utils/text";
 import { AnimationFadeIn } from "../../../components/animations";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";

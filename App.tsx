@@ -13,6 +13,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { Platform } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { Provider as ReduxProvider } from "react-redux";
 
 import { Navigator } from "./packages/components/navigation/Navigator";
@@ -58,8 +59,11 @@ export default function App() {
                       <TransactionModalsProvider>
                         <TNSContextProvider>
                           <SidebarContextProvider>
+                            <MenuProvider>
                             <StatusBar style="inverted" />
                             <Navigator />
+                              <Toast autoHide visibilityTime={2000} />
+                            </MenuProvider>
                           </SidebarContextProvider>
                         </TNSContextProvider>
                       </TransactionModalsProvider>

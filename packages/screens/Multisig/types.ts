@@ -10,6 +10,12 @@ export type MultisigLegacyFormType = {
   assets: string;
 };
 
+export type MultisigExecuteFormType = {
+  multisigAddress: string;
+  contractAddress: string;
+  msg: object;
+};
+
 export type MultisigTransactionDelegateFormType = {
   multisigAddress: string;
   membersAddress: { address: string }[];
@@ -41,6 +47,9 @@ export type UserWalletType = {
 export enum MultisigTransactionType {
   STAKE = "STAKE",
   TRANSFER = "TRANSFER",
+  LAUNCH_NFT_COLLECTION = "Launch Nft collection",
+  CREATE_NEW_POST = "Create new post",
+  MANAGE_PUBLIC_PROFILE = "Manage public profile",
 }
 export type MultiSigWalletTransactionType =
   | MultiSigWalletTransactionBasicType

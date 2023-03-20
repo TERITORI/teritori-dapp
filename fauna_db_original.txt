@@ -215,7 +215,7 @@ Query(
           after: If(IsNull(Var("after")), [], Var("after")),
           size: Var("size")
         }),
-        Lambda("doc", Get(Select(1, Var("doc"))))
+        Lambda("doc", Get(Var("doc")))
       )
     )
   )
@@ -269,7 +269,7 @@ Query(
             after: If(IsNull(Var("after")), [], Var("after")),
             size: Var("size")
           }),
-          Lambda("doc", Get(Select(1, Var("doc"))))
+          Lambda("doc", Get(Var("doc")))
         )
       )
     )

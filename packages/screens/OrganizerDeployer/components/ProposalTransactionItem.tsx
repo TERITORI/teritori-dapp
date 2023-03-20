@@ -9,7 +9,6 @@ import { BrandText } from "../../../components/BrandText";
 import { useCopyToClipboard } from "../../../components/CopyToClipboard";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
-import { tinyAddress } from "../../../components/WalletSelector";
 import { AnimationFadeIn } from "../../../components/animations";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
@@ -27,6 +26,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { tinyAddress } from "../../../utils/text";
 import { MultisigTransactionType } from "../../Multisig/types";
 import { TransactionItemButtons } from "./TransactionItemButtons";
 
@@ -61,11 +61,12 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   const feeSimple = coinSimplified(fee.amount[0]);
   const { copyToClipboard } = useCopyToClipboard();
 
-  const amount = coinSimplified(
+  const amount =
     type === MultisigTransactionType.STAKE
-      ? msgs[0].value.amount
-      : msgs[0].value.amount[0]
-  );
+      ? coinSimplified(msgs[0].value.amount)
+      : type === MultisigTransactionType.TRANSFER
+      ? coinSimplified(msgs[0].value.amount)
+      : { value: "", ticker: "" };
   const approvedByCount = currentSignatures?.length || 0;
   const approvalRequiredCount = parseInt(
     JSON.parse(multisig.pubkeyJSON)?.value.threshold || "0",
@@ -85,12 +86,11 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
 
   const getIcon = useMemo(() => {
     switch (type) {
-      case MultisigTransactionType.TRANSFER:
-        return transferSVG;
-
-      default:
       case MultisigTransactionType.STAKE:
         return stakedSVG;
+      case MultisigTransactionType.TRANSFER:
+      default:
+        return transferSVG;
     }
   }, []);
 

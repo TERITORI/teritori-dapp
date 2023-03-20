@@ -13,8 +13,8 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { MULTISIG_WALLET_HEADING } from "../MultisigWalletManageScreen";
 import { MultisigWalletItemMenu } from "../../OrganizerDeployer/components/MultisigWalletItemMenu";
+import { MULTISIG_WALLET_HEADING } from "../MultisigWalletManageScreen";
 import {UserWalletType} from "../types";
 
 interface MultisigWalletItemProps {
@@ -41,9 +41,7 @@ export const MultisigWalletItem: React.FC<MultisigWalletItemProps> = ({
       <View style={styles.rowCenter}>
         <SVG source={toriLogoSVG} width={24} height={24} />
         <SpacerRow size={1} />
-        <BrandText style={fontSemibold14}>
-          Tertiori
-        </BrandText>
+        <BrandText style={fontSemibold14}>Tertiori</BrandText>
       </View>
     ),
     []
@@ -81,9 +79,7 @@ export const MultisigWalletItem: React.FC<MultisigWalletItemProps> = ({
           { flex: MULTISIG_WALLET_HEADING.multisig_addr.flex },
         ]}
       >
-        <BrandText style={styles.valueText}>
-          {data.multisigAddress}
-        </BrandText>
+        <BrandText style={styles.valueText}>{data.multisigAddress}</BrandText>
       </View>
       <View
         style={[

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -8,19 +8,22 @@ import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { TableRow, TableRowHeading } from "../../components/table";
+import { useMultisigContext } from "../../context/MultisigReducer";
+import { useCreateUserWallet } from "../../hooks/multisig";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import {
+  getMultisig,
+  getMultisigsByUserWallet,
+} from "../../utils/founaDB/multisig/multisigGraphql";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { MultisigWalletItem } from "./components/MultisigWalletItem";
+import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { InputMultisigAddressModal } from "./components/InputMultisigAddressModal";
+import { MultisigWalletItem } from "./components/MultisigWalletItem";
 // import data from "./multisig-wallet.json";
-import {useCreateUserWallet} from "../../hooks/multisig";
-import {useMultisigContext} from "../../context/MultisigReducer";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {getMultisig, getMultisigsByUserWallet} from "../../utils/founaDB/multisig/multisigGraphql";
-import {CheckLoadingModal} from "./components/CheckLoadingModal";
-import {UserWalletType} from "./types";
+import { UserWalletType } from "./types";
 
 export const MULTISIG_WALLET_HEADING: { [key in string]: TableRowHeading } = {
   id: {
@@ -48,38 +51,43 @@ export const MULTISIG_WALLET_HEADING: { [key in string]: TableRowHeading } = {
 export const MultisigWalletManageScreen = () => {
   // variables
   const navigation = useAppNavigation();
-  const [isInputMultisigAddressVisible, setInputMultisigAddressVisible] = useState(false);
+  const [isInputMultisigAddressVisible, setInputMultisigAddressVisible] =
+    useState(false);
 
   const { mutate, isLoading, data: multisigData } = useCreateUserWallet();
   const { state } = useMultisigContext();
   const walletAccount = useSelectedWallet();
 
-  const [ multisigList, setMultisigList] = useState<UserWalletType[]>([]);
+  const [multisigList, setMultisigList] = useState<UserWalletType[]>([]);
 
-  useEffect(()=>{
-      const getMultisigList = async ()=>{
-        if (state.chain?.chainId && state.chain?.addressPrefix && walletAccount?.address) {
-          let userAddress = walletAccount?.address;
-          const chainId =  state.chain.chainId;
-          const res = await getMultisigsByUserWallet(userAddress, chainId);
-          const retArr:UserWalletType[] = [];
-          if (res.data.data.getMultisigsByUser){
-            res.data.data.getMultisigsByUser.data.map((item: any)=>{
-              retArr.push({
-                multisigId: item.multisig._id,
-                multisigAddress: item.multisig.address,
-                userAddress,
-                multisigUserAddresses: item.multisig.userAddresses,
-                chainId,
-                walletName: item.walletName
-              } as UserWalletType)
-            });
-            setMultisigList(retArr);
-          }
+  useEffect(() => {
+    const getMultisigList = async () => {
+      if (
+        state.chain?.chainId &&
+        state.chain?.addressPrefix &&
+        walletAccount?.address
+      ) {
+        const userAddress = walletAccount?.address;
+        const chainId = state.chain.chainId;
+        const res = await getMultisigsByUserWallet(userAddress, chainId);
+        const retArr: UserWalletType[] = [];
+        if (res.data.data.getMultisigsByUser) {
+          res.data.data.getMultisigsByUser.data.map((item: any) => {
+            retArr.push({
+              multisigId: item.multisig._id,
+              multisigAddress: item.multisig.address,
+              userAddress,
+              multisigUserAddresses: item.multisig.userAddresses,
+              chainId,
+              walletName: item.walletName,
+            } as UserWalletType);
+          });
+          setMultisigList(retArr);
         }
       }
-      getMultisigList();
-  },[walletAccount, state.chain?.chainId]);
+    };
+    getMultisigList();
+  }, [walletAccount, state.chain?.chainId]);
 
   // returns
   return (
@@ -101,9 +109,17 @@ export const MultisigWalletManageScreen = () => {
             </BrandText>
           </View>
           <View style={styles.rowSB}>
-            <SecondaryButton text="Add existing Wallet" size="M" onPress={()=>setInputMultisigAddressVisible(true)}/>
+            <SecondaryButton
+              text="Add existing Wallet"
+              size="M"
+              onPress={() => setInputMultisigAddressVisible(true)}
+            />
             <SpacerRow size={2} />
-            <PrimaryButton text="Create Multisig Wallet" size="M" onPress={ ()=>navigation.navigate("MultisigCreate") }/>
+            <PrimaryButton
+              text="Create Multisig Wallet"
+              size="M"
+              onPress={() => navigation.navigate("MultisigCreate")}
+            />
           </View>
         </View>
         <SpacerColumn size={2.5} />
@@ -123,45 +139,46 @@ export const MultisigWalletManageScreen = () => {
         ))}
       </ScrollView>
       <InputMultisigAddressModal
-          isVisible={isInputMultisigAddressVisible}
-          networkId={process.env.TERITORI_NETWORK_ID || ""}
-          onClose={() => setInputMultisigAddressVisible(false)}
-          onConfirm={async (walletName, address)=>{
-            if (state.chain?.chainId && state.chain?.addressPrefix && walletAccount?.address) {
-
-              const chainId =  state.chain.chainId;
-              const res = await getMultisig(address, chainId);
-              if (!res.data.data.getMultisig) {
-                setToastError({
-                  title: "Invalid Multisig address",
-                  message:
-                    "Multisig has no pubkey on node, and was not created using this tool.",
-                });
-                return;
-              }
-              setInputMultisigAddressVisible(false);
-
-              const multisigId = res.data.data.getMultisig._id;
-              let userAddress = walletAccount?.address;
-              mutate({
-                chainId,
-                walletName,
-                userAddress,
-                multisigId
-              })
+        isVisible={isInputMultisigAddressVisible}
+        networkId={process.env.TERITORI_NETWORK_ID || ""}
+        onClose={() => setInputMultisigAddressVisible(false)}
+        onConfirm={async (walletName, address) => {
+          if (
+            state.chain?.chainId &&
+            state.chain?.addressPrefix &&
+            walletAccount?.address
+          ) {
+            const chainId = state.chain.chainId;
+            const res = await getMultisig(address, chainId);
+            if (!res.data.data.getMultisig) {
+              setToastError({
+                title: "Invalid Multisig address",
+                message:
+                  "Multisig has no pubkey on node, and was not created using this tool.",
+              });
+              return;
             }
+            setInputMultisigAddressVisible(false);
 
-          }}
+            const multisigId = res.data.data.getMultisig._id;
+            const userAddress = walletAccount?.address;
+            mutate({
+              chainId,
+              walletName,
+              userAddress,
+              multisigId,
+            });
+          }
+        }}
       />
       <CheckLoadingModal
         isVisible={isLoading}
         onComplete={() => {
-          if (multisigData){
+          if (multisigData) {
             setMultisigList([...multisigList, multisigData!]);
           }
         }}
       />
-
     </ScreenContainer>
   );
 };
@@ -191,7 +208,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-function setToastError(arg0: { title: string; message: string; }) {
-    throw new Error("Function not implemented.");
+function setToastError(arg0: { title: string; message: string }) {
+  throw new Error("Function not implemented.");
 }
-

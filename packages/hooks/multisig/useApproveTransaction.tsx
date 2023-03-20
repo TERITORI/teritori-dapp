@@ -1,4 +1,5 @@
-import { SigningStargateClient } from "@cosmjs/stargate";
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { toUtf8 } from "@cosmjs/encoding";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useMutation } from "@tanstack/react-query";
 import { toBase64 } from "cosmwasm";
@@ -44,19 +45,29 @@ export const useApproveTransaction = () => {
 
         const signerAddress = walletAccount.address;
 
-        const signingClient = await SigningStargateClient.offline(
+        const signingClient = await SigningCosmWasmClient.offline(
           offlineSigner
         );
-
+        // const signingClient = await SigningStargateClient.offline(
+        //   offlineSigner
+        // );
         const signerData = {
           accountNumber: tx.accountNumber,
           sequence: tx.sequence,
           chainId: state.chain.chainId,
         };
-
+        const tx_msgs = [];
+        for (const msg of tx.msgs) {
+          if (msg?.typeUrl === "/cosmwasm.wasm.v1.MsgExecuteContract") {
+            msg.value.msg = toUtf8(msg.value.msg);
+            tx_msgs.push(msg);
+          } else {
+            tx_msgs.push(msg);
+          }
+        }
         const { bodyBytes, signatures } = await signingClient.sign(
           signerAddress,
-          tx.msgs,
+          tx_msgs,
           tx.fee,
           tx.memo,
           signerData

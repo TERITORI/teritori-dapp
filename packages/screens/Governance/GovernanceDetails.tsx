@@ -14,10 +14,8 @@ import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrOfflineSigner } from "../../utils/keplr";
-import { neutral44, tulipTree } from "../../utils/style/colors";
-import { getTeritoriSigningStargateClient } from "../../utils/teritori";
 import { getKeplrSigningStargateClient } from "../../networks";
+import { neutral44, tulipTree } from "../../utils/style/colors";
 import { ProposalStatus } from "./types";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (

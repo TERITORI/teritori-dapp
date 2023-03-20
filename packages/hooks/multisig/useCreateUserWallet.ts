@@ -1,9 +1,8 @@
-import { createMultisigThresholdPubkey, pubkeyToAddress } from "@cosmjs/amino";
 import { useMutation } from "@tanstack/react-query";
 
+import { UserWalletType } from "../../screens/Multisig/types";
 import { createUserWallet } from "../../utils/founaDB/multisig/multisigGraphql";
 import { DbUserWallet } from "../../utils/founaDB/multisig/types";
-import {UserWalletType} from "../../screens/Multisig/types";
 
 type CreateUserWalletArguement = {
   walletName: string;
@@ -15,13 +14,12 @@ type CreateUserWalletArguement = {
 export const useCreateUserWallet = () => {
   const mutation = useMutation(
     async ({
-             walletName,
-             userAddress,
-             chainId,
-             multisigId,
-           }: CreateUserWalletArguement) => {
+      walletName,
+      userAddress,
+      chainId,
+      multisigId,
+    }: CreateUserWalletArguement) => {
       try {
-
         // save userWallet to fauna
         const userWallet: DbUserWallet = {
           walletName,
@@ -36,7 +34,8 @@ export const useCreateUserWallet = () => {
           userAddress,
           multisigId,
           multisigAddress: saveRes.data.data.createUserWallet.multisig.address,
-          multisigUserAddresses: saveRes.data.data.createUserWallet.multisig.userAddresses,
+          multisigUserAddresses:
+            saveRes.data.data.createUserWallet.multisig.userAddresses,
         } as UserWalletType;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {

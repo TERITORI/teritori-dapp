@@ -1,6 +1,11 @@
 import axios from "axios";
 
-import {DbAccount, DbCreateTransaction, DbSignature, DbUserWallet} from "./types";
+import {
+  DbAccount,
+  DbCreateTransaction,
+  DbSignature,
+  DbUserWallet,
+} from "./types";
 
 // Graphql base request for Faunadb
 const graphqlReq = axios.create({
@@ -409,11 +414,10 @@ const getMultisigsByUserWallet = async(
             }
           }
        }
-      `
-    }
-  })
-}
-
+      `,
+    },
+  });
+};
 
 export {
   createOrFindMultisig,

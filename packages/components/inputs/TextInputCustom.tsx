@@ -31,7 +31,7 @@ import {
   neutral77,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
+import { fontMedium10 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
@@ -67,9 +67,6 @@ export interface TextInputCustomProps<T extends FieldValues>
   errorStyle?: ViewStyle;
   valueModifier?: (value: string) => string;
   isLoading?: boolean;
-  subtitle?: React.ReactElement;
-  labelStyle?: TextStyle;
-  noBrokenCorners?: boolean;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -100,7 +97,6 @@ export const TextInputCustom = <T extends FieldValues>({
   valueModifier,
   errorStyle,
   isLoading,
-  noBrokenCorners,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -173,17 +169,16 @@ export const TextInputCustom = <T extends FieldValues>({
 
   return (
     <>
-      {variant === "labelOutside" && (
-        <>
-          <View style={styles.rowEnd}>
-            <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
-              {label}
-            </BrandText>
-            {subtitle}
-          </View>
-          <SpacerColumn size={1} />
-        </>
-      )}
+      {variant &&
+        ["labelOutside", "noCropBorder"].includes(variant) &&
+        !hideLabel && (
+          <TextInputOutsideLabel
+            labelStyle={labelStyle}
+            isAsterickSign={isAsterickSign}
+            subtitle={subtitle}
+            label={label}
+          />
+        )}
 
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
@@ -196,7 +191,7 @@ export const TextInputCustom = <T extends FieldValues>({
         width={width}
         fullWidth={!width}
         height={height}
-        noBrokenCorners={noBrokenCorners}
+        noBrokenCorners={variant === "noCropBorder"}
       >
         <View style={styles.innerContainer}>
           {iconSVG && (

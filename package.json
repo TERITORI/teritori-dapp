@@ -96,7 +96,7 @@
     "electron-builder": "^23.1.0",
     "eslint": "^8.19.0",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "expo-cli": "^6.0.2",
+    "expo-cli": "~6.0.2",
     "expo-optimize": "^0.2.19",
     "patch-package": "^6.5.0",
     "postinstall-postinstall": "^2.1.0",

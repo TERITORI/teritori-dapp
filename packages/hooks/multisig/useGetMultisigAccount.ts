@@ -7,9 +7,22 @@ import { StargateClient, Account } from "@cosmjs/stargate";
 import { useQuery } from "@tanstack/react-query";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useMultisigContext } from "../../context/MultisigReducer";
+import { ChainInfo, useMultisigContext } from "../../context/MultisigReducer";
 import { MultisigType } from "../../screens/Multisig/types";
 import { getMultisig } from "../../utils/founaDB/multisig/multisigGraphql";
+
+export const getMultisigAccount = async (address: string, chain: ChainInfo) => {
+  const client = await StargateClient.connect(chain.nodeAddress!);
+  const accountOnChain = await client.getAccount(address);
+  const chainId = await client.getChainId();
+  const res = await getMultisig(address, chainId);
+  const data = res.data.data.getMultisig as MultisigType;
+
+  return {
+    accountData: accountOnChain,
+    dbData: data,
+  };
+};
 
 export const useGetMultisigAccount = (address: string) => {
   // variables
