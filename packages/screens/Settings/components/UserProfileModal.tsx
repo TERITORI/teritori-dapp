@@ -7,6 +7,7 @@ import {
   Pressable,
 } from "react-native";
 import { DragSortableView } from "react-native-drag-sort";
+import Hoverable from "react-native-hoverable";
 
 import confirmSVG from "../../../../assets/icons/confirm.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -26,7 +27,7 @@ import {
   fontSemibold28,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import Hoverable from "react-native-hoverable";
+import { initProfileData } from "./initProfile";
 
 type toggleUserProfileProps = {
   onClose: () => void;
@@ -39,8 +40,7 @@ const mobileWidth = 768;
 export type ProfileDataType = {
   id: number;
   content: string;
-}
-import {initProfileData} from "./initProfile";
+};
 
 export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   onClose,
@@ -67,7 +67,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
     if (width < (miniumWidth + gapWidth * 2) * 3)
       targetWidth = (width - gapWidth * 2 * 2) / 2;
     if (width < (miniumWidth + gapWidth * 2) * 2)
-      targetWidth = (width - gapWidth * 2 * 1) / 1;
+      targetWidth = width - gapWidth * 2;
 
     return targetWidth;
   };
@@ -79,7 +79,8 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   const marginChildrenTop =
     width < smallMobileWidth ? layout.padding_x1 : layout.padding_x2;
 
-  const [profileData, setProfileData] = useState<ProfileDataType[]>(initProfileData);
+  const [profileData, setProfileData] =
+    useState<ProfileDataType[]>(initProfileData);
   const [confirmedData, setConfirmedData] = useState<string[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
 
@@ -125,7 +126,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
             : 30 * layout.padding_x0_5
           : 45 * layout.padding_x0_5,
     },
-    cardBox:{
+    cardBox: {
       display: "flex",
       flexDirection: "row",
       justifyContent: "center",
@@ -139,7 +140,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
     },
 
     unselectedCardBoxBackroundColor: {
-      backgroundColor: neutral00
+      backgroundColor: neutral00,
     },
 
     selectedCardBoxBackgroundColor: {

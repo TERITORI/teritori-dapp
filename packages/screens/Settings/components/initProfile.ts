@@ -1,4 +1,4 @@
-import {ProfileDataType} from "./UserProfileModal";
+import { ProfileDataType } from "./UserProfileModal";
 
 export const initProfileData: ProfileDataType[] = [
   {
@@ -41,4 +41,4 @@ export const initProfileData: ProfileDataType[] = [
     id: 10,
     content: "Shared servers",
   },
-]
+];

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
@@ -7,8 +7,6 @@ import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import { SpacerColumn } from "../../components/spacer";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import {
@@ -114,6 +112,10 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
             </View>
           </TouchableOpacity>
         </View>
+        {/*<UserProfileModal*/}
+        {/*  visible={openProfile}*/}
+        {/*  onClose={toggleUserProfileModal}*/}
+        {/*/>*/}
       </View>
     </ScreenContainer>
   );

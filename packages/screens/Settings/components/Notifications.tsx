@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
