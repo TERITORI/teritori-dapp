@@ -28,7 +28,6 @@ import {
   combineFetchCommentPages,
   useFetchComments,
 } from "../../hooks/feed/useFetchComments";
-import { useErrorHandler } from "../../hooks/useErrorHandler";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
