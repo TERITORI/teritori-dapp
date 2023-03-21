@@ -16,7 +16,7 @@ import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
-import { socialFeedClient } from "../../../client-creators/socialFeedClient";
+import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
@@ -167,7 +167,7 @@ export const NewsFeedInput = React.forwardRef<
         getPostCategory(formValues),
         wallet
       );
-      updatePostFee(selectedNetworkId, getPostCategory(formValues), wallet);
+      updatePostFee(selectedNetworkId, getPostCategory(formValues));
     };
 
     const balances = useBalances(
@@ -194,7 +194,7 @@ export const NewsFeedInput = React.forwardRef<
         getPostCategory(formValues),
         wallet
       );
-      updatePostFee(selectedNetworkId, getPostCategory(formValues), wallet);
+      updatePostFee(selectedNetworkId, getPostCategory(formValues));
     }, [
       formValues,
       wallet,
@@ -253,7 +253,7 @@ export const NewsFeedInput = React.forwardRef<
 
         const postCategory = getPostCategory(formValues);
 
-        const client = await socialFeedClient({
+        const client = await signingSocialFeedClient({
           networkId: selectedNetworkId,
           walletAddress: wallet?.address || "",
         });

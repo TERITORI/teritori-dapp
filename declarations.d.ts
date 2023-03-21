@@ -10,5 +10,3 @@ declare module "*.png" {
 
   export = value;
 }
-
-declare module "nft.storage/dist/bundle.esm.min.js";

@@ -1,9 +1,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import { socialFeedClient } from "../../client-creators/socialFeedClient";
+import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
-import useSelectedWallet from "../useSelectedWallet";
 
 export type FetchCommentResponse = {
   list: PostResult[];
@@ -27,21 +26,15 @@ export const useFetchComments = ({
   enabled,
 }: ConfigType) => {
   // variable
-  const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
 
   // request
   const data = useInfiniteQuery<FetchCommentResponse>(
-    ["FetchComment", wallet?.address, parentId],
+    ["FetchComment", parentId],
     async ({ pageParam }) => {
-      if (!wallet?.address) {
-        return null;
-      }
-
       try {
-        const client = await socialFeedClient({
+        const client = await nonSigningSocialFeedClient({
           networkId: selectedNetworkId,
-          walletAddress: wallet.address,
         });
 
         const subComment = await client.querySubPosts({

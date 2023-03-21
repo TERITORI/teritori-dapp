@@ -7,52 +7,53 @@ import {
   mustGetNonSigningCosmWasmClient,
 } from "../networks";
 
-interface SocialFeedClientParams {
+interface SigningSocialFeedClientParams {
   networkId: string;
   walletAddress: string;
 }
 
-const cachedSigningClients: { [key: string]: TeritoriSocialFeedClient } = {};
-const cachedNonSigningClients: {
-  [key: string]: TeritoriSocialFeedQueryClient;
-} = {};
+interface NonSigningSocialFeedClientParams {
+  networkId: string;
+}
 
-export const socialFeedClient = async ({
+export const signingSocialFeedClient = async ({
   networkId,
   walletAddress,
-}: SocialFeedClientParams) => {
+}: SigningSocialFeedClientParams) => {
   const socialFeedContractAddress =
     process.env.TERITORI_SOCIAL_FEED_CONTRACT_ADDRESS || "";
+  const cachedSigningClients: { [key: string]: TeritoriSocialFeedClient } = {};
   const cacheKey = `${walletAddress}${socialFeedContractAddress}`;
 
-  if (cachedNonSigningClients[cacheKey]) {
-    return cachedNonSigningClients[cacheKey];
-  } else if (cachedSigningClients[cacheKey]) {
+  if (cachedSigningClients[cacheKey]) {
     return cachedSigningClients[cacheKey];
   } else {
-    const nonSigningCosmWasmClient = await mustGetNonSigningCosmWasmClient(
-      networkId
-    );
     const signingComswasmClient = await getKeplrSigningCosmWasmClient(
       networkId
     );
+    const client = new TeritoriSocialFeedClient(
+      signingComswasmClient,
+      walletAddress,
+      socialFeedContractAddress
+    );
 
-    let client;
-    if (walletAddress) {
-      client = new TeritoriSocialFeedClient(
-        signingComswasmClient,
-        walletAddress,
-        socialFeedContractAddress
-      );
-      cachedSigningClients[cacheKey] = client;
-    } else {
-      client = new TeritoriSocialFeedQueryClient(
-        nonSigningCosmWasmClient,
-        socialFeedContractAddress
-      );
-      cachedNonSigningClients[cacheKey] = client;
-    }
-
+    cachedSigningClients[cacheKey] = client;
     return client;
   }
+};
+
+export const nonSigningSocialFeedClient = async ({
+  networkId,
+}: NonSigningSocialFeedClientParams) => {
+  const socialFeedContractAddress =
+    process.env.TERITORI_SOCIAL_FEED_CONTRACT_ADDRESS || "";
+
+  const nonSigningCosmWasmClient = await mustGetNonSigningCosmWasmClient(
+    networkId
+  );
+
+  return new TeritoriSocialFeedQueryClient(
+    nonSigningCosmWasmClient,
+    socialFeedContractAddress
+  );
 };

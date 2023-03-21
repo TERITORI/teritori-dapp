@@ -6,7 +6,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import { socialFeedClient } from "../../client-creators/socialFeedClient";
+import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -30,7 +30,6 @@ import {
 } from "../../hooks/feed/useFetchComments";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { DEFAULT_USERNAME, postResultToPost } from "../../utils/social-feed";
@@ -48,7 +47,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   },
 }) => {
   const navigation = useAppNavigation();
-  const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const [refresh, setRefresh] = useState(0);
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
@@ -89,9 +87,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     const fetchPost = async () => {
       try {
         isLoadingValue.value = true;
-        const client = await socialFeedClient({
+        const client = await nonSigningSocialFeedClient({
           networkId: selectedNetworkId,
-          walletAddress: wallet?.address || "",
         });
         const _post = await client.queryPost({ identifier: id });
         setPostResult(_post);
@@ -106,7 +103,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     };
 
     fetchPost();
-  }, [id, wallet?.address, selectedNetworkId, isLoadingValue, setToastError]);
+  }, [id, selectedNetworkId, isLoadingValue, setToastError]);
 
   useEffect(() => {
     refetch();

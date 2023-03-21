@@ -3,7 +3,10 @@ import { omit } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { pinataPinFileToIPFS } from "../../../candymachine/pinata-upload";
-import { socialFeedClient } from "../../../client-creators/socialFeedClient";
+import {
+  nonSigningSocialFeedClient,
+  signingSocialFeedClient,
+} from "../../../client-creators/socialFeedClient";
 import { Wallet } from "../../../context/WalletsProvider";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
@@ -27,7 +30,7 @@ export const getAvailableFreePost = async ({
       return;
     }
 
-    const client = await socialFeedClient({
+    const client = await signingSocialFeedClient({
       networkId,
       walletAddress: wallet.address,
     });
@@ -44,22 +47,16 @@ export const getAvailableFreePost = async ({
 
 interface GetPostFeeParams {
   networkId: string;
-  wallet?: Wallet;
   postCategory: PostCategory;
 }
 
 export const getPostFee = async ({
   networkId,
-  wallet,
   postCategory,
 }: GetPostFeeParams) => {
   try {
-    if (!wallet?.connected || !wallet.address) {
-      return;
-    }
-    const client = await socialFeedClient({
+    const client = await nonSigningSocialFeedClient({
       networkId,
-      walletAddress: wallet.address,
     });
 
     const cost = await client.queryFeeByCategory({
@@ -127,7 +124,7 @@ export const createPost = async ({
     return;
   }
 
-  const client = await socialFeedClient({
+  const client = await signingSocialFeedClient({
     networkId,
     walletAddress: wallet.address,
   });

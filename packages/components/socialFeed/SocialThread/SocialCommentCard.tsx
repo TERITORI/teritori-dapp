@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { socialFeedClient } from "../../../client-creators/socialFeedClient";
+import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { Reaction as ReactionFromContract } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import {
@@ -171,7 +171,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     if (!wallet?.connected || !wallet.address) {
       return;
     }
-    const client = await socialFeedClient({
+    const client = await signingSocialFeedClient({
       networkId: selectedNetworkId,
       walletAddress: wallet.address,
     });

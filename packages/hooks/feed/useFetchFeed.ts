@@ -1,10 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
-import { socialFeedClient } from "../../client-creators/socialFeedClient";
+import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
 import { mustGetFeedClient } from "../../utils/backend";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
-import useSelectedWallet from "../useSelectedWallet";
 
 export type PostsList = {
   list: Post[];
@@ -15,7 +14,6 @@ export const combineFetchFeedPages = (pages: PostsList[]) =>
   pages.reduce((acc: Post[], page) => [...acc, ...(page?.list || [])], []);
 
 export const useFetchFeed = (req: PostsRequest) => {
-  const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
 
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
@@ -25,11 +23,10 @@ export const useFetchFeed = (req: PostsRequest) => {
       async ({ pageParam = req.offset }) => {
         try {
           // ===== We use social-feed contract to get the total posts count
-          const feedContractClient = await socialFeedClient({
+          const client = await nonSigningSocialFeedClient({
             networkId: selectedNetworkId,
-            walletAddress: wallet?.address || "",
           });
-          const mainPostsCount = await feedContractClient.queryMainPostsCount();
+          const mainPostsCount = await client.queryMainPostsCount();
 
           // Overriding the posts request with the current pageParam as offset
           const postsRequest: PostsRequest = { ...req, offset: pageParam || 0 };

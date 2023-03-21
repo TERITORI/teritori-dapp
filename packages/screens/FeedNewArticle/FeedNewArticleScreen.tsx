@@ -102,7 +102,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = ({
       getPostCategory(formValues),
       wallet
     );
-    updatePostFee(selectedNetworkId, getPostCategory(formValues), wallet);
+    updatePostFee(selectedNetworkId, getPostCategory(formValues));
   }, [
     formValues,
     wallet,

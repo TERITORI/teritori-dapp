@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleProp, View, ViewStyle, TouchableOpacity } from "react-native";
 
 import { Post } from "../../../api/feed/v1/feed";
-import { socialFeedClient } from "../../../client-creators/socialFeedClient";
+import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
@@ -85,7 +85,7 @@ export const SocialThreadCard: React.FC<{
     if (!wallet?.connected || !wallet.address) {
       return;
     }
-    const client = await socialFeedClient({
+    const client = await signingSocialFeedClient({
       networkId: selectedNetworkId,
       walletAddress: wallet.address,
     });
