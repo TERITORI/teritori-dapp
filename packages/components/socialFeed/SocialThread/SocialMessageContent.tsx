@@ -25,7 +25,10 @@ export const SocialMessageContent: React.FC<Props> = ({
     [metadata.files]
   );
   const imageFiles = useMemo(
-    () => metadata.files?.filter((file) => file.fileType === "image"),
+    () =>
+      metadata.files?.filter(
+        (file) => file.fileType === "image" || file.fileType === "base64"
+      ),
     [metadata.files]
   );
   const videoFiles = useMemo(
