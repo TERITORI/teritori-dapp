@@ -14,7 +14,7 @@ interface Settings {
 const initialState: Settings = {
   selectedWalletId: "",
   selectedNetworkId: "",
-  NFTStorageAPI: process.env.NFTStorageAPI || "",
+  NFTStorageAPI: process.env.NFT_STORAGE_API || "",
   isKeplrConnected: false,
   alreadyVisited: false,
   areTestnetsEnabled: false,

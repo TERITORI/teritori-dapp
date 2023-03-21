@@ -1,6 +1,6 @@
 import { ProfileDataType } from "./UserProfileModal";
 
-export const initProfileData: ProfileDataType[] = [
+export const INIT_PROFILE_DATA: ProfileDataType[] = [
   {
     id: 1,
     content: "Social Feed",

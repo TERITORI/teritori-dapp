@@ -24,7 +24,7 @@ import { SettingItem } from "./components/SettingItem";
 import { useCommonStyles } from "./components/commonStyles";
 import { SettingItemType } from "./types";
 
-function NFTAPIKeyInput() {
+const NFTAPIKeyInput: React.FC = () => {
   const NFTApiKey = useSelector(selectNFTStorageAPI);
   const dispatch = useAppDispatch();
   const commonStyles = useCommonStyles();
@@ -44,7 +44,7 @@ function NFTAPIKeyInput() {
         </BrandText>
         <Pressable
           onPress={() =>
-            dispatch(setNFTStorageAPI(process.env.NFTStorageAPI || ""))
+            dispatch(setNFTStorageAPI(process.env.NFT_STORAGE_API || ""))
           }
         >
           <Text style={[fontSemibold14, { color: primaryColor }]}>
@@ -60,7 +60,7 @@ function NFTAPIKeyInput() {
       />
     </View>
   );
-}
+};
 
 export const SettingsScreen: ScreenFC<"Settings"> = () => {
   const navigation = useAppNavigation();
@@ -112,6 +112,8 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
             </View>
           </TouchableOpacity>
         </View>
+        {/*Please note that the "user profile customization" part of this task was changed to navigate to the TNS manage page.*/}
+        {/*I left the files ( committed to the repo UserProfileModal.tsx) as by the previous developer.*/}
         {/*<UserProfileModal*/}
         {/*  visible={openProfile}*/}
         {/*  onClose={toggleUserProfileModal}*/}

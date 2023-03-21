@@ -30,11 +30,11 @@ export const SettingItem: React.FC<{
           ) : null}
         </View>
         <Switch
-          // @ts-ignore
+          // @ts-expect-error
           activeThumbColor={primaryColor}
           thumbColor={item.state ? primaryColor : neutral55}
           trackColor={{ true: secondaryColor, false: neutralA3 }}
-          value={item.state as boolean}
+          value={item.state}
         />
       </View>
     </TouchableOpacity>

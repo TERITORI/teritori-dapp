@@ -13,7 +13,7 @@ const defaultValue: DefaultValue = {
 
 const SidebarContext = createContext(defaultValue);
 
-const mobileWidth = 768;
+const MOBILE_WIDTH = 768;
 
 export const SidebarContextProvider: React.FC = ({ children }) => {
   // The entered isSidebarExpanded
@@ -25,7 +25,7 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     setIsSidebarExpanded(
-      windowWidth >= mobileWidth ? defaultValue.isSidebarExpanded : false
+      windowWidth >= MOBILE_WIDTH ? defaultValue.isSidebarExpanded : false
     );
   }, [windowWidth]);
 

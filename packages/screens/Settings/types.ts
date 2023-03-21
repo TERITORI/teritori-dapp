@@ -5,5 +5,5 @@ export interface SettingItemGroupType {
 export interface SettingItemType {
   title: string;
   description: string;
-  state: string | boolean;
+  state: boolean;
 }

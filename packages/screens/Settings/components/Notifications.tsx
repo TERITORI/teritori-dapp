@@ -9,7 +9,25 @@ import { layout } from "../../../utils/style/layout";
 import { SettingItemGroupType, SettingItemType } from "../types";
 import { SettingItem } from "./SettingItem";
 
-export const Notifications = () => {
+const styles = StyleSheet.create({
+  bigTitle: StyleSheet.flatten([
+    fontSemibold20,
+    {
+      paddingTop: layout.padding_x4,
+      paddingLeft: layout.padding_x2,
+    },
+  ]),
+  bigText: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: neutralA3,
+      paddingLeft: layout.padding_x2,
+      paddingTop: layout.padding_x1,
+    },
+  ]),
+});
+
+export const Notifications: React.FC = () => {
   const data: SettingItemGroupType = {
     sales: {
       title: "Sales",
@@ -42,23 +60,6 @@ export const Notifications = () => {
   };
   const [settings, setSettings] = useState<SettingItemGroupType>(data);
 
-  const styles = StyleSheet.create({
-    bigTitle: StyleSheet.flatten([
-      fontSemibold20,
-      {
-        paddingTop: layout.padding_x4,
-        paddingLeft: layout.padding_x2,
-      },
-    ]),
-    bigText: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: neutralA3,
-        paddingLeft: layout.padding_x2,
-        paddingTop: layout.padding_x1,
-      },
-    ]),
-  });
   return (
     <>
       <BrandText style={styles.bigTitle}>Notifications</BrandText>

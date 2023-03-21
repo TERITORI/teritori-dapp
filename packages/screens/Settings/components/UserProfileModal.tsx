@@ -27,15 +27,15 @@ import {
   fontSemibold28,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { initProfileData } from "./initProfile";
+import { INIT_PROFILE_DATA } from "./initProfile";
 
 type toggleUserProfileProps = {
   onClose: () => void;
   visible: boolean;
 };
 
-const smallMobileWidth = 512;
-const mobileWidth = 768;
+const SMALL_MOBILE_WIDTH = 512;
+const MOBILE_WIDTH = 768;
 
 export type ProfileDataType = {
   id: number;
@@ -77,10 +77,10 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   const parentWidth = width;
   const marginChildrenVertical = layout.padding_x1;
   const marginChildrenTop =
-    width < smallMobileWidth ? layout.padding_x1 : layout.padding_x2;
+    width < SMALL_MOBILE_WIDTH ? layout.padding_x1 : layout.padding_x2;
 
   const [profileData, setProfileData] =
-    useState<ProfileDataType[]>(initProfileData);
+    useState<ProfileDataType[]>(INIT_PROFILE_DATA);
   const [confirmedData, setConfirmedData] = useState<string[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
 
@@ -95,8 +95,8 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       fontSemibold28,
       {
         marginTop:
-          width < mobileWidth
-            ? width < smallMobileWidth
+          width < MOBILE_WIDTH
+            ? width < SMALL_MOBILE_WIDTH
               ? 5 * layout.padding_x1
               : 15 * layout.padding_x1
             : 25 * layout.padding_x1,
@@ -108,7 +108,8 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
         marginHorizontal: "auto",
         color: neutralA3,
         marginTop: layout.padding_x1,
-        width: width < smallMobileWidth ? 0.9 * width : 15 * layout.padding_x4,
+        width:
+          width < SMALL_MOBILE_WIDTH ? 0.9 * width : 15 * layout.padding_x4,
       },
     ]),
     cardContainer: {
@@ -120,8 +121,8 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       alignItems: "center",
       gap: layout.padding_x1_5,
       marginTop:
-        width < mobileWidth
-          ? width < smallMobileWidth
+        width < MOBILE_WIDTH
+          ? width < SMALL_MOBILE_WIDTH
             ? 5 * layout.padding_x0_5
             : 30 * layout.padding_x0_5
           : 45 * layout.padding_x0_5,
@@ -180,8 +181,8 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       flexDirection: "row",
       gap: layout.padding_x3,
       marginTop:
-        width < mobileWidth
-          ? width < smallMobileWidth
+        width < MOBILE_WIDTH
+          ? width < SMALL_MOBILE_WIDTH
             ? 5 * layout.padding_x0_5
             : 30 * layout.padding_x0_5
           : 45 * layout.padding_x0_5,

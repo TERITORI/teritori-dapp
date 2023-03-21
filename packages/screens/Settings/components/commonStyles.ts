@@ -13,7 +13,7 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-const mobileWidth = 768;
+const MOBILE_WIDTH = 768;
 const padWidth = 1024;
 
 export const useCommonStyles = () => {
@@ -45,7 +45,7 @@ export const useCommonStyles = () => {
       {
         color: neutralA3,
         width:
-          width < mobileWidth
+          width < MOBILE_WIDTH
             ? (width - 75) * 0.9 - 2 * layout.padding_x2 - 50
             : undefined,
         marginTop: layout.padding_x0_5,
@@ -62,7 +62,7 @@ export const useCommonStyles = () => {
     pageContainer: {
       width:
         width < padWidth
-          ? width < mobileWidth
+          ? width < MOBILE_WIDTH
             ? (width - 75) * 0.9
             : (width - 209) * 0.9
           : 676,
