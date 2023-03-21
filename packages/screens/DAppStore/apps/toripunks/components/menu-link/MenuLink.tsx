@@ -22,7 +22,7 @@ export const MenuLink = () => {
   const name =
     userInfo?.metadata?.tokenId ||
     tinyAddress(contentContext.selectedWallet?.address, 30) ||
-    "Testing";
+    "";
 
   const Separator = () => (
     <View

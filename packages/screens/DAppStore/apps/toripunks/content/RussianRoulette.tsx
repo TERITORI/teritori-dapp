@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
@@ -13,8 +13,26 @@ export const Russian = () => {
   const { isMinimunWindowWidth } = useContentContext();
   const [bet, setBet] = useState<number>(0);
 
-  const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
+  const styleTypeSize = isMinimunWindowWidth ? "80" : "30";
+  const buttonSize = isMinimunWindowWidth ? "S" : "Mobile";
 
+  // replace with user data.
+  const userToripunks = "XXX";
+  const maxTicket = "10";
+  const priceTicket = "1";
+  const monthPriceTicket = "120";
+  const remainingUserTicket = "XXXX";
+  const remainingUserCurrency = "XXXX";
+
+  // Button text
+  const longButtonLabelText = result
+    ? `${remainingUserTicket} remaining tickets in the russian roulette`
+    : `Last month's winnings per ticket = ${monthPriceTicket}$ Tor`;
+  const userInteractionInfo = result
+    ? `You can still buy ${remainingUserCurrency} tickets`
+    : `${userToripunks} Toripunks in your wallet`;
+
+  // use Hooks to buy, play, add bet , remove bet
   const click = () => {
     setResult(!result);
   };
@@ -27,8 +45,10 @@ export const Russian = () => {
     setBet(validateBet);
   };
 
+  const buyToripunks = () => {};
+
   return (
-    <View>
+    <View style={{ marginTop: isMinimunWindowWidth ? 70 : 40 }}>
       {/* Label View */}
       <View>
         <Label
@@ -43,7 +63,6 @@ export const Russian = () => {
         >
           {!result ? "TICKETS FOR THE one & only" : "Punks, you Played"}
         </Label>
-        )
         <Label
           styleType={`H2_DHBS_${styleTypeSize}`}
           style={{
@@ -62,7 +81,7 @@ export const Russian = () => {
           marginTop: 50,
           marginLeft: "auto",
           marginRight: "auto",
-          width: 500,
+          width: isMinimunWindowWidth ? 500 : 338,
         }}
       >
         <ActionButton
@@ -79,24 +98,42 @@ export const Russian = () => {
               marginBottom: 10,
             }}
           >
-            <ButtonLabel text="Max 10 tickets / transaction" size="S" />
-            <ButtonLabel text="Ticket price = 1 $TORI" size="S" />
+            <ButtonLabel
+              text={`Max ${maxTicket} tickets / transaction`}
+              size={buttonSize}
+            />
+            <ButtonLabel
+              text={`Ticket price = ${priceTicket} $TORI`}
+              size={buttonSize}
+            />
           </View>
         )}
         <ButtonLabel
-          text="Last month's winnings per ticket = 120$ Tor"
-          size="S"
+          text={longButtonLabelText}
+          size={buttonSize}
           style={{ width: "auto", marginBottom: 10 }}
         />
-        <View style={{ flexDirection: "row" }}>
-          <ButtonLabel text="Toripunks in your wallet" size="S" />
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <ButtonLabel text={userInteractionInfo} size={buttonSize} />
+          <TouchableOpacity onPress={buyToripunks}>
+            <ButtonLabel
+              text="BUY TORIPUNKS"
+              size={buttonSize}
+              style={{ borderColor: "#28f191", borderStyle: "solid" }}
+            />
+          </TouchableOpacity>
         </View>
       </View>
       {/* Play View */}
       <View style={{ flexWrap: "wrap", alignContent: "center" }}>
-        <Button onPress={click} text="PLAY" size="L" withImg />
+        <Button
+          onPress={click}
+          text="PLAY"
+          size={isMinimunWindowWidth ? "L" : "L-mobile"}
+          withImg
+        />
       </View>
-      <View style={{ marginTop: 78 }}>
+      <View style={{ marginTop: isMinimunWindowWidth ? 78 : 40 }}>
         <Footer isMinimunWindowWidth={isMinimunWindowWidth} />
       </View>
     </View>

@@ -18,6 +18,13 @@ export const textStyle = {
     fontSize: 40,
     lineHeight: 48,
   },
+  H1_Bebas_30: {
+    fontFamily: "Bebas Neue",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: 30,
+    lineHeight: 36,
+  },
   H2_DHBS_80: {
     fontFamily: "Dafter Harder Better Stronger",
     fontStyle: "normal",
@@ -31,6 +38,13 @@ export const textStyle = {
     fontWeight: "400",
     fontSize: 40,
     lineHeight: 48,
+  },
+  H2_DHBS_30: {
+    fontFamily: "Dafter Harder Better Stronger",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: 30,
+    lineHeight: 35,
   },
   T2_Bebas_50: {
     fontFamily: "Bebas Neue",
@@ -65,6 +79,6 @@ export const textStyle = {
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 15,
-    lineHeight: 48,
+    lineHeight: 18,
   },
 };

@@ -10,12 +10,13 @@ import {
 
 import buttonBackgroundBlack from "../../assets/button/RectangleButtonBlack.png";
 import buttonBackgroundBlackSmall from "../../assets/button/RectangleButtonSmall.png";
+import buttonBackgorundBlackMobile from "../../assets/button/RectangleButtonMobile.png";
 import { useContentContext } from "../../context/ContentProvider";
 
 export interface ButtonType {
   onPress?: () => void;
   text: string;
-  size: "S" | "L";
+  size: "S" | "L" | "L-mobile";
   withImg: boolean;
   style?: StyleProp<ViewStyle>;
 }
@@ -23,6 +24,7 @@ export interface ButtonType {
 const buttonSrc = {
   S: buttonBackgroundBlackSmall,
   L: buttonBackgroundBlack,
+  "L-mobile": buttonBackgorundBlackMobile,
 };
 
 export const Button: React.FC<ButtonType> = ({
@@ -73,6 +75,24 @@ const useStyles = (size: ButtonType["size"]) => {
           },
         ],
       };
+    case "L-mobile": {
+      return {
+        backgroundImg: {
+          width: 338,
+          justifyContent: "space-around",
+        },
+        text: [
+          contentContext.styles["H1_Bebas_40"],
+          {
+            marginTop: 10,
+            marginBottom: 45,
+            color: "#2AF191",
+            textAlign: "center",
+            borderLeftColor: "#2AF191",
+          },
+        ],
+      };
+    }
     case "S":
       return {
         backgroundImg: {
