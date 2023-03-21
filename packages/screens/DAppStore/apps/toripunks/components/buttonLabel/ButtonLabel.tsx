@@ -6,12 +6,14 @@ export interface ButtonLabelType {
   text: string;
   size: "S" | "L";
   style?: StyleProp<ViewStyle>;
+  onPress?: () => void;
 }
 
 export const ButtonLabel: React.FC<ButtonLabelType> = ({
   text,
   size,
   style,
+  onPress,
 }) => {
   const buttonStyles = useStyles(size);
 
@@ -23,13 +25,18 @@ export const ButtonLabel: React.FC<ButtonLabelType> = ({
           height: "fit-content",
           borderRadius: 5,
           backgroundColor: "#212708",
+          borderColor: "#28f191",
+          borderStyle: "solid",
+          borderWidth: 1,
           paddingTop: 8,
           paddingBottom: 8,
         },
         style,
       ]}
     >
-      <Text style={buttonStyles?.text}>{text}</Text>
+      <Text onPress={onPress} style={buttonStyles?.text}>
+        {text}
+      </Text>
     </View>
   );
 };

@@ -7,7 +7,6 @@ import { Content } from "./content/Content";
 import { ContentContextProvider } from "./context/ContentProvider";
 
 export const ToriPunks: ScreenFC<"ToriPunks"> = ({ route }) => {
-  console.log(route.params.route);
   return (
     <ScreenContainer
       fullWidth

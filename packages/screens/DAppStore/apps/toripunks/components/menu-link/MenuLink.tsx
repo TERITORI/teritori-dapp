@@ -8,7 +8,7 @@ import { useContentContext } from "../../context/ContentProvider";
 import { Button } from "../button/Button";
 
 enum ListSection {
-  price = "GIGANTIC LOTTERY",
+  lottery = "GIGANTIC LOTTERY",
   roulette = "RUSSIAN ROULETTE",
   raffle = "RAFFLE",
   comicbook = "COMIC BOOKS",

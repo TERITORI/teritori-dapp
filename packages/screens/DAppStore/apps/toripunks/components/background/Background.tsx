@@ -6,6 +6,9 @@ const imgComponent = {
   comicbook: (children: JSX.Element) => (
     <DefaultBackground type="comicbook">{children}</DefaultBackground>
   ),
+  "comic-book-history": (children: JSX.Element) => (
+    <DefaultBackground type="comic-book-history">{children}</DefaultBackground>
+  ),
   disconnect: (children: JSX.Element) => (
     <DefaultBackground type="disconnect">{children}</DefaultBackground>
   ),
@@ -15,8 +18,11 @@ const imgComponent = {
   roulette: (children: JSX.Element) => (
     <DefaultBackground type="roulette">{children}</DefaultBackground>
   ),
-  price: (children: JSX.Element) => (
-    <DefaultBackground type="price">{children}</DefaultBackground>
+  lottery: (children: JSX.Element) => (
+    <DefaultBackground type="lottery">{children}</DefaultBackground>
+  ),
+  "lottery-history": (children: JSX.Element) => (
+    <DefaultBackground type="lottery-history">{children}</DefaultBackground>
   ),
   pricepool: () => null,
   score: (children: JSX.Element) => (

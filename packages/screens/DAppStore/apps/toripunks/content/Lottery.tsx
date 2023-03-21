@@ -5,7 +5,7 @@ import { Footer } from "../components/footer/Footer";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
 
-export const ComicBooks = () => {
+export const Lottery = () => {
   const { setSelectedSectionHandler, isMinimunWindowWidth } =
     useContentContext();
 
@@ -22,13 +22,7 @@ export const ComicBooks = () => {
           styleType={`H1_Bebas_${styleTypeSize}`}
           style={{ textAlign: "center", color: "#E8E1EF" }}
         >
-          Punks, here's the prize
-        </Label>
-        <Label
-          styleType={`H1_Bebas_${styleTypeSize}`}
-          style={{ textAlign: "center", color: "#E8E1EF" }}
-        >
-          pool of the last
+          Punks, here's the prize pool of the last
         </Label>
         <Label
           styleType={`H2_DHBS_${styleTypeSize}`}
@@ -38,13 +32,7 @@ export const ComicBooks = () => {
             transform: [{ rotate: "-1.5deg" }],
           }}
         >
-          early punks wallet
-        </Label>
-        <Label
-          styleType={`H1_Bebas_${styleTypeSize}`}
-          style={{ textAlign: "center", color: "#E8E1EF" }}
-        >
-          DIVIDED BY XXXX WALLETS
+          gigantic lottery
         </Label>
         <Label
           styleType={`H1_Bebas_${styleTypeSize}`}
@@ -56,23 +44,21 @@ export const ComicBooks = () => {
           styleType="T1_Bebas_20"
           style={{ textAlign: "center", color: "#E8E1EF" }}
         >
-          Holders of 1 toripunk + 5 different comic books
+          Live draw in our discord on the 25th of each month
         </Label>
         <View
           style={{
             alignContent: "center",
             justifyContent: "space-evenly",
             flexWrap: "wrap",
-            height: 180,
+            height: 120,
           }}
         >
-          <ButtonLabel text="BUY COMIC BOOKS" size="S" />
           <ButtonLabel text="BUY TORIPUNKS" size="S" />
-
           <ButtonLabel
-            text="PREVIOUS POOL PRICE"
+            text="PREVIOUS LOTTERIES"
             size="S"
-            onPress={() => setSelectedSectionHandler("comic-book-history")}
+            onPress={() => setSelectedSectionHandler("lottery-history")}
           />
         </View>
 

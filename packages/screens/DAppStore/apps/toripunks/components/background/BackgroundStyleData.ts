@@ -1,7 +1,10 @@
+// @ts-ignore
+import comicBookHistory from "../../assets/background/comicbook-history.jpg";
+// @ts-ignore
+import comicBookLanding from "../../assets/background/comicbook.jpg";
 import disconnect from "../../assets/background/disconnect.png";
+import lottery from "../../assets/background/lottery.png";
 import main from "../../assets/background/main.png";
-import price from "../../assets/background/price.png";
-import pricePool from "../../assets/background/pricePool.png";
 import score from "../../assets/background/score.png";
 import welcome from "../../assets/background/welcome.png";
 import winorlose from "../../assets/background/winorlose.png";
@@ -27,8 +30,8 @@ export const imgComponent = {
     imgStyle: { filter: "sepia(1) brightness(0.5)" },
     resizeMode: "cover",
   },
-  price: {
-    src: price,
+  lottery: {
+    src: lottery,
     style: { ...baseStyle },
     imgStyle: {},
     resizeMode: "cover",
@@ -52,7 +55,21 @@ export const imgComponent = {
     resizeMode: "cover",
   },
   comicbook: {
-    src: pricePool,
+    src: comicBookLanding,
+    style: { ...baseStyle },
+    imgStyle: {
+      filter: "brightness(0.8)",
+    },
+    resizeMode: "cover",
+  },
+  "comic-book-history": {
+    src: comicBookHistory,
+    style: { ...baseStyle },
+    imgStyle: {},
+    resizeMode: "cover",
+  },
+  "lottery-history": {
+    src: lottery,
     style: { ...baseStyle },
     imgStyle: {},
     resizeMode: "cover",
