@@ -8,8 +8,7 @@ import { share } from "rxjs/operators";
 
 export const protobufPackage = "p2e.v1";
 
-export interface AllSeasonsRequest {
-}
+export interface AllSeasonsRequest {}
 
 export interface SeasonWithoutPrize {
   id: string;
@@ -21,8 +20,7 @@ export interface AllSeasonsResponse {
   seasons: SeasonWithoutPrize[];
 }
 
-export interface CurrentSeasonRequest {
-}
+export interface CurrentSeasonRequest {}
 
 export interface CurrentSeasonResponse {
   id: string;
@@ -69,7 +67,10 @@ function createBaseAllSeasonsRequest(): AllSeasonsRequest {
 }
 
 export const AllSeasonsRequest = {
-  encode(_: AllSeasonsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: AllSeasonsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
@@ -97,7 +98,9 @@ export const AllSeasonsRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(_: I): AllSeasonsRequest {
+  fromPartial<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(
+    _: I
+  ): AllSeasonsRequest {
     const message = createBaseAllSeasonsRequest();
     return message;
   },
@@ -108,7 +111,10 @@ function createBaseSeasonWithoutPrize(): SeasonWithoutPrize {
 }
 
 export const SeasonWithoutPrize = {
-  encode(message: SeasonWithoutPrize, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: SeasonWithoutPrize,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -161,7 +167,9 @@ export const SeasonWithoutPrize = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<SeasonWithoutPrize>, I>>(object: I): SeasonWithoutPrize {
+  fromPartial<I extends Exact<DeepPartial<SeasonWithoutPrize>, I>>(
+    object: I
+  ): SeasonWithoutPrize {
     const message = createBaseSeasonWithoutPrize();
     message.id = object.id ?? "";
     message.bossName = object.bossName ?? "";
@@ -175,7 +183,10 @@ function createBaseAllSeasonsResponse(): AllSeasonsResponse {
 }
 
 export const AllSeasonsResponse = {
-  encode(message: AllSeasonsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: AllSeasonsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     for (const v of message.seasons) {
       SeasonWithoutPrize.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -190,7 +201,9 @@ export const AllSeasonsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.seasons.push(SeasonWithoutPrize.decode(reader, reader.uint32()));
+          message.seasons.push(
+            SeasonWithoutPrize.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -202,23 +215,30 @@ export const AllSeasonsResponse = {
 
   fromJSON(object: any): AllSeasonsResponse {
     return {
-      seasons: Array.isArray(object?.seasons) ? object.seasons.map((e: any) => SeasonWithoutPrize.fromJSON(e)) : [],
+      seasons: Array.isArray(object?.seasons)
+        ? object.seasons.map((e: any) => SeasonWithoutPrize.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: AllSeasonsResponse): unknown {
     const obj: any = {};
     if (message.seasons) {
-      obj.seasons = message.seasons.map((e) => e ? SeasonWithoutPrize.toJSON(e) : undefined);
+      obj.seasons = message.seasons.map((e) =>
+        e ? SeasonWithoutPrize.toJSON(e) : undefined
+      );
     } else {
       obj.seasons = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AllSeasonsResponse>, I>>(object: I): AllSeasonsResponse {
+  fromPartial<I extends Exact<DeepPartial<AllSeasonsResponse>, I>>(
+    object: I
+  ): AllSeasonsResponse {
     const message = createBaseAllSeasonsResponse();
-    message.seasons = object.seasons?.map((e) => SeasonWithoutPrize.fromPartial(e)) || [];
+    message.seasons =
+      object.seasons?.map((e) => SeasonWithoutPrize.fromPartial(e)) || [];
     return message;
   },
 };
@@ -228,11 +248,17 @@ function createBaseCurrentSeasonRequest(): CurrentSeasonRequest {
 }
 
 export const CurrentSeasonRequest = {
-  encode(_: CurrentSeasonRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: CurrentSeasonRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CurrentSeasonRequest {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CurrentSeasonRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCurrentSeasonRequest();
@@ -256,18 +282,32 @@ export const CurrentSeasonRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(_: I): CurrentSeasonRequest {
+  fromPartial<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(
+    _: I
+  ): CurrentSeasonRequest {
     const message = createBaseCurrentSeasonRequest();
     return message;
   },
 };
 
 function createBaseCurrentSeasonResponse(): CurrentSeasonResponse {
-  return { id: "", denom: "", totalPrize: 0, bossName: "", bossHp: 0, remainingHp: 0, bossImage: "", isPre: false };
+  return {
+    id: "",
+    denom: "",
+    totalPrize: 0,
+    bossName: "",
+    bossHp: 0,
+    remainingHp: 0,
+    bossImage: "",
+    isPre: false,
+  };
 }
 
 export const CurrentSeasonResponse = {
-  encode(message: CurrentSeasonResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: CurrentSeasonResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -295,7 +335,10 @@ export const CurrentSeasonResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CurrentSeasonResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CurrentSeasonResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCurrentSeasonResponse();
@@ -351,16 +394,20 @@ export const CurrentSeasonResponse = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.totalPrize !== undefined && (obj.totalPrize = Math.round(message.totalPrize));
+    message.totalPrize !== undefined &&
+      (obj.totalPrize = Math.round(message.totalPrize));
     message.bossName !== undefined && (obj.bossName = message.bossName);
     message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
-    message.remainingHp !== undefined && (obj.remainingHp = message.remainingHp);
+    message.remainingHp !== undefined &&
+      (obj.remainingHp = message.remainingHp);
     message.bossImage !== undefined && (obj.bossImage = message.bossImage);
     message.isPre !== undefined && (obj.isPre = message.isPre);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CurrentSeasonResponse>, I>>(object: I): CurrentSeasonResponse {
+  fromPartial<I extends Exact<DeepPartial<CurrentSeasonResponse>, I>>(
+    object: I
+  ): CurrentSeasonResponse {
     const message = createBaseCurrentSeasonResponse();
     message.id = object.id ?? "";
     message.denom = object.denom ?? "";
@@ -379,7 +426,10 @@ function createBaseUserRankRequest(): UserRankRequest {
 }
 
 export const UserRankRequest = {
-  encode(message: UserRankRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: UserRankRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.seasonId !== "") {
       writer.uint32(10).string(message.seasonId);
     }
@@ -424,7 +474,9 @@ export const UserRankRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UserRankRequest>, I>>(object: I): UserRankRequest {
+  fromPartial<I extends Exact<DeepPartial<UserRankRequest>, I>>(
+    object: I
+  ): UserRankRequest {
     const message = createBaseUserRankRequest();
     message.seasonId = object.seasonId ?? "";
     message.userId = object.userId ?? "";
@@ -437,7 +489,10 @@ function createBaseUserRankResponse(): UserRankResponse {
 }
 
 export const UserRankResponse = {
-  encode(message: UserRankResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: UserRankResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.userScore !== undefined) {
       UserScore.encode(message.userScore, writer.uint32(10).fork()).ldelim();
     }
@@ -470,7 +525,9 @@ export const UserRankResponse = {
 
   fromJSON(object: any): UserRankResponse {
     return {
-      userScore: isSet(object.userScore) ? UserScore.fromJSON(object.userScore) : undefined,
+      userScore: isSet(object.userScore)
+        ? UserScore.fromJSON(object.userScore)
+        : undefined,
       totalUsers: isSet(object.totalUsers) ? Number(object.totalUsers) : 0,
     };
   },
@@ -478,16 +535,22 @@ export const UserRankResponse = {
   toJSON(message: UserRankResponse): unknown {
     const obj: any = {};
     message.userScore !== undefined &&
-      (obj.userScore = message.userScore ? UserScore.toJSON(message.userScore) : undefined);
-    message.totalUsers !== undefined && (obj.totalUsers = Math.round(message.totalUsers));
+      (obj.userScore = message.userScore
+        ? UserScore.toJSON(message.userScore)
+        : undefined);
+    message.totalUsers !== undefined &&
+      (obj.totalUsers = Math.round(message.totalUsers));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UserRankResponse>, I>>(object: I): UserRankResponse {
+  fromPartial<I extends Exact<DeepPartial<UserRankResponse>, I>>(
+    object: I
+  ): UserRankResponse {
     const message = createBaseUserRankResponse();
-    message.userScore = (object.userScore !== undefined && object.userScore !== null)
-      ? UserScore.fromPartial(object.userScore)
-      : undefined;
+    message.userScore =
+      object.userScore !== undefined && object.userScore !== null
+        ? UserScore.fromPartial(object.userScore)
+        : undefined;
     message.totalUsers = object.totalUsers ?? 0;
     return message;
   },
@@ -498,7 +561,10 @@ function createBaseLeaderboardRequest(): LeaderboardRequest {
 }
 
 export const LeaderboardRequest = {
-  encode(message: LeaderboardRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: LeaderboardRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.seasonId !== "") {
       writer.uint32(10).string(message.seasonId);
     }
@@ -551,7 +617,9 @@ export const LeaderboardRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LeaderboardRequest>, I>>(object: I): LeaderboardRequest {
+  fromPartial<I extends Exact<DeepPartial<LeaderboardRequest>, I>>(
+    object: I
+  ): LeaderboardRequest {
     const message = createBaseLeaderboardRequest();
     message.seasonId = object.seasonId ?? "";
     message.limit = object.limit ?? 0;
@@ -561,11 +629,21 @@ export const LeaderboardRequest = {
 };
 
 function createBaseUserScore(): UserScore {
-  return { rank: 0, snapshotRank: 0, userId: "", inProgressScore: 0, snapshotScore: 0, seasonId: "" };
+  return {
+    rank: 0,
+    snapshotRank: 0,
+    userId: "",
+    inProgressScore: 0,
+    snapshotScore: 0,
+    seasonId: "",
+  };
 }
 
 export const UserScore = {
-  encode(message: UserScore, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: UserScore,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.rank !== 0) {
       writer.uint32(8).int32(message.rank);
     }
@@ -623,10 +701,16 @@ export const UserScore = {
   fromJSON(object: any): UserScore {
     return {
       rank: isSet(object.rank) ? Number(object.rank) : 0,
-      snapshotRank: isSet(object.snapshotRank) ? Number(object.snapshotRank) : 0,
+      snapshotRank: isSet(object.snapshotRank)
+        ? Number(object.snapshotRank)
+        : 0,
       userId: isSet(object.userId) ? String(object.userId) : "",
-      inProgressScore: isSet(object.inProgressScore) ? Number(object.inProgressScore) : 0,
-      snapshotScore: isSet(object.snapshotScore) ? Number(object.snapshotScore) : 0,
+      inProgressScore: isSet(object.inProgressScore)
+        ? Number(object.inProgressScore)
+        : 0,
+      snapshotScore: isSet(object.snapshotScore)
+        ? Number(object.snapshotScore)
+        : 0,
       seasonId: isSet(object.seasonId) ? String(object.seasonId) : "",
     };
   },
@@ -634,15 +718,20 @@ export const UserScore = {
   toJSON(message: UserScore): unknown {
     const obj: any = {};
     message.rank !== undefined && (obj.rank = Math.round(message.rank));
-    message.snapshotRank !== undefined && (obj.snapshotRank = Math.round(message.snapshotRank));
+    message.snapshotRank !== undefined &&
+      (obj.snapshotRank = Math.round(message.snapshotRank));
     message.userId !== undefined && (obj.userId = message.userId);
-    message.inProgressScore !== undefined && (obj.inProgressScore = Math.round(message.inProgressScore));
-    message.snapshotScore !== undefined && (obj.snapshotScore = Math.round(message.snapshotScore));
+    message.inProgressScore !== undefined &&
+      (obj.inProgressScore = Math.round(message.inProgressScore));
+    message.snapshotScore !== undefined &&
+      (obj.snapshotScore = Math.round(message.snapshotScore));
     message.seasonId !== undefined && (obj.seasonId = message.seasonId);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UserScore>, I>>(object: I): UserScore {
+  fromPartial<I extends Exact<DeepPartial<UserScore>, I>>(
+    object: I
+  ): UserScore {
     const message = createBaseUserScore();
     message.rank = object.rank ?? 0;
     message.snapshotRank = object.snapshotRank ?? 0;
@@ -659,7 +748,10 @@ function createBaseLeaderboardResponse(): LeaderboardResponse {
 }
 
 export const LeaderboardResponse = {
-  encode(message: LeaderboardResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: LeaderboardResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.userScore !== undefined) {
       UserScore.encode(message.userScore, writer.uint32(10).fork()).ldelim();
     }
@@ -685,30 +777,51 @@ export const LeaderboardResponse = {
   },
 
   fromJSON(object: any): LeaderboardResponse {
-    return { userScore: isSet(object.userScore) ? UserScore.fromJSON(object.userScore) : undefined };
+    return {
+      userScore: isSet(object.userScore)
+        ? UserScore.fromJSON(object.userScore)
+        : undefined,
+    };
   },
 
   toJSON(message: LeaderboardResponse): unknown {
     const obj: any = {};
     message.userScore !== undefined &&
-      (obj.userScore = message.userScore ? UserScore.toJSON(message.userScore) : undefined);
+      (obj.userScore = message.userScore
+        ? UserScore.toJSON(message.userScore)
+        : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<LeaderboardResponse>, I>>(object: I): LeaderboardResponse {
+  fromPartial<I extends Exact<DeepPartial<LeaderboardResponse>, I>>(
+    object: I
+  ): LeaderboardResponse {
     const message = createBaseLeaderboardResponse();
-    message.userScore = (object.userScore !== undefined && object.userScore !== null)
-      ? UserScore.fromPartial(object.userScore)
-      : undefined;
+    message.userScore =
+      object.userScore !== undefined && object.userScore !== null
+        ? UserScore.fromPartial(object.userScore)
+        : undefined;
     return message;
   },
 };
 
 export interface P2eService {
-  Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse>;
-  CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse>;
-  UserRank(request: DeepPartial<UserRankRequest>, metadata?: grpc.Metadata): Promise<UserRankResponse>;
-  AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse>;
+  Leaderboard(
+    request: DeepPartial<LeaderboardRequest>,
+    metadata?: grpc.Metadata
+  ): Observable<LeaderboardResponse>;
+  CurrentSeason(
+    request: DeepPartial<CurrentSeasonRequest>,
+    metadata?: grpc.Metadata
+  ): Promise<CurrentSeasonResponse>;
+  UserRank(
+    request: DeepPartial<UserRankRequest>,
+    metadata?: grpc.Metadata
+  ): Promise<UserRankResponse>;
+  AllSeasons(
+    request: DeepPartial<AllSeasonsRequest>,
+    metadata?: grpc.Metadata
+  ): Promise<AllSeasonsResponse>;
 }
 
 export class P2eServiceClientImpl implements P2eService {
@@ -722,20 +835,48 @@ export class P2eServiceClientImpl implements P2eService {
     this.AllSeasons = this.AllSeasons.bind(this);
   }
 
-  Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse> {
-    return this.rpc.invoke(P2eServiceLeaderboardDesc, LeaderboardRequest.fromPartial(request), metadata);
+  Leaderboard(
+    request: DeepPartial<LeaderboardRequest>,
+    metadata?: grpc.Metadata
+  ): Observable<LeaderboardResponse> {
+    return this.rpc.invoke(
+      P2eServiceLeaderboardDesc,
+      LeaderboardRequest.fromPartial(request),
+      metadata
+    );
   }
 
-  CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse> {
-    return this.rpc.unary(P2eServiceCurrentSeasonDesc, CurrentSeasonRequest.fromPartial(request), metadata);
+  CurrentSeason(
+    request: DeepPartial<CurrentSeasonRequest>,
+    metadata?: grpc.Metadata
+  ): Promise<CurrentSeasonResponse> {
+    return this.rpc.unary(
+      P2eServiceCurrentSeasonDesc,
+      CurrentSeasonRequest.fromPartial(request),
+      metadata
+    );
   }
 
-  UserRank(request: DeepPartial<UserRankRequest>, metadata?: grpc.Metadata): Promise<UserRankResponse> {
-    return this.rpc.unary(P2eServiceUserRankDesc, UserRankRequest.fromPartial(request), metadata);
+  UserRank(
+    request: DeepPartial<UserRankRequest>,
+    metadata?: grpc.Metadata
+  ): Promise<UserRankResponse> {
+    return this.rpc.unary(
+      P2eServiceUserRankDesc,
+      UserRankRequest.fromPartial(request),
+      metadata
+    );
   }
 
-  AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse> {
-    return this.rpc.unary(P2eServiceAllSeasonsDesc, AllSeasonsRequest.fromPartial(request), metadata);
+  AllSeasons(
+    request: DeepPartial<AllSeasonsRequest>,
+    metadata?: grpc.Metadata
+  ): Promise<AllSeasonsResponse> {
+    return this.rpc.unary(
+      P2eServiceAllSeasonsDesc,
+      AllSeasonsRequest.fromPartial(request),
+      metadata
+    );
   }
 }
 
@@ -829,7 +970,8 @@ export const P2eServiceAllSeasonsDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-interface UnaryMethodDefinitionishR extends grpc.UnaryMethodDefinition<any, any> {
+interface UnaryMethodDefinitionishR
+  extends grpc.UnaryMethodDefinition<any, any> {
   requestStream: any;
   responseStream: any;
 }
@@ -840,12 +982,12 @@ interface Rpc {
   unary<T extends UnaryMethodDefinitionish>(
     methodDesc: T,
     request: any,
-    metadata: grpc.Metadata | undefined,
+    metadata: grpc.Metadata | undefined
   ): Promise<any>;
   invoke<T extends UnaryMethodDefinitionish>(
     methodDesc: T,
     request: any,
-    metadata: grpc.Metadata | undefined,
+    metadata: grpc.Metadata | undefined
   ): Observable<any>;
 }
 
@@ -867,7 +1009,7 @@ export class GrpcWebImpl {
       debug?: boolean;
       metadata?: grpc.Metadata;
       upStreamRetryCodes?: number[];
-    },
+    }
   ) {
     this.host = host;
     this.options = options;
@@ -876,12 +1018,16 @@ export class GrpcWebImpl {
   unary<T extends UnaryMethodDefinitionish>(
     methodDesc: T,
     _request: any,
-    metadata: grpc.Metadata | undefined,
+    metadata: grpc.Metadata | undefined
   ): Promise<any> {
     const request = { ..._request, ...methodDesc.requestType };
-    const maybeCombinedMetadata = metadata && this.options.metadata
-      ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+    const maybeCombinedMetadata =
+      metadata && this.options.metadata
+        ? new BrowserHeaders({
+            ...this.options?.metadata.headersMap,
+            ...metadata?.headersMap,
+          })
+        : metadata || this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
@@ -893,7 +1039,11 @@ export class GrpcWebImpl {
           if (response.status === grpc.Code.OK) {
             resolve(response.message);
           } else {
-            const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
+            const err = new GrpcWebError(
+              response.statusMessage,
+              response.status,
+              response.trailers
+            );
             reject(err);
           }
         },
@@ -904,16 +1054,20 @@ export class GrpcWebImpl {
   invoke<T extends UnaryMethodDefinitionish>(
     methodDesc: T,
     _request: any,
-    metadata: grpc.Metadata | undefined,
+    metadata: grpc.Metadata | undefined
   ): Observable<any> {
     const upStreamCodes = this.options.upStreamRetryCodes || [];
     const DEFAULT_TIMEOUT_TIME: number = 3_000;
     const request = { ..._request, ...methodDesc.requestType };
-    const maybeCombinedMetadata = metadata && this.options.metadata
-      ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+    const maybeCombinedMetadata =
+      metadata && this.options.metadata
+        ? new BrowserHeaders({
+            ...this.options?.metadata.headersMap,
+            ...metadata?.headersMap,
+          })
+        : metadata || this.options.metadata;
     return new Observable((observer) => {
-      const upStream = (() => {
+      const upStream = () => {
         const client = grpc.invoke(methodDesc, {
           host: this.host,
           request,
@@ -921,7 +1075,11 @@ export class GrpcWebImpl {
           metadata: maybeCombinedMetadata,
           debug: this.options.debug,
           onMessage: (next) => observer.next(next),
-          onEnd: (code: grpc.Code, message: string, trailers: grpc.Metadata) => {
+          onEnd: (
+            code: grpc.Code,
+            message: string,
+            trailers: grpc.Metadata
+          ) => {
             if (code === 0) {
               observer.complete();
             } else if (upStreamCodes.includes(code)) {
@@ -935,7 +1093,7 @@ export class GrpcWebImpl {
           },
         });
         observer.add(() => client.close());
-      });
+      };
       upStream();
     }).pipe(share());
   }
@@ -960,16 +1118,31 @@ var globalThis: any = (() => {
   throw "Unable to locate global object";
 })();
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : T extends {}
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
@@ -988,7 +1161,7 @@ function isSet(value: any): boolean {
 }
 
 export class GrpcWebError extends Error {
-  constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
+  constructor(message: string, code: grpc.Code, metadata: grpc.Metadata) {
     super(message);
   }
 }

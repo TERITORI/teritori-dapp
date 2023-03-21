@@ -27,7 +27,6 @@ export const Header: React.FC<{
           alignItems: "center",
           borderBottomColor: neutral33,
           borderBottomWidth: 1,
-          backgroundColor: "green",
         },
         style,
       ]}
@@ -42,7 +41,6 @@ export const Header: React.FC<{
             width > 500
               ? screenContainerContentMarginHorizontal
               : layout.padding_x1,
-          backgroundColor: "red",
         }}
       >
         <>{children}</>

@@ -112,7 +112,7 @@ export const ScreenContainer: React.FC<{
             <SelectedNetworkGate filter={networkFilter}>
               {hasScroll ? (
                 <ScrollView
-                  style={{ width: "100%", flex: 1, backgroundColor: "red" }}
+                  style={{ width: "100%", flex: 1 }}
                   contentContainerStyle={[
                     {
                       minHeight: height - headerHeight,
