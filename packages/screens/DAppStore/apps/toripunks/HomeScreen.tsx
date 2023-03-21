@@ -6,7 +6,8 @@ import { ScreenFC } from "../../../../utils/navigation";
 import { Content } from "./content/Content";
 import { ContentContextProvider } from "./context/ContentProvider";
 
-export const ToriPunks: ScreenFC<"ToriPunks"> = () => {
+export const ToriPunks: ScreenFC<"ToriPunks"> = ({ route }) => {
+  console.log(route.params.route);
   return (
     <ScreenContainer
       fullWidth
@@ -14,7 +15,7 @@ export const ToriPunks: ScreenFC<"ToriPunks"> = () => {
       footerChildren={<div />}
     >
       {/*Just a placeholder please delete me*/}
-      <ContentContextProvider>
+      <ContentContextProvider screen={route.params.route}>
         <Content />
       </ContentContextProvider>
       {/*Just a placeholder please delete me*/}

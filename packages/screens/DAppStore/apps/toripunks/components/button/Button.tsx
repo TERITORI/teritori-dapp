@@ -1,51 +1,48 @@
 import {
   ImageBackground,
-  StyleProp,
   TouchableOpacity,
-  TouchableOpacityProps,
   View,
   Text,
+  StyleProp,
+  ViewStyle,
+  FlexStyle,
 } from "react-native";
 
-import buttonBackgroundBlack from "../../assets/RectangleButtonBlack.png";
+import buttonBackgroundBlack from "../../assets/button/RectangleButtonBlack.png";
+import buttonBackgroundBlackSmall from "../../assets/button/RectangleButtonSmall.png";
 import { useContentContext } from "../../context/ContentProvider";
 
 export interface ButtonType {
-  onPress: () => void;
-  style?: StyleProp<TouchableOpacityProps>;
+  onPress?: () => void;
   text: string;
+  size: "S" | "L";
   withImg: boolean;
+  style?: StyleProp<ViewStyle>;
 }
+
+const buttonSrc = {
+  S: buttonBackgroundBlackSmall,
+  L: buttonBackgroundBlack,
+};
 
 export const Button: React.FC<ButtonType> = ({
   onPress,
-  style,
   text,
+  size,
   withImg,
+  style,
 }) => {
-  const contentContext = useContentContext();
+  const buttonStyles = useStyles(size);
   return (
-    <TouchableOpacity style={style} onPress={onPress}>
-      <View style={{}}>
+    <TouchableOpacity onPress={onPress}>
+      <View style={style}>
         {withImg ? (
           <ImageBackground
-            source={buttonBackgroundBlack}
-            style={{ width: 520 }}
+            source={buttonSrc[size]}
+            resizeMode="contain"
+            style={buttonStyles.backgroundImg as StyleProp<FlexStyle>}
           >
-            <Text
-              style={[
-                (contentContext.styles as any)["H1_Bebas_80"],
-                {
-                  marginTop: 10,
-                  marginBottom: 45,
-                  color: "#2AF191",
-                  textAlign: "center",
-                  borderLeftColor: "#2AF191",
-                },
-              ]}
-            >
-              {text}
-            </Text>
+            <Text style={buttonStyles.text}>{text}</Text>
           </ImageBackground>
         ) : (
           <Text>{text}</Text>
@@ -53,4 +50,45 @@ export const Button: React.FC<ButtonType> = ({
       </View>
     </TouchableOpacity>
   );
+};
+
+const useStyles = (size: ButtonType["size"]) => {
+  const contentContext = useContentContext();
+  // no StyleSheet.create :)
+  switch (size) {
+    case "L":
+      return {
+        backgroundImg: {
+          width: 520,
+          justifyContent: "space-around",
+        },
+        text: [
+          contentContext.styles["H1_Bebas_80"],
+          {
+            marginTop: 10,
+            marginBottom: 45,
+            color: "#2AF191",
+            textAlign: "center",
+            borderLeftColor: "#2AF191",
+          },
+        ],
+      };
+    case "S":
+      return {
+        backgroundImg: {
+          width: 180,
+          height: 60,
+          justifyContent: "space-around",
+        },
+        text: [
+          contentContext.styles["T2_Bebas_20"],
+          {
+            marginBottom: 10,
+            color: "#2AF191",
+            textAlign: "center",
+            borderLeftColor: "#2AF191",
+          },
+        ],
+      };
+  }
 };

@@ -3,17 +3,17 @@ import React from "react";
 import { DefaultBackground } from "./DefaultBackground";
 
 const imgComponent = {
-  comicgood: (children: JSX.Element) => (
-    <DefaultBackground type="comicgood">{children}</DefaultBackground>
+  comicbook: (children: JSX.Element) => (
+    <DefaultBackground type="comicbook">{children}</DefaultBackground>
   ),
   disconnect: (children: JSX.Element) => (
     <DefaultBackground type="disconnect">{children}</DefaultBackground>
   ),
-  login: (children: JSX.Element) => (
-    <DefaultBackground type="login">{children}</DefaultBackground>
+  welcome: (children: JSX.Element) => (
+    <DefaultBackground type="welcome">{children}</DefaultBackground>
   ),
-  main: (children: JSX.Element) => (
-    <DefaultBackground type="main">{children}</DefaultBackground>
+  roulette: (children: JSX.Element) => (
+    <DefaultBackground type="roulette">{children}</DefaultBackground>
   ),
   price: (children: JSX.Element) => (
     <DefaultBackground type="price">{children}</DefaultBackground>
@@ -28,12 +28,15 @@ const imgComponent = {
   raffle: (children: JSX.Element) => (
     <DefaultBackground type="raffle">{children}</DefaultBackground>
   ),
+  "my-history": (children: JSX.Element) => (
+    <DefaultBackground type="raffle">{children}</DefaultBackground>
+  ),
 };
 
 export const Background: React.FC<{ children: JSX.Element; type: string }> = ({
   children,
   type,
 }) => {
-  const selectedComponnet = (imgComponent as any)[type];
-  return selectedComponnet(children);
+  const selectedComponent = (imgComponent as any)[type];
+  return selectedComponent(children);
 };

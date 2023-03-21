@@ -1,30 +1,7 @@
 import React from "react";
 import { ImageBackground } from "react-native";
 
-import disconnect from "../../assets/background/disconnect.png";
-import login from "../../assets/background/login.png";
-import main from "../../assets/background/main.png";
-import price from "../../assets/background/price.png";
-import pricePool from "../../assets/background/pricePool.png";
-import score from "../../assets/background/score.png";
-import winorlose from "../../assets/background/winorlose.png";
-
-const baseStyle = { flex: 1 };
-
-const imgComponent = {
-  disconnect: { src: disconnect, style: { ...baseStyle }, imgStyle: {} },
-  main: { src: main, style: { ...baseStyle }, imgStyle: {} },
-  login: {
-    src: login,
-    style: { ...baseStyle },
-    imgStyle: { filter: "sepia(1)" },
-  },
-  price: { src: price, style: { ...baseStyle }, imgStyle: {} },
-  score: { src: score, style: { ...baseStyle }, imgStyle: {} },
-  winorlose: { src: winorlose, style: { ...baseStyle }, imgStyle: {} },
-  raffle: { src: "", style: { ...baseStyle }, imgStyle: {} },
-  comicgood: { src: pricePool, style: { ...baseStyle }, imgStyle: {} },
-};
+import { imgComponent } from "./BackgroundStyleData";
 
 export const DefaultBackground: React.FC<{
   children: JSX.Element;
@@ -36,7 +13,7 @@ export const DefaultBackground: React.FC<{
     <ImageBackground
       imageStyle={selectedComponnet.imgStyle}
       source={selectedComponnet.src}
-      resizeMode="cover"
+      resizeMode={selectedComponnet.resizeMode}
       style={selectedComponnet.style}
     >
       {children}

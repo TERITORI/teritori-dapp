@@ -1,97 +1,70 @@
-import { createContext, useContext, useState } from "react";
-import { StyleSheet } from "react-native";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { Dimensions } from "react-native";
+
+import { Wallet } from "../../../../../context/WalletsProvider";
+import useSelectedWallet from "../../../../../hooks/useSelectedWallet";
+import { useAppNavigation } from "../../../../../utils/navigation";
+import { textStyle } from "./TextStyleUtil";
 
 interface DefaultValue {
   setSelectedSectionHandler: (section: string) => void;
   selectedSection: string;
   styles: any;
+  selectedWallet: Wallet | undefined;
+  windowHeight: number;
+  windowWidth: number;
+  isMinimunWindowWidth: boolean;
 }
 
 const defaultValue: DefaultValue = {
   setSelectedSectionHandler: () => {},
-  selectedSection: "login",
-  styles: StyleSheet.create({}),
+  selectedSection: "welcome",
+  styles: {},
+  selectedWallet: undefined,
+  windowHeight: 800,
+  windowWidth: 1024,
+  isMinimunWindowWidth: false,
 };
+
+const windowDimensions = Dimensions.get("window");
 
 const ContentContext = createContext(defaultValue);
 
-export const ContentContextProvider: React.FC = ({ children }) => {
-  const [selectedSection, setSelectedSection] = useState<string>("login");
+export const ContentContextProvider: React.FC<{
+  children: ReactNode;
+  screen: string;
+}> = ({ children, screen }) => {
+  const [selectedSection, setSelectedSection] = useState<string>(screen);
+  const selectedWallet = useSelectedWallet();
+  const navigation = useAppNavigation();
 
   const setSelectedSectionHandler = (section: string) => {
+    navigation.navigate("ToriPunks", { route: section });
     setSelectedSection(section);
   };
 
-  const styles = StyleSheet.create({
-    base: {
-      color: "white",
-      fontSize: 20,
-      fontWeight: "600",
-    },
-    H1_Bebas_80: {
-      fontFamily: "Bebas Neue",
-      fontStyle: "normal",
-      fontWeight: "400",
-      fontSize: 80,
-      lineHeight: 96,
-    },
-    H1_Bebas_40: {
-      fontFamily: "Bebas Neue",
-      fontStyle: "normal",
-      fontWeight: "400",
-      fontSize: 40,
-      lineHeight: 96,
-    },
-    H2_DHBS_80: {
-      fontFamily: "Dafter Harder Better Stronger",
-      fontStyle: "normal",
-      fontWeight: "400",
-      fontSize: 80,
-      lineHeight: 96,
-    },
-    H2_DHBS_40: {
-      fontFamily: "Dafter Harder Better Stronger",
-      fontStyle: "normal",
-      fontWeight: "400",
-      fontSize: 40,
-      lineHeight: 96,
-    },
-    T2_Bebas_50: {
-      fontFamily: "Bebas Neue",
-      fontStyle: "normal",
-      fontWeight: "400",
-      fontSize: 50,
-      lineHeight: 96,
-    },
-    T2_Bebas_20: {
-      fontFamily: "Bebas Neue",
-      fontStyle: "normal",
-      fontWeight: "400",
-      fontSize: 20,
-      lineHeight: 96,
-    },
-    T1_Bebas_20: {
-      fontFamily: "Bebas Neue",
-      fontStyle: "normal",
-      fontWeight: "400",
-      fontSize: 20,
-      lineHeight: 96,
-    },
-    T1_DHBS_20: {
-      fontFamily: "Dafter Harder Better Stronger",
-      fontStyle: "normal",
-      fontWeight: "400",
-      fontSize: 20,
-      lineHeight: 96,
-    },
-    T1_Bebas_15: {
-      fontFamily: "Bebas Neue",
-      fontStyle: "normal",
-      fontWeight: "400",
-      fontSize: 15,
-      lineHeight: 96,
-    },
+  const [dimensions, setDimensions] = useState({
+    window: windowDimensions,
   });
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
+      setDimensions({ window });
+    });
+    return () => subscription?.remove();
+  });
+
+  const { height: windowHeight, width: windowWidth } = dimensions.window;
+
+  const isMinimunWindowWidth = windowWidth >= 1024;
+
+  const styles = textStyle;
 
   return (
     <ContentContext.Provider
@@ -99,6 +72,10 @@ export const ContentContextProvider: React.FC = ({ children }) => {
         selectedSection,
         setSelectedSectionHandler,
         styles,
+        selectedWallet,
+        windowHeight,
+        windowWidth,
+        isMinimunWindowWidth,
       }}
     >
       {children}

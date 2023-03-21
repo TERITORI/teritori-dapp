@@ -1,47 +1,66 @@
 import { useFonts } from "expo-font";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { Background } from "../components/background/Background";
 import { MenuLink } from "../components/menu-link/MenuLink";
 import { useContentContext } from "../context/ContentProvider";
-import { ComicBooks } from "./ComicBooks";
-import { Login } from "./Login";
-import { Raffle } from "./Raffle";
-import { Russian } from "./RussianRoulette";
+import { Route } from "./Route";
 
 export const Content = () => {
-  const { selectedSection } = useContentContext();
+  const { selectedSection, isMinimunWindowWidth } = useContentContext();
 
   const [fontsLoaded] = useFonts({
     "Bebas Neue": require("../assets/font/Bebas_Neue/BebasNeue-Regular.ttf"),
     "Dafter Harder Better Stronger": require("../assets/font/Dafter_Harder_Better_Stronger/Dafter Harder Better Stronger.ttf"),
   });
 
-  const Section = () => {
-    if (selectedSection === "login") return <Login />;
-    if (selectedSection === "main") return <Russian />;
-    if (selectedSection === "raffle") return <Raffle />;
-    if (selectedSection === "comicgood") return <ComicBooks />;
-  };
-
   if (!fontsLoaded) {
     return null;
   }
 
+  // CSS for Responsive WEB/Mobile
+  const containerStyle = isMinimunWindowWidth
+    ? {
+        flexWrap: "wrap",
+        justifyContent: "center",
+        minHeight: "35em",
+        flexGrow: 0,
+      }
+    : {
+        flexWrap: "nowrap",
+        justifyContent: "space-between",
+        height: "auto",
+        flexGrow: 1,
+      };
+
+  // Custom CSS (Layout) for different sections
+  const customStyle = {
+    main: { justifyContent: "flex-end", height: "auto" },
+  };
+
+  const validateCustomStyle = {
+    get: (target: any, name: string) => {
+      return target.hasOwnProperty(name) ? target[name] : {};
+    },
+  };
+
+  const selectionStyle = new Proxy(customStyle, validateCustomStyle);
+
   return (
     <Background type={selectedSection}>
       <>
-        {selectedSection !== "login" && <MenuLink />}
+        {selectedSection !== "welcome" && <MenuLink />}
         <View
-          style={{
-            flexDirection: "column",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignContent: "center",
-            height: "35em",
-          }}
+          style={[
+            containerStyle as ViewStyle,
+            {
+              flexDirection: "column",
+              alignContent: "center",
+            },
+            selectionStyle[selectedSection] as ViewStyle,
+          ]}
         >
-          {Section()}
+          {Route(selectedSection)}
         </View>
       </>
     </Background>
