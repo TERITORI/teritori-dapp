@@ -1,3 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable prefer-rest-params */
+/* eslint-disable no-func-assign */
+/* eslint-disable no-void */
+/* eslint-disable no-var */
+
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });

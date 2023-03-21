@@ -1,4 +1,6 @@
-//@ts-nocheck
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-void */
+/* eslint-disable no-unused-expressions */
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
