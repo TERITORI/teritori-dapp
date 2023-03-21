@@ -19,6 +19,11 @@ export interface NetworkInfoBase {
   backendEndpoint: string;
   secondaryDuringMintList?: string[];
   excludeFromLaunchpadList?: string[];
+
+  // p2e
+  distributorContractAddress?: string;
+  riotContractAddressGen0?: string;
+  riotContractAddressGen1?: string;
 }
 
 export type CosmosNetworkInfo = NetworkInfoBase & {
@@ -39,12 +44,10 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   nameServiceDefaultImage?: string;
   nameServiceTLD?: string;
   vaultContractAddress?: string;
-  distributorContractAddress?: string;
-  riotContractAddressGen0?: string;
-  riotContractAddressGen1?: string;
-  riotSquadStakingContractAddressV1?: string;
-  riotSquadStakingContractAddressV2?: string;
   riotersFooterContractAddress?: string;
+
+  riotSquadStakingContractAddressV1: string;
+  riotSquadStakingContractAddressV2: string;
 };
 
 export type EthereumNetworkInfo = NetworkInfoBase & {
@@ -54,7 +57,8 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   alchemyApiKey: string;
   theGraphEndpoint: string;
   vaultContractAddress: string;
-  riotContractAddress: string;
+
+  riotSquadStakingContractAddress: string;
 };
 
 export type SolanaNetworkInfo = NetworkInfoBase & {

@@ -16,25 +16,29 @@ import subtractSVG from "../../assets/game/subtract.svg";
 import toolSVG from "../../assets/game/tool.svg";
 import { NFT } from "../api/marketplace/v1/marketplace";
 import { TeritoriSquadStakingClient } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.client";
-import {
-  GetConfigResponse,
-  Nft as SquadStakeNFT,
-} from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
+import { Nft as SquadStakeNFT } from "../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import {
   getCosmosNetwork,
   getKeplrSigningCosmWasmClient,
   getUserId,
   mustGetCosmosNetwork,
+  NetworkKind,
   parseNftId,
   parseUserId,
+  mustGetEthereumNetwork,
 } from "../networks";
 import {
   GameBgCardItem,
   RipperRarity,
   RipperTraitType,
+  SquadConfig,
 } from "../screens/RiotGame/types";
 import { UserScore } from "./../api/p2e/v1/p2e";
+import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { SquadStakingV3__factory } from "./../evm-contracts-clients/teritori-squad-staking/SquadStakingV3__factory";
+import { NetworkInfo } from "./../networks/types";
 import { getKeplrSquadStakingClient } from "./contracts";
+import { getMetaMaskEthereumSigner } from "./ethereum";
 
 const round = (input: number) => {
   return Math.floor(100 * input) / 100;
@@ -407,16 +411,56 @@ export const squadWithdrawSeason1 = async (userId: string | undefined) => {
   return await client.withdraw();
 };
 
-export const squadWithdraw = async (userId: string | undefined) => {
+const cosmosSquadWithdraw = async (userId: string) => {
   const squadStakingClient = await getKeplrSquadStakingClient(userId);
-  return await squadStakingClient.withdraw();
+  const tx = await squadStakingClient.withdraw();
+  return tx.transactionHash;
+};
+
+const ethereumSquadWithdraw = async (
+  networkId: string,
+  userAddress: string,
+  squadIndex: number
+) => {
+  const ethereumNetwork = mustGetEthereumNetwork(networkId);
+  const signer = await getMetaMaskEthereumSigner(ethereumNetwork, userAddress);
+  if (!signer) {
+    throw Error(`failed to get ethereum signer`);
+  }
+
+  const squadStakingClient = SquadStakingV3__factory.connect(
+    ethereumNetwork.riotSquadStakingContractAddress,
+    signer
+  );
+
+  const tx = await squadStakingClient.unstake(squadIndex);
+  const receipt = await tx.wait();
+  return receipt.transactionHash;
+};
+
+export const squadWithdraw = async (
+  userId: string | undefined,
+  squadIndex: number
+) => {
+  if (!userId) return;
+
+  const [network, userAddress] = parseUserId(userId);
+
+  switch (network?.kind) {
+    case NetworkKind.Cosmos:
+      return cosmosSquadWithdraw(userId);
+    case NetworkKind.Ethereum:
+      return ethereumSquadWithdraw(network.id, userAddress, squadIndex);
+    default:
+      throw Error(`network ${network?.id} does not support withdraw squad`);
+  }
 };
 
 export const estimateStakingDuration = (
   rippers: NFT[],
-  squadStakingConfig: GetConfigResponse
+  squadStakingConfig: SquadConfig
 ) => {
-  const bonusMultiplier = squadStakingConfig.bonus_multiplier;
+  const bonusMultiplier = squadStakingConfig.bonusMultiplier;
 
   let duration = 0;
 
@@ -439,17 +483,55 @@ export const getSquadPresetId = (
   return `${userId}-${squadId}`;
 };
 
-export const squadStake = async (
-  userId: string | undefined,
+export const ethereumSquadStake = async (
+  network: NetworkInfo,
+  sender: string,
   selectedRippers: NFT[]
-) => {
-  const [network, sender] = parseUserId(userId);
-  if (!network || !sender) {
-    throw new Error("invalid user id");
+): Promise<string> => {
+  const ethereumNetwork = mustGetEthereumNetwork(network.id);
+  const squadContract = ethereumNetwork.riotSquadStakingContractAddress;
+
+  if (!squadContract) {
+    throw new Error("missing squad staking contract address in network config");
   }
 
+  const signer = await getMetaMaskEthereumSigner(ethereumNetwork, sender);
+  if (!signer) {
+    throw Error("no account connected");
+  }
+
+  const selectedNfts = [];
+  for (const selectedRipper of selectedRippers) {
+    const tokenId = getRipperTokenId(selectedRipper);
+
+    // Approve
+    const nftClient = TeritoriNft__factory.connect(
+      selectedRipper.nftContractAddress,
+      signer
+    );
+    const approveTx = await nftClient.approve(squadContract, tokenId);
+    await approveTx.wait();
+
+    selectedNfts.push({
+      collection: selectedRipper.nftContractAddress,
+      tokenId,
+    });
+  }
+
+  const stakeClient = SquadStakingV3__factory.connect(squadContract, signer);
+  const stakeTx = await stakeClient.stake(selectedNfts);
+  const res = await stakeTx.wait();
+
+  return res.transactionHash;
+};
+
+export const cosmosSquadStake = async (
+  network: NetworkInfo,
+  sender: string,
+  selectedRippers: NFT[]
+): Promise<string> => {
   const cosmosNetwork = mustGetCosmosNetwork(network.id);
-  const contractAddress = cosmosNetwork?.riotSquadStakingContractAddressV2;
+  const contractAddress = cosmosNetwork.riotSquadStakingContractAddressV2;
 
   if (!contractAddress) {
     throw new Error("missing squad staking contract address in network config");
@@ -487,5 +569,24 @@ export const squadStake = async (
     throw Error(tx.transactionHash);
   }
 
-  return tx;
+  return tx.transactionHash;
+};
+
+export const squadStake = async (
+  userId: string | undefined,
+  selectedRippers: NFT[]
+) => {
+  const [network, sender] = parseUserId(userId);
+  if (!network || !sender) {
+    throw Error("invalid user id");
+  }
+
+  switch (network.kind) {
+    case NetworkKind.Cosmos:
+      return cosmosSquadStake(network, sender, selectedRippers);
+    case NetworkKind.Ethereum:
+      return ethereumSquadStake(network, sender, selectedRippers);
+    default:
+      throw Error(`${network.id} does not support squad stake`);
+  }
 };

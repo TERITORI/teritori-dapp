@@ -285,7 +285,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     switch (mintAddress) {
       case getCosmosNetwork(network?.id)?.riotContractAddressGen0:
         return "https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b";
-      case getEthereumNetwork(network?.id)?.riotContractAddress:
+      case getEthereumNetwork(network?.id)?.riotContractAddressGen0:
         return "https://teritori.notion.site/The-Riot-Terms-Conditions-ETH-92328fb2d4494b6fb073b38929b28883";
       default:
         return null;

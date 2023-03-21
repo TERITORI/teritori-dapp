@@ -4,9 +4,8 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import addCircleSFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { SpacerColumn } from "../../components/spacer";
-import { Squad } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import { useSquadStakingConfig } from "../../hooks/riotGame/useSquadStakingConfig";
-import { useSquadStakingSquadsV2 } from "../../hooks/riotGame/useSquadStakingSquadsV2";
+import { useSquadStakingSquads } from "../../hooks/riotGame/useSquadStakingSquads";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
@@ -15,6 +14,7 @@ import { layout } from "../../utils/style/layout";
 import { FightSection } from "./component/FightSection";
 import { FightSectionHeader } from "./component/FightSectionHeader";
 import { GameContentView } from "./component/GameContentView";
+import { SquadInfo } from "./types";
 
 const FIGHT_BG_URI =
   "https://bafybeidca53mhjmgmu4uer4u3pr6hyvardmnwzlvmaemvgzrwl7knup2e4.ipfs.nftstorage.link/";
@@ -29,13 +29,13 @@ export const RiotGameFightScreen = () => {
     data: squads,
     isInitialLoading,
     refetch: fetchSquads,
-  } = useSquadStakingSquadsV2(selectedWallet?.userId);
+  } = useSquadStakingSquads(selectedWallet?.userId);
   const isSquadsLoaded = !!isInitialLoading;
 
   const [now, setNow] = useState<number>(0);
 
   const isCompleted = useCallback(
-    (squad: Squad) => now - squad.end_time * 1000 >= 0,
+    (squad: SquadInfo) => now - squad.endTime * 1000 >= 0,
     [now]
   );
 
@@ -84,7 +84,7 @@ export const RiotGameFightScreen = () => {
           title="Ongoing fights"
           total={ongoingSquads.length}
           hasStakeButton={
-            squads?.length < (squadStakingConfig?.squad_count_limit || 0)
+            squads?.length < (squadStakingConfig?.squadCountLimit || 0)
           }
         />
       )}
@@ -92,11 +92,11 @@ export const RiotGameFightScreen = () => {
       {ongoingSquads.map((squad) => {
         return (
           <FightSection
-            key={squad.start_time}
+            key={squad.startTime}
             squad={squad}
             onCloseClaimModal={onCloseClaimModal}
             now={now}
-            cooldown={squadStakingConfig?.cooldown_period || 0}
+            cooldown={squadStakingConfig?.cooldownPeriod || 0}
           />
         );
       })}
@@ -108,7 +108,7 @@ export const RiotGameFightScreen = () => {
           title="Victories"
           total={completedSquads.length}
           hasStakeButton={
-            squads?.length < (squadStakingConfig?.squad_count_limit || 0)
+            squads?.length < (squadStakingConfig?.squadCountLimit || 0)
           }
         />
       )}
@@ -116,11 +116,11 @@ export const RiotGameFightScreen = () => {
       {completedSquads.map((squad) => {
         return (
           <FightSection
-            key={squad.start_time}
+            key={squad.startTime}
             squad={squad}
             onCloseClaimModal={onCloseClaimModal}
             now={now}
-            cooldown={squadStakingConfig?.cooldown_period || 0}
+            cooldown={squadStakingConfig?.cooldownPeriod || 0}
           />
         );
       })}

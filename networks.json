@@ -251,12 +251,16 @@
     "accountExplorer": "https://goerli.etherscan.io/address/$address",
     "contractExplorer": "https://goerli.etherscan.io/address/$address",
     "testnet": true,
-    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "backendEndpoint": "http://localhost:9090",
     "chainId": 5,
     "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
     "theGraphEndpoint": "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
     "vaultContractAddress": "0xaB30d7379EbfD146B77B0B4d6f3eB09BD725e4EF",
-    "riotContractAddress": "0x43cc70bf324d716782628bed38af97e4afe92f69"
+    "riotContractAddressGen0": "0x43cc70bf324d716782628bed38af97e4afe92f69",
+    "riotContractAddressGen1": "0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7",
+    "excludeFromLaunchpadList": [
+      "0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7"
+    ]
   },
   {
     "id": "ethereum",
@@ -285,7 +289,7 @@
     "alchemyApiKey": "xZ3FVF0o6q_4beg_afmCEzf4GSJErhId",
     "theGraphEndpoint": "https://api.studio.thegraph.com/query/40379/teritori-mainnet/v1",
     "vaultContractAddress": "0x6251B3384c8eD53e2Cc38d34c1f26ffE8d461B94",
-    "riotContractAddress": "0x8f8304ea566affeb96ad0ffb593bbebd8876d124"
+    "riotContractAddressGen0": "0x8f8304ea566affeb96ad0ffb593bbebd8876d124"
   },
   {
     "id": "juno",

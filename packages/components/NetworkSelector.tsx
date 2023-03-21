@@ -33,7 +33,7 @@ import { SpacerRow } from "./spacer";
 export const NetworkSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
   forceNetworkId?: string;
-  forceNetworkKind?: NetworkKind;
+  forceNetworkKind?: NetworkKind | NetworkKind[];
 }> = ({ style, forceNetworkId, forceNetworkKind }) => {
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
@@ -43,6 +43,11 @@ export const NetworkSelector: React.FC<{
   const { setToastError } = useFeedbacks();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
+
+  const forcedNetworkKinds =
+    forceNetworkKind && !Array.isArray(forceNetworkKind)
+      ? [forceNetworkKind]
+      : forceNetworkKind;
 
   const onPressNetwork = (networkId: string) => {
     let walletProvider: WalletProvider | null = null;
@@ -136,7 +141,8 @@ export const NetworkSelector: React.FC<{
                 !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
                 selectedNetworkInfo?.id !== network.id && // check that it's not already selected
                 (!forceNetworkId || network.id === forceNetworkId) && // check that it's the forced network id if forced to
-                (!forceNetworkKind || network.kind === forceNetworkKind); // check that it's the correct network kind if forced to
+                (!forcedNetworkKinds ||
+                  forcedNetworkKinds.includes(network.kind)); // check that it's the correct network kind if forced to
 
               return (
                 <TouchableOpacity

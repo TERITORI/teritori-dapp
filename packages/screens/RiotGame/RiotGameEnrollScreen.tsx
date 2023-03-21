@@ -16,11 +16,11 @@ import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { useSquadStakingConfig } from "../../hooks/riotGame/useSquadStakingConfig";
+import { useSquadStakingSquads } from "../../hooks/riotGame/useSquadStakingSquads";
 import {
   getSquadStakingSquadsV1QueryKey,
   useSquadStakingSquadsV1,
 } from "../../hooks/riotGame/useSquadStakingSquadsV1";
-import { useSquadStakingSquadsV2 } from "../../hooks/riotGame/useSquadStakingSquadsV2";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -73,9 +73,10 @@ export const RiotGameEnrollScreen = () => {
   const { myAvailableRippers } = useRippers();
 
   const { data: squadStakingConfig } = useSquadStakingConfig(networkId);
-  const { data: squads, isInitialLoading } = useSquadStakingSquadsV2(
+  const { data: squads, isInitialLoading } = useSquadStakingSquads(
     selectedWallet?.userId
   );
+
   const { data: squadSeason1 } = useSquadStakingSquadsV1(
     selectedWallet?.userId
   );
@@ -250,7 +251,7 @@ export const RiotGameEnrollScreen = () => {
     if (
       !isInitialLoading &&
       squadStakingConfig?.owner &&
-      squads.length === squadStakingConfig.squad_count_limit
+      squads.length === squadStakingConfig.squadCountLimit
     ) {
       navigation.replace("RiotGameFight");
     }
@@ -258,7 +259,7 @@ export const RiotGameEnrollScreen = () => {
     isInitialLoading,
     navigation,
     squadStakingConfig?.owner,
-    squadStakingConfig?.squad_count_limit,
+    squadStakingConfig?.squadCountLimit,
     squads,
   ]);
 

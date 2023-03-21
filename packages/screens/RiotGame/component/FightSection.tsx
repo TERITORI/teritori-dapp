@@ -5,21 +5,82 @@ import { StyleSheet } from "react-native";
 import FlexRow from "../../../components/FlexRow";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { TeritoriNftQueryClient } from "../../../contracts-clients/teritori-nft/TeritoriNft.client";
-import { Squad } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
+import { TeritoriNft__factory } from "../../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { mustGetNonSigningCosmWasmClient } from "../../../networks";
+import {
+  getNetwork,
+  mustGetEthereumNetwork,
+  mustGetNonSigningCosmWasmClient,
+  NetworkInfo,
+  NetworkKind,
+} from "../../../networks";
+import { getMetaMaskEthereumProvider } from "../../../utils/ethereum";
 import { squadWithdraw } from "../../../utils/game";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { fontMedium48 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { RipperLightInfo } from "../types";
+import { RipperLightInfo, SquadInfo } from "../types";
 import { FightBossSection } from "./FightBossSection";
 import { FightCountdownSection } from "./FightCountdownSection";
 import { FightSquadSection } from "./FightSquadSection";
 import { UnstakeModal } from "./UnstakeModal";
 
+const cosmosNFTInfos = async (
+  network: NetworkInfo,
+  squad: SquadInfo
+): Promise<RipperLightInfo[]> => {
+  const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
+
+  const nftInfos = await Promise.all(
+    squad.nfts.map(async (nft) => {
+      const nftClient = new TeritoriNftQueryClient(
+        cosmwasmClient,
+        nft.contract
+      );
+      return await nftClient.nftInfo({ tokenId: nft.tokenId });
+    })
+  );
+
+  const stakedRippers: RipperLightInfo[] = nftInfos.map(({ extension }) => ({
+    imageUri: ipfsURLToHTTPURL(`${extension?.image}`),
+    name: `${extension?.name}`,
+  }));
+
+  return stakedRippers;
+};
+
+const ethereumNFTInfos = async (
+  network: NetworkInfo,
+  squad: SquadInfo
+): Promise<RipperLightInfo[]> => {
+  const ethereumNetwork = mustGetEthereumNetwork(network.id);
+  const metamaskProvider = await getMetaMaskEthereumProvider(
+    ethereumNetwork.chainId
+  );
+  if (!metamaskProvider) {
+    throw Error("unable to get ethereum provider");
+  }
+
+  const nftInfos = await Promise.all(
+    squad.nfts.map(async (nft) => {
+      const nftClient = TeritoriNft__factory.connect(
+        nft.contract,
+        metamaskProvider
+      );
+      return await nftClient.nftInfo(nft.tokenId);
+    })
+  );
+
+  const stakedRippers: RipperLightInfo[] = nftInfos.map((nft) => ({
+    imageUri: ipfsURLToHTTPURL(`${nft.image}`),
+    name: `${nft.name}`,
+  }));
+
+  return stakedRippers;
+};
+
 type FightSectionProps = {
-  squad: Squad;
+  squad: SquadInfo;
   onCloseClaimModal: () => void;
   now: number;
   cooldown: number;
@@ -48,26 +109,16 @@ export const FightSection: React.FC<FightSectionProps> = ({
         return [];
       }
 
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
+      const network = getNetwork(networkId);
 
-      const nftInfos = await Promise.all(
-        squad.nfts.map(async (nft) => {
-          const nftClient = new TeritoriNftQueryClient(
-            cosmwasmClient,
-            nft.contract_addr
-          );
-          return await nftClient.nftInfo({ tokenId: nft.token_id });
-        })
-      );
-
-      const stakedRippers: RipperLightInfo[] = nftInfos.map(
-        ({ extension }) => ({
-          imageUri: ipfsURLToHTTPURL(`${extension?.image}`),
-          name: `${extension?.name}`,
-        })
-      );
-
-      return stakedRippers;
+      switch (network?.kind) {
+        case NetworkKind.Cosmos:
+          return cosmosNFTInfos(network, squad);
+        case NetworkKind.Ethereum:
+          return ethereumNFTInfos(network, squad);
+        default:
+          return [];
+      }
     },
     { staleTime: Infinity }
   );
@@ -80,7 +131,7 @@ export const FightSection: React.FC<FightSectionProps> = ({
     try {
       setIsUnstaking(true);
 
-      await squadWithdraw(currentUser);
+      await squadWithdraw(currentUser, squad.index);
       setIsShowClaimModal(true);
     } catch (e: any) {
       setToastError({

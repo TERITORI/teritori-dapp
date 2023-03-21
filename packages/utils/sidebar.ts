@@ -101,7 +101,6 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     title: "Join The R!ot",
     route: "RiotGame",
     icon: riotersGameSVG,
-    disabledOn: [NetworkKind.Ethereum],
   },
   riotersFooter: {
     title: "Rioters Footer",
