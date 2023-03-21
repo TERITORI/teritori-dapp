@@ -1,4 +1,7 @@
-import { TeritoriSocialFeedClient } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.client";
+import {
+  TeritoriSocialFeedClient,
+  TeritoriSocialFeedQueryClient,
+} from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.client";
 import {
   getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
@@ -9,7 +12,10 @@ interface SocialFeedClientParams {
   walletAddress: string;
 }
 
-const cachedClients: { [key: string]: TeritoriSocialFeedClient } = {};
+const cachedSigningClients: { [key: string]: TeritoriSocialFeedClient } = {};
+const cachedNonSigningClients: {
+  [key: string]: TeritoriSocialFeedQueryClient;
+} = {};
 
 export const socialFeedClient = async ({
   networkId,
@@ -19,19 +25,34 @@ export const socialFeedClient = async ({
     process.env.TERITORI_SOCIAL_FEED_CONTRACT_ADDRESS || "";
   const cacheKey = `${walletAddress}${socialFeedContractAddress}`;
 
-  if (cachedClients[cacheKey]) {
-    return cachedClients[cacheKey];
+  if (cachedNonSigningClients[cacheKey]) {
+    return cachedNonSigningClients[cacheKey];
+  } else if (cachedSigningClients[cacheKey]) {
+    return cachedSigningClients[cacheKey];
   } else {
-    const signingComswasmClient = walletAddress
-      ? await getKeplrSigningCosmWasmClient(networkId)
-      : await mustGetNonSigningCosmWasmClient(networkId);
-    const client = new TeritoriSocialFeedClient(
-      signingComswasmClient,
-      walletAddress,
-      socialFeedContractAddress
+    const nonSigningCosmWasmClient = await mustGetNonSigningCosmWasmClient(
+      networkId
+    );
+    const signingComswasmClient = await getKeplrSigningCosmWasmClient(
+      networkId
     );
 
-    cachedClients[cacheKey] = client;
+    let client;
+    if (walletAddress) {
+      client = new TeritoriSocialFeedClient(
+        signingComswasmClient,
+        walletAddress,
+        socialFeedContractAddress
+      );
+      cachedSigningClients[cacheKey] = client;
+    } else {
+      client = new TeritoriSocialFeedQueryClient(
+        nonSigningCosmWasmClient,
+        socialFeedContractAddress
+      );
+      cachedNonSigningClients[cacheKey] = client;
+    }
+
     return client;
   }
 };
