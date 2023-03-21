@@ -70,7 +70,6 @@ export const UserPublicProfileScreenHeader = ({
         onSelect={setSelectedTab}
         style={{
           marginTop: 32,
-          height: 32,
           marginBottom: layout.padding_x2_5 / 2,
         }}
         borderColorTabSelected={primaryColor}

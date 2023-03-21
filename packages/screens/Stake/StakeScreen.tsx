@@ -77,7 +77,6 @@ export const StakeScreen: React.FC = () => {
           <Tabs
             items={tabs}
             onSelect={setSelectedTab}
-            style={{ height: 44 }}
             selected={selectedTab}
           />
         </View>

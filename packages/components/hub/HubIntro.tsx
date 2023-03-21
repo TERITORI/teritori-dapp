@@ -64,7 +64,7 @@ const ConnectedIntro: React.FC = () => {
         <Tabs
           items={walletsManagerTabItems}
           selected={selectedTab}
-          style={{ marginTop: 24, height: 40 }}
+          style={{ marginTop: 24 }}
           onSelect={setSelectedTab}
         />
         {selectedTab === "overview" && <Overview />}

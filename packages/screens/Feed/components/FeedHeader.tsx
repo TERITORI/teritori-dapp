@@ -25,7 +25,8 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
         style={styles.header}
         borderColorTabSelected={primaryColor}
         gradientText
-        textStyle={fontSemibold16}
+        tabTextStyle={fontSemibold16}
+        tabContainerStyle={{ height: 64 }}
       />
       <SpacerColumn size={1.5} />
     </>

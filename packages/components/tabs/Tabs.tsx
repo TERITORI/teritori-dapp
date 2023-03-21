@@ -42,7 +42,8 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   selected,
   hideSelector,
   gradientText,
-  textStyle,
+  tabTextStyle,
+  tabContainerStyle
 }: {
   items: T;
   selected: keyof T;
@@ -51,7 +52,8 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   style?: StyleProp<ViewStyle>;
   hideSelector?: boolean;
   gradientText?: boolean;
-  textStyle?: StyleProp<TextStyle>;
+  tabTextStyle?: StyleProp<TextStyle>;
+  tabContainerStyle?: StyleProp<ViewStyle>;
 }) => {
   const { scrollTo } = useScrollTo();
   const itemsArray = Object.entries(items);
@@ -79,12 +81,12 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                 : onSelect(key, item)
             }
             disabled={item.disabled}
-            style={{
-              height: 64,
+            style={[{
+              height: 44,
               justifyContent: "center",
               marginRight:
                 index !== itemsArray.length - 1 ? layout.padding_x3 : 0,
-            }}
+            }, tabContainerStyle]}
           >
             <View
               style={{
@@ -98,7 +100,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
               {isSelected && gradientText ? (
                 <GradientText
                   gradientType="blueExtended"
-                  style={[fontSemibold14, textStyle]}
+                  style={[fontSemibold14, tabTextStyle]}
                 >
                   {item.name}
                 </GradientText>
@@ -108,7 +110,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     fontSemibold14,
                     { lineHeight: 14 },
                     item.disabled && { color: neutral77 },
-                    textStyle,
+                    tabTextStyle,
                   ]}
                 >
                   {item.name}
