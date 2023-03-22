@@ -4,6 +4,7 @@ import comicBookHistory from "../../assets/background/comicbook-history.jpg";
 import comicBookLanding from "../../assets/background/comicbook.jpg";
 import disconnect from "../../assets/background/disconnect.png";
 import lottery from "../../assets/background/lottery.png";
+import lotteryHistory from "../../assets/background/lottery_history.png";
 import main from "../../assets/background/main.png";
 import score from "../../assets/background/score.png";
 import welcome from "../../assets/background/welcome.png";
@@ -50,7 +51,7 @@ export const imgComponent = {
   },
   raffle: {
     src: "",
-    style: { ...baseStyle },
+    style: { ...baseStyle, ...{ backgroundColor: "#1B0D11" } },
     imgStyle: {},
     resizeMode: "cover",
   },
@@ -66,12 +67,12 @@ export const imgComponent = {
     src: comicBookHistory,
     style: { ...baseStyle },
     imgStyle: {},
-    resizeMode: "cover",
+    resizeMode: "stretch",
   },
   "lottery-history": {
-    src: lottery,
+    src: lotteryHistory,
     style: { ...baseStyle },
     imgStyle: {},
-    resizeMode: "cover",
+    resizeMode: "stretch",
   },
 };

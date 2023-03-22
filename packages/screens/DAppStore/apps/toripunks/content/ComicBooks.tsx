@@ -1,7 +1,6 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
-import { Footer } from "../components/footer/Footer";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
 
@@ -16,6 +15,7 @@ export const ComicBooks = () => {
       <View
         style={{
           maxHeight: "100vh",
+          marginTop: 87,
         }}
       >
         <Label
@@ -66,17 +66,15 @@ export const ComicBooks = () => {
             height: 180,
           }}
         >
-          <ButtonLabel text="BUY COMIC BOOKS" size="S" />
-          <ButtonLabel text="BUY TORIPUNKS" size="S" />
+          <ButtonLabel text="BUY COMIC BOOKS" size="S" actionable />
+          <ButtonLabel text="BUY TORIPUNKS" size="S" actionable />
 
-          <ButtonLabel
-            text="PREVIOUS POOL PRICE"
-            size="S"
+          <TouchableOpacity
             onPress={() => setSelectedSectionHandler("comic-book-history")}
-          />
+          >
+            <ButtonLabel text="PREVIOUS POOL PRICE" size="S" actionable />
+          </TouchableOpacity>
         </View>
-
-        <Footer isMinimunWindowWidth={isMinimunWindowWidth} />
       </View>
     </>
   );

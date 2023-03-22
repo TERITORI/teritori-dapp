@@ -6,10 +6,20 @@ export const Raffle = () => {
   return (
     <View>
       <Label
-        styleType="H1_Bebas_80"
-        style={{ textAlign: "center", color: "#E8E1EF", fontSize: 60 }}
+        styleType="T2_Bebas_50"
+        style={{ textAlign: "center", color: "#E8E1EF" }}
       >
         Cosmos save the punks, long live the toripunks
+      </Label>
+      <Label
+        styleType="H2_DHBS_80"
+        style={{
+          textAlign: "center",
+          color: "rgba(31, 32, 16, 0.4)",
+          transform: [{ rotate: "-1.69deg" }],
+        }}
+      >
+        Be patient
       </Label>
     </View>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, TouchableOpacity, View } from "react-native";
 
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
@@ -126,6 +126,7 @@ export const LotteryHistory = () => {
         flexWrap: "nowrap",
         alignItems: "center",
         marginBottom: "3em",
+        marginTop: 90,
       }}
     >
       <View
@@ -158,11 +159,9 @@ export const LotteryHistory = () => {
           renderItem={({ item }) => <ListItem item={item} />}
         />
       </View>
-      <ButtonLabel
-        text="BACK"
-        size="S"
-        onPress={() => setSelectedSectionHandler("lottery")}
-      />
+      <TouchableOpacity onPress={() => setSelectedSectionHandler("lottery")}>
+        <ButtonLabel text="BACK" size="S" actionable />
+      </TouchableOpacity>
     </View>
   );
 };

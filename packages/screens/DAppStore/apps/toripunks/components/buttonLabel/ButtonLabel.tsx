@@ -7,6 +7,7 @@ export interface ButtonLabelType {
   size: "S" | "Mobile";
   style?: StyleProp<ViewStyle>;
   onPress?: () => void;
+  actionable?: boolean;
 }
 
 export const ButtonLabel: React.FC<ButtonLabelType> = ({
@@ -14,8 +15,15 @@ export const ButtonLabel: React.FC<ButtonLabelType> = ({
   size,
   style,
   onPress,
+  actionable = false,
 }) => {
   const buttonStyles = useStyles(size);
+  const buttonActionableStyle = actionable
+    ? ({
+        borderColor: "#28f191",
+        borderStyle: "solid",
+      } as StyleProp<ViewStyle>)
+    : {};
 
   return (
     <View
@@ -29,6 +37,7 @@ export const ButtonLabel: React.FC<ButtonLabelType> = ({
           paddingTop: 8,
           paddingBottom: 8,
         },
+        buttonActionableStyle,
         style,
       ]}
     >

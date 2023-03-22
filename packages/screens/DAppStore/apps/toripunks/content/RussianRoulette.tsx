@@ -4,7 +4,6 @@ import { TouchableOpacity, View } from "react-native";
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
-import { Footer } from "../components/footer/Footer";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
 
@@ -116,11 +115,7 @@ export const Russian = () => {
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <ButtonLabel text={userInteractionInfo} size={buttonSize} />
           <TouchableOpacity onPress={buyToripunks}>
-            <ButtonLabel
-              text="BUY TORIPUNKS"
-              size={buttonSize}
-              style={{ borderColor: "#28f191", borderStyle: "solid" }}
-            />
+            <ButtonLabel text="BUY TORIPUNKS" size={buttonSize} actionable />
           </TouchableOpacity>
         </View>
       </View>
@@ -132,9 +127,6 @@ export const Russian = () => {
           size={isMinimunWindowWidth ? "L" : "L-mobile"}
           withImg
         />
-      </View>
-      <View style={{ marginTop: isMinimunWindowWidth ? 78 : 40 }}>
-        <Footer isMinimunWindowWidth={isMinimunWindowWidth} />
       </View>
     </View>
   );

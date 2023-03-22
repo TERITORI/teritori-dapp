@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, TouchableOpacity, View } from "react-native";
 
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
@@ -97,6 +97,7 @@ const ListItem: React.FC<{ item: HistoryItem }> = ({ item }) => {
       style={{
         alignItems: "center",
         width: "100%",
+        marginTop: 80,
       }}
     >
       <FlatList
@@ -164,11 +165,10 @@ export const ComicBookHistory = () => {
           renderItem={({ item }) => <ListItem item={item} />}
         />
       </View>
-      <ButtonLabel
-        text="BACK"
-        size="S"
-        onPress={() => setSelectedSectionHandler("comicbook")}
-      />
+
+      <TouchableOpacity onPress={() => setSelectedSectionHandler("comicbook")}>
+        <ButtonLabel text="BACK" size="S" actionable />
+      </TouchableOpacity>
     </View>
   );
 };

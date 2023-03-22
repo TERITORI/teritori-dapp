@@ -2,6 +2,7 @@ import { useFonts } from "expo-font";
 import { View, ViewStyle } from "react-native";
 
 import { Background } from "../components/background/Background";
+import { Footer } from "../components/footer/Footer";
 import { MenuLink } from "../components/menu-link/MenuLink";
 import { useContentContext } from "../context/ContentProvider";
 import { Route } from "./Route";
@@ -36,6 +37,7 @@ export const Content = () => {
   // Custom CSS (Layout) for different sections
   const customStyle = {
     main: { justifyContent: "flex-end", height: "auto" },
+    raffle: { justifyContent: "flex-end" },
   };
 
   const validateCustomStyle = {
@@ -61,6 +63,9 @@ export const Content = () => {
           ]}
         >
           {Route(selectedSection)}
+        </View>
+        <View style={{ marginTop: isMinimunWindowWidth ? 78 : 40 }}>
+          <Footer isMinimunWindowWidth={isMinimunWindowWidth} />
         </View>
       </>
     </Background>

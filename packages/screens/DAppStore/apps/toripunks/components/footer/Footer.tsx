@@ -23,7 +23,7 @@ export const Footer = ({
           margin: "auto",
           marginTop: 50,
           backgroundColor: "#212708",
-          marginBottom: isMinimunWindowWidth ? 0 : 20,
+          marginBottom: isMinimunWindowWidth ? 25 : 20,
         }}
       >
         <Image

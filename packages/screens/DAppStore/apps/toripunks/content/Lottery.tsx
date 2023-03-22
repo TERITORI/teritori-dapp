@@ -1,7 +1,6 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
-import { Footer } from "../components/footer/Footer";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
 
@@ -16,6 +15,7 @@ export const Lottery = () => {
       <View
         style={{
           maxHeight: "100vh",
+          marginTop: 80,
         }}
       >
         <Label
@@ -52,17 +52,16 @@ export const Lottery = () => {
             justifyContent: "space-evenly",
             flexWrap: "wrap",
             height: 120,
+            marginTop: 90,
           }}
         >
-          <ButtonLabel text="BUY TORIPUNKS" size="S" />
-          <ButtonLabel
-            text="PREVIOUS LOTTERIES"
-            size="S"
+          <ButtonLabel text="BUY TORIPUNKS" size="S" actionable />
+          <TouchableOpacity
             onPress={() => setSelectedSectionHandler("lottery-history")}
-          />
+          >
+            <ButtonLabel text="PREVIOUS LOTTERIES" size="S" actionable />
+          </TouchableOpacity>
         </View>
-
-        <Footer isMinimunWindowWidth={isMinimunWindowWidth} />
       </View>
     </>
   );

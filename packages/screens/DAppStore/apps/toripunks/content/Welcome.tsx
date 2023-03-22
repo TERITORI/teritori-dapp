@@ -1,6 +1,5 @@
 import { View } from "react-native";
 
-import { Footer } from "../components/footer/Footer";
 import { Label } from "../components/label/Label";
 import { MenuLink } from "../components/menu-link/MenuLink";
 import { useContentContext } from "../context/ContentProvider";
@@ -49,7 +48,6 @@ export const Welcome = () => {
         >
           We are punks
         </Label>
-        <Footer isMinimunWindowWidth={isMinimunWindowWidth} />
       </View>
     </>
   );
