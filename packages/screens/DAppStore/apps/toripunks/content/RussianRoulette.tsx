@@ -22,6 +22,8 @@ export const Russian = () => {
   const monthPriceTicket = "120";
   const remainingUserTicket = "XXXX";
   const remainingUserCurrency = "XXXX";
+  const winning = 10;
+  const losing = 10;
 
   // Button text
   const longButtonLabelText = result
@@ -85,6 +87,8 @@ export const Russian = () => {
       >
         <ActionButton
           text={bet}
+          textWinning={winning}
+          textLosing={losing}
           addHandler={addBet}
           reduceHandler={reduceBet}
           result={result}
