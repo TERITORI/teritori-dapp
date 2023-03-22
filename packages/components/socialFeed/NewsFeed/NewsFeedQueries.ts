@@ -131,18 +131,20 @@ export const createPost = async ({
 
   let files: RemoteFileData[] = [];
 
-  if (formValues.files?.[0] && pinataJWTKey) {
+  if (formValues.files?.length && pinataJWTKey) {
     files = await uploadPostFilesToPinata({
       files: formValues.files,
       pinataJWTKey,
     });
   }
-
   let message = formValues.message || "";
 
-  if (category === PostCategory.Article) {
+  if (files.length && category === PostCategory.Article) {
     formValues.files?.map((file, index) => {
-      message = message.replace(file.url, ipfsURLToHTTPURL(files[index].url));
+      // Audio are not in the HTML for now
+      if (files[index]?.fileType !== "audio") {
+        message = message.replace(file.url, ipfsURLToHTTPURL(files[index].url));
+      }
     });
   }
 

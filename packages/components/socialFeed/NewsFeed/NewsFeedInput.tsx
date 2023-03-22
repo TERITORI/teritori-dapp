@@ -40,6 +40,7 @@ import {
   mentionMatch,
   generateIpfsKey,
   replaceFileInArray,
+  removeFileFromArray,
 } from "../../../utils/social-feed";
 import {
   errorColor,
@@ -58,7 +59,7 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
-import { RemoteFileData } from "../../../utils/types/feed";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
 import { IconBox } from "../../IconBox";
@@ -105,6 +106,7 @@ export interface NewsFeedInputHandle {
 }
 
 const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
+const MAX_IMAGES = 4;
 
 export const NewsFeedInput = React.forwardRef<
   NewsFeedInputHandle,
@@ -432,24 +434,14 @@ export const NewsFeedInput = React.forwardRef<
           <FilesPreviewsContainer
             files={formValues.files}
             gifs={formValues.gifs}
-            onDelete={(fileIndex) => {
-              if (typeof fileIndex === "number") {
-                setValue(
-                  "files",
-                  formValues.files?.filter((_, index) => index !== fileIndex)
-                );
-              } else if (typeof fileIndex === "string") {
-                setValue(
-                  "files",
-                  formValues.files?.filter((file) => file.url !== fileIndex)
-                );
-                setValue(
-                  "gifs",
-                  formValues.gifs?.filter((file) => file !== fileIndex)
-                );
-              } else {
-                setValue("files", []);
-              }
+            onDelete={(file) => {
+              setValue(
+                "files",
+                removeFileFromArray(
+                  formValues?.files || [],
+                  file as LocalFileData
+                )
+              );
             }}
             onDeleteGIF={(url) =>
               setValue(
@@ -528,7 +520,7 @@ export const NewsFeedInput = React.forwardRef<
                   formValues.files[0].fileType !== "image") ||
                 (formValues.files || []).length +
                   (formValues.gifs || [])?.length >=
-                  4
+                  MAX_IMAGES
               }
             />
             <SpacerRow size={2.5} />
@@ -576,11 +568,6 @@ export const NewsFeedInput = React.forwardRef<
                 setValue("files", [...(formValues.files || []), ...files]);
               }}
               mimeTypes={IMAGE_MIME_TYPES}
-              maxUpload={
-                4 -
-                (formValues.files?.length || 0) -
-                (formValues.gifs?.length || 0)
-              }
             >
               {({ onPress }) => (
                 <IconBox
@@ -589,7 +576,7 @@ export const NewsFeedInput = React.forwardRef<
                       formValues.files[0].fileType !== "image") ||
                     (formValues.files || []).length +
                       (formValues.gifs || [])?.length >=
-                      4
+                      MAX_IMAGES
                   }
                   icon={cameraSVG}
                   onPress={onPress}

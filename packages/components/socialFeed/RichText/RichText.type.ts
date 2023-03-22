@@ -1,26 +1,32 @@
+import { EntityInstance } from "draft-js";
+
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
-import { PublishButtonProps } from "./PublishButton";
+
+export type PublishValues = {
+  hashtags: string[];
+  mentions: string[];
+  images: LocalFileData[];
+  gifs: string[];
+  audios: LocalFileData[];
+  videos: LocalFileData[];
+  html: string;
+};
+
+export type SelectedEntity = {
+  blockKey: string;
+  entityKey: string;
+  entity: EntityInstance;
+};
+export type FoundEntity = SelectedEntity & { start: number; end: number };
 
 export interface RichTextProps {
-  onImageUpload?: (file: LocalFileData) => void;
-  onAudioUpload?: (file: LocalFileData) => void;
-  onAudioRemove?: (file: LocalFileData) => void;
-  onAudioUpdate?: (file: LocalFileData) => void;
-  onVideoUpload?: (file: LocalFileData) => void;
-  onGIFSelected?: (gifUrl: string | null) => void;
-  isGIFSelectorDisabled?: boolean;
-  isAudioUploadDisabled?: boolean;
-  isVideoUploadDisabled?: boolean;
   // We need to pass audios since we can't render audio preview in RichText
   audioFiles?: RemoteFileData[];
-  onChange?: (
-    // TODO: text useless ?
-    text: string,
-    hashtags?: string[],
-    mentions?: string[]
-  ) => void;
+  onChange?: (text: string) => void;
   onBlur?: () => void;
   initialValue?: string;
   isPostConsultation?: boolean;
-  publishButtonProps?: PublishButtonProps;
+  onPublish?: (publishValues: PublishValues) => void;
+  publishDisabled?: boolean;
+  loading?: boolean;
 }

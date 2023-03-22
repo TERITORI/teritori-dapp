@@ -6,7 +6,7 @@ import {
   RichToolbar,
 } from "react-native-pell-rich-editor";
 
-import { PublishButton } from "./PublishButton";
+import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { RichTextProps } from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./ToolbarContainer";
@@ -16,7 +16,8 @@ import { ToolbarContainer } from "./ToolbarContainer";
 export const RichText: React.FC<RichTextProps> = ({
   onChange = () => {},
   onBlur,
-  publishButtonProps,
+  publishDisabled,
+  loading,
   isPostConsultation,
 }) => {
   const richText = useRef(null);
@@ -29,7 +30,7 @@ export const RichText: React.FC<RichTextProps> = ({
         <RichEditor ref={richText} onChange={onChange} onBlur={onBlur} />
       </KeyboardAvoidingView>
 
-      {isPostConsultation && (
+      {!isPostConsultation && (
         <ActionsContainer>
           <ToolbarContainer>
             <RichToolbar
@@ -41,7 +42,12 @@ export const RichText: React.FC<RichTextProps> = ({
               ]}
             />
           </ToolbarContainer>
-          {!!publishButtonProps && <PublishButton {...publishButtonProps} />}
+          <PrimaryButton
+            disabled={publishDisabled}
+            loader={loading}
+            text="Publish"
+            size="M"
+          />
         </ActionsContainer>
       )}
     </View>

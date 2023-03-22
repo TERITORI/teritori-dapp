@@ -43,7 +43,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   hideSelector,
   gradientText,
   tabTextStyle,
-  tabContainerStyle
+  tabContainerStyle,
 }: {
   items: T;
   selected: keyof T;
@@ -81,12 +81,15 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                 : onSelect(key, item)
             }
             disabled={item.disabled}
-            style={[{
-              height: 44,
-              justifyContent: "center",
-              marginRight:
-                index !== itemsArray.length - 1 ? layout.padding_x3 : 0,
-            }, tabContainerStyle]}
+            style={[
+              {
+                height: 44,
+                justifyContent: "center",
+                marginRight:
+                  index !== itemsArray.length - 1 ? layout.padding_x3 : 0,
+              },
+              tabContainerStyle,
+            ]}
           >
             <View
               style={{

@@ -25,12 +25,13 @@ import {
   ContentBlock,
   ContentState,
   convertFromHTML,
+  DraftEntityType,
   EditorCommand,
   EditorState,
   getDefaultKeyBinding,
   Modifier,
 } from "draft-js";
-import React, { KeyboardEvent, useRef, useState } from "react";
+import React, { KeyboardEvent, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import audioSVG from "../../../../assets/icons/audio.svg";
@@ -55,59 +56,31 @@ import { LocalFileData } from "../../../utils/types/feed";
 import { AudioPreview } from "../../FilePreview/AudioPreview";
 import { EditableAudioPreview } from "../../FilePreview/EditableAudioPreview";
 import { IconBox } from "../../IconBox";
+import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { FileUploader } from "../../fileUploader";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
-import { PublishButton } from "./PublishButton";
 import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
 import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
 import { RichMentionRenderer } from "./RichRenderer/RichMentionRenderer";
 import { RichMentionRendererConsultation } from "./RichRenderer/RichMentionRendererConsultation";
 import { RichURLRenderer } from "./RichRenderer/RichURLRenderer";
 import { RichURLRendererConsultation } from "./RichRenderer/RichURLRendererConsultation";
-import { RichTextProps } from "./RichText.type";
+import {
+  FoundEntity,
+  PublishValues,
+  RichTextProps,
+  SelectedEntity,
+} from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./ToolbarContainer";
 import createInlineToolbarPlugin from "./inline-toolbar";
 
-const mentionStrategy = (
-  contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
-) => {
-  findWithRegex(MENTION_REGEX, contentBlock, callback);
-};
-
-const urlStrategy = (
-  contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
-) => {
-  findWithRegex(URL_REGEX, contentBlock, callback);
-};
-
-const hashtagStrategy = (
-  contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
-) => {
-  findWithRegex(HASHTAG_REGEX, contentBlock, callback);
-};
-
-const findWithRegex = (
-  regex: RegExp,
-  contentBlock: ContentBlock,
-  callback: (start: number, end: number) => void
-) => {
-  const text = contentBlock.getText();
-
-  [...text.matchAll(new RegExp(regex, "gi"))]
-    .map((a) =>
-      !a[0].toLowerCase().includes(DEFAULT_USERNAME.toLowerCase()) &&
-      a.index !== undefined
-        ? [a.index, a.index + a[0].length]
-        : null
-    )
-    .forEach((v) => v && callback(v[0], v[1]));
-};
+const VIDEOTYPE = "draft-js-video-plugin-video"; // See @draft-js-plugins/video/lib/video/constants
+const MAX_IMAGES = 8;
+const MAX_AUDIOS = 3;
+const MAX_VIDEOS = 2;
 
 const LinkPlugin = createLinkPlugin();
 const staticToolbarPlugin = createToolbarPlugin({
@@ -136,32 +109,15 @@ const videoPlugin = createVideoPlugin();
 const { Toolbar } = staticToolbarPlugin;
 const { InlineToolbar } = inlineToolbarPlugin;
 
-const createStateFromHTML = (html: string) => {
-  const blocksFromHTML = convertFromHTML(html);
-  const content = ContentState.createFromBlockArray(
-    blocksFromHTML.contentBlocks,
-    blocksFromHTML.entityMap
-  );
-
-  return EditorState.createWithContent(content);
-};
-
 export const RichText: React.FC<RichTextProps> = ({
   onChange = () => {},
   onBlur,
-  onImageUpload,
-  onAudioUpload,
-  onAudioRemove,
-  onAudioUpdate,
-  isGIFSelectorDisabled,
-  isAudioUploadDisabled,
-  isVideoUploadDisabled,
   audioFiles,
-  onVideoUpload,
-  onGIFSelected,
   initialValue,
   isPostConsultation,
-  publishButtonProps,
+  onPublish,
+  loading,
+  publishDisabled,
 }) => {
   const editorRef = useRef<Editor>(null);
   const [editorState, setEditorState] = useState(
@@ -169,6 +125,22 @@ export const RichText: React.FC<RichTextProps> = ({
   );
   // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
   const [uploadedAudios, setUploadedAudios] = useState<LocalFileData[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<LocalFileData[]>([]);
+  const [uploadedGIFs, setUploadedGIFs] = useState<string[]>([]);
+  const [uploadedVideos, setUploadedVideos] = useState<LocalFileData[]>([]);
+  const [html, setHtml] = useState(initialValue || "");
+  const isGIFSelectorDisabled = useMemo(
+    () => uploadedGIFs.length + uploadedImages.length >= MAX_IMAGES,
+    [uploadedGIFs.length, uploadedImages.length]
+  );
+  const isAudioUploadDisabled = useMemo(
+    () => uploadedAudios.length >= MAX_AUDIOS,
+    [uploadedAudios.length]
+  );
+  const isVideoUploadDisabled = useMemo(
+    () => uploadedVideos.length >= MAX_VIDEOS,
+    [uploadedVideos.length]
+  );
 
   const compositeDecorator = {
     decorators: [
@@ -201,26 +173,21 @@ export const RichText: React.FC<RichTextProps> = ({
     videoPlugin,
   ];
 
-  //!!!!!!!!!!!!!!!!! TODO: Handle remove image, gif, audio
   const addImage = (file: LocalFileData) => {
     const state = imagePlugin.addImage(editorState, file.url, {});
     handleChange(state);
-    onImageUpload?.(file);
+    setUploadedImages((files) => [...files, file]);
   };
-
   const addVideo = (file: LocalFileData) => {
     const state = videoPlugin.addVideo(editorState, { src: file.url });
     handleChange(state);
-    onVideoUpload?.(file);
+    setUploadedVideos((files) => [...files, file]);
   };
-
   const addGIF = (url: string) => {
-    // GIFS are added as images on the editor, but added in gifs array on post creation (No need to add them in files, no need to store them)
     const state = imagePlugin.addImage(editorState, url, {});
     handleChange(state);
-    onGIFSelected?.(url);
+    setUploadedGIFs((files) => [...files, url]);
   };
-  //!!!!!!!!!!!!!!!!
 
   const addEmoji = (emoji: string) => {
     const state = Modifier.insertText(
@@ -235,18 +202,15 @@ export const RichText: React.FC<RichTextProps> = ({
     // Don't add if already added
     if (uploadedAudios.find((audio) => audio.fileName === file.fileName))
       return;
-    onAudioUpload?.(file);
     setUploadedAudios((audios) => [...audios, file]);
   };
   const removeAudio = (file: LocalFileData) => {
-    onAudioRemove?.(file);
     setUploadedAudios((audios) => removeFileFromArray(audios, file));
   };
   // Updating an audio (And the whole array) when changing its thumbnail image
   const addThumbnailToAddedAudio = (newAudioFile: LocalFileData) => {
     const newAudios = replaceFileInArray(uploadedAudios, newAudioFile);
     if (!newAudios) return;
-    onAudioUpdate?.(newAudioFile);
     setUploadedAudios(newAudios);
   };
 
@@ -294,15 +258,12 @@ export const RichText: React.FC<RichTextProps> = ({
     return "not-handled";
   };
 
+  // Fired when writing in Editor
   const handleChange = (state: EditorState) => {
     setEditorState(state);
     const contentState = state.getCurrentContent();
 
-    // Just sent these arrays to FeedNewArticleScreen for createPost
-    const hashtags = hashtagMatch(contentState.getPlainText());
-    const mentions = mentionMatch(contentState.getPlainText());
-
-    const html = convertToHTML({
+    const _html = convertToHTML({
       entityToHTML: (entity, originalText) => {
         if (entity.type === "IMAGE") {
           return <img src={entity.data.src} />;
@@ -312,7 +273,23 @@ export const RichText: React.FC<RichTextProps> = ({
       },
     })(contentState);
 
-    onChange(html === "<p></p>" ? "" : html, hashtags || [], mentions || []);
+    setHtml(_html === "<p></p>" ? "" : _html);
+    onChange(_html === "<p></p>" ? "" : _html);
+  };
+
+  // Fired when pressing "Publish"
+  const handlePublish = () => {
+    const contentState = editorState.getCurrentContent();
+    const publishValues: PublishValues = {
+      hashtags: hashtagMatch(contentState.getPlainText()) || [],
+      mentions: mentionMatch(contentState.getPlainText()) || [],
+      images: getFilesToPublish(editorState, uploadedImages, "IMAGE"),
+      gifs: getGIFsToPublish(editorState, uploadedGIFs),
+      videos: getFilesToPublish(editorState, uploadedVideos, VIDEOTYPE),
+      audios: uploadedAudios,
+      html,
+    };
+    onPublish?.(publishValues);
   };
 
   // Cut the content at 2500 chars to show an Article preview on FeedScreen.
@@ -359,6 +336,7 @@ export const RichText: React.FC<RichTextProps> = ({
   //   }
   // };
 
+  /////////////// TOOLBAR BUTTONS ////////////////
   const Buttons: React.FC<{ externalProps: any }> = ({ externalProps }) => (
     <View style={styles.toolbarButtonsWrapper}>
       <EmojiSelector
@@ -501,18 +479,22 @@ export const RichText: React.FC<RichTextProps> = ({
               {(externalProps) => <Buttons externalProps={externalProps} />}
             </Toolbar>
           </ToolbarContainer>
-          {!!publishButtonProps && (
-            <>
-              <SpacerRow size={3} />
-              <PublishButton {...publishButtonProps} />
-            </>
-          )}
+
+          <SpacerRow size={3} />
+          <PrimaryButton
+            disabled={publishDisabled}
+            loader={loading}
+            text="Publish"
+            size="M"
+            onPress={handlePublish}
+          />
         </ActionsContainer>
       )}
     </View>
   );
 };
 
+/////////////// STYLES ////////////////
 const styles = StyleSheet.create({
   toolbarCustomButton: {
     marginHorizontal: layout.padding_x0_75 / 2,
@@ -529,14 +511,138 @@ const styles = StyleSheet.create({
   },
 });
 
+/////////////// SOME FUNCTIONS ////////////////
+const createStateFromHTML = (html: string) => {
+  const blocksFromHTML = convertFromHTML(html);
+  const content = ContentState.createFromBlockArray(
+    blocksFromHTML.contentBlocks,
+    blocksFromHTML.entityMap
+  );
+  return EditorState.createWithContent(content);
+};
+
+const mentionStrategy = (
+  contentBlock: ContentBlock,
+  callback: (start: number, end: number) => void
+) => {
+  findWithRegex(MENTION_REGEX, contentBlock, callback);
+};
+
+const urlStrategy = (
+  contentBlock: ContentBlock,
+  callback: (start: number, end: number) => void
+) => {
+  findWithRegex(URL_REGEX, contentBlock, callback);
+};
+
+const hashtagStrategy = (
+  contentBlock: ContentBlock,
+  callback: (start: number, end: number) => void
+) => {
+  findWithRegex(HASHTAG_REGEX, contentBlock, callback);
+};
+
+// Apply a regex in a block
+const findWithRegex = (
+  regex: RegExp,
+  contentBlock: ContentBlock,
+  callback: (start: number, end: number) => void
+) => {
+  const text = contentBlock.getText();
+
+  [...text.matchAll(new RegExp(regex, "gi"))]
+    .map((a) =>
+      !a[0].toLowerCase().includes(DEFAULT_USERNAME.toLowerCase()) &&
+      a.index !== undefined
+        ? [a.index, a.index + a[0].length]
+        : null
+    )
+    .forEach((v) => v && callback(v[0], v[1]));
+};
+
+// Get the current block
 const getCurrentBlock = (editorState: EditorState) => {
   const currentSelection = editorState.getSelection();
   const blockKey = currentSelection.getStartKey();
   return editorState.getCurrentContent().getBlockForKey(blockKey);
 };
 
+// Get the text of the current block
 const getCurrentText = (editorState: EditorState) => {
   const currentBlock = getCurrentBlock(editorState);
   const blockText = currentBlock.getText();
   return blockText;
+};
+
+// Get Draft entity by type
+const getEntities = (
+  editorState: EditorState,
+  entityType?: DraftEntityType
+) => {
+  const content = editorState.getCurrentContent();
+  const entities: FoundEntity[] = [];
+
+  content.getBlocksAsArray().forEach((block) => {
+    let selectedEntity: SelectedEntity;
+    block.findEntityRanges(
+      (character) => {
+        if (character.getEntity() !== null) {
+          const entity = content.getEntity(character.getEntity());
+          if (!entityType || (entityType && entity.getType() === entityType)) {
+            selectedEntity = {
+              entityKey: character.getEntity(),
+              blockKey: block.getKey(),
+              entity: content.getEntity(character.getEntity()),
+            };
+            return true;
+          }
+        }
+        return false;
+      },
+      (start, end) => {
+        entities.push({ ...selectedEntity, start, end });
+      }
+    );
+  });
+  return entities;
+};
+
+// Remove the deleted uploaded files to keep only the ones added to RichText. They will be used for publishing.
+// We need this since we can't detect when a file is deleted when handleChange
+const getFilesToPublish = (
+  editorState: EditorState,
+  files: LocalFileData[],
+  entityType: DraftEntityType
+) => {
+  const entities = getEntities(editorState, entityType);
+  const filesToPublish: LocalFileData[] = [];
+  files.forEach((file) => {
+    let found = false;
+    entities.forEach((entity) => {
+      if (entity.entity.getData().src === file.url) {
+        found = true;
+      }
+    });
+    if (found) {
+      filesToPublish.push(file);
+    }
+  });
+  return filesToPublish;
+};
+// Same as getFilesToPublish, but with gifs URLs
+const getGIFsToPublish = (editorState: EditorState, gifsUrls: string[]) => {
+  const entities = getEntities(editorState, "IMAGE");
+  const gifsToPublish: string[] = [];
+  gifsUrls.forEach((url) => {
+    let found = false;
+    entities.forEach((entity) => {
+      if (entity.entity.getData().src === url) {
+        found = true;
+      }
+    });
+    if (found) {
+      gifsToPublish.push(url);
+    }
+  });
+  return gifsToPublish;
 };
