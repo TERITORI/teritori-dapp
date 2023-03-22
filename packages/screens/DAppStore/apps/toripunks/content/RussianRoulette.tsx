@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
+import { BuyToripunksButton } from "../components/buttonLabel/BuyToripunksButton";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
 
@@ -45,8 +46,6 @@ export const Russian = () => {
     const validateBet = bet - 1 < 0 ? 0 : bet - 1;
     setBet(validateBet);
   };
-
-  const buyToripunks = () => {};
 
   return (
     <View style={{ marginTop: isMinimunWindowWidth ? 70 : 40 }}>
@@ -118,9 +117,7 @@ export const Russian = () => {
         />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <ButtonLabel text={userInteractionInfo} size={buttonSize} />
-          <TouchableOpacity onPress={buyToripunks}>
-            <ButtonLabel text="BUY TORIPUNKS" size={buttonSize} actionable />
-          </TouchableOpacity>
+          <BuyToripunksButton />
         </View>
       </View>
       {/* Play View */}
