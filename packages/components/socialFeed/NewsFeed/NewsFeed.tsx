@@ -127,7 +127,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         data={posts}
         renderItem={({ item: post }) => (
           <>
-            <SocialThreadCard post={post} />
+            <SocialThreadCard post={post} isPreview />
             <SpacerColumn size={3} />
           </>
         )}

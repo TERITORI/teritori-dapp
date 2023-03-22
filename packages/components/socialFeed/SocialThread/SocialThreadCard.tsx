@@ -44,6 +44,7 @@ export const SocialThreadCard: React.FC<{
   fadeInDelay?: number;
   onPressReply?: OnPressReplyType;
   isGovernance?: boolean;
+  isPreview?: boolean;
 }> = ({
   post,
   style,
@@ -51,6 +52,7 @@ export const SocialThreadCard: React.FC<{
   fadeInDelay,
   onPressReply,
   isGovernance,
+  isPreview,
 }) => {
   const [localPost, setLocalPost] = useState<Post>(post);
   const { mutate: postMutate, isLoading: isPostMutationLoading } =
@@ -214,6 +216,7 @@ export const SocialThreadCard: React.FC<{
         <SocialMessageContent
           metadata={metadata}
           postCategory={localPost.category}
+          isPreview={isPreview}
         />
         <SpacerColumn size={2} />
 

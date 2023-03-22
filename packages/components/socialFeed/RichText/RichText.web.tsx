@@ -31,7 +31,13 @@ import {
   getDefaultKeyBinding,
   Modifier,
 } from "draft-js";
-import React, { KeyboardEvent, useMemo, useRef, useState } from "react";
+import React, {
+  KeyboardEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import audioSVG from "../../../../assets/icons/audio.svg";
@@ -47,13 +53,17 @@ import {
   DEFAULT_USERNAME,
   hashtagMatch,
   mentionMatch,
+  NB_ROWS_SHOWN_IN_PREVIEW,
   removeFileFromArray,
   replaceFileInArray,
   urlMatch,
 } from "../../../utils/social-feed";
+import { primaryColor } from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
-import { AudioPreview } from "../../FilePreview/AudioPreview";
+import { BrandText } from "../../BrandText";
+import { AudioView } from "../../FilePreview/AudioView";
 import { EditableAudioPreview } from "../../FilePreview/EditableAudioPreview";
 import { IconBox } from "../../IconBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
@@ -115,33 +125,11 @@ export const RichText: React.FC<RichTextProps> = ({
   audioFiles,
   initialValue,
   isPostConsultation,
+  isPreview,
   onPublish,
   loading,
   publishDisabled,
 }) => {
-  const editorRef = useRef<Editor>(null);
-  const [editorState, setEditorState] = useState(
-    initialValue ? createStateFromHTML(initialValue) : EditorState.createEmpty()
-  );
-  // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
-  const [uploadedAudios, setUploadedAudios] = useState<LocalFileData[]>([]);
-  const [uploadedImages, setUploadedImages] = useState<LocalFileData[]>([]);
-  const [uploadedGIFs, setUploadedGIFs] = useState<string[]>([]);
-  const [uploadedVideos, setUploadedVideos] = useState<LocalFileData[]>([]);
-  const [html, setHtml] = useState(initialValue || "");
-  const isGIFSelectorDisabled = useMemo(
-    () => uploadedGIFs.length + uploadedImages.length >= MAX_IMAGES,
-    [uploadedGIFs.length, uploadedImages.length]
-  );
-  const isAudioUploadDisabled = useMemo(
-    () => uploadedAudios.length >= MAX_AUDIOS,
-    [uploadedAudios.length]
-  );
-  const isVideoUploadDisabled = useMemo(
-    () => uploadedVideos.length >= MAX_VIDEOS,
-    [uploadedVideos.length]
-  );
-
   const compositeDecorator = {
     decorators: [
       {
@@ -172,6 +160,51 @@ export const RichText: React.FC<RichTextProps> = ({
     imagePlugin,
     videoPlugin,
   ];
+
+  const editorRef = useRef<Editor>(null);
+  const [editorState, setEditorState] = useState(
+    createStateFromHTML(initialValue)
+  );
+  // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
+  const [uploadedAudios, setUploadedAudios] = useState<LocalFileData[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<LocalFileData[]>([]);
+  const [uploadedGIFs, setUploadedGIFs] = useState<string[]>([]);
+  const [uploadedVideos, setUploadedVideos] = useState<LocalFileData[]>([]);
+  const [html, setHtml] = useState(initialValue);
+  const isGIFSelectorDisabled = useMemo(
+    () => uploadedGIFs.length + uploadedImages.length >= MAX_IMAGES,
+    [uploadedGIFs.length, uploadedImages.length]
+  );
+  const isAudioUploadDisabled = useMemo(
+    () => uploadedAudios.length >= MAX_AUDIOS,
+    [uploadedAudios.length]
+  );
+  const isVideoUploadDisabled = useMemo(
+    () => uploadedVideos.length >= MAX_VIDEOS,
+    [uploadedVideos.length]
+  );
+
+  // Truncate using initialValue, only if isPreview
+  const isTruncateNeeded = useMemo(() => {
+    const contentState = createStateFromHTML(initialValue).getCurrentContent();
+    return (
+      isPreview &&
+      contentState.getBlocksAsArray().length >= NB_ROWS_SHOWN_IN_PREVIEW
+    );
+  }, [initialValue, isPreview]);
+  useEffect(() => {
+    if (isTruncateNeeded) {
+      const contentState =
+        createStateFromHTML(initialValue).getCurrentContent();
+      const truncatedBlocks = contentState
+        .getBlocksAsArray()
+        .slice(0, NB_ROWS_SHOWN_IN_PREVIEW);
+      const truncatedState = ContentState.createFromBlockArray(truncatedBlocks);
+      const truncatedHtml = createHTMLFromState(truncatedState);
+      setEditorState(EditorState.createWithContent(truncatedState));
+      setHtml(truncatedHtml);
+    }
+  }, [initialValue, isTruncateNeeded]);
 
   const addImage = (file: LocalFileData) => {
     const state = imagePlugin.addImage(editorState, file.url, {});
@@ -262,17 +295,7 @@ export const RichText: React.FC<RichTextProps> = ({
   const handleChange = (state: EditorState) => {
     setEditorState(state);
     const contentState = state.getCurrentContent();
-
-    const _html = convertToHTML({
-      entityToHTML: (entity, originalText) => {
-        if (entity.type === "IMAGE") {
-          return <img src={entity.data.src} />;
-        }
-        // TODO: Here, check entity.type === "LINK" and add URLRenderer with href ?
-        return originalText;
-      },
-    })(contentState);
-
+    const _html = createHTMLFromState(contentState);
     setHtml(_html === "<p></p>" ? "" : _html);
     onChange(_html === "<p></p>" ? "" : _html);
   };
@@ -291,50 +314,6 @@ export const RichText: React.FC<RichTextProps> = ({
     };
     onPublish?.(publishValues);
   };
-
-  // Cut the content at 2500 chars to show an Article preview on FeedScreen.
-  //TODO: Set a max height to SocialThreadCard and don't crop the content to avoid having huge Article "previews"
-  // const truncate = () => {
-  //   const contentState = editorState.getCurrentContent();
-  //   const blocks = contentState.getBlocksAsArray();
-  //
-  //   let index = 0;
-  //   let currentLength = 0;
-  //   let isTruncated = false;
-  //   const truncatedBlocks = [];
-  //
-  //   while (!isTruncated && blocks[index]) {
-  //     const block = blocks[index];
-  //     const length = block.getLength();
-  //     if (currentLength + length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT) {
-  //       isTruncated = true;
-  //       const truncatedText = block
-  //         .getText()
-  // {
-  /*        .slice(0, SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT - currentLength);*/
-  // }
-  //
-  //       const blocksFromHTML = convertFromHTML(
-  //         `${truncatedText} <br/><br/><span style="color: ${neutralA3}">...see more</span>`
-  //       );
-  //       const state = ContentState.createFromBlockArray(
-  //         blocksFromHTML.contentBlocks,
-  //         blocksFromHTML.entityMap
-  //       );
-  //
-  //       truncatedBlocks.push(state.getFirstBlock());
-  //     } else {
-  //       truncatedBlocks.push(block);
-  //     }
-  //     currentLength += length + 1;
-  //     index++;
-  //   }
-  //
-  //   if (isTruncated) {
-  //     const state = ContentState.createFromBlockArray(truncatedBlocks);
-  //     setEditorState(EditorState.createWithContent(state));
-  //   }
-  // };
 
   /////////////// TOOLBAR BUTTONS ////////////////
   const Buttons: React.FC<{ externalProps: any }> = ({ externalProps }) => (
@@ -431,7 +410,9 @@ export const RichText: React.FC<RichTextProps> = ({
         zIndex: 99999,
       }}
     >
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={isTruncateNeeded && { overflow: "hidden" }}
+      >
         <Editor
           editorState={editorState}
           handleKeyCommand={handleKeyCommand}
@@ -444,6 +425,12 @@ export const RichText: React.FC<RichTextProps> = ({
           ref={editorRef}
           decorators={compositeDecorator.decorators}
         />
+        {isTruncateNeeded && (
+          <BrandText style={[fontSemibold14, { color: primaryColor }]}>
+            {"\n...see more"}
+          </BrandText>
+        )}
+
         <InlineToolbar>
           {(externalProps) => <Buttons externalProps={externalProps} />}
         </InlineToolbar>
@@ -455,7 +442,7 @@ export const RichText: React.FC<RichTextProps> = ({
         audioFiles.map((file, index) => (
           <View key={index}>
             <SpacerColumn size={2} />
-            <AudioPreview file={file} />
+            <AudioView file={file} />
           </View>
         ))}
       {!isPostConsultation &&
@@ -520,6 +507,17 @@ const createStateFromHTML = (html: string) => {
   );
   return EditorState.createWithContent(content);
 };
+
+const createHTMLFromState = (state: ContentState) =>
+  convertToHTML({
+    entityToHTML: (entity, originalText) => {
+      if (entity.type === "IMAGE") {
+        return <img src={entity.data.src} />;
+      }
+      // TODO: Here, check entity.type === "LINK" and add URLRenderer with href ?
+      return originalText;
+    },
+  })(state);
 
 const mentionStrategy = (
   contentBlock: ContentBlock,

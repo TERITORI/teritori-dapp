@@ -20,12 +20,13 @@ export type SelectedEntity = {
 export type FoundEntity = SelectedEntity & { start: number; end: number };
 
 export interface RichTextProps {
+  initialValue: string;
   // We need to pass audios since we can't render audio preview in RichText
   audioFiles?: RemoteFileData[];
   onChange?: (text: string) => void;
   onBlur?: () => void;
-  initialValue?: string;
   isPostConsultation?: boolean;
+  isPreview?: boolean;
   onPublish?: (publishValues: PublishValues) => void;
   publishDisabled?: boolean;
   loading?: boolean;

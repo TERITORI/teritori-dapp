@@ -3,12 +3,14 @@ import { PostCategory } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { getUserId } from "../networks";
 import { mustGetFeedClient } from "./backend";
+import { GIF_MIME_TYPE } from "./mime";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
 import { LocalFileData } from "./types/feed";
 
 export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
 export const SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT = 2500;
+export const NB_ROWS_SHOWN_IN_PREVIEW = 4;
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);
@@ -110,3 +112,15 @@ export const removeFileFromArray = (
 ) => {
   return files.filter((file) => file.url !== damnedFile.url);
 };
+
+export const convertGIFToLocalFileType = (
+  gif: string,
+  fileName: string
+): LocalFileData => ({
+  file: new File([], fileName),
+  fileName,
+  mimeType: GIF_MIME_TYPE,
+  size: 120,
+  url: gif,
+  fileType: "image",
+});

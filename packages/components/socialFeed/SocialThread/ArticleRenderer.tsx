@@ -11,9 +11,14 @@ import { RichText } from "../RichText";
 interface Props {
   metadata: SocialFeedMetadata;
   audioFiles?: RemoteFileData[];
+  isPreview?: boolean;
 }
 // TODO: Rework this ! Set a max height for preview
-export const ArticlePreview: React.FC<Props> = ({ metadata, audioFiles }) => {
+export const ArticleRenderer: React.FC<Props> = ({
+  metadata,
+  audioFiles,
+  isPreview,
+}) => {
   const coverImage = metadata.files?.find((file) => file.isCoverImage);
 
   return (
@@ -38,6 +43,7 @@ export const ArticlePreview: React.FC<Props> = ({ metadata, audioFiles }) => {
       <RichText
         initialValue={metadata.message}
         isPostConsultation
+        isPreview={isPreview}
         audioFiles={audioFiles}
       />
     </>

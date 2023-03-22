@@ -3,8 +3,12 @@ import React, { useMemo } from "react";
 import {
   hashtagMatch,
   mentionMatch,
+  NB_ROWS_SHOWN_IN_PREVIEW,
   urlMatch,
 } from "../../../../utils/social-feed";
+import { neutralA3, primaryColor } from "../../../../utils/style/colors";
+import { fontSemibold14 } from "../../../../utils/style/fonts";
+import { BrandText } from "../../../BrandText";
 import { HashtagRenderer } from "./HashtagRenderer";
 import { MentionRenderer } from "./MentionRenderer";
 import { URLRenderer } from "./URLRenderer";
@@ -36,29 +40,50 @@ const Component = ({ type, text }: MatchText) => {
   return null;
 };
 
-export const TextRenderer = ({ text }: { text: string }) => {
+export const TextRenderer = ({
+  text,
+  isPreview,
+}: {
+  text: string;
+  isPreview?: boolean;
+}) => {
+  const refText = useMemo(
+    () => text.replace("/generate", "🖼️").replace("/question", "❓"),
+    [text]
+  );
+  const isTruncateNeeded = useMemo(
+    () => isPreview && refText.split("\n").length >= NB_ROWS_SHOWN_IN_PREVIEW,
+    [refText, isPreview]
+  );
+
   const formattedText = useMemo(() => {
-    let refText = text.replace("/generate", "🖼️").replace("/question", "❓");
+    let finalText = refText;
+    if (isTruncateNeeded) {
+      finalText = finalText
+        .split("\n")
+        .splice(0, NB_ROWS_SHOWN_IN_PREVIEW)
+        .join("\n");
+    }
     const matchTextReference: MatchText[] = [];
 
-    hashtagMatch(text)?.map((item, index) => {
+    hashtagMatch(refText)?.map((item, index) => {
       const matchKey = `--${index + 1}hashtag--`;
-      refText = refText.replace(item, matchKey);
+      finalText = finalText.replace(item, matchKey);
       matchTextReference.push({ type: "hashtag", matchKey, text: item });
     });
-    urlMatch(text)?.map((item, index) => {
+    urlMatch(refText)?.map((item, index) => {
       const matchKey = `--${index + 1}url--`;
-      refText = refText.replace(item, matchKey);
+      finalText = finalText.replace(item, matchKey);
       matchTextReference.push({ type: "url", matchKey, text: item });
     });
-    mentionMatch(text)?.map((item, index) => {
+    mentionMatch(refText)?.map((item, index) => {
       const matchKey = `--${index + 1}mention--`;
-      refText = refText.replace(item, matchKey);
+      finalText = finalText.replace(item, matchKey);
       matchTextReference.push({ type: "mention", matchKey, text: item });
     });
 
     // Splitting the text in parts that start by a matchKey
-    const splittedText = refText.split(REFERENCE_REGEX);
+    const splittedText = finalText.split(REFERENCE_REGEX);
     // For each part
     return splittedText.map((item, index) => {
       // We need to associate the matchKey and its text to the corresponding item
@@ -77,7 +102,16 @@ export const TextRenderer = ({ text }: { text: string }) => {
         </React.Fragment>
       );
     });
-  }, [text]);
+  }, [refText, isTruncateNeeded]);
 
-  return <>{formattedText}</>;
+  return (
+    <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+      {formattedText}
+      {isTruncateNeeded && (
+        <BrandText style={[fontSemibold14, { color: primaryColor }]}>
+          {"\n\n...see more"}
+        </BrandText>
+      )}
+    </BrandText>
+  );
 };

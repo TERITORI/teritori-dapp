@@ -33,7 +33,7 @@ const getDimension = (index: number, fileLength: number) => {
   }
 };
 
-export const ImagesPreviews: React.FC<ImagePreviewProps> = ({
+export const ImagesViews: React.FC<ImagePreviewProps> = ({
   files,
   onDelete,
   isEditable = false,

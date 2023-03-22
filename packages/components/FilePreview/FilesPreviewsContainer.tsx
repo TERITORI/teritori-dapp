@@ -3,11 +3,12 @@ import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import { GIF_MIME_TYPE } from "../../utils/mime";
+import { convertGIFToLocalFileType } from "../../utils/social-feed";
 import { layout } from "../../utils/style/layout";
 import { LocalFileData, RemoteFileData } from "../../utils/types/feed";
 import { EditableAudioPreview } from "./EditableAudioPreview";
-import { ImagesPreviews } from "./ImagesPreviews";
-import { VideoPreview } from "./VideoPreview";
+import { ImagesViews } from "./ImagesViews";
+import { VideoView } from "./VideoView";
 
 interface FilePreviewContainerProps {
   files?: LocalFileData[];
@@ -16,18 +17,6 @@ interface FilePreviewContainerProps {
   onDeleteGIF: (url: string) => void;
   onAudioUpdate: (updatedFile: LocalFileData) => void;
 }
-
-export const convertGIFToLocalFileType = (
-  gif: string,
-  fileName: string
-): LocalFileData => ({
-  file: new File([], fileName),
-  fileName,
-  mimeType: GIF_MIME_TYPE,
-  size: 120,
-  url: gif,
-  fileType: "image",
-});
 
 export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
   files,
@@ -67,7 +56,7 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
       ]}
     >
       {gifsFiles?.length || imageFiles?.length ? (
-        <ImagesPreviews
+        <ImagesViews
           files={[...(gifsFiles || []), ...(imageFiles || [])]}
           onDelete={(file: LocalFileData | RemoteFileData) => {
             if (file.mimeType === GIF_MIME_TYPE) onDeleteGIF(file.url);
@@ -78,7 +67,7 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
       ) : null}
 
       {videoFiles?.map((file, index) => (
-        <VideoPreview key={index} file={file} onDelete={onDelete} isEditable />
+        <VideoView key={index} file={file} onDelete={onDelete} isEditable />
       ))}
 
       {audioFiles?.map((file, index) => (

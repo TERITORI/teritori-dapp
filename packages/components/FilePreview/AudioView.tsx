@@ -22,7 +22,7 @@ import { SVG } from "../SVG";
 import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialMessageContent";
 import { AudioWaveform } from "./AudioWaveform";
 
-export const AudioPreview: React.FC<{
+export const AudioView: React.FC<{
   file: RemoteFileData;
 }> = ({ file }) => {
   const { width } = useMaxResolution();

@@ -15,7 +15,7 @@ interface VideoPreviewProps {
   isEditable?: boolean;
 }
 
-export const VideoPreview: React.FC<VideoPreviewProps> = ({
+export const VideoView: React.FC<VideoPreviewProps> = ({
   file,
   onDelete,
   isEditable = false,

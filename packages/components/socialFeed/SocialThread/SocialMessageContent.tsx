@@ -2,23 +2,28 @@ import React, { useMemo } from "react";
 import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
-import { SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT } from "../../../utils/social-feed";
-import { AudioPreview } from "../../FilePreview/AudioPreview";
-import { convertGIFToLocalFileType } from "../../FilePreview/FilesPreviewsContainer";
-import { ImagesPreviews } from "../../FilePreview/ImagesPreviews";
-import { VideoPreview } from "../../FilePreview/VideoPreview";
+import { HTML_TAG_REGEXP } from "../../../utils/regex";
+import {
+  convertGIFToLocalFileType,
+  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
+} from "../../../utils/social-feed";
+import { AudioView } from "../../FilePreview/AudioView";
+import { ImagesViews } from "../../FilePreview/ImagesViews";
+import { VideoView } from "../../FilePreview/VideoView";
 import { SocialFeedMetadata, PostCategory } from "../NewsFeed/NewsFeed.type";
-import { ArticlePreview } from "./ArticlePreview";
-import { TextContent } from "./TextContent";
+import { TextRenderer } from "../NewsFeed/TextRenderer/TextRenderer";
+import { ArticleRenderer } from "./ArticleRenderer";
 interface Props {
   metadata: SocialFeedMetadata;
   postCategory: PostCategory;
+  isPreview?: boolean;
 }
 export const THUMBNAIL_WIDTH = 140;
 
 export const SocialMessageContent: React.FC<Props> = ({
   metadata,
   postCategory,
+  isPreview,
 }) => {
   const audioFiles = useMemo(
     () => metadata.files?.filter((file) => file.fileType === "audio"),
@@ -48,26 +53,31 @@ export const SocialMessageContent: React.FC<Props> = ({
   ) {
     return (
       <View>
-        <ArticlePreview metadata={metadata} audioFiles={audioFiles} />
+        <ArticleRenderer
+          metadata={metadata}
+          audioFiles={audioFiles}
+          isPreview={isPreview}
+        />
       </View>
     );
   } else {
     return (
       <>
-        <TextContent metadata={metadata} />
+        <TextRenderer
+          isPreview={isPreview}
+          text={metadata.message.replace(HTML_TAG_REGEXP, "")}
+        />
 
         {gifsFiles?.length || imageFiles?.length ? (
-          <ImagesPreviews
-            files={[...(gifsFiles || []), ...(imageFiles || [])]}
-          />
+          <ImagesViews files={[...(gifsFiles || []), ...(imageFiles || [])]} />
         ) : null}
 
         {videoFiles?.map((file, index) => (
-          <VideoPreview key={index} file={file} />
+          <VideoView key={index} file={file} />
         ))}
 
         {audioFiles?.map((file, index) => (
-          <AudioPreview key={index} file={file} />
+          <AudioView key={index} file={file} />
         ))}
       </>
     );

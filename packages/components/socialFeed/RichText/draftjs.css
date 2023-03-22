@@ -15,7 +15,7 @@
 
 
 .public-DraftEditor-content {
-  color: #ffffff;
+  color: #A3A3A3;
   line-height: 20px;
   font-size: 14px;
   font-family: Exo_500Medium;
@@ -28,12 +28,15 @@
 
 .public-DraftEditor-content h1 {
   line-height: 37px;
+  color: #FFFFFF;
 }
 .public-DraftEditor-content h2 {
   line-height: 28px;
+  color: #FFFFFF;
 }
 .public-DraftEditor-content h3 {
   line-height: 23px;
+  color: #FFFFFF;
 }
 
 .public-DraftEditorPlaceholder-root {
