@@ -99,12 +99,14 @@ export const MenuLink = () => {
               text="MY HISTORY"
               size="S"
               withImg
+              revert
             />
           ) : null}
         </View>
       )}
     </>
   ) : (
+    //Mobile menu
     <TouchableOpacity onPress={menuSelectedSection}>
       <View
         style={{

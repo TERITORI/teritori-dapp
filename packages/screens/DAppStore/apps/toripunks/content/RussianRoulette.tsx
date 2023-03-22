@@ -127,7 +127,7 @@ export const Russian = () => {
       <View style={{ flexWrap: "wrap", alignContent: "center" }}>
         <Button
           onPress={click}
-          text="PLAY"
+          text={result ? "PLAY AGAIN" : "PLAY"}
           size={isMinimunWindowWidth ? "L" : "L-mobile"}
           withImg
         />

@@ -19,6 +19,7 @@ export interface ButtonType {
   size: "S" | "L" | "L-mobile";
   withImg: boolean;
   style?: StyleProp<ViewStyle>;
+  revert?: boolean;
 }
 
 const buttonSrc = {
@@ -33,8 +34,10 @@ export const Button: React.FC<ButtonType> = ({
   size,
   withImg,
   style,
+  revert = false,
 }) => {
   const buttonStyles = useStyles(size);
+  const customStyle = revert ? { transform: [{ rotate: "180deg" }] } : {};
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={style}>
@@ -42,9 +45,12 @@ export const Button: React.FC<ButtonType> = ({
           <ImageBackground
             source={buttonSrc[size]}
             resizeMode="contain"
-            style={buttonStyles.backgroundImg as StyleProp<FlexStyle>}
+            style={[
+              buttonStyles.backgroundImg as StyleProp<FlexStyle>,
+              customStyle,
+            ]}
           >
-            <Text style={buttonStyles.text}>{text}</Text>
+            <Text style={[buttonStyles.text, customStyle]}>{text}</Text>
           </ImageBackground>
         ) : (
           <Text>{text}</Text>
@@ -72,6 +78,7 @@ const useStyles = (size: ButtonType["size"]) => {
             color: "#2AF191",
             textAlign: "center",
             borderLeftColor: "#2AF191",
+            lineHeight: "normal",
           },
         ],
       };
@@ -89,6 +96,7 @@ const useStyles = (size: ButtonType["size"]) => {
             color: "#2AF191",
             textAlign: "center",
             borderLeftColor: "#2AF191",
+            lineHeight: "normal",
           },
         ],
       };
@@ -107,6 +115,7 @@ const useStyles = (size: ButtonType["size"]) => {
             color: "#2AF191",
             textAlign: "center",
             borderLeftColor: "#2AF191",
+            lineHeight: "normal",
           },
         ],
       };
