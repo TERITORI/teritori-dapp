@@ -15,6 +15,7 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
+import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
@@ -89,7 +90,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const { metadata } = useNSUserInfo(id);
   const selectedWallet = useSelectedWallet();
   const [network] = parseUserId(id);
-
+  setDocumentTitle(`User: ${metadata?.tokenId}`);
   return (
     <ScreenContainer
       forceNetworkId={network?.id}
