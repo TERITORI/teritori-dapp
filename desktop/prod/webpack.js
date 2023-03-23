@@ -3,14 +3,11 @@ const Dotenv = require("dotenv-webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
-module.exports = async function (env, argv) {
-  const config = await createExpoWebpackConfigAsync(
-    {
-      projectRoot: path.resolve(__dirname, "../../"),
-      mode: "production",
-    },
-    argv
-  );
+module.exports = async function () {
+  const config = await createExpoWebpackConfigAsync({
+    projectRoot: path.resolve(__dirname, "../../"),
+    mode: "production",
+  });
 
   // needed to use environment variables
   config.plugins.push(
@@ -60,11 +57,11 @@ module.exports = async function (env, argv) {
 
   return {
     ...config,
+    name: "renderer",
     output: {
-      path: path.resolve(__dirname, "dist"),
+      path: path.resolve(__dirname, "dist", "www"),
       filename: "[name].[hash].js",
       chunkFilename: "[name].[hash].chunk.js",
-      publicPath: "/",
     },
     devtool: "source-map",
   };

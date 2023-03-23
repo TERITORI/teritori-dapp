@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "clean:dist": "rimraf dist",
-    "build:web": "webpack --config desktop/prod/webpack.js",
+    "build:web": "webpack --config desktop/prod/webpack-electron.js",
     "build:desktop": "electron-builder --config desktop/prod/builder.config.js",
     "desktop": "electron desktop/dev/index.js",
     "eject": "expo eject",

@@ -1,20 +1,16 @@
 const { app, BrowserWindow, shell } = require("electron");
 const serve = require("electron-serve");
 
-app.setName("TERITORI");
-
-app.dock.setIcon(`${__dirname}/logo.png`);
-
 const mainWindow = () => {
   let browserWindow;
 
-  const loadURL = serve({ directory: `${__dirname}/dist` });
+  const loadURL = serve({ directory: `${__dirname}/www` });
 
   return app
     .whenReady()
     .then(() => {
       browserWindow = new BrowserWindow({
-        backgroundColor: "#FAFAFA",
+        backgroundColor: "#000000",
         width: 1200,
         height: 900,
         webPreferences: {
@@ -22,8 +18,6 @@ const mainWindow = () => {
           sandbox: false,
         },
       });
-
-      browserWindow.setTitle("TERITORI");
 
       browserWindow.webContents.setWindowOpenHandler(({ url }) => {
         const denial = { action: "deny" };

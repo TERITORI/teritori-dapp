@@ -24,7 +24,7 @@ const mainWindow = () => {
     .whenReady()
     .then(() => {
       browserWindow = new BrowserWindow({
-        backgroundColor: "#FAFAFA",
+        backgroundColor: "#000000",
         width: 1200,
         height: 900,
         webPreferences: {
