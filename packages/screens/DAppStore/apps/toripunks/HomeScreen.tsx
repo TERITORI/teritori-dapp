@@ -1,23 +1,28 @@
 import React from "react";
 
-import { BrandText } from "../../../../components/BrandText";
 import { ScreenContainer } from "../../../../components/ScreenContainer";
-import { ScreenFC } from "../../../../utils/navigation";
+import { TopLogo } from "../../../../components/navigation/components/TopLogo";
+import { ScreenFC, useAppNavigation } from "../../../../utils/navigation";
 import { Content } from "./content/Content";
 import { ContentContextProvider } from "./context/ContentProvider";
 
 export const ToriPunks: ScreenFC<"ToriPunks"> = ({ route }) => {
+  const navigation = useAppNavigation();
+  const screen = route.params ? route.params.route : "welcome";
+  if (!route.params) {
+    navigation.navigate("ToriPunks", { route: screen });
+  }
   return (
     <ScreenContainer
       fullWidth
-      headerChildren={<BrandText>ToriPunks</BrandText>}
+      hideSidebar
+      smallMargin
+      headerChildren={<TopLogo />}
       footerChildren={<div />}
     >
-      {/*Just a placeholder please delete me*/}
-      <ContentContextProvider screen={route.params.route}>
+      <ContentContextProvider screen={screen}>
         <Content />
       </ContentContextProvider>
-      {/*Just a placeholder please delete me*/}
     </ScreenContainer>
   );
 };
