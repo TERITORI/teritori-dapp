@@ -1,11 +1,7 @@
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import {
-  Sort,
-  SortDirection,
-} from "../../../../../api/marketplace/v1/marketplace";
-import { useNFTs } from "../../../../../hooks/useNFTs";
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
@@ -40,7 +36,7 @@ export const Russian = () => {
   const [result, setResult] = useState<boolean>(false);
   const { isMinimunWindowWidth, setLoadingGame } = useContentContext();
   const [bet, setBet] = useState<number>(0);
-  const count = useToripunks();
+  const userToriPunksList = useList();
 
   const [errorType, setErroType] = useState<
     "TICKET" | "NFT" | "TRANSACTION" | ""
@@ -50,7 +46,7 @@ export const Russian = () => {
   const buttonSize = isMinimunWindowWidth ? "S" : "Mobile";
 
   // replace with user data.
-  const userToripunks = count;
+  const userToripunks = userToriPunksList.length;
   const maxTicket = "10";
   const priceTicket = "1";
   const monthPriceTicket = "120";
@@ -62,7 +58,7 @@ export const Russian = () => {
   // Button text
   const longButtonLabelText = result
     ? `${remainingUserTicket} remaining tickets in the russian roulette`
-    : `Last month's winnings per ticket = ${monthPriceTicket}$ Tor`;
+    : `Last month's winnings per ticket = ${monthPriceTicket}$ TORI`;
   const userInteractionInfo = result
     ? `You can still buy ${remainingUserCurrency} tickets`
     : `${userToripunks} Toripunks in your wallet`;
@@ -243,19 +239,23 @@ export const Russian = () => {
   );
 };
 
-const useToripunks = () => {
+const useList = () => {
   const { selectedWallet } = useContentContext();
-
-  const { nfts } = useNFTs({
-    offset: 0,
-    limit: 100,
-    ownerId: selectedWallet?.userId || "",
-    collectionId:
-      selectedWallet?.networkId === "teritori-testnet"
-        ? "testori-tori10z8um7u47e24rv68ghd43tspeztmqy3cc283gvc3pj48zxs5ljdqn84deq"
-        : "tori-tori1plr28ztj64a47a32lw7tdae8vluzm2lm7nqk364r4ws50rgwyzgsapzezt",
-    sort: Sort.SORTING_PRICE,
-    sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
-  });
-  return nfts.length;
+  const addr = selectedWallet?.address || "";
+  const { data } = useQuery(
+    ["toripunks", addr],
+    async () => {
+      const response = await fetch(
+        `https://api.roulette.aaa-metahuahua.com/toripunks?addr=${addr}`
+      );
+      return response.json();
+    },
+    {
+      initialData: {},
+      refetchInterval: 20000,
+      staleTime: Infinity,
+      initialDataUpdatedAt: 0,
+    }
+  );
+  return data;
 };
