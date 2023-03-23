@@ -184,7 +184,7 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
         editable={!disabled}
         placeholder={placeHolder}
         onChangeText={handleChangeText}
-        onKeyPress={handleKeyPress}
+        onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
         placeholderTextColor={neutralA3}
         value={field.value}
         style={[styles.textInput, textInputStyle]}
@@ -197,9 +197,9 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
       {variant === "labelOutside" && (
         <>
           <View style={styles.rowEnd}>
-            <BrandText style={[styles.labelText, fontSemibold14, labelStyle]} isRequired={!!rules?.required}>
+            <Label style={labelStyle} isRequired={!!rules?.required}>
               {label}
-            </BrandText>
+            </Label>
             {subtitle}
           </View>
           <SpacerColumn size={1} />
@@ -218,7 +218,7 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {variant !== "labelOutside" && (
-              <Pressable onPress={() => inputRef.current?.focus()}>
+              <Pressable onPress={() => ref.current?.focus()}>
                 <BrandText style={[styles.labelText, fontMedium10, labelStyle]}>
                   {label}
                 </BrandText>
@@ -226,7 +226,7 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
               </Pressable>
             )}
             <TextInput
-              ref={inputRef}
+              ref={ref}
               editable={!disabled}
               placeholder={placeHolder}
               onChangeText={handleChangeText}
@@ -244,7 +244,7 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
       <ErrorText>{error || fieldError}</ErrorText>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   rowEnd: {
