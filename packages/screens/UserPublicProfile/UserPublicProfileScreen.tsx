@@ -1,79 +1,119 @@
-import React, { useState } from "react";
+import { bech32 } from "bech32";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
+import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
+import { NotFound } from "../../components/NotFound";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Tabs } from "../../components/tabs/Tabs";
-import { UPPActivity } from "../../components/userPublicProfile/UPPActivity";
-import { UPPGigServices } from "../../components/userPublicProfile/UPPGigServices";
-import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
+import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
-import { UPPPathwarChallenges } from "../../components/userPublicProfile/UPPPathwarChallenges";
-import { UPPSocialFeed } from "../../components/userPublicProfile/UPPSocialFeed";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseUserId } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
+import { parseNetworkObjectId, parseUserId } from "../../networks";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { setDocumentTitle } from "../../utils/setDocumentTitle";
-import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
+import {
+  UserPublicProfileScreenHeader,
+  screenTabItems,
+} from "./UserPublicProfileHeader";
 
-const screenTabItems = {
-  "social-feed": {
-    name: "Social Feed",
-    disabled: true,
-  },
-  nfts: {
-    name: "NFTs",
-  },
-  activity: {
-    name: "Activity",
-    disabled: true,
-  },
-  quests: {
-    name: "Quests",
-  },
-  pathwar: {
-    name: "Pathwar Challenges",
-    disabled: true,
-  },
-  gig: {
-    name: "Gig Services",
-    disabled: true,
-  },
-  votes: {
-    name: "Governance Votes",
-    disabled: true,
-  },
-  footer: {
-    name: "Putted NFT to Rioters Footer",
-    disabled: true,
-  },
-  servers: {
-    name: "Shared servers",
-    disabled: true,
-  },
-};
+const TabContainer: React.FC = ({ children }) => (
+  <View style={{ flex: 1, alignItems: "center" }}>
+    <View style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}>
+      {children}
+    </View>
+  </View>
+);
 
 const SelectedTabContent: React.FC<{
   userId: string;
   selectedTab: keyof typeof screenTabItems;
-}> = ({ userId, selectedTab }) => {
+  setSelectedTab: (tab: keyof typeof screenTabItems) => void;
+}> = ({ userId, selectedTab, setSelectedTab }) => {
+  const selectedWallet = useSelectedWallet();
+  const [, userAddress] = parseNetworkObjectId(userId);
+  const userInfo = useNSUserInfo(userId);
+  const feedRequestUser: PostsRequest = useMemo(() => {
+    return {
+      filter: {
+        user: userId,
+        mentions: [],
+        categories: [],
+        hashtags: [],
+      },
+      limit: 10,
+      offset: 0,
+    };
+  }, [userId]);
+
+  const feedRequestMentions: PostsRequest = useMemo(() => {
+    return {
+      filter: {
+        user: "",
+        mentions: userInfo?.metadata.tokenId
+          ? // The user can be mentioned by his NS name OR his address, so we use both in this filter
+            [`@${userAddress}`, `@${userInfo?.metadata.tokenId}`]
+          : // Btw, is the user has no NS name, we use his address in this filter
+            [`@${userAddress}`],
+        categories: [],
+        hashtags: [],
+      },
+      limit: 10,
+      offset: 0,
+    };
+  }, [userInfo?.metadata.tokenId, userAddress]);
+
   switch (selectedTab) {
-    case "social-feed":
-      return <UPPSocialFeed />;
+    case "userPosts":
+      return (
+        <NewsFeed
+          Header={() => (
+            <UserPublicProfileScreenHeader
+              userId={userId}
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+            />
+          )}
+          additionalMention={
+            selectedWallet?.address !== userAddress
+              ? userInfo?.metadata.tokenId || userAddress
+              : undefined
+          }
+          req={feedRequestUser}
+        />
+      );
+    case "mentionsPosts":
+      return (
+        <NewsFeed
+          Header={() => (
+            <UserPublicProfileScreenHeader
+              userId={userId}
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+            />
+          )}
+          additionalMention={
+            selectedWallet?.address !== userAddress
+              ? userInfo?.metadata.tokenId || userAddress
+              : undefined
+          }
+          req={feedRequestMentions}
+        />
+      );
     case "nfts":
       return <UPPNFTs userId={userId} />;
-    case "activity":
-      return <UPPActivity />;
+    // case "activity":
+    //   return <UPPActivity />;
     case "quests":
       return <UPPQuests userId={userId} />;
-    case "pathwar":
-      return <UPPPathwarChallenges />;
-    case "gig":
-      return <UPPGigServices />;
+    // case "pathwar":
+    //   return <UPPPathwarChallenges />;
+    // case "gig":
+    //   return <UPPGigServices />;
     default:
       return null;
   }
@@ -85,40 +125,58 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   },
 }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("nfts");
+    useState<keyof typeof screenTabItems>("userPosts");
 
-  const { metadata } = useNSUserInfo(id);
-  const selectedWallet = useSelectedWallet();
-  const [network] = parseUserId(id);
+  const navigation = useAppNavigation();
+  const [network, userAddress] = parseUserId(id);
+  const { metadata, notFound } = useNSUserInfo(id);
   setDocumentTitle(`User: ${metadata?.tokenId}`);
+
   return (
     <ScreenContainer
       forceNetworkId={network?.id}
+      responsive
+      fullWidth
+      noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
       smallMargin
       footerChildren={<></>}
       headerChildren={
-        <BrandText style={fontSemibold20}>{metadata?.tokenId || ""}</BrandText>
+        <BrandText style={fontSemibold20}>
+          {metadata?.tokenId || userAddress}
+        </BrandText>
+      }
+      onBackPress={() =>
+        navigation.canGoBack()
+          ? navigation.goBack()
+          : navigation.navigate("Home")
       }
     >
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <View style={{ width: "100%", maxWidth: screenContentMaxWidthLarge }}>
-          <UPPIntro userId={id} isUserOwner={selectedWallet?.userId === id} />
-
-          <Tabs
-            items={screenTabItems}
-            selected={selectedTab}
-            onSelect={setSelectedTab}
-            style={{
-              marginTop: 32,
-              height: 32,
-              marginBottom: layout.padding_x2_5 / 2,
-            }}
-            borderColorTabSelected={primaryColor}
-          />
-
-          <SelectedTabContent selectedTab={selectedTab} userId={id} />
-        </View>
-      </View>
+      {notFound || !userAddress || !bech32.decodeUnsafe(userAddress) ? (
+        <NotFound label="User" />
+      ) : (
+        <>
+          {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
+            <TabContainer>
+              <UserPublicProfileScreenHeader
+                userId={id}
+                selectedTab={selectedTab}
+                setSelectedTab={setSelectedTab}
+              />
+              <SelectedTabContent
+                selectedTab={selectedTab}
+                userId={id}
+                setSelectedTab={setSelectedTab}
+              />
+            </TabContainer>
+          ) : (
+            <SelectedTabContent
+              selectedTab={selectedTab}
+              userId={id}
+              setSelectedTab={setSelectedTab}
+            />
+          )}
+        </>
+      )}
     </ScreenContainer>
   );
 };

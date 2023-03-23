@@ -18,7 +18,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
 
   return (
-    <ScreenContainer>
+    <ScreenContainer responsive>
       <View
         style={{
           paddingBottom: layout.contentPadding,

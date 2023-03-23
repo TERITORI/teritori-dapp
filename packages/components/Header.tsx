@@ -6,11 +6,13 @@ import {
   headerHeight,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
+import { BackButton } from "./navigation/components/BackButton";
 
 export const Header: React.FC<{
   smallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ children, style }) => {
+  onBackPress?: () => void;
+}> = ({ children, style, onBackPress }) => {
   return (
     <View
       style={[
@@ -37,7 +39,8 @@ export const Header: React.FC<{
           marginLeft: screenContainerContentMarginHorizontal,
         }}
       >
-        <>{children}</>
+        {onBackPress && <BackButton onPress={onBackPress} />}
+        {children}
       </View>
 
       {/* Wallet selector placeholder */}

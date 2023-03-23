@@ -173,7 +173,6 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             description="Lookup addresses and explore registered names"
             iconSVG={exploreSVG}
             onPress={() => navigation.navigate("TNSHome", { modal: "explore" })}
-            style={{}}
           />
         </View>
 

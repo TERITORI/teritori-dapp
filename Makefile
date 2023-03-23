@@ -24,6 +24,7 @@ BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-pa
 PRICES_SERVICE_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-service:$(shell git rev-parse --short HEAD)
 PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell git rev-parse --short HEAD)
 P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse --short HEAD)
+FEED_DOCKER_IMAGE=$(DOCKER_REGISTRY)/feed-clean-pinata-keys:$(shell git rev-parse --short HEAD)
 
 node_modules: package.json yarn.lock
 	yarn
@@ -221,6 +222,11 @@ generate.sqlboiler-prices:
 publish.p2e-update-leaderboard:
 	docker build -f go/cmd/p2e-update-leaderboard/Dockerfile . --platform amd64 -t $(P2E_DOCKER_IMAGE)
 	docker push $(P2E_DOCKER_IMAGE)
+
+.PHONY: publish.feed-clean-pinata-keys
+publish.feed-clean-pinata-keys:
+	docker build -f go/cmd/feed-clean-pinata-keys/Dockerfile . --platform amd64 -t $(FEED_DOCKER_IMAGE)
+	docker push $(FEED_DOCKER_IMAGE)
 
 .PHONY: validate-networks
 validate-networks: node_modules
