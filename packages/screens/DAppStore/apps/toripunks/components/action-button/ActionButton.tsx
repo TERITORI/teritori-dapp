@@ -17,7 +17,7 @@ export const ActionButton = ({
   textWinning = 0,
   textLosing = 0,
 }: {
-  text?: number;
+  text: number;
   textWinning?: number;
   textLosing?: number;
   reduceHandler: () => void;
@@ -78,7 +78,13 @@ export const ActionButton = ({
             paddingRight: 15,
           }}
         >
-          <TouchableOpacity onPress={reduceHandler}>
+          <TouchableOpacity
+            onPress={reduceHandler}
+            disabled={text < 1}
+            style={{
+              opacity: text < 1 ? 0.5 : 1,
+            }}
+          >
             <Image
               source={require("../../assets/minus.png")}
               style={{ width: 40, height: 40 }}
@@ -87,7 +93,13 @@ export const ActionButton = ({
           <Text style={[styles["H1_Bebas_80"], { color: "#E8E1EF" }]}>
             {text}
           </Text>
-          <TouchableOpacity onPress={addHandler}>
+          <TouchableOpacity
+            onPress={addHandler}
+            disabled={text >= 10}
+            style={{
+              opacity: text >= 10 ? 0.5 : 1,
+            }}
+          >
             <Image
               source={require("../../assets/plus.png")}
               style={{ width: 40, height: 40 }}

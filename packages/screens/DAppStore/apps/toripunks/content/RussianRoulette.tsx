@@ -1,9 +1,15 @@
 import { useState } from "react";
-import { BackHandler, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
+import {
+  Sort,
+  SortDirection,
+} from "../../../../../api/marketplace/v1/marketplace";
+import { useNFTs } from "../../../../../hooks/useNFTs";
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
+import { BuyToripunksButton } from "../components/buttonLabel/BuyToripunksButton";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
 
@@ -34,6 +40,7 @@ export const Russian = () => {
   const [result, setResult] = useState<boolean>(false);
   const { isMinimunWindowWidth, setLoadingGame } = useContentContext();
   const [bet, setBet] = useState<number>(0);
+  const count = useToripunks();
 
   const [errorType, setErroType] = useState<
     "TICKET" | "NFT" | "TRANSACTION" | ""
@@ -43,7 +50,7 @@ export const Russian = () => {
   const buttonSize = isMinimunWindowWidth ? "S" : "Mobile";
 
   // replace with user data.
-  const userToripunks = "XXX";
+  const userToripunks = count;
   const maxTicket = "10";
   const priceTicket = "1";
   const monthPriceTicket = "120";
@@ -73,16 +80,14 @@ export const Russian = () => {
   };
 
   const addBet = () => {
-    setBet(bet + 1);
-    setErroType("TICKET");
+    const validateBet = bet + 1 > +maxTicket ? 10 : bet + 1;
+    setBet(validateBet);
+    if (validateBet + 1 === 11) setErroType("TICKET");
   };
   const reduceBet = () => {
     const validateBet = bet - 1 < 0 ? 0 : bet - 1;
     setBet(validateBet);
-  };
-
-  const buyToripunks = () => {
-    setErroType("NFT");
+    if (validateBet - 1 === -1) setErroType("NFT");
   };
 
   const backHandler = () => {
@@ -113,16 +118,14 @@ export const Russian = () => {
               marginTop: 60,
             }}
           >
-            <TouchableOpacity onPress={buyToripunks}>
+            <BuyToripunksButton />
+            <TouchableOpacity onPress={backHandler}>
               <ButtonLabel
-                text="BUY TORIPUNKS"
+                text="BACK"
                 size={buttonSize}
                 actionable
-                style={{ marginRight: 20 }}
+                style={{ marginLeft: 20 }}
               />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={backHandler}>
-              <ButtonLabel text="BACK" size={buttonSize} actionable />
             </TouchableOpacity>
           </View>
         );
@@ -190,13 +193,7 @@ export const Russian = () => {
                 }}
               >
                 <ButtonLabel text={userInteractionInfo} size={buttonSize} />
-                <TouchableOpacity onPress={buyToripunks}>
-                  <ButtonLabel
-                    text="BUY TORIPUNKS"
-                    size={buttonSize}
-                    actionable
-                  />
-                </TouchableOpacity>
+                <BuyToripunksButton />
               </View>
             </View>
             {/* Play View */}
@@ -244,4 +241,21 @@ export const Russian = () => {
       {getInteractionView()}
     </View>
   );
+};
+
+const useToripunks = () => {
+  const { selectedWallet } = useContentContext();
+
+  const { nfts } = useNFTs({
+    offset: 0,
+    limit: 100,
+    ownerId: selectedWallet?.userId || "",
+    collectionId:
+      selectedWallet?.networkId === "teritori-testnet"
+        ? "testori-tori10z8um7u47e24rv68ghd43tspeztmqy3cc283gvc3pj48zxs5ljdqn84deq"
+        : "tori-tori1plr28ztj64a47a32lw7tdae8vluzm2lm7nqk364r4ws50rgwyzgsapzezt",
+    sort: Sort.SORTING_PRICE,
+    sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
+  });
+  return nfts.length;
 };

@@ -97,7 +97,6 @@ const ListItem: React.FC<{ item: HistoryItem }> = ({ item }) => {
       style={{
         alignItems: "center",
         width: "100%",
-        marginTop: 80,
       }}
     >
       <FlatList
@@ -159,6 +158,7 @@ export const ComicBookHistory = () => {
         <FlatList
           contentContainerStyle={{
             alignItems: "center",
+            marginTop: 80,
             marginBottom: "7em",
           }}
           data={data}

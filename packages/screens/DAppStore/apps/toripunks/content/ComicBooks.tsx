@@ -1,6 +1,7 @@
-import { TouchableOpacity, View } from "react-native";
+import { Linking, TouchableOpacity, View } from "react-native";
 
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
+import { BuyToripunksButton } from "../components/buttonLabel/BuyToripunksButton";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
 
@@ -66,8 +67,17 @@ export const ComicBooks = () => {
             height: 180,
           }}
         >
-          <ButtonLabel text="BUY COMIC BOOKS" size="S" actionable />
-          <ButtonLabel text="BUY TORIPUNKS" size="S" actionable />
+          <ButtonLabel
+            text="BUY COMIC BOOKS"
+            size="S"
+            actionable
+            onPress={() => {
+              Linking.openURL(
+                "https://app.teritori.com/collection/tori-tori1syx6q5rxhntng93pmk9xep25638dqy3dcnppvvytnccxrp7urt7s2570jc"
+              );
+            }}
+          />
+          <BuyToripunksButton />
 
           <TouchableOpacity
             onPress={() => setSelectedSectionHandler("comic-book-history")}

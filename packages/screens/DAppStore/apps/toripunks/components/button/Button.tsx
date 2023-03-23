@@ -9,8 +9,8 @@ import {
 } from "react-native";
 
 import buttonBackgroundBlack from "../../assets/button/RectangleButtonBlack.png";
-import buttonBackgroundBlackSmall from "../../assets/button/RectangleButtonSmall.png";
 import buttonBackgorundBlackMobile from "../../assets/button/RectangleButtonMobile.png";
+import buttonBackgroundBlackSmall from "../../assets/button/RectangleButtonSmall.png";
 import { useContentContext } from "../../context/ContentProvider";
 
 export interface ButtonType {
