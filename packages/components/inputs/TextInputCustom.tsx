@@ -1,5 +1,12 @@
 import { Currency } from "@keplr-wallet/types";
-import React, { forwardRef, useEffect, useMemo } from "react";
+import React, {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import {
   RegisterOptions,
   useController,
@@ -22,18 +29,18 @@ import {
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import { handleKeyPress } from "../../utils/keyboard";
 import {
-  fontMedium10,
-  fontSemibold14,
-  fontSemibold20,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import {
   additionalRed,
   neutral22,
   neutral77,
   neutralA3,
   secondaryColor,
 } from "../../utils/style/colors";
+import {
+  fontMedium10,
+  fontSemibold14,
+  fontSemibold20,
+} from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -65,6 +72,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   noBrokenCorners?: boolean;
   error?: string;
   fullWidth?: boolean;
+  setRef?: Dispatch<SetStateAction<RefObject<any> | null>>;
 }
 
 export const Label: React.FC<{
@@ -94,7 +102,7 @@ export const Label: React.FC<{
 );
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
-export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
+export const TextInputCustom = <T extends FieldValues>({
   label,
   placeHolder,
   onPressEnter,
@@ -119,10 +127,9 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
   error,
   noBrokenCorners,
   fullWidth,
+  setRef,
   ...restProps
-}: TextInputCustomProps<T>,
-  ref: any
-) => {
+}: TextInputCustomProps<T>) => {
   // variables
   const { field, fieldState } = useController<T>({
     name,
@@ -130,7 +137,14 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
     rules,
     defaultValue,
   });
-  // hooks
+  const inputRef = useRef<TextInput>(null);
+  // Passing ref to parent since I didn't find a pattern to handle generic argument <T extends FieldValues> AND forwardRef
+  useEffect(() => {
+    if (inputRef.current && setRef) {
+      setRef(inputRef);
+    }
+  }, [setRef]);
+
   useEffect(() => {
     if (defaultValue) {
       handleChangeText(defaultValue);
@@ -148,39 +162,39 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
     }
   }, [fieldState.error]);
 
-    // FIXME: the first input does not trigger the custom validation
+  // FIXME: the first input does not trigger the custom validation
 
-    // custom validation
-    const handleChangeText = (value: string) => {
-      if (currency) {
-        const reg = new RegExp(`^\\d+\\.?\\d{0,${currency.coinDecimals}}$`);
+  // custom validation
+  const handleChangeText = (value: string) => {
+    if (currency) {
+      const reg = new RegExp(`^\\d+\\.?\\d{0,${currency.coinDecimals}}$`);
 
-        if (rules?.max && parseFloat(value) > rules.max) {
-          return;
-        }
-
-        if (reg.test(value) || !value) {
-          field.onChange(value);
-          if (restProps.onChangeText) {
-            restProps.onChangeText(value);
-            return;
-          }
-        }
+      if (rules?.max && parseFloat(value) > rules.max) {
         return;
       }
 
-      if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
+      if (reg.test(value) || !value) {
         field.onChange(value);
         if (restProps.onChangeText) {
           restProps.onChangeText(value);
+          return;
         }
       }
-    };
+      return;
+    }
+
+    if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
+      field.onChange(value);
+      if (restProps.onChangeText) {
+        restProps.onChangeText(value);
+      }
+    }
+  };
 
   if (variant === "noStyle")
     return (
       <TextInput
-        ref={ref}
+        ref={inputRef}
         editable={!disabled}
         placeholder={placeHolder}
         onChangeText={handleChangeText}
@@ -218,7 +232,7 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {variant !== "labelOutside" && (
-              <Pressable onPress={() => ref.current?.focus()}>
+              <Pressable onPress={() => inputRef.current?.focus()}>
                 <BrandText style={[styles.labelText, fontMedium10, labelStyle]}>
                   {label}
                 </BrandText>
@@ -226,7 +240,7 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
               </Pressable>
             )}
             <TextInput
-              ref={ref}
+              ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
               onChangeText={handleChangeText}
@@ -244,7 +258,7 @@ export const TextInputCustom = forwardRef<any, any>(<T extends FieldValues>({
       <ErrorText>{error || fieldError}</ErrorText>
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   rowEnd: {

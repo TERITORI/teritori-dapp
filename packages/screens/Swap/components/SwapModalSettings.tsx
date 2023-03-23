@@ -1,11 +1,11 @@
 import React, {
   Dispatch,
+  RefObject,
   SetStateAction,
   useEffect,
-  useRef,
   useState,
 } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import infoSVG from "../../../../assets/icons/info.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -68,7 +68,7 @@ export const SwapModalSettings: React.FC<{
     { value: 5 },
   ]);
   const [manualSlippageSelected, setManualSlippageSelected] = useState(false);
-  const inputRef = useRef<TextInput>(null);
+  const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
 
   const onChangeManualSlippage = (value: string) => {
     if (!value) {
@@ -90,7 +90,7 @@ export const SwapModalSettings: React.FC<{
   };
 
   const onPressSlippageItem = (item: SlippageItem) => {
-    inputRef.current?.blur();
+    inputRef?.current?.blur();
     const newItems: SlippageItem[] = [];
     slippageItems.forEach((sItem) => {
       sItem.isSelected = false;
@@ -105,7 +105,7 @@ export const SwapModalSettings: React.FC<{
   };
 
   const onFocusManualSlippage = () => {
-    inputRef.current?.focus();
+    inputRef?.current?.focus();
     if (!manualSlippage || manualSlippageSelected) return;
     selectManualSlippage();
   };
@@ -193,7 +193,7 @@ export const SwapModalSettings: React.FC<{
               isSelected={manualSlippageSelected}
             >
               <TextInputCustom
-                ref={inputRef}
+                setRef={setInputRef}
                 label=""
                 name=""
                 variant="noStyle"
