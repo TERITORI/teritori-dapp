@@ -5,10 +5,12 @@ import { Background } from "../components/background/Background";
 import { Footer } from "../components/footer/Footer";
 import { MenuLink } from "../components/menu-link/MenuLink";
 import { useContentContext } from "../context/ContentProvider";
+import { LoadingGame } from "./Loading";
 import { Route } from "./Route";
 
 export const Content = () => {
-  const { selectedSection, isMinimunWindowWidth } = useContentContext();
+  const { selectedSection, isMinimunWindowWidth, loadingGame } =
+    useContentContext();
 
   const [fontsLoaded] = useFonts({
     "Bebas Neue": require("../assets/font/Bebas_Neue/BebasNeue-Regular.ttf"),
@@ -49,25 +51,28 @@ export const Content = () => {
   const selectionStyle = new Proxy(customStyle, validateCustomStyle);
 
   return (
-    <Background type={selectedSection}>
-      <>
-        {selectedSection !== "welcome" && <MenuLink />}
-        <View
-          style={[
-            containerStyle as ViewStyle,
-            {
-              flexDirection: "column",
-              alignContent: "center",
-            },
-            selectionStyle[selectedSection] as ViewStyle,
-          ]}
-        >
-          {Route(selectedSection)}
-        </View>
-        <View style={{ marginTop: isMinimunWindowWidth ? 78 : 40 }}>
-          <Footer isMinimunWindowWidth={isMinimunWindowWidth} />
-        </View>
-      </>
-    </Background>
+    <>
+      {loadingGame && <LoadingGame />}
+      <Background type={selectedSection}>
+        <>
+          {selectedSection !== "welcome" && <MenuLink />}
+          <View
+            style={[
+              containerStyle as ViewStyle,
+              {
+                flexDirection: "column",
+                alignContent: "center",
+              },
+              selectionStyle[selectedSection] as ViewStyle,
+            ]}
+          >
+            {Route(selectedSection)}
+          </View>
+          <View style={{ marginTop: isMinimunWindowWidth ? 78 : 40 }}>
+            <Footer isMinimunWindowWidth={isMinimunWindowWidth} />
+          </View>
+        </>
+      </Background>
+    </>
   );
 };

@@ -24,11 +24,11 @@ export const ActionButton = ({
   addHandler: () => void;
   result: boolean;
 }) => {
-  const contentContext = useContentContext();
+  const { styles, isMinimunWindowWidth } = useContentContext();
 
   const resultCss = {
     backgroundColor: "#212708",
-    width: 242,
+    width: isMinimunWindowWidth ? 242 : 160,
     borderRadius: 5,
     justifyContent: "center",
     height: 150,
@@ -36,12 +36,12 @@ export const ActionButton = ({
   };
 
   const titleCss = {
-    ...contentContext.styles["T1_Bebas_20"],
+    ...styles["T1_Bebas_20"],
     ...{ color: "#E8E1EF", lineHeight: "normal" },
   };
 
   const resultTextCss = {
-    ...contentContext.styles["H1_Bebas_80"],
+    ...styles["H1_Bebas_80"],
     ...{ color: "#E8E1EF" },
   };
 
@@ -84,9 +84,7 @@ export const ActionButton = ({
               style={{ width: 40, height: 40 }}
             />
           </TouchableOpacity>
-          <Text
-            style={[contentContext.styles["H1_Bebas_80"], { color: "#E8E1EF" }]}
-          >
+          <Text style={[styles["H1_Bebas_80"], { color: "#E8E1EF" }]}>
             {text}
           </Text>
           <TouchableOpacity onPress={addHandler}>

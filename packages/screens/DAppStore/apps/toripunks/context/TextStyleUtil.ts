@@ -65,7 +65,7 @@ export const textStyle = {
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 20,
-    lineHeight: 48,
+    lineHeight: 24,
   },
   T1_DHBS_20: {
     fontFamily: "Dafter Harder Better Stronger",

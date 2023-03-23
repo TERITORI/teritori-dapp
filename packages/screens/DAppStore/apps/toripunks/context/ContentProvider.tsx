@@ -1,6 +1,8 @@
 import {
   createContext,
+  Dispatch,
   ReactNode,
+  SetStateAction,
   useContext,
   useEffect,
   useState,
@@ -20,6 +22,8 @@ interface DefaultValue {
   windowHeight: number;
   windowWidth: number;
   isMinimunWindowWidth: boolean;
+  loadingGame: boolean;
+  setLoadingGame: Dispatch<SetStateAction<boolean>>;
 }
 
 const defaultValue: DefaultValue = {
@@ -30,6 +34,8 @@ const defaultValue: DefaultValue = {
   windowHeight: 800,
   windowWidth: 1024,
   isMinimunWindowWidth: false,
+  loadingGame: true,
+  setLoadingGame: () => {},
 };
 
 const windowDimensions = Dimensions.get("window");
@@ -43,6 +49,7 @@ export const ContentContextProvider: React.FC<{
   const [selectedSection, setSelectedSection] = useState<string>(screen);
   const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
+  const [loadingGame, setLoadingGame] = useState<boolean>(false);
 
   const setSelectedSectionHandler = (section: string) => {
     navigation.navigate("ToriPunks", { route: section });
@@ -76,6 +83,8 @@ export const ContentContextProvider: React.FC<{
         windowHeight,
         windowWidth,
         isMinimunWindowWidth,
+        loadingGame,
+        setLoadingGame,
       }}
     >
       {children}
