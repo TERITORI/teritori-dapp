@@ -6,6 +6,7 @@ import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { VictoryPie } from "victory";
 
+import { ProposalStatus } from "./types";
 import { BrandText } from "../../components/BrandText/BrandText";
 import { ConfirmationVote } from "../../components/GovernanceBox/ConfirmationVote";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -16,7 +17,6 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrSigningStargateClient } from "../../networks";
 import { neutral44 } from "../../utils/style/colors";
-import { ProposalStatus } from "./types";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View

@@ -1,6 +1,9 @@
 import detectEthereumProvider from "@metamask/detect-provider";
 import { ethers } from "ethers";
 
+import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { ipfsURLToHTTPURL } from "./ipfs";
 import { Attribute, Collection, NFT } from "../api/marketplace/v1/marketplace";
 import {
   EthereumNetworkInfo,
@@ -8,9 +11,6 @@ import {
   parseNftId,
   NetworkKind,
 } from "../networks";
-import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { ipfsURLToHTTPURL } from "./ipfs";
 
 // this is used to block all calls to the provider getter while we wait for network switch auth
 const proms: {

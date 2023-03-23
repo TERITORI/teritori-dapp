@@ -1,8 +1,8 @@
 import React from "react";
 import { Image } from "react-native";
 
-import { getNativeCurrency } from "../networks";
 import { SVG } from "./SVG";
+import { getNativeCurrency } from "../networks";
 
 export const CurrencyIcon: React.FC<{
   networkId: string;

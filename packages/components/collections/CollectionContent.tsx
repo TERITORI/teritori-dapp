@@ -1,5 +1,6 @@
 import React from "react";
 
+import { TabsListType } from "./types";
 import {
   NFTsRequest,
   Sort,
@@ -11,7 +12,6 @@ import { alignDown } from "../../utils/align";
 import { ActivityTable } from "../activity/ActivityTable";
 import { Footer } from "../footers/Footer";
 import { NFTs } from "../nfts/NFTs";
-import { TabsListType } from "./types";
 
 const nftWidth = 268; // FIXME: ssot
 

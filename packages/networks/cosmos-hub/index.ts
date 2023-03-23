@@ -1,5 +1,5 @@
-import { NetworkKind, NetworkInfo } from "../types";
 import { cosmosHubCurrencies } from "./currencies";
+import { NetworkKind, NetworkInfo } from "../types";
 
 export const cosmosNetwork: NetworkInfo = {
   id: "cosmos-hub",

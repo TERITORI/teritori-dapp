@@ -1,6 +1,12 @@
 import React, { useRef } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 
+import { TopMenuAccount } from "./TopMenuAccount";
+import { TopMenuHighlightedNews } from "./TopMenuHighlightedNews";
+import { TopMenuLiveMint } from "./TopMenuLiveMint";
+import { TopMenuMyTeritories } from "./TopMenuMyTeritories";
+import { TopMenuMyWallets } from "./TopMenuMyWallets";
+import { WalletView } from "./WalletView";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
@@ -19,12 +25,6 @@ import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { TopMenuAccount } from "./TopMenuAccount";
-import { TopMenuHighlightedNews } from "./TopMenuHighlightedNews";
-import { TopMenuLiveMint } from "./TopMenuLiveMint";
-import { TopMenuMyTeritories } from "./TopMenuMyTeritories";
-import { TopMenuMyWallets } from "./TopMenuMyWallets";
-import { WalletView } from "./WalletView";
 
 export const TopMenu: React.FC<{
   selectedWallet?: Wallet;

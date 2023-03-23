@@ -10,6 +10,12 @@ import {
   StyleProp,
 } from "react-native";
 
+import { Header } from "./Header";
+import { NetworkSelector } from "./NetworkSelector";
+import { SelectedNetworkGate } from "./SelectedNetworkGate";
+import { ConnectWalletButton } from "./TopMenu/ConnectWalletButton";
+import { Footer } from "./footers/Footer";
+import { Sidebar } from "./navigation/Sidebar";
 import { useForceNetworkKind } from "../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
 import { useMaxResolution } from "../hooks/useMaxResolution";
@@ -19,12 +25,6 @@ import {
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
-import { Header } from "./Header";
-import { NetworkSelector } from "./NetworkSelector";
-import { SelectedNetworkGate } from "./SelectedNetworkGate";
-import { ConnectWalletButton } from "./TopMenu/ConnectWalletButton";
-import { Footer } from "./footers/Footer";
-import { Sidebar } from "./navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;

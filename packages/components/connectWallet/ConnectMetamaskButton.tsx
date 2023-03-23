@@ -2,13 +2,13 @@ import { useMetaMask } from "metamask-react";
 import React from "react";
 import { Linking } from "react-native";
 
+import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import metamaskSVG from "../../../assets/icons/metamask.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getEthereumNetwork, selectableEthereumNetworks } from "../../networks";
 import { setSelectedNetworkId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
-import { ConnectWalletButton } from "./components/ConnectWalletButton";
 
 export const ConnectMetamaskButton: React.FC<{
   onDone?: (err?: unknown) => void;

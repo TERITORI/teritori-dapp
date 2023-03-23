@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 
+import { useMintEnded } from "./useMintEnded";
 import { parseNetworkObjectId } from "../networks";
 import { useAppNavigation } from "../utils/navigation";
-import { useMintEnded } from "./useMintEnded";
 
 export interface NavigateToCollectionOpts {
   forceSecondaryDuringMint?: boolean;

@@ -1,9 +1,9 @@
 import React from "react";
 import { View } from "react-native";
 
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { WalletHeader } from "./WalletHeader";
 import { WALLET_SCREEN_CONTAINER_MARGIN_HORIZONTAL } from "./constants";
+import { ScreenContainer } from "../../components/ScreenContainer";
 
 export const WalletManagerScreenContainer: React.FC<{
   children: React.ReactNode;

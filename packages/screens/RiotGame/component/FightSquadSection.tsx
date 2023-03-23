@@ -1,6 +1,7 @@
 import React from "react";
 import { FlatList, ImageBackground, StyleSheet, View } from "react-native";
 
+import { RipperAvatar } from "./RipperAvatar";
 import brokenBoxPNG from "../../../../assets/game/broken-box.png";
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
@@ -8,7 +9,6 @@ import { neutralA3 } from "../../../utils/style/colors";
 import { fontMedium32, fontMedium13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { RipperLightInfo } from "../types";
-import { RipperAvatar } from "./RipperAvatar";
 
 const RIPPER_AVATAR_SIZE = 60;
 

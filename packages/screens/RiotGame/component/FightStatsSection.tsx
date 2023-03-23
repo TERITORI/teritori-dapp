@@ -1,5 +1,6 @@
 import { StyleSheet, View, ViewStyle } from "react-native";
 
+import { InfoBox } from "./InfoBox";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { useGameRewards } from "../../../hooks/riotGame/useGameRewards";
 import { useSeasonRank } from "../../../hooks/riotGame/useSeasonRank";
@@ -7,7 +8,6 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { decimalFromAtomics } from "../../../utils/coins";
 import { yellowDefault } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { InfoBox } from "./InfoBox";
 
 type FightStatsSectionProps = {
   containerStyle?: ViewStyle;
