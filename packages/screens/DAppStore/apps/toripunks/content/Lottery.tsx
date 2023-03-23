@@ -15,8 +15,8 @@ export const Lottery = () => {
     <>
       <View
         style={{
-          maxHeight: "100vh",
-          marginTop: 80,
+          height: "57vh",
+          justifyContent: "flex-end",
         }}
       >
         <Label

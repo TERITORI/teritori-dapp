@@ -15,8 +15,8 @@ export const ComicBooks = () => {
     <>
       <View
         style={{
-          maxHeight: "100vh",
-          marginTop: 87,
+          height: "64vh",
+          justifyContent: "flex-end",
         }}
       >
         <Label

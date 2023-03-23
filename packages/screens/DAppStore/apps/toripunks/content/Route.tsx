@@ -1,5 +1,6 @@
 import { ComicBookHistory } from "./ComicBookHistory";
 import { ComicBooks } from "./ComicBooks";
+import { Disconnect } from "./Disconnect";
 import { Lottery } from "./Lottery";
 import { LotteryHistory } from "./LotteryHistory";
 import { MenuMobile } from "./MenuMobile";
@@ -16,6 +17,7 @@ export const Route: React.FC<string> = (section: string) => {
     roulette: () => <Russian />,
     raffle: () => <Raffle />,
     comicbook: () => <ComicBooks />,
+    disconnect: () => <Disconnect />,
     "my-history": () => <MyHistory />,
     "menu-mobile": () => <MenuMobile />,
     "comic-book-history": () => <ComicBookHistory />,

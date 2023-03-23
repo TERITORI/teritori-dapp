@@ -10,14 +10,14 @@ export const Welcome = () => {
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
 
   return (
-    <>
+    <View
+      style={{
+        height: "79vh",
+        justifyContent: "flex-end",
+      }}
+    >
       {!isMinimunWindowWidth && <MenuLink />}
-      <View
-        style={{
-          justifyContent: "flex-end",
-          marginTop: isMinimunWindowWidth ? "45vh" : 0,
-        }}
-      >
+      <View>
         <Label
           styleType={`H1_Bebas_${styleTypeSize}`}
           style={{ textAlign: "center", color: "#E8E1EF" }}
@@ -49,6 +49,6 @@ export const Welcome = () => {
           We are punks
         </Label>
       </View>
-    </>
+    </View>
   );
 };

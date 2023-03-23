@@ -89,7 +89,14 @@ export const MenuLink = () => {
           }}
         >
           {name !== "" && (
-            <Button onPress={() => {}} text={name} size="S" withImg />
+            <Button
+              onPress={() => {
+                setSelectedSectionHandler("disconnect");
+              }}
+              text={name}
+              size="S"
+              withImg
+            />
           )}
           {contentContext.selectedWallet ? (
             <Button
