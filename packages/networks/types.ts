@@ -1,3 +1,6 @@
+import { FunctionComponent } from "react";
+import { SvgProps } from "react-native-svg";
+
 export enum NetworkKind {
   Unknown = "Unknown",
   Ethereum = "Ethereum",
@@ -9,7 +12,7 @@ export interface NetworkInfoBase {
   id: string;
   displayName: string;
   kind: NetworkKind;
-  icon?: string;
+  icon?: FunctionComponent<SvgProps>;
   currencies: CurrencyInfo[];
   idPrefix: string;
   txExplorer: string;
@@ -75,7 +78,7 @@ export type NativeCurrencyInfo = {
   displayName: string;
   decimals: number;
   coingeckoId: string;
-  icon: string;
+  icon: FunctionComponent<SvgProps>;
   color: string;
 };
 

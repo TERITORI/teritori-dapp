@@ -1,3 +1,4 @@
+import IconSVG from "../../../assets/icons/networks/teritori-circle.svg";
 import { NetworkInfo, NetworkKind } from "../types";
 import { teritoriTestnetCurrencies } from "./currencies";
 
@@ -12,7 +13,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "teritori-testnet-v3",
   displayName: "Teritori Testnet",
-  icon: "icons/networks/teritori-circle.svg",
+  icon: IconSVG,
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
   accountExplorer:

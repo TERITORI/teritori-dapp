@@ -1,3 +1,4 @@
+import IconSVG from "../../../assets/icons/networks/ethereum.svg";
 import { NetworkInfo, NetworkKind } from "../types";
 import { ethereumGoerliCurrencies } from "./currencies";
 
@@ -5,7 +6,7 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   id: "ethereum-goerli",
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum Goerli",
-  icon: "icons/networks/ethereum.svg",
+  icon: IconSVG,
   currencies: ethereumGoerliCurrencies,
   idPrefix: "testeth",
   endpoint: "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",

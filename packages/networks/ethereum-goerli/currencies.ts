@@ -1,3 +1,4 @@
+import IconSVG from "../../../assets/icons/networks/ethereum-circle.svg";
 import { CurrencyInfo } from "../types";
 
 export const ethereumGoerliCurrencies: CurrencyInfo[] = [
@@ -6,7 +7,7 @@ export const ethereumGoerliCurrencies: CurrencyInfo[] = [
     displayName: "GoerliETH",
     decimals: 18,
     coingeckoId: "ethereum",
-    icon: "icons/networks/ethereum-circle.svg",
+    icon: IconSVG,
     kind: "native",
     color: "#16BBFF",
   },

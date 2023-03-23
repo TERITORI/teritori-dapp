@@ -1,10 +1,11 @@
+import IconSVG from "../../../assets/icons/networks/solana.svg";
 import { NetworkKind, NetworkInfo } from "../types";
 
 export const solanaNetwork: NetworkInfo = {
   id: "solana",
   kind: NetworkKind.Solana,
   displayName: "Solana",
-  icon: "icons/networks/solana.svg",
+  icon: IconSVG,
   currencies: [],
   txExplorer: "TODO",
   accountExplorer: "TODO",

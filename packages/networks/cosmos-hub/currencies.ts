@@ -1,3 +1,4 @@
+import comsomsHubCircleSVG from "../../../assets/icons/networks/cosmos-hub-circle.svg";
 import { purpleDark } from "../../utils/style/colors";
 import { CurrencyInfo } from "../types";
 
@@ -7,7 +8,7 @@ export const cosmosHubCurrencies: CurrencyInfo[] = [
     displayName: "ATOM",
     decimals: 6,
     coingeckoId: "cosmos",
-    icon: "icons/networks/cosmos-hub-circle.svg",
+    icon: comsomsHubCircleSVG,
     kind: "native",
     color: purpleDark,
   },

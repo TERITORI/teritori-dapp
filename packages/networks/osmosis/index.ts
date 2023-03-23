@@ -1,3 +1,4 @@
+import IconSVG from "../../../assets/icons/networks/osmosis.svg";
 import { NetworkKind, NetworkInfo } from "../types";
 
 export const osmosisNetwork: NetworkInfo = {
@@ -5,7 +6,7 @@ export const osmosisNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "TODO",
   displayName: "Osmosis",
-  icon: "icons/networks/osmosis.svg",
+  icon: IconSVG,
   currencies: [],
   txExplorer: "https://www.mintscan.io/osmosis/txs/$hash",
   accountExplorer: "https://www.mintscan.io/osmosis/account/$address",

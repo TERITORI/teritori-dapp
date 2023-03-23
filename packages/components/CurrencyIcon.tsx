@@ -1,5 +1,4 @@
 import React from "react";
-import { Image } from "react-native";
 
 import { getNativeCurrency } from "../networks";
 import { SVG } from "./SVG";
@@ -13,13 +12,6 @@ export const CurrencyIcon: React.FC<{
   if (!currency?.icon) {
     return null;
   }
-  console.log("currency icon", currency.icon);
-  return null;
-  // const source = require("../../assets/" + currency.icon).default;
-  // if (currency.icon.endsWith(".svg")) {
-  //   return <SVG source={source} width={size} height={size} />;
-  // }
-  // return (
-  //   <Image source={{ uri: source }} style={{ width: size, height: size }} />
-  // );
+
+  return <SVG source={currency.icon} width={size} height={size} />;
 };

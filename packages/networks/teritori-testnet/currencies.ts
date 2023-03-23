@@ -1,3 +1,4 @@
+import IconSVG from "../../../assets/icons/networks/teritori-circle.svg";
 import { CurrencyInfo } from "../types";
 
 export const teritoriTestnetCurrencies: CurrencyInfo[] = [
@@ -6,7 +7,7 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
     displayName: "TORI",
     decimals: 6,
     coingeckoId: "teritori",
-    icon: "icons/networks/teritori-circle.svg",
+    icon: IconSVG,
     kind: "native",
     color: "#16BBFF",
   },

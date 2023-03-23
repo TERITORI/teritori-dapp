@@ -12,13 +12,7 @@ export const fullSidebarWidth = 210;
 
 const BASE_SIZE = 8;
 
-export const BREAK_POINTS = {
-  sm: 512,
-  md: 769,
-};
-
 export const getResponsiveScreenContainerMarginHorizontal = (width: number) => {
-  console.log("responsive width", width);
   if (width >= 992) {
     return 140;
   } else if (width >= 768) {

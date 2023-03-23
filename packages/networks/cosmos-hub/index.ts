@@ -1,3 +1,4 @@
+import cosmosHubSVG from "../../../assets/icons/networks/cosmos-hub.svg";
 import { NetworkKind, NetworkInfo } from "../types";
 import { cosmosHubCurrencies } from "./currencies";
 
@@ -6,7 +7,7 @@ export const cosmosNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "cosmoshub-4",
   displayName: "Cosmos Hub",
-  icon: "icons/networks/cosmos-hub.svg",
+  icon: cosmosHubSVG,
   currencies: cosmosHubCurrencies,
   txExplorer: "https://www.mintscan.io/cosmos/txs/$hash",
   accountExplorer: "https://www.mintscan.io/cosmos/account/$address",

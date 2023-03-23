@@ -1,3 +1,4 @@
+import IconSVG from "../../../assets/icons/networks/juno.svg";
 import { NetworkKind, NetworkInfo } from "../types";
 
 export const junoNetwork: NetworkInfo = {
@@ -5,7 +6,7 @@ export const junoNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "juno-1",
   displayName: "Juno",
-  icon: "icons/networks/juno.svg",
+  icon: IconSVG,
   currencies: [],
   txExplorer: "https://www.mintscan.io/juno/txs/$hash",
   accountExplorer: "https://www.mintscan.io/juno/account/$address",

@@ -12,7 +12,7 @@ export const MainConnectWalletButton: React.FC<{
     <View style={style}>
       <PrimaryButton
         size="XL"
-        text="Connect walleter"
+        text="Connect wallet"
         onPress={() => setIsConnectWalletVisible(true)}
       />
       <ConnectWalletModal
