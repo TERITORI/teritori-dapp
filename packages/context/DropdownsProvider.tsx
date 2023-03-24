@@ -1,5 +1,10 @@
 import React, { createContext, RefObject, useContext, useState } from "react";
-import { GestureResponderEvent, Pressable, StyleSheet } from "react-native";
+import {
+  GestureResponderEvent,
+  Platform,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 
 interface DefaultValue {
   onPressDropdownButton: (dropdownRef: RefObject<any>) => void;
@@ -35,6 +40,9 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
   };
 
   const handlePressOut = (e: GestureResponderEvent) => {
+    if (["ios", "android"].includes(Platform.OS)) {
+      return;
+    }
     if (
       openedDropdownRef &&
       openedDropdownRef.current &&

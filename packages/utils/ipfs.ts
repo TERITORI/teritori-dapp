@@ -1,6 +1,6 @@
 export const ipfsURLToHTTPURL = (ipfsURL: string | undefined) => {
   if (!ipfsURL) {
-    return "";
+    return;
   }
   if (!ipfsURL.startsWith("ipfs://")) {
     return ipfsURL;
