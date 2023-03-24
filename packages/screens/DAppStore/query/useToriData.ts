@@ -3,14 +3,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Wallet } from "../../../context/WalletsProvider/wallet";
 import { getCodeError } from "./codeError";
 
-const addr = "tori1xdtdctdedst45u8c8fmxutg8vvltyg5ezpdycz";
+// const addr = "tori1xdtdctdedst45u8c8fmxutg8vvltyg5ezpdycz";
 
 export const useList = ({
   selectedWallet,
 }: {
   selectedWallet?: Wallet;
 }): number[] | number => {
-  //   const addr = selectedWallet?.address || "";
+  const addr = selectedWallet?.address || "";
   const { data } = useQuery(
     ["toripunks", addr],
     async () => {
@@ -42,7 +42,7 @@ export const useBuyTicket = ({
   buyCount: number;
   selectedWallet?: Wallet;
 }) => {
-  //   const addr = selectedWallet?.address || "";
+  const addr = selectedWallet?.address || "";
   const buyArray =
     buyCount === 1 ? userTokens.shift() : userTokens.splice(0, buyCount);
 
