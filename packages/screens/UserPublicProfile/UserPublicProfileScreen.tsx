@@ -15,7 +15,6 @@ import { parseNetworkObjectId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
 import {
   UserPublicProfileScreenHeader,
   screenTabItems,
@@ -23,9 +22,7 @@ import {
 
 const TabContainer: React.FC = ({ children }) => (
   <View style={{ flex: 1, alignItems: "center" }}>
-    <View style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}>
-      {children}
-    </View>
+    <View style={{ width: "100%" }}>{children}</View>
   </View>
 );
 
@@ -136,7 +133,6 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     <ScreenContainer
       forceNetworkId={network?.id}
       responsive
-      fullWidth
       noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
       smallMargin
       footerChildren={<></>}
