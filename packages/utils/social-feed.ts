@@ -1,5 +1,9 @@
 import { Post, Reaction } from "../api/feed/v1/feed";
-import { PostCategory } from "../components/socialFeed/NewsFeed/NewsFeed.type";
+import {
+  PostCategory,
+  PostExtra,
+  PostResultExtra,
+} from "../components/socialFeed/NewsFeed/NewsFeed.type";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { getUserId } from "../networks";
 import { mustGetFeedClient } from "./backend";
@@ -68,19 +72,38 @@ export const hashtagMatch = (text: string) =>
 export const urlMatch = (text: string) =>
   text.match(new RegExp(URL_REGEX, "g"));
 
-export const postResultToPost = (networkId: string, postResult: PostResult) => {
-  return {
-    category: postResult.category,
-    isDeleted: postResult.deleted,
-    identifier: postResult.identifier,
-    metadata: postResult.metadata,
-    parentPostIdentifier: postResult.parent_post_identifier,
-    subPostLength: postResult.sub_post_length,
-    reactions: postResult.reactions,
-    // TODO: We need to parse, because we're using Post[] from social-feed API and PostResult[] from social-feed contract
-    createdBy: getUserId(networkId, postResult.post_by),
-    createdAt: JSON.parse(postResult.metadata).createdAt,
-  } as Post;
+export const postResultToPost = (
+  networkId: string,
+  postResult: PostResultExtra | PostResult
+) => {
+  if ("isInLocal" in postResult) {
+    return {
+      category: postResult.category,
+      isDeleted: postResult.deleted,
+      identifier: postResult.identifier,
+      metadata: postResult.metadata,
+      parentPostIdentifier: postResult.parent_post_identifier,
+      subPostLength: postResult.sub_post_length,
+      reactions: postResult.reactions,
+      // TODO: We need to parse, because we're using Post[] from social-feed API and PostResult[] from social-feed contract
+      createdBy: getUserId(networkId, postResult.post_by),
+      createdAt: JSON.parse(postResult.metadata).createdAt,
+      isInLocal: postResult.isInLocal,
+    } as PostExtra;
+  } else {
+    return {
+      category: postResult.category,
+      isDeleted: postResult.deleted,
+      identifier: postResult.identifier,
+      metadata: postResult.metadata,
+      parentPostIdentifier: postResult.parent_post_identifier,
+      subPostLength: postResult.sub_post_length,
+      reactions: postResult.reactions,
+      // TODO: We need to parse, because we're using Post[] from social-feed API and PostResult[] from social-feed contract
+      createdBy: getUserId(networkId, postResult.post_by),
+      createdAt: JSON.parse(postResult.metadata).createdAt,
+    } as Post;
+  }
 };
 
 export const generateIpfsKey = async (networkId: string, userId: string) => {
