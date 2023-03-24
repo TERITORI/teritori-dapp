@@ -48,6 +48,7 @@ export const Russian = () => {
   const userTx = useRef<string>("");
   const [winning, setWinning] = useState<number>(0);
   const [losing, setLosing] = useState<number>(0);
+  const [remaningTicket, setRemaningTicket] = useState<number>(0);
 
   const userToriPunksList = useList({ selectedWallet });
   const { data: buyTSC, mutate: handleBuyTicket } = useBuyTicket({
@@ -85,7 +86,7 @@ export const Russian = () => {
   const maxTicket = "10";
   const priceTicket = "1";
   const monthPriceTicket = "120";
-  const remainingUserTicket = "XXXX";
+  const remainingUserTicket = remaningTicket;
   const remainingUserCurrency = getUserToripunks();
 
   // Button text
@@ -106,6 +107,11 @@ export const Russian = () => {
         bet === 1
           ? ([buyTSC.ticket.ticket_id] as string[])
           : reArrangeTicketList(buyTSC.created_tickets.tickets);
+      // eslint-disable-next-line no-unused-expressions
+      bet === 1
+        ? setRemaningTicket(buyTSC.remaining_tickets)
+        : setRemaningTicket(buyTSC.created_tickets.remaining_tickets);
+
       handleProofTransc({ tickets });
       setLoadingGame(false);
     }
