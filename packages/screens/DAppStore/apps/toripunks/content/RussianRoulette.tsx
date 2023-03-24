@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import { useBuyTicket, useList } from "../../../query/useToriData";
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
@@ -34,19 +34,46 @@ const errorTypeMsg = {
 
 export const Russian = () => {
   const [result, setResult] = useState<boolean>(false);
-  const { isMinimunWindowWidth, setLoadingGame } = useContentContext();
+  const { isMinimunWindowWidth, setLoadingGame, selectedWallet } =
+    useContentContext();
   const [bet, setBet] = useState<number>(0);
-  const userToriPunksList = useList();
-
   const [errorType, setErroType] = useState<
     "TICKET" | "NFT" | "TRANSACTION" | ""
   >("");
+
+  const userToriPunksList = useList({ selectedWallet });
+  const {
+    data: buyTSC,
+    isLoading,
+    mutate: handleBuyTicket,
+  } = useBuyTicket({
+    userTokens: userToriPunksList as number[],
+    buyCount: bet,
+    selectedWallet,
+  });
+
+  const getUserToripunks = () => {
+    if (Array.isArray(userToriPunksList)) return userToriPunksList.length;
+    else if (!errorType) {
+      switch (userToriPunksList) {
+        case 10:
+          setErroType("TICKET");
+          break;
+        case 20:
+          setErroType("NFT");
+          break;
+        default:
+          setErroType("TRANSACTION");
+          break;
+      }
+    }
+  };
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "30";
   const buttonSize = isMinimunWindowWidth ? "S" : "Mobile";
 
   // replace with user data.
-  const userToripunks = userToriPunksList.length;
+  const userToripunks = getUserToripunks();
   const maxTicket = "10";
   const priceTicket = "1";
   const monthPriceTicket = "120";
@@ -63,27 +90,33 @@ export const Russian = () => {
     ? `You can still buy ${remainingUserCurrency} tickets`
     : `${userToripunks} Toripunks in your wallet`;
 
-  const delay = (ms: number | undefined) =>
-    new Promise((res) => setTimeout(res, ms));
+  useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
+    isLoading ? setLoadingGame(true) : setLoadingGame(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
+  useEffect(() => {
+    console.log(buyTSC);
+  }, [buyTSC]);
 
   // use Hooks to buy, play, add bet , remove bet
   const click = async () => {
-    setLoadingGame(true);
-    await delay(1000);
-    setResult(!result);
-    await delay(2000);
-    setLoadingGame(false);
+    if (!bet) return;
+    handleBuyTicket();
+    // await delay(1000);
+    // setResult(!result);
+    // await delay(2000);
+    // setLoadingGame(false);
   };
 
   const addBet = () => {
     const validateBet = bet + 1 > +maxTicket ? 10 : bet + 1;
     setBet(validateBet);
-    if (validateBet + 1 === 11) setErroType("TICKET");
   };
   const reduceBet = () => {
     const validateBet = bet - 1 < 0 ? 0 : bet - 1;
     setBet(validateBet);
-    if (validateBet - 1 === -1) setErroType("NFT");
   };
 
   const backHandler = () => {
@@ -237,25 +270,4 @@ export const Russian = () => {
       {getInteractionView()}
     </View>
   );
-};
-
-const useList = () => {
-  const { selectedWallet } = useContentContext();
-  const addr = selectedWallet?.address || "";
-  const { data } = useQuery(
-    ["toripunks", addr],
-    async () => {
-      const response = await fetch(
-        `https://api.roulette.aaa-metahuahua.com/toripunks?addr=${addr}`
-      );
-      return response.json();
-    },
-    {
-      initialData: {},
-      refetchInterval: 20000,
-      staleTime: Infinity,
-      initialDataUpdatedAt: 0,
-    }
-  );
-  return data;
 };
