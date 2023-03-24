@@ -96,12 +96,12 @@ export const UPPIntro: React.FC<{
         </View>
         {isUserOwner ? (
           <ProfileButton
-            touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
+            style={{ position: "absolute", right: 0, bottom: -80 }}
             isEdit
           />
         ) : (
           <SecondaryButtonOutline
-            touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
+            touchableStyle={{ position: "absolute", right: 0, bottom: -80 }}
             text="Follow this Teritori"
             size="XL"
             backgroundColor={neutral00}
