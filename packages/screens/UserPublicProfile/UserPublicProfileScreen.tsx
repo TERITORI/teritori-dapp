@@ -15,7 +15,7 @@ import { parseNetworkObjectId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
+import { screenContentMaxWidth } from "../../utils/style/layout";
 import {
   UserPublicProfileScreenHeader,
   screenTabItems,
@@ -23,7 +23,7 @@ import {
 
 const TabContainer: React.FC = ({ children }) => (
   <View style={{ flex: 1, alignItems: "center" }}>
-    <View style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}>
+    <View style={{ width: "100%", maxWidth: screenContentMaxWidth }}>
       {children}
     </View>
   </View>
@@ -125,7 +125,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   },
 }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("userPosts");
+    useState<keyof typeof screenTabItems>("nfts");
 
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
