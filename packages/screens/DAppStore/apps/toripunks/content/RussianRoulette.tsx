@@ -46,7 +46,7 @@ export const Russian = () => {
     "TICKET" | "NFT" | "TRANSACTION" | ""
   >("");
   const userTx = useRef<string>("");
-  const userTicketTx = useRef<string[]>([""]);
+  // const userTicketTx = useRef<string[]>([""]);
 
   const userToriPunksList = useList({ selectedWallet });
   const {
@@ -61,7 +61,6 @@ export const Russian = () => {
 
   const { isLoading: isLoadingProof, mutate: handleProofTransc } = useProof({
     tx: userTx.current,
-    tickets: userTicketTx.current,
   });
 
   const getUserToripunks = () => {
@@ -108,13 +107,17 @@ export const Russian = () => {
     loadingGame && !isLoadingProof && !isLoading && setLoadingGame(false);
   }, [isLoading, isLoadingProof, loadingGame, setLoadingGame]);
 
+  const reArrangeTicketList = (tickets: { ticket_id: string }[]) => {
+    return tickets.map((ticket: { ticket_id: string }) => ticket.ticket_id);
+  };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (buyTSC) {
-      debugger;
-      userTicketTx.current =
-        bet === 1 ? [buyTSC.ticket.ticket_id] : buyTSC.ticket.ticket_id;
-      handleProofTransc();
+      const tickets =
+        bet === 1
+          ? ([buyTSC.ticket.ticket_id] as string[])
+          : reArrangeTicketList(buyTSC.created_tickets.tickets);
+      handleProofTransc({ tickets });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buyTSC]);

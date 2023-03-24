@@ -77,21 +77,15 @@ export const useBuyTicket = ({
   return { data, mutate, isError, isLoading };
 };
 
-export const useProof = ({
-  tx,
-  tickets,
-}: {
-  tx: string;
-  tickets: string[];
-}) => {
-  debugger;
-  const dataBody = { tx_hash: tx, tickets };
+export const useProof = ({ tx }: { tx: string }) => {
   const URL = `https://api.roulette.aaa-metahuahua.com/tickets/proofs`;
 
   const { data, mutate, isError, isLoading } = useMutation(
-    ["transaction", tx, "tickets", tickets],
-    async () => {
+    ["transaction", tx],
+    async ({ tickets }: { tickets: string[] }) => {
       if (addr) {
+        debugger;
+        const dataBody = { tx_hash: tx, tickets };
         const res = await fetch(URL, {
           method: "POST",
           headers: {
