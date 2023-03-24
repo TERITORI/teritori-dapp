@@ -39,26 +39,24 @@ const errorTypeMsg = {
 
 export const Russian = () => {
   const [result, setResult] = useState<boolean>(false);
-  const { isMinimunWindowWidth, setLoadingGame, selectedWallet, loadingGame } =
+  const { isMinimunWindowWidth, setLoadingGame, selectedWallet } =
     useContentContext();
   const [bet, setBet] = useState<number>(0);
   const [errorType, setErroType] = useState<
     "TICKET" | "NFT" | "TRANSACTION" | ""
   >("");
   const userTx = useRef<string>("");
+  const [winning, setWinning] = useState<number>(0);
+  const [losing, setLosing] = useState<number>(0);
 
   const userToriPunksList = useList({ selectedWallet });
-  const {
-    data: buyTSC,
-    isLoading,
-    mutate: handleBuyTicket,
-  } = useBuyTicket({
+  const { data: buyTSC, mutate: handleBuyTicket } = useBuyTicket({
     userTokens: userToriPunksList as number[],
     buyCount: bet,
     selectedWallet,
   });
 
-  const { isLoading: isLoadingProof, mutate: handleProofTransc } = useProof({
+  const { data: ResultData, mutate: handleProofTransc } = useProof({
     tx: userTx.current,
   });
 
@@ -88,9 +86,7 @@ export const Russian = () => {
   const priceTicket = "1";
   const monthPriceTicket = "120";
   const remainingUserTicket = "XXXX";
-  const remainingUserCurrency = "XXXX";
-  const winning = 10;
-  const losing = 10;
+  const remainingUserCurrency = getUserToripunks();
 
   // Button text
   const longButtonLabelText = result
@@ -99,12 +95,6 @@ export const Russian = () => {
   const userInteractionInfo = result
     ? `You can still buy ${remainingUserCurrency} tickets`
     : `${userToripunks} Toripunks in your wallet`;
-
-  useEffect(() => {
-    // eslint-disable-next-line no-unused-expressions
-    isLoading && setLoadingGame(true);
-    loadingGame && !isLoadingProof && !isLoading && setLoadingGame(false);
-  }, [isLoading, isLoadingProof, loadingGame, setLoadingGame]);
 
   const reArrangeTicketList = (tickets: { ticket_id: string }[]) => {
     return tickets.map((ticket: { ticket_id: string }) => ticket.ticket_id);
@@ -117,15 +107,29 @@ export const Russian = () => {
           ? ([buyTSC.ticket.ticket_id] as string[])
           : reArrangeTicketList(buyTSC.created_tickets.tickets);
       handleProofTransc({ tickets });
+      setLoadingGame(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buyTSC]);
+
+  useEffect(() => {
+    if (ResultData) {
+      setWinning(ResultData.length);
+      setLosing(bet - ResultData.length);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ResultData]);
 
   // use Hooks to buy, play, add bet , remove bet
   const click = async () => {
     if (result) return setResult(!result);
     if (!bet) return;
-    sendKeplarTx({ selectedWallet, amount: `${bet}` }).then((res) => {
+    setLoadingGame(true);
+    sendKeplarTx({ selectedWallet, amount: `${bet * 1000000}` }).then((res) => {
+      if (!res) {
+        setLoadingGame(false);
+        return;
+      }
       userTx.current = res ? res.transactionHash : "";
       handleBuyTicket();
       setResult(!result);

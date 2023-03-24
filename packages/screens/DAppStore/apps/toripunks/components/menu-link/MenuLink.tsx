@@ -56,6 +56,7 @@ export const MenuLink = () => {
           flexWrap: "wrap",
           justifyContent: "center",
           alignContent: "center",
+          zIndex: 1,
         }}
       >
         {(Object.keys(ListSection) as (keyof typeof ListSection)[]).map(

@@ -86,7 +86,7 @@ export const useProof = ({ tx }: { tx: string }) => {
       if (addr) {
         const dataBody = { tx_hash: tx, tickets };
         const res = await fetch(URL, {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
@@ -112,17 +112,21 @@ export const sendKeplarTx = async ({
       network?.id
     );
     if (selectedWallet) {
-      const tx = signingComswasmClient.sendTokens(
-        selectedWallet?.address,
-        "tori1dptnvy7kwjn4g226cw3pklzmze9qvet5hrgfh4",
-        [
-          {
-            denom: "utori",
-            amount,
-          },
-        ],
-        "auto"
-      );
+      const tx = signingComswasmClient
+        .sendTokens(
+          selectedWallet?.address,
+          "tori1stvrc5fjw7t60sgkctpjh27j6vgdzdhm5l2gt0",
+          [
+            {
+              denom: "utori",
+              amount,
+            },
+          ],
+          "auto"
+        )
+        .catch(() => {
+          return undefined;
+        });
       return tx;
     }
   }
