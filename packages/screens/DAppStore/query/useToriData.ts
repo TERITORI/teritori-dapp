@@ -43,8 +43,11 @@ export const useBuyTicket = ({
   selectedWallet?: Wallet;
 }) => {
   const addr = selectedWallet?.address || "";
-  const buyArray =
-    buyCount === 1 ? userTokens.shift() : userTokens.splice(0, buyCount);
+  const buyArray = Array.isArray(userTokens)
+    ? buyCount === 1
+      ? userTokens.shift()
+      : userTokens.splice(0, buyCount)
+    : 0;
 
   const dataBody = { addr, toripunk: buyArray };
   const URL =
