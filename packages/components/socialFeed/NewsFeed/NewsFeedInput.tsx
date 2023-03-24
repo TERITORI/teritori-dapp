@@ -483,92 +483,100 @@ export const NewsFeedInput = React.forwardRef<
               justifyContent: "flex-end",
             }}
           >
-            <EmojiSelector
-              onEmojiSelected={onEmojiSelected}
-              optionsContainer={{ marginLeft: -80, marginTop: -6 }}
-            />
-            <SpacerRow size={2.5} />
-
-            <GIFSelector
-              optionsContainer={{ marginLeft: -186, marginTop: -6 }}
-              onGIFSelected={(url) => {
-                // Don't add if already added
-                if (formValues.gifs?.find((gif) => gif === url)) return;
-                url && setValue("gifs", [...(formValues.gifs || []), url]);
+            <View
+              style={{
+                flexWrap: isMobile ? "wrap" : "nowrap",
+                flexDirection: isMobile ? "row" : "column",
+                width: isMobile ? 200 : "100%",
               }}
-              disabled={
-                (formValues.files?.[0] &&
-                  formValues.files[0].fileType !== "image") ||
-                (formValues.files || []).length +
-                  (formValues.gifs || [])?.length >=
-                  MAX_IMAGES
-              }
-            />
-            <SpacerRow size={2.5} />
+            >
+              <EmojiSelector
+                onEmojiSelected={onEmojiSelected}
+                optionsContainer={{ marginLeft: -80, marginTop: -6 }}
+              />
+              <SpacerRow size={2.5} />
 
-            <FileUploader
-              onUpload={(files) => setValue("files", [files?.[0]])}
-              mimeTypes={AUDIO_MIME_TYPES}
-            >
-              {({ onPress }) => (
-                <IconBox
-                  icon={audioSVG}
-                  onPress={onPress}
-                  style={{ marginRight: layout.padding_x2_5 }}
-                  disabled={
-                    !!formValues.files?.length || !!formValues.gifs?.length
-                  }
-                />
-              )}
-            </FileUploader>
-            <FileUploader
-              onUpload={(files) => setValue("files", [files?.[0]])}
-              mimeTypes={VIDEO_MIME_TYPES}
-            >
-              {({ onPress }) => (
-                <IconBox
-                  icon={videoSVG}
-                  onPress={onPress}
-                  style={{ marginRight: layout.padding_x2_5 }}
-                  disabled={
-                    !!formValues.files?.length || !!formValues.gifs?.length
-                  }
-                />
-              )}
-            </FileUploader>
-            <FileUploader
-              // multiple
-              onUpload={(files) => {
-                // Don't add if already added
-                if (
-                  formValues.files?.find(
-                    (file) => file.fileName === files[0].fileName
+              <GIFSelector
+                optionsContainer={{ marginLeft: -186, marginTop: -6 }}
+                onGIFSelected={(url) => {
+                  // Don't add if already added
+                  if (formValues.gifs?.find((gif) => gif === url)) return;
+                  url && setValue("gifs", [...(formValues.gifs || []), url]);
+                }}
+                disabled={
+                  (formValues.files?.[0] &&
+                    formValues.files[0].fileType !== "image") ||
+                  (formValues.files || []).length +
+                    (formValues.gifs || [])?.length >=
+                    MAX_IMAGES
+                }
+              />
+              <SpacerRow size={2.5} />
+
+              <FileUploader
+                onUpload={(files) => setValue("files", [files?.[0]])}
+                mimeTypes={AUDIO_MIME_TYPES}
+              >
+                {({ onPress }) => (
+                  <IconBox
+                    icon={audioSVG}
+                    onPress={onPress}
+                    style={{ marginRight: layout.padding_x2_5 }}
+                    disabled={
+                      !!formValues.files?.length || !!formValues.gifs?.length
+                    }
+                  />
+                )}
+              </FileUploader>
+              <FileUploader
+                onUpload={(files) => setValue("files", [files?.[0]])}
+                mimeTypes={VIDEO_MIME_TYPES}
+              >
+                {({ onPress }) => (
+                  <IconBox
+                    icon={videoSVG}
+                    onPress={onPress}
+                    style={{ marginRight: layout.padding_x2_5 }}
+                    disabled={
+                      !!formValues.files?.length || !!formValues.gifs?.length
+                    }
+                  />
+                )}
+              </FileUploader>
+              <FileUploader
+                // multiple
+                onUpload={(files) => {
+                  // Don't add if already added
+                  if (
+                    formValues.files?.find(
+                      (file) => file.fileName === files[0].fileName
+                    )
                   )
-                )
-                  return;
-                setValue("files", [...(formValues.files || []), ...files]);
-              }}
-              mimeTypes={IMAGE_MIME_TYPES}
-            >
-              {({ onPress }) => (
-                <IconBox
-                  disabled={
-                    (formValues.files?.[0] &&
-                      formValues.files[0].fileType !== "image") ||
-                    (formValues.files || []).length +
-                      (formValues.gifs || [])?.length >=
-                      MAX_IMAGES
-                  }
-                  icon={cameraSVG}
-                  onPress={onPress}
-                  style={{ marginRight: layout.padding_x2_5 }}
-                  iconProps={{
-                    height: 18,
-                    width: 18,
-                  }}
-                />
-              )}
-            </FileUploader>
+                    return;
+                  setValue("files", [...(formValues.files || []), ...files]);
+                }}
+                mimeTypes={IMAGE_MIME_TYPES}
+              >
+                {({ onPress }) => (
+                  <IconBox
+                    disabled={
+                      (formValues.files?.[0] &&
+                        formValues.files[0].fileType !== "image") ||
+                      (formValues.files || []).length +
+                        (formValues.gifs || [])?.length >=
+                        MAX_IMAGES
+                    }
+                    icon={cameraSVG}
+                    onPress={onPress}
+                    style={{ marginRight: layout.padding_x2_5 }}
+                    iconProps={{
+                      height: 18,
+                      width: 18,
+                    }}
+                  />
+                )}
+              </FileUploader>
+            </View>
 
             {type === "post" && (
               <OmniLink to={{ screen: "FeedNewArticle" }}>

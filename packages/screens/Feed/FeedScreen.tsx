@@ -32,7 +32,6 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
   return (
     <ScreenContainer
       responsive
-      fullWidth
       noScroll
       footerChildren={<></>}
       forceNetworkKind={NetworkKind.Cosmos}
