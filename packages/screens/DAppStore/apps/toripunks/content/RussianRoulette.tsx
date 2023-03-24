@@ -1,7 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import { useBuyTicket, useList } from "../../../query/useToriData";
+import {
+  sendKeplarTx,
+  useBuyTicket,
+  useList,
+  useProof,
+} from "../../../query/useToriData";
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
@@ -34,12 +39,14 @@ const errorTypeMsg = {
 
 export const Russian = () => {
   const [result, setResult] = useState<boolean>(false);
-  const { isMinimunWindowWidth, setLoadingGame, selectedWallet } =
+  const { isMinimunWindowWidth, setLoadingGame, selectedWallet, loadingGame } =
     useContentContext();
   const [bet, setBet] = useState<number>(0);
   const [errorType, setErroType] = useState<
     "TICKET" | "NFT" | "TRANSACTION" | ""
   >("");
+  const userTx = useRef<string>("");
+  const userTicketTx = useRef<string[]>([""]);
 
   const userToriPunksList = useList({ selectedWallet });
   const {
@@ -50,6 +57,11 @@ export const Russian = () => {
     userTokens: userToriPunksList as number[],
     buyCount: bet,
     selectedWallet,
+  });
+
+  const { isLoading: isLoadingProof, mutate: handleProofTransc } = useProof({
+    tx: userTx.current,
+    tickets: userTicketTx.current,
   });
 
   const getUserToripunks = () => {
@@ -92,22 +104,30 @@ export const Russian = () => {
 
   useEffect(() => {
     // eslint-disable-next-line no-unused-expressions
-    isLoading ? setLoadingGame(true) : setLoadingGame(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+    isLoading && setLoadingGame(true);
+    loadingGame && !isLoadingProof && !isLoading && setLoadingGame(false);
+  }, [isLoading, isLoadingProof, loadingGame, setLoadingGame]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    console.log(buyTSC);
+    if (buyTSC) {
+      debugger;
+      userTicketTx.current =
+        bet === 1 ? [buyTSC.ticket.ticket_id] : buyTSC.ticket.ticket_id;
+      handleProofTransc();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buyTSC]);
 
   // use Hooks to buy, play, add bet , remove bet
   const click = async () => {
+    if (result) return setResult(!result);
     if (!bet) return;
-    handleBuyTicket();
-    // await delay(1000);
-    // setResult(!result);
-    // await delay(2000);
-    // setLoadingGame(false);
+    sendKeplarTx({ selectedWallet, amount: `${bet}` }).then((res) => {
+      userTx.current = res ? res.transactionHash : "";
+      handleBuyTicket();
+      setResult(!result);
+    });
   };
 
   const addBet = () => {

@@ -21,7 +21,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     "https://explorer.teritori.com/teritori-testnet/account/$address",
   idPrefix: "testori",
   testnet: true,
-  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
+  backendEndpoint: "https://www.backend-dev1.omniwired.com/",
   addressPrefix: "tori",
   restEndpoint: "https://rest.testnet.teritori.com",
   rpcEndpoint: "https://rpc.testnet.teritori.com",
