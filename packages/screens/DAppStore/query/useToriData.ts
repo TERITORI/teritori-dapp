@@ -84,7 +84,6 @@ export const useProof = ({ tx }: { tx: string }) => {
     ["transaction", tx],
     async ({ tickets }: { tickets: string[] }) => {
       if (addr) {
-        debugger;
         const dataBody = { tx_hash: tx, tickets };
         const res = await fetch(URL, {
           method: "POST",

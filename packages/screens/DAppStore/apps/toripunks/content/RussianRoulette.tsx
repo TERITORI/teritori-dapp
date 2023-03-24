@@ -46,7 +46,6 @@ export const Russian = () => {
     "TICKET" | "NFT" | "TRANSACTION" | ""
   >("");
   const userTx = useRef<string>("");
-  // const userTicketTx = useRef<string[]>([""]);
 
   const userToriPunksList = useList({ selectedWallet });
   const {
