@@ -12,7 +12,7 @@ export const Welcome = () => {
   return (
     <View
       style={{
-        height: "79vh",
+        height: "74vh",
         justifyContent: "flex-end",
       }}
     >

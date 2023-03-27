@@ -26,13 +26,11 @@ export const Content = () => {
     ? {
         flexWrap: "wrap",
         justifyContent: "center",
-        minHeight: "35em",
         flexGrow: 0,
       }
     : {
         flexWrap: "nowrap",
         justifyContent: "space-between",
-        height: "auto",
         flexGrow: 1,
       };
 

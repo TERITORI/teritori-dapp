@@ -30,6 +30,7 @@ export const Lottery = () => {
           style={{
             textAlign: "center",
             color: "#FFD753",
+            marginBottom: 24,
             transform: [{ rotate: "-1.5deg" }],
           }}
         >
@@ -37,13 +38,13 @@ export const Lottery = () => {
         </Label>
         <Label
           styleType={`H1_Bebas_${styleTypeSize}`}
-          style={{ textAlign: "center", color: "#E8E1EF" }}
+          style={{ textAlign: "center", color: "#E8E1EF", fontSize: 100 }}
         >
           2500000 $TORI
         </Label>
         <Label
           styleType="T1_Bebas_20"
-          style={{ textAlign: "center", color: "#E8E1EF" }}
+          style={{ textAlign: "center", color: "#E8E1EF", marginTop: 24 }}
         >
           Live draw in our discord on the 25th of each month
         </Label>
@@ -53,7 +54,7 @@ export const Lottery = () => {
             justifyContent: "space-evenly",
             flexWrap: "wrap",
             height: 120,
-            marginTop: 90,
+            marginTop: 40,
           }}
         >
           <BuyToripunksButton />

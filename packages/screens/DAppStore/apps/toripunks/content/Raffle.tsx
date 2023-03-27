@@ -4,7 +4,13 @@ import { Label } from "../components/label/Label";
 
 export const Raffle = () => {
   return (
-    <View>
+    <View
+      style={{
+        height: "56vh",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Label
         styleType="T2_Bebas_50"
         style={{ textAlign: "center", color: "#E8E1EF" }}

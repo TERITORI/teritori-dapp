@@ -15,8 +15,9 @@ export const ComicBooks = () => {
     <>
       <View
         style={{
-          height: "64vh",
-          justifyContent: "flex-end",
+          height: "56vh",
+          justifyContent: "space-around",
+          alignItems: "center",
         }}
       >
         <Label
@@ -36,6 +37,8 @@ export const ComicBooks = () => {
           style={{
             textAlign: "center",
             color: "#FFD753",
+            marginTop: 16,
+            marginBottom: 16,
             transform: [{ rotate: "-1.5deg" }],
           }}
         >
@@ -43,15 +46,15 @@ export const ComicBooks = () => {
         </Label>
         <Label
           styleType={`H1_Bebas_${styleTypeSize}`}
-          style={{ textAlign: "center", color: "#E8E1EF" }}
+          style={{ textAlign: "center", color: "#E8E1EF", fontSize: 88 }}
         >
-          DIVIDED BY XXXX WALLETS
+          2500000 $TORI
         </Label>
         <Label
           styleType={`H1_Bebas_${styleTypeSize}`}
           style={{ textAlign: "center", color: "#E8E1EF" }}
         >
-          2500000 $TORI
+          DIVIDED BY XXXX WALLETS
         </Label>
         <Label
           styleType="T1_Bebas_20"
@@ -62,6 +65,7 @@ export const ComicBooks = () => {
         <View
           style={{
             alignContent: "center",
+            marginTop: 16,
             justifyContent: "space-evenly",
             flexWrap: "wrap",
             height: 180,

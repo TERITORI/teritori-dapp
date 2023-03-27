@@ -59,7 +59,7 @@ export const imgComponent = {
     src: comicBookLanding,
     style: { ...baseStyle },
     imgStyle: {
-      filter: "brightness(0.8)",
+      // filter: "brightness(0.8)",
     },
     resizeMode: "cover",
   },
