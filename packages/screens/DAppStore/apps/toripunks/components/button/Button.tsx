@@ -6,6 +6,7 @@ import {
   StyleProp,
   ViewStyle,
   FlexStyle,
+  TextStyle,
 } from "react-native";
 
 import buttonBackgroundBlack from "../../assets/button/RectangleButtonBlack.png";
@@ -20,6 +21,7 @@ export interface ButtonType {
   withImg: boolean;
   style?: StyleProp<ViewStyle>;
   revert?: boolean;
+  textStyle?: StyleProp<TextStyle>;
 }
 
 const buttonSrc = {
@@ -35,6 +37,7 @@ export const Button: React.FC<ButtonType> = ({
   withImg,
   style,
   revert = false,
+  textStyle,
 }) => {
   const buttonStyles = useStyles(size);
   const customStyle = revert ? { transform: [{ rotate: "180deg" }] } : {};
@@ -50,7 +53,10 @@ export const Button: React.FC<ButtonType> = ({
               customStyle,
             ]}
           >
-            <Text style={[buttonStyles.text, customStyle]} numberOfLines={1}>
+            <Text
+              style={[buttonStyles.text, customStyle, textStyle]}
+              numberOfLines={1}
+            >
               {text}
             </Text>
           </ImageBackground>

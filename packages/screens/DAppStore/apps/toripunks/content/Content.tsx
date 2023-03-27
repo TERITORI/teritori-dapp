@@ -38,6 +38,7 @@ export const Content = () => {
   const customStyle = {
     main: { justifyContent: "flex-end", height: "auto" },
     raffle: { justifyContent: "flex-end" },
+    "menu-mobile": { justifyContent: "center" },
   };
 
   const validateCustomStyle = {

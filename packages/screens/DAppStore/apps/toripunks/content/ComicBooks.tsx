@@ -89,7 +89,7 @@ export const ComicBooks = () => {
               );
             }}
           />
-          <BuyToripunksButton />
+          <BuyToripunksButton size="S" />
 
           <TouchableOpacity
             onPress={() => setSelectedSectionHandler("comic-book-history")}

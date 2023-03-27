@@ -13,7 +13,7 @@ export const Welcome = () => {
     <View
       style={{
         height: "74vh",
-        justifyContent: "flex-end",
+        justifyContent: isMinimunWindowWidth ? "flex-end" : "space-between",
       }}
     >
       {!isMinimunWindowWidth && <MenuLink />}

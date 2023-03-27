@@ -75,4 +75,10 @@ export const imgComponent = {
     imgStyle: {},
     resizeMode: "stretch",
   },
+  "menu-mobile": {
+    src: disconnect,
+    style: { ...baseStyle },
+    imgStyle: { filter: "brightness(0.5)" },
+    resizeMode: "cover",
+  },
 };

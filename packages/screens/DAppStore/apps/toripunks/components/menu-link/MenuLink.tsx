@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { ImageBackground, TouchableOpacity, View } from "react-native";
 
 import { TransparentButtonOutline } from "../../../../../../components/buttons/TransparentButtonOutline";
 import { useNSUserInfo } from "../../../../../../hooks/useNSUserInfo";
 import { tinyAddress } from "../../../../../../utils/text";
+import exitButton from "../../assets/exit.png";
 import menuButton from "../../assets/menuButton.png";
 import { useContentContext } from "../../context/ContentProvider";
 import { Button } from "../button/Button";
@@ -15,13 +17,18 @@ enum ListSection {
 }
 
 export const MenuLink = () => {
-  const { setSelectedSectionHandler, selectedSection, isMinimunWindowWidth } =
-    useContentContext();
-  const contentContext = useContentContext();
-  const userInfo = useNSUserInfo(contentContext.selectedWallet?.userId);
+  const {
+    setSelectedSectionHandler,
+    selectedSection,
+    isMinimunWindowWidth,
+    selectedWallet,
+  } = useContentContext();
+  const [prevSelectedSection, setPrevSelectedSection] =
+    useState<string>("welcome");
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
   const name =
     userInfo?.metadata?.tokenId ||
-    tinyAddress(contentContext.selectedWallet?.address, 15) ||
+    tinyAddress(selectedWallet?.address, 15) ||
     "";
 
   const Separator = () => (
@@ -45,7 +52,12 @@ export const MenuLink = () => {
   };
 
   const menuSelectedSection = () => {
+    setPrevSelectedSection(selectedSection);
     setSelectedSectionHandler("menu-mobile");
+  };
+
+  const exitMenuSelection = () => {
+    setSelectedSectionHandler(prevSelectedSection);
   };
 
   return isMinimunWindowWidth ? (
@@ -99,7 +111,7 @@ export const MenuLink = () => {
               withImg
             />
           )}
-          {contentContext.selectedWallet ? (
+          {selectedWallet ? (
             <Button
               onPress={() => {
                 setSelectedSectionHandler("my-history");
@@ -113,15 +125,14 @@ export const MenuLink = () => {
         </View>
       )}
     </>
-  ) : (
-    //Mobile menu
+  ) : //Mobile menu
+  !(selectedSection === "menu-mobile") ? (
     <TouchableOpacity onPress={menuSelectedSection}>
       <View
         style={{
           flexDirection: "row",
           flexWrap: "wrap",
           flex: 1,
-          position: "absolute",
           top: 0,
           left: 0,
         }}
@@ -130,6 +141,24 @@ export const MenuLink = () => {
           source={menuButton}
           resizeMode="contain"
           style={{ height: 30, width: 30, marginTop: 18, marginLeft: 19 }}
+        />
+      </View>
+    </TouchableOpacity>
+  ) : (
+    <TouchableOpacity onPress={exitMenuSelection}>
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          flex: 1,
+          top: 0,
+          justifyContent: "flex-end",
+        }}
+      >
+        <ImageBackground
+          source={exitButton}
+          resizeMode="contain"
+          style={{ height: 30, width: 30, marginTop: 18, marginRight: 19 }}
         />
       </View>
     </TouchableOpacity>

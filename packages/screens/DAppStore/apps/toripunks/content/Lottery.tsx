@@ -63,7 +63,7 @@ export const Lottery = () => {
             marginTop: 40,
           }}
         >
-          <BuyToripunksButton />
+          <BuyToripunksButton size="S" />
 
           <TouchableOpacity
             onPress={() => setSelectedSectionHandler("lottery-history")}

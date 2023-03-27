@@ -37,6 +37,9 @@ const imgComponent = {
   "my-history": (children: JSX.Element) => (
     <DefaultBackground type="raffle">{children}</DefaultBackground>
   ),
+  "menu-mobile": (children: JSX.Element) => (
+    <DefaultBackground type="menu-mobile">{children}</DefaultBackground>
+  ),
 };
 
 export const Background: React.FC<{ children: JSX.Element; type: string }> = ({

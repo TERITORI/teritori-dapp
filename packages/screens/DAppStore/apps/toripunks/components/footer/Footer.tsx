@@ -26,7 +26,7 @@ export const Footer = ({
         }}
       >
         <Image
-          source={require("../../assets/LOGO_REMIX.png")}
+          source={require("../../assets/LOGO_REMIX_1.png")}
           fadeDuration={0}
           style={{
             width: 50,

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import {
@@ -206,7 +206,7 @@ export const Russian = () => {
               marginTop: 60,
             }}
           >
-            <BuyToripunksButton />
+            <BuyToripunksButton size={buttonSize} />
             <TouchableOpacity onPress={backHandler}>
               <ButtonLabel
                 text="BACK"
@@ -281,7 +281,7 @@ export const Russian = () => {
                 }}
               >
                 <ButtonLabel text={userInteractionInfo} size={buttonSize} />
-                <BuyToripunksButton />
+                <BuyToripunksButton size={buttonSize} />
               </View>
             </View>
             {/* Play View */}
