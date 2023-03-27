@@ -2,13 +2,25 @@ import React from "react";
 import { View } from "react-native";
 
 import { neutral33 } from "../../../utils/style/colors";
-import { ProfileStep } from "../../../utils/types/freelance";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 
-export const ProfileFooter: React.FC<{
-  step: ProfileStep;
-  nextStep: () => void;
-}> = ({ step, nextStep }) => {
+type GigCreationFooterProps = {
+  currentStep: number;
+  setCurrentStep: any;
+};
+
+export const GigCreationFooter: React.FC<GigCreationFooterProps> = ({
+  currentStep,
+  setCurrentStep,
+}) => {
+  const getButtonText = (): string => {
+    if (currentStep < 5) return "Save & Continue";
+    else {
+      if (currentStep === 5) return "Publish";
+      else return "Done";
+    }
+  };
+
   return (
     <View style={{ flexDirection: "column" }}>
       <View
@@ -23,12 +35,10 @@ export const ProfileFooter: React.FC<{
         <PrimaryButton
           style={{ marginRight: 20 }}
           size="SM"
-          text={
-            step < ProfileStep.AccountSecurity
-              ? "Continue"
-              : "Continue & Create First Gig"
-          }
-          onPress={nextStep}
+          text={getButtonText()}
+          onPress={() => {
+            if (currentStep < 6) setCurrentStep(currentStep + 1);
+          }}
         />
       </View>
     </View>

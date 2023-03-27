@@ -8,7 +8,7 @@ interface DefaultValue {
 
 const defaultValue: DefaultValue = {
   isSidebarExpanded: true,
-  toggleSidebar: () => { },
+  toggleSidebar: () => {},
 };
 
 const SidebarContext = createContext(defaultValue);

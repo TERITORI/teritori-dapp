@@ -23,7 +23,7 @@ export const TertiaryButton: React.FC<{
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
-  textColor?: string
+  textColor?: string;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -35,7 +35,7 @@ export const TertiaryButton: React.FC<{
   iconSVG,
   disabled = false,
   fullWidth = false,
-  textColor = secondaryColor
+  textColor = secondaryColor,
 }) => {
   const boxProps = {
     style,

@@ -13,7 +13,7 @@ const galleries: Gallery[] = [
 ];
 export const FreelanceServicesHome: ScreenFC<"FreelanceServicesHome"> = () => {
   return (
-    <FreelanceServicesScreenWrapper showBuyerSeller={true}>
+    <FreelanceServicesScreenWrapper showBuyerSeller>
       <FreelanceServicesHeader />
       <ExplorerMarketPlace />
       {galleries.map((gallery, index) => (

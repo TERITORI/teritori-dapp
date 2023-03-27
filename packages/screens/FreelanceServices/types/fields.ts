@@ -18,11 +18,11 @@ export interface SellerInfo {
   languages: LangInfo[];
   skills: SkillInfo[];
   educations: EducationInfo[];
-  certifications: CertificationInfo[]
+  certifications: CertificationInfo[];
   personalSite: string;
 }
 
-export const emptySeller:SellerInfo = {
+export const emptySeller: SellerInfo = {
   id: "",
   avatar: "",
   firstName: "",
@@ -34,7 +34,7 @@ export const emptySeller:SellerInfo = {
   skills: [],
   educations: [],
   certifications: [],
-  personalSite: ""
+  personalSite: "",
 } as SellerInfo;
 
 export interface User {
@@ -156,7 +156,7 @@ export interface LangInfo {
   name: string;
   level: string;
 }
-export interface SkillInfo{
+export interface SkillInfo {
   name: string;
   level: string;
 }

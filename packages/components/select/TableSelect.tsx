@@ -11,6 +11,7 @@ import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import {
   neutral00,
+  neutral17,
   neutral33,
   neutral77,
   neutralA3,
@@ -21,52 +22,42 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 
-type GeneralSelectProps = {
+type TableSelectProps = {
   width: number;
+  height: number;
   data: string[];
   initValue?: string;
-  value: string;
-  setValue?: any;
+  // value: string,
+  // setValue?: any,
   disable?: boolean;
+  zIndex?: number;
   style?: StyleProp<ViewStyle>;
 };
 
-export const GeneralSelect: React.FC<GeneralSelectProps> = ({
+export const TableSelect: React.FC<TableSelectProps> = ({
   width,
+  height,
   data,
   initValue,
-  value,
-  setValue,
+  // value,
+  // setValue,
   disable,
+  zIndex = 0,
   style,
 }) => {
+  const unitHorizontalPadding = 10;
+
+  const [value, setValue] = useState<string>("");
+
   const styles = StyleSheet.create({
     selectInput: {
       backgroundColor: neutral00,
-      fontSize: 14,
-      fontWeight: 600,
-      color: secondaryColor,
-      width: width - 2 * layout.padding_x2,
-      borderColor: neutral33,
-      borderWidth: 1,
-      borderRadius: layout.padding_x1_5,
-      padding: layout.padding_x2,
+      width,
+      height,
+      paddingHorizontal: unitHorizontalPadding,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-    },
-    inputContainer: {
-      backgroundColor: neutral00,
-      borderWidth: 1,
-      borderColor: neutral33,
-      borderRadius: layout.padding_x1_5,
-      paddingHorizontal: layout.padding_x2,
-    },
-    inputItemStyle: {
-      backgroundColor: "#292929",
-      color: neutralA3,
-      paddingVertical: layout.padding_x2,
-      paddingHorizontal: layout.padding_x1,
     },
     inputItemText: StyleSheet.flatten([
       fontSemibold14,
@@ -75,16 +66,11 @@ export const GeneralSelect: React.FC<GeneralSelectProps> = ({
       },
     ]),
     dropdownMenu: {
-      backgroundColor: "#292929",
-      borderWidth: 1,
-      borderColor: neutral33,
-      borderRadius: layout.padding_x1_5,
-      paddingVertical: layout.padding_x2,
-      paddingHorizontal: layout.padding_x1,
+      backgroundColor: neutral17,
+      paddingVertical: unitHorizontalPadding,
       position: "absolute",
-      top: 52,
+      top: 39,
       width: "100%",
-      zIndex: 10,
     },
     normalDropdownMenuText: StyleSheet.flatten([
       fontMedium13,
@@ -97,7 +83,6 @@ export const GeneralSelect: React.FC<GeneralSelectProps> = ({
       fontMedium13,
       {
         backgroundColor: neutral33,
-        borderRadius: 6,
         padding: layout.padding_x1,
       },
     ]),
@@ -111,7 +96,7 @@ export const GeneralSelect: React.FC<GeneralSelectProps> = ({
       onPress={() => {
         if (!disable) setOpenMenu((value) => !value);
       }}
-      style={[style, { position: "relative" }]}
+      style={[style, { position: "relative", zIndex }]}
     >
       <View style={[styles.selectInput, { width }]}>
         <BrandText style={styles.inputItemText}>

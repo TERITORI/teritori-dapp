@@ -20,6 +20,7 @@ export type RootStackParamList = {
   FreelanceServicesHome: undefined;
   FreelanceServicesHomeSeller: undefined;
   FreelanceServicesProfileSeller: undefined;
+  FreelanceServicesGigCreation: undefined;
   GraphicsAndDesign: undefined;
   LogoDesign: undefined;
   LogoDesignDetails: { id: string };
@@ -125,6 +126,7 @@ const navConfig: {
     FreelanceServicesHome: "freelance-services/buyer",
     FreelanceServicesHomeSeller: "freelance-services/seller",
     FreelanceServicesProfileSeller: "freelance-services/profile_seller",
+    FreelanceServicesGigCreation: "freelance-services/gig_creation",
     SellerDetails: "seller-details/:id",
     OrderDetails: "order-details/:modal?",
     LogoDesign: "logo-design",
