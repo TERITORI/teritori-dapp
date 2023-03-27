@@ -9,13 +9,9 @@ import { getCodeError } from "./codeError";
 
 const addr = "tori1xdtdctdedst45u8c8fmxutg8vvltyg5ezpdycz";
 
-export const useList = ({
-  selectedWallet,
-}: {
-  selectedWallet?: Wallet;
-}): number[] | number => {
+export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
   //   const addr = selectedWallet?.address || "";
-  const { data } = useQuery(
+  const { data, refetch } = useQuery(
     ["toripunks", addr],
     async () => {
       if (addr) {
@@ -27,14 +23,13 @@ export const useList = ({
     },
     {
       initialData: [],
-      refetchInterval: 20000,
-      staleTime: Infinity,
-      initialDataUpdatedAt: 0,
       refetchOnMount: false,
+      enabled: false,
     }
   );
-  if ("err" in data) return getCodeError(data.err);
-  return data;
+  if ("err" in data) return { data: getCodeError(data.err) };
+  const dataCopy = [...data];
+  return { data: dataCopy, refetch };
 };
 
 export const useBuyTicket = ({

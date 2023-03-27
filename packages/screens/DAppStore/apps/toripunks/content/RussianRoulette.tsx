@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import {
@@ -45,14 +45,17 @@ export const Russian = () => {
   const [errorType, setErroType] = useState<
     "TICKET" | "NFT" | "TRANSACTION" | ""
   >("");
+  const [totalToriUser, setTotalToriUser] = useState<number>(0);
   const userTx = useRef<string>("");
   const [winning, setWinning] = useState<number>(0);
   const [losing, setLosing] = useState<number>(0);
   const [remaningTicket, setRemaningTicket] = useState<number>(0);
 
-  const userToriPunksList = useList({ selectedWallet });
+  const { data: userToriPunksList, refetch: handleGetToriList } = useList({
+    selectedWallet,
+  });
   const { data: buyTSC, mutate: handleBuyTicket } = useBuyTicket({
-    userTokens: userToriPunksList as number[],
+    userTokens: [...(userToriPunksList as number[])],
     buyCount: bet,
     selectedWallet,
   });
@@ -61,8 +64,14 @@ export const Russian = () => {
     tx: userTx.current,
   });
 
+  useEffect(() => {
+    handleGetToriList && handleGetToriList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const getUserToripunks = () => {
-    if (Array.isArray(userToriPunksList)) return userToriPunksList.length;
+    if (Array.isArray(userToriPunksList))
+      setTotalToriUser(userToriPunksList.length);
     else if (!errorType) {
       switch (userToriPunksList) {
         case 10:
@@ -76,18 +85,24 @@ export const Russian = () => {
           break;
       }
     }
+    return 0;
   };
+
+  useEffect(() => {
+    getUserToripunks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userToriPunksList]);
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "30";
   const buttonSize = isMinimunWindowWidth ? "S" : "Mobile";
 
   // replace with user data.
-  const userToripunks = getUserToripunks();
+  const userToripunks = totalToriUser;
   const maxTicket = "10";
   const priceTicket = "1";
   const monthPriceTicket = "120";
   const remainingUserTicket = remaningTicket;
-  const remainingUserCurrency = getUserToripunks();
+  const remainingUserCurrency = totalToriUser;
 
   // Button text
   const longButtonLabelText = result
@@ -100,6 +115,12 @@ export const Russian = () => {
   const reArrangeTicketList = (tickets: { ticket_id: string }[]) => {
     return tickets.map((ticket: { ticket_id: string }) => ticket.ticket_id);
   };
+
+  const updateToriList = () => {
+    handleGetToriList && handleGetToriList();
+    // getUserToripunks();
+  };
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (buyTSC) {
@@ -113,6 +134,9 @@ export const Russian = () => {
         : setRemaningTicket(buyTSC.created_tickets.remaining_tickets);
 
       handleProofTransc({ tickets });
+
+      updateToriList();
+      // eslint-disable-next-line no-unused-expressions
       setLoadingGame(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,7 +152,10 @@ export const Russian = () => {
 
   // use Hooks to buy, play, add bet , remove bet
   const click = async () => {
-    if (result) return setResult(!result);
+    if (result) {
+      setBet(0);
+      return setResult(!result);
+    }
     if (!bet) return;
     setLoadingGame(true);
     sendKeplarTx({ selectedWallet, amount: `${bet * 1000000}` }).then((res) => {
