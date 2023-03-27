@@ -1,7 +1,10 @@
 import React from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 
 import { Label } from "../components/label/Label";
+import { Datum } from "../components/table/Datum";
+import { HeaderItem } from "../components/table/HeaderItem";
+import { Round } from "../components/table/Round";
 import { useContentContext } from "../context/ContentProvider";
 interface HistoryItem {
   round: number;
@@ -79,76 +82,20 @@ const data: HistoryItem[] = [
   },
 ];
 
-const HeaderItem: React.FC<{
-  text: string;
-  datumWidth: number;
-  roundWidth: number;
-}> = ({ text, roundWidth, datumWidth }) => (
-  <View
-    style={{
-      justifyContent: "center",
-      width: text === "" ? roundWidth : datumWidth,
-    }}
-  >
-    <Label
-      styleType="T2_Bebas_20"
-      style={{
-        justifyContent: "center",
-        textAlign: "center",
-        color: "#E8E1EF",
-      }}
-    >
-      {text}
-    </Label>
-  </View>
-);
-
-const RoundNumber: React.FC<{ round: number }> = ({ round }) => (
-  <View
-    style={{
-      justifyContent: "center",
-    }}
-  >
-    <Label
-      styleType="T2_Bebas_20"
-      style={{
-        color: "#E8E1EF",
-        transform: [{ rotate: "-90deg" }],
-      }}
-    >
-      Round {round}
-    </Label>
-  </View>
-);
-
-const Datum: React.FC<{
-  value: number;
-  datumWidth: number;
-  styleTypeSize: string;
-}> = ({ value, datumWidth, styleTypeSize }) => (
-  <View
-    style={{
-      backgroundColor: "#212708",
-      padding: 30,
-      width: datumWidth,
-    }}
-  >
-    <Label
-      styleType={`H1_Bebas_${styleTypeSize}`}
-      style={{ textAlign: "center", color: "#E8E1EF", fontSize: 30 }}
-    >
-      {value}
-    </Label>
-  </View>
-);
-
 const ListItem: React.FC<{
   item: HistoryItem;
-  datumWidth: number;
-  roundWidth: number;
   styleTypeSize: string;
-}> = ({ item, datumWidth, roundWidth, styleTypeSize }) => {
+}> = ({ item, styleTypeSize }) => {
+  const { isMinimunWindowWidth } = useContentContext();
+
   const header = ["", "Tickets Bought", "Tickets WON", "$TORI WON"];
+  const datumWidth = isMinimunWindowWidth ? 200 : 100;
+  const roundWidth = isMinimunWindowWidth ? 52 : 22;
+  const datumStyle = {
+    backgroundColor: "#212708",
+    padding: isMinimunWindowWidth ? 30 : 10,
+    width: datumWidth,
+  };
   return (
     <View
       style={{
@@ -178,22 +125,25 @@ const ListItem: React.FC<{
           width: "100%",
         }}
       >
-        <RoundNumber round={item.round} />
+        <Round round={item.round} />
 
         <Datum
           value={item.tickets.bought}
           datumWidth={datumWidth}
           styleTypeSize={styleTypeSize}
+          style={datumStyle}
         />
         <Datum
           value={item.tickets.won}
           datumWidth={datumWidth}
           styleTypeSize={styleTypeSize}
+          style={datumStyle}
         />
         <Datum
           value={item.toriWon}
           datumWidth={datumWidth}
           styleTypeSize={styleTypeSize}
+          style={datumStyle}
         />
       </View>
     </View>
@@ -204,8 +154,7 @@ export const MyHistory = () => {
   const { isMinimunWindowWidth } = useContentContext();
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
-  const datumWidth = isMinimunWindowWidth ? 200 : 100;
-  const roundWidth = isMinimunWindowWidth ? 52 : 22;
+
   return (
     <>
       <View
@@ -242,12 +191,7 @@ export const MyHistory = () => {
         }}
         data={data}
         renderItem={({ item }) => (
-          <ListItem
-            item={item}
-            datumWidth={datumWidth}
-            roundWidth={roundWidth}
-            styleTypeSize={styleTypeSize}
-          />
+          <ListItem item={item} styleTypeSize={styleTypeSize} />
         )}
       />
     </>

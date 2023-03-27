@@ -3,6 +3,9 @@ import { FlatList, TouchableOpacity, View } from "react-native";
 
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
+import { Datum } from "../components/table/Datum";
+import { HeaderItem } from "../components/table/HeaderItem";
+import { Round } from "../components/table/Round";
 import { useContentContext } from "../context/ContentProvider";
 
 interface HistoryItem {
@@ -10,8 +13,6 @@ interface HistoryItem {
   poolPrice: number;
   wallets: number;
 }
-const datumWidth = 320;
-const roundWidth = 52;
 const data: HistoryItem[] = [
   {
     round: 1,
@@ -35,63 +36,20 @@ const data: HistoryItem[] = [
   },
 ];
 
-const HeaderItem = ({ text }: { text: string }) => (
-  <View
-    style={{
-      justifyContent: "center",
-      width: text === "" ? roundWidth : datumWidth,
-    }}
-  >
-    <Label
-      styleType="T2_Bebas_20"
-      style={{
-        justifyContent: "center",
-        textAlign: "center",
-        color: "#E8E1EF",
-      }}
-    >
-      {text}
-    </Label>
-  </View>
-);
-
-const RoundNumber: React.FC<{ round: number }> = ({ round }) => (
-  <View
-    style={{
-      justifyContent: "center",
-    }}
-  >
-    <Label
-      styleType="T2_Bebas_20"
-      style={{
-        color: "#E8E1EF",
-        transform: [{ rotate: "-90deg" }],
-      }}
-    >
-      Round {round}
-    </Label>
-  </View>
-);
-
-const Datum: React.FC<{ value: number }> = ({ value }) => (
-  <View
-    style={{
-      backgroundColor: "#212708",
-      padding: 30,
-      width: datumWidth,
-    }}
-  >
-    <Label
-      styleType="H1_Bebas_80"
-      style={{ textAlign: "center", color: "#E8E1EF" }}
-    >
-      {value}
-    </Label>
-  </View>
-);
-
-const ListItem: React.FC<{ item: HistoryItem }> = ({ item }) => {
+const ListItem: React.FC<{
+  item: HistoryItem;
+  styleTypeSize: string;
+}> = ({ item, styleTypeSize }) => {
   const header = ["", "Pool price $tori", "Numbers wallet"];
+  const { isMinimunWindowWidth } = useContentContext();
+
+  const datumWidth = isMinimunWindowWidth ? 320 : 160;
+  const roundWidth = isMinimunWindowWidth ? 52 : 22;
+  const datumStyle = {
+    backgroundColor: "#212708",
+    padding: isMinimunWindowWidth ? 30 : 10,
+    width: datumWidth,
+  };
   return (
     <View
       style={{
@@ -105,7 +63,13 @@ const ListItem: React.FC<{ item: HistoryItem }> = ({ item }) => {
         }}
         data={header}
         numColumns={3}
-        renderItem={({ item }) => <HeaderItem text={item} />}
+        renderItem={({ item }) => (
+          <HeaderItem
+            text={item}
+            datumWidth={datumWidth}
+            roundWidth={roundWidth}
+          />
+        )}
       />
 
       <View
@@ -115,17 +79,29 @@ const ListItem: React.FC<{ item: HistoryItem }> = ({ item }) => {
           width: "100%",
         }}
       >
-        <RoundNumber round={item.round} />
+        <Round round={item.round} />
 
-        <Datum value={item.poolPrice} />
-        <Datum value={item.wallets} />
+        <Datum
+          value={item.poolPrice}
+          datumWidth={datumWidth}
+          style={datumStyle}
+          styleTypeSize={styleTypeSize}
+        />
+        <Datum
+          value={item.wallets}
+          datumWidth={datumWidth}
+          style={datumStyle}
+          styleTypeSize={styleTypeSize}
+        />
       </View>
     </View>
   );
 };
 
 export const ComicBookHistory = () => {
-  const { setSelectedSectionHandler } = useContentContext();
+  const { setSelectedSectionHandler, isMinimunWindowWidth } =
+    useContentContext();
+  const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
   return (
     <View
       style={{
@@ -143,7 +119,7 @@ export const ComicBookHistory = () => {
         }}
       >
         <Label
-          styleType="H2_DHBS_80"
+          styleType={`H2_DHBS_${styleTypeSize}`}
           style={{
             textAlign: "center",
             color: "#FFD753",
@@ -162,7 +138,9 @@ export const ComicBookHistory = () => {
             marginBottom: "7em",
           }}
           data={data}
-          renderItem={({ item }) => <ListItem item={item} />}
+          renderItem={({ item }) => (
+            <ListItem item={item} styleTypeSize={styleTypeSize} />
+          )}
         />
       </View>
 
