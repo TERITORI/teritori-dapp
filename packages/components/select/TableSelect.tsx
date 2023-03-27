@@ -27,8 +27,8 @@ type TableSelectProps = {
   height: number;
   data: string[];
   initValue?: string;
-  // value: string,
-  // setValue?: any,
+  value: string;
+  setValue?: any;
   disable?: boolean;
   zIndex?: number;
   style?: StyleProp<ViewStyle>;
@@ -39,15 +39,13 @@ export const TableSelect: React.FC<TableSelectProps> = ({
   height,
   data,
   initValue,
-  // value,
-  // setValue,
+  value,
+  setValue,
   disable,
   zIndex = 0,
   style,
 }) => {
   const unitHorizontalPadding = 10;
-
-  const [value, setValue] = useState<string>("");
 
   const styles = StyleSheet.create({
     selectInput: {

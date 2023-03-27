@@ -163,7 +163,9 @@ export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
           onPress={() => setCurrentStep(3)}
         >
           <BrandText style={getStepStyle(3, "circle")}>3</BrandText>
-          <BrandText style={getStepStyle(3, "title")}>Description</BrandText>
+          <BrandText style={getStepStyle(3, "title")}>
+            Description & FAQ
+          </BrandText>
         </Pressable>
         <SVG
           source={chevronRightSVG}

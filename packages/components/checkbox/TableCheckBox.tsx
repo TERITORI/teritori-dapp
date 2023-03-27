@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 
 import Tick from "../../../assets/icons/tick.svg";
@@ -13,12 +13,16 @@ import { SVG } from "../SVG";
 
 type TableCheckBoxProps = {
   zoom?: number;
+  value: boolean;
+  setValue: any;
 };
 
-export const TableCheckBox: React.FC<TableCheckBoxProps> = ({ zoom = 1 }) => {
+export const TableCheckBox: React.FC<TableCheckBoxProps> = ({
+  zoom = 1,
+  value,
+  setValue,
+}) => {
   const unitHeight = 38;
-
-  const [value, setValue] = useState<boolean>();
 
   const styles = StyleSheet.create({
     unitContainer: {
@@ -49,10 +53,7 @@ export const TableCheckBox: React.FC<TableCheckBoxProps> = ({ zoom = 1 }) => {
   });
 
   return (
-    <Pressable
-      onPress={() => setValue((value) => !value)}
-      style={styles.unitContainer}
-    >
+    <Pressable onPress={() => setValue(!value)} style={styles.unitContainer}>
       <View style={value ? styles.checked : styles.unchecked}>
         {value && <SVG source={Tick} height={zoom * 10} width={zoom * 10} />}
       </View>

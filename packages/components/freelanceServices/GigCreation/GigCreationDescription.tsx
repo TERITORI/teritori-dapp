@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Pressable, TextInput } from "react-native";
 
 import DeleteIcon from "../../../../assets/icons/delete.svg";
 import DropIcon from "../../../../assets/icons/drop.svg";
+import { Faq, GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral00,
   neutral33,
@@ -18,109 +19,23 @@ import { SVG } from "../../SVG";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TertiaryButton } from "../../buttons/TertiaryButton";
 
-export const GigCreationDescription: React.FC = () => {
-  const pageContentWidth = 908;
+const pageContentWidth = 908;
 
-  const [updatePageState, setUpdatePageState] = useState<boolean>(true);
+export const GigCreationDescription: React.FC<{
+  gigInfo: GigInfo;
+  setGig: React.Dispatch<React.SetStateAction<GigInfo>>;
+}> = ({ gigInfo, setGig }) => {
   const [question, setQuestion] = useState<string>("");
   const [answer, setAnswer] = useState<string>("");
-  const [faqData, setFAQData] = useState<string[][]>([]);
   const [enableAdd, setEnableAdd] = useState<boolean>(false);
   const [dropDown, setDropDown] = useState<boolean[]>([]);
 
-  const styles = StyleSheet.create({
-    pageContent: {
-      flexDirection: "column",
-      width: pageContentWidth,
-    },
-    text: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: neutralA3,
-      },
-    ]),
-    subTitle: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        marginTop: layout.padding_x3,
-      },
-    ]),
-    descriptionInput: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        padding: layout.padding_x2,
-        borderWidth: 1,
-        borderColor: neutral33,
-        borderRadius: layout.padding_x1_5,
-        color: secondaryColor,
-        marginTop: layout.padding_x1_5,
-        marginBottom: layout.padding_x4,
-      },
-    ]),
-    questionInput: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        padding: layout.padding_x2,
-        borderWidth: 1,
-        borderColor: neutral33,
-        color: secondaryColor,
-        borderTopLeftRadius: layout.padding_x1_5,
-        borderTopRightRadius: layout.padding_x1_5,
-        borderBottomWidth: 0,
-      },
-    ]),
-    divideLine: {
-      height: 1,
-      width: "100%",
-      backgroundColor: neutral33,
-    },
-    answerInput: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        padding: layout.padding_x2,
-        borderWidth: 1,
-        borderColor: neutral33,
-        color: secondaryColor,
-        borderBottomLeftRadius: layout.padding_x1_5,
-        borderBottomRightRadius: layout.padding_x1_5,
-        borderTopWidth: 0,
-      },
-    ]),
-    addFAQButtonGroup: {
-      flexDirection: "row",
-      justifyContent: "flex-end",
-      gap: layout.padding_x2,
-      marginTop: layout.padding_x1_5,
-    },
-    faqCard: {
-      marginTop: layout.padding_x2,
-      borderRadius: layout.padding_x1_5,
-      paddingVertical: layout.padding_x2,
-      paddingHorizontal: layout.padding_x1_5,
-      borderWidth: 1,
-      borderColor: neutral33,
-      backgroundColor: neutral00,
-    },
-    oneLine: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-    },
-    faqDetailContainer: {
-      flexDirection: "column",
-      gap: layout.padding_x0_5,
-      width: "100%",
-      marginTop: layout.padding_x2,
-    },
-    faqDetailText: StyleSheet.flatten([fontMedium13]),
-  });
-
   const addFAQData = () => {
     if (!question || !answer) return;
-    const targetData = faqData;
-    targetData.push([question, answer]);
-    setFAQData(targetData);
-    setUpdatePageState((value) => !value);
+    const targetData = gigInfo.faq;
+    targetData.push({ question, answer });
+    setGig({ ...gigInfo, faq: targetData });
+    // setUpdatePageState((value) => !value);
     setAnswer("");
     setQuestion("");
   };
@@ -132,24 +47,20 @@ export const GigCreationDescription: React.FC = () => {
   };
 
   const dropDownFAQ = (index: number) => {
-    if (!faqData) return;
+    if (gigInfo.faq.length === 0) return;
 
     const targetData = dropDown;
     targetData[index] = !targetData[index];
-    setDropDown(targetData);
-    setUpdatePageState((value) => !value);
+    setDropDown([...targetData]);
   };
 
   const deleteFAQ = (index: number) => {
-    if (!faqData) return;
+    if (gigInfo.faq.length === 0) return;
 
-    const targetData = faqData;
+    const targetData = gigInfo.faq;
     targetData.splice(index, 1);
-    setFAQData(targetData);
-    setUpdatePageState((value) => !value);
+    setGig({ ...gigInfo, faq: targetData });
   };
-
-  useEffect(() => {}, [updatePageState]);
 
   return (
     <View style={styles.pageContent}>
@@ -163,6 +74,8 @@ export const GigCreationDescription: React.FC = () => {
         style={[styles.descriptionInput, { outlineStyle: "none" } as any]}
         multiline
         numberOfLines={5}
+        value={gigInfo.description}
+        onChangeText={(value) => setGig({ ...gigInfo, description: value })}
       />
 
       <BrandText>Frequently Asked Questions</BrandText>
@@ -170,10 +83,10 @@ export const GigCreationDescription: React.FC = () => {
         Add Questions & Answers for Your Buyers.
       </BrandText>
 
-      {faqData.length === 0 && (
+      {gigInfo.faq.length === 0 && (
         <View style={{ flexDirection: "column", marginTop: layout.padding_x2 }}>
           <TextInput
-            placeholder="Type here"
+            placeholder="Type question"
             placeholderTextColor={neutral77}
             style={[styles.questionInput, { outlineStyle: "none" } as any]}
             value={question}
@@ -181,7 +94,7 @@ export const GigCreationDescription: React.FC = () => {
           />
           <View style={styles.divideLine} />
           <TextInput
-            placeholder="Type here"
+            placeholder="Type answer"
             placeholderTextColor={neutral77}
             style={[styles.answerInput, { outlineStyle: "none" } as any]}
             value={answer}
@@ -202,7 +115,7 @@ export const GigCreationDescription: React.FC = () => {
         </View>
       )}
 
-      {faqData.map((item: string[], index: number) => (
+      {gigInfo.faq.map((item: Faq, index: number) => (
         <View style={styles.faqCard} key={index}>
           <View style={styles.oneLine}>
             <View style={styles.oneLine}>
@@ -223,10 +136,10 @@ export const GigCreationDescription: React.FC = () => {
           {dropDown[index] && (
             <View style={styles.faqDetailContainer}>
               <BrandText style={styles.faqDetailText}>
-                Question : {item[0]}
+                Question : {item.question}
               </BrandText>
               <BrandText style={styles.faqDetailText}>
-                Answer : {item[1]}
+                Answer : {item.answer}
               </BrandText>
             </View>
           )}
@@ -242,10 +155,10 @@ export const GigCreationDescription: React.FC = () => {
         </BrandText>
       </Pressable>
 
-      {faqData.length > 0 && enableAdd && (
+      {gigInfo.faq.length > 0 && enableAdd && (
         <View style={{ flexDirection: "column", marginTop: layout.padding_x2 }}>
           <TextInput
-            placeholder="Type here"
+            placeholder="Type question"
             placeholderTextColor={neutral77}
             style={[styles.questionInput, { outlineStyle: "none" } as any]}
             value={question}
@@ -253,7 +166,7 @@ export const GigCreationDescription: React.FC = () => {
           />
           <View style={styles.divideLine} />
           <TextInput
-            placeholder="Type here"
+            placeholder="Type answer"
             placeholderTextColor={neutral77}
             style={[styles.answerInput, { outlineStyle: "none" } as any]}
             value={answer}
@@ -276,3 +189,90 @@ export const GigCreationDescription: React.FC = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  pageContent: {
+    flexDirection: "column",
+    width: pageContentWidth,
+  },
+  text: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: neutralA3,
+    },
+  ]),
+  subTitle: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      marginTop: layout.padding_x3,
+    },
+  ]),
+  descriptionInput: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      padding: layout.padding_x2,
+      borderWidth: 1,
+      borderColor: neutral33,
+      borderRadius: layout.padding_x1_5,
+      color: secondaryColor,
+      marginTop: layout.padding_x1_5,
+      marginBottom: layout.padding_x4,
+    },
+  ]),
+  questionInput: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      padding: layout.padding_x2,
+      borderWidth: 1,
+      borderColor: neutral33,
+      color: secondaryColor,
+      borderTopLeftRadius: layout.padding_x1_5,
+      borderTopRightRadius: layout.padding_x1_5,
+      borderBottomWidth: 0,
+    },
+  ]),
+  divideLine: {
+    height: 1,
+    width: "100%",
+    backgroundColor: neutral33,
+  },
+  answerInput: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      padding: layout.padding_x2,
+      borderWidth: 1,
+      borderColor: neutral33,
+      color: secondaryColor,
+      borderBottomLeftRadius: layout.padding_x1_5,
+      borderBottomRightRadius: layout.padding_x1_5,
+      borderTopWidth: 0,
+    },
+  ]),
+  addFAQButtonGroup: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: layout.padding_x2,
+    marginTop: layout.padding_x1_5,
+  },
+  faqCard: {
+    marginTop: layout.padding_x2,
+    borderRadius: layout.padding_x1_5,
+    paddingVertical: layout.padding_x2,
+    paddingHorizontal: layout.padding_x1_5,
+    borderWidth: 1,
+    borderColor: neutral33,
+    backgroundColor: neutral00,
+  },
+  oneLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  faqDetailContainer: {
+    flexDirection: "column",
+    gap: layout.padding_x0_5,
+    width: "100%",
+    marginTop: layout.padding_x2,
+  },
+  faqDetailText: StyleSheet.flatten([fontMedium13]),
+});

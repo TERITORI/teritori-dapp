@@ -5,6 +5,7 @@ import FaceBookIcon from "../../../../assets/icons/gig-creation/facebook.svg";
 import GoogleIcon from "../../../../assets/icons/gig-creation/google.svg";
 import ShareIcon from "../../../../assets/icons/gig-creation/share.svg";
 import TwitterIcon from "../../../../assets/icons/gig-creation/twitter.svg";
+import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutralA3,
   primaryColor,
@@ -16,7 +17,10 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 
-export const GigCreationPublish: React.FC = () => {
+export const GigCreationPublish: React.FC<{
+  gigInfo: GigInfo;
+  setGig: React.Dispatch<React.SetStateAction<GigInfo>>;
+}> = ({ gigInfo, setGig }) => {
   const pageContentWidth = 760;
 
   const styles = StyleSheet.create({

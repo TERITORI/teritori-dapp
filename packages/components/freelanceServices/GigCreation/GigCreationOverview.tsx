@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Pressable, TextInput } from "react-native";
 
 import RemoveIcon from "../../../../assets/icons/remove.svg";
+import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral00,
   neutral22,
@@ -18,232 +19,64 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { CheckBox } from "../../checkbox/CheckBox";
 import { GeneralSelect } from "../../select/GeneralSelect";
+import {
+  categoryData,
+  detailDataWebsiteType,
+  detailDataPlatformTool,
+  subcategoryData,
+} from "./GigBasedata";
 
-export const GigCreationOverview: React.FC = () => {
-  const pageContentWidth = 908;
-  const rightBoxWidth = 612;
-  const gapWidth = 20;
-  const leftBoxWidth = 250;
+const pageContentWidth = 908;
+const rightBoxWidth = 612;
+const leftBoxWidth = 250;
+const gapWidth = 20;
 
-  const categoryData = [
-    "Digital Marketing",
-    "Graphics & Design",
-    "Writing & Translation",
-    "Programming & Tech",
-    "Music & Audio",
-  ];
-  const subcategoryData = [
-    "Digital Marketing",
-    "Graphics & Design",
-    "Writing & Translation",
-    "Programming & Tech",
-    "Music & Audio",
-  ];
-  const detailData = [
-    "E-commerce",
-    "Educational",
-    "Product pages",
-    "Business promotion",
-    "Stocks",
-    "Marketing pages",
-    "Blog",
-    "Social networking",
-    "Online magazines",
-    "Portfolio",
-    "News",
-    "Other",
-  ];
-  const initDetailCheckData = [Array(12).fill(false), Array(12).fill(false)];
-  const initTagData = ["Landing Page", "Product Design"];
-
-  const [category, setCategory] = useState<string>("");
-  const [subCategory, setSubcategory] = useState<string>("");
+export const GigCreationOverview: React.FC<{
+  gigInfo: GigInfo;
+  setGig: React.Dispatch<React.SetStateAction<GigInfo>>;
+}> = ({ gigInfo, setGig }) => {
   const [tab, setTab] = useState<string>("left");
-  const [detailCheckData, setDetailCheckData] =
-    useState<boolean[][]>(initDetailCheckData);
-  const [tagData, setTagData] = useState<string[]>(initTagData);
+
   const [addTag, setAddTag] = useState<string>("");
-  const [clickNumber, setClickNumber] = useState<number>(0);
 
-  const styles = StyleSheet.create({
-    oneLineBig: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      width: pageContentWidth,
-      marginBottom: layout.padding_x4,
-    },
-    oneLineSmall: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      width: "100%",
-      marginVertical: layout.padding_x1_5,
-    },
-    leftBox: {
-      width: leftBoxWidth,
-    },
-    subTitle: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: neutral77,
-        marginTop: layout.padding_x1_5,
-      },
-    ]),
-    rightBox: {
-      width: rightBoxWidth,
-      flexDirection: "column",
-      gap: layout.padding_x2_5,
-    },
-    selectBox: {
-      width: "100%",
-      flexDirection: "row",
-      gap: layout.padding_x2_5,
-      zIndex: 1,
-    },
-    fullTextInput: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        height: 66,
-        color: secondaryColor,
-        width: rightBoxWidth,
-        backgroundColor: neutral00,
-        borderWidth: 1,
-        borderColor: neutral33,
-        padding: layout.padding_x2,
-        borderRadius: layout.padding_x1_5,
-      },
-    ]),
-    detailInfo: {
-      width: "100%",
-      flexDirection: "column",
-    },
-    selectedTabTitle: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: neutral00,
-      },
-    ]),
-    selectedTabBox: {
-      backgroundColor: primaryColor,
-      borderWidth: 1,
-      borderColor: primaryColor,
-      paddingVertical: layout.padding_x0_5,
-    },
-    unselectedTabBox: {
-      backgroundColor: neutral00,
-      borderWidth: 1,
-      borderColor: neutral33,
-      paddingVertical: layout.padding_x0_5,
-    },
-    leftTab: {
-      paddingLeft: layout.padding_x2,
-      paddingRight: layout.padding_x1_5,
-      borderTopLeftRadius: layout.padding_x1_5,
-      borderBottomLeftRadius: layout.padding_x1_5,
-    },
-    rightTab: {
-      paddingRight: layout.padding_x2,
-      paddingLeft: layout.padding_x1_5,
-      borderTopEndRadius: layout.padding_x1_5,
-      borderBottomEndRadius: layout.padding_x1_5,
-    },
-    unselectedTabTitle: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: secondaryColor,
-      },
-    ]),
-    checkBoxGroup: {
-      flexDirection: "row",
-      alignItems: "center",
-      flexWrap: "wrap",
-      borderWidth: 1,
-      borderTopColor: neutral22,
-      borderBottomColor: neutral22,
-      paddingTop: layout.padding_x1_5,
-    },
-    singleCheckBox: {
-      marginBottom: layout.padding_x1_5,
-      flexDirection: "row",
-      alignItems: "center",
-      width: `${100 / 3}%`,
-      gap: layout.padding_x1,
-    },
-    checkedText: StyleSheet.flatten([
-      fontMedium13,
-      {
-        color: secondaryColor,
-      },
-    ]),
-    uncheckedText: StyleSheet.flatten([
-      fontMedium13,
-      {
-        color: neutralA3,
-      },
-    ]),
-    tagGroup: {
-      flexDirection: "row",
-      width: rightBoxWidth,
-      alignItems: "flex-start",
-      gap: layout.padding_x1_5,
-    },
-    tagCard: {
-      padding: layout.padding_x2,
-      backgroundColor: neutral33,
-      borderRadius: layout.padding_x1_5,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x1,
-    },
-    addTag: {
-      padding: layout.padding_x2,
-      borderColor: neutral33,
-      borderWidth: 1,
-      borderRadius: layout.padding_x1_5,
-    },
-    textInput: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: secondaryColor,
-        backgroundColor: neutral00,
-        borderColor: neutral33,
-        padding: layout.padding_x2,
-        width: 123,
-        borderWidth: 1,
-        borderRadius: layout.padding_x1_5,
-      },
-    ]),
-  });
-
-  const updateDetailCheckData = (smallIndex: number) => {
-    const bigIndex = tab === "left" ? 0 : 1;
-    const targetData = detailCheckData;
-
-    if (targetData[bigIndex][smallIndex])
-      targetData[bigIndex][smallIndex] = false;
-    else {
+  const updateWebsiteTypeCheckData = (item: string) => {
+    const websiteTypeData = gigInfo.websiteType;
+    const index = websiteTypeData.indexOf(item);
+    if (index >= 0) {
+      websiteTypeData.splice(index, 1);
+    } else {
       if (getCheckedNumbers() >= 3) return;
-      targetData[bigIndex][smallIndex] = true;
+      websiteTypeData.push(item);
     }
+    setGig({ ...gigInfo, websiteType: websiteTypeData });
+  };
 
-    setDetailCheckData(targetData);
-    setClickNumber((value) => value + 1);
+  const updatePlatformToolCheckData = (item: string) => {
+    const platformToolData = gigInfo.platformToolType;
+    const index = platformToolData.indexOf(item);
+    if (index >= 0) {
+      platformToolData.splice(index, 1);
+    } else {
+      if (getCheckedNumbers() >= 3) return;
+      platformToolData.push(item);
+    }
+    setGig({ ...gigInfo, platformToolType: platformToolData });
   };
 
   const getCheckedNumbers = (): number => {
-    if (tab === "left")
-      return detailCheckData[0].filter((item) => item === true).length;
-    else return detailCheckData[1].filter((item) => item === true).length;
+    if (tab === "left") {
+      return gigInfo.websiteType.length;
+    } else {
+      return gigInfo.platformToolType.length;
+    }
   };
 
   const removeTag = (index: number) => {
-    const targetData = tagData;
+    const targetData = gigInfo.positiveKeywords;
 
     targetData.splice(index, 1);
-    setTagData(targetData);
-    setClickNumber((value) => value + 1);
+    setGig({ ...gigInfo, positiveKeywords: targetData });
   };
-
-  useEffect(() => {}, [clickNumber]);
 
   return (
     <View style={{ flexDirection: "column" }}>
@@ -261,6 +94,10 @@ export const GigCreationOverview: React.FC = () => {
           multiline
           placeholder="I will do something I’m really good at"
           placeholderTextColor={neutral55}
+          value={gigInfo.title}
+          onChangeText={(text: string) => {
+            setGig({ ...gigInfo, title: text } as GigInfo);
+          }}
         />
       </View>
       <View style={styles.oneLineBig}>
@@ -275,15 +112,19 @@ export const GigCreationOverview: React.FC = () => {
             <GeneralSelect
               width={(rightBoxWidth - gapWidth) / 2}
               data={categoryData}
-              value={category}
-              setValue={setCategory}
+              value={gigInfo.category}
+              setValue={(category: string) => {
+                setGig({ ...gigInfo, category });
+              }}
               initValue="Select a category"
             />
             <GeneralSelect
               width={(rightBoxWidth - gapWidth) / 2}
               data={subcategoryData}
-              value={subCategory}
-              setValue={setSubcategory}
+              value={gigInfo.subCategory}
+              setValue={(subCategory: string) => {
+                setGig({ ...gigInfo, subCategory });
+              }}
               initValue="select a subcategory"
             />
           </View>
@@ -339,19 +180,26 @@ export const GigCreationOverview: React.FC = () => {
               </View>
             </View>
             <View style={styles.checkBoxGroup}>
-              {detailData.map((item: string, index: number) => (
-                <View style={styles.singleCheckBox} key={index}>
-                  <CheckBox
-                    value={
-                      tab === "left"
-                        ? detailCheckData[0][index]
-                        : detailCheckData[1][index]
-                    }
-                    onValueChange={() => updateDetailCheckData(index)}
-                  />
-                  <BrandText style={styles.checkedText}>{item}</BrandText>
-                </View>
-              ))}
+              {tab === "left" &&
+                detailDataWebsiteType.map((item: string, index: number) => (
+                  <View style={styles.singleCheckBox} key={index}>
+                    <CheckBox
+                      value={gigInfo.websiteType.includes(item)}
+                      onValueChange={() => updateWebsiteTypeCheckData(item)}
+                    />
+                    <BrandText style={styles.checkedText}>{item}</BrandText>
+                  </View>
+                ))}
+              {tab === "right" &&
+                detailDataPlatformTool.map((item: string, index: number) => (
+                  <View style={styles.singleCheckBox} key={index}>
+                    <CheckBox
+                      value={gigInfo.platformToolType.includes(item)}
+                      onValueChange={() => updatePlatformToolCheckData(item)}
+                    />
+                    <BrandText style={styles.checkedText}>{item}</BrandText>
+                  </View>
+                ))}
             </View>
           </View>
         </View>
@@ -365,7 +213,7 @@ export const GigCreationOverview: React.FC = () => {
           </BrandText>
         </View>
         <View style={styles.tagGroup}>
-          {tagData.map((item: string, index: number) => (
+          {gigInfo.positiveKeywords.map((item: string, index: number) => (
             <View style={styles.tagCard} key={index}>
               <BrandText style={[fontSemibold14]}>{item}</BrandText>
               <Pressable onPress={() => removeTag(index)}>
@@ -385,7 +233,10 @@ export const GigCreationOverview: React.FC = () => {
             value={addTag}
             onChangeText={(value) => setAddTag(value)}
             onSubmitEditing={() => {
-              setTagData([...tagData, addTag]);
+              setGig({
+                ...gigInfo,
+                positiveKeywords: [...gigInfo.positiveKeywords, addTag],
+              });
               setAddTag("");
             }}
           />
@@ -394,3 +245,152 @@ export const GigCreationOverview: React.FC = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  oneLineBig: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: pageContentWidth,
+    marginBottom: layout.padding_x4,
+  },
+  oneLineSmall: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginVertical: layout.padding_x1_5,
+  },
+  leftBox: {
+    width: leftBoxWidth,
+  },
+  subTitle: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: neutral77,
+      marginTop: layout.padding_x1_5,
+    },
+  ]),
+  rightBox: {
+    width: rightBoxWidth,
+    flexDirection: "column",
+    gap: layout.padding_x2_5,
+  },
+  selectBox: {
+    width: "100%",
+    flexDirection: "row",
+    gap: layout.padding_x2_5,
+    zIndex: 1,
+  },
+  fullTextInput: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      height: 66,
+      color: secondaryColor,
+      width: rightBoxWidth,
+      backgroundColor: neutral00,
+      borderWidth: 1,
+      borderColor: neutral33,
+      padding: layout.padding_x2,
+      borderRadius: layout.padding_x1_5,
+    },
+  ]),
+  detailInfo: {
+    width: "100%",
+    flexDirection: "column",
+  },
+  selectedTabTitle: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: neutral00,
+    },
+  ]),
+  selectedTabBox: {
+    backgroundColor: primaryColor,
+    borderWidth: 1,
+    borderColor: primaryColor,
+    paddingVertical: layout.padding_x0_5,
+  },
+  unselectedTabBox: {
+    backgroundColor: neutral00,
+    borderWidth: 1,
+    borderColor: neutral33,
+    paddingVertical: layout.padding_x0_5,
+  },
+  leftTab: {
+    paddingLeft: layout.padding_x2,
+    paddingRight: layout.padding_x1_5,
+    borderTopLeftRadius: layout.padding_x1_5,
+    borderBottomLeftRadius: layout.padding_x1_5,
+  },
+  rightTab: {
+    paddingRight: layout.padding_x2,
+    paddingLeft: layout.padding_x1_5,
+    borderTopEndRadius: layout.padding_x1_5,
+    borderBottomEndRadius: layout.padding_x1_5,
+  },
+  unselectedTabTitle: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: secondaryColor,
+    },
+  ]),
+  checkBoxGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    borderWidth: 1,
+    borderTopColor: neutral22,
+    borderBottomColor: neutral22,
+    paddingTop: layout.padding_x1_5,
+  },
+  singleCheckBox: {
+    marginBottom: layout.padding_x1_5,
+    flexDirection: "row",
+    alignItems: "center",
+    width: `${100 / 3}%`,
+    gap: layout.padding_x1,
+  },
+  checkedText: StyleSheet.flatten([
+    fontMedium13,
+    {
+      color: secondaryColor,
+    },
+  ]),
+  uncheckedText: StyleSheet.flatten([
+    fontMedium13,
+    {
+      color: neutralA3,
+    },
+  ]),
+  tagGroup: {
+    flexDirection: "row",
+    width: rightBoxWidth,
+    alignItems: "flex-start",
+    gap: layout.padding_x1_5,
+  },
+  tagCard: {
+    padding: layout.padding_x2,
+    backgroundColor: neutral33,
+    borderRadius: layout.padding_x1_5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x1,
+  },
+  addTag: {
+    padding: layout.padding_x2,
+    borderColor: neutral33,
+    borderWidth: 1,
+    borderRadius: layout.padding_x1_5,
+  },
+  textInput: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: secondaryColor,
+      backgroundColor: neutral00,
+      borderColor: neutral33,
+      padding: layout.padding_x2,
+      width: 123,
+      borderWidth: 1,
+      borderRadius: layout.padding_x1_5,
+    },
+  ]),
+});

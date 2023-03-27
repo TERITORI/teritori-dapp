@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import PdfIcon from "../../../../assets/icons/pdf.svg";
 import PicIcon from "../../../../assets/icons/pic.svg";
 import VideoIcon from "../../../../assets/icons/video.svg";
 import WarningIcon from "../../../../assets/icons/warning.svg";
+import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
+import { ipfsPinataUrl, uploadFileToIPFS } from "../../../utils/ipfs";
 import {
   neutralA3,
-  primaryColor,
   neutral33,
   secondaryColor,
   neutral00,
@@ -23,92 +24,34 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { CheckBox } from "../../checkbox/CheckBox";
+import { DragDropFile, GigUploadFileType } from "../../inputs/DragDropFile";
 
-export const GigCreationGallery: React.FC = () => {
-  const pageContentWidth = 760;
-  const cardWidth = 240;
-  const cardHeight = 180;
+const pageContentWidth = 760;
+const cardWidth = 240;
+const cardHeight = 180;
 
+export const GigCreationGallery: React.FC<{
+  gigInfo: GigInfo;
+  setGig: React.Dispatch<React.SetStateAction<GigInfo>>;
+}> = ({ gigInfo, setGig }) => {
   const [agreePolicy, setAgreePolicy] = useState<boolean>(false);
+  const uploadImageFile = async (file: File) => {
+    if (file) {
+      const ipfsHash = await uploadFileToIPFS(file);
+      const images = gigInfo.images;
+      images.push(ipfsHash);
+      setGig({ ...gigInfo, images });
+    }
+  };
 
-  const styles = StyleSheet.create({
-    pageContent: {
-      flexDirection: "column",
-      width: pageContentWidth,
-    },
-    text: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: neutralA3,
-      },
-    ]),
-    subTitle: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        marginBottom: layout.padding_x1_5,
-        marginTop: layout.padding_x4,
-      },
-    ]),
-    oneLine: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-    },
-    questionInput: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        padding: layout.padding_x2,
-        borderWidth: 1,
-        borderColor: neutral33,
-        borderRadius: layout.padding_x1_5,
-        color: secondaryColor,
-        marginBottom: layout.padding_x2,
-      },
-    ]),
-    divideLine: {
-      height: 1,
-      width: "100%",
-      backgroundColor: neutral33,
-    },
-    mediaCard: {
-      width: cardWidth,
-      height: cardHeight,
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      borderColor: neutral33,
-      borderRadius: layout.padding_x1_5,
-      backgroundColor: neutral00,
-      borderWidth: 1,
-      marginTop: layout.padding_x1_5,
-    },
-    cardText: StyleSheet.flatten([
-      fontMedium16,
-      {
-        color: neutralA3,
-        marginTop: layout.padding_x1_5,
-        marginBottom: layout.padding_x1,
-      },
-    ]),
-    tipText: StyleSheet.flatten([
-      fontMedium10,
-      {
-        color: neutralA3,
-      },
-    ]),
-    policyBox: {
-      flexDirection: "row",
-      gap: layout.padding_x1_5,
-      alignItems: "center",
-      marginTop: layout.padding_x4,
-    },
-    warningBox: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x1_5,
-      marginTop: layout.padding_x2,
-    },
-  });
+  const uploadPdfFile = async (file: File) => {
+    if (file) {
+      const ipfsHash = await uploadFileToIPFS(file);
+      const documents = gigInfo.documents;
+      documents.push(ipfsHash);
+      setGig({ ...gigInfo, documents });
+    }
+  };
 
   return (
     <View style={styles.pageContent}>
@@ -125,17 +68,33 @@ export const GigCreationGallery: React.FC = () => {
         Get noticed by the buyers with visual examples of your services.
       </BrandText>
       <View style={styles.oneLine}>
-        <View style={styles.mediaCard}>
+        <DragDropFile
+          setFile={uploadImageFile}
+          url={
+            gigInfo.images.length >= 1 ? ipfsPinataUrl(gigInfo.images[0]) : ""
+          }
+        >
           <SVG source={PicIcon} width={32} height={32} />
           <BrandText style={styles.cardText}>Drag & drop a Photo or</BrandText>
-          <Pressable>
-            <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-              Browse
-            </BrandText>
-          </Pressable>
-        </View>
-        <View style={styles.mediaCard} />
-        <View style={styles.mediaCard} />
+        </DragDropFile>
+        <DragDropFile
+          setFile={uploadImageFile}
+          url={
+            gigInfo.images.length >= 2 ? ipfsPinataUrl(gigInfo.images[1]) : ""
+          }
+        >
+          <SVG source={PicIcon} width={32} height={32} />
+          <BrandText style={styles.cardText}>Drag & drop a Photo or</BrandText>
+        </DragDropFile>
+        <DragDropFile
+          setFile={uploadImageFile}
+          url={
+            gigInfo.images.length >= 3 ? ipfsPinataUrl(gigInfo.images[2]) : ""
+          }
+        >
+          <SVG source={PicIcon} width={32} height={32} />
+          <BrandText style={styles.cardText}>Drag & drop a Photo or</BrandText>
+        </DragDropFile>
       </View>
 
       <BrandText style={styles.subTitle}>Video (only one)</BrandText>
@@ -145,33 +104,51 @@ export const GigCreationGallery: React.FC = () => {
       <BrandText style={styles.tipText}>
         Please choose a video shorter than 75 seconds and smaller than 50MB
       </BrandText>
-      <View style={styles.mediaCard}>
+      <DragDropFile
+        setFile={uploadPdfFile}
+        accept={"video/*"}
+        url={
+          gigInfo.documents.length >= 1
+            ? ipfsPinataUrl(gigInfo.documents[0])
+            : ""
+        }
+        fileType={GigUploadFileType.PDF}
+      >
         <SVG source={VideoIcon} width={32} height={32} />
-        <BrandText style={styles.cardText}>Drag & drop a Photo or</BrandText>
-        <Pressable>
-          <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-            Browse
-          </BrandText>
-        </Pressable>
-      </View>
-
+        <BrandText style={styles.cardText}>Drag & drop a Video or</BrandText>
+      </DragDropFile>
       <BrandText style={styles.subTitle}>Documents (up to 2)</BrandText>
       <BrandText style={styles.text}>
         Show some of the best work you created in a document (PDFs only).
       </BrandText>
       <View style={{ flexDirection: "row" }}>
-        <View style={[styles.mediaCard, { marginRight: layout.padding_x2_5 }]}>
+        <DragDropFile
+          setFile={uploadPdfFile}
+          accept="application/pdf"
+          url={
+            gigInfo.documents.length >= 1
+              ? ipfsPinataUrl(gigInfo.documents[0])
+              : ""
+          }
+          fileType={GigUploadFileType.PDF}
+        >
           <SVG source={PdfIcon} width={32} height={32} />
-          <BrandText style={styles.cardText}>Drag & drop a Photo or</BrandText>
-          <Pressable>
-            <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-              Browse
-            </BrandText>
-          </Pressable>
-        </View>
-        <View style={styles.mediaCard} />
+          <BrandText style={styles.cardText}>Drag & drop a PDF or</BrandText>
+        </DragDropFile>
+        <DragDropFile
+          setFile={uploadPdfFile}
+          accept="application/pdf"
+          url={
+            gigInfo.documents.length >= 2
+              ? ipfsPinataUrl(gigInfo.documents[1])
+              : ""
+          }
+          fileType={GigUploadFileType.PDF}
+        >
+          <SVG source={PdfIcon} width={32} height={32} />
+          <BrandText style={styles.cardText}>Drag & drop a PDF or</BrandText>
+        </DragDropFile>
       </View>
-
       <View style={styles.policyBox}>
         <CheckBox
           value={agreePolicy}
@@ -193,3 +170,83 @@ export const GigCreationGallery: React.FC = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  pageContent: {
+    flexDirection: "column",
+    width: pageContentWidth,
+  },
+  text: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: neutralA3,
+    },
+  ]),
+  subTitle: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      marginBottom: layout.padding_x1_5,
+      marginTop: layout.padding_x4,
+    },
+  ]),
+  oneLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  questionInput: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      padding: layout.padding_x2,
+      borderWidth: 1,
+      borderColor: neutral33,
+      borderRadius: layout.padding_x1_5,
+      color: secondaryColor,
+      marginBottom: layout.padding_x2,
+    },
+  ]),
+  divideLine: {
+    height: 1,
+    width: "100%",
+    backgroundColor: neutral33,
+  },
+  mediaCard: {
+    width: cardWidth,
+    height: cardHeight,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: neutral33,
+    borderRadius: layout.padding_x1_5,
+    backgroundColor: neutral00,
+    borderWidth: 1,
+    marginTop: layout.padding_x1_5,
+    position: "relative",
+  },
+  cardText: StyleSheet.flatten([
+    fontMedium16,
+    {
+      color: neutralA3,
+      marginTop: layout.padding_x1_5,
+      marginBottom: layout.padding_x1,
+    },
+  ]),
+  tipText: StyleSheet.flatten([
+    fontMedium10,
+    {
+      color: neutralA3,
+    },
+  ]),
+  policyBox: {
+    flexDirection: "row",
+    gap: layout.padding_x1_5,
+    alignItems: "center",
+    marginTop: layout.padding_x4,
+  },
+  warningBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x1_5,
+    marginTop: layout.padding_x2,
+  },
+});

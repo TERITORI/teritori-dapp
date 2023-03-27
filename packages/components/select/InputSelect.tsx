@@ -161,7 +161,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
         />
       )}
 
-      {openRecommendMenu && value && (
+      {openRecommendMenu && value !== "" && (
         <View style={styles.dropdownMenu}>
           {data.map((item: string, index: number) => {
             if (item.includes(value))

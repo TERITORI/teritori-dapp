@@ -21,6 +21,116 @@ export interface SellerInfo {
   certifications: CertificationInfo[];
   personalSite: string;
 }
+export interface PackageInfo {
+  title: string;
+  desc: string;
+  deliveryTime: string; //index
+  delivery: string;
+  numberOfPages: string;
+  designCustomization: boolean;
+  contentUpload: boolean;
+  responsiveDesign: boolean;
+  includeSourceCode: boolean;
+  revisions: string; //number | index
+  price: string;
+}
+export interface ExtraFast {
+  expectedDuration: string;
+  price: string;
+}
+export interface Faq {
+  question: string;
+  answer: string;
+}
+export interface Question {
+  question: string;
+  required: boolean;
+  questionForm: string;
+}
+export interface GigInfo {
+  //overview
+  title: string;
+  category: string;
+  subCategory: string;
+  serviceType: string;
+  websiteType: string[];
+  platformToolType: string[];
+  positiveKeywords: string[];
+  //pricing
+  basicPackage: PackageInfo;
+  standardPackage: PackageInfo;
+  premiumPackage: PackageInfo;
+  //pricing - extraservices
+  extraFastBasic: ExtraFast;
+  extraFastStandard: ExtraFast;
+  extraFastPremium: ExtraFast;
+  additionalPage: ExtraFast | null;
+  responsiveDesign: ExtraFast | null;
+  includeSourceCode: string | null;
+  additionalRevision: ExtraFast | null;
+  //description & faq
+  description: string;
+  faq: Faq[];
+  //requirement
+  questions: Question[];
+
+  //gallery
+  images: string[]; //ipfs_hash
+  video: string; //ipfs_hash
+  documents: string[]; //ipfs_hash
+}
+export const emptyPackageInfo: PackageInfo = {
+  title: "",
+  desc: "",
+  deliveryTime: "",
+  delivery: "",
+  numberOfPages: "",
+  designCustomization: false,
+  contentUpload: false,
+  responsiveDesign: false,
+  includeSourceCode: false,
+  revisions: "", //number | index
+  price: "0", //number
+};
+
+export const emptyGigInfo: GigInfo = {
+  title: "",
+  category: "",
+  subCategory: "",
+  serviceType: "",
+  websiteType: [],
+  platformToolType: [],
+  positiveKeywords: ["Landing Page", "Product Design"],
+  //pricing
+  basicPackage: emptyPackageInfo,
+  standardPackage: emptyPackageInfo,
+  premiumPackage: emptyPackageInfo,
+  //pricing - extraservices
+  extraFastBasic: {
+    price: "0",
+    expectedDuration: "",
+  },
+  extraFastStandard: {
+    price: "0",
+    expectedDuration: "",
+  },
+  extraFastPremium: {
+    price: "0",
+    expectedDuration: "",
+  },
+  additionalPage: null,
+  responsiveDesign: null,
+  includeSourceCode: null,
+  additionalRevision: null,
+  //description & faq
+  description: "",
+  faq: [],
+  questions: [],
+  //gallery
+  images: [], //ipfs_hash
+  video: "", //ipfs_hash
+  documents: [], //ipfs_hash
+};
 
 export const emptySeller: SellerInfo = {
   id: "",

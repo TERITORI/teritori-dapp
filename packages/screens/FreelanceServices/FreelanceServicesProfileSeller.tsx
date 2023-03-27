@@ -17,6 +17,7 @@ import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { ProfileStep } from "../../utils/types/freelance";
 import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 import { emptySeller, SellerInfo } from "./types/fields";
+import { getSellerIpfsHash } from "./utils";
 
 export const FreelanceServicesProfileSeller: ScreenFC<
   "FreelanceServicesProfileSeller"
@@ -38,22 +39,9 @@ export const FreelanceServicesProfileSeller: ScreenFC<
   }, [wallets]);
   const getSellerInfo = async (address: string) => {
     try {
-      const query_msg = {
-        seller_profile: {
-          seller: address,
-        },
-      };
-      const contractAddress = process.env
-        .TERITORI_SELLER_PROFILE_CONTRACT_ADRESS as string;
-      const signingClient = await getSigningCosmWasmClient();
-      const res = await signingClient.queryContractSmart(
-        contractAddress,
-        query_msg
-      );
-      if (!res) {
-        return;
-      }
-      const ipfs_hash = res.ipfs_hash;
+      const ipfs_hash = await getSellerIpfsHash(address);
+      if (!ipfs_hash) return;
+
       const profile_json_res = await axios.get(ipfsPinataUrl(ipfs_hash));
       if (profile_json_res.status !== 200) return;
       const profile_json = profile_json_res.data;
@@ -98,8 +86,6 @@ export const FreelanceServicesProfileSeller: ScreenFC<
             msg,
             "auto"
           );
-          console.log(ipfsHash);
-          console.log("Hello");
 
           if (updatedProfileRes) {
             const obserable = sellerprofileBackendClient.updateProfile({

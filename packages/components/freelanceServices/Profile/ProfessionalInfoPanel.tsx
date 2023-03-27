@@ -280,7 +280,7 @@ export const ProfessionalInfoPanel: React.FC<{
                   value={selectedOccupationItem}
                   setValue={setSelectedOccupationItem}
                 />
-                {selectedOccupationItem && (
+                {selectedOccupationItem !== "" && (
                   <View style={styles.selectYearContainer}>
                     <BrandText style={styles.generalDarkText}>From</BrandText>
                     <GeneralSelect
@@ -301,7 +301,7 @@ export const ProfessionalInfoPanel: React.FC<{
                   </View>
                 )}
               </View>
-              {selectedOccupationItem && (
+              {selectedOccupationItem !== "" && (
                 <View style={styles.detailContentContainer}>
                   <BrandText style={styles.detailTitle}>
                     Choose two to five of your best skills in{" "}
@@ -370,7 +370,6 @@ export const ProfessionalInfoPanel: React.FC<{
                 </View>
               )}
             </View>
-
             {seller.occupations.map((item: Occupation, bigIndex: number) => (
               <View
                 style={{ width: "100%", marginTop: layout.padding_x2_5 }}

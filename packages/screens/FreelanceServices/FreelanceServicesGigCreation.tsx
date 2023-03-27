@@ -6,12 +6,13 @@ import { GigCreationFooter } from "../../components/freelanceServices/GigCreatio
 import { GigCreationHeader } from "../../components/freelanceServices/GigCreation/GigCreationHeader";
 import { ScreenFC } from "../../utils/navigation";
 import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
+import { emptyGigInfo, GigInfo } from "./types/fields";
 
 export const FreelanceServicesGigCreation: ScreenFC<
   "FreelanceServicesGigCreation"
 > = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
-
+  const [gigInfo, setGigInfo] = useState<GigInfo>(emptyGigInfo);
   return (
     <FreelanceServicesScreenWrapper>
       <View style={{ marginLeft: 35, zIndex: 1 }}>
@@ -19,7 +20,11 @@ export const FreelanceServicesGigCreation: ScreenFC<
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
         />
-        <GigCreationBody currentStep={currentStep} />
+        <GigCreationBody
+          step={currentStep}
+          gigInfo={gigInfo}
+          setGig={setGigInfo}
+        />
       </View>
       <GigCreationFooter
         setCurrentStep={setCurrentStep}

@@ -128,10 +128,10 @@ export const PersonalInfoPanel: React.FC<{
                 onChange={onUserPictureChange}
                 ref={userPictureRef}
               />
-              {!seller.avatar && (
+              {seller.avatar === "" && (
                 <SVG source={emptySVG} width="100%" height="100%" />
               )}
-              {seller.avatar && (
+              {seller.avatar !== "" && (
                 <Image
                   source={{ uri: ipfsPinataUrl(seller.avatar) }}
                   style={styles.picture}
@@ -157,10 +157,10 @@ export const PersonalInfoPanel: React.FC<{
                 onChange={onProfilePictureChange}
                 ref={profilePictureRef}
               />
-              {!seller.profilePicture && (
+              {seller.profilePicture === "" && (
                 <SVG source={emptySVG} width="100%" height="100%" />
               )}
-              {seller.profilePicture && (
+              {seller.profilePicture !== "" && (
                 <Image
                   source={{ uri: ipfsPinataUrl(seller.profilePicture) }}
                   style={styles.picture}
