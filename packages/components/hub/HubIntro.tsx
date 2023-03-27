@@ -51,7 +51,7 @@ const ConnectedIntro: React.FC = () => {
         size="XL"
       />
 
-      <ProfileButton touchableStyle={{ marginTop: 40 }} />
+      <ProfileButton style={{ marginTop: 40 }} />
 
       <Section title="Quests" subtitle="4">
         <FullWidthSeparator />
