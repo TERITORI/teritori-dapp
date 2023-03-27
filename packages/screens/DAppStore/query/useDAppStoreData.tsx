@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { getMarketplaceClient } from "../../../utils/backend";
 import { dAppGroup, dAppType } from "../types";
+import { failbackDapps, fallbackDappGroups } from "./fallbackValues";
 
 export const useDAppStoreData = (): dAppGroup | undefined => {
   interface IdAppsLUT {
@@ -21,6 +22,7 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
     },
     {
       cacheTime: 5 * 60 * 1000,
+      initialData: failbackDapps,
     }
   );
   const { data: dAppsGroups } = useQuery(
@@ -32,6 +34,7 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
     },
     {
       cacheTime: 5 * 60 * 1000,
+      initialData: fallbackDappGroups,
     }
   );
   if (dAppsGroups === undefined || dApps === undefined) {
