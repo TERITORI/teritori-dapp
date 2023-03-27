@@ -50,7 +50,9 @@ export const Button: React.FC<ButtonType> = ({
               customStyle,
             ]}
           >
-            <Text style={[buttonStyles.text, customStyle]}>{text}</Text>
+            <Text style={[buttonStyles.text, customStyle]} numberOfLines={1}>
+              {text}
+            </Text>
           </ImageBackground>
         ) : (
           <Text>{text}</Text>

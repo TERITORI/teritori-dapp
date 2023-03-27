@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList, View } from "react-native";
 
 import { Label } from "../components/label/Label";
+import { useContentContext } from "../context/ContentProvider";
 interface HistoryItem {
   round: number;
   tickets: {
@@ -10,8 +11,7 @@ interface HistoryItem {
   };
   toriWon: number;
 }
-const datumWidth = 200;
-const roundWidth = 52;
+
 const data: HistoryItem[] = [
   {
     round: 1,
@@ -79,7 +79,11 @@ const data: HistoryItem[] = [
   },
 ];
 
-const HeaderItem = ({ text }: { text: string }) => (
+const HeaderItem: React.FC<{
+  text: string;
+  datumWidth: number;
+  roundWidth: number;
+}> = ({ text, roundWidth, datumWidth }) => (
   <View
     style={{
       justifyContent: "center",
@@ -117,7 +121,11 @@ const RoundNumber: React.FC<{ round: number }> = ({ round }) => (
   </View>
 );
 
-const Datum: React.FC<{ value: number }> = ({ value }) => (
+const Datum: React.FC<{
+  value: number;
+  datumWidth: number;
+  styleTypeSize: string;
+}> = ({ value, datumWidth, styleTypeSize }) => (
   <View
     style={{
       backgroundColor: "#212708",
@@ -126,15 +134,20 @@ const Datum: React.FC<{ value: number }> = ({ value }) => (
     }}
   >
     <Label
-      styleType="H1_Bebas_80"
-      style={{ textAlign: "center", color: "#E8E1EF" }}
+      styleType={`H1_Bebas_${styleTypeSize}`}
+      style={{ textAlign: "center", color: "#E8E1EF", fontSize: 30 }}
     >
       {value}
     </Label>
   </View>
 );
 
-const ListItem: React.FC<{ item: HistoryItem }> = ({ item }) => {
+const ListItem: React.FC<{
+  item: HistoryItem;
+  datumWidth: number;
+  roundWidth: number;
+  styleTypeSize: string;
+}> = ({ item, datumWidth, roundWidth, styleTypeSize }) => {
   const header = ["", "Tickets Bought", "Tickets WON", "$TORI WON"];
   return (
     <View
@@ -149,7 +162,13 @@ const ListItem: React.FC<{ item: HistoryItem }> = ({ item }) => {
         }}
         data={header}
         numColumns={4}
-        renderItem={({ item }) => <HeaderItem text={item} />}
+        renderItem={({ item }) => (
+          <HeaderItem
+            text={item}
+            datumWidth={datumWidth}
+            roundWidth={roundWidth}
+          />
+        )}
       />
 
       <View
@@ -161,15 +180,32 @@ const ListItem: React.FC<{ item: HistoryItem }> = ({ item }) => {
       >
         <RoundNumber round={item.round} />
 
-        <Datum value={item.tickets.bought} />
-        <Datum value={item.tickets.won} />
-        <Datum value={item.toriWon} />
+        <Datum
+          value={item.tickets.bought}
+          datumWidth={datumWidth}
+          styleTypeSize={styleTypeSize}
+        />
+        <Datum
+          value={item.tickets.won}
+          datumWidth={datumWidth}
+          styleTypeSize={styleTypeSize}
+        />
+        <Datum
+          value={item.toriWon}
+          datumWidth={datumWidth}
+          styleTypeSize={styleTypeSize}
+        />
       </View>
     </View>
   );
 };
 
 export const MyHistory = () => {
+  const { isMinimunWindowWidth } = useContentContext();
+
+  const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
+  const datumWidth = isMinimunWindowWidth ? 200 : 100;
+  const roundWidth = isMinimunWindowWidth ? 52 : 22;
   return (
     <>
       <View
@@ -178,13 +214,17 @@ export const MyHistory = () => {
         }}
       >
         <Label
-          styleType="H1_Bebas_80"
-          style={{ textAlign: "center", color: "#E8E1EF", fontSize: 95 }}
+          styleType={`H1_Bebas_${styleTypeSize}`}
+          style={{
+            textAlign: "center",
+            color: "#E8E1EF",
+            fontSize: isMinimunWindowWidth ? 95 : 40,
+          }}
         >
           Punks, this is your history
         </Label>
         <Label
-          styleType="H2_DHBS_80"
+          styleType={`H2_DHBS_${styleTypeSize}`}
           style={{
             textAlign: "center",
             color: "#FFD753",
@@ -201,7 +241,14 @@ export const MyHistory = () => {
           alignItems: "center",
         }}
         data={data}
-        renderItem={({ item }) => <ListItem item={item} />}
+        renderItem={({ item }) => (
+          <ListItem
+            item={item}
+            datumWidth={datumWidth}
+            roundWidth={roundWidth}
+            styleTypeSize={styleTypeSize}
+          />
+        )}
       />
     </>
   );

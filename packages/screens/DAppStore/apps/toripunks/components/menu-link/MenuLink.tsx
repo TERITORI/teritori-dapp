@@ -21,7 +21,7 @@ export const MenuLink = () => {
   const userInfo = useNSUserInfo(contentContext.selectedWallet?.userId);
   const name =
     userInfo?.metadata?.tokenId ||
-    tinyAddress(contentContext.selectedWallet?.address, 30) ||
+    tinyAddress(contentContext.selectedWallet?.address, 15) ||
     "";
 
   const Separator = () => (
@@ -121,6 +121,9 @@ export const MenuLink = () => {
           flexDirection: "row",
           flexWrap: "wrap",
           flex: 1,
+          position: "absolute",
+          top: 0,
+          left: 0,
         }}
       >
         <ImageBackground

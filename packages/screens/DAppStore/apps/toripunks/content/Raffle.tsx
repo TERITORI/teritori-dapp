@@ -1,10 +1,19 @@
 import { View } from "react-native";
 
 import { Label } from "../components/label/Label";
+import { useContentContext } from "../context/ContentProvider";
 
 export const Raffle = () => {
+  const { isMinimunWindowWidth } = useContentContext();
   return (
-    <View>
+    <View
+      style={{
+        height: isMinimunWindowWidth ? "56vh" : "40vh",
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: isMinimunWindowWidth ? 0 : 18,
+      }}
+    >
       <Label
         styleType="T2_Bebas_50"
         style={{ textAlign: "center", color: "#E8E1EF" }}
