@@ -22,7 +22,6 @@ export const Footer = ({
         style={{
           margin: "auto",
           marginTop: 50,
-          // backgroundColor: "#212708",
           marginBottom: isMinimunWindowWidth ? 25 : 20,
         }}
       >
@@ -32,7 +31,6 @@ export const Footer = ({
           style={{
             width: 50,
             height: 50,
-            // tintColor: "#2AF191",
           }}
         />
       </TouchableOpacity>
