@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from "react-native";
+import { Linking, TouchableOpacity, View } from "react-native";
 
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { BuyToripunksButton } from "../components/buttonLabel/BuyToripunksButton";
@@ -15,7 +15,8 @@ export const Lottery = () => {
     <>
       <View
         style={{
-          height: "57vh",
+          height: isMinimunWindowWidth ? "57vh" : "73vh",
+          paddingHorizontal: isMinimunWindowWidth ? 0 : 18,
           justifyContent: "flex-end",
         }}
       >
@@ -38,13 +39,18 @@ export const Lottery = () => {
         </Label>
         <Label
           styleType={`H1_Bebas_${styleTypeSize}`}
-          style={{ textAlign: "center", color: "#E8E1EF", fontSize: 100 }}
+          style={{
+            textAlign: "center",
+            color: "#E8E1EF",
+            fontSize: parseInt(styleTypeSize, 10) + 20,
+          }}
         >
           2500000 $TORI
         </Label>
         <Label
           styleType="T1_Bebas_20"
           style={{ textAlign: "center", color: "#E8E1EF", marginTop: 24 }}
+          onPress={() => Linking.openURL("https://discord.gg/n6QdEXXGzP")}
         >
           Live draw in our discord on the 25th of each month
         </Label>

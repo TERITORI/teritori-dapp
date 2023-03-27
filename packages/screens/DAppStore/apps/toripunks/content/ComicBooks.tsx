@@ -15,9 +15,11 @@ export const ComicBooks = () => {
     <>
       <View
         style={{
-          height: "56vh",
-          justifyContent: "space-around",
+          height: isMinimunWindowWidth ? "56vh" : "74vh",
+          justifyContent: isMinimunWindowWidth ? "space-around" : "flex-end",
           alignItems: "center",
+          paddingHorizontal: isMinimunWindowWidth ? 0 : 18,
+          marginBottom: isMinimunWindowWidth ? 0 : "-2em",
         }}
       >
         <Label
@@ -46,7 +48,13 @@ export const ComicBooks = () => {
         </Label>
         <Label
           styleType={`H1_Bebas_${styleTypeSize}`}
-          style={{ textAlign: "center", color: "#E8E1EF", fontSize: 88 }}
+          style={{
+            textAlign: "center",
+            color: "#E8E1EF",
+            fontSize: isMinimunWindowWidth
+              ? parseInt(styleTypeSize, 10) + 8
+              : parseInt(styleTypeSize, 10),
+          }}
         >
           2500000 $TORI
         </Label>
