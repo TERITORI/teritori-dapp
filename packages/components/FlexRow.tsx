@@ -29,7 +29,7 @@ type Direction =
 const FlexRow: React.FC<FlexRowProps> = ({
   breakpoint,
   width = "100%",
-  alignItems,
+  alignItems = "center",
   justifyContent,
   ...props
 }) => {

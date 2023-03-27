@@ -207,8 +207,8 @@ const Content: React.FC<{
                 justifyContent: "flex-end",
                 width: "100%",
               }}
+              tabContainerStyle={{ height: 60 }}
               onSelect={setSelectedTab}
-              hideSelector
             />
           </View>
 

@@ -1,4 +1,5 @@
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
+import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
 import gridSVG from "../../assets/icons/grid.svg";
@@ -15,6 +16,13 @@ import { SidebarRecordType } from "../components/navigation/types";
 import { NetworkKind } from "../networks";
 
 export const SIDEBAR_LIST: SidebarRecordType = {
+  feed: {
+    title: "Feed",
+    // route: "Feed",
+    id: "Feed",
+    route: "ComingSoon",
+    icon: feedSVG,
+  },
   messages: {
     title: "Messages",
     id: "Messages",

@@ -199,6 +199,7 @@ export const Sidebar: React.FC<{ availableApps: dAppGroup }> = ({
           connected &&
           userInfo.metadata && (
             <SidebarProfileButton
+              isLoading={userInfo.loading}
               userId={selectedWallet?.userId || ""}
               tokenId={userInfo.metadata.tokenId || ""}
               image={userInfo.metadata.image || ""}
