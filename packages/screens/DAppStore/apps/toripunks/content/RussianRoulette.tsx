@@ -301,7 +301,7 @@ export const Russian = () => {
   };
 
   return (
-    <View style={{ height: isMinimunWindowWidth ? "76vh" : "74vh" }}>
+    <View>
       {/* Label View */}
       <View>
         <Label

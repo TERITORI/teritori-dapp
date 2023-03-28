@@ -39,6 +39,7 @@ export const Content = () => {
     main: { justifyContent: "flex-end", height: "auto" },
     raffle: { justifyContent: "flex-end" },
     "menu-mobile": { justifyContent: "center" },
+    roulette: { height: "56vh" },
   };
 
   const validateCustomStyle = {

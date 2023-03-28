@@ -15,7 +15,7 @@ export const ComicBooks = () => {
     <>
       <View
         style={{
-          height: isMinimunWindowWidth ? "76vh" : "74vh",
+          height: isMinimunWindowWidth ? "56vh" : "74vh",
           justifyContent: isMinimunWindowWidth ? "space-around" : "flex-end",
           alignItems: "center",
           paddingHorizontal: isMinimunWindowWidth ? 0 : 18,
