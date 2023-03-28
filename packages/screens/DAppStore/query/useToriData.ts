@@ -7,10 +7,8 @@ import {
 } from "../../../networks";
 import { getCodeError } from "./codeError";
 
-const addr = "tori1xdtdctdedst45u8c8fmxutg8vvltyg5ezpdycz";
-
 export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
-  //   const addr = selectedWallet?.address || "";
+  const addr = selectedWallet?.address || "";
   const { data, refetch } = useQuery(
     ["toripunks", addr],
     async () => {
@@ -41,7 +39,7 @@ export const useBuyTicket = ({
   buyCount: number;
   selectedWallet?: Wallet;
 }) => {
-  //   const addr = selectedWallet?.address || "";
+  const addr = selectedWallet?.address || "";
   const buyArray = Array.isArray(userTokens)
     ? buyCount === 1
       ? userTokens.shift()
@@ -72,8 +70,15 @@ export const useBuyTicket = ({
   return { data, mutate, isError, isLoading };
 };
 
-export const useProof = ({ tx }: { tx: string }) => {
+export const useProof = ({
+  tx,
+  selectedWallet,
+}: {
+  tx: string;
+  selectedWallet?: Wallet;
+}) => {
   const URL = `https://api.roulette.aaa-metahuahua.com/tickets/proofs`;
+  const addr = selectedWallet?.address || "";
 
   const { data, mutate, isError, isLoading } = useMutation(
     ["transaction", tx],

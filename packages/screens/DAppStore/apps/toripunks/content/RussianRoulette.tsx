@@ -62,6 +62,7 @@ export const Russian = () => {
 
   const { data: ResultData, mutate: handleProofTransc } = useProof({
     tx: userTx.current,
+    selectedWallet,
   });
 
   useEffect(() => {
@@ -171,6 +172,7 @@ export const Russian = () => {
 
   const addBet = () => {
     const validateBet = bet + 1 > +maxTicket ? 10 : bet + 1;
+    if (totalToriUser === 0) return setErroType("TICKET");
     setBet(validateBet);
   };
   const reduceBet = () => {

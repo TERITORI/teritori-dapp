@@ -1,5 +1,6 @@
-import React from "react";
-import { FlatList, StyleProp, View, ViewStyle } from "react-native";
+import React, { useEffect } from "react";
+import { FlatList, View } from "react-native";
+import { useMyHistoryData } from "../../../query/useHistoryData";
 
 import { Label } from "../components/label/Label";
 import { Datum } from "../components/table/Datum";
@@ -151,9 +152,18 @@ const ListItem: React.FC<{
 };
 
 export const MyHistory = () => {
-  const { isMinimunWindowWidth } = useContentContext();
+  const { isMinimunWindowWidth, selectedWallet } = useContentContext();
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
+
+  const { data, refetch: handleFetchHistoryData } = useMyHistoryData({
+    selectedWallet,
+  });
+
+  useEffect(() => {
+    handleFetchHistoryData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -185,15 +195,17 @@ export const MyHistory = () => {
         </Label>
       </View>
 
-      <FlatList
-        contentContainerStyle={{
-          alignItems: "center",
-        }}
-        data={data}
-        renderItem={({ item }) => (
-          <ListItem item={item} styleTypeSize={styleTypeSize} />
-        )}
-      />
+      {data && (
+        <FlatList
+          contentContainerStyle={{
+            alignItems: "center",
+          }}
+          data={data}
+          renderItem={({ item }) => (
+            <ListItem item={item} styleTypeSize={styleTypeSize} />
+          )}
+        />
+      )}
     </>
   );
 };
