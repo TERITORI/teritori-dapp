@@ -76,34 +76,22 @@ export const postResultToPost = (
   networkId: string,
   postResult: PostResultExtra | PostResult
 ) => {
+  const post: Post = {
+    category: postResult.category,
+    isDeleted: postResult.deleted,
+    identifier: postResult.identifier,
+    metadata: postResult.metadata,
+    parentPostIdentifier: postResult.parent_post_identifier || "",
+    subPostLength: postResult.sub_post_length,
+    reactions: postResult.reactions,
+    // TODO: We need to parse, because we're using Post[] from social-feed API and PostResult[] from social-feed contract
+    createdBy: getUserId(networkId, postResult.post_by),
+    createdAt: JSON.parse(postResult.metadata).createdAt,
+  };
   if ("isInLocal" in postResult) {
-    return {
-      category: postResult.category,
-      isDeleted: postResult.deleted,
-      identifier: postResult.identifier,
-      metadata: postResult.metadata,
-      parentPostIdentifier: postResult.parent_post_identifier,
-      subPostLength: postResult.sub_post_length,
-      reactions: postResult.reactions,
-      // TODO: We need to parse, because we're using Post[] from social-feed API and PostResult[] from social-feed contract
-      createdBy: getUserId(networkId, postResult.post_by),
-      createdAt: JSON.parse(postResult.metadata).createdAt,
-      isInLocal: postResult.isInLocal,
-    } as PostExtra;
-  } else {
-    return {
-      category: postResult.category,
-      isDeleted: postResult.deleted,
-      identifier: postResult.identifier,
-      metadata: postResult.metadata,
-      parentPostIdentifier: postResult.parent_post_identifier,
-      subPostLength: postResult.sub_post_length,
-      reactions: postResult.reactions,
-      // TODO: We need to parse, because we're using Post[] from social-feed API and PostResult[] from social-feed contract
-      createdBy: getUserId(networkId, postResult.post_by),
-      createdAt: JSON.parse(postResult.metadata).createdAt,
-    } as Post;
+    return { ...post, isInLocal: postResult.isInLocal } as PostExtra;
   }
+  return post;
 };
 
 export const generateIpfsKey = async (networkId: string, userId: string) => {
