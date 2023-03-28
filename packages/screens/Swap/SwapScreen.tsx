@@ -16,13 +16,13 @@ import { useAppDispatch } from "../../store/store";
 import { ScreenFC } from "../../utils/navigation";
 import { Assets } from "../WalletManager/Assets";
 import { ConnectModal } from "./components/ConnectModal";
-import { SwapModal } from "./components/SwapModal";
+// import { SwapModal } from "./components/SwapModal";
 
 export const SwapScreen: ScreenFC<"Swap"> = () => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
-  const [swapModalVisible, setSwapModalVisible] = useState(false);
+  // const [swapModalVisible, setSwapModalVisible] = useState(false);
   const [connectModalVisible, setConnectModalVisible] = useState(false);
   const isScreenFocused = useIsFocused();
 
@@ -60,7 +60,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
             <PrimaryButton
               size="XL"
               text="Swap"
-              onPress={() => setSwapModalVisible(true)}
+              // onPress={() => setSwapModalVisible(true)}
               touchableStyle={styles.primaryButton}
             />
             <Assets userId={selectedWallet.userId} style={styles.assets} />
@@ -75,12 +75,12 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
         )}
       </View>
 
-      {osmosisConnected && isScreenFocused && (
-        <SwapModal
-          visible={swapModalVisible}
-          onClose={() => setSwapModalVisible(false)}
-        />
-      )}
+      {/*{osmosisConnected && isScreenFocused && (*/}
+      {/*  <SwapModal*/}
+      {/*    visible={swapModalVisible}*/}
+      {/*    onClose={() => setSwapModalVisible(false)}*/}
+      {/*  />*/}
+      {/*)}*/}
       <ConnectModal
         onPressConnect={onPressConnect}
         onPressConnectTestnet={onPressConnectTestnet}
