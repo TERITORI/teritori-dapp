@@ -32,6 +32,7 @@ export const Footer = ({
             width: 50,
             height: 50,
           }}
+          resizeMode="contain"
         />
       </TouchableOpacity>
     </View>

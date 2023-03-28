@@ -301,7 +301,7 @@ export const Russian = () => {
   };
 
   return (
-    <View style={{ marginTop: isMinimunWindowWidth ? -10 : 40 }}>
+    <View style={{ height: isMinimunWindowWidth ? "76vh" : "74vh" }}>
       {/* Label View */}
       <View>
         <Label

@@ -135,6 +135,7 @@ export const MenuLink = () => {
           flex: 1,
           top: 0,
           left: 0,
+          marginBottom: 40,
         }}
       >
         <ImageBackground
