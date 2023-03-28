@@ -7,6 +7,7 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/pricespb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/tmws"
 	"github.com/allegro/bigcache/v3"
@@ -32,18 +33,13 @@ type Message struct {
 }
 
 type Config struct {
-	TNSContractAddress             string
-	MinterCodeIDs                  []uint64
-	VaultContractAddress           string
-	SquadStakingContractAddressV1  string
-	SquadStakingContractAddressV2  string
-	TheRiotCollectionAddress       string
-	TheRiotBreedingContractAddress string
-	TNSDefaultImageURL             string
-	TendermintClient               *tmws.Client
-	NetworkID                      string
-	BlockTimeCache                 *bigcache.BigCache
-	PricesClient                   pricespb.PricesServiceClient
+	MinterCodeIDs             []uint64
+	TendermintClient          *tmws.Client
+	BlockTimeCache            *bigcache.BigCache
+	PricesClient              pricespb.PricesServiceClient
+	Network                   *networks.CosmosNetwork
+	NetworkStore              networks.NetworkStore
+	SocialFeedContractAddress string
 }
 
 type Handler struct {
@@ -140,12 +136,12 @@ func (h *Handler) handleInstantiate(e *Message) error {
 	}
 
 	switch contractAddress {
-	case h.config.TNSContractAddress:
+	case h.config.Network.NameServiceContractAddress:
 		if err := h.handleInstantiateTNS(e, contractAddress, &instantiateMsg); err != nil {
 			return errors.Wrap(err, "failed to handle tns minter instantiation")
 		}
 		return nil
-	case h.config.TheRiotBreedingContractAddress:
+	case h.config.Network.RiotContractAddressGen1:
 		if err := h.handleInstantiateBreeding(e, contractAddress, &instantiateMsg); err != nil {
 			return errors.Wrap(err, "failed to handle breeding instantiation")
 		}
@@ -202,7 +198,7 @@ func (h *Handler) handleExecute(e *Message) error {
 		}
 	case "withdraw":
 		// Squad unstaking
-		if executeMsg.Contract == h.config.SquadStakingContractAddressV1 || executeMsg.Contract == h.config.SquadStakingContractAddressV2 {
+		if executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 || executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV2 {
 			if err := h.handleExecuteSquadUnstake(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle squad unstake")
 			}
@@ -244,12 +240,36 @@ func (h *Handler) handleExecute(e *Message) error {
 			return errors.Wrap(err, "failed to handle unpause")
 		}
 	case "stake":
-		if executeMsg.Contract == h.config.SquadStakingContractAddressV1 || executeMsg.Contract == h.config.SquadStakingContractAddressV2 {
+		if executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 || executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV2 {
 			if err := h.handleExecuteSquadStake(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}
 		}
-		// NOTE: add another stake handler here if needed
+	// Feeds actions
+	case "create_post":
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create post")
+			}
+		}
+	case "create_post_by_bot":
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteCreatePostByBot(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create post by bot")
+			}
+		}
+	case "react_post":
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteReactPost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle react post")
+			}
+		}
+	case "delete_post":
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteDeletePost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle delete post")
+			}
+		}
 	}
 
 	return nil
@@ -259,7 +279,7 @@ func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteCon
 	contractAddress := execMsg.Contract
 
 	var collections []*indexerdb.Collection
-	if err := h.db.Preload("TeritoriCollection").Limit(1).Find(&collections, &indexerdb.Collection{ID: indexerdb.TeritoriCollectionID(contractAddress)}).Error; err != nil {
+	if err := h.db.Preload("TeritoriCollection").Limit(1).Find(&collections, &indexerdb.Collection{ID: h.config.Network.CollectionID(contractAddress)}).Error; err != nil {
 		return errors.Wrap(err, "find collection error")
 	}
 	if len(collections) == 0 {
@@ -280,7 +300,7 @@ func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteCon
 	}
 	tokenId := tokenIds[0]
 
-	if collection.TeritoriCollection != nil && collection.TeritoriCollection.MintContractAddress == h.config.TNSContractAddress {
+	if collection.TeritoriCollection != nil && collection.TeritoriCollection.MintContractAddress == h.config.Network.NameServiceContractAddress {
 		if err := h.handleExecuteMintTNS(e, collection, tokenId, execMsg); err != nil {
 			return errors.Wrap(err, "failed to handle tns mint")
 		}

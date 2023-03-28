@@ -2,8 +2,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
+import { FeedScreen } from "../../screens/Feed/FeedScreen";
+import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
+import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
+import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScreen";
 import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
@@ -20,9 +24,9 @@ import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventor
 import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeaderboardScreen";
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
-import { RiotGameRarityScreen } from "../../screens/RiotGame/RiotGameRarityScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
+import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
@@ -31,7 +35,7 @@ import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsS
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const screenTitle = (title: string) => "Teritori - " + title;
+export const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
@@ -131,14 +135,6 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Riot Game Inventory"),
         }}
       />
-      <Stack.Screen
-        name="RiotGameRarity"
-        component={RiotGameRarityScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Riot Game Rarity"),
-        }}
-      />
 
       {/* ==== Wallet Manager */}
       <Stack.Screen
@@ -212,6 +208,32 @@ export const Navigator: React.FC = () => {
         name="CollectionTools"
         component={CollectionToolsScreen}
         options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="FeedNewArticle"
+        component={FeedNewArticleScreen}
+        options={{ header: () => null, title: screenTitle("New Article") }}
+      />
+
+      <Stack.Screen
+        name="FeedPostView"
+        component={FeedPostViewScreen}
+        options={{ header: () => null, title: "Teritori" }}
+      />
+      <Stack.Screen
+        name="Feed"
+        component={FeedScreen}
+        options={{ header: () => null, title: screenTitle("Feed") }}
+      />
+      <Stack.Screen
+        name="HashtagFeed"
+        component={HashtagFeedScreen}
+        options={{ header: () => null, title: screenTitle("") }}
       />
     </Stack.Navigator>
   );

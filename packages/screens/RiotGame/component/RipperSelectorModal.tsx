@@ -19,7 +19,8 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { SpacerRow } from "../../../components/spacer";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
-import { getRipperTokenId } from "../../../utils/game";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { getRipperTokenId, isNFTStaked } from "../../../utils/game";
 import {
   neutral00,
   withAlpha,
@@ -61,7 +62,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 }) => {
   const [selectedRipper, setSelectedRipper] = useState<NFT | undefined>();
   const [breedingsLeft, setBreedingsLeft] = useState<number>(0);
-  const { getBreedingsLefts } = useBreeding();
+  const networkId = useSelectedNetworkId();
+  const { getBreedingsLefts } = useBreeding(networkId);
 
   const { width } = useWindowDimensions();
 
@@ -158,6 +160,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   size={RIPPER_IMAGE_SIZE}
                   rounded
                   containerStyle={styles.roundedContainer}
+                  isStaked={isNFTStaked(selectedRipper)}
                 />
               </ImageBackground>
 

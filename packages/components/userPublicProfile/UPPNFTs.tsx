@@ -7,7 +7,6 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { alignDown } from "../../utils/align";
 import { layout } from "../../utils/style/layout";
 import { NFTs } from "../nfts/NFTs";
@@ -27,10 +26,8 @@ const SelectedTabContent: React.FC<{
 }> = React.memo(({ userId, selectedTab }) => {
   const { width } = useMaxResolution();
   const numColumns = Math.floor(width / nftWidth);
-  const selectedNetworkId = useSelectedNetworkId();
 
   const nftsRequest: NFTsRequest = {
-    networkId: selectedNetworkId,
     collectionId: "",
     ownerId: userId,
     limit: alignDown(20, numColumns) || numColumns,
@@ -76,7 +73,7 @@ export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
           selected={selectedTab}
           items={tabItemsNFTs}
           onSelect={setSelectedTab}
-          style={{ width: 436, height: 44, alignSelf: "flex-end" }}
+          style={{ width: 436, alignSelf: "flex-end" }}
         />
       </View>
 

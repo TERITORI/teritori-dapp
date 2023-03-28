@@ -1,22 +1,21 @@
 import React from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
-import emptyCircleFrameSVG from "../../../../assets/empty-circle-frame.svg";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold9 } from "../../../utils/style/fonts";
 import { fullSidebarWidth, layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
-import { SVG } from "../../SVG";
 import { CustomPressable } from "../../buttons/CustomPressable";
+import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 
 export const SidebarProfileButton: React.FC<{
-  walletAddress: string;
+  userId: string;
   image: string;
   tokenId: string;
   isExpanded?: boolean;
-}> = ({ walletAddress, image, tokenId, isExpanded }) => {
+  isLoading?: boolean;
+}> = ({ userId, image, tokenId, isExpanded, isLoading }) => {
   const navigation = useAppNavigation();
   const imageWidth = 68;
 
@@ -24,7 +23,7 @@ export const SidebarProfileButton: React.FC<{
     <CustomPressable
       onPress={() =>
         navigation.navigate("UserPublicProfile", {
-          id: `tori-${walletAddress}`,
+          id: userId,
         })
       }
     >
@@ -37,34 +36,7 @@ export const SidebarProfileButton: React.FC<{
           isExpanded && { flexDirection: "row", alignItems: "center" },
         ]}
       >
-        <Image
-          source={{
-            uri: ipfsURLToHTTPURL(
-              image
-                ? image
-                : process.env.TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
-            ),
-          }} // TODO: proper fallback
-          style={[
-            {
-              top: 14,
-              left: 14,
-              zIndex: 2,
-              marginBottom: 20,
-              position: "absolute",
-              borderRadius: 999,
-            },
-            {
-              width: 40,
-              aspectRatio: 1,
-            },
-          ]}
-        />
-        <SVG
-          source={emptyCircleFrameSVG}
-          width={imageWidth}
-          height={imageWidth}
-        />
+        <AvatarWithFrame image={image} size="M" isLoading={isLoading} />
 
         <View
           style={[
@@ -84,9 +56,11 @@ export const SidebarProfileButton: React.FC<{
             },
           ]}
         >
-          <BrandText style={fontSemibold12} numberOfLines={1}>
-            {`@${tokenId}`}
-          </BrandText>
+          {!!tokenId && (
+            <BrandText style={fontSemibold12} numberOfLines={1}>
+              {`@${tokenId}`}
+            </BrandText>
+          )}
           <BrandText style={[fontSemibold9, { color: neutral77 }]}>
             My Profile
           </BrandText>

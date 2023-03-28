@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import {
   View,
@@ -19,9 +18,10 @@ import {
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
+import { useBanners } from "../../hooks/useBanners";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { backendClient } from "../../utils/backend";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { smallMobileWidth } from "../../utils/style/layout";
@@ -41,9 +41,8 @@ export const HubLanding: React.FC = () => {
     image: defaultNewsBanner,
     maxSize: { width: maxWidth },
   });
-  const banners = useBanners(
-    process.env.TERITORI_NETWORK_ID === "teritori-testnet"
-  );
+  const networkId = useSelectedNetworkId();
+  const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
 
   const { width: windowWidth } = useWindowDimensions();
@@ -89,7 +88,7 @@ export const HubLanding: React.FC = () => {
           title="Upcoming Launches on Teritori Launch Pad"
           req={{
             upcoming: true,
-            networkId: "",
+            networkId,
             sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
             sort: Sort.SORTING_UNSPECIFIED,
             limit: 16,

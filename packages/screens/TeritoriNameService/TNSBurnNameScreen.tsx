@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
@@ -9,16 +10,16 @@ import ModalBase from "../../components/modals/ModalBase";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
-import { useTokenList } from "../../hooks/tokens";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  getFirstKeplrAccount,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+  getKeplrSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+} from "../../networks";
 import { neutral17 } from "../../utils/style/colors";
 import { modalWidthRatio, smallMobileWidth } from "../../utils/style/layout";
-import { isTokenOwnedByUser } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
@@ -28,26 +29,23 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
 }) => {
   const { name } = useTNS();
   const { setToastError, setToastSuccess } = useFeedbacks();
+  const selectedWallet = useSelectedWallet();
+  const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const walletAddress = selectedWallet?.address;
+  const normalizedTokenId = (name + network.nameServiceTLD || "").toLowerCase();
 
-  const { tokens } = useTokenList();
-  const isKeplrConnected = useIsKeplrConnected();
-  const userHasCoWallet = useAreThereWallets();
-  const contractAddress = process.env
-    .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
-  const normalizedTokenId = (name + process.env.TLD).toLowerCase();
+  const queryClient = useQueryClient();
 
   const onSubmit = async () => {
-    if (!isKeplrConnected) {
+    if (!walletAddress) {
       setToastError({
-        title: "Please connect Keplr",
+        title: "No wallet address",
         message: "",
       });
       return;
     }
-    if (
-      tokens.length &&
-      (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))
-    ) {
+    if (tokens.length && !tokens.includes(normalizedTokenId)) {
       setToastError({
         title: "Something went wrong!",
         message: "",
@@ -55,31 +53,28 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       return;
     }
 
-    const msg = {
-      burn: {
-        token_id: normalizedTokenId,
-      },
-    };
     try {
-      const signingClient = await getSigningCosmWasmClient();
-
-      const walletAddress = (await getFirstKeplrAccount()).address;
-
-      const updatedToken = await signingClient.execute(
-        walletAddress,
-        contractAddress,
-        msg,
-        "auto"
-      );
-      if (updatedToken) {
-        console.log(normalizedTokenId + " successfully burnt");
-        setToastSuccess({
-          title: normalizedTokenId + " successfully burnt",
-          message: "",
-        });
-
-        onClose("TNSManage");
+      if (!network.nameServiceContractAddress) {
+        throw new Error("network not supported");
       }
+
+      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
+
+      const nsClient = new TeritoriNameServiceClient(
+        signingClient,
+        walletAddress,
+        network.nameServiceContractAddress
+      );
+
+      await nsClient.burn({ tokenId: normalizedTokenId });
+
+      console.log(normalizedTokenId + " successfully burnt");
+      setToastSuccess({
+        title: normalizedTokenId + " successfully burnt",
+        message: "",
+      });
+
+      onClose("TNSManage");
     } catch (e) {
       if (e instanceof Error) {
         setToastError({
@@ -89,6 +84,10 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       }
       console.warn(e);
     }
+
+    await queryClient.invalidateQueries(
+      nsNameInfoQueryKey(selectedWallet?.networkId, normalizedTokenId)
+    );
   };
 
   const { width } = useWindowDimensions();

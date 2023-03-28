@@ -11,44 +11,43 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-import bannerCollection from "../../../assets/default-images/banner-collection.png";
-import etherscanSVG from "../../../assets/icons/etherscan.svg";
-import shareSVG from "../../../assets/icons/share.svg";
-import {
-  NFTsRequest,
-  Sort,
-  SortDirection,
-} from "../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../components/BrandText";
+import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { ActivityTable } from "../../components/activity/ActivityTable";
-import { PrimaryBox } from "../../components/boxes/PrimaryBox";
-import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSecondary";
-import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
-import { Footer } from "../../components/footers/Footer";
-import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
-import { NFTs } from "../../components/nfts/NFTs";
-import { SortButton } from "../../components/sorts/SortButton";
-import { SpacerRow } from "../../components/spacer";
-import { Tabs } from "../../components/tabs/Tabs";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useCoingeckoPrices } from "../../hooks/useCoingeckoPrices";
-import {
-  CollectionInfo,
-  useCollectionInfo,
-} from "../../hooks/useCollectionInfo";
-import { useCollectionStats } from "../../hooks/useCollectionStats";
-import { useImageResizer } from "../../hooks/useImageResizer";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getNativeCurrency } from "../../networks";
-import { alignDown } from "../../utils/align";
+import { CollectionContent } from "../../components/collections/CollectionContent";
+import { CollectionHeader } from "../../components/collections/CollectionHeader";
+import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { parseCollectionId } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout, smallMobileWidth } from "../../utils/style/layout";
-import { CollectionStat } from "./components/CollectionStat";
+import { useCollectionStats } from "../../hooks/useCollectionStats";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { NFTsRequest } from "../../api/marketplace/v1/marketplace";
+import { NFTs } from "../../components/nfts/NFTs";
+import { useImageResizer } from "../../hooks/useImageResizer";
+import { CollectionStat } from "../../components/collections/CollectionStat";
+import { BrandText } from "../../components/BrandText";
+import { PrimaryBox } from "../../components/boxes/PrimaryBox";
+import { Tabs } from "../../components/tabs/Tabs";
+import { SortButton } from "../../components/sorts/SortButton";
+import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSecondary";
+import shareSVG from "../../../assets/icons/share.svg";
+import etherscanSVG from "../../../assets/icons/etherscan.svg";
+import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
+import { SpacerRow } from "../../components/spacer";
+import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
+import { getNativeCurrency } from "../../networks";
+import { useCoingeckoPrices } from "../../hooks/useCoingeckoPrices";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { CollectionInfo } from "../../hooks/useCollectionInfo";
+import { ActivityTable } from "../../components/activity/ActivityTable";
+import { Sort } from "../../api/marketplace/v1/marketplace";
+import { alignDown } from "../../utils/align";
+import { Footer } from "../../components/footers/Footer";
+import bannerCollection from "../../../assets/default-images/banner-collection.png";
 
 const nftWidth = 268; // FIXME: ssot
 
@@ -390,15 +389,22 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );
+  const [network] = parseCollectionId(id);
 
   // returns
   return (
-    <ScreenContainer fullWidth footerChildren={<></>} noMargin noScroll>
+    <ScreenContainer
+      fullWidth
+      footerChildren={<></>}
+      noMargin
+      noScroll
+      forceNetworkId={network?.id}
+    >
       <ScrollView
         style={{ width: "100%" }}
         contentContainerStyle={{ alignItems: "center" }}
       >
-        <Header
+        <CollectionHeader
           collectionId={id}
           collectionInfo={info}
           selectedTab={selectedTab}
@@ -406,7 +412,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
           onChangeSortDirection={setSortDirection}
           sortDirection={sortDirection}
         />
-        <Content
+        <CollectionContent
           key={id}
           id={id}
           selectedTab={selectedTab}

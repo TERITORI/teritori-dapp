@@ -1,6 +1,6 @@
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { Decimal } from "cosmwasm";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -8,47 +8,63 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTNS } from "../../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useBalances } from "../../../hooks/useBalances";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import {
+  getKeplrSigningStargateClient,
+  mustGetNonSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+  getStakingCurrency,
+  keplrCurrencyFromNativeCurrencyInfo,
+} from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
-import {
-  getKeplrOfflineSigner,
-  getNonSigningCosmWasmClient,
-} from "../../../utils/keplr";
-import {
-  getTeritoriSigningStargateClient,
-  toriCurrency,
-} from "../../../utils/teritori";
-import { SendFundFormType } from "../../../utils/types/tns";
+import { layout } from "../../../utils/style/layout";
+import { TNSSendFundsFormType } from "../../../utils/types/tns";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
 
-export const SendFundModal: React.FC<{
+export const TNSSendFundsModal: React.FC<{
   onClose: () => void;
-  visible?: boolean;
-}> = ({ onClose, visible }) => {
+  isVisible: boolean;
+}> = ({ onClose, isVisible }) => {
   const { name } = useTNS();
-  const [isVisible, setIsVisible] = useState(false);
   const { control, handleSubmit: formHandleSubmit } =
-    useForm<SendFundFormType>();
+    useForm<TNSSendFundsFormType>();
   const selectedWallet = useSelectedWallet();
-  const selectedNetWorkId = useSelectedNetworkId();
+  const networkId = selectedWallet?.networkId;
+  const nativeCurrency = getStakingCurrency(networkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const balances = useBalances(selectedNetWorkId, selectedWallet?.address);
-  const toriBalance = balances.find(
-    (bal) => bal.denom === toriCurrency.coinMinimalDenom
+  const balances = useBalances(networkId, selectedWallet?.address);
+  const currencyBalance = balances.find(
+    (bal) => bal.denom === nativeCurrency?.denom
   );
 
-  useEffect(() => {
-    setIsVisible(visible || false);
-  }, [visible]);
-
-  const handleSubmit: SubmitHandler<SendFundFormType> = async (fieldValues) => {
+  const handleSubmit: SubmitHandler<TNSSendFundsFormType> = async (
+    fieldValues
+  ) => {
     try {
+      if (!nativeCurrency) {
+        setToastError({
+          title: "Internal error",
+          message: "Currency not found",
+        });
+        onClose();
+        return;
+      }
+
+      if (!networkId) {
+        setToastError({
+          title: "Internal error",
+          message: "Invalid teritori network id",
+        });
+        onClose();
+        return;
+      }
+
       // get contract address
-      const contractAddress =
-        process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS;
+      const network = mustGetCosmosNetwork(networkId);
+      const contractAddress = network.nameServiceContractAddress;
+
       if (!contractAddress) {
         setToastError({
           title: "Internal error",
@@ -70,10 +86,10 @@ export const SendFundModal: React.FC<{
       }
 
       // get token id
-      const tokenId = name + process.env.TLD || "";
+      const tokenId = name + network.nameServiceTLD || "";
 
       // get tns client
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const tnsClient = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
         contractAddress
@@ -83,8 +99,7 @@ export const SendFundModal: React.FC<{
       const { owner: recipientAddress } = await tnsClient.ownerOf({ tokenId });
 
       // get stargate client
-      const signer = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(signer);
+      const client = await getKeplrSigningStargateClient(networkId);
 
       // send tokens
       const response = await client.sendTokens(
@@ -92,10 +107,10 @@ export const SendFundModal: React.FC<{
         recipientAddress,
         [
           {
-            denom: toriCurrency.coinMinimalDenom,
+            denom: nativeCurrency.denom,
             amount: Decimal.fromUserInput(
               fieldValues.amount,
-              toriCurrency.coinDecimals
+              nativeCurrency.decimals
             ).atomics,
           },
         ],
@@ -125,9 +140,9 @@ export const SendFundModal: React.FC<{
       onClose={onClose}
       width={400}
       label={`Your wallet has ${prettyPrice(
-        process.env.TERITORI_NETWORK_ID || "",
-        toriBalance?.amount || "0",
-        toriBalance?.denom || ""
+        selectedWallet?.networkId || "",
+        currencyBalance?.amount || "0",
+        currencyBalance?.denom || ""
       )}`}
     >
       <View
@@ -135,28 +150,29 @@ export const SendFundModal: React.FC<{
           alignItems: "center",
         }}
       >
-        <TextInputCustom<SendFundFormType>
+        <TextInputCustom<TNSSendFundsFormType>
           name="comment"
           label="COMMENT ?"
           control={control}
           defaultValue="Sent from Teritori"
           placeHolder="Type your comment here"
-          style={{ marginBottom: 12 }}
+          containerStyle={{ marginBottom: layout.padding_x1_5, width: "100%" }}
         />
 
-        <TextInputCustom<SendFundFormType>
+        <TextInputCustom<TNSSendFundsFormType>
           name="amount"
-          label={`${toriCurrency.coinDenom} AMOUNT ?`}
+          label={`${nativeCurrency?.displayName} AMOUNT ?`}
           control={control}
           placeHolder="Type your amount here"
           rules={{
             max: Decimal.fromAtomics(
-              toriBalance?.amount || "0",
-              toriCurrency.coinDecimals
+              currencyBalance?.amount || "0",
+              nativeCurrency?.decimals || 0
             ).toString(),
             required: true,
           }}
-          currency={toriCurrency}
+          currency={keplrCurrencyFromNativeCurrencyInfo(nativeCurrency)}
+          containerStyle={{ width: "100%" }}
         />
         <PrimaryButton
           size="M"
@@ -164,6 +180,7 @@ export const SendFundModal: React.FC<{
           style={{
             marginVertical: 20,
           }}
+          fullWidth
           loader
           onPress={formHandleSubmit(handleSubmit)}
         />

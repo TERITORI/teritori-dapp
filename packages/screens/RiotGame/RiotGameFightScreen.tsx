@@ -1,10 +1,14 @@
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import addCircleSFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { SpacerColumn } from "../../components/spacer";
 import { Squad } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
-import { useSquadStaking } from "../../hooks/riotGame/useSquadStaking";
+import { useSquadStakingConfig } from "../../hooks/riotGame/useSquadStakingConfig";
+import { useSquadStakingSquadsV2 } from "../../hooks/riotGame/useSquadStakingSquadsV2";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
@@ -17,15 +21,16 @@ const FIGHT_BG_URI =
 
 export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();
+  const selectedWallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
 
+  const { data: squadStakingConfig } = useSquadStakingConfig(networkId);
   const {
-    squads,
-    squadStakingConfig,
-    currentUser,
-    squadWithdraw,
-    isSquadsLoaded,
-    fetchSquads,
-  } = useSquadStaking();
+    data: squads,
+    isInitialLoading,
+    refetch: fetchSquads,
+  } = useSquadStakingSquadsV2(selectedWallet?.userId);
+  const isSquadsLoaded = !!isInitialLoading;
 
   const [now, setNow] = useState<number>(0);
 
@@ -48,7 +53,7 @@ export const RiotGameFightScreen = () => {
   };
 
   const onCloseClaimModal = () => {
-    fetchSquads(currentUser || "");
+    fetchSquads();
   };
 
   useEffect(() => {
@@ -61,11 +66,12 @@ export const RiotGameFightScreen = () => {
     };
   }, []);
 
-  useEffect(() => {
+  const focusEffect = useCallback(() => {
     if (isSquadsLoaded && squadStakingConfig?.owner && squads.length === 0) {
       navigation.replace("RiotGameEnroll");
     }
   }, [isSquadsLoaded, navigation, squadStakingConfig?.owner, squads.length]);
+  useFocusEffect(focusEffect);
 
   return (
     <GameContentView bgImage={{ uri: FIGHT_BG_URI }}>
@@ -87,8 +93,6 @@ export const RiotGameFightScreen = () => {
         return (
           <FightSection
             key={squad.start_time}
-            currentUser={currentUser}
-            squadWithdraw={squadWithdraw}
             squad={squad}
             onCloseClaimModal={onCloseClaimModal}
             now={now}
@@ -113,8 +117,6 @@ export const RiotGameFightScreen = () => {
         return (
           <FightSection
             key={squad.start_time}
-            currentUser={currentUser}
-            squadWithdraw={squadWithdraw}
             squad={squad}
             onCloseClaimModal={onCloseClaimModal}
             now={now}
@@ -124,9 +126,12 @@ export const RiotGameFightScreen = () => {
       })}
 
       <PrimaryButtonOutline
-        style={{
+        touchableStyle={{
           alignSelf: "flex-end",
           marginTop: layout.padding_x1_5,
+          paddingRight: 2 * layout.padding_x4,
+        }}
+        style={{
           paddingRight: 2 * layout.padding_x4,
         }}
         onPress={gotoMarketplace}

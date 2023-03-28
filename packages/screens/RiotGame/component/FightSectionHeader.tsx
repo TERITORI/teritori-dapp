@@ -24,7 +24,7 @@ export const FightSectionHeader: React.FC<FightSectionHeaderProps> = ({
   const navigation = useAppNavigation();
 
   const gotoEnroll = () => {
-    navigation.navigate("RiotGameEnroll");
+    navigation.replace("RiotGameEnroll");
   };
 
   return (

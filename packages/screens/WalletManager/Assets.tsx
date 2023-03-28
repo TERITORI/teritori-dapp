@@ -7,27 +7,26 @@ import { BrandText } from "../../components/BrandText";
 import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getNetwork } from "../../networks";
-import { Balance, prettyPrice } from "../../utils/coins";
+import { useBalances } from "../../hooks/useBalances";
+import { parseUserId } from "../../networks";
+import { prettyPrice } from "../../utils/coins";
 import { neutral22, neutral33 } from "../../utils/style/colors";
 import { smallMobileWidth } from "../../utils/style/layout";
 import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
 
 const collapsedCount = 5;
 
-export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
-  networkId,
-  balances,
+export const Assets: React.FC<{ userId: string | undefined }> = ({
+  userId,
 }) => {
   const [isDepositVisible, setDepositVisible] = useState(false);
   const [isWithdrawVisible, setWithdrawVisible] = useState(false);
   const [targetCurrency, setTargetCurrency] = useState<string>();
   const [expanded, setExpanded] = useState(false);
-  const selectedNetworkId = useSelectedNetworkId();
   const { width } = useWindowDimensions();
+  const [network, userAddress] = parseUserId(userId);
+  const balances = useBalances(network?.id, userAddress);
 
-  const network = getNetwork(networkId);
   if (!network) {
     return null;
   }
@@ -154,7 +153,7 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
             >
               <CurrencyIcon
                 size={64}
-                networkId={networkId}
+                networkId={network.id}
                 denom={currency.denom}
               />
               <View style={{ marginLeft: 16 }}>
@@ -166,7 +165,7 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
                 >
                   <BrandText>
                     {prettyPrice(
-                      selectedNetworkId,
+                      network.id,
                       balance?.amount || "0",
                       currency.denom
                     )}
@@ -216,14 +215,14 @@ export const Assets: React.FC<{ networkId: string; balances: Balance[] }> = ({
       })}
       <DepositWithdrawModal
         variation="deposit"
-        networkId={networkId}
+        networkId={network.id}
         targetCurrency={targetCurrency}
         onClose={() => setDepositVisible(false)}
         isVisible={isDepositVisible}
       />
       <DepositWithdrawModal
         variation="withdraw"
-        networkId={networkId}
+        networkId={network.id}
         targetCurrency={targetCurrency}
         onClose={() => setWithdrawVisible(false)}
         isVisible={isWithdrawVisible}

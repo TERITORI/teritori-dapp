@@ -1,4 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 
@@ -9,17 +10,17 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { useTokenList } from "../../hooks/tokens";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  getFirstKeplrAccount,
-  getNonSigningCosmWasmClient,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+  getKeplrSigningCosmWasmClient,
+  mustGetNonSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+  getCosmosNetwork,
+} from "../../networks";
 import { neutral17 } from "../../utils/style/colors";
 import { modalWidthRatio, smallMobileWidth } from "../../utils/style/layout";
-import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 
@@ -33,26 +34,33 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();
   const { setToastSuccess, setToastError } = useFeedbacks();
-  const { tokens } = useTokenList();
-  const isKeplrConnected = useIsKeplrConnected();
-  const userHasCoWallet = useAreThereWallets();
-  const contractAddress =
-    process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || "";
+  const selectedWallet = useSelectedWallet();
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const network = getCosmosNetwork(selectedWallet?.networkId);
+  const walletAddress = selectedWallet?.address;
+  const normalizedTokenId = (
+    name + network?.nameServiceTLD || ""
+  ).toLowerCase();
 
   const { width } = useWindowDimensions();
 
   const initData = async () => {
     try {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+      if (!network.nameServiceContractAddress) {
+        throw new Error("network not supported");
+      }
+
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
 
       const client = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
-        contractAddress
+        network.nameServiceContractAddress
       );
 
       // If this query fails it means that the token does not exist.
       const { extension } = await client.nftInfo({
-        tokenId: name + process.env.TLD,
+        tokenId: name + network.nameServiceTLD || "",
       });
       console.log("in data", extension);
       setInitialized(true);
@@ -69,27 +77,24 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
     if (!initialized) initData();
   });
 
+  const queryClient = useQueryClient();
+
   const submitData = async (data: Metadata) => {
     console.log("data", data);
-    if (!isKeplrConnected) {
+    if (!walletAddress) {
       setToastError({
-        title: "Please connect Keplr",
+        title: "No wallet address",
         message: "",
       });
       return;
     }
-    if (
-      tokens.length &&
-      (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))
-    ) {
+    if (tokens.length && !tokens.includes(normalizedTokenId)) {
       setToastError({
         title: "Something went wrong!",
         message: "",
       });
       return;
     }
-
-    const normalizedTokenId = (name + process.env.TLD).toLowerCase();
 
     const msg = {
       update_metadata: {
@@ -99,13 +104,16 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
     };
 
     try {
-      const walletAddress = (await getFirstKeplrAccount()).address;
+      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+      if (!network.nameServiceContractAddress) {
+        throw new Error("network not supported");
+      }
 
-      const signingClient = await getSigningCosmWasmClient();
+      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
 
       const updatedToken = await signingClient.execute(
         walletAddress,
-        contractAddress,
+        network.nameServiceContractAddress,
         msg,
         "auto"
       );
@@ -131,6 +139,9 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
         message,
       });
     }
+    await queryClient.invalidateQueries(
+      nsNameInfoQueryKey(selectedWallet?.networkId, normalizedTokenId)
+    );
   };
 
   return (

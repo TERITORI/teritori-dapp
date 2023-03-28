@@ -14,12 +14,13 @@ import { SVG } from "../../components/SVG";
 import { PrimaryBadge } from "../../components/badges/PrimaryBadge";
 import ModalBase from "../../components/modals/ModalBase";
 import { useTNS } from "../../context/TNSProvider";
-import { useTokenList } from "../../hooks/tokens";
-import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
+import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral17, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { modalWidthRatio, smallMobileWidth } from "../../utils/style/layout";
-import { tokenWithoutTld } from "../../utils/tns";
+import { nsTokenWithoutTLD } from "../../utils/tns";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 const NameCard: React.FC<{
@@ -89,8 +90,9 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
   onClose,
 }) => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
-  const { tokens } = useTokenList();
-  const { alias } = usePrimaryAlias();
+  const selectedWallet = useSelectedWallet();
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const { primaryAlias } = useNSPrimaryAlias(selectedWallet?.userId);
 
   const { setName } = useTNS();
 
@@ -110,8 +112,8 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
     <ModalBase
       onClose={() => onClose()}
       hideMainSeparator
-      label={` Welcome back, ${alias} !`}
       width={width < smallMobileWidth ? modalWidthRatio * width : 457}
+      label={` Welcome back, ${primaryAlias} !`}
     >
       <View style={{ flex: 1, alignItems: "center" }}>
         {!tokens.length ? (
@@ -134,16 +136,16 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
 
             {tokens.map((token) => (
               <NameCard
-                isPrimary={alias === token}
+                isPrimary={primaryAlias === token}
                 fullName={token}
                 key={token}
                 style={{ marginBottom: 20 }}
                 onPress={() => {
-                  setName(tokenWithoutTld(token));
+                  setName(nsTokenWithoutTLD(token));
                   onClose(
                     "TNSConsultName",
                     "TNSManage",
-                    tokenWithoutTld(token)
+                    nsTokenWithoutTLD(token)
                   );
                 }}
               />

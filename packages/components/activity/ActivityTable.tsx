@@ -5,11 +5,8 @@ import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
 import { useActivity } from "../../hooks/useActivity";
-import {
-  useSelectedNetworkId,
-  useSelectedNetworkInfo,
-} from "../../hooks/useSelectedNetwork";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { parseActivityId, parseUserId, txExplorerLink } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import {
   mineShaftColor,
@@ -19,7 +16,6 @@ import {
 } from "../../utils/style/colors";
 import { fontMedium14 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
-import { txExplorerLink } from "../../utils/teritori";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { Pagination } from "../Pagination";
@@ -57,11 +53,9 @@ export const ActivityTable: React.FC<{
   nftId?: string;
   collectionId?: string;
 }> = ({ nftId, collectionId }) => {
-  const itemsPerPage = 5;
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
-  const selectedNetworkId = useSelectedNetworkId();
   const { total, activities } = useActivity({
-    networkId: selectedNetworkId,
     collectionId: collectionId || "",
     nftId: nftId || "",
     offset: pageIndex * itemsPerPage,
@@ -82,7 +76,7 @@ export const ActivityTable: React.FC<{
         renderItem={({ item }) => <ActivityRow activity={item} />}
         keyExtractor={(item) => item.id}
         style={{
-          height: 248,
+          minHeight: 248,
           borderTopColor: mineShaftColor,
           borderTopWidth: 1,
         }}
@@ -92,6 +86,8 @@ export const ActivityTable: React.FC<{
         currentPage={pageIndex}
         maxPage={maxPage}
         itemsPerPage={itemsPerPage}
+        dropdownOptions={[50, 100, 200]}
+        setItemsPerPage={setItemsPerPage}
         onChangePage={setPageIndex}
       />
       <SpacerColumn size={2} />
@@ -100,15 +96,11 @@ export const ActivityTable: React.FC<{
 };
 
 const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
-  const txHash = activity.id.split("-")[1];
-  const buyerAddress = activity.buyerId && activity.buyerId.split("-")[1];
-  const sellerAddress = activity.sellerId && activity.sellerId.split("-")[1];
-  const buyerTNSMetadata = useTNSMetadata(buyerAddress);
-  const sellerTNSMetadata = useTNSMetadata(sellerAddress);
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetwork = selectedNetworkInfo?.network;
-
-  const addressPrefix = selectedNetworkInfo?.addressPrefix;
+  const [network, txHash] = parseActivityId(activity.id);
+  const [, buyerAddress] = parseUserId(activity.buyerId);
+  const [, sellerAddress] = parseUserId(activity.sellerId);
+  const buyerInfo = useNSUserInfo(activity.buyerId);
+  const sellerInfo = useNSUserInfo(activity.sellerId);
 
   return (
     <View
@@ -130,7 +122,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         }}
       >
         <ExternalLink
-          externalUrl={txExplorerLink(selectedNetwork, txHash)}
+          externalUrl={txExplorerLink(network?.id, txHash)}
           style={[fontMedium14, { width: "100%" }]}
           ellipsizeMode="middle"
           numberOfLines={1}
@@ -167,22 +159,18 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           },
         ]}
       >
-        {prettyPrice(
-          selectedNetworkInfo?.id || "",
-          activity.amount,
-          activity.denom
-        )}
+        {prettyPrice(network?.id || "", activity.amount, activity.denom)}
       </BrandText>
       <View
         style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.padding_x1 }}
       >
         <Link
-          to={`/user/${addressPrefix}-${buyerAddress}`}
+          to={`/user/${activity.buyerId}`}
           style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
-          {buyerTNSMetadata.metadata?.tokenId || buyerAddress}
+          {buyerInfo.metadata?.tokenId || buyerAddress}
         </Link>
       </View>
       <View
@@ -192,12 +180,12 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         }}
       >
         <Link
-          to={`/user/${addressPrefix}-${sellerAddress}`}
+          to={`/user/${activity.sellerId}`}
           style={[fontMedium14, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
-          {sellerTNSMetadata.metadata?.tokenId || sellerAddress}
+          {sellerInfo.metadata?.tokenId || sellerAddress}
         </Link>
       </View>
     </View>

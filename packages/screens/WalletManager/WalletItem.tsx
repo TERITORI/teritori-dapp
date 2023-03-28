@@ -11,17 +11,17 @@ import copySVG from "../../../assets/icons/copy.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import { BrandText } from "../../components/BrandText";
 import { Menu } from "../../components/Menu";
+import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { rewardsPrice, TotalRewards } from "../../hooks/useRewards";
-import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import { useAppNavigation } from "../../utils/navigation";
 import { getShortAddress_Small } from "../../utils/strings";
-import { neutral33, neutral77 } from "../../utils/style/colors";
 import { smallMobileWidth } from "../../utils/style/layout";
-import { accountExplorerLink } from "../../utils/teritori";
-import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
+import { rewardsPrice, TotalRewards, useRewards } from "../../hooks/useRewards";
+import { accountExplorerLink, getUserId } from "../../networks";
+import { neutral33, neutral77 } from "../../utils/style/colors";
+
 
 export interface WalletItemProps {
   index: number;
@@ -31,8 +31,8 @@ export interface WalletItemProps {
     title: string;
     address: string;
     pendingRewards: TotalRewards[];
-    claimReward: (validatorAddress: string) => Promise<void>;
     staked: number;
+    networkId: string;
   };
 }
 
@@ -43,8 +43,9 @@ export const WalletItem: React.FC<WalletItemProps> = ({
 }) => {
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
-  const navigation = useAppNavigation();
-  const selectedNetwork = useSelectedNetwork();
+  const { claimAllRewards } = useRewards(
+    getUserId(item.networkId, item.address)
+  );
 
   // Total rewards price with all denoms
   const claimablePrice = rewardsPrice(item.pendingRewards);
@@ -68,15 +69,8 @@ export const WalletItem: React.FC<WalletItemProps> = ({
           alignItems: "center",
         }}
       >
-        <SVG
-          source={getWalletIconFromTitle(item.title)}
-          height={width < smallMobileWidth ? 48 : 64}
-          width={width < smallMobileWidth ? 48 : 64}
-          style={{
-            marginRight: 16,
-          }}
-        />
-        <View>
+        <NetworkIcon networkId={item.networkId} size={64} />
+        <View style={{ marginLeft: 16 }}>
           <View>
             <BrandText>{item.title}</BrandText>
             <View
@@ -189,9 +183,8 @@ export const WalletItem: React.FC<WalletItemProps> = ({
             size="XS"
             text="Claim rewards"
             disabled={!claimablePrice}
-            onPress={() => {
-              item.claimReward(item.address);
-            }}
+            onPress={claimAllRewards}
+            loader
             style={{ marginRight: 16 }}
           />
         )}
@@ -203,7 +196,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               ? [
                   {
                     label: "Claim rewards",
-                    onPress: () => navigation.navigate("Staking"),
+                    onPress: claimAllRewards,
                     disabled: !claimablePrice,
                   },
                   {
@@ -214,10 +207,12 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               : []),
             {
               label: "View on Explorer",
-              onPress: () =>
+              onPress: () => {
+                console.log("item", item);
                 Linking.openURL(
-                  accountExplorerLink(selectedNetwork, item.address)
-                ),
+                  accountExplorerLink(item.networkId, item.address)
+                );
+              },
             },
             {
               label: "Rename address",

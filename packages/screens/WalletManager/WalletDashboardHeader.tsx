@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, useWindowDimensions } from "react-native";
+
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import penSVG from "../../../assets/icons/manage.svg";
@@ -8,14 +9,15 @@ import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useBalances } from "../../hooks/useBalances";
+import { useDelegations } from "../../hooks/useDelegations";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { rewardsPrice, useRewards } from "../../hooks/useRewards";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { useAppNavigation } from "../../utils/navigation";
 import { getShortAddress_Big } from "../../utils/strings";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { layout, smallMobileWidth } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 
 interface WalletDashboardHeaderProps {
   title: string;
@@ -104,17 +106,27 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
 
 export const WalletDashboardHeader: React.FC = () => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
-  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+  const selectedNetworkId = selectedWallet?.networkId;
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const navigation = useAppNavigation();
-  const totalUSDBalance = balances.reduce(
-    (total, bal) => total + (bal.usdAmount || 0),
-    0
-  );
-  const { totalsRewards, claimAllRewards } = useRewards(
+  const { delegationsBalances } = useDelegations(
+    selectedNetworkId,
     selectedWallet?.address
   );
+  const availableUSDBalance = useMemo(
+    () => balances.reduce((total, bal) => total + (bal.usdAmount || 0), 0),
+    [balances]
+  );
+  const delegationsUsdBalance = useMemo(
+    () =>
+      delegationsBalances.reduce(
+        (total, bal) => total + (bal.usdAmount || 0),
+        0
+      ),
+    [delegationsBalances]
+  );
+  const { totalsRewards, claimAllRewards } = useRewards(selectedWallet?.userId);
   // Total rewards price with all denoms
   const claimablePrice = rewardsPrice(totalsRewards);
 
@@ -127,7 +139,6 @@ export const WalletDashboardHeader: React.FC = () => {
         alignItems: "center",
         justifyContent: "space-between",
         paddingTop: layout.contentPadding,
-        paddingBottom: 16,
         flex: 1,
         flexWrap: "wrap",
         marginTop: -layout.padding_x3,
@@ -165,12 +176,13 @@ export const WalletDashboardHeader: React.FC = () => {
           <BrandText
             style={{
               fontSize: 20,
+              maxWidth: 324,
             }}
+            numberOfLines={1}
           >
-            {getShortAddress_Big(
-              tnsMetadata.metadata?.tokenId || selectedWallet?.address || "",
-              width
-            )}
+            {userInfo.metadata?.tokenId ||
+              tinyAddress(selectedWallet?.address, 24) ||
+              ""}
           </BrandText>
         </View>
       </View>
@@ -186,7 +198,15 @@ export const WalletDashboardHeader: React.FC = () => {
         <WalletDashboardHeaderCard
           {...{
             title: "Total Balance",
-            data: `$${totalUSDBalance.toFixed(2)}`,
+            data: `$${(availableUSDBalance + delegationsUsdBalance).toFixed(
+              2
+            )}`,
+          }}
+        />
+        <WalletDashboardHeaderCard
+          {...{
+            title: "Staked",
+            data: `$${delegationsUsdBalance.toFixed(2)}`,
           }}
         />
         <WalletDashboardHeaderCard

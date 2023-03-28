@@ -2,18 +2,21 @@ import React, { useEffect, useState } from "react";
 import { View, useWindowDimensions, ScrollView } from "react-native";
 
 import { Quest } from "../api/marketplace/v1/marketplace";
-import { backendClient } from "../utils/backend";
+import { backendClient, mustGetMarketplaceClient } from "../utils/backend";
 import { smallMobileWidth } from "../utils/style/layout";
+import { parseNetworkObjectId } from "../networks";
 import { QuestCard } from "./cards/QuestCard";
 
 export const Quests: React.FC<{
   userId?: string;
 }> = ({ userId }) => {
   const [quests, setQuests] = useState<Quest[]>([]);
+  const [network] = parseNetworkObjectId(userId);
 
   useEffect(() => {
     try {
       setQuests([]);
+      const backendClient = mustGetMarketplaceClient(network?.id);
       const stream = backendClient.Quests({
         limit: 100,
         offset: 0,
@@ -28,7 +31,7 @@ export const Quests: React.FC<{
     } catch (err) {
       console.error(err);
     }
-  }, [userId]);
+  }, [network?.id, userId]);
 
   const questCardStyle = {
     marginTop: 20,

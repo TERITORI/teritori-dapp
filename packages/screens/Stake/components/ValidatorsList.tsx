@@ -100,6 +100,8 @@ export const ValidatorsTable: React.FC<{
     : removeObjectKey(TABLE_ROWS_MOBILE, "actions");
   const selectedWallet = useSelectedWallet();
   const { rewards, claimReward } = useRewards(selectedWallet?.address);
+  // const { rewards, claimReward } = useRewards(selectedWallet?.userId);
+
   // returns
   return (
     <View>

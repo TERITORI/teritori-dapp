@@ -39,14 +39,15 @@ import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/Ter
 import { useCollections } from "../../hooks/useCollections";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
-  getNonSigningCosmWasmClient,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+  getCosmosNetwork,
+  getKeplrSigningCosmWasmClient,
+  mustGetNonSigningCosmWasmClient,
+  parseNftId,
+} from "../../networks";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { toriCurrency } from "../../utils/teritori";
 import { NFTDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
 
 export const RiotersFooterScreen: React.FC = () => {
@@ -116,16 +117,19 @@ export const RiotersFooterScreen: React.FC = () => {
 
   useEffect(() => {
     const effect = async () => {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
+        selectedNetworkId
+      );
+      const network = getCosmosNetwork(selectedNetworkId);
       const rioterFooterClient = new RioterFooterNftQueryClient(
         cosmwasmClient,
-        process.env.RIOTERS_FOOTER_CONTRACT_ADDRESS || ""
+        network?.riotersFooterContractAddress || ""
       );
       setClient(rioterFooterClient);
       setMapsize(await rioterFooterClient.queryMapSize());
     };
     effect();
-  }, []);
+  }, [selectedNetworkId]);
 
   useEffect(() => {
     const effect = async () => {
@@ -134,7 +138,9 @@ export const RiotersFooterScreen: React.FC = () => {
       }
       try {
         const nftCount = await client.queryNftCount();
-        const cosmwasmClient = await getSigningCosmWasmClient();
+        const cosmwasmClient = await getKeplrSigningCosmWasmClient(
+          selectedNetworkId
+        );
         const allNfts: FooterNftData[] = [];
         for (let i = 0; i < nftCount; i += 11) {
           const nfts = await client.queryNfts({
@@ -172,7 +178,7 @@ export const RiotersFooterScreen: React.FC = () => {
       }
     };
     effect();
-  }, [client]);
+  }, [client, selectedNetworkId]);
 
   const [collections, fetchMoreCollections] = useCollections({
     networkId: selectedNetworkId,
@@ -208,23 +214,28 @@ export const RiotersFooterScreen: React.FC = () => {
     setTransactionPaymentModalVisible(false);
     const finalPrice = await getPrice();
     if (!nftDropedAdjustment || finalPrice === undefined || !wallet) return;
-    const cosmwasmClientSignIn = await getSigningCosmWasmClient();
-
+    const cosmwasmClientSignIn = await getKeplrSigningCosmWasmClient(
+      selectedNetworkId
+    );
+    const network = getCosmosNetwork(selectedNetworkId);
     const rioterFooterClient = new RioterFooterNftClient(
       cosmwasmClientSignIn,
       wallet.address,
-      process.env.RIOTERS_FOOTER_CONTRACT_ADDRESS || ""
+      network?.riotersFooterContractAddress || ""
     );
     if (!rioterFooterClient) return;
     setTransactionPendingModalVisible(true);
     try {
-      const nftTokenId = nftDroped?.id.split("-")[2];
-      const nftMinterContractAddress = nftDroped?.id.split("-")[1];
+      const [, nftMinterContractAddress, nftTokenId] = parseNftId(
+        nftDroped?.id
+      );
       if (!nftMinterContractAddress || !nftTokenId) {
         console.log("nftMinterContractAddress or nftTokenId is undefined");
         return;
       }
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
+        selectedNetworkId
+      );
       const minterClient = new TeritoriBunkerMinterQueryClient(
         cosmwasmClient,
         nftMinterContractAddress.toString()
@@ -249,7 +260,7 @@ export const RiotersFooterScreen: React.FC = () => {
         [
           {
             amount: finalPrice.toString(),
-            denom: toriCurrency.coinMinimalDenom,
+            denom: "utori", // FIXME: don't harcode
           },
         ]
       );
@@ -260,7 +271,7 @@ export const RiotersFooterScreen: React.FC = () => {
       setTransactionPendingModalVisible(false);
       console.log("error", e);
     }
-  }, [getPrice, nftDropedAdjustment, wallet, nftDroped?.id]);
+  }, [getPrice, nftDroped?.id, nftDropedAdjustment, selectedNetworkId, wallet]);
 
   const isCloseToBottom = useCallback(
     ({ layoutMeasurement, contentOffset, contentSize }: NativeScrollEvent) => {
@@ -473,11 +484,12 @@ export const RiotersFooterScreen: React.FC = () => {
       {/* ----- Modal to process payment*/}
       {price !== undefined && (
         <TransactionPaymentModal
+          nftId={nftDroped?.id || ""}
           onPressProceed={handleBuy}
           onClose={() => setTransactionPaymentModalVisible(false)}
           visible={transactionPaymentModalVisible}
           price={price.toString()}
-          priceDenom={toriCurrency.coinMinimalDenom}
+          priceDenom="utori" // FIXME: don't hardcode
           label="Pay $Tori"
           textComponent={
             <BrandText style={fontSemibold14}>
@@ -503,6 +515,7 @@ export const RiotersFooterScreen: React.FC = () => {
 
       {/* ----- Success modal*/}
       <TransactionSuccessModal
+        networkId={nftDroped?.networkId}
         transactionHash={transactionHash}
         visible={transactionSuccessModalVisible}
         textComponent={

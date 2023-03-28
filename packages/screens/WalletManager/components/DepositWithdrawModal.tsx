@@ -10,7 +10,6 @@ import arrowDivideSVG from "../../../../assets/icons/arrow-divide.svg";
 import { BrandText } from "../../../components/BrandText";
 import { NetworkIcon } from "../../../components/NetworkIcon";
 import { SVG } from "../../../components/SVG";
-import { tinyAddress } from "../../../components/WalletSelector";
 import { MaxButton } from "../../../components/buttons/MaxButton";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
@@ -20,6 +19,7 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
+  getCosmosNetwork,
   getIBCCurrency,
   getKeplrSigningStargateClient,
   getNativeCurrency,
@@ -27,14 +27,14 @@ import {
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
 import { getShortAddress_Chain } from "../../../utils/strings";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
 import {
   layout,
   modalWidthRatio,
   smallMobileWidth,
 } from "../../../utils/style/layout";
-import { capitalize } from "../../../utils/text";
+import { neutral77, primaryColor } from "../../../utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
+import { capitalize, tinyAddress } from "../../../utils/text";
 import { TransactionForm } from "../types";
 
 type DepositModalProps = {
@@ -248,7 +248,14 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
             currency={keplrCurrencyFromNativeCurrencyInfo(nativeTargetCurrency)}
             rules={{ required: true, max }}
             placeHolder="0"
-            subtitle={`Available balance: ${max}`}
+            subtitle={
+              <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+                Available:{" "}
+                <BrandText style={[fontSemibold13, { color: primaryColor }]}>
+                  {max}
+                </BrandText>
+              </BrandText>
+            }
           >
             <MaxButton onPress={() => setValue("amount", max)} />
           </TextInputCustom>
@@ -365,10 +372,10 @@ const convertCosmosAddress = (
   sourceAddress: string | undefined,
   targetNetworkId: string | undefined
 ) => {
-  if (!sourceAddress || !targetNetworkId) {
+  if (!sourceAddress) {
     return undefined;
   }
-  const targetNetwork = getNetwork(targetNetworkId);
+  const targetNetwork = getCosmosNetwork(targetNetworkId);
   if (!targetNetwork) {
     return undefined;
   }

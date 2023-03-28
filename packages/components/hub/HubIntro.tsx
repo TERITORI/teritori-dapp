@@ -3,8 +3,8 @@ import { View } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
 import { Overview } from "../../screens/WalletManager/components/Overview";
@@ -15,7 +15,7 @@ import { Quests } from "../Quests";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
-import { UserImage } from "../images/UserImage";
+import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { Tabs } from "../tabs/Tabs";
 import { ProfileButton } from "./ProfileButton";
 
@@ -35,7 +35,7 @@ const ConnectedIntro: React.FC = () => {
     useState<keyof typeof walletsManagerTabItems>("overview");
 
   const selectedWallet = useSelectedWallet();
-  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
 
   return (
     <View
@@ -45,13 +45,17 @@ const ConnectedIntro: React.FC = () => {
         width: "100%",
       }}
     >
-      <UserImage image={tnsMetadata.metadata?.image} />
+      <AvatarWithFrame
+        isLoading={userInfo?.loading}
+        image={userInfo?.metadata?.image}
+        size="XL"
+      />
 
-      <ProfileButton touchableStyle={{ marginTop: 40 }} />
+      <ProfileButton style={{ marginTop: 40 }} />
 
       <Section title="Quests" subtitle="4">
         <FullWidthSeparator />
-        <Quests userId={`tori-${selectedWallet?.address}`} />
+        <Quests userId={selectedWallet?.userId} />
       </Section>
 
       <Section title="Wallets manager">
@@ -60,7 +64,7 @@ const ConnectedIntro: React.FC = () => {
         <Tabs
           items={walletsManagerTabItems}
           selected={selectedTab}
-          style={{ marginTop: 24, height: 40 }}
+          style={{ marginTop: 24 }}
           onSelect={setSelectedTab}
         />
         {selectedTab === "overview" && <Overview />}

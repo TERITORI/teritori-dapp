@@ -50,7 +50,6 @@ export const Menu: React.FC<MenuProps> = ({
         >
           <PrimaryBox
             width={width}
-            style={{}}
             mainContainerStyle={{
               position: "absolute",
               paddingHorizontal: 12,

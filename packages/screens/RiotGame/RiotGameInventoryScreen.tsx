@@ -10,6 +10,7 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { useRippers } from "../../hooks/riotGame/useRippers";
+import { isNFTStaked } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium24, fontMedium32 } from "../../utils/style/fonts";
@@ -109,7 +110,11 @@ export const RiotGameInventoryScreen = () => {
                   width={150}
                   height={150}
                 >
-                  <RipperAvatar size={132} source={ripper.imageUri} />
+                  <RipperAvatar
+                    size={132}
+                    source={ripper.imageUri}
+                    isStaked={isNFTStaked(ripper)}
+                  />
                 </TertiaryBox>
               );
             }}

@@ -36,6 +36,7 @@ export const PrimaryButton: React.FC<{
   RightComponent?: React.FC;
   color?: string;
   noBrokenCorners?: boolean;
+  isLoading?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -53,23 +54,24 @@ export const PrimaryButton: React.FC<{
   iconColor,
   color = primaryColor,
   noBrokenCorners = false,
+  isLoading,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
 
   const handlePress = useCallback(async () => {
-    if (isLoading || !onPress) {
+    if (isLocalLoading || !onPress) {
       return;
     }
-    setIsLoading(true);
+    setIsLocalLoading(true);
     try {
       await onPress();
     } catch (err) {
       console.error(err);
     }
-    setIsLoading(false);
-  }, [onPress, isLoading]);
+    setIsLocalLoading(false);
+  }, [onPress, isLocalLoading]);
 
-  const isDisabled = !!(disabled || (loader && isLoading));
+  const isDisabled = !!(disabled || (loader && (isLocalLoading || isLoading)));
 
   const boxProps = {
     style,
@@ -109,8 +111,8 @@ export const PrimaryButton: React.FC<{
           />
         ) : null}
 
-        {loader && isLoading ? (
-          <ActivityIndicator />
+        {(loader && isLocalLoading) || isLoading ? (
+          <ActivityIndicator color={primaryTextColor} />
         ) : (
           <BrandText
             style={[
@@ -124,7 +126,7 @@ export const PrimaryButton: React.FC<{
             {text}
           </BrandText>
         )}
-        {!isLoading && RightComponent && <RightComponent />}
+        {!(isLocalLoading || isLoading) && RightComponent && <RightComponent />}
       </SecondaryBox>
     </TouchableOpacity>
   );

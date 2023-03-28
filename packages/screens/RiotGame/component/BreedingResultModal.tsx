@@ -1,14 +1,13 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, Linking, StyleSheet, View } from "react-native";
 
 import firePNG from "../../../../assets/game/fire.png";
+import twitterSVG from "../../../../assets/icons/twitter.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { CollectionSocialButtons } from "../../../components/collections/CollectionSocialButtons";
+import { SocialButton } from "../../../components/buttons/SocialButton";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
-import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
-import { THE_RIOT_COLLECTION_ID } from "../../../utils/game";
 import { mineShaftColor, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -29,10 +28,15 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
   tokenInfo,
   onClose,
 }) => {
-  const { info: collectionInfo = { mintPhases: [] } } = useCollectionInfo(
-    THE_RIOT_COLLECTION_ID
-  );
+  const onPressTwitter = () => {
+    if (!tokenInfo?.id) return;
 
+    const twitterShareMessage = `Another one ⛩️️\nI just recruited this new Ripper ${tokenInfo.id} in my squad!\nJoin the fight: https://app.teritori.com/riot-game`;
+    const twitterShareLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      twitterShareMessage
+    )}`;
+    Linking.openURL(twitterShareLink);
+  };
   return (
     <ModalBase
       contentStyle={{ alignItems: "center" }}
@@ -56,8 +60,12 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
 
           <SpacerColumn size={2} />
 
-          <FlexRow justifyContent="space-between">
-            <CollectionSocialButtons collectionInfo={collectionInfo} />
+          <FlexRow justifyContent="center">
+            <SocialButton
+              text="Twitter"
+              iconSvg={twitterSVG}
+              onPress={onPressTwitter}
+            />
           </FlexRow>
         </View>
       }

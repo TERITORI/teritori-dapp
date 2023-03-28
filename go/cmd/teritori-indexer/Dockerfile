@@ -57,7 +57,11 @@ FROM ${RUNNER_IMAGE}
 
 COPY --from=builder /app/build/teritori-indexer /bin/teritori-indexer
 
+
+
 ENV HOME /app
 WORKDIR $HOME
+
+COPY networks.json $HOME/networks.json
 
 ENTRYPOINT ["teritori-indexer"]

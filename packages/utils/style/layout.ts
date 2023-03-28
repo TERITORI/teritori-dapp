@@ -6,7 +6,7 @@ export const screenContentMaxWidth = 1092;
 export const screenContentMaxWidthLarge = 1290;
 export const headerMarginHorizontal = 22;
 export const avatarWidth = 40;
-export const walletSelectorWidth = 220;
+export const topMenuWidth = 332;
 export const smallSidebarWidth = 76;
 export const fullSidebarWidth = 210;
 export const mobileWidth = 768;
@@ -14,6 +14,8 @@ export const smallMobileWidth = 512;
 export const homeCardGroupWidth = 1002;
 export const homeHighLightedWidth = 1000;
 export const modalWidthRatio = 0.95;
+export const NEWS_FEED_MAX_WIDTH = 900;
+
 
 const BASE_SIZE = 8;
 
@@ -38,6 +40,10 @@ export const layout = {
   // 4
   get padding_x0_5() {
     return this.padding_x1 * 0.5;
+  },
+  // 6
+  get padding_x0_75() {
+    return this.padding_x1 * 0.75;
   },
   // 12
   get padding_x1_5() {

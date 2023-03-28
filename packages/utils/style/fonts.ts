@@ -25,6 +25,13 @@ export const fontBold12: StyleProp<TextStyle> = {
   fontFamily: "Exo_700Bold",
   fontWeight: "700",
 };
+export const fontBold11: StyleProp<TextStyle> = {
+  fontSize: 11,
+  letterSpacing: -(12 * 0.04),
+  lineHeight: 14,
+  fontFamily: "Exo_700Bold",
+  fontWeight: "700",
+};
 export const fontBold9: StyleProp<TextStyle> = {
   fontSize: 9,
   letterSpacing: 9 * 0.08,

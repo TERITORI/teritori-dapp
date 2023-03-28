@@ -7,14 +7,16 @@ import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { isNFTStaked } from "../../../utils/game";
 import {
   yellowDefault,
   neutral33,
   secondaryColor,
   orangeLight,
   withAlpha,
+  redDefault,
 } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
+import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout, smallMobileWidth } from "../../../utils/style/layout";
 
 interface EnrollSlotProps {
@@ -29,6 +31,8 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
   isLeader,
 }) => {
   const { width } = useWindowDimensions();
+  const isStaked = isNFTStaked(ripper);
+
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
       <TertiaryBox
@@ -42,7 +46,16 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
         }}
       >
         {ripper ? (
-          <Image style={styles.ripperImage} source={{ uri: ripper.imageUri }} />
+          <>
+            <Image
+              style={[styles.ripperImage, isStaked && { opacity: 0.4 }]}
+              source={{ uri: ripper.imageUri }}
+            />
+
+            {isStaked && (
+              <BrandText style={styles.stakedTitle}>Staked</BrandText>
+            )}
+          </>
         ) : (
           <SVG
             source={addSVG}
@@ -61,15 +74,26 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
 };
 
 const styles = StyleSheet.create({
+  stakedTitle: {
+    position: "absolute",
+    top: 20,
+    color: redDefault,
+    backgroundColor: withAlpha(redDefault, 0.3),
+    paddingVertical: layout.padding_x0_5,
+    paddingHorizontal: layout.padding_x1_5,
+    borderRadius: 100,
+    ...(fontSemibold12 as object),
+  },
+
   leaderTitle: {
     position: "absolute",
     bottom: 20,
     color: yellowDefault,
-    backgroundColor: withAlpha(orangeLight, 0.1),
+    backgroundColor: withAlpha(orangeLight, 0.3),
     paddingVertical: layout.padding_x0_5,
     paddingHorizontal: layout.padding_x1_5,
     borderRadius: 100,
-    ...(fontSemibold13 as object),
+    ...(fontSemibold12 as object),
   },
   ripperImage: {
     width: 120,

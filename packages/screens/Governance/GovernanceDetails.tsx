@@ -19,7 +19,7 @@ import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrOfflineSigner } from "../../utils/keplr";
+import { getKeplrSigningStargateClient } from "../../networks";
 import { neutral44 } from "../../utils/style/colors";
 import { modalWidthRatio, smallMobileWidth } from "../../utils/style/layout";
 import { getTeritoriSigningStargateClient } from "../../utils/teritori";
@@ -111,8 +111,9 @@ export const GovernanceDetails: React.FC<{
     }
 
     try {
-      const keplrSigner = await getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(keplrSigner);
+      const client = await getKeplrSigningStargateClient(
+        selectedWallet.networkId
+      );
 
       const vote: MsgVoteEncodeObject = {
         typeUrl: "/cosmos.gov.v1beta1.MsgVote",
@@ -148,6 +149,7 @@ export const GovernanceDetails: React.FC<{
     numberProposal,
     selectedWallet?.address,
     selectedWallet?.connected,
+    selectedWallet?.networkId,
     setToastError,
     voteOption,
   ]);
@@ -671,7 +673,6 @@ export const GovernanceDetails: React.FC<{
                 <SecondaryButton
                   size="M"
                   text="Cancel"
-                  style={{}}
                   onPress={activeVotePopup}
                 />
               </View>
@@ -679,7 +680,6 @@ export const GovernanceDetails: React.FC<{
                 <PrimaryButton
                   size="M"
                   text="Confirm"
-                  style={{}}
                   onPress={() => {
                     if (checked !== "nothingChecked") {
                       handlePress();

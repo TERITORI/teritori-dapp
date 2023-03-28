@@ -1,24 +1,10 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, View, ViewStyle, useWindowDimensions } from "react-native";
-
-import {
-  CurrentSeasonResponse,
-  UserRankResponse,
-} from "../../../api/p2e/v1/p2e";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import {
-  TeritoriDistributorQueryClient,
-  TeritoriDistributorClient,
-} from "../../../contracts-clients/teritori-distributor/TeritoriDistributor.client";
+import { useGameRewards } from "../../../hooks/riotGame/useGameRewards";
+import { useSeasonRank } from "../../../hooks/riotGame/useSeasonRank";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { p2eBackendClient } from "../../../utils/backend";
 import { decimalFromAtomics } from "../../../utils/coins";
-import { TERITORI_DISTRIBUTOR_CONTRACT_ADDRESS } from "../../../utils/game";
-import {
-  getNonSigningCosmWasmClient,
-  getSigningCosmWasmClient,
-} from "../../../utils/keplr";
 import { yellowDefault } from "../../../utils/style/colors";
 import {
   layout,
@@ -138,8 +124,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
           size={width < smallMobileWidth ? "XS" : "SM"}
           // size="SM"
           title="Prize Pool"
-          content={`${currentSeason?.isPre ? 0 : currentSeason?.totalPrize} ${
-            currentSeason?.denom.toUpperCase() || ""
+          content={`${currentSeason?.isPre ? 0 : currentSeason?.totalPrize} ${currentSeason?.denom.toUpperCase() || ""
           }`}
           width={width < smallMobileWidth ? 100 : 150}
         />
@@ -147,14 +132,12 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
           // size="SM"
           size={width < smallMobileWidth ? "XS" : "SM"}
           title="Rank"
-          content={`${userRank?.userScore?.rank || 0}/${
-            userRank?.totalUsers || 0
+          content={`${userRank?.userScore?.rank || 0}/${userRank?.totalUsers || 0
           }`}
           width={width < smallMobileWidth ? 80 : 120}
         />
       </View>
-      {/* {claimableAmount !== 0 && selectedWallet?.address && ( */}
-      {1 && (
+      {+claimableAmount !== 0 && selectedWallet?.address && (
         <PrimaryButtonOutline
           disabled={isClaiming}
           color={yellowDefault}
@@ -163,9 +146,9 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
             isClaiming
               ? "Claiming..."
               : `Claim available rewards: ${decimalFromAtomics(
-                  process.env.TERITORI_NETWORK_ID || "",
+                  selectedWallet?.networkId,
                   "" + claimableAmount,
-                  "utori"
+                  "utori" // FIXME: don't hardcode denom and use prettyPrice
                 )} TORI`
           }
           style={{
@@ -174,6 +157,8 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
             marginTop: width < mobileWidth ? 10 : 0,
           }}
           // onPress={() => claimRewards(selectedWallet.address)}
+          touchableStyle={{ marginLeft: layout.padding_x1 }}
+          onPress={claimRewards}
           noBrokenCorners
         />
       )}
