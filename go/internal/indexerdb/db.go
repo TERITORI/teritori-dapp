@@ -52,6 +52,9 @@ var allModels = []interface{}{
 	// p2e
 	&P2eSquadStaking{},
 	&P2eLeaderboard{},
+
+	// feed
+	&Post{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

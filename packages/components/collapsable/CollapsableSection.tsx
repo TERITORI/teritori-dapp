@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     height: layout.iconButton,
     width: layout.iconButton,
     borderRadius: layout.iconButton / 2,
-    background: neutral33,
+    backgroundColor: neutral33,
     borderWidth: 1,
     borderColor: neutral44,
   },

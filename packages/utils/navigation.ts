@@ -2,6 +2,8 @@ import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
+import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
+
 export type RootStackParamList = {
   Home: undefined;
   MyCollection: undefined;
@@ -23,6 +25,15 @@ export type RootStackParamList = {
   Collection: { id: string };
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
+  Feed: undefined;
+  FeedNewArticle:
+    | (NewPostFormValues & {
+        additionalMention?: string;
+        additionalHashtag?: string;
+      })
+    | undefined;
+  FeedPostView: { id: string };
+  HashtagFeed: { hashtag: string };
 
   RiotGame: undefined;
   RiotGameEnroll: undefined;
@@ -88,6 +99,11 @@ const navConfig: {
     Collection: "collection/:id",
     CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",
+    Feed: "feed",
+    FeedNewArticle: "feed/new",
+    FeedPostView: "feed/post/:id",
+    HashtagFeed: "feed/hashtag/:hashtag",
+
     // ==== Staking
     Staking: "staking",
     // ==== ComingSoon

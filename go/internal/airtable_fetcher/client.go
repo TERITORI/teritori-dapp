@@ -6,7 +6,6 @@ type Client struct {
 
 type ClientConfig struct {
 	APIKey            string
-	APIKeydappsStore  string
 	BaseID            string
 	DAppStoreBaseID   string
 	LaunchpadTableID  string
@@ -21,7 +20,6 @@ type ClientConfig struct {
 func NewClient(apiKey string) *Client {
 	return &Client{config: ClientConfig{
 		APIKey:            apiKey,
-		APIKeydappsStore:  apiKey,
 		BaseID:            "appetXQzVoElrsJs5",
 		DAppStoreBaseID:   "appWvX70w3LrF80BL",
 		LaunchpadTableID:  "tbla2ZD8MtljtvHKt",

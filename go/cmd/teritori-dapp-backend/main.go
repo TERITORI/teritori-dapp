@@ -10,6 +10,8 @@ import (
 	"unicode"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/feed"
+	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -37,6 +39,7 @@ func main() {
 		airtableAPIKey           = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
 		airtableAPIKeydappsStore = fs.String("airtable-api-key-dapps-store", "", "api key of airtable for the dapps store")
 		networksFile             = fs.String("networks-file", "networks.json", "path to networks config file")
+		pinataJWT                = fs.String("pinata-jwt", "", "Pinata admin JWT token")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -52,6 +55,11 @@ func main() {
 	}
 	if *airtableAPIKeydappsStore == "" {
 		panic(errors.New("missing AIRTABLE_API_KEY_DAPPS_STORE"))
+	}
+
+	// Load Pinata JWT token
+	if *pinataJWT == "" {
+		panic(errors.New("env var PINATA_JWT must be provided"))
 	}
 
 	// load networks
@@ -100,14 +108,23 @@ func main() {
 		panic(errors.Wrap(err, "failed to create marketplace service"))
 	}
 
+	// P2E services
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
 	})
 
+	// Feed services
+	feedSvc := feed.NewFeedService(context.Background(), &feed.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+		PinataJWT: *pinataJWT,
+	})
+
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
+	feedpb.RegisterFeedServiceServer(server, feedSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),

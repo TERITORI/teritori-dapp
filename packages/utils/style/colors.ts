@@ -12,7 +12,7 @@ export const purpleDefault = "#9058EC";
 export const purpleLight = "#9990F5";
 export const lavenderDefault = "#AEB1FF";
 export const orangeDefault = "#EAA54B";
-export const redDefault = "#F46F76";
+export const redDefault = errorColor;
 
 export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
@@ -23,6 +23,7 @@ export const gameHighlight = "#FCEE4F";
 export const neutral00 = "#000000";
 export const neutral17 = "#171717";
 export const neutral11 = "#111111";
+export const neutral15 = "#151515";
 export const neutral1A = "#1A1B26";
 export const neutral22 = "#222222";
 export const neutral30 = "#2B2B33";
@@ -33,11 +34,12 @@ export const neutral55 = "#555555";
 export const neutral67 = "#676767";
 export const neutral77 = "#777777";
 export const neutralA3 = "#A3A3A3";
+export const transparentColor = "transparent";
+
 export const additionalRed = "#FFAEAE";
+export const additionalGreen = successColor;
 
 export const orangeLight = "#EAA54B";
-
-export const additionalGreen = "#C8FFAE";
 
 export const gradientColorTurquoise = "#A5FECB";
 export const gradientColorLightLavender = "#C3CFE2";
