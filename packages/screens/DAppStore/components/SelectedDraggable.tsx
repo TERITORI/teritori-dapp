@@ -18,6 +18,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontBold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { SEPARATOR } from "../query/util";
 import { dAppType } from "../types";
 
 export function SelectedDraggable({
@@ -31,7 +32,7 @@ export function SelectedDraggable({
 }) {
   const [showTrashIcon, setShowTrashIcon] = useState(false);
   const dispatch = useAppDispatch();
-  const draggableId = `${groupKey}*SEPARATOR*${id}`;
+  const draggableId = `${groupKey}${SEPARATOR}${id}`;
   const deleteFromList = () => {
     const action = {
       draggableId,

@@ -15,7 +15,7 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
-import { getValuesFromId } from "../../screens/DAppStore/query/util";
+import { getValuesFromId, SEPARATOR } from "../../screens/DAppStore/query/util";
 import { dAppGroup } from "../../screens/DAppStore/types";
 import {
   selectCheckedApps,
@@ -99,7 +99,7 @@ export const Sidebar: React.FC<{ availableApps: dAppGroup }> = ({
             return Object.values(item.options)
               .filter((dapp) => dapp.selectedByDefault)
               .map(({ groupKey, id }) => {
-                return `${groupKey}*SEPARATOR*${id}`;
+                return `${groupKey}${SEPARATOR}${id}`;
               });
           })
         )
