@@ -304,6 +304,16 @@ export interface TeritoriSocialFeedInterface
     memo?: string,
     funds?: Coin[]
   ) => Promise<ExecuteResult>;
+  tipPost: (
+    {
+      identifier,
+    }: {
+      identifier: string;
+    },
+    fee?: number | StdFee | "auto",
+    memo?: string,
+    funds?: Coin[]
+  ) => Promise<ExecuteResult>;
   deletePost: (
     {
       identifier,
@@ -388,6 +398,7 @@ export class TeritoriSocialFeedClient
     this.createPost = this.createPost.bind(this);
     this.updatePost = this.updatePost.bind(this);
     this.reactPost = this.reactPost.bind(this);
+    this.tipPost = this.tipPost.bind(this);
     this.deletePost = this.deletePost.bind(this);
     this.lockTokens = this.lockTokens.bind(this);
     this.unlockTokens = this.unlockTokens.bind(this);
@@ -554,6 +565,29 @@ export class TeritoriSocialFeedClient
           icon,
           identifier,
           up,
+        },
+      },
+      fee,
+      memo,
+      funds
+    );
+  };
+  tipPost = async (
+    {
+      identifier,
+    }: {
+      identifier: string;
+    },
+    fee: number | StdFee | "auto" = "auto",
+    memo?: string,
+    funds?: Coin[]
+  ): Promise<ExecuteResult> => {
+    return await this.client.execute(
+      this.sender,
+      this.contractAddress,
+      {
+        tip_post: {
+          identifier,
         },
       },
       fee,
