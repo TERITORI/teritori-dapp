@@ -14,6 +14,7 @@ import { useAppDispatch } from "../../../store/store";
 import { neutral00, neutral17, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { SEPARATOR } from "../query/util";
 import { dAppType } from "../types";
 import { CheckboxDappStore } from "./CheckboxDappStore";
 
@@ -26,7 +27,7 @@ export const DAppBox: React.FC<{
 }) => {
   const selectedApps = useSelector(selectCheckedApps);
   const dispatch = useAppDispatch();
-  const draggableId = `${groupKey}*SEPARATOR*${id}`;
+  const draggableId = `${groupKey}${SEPARATOR}${id}`;
   const [isChecked, setChecked] = useState(selectedApps.includes(draggableId));
 
   const handleClick = () => {

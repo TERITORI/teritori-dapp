@@ -2,7 +2,12 @@ import React from "react";
 import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { neutral1A, primaryColor, withAlpha } from "../../utils/style/colors";
+import {
+  neutral1A,
+  primaryColor,
+  primaryTextColor,
+  withAlpha,
+} from "../../utils/style/colors";
 import { fontMedium14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -34,7 +39,12 @@ export const SocialButtonSecondary: React.FC<{
             squaresBackgroundColor={withAlpha(neutral1A, 0.64)}
             cornerWidth={5.5}
           >
-            <SVG source={iconSvg} width={20} height={20} />
+            <SVG
+              source={iconSvg}
+              width={20}
+              height={20}
+              color={primaryTextColor}
+            />
           </SecondaryBox>
           <BrandText
             style={[

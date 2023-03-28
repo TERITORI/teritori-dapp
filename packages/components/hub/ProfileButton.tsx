@@ -9,9 +9,9 @@ import { OmniLink } from "../OmniLink";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 
 export const ProfileButton: React.FC<{
-  touchableStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
   isEdit?: boolean;
-}> = ({ touchableStyle, isEdit }) => {
+}> = ({ style, isEdit }) => {
   const selectedWallet = useSelectedWallet();
   const network = getCosmosNetwork(selectedWallet?.networkId);
   const { metadata } = useNSUserInfo(selectedWallet?.userId);
@@ -19,6 +19,7 @@ export const ProfileButton: React.FC<{
   if (selectedWallet && metadata?.tokenId)
     return (
       <OmniLink
+        style={style}
         to={
           !isEdit
             ? {
@@ -42,7 +43,6 @@ export const ProfileButton: React.FC<{
           size="XL"
           text={isEdit ? "Edit profile" : "My profile"}
           backgroundColor={neutral00}
-          touchableStyle={touchableStyle}
         />
       </OmniLink>
     );
@@ -56,12 +56,12 @@ export const ProfileButton: React.FC<{
             modal: "register",
           },
         }}
+        style={style}
       >
         <SecondaryButtonOutline
           size="XL"
           text="Create profile"
           backgroundColor={neutral00}
-          touchableStyle={touchableStyle}
         />
       </OmniLink>
     );
