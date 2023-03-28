@@ -16,8 +16,8 @@ import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
 import { getValuesFromId, SEPARATOR } from "../../screens/DAppStore/query/util";
-import { dAppGroup } from "../../screens/DAppStore/types";
 import {
+  selectAvailableApps,
   selectCheckedApps,
   setSelectedApps,
 } from "../../store/slices/dapps-store";
@@ -46,9 +46,7 @@ const SpringConfig: WithSpringConfig = {
   restDisplacementThreshold: 0.2,
 };
 
-export const Sidebar: React.FC<{ availableApps: dAppGroup }> = ({
-  availableApps,
-}) => {
+export const Sidebar: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
@@ -89,6 +87,8 @@ export const Sidebar: React.FC<{ availableApps: dAppGroup }> = ({
   };
 
   const selectedApps = useSelector(selectCheckedApps);
+  const availableApps = useSelector(selectAvailableApps);
+
   const dispatch = useAppDispatch();
 
   const dynamicSidebar = useMemo(() => {

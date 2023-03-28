@@ -1,17 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
+import { memo } from "react";
 
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { setAvailableApps } from "../../../store/slices/dapps-store";
+import { useAppDispatch } from "../../../store/store";
 import { getMarketplaceClient } from "../../../utils/backend";
+import { failbackDapps, fallbackDappGroups } from "../query/fallbackValues";
 import { dAppGroup, dAppType } from "../types";
-import { failbackDapps, fallbackDappGroups } from "./fallbackValues";
 
-export const useDAppStoreData = (): dAppGroup | undefined => {
+export const DAppStoreData: React.FC = memo(() => {
   interface IdAppsLUT {
     [key: string]: {
       [key: string]: dAppType;
     };
   }
-  const networkId = useSelectedNetworkId();
+  const networkId = "teritori"; // there is no difference between the networks
 
   const { data: dApps } = useQuery(
     ["DApps", networkId],
@@ -37,9 +39,6 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
       initialData: fallbackDappGroups,
     }
   );
-  if (dAppsGroups === undefined || dApps === undefined) {
-    return;
-  }
 
   const dAppsCol: IdAppsLUT = {};
   const formatted: dAppGroup = {};
@@ -78,6 +77,7 @@ export const useDAppStoreData = (): dAppGroup | undefined => {
       options,
     };
   });
-
-  return formatted;
-};
+  const dispatch = useAppDispatch();
+  dispatch(setAvailableApps(formatted));
+  return <></>;
+});
