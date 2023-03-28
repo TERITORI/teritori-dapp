@@ -443,6 +443,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <View key={index}>
             <SpacerColumn size={2} />
             <AudioView file={file} />
+            <SpacerColumn size={2} />
           </View>
         ))}
       {!isPostConsultation &&
@@ -454,10 +455,9 @@ export const RichText: React.FC<RichTextProps> = ({
               onDelete={removeAudio}
               onUploadThumbnail={addThumbnailToAddedAudio}
             />
+            <SpacerColumn size={2} />
           </View>
         ))}
-
-      <SpacerColumn size={2} />
 
       {!isPostConsultation && (
         <ActionsContainer>

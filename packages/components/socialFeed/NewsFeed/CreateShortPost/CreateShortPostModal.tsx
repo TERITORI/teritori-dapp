@@ -1,10 +1,8 @@
 import React from "react";
 import { MenuProvider } from "react-native-popup-menu";
 
-import { useAppNavigation } from "../../../../utils/navigation";
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../../../utils/style/layout";
 import ModalBase from "../../../modals/ModalBase";
-import { NewPostFormValues } from "../NewsFeed.type";
 import { NewsFeedInput } from "../NewsFeedInput";
 
 export const CreateShortPostModal: React.FC<{
@@ -20,20 +18,6 @@ export const CreateShortPostModal: React.FC<{
   additionalHashtag,
   onSubmitSuccess,
 }) => {
-  const navigation = useAppNavigation();
-
-  const onPressCreateArticle = (formValues: NewPostFormValues) => {
-    navigation.navigate(
-      "FeedNewArticle"
-      //   , {
-      //   ...formValues,
-      //   additionalHashtag,
-      //   additionalMention,
-      // }
-    );
-    onClose();
-  };
-
   return (
     <ModalBase
       visible={isVisible}
@@ -43,7 +27,6 @@ export const CreateShortPostModal: React.FC<{
     >
       <MenuProvider>
         <NewsFeedInput
-          onPressCreateArticle={onPressCreateArticle}
           onCloseCreateModal={onClose}
           type="post"
           onSubmitSuccess={onSubmitSuccess}
