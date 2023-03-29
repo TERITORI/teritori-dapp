@@ -1,12 +1,11 @@
 import React from "react";
 import { View } from "react-native";
 
-import { useAppNavigation } from "../../../utils/navigation";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold9 } from "../../../utils/style/fonts";
 import { fullSidebarWidth, layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
-import { CustomPressable } from "../../buttons/CustomPressable";
+import { OmniLink } from "../../OmniLink";
 import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 
 export const SidebarProfileButton: React.FC<{
@@ -16,17 +15,10 @@ export const SidebarProfileButton: React.FC<{
   isExpanded?: boolean;
   isLoading?: boolean;
 }> = ({ userId, image, tokenId, isExpanded, isLoading }) => {
-  const navigation = useAppNavigation();
   const imageWidth = 68;
 
   return (
-    <CustomPressable
-      onPress={() =>
-        navigation.navigate("UserPublicProfile", {
-          id: userId,
-        })
-      }
-    >
+    <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
       <View
         style={[
           {
@@ -66,6 +58,6 @@ export const SidebarProfileButton: React.FC<{
           </BrandText>
         </View>
       </View>
-    </CustomPressable>
+    </OmniLink>
   );
 };

@@ -63,6 +63,7 @@ import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
 import { IconBox } from "../../IconBox";
+import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
@@ -92,7 +93,6 @@ interface NewsFeedInputProps {
   onSubmitInProgress?: () => void;
   replyTo?: ReplyToType;
   onCloseCreateModal?: () => void;
-  onPressCreateArticle?: (formValues: NewPostFormValues) => void;
   // Receive this if the post is created from HashFeedScreen
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
@@ -121,7 +121,6 @@ export const NewsFeedInput = React.forwardRef<
       replyTo,
       onSubmitInProgress,
       onCloseCreateModal,
-      onPressCreateArticle,
       additionalHashtag,
       additionalMention,
     },
@@ -590,33 +589,29 @@ export const NewsFeedInput = React.forwardRef<
             </FileUploader>
 
             {type === "post" && (
-              <SecondaryButtonOutline
-                size="M"
-                color={
-                  formValues?.message.length >
-                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                    ? primaryTextColor
-                    : primaryColor
-                }
-                borderColor={primaryColor}
-                touchableStyle={{
-                  marginRight: layout.padding_x2_5,
-                }}
-                backgroundColor={
-                  formValues?.message.length >
-                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                    ? primaryColor
-                    : neutral17
-                }
-                text="Create an Article"
-                onPress={
-                  onPressCreateArticle
-                    ? () =>
-                        onPressCreateArticle && onPressCreateArticle(formValues)
-                    : undefined
-                }
-                squaresBackgroundColor={neutral17}
-              />
+              <OmniLink to={{ screen: "FeedNewArticle" }}>
+                <SecondaryButtonOutline
+                  size="M"
+                  color={
+                    formValues?.message.length >
+                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                      ? primaryTextColor
+                      : primaryColor
+                  }
+                  borderColor={primaryColor}
+                  touchableStyle={{
+                    marginRight: layout.padding_x2_5,
+                  }}
+                  backgroundColor={
+                    formValues?.message.length >
+                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                      ? primaryColor
+                      : neutral17
+                  }
+                  text="Create an Article"
+                  squaresBackgroundColor={neutral17}
+                />
+              </OmniLink>
             )}
 
             <PrimaryButton

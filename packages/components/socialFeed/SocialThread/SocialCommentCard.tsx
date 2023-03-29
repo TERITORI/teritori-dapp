@@ -4,7 +4,6 @@ import {
   LayoutRectangle,
   StyleProp,
   StyleSheet,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
@@ -20,7 +19,7 @@ import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../hooks/usePrevious";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId } from "../../../networks";
+import { parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
@@ -31,35 +30,31 @@ import {
   neutral00,
   neutral22,
   neutral33,
-  neutral77,
   primaryColor,
   secondaryColor,
   withAlpha,
 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
-import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { AnimationFadeInOut } from "../../animations/AnimationFadeInOut";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../buttons/PrimaryButtonOutline";
 import { CommentsContainer } from "../../cards/CommentsContainer";
-import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
-import { PostResultExtra } from "../NewsFeed/NewsFeed.type";
+import { PostExtra } from "../NewsFeed/NewsFeed.type";
 import { CommentsCount } from "../SocialActions/CommentsCount";
 import { Reactions } from "../SocialActions/Reactions";
 import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { TipButton } from "../SocialActions/TipButton";
-import { DateTime } from "./DateTime";
+import { SocialCardHeader } from "./SocialCardHeader";
 import { SocialMessageContent } from "./SocialMessageContent";
 
 export interface SocialCommentCardProps {
-  comment: PostResultExtra;
+  comment: PostExtra;
   style?: StyleProp<ViewStyle>;
   isLast?: boolean;
   onPressReply: OnPressReplyType;
@@ -79,17 +74,18 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   onScrollTo,
   parentOffsetValue = 0,
 }) => {
-  const [localComment, setLocalComment] = useState({ ...comment });
+  const [localComment, setLocalComment] = useState<PostExtra>({ ...comment });
   const navigation = useAppNavigation();
   const [replyShown, setReplyShown] = useState(false);
   const [replyListYOffset, setReplyListYOffset] = useState<number[]>([]);
   const [replyListLayout, setReplyListLayout] = useState<LayoutRectangle>();
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
+  const [, userAddress] = parseUserId(localComment.createdBy);
   const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
     useFetchComments({
       parentId: localComment.identifier,
-      totalCount: localComment.sub_post_length,
+      totalCount: localComment.subPostLength,
       enabled: replyShown,
     });
   const oldIsFetching = usePrevious(isFetching);
@@ -112,11 +108,9 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     () => (data ? combineFetchCommentPages(data.pages) : []),
     [data]
   );
-  const moreCommentsCount = localComment.sub_post_length - comments.length;
-
+  const moreCommentsCount = localComment.subPostLength - comments.length;
   const metadata = JSON.parse(localComment.metadata);
-  const authorId = getUserId(selectedNetworkId, localComment.post_by);
-  const authorNSInfo = useNSUserInfo(authorId);
+  const authorNSInfo = useNSUserInfo(localComment.createdBy);
   const userInfo = useNSUserInfo(wallet?.userId);
   const username = authorNSInfo?.metadata?.tokenId
     ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
@@ -216,69 +210,13 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
             <View style={styles.commentContainerInside}>
               {/*====== Card Header */}
-              <FlexRow>
-                {/*---- User image */}
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("UserPublicProfile", {
-                      id: authorId,
-                    })
-                  }
-                  style={{
-                    marginRight: layout.padding_x2,
-                  }}
-                >
-                  <AvatarWithFrame
-                    image={authorNSInfo?.metadata?.image}
-                    size="M"
-                    isLoading={authorNSInfo.loading}
-                  />
-                </TouchableOpacity>
+              <SocialCardHeader
+                authorAddress={userAddress}
+                authorId={localComment.createdBy}
+                postMetadata={metadata}
+                authorMetadata={authorNSInfo?.metadata}
+              />
 
-                {/*---- User name */}
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("UserPublicProfile", {
-                      id: authorId,
-                    })
-                  }
-                  activeOpacity={0.7}
-                >
-                  <AnimationFadeIn>
-                    <BrandText style={fontSemibold16}>
-                      {authorNSInfo?.metadata?.public_name ||
-                        localComment.post_by}
-                    </BrandText>
-                  </AnimationFadeIn>
-                </TouchableOpacity>
-
-                {/*---- User TNS name */}
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("UserPublicProfile", {
-                      id: authorId,
-                    })
-                  }
-                  style={{ marginHorizontal: layout.padding_x1_5 }}
-                >
-                  <BrandText
-                    style={[
-                      fontSemibold14,
-                      {
-                        color: neutral77,
-                      },
-                    ]}
-                  >
-                    @
-                    {authorNSInfo?.metadata?.tokenId
-                      ? tinyAddress(authorNSInfo.metadata.tokenId, 19)
-                      : localComment.post_by}
-                  </BrandText>
-                </TouchableOpacity>
-
-                {/*---- Date */}
-                <DateTime date={metadata.createdAt} />
-              </FlexRow>
               <SpacerColumn size={2} />
 
               {/*====== Card Content */}
@@ -302,7 +240,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 <SpacerRow size={2.5} />
                 <ReplyButton onPress={handleReply} />
                 <SpacerRow size={2.5} />
-                <CommentsCount count={localComment.sub_post_length} />
+                <CommentsCount count={localComment.subPostLength} />
 
                 {authorNSInfo.metadata?.tokenId !==
                   userInfo?.metadata?.tokenId && (
