@@ -19,11 +19,9 @@ export const screenTabItems = {
   },
   userPosts: {
     name: "User's Posts",
-    disabled: true,
   },
   mentionsPosts: {
     name: "Mentions Posts",
-    disabled: true,
   },
   // pathwar: {
   //   name: "Pathwar Challenges",

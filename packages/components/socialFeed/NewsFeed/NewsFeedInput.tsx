@@ -624,6 +624,7 @@ export const NewsFeedInput = React.forwardRef<
                 !wallet
               }
               isLoading={isLoading || isMutateLoading}
+              loader
               size="M"
               text={type === "comment" ? "Comment" : "Publish"}
               squaresBackgroundColor={neutral17}

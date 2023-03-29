@@ -45,6 +45,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <PrimaryButton
             disabled={publishDisabled}
             isLoading={loading}
+            loader
             text="Publish"
             size="M"
           />

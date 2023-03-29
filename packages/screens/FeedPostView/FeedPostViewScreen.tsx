@@ -48,7 +48,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 }) => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
-  const [refresh, setRefresh] = useState(0);
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
   const [postResult, setPostResult] = useState<PostResult>();
   const authorNSInfo = useNSUserInfo(
@@ -208,7 +207,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                 <SocialThreadCard
                   post={postResultToPost(selectedNetworkId, postResult)}
                   isPostConsultation
-                  refresh={refresh}
                   onPressReply={onPressReply}
                 />
               </View>
@@ -233,7 +231,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                 isRefreshing={isLoadingValue}
                 onPress={() => {
                   refetch();
-                  setRefresh((prev) => ++prev);
                 }}
               />
             </Animated.View>
@@ -244,7 +241,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               <CommentsContainer
                 comments={comments}
                 onPressReply={onPressReply}
-                refresh={refresh}
                 onScrollTo={(y: number) => aref.current?.scrollTo(y)}
                 parentOffsetValue={parentOffsetValue}
               />

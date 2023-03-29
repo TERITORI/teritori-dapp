@@ -470,6 +470,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <SpacerRow size={3} />
           <PrimaryButton
             disabled={publishDisabled}
+            loader
             isLoading={loading}
             text="Publish"
             size="M"
