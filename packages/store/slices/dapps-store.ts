@@ -6,20 +6,26 @@ import { RootState } from "../store";
 type pinnedAppsCollection = string[];
 
 interface DappsStorage {
-  selectedApps: pinnedAppsCollection;
   availableApps: dAppGroup;
 }
 
+interface DappsStoragePersisted {
+  selectedApps: pinnedAppsCollection;
+}
+
 const initialState: DappsStorage = {
-  selectedApps: [],
   availableApps: {},
+};
+
+const initialStatePersisted: DappsStoragePersisted = {
+  selectedApps: [],
 };
 
 export const selectAvailableApps = (state: RootState) =>
   state.dAppsStore.availableApps;
 
 export const selectCheckedApps = (state: RootState) => [
-  ...new Set(state.dAppsStore.selectedApps),
+  ...new Set(state.dAppsStorePersisted.selectedApps),
 ];
 
 const dAppsStore = createSlice({
@@ -29,6 +35,12 @@ const dAppsStore = createSlice({
     setAvailableApps: (state, action: PayloadAction<dAppGroup>) => {
       state.availableApps = action.payload;
     },
+  },
+});
+const dAppsStorePersisted = createSlice({
+  name: "dapps-storage-persisted",
+  initialState: initialStatePersisted,
+  reducers: {
     setSelectedApps: (state, action: PayloadAction<pinnedAppsCollection>) => {
       state.selectedApps = action.payload;
     },
@@ -54,8 +66,9 @@ const dAppsStore = createSlice({
     },
   },
 });
+export const { setAvailableApps } = dAppsStore.actions;
 
-export const { setAvailableApps, setCheckedApp, setSelectedApps } =
-  dAppsStore.actions;
+export const { setSelectedApps, setCheckedApp } = dAppsStorePersisted.actions;
 
+export const dAppsReducerPersisted = dAppsStorePersisted.reducer;
 export const dAppsReducer = dAppsStore.reducer;

@@ -114,6 +114,14 @@ export const Sidebar: React.FC = () => {
         return;
       }
       const option = availableApps[groupKey].options[appId];
+      if (option === undefined) {
+        /*
+         we found something inconsistent between the selected apps and what is available.
+         I will reset user selection to go back to a sane state
+         */
+        dispatch(setSelectedApps([]));
+        return;
+      }
 
       dynamicAppsSelection[element] = SIDEBAR_LIST[option.id]
         ? SIDEBAR_LIST[option.id]

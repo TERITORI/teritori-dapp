@@ -4,7 +4,6 @@ import { memo } from "react";
 import { setAvailableApps } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import { getMarketplaceClient } from "../../../utils/backend";
-import { failbackDapps, fallbackDappGroups } from "../query/fallbackValues";
 import { dAppGroup, dAppType } from "../types";
 
 export const DAppStoreData: React.FC = memo(() => {
@@ -18,32 +17,26 @@ export const DAppStoreData: React.FC = memo(() => {
   const { data: dApps } = useQuery(
     ["DApps", networkId],
     async () => {
-      // @ts-expect-error
-      const { group } = await getMarketplaceClient(networkId).DApps({});
-      return group;
+      return getMarketplaceClient(networkId)?.DApps({});
     },
     {
       cacheTime: 5 * 60 * 1000,
-      initialData: failbackDapps,
     }
   );
   const { data: dAppsGroups } = useQuery(
     ["DAppsGroups", networkId],
     async () => {
-      // @ts-expect-error
-      const { group } = await getMarketplaceClient(networkId).DAppsGroups({});
-      return group;
+      return getMarketplaceClient(networkId)?.DAppsGroups({});
     },
     {
       cacheTime: 5 * 60 * 1000,
-      initialData: fallbackDappGroups,
     }
   );
 
   const dAppsCol: IdAppsLUT = {};
   const formatted: dAppGroup = {};
 
-  dApps.forEach((record) => {
+  dApps?.group.forEach((record) => {
     dAppsCol[record.linkingId] = {
       [record.id]: {
         id: record.id,
@@ -58,7 +51,7 @@ export const DAppStoreData: React.FC = memo(() => {
     };
   });
 
-  dAppsGroups.forEach((record) => {
+  dAppsGroups?.group.forEach((record) => {
     const options = {} as {
       [key: string]: dAppType;
     };
@@ -78,6 +71,9 @@ export const DAppStoreData: React.FC = memo(() => {
     };
   });
   const dispatch = useAppDispatch();
-  dispatch(setAvailableApps(formatted));
+  if (formatted) {
+    dispatch(setAvailableApps(formatted));
+  }
+
   return <></>;
 });

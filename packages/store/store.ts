@@ -3,7 +3,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { persistStore, persistReducer } from "redux-persist";
 
-import { dAppsReducer } from "./slices/dapps-store";
+import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import { settingsReducer } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
 import { walletsReducer } from "./slices/wallets";
@@ -11,13 +11,15 @@ import { walletsReducer } from "./slices/wallets";
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["wallets", "settings", "dAppsStore", "squadPresets"],
+  whitelist: ["wallets", "settings", "dAppsStorePersisted", "squadPresets"],
+  blacklist: ["dAppsStore"],
 };
 
 const rootReducer = combineReducers({
   wallets: walletsReducer,
   settings: settingsReducer,
   squadPresets: squadPresetsReducer,
+  dAppsStorePersisted: dAppsReducerPersisted,
   dAppsStore: dAppsReducer,
 });
 
