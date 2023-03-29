@@ -15,7 +15,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-// import { ModalHeader } from "./SwapModal";
+import { ModalHeader } from "./SwapModal";
 
 type ConnectModalProps = {
   onClose: () => void;
@@ -36,8 +36,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     <ModalBase
       visible={visible}
       onClose={onClose}
-      // Header={() => <ModalHeader />}
-      Header={() => <></>}
+      Header={() => <ModalHeader />}
       width={456}
     >
       <View style={styles.modalChildren}>
