@@ -8,3 +8,6 @@ export const nsTokenWithoutTLD = (str: string): string =>
 export const isNSPath = (str: string) => str.includes("::");
 
 export const isNSToken = (str: string) => !isNSPath(str);
+
+export const isTokenOwnedByUser = (tokensArray: string[], name: string) =>
+  tokensArray.includes(name + process.env.TLD);

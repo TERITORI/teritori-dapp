@@ -244,44 +244,7 @@ func (p *Provider) GetNFTs(ctx context.Context, collectionID string, ownerID str
 			return nil, err
 		}
 
-		collection2, err := thegraph.GetCollectionNFTs(ctx, client, nftContractFilter, nftFilter2, thegraph.Nft_orderByPrice, sortDirection)
-		if err != nil {
-			return nil, err
-		}
-
 		for _, nftContract := range collection1.NftContracts {
-			nfts := nftContract.Nfts
-
-			for _, nft := range nfts {
-				var (
-					lockedOn = ""
-					ownerId  = nft.Owner
-				)
-
-				if nft.InSale {
-					lockedOn = nft.Owner
-					ownerId = nft.Seller
-				}
-
-				nft := marketplacepb.NFT{
-					Id:                 string(ethNetwork.NFTID(nftContract.Minter, nft.TokenID)),
-					NetworkId:          string(ethNetwork.CollectionID(nftContract.Minter)),
-					ImageUri:           nft.TokenURI,
-					MintAddress:        nftContract.Minter,
-					Price:              nft.Price,
-					Denom:              nft.Denom,
-					IsListed:           nft.InSale,
-					CollectionName:     nftContract.Name,
-					OwnerId:            ownerId,
-					LockedOn:           lockedOn,
-					NftContractAddress: nftContract.Id,
-				}
-
-				res = append(res, &nft)
-			}
-		}
-
-		for _, nftContract := range collection2.NftContracts {
 			nfts := nftContract.Nfts
 
 			for _, nft := range nfts {
@@ -310,6 +273,45 @@ func (p *Provider) GetNFTs(ctx context.Context, collectionID string, ownerID str
 				}
 
 				res = append(res, &nft)
+			}
+		}
+
+		if owner != "" {
+			collection2, err := thegraph.GetCollectionNFTs(ctx, client, nftContractFilter, nftFilter2, thegraph.Nft_orderByPrice, sortDirection)
+			if err != nil {
+				return nil, err
+			}
+
+			for _, nftContract := range collection2.NftContracts {
+				nfts := nftContract.Nfts
+
+				for _, nft := range nfts {
+					var (
+						lockedOn = ""
+						ownerId  = nft.Owner
+					)
+
+					if nft.InSale {
+						lockedOn = nft.Owner
+						ownerId = nft.Seller
+					}
+
+					nft := marketplacepb.NFT{
+						Id:                 string(ethNetwork.NFTID(nftContract.Minter, nft.TokenID)),
+						NetworkId:          ethNetwork.ID,
+						ImageUri:           nft.TokenURI,
+						MintAddress:        nftContract.Minter,
+						Price:              nft.Price,
+						Denom:              nft.Denom,
+						IsListed:           nft.InSale,
+						CollectionName:     nftContract.Name,
+						OwnerId:            ownerId,
+						LockedOn:           lockedOn,
+						NftContractAddress: nftContract.Id,
+					}
+
+					res = append(res, &nft)
+				}
 			}
 		}
 

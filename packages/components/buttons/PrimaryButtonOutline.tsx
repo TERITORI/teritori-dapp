@@ -1,5 +1,10 @@
 import React from "react";
-import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import {
+  ActivityIndicator,
+  StyleProp,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import {
@@ -20,11 +25,13 @@ export const PrimaryButtonOutline: React.FC<{
   onPress?: () => void;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
+  touchableStyle?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
   color?: string;
   noBrokenCorners?: boolean;
+  isLoading?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -33,11 +40,13 @@ export const PrimaryButtonOutline: React.FC<{
   onPress,
   squaresBackgroundColor,
   style,
+  touchableStyle = {},
   iconSVG,
   disabled = false,
   fullWidth = false,
   color = primaryColor,
   noBrokenCorners = false,
+  isLoading,
 }) => {
   const boxProps = {
     style,
@@ -53,7 +62,10 @@ export const PrimaryButtonOutline: React.FC<{
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      style={{ width: fullWidth ? "100%" : width, opacity: disabled ? 0.5 : 1 }}
+      style={[
+        { width: fullWidth ? "100%" : width, opacity: disabled ? 0.5 : 1 },
+        touchableStyle,
+      ]}
     >
       <TertiaryBox
         height={heightButton(size)}
@@ -66,19 +78,25 @@ export const PrimaryButtonOutline: React.FC<{
         }}
         {...boxProps}
       >
-        {iconSVG ? (
-          <SVG
-            source={iconSVG}
-            color={color}
-            width={16}
-            height={16}
-            style={{ marginRight: 8 }}
-          />
-        ) : null}
+        {isLoading ? (
+          <ActivityIndicator color={primaryColor} />
+        ) : (
+          <>
+            {iconSVG ? (
+              <SVG
+                source={iconSVG}
+                color={color}
+                width={16}
+                height={16}
+                style={{ marginRight: 8 }}
+              />
+            ) : null}
 
-        <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
-          {text}
-        </BrandText>
+            <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
+              {text}
+            </BrandText>
+          </>
+        )}
       </TertiaryBox>
     </TouchableOpacity>
   );

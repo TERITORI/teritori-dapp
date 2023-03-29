@@ -4,5 +4,5 @@
   "compilerOptions": {
     "useDefineForClassFields": false, // this is needed by cosmwasm-ts-codegen clients
     "strict": true
-  },
+  }
 }

@@ -73,7 +73,7 @@ export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
           selected={selectedTab}
           items={tabItemsNFTs}
           onSelect={setSelectedTab}
-          style={{ width: 436, height: 44, alignSelf: "flex-end" }}
+          style={{ width: 436, alignSelf: "flex-end" }}
         />
       </View>
 

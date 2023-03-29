@@ -13,6 +13,7 @@ export const PrimaryBox: React.FC<{
   style?: StyleProp<ViewStyle>;
   mainContainerStyle?: StyleProp<ViewStyle>;
   noBrokenCorners?: boolean;
+  colors?: string[];
 }> = ({
   width,
   height,
@@ -22,6 +23,7 @@ export const PrimaryBox: React.FC<{
   style,
   mainContainerStyle,
   children,
+  colors,
   noBrokenCorners,
 }) => {
   const flatMainContainerStyle = mainContainerStyle
@@ -62,7 +64,13 @@ export const PrimaryBox: React.FC<{
                 padding: 1,
               },
             ]}
-            colors={disabled ? [neutral67, "#B7B7B7"] : ["#01B7C5", "#782C96"]}
+            colors={
+              disabled
+                ? [neutral67, "#B7B7B7"]
+                : colors
+                ? colors
+                : ["#01B7C5", "#782C96"]
+            }
           >
             {/* ---- Content container */}
             <View
@@ -119,7 +127,11 @@ export const PrimaryBox: React.FC<{
                   }}
                   // Approximate colors for the corners border, no inconvenient visible to naked eyes.
                   colors={
-                    disabled ? [neutral67, "#666666"] : ["#04B4C4", "#04B3C3"]
+                    disabled
+                      ? [neutral67, "#666666"]
+                      : colors
+                      ? [colors[0], colors[0]]
+                      : ["#04B4C4", "#04B3C3"]
                   }
                 />
 
@@ -154,7 +166,11 @@ export const PrimaryBox: React.FC<{
                   }}
                   // Approximate colors for the corners border, no inconvenient visible to naked eyes.
                   colors={
-                    disabled ? ["#B7B7B7", "#bebbbb"] : ["#7c31a0", "#7c2fa2"]
+                    disabled
+                      ? ["#B7B7B7", "#bebbbb"]
+                      : colors
+                      ? [colors[colors.length - 1], colors[colors.length - 1]]
+                      : ["#7c31a0", "#7c2fa2"]
                   }
                 />
               </>

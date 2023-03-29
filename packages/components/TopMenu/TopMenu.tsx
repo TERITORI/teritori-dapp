@@ -1,17 +1,10 @@
 import React, { useRef } from "react";
-import {
-  View,
-  ViewStyle,
-  TouchableOpacity,
-  StyleProp,
-  StyleSheet,
-} from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useAppNavigation } from "../../utils/navigation";
+import { Wallet } from "../../context/WalletsProvider";
 import {
   neutral00,
   neutral33,
@@ -22,6 +15,7 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, topMenuWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
+import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -32,23 +26,14 @@ import { TopMenuMyTeritories } from "./TopMenuMyTeritories";
 import { TopMenuMyWallets } from "./TopMenuMyWallets";
 import { WalletView } from "./WalletView";
 
-// FIXME: the dropdown menu goes under other elements, consider doing a web component and using https://www.npmjs.com/package/react-native-select-dropdown for native
-
 export const TopMenu: React.FC<{
-  style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
-  const selectedWallet = useSelectedWallet();
-  const navigation = useAppNavigation();
-
+  selectedWallet?: Wallet;
+}> = ({ selectedWallet }) => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
 
-  if (!selectedWallet) {
-    return null;
-  }
-
   return (
-    <View style={style} ref={dropdownRef}>
+    <View ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
         <TertiaryBox
           width={220}
@@ -87,11 +72,11 @@ export const TopMenu: React.FC<{
         <TopMenuLiveMint />
 
         <Separator />
-        <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+        <OmniLink to={{ screen: "Settings" }}>
           <FlexCol style={{ paddingVertical: layout.padding_x1_5 }}>
             <BrandText style={styles.settingsText}>Settings</BrandText>
           </FlexCol>
-        </TouchableOpacity>
+        </OmniLink>
       </TertiaryBox>
     </View>
   );

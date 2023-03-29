@@ -9,12 +9,10 @@ import {
   FieldValues,
 } from "react-hook-form";
 import {
-  NativeSyntheticEvent,
   Pressable,
   StyleProp,
   StyleSheet,
   TextInput,
-  TextInputKeyPressEventData,
   TextInputProps,
   TextStyle,
   View,
@@ -22,8 +20,19 @@ import {
 } from "react-native";
 
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
-import { neutral22, neutral77, secondaryColor } from "../../utils/style/colors";
-import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
+import { handleKeyPress } from "../../utils/keyboard";
+import {
+  additionalRed,
+  neutral22,
+  neutral77,
+  secondaryColor,
+} from "../../utils/style/colors";
+import {
+  fontMedium10,
+  fontSemibold14,
+  fontSemibold20,
+} from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -49,7 +58,38 @@ export interface TextInputCustomProps<T extends FieldValues>
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: React.ReactElement;
   labelStyle?: TextStyle;
+  containerStyle?: ViewStyle;
+  boxMainContainerStyle?: ViewStyle;
+  noBrokenCorners?: boolean;
+  error?: string;
+  fullWidth?: boolean;
 }
+
+export const Label: React.FC<{
+  children: string;
+  style?: TextStyle;
+  isRequired?: boolean;
+}> = ({ children, style, isRequired }) => (
+  <View
+    style={{
+      flexDirection: "row",
+    }}
+  >
+    <BrandText style={[styles.labelText, fontSemibold14, style]}>
+      {children}
+    </BrandText>
+    {!!isRequired && (
+      <BrandText
+        style={[
+          fontSemibold20,
+          { color: additionalRed, marginLeft: layout.padding_x0_5 },
+        ]}
+      >
+        *
+      </BrandText>
+    )}
+  </View>
+);
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const TextInputCustom = <T extends FieldValues>({
@@ -71,6 +111,11 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
+  containerStyle,
+  boxMainContainerStyle,
+  error,
+  noBrokenCorners,
+  fullWidth,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -91,7 +136,7 @@ export const TextInputCustom = <T extends FieldValues>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
-  const error = useMemo(() => {
+  const fieldError = useMemo(() => {
     if (fieldState.error) {
       if (fieldState.error.message) {
         return fieldState.error.message;
@@ -129,27 +174,14 @@ export const TextInputCustom = <T extends FieldValues>({
     }
   };
 
-  // Handling key pressing
-  const handleKeyPress = (
-    event: NativeSyntheticEvent<TextInputKeyPressEventData>
-  ) => {
-    const {
-      nativeEvent: { key: keyValue },
-    } = event;
-    switch (keyValue) {
-      case "Enter":
-        if (onPressEnter) onPressEnter();
-    }
-  };
-
   return (
-    <>
+    <View style={containerStyle}>
       {variant === "labelOutside" && (
         <>
           <View style={styles.rowEnd}>
-            <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
+            <Label style={labelStyle} isRequired={!!rules?.required}>
               {label}
-            </BrandText>
+            </Label>
             {subtitle}
           </View>
           <SpacerColumn size={1} />
@@ -159,10 +191,11 @@ export const TextInputCustom = <T extends FieldValues>({
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
-        mainContainerStyle={styles.mainContainer}
+        mainContainerStyle={[styles.mainContainer, boxMainContainerStyle]}
         width={width}
         fullWidth={!width}
         height={height}
+        noBrokenCorners={noBrokenCorners}
       >
         <View style={styles.innerContainer}>
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
@@ -178,20 +211,20 @@ export const TextInputCustom = <T extends FieldValues>({
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
-              onChangeText={handleChangeText}
-              onKeyPress={handleKeyPress}
+              onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
               placeholderTextColor="#999999"
               value={field.value}
               style={styles.textInput}
               {...restProps}
+              onChangeText={handleChangeText}
             />
           </View>
 
           <>{children}</>
         </View>
       </TertiaryBox>
-      <ErrorText>{error}</ErrorText>
-    </>
+      <ErrorText>{error || fieldError}</ErrorText>
+    </View>
   );
 };
 

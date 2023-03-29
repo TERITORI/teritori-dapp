@@ -74,12 +74,7 @@ export const StakeScreen: React.FC = () => {
       <View style={styles.rowHeader}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
         <View style={styles.rowWithCenter}>
-          <Tabs
-            items={tabs}
-            onSelect={setSelectedTab}
-            style={{ height: 44 }}
-            selected={selectedTab}
-          />
+          <Tabs items={tabs} onSelect={setSelectedTab} selected={selectedTab} />
         </View>
       </View>
       <ValidatorsTable
