@@ -135,7 +135,7 @@ export const Sidebar: React.FC = () => {
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
 
     return dynamicAppsSelection;
-  }, [selectedApps, availableApps]);
+  }, [selectedApps, availableApps, dispatch]);
 
   // returns
   return (
