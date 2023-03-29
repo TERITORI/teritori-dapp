@@ -30,6 +30,6 @@ type TeritoriCollection struct {
 	MintContractAddress string                `gorm:"primaryKey"`
 	NFTContractAddress  string
 	CreatorAddress      string
-	Price               int
+	Price               int64
 	Denom               string
 }

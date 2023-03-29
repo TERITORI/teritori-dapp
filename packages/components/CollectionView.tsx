@@ -27,7 +27,7 @@ export const CollectionView: React.FC<{
     forceLinkToMint: linkToMint,
   });
   const sizedStyles = useMemo(() => StyleSheet.flatten(styles[size]), [size]);
-  let maxSupply;
+
   const navigateToTwitter = () => {
     Linking.openURL(item.twitterUrl);
   };
@@ -38,11 +38,7 @@ export const CollectionView: React.FC<{
           parseInt(info.maxSupply as string, 10)
       )
     : NaN;
-  if (!info) {
-    maxSupply = item.maxSupply;
-  } else {
-    maxSupply = info.maxSupply;
-  }
+  const maxSupply = !info ? item.maxSupply : info.maxSupply;
 
   return (
     <Pressable

@@ -76,7 +76,7 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
 			CreatorAddress:      instantiateMsg.Sender,
-			Price:               price,
+			Price:               int64(price),
 			Denom:               minterInstantiateMsg.PriceDenom,
 		},
 	}).Error; err != nil {
