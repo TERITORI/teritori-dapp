@@ -35,7 +35,7 @@ export const TransactionPaymentModal: React.FC<{
   onClose,
   visible = false,
 }) => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const [nftNetwork] = parseNetworkObjectId(nftId);
   const nftNetworkId = nftNetwork?.id;
   const balances = useBalances(nftNetworkId, selectedWallet?.address);

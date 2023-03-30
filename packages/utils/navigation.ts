@@ -119,7 +119,7 @@ const navConfig: {
     MultisigWalletManage: "multisig-wallet/manage",
     MultisigWalletTransaction: "multisig-wallet/transaction",
     MultisigTransactionProposal: "multisig/:address/transaction/proposals",
-    MultisigLegacy: "multisig/:address",
+    MultisigLegacy: "multisig/:address/:name",
     MultisigTransfer: "multisig/:address/transfer",
     MultisigDelegate: "multisig/:address/delegate",
 

@@ -18,7 +18,7 @@ interface WalletStatusCardProps {
 export const WalletStatusCard: React.FC<WalletStatusCardProps> = ({
   walletAddress,
 }) => {
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const selectedNetworkInfo = getNetwork(wallet?.networkId);
 
   return (

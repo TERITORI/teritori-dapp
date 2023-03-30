@@ -5,17 +5,18 @@ import { useMutation } from "@tanstack/react-query";
 import { toBase64 } from "cosmwasm";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useMultisigContext } from "../../context/MultisigReducer";
 import { createSignature } from "../../utils/founaDB/multisig/multisigGraphql";
 import { DbSignature } from "../../utils/founaDB/multisig/types";
 import useSelectedWallet from "../useSelectedWallet";
 import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
+import {useSelectedNetworkId} from "../useSelectedNetwork";
+import {mustGetCosmosNetwork} from "../../networks";
 
 export const useApproveTransaction = () => {
   // variables
-  const { state } = useMultisigContext();
   const { setToastError } = useFeedbacks();
-  const walletAccount = useSelectedWallet();
+  const { selectedWallet: walletAccount } = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
 
   // req
   const mutation = useMutation(
@@ -35,12 +36,13 @@ export const useApproveTransaction = () => {
     }) => {
       try {
         const keplr = (window as KeplrWindow)?.keplr;
-        if (!state?.chain.chainId || !keplr || !walletAccount?.address) {
+        if (!selectedNetworkId || !keplr || !walletAccount?.address) {
           return;
         }
+        const network = mustGetCosmosNetwork(selectedNetworkId);
 
         const offlineSigner = keplr.getOfflineSignerOnlyAmino(
-          state.chain.chainId
+          network.chainId
         );
 
         const signerAddress = walletAccount.address;
@@ -54,7 +56,7 @@ export const useApproveTransaction = () => {
         const signerData = {
           accountNumber: tx.accountNumber,
           sequence: tx.sequence,
-          chainId: state.chain.chainId,
+          chainId: network.chainId,
         };
         const tx_msgs = [];
         for (const msg of tx.msgs) {

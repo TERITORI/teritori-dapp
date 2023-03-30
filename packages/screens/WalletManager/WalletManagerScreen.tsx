@@ -14,7 +14,7 @@ import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
 import { Wallets } from "./Wallets";
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const areThereWallets = useAreThereWallets();
   const { height } = useMaxResolution();
 

@@ -37,7 +37,7 @@ import { SendModal } from "../modals/SendModal";
 import { TopMenuSection } from "./TopMenuSection";
 
 const TokenBalance: React.FC = () => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const { delegationsBalances } = useDelegations(
     selectedNetworkId,

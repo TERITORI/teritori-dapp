@@ -6,18 +6,25 @@ import {
   MultisigTransactionResponseType,
 } from "./useFetchMultisigTransactionsById";
 
-export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
+export const useFetchMultisigTransactionsByAddress = (
+  userAddress: string,
+  chainId: string
+) => {
   //  request
   const request = useInfiniteQuery<{
     data: MultisigTransactionListType[];
     after: string;
   }>(
-    ["multisig-transactions", userAddress],
+    ["multisig-transactions", userAddress, chainId],
     async () => {
       if (!userAddress) {
         return { data: [], after: "" };
       }
-      const saveRes = await transactionsByUserAddress(userAddress, 5);
+      const saveRes = await transactionsByUserAddress(
+        userAddress,
+        chainId,
+        5
+      );
 
       const { after, data } = saveRes.data.data.transactionsByUserAddress;
 

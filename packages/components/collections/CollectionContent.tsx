@@ -20,7 +20,7 @@ export const CollectionContent: React.FC<{
   selectedTab: TabsListType;
   sortDirection: SortDirection;
 }> = React.memo(({ id, selectedTab, sortDirection }) => {
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
 
   const { width } = useMaxResolution();
   const numColumns = Math.floor(width / nftWidth);

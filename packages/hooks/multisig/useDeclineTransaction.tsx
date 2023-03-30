@@ -5,7 +5,7 @@ import useSelectedWallet from "../useSelectedWallet";
 
 export const useDeclineTransaction = () => {
   // variables
-  const walletAccount = useSelectedWallet();
+  const { selectedWallet: walletAccount } = useSelectedWallet();
 
   // req
   const mutation = useMutation(

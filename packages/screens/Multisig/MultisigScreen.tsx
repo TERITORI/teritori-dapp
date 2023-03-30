@@ -25,7 +25,6 @@ import { AnimationFadeIn } from "../../components/animations";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import ModalBase from "../../components/modals/ModalBase";
 import { SpacerColumn } from "../../components/spacer";
-import { useMultisigContext } from "../../context/MultisigReducer";
 import {
   getMultisigAccount,
   MultisigTransactionListType,
@@ -46,6 +45,7 @@ import { tinyAddress } from "../../utils/text";
 import { GetStartedOption } from "../OrganizerDeployer/components/GetStartedOption";
 import { ProposalTransactionItem } from "../OrganizerDeployer/components/ProposalTransactionItem";
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
+import { useMultisigContext } from "../../context/MultisigReducer";
 import { MultisigTransactionType } from "./types";
 
 const RESULT_SIZE = 20;
@@ -59,8 +59,8 @@ enum SelectModalKind {
 export const MultisigScreen = () => {
   // variables
   const navigation = useAppNavigation();
-  const selectedWallet = useSelectedWallet();
-
+  const { selectedWallet } = useSelectedWallet();
+  const { state } = useMultisigContext();
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -95,12 +95,18 @@ export const MultisigScreen = () => {
     data,
     isLoading: isMultisigLoading,
     isFetching: isMultisigFetching,
-  } = useFetchMultisigList(selectedWallet?.address || "");
+  } = useFetchMultisigList(
+    selectedWallet?.address || "",
+    state.chain.chainId!
+  );
   const {
     data: transactionData,
     isLoading: isTransactionsLoading,
     isFetching: isTransactionsFetching,
-  } = useFetchMultisigTransactionsByAddress(selectedWallet?.address || "");
+  } = useFetchMultisigTransactionsByAddress(
+    selectedWallet?.address || "",
+    state.chain.chainId!
+  );
 
   const list = useMemo(
     () =>
@@ -119,7 +125,6 @@ export const MultisigScreen = () => {
   const [openSelectMultiSignModal, setOpenSelectMultiSignModal] =
     useState<boolean>(false);
   const [kind, setKind] = useState<SelectModalKind>(SelectModalKind.LaunchNFT);
-  const { state } = useMultisigContext();
 
   const {
     isLoading,
@@ -139,7 +144,10 @@ export const MultisigScreen = () => {
   //address: multisign address
   const createProposalForLaunchNFT = async (address: string) => {
     const contractAddress = "CONTRACT_ADDR1";
-    const mltisignAccountInfo = await getMultisigAccount(address, state.chain);
+    const mltisignAccountInfo = await getMultisigAccount(
+      address,
+      selectedWallet?.networkId!
+    );
     if (mltisignAccountInfo?.accountData && mltisignAccountInfo.dbData._id) {
       mutate({
         formData: {
@@ -157,7 +165,10 @@ export const MultisigScreen = () => {
   //address: multisign address
   const createProposalForCreatePost = async (address: string) => {
     const contractAddress = "CONTRACT_ADDR1";
-    const mltisignAccountInfo = await getMultisigAccount(address, state.chain);
+    const mltisignAccountInfo = await getMultisigAccount(
+      address,
+      selectedWallet?.networkId!
+    );
     if (mltisignAccountInfo?.accountData && mltisignAccountInfo.dbData._id) {
       mutate({
         formData: {
@@ -175,7 +186,10 @@ export const MultisigScreen = () => {
   //address: multisign address
   const createProposalForManagePublicProfile = async (address: string) => {
     const contractAddress = "CONTRACT_ADDR1";
-    const mltisignAccountInfo = await getMultisigAccount(address, state.chain);
+    const mltisignAccountInfo = await getMultisigAccount(
+      address,
+      selectedWallet?.networkId!
+    );
     if (mltisignAccountInfo?.accountData && mltisignAccountInfo.dbData._id) {
       mutate({
         formData: {

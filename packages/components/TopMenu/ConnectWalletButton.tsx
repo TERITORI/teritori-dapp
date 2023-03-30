@@ -15,7 +15,7 @@ const WIDTH = 220;
 
 export const ConnectWalletButton = () => {
   // variables
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
 
   // functions
@@ -27,7 +27,11 @@ export const ConnectWalletButton = () => {
     <>
       <View style={{ marginRight: headerMarginHorizontal }}>
         {selectedWallet ? (
-          <TopMenu selectedWallet={selectedWallet} />
+          <TopMenu
+            selectedWallet={
+              selectedMultisignWallet ? selectedMultisignWallet : selectedWallet
+            }
+          />
         ) : (
           <Pressable onPress={toggleConnectWallet}>
             <SVG

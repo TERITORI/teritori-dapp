@@ -25,6 +25,7 @@ import { TransactionModalsProvider } from "./packages/context/TransactionModalsP
 import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
+import {MultisigContextProvider} from "./packages/context/MultisigReducer";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ export default function App() {
                 <FeedbacksContextProvider>
                   <DropdownsContextProvider>
                     <WalletsProvider>
+                      <MultisigContextProvider>
                       <TransactionModalsProvider>
                         <TNSContextProvider>
                           <SidebarContextProvider>
@@ -67,6 +69,7 @@ export default function App() {
                           </SidebarContextProvider>
                         </TNSContextProvider>
                       </TransactionModalsProvider>
+                      </MultisigContextProvider>
                     </WalletsProvider>
                   </DropdownsContextProvider>
                 </FeedbacksContextProvider>

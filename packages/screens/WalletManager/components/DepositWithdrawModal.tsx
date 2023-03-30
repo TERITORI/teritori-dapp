@@ -49,7 +49,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 }) => {
   const { setToastError } = useFeedbacks();
 
-  const selectedWallet = useSelectedWallet(); // FIXME: this could not match networkId
+  const { selectedWallet } = useSelectedWallet(); // FIXME: this could not match networkId
 
   const ibcTargetCurrency = getIBCCurrency(networkId, targetCurrencyDenom);
 

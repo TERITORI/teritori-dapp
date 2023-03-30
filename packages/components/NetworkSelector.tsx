@@ -9,7 +9,7 @@ import { useFeedbacks } from "../context/FeedbacksProvider";
 import { useWallets } from "../context/WalletsProvider";
 import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import {
-  getNetwork,
+  getNetwork, mustGetCosmosNetwork, NativeCurrencyInfo,
   NetworkInfo,
   NetworkKind,
   selectableNetworks,
@@ -29,6 +29,7 @@ import { NetworkIcon } from "./NetworkIcon";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SpacerRow } from "./spacer";
+import {useMultisigContext} from "../context/MultisigReducer";
 
 export const NetworkSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -43,6 +44,8 @@ export const NetworkSelector: React.FC<{
   const { setToastError } = useFeedbacks();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
+
+  const { state, dispatch: multisigDispatch } = useMultisigContext();
 
   const onPressNetwork = (networkId: string) => {
     let walletProvider: WalletProvider | null = null;
@@ -74,6 +77,25 @@ export const NetworkSelector: React.FC<{
 
     dispatch(setSelectedWalletId(selectedWallet?.id || ""));
 
+    const networkInfo = mustGetCosmosNetwork(networkId);
+
+    if (network.kind === NetworkKind.Cosmos){
+      multisigDispatch({
+        type: "changeChain",
+        value: {
+          ...state.chain,
+          nodeAddress: networkInfo.rpcEndpoint,
+          denom: networkInfo.currencies[0].denom,
+          displayDenom: (networkInfo.currencies[0] as NativeCurrencyInfo).displayName,
+          displayDenomExponent: (networkInfo.currencies[0] as NativeCurrencyInfo).decimals,
+          gasPrice: process.env.PUBLIC_GAS_PRICE,
+          chainId: networkInfo.chainId,
+          chainDisplayName: (networkInfo.currencies[0] as NativeCurrencyInfo).displayName,
+          registryName: networkInfo.displayName,
+          addressPrefix: networkInfo.idPrefix
+        }
+      });
+    }
     closeOpenedDropdown();
   };
 

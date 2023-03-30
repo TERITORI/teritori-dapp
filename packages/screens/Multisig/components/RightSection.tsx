@@ -1,21 +1,43 @@
 import { useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { TNSNameFinderModal } from "../../../components/modals/teritoriNameService/TNSNameFinderModal";
 import { SpacerColumn } from "../../../components/spacer";
 import { AppRouteType, useAppNavigation } from "../../../utils/navigation";
 import { neutral33, neutral55 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { TNSMintNameMultisignScreen } from "../../TeritoriNameService/TNSMintNameMultisignScreen";
+import { TNSRegisterScreen } from "../../TeritoriNameService/TNSRegisterScreen";
 
 export const RightSection = () => {
   // variables
   const navigation = useAppNavigation();
+  const [visibleRegisterForm, setVisibleRegisterForm] =
+    useState<boolean>(false);
+  const [visibleMintForm, setVisibleMintForm] = useState<boolean>(false);
   const {
     params: { address, name },
   } = useRoute<AppRouteType<"MultisigLegacy">>();
+
+  const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
+
+  const handleRegisterTnsModalClose = (modalName?: string) => {
+    setVisibleRegisterForm(false);
+    if (modalName === "TNSMintName") {
+      setVisibleMintForm(true);
+    }
+  };
+  const handleMintTnsModalClose = (modalName?: string) => {
+    setVisibleMintForm(false);
+    navigation.reset({
+      index: 1,
+      routes: [{ name: "Multisig" }],
+    });
+  };
 
   // returns
   return (
@@ -46,7 +68,14 @@ export const RightSection = () => {
       />
 
       <SpacerColumn size={2.5} />
-      <PrimaryButton size="M" text="Buy a TNS Account" fullWidth />
+      <PrimaryButton
+        size="M"
+        text="Buy a TNS Account"
+        fullWidth
+        onPress={() => {
+          setModalNameFinderVisible(true);
+        }}
+      />
 
       <SpacerColumn size={2.5} />
       <PrimaryButton
@@ -60,6 +89,30 @@ export const RightSection = () => {
           })
         }
       />
+      <TNSNameFinderModal
+        visible={modalNameFinderVisible}
+        onClose={() => {
+          setModalNameFinderVisible(false);
+        }}
+        onEnter={() => {
+          setModalNameFinderVisible(false);
+          setVisibleRegisterForm(true);
+          // pressedTNSItems &&
+          // navigation.navigate("TNSHome", {
+          //   modal: TNSPathMap[pressedTNSItems],
+          //   name,
+          // });
+        }}
+      />
+      {visibleRegisterForm && (
+        <TNSRegisterScreen onClose={handleRegisterTnsModalClose} />
+      )}
+      {visibleMintForm && (
+        <TNSMintNameMultisignScreen
+          onClose={handleMintTnsModalClose}
+          address={address}
+        />
+      )}
     </View>
   );
 };

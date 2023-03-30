@@ -13,6 +13,7 @@ export const useMultisigHelpers = () => {
       throw new Error("Unable to fetch");
     }
     const client = await StargateClient.connect(state?.chain?.nodeAddress);
+
     const accountOnChain = await client.getAccount(address);
 
     if (!accountOnChain || !accountOnChain.pubkey) {
@@ -39,7 +40,6 @@ export const useMultisigHelpers = () => {
     // null, undefined and this sort of things
     if (!coin) return null;
 
-    // The display denom from configuration
     if (coin.denom === state.chain.denom) {
       const exponent = Number(state.chain.displayDenomExponent);
       const value = Decimal.fromAtomics(
@@ -62,6 +62,7 @@ export const useMultisigHelpers = () => {
   };
 
   const participantAddressesFromMultisig = (multisigPubkey: Pubkey) => {
+
     const values: string[] = multisigPubkey.value.pubkeys.map(
       (p: Pubkey) =>
         pubkeyToAddress(p, state.chain?.addressPrefix || "") as string

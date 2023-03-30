@@ -12,7 +12,7 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 
 export const MyNFTs: React.FC = () => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const navigation = useAppNavigation();
 
   const { nfts, fetchMore } = useNFTs({

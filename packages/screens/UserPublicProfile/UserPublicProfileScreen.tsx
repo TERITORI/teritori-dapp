@@ -87,7 +87,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     useState<keyof typeof screenTabItems>("nfts");
 
   const { metadata } = useNSUserInfo(id);
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const [network] = parseUserId(id);
 
   return (

@@ -1,5 +1,5 @@
 import { EncodeObject } from "@cosmjs/proto-signing";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { StdFee } from "cosmwasm";
 
 import {
@@ -37,26 +37,33 @@ export interface MultisigTransactionResponseType
 export const useFetchMultisigTransactionsById = (
   multisigId: string,
   type: "" | MultisigTransactionType = "",
+  after: string | null,
   size: number
 ) => {
   // variables
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
 
   //  request
-  const request = useInfiniteQuery<{
+  const request = useQuery<{
     data: MultisigTransactionListType[];
-    after: string;
+    after: string | null;
+    before: string | null;
   }>(
-    ["multisig-transactions", multisigId, type, wallet?.address],
-    async ({ pageParam }) => {
+    ["multisig-transactions", multisigId, type, wallet?.address, after],
+    async () => {
       const saveRes = await transactionsByMultisigId(
         multisigId,
         type,
         size,
-        pageParam
+        after
       );
-      const { after, data } = saveRes?.data?.data?.transactionsByMultisigId || {
+      const {
+        after: afterData,
+        before,
+        data,
+      } = saveRes?.data?.data?.transactionsByMultisigId || {
         after: null,
+        before: null,
         data: [],
       };
 
@@ -66,12 +73,9 @@ export const useFetchMultisigTransactionsById = (
           msgs: JSON.parse(s.msgs),
           fee: JSON.parse(s.fee),
         })),
-        after,
+        after: afterData,
+        before,
       };
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.after,
-      refetchOnWindowFocus: false,
     }
   );
 

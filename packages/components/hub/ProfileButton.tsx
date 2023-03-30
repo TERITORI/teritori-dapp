@@ -13,7 +13,7 @@ export const ProfileButton: React.FC<{
   isEdit?: boolean;
 }> = ({ touchableStyle, isEdit }) => {
   const navigation = useAppNavigation();
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const network = getCosmosNetwork(selectedWallet?.networkId);
   const { metadata } = useNSUserInfo(selectedWallet?.userId);
 

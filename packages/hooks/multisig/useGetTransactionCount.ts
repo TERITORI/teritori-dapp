@@ -5,7 +5,7 @@ import useSelectedWallet from "../useSelectedWallet";
 
 export const useGetTransactionCount = (multisigId: string, types: string[]) => {
   // variables
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
 
   // request
   const req = useQuery<number[]>(

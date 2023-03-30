@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
@@ -16,9 +16,11 @@ import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useMultisigContext } from "../../context/MultisigReducer";
 import { useMultisigHelpers, useCreateMultisig } from "../../hooks/multisig";
 import {
+  getNSAddress,
+  mintedNS,
   patternOnlyNumbers,
   validateAddress,
-  validateMaxNumber,
+  validateMaxNumber, validateNS,
 } from "../../utils/formRules";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -36,6 +38,7 @@ import { layout } from "../../utils/style/layout";
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigSection } from "./components/MultisigSection";
 import { CreateMultisigWalletFormType } from "./types";
+import {useSelectedNetworkId} from "../../hooks/useSelectedNetwork";
 
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
@@ -53,6 +56,7 @@ export const MultisigCreateScreen = () => {
   const { getPubkeyFromNode } = useMultisigHelpers();
   const { mutate, isLoading, data } = useCreateMultisig();
   const { state } = useMultisigContext();
+  const networkId = useSelectedNetworkId();
 
   // functions
   const removeAddressField = (index: number) => {
@@ -84,15 +88,30 @@ export const MultisigCreateScreen = () => {
   };
 
   const onAddressChange = async (index: number, value: string) => {
+
     const resValAddress = validateAddress(value);
-    if (resValAddress !== true) return resValAddress;
-    if (addressIndexes.find((a, i) => a.address === value && i !== index))
+    const resNsAddress = validateNS(value);
+
+    if (resValAddress !== true && resNsAddress !== true) return "Invalid address";
+
+    let address = "";
+    if (resValAddress === true){
+      address = value;
+    }else{
+      let nsAddrInfo = await getNSAddress(value, networkId );
+      if ( nsAddrInfo.status === false){
+        return nsAddrInfo.msg;
+      }
+      address = nsAddrInfo.address!;
+    }
+
+    if (addressIndexes.find((a, i) => a.address === address && i !== index))
       return "This address is already used in this form.";
 
     try {
       const tempPubkeys = [...addressIndexes];
-      const pubkey = await getPubkeyFromNode(value);
-      tempPubkeys[index].address = value;
+      const pubkey = await getPubkeyFromNode(address);
+      tempPubkeys[index].address = address;
       tempPubkeys[index].compressedPubkey = pubkey;
       setAddressIndexes(tempPubkeys);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

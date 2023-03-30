@@ -1,4 +1,4 @@
-export interface DbUserWallet{
+export interface DbUserWallet {
   walletName: string;
   userAddress: string;
   chainId: string;

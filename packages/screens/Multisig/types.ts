@@ -50,6 +50,7 @@ export enum MultisigTransactionType {
   LAUNCH_NFT_COLLECTION = "Launch Nft collection",
   CREATE_NEW_POST = "Create new post",
   MANAGE_PUBLIC_PROFILE = "Manage public profile",
+  REGISTER_TNS = "Register TNS",
 }
 export type MultiSigWalletTransactionType =
   | MultiSigWalletTransactionBasicType

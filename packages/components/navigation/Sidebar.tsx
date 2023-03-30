@@ -40,7 +40,7 @@ const SpringConfig: WithSpringConfig = {
 
 export const Sidebar: React.FC = () => {
   // variables
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
   const connected = selectedWallet?.connected;

@@ -1,15 +1,15 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { EmptyList } from "../../components/EmptyList";
+import { Pagination } from "../../components/Pagination";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { AnimationFadeIn } from "../../components/animations";
 import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import {
-  MultisigTransactionListType,
   useFetchMultisigTransactionsById,
   useGetMultisigAccount,
   useMultisigValidator,
@@ -21,25 +21,31 @@ import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { MultisigTransactionType } from "../Multisig/types";
 import { ProposalTransactionItem } from "./components/ProposalTransactionItem";
+import {useMultisigContext} from "../../context/MultisigReducer";
 
-const RESULT_SIZE = 20;
+const RESULT_SIZE = 2;
 export const TransactionProposalScreen: ScreenFC<
   "MultisigTransactionProposal"
 > = ({ route }) => {
   // variables
   const { address, backText } = route.params;
-  const [
-    isEndReachedCalledDuringMomentum,
-    setIsEndReachedCalledDuringMomentum,
-  ] = useState(false);
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
-  const { data: multisigData } = useGetMultisigAccount(address);
+  const { state } = useMultisigContext();
+  const { data: multisigData } = useGetMultisigAccount( address );
   const { data: countList } = useGetTransactionCount(
     multisigData?.dbData._id || "",
     ["", MultisigTransactionType.TRANSFER, MultisigTransactionType.STAKE]
   );
-  const { isUserMultisig } = useMultisigValidator(address);
 
+  const { isUserMultisig } = useMultisigValidator(address, state.chain.chainId!);
+
+  const [pageIndex, setPageIndex] = useState(0);
+
+  const [currentIndex, setCurrentIndex] = useState<string | null>(null);
+  const [afterIndex, setAfterIndex] = useState<string | null>(null);
+  const [beforeIndex, setBeforeIndex] = useState<string | null>(null);
+
+  const itemsPerPage = 2;
   const tabs = useMemo(
     () => ({
       all: {
@@ -60,29 +66,38 @@ export const TransactionProposalScreen: ScreenFC<
     }),
     [countList]
   );
+  useEffect(()=>{
+    setCurrentIndex(null);
+    setAfterIndex(null);
+    setBeforeIndex(null);
+  },[selectedTab])
+  const total = useMemo( ()=>{
+      return tabs[selectedTab].badgeCount
+    },[selectedTab, countList]);
 
-  const { data, isLoading, isFetching, fetchNextPage, hasNextPage, refetch } =
-    useFetchMultisigTransactionsById(
-      multisigData?.dbData._id || "",
-      tabs[selectedTab].value,
-      RESULT_SIZE
-    );
-
-  const list = useMemo(
-    () =>
-      data?.pages.reduce(
-        (ar: MultisigTransactionListType[], ac) => [...ar, ...ac.data],
-        []
-      ),
-    [data?.pages]
+  const maxPage = useMemo(
+    () => Math.max(Math.ceil(total / itemsPerPage), 1),
+    [total]
   );
 
-  // functions
-  const onEndReach = () => {
-    if (hasNextPage && !isEndReachedCalledDuringMomentum) {
-      fetchNextPage();
+
+
+  const { data, isLoading, isFetching } = useFetchMultisigTransactionsById(
+    multisigData?.dbData._id || "",
+    tabs[selectedTab].value,
+    currentIndex,
+    RESULT_SIZE
+  );
+  useEffect(() => {
+    if (data && !isLoading && !isFetching) {
+      setAfterIndex(data.after);
+      setBeforeIndex(data.before);
     }
-  };
+  }, [data, isLoading, isFetching]);
+  const list = useMemo(() => {
+    if (data) return data.data;
+    return [];
+  }, [data]);
 
   // returns
   const ListFooter = useCallback(
@@ -95,9 +110,34 @@ export const TransactionProposalScreen: ScreenFC<
             <SpacerColumn size={2} />
           </>
         )}
+        {!isLoading && !isFetching && data && data.data.length > 0 && (
+          <Pagination
+            disableLastButton
+            currentPage={pageIndex}
+            maxPage={maxPage}
+            itemsPerPage={itemsPerPage}
+            onChangePage={(index) => {
+              if (index === pageIndex - 1) {
+                //back
+                setCurrentIndex(beforeIndex);
+              } else if (index === pageIndex + 1) {
+                //forward
+                setCurrentIndex(afterIndex);
+              } else {
+                if (index === 0) {
+                  //first
+                  setCurrentIndex(null);
+                } else if (index === maxPage - 1) {
+                  //last
+                }
+              }
+              setPageIndex(index);
+            }}
+          />
+        )}
       </>
     ),
-    [isFetching, isLoading]
+    [isFetching, isLoading, pageIndex, afterIndex, beforeIndex]
   );
 
   return (
@@ -112,7 +152,6 @@ export const TransactionProposalScreen: ScreenFC<
       <View style={styles.header}>
         <BrandText style={fontSemibold28}>Transaction proposals</BrandText>
         <SpacerColumn size={1.5} />
-
         <Tabs
           items={tabs}
           onSelect={setSelectedTab}
@@ -129,7 +168,6 @@ export const TransactionProposalScreen: ScreenFC<
             <ProposalTransactionItem
               {...item}
               isUserMultisig={isUserMultisig}
-              shouldRetch={() => refetch()}
             />
           </AnimationFadeIn>
         )}
@@ -138,9 +176,6 @@ export const TransactionProposalScreen: ScreenFC<
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.container}
         ListFooterComponent={ListFooter}
-        onEndReached={onEndReach}
-        onMomentumScrollBegin={() => setIsEndReachedCalledDuringMomentum(false)}
-        onEndReachedThreshold={0.1}
         ListEmptyComponent={() =>
           isLoading ? null : <EmptyList text="No proposals" />
         }
@@ -158,5 +193,10 @@ const styles = StyleSheet.create({
   header: {
     marginHorizontal: layout.contentPadding,
     marginTop: layout.topContentPaddingWithHeading,
+  },
+  pagination_container: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

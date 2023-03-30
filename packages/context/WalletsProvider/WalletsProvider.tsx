@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 
 import { WalletProvider } from "../../utils/walletProvider";
 import { useKeplr } from "./keplr";
@@ -10,14 +10,18 @@ import { Wallet } from "./wallet";
 
 type WalletsContextValue = {
   wallets: Wallet[];
+  multisignWallet: Wallet | null;
   walletProviders: WalletProvider[];
   ready: boolean;
+  setMultisignWallet: any;
 };
 
 const WalletsContext = createContext<WalletsContextValue>({
   wallets: [],
+  multisignWallet: null,
   walletProviders: [],
   ready: false,
+  setMultisignWallet: null,
 });
 
 export const useWallets = () => useContext(WalletsContext);
@@ -26,6 +30,7 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
   // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
   const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
   const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
+  const [multisignWallet, setMultisignWallet] = useState<Wallet | null>(null);
 
   // const storeWallets = useSelector(selectStoreWallets);
 
@@ -100,8 +105,10 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
 
     return {
       wallets,
+      multisignWallet,
       walletProviders,
       ready: keplrIsReady && metamaskIsReady,
+      setMultisignWallet,
     };
   }, [
     // hasPhantom,

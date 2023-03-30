@@ -56,7 +56,7 @@ export const MultisigWalletManageScreen = () => {
 
   const { mutate, isLoading, data: multisigData } = useCreateUserWallet();
   const { state } = useMultisigContext();
-  const walletAccount = useSelectedWallet();
+  const { selectedWallet: walletAccount } = useSelectedWallet();
 
   const [multisigList, setMultisigList] = useState<UserWalletType[]>([]);
 

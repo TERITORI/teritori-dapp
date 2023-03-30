@@ -105,7 +105,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
   "WalletManagerWallets" | "WalletManagerChains"
 > = () => {
   const [showConnectModal, setShowConnectModal] = useState(false);
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
 
   // TODO: Handle multiple wallets addresses
   const { totalsRewards, claimReward } = useRewards(selectedWallet?.userId);

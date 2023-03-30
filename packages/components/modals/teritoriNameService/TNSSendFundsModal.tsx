@@ -29,7 +29,7 @@ export const TNSSendFundsModal: React.FC<{
   const { name } = useTNS();
   const { control, handleSubmit: formHandleSubmit } =
     useForm<TNSSendFundsFormType>();
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const networkId = selectedWallet?.networkId;
   const nativeCurrency = getStakingCurrency(networkId);
   const { setToastError, setToastSuccess } = useFeedbacks();

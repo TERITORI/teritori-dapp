@@ -8,7 +8,7 @@ import {
 } from "../../hooks/multisig";
 import { ScreenFC } from "../../utils/navigation";
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
-import { MultisigTranscationDelegateForm } from "./components/MultisigTranscationDelegateForm";
+import { MultisigTransactionDelegateForm } from "./components/MultisigTransactionDelegateForm";
 import { SignTransactionModal } from "./components/SignTransactionModal";
 import {
   MultisigTransactionDelegateFormType,
@@ -83,7 +83,7 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
       noScroll
       isHeaderSmallMargin
     >
-      <MultisigTranscationDelegateForm
+      <MultisigTransactionDelegateForm
         type="transfer"
         title="Create a New Transaction"
         transferText="Send to"

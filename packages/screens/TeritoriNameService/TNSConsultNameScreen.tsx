@@ -84,7 +84,7 @@ const OwnerActions: React.FC<{
   ownerId: string;
   isPrimary: boolean;
 }> = ({ onClose, isPrimary, tokenId, ownerId }) => {
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const queryClient = useQueryClient();
   const navigation = useAppNavigation();
@@ -176,7 +176,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
   navigateBackTo,
 }) => {
   const { name } = useTNS();
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
   const tokenId = (name + network?.nameServiceTLD || "").toLowerCase();

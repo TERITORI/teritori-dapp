@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 import { calculateFee } from "cosmwasm";
 import moment from "moment";
 
-import { useMultisigContext } from "../../context/MultisigReducer";
 import {
   MultisigExecuteFormType,
   MultisigTransactionType,
@@ -12,12 +11,14 @@ import {
 import { createTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
 import { DbCreateTransaction } from "../../utils/founaDB/multisig/types";
 import useSelectedWallet from "./../useSelectedWallet";
+import {useSelectedNetworkId} from "../useSelectedNetwork";
+import {mustGetCosmosNetwork} from "../../networks";
 
 export const useCreateMultisigTransactionForExecuteContract = () => {
   // variables
-  const { state } = useMultisigContext();
 
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
 
   // req
   const mutation = useMutation(
@@ -31,6 +32,11 @@ export const useCreateMultisigTransactionForExecuteContract = () => {
       };
       accountOnChain: Account | null;
     }) => {
+      if (!selectedNetworkId) {
+        return
+      }
+      const network = mustGetCosmosNetwork(selectedNetworkId);
+
       try {
         const msgSend = {
           sender: multisigAddress,
@@ -51,7 +57,7 @@ export const useCreateMultisigTransactionForExecuteContract = () => {
         const tx: DbCreateTransaction = {
           accountNumber: accountOnChain.accountNumber,
           sequence: accountOnChain.sequence,
-          chainId: state.chain?.chainId || "",
+          chainId: network.chainId,
           msgs: JSON.stringify([cosmwasm_msg]),
           fee: JSON.stringify(fee),
           memo: "",

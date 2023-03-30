@@ -44,7 +44,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
   const network = getNetwork(networkId);
   const networkKind = network?.kind;
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const { handleSubmit: formHandleSubmit, control } =
     useForm<NFTTransferForm>();
 

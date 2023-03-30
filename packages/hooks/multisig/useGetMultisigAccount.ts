@@ -7,15 +7,19 @@ import { StargateClient, Account } from "@cosmjs/stargate";
 import { useQuery } from "@tanstack/react-query";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { ChainInfo, useMultisigContext } from "../../context/MultisigReducer";
+import { mustGetCosmosNetwork } from "../../networks";
 import { MultisigType } from "../../screens/Multisig/types";
 import { getMultisig } from "../../utils/founaDB/multisig/multisigGraphql";
+import {ChainInfo, useMultisigContext} from "../../context/MultisigReducer";
 
-export const getMultisigAccount = async (address: string, chain: ChainInfo) => {
-  const client = await StargateClient.connect(chain.nodeAddress!);
+export const getMultisigAccount = async (
+  address: string,
+  networkId: string
+) => {
+  const network = mustGetCosmosNetwork(networkId);
+  const client = await StargateClient.connect(network.rpcEndpoint);
   const accountOnChain = await client.getAccount(address);
-  const chainId = await client.getChainId();
-  const res = await getMultisig(address, chainId);
+  const res = await getMultisig(address, network.chainId);
   const data = res.data.data.getMultisig as MultisigType;
 
   return {
@@ -28,7 +32,6 @@ export const useGetMultisigAccount = (address: string) => {
   // variables
   const { state } = useMultisigContext();
   const { setToastError } = useFeedbacks();
-
   //  request
   const request = useQuery<{
     accountData: [MultisigThresholdPubkey, Account | null];
@@ -40,12 +43,13 @@ export const useGetMultisigAccount = (address: string) => {
       if (!state.chain?.nodeAddress || !state.chain?.denom) {
         return null;
       }
-
       const client = await StargateClient.connect(state.chain.nodeAddress);
       const accountOnChain = await client.getAccount(address);
       const chainId = await client.getChainId();
-      const tempHoldings = await client.getBalance(address, state.chain.denom);
-
+      const tempHoldings = await client.getBalance(
+        address,
+        state.chain.denom
+      );
       if (
         accountOnChain?.pubkey &&
         !isMultisigThresholdPubkey(accountOnChain.pubkey)

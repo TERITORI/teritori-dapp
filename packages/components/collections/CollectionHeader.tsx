@@ -49,7 +49,7 @@ export const CollectionHeader: React.FC<{
   sortDirection,
   onChangeSortDirection,
 }) => {
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   // variables
   const stats = useCollectionStats(collectionId, wallet?.userId);
   const { width: maxWidth } = useMaxResolution();

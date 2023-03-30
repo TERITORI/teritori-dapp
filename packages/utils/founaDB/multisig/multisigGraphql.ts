@@ -117,7 +117,7 @@ const transactionsByMultisigId = async (
   multisigId: string,
   type: string,
   size: number,
-  cursor: string
+  cursor: string | null
 ) => {
   return graphqlReq({
     method: "POST",
@@ -158,6 +158,7 @@ const transactionsByMultisigId = async (
                 }
               }
             }
+            before
             after
           }
         }
@@ -172,7 +173,11 @@ const transactionsByMultisigId = async (
  * @param {string} userAddress Faunadb resource txHash
  * @return Returns async function that makes a request to the faunadb graphql endpoint
  */
-const transactionsByUserAddress = async (userAddress: string, size: number) => {
+const transactionsByUserAddress = async (
+  userAddress: string,
+  chainId: string,
+  size: number
+) => {
   return graphqlReq({
     method: "POST",
     data: {
@@ -181,6 +186,7 @@ const transactionsByUserAddress = async (userAddress: string, size: number) => {
           transactionsByUserAddress(
             address: "${userAddress}"
             type: null
+            chainId: "${chainId}"
             _size: ${size}
           ) {
             data {
@@ -225,13 +231,13 @@ const transactionsByUserAddress = async (userAddress: string, size: number) => {
  * @param {string} multisigId Faunadb resource txHash
  * @return Returns async function that makes a request to the faunadb graphql endpoint
  */
-const multisigsByUserAddress = async (userAddress: string) => {
+const multisigsByUserAddress = async (userAddress: string, chainId: string) => {
   return graphqlReq({
     method: "POST",
     data: {
       query: `
       query {
-        multisigByUserAddress(address: "${userAddress}") {
+        multisigByUserAddress(address: "${userAddress}", chainId: "${chainId}") {
           _id
           address
           userAddresses
@@ -391,13 +397,13 @@ const createUserWallet = async (
   });
 };
 
-const getMultisigsByUserWallet = async(
+const getMultisigsByUserWallet = async (
   userAddress: string,
   chainId: string
 ) => {
   return graphqlReq({
     method: "POST",
-    data:{
+    data: {
       query: `
         query{
           getMultisigsByUser(

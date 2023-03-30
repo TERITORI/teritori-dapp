@@ -75,7 +75,7 @@ export const GovernanceDetails: React.FC<{
   const valueChartNo = parseInt(percentageNo.replace("%", ""), 10);
   const valueChartAbstain = 100 - valueChartYes - valueChartNo;
 
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   let voteOption = 0;
 
   if (checked === "Yes") {

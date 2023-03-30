@@ -7,7 +7,6 @@ import { BrandText } from "../../../components/BrandText";
 import { useCopyToClipboard } from "../../../components/CopyToClipboard";
 import { EmptyList } from "../../../components/EmptyList";
 import { SVG } from "../../../components/SVG";
-import { tinyAddress } from "../../../utils/text";
 import { AnimationFadeIn } from "../../../components/animations";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
@@ -27,6 +26,7 @@ import {
   successColor,
 } from "../../../utils/style/colors";
 import { fontMedium14, fontSemibold9 } from "../../../utils/style/fonts";
+import { tinyAddress } from "../../../utils/text";
 import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
 
 interface TransactionItemButtonsProps extends ProposalTransactionItemProps {
@@ -58,7 +58,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   shouldRetch,
 }) => {
   // variables
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const { mutate: approve } = useApproveTransaction();
   const { mutate: decline, isLoading: isDeclining } = useDeclineTransaction();
   const {

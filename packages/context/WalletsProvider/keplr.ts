@@ -78,6 +78,7 @@ export const useKeplr: () => UseKeplrResult = () => {
           console.error("no keplr");
           return;
         }
+
         if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
           return;
         }
@@ -87,6 +88,7 @@ export const useKeplr: () => UseKeplrResult = () => {
           return;
         }
         await keplr.enable(chainId);
+
         keplr.defaultOptions = {
           sign: {
             preferNoSetFee: true,

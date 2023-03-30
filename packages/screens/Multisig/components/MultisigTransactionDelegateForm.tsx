@@ -1,25 +1,26 @@
 import { useRoute } from "@react-navigation/native";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 
 import arrowSVG from "../../../../assets/icons/arrow-with-tail.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { AnimationExpand } from "../../../components/animations";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { GeneralSelect } from "../../../components/select/GeneralSelect";
 import { SpacerColumn } from "../../../components/spacer";
-import { useMultisigContext } from "../../../context/MultisigReducer";
 import { useGetMultisigAccount } from "../../../hooks/multisig";
 import { useMultisigHelpers } from "../../../hooks/multisig/useMultisigHelpers";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { useValidators } from "../../../hooks/useValidators";
 import {
   patternOnlyNumbers,
   validateAddress,
   validateMaxNumber,
-  validateMultisigAddress,
 } from "../../../utils/formRules";
 import { AppRouteType } from "../../../utils/navigation";
-import { neutral77 } from "../../../utils/style/colors";
+import { neutral77, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold16, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { toriCurrency } from "../../../utils/teritori";
@@ -27,7 +28,7 @@ import { MultisigTransactionDelegateFormType } from "../types";
 import { MultisigFormInput } from "./MultisigFormInput";
 import { MultisigSection } from "./MultisigSection";
 
-interface MultisigTranscationDelegateFormProps {
+interface MultisigTransactionDelegateFormProps {
   type: "transfer" | "delegate";
   title: string;
   transferText: string;
@@ -35,19 +36,23 @@ interface MultisigTranscationDelegateFormProps {
   onSubmit?: (formValues: MultisigTransactionDelegateFormType) => void;
 }
 
-export const MultisigTranscationDelegateForm: React.FC<
-  MultisigTranscationDelegateFormProps
+export const MultisigTransactionDelegateForm: React.FC<
+  MultisigTransactionDelegateFormProps
 > = ({ title, transferText, submitBtnText, onSubmit = () => {}, type }) => {
   // variables
   const {
     params: { address },
   } = useRoute<AppRouteType<"MultisigTransfer" | "MultisigDelegate">>();
+  const selectedNetworkId = useSelectedNetworkId();
   const { isLoading, data } = useGetMultisigAccount(address);
   const { control, handleSubmit, setValue } =
     useForm<MultisigTransactionDelegateFormType>();
   const { coinSimplified, participantAddressesFromMultisig } =
     useMultisigHelpers();
-  const { state } = useMultisigContext();
+  const {
+    data: { activeValidators },
+    isFetching,
+  } = useValidators(selectedNetworkId);
 
   const holidings = useMemo(() => {
     if (data?.holdings) {
@@ -68,6 +73,7 @@ export const MultisigTranscationDelegateForm: React.FC<
     setValue("amount", holidings?.value || "0", { shouldValidate: true });
   };
 
+  const [selectValidator, setSelectValidator] = useState<string>("");
   // returns
   return (
     <ScrollView
@@ -136,26 +142,28 @@ export const MultisigTranscationDelegateForm: React.FC<
 
         <View style={styles.rightSection}>
           <SpacerColumn size={2.5} />
-          <MultisigSection title="Recipient Address">
-            <MultisigFormInput<MultisigTransactionDelegateFormType>
-              control={control}
-              label=""
-              hideLabel
-              isAsterickSign
-              name="recipientAddress"
-              isDisabled={!membersAddress?.length}
-              rules={{
-                required: true,
-                validate: (value) =>
-                  validateMultisigAddress(
-                    value,
-                    type === "transfer"
-                      ? state.chain?.addressPrefix || ""
-                      : state.chain?.validatorPrefix || ""
-                  ),
-              }}
-              placeHolder="E.g : torix23Jkj1ZSQJ128D928XJSkL2K30Dld1ksl"
-            />
+          <MultisigSection
+            title="Recipient Address"
+            containerStyle={{ zIndex: 20 }}
+          >
+            {isFetching && <ActivityIndicator color={secondaryColor} />}
+            {!isFetching && (
+              <GeneralSelect
+                data={activeValidators.map((v) => v.moniker)}
+                initValue="Select"
+                value={selectValidator}
+                setValue={(v: string) => {
+                  let recipientAddr = "";
+                  activeValidators.map((av) => {
+                    if (av.moniker === v) {
+                      recipientAddr = av.address;
+                    }
+                  });
+                  setValue("recipientAddress", recipientAddr);
+                  setSelectValidator(v);
+                }}
+              />
+            )}
           </MultisigSection>
 
           <MultisigSection title="Amount of the Transaction" toriText>
@@ -200,7 +208,7 @@ export const MultisigTranscationDelegateForm: React.FC<
               isDisabled
               isOverrideDisabledBorder
               placeHolder="0"
-              defaultValue={state.chain?.gasPrice}
+              defaultValue={process.env.PUBLIC_GAS_PRICE}
             />
             <SpacerColumn size={2.5} />
 

@@ -47,7 +47,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   visible,
   validator,
 }) => {
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const networkId = wallet?.networkId || "";
   const { bondedTokens, refreshBondedTokens } = useCosmosValidatorBondedAmount(
     wallet?.userId,

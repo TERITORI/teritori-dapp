@@ -22,6 +22,7 @@ type PaginationProps = {
   maxPage: number;
   itemsPerPage: number;
   onChangePage: (page: number) => void;
+  disableLastButton?: boolean;
 };
 
 export const Pagination = ({
@@ -29,6 +30,7 @@ export const Pagination = ({
   maxPage,
   itemsPerPage,
   onChangePage,
+  disableLastButton,
 }: PaginationProps) => {
   const handleChangePage = (pageIndex: number) => {
     if (pageIndex < 0) {
@@ -76,11 +78,13 @@ export const Pagination = ({
           </TertiaryBox>
         </TouchableOpacity>
         <SpacerRow size={0.5} />
-        <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
-          <TertiaryBox height={42} width={56}>
-            <SVG source={chevronRightDoubleSVG} height={16} width={16} />
-          </TertiaryBox>
-        </TouchableOpacity>
+        {!disableLastButton && (
+          <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
+            <TertiaryBox height={42} width={56}>
+              <SVG source={chevronRightDoubleSVG} height={16} width={16} />
+            </TertiaryBox>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View

@@ -17,7 +17,7 @@ export const useCreateMultisigDelegate = () => {
   // variables
   const { state } = useMultisigContext();
 
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
 
   // req
   const mutation = useMutation(

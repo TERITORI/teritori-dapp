@@ -167,12 +167,12 @@ Query(
 -multisigByUserAddress
 Query(
   Lambda(
-    ["address"],
+    ["address", "chainId"],
     Let(
       {
         paginatedList: Filter(
           Map(
-            Paginate(Documents(Collection("Multisig")), { size: 10000 }),
+            Paginate(Match(Index("getMultisigByChainId"), [Var("chainId")])),
             Lambda("doc", Get(Var("doc")))
           ),
           Lambda(
@@ -224,13 +224,13 @@ Query(
 -transactionsByUserAddress
 Query(
   Lambda(
-    ["address", "type", "size", "after", "_"],
+    ["address", "type", "chainId", "size", "after", "_"],
     Let(
       {
         mulsigRefs: Select(
           "data",
           Filter(
-            Paginate(Documents(Collection("Multisig")), { size: 10000 }),
+            Paginate(Match(Index("getMultisigByChainId"), [Var("chainId")])),
             Lambda(
               "doc",
               ContainsValue(

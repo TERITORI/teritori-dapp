@@ -45,7 +45,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   validator,
 }) => {
   // variables
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
   const networkId = wallet?.networkId || "";

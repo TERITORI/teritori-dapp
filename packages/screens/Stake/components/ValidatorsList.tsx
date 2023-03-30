@@ -58,7 +58,7 @@ export const ValidatorsTable: React.FC<{
 }> = ({ validators, actions, style }) => {
   // variables
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const { rewards, claimReward } = useRewards(selectedWallet?.userId);
 
   // returns
@@ -92,7 +92,7 @@ const ValidatorRow: React.FC<{
 }> = ({ validator, claimReward, pendingRewards, actions }) => {
   const imageURL = useKeybaseAvatarURL(validator.identity);
 
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   // Rewards price with all denoms
   const claimablePrice = rewardsPrice(pendingRewards);
 

@@ -16,7 +16,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { MultiSigWalletTransactionBasicType } from "../types";
+import { MultiSigWalletTransactionBasicType } from "../../Multisig/types";
 
 interface BasicTransactionItemProps
   extends MultiSigWalletTransactionBasicType {}
