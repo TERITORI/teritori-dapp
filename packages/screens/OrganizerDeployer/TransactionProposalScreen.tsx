@@ -9,6 +9,7 @@ import { AnimationFadeIn } from "../../components/animations";
 import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
+import { useMultisigContext } from "../../context/MultisigReducer";
 import {
   useFetchMultisigTransactionsById,
   useGetMultisigAccount,
@@ -21,7 +22,6 @@ import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { MultisigTransactionType } from "../Multisig/types";
 import { ProposalTransactionItem } from "./components/ProposalTransactionItem";
-import {useMultisigContext} from "../../context/MultisigReducer";
 
 const RESULT_SIZE = 2;
 export const TransactionProposalScreen: ScreenFC<
@@ -31,13 +31,16 @@ export const TransactionProposalScreen: ScreenFC<
   const { address, backText } = route.params;
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
   const { state } = useMultisigContext();
-  const { data: multisigData } = useGetMultisigAccount( address );
+  const { data: multisigData } = useGetMultisigAccount(address);
   const { data: countList } = useGetTransactionCount(
     multisigData?.dbData._id || "",
     ["", MultisigTransactionType.TRANSFER, MultisigTransactionType.STAKE]
   );
 
-  const { isUserMultisig } = useMultisigValidator(address, state.chain.chainId!);
+  const { isUserMultisig } = useMultisigValidator(
+    address,
+    state.chain.chainId!
+  );
 
   const [pageIndex, setPageIndex] = useState(0);
 
@@ -66,21 +69,19 @@ export const TransactionProposalScreen: ScreenFC<
     }),
     [countList]
   );
-  useEffect(()=>{
+  useEffect(() => {
     setCurrentIndex(null);
     setAfterIndex(null);
     setBeforeIndex(null);
-  },[selectedTab])
-  const total = useMemo( ()=>{
-      return tabs[selectedTab].badgeCount
-    },[selectedTab, countList]);
+  }, [selectedTab]);
+  const total = useMemo(() => {
+    return tabs[selectedTab].badgeCount;
+  }, [selectedTab, countList]);
 
   const maxPage = useMemo(
     () => Math.max(Math.ceil(total / itemsPerPage), 1),
     [total]
   );
-
-
 
   const { data, isLoading, isFetching } = useFetchMultisigTransactionsById(
     multisigData?.dbData._id || "",

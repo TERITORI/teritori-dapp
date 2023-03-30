@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
@@ -15,12 +15,13 @@ import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useMultisigContext } from "../../context/MultisigReducer";
 import { useMultisigHelpers, useCreateMultisig } from "../../hooks/multisig";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import {
   getNSAddress,
-  mintedNS,
   patternOnlyNumbers,
   validateAddress,
-  validateMaxNumber, validateNS,
+  validateMaxNumber,
+  validateNS,
 } from "../../utils/formRules";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -38,7 +39,6 @@ import { layout } from "../../utils/style/layout";
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigSection } from "./components/MultisigSection";
 import { CreateMultisigWalletFormType } from "./types";
-import {useSelectedNetworkId} from "../../hooks/useSelectedNetwork";
 
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
@@ -88,18 +88,18 @@ export const MultisigCreateScreen = () => {
   };
 
   const onAddressChange = async (index: number, value: string) => {
-
     const resValAddress = validateAddress(value);
     const resNsAddress = validateNS(value);
 
-    if (resValAddress !== true && resNsAddress !== true) return "Invalid address";
+    if (resValAddress !== true && resNsAddress !== true)
+      return "Invalid address";
 
     let address = "";
-    if (resValAddress === true){
+    if (resValAddress === true) {
       address = value;
-    }else{
-      let nsAddrInfo = await getNSAddress(value, networkId );
-      if ( nsAddrInfo.status === false){
+    } else {
+      const nsAddrInfo = await getNSAddress(value, networkId);
+      if (nsAddrInfo.status === false) {
         return nsAddrInfo.msg;
       }
       address = nsAddrInfo.address!;

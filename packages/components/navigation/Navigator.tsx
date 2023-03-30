@@ -2,8 +2,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
+import { FeedScreen } from "../../screens/Feed/FeedScreen";
+import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
+import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
+import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScreen";
 import { LaunchpadScreen } from "../../screens/Launchpad/LaunchpadScreen";
@@ -41,7 +45,7 @@ import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsS
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const screenTitle = (title: string) => "Teritori - " + title;
+export const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
@@ -305,6 +309,27 @@ export const Navigator: React.FC = () => {
         name="Settings"
         component={SettingsScreen}
         options={{ header: () => null }}
+      />
+      <Stack.Screen
+        name="FeedNewArticle"
+        component={FeedNewArticleScreen}
+        options={{ header: () => null, title: screenTitle("New Article") }}
+      />
+
+      <Stack.Screen
+        name="FeedPostView"
+        component={FeedPostViewScreen}
+        options={{ header: () => null, title: "Teritori" }}
+      />
+      <Stack.Screen
+        name="Feed"
+        component={FeedScreen}
+        options={{ header: () => null, title: screenTitle("Feed") }}
+      />
+      <Stack.Screen
+        name="HashtagFeed"
+        component={HashtagFeedScreen}
+        options={{ header: () => null, title: screenTitle("") }}
       />
     </Stack.Navigator>
   );

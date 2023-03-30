@@ -7,10 +7,10 @@ import { StargateClient, Account } from "@cosmjs/stargate";
 import { useQuery } from "@tanstack/react-query";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useMultisigContext } from "../../context/MultisigReducer";
 import { mustGetCosmosNetwork } from "../../networks";
 import { MultisigType } from "../../screens/Multisig/types";
 import { getMultisig } from "../../utils/founaDB/multisig/multisigGraphql";
-import {ChainInfo, useMultisigContext} from "../../context/MultisigReducer";
 
 export const getMultisigAccount = async (
   address: string,
@@ -46,10 +46,7 @@ export const useGetMultisigAccount = (address: string) => {
       const client = await StargateClient.connect(state.chain.nodeAddress);
       const accountOnChain = await client.getAccount(address);
       const chainId = await client.getChainId();
-      const tempHoldings = await client.getBalance(
-        address,
-        state.chain.denom
-      );
+      const tempHoldings = await client.getBalance(address, state.chain.denom);
       if (
         accountOnChain?.pubkey &&
         !isMultisigThresholdPubkey(accountOnChain.pubkey)

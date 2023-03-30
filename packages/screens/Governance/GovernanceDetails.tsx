@@ -639,7 +639,6 @@ export const GovernanceDetails: React.FC<{
                 <SecondaryButton
                   size="M"
                   text="Cancel"
-                  style={{}}
                   onPress={activeVotePopup}
                 />
               </View>
@@ -647,7 +646,6 @@ export const GovernanceDetails: React.FC<{
                 <PrimaryButton
                   size="M"
                   text="Confirm"
-                  style={{}}
                   onPress={() => {
                     if (checked !== "nothingChecked") {
                       handlePress();

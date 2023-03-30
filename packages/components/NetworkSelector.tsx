@@ -6,10 +6,13 @@ import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
 import { useFeedbacks } from "../context/FeedbacksProvider";
+import { useMultisigContext } from "../context/MultisigReducer";
 import { useWallets } from "../context/WalletsProvider";
 import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import {
-  getNetwork, mustGetCosmosNetwork, NativeCurrencyInfo,
+  getNetwork,
+  mustGetCosmosNetwork,
+  NativeCurrencyInfo,
   NetworkInfo,
   NetworkKind,
   selectableNetworks,
@@ -29,7 +32,6 @@ import { NetworkIcon } from "./NetworkIcon";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { SpacerRow } from "./spacer";
-import {useMultisigContext} from "../context/MultisigReducer";
 
 export const NetworkSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -79,21 +81,25 @@ export const NetworkSelector: React.FC<{
 
     const networkInfo = mustGetCosmosNetwork(networkId);
 
-    if (network.kind === NetworkKind.Cosmos){
+    if (network.kind === NetworkKind.Cosmos) {
       multisigDispatch({
         type: "changeChain",
         value: {
           ...state.chain,
           nodeAddress: networkInfo.rpcEndpoint,
           denom: networkInfo.currencies[0].denom,
-          displayDenom: (networkInfo.currencies[0] as NativeCurrencyInfo).displayName,
-          displayDenomExponent: (networkInfo.currencies[0] as NativeCurrencyInfo).decimals,
+          displayDenom: (networkInfo.currencies[0] as NativeCurrencyInfo)
+            .displayName,
+          displayDenomExponent: (
+            networkInfo.currencies[0] as NativeCurrencyInfo
+          ).decimals,
           gasPrice: process.env.PUBLIC_GAS_PRICE,
           chainId: networkInfo.chainId,
-          chainDisplayName: (networkInfo.currencies[0] as NativeCurrencyInfo).displayName,
+          chainDisplayName: (networkInfo.currencies[0] as NativeCurrencyInfo)
+            .displayName,
           registryName: networkInfo.displayName,
-          addressPrefix: networkInfo.idPrefix
-        }
+          addressPrefix: networkInfo.idPrefix,
+        },
       });
     }
     closeOpenedDropdown();

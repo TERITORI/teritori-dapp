@@ -2,9 +2,7 @@ import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   StyleProp,
-  StyleSheet,
   TouchableOpacity,
-  View,
   ViewStyle,
 } from "react-native";
 import { SvgProps } from "react-native-svg";
@@ -14,11 +12,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import {
-  primaryColor,
-  primaryTextColor,
-  secondaryColor,
-} from "../../utils/style/colors";
+import { primaryColor, primaryTextColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -40,6 +34,7 @@ export const PrimaryButton: React.FC<{
   RightComponent?: React.FC;
   color?: string;
   noBrokenCorners?: boolean;
+  isLoading?: boolean;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -57,23 +52,24 @@ export const PrimaryButton: React.FC<{
   iconColor,
   color = primaryColor,
   noBrokenCorners = false,
+  isLoading,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
 
   const handlePress = useCallback(async () => {
-    if (isLoading || !onPress) {
+    if (isLocalLoading || !onPress) {
       return;
     }
-    setIsLoading(true);
+    setIsLocalLoading(true);
     try {
       await onPress();
     } catch (err) {
       console.error(err);
     }
-    setIsLoading(false);
-  }, [onPress, isLoading]);
+    setIsLocalLoading(false);
+  }, [onPress, isLocalLoading]);
 
-  const isDisabled = !!(disabled || (loader && isLoading));
+  const isDisabled = !!(disabled || (loader && (isLocalLoading || isLoading)));
 
   const boxProps = {
     style,
@@ -110,36 +106,23 @@ export const PrimaryButton: React.FC<{
             color={iconColor}
           />
         ) : null}
-
-        <BrandText
-          style={[
-            fontSemibold14,
-            {
-              color: primaryTextColor,
-              textAlign: "center",
-            },
-          ]}
-        >
-          {text}
-        </BrandText>
-        {!isLoading && RightComponent && <RightComponent />}
-        {loader && isLoading && (
-          <View style={styles.loader}>
-            <ActivityIndicator color={secondaryColor} />
-          </View>
+        {(loader && isLocalLoading) || isLoading ? (
+          <ActivityIndicator color={primaryTextColor} />
+        ) : (
+          <BrandText
+            style={[
+              fontSemibold14,
+              {
+                color: primaryTextColor,
+                textAlign: "center",
+              },
+            ]}
+          >
+            {text}
+          </BrandText>
         )}
+        {!(isLocalLoading || isLoading) && RightComponent && <RightComponent />}
       </SecondaryBox>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  loader: {
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    backgroundColor: primaryColor,
-    width: "90%",
-    height: "100%",
-  },
-});

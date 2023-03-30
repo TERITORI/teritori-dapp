@@ -7,12 +7,12 @@ import {
 } from "react-native";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
+import { useMultisigContext } from "../../context/MultisigReducer";
 import { useWallets, Wallet } from "../../context/WalletsProvider";
 import { useFetchMultisigList } from "../../hooks/multisig";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutralA3, purpleLight } from "../../utils/style/colors";
 import { fontMedium13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout, topMenuWidth } from "../../utils/style/layout";
@@ -20,12 +20,11 @@ import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
+import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { UserNameInline } from "../UserNameInline";
-import {useMultisigContext} from "../../context/MultisigReducer";
 
 export const TopMenuAccount: React.FC = () => {
-  const navigation = useAppNavigation();
   const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
   const { setMultisignWallet } = useWallets();
   const selectedNetworkInfo = useSelectedNetworkInfo();
@@ -66,7 +65,6 @@ export const TopMenuAccount: React.FC = () => {
           <FlexRow alignItems="center">
             <BrandText style={styles.switchAccount}>Switch Account</BrandText>
             <SVG source={chevronRightSVG} width={16} height={16} />
-
             {openMultisignDropList && (
               <ScrollView style={getScrollViewStyle()}>
                 <Pressable
@@ -124,15 +122,14 @@ export const TopMenuAccount: React.FC = () => {
             )}
           </FlexRow>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("UserPublicProfile", {
-              id: selectedWallet?.userId || "",
-            });
+        <OmniLink
+          to={{
+            screen: "UserPublicProfile",
+            params: { id: selectedWallet?.userId || "" },
           }}
         >
           <BrandText style={styles.manageProfile}>Manage Profile</BrandText>
-        </TouchableOpacity>
+        </OmniLink>
       </FlexRow>
     </FlexCol>
   );

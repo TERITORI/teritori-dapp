@@ -13,7 +13,7 @@ import { getCosmosNetwork } from "../../networks";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 
 const Footer: React.FC<{ tokenId: string }> = ({ tokenId }) => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   // FIXME: this only works on web
   const SOCIAL_BUTTONS = [
     {

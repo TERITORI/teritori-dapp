@@ -20,11 +20,7 @@ export const useFetchMultisigTransactionsByAddress = (
       if (!userAddress) {
         return { data: [], after: "" };
       }
-      const saveRes = await transactionsByUserAddress(
-        userAddress,
-        chainId,
-        5
-      );
+      const saveRes = await transactionsByUserAddress(userAddress, chainId, 5);
 
       const { after, data } = saveRes.data.data.transactionsByUserAddress;
 

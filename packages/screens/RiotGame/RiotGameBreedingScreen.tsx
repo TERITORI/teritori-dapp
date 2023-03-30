@@ -274,7 +274,7 @@ export const RiotGameBreedingScreen = () => {
           size="M"
           text={isBreeding ? "Breeding..." : "Breed my Rippers"}
           iconSVG={breedSVG}
-          style={{ marginTop: layout.padding_x2 }}
+          touchableStyle={{ marginTop: layout.padding_x2 }}
         />
 
         <FlexRow

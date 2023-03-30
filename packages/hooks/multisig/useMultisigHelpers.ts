@@ -62,7 +62,6 @@ export const useMultisigHelpers = () => {
   };
 
   const participantAddressesFromMultisig = (multisigPubkey: Pubkey) => {
-
     const values: string[] = multisigPubkey.value.pubkeys.map(
       (p: Pubkey) =>
         pubkeyToAddress(p, state.chain?.addressPrefix || "") as string

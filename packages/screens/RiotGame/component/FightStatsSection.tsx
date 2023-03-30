@@ -52,7 +52,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
                   "utori" // FIXME: don't hardcode denom and use prettyPrice
                 )} TORI`
           }
-          style={{ marginLeft: layout.padding_x1 }}
+          touchableStyle={{ marginLeft: layout.padding_x1 }}
           onPress={claimRewards}
           noBrokenCorners
         />

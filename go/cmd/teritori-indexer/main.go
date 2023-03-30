@@ -51,6 +51,7 @@ func main() {
 		insecurePrices              = fs.Bool("prices-insecure-grpc", false, "do not use TLS to connect to prices service")
 		networksFile                = fs.String("networks-file", "networks.json", "path to networks config file")
 		networkID                   = fs.String("indexer-network-id", "teritori", "network id to index")
+		socialFeedContractAddress   = fs.String("teritori-social-feed-contract-address", "", "contract address of Teritori social feed")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -118,6 +119,10 @@ func main() {
 	}
 	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
 		panic(errors.New("missing Database configuration"))
+	}
+
+	if *socialFeedContractAddress == "" {
+		panic(errors.New("missing social feed contract address"))
 	}
 
 	// create block time cache
@@ -239,12 +244,13 @@ func main() {
 
 			if err := db.Transaction(func(dbtx *gorm.DB) error {
 				handler, err := indexerhandler.NewHandler(dbtx, indexerhandler.Config{
-					MinterCodeIDs:    mcis,
-					TendermintClient: client,
-					BlockTimeCache:   blockTimeCache,
-					PricesClient:     ps,
-					Network:          network,
-					NetworkStore:     netstore,
+					MinterCodeIDs:             mcis,
+					TendermintClient:          client,
+					BlockTimeCache:            blockTimeCache,
+					PricesClient:              ps,
+					Network:                   network,
+					NetworkStore:              netstore,
+					SocialFeedContractAddress: *socialFeedContractAddress,
 				}, logger)
 				if err != nil {
 					return errors.Wrap(err, "failed to create handler")

@@ -17,7 +17,7 @@ import { FightSectionHeader } from "./component/FightSectionHeader";
 import { GameContentView } from "./component/GameContentView";
 
 const FIGHT_BG_URI =
-  "https://bafybeidca53mhjmgmu4uer4u3pr6hyvardmnwzlvmaemvgzrwl7knup2e4.ipfs.nftstorage.link/";
+  "https://bafybeigv6eunkzlb4a7je6c5ezrcxgr2bv2guuwogin6mbsmdl2i6mgvwq.ipfs.nftstorage.link/";
 
 export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();
@@ -126,9 +126,12 @@ export const RiotGameFightScreen = () => {
       })}
 
       <PrimaryButtonOutline
-        style={{
+        touchableStyle={{
           alignSelf: "flex-end",
           marginTop: layout.padding_x1_5,
+          paddingRight: 2 * layout.padding_x4,
+        }}
+        style={{
           paddingRight: 2 * layout.padding_x4,
         }}
         onPress={gotoMarketplace}

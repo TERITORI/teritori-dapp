@@ -1,17 +1,17 @@
 import React from "react";
-import { StyleProp, TextStyle, TouchableOpacity } from "react-native";
+import { StyleProp, TextStyle } from "react-native";
 
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { getCosmosNetwork } from "../networks";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
-import { useAppNavigation } from "../utils/navigation";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { tinyAddress } from "../utils/text";
 import { BrandText } from "./BrandText";
 import FlexRow from "./FlexRow";
+import { OmniLink } from "./OmniLink";
 import { RoundedGradientImage } from "./images/RoundedGradientImage";
 
 type PlayerNameProps = {
@@ -24,7 +24,6 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
   userId,
   style,
 }) => {
-  const navigation = useAppNavigation();
   const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
   const userInfo = useNSUserInfo(
     selectedMultisignWallet
@@ -45,13 +44,9 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
 
   return (
     <FlexRow alignItems="center" style={style}>
-      <TouchableOpacity
+      <OmniLink
+        to={{ screen: "UserPublicProfile", params: { id: userId } }}
         style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
-        onPress={() => {
-          navigation.navigate("UserPublicProfile", {
-            id: userId,
-          });
-        }}
       >
         <RoundedGradientImage
           size="XXS"
@@ -70,7 +65,7 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
         >
           {name}
         </BrandText>
-      </TouchableOpacity>
+      </OmniLink>
     </FlexRow>
   );
 };

@@ -25,6 +25,7 @@ import { AnimationFadeIn } from "../../components/animations";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import ModalBase from "../../components/modals/ModalBase";
 import { SpacerColumn } from "../../components/spacer";
+import { useMultisigContext } from "../../context/MultisigReducer";
 import {
   getMultisigAccount,
   MultisigTransactionListType,
@@ -45,7 +46,6 @@ import { tinyAddress } from "../../utils/text";
 import { GetStartedOption } from "../OrganizerDeployer/components/GetStartedOption";
 import { ProposalTransactionItem } from "../OrganizerDeployer/components/ProposalTransactionItem";
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
-import { useMultisigContext } from "../../context/MultisigReducer";
 import { MultisigTransactionType } from "./types";
 
 const RESULT_SIZE = 20;
@@ -95,10 +95,7 @@ export const MultisigScreen = () => {
     data,
     isLoading: isMultisigLoading,
     isFetching: isMultisigFetching,
-  } = useFetchMultisigList(
-    selectedWallet?.address || "",
-    state.chain.chainId!
-  );
+  } = useFetchMultisigList(selectedWallet?.address || "", state.chain.chainId!);
   const {
     data: transactionData,
     isLoading: isTransactionsLoading,

@@ -53,7 +53,7 @@ export const ActivityTable: React.FC<{
   nftId?: string;
   collectionId?: string;
 }> = ({ nftId, collectionId }) => {
-  const itemsPerPage = 5;
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
   const { total, activities } = useActivity({
     collectionId: collectionId || "",
@@ -76,7 +76,7 @@ export const ActivityTable: React.FC<{
         renderItem={({ item }) => <ActivityRow activity={item} />}
         keyExtractor={(item) => item.id}
         style={{
-          height: 248,
+          minHeight: 248,
           borderTopColor: mineShaftColor,
           borderTopWidth: 1,
         }}
@@ -86,6 +86,8 @@ export const ActivityTable: React.FC<{
         currentPage={pageIndex}
         maxPage={maxPage}
         itemsPerPage={itemsPerPage}
+        dropdownOptions={[50, 100, 200]}
+        setItemsPerPage={setItemsPerPage}
         onChangePage={setPageIndex}
       />
       <SpacerColumn size={2} />

@@ -83,7 +83,7 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
   onClose,
 }) => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const { primaryAlias } = useNSPrimaryAlias(selectedWallet?.userId);
 

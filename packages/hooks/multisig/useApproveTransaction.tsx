@@ -5,12 +5,12 @@ import { useMutation } from "@tanstack/react-query";
 import { toBase64 } from "cosmwasm";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { mustGetCosmosNetwork } from "../../networks";
 import { createSignature } from "../../utils/founaDB/multisig/multisigGraphql";
 import { DbSignature } from "../../utils/founaDB/multisig/types";
+import { useSelectedNetworkId } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
-import {useSelectedNetworkId} from "../useSelectedNetwork";
-import {mustGetCosmosNetwork} from "../../networks";
 
 export const useApproveTransaction = () => {
   // variables
@@ -41,9 +41,7 @@ export const useApproveTransaction = () => {
         }
         const network = mustGetCosmosNetwork(selectedNetworkId);
 
-        const offlineSigner = keplr.getOfflineSignerOnlyAmino(
-          network.chainId
-        );
+        const offlineSigner = keplr.getOfflineSignerOnlyAmino(network.chainId);
 
         const signerAddress = walletAccount.address;
 

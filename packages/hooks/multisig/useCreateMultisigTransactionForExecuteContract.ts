@@ -4,15 +4,15 @@ import { useMutation } from "@tanstack/react-query";
 import { calculateFee } from "cosmwasm";
 import moment from "moment";
 
+import { mustGetCosmosNetwork } from "../../networks";
 import {
   MultisigExecuteFormType,
   MultisigTransactionType,
 } from "../../screens/Multisig/types";
 import { createTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
 import { DbCreateTransaction } from "../../utils/founaDB/multisig/types";
+import { useSelectedNetworkId } from "../useSelectedNetwork";
 import useSelectedWallet from "./../useSelectedWallet";
-import {useSelectedNetworkId} from "../useSelectedNetwork";
-import {mustGetCosmosNetwork} from "../../networks";
 
 export const useCreateMultisigTransactionForExecuteContract = () => {
   // variables
@@ -33,7 +33,7 @@ export const useCreateMultisigTransactionForExecuteContract = () => {
       accountOnChain: Account | null;
     }) => {
       if (!selectedNetworkId) {
-        return
+        return;
       }
       const network = mustGetCosmosNetwork(selectedNetworkId);
 
