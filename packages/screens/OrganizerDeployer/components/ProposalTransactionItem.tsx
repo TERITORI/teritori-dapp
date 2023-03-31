@@ -92,7 +92,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
       default:
         return transferSVG;
     }
-  }, []);
+  }, [type]);
 
   // hooks
   useEffect(() => {

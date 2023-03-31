@@ -38,7 +38,7 @@ export const BasicTransactionItem: React.FC<BasicTransactionItemProps> = ({
       default:
         return transferedSVG;
     }
-  }, []);
+  }, [type]);
 
   // returns
   const RenderAmount = useCallback(() => {
@@ -60,7 +60,7 @@ export const BasicTransactionItem: React.FC<BasicTransactionItemProps> = ({
       default:
         return <BrandText style={[fontSemibold13]}>${amount}</BrandText>;
     }
-  }, []);
+  }, [amount, type]);
 
   return (
     <Pressable style={styles.container}>

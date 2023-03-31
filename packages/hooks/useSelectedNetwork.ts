@@ -46,7 +46,7 @@ export const useSelectedNetworkId = () => {
         });
       }
     }
-  }, [currentNetworkId, dispatch, multisigDispatch, networkId]);
+  }, [currentNetworkId, dispatch, multisigDispatch, networkId, state.chain]);
   return networkId;
 };
 

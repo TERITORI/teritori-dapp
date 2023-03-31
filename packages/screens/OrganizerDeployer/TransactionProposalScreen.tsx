@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -13,9 +13,9 @@ import { useMultisigContext } from "../../context/MultisigReducer";
 import {
   useFetchMultisigTransactionsById,
   useGetMultisigAccount,
+  useGetTransactionCount,
   useMultisigValidator,
 } from "../../hooks/multisig";
-import { useGetTransactionCount } from "../../hooks/multisig/useGetTransactionCount";
 import { ScreenFC } from "../../utils/navigation";
 import { secondaryColor } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -76,7 +76,7 @@ export const TransactionProposalScreen: ScreenFC<
   }, [selectedTab]);
   const total = useMemo(() => {
     return tabs[selectedTab].badgeCount;
-  }, [selectedTab, countList]);
+  }, [tabs, selectedTab]);
 
   const maxPage = useMemo(
     () => Math.max(Math.ceil(total / itemsPerPage), 1),
@@ -138,7 +138,7 @@ export const TransactionProposalScreen: ScreenFC<
         )}
       </>
     ),
-    [isFetching, isLoading, pageIndex, afterIndex, beforeIndex]
+    [isLoading, isFetching, data, pageIndex, maxPage, beforeIndex, afterIndex]
   );
 
   return (

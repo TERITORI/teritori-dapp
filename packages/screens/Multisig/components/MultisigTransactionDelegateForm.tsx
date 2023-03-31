@@ -59,14 +59,14 @@ export const MultisigTransactionDelegateForm: React.FC<
       return coinSimplified(data.holdings);
     }
     return null;
-  }, [data]);
+  }, [coinSimplified, data?.holdings]);
 
   const membersAddress = useMemo(() => {
     if (data?.accountData) {
       return participantAddressesFromMultisig(data.accountData[0]);
     }
     return null;
-  }, [data]);
+  }, [data?.accountData, participantAddressesFromMultisig]);
 
   // functions
   const onPressMax = () => {

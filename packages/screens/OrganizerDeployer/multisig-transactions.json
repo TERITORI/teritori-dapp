@@ -1,61 +1,61 @@
 [
-    {
-        "id": 1,
-        "type": "proposals",
-        "count": 1
-    },
-    {
-        "id": 2,
-        "type": "received",
-        "createdAt": "12/9/2022",
-        "amount": "9.99"
-    },
-    {
-        "id": 3,
-        "type": "transfered",
-        "createdAt": "12/9/2022",
-        "amount": "9.99"
-    },
-    {
-        "id": 4,
-        "type": "staked",
-        "createdAt": "12/9/2022",
-        "amount": "9.99"
-    },
-    {
-        "id": 5,
-        "type": "received",
-        "createdAt": "12/9/2022",
-        "amount": "9.99"
-    },
-    {
-        "id": 6,
-        "type": "transfered",
-        "createdAt": "12/9/2022",
-        "amount": "9.99"
-    },
-    {
-        "id": 7,
-        "type": "staked",
-        "createdAt": "12/9/2022",
-        "amount": "9.99"
-    },
-    {
-        "id": 8,
-        "type": "received",
-        "createdAt": "12/9/2022",
-        "amount": "9.99"
-    },
-    {
-        "id": 9,
-        "type": "transfered",
-        "createdAt": "12/9/2022",
-        "amount": "9.99"
-    },
-    {
-        "id": 10,
-        "type": "staked",
-        "createdAt": "12/9/2022",
-        "amount": "9.99"
-    }
+  {
+    "id": 1,
+    "type": "proposals",
+    "count": 1
+  },
+  {
+    "id": 2,
+    "type": "received",
+    "createdAt": "12/9/2022",
+    "amount": "9.99"
+  },
+  {
+    "id": 3,
+    "type": "transfered",
+    "createdAt": "12/9/2022",
+    "amount": "9.99"
+  },
+  {
+    "id": 4,
+    "type": "staked",
+    "createdAt": "12/9/2022",
+    "amount": "9.99"
+  },
+  {
+    "id": 5,
+    "type": "received",
+    "createdAt": "12/9/2022",
+    "amount": "9.99"
+  },
+  {
+    "id": 6,
+    "type": "transfered",
+    "createdAt": "12/9/2022",
+    "amount": "9.99"
+  },
+  {
+    "id": 7,
+    "type": "staked",
+    "createdAt": "12/9/2022",
+    "amount": "9.99"
+  },
+  {
+    "id": 8,
+    "type": "received",
+    "createdAt": "12/9/2022",
+    "amount": "9.99"
+  },
+  {
+    "id": 9,
+    "type": "transfered",
+    "createdAt": "12/9/2022",
+    "amount": "9.99"
+  },
+  {
+    "id": 10,
+    "type": "staked",
+    "createdAt": "12/9/2022",
+    "amount": "9.99"
+  }
 ]

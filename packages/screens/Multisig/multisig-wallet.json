@@ -1,23 +1,23 @@
 [
-    {
-        "id": 1, 
-        "name": "Wallet name 1", 
-        "asset_type": "TORI", 
-        "approval": 15, 
-        "participants": 15
-    },
-    {
-        "id": 2, 
-        "name": "Wallet name 2", 
-        "asset_type": "TORI", 
-        "approval": 15, 
-        "participants": 15
-    },
-    {
-        "id": 3, 
-        "name": "Wallet name 3", 
-        "asset_type": "TORI", 
-        "approval": 15, 
-        "participants": 15
-    }
+  {
+    "id": 1,
+    "name": "Wallet name 1",
+    "asset_type": "TORI",
+    "approval": 15,
+    "participants": 15
+  },
+  {
+    "id": 2,
+    "name": "Wallet name 2",
+    "asset_type": "TORI",
+    "approval": 15,
+    "participants": 15
+  },
+  {
+    "id": 3,
+    "name": "Wallet name 3",
+    "asset_type": "TORI",
+    "approval": 15,
+    "participants": 15
+  }
 ]

@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
+  Animated,
   Pressable,
   StyleSheet,
   View,
-  ActivityIndicator,
-  Animated,
 } from "react-native";
 
 import checkCircleSVG from "../../../../assets/icons/check-circle.svg";
@@ -60,7 +60,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
     if (!unlockedSteps.includes(currentStep)) {
       setUnlockedSteps([...unlockedSteps, currentStep]);
     }
-  }, [currentStep]);
+  }, [currentStep, unlockedSteps]);
 
   useEffect(() => {
     Animated.timing(loadingPercentAnim, {
@@ -68,7 +68,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, [percentage]);
+  }, [loadingPercentAnim, percentage]);
 
   // returns
   const SignatureProcess = useCallback(

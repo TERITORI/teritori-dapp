@@ -1,6 +1,6 @@
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import React, { useRef, useEffect } from "react";
-import { StyleSheet, View, Animated } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { Animated, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
@@ -29,7 +29,7 @@ export const LaunchingOrganizationSection: React.FC<{
       lottieRef.current?.stop();
       lottieRef.current?.play();
     }
-  }, [isLaunched]);
+  }, [isLaunched, successAnimateValue]);
 
   // animation
   const fadeOutAnim = successAnimateValue.interpolate({

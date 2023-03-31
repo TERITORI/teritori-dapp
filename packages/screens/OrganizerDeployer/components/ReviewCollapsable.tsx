@@ -1,4 +1,3 @@
-// libraries
 import React, { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -9,7 +8,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-// misc
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -62,7 +60,7 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
         setIsExpanded(true);
       }
     }, 1000);
-  }, []);
+  }, [isExpandedByDefault]);
 
   // functions
   const toggleExpansion = () => {

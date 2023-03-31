@@ -12,9 +12,11 @@ import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import { MainConnectWalletButton } from "../../../components/connectWallet/MainConnectWalletButton";
 import { SpacerRow } from "../../../components/spacer";
-import { useApproveTransaction } from "../../../hooks/multisig/useApproveTransaction";
-import { useBrodcastTransaction } from "../../../hooks/multisig/useBrodcastTransaction";
-import { useDeclineTransaction } from "../../../hooks/multisig/useDeclineTransaction";
+import {
+  useApproveTransaction,
+  useBrodcastTransaction,
+  useDeclineTransaction,
+} from "../../../hooks/multisig";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { DbSignature } from "../../../utils/founaDB/multisig/types";
 import {
@@ -70,14 +72,14 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
 
   const hasSigned = useMemo(
     () => currentSignatures?.some((sig) => sig.address === wallet?.address),
-    [currentSignatures]
+    [currentSignatures, wallet?.address]
   );
 
   const hasDeclined = useMemo(
     () =>
       currentDecliners?.some((address) => address === wallet?.address) ||
       isCompletelyDeclined,
-    [currentDecliners, isCompletelyDeclined]
+    [currentDecliners, isCompletelyDeclined, wallet?.address]
   );
 
   // hooks
@@ -85,7 +87,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     if (resTxHash) {
       shouldRetch && shouldRetch();
     }
-  }, [resTxHash]);
+  }, [resTxHash, shouldRetch]);
 
   // functions
   const onApprove = () =>

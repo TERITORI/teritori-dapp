@@ -10,8 +10,8 @@ import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 import {
-  CreateDaoFormType,
   ConfigureVotingFormType,
+  CreateDaoFormType,
   TokenSettingFormType,
 } from "../types";
 import { ReviewCollapsable } from "./ReviewCollapsable";

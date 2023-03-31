@@ -87,7 +87,7 @@ export const MultisigWalletManageScreen = () => {
       }
     };
     getMultisigList();
-  }, [walletAccount, state.chain?.chainId]);
+  }, [walletAccount, state.chain.chainId, state.chain?.addressPrefix]);
 
   // returns
   return (

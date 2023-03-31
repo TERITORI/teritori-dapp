@@ -33,14 +33,14 @@ export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
       return coinSimplified(data.holdings);
     }
     return null;
-  }, [data]);
+  }, [coinSimplified, data?.holdings]);
 
   const membersAddress = useMemo(() => {
     if (data?.accountData) {
       return participantAddressesFromMultisig(data.accountData[0]);
     }
     return null;
-  }, [data]);
+  }, [data?.accountData, participantAddressesFromMultisig]);
 
   // returns
   return (

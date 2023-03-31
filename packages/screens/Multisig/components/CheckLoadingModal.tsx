@@ -54,7 +54,7 @@ export const CheckLoadingModal: React.FC<CheckLoadingModalProps> = ({
 
       setLocalVisibleValue(true);
     }
-  }, [isVisible]);
+  }, [init, isVisible, onComplete, successAnimateValue]);
 
   // animation
   const fadeOutAnim = successAnimateValue.interpolate({

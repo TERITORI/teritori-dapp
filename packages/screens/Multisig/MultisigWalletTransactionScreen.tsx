@@ -46,7 +46,7 @@ export const MultisigWalletTransactionScreen = () => {
           return <BasicTransactionItem {...item} />;
       }
     },
-    []
+    [navigation]
   );
 
   return (

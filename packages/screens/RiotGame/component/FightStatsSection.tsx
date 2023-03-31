@@ -16,7 +16,7 @@ type FightStatsSectionProps = {
 export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   containerStyle,
 }) => {
-  const { selectedWallet }= useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const { userRank, prettyUserRank, currentSeason } = useSeasonRank();
   const { isClaiming, claimableAmount, claimRewards } = useGameRewards();
 
