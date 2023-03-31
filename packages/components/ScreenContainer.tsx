@@ -24,7 +24,6 @@ import { Header } from "./Header";
 import { NetworkSelector } from "./NetworkSelector";
 import { SelectedNetworkGate } from "./SelectedNetworkGate";
 import { ConnectWalletButton } from "./TopMenu/ConnectWalletButton";
-import { Footer } from "./footers/Footer";
 import { Sidebar } from "./navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
@@ -95,7 +94,9 @@ export const ScreenContainer: React.FC<{
     },
     [forceNetworkId, forceNetworkKind]
   );
-
+  const Footer = React.lazy(() =>
+    import("./footers/Footer").then((module) => ({ default: module.Footer }))
+  );
   // returns
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>

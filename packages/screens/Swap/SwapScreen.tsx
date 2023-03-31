@@ -16,7 +16,6 @@ import { useAppDispatch } from "../../store/store";
 import { ScreenFC } from "../../utils/navigation";
 import { Assets } from "../WalletManager/Assets";
 import { ConnectModal } from "./components/ConnectModal";
-import { SwapModal } from "./components/SwapModal";
 
 export const SwapScreen: ScreenFC<"Swap"> = () => {
   const selectedWallet = useSelectedWallet();
@@ -25,6 +24,11 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   const [swapModalVisible, setSwapModalVisible] = useState(false);
   const [connectModalVisible, setConnectModalVisible] = useState(false);
   const isScreenFocused = useIsFocused();
+  const SwapModal = React.lazy(() =>
+    import("./components/SwapModal").then((module) => ({
+      default: module.SwapModal,
+    }))
+  );
 
   const osmosisConnected = useMemo(
     () =>

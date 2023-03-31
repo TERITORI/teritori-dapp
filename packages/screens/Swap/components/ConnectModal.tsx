@@ -15,7 +15,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ModalHeader } from "./SwapModal";
 
 type ConnectModalProps = {
   onClose: () => void;
@@ -31,6 +30,9 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   onClose,
 }) => {
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const ModalHeader = React.lazy(() =>
+    import("./SwapModal").then((module) => ({ default: module.ModalHeader }))
+  );
 
   return (
     <ModalBase

@@ -37,7 +37,12 @@ import {
   useSelectedNetworkInfo,
 } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useSwap } from "../../../hooks/useSwap";
+import {
+  useSwap,
+  /* webpackChunkName: "osmosis-swap-modal" */
+  /* webpackExports: ["default", "named"] */
+  /* webpackMode: "lazy" */
+} from "../../../hooks/useSwap";
 import {
   allNetworks,
   CosmosNetworkInfo,

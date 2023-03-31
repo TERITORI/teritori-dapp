@@ -7,7 +7,6 @@ import {
   ViewStyle,
 } from "react-native";
 
-import getupSVG from "../../../assets/getup.svg";
 import discordSVG from "../../../assets/icons/discord.svg";
 import mediumSVG from "../../../assets/icons/medium.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
@@ -72,6 +71,7 @@ const FooterSocialNetworks: React.FC = () => {
 };
 
 const FooterGetUp: React.FC = () => {
+  const getupSVG = React.lazy(() => import("../../../assets/getup.svg"));
   return (
     <View
       style={{
