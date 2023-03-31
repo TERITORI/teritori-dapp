@@ -23,6 +23,7 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
+import { MessageScreen } from "../../screens/Message/MessageScreen";
 import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
@@ -50,11 +51,8 @@ import { neutral00 } from "../../utils/style/colors";
 import { fullSidebarWidth } from "../../utils/style/layout";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-<<<<<<< HEAD
-=======
 const Drawer = createDrawerNavigator();
 
->>>>>>> 9a0880e1 (mobile & desktop build)
 const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
@@ -75,6 +73,11 @@ export const Navigator: React.FC = () => {
         name="Home"
         component={HomeScreen}
         options={{ header: () => null, title: screenTitle("Home") }}
+      />
+      <Stack.Screen
+        name="Message"
+        component={MessageScreen}
+        options={{ header: () => null, title: screenTitle("Message") }}
       />
       <Stack.Screen
         name="MyCollection"
