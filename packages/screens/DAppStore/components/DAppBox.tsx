@@ -96,7 +96,7 @@ export const DAppBox: React.FC<{
           </View>
         </View>
 
-        {!alwaysOn ? <CheckboxDappStore isChecked={isChecked} /> : null}
+        {!alwaysOn && <CheckboxDappStore isChecked={isChecked} />}
       </TertiaryBox>
     </TouchableHighlight>
   );
