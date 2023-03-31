@@ -50,6 +50,8 @@
     "@react-native-masked-view/masked-view": "0.2.8",
 >>>>>>> d6888e33 (expo sdk upgrade to 47)
     "@react-navigation/drawer": "^6.6.2",
+    "@react-native-clipboard/clipboard": "^1.10.0",
+    "@react-navigation/material-top-tabs": "^6.6.2",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
     "@reduxjs/toolkit": "^1.8.3",
@@ -103,6 +105,7 @@
     "react-native-get-random-values": "~1.8.0",
     "react-native-heroicons": "^3.2.0",
     "react-native-hoverable": "^0.2.0",
+    "react-native-pager-view": "^6.2.0",
     "react-native-paper": "^4.12.5",
     "react-native-pell-rich-editor": "^1.8.8",
     "react-native-popup-menu": "^0.16.1",
@@ -126,6 +129,7 @@
     "react-native-svg": "13.4.0",
 >>>>>>> d6888e33 (expo sdk upgrade to 47)
     "react-native-text-ticker": "^1.14.0",
+    "react-native-tab-view": "^3.5.1",
     "react-native-toast-message": "^2.1.5",
     "react-native-web": "~0.18.7",
     "react-native-webview": "11.23.1",
