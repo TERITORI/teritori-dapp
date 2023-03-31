@@ -3940,7 +3940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cosmjs/proto-signing@npm:0.28.13, @cosmjs/proto-signing@npm:^0.28.13, @cosmjs/proto-signing@npm:^0.28.3":
+"@cosmjs/proto-signing@npm:0.28.13, @cosmjs/proto-signing@npm:^0.28.3":
   version: 0.28.13
   resolution: "@cosmjs/proto-signing@npm:0.28.13"
   dependencies:
@@ -4020,7 +4020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cosmjs/stargate@npm:0.28.13, @cosmjs/stargate@npm:^0.28.13, @cosmjs/stargate@npm:^0.28.3":
+"@cosmjs/stargate@npm:0.28.13, @cosmjs/stargate@npm:^0.28.3":
   version: 0.28.13
   resolution: "@cosmjs/stargate@npm:0.28.13"
   dependencies:
@@ -4169,7 +4169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cosmology/core@npm:^1.16.0":
+"@cosmology/core@npm:1.20.0":
   version: 1.20.0
   resolution: "@cosmology/core@npm:1.20.0"
   dependencies:
@@ -8418,6 +8418,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/yauzl@npm:^2.9.1":
+  version: 2.10.0
+  resolution: "@types/yauzl@npm:2.10.0"
+  dependencies:
+    "@types/node": "*"
+  checksum: 55d27ae5d346ea260e40121675c24e112ef0247649073848e5d4e03182713ae4ec8142b98f61a1c6cbe7d3b72fa99bbadb65d8b01873e5e605cdc30f1ff70ef2
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:^5.30.5":
   version: 5.45.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.45.0"
@@ -12391,7 +12400,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concat-stream@npm:1.6.2, concat-stream@npm:^1.5.0, concat-stream@npm:^1.6.2":
+"concat-stream@npm:1.6.2, concat-stream@npm:^1.5.0":
   version: 1.6.2
   resolution: "concat-stream@npm:1.6.2"
   dependencies:
@@ -13971,7 +13980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv-webpack@npm:^8.0.0":
+"dotenv-webpack@npm:^8.0.1":
   version: 8.0.1
   resolution: "dotenv-webpack@npm:8.0.1"
   dependencies:
@@ -14094,7 +14103,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-builder@npm:^23.1.0":
+"electron-builder@npm:^23.6.0":
   version: 23.6.0
   resolution: "electron-builder@npm:23.6.0"
   dependencies:
@@ -14245,16 +14254,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^19.0.8":
-  version: 19.1.9
-  resolution: "electron@npm:19.1.9"
+"electron@npm:20.3.9":
+  version: 20.3.9
+  resolution: "electron@npm:20.3.9"
   dependencies:
     "@electron/get": ^1.14.1
     "@types/node": ^16.11.26
-    extract-zip: ^1.0.3
+    extract-zip: ^2.0.1
   bin:
     electron: cli.js
-  checksum: 7873245905e5d554e69e7b679fdcda0a389f5b576f8a116e4753cd21d951e983348ea73da042612d70342c2d67b87364c65bce3199758c09f14d1fc96969fb63
+  checksum: d44911372e1ab6a09c8cba2830037530b0bf205507bdef309163464bfab8f61e5dd93647104d758c0d5836e2700f643ee5fb4a75e257e04dbaceba9a566e27df
   languageName: node
   linkType: hard
 
@@ -14679,7 +14688,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-universe@npm:^11.0.0":
+"eslint-config-universe@npm:^11.2.0":
   version: 11.2.0
   resolution: "eslint-config-universe@npm:11.2.0"
   dependencies:
@@ -14937,7 +14946,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.19.0":
+"eslint@npm:^8.37.0":
   version: 8.37.0
   resolution: "eslint@npm:8.37.0"
   dependencies:
@@ -15687,7 +15696,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:~45.0.0":
+"expo@npm:~45.0.8":
   version: 45.0.8
   resolution: "expo@npm:45.0.8"
   dependencies:
@@ -15871,17 +15880,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"extract-zip@npm:^1.0.3":
-  version: 1.7.0
-  resolution: "extract-zip@npm:1.7.0"
+"extract-zip@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "extract-zip@npm:2.0.1"
   dependencies:
-    concat-stream: ^1.6.2
-    debug: ^2.6.9
-    mkdirp: ^0.5.4
+    "@types/yauzl": ^2.9.1
+    debug: ^4.1.1
+    get-stream: ^5.1.0
     yauzl: ^2.10.0
+  dependenciesMeta:
+    "@types/yauzl":
+      optional: true
   bin:
     extract-zip: cli.js
-  checksum: 011bab660d738614555773d381a6ba4815d98c1cfcdcdf027e154ebcc9fc8c9ef637b3ea5c9b2144013100071ee41722ed041fc9aacc60f6198ef747cac0c073
+  checksum: 8cbda9debdd6d6980819cc69734d874ddd71051c9fe5bde1ef307ebcedfe949ba57b004894b585f758b7c9eeeea0e3d87f2dda89b7d25320459c2c9643ebb635
   languageName: node
   linkType: hard
 
@@ -20296,14 +20308,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lottie-ios@npm:3.4.0":
-  version: 3.4.0
-  resolution: "lottie-ios@npm:3.4.0"
-  checksum: 1a5becc6b34d258afde38f17104877c74749afd7d21d29813a0a56e7b8dae022deacd2139ea2262cd964bdf18791b63de50f28f6263aba3fcff09b08acabb3ce
+"lottie-ios@npm:3.5.0":
+  version: 3.5.0
+  resolution: "lottie-ios@npm:3.5.0"
+  checksum: 81385fb0ee1b5dbfd2ad1a721ea7030565cd2539079075ae5933d3c62dae408e8e7c792ca502419c2545260c77b2903e1a309f756176d3be99909e5744111576
   languageName: node
   linkType: hard
 
-"lottie-react@npm:^2.3.1":
+"lottie-react@npm:^2.4.0":
   version: 2.4.0
   resolution: "lottie-react@npm:2.4.0"
   dependencies:
@@ -21340,7 +21352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:^0.5.1, mkdirp@npm:^0.5.3, mkdirp@npm:^0.5.4, mkdirp@npm:^0.5.6, mkdirp@npm:~0.5.1":
+"mkdirp@npm:^0.5.1, mkdirp@npm:^0.5.3, mkdirp@npm:^0.5.6, mkdirp@npm:~0.5.1":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
   dependencies:
@@ -23737,7 +23749,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.7.1":
+"prettier@npm:^2.8.7":
   version: 2.8.7
   resolution: "prettier@npm:2.8.7"
   bin:
@@ -24525,9 +24537,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:~2.8.0":
-  version: 2.8.0
-  resolution: "react-native-reanimated@npm:2.8.0"
+"react-native-reanimated@npm:2.10.0":
+  version: 2.10.0
+  resolution: "react-native-reanimated@npm:2.10.0"
   dependencies:
     "@babel/plugin-transform-object-assign": ^7.16.7
     "@babel/preset-typescript": ^7.16.7
@@ -24540,7 +24552,7 @@ __metadata:
     "@babel/core": ^7.0.0-0
     react: "*"
     react-native: "*"
-  checksum: 6409a941a177d04d9091953a05f493d4924eb0d3e2a4b24cf83bb20460b985f89dd879f0ab7337655dba6a3183ca50cc2ad2b3ea1c505cdc1eed6c5ee1296b59
+  checksum: 7f01ee15e0f2d48af543370b10b8d257e22d09c3fcdbeff1d74d68bfc72f0e9cf74d0634edb10beef4671a20068d7be128678bb52d976aefdf78f5c80a0baa90
   languageName: node
   linkType: hard
 
@@ -27382,9 +27394,9 @@ __metadata:
     "@babel/plugin-proposal-numeric-separator": ^7.18.6
     "@cosmjs/cosmwasm-stargate": ^0.28.13
     "@cosmjs/math": ^0.28.13
-    "@cosmjs/proto-signing": ^0.28.13
-    "@cosmjs/stargate": ^0.28.13
-    "@cosmology/core": ^1.16.0
+    "@cosmjs/proto-signing": 0.29.5
+    "@cosmjs/stargate": 0.29.5
+    "@cosmology/core": 1.20.0
     "@cosmwasm/ts-codegen": ^0.16.3
     "@draft-js-plugins/anchor": ^4.2.0
     "@draft-js-plugins/editor": ^4.1.3
@@ -27414,7 +27426,7 @@ __metadata:
     "@tanstack/react-query": ^4.12.0
     "@types/draft-convert": ^2.1.4
     "@types/draft-js": ^0.11.9
-    "@types/react": ~17.0.21
+    "@types/react": 17.0.2
     "@types/react-native": ~0.67.6
     "@types/react-native-countdown-component": ^2.7.0
     "@types/react-native-svg-charts": ^5.0.12
@@ -27429,17 +27441,17 @@ __metadata:
     bech32: ^2.0.0
     browser-headers: ^0.4.1
     cosmwasm: ^1.1.1
-    dotenv-webpack: ^8.0.0
+    dotenv-webpack: ^8.0.1
     draft-convert: ^2.1.13
     draft-js: ^0.11.7
-    electron: ^19.0.8
-    electron-builder: ^23.1.0
-    eslint: ^8.19.0
-    eslint-config-universe: ^11.0.0
+    electron: 20.3.9
+    electron-builder: ^23.6.0
+    eslint: ^8.37.0
+    eslint-config-universe: ^11.2.0
     eslint-plugin-import: ^2.27.5
     eslint-plugin-react-hooks: ^4.6.0
     ethers: ^5.7.2
-    expo: ~45.0.0
+    expo: ~45.0.8
     expo-av: ~11.2.3
     expo-cli: ^6.0.2
     expo-font: ~10.1.0
@@ -27449,8 +27461,8 @@ __metadata:
     http2: ^3.3.7
     lodash: ^4.17.21
     long: ^5.2.1
-    lottie-ios: 3.4.0
-    lottie-react: ^2.3.1
+    lottie-ios: 3.5.0
+    lottie-react: ^2.4.0
     metamask-react: ^2.4.1
     mime: ^3.0.0
     moment: ^2.29.4
@@ -27458,7 +27470,7 @@ __metadata:
     osmojs: 15.0.5
     patch-package: ^6.5.0
     postinstall-postinstall: ^2.1.0
-    prettier: ^2.7.1
+    prettier: ^2.8.7
     react: 17.0.2
     react-dom: 17.0.2
     react-hook-form: ^7.36.1
@@ -27473,7 +27485,7 @@ __metadata:
     react-native-paper: ^4.12.5
     react-native-pell-rich-editor: ^1.8.8
     react-native-popup-menu: ^0.16.1
-    react-native-reanimated: ~2.8.0
+    react-native-reanimated: 2.10.0
     react-native-reanimated-carousel: ^3.0.3
     react-native-redash: ^18.0.0
     react-native-safe-area-context: 4.2.4
