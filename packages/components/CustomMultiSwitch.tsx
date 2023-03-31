@@ -42,11 +42,23 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
         useNativeDriver: true,
       }).start();
     }
-  }, [elements]);
+  }, [animatedValue, elements, items.length, value]);
 
   useEffect(() => {
+    const startAnimation = (newVal: string) => {
+      const position = elements.find((el) => el.id === newVal);
+      if (!position) {
+        return;
+      }
+      Animated.timing(animatedValue, {
+        toValue: position.value,
+        duration: 200,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }).start();
+    };
     startAnimation(value);
-  }, [value]);
+  }, [animatedValue, elements, value]);
 
   const getSliderStyle = () => {
     return [
@@ -55,19 +67,6 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
       { transform: [{ translateX: animatedValue }] },
       { opacity: 1 },
     ];
-  };
-
-  const startAnimation = (newVal: string) => {
-    const position = elements.find((el) => el.id === newVal);
-    if (!position) {
-      return;
-    }
-    Animated.timing(animatedValue, {
-      toValue: position.value,
-      duration: 200,
-      easing: Easing.ease,
-      useNativeDriver: true,
-    }).start();
   };
 
   return (

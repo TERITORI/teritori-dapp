@@ -19,7 +19,7 @@ export const useMultisigValidator = (
       const userHasMultisig = data.some((mu) => mu.address === multisigAddress);
       setIsUserMultisig(userHasMultisig);
     }
-  }, [isLoading, isFetching, data]);
+  }, [isLoading, isFetching, data, multisigAddress]);
 
   return { isUserMultisig };
 };

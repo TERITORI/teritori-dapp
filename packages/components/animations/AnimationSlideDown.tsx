@@ -25,7 +25,7 @@ export const AnimationSlideDown: React.FC<SlideDownProps> = ({
       useNativeDriver: true,
       delay,
     }).start();
-  }, []);
+  }, [delay, slideDownAnimation, toValue]);
 
   // renders
   return (

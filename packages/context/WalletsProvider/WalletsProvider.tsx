@@ -111,16 +111,13 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       setMultisignWallet,
     };
   }, [
-    // hasPhantom,
-    // phantomIsReady,
-    // phantomWallet,
     hasKeplr,
-    keplrIsReady,
-    keplrWallets,
     hasMetamask,
+    multisignWallet,
+    keplrIsReady,
     metamaskIsReady,
+    keplrWallets,
     metamaskWallets,
-    // storeWallets,
   ]);
 
   return (
