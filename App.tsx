@@ -59,19 +59,19 @@ export default function App() {
                   <DropdownsContextProvider>
                     <WalletsProvider>
                       <MultisigContextProvider>
-                      <TransactionModalsProvider>
-                        <TNSContextProvider>
-                          <TNSMetaDataListContextProvider>
-                            <MenuProvider>
-                              <SidebarContextProvider>
-                                <StatusBar style="inverted" />
-                                <Navigator />
-                                <Toast autoHide visibilityTime={2000} />
-                              </SidebarContextProvider>
-                            </MenuProvider>
-                          </TNSMetaDataListContextProvider>
-                        </TNSContextProvider>
-                      </TransactionModalsProvider>
+                        <TransactionModalsProvider>
+                          <TNSContextProvider>
+                            <TNSMetaDataListContextProvider>
+                              <MenuProvider>
+                                <SidebarContextProvider>
+                                  <StatusBar style="inverted" />
+                                  <Navigator />
+                                  <Toast autoHide visibilityTime={2000} />
+                                </SidebarContextProvider>
+                              </MenuProvider>
+                            </TNSMetaDataListContextProvider>
+                          </TNSContextProvider>
+                        </TransactionModalsProvider>
                       </MultisigContextProvider>
                     </WalletsProvider>
                   </DropdownsContextProvider>
