@@ -51,7 +51,6 @@ export const CollectionGallery: React.FC<{
         }}
         renderItem={renderItem}
       />
-      )
     </Section>
   ) : null;
 };
