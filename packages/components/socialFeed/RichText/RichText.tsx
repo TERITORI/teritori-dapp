@@ -44,7 +44,7 @@ export const RichText: React.FC<RichTextProps> = ({
           </ToolbarContainer>
           <PrimaryButton
             disabled={publishDisabled}
-            loader={loading}
+            isLoading={loading}
             text="Publish"
             size="M"
           />
