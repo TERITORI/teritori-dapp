@@ -35,7 +35,11 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
     !isLoading && setIsEmojiModalVisible(!isEmojiModalVisible);
 
   return (
-    <Menu opened={isEmojiModalVisible} onBackdropPress={toggleEmojiModal}>
+    <Menu
+      opened={isEmojiModalVisible}
+      onBackdropPress={toggleEmojiModal}
+      style={{ marginRight: layout.padding_x2_5 }}
+    >
       <MenuTrigger
         onPress={() => !disabled && toggleEmojiModal()}
         disabled={disabled}

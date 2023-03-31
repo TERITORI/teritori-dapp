@@ -98,6 +98,7 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
       opened={isGIFModalVisible}
       onBackdropPress={toggleGIFModal}
       rendererProps={{ placement: "bottom" }}
+      style={{ marginRight: layout.padding_x2_5 }}
     >
       <MenuTrigger onPress={() => !disabled && toggleGIFModal}>
         <IconBox
