@@ -23,6 +23,7 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
+import { MessageScreen } from "../../screens/Message/MessageScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
@@ -69,6 +70,11 @@ export const Navigator: React.FC = () => {
         name="Home"
         component={HomeScreen}
         options={{ header: () => null, title: screenTitle("Home") }}
+      />
+      <Stack.Screen
+        name="Message"
+        component={MessageScreen}
+        options={{ header: () => null, title: screenTitle("Message") }}
       />
       <Stack.Screen
         name="MyCollection"

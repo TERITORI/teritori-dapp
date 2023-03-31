@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { Header } from "./Header";
+import HeaderMessage from "./HeaderMessage";
 import { ScreenContainerMobile } from "./ScreenContainerMobile";
 import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
@@ -16,7 +17,6 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
-import { neutral33 } from "../../utils/style/colors";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
@@ -30,6 +30,7 @@ import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
+import { neutral33 } from "../../utils/style/colors";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;

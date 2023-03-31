@@ -25,7 +25,12 @@ export const SearchInput: React.FC<{
       fullWidth
     >
       <SVG
-        style={{ marginRight: layout.padding_x1, maxWidth: 22 }}
+        style={{
+          marginRight: layout.padding_x1,
+          maxWidth: 22,
+          width: 40,
+          height: 40,
+        }}
         source={searchSVG}
       />
       <TextInput

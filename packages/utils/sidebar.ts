@@ -28,7 +28,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   messages: {
     title: "Messages",
     id: "Messages",
-    route: "ComingSoon",
+    route: "Message",
     icon: messagesSVG,
   },
   launchpad: {

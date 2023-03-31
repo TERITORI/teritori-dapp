@@ -61,6 +61,7 @@ export type RootStackParamList = {
   ToriPunks: { route: string };
 
   Chat: undefined;
+  Message: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -103,6 +104,8 @@ const navConfig: {
     MintCollection: "collection/:id/mint",
     // ==== Teritori Name Service
     TNSHome: "tns/:modal?",
+    //==Message
+    Message: "message",
 
     // ==== Marketplace
     Marketplace: "marketplace",
