@@ -1,3 +1,4 @@
+import { Post } from "../../../api/feed/v1/feed";
 import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 
@@ -24,6 +25,9 @@ export interface NewPostFormValues {
 }
 
 export interface PostResultExtra extends PostResult {
+  isInLocal?: boolean;
+}
+export interface PostExtra extends Post {
   isInLocal?: boolean;
 }
 

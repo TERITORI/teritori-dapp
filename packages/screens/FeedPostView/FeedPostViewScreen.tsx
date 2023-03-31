@@ -175,10 +175,12 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
       }
       onBackPress={() =>
-        postResult?.parentPostIdentifier
+        postResult?.parent_post_identifier
           ? navigation.navigate("FeedPostView", {
               id: postResult?.parent_post_identifier || "",
             })
+          : navigation.canGoBack()
+          ? navigation.goBack()
           : navigation.navigate("Feed")
       }
       footerChildren
@@ -217,7 +219,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               style={[
                 {
                   position: "absolute",
-                  top: threadCardOffsetY + layout.contentPadding - 22,
+                  top: threadCardOffsetY + layout.contentPadding - 20,
                   flexDirection: "row",
                   width: "100%",
                   alignItems: "center",

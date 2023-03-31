@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleProp, View, ViewStyle, TouchableOpacity } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 
 import { Post } from "../../../api/feed/v1/feed";
 import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
@@ -10,20 +10,17 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../utils/navigation";
-import { DEFAULT_NAME, getUpdatedReactions } from "../../../utils/social-feed";
+import { getUpdatedReactions } from "../../../utils/social-feed";
 import {
   neutral00,
   neutral17,
   neutral33,
-  neutral77,
+  withAlpha,
 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { CustomPressable } from "../../buttons/CustomPressable";
-import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
@@ -33,7 +30,7 @@ import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { SocialThreadGovernance } from "../SocialActions/SocialThreadGovernance";
 import { TipButton } from "../SocialActions/TipButton";
-import { DateTime } from "./DateTime";
+import { SocialCardHeader } from "./SocialCardHeader";
 import { SocialMessageContent } from "./SocialMessageContent";
 
 export const SocialThreadCard: React.FC<{
@@ -121,95 +118,26 @@ export const SocialThreadCard: React.FC<{
       <AnimationFadeIn
         style={[
           {
-            borderWidth: 1,
-            borderColor: neutral33,
+            borderWidth: isPostConsultation ? 4 : 1,
+            borderColor: isPostConsultation
+              ? withAlpha(neutral33, 0.4)
+              : neutral33,
             borderRadius: 12,
             paddingVertical: layout.padding_x2,
             paddingHorizontal: layout.padding_x2_5,
           },
-          isPostConsultation && { backgroundColor: neutral17 },
           style,
         ]}
         delay={fadeInDelay}
       >
         {/*====== Card Header */}
-        <FlexRow justifyContent="space-between">
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {/*---- User image */}
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("UserPublicProfile", {
-                  id: localPost.createdBy,
-                })
-              }
-              style={{
-                marginRight: layout.padding_x2,
-              }}
-            >
-              <AvatarWithFrame
-                image={authorNSInfo?.metadata?.image}
-                size="M"
-                isLoading={authorNSInfo.loading}
-              />
-            </TouchableOpacity>
+        <SocialCardHeader
+          authorAddress={userAddress}
+          authorId={localPost.createdBy}
+          postMetadata={metadata}
+          authorMetadata={authorNSInfo?.metadata}
+        />
 
-            {/*---- User name */}
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("UserPublicProfile", {
-                  id: localPost.createdBy,
-                })
-              }
-              activeOpacity={0.7}
-            >
-              <AnimationFadeIn>
-                <BrandText style={fontSemibold16}>
-                  {authorNSInfo?.metadata?.public_name || DEFAULT_NAME}
-                </BrandText>
-              </AnimationFadeIn>
-            </TouchableOpacity>
-
-            {/*---- User TNS name */}
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("UserPublicProfile", {
-                  id: localPost.createdBy,
-                })
-              }
-              style={{ marginHorizontal: layout.padding_x1_5 }}
-            >
-              <BrandText
-                style={[
-                  fontSemibold14,
-                  {
-                    color: neutral77,
-                  },
-                ]}
-                numberOfLines={1}
-              >
-                {" "}
-                @
-                {authorNSInfo?.metadata?.tokenId
-                  ? authorNSInfo.metadata.tokenId
-                  : userAddress}
-              </BrandText>
-            </TouchableOpacity>
-
-            {/*---- Date */}
-            <DateTime date={metadata.createdAt} />
-          </View>
-
-          {/*---- Badges TODO: Handle this later */}
-          {/*{!!communityHashtag && (*/}
-          {/*  <DotBadge*/}
-          {/*    label={communityHashtag.hashtag}*/}
-          {/*    dotColor={communityHashtag.color}*/}
-          {/*    style={{*/}
-          {/*      backgroundColor: isPostConsultation ? neutral00 : neutral17,*/}
-          {/*    }}*/}
-          {/*  />*/}
-          {/*)}*/}
-        </FlexRow>
         <SpacerColumn size={2} />
 
         {/*====== Card Content */}
@@ -250,7 +178,8 @@ export const SocialThreadCard: React.FC<{
             <SpacerRow size={2.5} />
             <CommentsCount count={localPost.subPostLength} />
 
-            {authorNSInfo.metadata?.tokenId !== userInfo?.metadata?.tokenId && (
+            {authorNSInfo?.metadata?.tokenId !==
+              userInfo?.metadata?.tokenId && (
               <>
                 <SpacerRow size={2.5} />
                 <TipButton
