@@ -16,6 +16,11 @@ import {
   Animated,
 } from "react-native";
 
+import { CurrencyAmount } from "./CurrencyAmount";
+import { SelectedCurrency } from "./SelectedCurrency";
+import { SwapDetails } from "./SwapDetails";
+import { SwapModalSettings } from "./SwapModalSettings";
+import { SwapModalTokenList } from "./SwapModalTokenList";
 import chevronCircleDown from "../../../../assets/icons/chevron-circle-down.svg";
 import chevronCircleUp from "../../../../assets/icons/chevron-circle-up.svg";
 import osmosisLogo from "../../../../assets/icons/networks/osmosis.svg";
@@ -61,11 +66,6 @@ import {
 import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { isFloatText } from "../../../utils/text";
-import { CurrencyAmount } from "./CurrencyAmount";
-import { SelectedCurrency } from "./SelectedCurrency";
-import { SwapDetails } from "./SwapDetails";
-import { SwapModalSettings } from "./SwapModalSettings";
-import { SwapModalTokenList } from "./SwapModalTokenList";
 
 type SwapModalProps = {
   onClose: () => void;

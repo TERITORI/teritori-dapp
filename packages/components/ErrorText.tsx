@@ -2,9 +2,9 @@
 import React from "react";
 import { TextProps } from "react-native";
 
+import { BrandText } from "./BrandText";
 import { errorColor } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
-import { BrandText } from "./BrandText";
 
 interface ErrorTextProps extends TextProps {
   center?: boolean;

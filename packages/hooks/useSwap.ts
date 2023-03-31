@@ -11,20 +11,18 @@ import Long from "long";
 import { osmosis, getSigningOsmosisClient } from "osmojs";
 import { QuerySpotPriceRequest } from "osmojs/src/codegen/osmosis/gamm/v1beta1/query";
 import { Coin } from "osmojs/types/codegen/cosmos/base/v1beta1/coin";
-import {
-  MsgSwapExactAmountIn,
-  SwapAmountInRoute,
-} from "osmojs/types/codegen/osmosis/gamm/v1beta1/tx";
+import { MsgSwapExactAmountIn } from "osmojs/types/codegen/osmosis/gamm/v1beta1/tx";
+import { SwapAmountInRoute } from "osmojs/types/codegen/osmosis/poolmanager/v1beta1/swap_route";
 import { useEffect, useMemo, useState } from "react";
 
+import { useSelectedNetworkId } from "./useSelectedNetwork";
+import useSelectedWallet from "./useSelectedWallet";
 import {
   CurrencyInfo,
   getCosmosNetwork,
   getKeplrSigner,
   getNativeCurrency,
 } from "../networks";
-import { useSelectedNetworkId } from "./useSelectedNetwork";
-import useSelectedWallet from "./useSelectedWallet";
 
 interface PriceHash<T> {
   [key: string]: T;

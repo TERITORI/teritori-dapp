@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 
+import { TopMenuSection } from "./TopMenuSection";
 import orgGnoPunksPNG from "../../../assets/default-images/orgGnopunks.png";
 import orgJungleDefendersPNG from "../../../assets/default-images/orgJungleDefenders.png";
 import { neutral00, neutral77 } from "../../utils/style/colors";
@@ -16,7 +17,6 @@ import FlexRow from "../FlexRow";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SmallCarousel } from "../carousels/SmallCarousel";
-import { TopMenuSection } from "./TopMenuSection";
 
 //TODO: Make SmallCarousel with items auto sized instead of fix widths
 const ORG_CARD_WIDTH = 164;

@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
+import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { getCosmosNetwork, getNativeCurrency } from "../networks";
 import { Balance } from "../utils/coins";
 import { CosmosDelegationsResponse } from "../utils/teritori";
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
 const initialData = { delegation_responses: [] };
 

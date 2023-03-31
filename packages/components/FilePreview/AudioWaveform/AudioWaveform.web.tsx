@@ -3,9 +3,9 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
+import { AudioWaveformProps } from "./AudioWaveform.type";
 import { neutral55, secondaryColor } from "../../../utils/style/colors";
 import { BAR_LENGTH, generateBars } from "../../../utils/waveform";
-import { AudioWaveformProps } from "./AudioWaveform.type";
 
 const BAR_WIDTH = 3;
 

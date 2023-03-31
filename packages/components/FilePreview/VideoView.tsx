@@ -2,12 +2,12 @@ import { Video, ResizeMode } from "expo-av";
 import React from "react";
 import { View } from "react-native";
 
+import { DeleteButton } from "./DeleteButton";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { LocalFileData, RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
-import { DeleteButton } from "./DeleteButton";
 
 interface VideoPreviewProps {
   file: LocalFileData | RemoteFileData;

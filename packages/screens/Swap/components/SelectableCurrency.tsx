@@ -2,6 +2,7 @@ import { Decimal } from "cosmwasm";
 import React, { useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import { CurrencyAmount } from "./CurrencyAmount";
 import { BrandText } from "../../../components/BrandText";
 import { CurrencyIcon } from "../../../components/CurrencyIcon";
 import { Separator } from "../../../components/Separator";
@@ -20,7 +21,6 @@ import { Balance } from "../../../utils/coins";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { CurrencyAmount } from "./CurrencyAmount";
 
 export const SelectableCurrency: React.FC<{
   onPressItem: () => void;

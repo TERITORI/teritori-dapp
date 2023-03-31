@@ -1,11 +1,18 @@
 const createExpoWebpackConfigAsync = require("@expo/webpack-config");
 const Dotenv = require("dotenv-webpack");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
 
   // needed to use environment variables
-  config.plugins.push(new Dotenv());
+  config.plugins.push(
+    new Dotenv(),
+    new BundleAnalyzerPlugin({
+      path: "web-report",
+      generateStatsFile: true,
+    })
+  );
 
   // victory native specific code
   config.module.rules.push({

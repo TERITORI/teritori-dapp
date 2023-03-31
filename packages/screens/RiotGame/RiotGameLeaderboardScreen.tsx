@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 
+import { GameContentView } from "./component/GameContentView";
 import iconFightSVG from "../../../assets/game/icon-fight.svg";
 import iconXPSVG from "../../../assets/game/icon-xp.svg";
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
@@ -45,7 +46,6 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { GameContentView } from "./component/GameContentView";
 
 type RankProps = {
   changes: number;

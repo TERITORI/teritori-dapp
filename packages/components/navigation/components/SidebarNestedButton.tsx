@@ -5,6 +5,8 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
+import { SideNotch } from "./SideNotch";
+import { SidebarButtonProps } from "./SidebarButton";
 import { useSidebar } from "../../../context/SidebarProvider";
 import { neutralA3, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
@@ -13,8 +15,6 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
-import { SideNotch } from "./SideNotch";
-import { SidebarButtonProps } from "./SidebarButton";
 
 export type SidebarNestedButtonProps = Omit<SidebarButtonProps, "nested">;
 

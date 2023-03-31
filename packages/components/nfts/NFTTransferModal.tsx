@@ -3,6 +3,7 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Image, StyleSheet, View } from "react-native";
 
+import { NFTTransferForm } from "./types";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
@@ -25,7 +26,6 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
-import { NFTTransferForm } from "./types";
 
 interface NFTTransferModalProps {
   nft?: NFT;

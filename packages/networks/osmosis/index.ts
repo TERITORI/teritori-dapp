@@ -1,5 +1,5 @@
-import { NetworkKind, NetworkInfo } from "../types";
 import { osmosisCurrencies } from "./currencies";
+import { NetworkKind, NetworkInfo } from "../types";
 
 export const osmosisNetwork: NetworkInfo = {
   id: "osmosis",

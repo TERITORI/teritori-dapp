@@ -2,15 +2,15 @@ import React, { useMemo } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
+import { BrandText } from "./BrandText";
+import { TertiaryBox } from "./boxes/TertiaryBox";
+import { GradientText } from "./gradientText";
 import { Collection } from "../api/marketplace/v1/marketplace";
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
 import { parseUserId } from "../networks";
 import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { TertiaryBox } from "./boxes/TertiaryBox";
-import { GradientText } from "./gradientText";
 
 type CollectionViewSize = "XL" | "XS";
 export const COLLECTION_VIEW_SM_WIDTH = 124;

@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { Pressable, View } from "react-native";
 
+import { FadeInView } from "./FadeInView";
 import infoSVG from "../../../../assets/icons/info.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -23,7 +24,6 @@ import {
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { isFloatText } from "../../../utils/text";
-import { FadeInView } from "./FadeInView";
 
 type SlippageItem = {
   value: number;

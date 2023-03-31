@@ -1,6 +1,8 @@
 import React, { SyntheticEvent, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import { FileUploaderProps } from "./FileUploader.type";
+import { formatFile } from "./formatFile";
 import gradientDottedCardSVG from "../../../assets/cards/gradient-dotted-card.svg";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -11,8 +13,6 @@ import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVG } from "../SVG";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
-import { FileUploaderProps } from "./FileUploader.type";
-import { formatFile } from "./formatFile";
 const FILE_HEIGHT = 256;
 
 export const FileUploader: React.FC<FileUploaderProps> = ({

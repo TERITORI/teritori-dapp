@@ -2,6 +2,8 @@ import { Audio, AVPlaybackStatus } from "expo-av";
 import React, { useEffect, useState } from "react";
 import { Image, View, TouchableOpacity, ActivityIndicator } from "react-native";
 
+import { AudioWaveform } from "./AudioWaveform";
+import { DeleteButton } from "./DeleteButton";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
@@ -17,8 +19,6 @@ import { LocalFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { FileUploader } from "../fileUploader";
-import { AudioWaveform } from "./AudioWaveform";
-import { DeleteButton } from "./DeleteButton";
 
 interface AudioPreviewProps {
   file: LocalFileData;

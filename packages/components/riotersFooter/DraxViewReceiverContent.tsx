@@ -1,13 +1,13 @@
 import React, { memo, SetStateAction, useCallback } from "react";
 import { StyleSheet, View, Image } from "react-native";
 
+import DragAndDropNftInReceiverView from "./DragAndDropNftInReceiverView";
+import NftDragResizerCorner from "./NftDragResizerCorner";
 import teritorriSvg from "../../../assets/icons/networks/teritori.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { neutral33 } from "../../utils/style/colors";
 import { NFTDropedAdjustmentType, FooterNftData } from "../../utils/types/nft";
 import { SVG } from "../SVG";
-import DragAndDropNftInReceiverView from "./DragAndDropNftInReceiverView";
-import NftDragResizerCorner from "./NftDragResizerCorner";
 
 const DraxViewReceiverContent: React.FC<{
   oldNftPositions: FooterNftData[];

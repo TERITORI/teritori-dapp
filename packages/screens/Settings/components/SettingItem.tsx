@@ -1,6 +1,7 @@
 import React from "react";
 import { Switch, TouchableOpacity, View } from "react-native";
 
+import { useCommonStyles } from "./commonStyles";
 import { BrandText } from "../../../components/BrandText";
 import {
   neutral55,
@@ -10,7 +11,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { SettingItemType } from "../types";
-import { useCommonStyles } from "./commonStyles";
 
 export const SettingItem: React.FC<{
   item: SettingItemType;

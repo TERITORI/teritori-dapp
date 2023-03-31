@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from "react";
 
+import { FeedHeader } from "./components/FeedHeader";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { NetworkKind } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 import { feedTabToCategories, feedsTabItems } from "../../utils/social-feed";
-import { FeedHeader } from "./components/FeedHeader";
 
 export const socialFeedBreakpointXL = 1024;
 export const socialFeedBreakpointSM = 926;

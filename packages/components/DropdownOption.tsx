@@ -2,13 +2,13 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { secondaryColor } from "../utils/style/colors";
-import { fontSemibold14 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { CustomPressable } from "./buttons/CustomPressable";
 import { SpacerRow } from "./spacer";
+import { secondaryColor } from "../utils/style/colors";
+import { fontSemibold14 } from "../utils/style/fonts";
+import { layout } from "../utils/style/layout";
 
 interface DropdownOptionProps {
   icon: React.FC<SvgProps>;

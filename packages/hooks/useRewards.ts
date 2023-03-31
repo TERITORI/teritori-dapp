@@ -5,6 +5,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
+import { useCoingeckoPrices } from "./useCoingeckoPrices";
+import { useErrorHandler } from "./useErrorHandler";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import {
   getKeplrSigningStargateClient,
@@ -14,8 +16,6 @@ import {
 } from "../networks";
 import { CoingeckoCoin, getCoingeckoPrice } from "../utils/coingecko";
 import { CosmosRewardsResponse } from "../utils/teritori";
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
-import { useErrorHandler } from "./useErrorHandler";
 
 export type Reward = {
   validator: string;
