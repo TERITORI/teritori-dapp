@@ -2,14 +2,14 @@ import React, { Dispatch, SetStateAction } from "react";
 import { View, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { FadeInView } from "./FadeInView";
 import { SelectableCurrency } from "./SelectableCurrency";
-import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
-import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { CurrencyInfo } from "../../../networks";
-import { layout } from "../../../utils/style/layout";
-export const SwapModalTokenList: React.FC<{
+import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
+import { SVG } from "../../../../components/SVG";
+import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { CurrencyInfo } from "../../../../networks";
+import { layout } from "../../../../utils/style/layout";
+import { FadeInView } from "../FadeInView";
+export const SwapTokensList: React.FC<{
   isOpened: boolean;
   close: () => void;
   width: number;

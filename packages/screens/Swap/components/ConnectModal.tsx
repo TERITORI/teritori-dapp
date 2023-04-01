@@ -31,7 +31,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
 }) => {
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
   const ModalHeader = React.lazy(() =>
-    import("./SwapModal").then((module) => ({ default: module.ModalHeader }))
+    import("./SwapView").then((module) => ({ default: module.SwapHeader }))
   );
 
   return (

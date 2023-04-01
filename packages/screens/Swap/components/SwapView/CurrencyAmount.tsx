@@ -1,9 +1,9 @@
 import React from "react";
 import { View } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
+import { BrandText } from "../../../../components/BrandText";
+import { neutralA3 } from "../../../../utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "../../../../utils/style/fonts";
 
 export const CurrencyAmount: React.FC<{
   amount: number;

@@ -21,12 +21,11 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
-  const [swapModalVisible, setSwapModalVisible] = useState(false);
   const [connectModalVisible, setConnectModalVisible] = useState(false);
   const isScreenFocused = useIsFocused();
-  const SwapModal = React.lazy(() =>
-    import("./components/SwapModal").then((module) => ({
-      default: module.SwapModal,
+  const SwapView = React.lazy(() =>
+    import("./components/SwapView").then((module) => ({
+      default: module.SwapView,
     }))
   );
 
@@ -61,12 +60,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
           <MainConnectWalletButton style={{ alignSelf: "center" }} />
         ) : osmosisConnected && isScreenFocused ? (
           <>
-            <PrimaryButton
-              size="XL"
-              text="Swap"
-              onPress={() => setSwapModalVisible(true)}
-              touchableStyle={styles.primaryButton}
-            />
+            <SwapView />
             <Assets userId={selectedWallet.userId} style={styles.assets} />
           </>
         ) : (
@@ -78,13 +72,6 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
           />
         )}
       </View>
-
-      {osmosisConnected && isScreenFocused && (
-        <SwapModal
-          visible={swapModalVisible}
-          onClose={() => setSwapModalVisible(false)}
-        />
-      )}
       <ConnectModal
         onPressConnect={onPressConnect}
         onPressConnectTestnet={onPressConnectTestnet}
@@ -97,7 +84,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
 
 const styles = StyleSheet.create({
   mainContainer: {
-    paddingTop: 140,
+    paddingTop: 80,
   },
   primaryButton: {
     alignSelf: "center",

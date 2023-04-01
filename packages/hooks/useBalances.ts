@@ -23,6 +23,14 @@ export const useBalances = (
       if (!address || !networkId) {
         return [];
       }
+      // Ensuring with uses the wallet address that corresponds to the network
+      const network = getNetwork(networkId);
+      if (
+        network?.kind === NetworkKind.Cosmos &&
+        !address.includes(network.addressPrefix)
+      ) {
+        return [];
+      }
 
       return await getNetworkBalances(networkId, address);
     },

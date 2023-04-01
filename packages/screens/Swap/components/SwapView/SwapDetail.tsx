@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
-import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
-import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { Separator } from "../../../components/Separator";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SpacerColumn } from "../../../components/spacer";
+import chevronDownSVG from "../../../../../assets/icons/chevron-down.svg";
+import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
+import { BrandText } from "../../../../components/BrandText";
+import { SVG } from "../../../../components/SVG";
+import { Separator } from "../../../../components/Separator";
+import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { SpacerColumn } from "../../../../components/spacer";
 import {
   neutral77,
   neutralA3,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "../../../../utils/style/colors";
+import { fontSemibold14 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
 
-export const SwapDetails: React.FC<{
+export const SwapDetail: React.FC<{
   slippage: number;
   fee: number;
   feeAmountOutUsd: number;
@@ -75,10 +75,11 @@ export const SwapDetails: React.FC<{
           <>
             <SpacerColumn size={2.5} />
 
-            <View style={styles.row}>
-              <BrandText style={styles.rowLabel}>Price Impact</BrandText>
-              <BrandText style={styles.rowValue}>-???%</BrandText>
-            </View>
+            {/*TODO: Handle Price impact*/}
+            {/*<View style={styles.row}>*/}
+            {/*  <BrandText style={styles.rowLabel}>Price Impact</BrandText>*/}
+            {/*  <BrandText style={styles.rowValue}>-???%</BrandText>*/}
+            {/*</View>*/}
 
             <SpacerColumn size={1} />
 

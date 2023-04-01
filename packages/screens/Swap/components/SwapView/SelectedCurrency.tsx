@@ -8,21 +8,21 @@ import React, {
 } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
-import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
-import { BrandText } from "../../../components/BrandText";
-import { CurrencyIcon } from "../../../components/CurrencyIcon";
-import { SVG } from "../../../components/SVG";
-import { useDropdowns } from "../../../context/DropdownsProvider";
+import chevronDownSVG from "../../../../../assets/icons/chevron-down.svg";
+import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
+import { BrandText } from "../../../../components/BrandText";
+import { CurrencyIcon } from "../../../../components/CurrencyIcon";
+import { SVG } from "../../../../components/SVG";
+import { useDropdowns } from "../../../../context/DropdownsProvider";
 import {
   allNetworks,
   CosmosNetworkInfo,
   NativeCurrencyInfo,
   NetworkKind,
-} from "../../../networks";
-import { neutralA3, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "../../../../networks";
+import { neutralA3, secondaryColor } from "../../../../utils/style/colors";
+import { fontSemibold13 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
 
 export const SelectedCurrency: React.FC<{
   currency?: NativeCurrencyInfo;

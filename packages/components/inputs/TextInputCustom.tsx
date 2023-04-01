@@ -88,7 +88,7 @@ export const Label: React.FC<{
     <BrandText style={[styles.labelText, fontSemibold14, style]}>
       {children}
     </BrandText>
-    {!!isRequired && (
+    {!!isRequired && children && (
       <BrandText
         style={[
           fontSemibold20,

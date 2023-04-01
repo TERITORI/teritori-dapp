@@ -3,12 +3,12 @@ import React, { useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import { CurrencyAmount } from "./CurrencyAmount";
-import { BrandText } from "../../../components/BrandText";
-import { CurrencyIcon } from "../../../components/CurrencyIcon";
-import { Separator } from "../../../components/Separator";
-import { SpacerColumn } from "../../../components/spacer";
-import { useBalances } from "../../../hooks/useBalances";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { BrandText } from "../../../../components/BrandText";
+import { CurrencyIcon } from "../../../../components/CurrencyIcon";
+import { Separator } from "../../../../components/Separator";
+import { SpacerColumn } from "../../../../components/spacer";
+import { useBalances } from "../../../../hooks/useBalances";
+import useSelectedWallet from "../../../../hooks/useSelectedWallet";
 import {
   allNetworks,
   CosmosNetworkInfo,
@@ -16,11 +16,11 @@ import {
   getNativeCurrency,
   NativeCurrencyInfo,
   NetworkKind,
-} from "../../../networks";
-import { Balance } from "../../../utils/coins";
-import { neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "../../../../networks";
+import { Balance } from "../../../../utils/coins";
+import { neutralA3 } from "../../../../utils/style/colors";
+import { fontSemibold13 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
 
 export const SelectableCurrency: React.FC<{
   onPressItem: () => void;

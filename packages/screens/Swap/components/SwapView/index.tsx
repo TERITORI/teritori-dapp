@@ -14,116 +14,88 @@ import {
   TouchableOpacity,
   View,
   Animated,
+  LayoutChangeEvent,
 } from "react-native";
 
 import { CurrencyAmount } from "./CurrencyAmount";
 import { SelectedCurrency } from "./SelectedCurrency";
-import { SwapDetails } from "./SwapDetails";
-import { SwapModalSettings } from "./SwapModalSettings";
-import { SwapModalTokenList } from "./SwapModalTokenList";
-import chevronCircleDown from "../../../../assets/icons/chevron-circle-down.svg";
-import chevronCircleUp from "../../../../assets/icons/chevron-circle-up.svg";
-import osmosisLogo from "../../../../assets/icons/networks/osmosis.svg";
-import settingsSVG from "../../../../assets/icons/settings.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import ModalBase from "../../../components/modals/ModalBase";
-import { SpacerColumn } from "../../../components/spacer";
-import { useDropdowns } from "../../../context/DropdownsProvider";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useBalances } from "../../../hooks/useBalances";
-import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
+import { SwapDetail } from "./SwapDetail";
+import { SwapSettings } from "./SwapSettings";
+import { SwapTokensList } from "./SwapTokensList";
+import chevronCircleDown from "../../../../../assets/icons/chevron-circle-down.svg";
+import chevronCircleUp from "../../../../../assets/icons/chevron-circle-up.svg";
+import osmosisLogo from "../../../../../assets/icons/networks/osmosis.svg";
+import settingsSVG from "../../../../../assets/icons/settings.svg";
+import { BrandText } from "../../../../components/BrandText";
+import { SVG } from "../../../../components/SVG";
+import { SeparatorGradient } from "../../../../components/SeparatorGradient";
+import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { CustomPressable } from "../../../../components/buttons/CustomPressable";
+import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
+import { SecondaryButton } from "../../../../components/buttons/SecondaryButton";
+import { SpacerColumn } from "../../../../components/spacer";
+import { useDropdowns } from "../../../../context/DropdownsProvider";
+import { useFeedbacks } from "../../../../context/FeedbacksProvider";
+import { useBalances } from "../../../../hooks/useBalances";
+import { useCoingeckoPrices } from "../../../../hooks/useCoingeckoPrices";
 import {
   useSelectedNetworkId,
   useSelectedNetworkInfo,
-} from "../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  useSwap,
-  /* webpackChunkName: "osmosis-swap-modal" */
-  /* webpackExports: ["default", "named"] */
-  /* webpackMode: "lazy" */
-} from "../../../hooks/useSwap";
+} from "../../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+import { useSwap } from "../../../../hooks/useSwap";
 import {
   allNetworks,
   CosmosNetworkInfo,
   CurrencyInfo,
   getNativeCurrency,
   NativeCurrencyInfo,
-} from "../../../networks";
-import { Balance } from "../../../utils/coins";
+} from "../../../../networks";
+import { Balance } from "../../../../utils/coins";
 import {
   neutral00,
   neutral77,
   neutralA3,
   primaryColor,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { isFloatText } from "../../../utils/text";
-
-type SwapModalProps = {
-  onClose: () => void;
-  visible: boolean;
-};
+} from "../../../../utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
+import { isFloatText } from "../../../../utils/text";
 
 const INVERT_ANIMATION_DURATION = 200;
+const MAX_WIDTH = 600;
 
-//TODO: Amounts not refreshed (Assets, etc..)
-//TODO:  fix errors useSwap
-
-export const ModalHeader: React.FC<{
+export const SwapHeader: React.FC<{
   setSettingsOpened?: Dispatch<SetStateAction<boolean>>;
   networkDisplayName?: string;
 }> = ({ setSettingsOpened, networkDisplayName }) => {
-  const styles = StyleSheet.create({
-    modalHeaderContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      flex: 1,
-    },
-    modalHeaderLogoTitle: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    modalHeaderTitle: {
-      marginLeft: layout.padding_x2,
-    },
-  });
-
   return (
-    <>
-      <View style={styles.modalHeaderContainer}>
-        <View style={styles.modalHeaderLogoTitle}>
-          <SVG source={osmosisLogo} height={32} width={32} />
-          <BrandText style={styles.modalHeaderTitle}>
-            Swap on {networkDisplayName || "Osmosis"}
-          </BrandText>
-        </View>
-        {setSettingsOpened && (
-          <TouchableOpacity
-            onPress={() => setSettingsOpened((isOpened) => !isOpened)}
-          >
-            <SVG source={settingsSVG} height={20} width={20} />
-          </TouchableOpacity>
-        )}
+    <View style={styles.headerContainer}>
+      <View style={styles.headerLogoTitle}>
+        <SVG source={osmosisLogo} height={32} width={32} />
+        <BrandText style={styles.headerTitle}>
+          Swap on {networkDisplayName || "Osmosis"}
+        </BrandText>
       </View>
-    </>
+      {setSettingsOpened && (
+        <TouchableOpacity
+          onPress={() => setSettingsOpened((isOpened) => !isOpened)}
+        >
+          <SVG source={settingsSVG} height={20} width={20} />
+        </TouchableOpacity>
+      )}
+    </View>
   );
 };
 
-/////////////////// MODAL
-export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
-  // ==== Animations
+/////////////////// SWAP VIEW
+export const SwapView: React.FC = () => {
+  // ==== Animations, layout
   const opacity = useRef(new Animated.Value(1)).current;
   const translateToTop = useRef(new Animated.Value(0)).current;
   const translateToBottom = useRef(new Animated.Value(0)).current;
+  const [viewWidth, setViewWidth] = useState(0);
   const opacityFunction = () => {
     Animated.sequence([
       Animated.timing(opacity, {
@@ -178,6 +150,10 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       }),
     ]).start();
   };
+
+  const onLayout = (e: LayoutChangeEvent) => {
+    setViewWidth(e.nativeEvent.layout.width);
+  };
   // =========
 
   const selectedWallet = useSelectedWallet();
@@ -186,7 +162,6 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
 
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const modalWidth = 456;
 
   const cosmosNetwork = allNetworks.find(
     (networkInfo) => networkInfo.id === "cosmos-hub"
@@ -341,12 +316,6 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
       setAmountIn("");
     }
   };
-  const onCloseModal = () => {
-    setSettingsOpened(false);
-    setSlippage(1);
-    setAmountIn("");
-    onClose();
-  };
 
   // ---- SWAP OSMOSIS
   const { swap, spotPrice, fee } = useSwap(currencyIn, currencyOut);
@@ -384,184 +353,192 @@ export const SwapModal: React.FC<SwapModalProps> = ({ onClose, visible }) => {
 
   // ===== RETURN
   return (
-    <ModalBase
-      childrenBottom={
-        <>
-          {/*======= Set slippage */}
-          <SwapModalSettings
-            settingsOpened={settingsOpened}
-            setSlippageValue={setSlippage}
+    <TertiaryBox fullWidth style={{ maxWidth: MAX_WIDTH, alignSelf: "center" }}>
+      <View style={{ width: "100%" }} onLayout={onLayout}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%",
+            padding: layout.padding_x2_5,
+          }}
+        >
+          <SwapHeader
+            setSettingsOpened={setSettingsOpened}
+            networkDisplayName={selectedNetwork?.displayName}
           />
-          {/*======= Selectable currencies in */}
-          <SwapModalTokenList
-            isOpened={!!dropdownOutRef && isDropdownOpen(dropdownOutRef)}
-            close={closeOpenedDropdown}
-            width={modalWidth}
-            currencies={selectableCurrencies}
-            selectedNetworkId={selectedNetworkId}
-            setCurrency={setCurrencyOut}
-          />
-          {/*======= Selectable currencies out */}
-          <SwapModalTokenList
-            isOpened={!!dropdownInRef && isDropdownOpen(dropdownInRef)}
-            close={closeOpenedDropdown}
-            width={modalWidth}
-            currencies={selectableCurrencies}
-            selectedNetworkId={selectedNetworkId}
-            setCurrency={setCurrencyIn}
-          />
-        </>
-      }
-      Header={() => (
-        <ModalHeader
-          setSettingsOpened={setSettingsOpened}
-          networkDisplayName={selectedNetwork?.displayName}
-        />
-      )}
-      width={modalWidth}
-      visible={visible}
-      onClose={onCloseModal}
-      contentStyle={{ justifyContent: "flex-start" }}
-      closeButtonStyle={{ alignSelf: "center" }}
-    >
-      <View style={styles.modalChildrenContainer}>
-        <View style={styles.currencies}>
-          {/*======= First currency */}
-          <TertiaryBox
-            fullWidth
-            mainContainerStyle={styles.currencyBoxMainContainer}
-          >
-            {/*----- Selected currencyIn available amount */}
-            <View style={styles.counts}>
-              <BrandText style={styles.availableAmount}>
-                Available{" "}
-                <BrandText style={{ color: primaryColor }}>
-                  {currencyInAmount}
-                </BrandText>
-              </BrandText>
-              <View style={{ flexDirection: "row" }}>
-                <SecondaryButton size="XS" text="MAX" onPress={onPressMax} />
-                <SecondaryButton
-                  onPress={onPressHalf}
-                  size="XS"
-                  text="HALF"
-                  touchableStyle={{ marginLeft: layout.padding_x1 }}
-                />
-              </View>
-            </View>
-
-            {/*----- Selected currencyIn*/}
-            <Animated.View
-              style={{
-                opacity,
-                width: "100%",
-                transform: [{ translateY: translateRangeToBottom }],
-              }}
-            >
-              <View style={styles.currency}>
-                <SelectedCurrency
-                  currency={currencyInNative}
-                  selectedNetworkId={selectedNetworkId}
-                  setRef={setDropdownInRef}
-                />
-                {/*----- Desired amount for swap */}
-                <View>
-                  <TextInput
-                    style={styles.inputAmount}
-                    value={amountIn}
-                    placeholder="0"
-                    placeholderTextColor={neutralA3}
-                    onChangeText={onChangeAmountIn}
-                  />
-                  <BrandText style={styles.amountUsd}>
-                    ≈ ${parseFloat(amountInUsd.toFixed(2).toString())}
-                  </BrandText>
-                </View>
-              </View>
-            </Animated.View>
-          </TertiaryBox>
-
-          {/*======= Second currency */}
-          <SpacerColumn size={1.5} />
-          <TertiaryBox
-            fullWidth
-            mainContainerStyle={styles.currencyBoxMainContainer}
-          >
-            <>
-              {/*----- Invert button */}
-              <CustomPressable
-                onPress={onPressInvert}
-                style={styles.invertButton}
-              >
-                {({ hovered }) => (
-                  <SVG
-                    source={hovered ? chevronCircleDown : chevronCircleUp}
-                    height={32}
-                    width={32}
-                  />
-                )}
-              </CustomPressable>
-
-              {/*----- Selected currencyOut */}
-              <Animated.View
-                style={{
-                  opacity,
-                  width: "100%",
-                  transform: [{ translateY: translateRangeToTop }],
-                }}
-              >
-                <View style={styles.currency}>
-                  <SelectedCurrency
-                    currency={currencyOutNative}
-                    selectedNetworkId={selectedNetworkId}
-                    setRef={setDropdownOutRef}
-                  />
-
-                  {/*----- Amount earned after swap */}
-                  <CurrencyAmount
-                    amount={amountOutWithFee}
-                    amountUsd={amountOutUsdWithFee}
-                    isApproximate
-                  />
-                </View>
-              </Animated.View>
-            </>
-          </TertiaryBox>
         </View>
 
-        {/*======= Currencies In/Out equivalence */}
-        <SpacerColumn size={1.5} />
-        <SwapDetails
-          fee={fee}
-          spotPrice={spotPrice || ""}
-          amountIn={amountIn}
-          tokenNameIn={currencyInNative?.displayName || ""}
-          tokenNameOut={currencyOutNative?.displayName || ""}
-          feeAmountOutUsd={feeAmountOutUsd}
-          expectedAmountOut={amountOutWithFee}
-          slippage={slippage}
-        />
+        <View style={{ width: "100%", paddingHorizontal: layout.padding_x2_5 }}>
+          <SeparatorGradient style={{ marginBottom: layout.padding_x2_5 }} />
+          <View style={styles.childrenContainer}>
+            <View style={styles.currencies}>
+              {/*======= First currency */}
+              <TertiaryBox
+                fullWidth
+                mainContainerStyle={styles.currencyBoxMainContainer}
+              >
+                {/*----- Selected currencyIn available amount */}
+                <View style={styles.counts}>
+                  <BrandText style={styles.availableAmount}>
+                    Available{" "}
+                    <BrandText style={{ color: primaryColor }}>
+                      {currencyInAmount}
+                    </BrandText>
+                  </BrandText>
+                  <View style={{ flexDirection: "row" }}>
+                    <SecondaryButton
+                      size="XS"
+                      text="MAX"
+                      onPress={onPressMax}
+                    />
+                    <SecondaryButton
+                      onPress={onPressHalf}
+                      size="XS"
+                      text="HALF"
+                      touchableStyle={{ marginLeft: layout.padding_x1 }}
+                    />
+                  </View>
+                </View>
 
-        {/*======= Swap button */}
-        <SpacerColumn size={2.5} />
-        <PrimaryButton
-          size="XL"
-          loader
-          text={
-            amountIn && parseFloat(amountIn) > parseFloat(currencyInAmount)
-              ? "Insufficient balance"
-              : "Swap"
-          }
-          fullWidth
-          disabled={
-            !amountIn ||
-            parseFloat(amountIn) === 0 ||
-            parseFloat(amountIn) > parseFloat(currencyInAmount)
-          }
-          onPress={onPressSwap}
+                {/*----- Selected currencyIn*/}
+                <Animated.View
+                  style={{
+                    opacity,
+                    width: "100%",
+                    transform: [{ translateY: translateRangeToBottom }],
+                  }}
+                >
+                  <View style={styles.currency}>
+                    <SelectedCurrency
+                      currency={currencyInNative}
+                      selectedNetworkId={selectedNetworkId}
+                      setRef={setDropdownInRef}
+                    />
+                    {/*----- Desired amount for swap */}
+                    <View>
+                      <TextInput
+                        style={styles.inputAmount}
+                        value={amountIn}
+                        placeholder="0"
+                        placeholderTextColor={neutralA3}
+                        onChangeText={onChangeAmountIn}
+                      />
+                      <BrandText style={styles.amountUsd}>
+                        ≈ ${parseFloat(amountInUsd.toFixed(2).toString())}
+                      </BrandText>
+                    </View>
+                  </View>
+                </Animated.View>
+              </TertiaryBox>
+
+              {/*======= Second currency */}
+              <SpacerColumn size={1.5} />
+              <TertiaryBox
+                fullWidth
+                mainContainerStyle={styles.currencyBoxMainContainer}
+              >
+                <>
+                  {/*----- Invert button */}
+                  <CustomPressable
+                    onPress={onPressInvert}
+                    style={styles.invertButton}
+                  >
+                    {({ hovered }) => (
+                      <SVG
+                        source={hovered ? chevronCircleDown : chevronCircleUp}
+                        height={32}
+                        width={32}
+                      />
+                    )}
+                  </CustomPressable>
+
+                  {/*----- Selected currencyOut */}
+                  <Animated.View
+                    style={{
+                      opacity,
+                      width: "100%",
+                      transform: [{ translateY: translateRangeToTop }],
+                    }}
+                  >
+                    <View style={styles.currency}>
+                      <SelectedCurrency
+                        currency={currencyOutNative}
+                        selectedNetworkId={selectedNetworkId}
+                        setRef={setDropdownOutRef}
+                      />
+
+                      {/*----- Amount earned after swap */}
+                      <CurrencyAmount
+                        amount={amountOutWithFee}
+                        amountUsd={amountOutUsdWithFee}
+                        isApproximate
+                      />
+                    </View>
+                  </Animated.View>
+                </>
+              </TertiaryBox>
+            </View>
+
+            {/*======= Currencies In/Out equivalence */}
+            <SpacerColumn size={1.5} />
+            <SwapDetail
+              fee={fee}
+              spotPrice={spotPrice || ""}
+              amountIn={amountIn}
+              tokenNameIn={currencyInNative?.displayName || ""}
+              tokenNameOut={currencyOutNative?.displayName || ""}
+              feeAmountOutUsd={feeAmountOutUsd}
+              expectedAmountOut={amountOutWithFee}
+              slippage={slippage}
+            />
+
+            {/*======= Swap button */}
+            <SpacerColumn size={2.5} />
+            <PrimaryButton
+              size="XL"
+              loader
+              text={
+                amountIn && parseFloat(amountIn) > parseFloat(currencyInAmount)
+                  ? "Insufficient balance"
+                  : "Swap"
+              }
+              fullWidth
+              disabled={
+                !amountIn ||
+                parseFloat(amountIn) === 0 ||
+                parseFloat(amountIn) > parseFloat(currencyInAmount)
+              }
+              onPress={onPressSwap}
+            />
+          </View>
+        </View>
+
+        {/*======= Set slippage */}
+        <SwapSettings
+          settingsOpened={settingsOpened}
+          setSlippageValue={setSlippage}
+        />
+        {/*======= Selectable currencies in */}
+        <SwapTokensList
+          width={viewWidth}
+          isOpened={!!dropdownOutRef && isDropdownOpen(dropdownOutRef)}
+          close={closeOpenedDropdown}
+          currencies={selectableCurrencies}
+          selectedNetworkId={selectedNetworkId}
+          setCurrency={setCurrencyOut}
+        />
+        {/*======= Selectable currencies out */}
+        <SwapTokensList
+          width={viewWidth}
+          isOpened={!!dropdownInRef && isDropdownOpen(dropdownInRef)}
+          close={closeOpenedDropdown}
+          currencies={selectableCurrencies}
+          selectedNetworkId={selectedNetworkId}
+          setCurrency={setCurrencyIn}
         />
       </View>
-    </ModalBase>
+    </TertiaryBox>
   );
 };
 
@@ -588,7 +565,21 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
 
-  modalChildrenContainer: {
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flex: 1,
+  },
+  headerLogoTitle: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  headerTitle: {
+    marginLeft: layout.padding_x2,
+  },
+
+  childrenContainer: {
     alignItems: "center",
     paddingBottom: layout.padding_x2_5,
   },
