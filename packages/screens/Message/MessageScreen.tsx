@@ -1,16 +1,12 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
-import farward from "../../../assets/icons/farward.svg";
-import friends from "../../../assets/icons/friends.svg";
-import { SVG } from "../../../packages/components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import MessageCard from "../../components/cards/MessageCard";
 import { SearchInput } from "../../components/sorts/SearchInput";
-import DetailsChatScreen from "./DetailsChatScreen";
 import { MessageHeader } from "./MessageHeader";
+import SideBarChats from "./SideBarChats";
 import TopHeaderButtonChat from "./TopHeaderButtonChat";
 import data from "./data";
 export const MessageScreen: ScreenFC<"Message"> = () => {
@@ -40,23 +36,12 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
 
       <Separator style={{ marginTop: 20, left: 0 }} horizontal={false} />
       <View style={{ flexDirection: "row" }}>
-        <View style={styles.friendBox}>
-          <View style={styles.iconandText}>
-            <SVG source={friends} />
-            <Text style={styles.friendText}>Friends</Text>
-          </View>
-          <View style={styles.iconandText}>
-            <Text style={styles.number}>0</Text>
-            <TouchableOpacity>
-              <SVG source={farward} />
-            </TouchableOpacity>
-          </View>
-        </View>
+        <SideBarChats />
 
-        <Separator style={{ marginLeft: 20, height: 400 }} horizontal />
+        <Separator style={{ marginLeft: 20, height: 500 }} horizontal />
         <View style={{ flex: 1 }}>
           <TopHeaderButtonChat />
-          <SearchInput style={{ top: -100 }} />
+          {/* <SearchInput style={{ top: -100 }} /> */}
         </View>
       </View>
     </ScreenContainer>
