@@ -43,11 +43,18 @@ export const useRewards = (userId: string | undefined) => {
   const claimAllRewards = async (callback?: () => void) => {
     try {
       if (!userAddress || !networkId) return;
-
+      // Ensuring with uses the wallet address that corresponds to the network
+      const network = getNetwork(networkId);
+      if (
+        network?.kind === NetworkKind.Cosmos &&
+        !userAddress.includes(network.addressPrefix)
+      ) {
+        return initialData;
+      }
       const client = await getKeplrSigningStargateClient(networkId);
 
       const msgs: MsgWithdrawDelegatorRewardEncodeObject[] = [];
-      networkRewards.rewards.forEach((rew) => {
+      networkRewards.rewards?.forEach((rew) => {
         if (!rew.reward.length) return;
         msgs.push({
           typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
@@ -128,7 +135,7 @@ export const useRewards = (userId: string | undefined) => {
   // ---- Get all denoms used for these rewards
   const denoms: string[] = useMemo(() => {
     const memoDenoms: string[] = [];
-    networkRewards.rewards.forEach((rew) => {
+    networkRewards.rewards?.forEach((rew) => {
       rew.reward.forEach((r) => {
         let neverAdded = false;
         memoDenoms.forEach((d) => {
@@ -157,7 +164,7 @@ export const useRewards = (userId: string | undefined) => {
   // ========= Handle rewards per validator
   const rewards: Reward[] = useMemo(() => {
     const memoRewards: Reward[] = [];
-    networkRewards.rewards.forEach((rew) => {
+    networkRewards.rewards?.forEach((rew) => {
       rew.reward.forEach((r) => {
         const price = getCoingeckoPrice(networkId, r.denom, r.amount, prices);
         if (price) {
@@ -177,7 +184,7 @@ export const useRewards = (userId: string | undefined) => {
   // ========= Handle the rewards total
   const totalsRewards: TotalRewards[] = useMemo(() => {
     const memoTotalsRewards: TotalRewards[] = [];
-    networkRewards.total.forEach((t) => {
+    networkRewards.total?.forEach((t) => {
       const price = getCoingeckoPrice(networkId, t.denom, t.amount, prices);
       if (price) {
         const finalTotal: TotalRewards = {
