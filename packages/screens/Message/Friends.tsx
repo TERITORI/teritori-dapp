@@ -1,13 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 
-import AddFriendList from "../../components/addfriend/AddFriendList";
-import data from "../../components/addfriend/data";
-const AddFriend = () => {
+import FriendList from "../../components/friends/FriendsList";
+import data from "../../components/friends/data";
+const Friends = () => {
   return (
-    <View>
+    <View style={{ flex: 1, backgroundColor: "#000" }}>
       {data.map((item) => (
-        <AddFriendList
+        <FriendList
           avatar={item.avatar}
           name={item.name}
           isOnline={item.isOnline}
@@ -16,4 +16,5 @@ const AddFriend = () => {
     </View>
   );
 };
-export default AddFriend;
+
+export default Friends;
