@@ -50,7 +50,6 @@ export const SocialThreadCard: React.FC<{
   isGovernance,
   isPreview,
 }) => {
-  const { width } = useWindowDimensions();
   const [localPost, setLocalPost] = useState<Post>(post);
   const { mutate: postMutate, isLoading: isPostMutationLoading } =
     useTeritoriSocialFeedReactPostMutation({
