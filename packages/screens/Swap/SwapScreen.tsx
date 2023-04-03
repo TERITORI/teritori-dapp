@@ -9,7 +9,6 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
 import { osmosisNetwork } from "../../networks/osmosis";
 import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
 import { setSelectedNetworkId } from "../../store/slices/settings";
@@ -51,10 +50,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   }, [osmosisConnected, isScreenFocused]);
 
   return (
-    <ScreenContainer
-      headerChildren={<BrandText>Swap</BrandText>}
-      forceNetworkKind={NetworkKind.Cosmos}
-    >
+    <ScreenContainer headerChildren={<BrandText>Swap</BrandText>}>
       <View style={styles.mainContainer}>
         {!selectedWallet?.address ? (
           <MainConnectWalletButton style={{ alignSelf: "center" }} />

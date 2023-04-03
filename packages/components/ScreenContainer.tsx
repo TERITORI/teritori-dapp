@@ -17,6 +17,7 @@ import { ConnectWalletButton } from "./TopMenu/ConnectWalletButton";
 import { Sidebar } from "./navigation/Sidebar";
 import { useForceNetworkKind } from "../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
+import { useForceUnselectNetworks } from "../hooks/useForceUnselectNetworks";
 import { useMaxResolution } from "../hooks/useMaxResolution";
 import { NetworkInfo, NetworkKind } from "../networks";
 import {
@@ -81,6 +82,7 @@ export const ScreenContainer: React.FC<{
 
   useForceNetworkSelection(forceNetworkId);
   useForceNetworkKind(forceNetworkKind);
+  useForceUnselectNetworks();
 
   const networkFilter = useCallback(
     (n: NetworkInfo | undefined) => {
