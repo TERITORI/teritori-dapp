@@ -28,9 +28,9 @@ const tabs = [
   "Reviews",
 ];
 
-export const LogoDesignDetailsHeader: React.FC<{ data: ServiceFields }> = ({
-  data,
-}) => {
+export const LogoDesignDetailsHeader: React.FC<{
+  data: ServiceFields | null;
+}> = ({ data }) => {
   const [selected, setSelected] = useState(tabs[0]);
   const [displayReportPopup, setDisplayReportPopup] = useState(false);
   const [displaySharePopup, setDisplaySharePopup] = useState(false);
@@ -112,12 +112,12 @@ export const LogoDesignDetailsHeader: React.FC<{ data: ServiceFields }> = ({
                 source={heartIcon}
                 width={24}
                 height={24}
-                fill={data.isFavorite ? "red" : "none"}
+                fill={data && data.isFavorite ? "red" : "none"}
               />
               <BrandText
                 style={[fontMedium14, { color: neutralA3, marginLeft: 12 }]}
               >
-                {data.reviews?.stats.total}
+                {data && data.reviews?.stats.total}
               </BrandText>
             </View>
           </TouchableOpacity>

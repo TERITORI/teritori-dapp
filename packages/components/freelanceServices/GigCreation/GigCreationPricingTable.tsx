@@ -1,7 +1,10 @@
 import React from "react";
 import { View, StyleSheet, TextInput, TextProps } from "react-native";
 
-import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
+import {
+  GigInfo,
+  PriceContentType,
+} from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral77,
   neutral33,
@@ -17,8 +20,9 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
-import { TableCheckBox } from "../../checkbox/TableCheckBox";
 import { TableSelect } from "../../select/TableSelect";
+import { deliveryTimeData } from "./GigBasedata";
+import { GigPriceContentData } from "./GigPriceContentData";
 
 const tableWidth = 909;
 const borderWidth = 1;
@@ -31,43 +35,20 @@ export const GigCreationPricingTable: React.FC<{
   const unitHeight = 38;
 
   const columnTitle = ["Basic", "Standard", "Premium"];
-  const rowTitle = [
-    "Number of pages/screens",
-    "Design customization",
-    "Content upload",
-    "Responsive design",
-    "Include source code",
-    "Revisions",
-    "Price",
-  ];
-
-  const deliveryTimeData = [
-    "delivery time 1",
-    "delivery time 2",
-    "delivery time 3",
-    "delivery time 4",
-  ];
-  const pageScreenNumberData = ["1 - 5", "5 - 10", "11 - 15", "16 - 20"];
-  const revisionsData = [
-    "Revisions 1",
-    "Revisions 2",
-    "Revisions 3",
-    "Revisions 4",
-    "Revisions 5",
-  ];
 
   return (
-    <View style={styles.tableContainer}>
+    <View style={[styles.tableContainer, { zIndex: 50 }]}>
       <View style={styles.columnContainer}>
-        {rowTitle.map((item, index) => (
+        {gigInfo.basicPackage.contents.map((item, index) => (
           <NormalUnit
-            text={item}
+            text={item.title}
             title
             style={styles.rowTitle}
             key={index}
             first={index === 0 ? true : undefined}
           />
         ))}
+        <NormalUnit text="Price" title style={styles.rowTitle} />
       </View>
 
       <View style={styles.columnContainer}>
@@ -110,70 +91,12 @@ export const GigCreationPricingTable: React.FC<{
             });
           }}
         />
-        <TableSelect
-          width={unitWidth}
-          height={unitHeight}
-          data={pageScreenNumberData}
-          initValue="Select"
-          zIndex={2}
-          value={gigInfo.basicPackage.delivery}
-          setValue={(v: string) => {
-            setGig({
-              ...gigInfo,
-              basicPackage: { ...gigInfo.basicPackage, delivery: v },
-            });
-          }}
+        <GigPriceContentData
+          gigInfo={gigInfo}
+          setGig={setGig}
+          priceContentType={PriceContentType.basic}
         />
-        <TableCheckBox
-          value={gigInfo.basicPackage.designCustomization}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              basicPackage: { ...gigInfo.basicPackage, designCustomization: v },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.basicPackage.contentUpload}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              basicPackage: { ...gigInfo.basicPackage, contentUpload: v },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.basicPackage.responsiveDesign}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              basicPackage: { ...gigInfo.basicPackage, responsiveDesign: v },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.basicPackage.includeSourceCode}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              basicPackage: { ...gigInfo.basicPackage, includeSourceCode: v },
-            });
-          }}
-        />
-        <TableSelect
-          width={unitWidth}
-          height={unitHeight}
-          data={revisionsData}
-          initValue="Select"
-          zIndex={1}
-          value={gigInfo.basicPackage.revisions}
-          setValue={(v: string) => {
-            setGig({
-              ...gigInfo,
-              basicPackage: { ...gigInfo.basicPackage, revisions: v },
-            });
-          }}
-        />
+
         <TableTextInput
           value={gigInfo.basicPackage.price}
           onChangeText={(v) => {
@@ -224,78 +147,10 @@ export const GigCreationPricingTable: React.FC<{
             });
           }}
         />
-        <TableSelect
-          width={unitWidth}
-          height={unitHeight}
-          data={pageScreenNumberData}
-          initValue="Select"
-          zIndex={2}
-          value={gigInfo.standardPackage.delivery}
-          setValue={(v: string) => {
-            setGig({
-              ...gigInfo,
-              standardPackage: { ...gigInfo.standardPackage, delivery: v },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.standardPackage.designCustomization}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              standardPackage: {
-                ...gigInfo.standardPackage,
-                designCustomization: v,
-              },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.standardPackage.contentUpload}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              standardPackage: { ...gigInfo.standardPackage, contentUpload: v },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.standardPackage.responsiveDesign}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              standardPackage: {
-                ...gigInfo.standardPackage,
-                responsiveDesign: v,
-              },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.standardPackage.includeSourceCode}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              standardPackage: {
-                ...gigInfo.standardPackage,
-                includeSourceCode: v,
-              },
-            });
-          }}
-        />
-        <TableSelect
-          width={unitWidth}
-          height={unitHeight}
-          data={revisionsData}
-          initValue="Select"
-          zIndex={1}
-          value={gigInfo.standardPackage.revisions}
-          setValue={(v: string) => {
-            setGig({
-              ...gigInfo,
-              standardPackage: { ...gigInfo.standardPackage, revisions: v },
-            });
-          }}
+        <GigPriceContentData
+          gigInfo={gigInfo}
+          setGig={setGig}
+          priceContentType={PriceContentType.standard}
         />
         <TableTextInput
           value={gigInfo.standardPackage.price}
@@ -348,78 +203,10 @@ export const GigCreationPricingTable: React.FC<{
             });
           }}
         />
-        <TableSelect
-          width={unitWidth}
-          height={unitHeight}
-          data={pageScreenNumberData}
-          initValue="Select"
-          zIndex={2}
-          value={gigInfo.premiumPackage.delivery}
-          setValue={(v: string) => {
-            setGig({
-              ...gigInfo,
-              premiumPackage: { ...gigInfo.premiumPackage, delivery: v },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.premiumPackage.designCustomization}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              premiumPackage: {
-                ...gigInfo.premiumPackage,
-                designCustomization: v,
-              },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.premiumPackage.contentUpload}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              premiumPackage: { ...gigInfo.premiumPackage, contentUpload: v },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.premiumPackage.responsiveDesign}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              premiumPackage: {
-                ...gigInfo.premiumPackage,
-                responsiveDesign: v,
-              },
-            });
-          }}
-        />
-        <TableCheckBox
-          value={gigInfo.premiumPackage.includeSourceCode}
-          setValue={(v: boolean) => {
-            setGig({
-              ...gigInfo,
-              premiumPackage: {
-                ...gigInfo.premiumPackage,
-                includeSourceCode: v,
-              },
-            });
-          }}
-        />
-        <TableSelect
-          width={unitWidth}
-          height={unitHeight}
-          data={revisionsData}
-          initValue="Select"
-          zIndex={1}
-          value={gigInfo.premiumPackage.revisions}
-          setValue={(v: string) => {
-            setGig({
-              ...gigInfo,
-              premiumPackage: { ...gigInfo.premiumPackage, revisions: v },
-            });
-          }}
+        <GigPriceContentData
+          gigInfo={gigInfo}
+          setGig={setGig}
+          priceContentType={PriceContentType.premium}
         />
         <TableTextInput
           value={gigInfo.premiumPackage.price}

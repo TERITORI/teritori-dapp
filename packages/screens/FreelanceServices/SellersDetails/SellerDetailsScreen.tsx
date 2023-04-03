@@ -1,4 +1,5 @@
-import React, { useState, createRef } from "react";
+import axios from "axios";
+import React, { useState, createRef, useEffect } from "react";
 import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 
 import heart from "../../../../assets/icons/heart.svg";
@@ -30,7 +31,11 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useIsKeplrConnected } from "../../../hooks/useIsKeplrConnected";
 import { sellerprofileBackendClient } from "../../../utils/backend";
-import { uploadJSONToIPFS, uploadFileToIPFS } from "../../../utils/ipfs";
+import {
+  uploadJSONToIPFS,
+  uploadFileToIPFS,
+  ipfsPinataUrl,
+} from "../../../utils/ipfs";
 import {
   getSigningCosmWasmClient,
   getFirstKeplrAccount,
@@ -59,34 +64,51 @@ import {
 } from "../../../utils/style/fonts";
 import { leftMarginMainContent } from "../../../utils/style/layout";
 import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
-import { getService, getUser } from "../query/data";
-import { LangInfo, EducationInfo, CertificationInfo } from "../types/fields";
+import { getServiceFieldFromIPFS } from "../query/data";
+import {
+  LangInfo,
+  EducationInfo,
+  CertificationInfo,
+  ServiceFields,
+} from "../types/fields";
 
 export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
   route: {
     params: { id },
   },
 }) => {
-  const user = getUser(id);
-  const data = getService(id);
+  const [data, setData] = useState<ServiceFields | null>(null);
+  useEffect(() => {
+    if (id !== "") return;
+    const setId = async () => {
+      const gig_json_res = await axios.get(ipfsPinataUrl(id));
+      setData(await getServiceFieldFromIPFS(id, gig_json_res.data));
+    };
+    setId();
+  }, [id]);
+
   const { width } = useWindowDimensions();
 
-  const [avatarUrl, setAvatarUrl] = useState(user.profilePic);
-  const [portfolios, setPortfolios] = useState(user.portfolios);
+  const [avatarUrl, setAvatarUrl] = useState(data?.user?.profilePic);
+  const [portfolios, setPortfolios] = useState(data?.user?.portfolios);
 
   const [isEditName, setIsEditName] = useState(false);
-  const [userName, setUserName] = useState(user.username);
+  const [userName, setUserName] = useState(data?.user.username);
 
-  const [description, setDescription] = useState(user.intro);
+  const [description, setDescription] = useState(data?.user.intro);
 
-  const [langInfoList, setLangInfoList] = useState<LangInfo[]>(user.languages);
+  const [langInfoList, setLangInfoList] = useState<LangInfo[]>(
+    data?.user.languages!
+  );
   const [editLangValue, setEditLangValue] = useState<LangInfo | undefined>(
     undefined
   );
   const [indexLangValue, setIndexLangValue] = useState(-1);
   const [isEditLang, setIsEditLang] = useState(false);
 
-  const [skillInfoList, setSkillInfoList] = useState<string[]>(user.skills);
+  const [skillInfoList, setSkillInfoList] = useState<string[]>(
+    data?.user.skills!
+  );
   const [indexSkillValue, setIndexSkillValue] = useState(-1);
   const [editSkillValue, setEditSkillValue] = useState<string | undefined>(
     undefined
@@ -95,7 +117,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
 
   const [isEditEducation, setIsEditEducation] = useState(false);
   const [educationInfoList, setEducationInfoList] = useState<EducationInfo[]>(
-    user.education
+    data?.user.education!
   );
   const [editEducationValue, setEditEducationValue] = useState<
     EducationInfo | undefined
@@ -105,7 +127,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
   const [isEditCertification, setIsEditCertification] = useState(false);
   const [certificationInfoList, setCertificationInfoList] = useState<
     CertificationInfo[]
-  >(user.certifications);
+  >(data?.user.certifications!);
   const [editCertificationValue, setEditCertificationValue] = useState<
     CertificationInfo | undefined
   >(undefined);
@@ -120,21 +142,20 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
   const fileRef = createRef<HTMLInputElement>();
 
   const onPressUpdateName = () => {
-    if (userName.trim() === "") return;
+    if (data?.user.username.trim() === "") return;
     setIsEditName(false);
   };
   const onPressUpdateDescription = () => {
     setIsEditDescription(false);
   };
 
-  const contractAddress = process.env
-    .TERITORI_SELLER_PROFILE_CONTRACT_ADRESS as string;
+  const contractAddress = process.env.TERITORI_SELLER_CONTRACT_ADRESS as string;
 
   const updateProfile = async () => {
     //get ipfsHash for Profile
 
     const ipfs_msg = {
-      name: userName.trim(),
+      name: userName?.trim(),
       description,
       avatar: avatarUrl,
       portfolio: portfolios,
@@ -255,7 +276,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                     style={{ marginRight: 80 }}
                   />
                   <AvatarImage
-                    source={user.profilePic}
+                    source={data?.user.profilePic}
                     style={{ width: 104, height: 104 }}
                     onUpdate={(ipfsHash) => {
                       setAvatarUrl(ipfsHash);
@@ -287,7 +308,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       <View
                         style={{
                           backgroundColor:
-                            user.onlineStatus === "online"
+                            data?.user.onlineStatus! === "online"
                               ? successColor
                               : errorColor,
                           width: 6,
@@ -300,7 +321,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                           fontSemibold16,
                           {
                             color:
-                              user.onlineStatus === "online"
+                              data?.user.onlineStatus! === "online"
                                 ? successColor
                                 : errorColor,
                             marginLeft: 4,
@@ -308,7 +329,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                         ]}
                       >
                         {" "}
-                        {user.onlineStatus}
+                        {data?.user?.onlineStatus}
                       </BrandText>
                     </View>
                   </View>
@@ -384,7 +405,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                     fontSemibold14,
                   ]}
                 >
-                  {user.tagline}
+                  {data?.user.tagline}
                 </BrandText>
                 <View
                   style={{
@@ -393,17 +414,17 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                     marginRight: 12,
                   }}
                 >
-                  <StarRating rating={user.rating} />
+                  <StarRating rating={data?.user.rating!} />
                   <BrandText
                     style={[
                       { color: yellowDefault, marginRight: 12 },
                       fontMedium14,
                     ]}
                   >
-                    {user.rating}
+                    {data?.user.rating!}
                   </BrandText>
                   <BrandText style={[{ color: neutral77 }, fontMedium14]}>
-                    ({user.totalReviews})
+                    ({data?.user.totalReviews})
                   </BrandText>
                 </View>
                 <Separator
@@ -429,7 +450,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       From
                     </BrandText>
                     <BrandText style={fontSemibold14}>
-                      {user.country.name}
+                      {data?.user.country.name}
                     </BrandText>
                   </View>
                   <View style={{ flexDirection: "column", width: 160 }}>
@@ -442,7 +463,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       Member Since
                     </BrandText>
                     <BrandText style={fontSemibold14}>
-                      {user.createDate.toLocaleDateString()}
+                      {data?.user.createDate.toLocaleDateString()}
                     </BrandText>
                   </View>
                 </View>
@@ -463,7 +484,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       Avg. response time
                     </BrandText>
                     <BrandText style={fontSemibold14}>
-                      {user.times.avgResponseTime}
+                      {data?.user.times.avgResponseTime}
                     </BrandText>
                   </View>
                   <View style={{ flexDirection: "column", width: 160 }}>
@@ -476,7 +497,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                       Last delivery
                     </BrandText>
                     <BrandText style={fontSemibold14}>
-                      {user.times.lastDelivery}
+                      {data?.user.times.lastDelivery}
                     </BrandText>
                   </View>
                 </View>
@@ -503,13 +524,13 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                   style={{ display: "none" }}
                   accept="image/png,image/jpg,image/gif"
                   onChange={async (e) => {
-                    const file = e.target?.files?.[0];
-                    try {
-                      const ipfsHash = await uploadFileToIPFS(file!);
-                      setPortfolios([...portfolios, ipfsHash]);
-                    } catch (exception) {
-                      console.log(exception);
-                    }
+                    // const file = e.target?.files?.[0];
+                    // try {
+                    //   // const ipfsHash = await uploadFileToIPFS(file!);
+                    //   // setPortfolios([...portfolios, ipfsHash]);
+                    // } catch (exception) {
+                    //   console.log(exception);
+                    // }
                   }}
                   ref={fileRef}
                 />
@@ -527,23 +548,25 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                 flexWrap: "wrap",
               }}
             >
-              {portfolios.map((item, index) => (
-                <PortfolioImage
-                  key={`portfolio-${index}`}
-                  width={191}
-                  height={191}
-                  source={item}
-                  onUpdate={(ipfsHash) => {
-                    portfolios[index] = ipfsHash;
-                    setPortfolios([...portfolios]);
-                  }}
-                  onRemove={() => {
-                    portfolios.splice(index, 1);
-                    setPortfolios([...portfolios]);
-                  }}
-                  style={{ marginLeft: 15, marginTop: 10 }}
-                />
-              ))}
+              {
+                //   portfolios.map((item, index) => (
+                //   <PortfolioImage
+                //     key={`portfolio-${index}`}
+                //     width={191}
+                //     height={191}
+                //     source={item}
+                //     onUpdate={(ipfsHash) => {
+                //       portfolios[index] = ipfsHash;
+                //       setPortfolios([...portfolios]);
+                //     }}
+                //     onRemove={() => {
+                //       portfolios.splice(index, 1);
+                //       setPortfolios([...portfolios]);
+                //     }}
+                //     style={{ marginLeft: 15, marginTop: 10 }}
+                //   />
+                // ))
+              }
             </View>
 
             <Separator
@@ -1206,8 +1229,8 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
           }}
         >
           <DisplayMoreServices />
-          {data.reviews ? <ReviewsStats reviews={data.reviews} /> : <></>}
-          {data.reviews?.items ? (
+          {data?.reviews ? <ReviewsStats reviews={data.reviews} /> : <></>}
+          {data?.reviews?.items ? (
             <DisplayReviews reviews={data.reviews.items} />
           ) : (
             <></>

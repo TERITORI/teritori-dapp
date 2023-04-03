@@ -12,6 +12,7 @@ export const subcategoryData = [
   "Programming & Tech",
   "Music & Audio",
 ];
+
 export const detailDataWebsiteType = [
   "E-commerce",
   "Educational",
@@ -40,6 +41,37 @@ export const detailDataPlatformTool = [
   "Portfolio",
   "News",
   "Other",
+];
+export const deliveryTimeData: string[] = [
+  "1 day Delivery",
+  "2 days Delivery",
+  "3 days Delivery",
+  "4 days Delivery",
+  "5 days Delivery",
+  "6 days Delivery",
+  "7 days Delivery",
+  "10 days Delivery",
+  "14 days Delivery",
+  "21 days Delivery",
+  "30 days Delivery",
+  "45 days Delivery",
+  "60 days Delivery",
+  "75 days Delivery",
+  "90 days Delivery",
+];
+
+export const revisionsData = [
+  "0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "UNLIMITED",
 ];
 
 export const requirementFormData: string[] = [

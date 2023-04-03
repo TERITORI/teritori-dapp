@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
 import { useWallets } from "../../../context/WalletsProvider";
-import { getSellerIpfsHash } from "../../../screens/FreelanceServices/utils";
+import { getSellerIpfsHash } from "../../../screens/FreelanceServices/contract";
 import { useAppNavigation } from "../../../utils/navigation";
 import { BrandText } from "../../BrandText";
 import { Separator } from "../../Separator";

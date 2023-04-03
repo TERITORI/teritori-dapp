@@ -24,16 +24,28 @@ export interface SellerInfo {
 export interface PackageInfo {
   title: string;
   desc: string;
-  deliveryTime: string; //index
-  delivery: string;
-  numberOfPages: string;
-  designCustomization: boolean;
-  contentUpload: boolean;
-  responsiveDesign: boolean;
-  includeSourceCode: boolean;
-  revisions: string; //number | index
+  deliveryTime: string;
+  contents: ContentInfo[];
   price: string;
 }
+export interface ContentInfo {
+  id: string;
+  active: boolean;
+  edit_type: EditType;
+  title: string;
+  data_value: string | null;
+  data_options: DataOptions[] | null;
+}
+export interface DataOptions {
+  value: number;
+  text: string;
+  val: number;
+}
+export enum EditType {
+  DROPDOWN = "dropdown",
+  CHECKBOX = "checkbox",
+}
+
 export interface ExtraFast {
   expectedDuration: string;
   price: string;
@@ -47,7 +59,14 @@ export interface Question {
   required: boolean;
   questionForm: string;
 }
+export enum PriceContentType {
+  basic,
+  standard,
+  premium,
+}
 export interface GigInfo {
+  //
+  profileHash: string;
   //overview
   title: string;
   category: string;
@@ -66,7 +85,6 @@ export interface GigInfo {
   extraFastPremium: ExtraFast;
   additionalPage: ExtraFast | null;
   responsiveDesign: ExtraFast | null;
-  includeSourceCode: string | null;
   additionalRevision: ExtraFast | null;
   //description & faq
   description: string;
@@ -78,22 +96,89 @@ export interface GigInfo {
   images: string[]; //ipfs_hash
   video: string; //ipfs_hash
   documents: string[]; //ipfs_hash
+  approveLicense: boolean;
 }
 export const emptyPackageInfo: PackageInfo = {
   title: "",
   desc: "",
   deliveryTime: "",
-  delivery: "",
-  numberOfPages: "",
-  designCustomization: false,
-  contentUpload: false,
-  responsiveDesign: false,
-  includeSourceCode: false,
-  revisions: "", //number | index
+  contents: [
+    {
+      id: "number_of_pages",
+      active: false,
+      edit_type: EditType.DROPDOWN,
+      title: "Number of pages",
+      data_value: null,
+      data_options: [
+        { value: 1, text: "1", val: 1 },
+        { value: 2, text: "2", val: 2 },
+        { value: 3, text: "3", val: 3 },
+        { value: 4, text: "4", val: 4 },
+        { value: 5, text: "5", val: 5 },
+        { value: 6, text: "6", val: 6 },
+        { value: 7, text: "7", val: 7 },
+        { value: 8, text: "8", val: 8 },
+        { value: 9, text: "9", val: 9 },
+      ],
+    } as ContentInfo,
+    {
+      id: "design_customization",
+      active: false,
+      edit_type: EditType.CHECKBOX,
+      title: "Design customization",
+      data_value: null,
+      data_options: null,
+    } as ContentInfo,
+    {
+      id: "content_upload",
+      active: false,
+      edit_type: EditType.CHECKBOX,
+      title: "Content upload",
+      data_value: null,
+      data_options: null,
+    } as ContentInfo,
+    {
+      id: "responsive_design",
+      active: false,
+      edit_type: EditType.CHECKBOX,
+      title: "Responsive design",
+      data_value: null,
+      data_options: null,
+    } as ContentInfo,
+    {
+      id: "include_source_code",
+      active: false,
+      edit_type: EditType.CHECKBOX,
+      title: "Include Source code",
+      data_value: null,
+      data_options: null,
+    } as ContentInfo,
+    {
+      id: "revisions",
+      active: false,
+      edit_type: EditType.DROPDOWN,
+      title: "Revisions",
+      data_value: null,
+      data_options: [
+        { value: 0, text: "0", val: 0 },
+        { value: 1, text: "1", val: 1 },
+        { value: 2, text: "2", val: 2 },
+        { value: 3, text: "3", val: 3 },
+        { value: 4, text: "4", val: 4 },
+        { value: 5, text: "5", val: 5 },
+        { value: 6, text: "6", val: 6 },
+        { value: 7, text: "7", val: 7 },
+        { value: 8, text: "8", val: 8 },
+        { value: 9, text: "9", val: 9 },
+      ],
+    } as ContentInfo,
+  ],
+
   price: "0", //number
 };
 
 export const emptyGigInfo: GigInfo = {
+  profileHash: "",
   title: "",
   category: "",
   subCategory: "",
@@ -102,9 +187,239 @@ export const emptyGigInfo: GigInfo = {
   platformToolType: [],
   positiveKeywords: ["Landing Page", "Product Design"],
   //pricing
-  basicPackage: emptyPackageInfo,
-  standardPackage: emptyPackageInfo,
-  premiumPackage: emptyPackageInfo,
+  basicPackage: {
+    title: "",
+    desc: "",
+    deliveryTime: "",
+    contents: [
+      {
+        id: "number_of_pages",
+        active: false,
+        edit_type: EditType.DROPDOWN,
+        title: "Number of pages",
+        data_value: null,
+        data_options: [
+          { value: 1, text: "1", val: 1 },
+          { value: 2, text: "2", val: 2 },
+          { value: 3, text: "3", val: 3 },
+          { value: 4, text: "4", val: 4 },
+          { value: 5, text: "5", val: 5 },
+          { value: 6, text: "6", val: 6 },
+          { value: 7, text: "7", val: 7 },
+          { value: 8, text: "8", val: 8 },
+          { value: 9, text: "9", val: 9 },
+        ],
+      } as ContentInfo,
+      {
+        id: "design_customization",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Design customization",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "content_upload",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Content upload",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "responsive_design",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Responsive design",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "include_source_code",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Include Source code",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "revisions",
+        active: false,
+        edit_type: EditType.DROPDOWN,
+        title: "Revisions",
+        data_value: null,
+        data_options: [
+          { value: 0, text: "0", val: 0 },
+          { value: 1, text: "1", val: 1 },
+          { value: 2, text: "2", val: 2 },
+          { value: 3, text: "3", val: 3 },
+          { value: 4, text: "4", val: 4 },
+          { value: 5, text: "5", val: 5 },
+          { value: 6, text: "6", val: 6 },
+          { value: 7, text: "7", val: 7 },
+          { value: 8, text: "8", val: 8 },
+          { value: 9, text: "9", val: 9 },
+        ],
+      } as ContentInfo,
+    ],
+
+    price: "0", //number
+  },
+  standardPackage: {
+    title: "",
+    desc: "",
+    deliveryTime: "",
+    contents: [
+      {
+        id: "number_of_pages",
+        active: false,
+        edit_type: EditType.DROPDOWN,
+        title: "Number of pages",
+        data_value: null,
+        data_options: [
+          { value: 1, text: "1", val: 1 },
+          { value: 2, text: "2", val: 2 },
+          { value: 3, text: "3", val: 3 },
+          { value: 4, text: "4", val: 4 },
+          { value: 5, text: "5", val: 5 },
+          { value: 6, text: "6", val: 6 },
+          { value: 7, text: "7", val: 7 },
+          { value: 8, text: "8", val: 8 },
+          { value: 9, text: "9", val: 9 },
+        ],
+      } as ContentInfo,
+      {
+        id: "design_customization",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Design customization",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "content_upload",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Content upload",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "responsive_design",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Responsive design",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "include_source_code",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Include Source code",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "revisions",
+        active: false,
+        edit_type: EditType.DROPDOWN,
+        title: "Revisions",
+        data_value: null,
+        data_options: [
+          { value: 0, text: "0", val: 0 },
+          { value: 1, text: "1", val: 1 },
+          { value: 2, text: "2", val: 2 },
+          { value: 3, text: "3", val: 3 },
+          { value: 4, text: "4", val: 4 },
+          { value: 5, text: "5", val: 5 },
+          { value: 6, text: "6", val: 6 },
+          { value: 7, text: "7", val: 7 },
+          { value: 8, text: "8", val: 8 },
+          { value: 9, text: "9", val: 9 },
+        ],
+      } as ContentInfo,
+    ],
+
+    price: "0", //number
+  },
+  premiumPackage: {
+    title: "",
+    desc: "",
+    deliveryTime: "",
+    contents: [
+      {
+        id: "number_of_pages",
+        active: false,
+        edit_type: EditType.DROPDOWN,
+        title: "Number of pages",
+        data_value: null,
+        data_options: [
+          { value: 1, text: "1", val: 1 },
+          { value: 2, text: "2", val: 2 },
+          { value: 3, text: "3", val: 3 },
+          { value: 4, text: "4", val: 4 },
+          { value: 5, text: "5", val: 5 },
+          { value: 6, text: "6", val: 6 },
+          { value: 7, text: "7", val: 7 },
+          { value: 8, text: "8", val: 8 },
+          { value: 9, text: "9", val: 9 },
+        ],
+      } as ContentInfo,
+      {
+        id: "design_customization",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Design customization",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "content_upload",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Content upload",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "responsive_design",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Responsive design",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "include_source_code",
+        active: false,
+        edit_type: EditType.CHECKBOX,
+        title: "Include Source code",
+        data_value: null,
+        data_options: null,
+      } as ContentInfo,
+      {
+        id: "revisions",
+        active: false,
+        edit_type: EditType.DROPDOWN,
+        title: "Revisions",
+        data_value: null,
+        data_options: [
+          { value: 0, text: "0", val: 0 },
+          { value: 1, text: "1", val: 1 },
+          { value: 2, text: "2", val: 2 },
+          { value: 3, text: "3", val: 3 },
+          { value: 4, text: "4", val: 4 },
+          { value: 5, text: "5", val: 5 },
+          { value: 6, text: "6", val: 6 },
+          { value: 7, text: "7", val: 7 },
+          { value: 8, text: "8", val: 8 },
+          { value: 9, text: "9", val: 9 },
+        ],
+      } as ContentInfo,
+    ],
+    price: "0", //number
+  },
   //pricing - extraservices
   extraFastBasic: {
     price: "0",
@@ -120,7 +435,6 @@ export const emptyGigInfo: GigInfo = {
   },
   additionalPage: null,
   responsiveDesign: null,
-  includeSourceCode: null,
   additionalRevision: null,
   //description & faq
   description: "",
@@ -130,6 +444,7 @@ export const emptyGigInfo: GigInfo = {
   images: [], //ipfs_hash
   video: "", //ipfs_hash
   documents: [], //ipfs_hash
+  approveLicense: false,
 };
 
 export const emptySeller: SellerInfo = {
@@ -175,22 +490,8 @@ export interface User {
     }
   ];
   skills: string[];
-  education: [
-    {
-      country: string;
-      universityName: string;
-      title: string;
-      major: string;
-      year: number;
-    }
-  ];
-  certifications: [
-    {
-      name: string;
-      from: string;
-      year: number;
-    }
-  ];
+  education: EducationInfo[];
+  certifications: CertificationInfo[];
 }
 
 export interface ServiceFields {
@@ -224,8 +525,8 @@ export interface ServiceLevels {
   text: string;
   description: string;
   price: FreelanceServicePriceType;
-  daysToDelivery: number;
-  maximumRevisions: number;
+  daysToDelivery: string;
+  maximumRevisions: string;
   included: string[];
   extras: ServiceLevelsExtra[];
 }

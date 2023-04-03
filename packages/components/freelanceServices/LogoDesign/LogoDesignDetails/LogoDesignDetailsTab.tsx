@@ -76,49 +76,50 @@ export const LogoDesignDetailsTab: React.FC<{
           </View>
         ))}
       </View>
-      {serviceLevels[2].included.map((serviceText, index) => (
-        <View key={index} style={{ flexDirection: "row" }}>
-          <View
-            style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
-          >
-            <BrandText
-              style={[
-                fontMedium14,
-                {
-                  color: neutral33,
-                  marginTop: 8,
-                  marginLeft: 8,
-                  marginBottom: 8,
-                },
-              ]}
-            >
-              {serviceText}
-            </BrandText>
-          </View>
-          {serviceLevels.map((serviceLevel, index) => (
+      {serviceLevels.length >= 2 &&
+        serviceLevels[2].included.map((serviceText, index) => (
+          <View key={index} style={{ flexDirection: "row" }}>
             <View
-              key={index}
-              style={{
-                width: "25%",
-                borderColor: neutral33,
-                borderWidth: 0.5,
-                justifyContent: "center",
-              }}
+              style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
             >
-              <SVG
-                source={
-                  serviceLevel.included.includes(serviceText)
-                    ? checkIcon
-                    : xIcon
-                }
-                width={16}
-                height={16}
-                style={{ marginLeft: 8 }}
-              />
+              <BrandText
+                style={[
+                  fontMedium14,
+                  {
+                    color: neutral33,
+                    marginTop: 8,
+                    marginLeft: 8,
+                    marginBottom: 8,
+                  },
+                ]}
+              >
+                {serviceText}
+              </BrandText>
             </View>
-          ))}
-        </View>
-      ))}
+            {serviceLevels.map((serviceLevel, index) => (
+              <View
+                key={index}
+                style={{
+                  width: "25%",
+                  borderColor: neutral33,
+                  borderWidth: 0.5,
+                  justifyContent: "center",
+                }}
+              >
+                <SVG
+                  source={
+                    serviceLevel.included.includes(serviceText)
+                      ? checkIcon
+                      : xIcon
+                  }
+                  width={16}
+                  height={16}
+                  style={{ marginLeft: 8 }}
+                />
+              </View>
+            ))}
+          </View>
+        ))}
       <View style={{ flexDirection: "row" }}>
         <View
           style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}
@@ -150,7 +151,7 @@ export const LogoDesignDetailsTab: React.FC<{
             <BrandText
               style={[fontSemibold16, { color: neutralA3, marginLeft: 8 }]}
             >
-              {serviceLevel.maximumRevisions === -1
+              {serviceLevel.maximumRevisions === "-1"
                 ? "Unlimited"
                 : serviceLevel.maximumRevisions}
             </BrandText>

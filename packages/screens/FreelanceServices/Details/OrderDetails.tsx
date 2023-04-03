@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { RadioButton } from "react-native-paper";
@@ -12,6 +13,7 @@ import { TeritoriOrderClient } from "../../../contracts-clients/teritori-freelan
 import { OrderParams } from "../../../contracts-clients/teritori-freelance-order/TeritoriOrder.types";
 import { useIsKeplrConnected } from "../../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { ipfsPinataUrl } from "../../../utils/ipfs";
 import { getSigningCosmWasmClient } from "../../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
@@ -24,7 +26,8 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "../../../utils/style/fonts";
 import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
-import { getService } from "../query/data";
+import { getServiceFieldFromIPFS } from "../query/data";
+import { ServiceFields } from "../types/fields";
 import { FirstRightCard } from "./FirstRightCard";
 import { FirstStep } from "./FirstStep";
 import { SecondRightCard } from "./SecondRightCard";
@@ -125,7 +128,17 @@ function SecondStep(props: {
 
 export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
   // const data = getService(params.id);
-  const data = getService("123");
+  const [data, setData] = useState<ServiceFields | null>(null);
+  const id = "user123";
+  useEffect(() => {
+    // if (id !== "") return;
+    const setId = async () => {
+      const gig_json_res = await axios.get(ipfsPinataUrl(id));
+      setData(await getServiceFieldFromIPFS(id, gig_json_res.data));
+    };
+    setId();
+  }, [id]);
+
   const [extraSelection, setExtraSelection] = useState<Set<number>>(new Set());
   const wallet = useSelectedWallet();
   const navigation = useAppNavigation();
@@ -336,7 +349,7 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
           </View>
           {step === 1 && (
             <FirstStep
-              service={data}
+              service={data!}
               selected={extraSelection}
               setSelected={setExtraSelection}
             />
@@ -364,13 +377,13 @@ export const OrderDetails: ScreenFC<"OrderDetails"> = ({ route }) => {
 
         {step === 1 && (
           <FirstRightCard
-            serviceLevels={data.serviceLevels[1]}
+            serviceLevels={data?.serviceLevels[1]!}
             selected={extraSelection}
           />
         )}
         {step === 2 && (
           <SecondRightCard
-            serviceLevels={data.serviceLevels[1]}
+            serviceLevels={data?.serviceLevels[1]!}
             selected={extraSelection}
           />
         )}

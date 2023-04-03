@@ -2,21 +2,22 @@ import React from "react";
 import { View } from "react-native";
 
 import { neutral33 } from "../../../utils/style/colors";
+import { GigStep } from "../../../utils/types/freelance";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 
 type GigCreationFooterProps = {
-  currentStep: number;
-  setCurrentStep: any;
+  step: GigStep;
+  nextStep: () => void;
 };
 
 export const GigCreationFooter: React.FC<GigCreationFooterProps> = ({
-  currentStep,
-  setCurrentStep,
+  step,
+  nextStep,
 }) => {
   const getButtonText = (): string => {
-    if (currentStep < 5) return "Save & Continue";
+    if (step < GigStep.Publish) return "Save & Continue";
     else {
-      if (currentStep === 5) return "Publish";
+      if (step === GigStep.Publish) return "Publish";
       else return "Done";
     }
   };
@@ -36,9 +37,7 @@ export const GigCreationFooter: React.FC<GigCreationFooterProps> = ({
           style={{ marginRight: 20 }}
           size="SM"
           text={getButtonText()}
-          onPress={() => {
-            if (currentStep < 6) setCurrentStep(currentStep + 1);
-          }}
+          onPress={nextStep}
         />
       </View>
     </View>

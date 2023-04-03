@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import PdfIcon from "../../../../assets/icons/pdf.svg";
@@ -34,7 +34,6 @@ export const GigCreationGallery: React.FC<{
   gigInfo: GigInfo;
   setGig: React.Dispatch<React.SetStateAction<GigInfo>>;
 }> = ({ gigInfo, setGig }) => {
-  const [agreePolicy, setAgreePolicy] = useState<boolean>(false);
   const uploadImageFile = async (file: File) => {
     if (file) {
       const ipfsHash = await uploadFileToIPFS(file);
@@ -151,8 +150,10 @@ export const GigCreationGallery: React.FC<{
       </View>
       <View style={styles.policyBox}>
         <CheckBox
-          value={agreePolicy}
-          onValueChange={() => setAgreePolicy((value) => !value)}
+          value={gigInfo.approveLicense}
+          onValueChange={() => {
+            setGig({ ...gigInfo, approveLicense: !gigInfo.approveLicense });
+          }}
         />
         <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
           I declare that materials were created by myself or by my team and do

@@ -1,82 +1,91 @@
+import axios from "axios";
+
 import serviceBackground from "../../../../assets/banners/freelance-service/service-card-background.png";
 import { allCountries } from "../../../utils/allCountries";
+import { ipfsPinataUrl } from "../../../utils/ipfs";
 import {
   CheckableType,
+  ContentInfo,
   FilterOptionType,
+  FreelanceServicePriceType,
+  GigInfo,
+  SellerInfo,
   ServiceFields,
   ServiceLevels,
   User,
 } from "../types/fields";
 
-export function getServiceListing(): ServiceFields[] {
-  return [
-    {
-      user: getUser("id123"),
-      id: "id123",
-      title: "I will do modern timeless logo design",
-      description: "description: I will do modern timeless logo design",
-      pricePreText: "Starting at",
-      isFavorite: false,
-      price: {
-        value: 50.0,
-        currency: "TORI",
-      },
-      tags: ["minimalist", "logo", "business", "vector"],
-      serviceLevels: [],
-    },
-  ];
-}
-export function getService(id: string): ServiceFields {
-  return {
-    user: getUser(id),
-    id,
-    title: "I will do modern timeless logo design",
-    description: "Lorem ",
-    pricePreText: "Starting at",
-    price: {
-      value: 50.0,
-      currency: "TORI",
-    },
-    isFavorite: true, // this is meant to be resolved as: does the current logged user liked this service
-    tags: ["minimalist", "logo", "business", "vector"],
-    serviceLevels,
-    reviews: {
-      stats: {
-        total: 100,
-        starsCount: [1, 9, 10, 40, 50],
-        avgRating: {
-          total: 4.9,
-          communication: 4.5,
-          recommendToFriend: 4.4,
-          serviceAsDescribed: 4,
-        },
-      },
-      items: [
-        {
-          id: "aoeu",
-          user: getUser(id),
-          date: new Date().toLocaleDateString(),
-          rating: 2,
-          text: "Pretty bad..",
-        },
-        {
-          id: "aoeu",
-          user: getUser(id),
-          date: new Date().toLocaleDateString(),
-          rating: 5,
-          text: "Great",
-        },
-      ],
-    },
-  };
-}
+// export function getServiceListing(): ServiceFields[] {
+//   return [
+//     {
+//       user: getUser("id123"),
+//       id: "id123",
+//       title: "I will do modern timeless logo design",
+//       description: "description: I will do modern timeless logo design",
+//       pricePreText: "Starting at",
+//       isFavorite: false,
+//       price: {
+//         value: 50.0,
+//         currency: "TORI",
+//       },
+//       tags: ["minimalist", "logo", "business", "vector"],
+//       serviceLevels: [],
+//     },
+//   ];
+// }
+// export function getService(id: string): ServiceFields {
+//   return {
+//     user: getUser(id),
+//     id,
+//     title: "I will do modern timeless logo design",
+//     description: "Lorem ",
+//     pricePreText: "Starting at",
+//     price: {
+//       value: 50.0,
+//       currency: "TORI",
+//     },
+//     isFavorite: true, // this is meant to be resolved as: does the current logged user liked this service
+//     tags: ["minimalist", "logo", "business", "vector"],
+//     serviceLevels,
+//     reviews: {
+//       stats: {
+//         total: 100,
+//         starsCount: [1, 9, 10, 40, 50],
+//         avgRating: {
+//           total: 4.9,
+//           communication: 4.5,
+//           recommendToFriend: 4.4,
+//           serviceAsDescribed: 4,
+//         },
+//       },
+//       items: [
+//         {
+//           id: "aoeu",
+//           user: getUser(id),
+//           date: new Date().toLocaleDateString(),
+//           rating: 2,
+//           text: "Pretty bad..",
+//         },
+//         {
+//           id: "aoeu",
+//           user: getUser(id),
+//           date: new Date().toLocaleDateString(),
+//           rating: 5,
+//           text: "Great",
+//         },
+//       ],
+//     },
+//   };
+// }
 
-export function getUser(id: string): User {
+export const getUser = async (ipfsHash: string): Promise<User> => {
+  const profile_json_res = await axios.get(ipfsPinataUrl(ipfsHash));
+  const sellerProfile = profile_json_res.data as SellerInfo;
   return {
-    id,
+    id: ipfsHash,
     backgroundPic: serviceBackground,
-    profilePic: "QmdwfuR4doRFsbMzNwDyjNv8ZFd4qUx5JMbbrSuURgESbE",
-    username: "freelancerUser100",
+    profilePic: sellerProfile.profilePicture,
+    username: `${sellerProfile.firstName} ${sellerProfile.lastName}`,
     levelText: "Level 2 Seller",
     isFavorite: false,
     intro:
@@ -94,18 +103,10 @@ export function getUser(id: string): User {
       "country-code": "54",
     },
     onlineStatus: "online",
-    portfolios: [
-      "QmdwfuR4doRFsbMzNwDyjNv8ZFd4qUx5JMbbrSuURgESbE",
-      "QmdwfuR4doRFsbMzNwDyjNv8ZFd4qUx5JMbbrSuURgESbE",
-    ],
+    portfolios: [],
     createDate: new Date(),
     totalQueue: 5,
-    languages: [
-      {
-        name: "English",
-        level: "Native",
-      },
-    ],
+    languages: sellerProfile.languages,
     linkedAccounts: [
       {
         type: "twitter",
@@ -120,182 +121,172 @@ export function getUser(id: string): User {
       "text logo",
       "logo-with-effect",
     ],
-    education: [
-      {
-        title: "Some School",
-        description: "BSc",
-      },
-    ],
-    certifications: [
-      {
-        title: "MOTU",
-        description: "Ubuntu cert",
-      },
-    ],
+    education: sellerProfile.educations,
+    certifications: sellerProfile.certifications,
   };
-}
+};
 
-const serviceLevels: ServiceLevels[] = [
-  {
-    text: "Basic",
-    price: {
-      value: 500,
-      currency: "TORI",
-    },
-    description: "Basic baby",
-    daysToDelivery: 5,
-    maximumRevisions: 3,
-    included: ["4 concepts included", "Logo transparency"],
-    extras: [
-      {
-        text: "Additional revision",
-        description:
-          "Add an additional revision your seller will provide after the delivery.",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-    ],
-  },
-  {
-    text: "Standard",
-    price: {
-      value: 1500,
-      currency: "TORI",
-    },
-    description:
-      "4 HQ UltraQuality Logos + AI EPS Vector Source File + 3D Mockup + VIP Support + 5 Social Media Covers",
-    daysToDelivery: 3,
-    maximumRevisions: 5,
-    included: [
-      "4 concepts included",
-      "Logo transparency",
-      "Vector file",
-      "Printable file",
-      "Include 3D Mockup",
-      "Include source file",
-      "Include social media kit",
-    ],
-    extras: [
-      {
-        text: "Extra Fast 2 Days Delivery",
-        description: "",
-        price: {
-          value: 1500,
-          currency: "TORI",
-        },
-      },
-      {
-        text: "Additional revision",
-        description:
-          "Add an additional revision your seller will provide after the delivery.",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-      {
-        text: "Include social media kit",
-        description:
-          "You'll get graphics showing your logo that you can use on social media platforms. Ex. Facebook and Instagram.",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-      {
-        text: "Stationery designs",
-        description:
-          "You'll get a template with your logo to use for stationary—letterhead, envelopes, business cards, etc.",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-      {
-        text: "Additional logo",
-        description: "Add another (1) logo concept.",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-      {
-        text: "Full Vector Package",
-        description:
-          "I will provide full HQ resolution logo files in 5000 X 5000 Vector AI EPS PDF JPG PNG on transparent BG",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-      {
-        text: "Favicon Design",
-        description: "I will design favicon for your Website",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-      {
-        text: "E Mail Signature",
-        description: "I will design E-Mail signature for digital branding",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-      {
-        text: "Full Color Codes",
-        description:
-          "I will provide color codes in HEX RGB and CMYK for the final logo",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-      {
-        text: "Branding Design",
-        description:
-          "I will design double sided business card and letterhead design to build your brand",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-      {
-        text: "Logo Guidelines",
-        description: "I will design an outstanding Logo Guidelines",
-        price: {
-          value: 500,
-          currency: "TORI",
-        },
-      },
-    ],
-  },
-  {
-    text: "Premium",
-    price: {
-      value: 5000,
-      currency: "TORI",
-    },
-    description: "TORI TORI bill yo",
-    daysToDelivery: 3,
-    maximumRevisions: 5,
-    included: [
-      "4 concepts included",
-      "Logo transparency",
-      "Vector file",
-      "Printable file",
-      "Include 3D Mockup",
-      "Include source file",
-      "Include social media kit",
-      "Keys to the Kingdom",
-    ],
-    extras: [],
-  },
-];
+// const serviceLevels: ServiceLevels[] = [
+//   {
+//     text: "Basic",
+//     price: {
+//       value: 500,
+//       currency: "TORI",
+//     },
+//     description: "Basic baby",
+//     daysToDelivery: 5,
+//     maximumRevisions: 3,
+//     included: ["4 concepts included", "Logo transparency"],
+//     extras: [
+//       {
+//         text: "Additional revision",
+//         description:
+//           "Add an additional revision your seller will provide after the delivery.",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//     ],
+//   },
+//   {
+//     text: "Standard",
+//     price: {
+//       value: 1500,
+//       currency: "TORI",
+//     },
+//     description:
+//       "4 HQ UltraQuality Logos + AI EPS Vector Source File + 3D Mockup + VIP Support + 5 Social Media Covers",
+//     daysToDelivery: 3,
+//     maximumRevisions: 5,
+//     included: [
+//       "4 concepts included",
+//       "Logo transparency",
+//       "Vector file",
+//       "Printable file",
+//       "Include 3D Mockup",
+//       "Include source file",
+//       "Include social media kit",
+//     ],
+//     extras: [
+//       {
+//         text: "Extra Fast 2 Days Delivery",
+//         description: "",
+//         price: {
+//           value: 1500,
+//           currency: "TORI",
+//         },
+//       },
+//       {
+//         text: "Additional revision",
+//         description:
+//           "Add an additional revision your seller will provide after the delivery.",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//       {
+//         text: "Include social media kit",
+//         description:
+//           "You'll get graphics showing your logo that you can use on social media platforms. Ex. Facebook and Instagram.",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//       {
+//         text: "Stationery designs",
+//         description:
+//           "You'll get a template with your logo to use for stationary—letterhead, envelopes, business cards, etc.",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//       {
+//         text: "Additional logo",
+//         description: "Add another (1) logo concept.",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//       {
+//         text: "Full Vector Package",
+//         description:
+//           "I will provide full HQ resolution logo files in 5000 X 5000 Vector AI EPS PDF JPG PNG on transparent BG",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//       {
+//         text: "Favicon Design",
+//         description: "I will design favicon for your Website",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//       {
+//         text: "E Mail Signature",
+//         description: "I will design E-Mail signature for digital branding",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//       {
+//         text: "Full Color Codes",
+//         description:
+//           "I will provide color codes in HEX RGB and CMYK for the final logo",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//       {
+//         text: "Branding Design",
+//         description:
+//           "I will design double sided business card and letterhead design to build your brand",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//       {
+//         text: "Logo Guidelines",
+//         description: "I will design an outstanding Logo Guidelines",
+//         price: {
+//           value: 500,
+//           currency: "TORI",
+//         },
+//       },
+//     ],
+//   },
+//   {
+//     text: "Premium",
+//     price: {
+//       value: 5000,
+//       currency: "TORI",
+//     },
+//     description: "TORI TORI bill yo",
+//     daysToDelivery: 3,
+//     maximumRevisions: 5,
+//     included: [
+//       "4 concepts included",
+//       "Logo transparency",
+//       "Vector file",
+//       "Printable file",
+//       "Include 3D Mockup",
+//       "Include source file",
+//       "Include social media kit",
+//       "Keys to the Kingdom",
+//     ],
+//     extras: [],
+//   },
+// ];
 
 export const getFilterOptions = (type: string): FilterOptionType[] => {
   if (type === "logo") {
@@ -421,4 +412,72 @@ export const getFilterOptions = (type: string): FilterOptionType[] => {
       },
     ];
   }
+};
+
+export const getServiceFieldFromIPFS = async (
+  ipfsHash: string,
+  gigInfo: GigInfo
+): Promise<ServiceFields> => {
+  return {
+    id: ipfsHash,
+    user: await getUser(gigInfo.profileHash),
+    title: gigInfo.title,
+    description: gigInfo.description,
+    pricePreText: "Starting at",
+    isFavorite: false,
+    price: {
+      value: Math.ceil(parseFloat(gigInfo.basicPackage.price)),
+      currency: "TORI",
+    } as FreelanceServicePriceType,
+    tags: gigInfo.positiveKeywords,
+    serviceLevels: [
+      {
+        text: "Basic",
+        description: gigInfo.basicPackage.desc,
+        price: {
+          value: Math.ceil(parseFloat(gigInfo.basicPackage.price)),
+          currency: "TORI",
+        } as FreelanceServicePriceType,
+        daysToDelivery: gigInfo.basicPackage.deliveryTime,
+        maximumRevisions: maxiumRevisions(gigInfo.basicPackage.contents),
+        included: gigInfo.basicPackage.contents.map((item) => item.title),
+        extras: [],
+      } as ServiceLevels,
+      {
+        text: "Standard",
+        description: gigInfo.standardPackage.desc,
+        price: {
+          value: Math.ceil(parseFloat(gigInfo.standardPackage.price)),
+          currency: "TORI",
+        } as FreelanceServicePriceType,
+        daysToDelivery: gigInfo.standardPackage.deliveryTime,
+        maximumRevisions: maxiumRevisions(gigInfo.standardPackage.contents),
+        included: gigInfo.standardPackage.contents.map((item) => item.title),
+        extras: [],
+      } as ServiceLevels,
+      {
+        text: "Premium",
+        description: gigInfo.premiumPackage.desc,
+        price: {
+          value: Math.ceil(parseFloat(gigInfo.premiumPackage.price)),
+          currency: "TORI",
+        } as FreelanceServicePriceType,
+        daysToDelivery: gigInfo.premiumPackage.deliveryTime,
+        maximumRevisions: maxiumRevisions(gigInfo.premiumPackage.contents),
+        included: gigInfo.premiumPackage.contents.map((item) => item.title),
+        extras: [],
+      } as ServiceLevels,
+    ],
+  } as ServiceFields;
+};
+
+const maxiumRevisions = (contentInfos: ContentInfo[]): string => {
+  let maxRevisions = -1;
+  contentInfos.map((contentInfo) => {
+    if (contentInfo.id === "revisions" && contentInfo.data_value !== null) {
+      maxRevisions = parseInt(contentInfo.data_value, 10);
+    }
+  });
+
+  return maxRevisions.toString(10);
 };

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import chevronLeftDouble from "../../../../assets/icons/chevron-left-double.svg";
@@ -7,7 +8,14 @@ import chevronRightDouble from "../../../../assets/icons/chevron-right-double.sv
 import chevronRight from "../../../../assets/icons/chevron-right.svg";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
-import { getServiceListing } from "../../../screens/FreelanceServices/query/data";
+import { useWallets } from "../../../context/WalletsProvider";
+import { getGigsFromContract } from "../../../screens/FreelanceServices/contract";
+import { getServiceFieldFromIPFS } from "../../../screens/FreelanceServices/query/data";
+import {
+  GigInfo,
+  ServiceFields,
+} from "../../../screens/FreelanceServices/types/fields";
+import { ipfsPinataUrl } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral17,
@@ -27,7 +35,7 @@ import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import { ServiceCard } from "../Cards/ServiceCard";
 
-const data = getServiceListing();
+// const data = getServiceListing();
 const logoDesignTags = [
   "retro",
   "styleguides",
@@ -58,7 +66,24 @@ export const ListServices: React.FC = () => {
   const [pageLimitMin, setPageLimitMin] = useState(0);
   const [pageLimitMax, setPageLimitMax] = useState(numbersOfItemsPerPage);
   const navigation = useAppNavigation();
+  const { wallets } = useWallets();
 
+  const [gigList, setGigList] = useState<ServiceFields[]>([]);
+  useEffect(() => {
+    const getGigList = async () => {
+      const gigHashes = await getGigsFromContract(null, 10);
+
+      const newGigList: ServiceFields[] = [];
+      gigHashes.map(async (ipfsHash, index) => {
+        const gig_json_res = await axios.get(ipfsPinataUrl(ipfsHash));
+        newGigList.push(
+          await getServiceFieldFromIPFS(ipfsHash, gig_json_res.data as GigInfo)
+        );
+      });
+      setGigList(newGigList);
+    };
+    getGigList();
+  }, [wallets]);
   function reducePageLimits() {
     setPageLimitMin(pageLimitMin - numbersOfItemsPerPage);
     setPageLimitMax(pageLimitMax - numbersOfItemsPerPage);
@@ -74,7 +99,7 @@ export const ListServices: React.FC = () => {
   }
 
   function checkIfMaxLimitIsReached() {
-    return pageLimitMax >= data.length;
+    return pageLimitMax >= gigList.length;
   }
 
   return (
@@ -89,7 +114,7 @@ export const ListServices: React.FC = () => {
           zIndex: -1,
         }}
       >
-        {data.map((item, index) => (
+        {gigList.map((item, index) => (
           <TouchableOpacity
             key={index}
             onPress={() => {
@@ -180,7 +205,7 @@ export const ListServices: React.FC = () => {
           <TouchableOpacity
             disabled={checkIfMaxLimitIsReached()}
             onPress={() => {
-              if (pageLimitMax < data.length) {
+              if (pageLimitMax < gigList.length) {
                 addPageLimits();
               }
             }}

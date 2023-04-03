@@ -134,7 +134,6 @@ export const GeneralSelect: React.FC<GeneralSelectProps> = ({
           />
         )}
       </View>
-
       {openMenu && (
         <View style={styles.dropdownMenu}>
           {data.map((item: string, index: number) => (

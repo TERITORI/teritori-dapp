@@ -12,16 +12,19 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { GigStep } from "../../../utils/types/freelance";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 
 type GigCreationHeaderProps = {
-  currentStep: number;
+  currentStep: GigStep;
+  step: GigStep;
   setCurrentStep: any;
 };
 
 export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
   currentStep,
+  step,
   setCurrentStep,
 }) => {
   const stepCircleSize = layout.padding_x4;
@@ -108,16 +111,16 @@ export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
     ]),
   });
 
-  const getStepStyle = (step: number, content: string): any => {
+  const getStepStyle = (gigStep: GigStep, content: string): any => {
     let targetStyles: any;
 
-    if (step === currentStep) {
+    if (gigStep === currentStep) {
       targetStyles =
         content === "circle"
           ? stepStyles.currentCircle
           : stepStyles.currentTitle;
     } else {
-      if (step < currentStep) {
+      if (gigStep < currentStep) {
         targetStyles =
           content === "circle"
             ? stepStyles.previousCircle
@@ -136,10 +139,14 @@ export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
       <View style={generalStyles.stepContainer}>
         <Pressable
           style={generalStyles.singleBox}
-          onPress={() => setCurrentStep(1)}
+          onPress={() => setCurrentStep(GigStep.OverView)}
         >
-          <BrandText style={getStepStyle(1, "circle")}>1</BrandText>
-          <BrandText style={getStepStyle(1, "title")}>Overview</BrandText>
+          <BrandText style={getStepStyle(GigStep.OverView, "circle")}>
+            1
+          </BrandText>
+          <BrandText style={getStepStyle(GigStep.OverView, "title")}>
+            Overview
+          </BrandText>
         </Pressable>
         <SVG
           source={chevronRightSVG}
@@ -148,10 +155,16 @@ export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
         />
         <Pressable
           style={generalStyles.singleBox}
-          onPress={() => setCurrentStep(2)}
+          onPress={() => {
+            GigStep.Pricing <= step && setCurrentStep(GigStep.Pricing);
+          }}
         >
-          <BrandText style={getStepStyle(2, "circle")}>2</BrandText>
-          <BrandText style={getStepStyle(2, "title")}>Pricing</BrandText>
+          <BrandText style={getStepStyle(GigStep.Pricing, "circle")}>
+            2
+          </BrandText>
+          <BrandText style={getStepStyle(GigStep.Pricing, "title")}>
+            Pricing
+          </BrandText>
         </Pressable>
         <SVG
           source={chevronRightSVG}
@@ -160,10 +173,14 @@ export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
         />
         <Pressable
           style={generalStyles.singleBox}
-          onPress={() => setCurrentStep(3)}
+          onPress={() => {
+            GigStep.Description <= step && setCurrentStep(GigStep.Description);
+          }}
         >
-          <BrandText style={getStepStyle(3, "circle")}>3</BrandText>
-          <BrandText style={getStepStyle(3, "title")}>
+          <BrandText style={getStepStyle(GigStep.Description, "circle")}>
+            3
+          </BrandText>
+          <BrandText style={getStepStyle(GigStep.Description, "title")}>
             Description & FAQ
           </BrandText>
         </Pressable>
@@ -174,10 +191,16 @@ export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
         />
         <Pressable
           style={generalStyles.singleBox}
-          onPress={() => setCurrentStep(4)}
+          onPress={() => {
+            GigStep.Requirement <= step && setCurrentStep(GigStep.Requirement);
+          }}
         >
-          <BrandText style={getStepStyle(4, "circle")}>4</BrandText>
-          <BrandText style={getStepStyle(4, "title")}>Requirement</BrandText>
+          <BrandText style={getStepStyle(GigStep.Requirement, "circle")}>
+            4
+          </BrandText>
+          <BrandText style={getStepStyle(GigStep.Requirement, "title")}>
+            Requirement
+          </BrandText>
         </Pressable>
         <SVG
           source={chevronRightSVG}
@@ -186,10 +209,16 @@ export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
         />
         <Pressable
           style={generalStyles.singleBox}
-          onPress={() => setCurrentStep(5)}
+          onPress={() => {
+            GigStep.Gallery <= step && setCurrentStep(GigStep.Gallery);
+          }}
         >
-          <BrandText style={getStepStyle(5, "circle")}>5</BrandText>
-          <BrandText style={getStepStyle(5, "title")}>Gallery</BrandText>
+          <BrandText style={getStepStyle(GigStep.Gallery, "circle")}>
+            5
+          </BrandText>
+          <BrandText style={getStepStyle(GigStep.Gallery, "title")}>
+            Gallery
+          </BrandText>
         </Pressable>
         <SVG
           source={chevronRightSVG}
@@ -198,10 +227,16 @@ export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
         />
         <Pressable
           style={generalStyles.singleBox}
-          onPress={() => setCurrentStep(6)}
+          onPress={() => {
+            GigStep.Publish <= step && setCurrentStep(GigStep.Publish);
+          }}
         >
-          <BrandText style={getStepStyle(6, "circle")}>6</BrandText>
-          <BrandText style={getStepStyle(6, "title")}>Publish</BrandText>
+          <BrandText style={getStepStyle(GigStep.Publish, "circle")}>
+            6
+          </BrandText>
+          <BrandText style={getStepStyle(GigStep.Publish, "title")}>
+            Publish
+          </BrandText>
         </Pressable>
       </View>
       <View style={generalStyles.divideLine} />

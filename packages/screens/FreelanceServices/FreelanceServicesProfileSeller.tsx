@@ -9,15 +9,12 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useWallets } from "../../context/WalletsProvider";
 import { sellerprofileBackendClient } from "../../utils/backend";
 import { ipfsPinataUrl, uploadJSONToIPFS } from "../../utils/ipfs";
-import {
-  getFirstKeplrAccount,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+import { getFirstKeplrAccount } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { ProfileStep } from "../../utils/types/freelance";
 import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
+import { getSellerIpfsHash, updateSellerProfileToContract } from "./contract";
 import { emptySeller, SellerInfo } from "./types/fields";
-import { getSellerIpfsHash } from "./utils";
 
 export const FreelanceServicesProfileSeller: ScreenFC<
   "FreelanceServicesProfileSeller"
@@ -67,26 +64,12 @@ export const FreelanceServicesProfileSeller: ScreenFC<
     if (currentStep === ProfileStep.AccountSecurity) {
       // store  UserSeller to ipfs and db
       uploadJSONToIPFS(sellerInfo).then(async (ipfsHash) => {
-        const walletAddress = (await getFirstKeplrAccount()).address;
-
-        const contractAddress = process.env
-          .TERITORI_SELLER_PROFILE_CONTRACT_ADRESS as string;
-
-        const msg = {
-          update_seller_profile: {
-            seller: walletAddress,
-            ipfs_hash: ipfsHash,
-          },
-        } as any;
         try {
-          const signingClient = await getSigningCosmWasmClient();
-          const updatedProfileRes = await signingClient.execute(
-            walletAddress!,
-            contractAddress,
-            msg,
-            "auto"
+          const walletAddress = (await getFirstKeplrAccount()).address;
+          const updatedProfileRes = await updateSellerProfileToContract(
+            walletAddress,
+            ipfsHash
           );
-
           if (updatedProfileRes) {
             const obserable = sellerprofileBackendClient.updateProfile({
               sellerId: walletAddress,

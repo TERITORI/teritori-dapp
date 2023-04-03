@@ -7,3 +7,12 @@ export enum ProfileStep {
   LinkedAccounts,
   AccountSecurity,
 }
+
+export enum GigStep {
+  OverView,
+  Pricing,
+  Description,
+  Requirement,
+  Gallery,
+  Publish,
+}
