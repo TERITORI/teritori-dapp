@@ -1,5 +1,10 @@
 import React from "react";
-import { StyleProp, TouchableOpacity, ViewStyle, useWindowDimensions } from "react-native";
+import {
+  StyleProp,
+  TouchableOpacity,
+  ViewStyle,
+  useWindowDimensions,
+} from "react-native";
 
 import penSVG from "../../../../../assets/icons/pen.svg";
 import {
@@ -13,7 +18,6 @@ export const CreateShortPostButtonRound: React.FC<{
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ onPress, style }) => {
-
   const { width } = useWindowDimensions();
 
   return (

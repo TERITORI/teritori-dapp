@@ -22,7 +22,7 @@ export const WalletStatusBox: React.FC = () => {
 
   const getShortAddress = (address: string) => {
     return `${address.slice(0, 5)}...${address.slice(-2)}`;
-  }
+  };
 
   return (
     <TertiaryBox
@@ -51,7 +51,9 @@ export const WalletStatusBox: React.FC = () => {
                 {selectedNetworkInfo?.displayName}
               </BrandText>
               <BrandText style={[fontSemibold13]}>
-                {width < 512 ? getShortAddress(selectedWallet.address) : selectedWallet.address}
+                {width < 512
+                  ? getShortAddress(selectedWallet.address)
+                  : selectedWallet.address}
               </BrandText>
             </View>
           </View>

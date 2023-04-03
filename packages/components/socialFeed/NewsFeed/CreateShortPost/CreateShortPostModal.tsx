@@ -1,6 +1,6 @@
 import React from "react";
-import { MenuProvider } from "react-native-popup-menu";
 import { useWindowDimensions } from "react-native";
+import { MenuProvider } from "react-native-popup-menu";
 
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../../../utils/style/layout";
 import ModalBase from "../../../modals/ModalBase";

@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { LayoutChangeEvent, StyleSheet, View, useWindowDimensions } from "react-native";
+import {
+  LayoutChangeEvent,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,

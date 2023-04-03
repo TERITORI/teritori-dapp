@@ -1,12 +1,16 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, useWindowDimensions } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+} from "react-native";
 import Animated, {
   Easing,
   SharedValue,
   useAnimatedStyle,
   useDerivedValue,
   withRepeat,
-  withTiming
+  withTiming,
 } from "react-native-reanimated";
 
 import refreshSVG from "../../../../../assets/icons/refresh.svg";
@@ -36,16 +40,16 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
   const rotateValue = useDerivedValue(() => {
     return isRefreshingAnim.value
       ? withRepeat(
-        withTiming(1, {
+          withTiming(1, {
+            duration: 500,
+            easing: Easing.linear,
+          }),
+          -1
+        )
+      : withTiming(0, {
           duration: 500,
           easing: Easing.linear,
-        }),
-        -1
-      )
-      : withTiming(0, {
-        duration: 500,
-        easing: Easing.linear,
-      });
+        });
   }, [isRefreshingAnim.value]);
 
   const animatedStyles = useAnimatedStyle(() => {
