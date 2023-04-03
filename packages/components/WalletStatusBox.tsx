@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
@@ -16,8 +16,13 @@ import {
 import { layout } from "../utils/style/layout";
 
 export const WalletStatusBox: React.FC = () => {
+  const { width } = useWindowDimensions();
   const selectedWallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
+
+  const getShortAddress = (address: string) => {
+    return `${address.slice(0, 5)}...${address.slice(-2)}`;
+  }
 
   return (
     <TertiaryBox
@@ -46,7 +51,7 @@ export const WalletStatusBox: React.FC = () => {
                 {selectedNetworkInfo?.displayName}
               </BrandText>
               <BrandText style={[fontSemibold13]}>
-                {selectedWallet.address}
+                {width < 512 ? getShortAddress(selectedWallet.address) : selectedWallet.address}
               </BrandText>
             </View>
           </View>

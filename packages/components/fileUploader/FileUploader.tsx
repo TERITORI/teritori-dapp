@@ -25,6 +25,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ label, style }) => {
       <View
         style={{
           flex: 1,
+          width: "100%",
           flexDirection: "row",
           alignItems: "center",
           height: files.length ? FILE_HEIGHT : 80,

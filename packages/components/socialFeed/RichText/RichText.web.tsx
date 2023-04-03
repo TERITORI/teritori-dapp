@@ -320,14 +320,14 @@ export const RichText: React.FC<RichTextProps> = ({
     <View style={styles.toolbarButtonsWrapper}>
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}
-        optionsContainer={{ marginLeft: -80, marginTop: -6 }}
-        buttonStyle={styles.toolbarCustomButton}
+        optionsContainer={{ marginLeft: 0, marginTop: -6 }}
+        buttonStyle={[styles.toolbarCustomButton, { marginRight: -18 }]}
       />
 
       <GIFSelector
         onGIFSelected={(url) => (url ? addGIF(url) : undefined)}
-        optionsContainer={{ marginLeft: -186, marginTop: -6 }}
-        buttonStyle={styles.toolbarCustomButton}
+        optionsContainer={{ marginLeft: 0, marginTop: -6 }}
+        buttonStyle={[styles.toolbarCustomButton, { marginRight: -18 }]}
         disabled={isGIFSelectorDisabled}
       />
 
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    flex: 1,
+    width: "100%",
     flexWrap: "wrap",
   },
 });

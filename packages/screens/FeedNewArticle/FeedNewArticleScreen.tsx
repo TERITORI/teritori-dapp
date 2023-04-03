@@ -206,6 +206,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           label="Cover image"
           style={{
             marginTop: layout.padding_x3,
+            width: "100%"
           }}
           onUpload={(files) =>
             setValue("files", [

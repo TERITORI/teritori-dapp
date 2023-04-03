@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleProp, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle, useWindowDimensions } from "react-native";
 
 import { SocialCardHeader } from "./SocialCardHeader";
 import { SocialMessageContent } from "./SocialMessageContent";
@@ -50,6 +50,7 @@ export const SocialThreadCard: React.FC<{
   isGovernance,
   isPreview,
 }) => {
+  const { width } = useWindowDimensions();
   const [localPost, setLocalPost] = useState<Post>(post);
   const { mutate: postMutate, isLoading: isPostMutationLoading } =
     useTeritoriSocialFeedReactPostMutation({
@@ -125,6 +126,7 @@ export const SocialThreadCard: React.FC<{
             paddingVertical: layout.padding_x2,
             paddingHorizontal: layout.padding_x2_5,
           },
+          isPostConsultation && { backgroundColor: neutral17 },
           style,
         ]}
         delay={fadeInDelay}
@@ -136,7 +138,7 @@ export const SocialThreadCard: React.FC<{
           postMetadata={metadata}
           authorMetadata={authorNSInfo?.metadata}
         />
-
+        
         <SpacerColumn size={2} />
 
         {/*====== Card Content */}
@@ -177,25 +179,25 @@ export const SocialThreadCard: React.FC<{
             <SpacerRow size={2.5} />
             <CommentsCount count={localPost.subPostLength} />
 
-            <SpacerRow size={2.5} />
-            <TipButton
-              disabled={
-                authorNSInfo?.metadata?.tokenId === userInfo?.metadata?.tokenId
-              }
-              amount={localPost.tipAmount}
-              author={username}
-              postId={localPost.identifier}
-            />
+              <SpacerRow size={2.5} />
+              <TipButton
+                disabled={
+                  authorNSInfo?.metadata?.tokenId === userInfo?.metadata?.tokenId
+                }
+                amount={localPost.tipAmount}
+                author={username}
+                postId={localPost.identifier}
+              />
 
-            {isPostConsultation && (
-              <>
-                <SpacerRow size={2.5} />
-                <ShareButton postId={localPost.identifier} />
-              </>
-            )}
-          </FlexRow>
-        )}
-      </AnimationFadeIn>
-    </CustomPressable>
-  );
-};
+              {isPostConsultation && (
+                <>
+                  <SpacerRow size={2.5} />
+                  <ShareButton postId={localPost.identifier} />
+                </>
+              )}
+            </FlexRow>
+          )}
+        </AnimationFadeIn>
+      </CustomPressable>
+    );
+  };

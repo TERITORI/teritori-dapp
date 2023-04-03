@@ -7,6 +7,7 @@ import {
   ViewStyle,
   Pressable,
   StyleSheet,
+  useWindowDimensions
 } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
@@ -125,6 +126,8 @@ export const NewsFeedInput = React.forwardRef<
     },
     forwardRef
   ) => {
+    const { width } = useWindowDimensions();
+    const smallMobileWidth = 512;
     const inputMaxHeight = 400;
     const inputMinHeight = 20;
     const inputHeight = useSharedValue(20);
@@ -354,9 +357,8 @@ export const NewsFeedInput = React.forwardRef<
                 onSelectionChange={(event) =>
                   setSelection(event.nativeEvent.selection)
                 }
-                placeholder={`Hey yo! ${
-                  type === "post" ? "Post something" : "Write your comment"
-                } here! _____`}
+                placeholder={`Hey yo! ${type === "post" ? "Post something" : "Write your comment"
+                  } ${width < smallMobileWidth ? "" : "here! _____"}`}
                 placeholderTextColor={neutral77}
                 onChangeText={handleTextChange}
                 multiline
@@ -390,15 +392,15 @@ export const NewsFeedInput = React.forwardRef<
                   color: !formValues?.message
                     ? neutral77
                     : formValues?.message?.length >
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
-                          CHARS_LIMIT_WARNING_MULTIPLIER &&
+                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
+                      CHARS_LIMIT_WARNING_MULTIPLIER &&
                       formValues?.message?.length <
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                    ? yellowDefault
-                    : formValues?.message?.length >=
                       SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                    ? errorColor
-                    : primaryColor,
+                      ? yellowDefault
+                      : formValues?.message?.length >=
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        ? errorColor
+                        : primaryColor,
                   position: "absolute",
                   bottom: 12,
                   right: 20,
@@ -447,7 +449,7 @@ export const NewsFeedInput = React.forwardRef<
             paddingBottom: layout.padding_x1_5,
             marginTop: -layout.padding_x2_5,
             paddingHorizontal: layout.padding_x2_5,
-            flexDirection: isMobile ? "column" : "row",
+            flexDirection: width < 1100 ? "column" : "row",
             alignItems: "center",
             justifyContent: "space-between",
             borderRadius: 8,
@@ -470,10 +472,10 @@ export const NewsFeedInput = React.forwardRef<
               {freePostCount
                 ? `You have ${freePostCount} free ${type} left`
                 : `The cost for this ${type} is ${prettyPrice(
-                    selectedNetworkId,
-                    postFee.toString(),
-                    "utori"
-                  )}`}
+                  selectedNetworkId,
+                  postFee.toString(),
+                  "utori"
+                )}`}
             </BrandText>
           </View>
           <View
@@ -486,21 +488,21 @@ export const NewsFeedInput = React.forwardRef<
               },
               isMobile
                 ? {
-                    maxWidth: "11em",
-                    minHeight: "13em",
-                    justifyContent: "center",
-                    flexWrap: "wrap",
-                  }
+                  maxWidth: "11em",
+                  minHeight: "13em",
+                  justifyContent: "center",
+                  flexWrap: "wrap",
+                }
                 : [],
             ]}
           >
             <EmojiSelector
               onEmojiSelected={onEmojiSelected}
-              optionsContainer={{ marginLeft: -80, marginTop: -6 }}
+              optionsContainer={{ marginLeft: 0, marginTop: -6 }}
             />
 
             <GIFSelector
-              optionsContainer={{ marginLeft: -186, marginTop: -6 }}
+              optionsContainer={{ marginLeft: 0, marginTop: -6 }}
               onGIFSelected={(url) => {
                 // Don't add if already added
                 if (formValues.gifs?.find((gif) => gif === url)) return;
@@ -510,8 +512,8 @@ export const NewsFeedInput = React.forwardRef<
                 (formValues.files?.[0] &&
                   formValues.files[0].fileType !== "image") ||
                 (formValues.files || []).length +
-                  (formValues.gifs || [])?.length >=
-                  MAX_IMAGES
+                (formValues.gifs || [])?.length >=
+                MAX_IMAGES
               }
             />
 
@@ -565,8 +567,8 @@ export const NewsFeedInput = React.forwardRef<
                     (formValues.files?.[0] &&
                       formValues.files[0].fileType !== "image") ||
                     (formValues.files || []).length +
-                      (formValues.gifs || [])?.length >=
-                      MAX_IMAGES
+                    (formValues.gifs || [])?.length >=
+                    MAX_IMAGES
                   }
                   icon={cameraSVG}
                   onPress={onPress}
@@ -581,27 +583,27 @@ export const NewsFeedInput = React.forwardRef<
 
             {type === "post" && (
               <OmniLink to={{ screen: "FeedNewArticle" }}>
-                <SecondaryButtonOutline
-                  size="M"
-                  color={
-                    formValues?.message.length >
-                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                      ? primaryTextColor
-                      : primaryColor
-                  }
-                  borderColor={primaryColor}
-                  touchableStyle={{
-                    marginRight: layout.padding_x2_5,
-                  }}
-                  backgroundColor={
-                    formValues?.message.length >
-                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                      ? primaryColor
-                      : neutral17
-                  }
-                  text="Create an Article"
-                  squaresBackgroundColor={neutral17}
-                />
+              <SecondaryButtonOutline
+                size="M"
+                color={
+                  formValues?.message.length >
+                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                    ? primaryTextColor
+                    : primaryColor
+                }
+                borderColor={primaryColor}
+                touchableStyle={{
+                  marginRight: layout.padding_x2_5,
+                }}
+                backgroundColor={
+                  formValues?.message.length >
+                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                    ? primaryColor
+                    : neutral17
+                }
+                text="Create an Article"
+                squaresBackgroundColor={neutral17}
+              />
               </OmniLink>
             )}
 
@@ -611,7 +613,7 @@ export const NewsFeedInput = React.forwardRef<
                   !formValues?.files?.length &&
                   !formValues?.gifs?.length) ||
                 formValues?.message.length >
-                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
+                SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
                 !wallet
               }
               isLoading={isLoading || isMutateLoading}

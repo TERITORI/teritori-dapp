@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { LayoutChangeEvent, StyleSheet, View } from "react-native";
+import { LayoutChangeEvent, StyleSheet, View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
@@ -36,6 +36,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   additionalHashtag,
   additionalMention,
 }) => {
+  const { width } = useWindowDimensions();
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
   const isLoadingValue = useSharedValue(false);
@@ -110,6 +111,21 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     [isLoadingValue, Header, additionalMention, additionalHashtag, refetch]
   );
 
+  const styles = StyleSheet.create({
+    content: {
+      alignSelf: "center",
+      maxWidth: NEWS_FEED_MAX_WIDTH,
+      width: "100%",
+    },
+    floatingActions: {
+      position: "absolute",
+      justifyContent: "center",
+      alignItems: "center",
+      right: width < 512 ? 0.05 * width : 68,
+      bottom: width < 512 ? 0.05 * width : 68,
+    },
+  });
+
   return (
     <>
       <Animated.FlatList
@@ -151,18 +167,3 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  content: {
-    alignSelf: "center",
-    maxWidth: NEWS_FEED_MAX_WIDTH,
-    width: "100%",
-  },
-  floatingActions: {
-    position: "absolute",
-    justifyContent: "center",
-    alignItems: "center",
-    right: 68,
-    bottom: 68,
-  },
-});

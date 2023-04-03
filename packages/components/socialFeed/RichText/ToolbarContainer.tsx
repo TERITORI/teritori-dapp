@@ -1,3 +1,5 @@
+import { useWindowDimensions } from "react-native";
+
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -6,10 +8,13 @@ import {
 import { PrimaryBox } from "../../boxes/PrimaryBox";
 
 export const ToolbarContainer: React.FC = ({ children }) => {
+
+  const { width } = useWindowDimensions();
+
   return (
     <PrimaryBox
       fullWidth
-      height={48}
+      height={width < 959 ? width < 380 ? 108 : 84 : 48}
       colors={[
         gradientColorDarkerBlue,
         gradientColorBlue,
