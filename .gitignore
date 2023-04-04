@@ -82,4 +82,7 @@ buck-out/
 web-build/
 dist/
 
+# Substreams
+substreams-*/target
+
 # @end expo-cli
