@@ -7,7 +7,7 @@ module.exports = async function (env, argv) {
 
   // needed to use environment variables
   config.plugins.push(
-    new Dotenv(),
+    new Dotenv()
     // new BundleAnalyzerPlugin({
     //   path: "web-report",
     //   generateStatsFile: true,
