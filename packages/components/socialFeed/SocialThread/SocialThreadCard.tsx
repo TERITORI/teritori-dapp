@@ -37,7 +37,6 @@ export const SocialThreadCard: React.FC<{
   post: Post;
   style?: StyleProp<ViewStyle>;
   isPostConsultation?: boolean;
-  refresh?: number;
   fadeInDelay?: number;
   onPressReply?: OnPressReplyType;
   isGovernance?: boolean;
@@ -178,15 +177,15 @@ export const SocialThreadCard: React.FC<{
             <SpacerRow size={2.5} />
             <CommentsCount count={localPost.subPostLength} />
 
-            {authorNSInfo?.metadata?.tokenId !==
-              userInfo?.metadata?.tokenId && (
-              <>
-                <SpacerRow size={2.5} />
-                <TipButton
-                  postTokenId={authorNSInfo?.metadata?.tokenId || ""}
-                />
-              </>
-            )}
+            <SpacerRow size={2.5} />
+            <TipButton
+              disabled={
+                authorNSInfo?.metadata?.tokenId === userInfo?.metadata?.tokenId
+              }
+              amount={localPost.tipAmount}
+              author={username}
+              postId={localPost.identifier}
+            />
 
             {isPostConsultation && (
               <>

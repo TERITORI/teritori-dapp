@@ -31,6 +31,7 @@ export const useCreatePost = ({
         isInLocal: true,
         reactions: [],
         user_reactions: [],
+        tip_amount: "0",
       };
 
       const prevData = addUpdateNewComment(

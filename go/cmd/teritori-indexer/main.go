@@ -121,7 +121,7 @@ func main() {
 		panic(errors.New("missing Database configuration"))
 	}
 
-	if *socialFeedContractAddress == "" {
+	if network.SocialFeedContractAddress == "" {
 		panic(errors.New("missing social feed contract address"))
 	}
 

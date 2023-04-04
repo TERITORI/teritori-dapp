@@ -63,4 +63,6 @@ export const teritoriNetwork: NetworkInfo = {
     "tori16504tvqjzrln0gsewpcn20863h5ftr638fxlx37a6ntd7w5tudwqs8f3ts", // Mr Crypto
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
+  socialFeedContractAddress:
+    "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp",
 };
