@@ -1,0 +1,15 @@
+{
+  "name": "TheGraph GraphQL Schema",
+  "schemaPath": "schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "TheGraph GraphQL Endpoint MainNet": {
+        "url": "https://api.studio.thegraph.com/query/40379/teritori-mainnet/v1",
+        "headers": {
+          "user-agent": "JS GraphQL"
+        },
+        "introspect": true
+      }
+    }
+  }
+}

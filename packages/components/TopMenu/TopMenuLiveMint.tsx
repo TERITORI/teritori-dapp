@@ -43,7 +43,12 @@ export const TopMenuLiveMint: React.FC = () => {
         loop={false}
         renderItem={({ item }) => (
           <View style={{ alignItems: "flex-end" }}>
-            <CollectionView item={item} linkToMint size="XS" />
+            <CollectionView
+              item={item}
+              linkToMint
+              size="XS"
+              mintState={item.mintState}
+            />
           </View>
         )}
       />

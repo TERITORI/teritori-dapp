@@ -69,6 +69,8 @@ type DBCollectionWithExtra struct {
 	Volume              string
 	MintContractAddress string
 	CreatorAddress      string
+	Price               uint64
+	MaxSupply           int64
 	SecondaryDuringMint bool
 }
 
@@ -116,7 +118,28 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		case marketplacepb.MintState_MINT_STATE_RUNNING:
 			where = "where c.paused = false and c.max_supply != -1 and (select count from count_by_collection where collection_id = c.id) != c.max_supply"
 		case marketplacepb.MintState_MINT_STATE_ENDED:
-			where = "where c.max_supply = -1 or (select count from count_by_collection where collection_id = c.id) = c.max_supply"
+			where = "where (select count from count_by_collection where collection_id = c.id) = c.max_supply"
+		}
+		orderDirection := ""
+		switch req.GetSortDirection() {
+		case marketplacepb.SortDirection_SORT_DIRECTION_UNSPECIFIED:
+			orderDirection = ""
+		case marketplacepb.SortDirection_SORT_DIRECTION_ASCENDING:
+			orderDirection = " ASC "
+		case marketplacepb.SortDirection_SORT_DIRECTION_DESCENDING:
+			orderDirection = " DESC "
+		}
+		orderSQL := ""
+		switch req.GetSort() {
+		case marketplacepb.Sort_SORTING_PRICE:
+			where = where + "AND tc.denom = utori" // not mixed denoms allowed !
+			orderSQL = "tc.price" + orderDirection
+		case marketplacepb.Sort_SORTING_VOLUME:
+			orderSQL = "volume " + orderDirection + ", id ASC"
+		case marketplacepb.Sort_SORTING_CREATED_AT:
+			orderSQL = "c.time " + orderDirection
+		case marketplacepb.Sort_SORTING_UNSPECIFIED:
+			orderSQL = "volume DESC, id ASC"
 		}
 
 		err := s.conf.IndexerDB.Raw(fmt.Sprintf(`
@@ -124,7 +147,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				SELECT count(1), collection_id FROM nfts GROUP BY nfts.collection_id
 			),
 			tori_collections AS (
-				SELECT c.*, tc.mint_contract_address, tc.creator_address FROM collections AS c
+				SELECT c.*, tc.* FROM collections AS c
 				INNER JOIN teritori_collections tc ON tc.collection_id = c.id
 				%s
 				AND tc.mint_contract_address IN ?
@@ -145,14 +168,15 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
 				GROUP BY nbc.id
 			)
-			SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume 
+			SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume
 				FROM tori_collections tc
-			ORDER BY volume DESC, id ASC
+			ORDER BY ?
 			LIMIT ?
 			OFFSET ?
 		`, where),
 			s.conf.Whitelist,
 			time.Now().AddDate(0, 0, -30),
+			orderSQL,
 			limit,
 			offset,
 		).Scan(&collections).Error
@@ -171,6 +195,8 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				Volume:              c.Volume,
 				CreatorId:           string(network.UserID(c.CreatorAddress)),
 				SecondaryDuringMint: c.SecondaryDuringMint,
+				FloorPrice:          c.Price,
+				MaxSupply:           c.MaxSupply,
 			}}); err != nil {
 				return errors.Wrap(err, "failed to send collection")
 			}
@@ -179,7 +205,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		return nil
 
 	case *networks.EthereumNetwork:
-		collections, err := s.ethereumProvider.GetCollections(srv.Context(), networkID)
+		collections, err := s.ethereumProvider.GetCollections(srv.Context(), networkID, req)
 		if err != nil {
 			return errors.Wrap(err, "failed to query database")
 		}

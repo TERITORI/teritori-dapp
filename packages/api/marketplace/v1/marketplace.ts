@@ -13,6 +13,7 @@ export enum Sort {
   SORTING_PRICE = 1,
   SORTING_VOLUME = 2,
   SORTING_MARKET_CAP = 3,
+  SORTING_CREATED_AT = 4,
   UNRECOGNIZED = -1,
 }
 
@@ -30,6 +31,9 @@ export function sortFromJSON(object: any): Sort {
     case 3:
     case "SORTING_MARKET_CAP":
       return Sort.SORTING_MARKET_CAP;
+    case 4:
+    case "SORTING_CREATED_AT":
+      return Sort.SORTING_CREATED_AT;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -47,6 +51,8 @@ export function sortToJSON(object: Sort): string {
       return "SORTING_VOLUME";
     case Sort.SORTING_MARKET_CAP:
       return "SORTING_MARKET_CAP";
+    case Sort.SORTING_CREATED_AT:
+      return "SORTING_CREATED_AT";
     case Sort.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -170,6 +176,10 @@ export interface Collection {
   volumeDenom: string;
   creatorId: string;
   secondaryDuringMint: boolean;
+  websiteUrl: string;
+  twitterUrl: string;
+  floorPrice: number;
+  maxSupply: number;
 }
 
 export interface CollectionStats {
@@ -621,6 +631,10 @@ function createBaseCollection(): Collection {
     volumeDenom: "",
     creatorId: "",
     secondaryDuringMint: false,
+    websiteUrl: "",
+    twitterUrl: "",
+    floorPrice: 0,
+    maxSupply: 0,
   };
 }
 
@@ -658,6 +672,18 @@ export const Collection = {
     }
     if (message.secondaryDuringMint === true) {
       writer.uint32(96).bool(message.secondaryDuringMint);
+    }
+    if (message.websiteUrl !== "") {
+      writer.uint32(106).string(message.websiteUrl);
+    }
+    if (message.twitterUrl !== "") {
+      writer.uint32(114).string(message.twitterUrl);
+    }
+    if (message.floorPrice !== 0) {
+      writer.uint32(120).uint64(message.floorPrice);
+    }
+    if (message.maxSupply !== 0) {
+      writer.uint32(128).int64(message.maxSupply);
     }
     return writer;
   },
@@ -702,6 +728,18 @@ export const Collection = {
         case 12:
           message.secondaryDuringMint = reader.bool();
           break;
+        case 13:
+          message.websiteUrl = reader.string();
+          break;
+        case 14:
+          message.twitterUrl = reader.string();
+          break;
+        case 15:
+          message.floorPrice = longToNumber(reader.uint64() as Long);
+          break;
+        case 16:
+          message.maxSupply = longToNumber(reader.int64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -723,6 +761,10 @@ export const Collection = {
       volumeDenom: isSet(object.volumeDenom) ? String(object.volumeDenom) : "",
       creatorId: isSet(object.creatorId) ? String(object.creatorId) : "",
       secondaryDuringMint: isSet(object.secondaryDuringMint) ? Boolean(object.secondaryDuringMint) : false,
+      websiteUrl: isSet(object.websiteUrl) ? String(object.websiteUrl) : "",
+      twitterUrl: isSet(object.twitterUrl) ? String(object.twitterUrl) : "",
+      floorPrice: isSet(object.floorPrice) ? Number(object.floorPrice) : 0,
+      maxSupply: isSet(object.maxSupply) ? Number(object.maxSupply) : 0,
     };
   },
 
@@ -739,6 +781,10 @@ export const Collection = {
     message.volumeDenom !== undefined && (obj.volumeDenom = message.volumeDenom);
     message.creatorId !== undefined && (obj.creatorId = message.creatorId);
     message.secondaryDuringMint !== undefined && (obj.secondaryDuringMint = message.secondaryDuringMint);
+    message.websiteUrl !== undefined && (obj.websiteUrl = message.websiteUrl);
+    message.twitterUrl !== undefined && (obj.twitterUrl = message.twitterUrl);
+    message.floorPrice !== undefined && (obj.floorPrice = Math.round(message.floorPrice));
+    message.maxSupply !== undefined && (obj.maxSupply = Math.round(message.maxSupply));
     return obj;
   },
 
@@ -755,6 +801,10 @@ export const Collection = {
     message.volumeDenom = object.volumeDenom ?? "";
     message.creatorId = object.creatorId ?? "";
     message.secondaryDuringMint = object.secondaryDuringMint ?? false;
+    message.websiteUrl = object.websiteUrl ?? "";
+    message.twitterUrl = object.twitterUrl ?? "";
+    message.floorPrice = object.floorPrice ?? 0;
+    message.maxSupply = object.maxSupply ?? 0;
     return message;
   },
 };
