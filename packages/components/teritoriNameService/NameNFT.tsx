@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, StyleProp, ViewStyle, View } from "react-native";
 
+import { NameAndTldText } from "./NameAndTldText";
 import defaultNameNFT from "../../../assets/default-images/default-name-nft.png";
 import { useNSNameInfo } from "../../hooks/useNSNameInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -9,7 +10,6 @@ import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold16 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { NameAndTldText } from "./NameAndTldText";
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameNFT: React.FC<{
   style?: StyleProp<ViewStyle>;

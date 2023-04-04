@@ -5,6 +5,11 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
+import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
+import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
+import { NewsFeedInput } from "./NewsFeedInput";
+import { RefreshButton } from "./RefreshButton/RefreshButton";
+import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
 import { Post, PostsRequest } from "../../../api/feed/v1/feed";
 import {
   combineFetchFeedPages,
@@ -13,11 +18,6 @@ import {
 import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
 import { SpacerColumn } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
-import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
-import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
-import { NewsFeedInput } from "./NewsFeedInput";
-import { RefreshButton } from "./RefreshButton/RefreshButton";
-import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
 

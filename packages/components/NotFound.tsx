@@ -1,8 +1,8 @@
 import React from "react";
 import { View } from "react-native";
 
-import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
+import { layout } from "../utils/style/layout";
 
 export const NotFound: React.FC<{ label: string }> = ({ label }) => {
   return (

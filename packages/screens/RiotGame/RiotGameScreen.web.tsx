@@ -1,14 +1,14 @@
 import React from "react";
 import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
 
-import { gameBgData } from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
-import { neutral00 } from "../../utils/style/colors";
-import { headerHeight } from "../../utils/style/layout";
 import { CenterSection } from "./component/CenterSection";
 import { GameBgCard } from "./component/GameBgCard";
 import { GameBgOverlay } from "./component/GameBgOverlay";
 import { RiotGameHeader } from "./component/RiotGameHeader";
+import { gameBgData } from "../../utils/game";
+import { useAppNavigation } from "../../utils/navigation";
+import { neutral00 } from "../../utils/style/colors";
+import { headerHeight } from "../../utils/style/layout";
 
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();

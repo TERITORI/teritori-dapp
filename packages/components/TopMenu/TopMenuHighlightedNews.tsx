@@ -1,13 +1,13 @@
 import React from "react";
 import { Image } from "react-native";
 
+import { TopMenuSection } from "./TopMenuSection";
 import { useBanners } from "../../hooks/useBanners";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import FlexCol from "../FlexCol";
 import { Link } from "../Link";
 import { PrimaryBox } from "../boxes/PrimaryBox";
-import { TopMenuSection } from "./TopMenuSection";
 
 export const TopMenuHighlightedNews: React.FC = () => {
   const networkId = useSelectedNetworkId();

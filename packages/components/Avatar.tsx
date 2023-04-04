@@ -3,8 +3,8 @@ import React from "react";
 import { Image } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { avatarWidth } from "../utils/style/layout";
 import { SVG } from "./SVG";
+import { avatarWidth } from "../utils/style/layout";
 
 // types
 export interface AvatarProps {

@@ -2,10 +2,13 @@ import { Decimal } from "cosmwasm";
 import { ethers } from "ethers";
 import { useCallback } from "react";
 
+import { Wallet } from "./../context/WalletsProvider/wallet";
+import { getMetaMaskEthereumSigner } from "./../utils/ethereum";
+import useSelectedWallet from "./useSelectedWallet";
 import { initialToastError, useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
-import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
   getKeplrSigningCosmWasmClient,
   getNativeCurrency,
@@ -14,9 +17,6 @@ import {
   WEI_TOKEN_ADDRESS,
   NetworkKind,
 } from "../networks";
-import { Wallet } from "./../context/WalletsProvider/wallet";
-import { getMetaMaskEthereumSigner } from "./../utils/ethereum";
-import useSelectedWallet from "./useSelectedWallet";
 
 const teritoriSellNFT = async (
   wallet: Wallet,

@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import getupSVG from "../../../assets/getup.svg";
+import { LegalFooter } from "./LegalFooter";
 import discordSVG from "../../../assets/icons/discord.svg";
 import mediumSVG from "../../../assets/icons/medium.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
@@ -16,7 +16,6 @@ import { secondaryColor } from "../../utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { LegalFooter } from "./LegalFooter";
 
 const FooterSocialNetworks: React.FC = () => {
   return (
@@ -72,6 +71,9 @@ const FooterSocialNetworks: React.FC = () => {
 };
 
 const FooterGetUp: React.FC = () => {
+  const getupSVG = React.lazy(
+    () => import("../../../dynamic-assets/getup.svg")
+  );
   return (
     <View
       style={{

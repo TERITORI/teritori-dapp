@@ -10,8 +10,14 @@ import {
   StyleProp,
 } from "react-native";
 
+import { Header } from "./Header";
+import { NetworkSelector } from "./NetworkSelector";
+import { SelectedNetworkGate } from "./SelectedNetworkGate";
+import { ConnectWalletButton } from "./TopMenu/ConnectWalletButton";
+import { Sidebar } from "./navigation/Sidebar";
 import { useForceNetworkKind } from "../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
+import { useForceUnselectNetworks } from "../hooks/useForceUnselectNetworks";
 import { useMaxResolution } from "../hooks/useMaxResolution";
 import { NetworkInfo, NetworkKind } from "../networks";
 import { DAppStoreData } from "../screens/DAppStore/components/DAppStoreData";
@@ -21,12 +27,6 @@ import {
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
 } from "../utils/style/layout";
-import { Header } from "./Header";
-import { NetworkSelector } from "./NetworkSelector";
-import { SelectedNetworkGate } from "./SelectedNetworkGate";
-import { ConnectWalletButton } from "./TopMenu/ConnectWalletButton";
-import { Footer } from "./footers/Footer";
-import { Sidebar } from "./navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
@@ -83,6 +83,7 @@ export const ScreenContainer: React.FC<{
 
   useForceNetworkSelection(forceNetworkId);
   useForceNetworkKind(forceNetworkKind);
+  useForceUnselectNetworks();
 
   const networkFilter = useCallback(
     (n: NetworkInfo | undefined) => {
@@ -93,7 +94,9 @@ export const ScreenContainer: React.FC<{
     },
     [forceNetworkId, forceNetworkKind]
   );
-
+  const Footer = React.lazy(() =>
+    import("./footers/Footer").then((module) => ({ default: module.Footer }))
+  );
   // returns
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>

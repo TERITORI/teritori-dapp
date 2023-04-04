@@ -1,8 +1,8 @@
 import { View } from "react-native";
 
+import { BrandText } from "./BrandText";
 import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import { NetworkInfo } from "../networks";
-import { BrandText } from "./BrandText";
 
 export const SelectedNetworkGate: React.FC<{
   filter: (n: NetworkInfo) => boolean;

@@ -6,10 +6,10 @@ import {
   RichToolbar,
 } from "react-native-pell-rich-editor";
 
-import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { RichTextProps } from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./ToolbarContainer";
+import { PrimaryButton } from "../../buttons/PrimaryButton";
 
 // /!\ It will not fully work on mobile
 

@@ -1,12 +1,12 @@
 import { useMetaMask } from "metamask-react";
 import { useMemo } from "react";
 
+import { Wallet } from "./wallet";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkKind, getUserId } from "../../networks";
 import { setSelectedWalletId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
-import { Wallet } from "./wallet";
 
 export type UseMetamaskResult =
   | [true, boolean, Wallet[]]

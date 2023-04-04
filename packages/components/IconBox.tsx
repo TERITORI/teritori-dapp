@@ -2,9 +2,9 @@ import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { neutral33, neutral77, secondaryColor } from "../utils/style/colors";
 import { SVG } from "./SVG";
 import { CustomPressable } from "./buttons/CustomPressable";
+import { neutral33, neutral77, secondaryColor } from "../utils/style/colors";
 
 interface IconBoxProps {
   onPress: () => void;

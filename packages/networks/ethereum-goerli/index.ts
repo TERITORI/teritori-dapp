@@ -1,5 +1,5 @@
-import { NetworkInfo, NetworkKind } from "../types";
 import { ethereumGoerliCurrencies } from "./currencies";
+import { NetworkInfo, NetworkKind } from "../types";
 
 export const ethereumGoerliNetwork: NetworkInfo = {
   id: "ethereum-goerli",

@@ -1,6 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 
+import { BrandText } from "./BrandText";
+import { NetworkIcon } from "./NetworkIcon";
+import { SuccessBadge } from "./badges/SuccessBadge";
+import { TertiaryBox } from "./boxes/TertiaryBox";
 import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { neutral11, neutral77 } from "../utils/style/colors";
@@ -10,10 +14,6 @@ import {
   fontSemibold14,
 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
-import { SuccessBadge } from "./badges/SuccessBadge";
-import { TertiaryBox } from "./boxes/TertiaryBox";
 
 export const WalletStatusBox: React.FC = () => {
   const selectedWallet = useSelectedWallet();

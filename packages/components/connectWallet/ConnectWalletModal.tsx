@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { ConnectKeplrButton } from "./ConnectKeplrButton";
+import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
+import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import adenaSVG from "../../../assets/icons/adena.svg";
 import walletConnectSVG from "../../../assets/icons/wallet-connect.svg";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
@@ -13,9 +16,6 @@ import { SeparatorGradient } from "../SeparatorGradient";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
-import { ConnectKeplrButton } from "./ConnectKeplrButton";
-import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
-import { ConnectWalletButton } from "./components/ConnectWalletButton";
 
 type ConnectWalletProps = {
   onClose: () => void;

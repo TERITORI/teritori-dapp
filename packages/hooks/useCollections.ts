@@ -1,13 +1,13 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRef, useMemo, useCallback } from "react";
 
+import { addCollectionMetadata } from "./../utils/ethereum";
 import {
   Collection,
   CollectionsRequest,
 } from "../api/marketplace/v1/marketplace";
 import { getNetwork, NetworkKind } from "../networks";
 import { mustGetMarketplaceClient } from "../utils/backend";
-import { addCollectionMetadata } from "./../utils/ethereum";
 
 export const useCollections = (
   req: CollectionsRequest,
