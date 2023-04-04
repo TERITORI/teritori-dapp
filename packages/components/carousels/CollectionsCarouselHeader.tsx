@@ -24,6 +24,8 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { GradientText } from "../gradientText";
 
+const HERO_SIZE = 460;
+
 const defaultRequest: CollectionsRequest = {
   networkId: "fake",
   sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
@@ -89,8 +91,8 @@ const CarouselCollectionItem: React.FC<{
           <Image
             source={{ uri: collection.imageUri }}
             style={{
-              height: 368,
-              width: 368,
+              height: HERO_SIZE,
+              width: HERO_SIZE,
               borderRadius: 8,
             }}
           />
@@ -136,7 +138,7 @@ export const CollectionsCarouselHeader: React.FC<{
         data={collections}
         ref={carouselRef}
         panGestureHandlerProps={{ enableTrackpadTwoFingerGesture: true }}
-        height={370}
+        height={HERO_SIZE + 4}
         pagingEnabled
         autoPlay
         autoPlayInterval={3000}
